@@ -1,0 +1,18 @@
+
+
+Spring MockServlet
+http://static.springsource.org/spring/docs/3.0.x/javadoc-api/org/springframework/mock/web/MockHttpServletRequest.html
+
+
+
+http://sourceforge.net/projects/kxml/
+
+http://cds.u-strasbg.fr/resources/doku.php?id=adqllib
+
+http://cdsportal.u-strasbg.fr/adqltuto/download.html
+
+http://cds.u-strasbg.fr/resources/doku.php?id=savot2.6
+
+
+
+http://cdsportal.u-strasbg.fr/uwstuto/download?file=library&version=3.1
