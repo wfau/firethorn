@@ -39,10 +39,10 @@
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
 
-    <name>FireThorn library</name>
+    <name>WFAU FireThorn library</name>
     <description>
         <![CDATA[
-        FireThorn library.
+        WFAU FireThorn library.
         ]]>
     </description>
     

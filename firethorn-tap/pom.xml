@@ -39,10 +39,10 @@
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
 
-    <name>TAP service components</name>
+    <name>WFAU FireThorn TAP service</name>
     <description>
         <![CDATA[
-        TAP service components.
+        WFAU FireThorn TAP service.
         ]]>
     </description>
     
@@ -68,6 +68,44 @@
             <version>20120113</version>
         </dependency>
 
+        <!--+
+            | Postgresql database driver.
+            | Linked to the local OS installed driver for our database.
+            | Deployed webapps will need to provide their own.
+            | ** nice idea, works for JUnit testing but fails in the tomcat:run goal **
+    	<dependency>
+    		<groupId>postgresql</groupId>
+    		<artifactId>postgresql</artifactId>
+            <version>local</version>
+            <scope>system</scope>
+            <systemPath>/usr/share/java/postgresql-jdbc.jar</systemPath>
+    	</dependency>
+            +-->
+
+        <!--+
+            | Postgresql database driver (for testing only).
+            | When deployed the container should provide the correct version of the driver.
+            +-->
+    	<dependency>
+    		<groupId>postgresql</groupId>
+    		<artifactId>postgresql</artifactId>
+            <version>8.4-701.jdbc4</version>
+            <!--scope>test</scope-->
+    	</dependency>
+
+	    <!--+
+	        | Servlet libraries.
+	        +-->
+	    <dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>servlet-api</artifactId>
+		    <scope>provided</scope>
+	    </dependency>
+	    <dependency>
+		    <groupId>javax.servlet.jsp</groupId>
+		    <artifactId>jsp-api</artifactId>
+		    <scope>provided</scope>
+	    </dependency>
 
     </dependencies>
 

@@ -1,0 +1,8 @@
+syntax: glob
+
+# Maven build directories.
+*/target
+
+# Temp data directories.
+*/tmp
+

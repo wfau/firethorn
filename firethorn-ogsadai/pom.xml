@@ -39,10 +39,10 @@
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
 
-    <name>FireThorn OGSA-DAI components</name>
+    <name>WFAU FireThorn OGSA-DAI components</name>
     <description>
         <![CDATA[
-        FireThorn OGSA-DAI components.
+        WFAU FireThorn OGSA-DAI components.
         ]]>
     </description>
     

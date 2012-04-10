@@ -23,27 +23,24 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
     >
+
+    <!--+
+        | Maven POM documentation.
+        | https://maven.apache.org/ref/3.0.4/maven-model/maven.html
+        +-->
+
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>uk.ac.roe.wfau</groupId>
     <artifactId>firethorn</artifactId>
 
-    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-    <!--+
-        | Maven parent/child projects.
-        | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
-        +-->
-    <modules>
-        <module>firethorn-tap</module>
-        <!--module>firethorn-two</module-->
-    </modules>
-
-    <name>FireThorn TAP webservice</name>
+    <name>WFAU FireThorn project</name>
     <description>
         <![CDATA[
-        FireThorn TAP webservice.
+        WFAU FireThorn project.
         <br/>
         Named after the <a href='http://ukmoths.org.uk/show.php?bf=332a'>Firethorn Leaf Miner</a>
         moth <i>(Phyllonorycter leucographella)</i>.
@@ -51,7 +48,25 @@
     </description>
     <url>http://hempriggs.roe.ac.uk/redmine/projects/wva</url>
 
+    <organization>
+        <name>The Royal Observatory, Edinburgh</name>
+        <url>http://www.roe.ac.uk/</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>GPLv3</name>
+            <url>https://www.gnu.org/copyleft/gpl.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
     <developers>
+
+        <developer>
+            <name>Mark Holliman</name>
+            <url>http://hempriggs.roe.ac.uk/redmine/users/1</url>
+        </developer>
 
         <developer>
             <name>Dave Morris</name>
@@ -64,21 +79,55 @@
         </developer>
 
         <developer>
-            <name>Bob Mann</name>
-            <url>http://hempriggs.roe.ac.uk/redmine/users/6</url>
+            <name>Stelios Voutsinas</name>
+            <url>http://hempriggs.roe.ac.uk/redmine/users/5</url>
         </developer>
 
     </developers>
+
+    <contributors>
+
+        <contributor>
+            <name>Bob Mann</name>
+            <url>http://hempriggs.roe.ac.uk/redmine/users/6</url>
+        </contributor>
+
+    </contributors>
+
+    <scm>
+        <!--+
+        <connection>...</connection>
+        <url>....</url>
+        +-->
+    </scm>
+
+    <issueManagement>
+        <system>redmine</system>
+        <url>http://hempriggs.roe.ac.uk/redmine/projects/wva</url>
+    </issueManagement>
+
+    <ciManagement>
+        <!--+
+        <system>...</system>
+        <url>...</url>
+        +-->
+    </ciManagement>
+
+    <!--+
+        | Maven parent/child projects.
+        | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
+        +-->
+    <modules>
+        <module>firethorn-spring</module>
+        <module>firethorn-tap</module>
+        <module>firethorn-war</module>
+    </modules>
 
     <properties>
 
         <project.javaversion>1.6</project.javaversion>
 
         <project.build.sourceencoding>UTF-8</project.build.sourceencoding>
-
-		<org.spring.version>3.1.1.RELEASE</org.spring.version>
-        <org.hibernate.version>3.6.9.Final</org.hibernate.version>
-		<!--org.aspectj.version>1.6.11</org.aspectj.version-->
 
         <org.junit.version>4.8.2</org.junit.version>
 		<org.slf4j.version>1.6.1</org.slf4j.version>
@@ -111,146 +160,214 @@
             <layout>default</layout>
         </repository>
 
-        <!--+
-            | SpringSource repository.
-            +-->
-        <repository>
-            <id>springsource-repo</id>
-            <name>SpringSource Repository</name>
-            <url>http://repo.springsource.org/release</url>
-        </repository>
-
-        <!--+
-            | JBoss/Hibernate repository.
-            +-->
-        <repository>
-            <id>org.jboss.maven.public</id>
-            <name>JBoss Public Repository Group</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public</url>
-        </repository>
-
     </repositories>
 
-    <dependencies>
-
-    <!--+
-        | http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html
-        | http://www.sonatype.com/people/2009/10/maven-tips-and-tricks-grouping-dependencies/
-        +-->	
-
-		<!--+
-		    | Joda Time Libraries.
-		    | http://joda-time.sourceforge.net/
-		    | http://joda-time.sourceforge.net/api-release/index.html
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledJodaTime
-		    +-->	
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>1.6.2</version>
-        </dependency>
+    <dependencyManagement>
 
         <!--+
-            | JUnit test framework.
-            +-->
-    	<dependency>
-    		<groupId>junit</groupId>
-    		<artifactId>junit</artifactId>
-            <version>${org.junit.version}</version>
-            <scope>test</scope>
-    	</dependency>
+            | https://maven.apache.org/ref/3.0.4/maven-model/maven.html#class_dependencyManagement
+            | http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html
+            | http://www.sonatype.com/people/2009/10/maven-tips-and-tricks-grouping-dependencies/
+            +-->	
 
-		<!--+
-		    | Java Servlet libraries.
-		    +-->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>jsp-api</artifactId>
-			<version>2.1</version>
-			<scope>provided</scope>
-		</dependency>
+        <dependencies>
 
-        <!--+
-            | SLf4J libraries.
-            | 
-            +-->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${org.slf4j.version}</version>
-        </dependency>
-        <!--dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${org.slf4j.version}</version>
-        </dependency-->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${org.slf4j.version}</version>
-        </dependency>
+            <!--+
+                | JUnit test framework.
+                | http://www.junit.org/
+                +-->
+        	<dependency>
+        		<groupId>junit</groupId>
+        		<artifactId>junit</artifactId>
+                <version>${org.junit.version}</version>
+                <scope>test</scope>
+        	</dependency>
 
-        <!--+
-            | Log4J libraries.
-            | http://logging.apache.org/log4j/1.2/index.html
-            | http://static.springsource.org/spring/docs/3.0.5.RELEASE/reference/overview.html
-            +-->
-    	<dependency>
-    		<groupId>log4j</groupId>
-    		<artifactId>log4j</artifactId>
-            <version>${org.log4j.version}</version>
-    	</dependency>
+            <!--+
+                | SLf4J libraries.
+                | http://www.slf4j.org/
+                +-->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${org.slf4j.version}</version>
+            </dependency>
+            <!--dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${org.slf4j.version}</version>
+            </dependency-->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${org.slf4j.version}</version>
+            </dependency>
 
-        <!--+
-            | Apache commons logging.
-            +-->
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.1.1</version>
-        </dependency>
+            <!--+
+                | Log4J libraries.
+                | http://logging.apache.org/log4j/1.2/index.html
+                +-->
+        	<dependency>
+        		<groupId>log4j</groupId>
+        		<artifactId>log4j</artifactId>
+                <version>${org.log4j.version}</version>
+        	</dependency>
 
-        <!--+
-            | Apache commons libraries.
-            +-->
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.3</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>1.3</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-discovery</groupId>
-            <artifactId>commons-discovery</artifactId>
-            <version>0.5</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-pool</groupId>
-            <artifactId>commons-pool</artifactId>
-            <version>1.5.4</version>
-        </dependency>
+            <!--+
+                | Apache commons libraries.
+                | https://commons.apache.org/
+                +-->
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.3</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>3.2.1</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-dbcp</groupId>
+                <artifactId>commons-dbcp</artifactId>
+                <version>1.3</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-discovery</groupId>
+                <artifactId>commons-discovery</artifactId>
+                <version>0.5</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>1.1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-pool</groupId>
+                <artifactId>commons-pool</artifactId>
+                <version>1.5.4</version>
+            </dependency>
 
-    </dependencies>
+            <!--+
+                | Apache file upload.
+                | http://commons.apache.org/fileupload/index.html
+                +-->
+        	<dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>1.2.2</version>
+        	</dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>1.3.2</version>
+            </dependency>
+
+            <!--+
+                | Apache HttpClient libraries.
+                | http://hc.apache.org/httpcomponents-core-ga/index.html
+        	<dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <version>${org.apache.httpcomponents.version}</version>
+        	</dependency>
+        	<dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpmime</artifactId>
+                <version>${org.apache.httpcomponents.version}</version>
+        	</dependency>
+        	<dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${org.apache.httpcomponents.version}</version>
+        	</dependency>
+        	<dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient-cache</artifactId>
+                <version>${org.apache.httpcomponents.version}</version>
+        	</dependency>
+                +-->
+
+		    <!--+
+		        | Servlet libraries.
+		        +-->
+		    <dependency>
+			    <groupId>javax.servlet</groupId>
+			    <artifactId>servlet-api</artifactId>
+			    <version>2.5</version>
+			    <scope>provided</scope>
+		    </dependency>
+		    <dependency>
+			    <groupId>javax.servlet.jsp</groupId>
+			    <artifactId>jsp-api</artifactId>
+			    <version>2.1</version>
+			    <scope>provided</scope>
+		    </dependency>
+
+            <!--+
+                | Starlink Tables library.
+                | http://www.star.bris.ac.uk/~mbt/stil/
+                +-->
+            <dependency>
+                <groupId>uk.ac.starlink</groupId>
+                <artifactId>stil-util</artifactId>
+                <version>3.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>uk.ac.starlink</groupId>
+                <artifactId>stil-table</artifactId>
+                <version>3.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>uk.ac.starlink</groupId>
+                <artifactId>stil-votable</artifactId>
+                <version>3.0.2</version>
+            </dependency>
+
+		    <!--+
+		        | Joda Time Libraries.
+		        | http://joda-time.sourceforge.net/
+		        | http://joda-time.sourceforge.net/api-release/index.html
+                | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledJodaTime
+		        +-->	
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>1.6.2</version>
+            </dependency>
+
+		    <!--+
+		        | Java Simplified Encryption
+                | http://www.jasypt.org/howtoencryptuserpasswords.html
+		        +-->
+            <dependency>
+                <groupId>org.jasypt</groupId>
+                <artifactId>jasypt</artifactId>
+                <version>1.8</version>
+            </dependency>
+
+		    <!--+
+		        | PJA (Pure Java AWT) Toolkit
+                | http://www.eteks.com/pja/en/
+		        +-->
+            <dependency>
+                <groupId>com.eteks.pja</groupId>
+                <artifactId>pjatools</artifactId>
+                <version>2.5</version>
+            </dependency>
+            <dependency>
+                <groupId>com.eteks.pja</groupId>
+                <artifactId>pja</artifactId>
+                <version>2.5</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
 
 </project>
 
