@@ -35,14 +35,14 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>firethorn-one</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>firethorn-war</artifactId>
+    <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
 
-    <name>FireThorn library</name>
+    <name>FireThorn webapp</name>
     <description>
         <![CDATA[
-        FireThorn library.
+        FireThorn webapp.
         ]]>
     </description>
     
@@ -55,6 +55,19 @@
     </repositories>
 
     <dependencies>
+
+        <!--+
+            | Big blob of things from CDS.
+            | Currently based on a pre-release version of the TAP code and may contains some unpublished classes from the other CDS projects.
+            | Once we get our own local version working we should use that instead.
+            +-->
+        <dependency>
+            <groupId>cds</groupId>
+            <artifactId>cds-tap</artifactId>
+            <!--version>1.0-beta</version-->
+            <version>20120113</version>
+        </dependency>
+
 
     </dependencies>
 

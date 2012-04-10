@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | Copyright (c) 2012, ROE (http://www.roe.ac.uk/)
+    | All rights reserved.
+    |
+    | This program is free software: you can redistribute it and/or modify
+    | it under the terms of the GNU General Public License as published by
+    | the Free Software Foundation, either version 3 of the License, or
+    | (at your option) any later version.
+    |
+    | This program is distributed in the hope that it will be useful,
+    | but WITHOUT ANY WARRANTY; without even the implied warranty of
+    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    | GNU General Public License for more details.
+    |
+    | You should have received a copy of the GNU General Public License
+    | along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    |
+    +-->
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:txn="http://www.springframework.org/schema/tx"
+    xmlns:cxt="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        "
+    >
+    <!--+
+        | Import our database connection settings.
+        +-->
+    <import resource="database-config.xml"/>
+
+    <!--+
+        | Import our Hibernate data access beans.
+        +-->
+    <import resource="hibernate-config.xml"/>
+
+    <!--+
+        | Import our task scheduler config.
+        +-->
+    <import resource="scheduler-config.xml"/>
+
+    <!--+
+        | Load the JSR-303 validator.
+        +-->
+    <bean class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+
+    <!--+
+        | Enable JSR-303 annotations.
+        +-->
+    <mvc:annotation-driven/>
+
+    <!--+
+        | Explicity register the default Annotation handlers.
+        | http://www.vaannila.com/spring/spring-annotation-controller-1.html
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+        +-->
+
+    <!--+
+        | Enable automatic @Autowired component injection.
+        | http://amin-mc.blogspot.com/2008/02/configurable-example-with-spring-25.html
+    <cxt:annotation-config/>
+    <cxt:spring-configured/>
+        +-->
+
+    <!--+
+        | Scan for annotated components.
+        +-->
+    <cxt:component-scan base-package="uk.ac.roe.wfau.firethorn"/>
+
+    <!--+
+        | java.lang.IllegalStateException: 
+        | ClassLoader [org.apache.catalina.loader.WebappClassLoader] does NOT provide an 'addTransformer(ClassFileTransformer)' method.
+        | Specify a custom LoadTimeWeaver or start your Java virtual machine with Spring's agent: -javaagent:org.springframework.instrument.jar
+    <cxt:load-time-weaver/>
+	<cxt:load-time-weaver aspectj-weaving="on"/>
+        +-->
+
+</beans>
+

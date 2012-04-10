@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | Copyright (c) 2012, ROE (http://www.roe.ac.uk/)
+    | All rights reserved.
+    |
+    | This program is free software: you can redistribute it and/or modify
+    | it under the terms of the GNU General Public License as published by
+    | the Free Software Foundation, either version 3 of the License, or
+    | (at your option) any later version.
+    |
+    | This program is distributed in the hope that it will be useful,
+    | but WITHOUT ANY WARRANTY; without even the implied warranty of
+    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    | GNU General Public License for more details.
+    |
+    | You should have received a copy of the GNU General Public License
+    | along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    |
+    +-->
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        "
+    >
+
+    <!--+
+        | Database settings for local Postgresql database.
+    <bean id="FireThornDatabase" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="jdbc:postgresql://leucine.metagrid.co.uk/firethorn"/>
+        <property name="username" value="firethorn"/>
+        <property name="password" value="q237-1q2n-jas1-234w-sf1t-q236"/>
+    </bean>
+        +-->
+
+    <!--+
+        | Database settings from Tomcat config.
+        | http://pro-programmers.blogspot.com/2008/07/spring-datasource-jndi-lookup-from.html
+        +-->
+    <bean id="FireThornDatabase" class="org.springframework.jndi.JndiObjectFactoryBean">
+      <property name="jndiName" value="java:comp/env/firethorn/database"/>   
+      <property name="resourceRef" value="true" />
+    </bean>
+
+</beans>
+
