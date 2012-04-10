@@ -64,8 +64,8 @@
     <dependencies>
 
         <!--+
-            | Big blob of things with no version from CDS.
-            | Looks like it may contains some unpublished classes as well.
+            | Big blob of things from CDS.
+            | This is based on a pre-release version of the TAP code and may contains some unpublished classes from the other CDS projects.
             | Once we get our own local version we can use that instead.
             +-->
         <dependency>

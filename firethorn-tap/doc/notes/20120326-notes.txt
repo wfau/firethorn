@@ -16,3 +16,17 @@ http://cds.u-strasbg.fr/resources/doku.php?id=savot2.6
 
 
 http://cdsportal.u-strasbg.fr/uwstuto/download?file=library&version=3.1
+
+
+
+* "TAP library":http://cds.u-strasbg.fr/resources/doku.php?id=taplib
+* "TAP tutorial":http://cdsportal.u-strasbg.fr/taptuto/
+
+* "UWS library":http://cds.u-strasbg.fr/resources/doku.php?id=uwslib
+* "UWS tutorial":http://cdsportal.u-strasbg.fr/uwstuto/
+
+* "ADQL library":http://cds.u-strasbg.fr/resources/doku.php?id=adqllib
+* "ADQL tutorial":http://cdsportal.u-strasbg.fr/adqltuto/
+
+
+

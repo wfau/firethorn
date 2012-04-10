@@ -1,0 +1,20 @@
+
+    OGSA-DAI source code
+
+    svn co https://ogsa-dai.svn.sourceforge.net/svnroot/ogsa-dai ogsa-dai 
+
+    OGSA-DAI Trac
+
+    http://sourceforge.net/apps/trac/ogsa-dai/browser/sandbox/astrodata/TAPFactory
+
+    OGSA-DAI test builds
+
+    http://daiserver.epcc.ed.ac.uk/~ogsadai-tests/test-results/
+
+    TAP-Factory install instructions.
+
+    Drop dai.war into Tomcat/webapps and then install the required TAP activities and resource templates (see the README).
+    You need two additional jars: the OGSA-DAI JDBC driver and the TAP activities (plus dependency stil.jar). See attached. 
+
+
+
