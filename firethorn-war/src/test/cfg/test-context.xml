@@ -20,7 +20,7 @@
     +-->
 <Context
     path="/firethorn"
-    displayName="WFAU FireThorn service"
+    displayName="ROE WFAU FireThorn service"
     >
 
     <!--+

@@ -64,6 +64,17 @@
     </repositories>
 
     <dependencies>
+
+        <!--+
+            | The core SLf4J API.
+            | http://www.slf4j.org/
+            +-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${org.slf4j.version}</version>
+        </dependency>
+
     </dependencies>
 
     <profiles>
@@ -82,16 +93,6 @@
             </activation>
 
             <dependencies>
-
-                <!--+
-                    | Include the SLf4J API.
-                    | http://www.slf4j.org/
-                    +-->
-                <dependency>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                    <version>${org.slf4j.version}</version>
-                </dependency>
 
                 <!--+
                     | Include the SLf4J simple library.
@@ -176,16 +177,6 @@
             <dependencies>
 
                 <!--+
-                    | Include the SLf4J API.
-                    | http://www.slf4j.org/
-                    +-->
-                <dependency>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                    <version>${org.slf4j.version}</version>
-                </dependency>
-
-                <!--+
                     | Include the JUL binding.
                     +-->
                 <dependency>
@@ -258,16 +249,6 @@
             <dependencies>
 
                 <!--+
-                    | Include the SLf4J API.
-                    | http://www.slf4j.org/
-                    +-->
-                <dependency>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                    <version>${org.slf4j.version}</version>
-                </dependency>
-
-                <!--+
                     | Include the Log4j binding and library.
                     +-->
             	<dependency>
@@ -332,16 +313,6 @@
             </activation>
 
             <dependencies>
-
-                <!--+
-                    | Include the SLf4J API.
-                    | http://www.slf4j.org/
-                    +-->
-                <dependency>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                    <version>${org.slf4j.version}</version>
-                </dependency>
 
                 <!--+
                     | Include the commons logging binding and library.
