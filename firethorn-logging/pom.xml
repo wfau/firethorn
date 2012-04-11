@@ -57,7 +57,13 @@
     </description>
 
     <properties>
-        <logtype>simple</logtype>
+
+        <logtype>logback</logtype>
+
+		<org.slf4j.version>1.6.1</org.slf4j.version>
+        <org.log4j.version>1.2.14</org.log4j.version>
+        <org.logback.version>1.0.1</org.logback.version>
+
     </properties>
 
     <repositories>
@@ -239,7 +245,6 @@
             <id>logging-log4j</id>
 
             <activation>
-                <activeByDefault>true</activeByDefault>
                 <property>
                     <name>logtype</name>
                     <value>log4j</value>
@@ -360,6 +365,95 @@
                     <version>${org.log4j.version}</version>
                     <scope>provided</scope>
             	</dependency>
+
+            </dependencies>
+
+        </profile>
+
+        <!--+
+            | Use logback logging.
+            | http://logback.qos.ch/
+            | https://wiki.base22.com/x/MIEdAg
+            +-->
+        <profile>
+            <id>logging-logback</id>
+
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>logtype</name>
+                    <value>logback</value>
+                </property>
+            </activation>
+
+            <dependencies>
+
+                <!--+
+                    | Include the logback libraries.
+                    | 
+                    +-->
+                <dependency>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-core</artifactId>
+                    <version>${org.logback.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                    <version>${org.logback.version}</version>
+                </dependency>
+
+                <!--+
+                    | Redirect JDK to SLf4j.
+                    +-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jul-to-slf4j</artifactId>
+                    <version>${org.slf4j.version}</version>
+                    <!--scope>runtime</scope-->
+                </dependency>
+
+                <!--+
+                    | Redirect Log4j to SLf4j.
+                    +-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                    <version>${org.slf4j.version}</version>
+                    <!--scope>runtime</scope-->
+                </dependency>
+
+                <!--+
+                    | Exclude the Log4j libraries.
+                    | http://www.slf4j.org/faq.html#excludingJCL
+                    +-->
+            	<dependency>
+            		<groupId>log4j</groupId>
+            		<artifactId>log4j</artifactId>
+                    <version>${org.log4j.version}</version>
+                    <scope>provided</scope>
+            	</dependency>
+
+                <!--+
+                    | Redirect commons-logging to SLf4j.
+                    +-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                    <version>${org.slf4j.version}</version>
+                    <!--scope>runtime</scope-->
+                </dependency>
+
+                <!--+
+                    | Exclude the commons-logging libraries.
+                    | http://www.slf4j.org/faq.html#excludingJCL
+                    +-->
+                <dependency>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                    <version>1.1.1</version>
+                    <scope>provided</scope>
+                </dependency>
 
             </dependencies>
 

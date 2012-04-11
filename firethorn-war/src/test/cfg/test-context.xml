@@ -24,20 +24,34 @@
     >
 
     <!--+
+        | In memory HSQLDB test database.
+        | 
+        +-->
+    <Resource
+        name="firethorn/database" 
+        auth="Container"
+        type="javax.sql.DataSource" 
+        driverClassName="org.hsqldb.jdbcDriver"
+        url="jdbc:hsqldb:mem:firethorn"
+        username="sa"
+        password=""
+        />
+
+    <!--+
         | PostgreSQL test database.
         | http://pro-programmers.blogspot.com/2008/07/spring-datasource-jndi-lookup-from.html
-        +-->
     <Resource
         name="firethorn/database" 
         auth="Container"
         type="javax.sql.DataSource" 
         driverClassName="org.postgresql.Driver"
         url="jdbc:postgresql://localhost/firethorn"
-        username="wilbert"
-        password="IC1-88-qcesf-etvryt-4P-fijot-18"
+        username="xxxx"
+        password="xxxx-xxxx-xxxx-xxxx"
         maxActive="8" 
         maxIdle="4"
         />
+        +-->
 
     <!--+
         | Endpoint URL for our OGSA-DAI service.

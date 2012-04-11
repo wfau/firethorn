@@ -141,7 +141,21 @@
             +-->
         <profile>
             <id>tomcat-run</id>
+
+            <dependencies>
+
+                <dependency>
+                    <groupId>org.hsqldb</groupId>
+                    <artifactId>hsqldb</artifactId>
+                    <version>1.8.0.10</version>
+                </dependency>
+
+            </dependencies>
+
             <build>
+
+                <defaultGoal>tomcat:run</defaultGoal>
+
                 <plugins>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
@@ -171,7 +185,11 @@
 
         <profile>
             <id>tomcat-deploy</id>
+
             <build>
+
+                <defaultGoal>tomcat:deploy</defaultGoal>
+
                 <plugins>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
@@ -179,7 +197,7 @@
                         <configuration>
 
                             <!--+
-                                | Server user name and password in ~/.settings.xml
+                                | Server user name and password in ~/.m2/settings.xml
                                 | e.g.
                                 |
                                 |   <servers>
