@@ -57,6 +57,16 @@
     <dependencies>
 
         <!--+
+            | Our logging components.
+            +-->
+        <dependency>
+            <groupId>uk.ac.roe.wfau</groupId>
+            <artifactId>firethorn-logging</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
             | Our Spring components.
             +-->
         <dependency>

@@ -1,0 +1,401 @@
+<?xml version="1.0"?>
+<!--+
+    |
+    | Copyright (c) 2012, ROE (http://www.roe.ac.uk/)
+    | All rights reserved.
+    |
+    | This program is free software: you can redistribute it and/or modify
+    | it under the terms of the GNU General Public License as published by
+    | the Free Software Foundation, either version 3 of the License, or
+    | (at your option) any later version.
+    |
+    | This program is distributed in the hope that it will be useful,
+    | but WITHOUT ANY WARRANTY; without even the implied warranty of
+    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    | GNU General Public License for more details.
+    |
+    | You should have received a copy of the GNU General Public License
+    | along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    |
+    +-->
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+    >
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--+
+        | Maven parent/child projects.
+        | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
+        +-->
+    <parent>
+        <groupId>uk.ac.roe.wfau</groupId>
+        <artifactId>firethorn</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>firethorn-logging</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>WFAU FireThorn logging components</name>
+    <description>
+        <![CDATA[
+        This is a placeholder POM to include all of the logging related dependencies in one place.
+
+        In theory, we should be able to select the logging profile using the logtype property.
+
+        In practice, this doesn't seem to work, so we explicitly enable one of the logging
+        profiles by setting the activeByDefault attrubute on the profile itself.
+
+        We may need to exclude other logging implementations from some of our dependencies.
+        http://blog.frankel.ch/configuring-maven-to-use-slf4j
+        http://www.jaxzin.com/2010/09/simplifying-logging-with-maven-and.html
+
+        ]]>
+    </description>
+
+    <properties>
+        <logtype>simple</logtype>
+    </properties>
+
+    <repositories>
+    </repositories>
+
+    <dependencies>
+    </dependencies>
+
+    <profiles>
+
+        <!--+
+            | Use simple logging.
+            +-->
+        <profile>
+            <id>logging-simple</id>
+
+            <activation>
+                <property>
+                    <name>logtype</name>
+                    <value>simple</value>
+                </property>
+            </activation>
+
+            <dependencies>
+
+                <!--+
+                    | Include the SLf4J API.
+                    | http://www.slf4j.org/
+                    +-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                    <version>${org.slf4j.version}</version>
+                </dependency>
+
+                <!--+
+                    | Include the SLf4J simple library.
+                    | http://www.slf4j.org/
+                    +-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                    <version>${org.slf4j.version}</version>
+                </dependency>
+
+                <!--+
+                    | Redirect JDK to SLf4j.
+                    +-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jul-to-slf4j</artifactId>
+                    <version>${org.slf4j.version}</version>
+                    <!--scope>runtime</scope-->
+                </dependency>
+
+                <!--+
+                    | Redirect Log4j to SLf4j.
+                    +-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                    <version>${org.slf4j.version}</version>
+                    <!--scope>runtime</scope-->
+                </dependency>
+
+                <!--+
+                    | Exclude the Log4j libraries.
+                    | http://www.slf4j.org/faq.html#excludingJCL
+                    +-->
+            	<dependency>
+            		<groupId>log4j</groupId>
+            		<artifactId>log4j</artifactId>
+                    <version>${org.log4j.version}</version>
+                    <scope>provided</scope>
+            	</dependency>
+
+                <!--+
+                    | Redirect commons-logging to SLf4j.
+                    +-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                    <version>${org.slf4j.version}</version>
+                    <!--scope>runtime</scope-->
+                </dependency>
+
+                <!--+
+                    | Exclude the commons-logging libraries.
+                    | http://www.slf4j.org/faq.html#excludingJCL
+                    +-->
+                <dependency>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                    <version>1.1.1</version>
+                    <scope>provided</scope>
+                </dependency>
+
+            </dependencies>
+
+
+        </profile>
+
+        <!--+
+            | Use JDK logging.
+            +-->
+        <profile>
+            <id>logging-jdk14</id>
+
+            <activation>
+                <property>
+                    <name>logtype</name>
+                    <value>jdk14</value>
+                </property>
+            </activation>
+
+            <dependencies>
+
+                <!--+
+                    | Include the SLf4J API.
+                    | http://www.slf4j.org/
+                    +-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                    <version>${org.slf4j.version}</version>
+                </dependency>
+
+                <!--+
+                    | Include the JUL binding.
+                    +-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-jdk14</artifactId>
+                    <version>${org.slf4j.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+
+                <!--+
+                    | Redirect Log4j to SLf4j.
+                    +-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                    <version>${org.slf4j.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+
+                <!--+
+                    | Exclude the Log4j libraries.
+                    | http://www.slf4j.org/faq.html#excludingJCL
+                    +-->
+            	<dependency>
+            		<groupId>log4j</groupId>
+            		<artifactId>log4j</artifactId>
+                    <version>${org.log4j.version}</version>
+                    <scope>provided</scope>
+            	</dependency>
+
+                <!--+
+                    | Redirect commons-logging to SLf4j.
+                    +-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                    <version>${org.slf4j.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+
+                <!--+
+                    | Exclude the commons-logging libraries.
+                    | http://www.slf4j.org/faq.html#excludingJCL
+                    +-->
+                <dependency>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                    <version>1.1.1</version>
+                    <scope>provided</scope>
+                </dependency>
+
+            </dependencies>
+
+        </profile>
+
+        <!--+
+            | Use Log4j logging.
+            +-->
+        <profile>
+            <id>logging-log4j</id>
+
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>logtype</name>
+                    <value>log4j</value>
+                </property>
+            </activation>
+
+            <dependencies>
+
+                <!--+
+                    | Include the SLf4J API.
+                    | http://www.slf4j.org/
+                    +-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                    <version>${org.slf4j.version}</version>
+                </dependency>
+
+                <!--+
+                    | Include the Log4j binding and library.
+                    +-->
+            	<dependency>
+            		<groupId>log4j</groupId>
+            		<artifactId>log4j</artifactId>
+                    <version>${org.log4j.version}</version>
+                    <scope>runtime</scope>
+            	</dependency>
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                    <version>${org.slf4j.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+
+                <!--+
+                    | Redirect JUL to SLf4j.
+                    +-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jul-to-slf4j</artifactId>
+                    <version>${org.slf4j.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+
+                <!--+
+                    | Redirect commons-logging to SLf4j.
+                    +-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                    <version>${org.slf4j.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+
+                <!--+
+                    | Exclude the commons-logging libraries.
+                    | http://www.slf4j.org/faq.html#excludingJCL
+                    +-->
+                <dependency>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                    <version>1.1.1</version>
+                    <scope>provided</scope>
+                </dependency>
+
+            </dependencies>
+
+        </profile>
+
+        <!--+
+            | Use commons logging.
+            +-->
+        <profile>
+            <id>logging-commons</id>
+
+            <activation>
+                <property>
+                    <name>logtype</name>
+                    <value>commons</value>
+                </property>
+            </activation>
+
+            <dependencies>
+
+                <!--+
+                    | Include the SLf4J API.
+                    | http://www.slf4j.org/
+                    +-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                    <version>${org.slf4j.version}</version>
+                </dependency>
+
+                <!--+
+                    | Include the commons logging binding and library.
+                    | https://commons.apache.org/logging/
+                    +-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-jcl</artifactId>
+                    <version>${org.slf4j.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                    <version>1.1.1</version>
+                </dependency>
+
+                <!--+
+                    | Redirect JUL to SLf4j.
+                    +-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jul-to-slf4j</artifactId>
+                    <version>${org.slf4j.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+
+                <!--+
+                    | Redirect Log4j to SLf4j.
+                    +-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                    <version>${org.slf4j.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+
+                <!--+
+                    | Exclude the Log4j libraries.
+                    | http://www.slf4j.org/faq.html#excludingJCL
+                    +-->
+            	<dependency>
+            		<groupId>log4j</groupId>
+            		<artifactId>log4j</artifactId>
+                    <version>${org.log4j.version}</version>
+                    <scope>provided</scope>
+            	</dependency>
+
+            </dependencies>
+
+        </profile>
+
+    </profiles>
+
+</project>
+
+

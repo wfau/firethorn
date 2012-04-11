@@ -57,6 +57,16 @@
     <dependencies>
 
         <!--+
+            | Our logging components.
+            +-->
+        <dependency>
+            <groupId>uk.ac.roe.wfau</groupId>
+            <artifactId>firethorn-logging</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
             | Big blob of things from CDS.
             | This is based on a pre-release version of the TAP code and may contains some unpublished classes from the other CDS projects.
             | Once we get our own local version we can use that instead.
@@ -67,6 +77,20 @@
             <!--version>1.0-beta</version-->
             <version>20120113</version>
         </dependency>
+
+	    <!--+
+	        | Servlet libraries.
+	        +-->
+	    <dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>servlet-api</artifactId>
+		    <scope>provided</scope>
+	    </dependency>
+	    <dependency>
+		    <groupId>javax.servlet.jsp</groupId>
+		    <artifactId>jsp-api</artifactId>
+		    <scope>provided</scope>
+	    </dependency>
 
         <!--+
             | Postgresql database driver.
@@ -85,27 +109,13 @@
         <!--+
             | Postgresql database driver (for testing only).
             | When deployed the container should provide the correct version of the driver.
-            +-->
     	<dependency>
     		<groupId>postgresql</groupId>
     		<artifactId>postgresql</artifactId>
             <version>8.4-701.jdbc4</version>
-            <!--scope>test</scope-->
+            <scope>test</scope>
     	</dependency>
-
-	    <!--+
-	        | Servlet libraries.
-	        +-->
-	    <dependency>
-		    <groupId>javax.servlet</groupId>
-		    <artifactId>servlet-api</artifactId>
-		    <scope>provided</scope>
-	    </dependency>
-	    <dependency>
-		    <groupId>javax.servlet.jsp</groupId>
-		    <artifactId>jsp-api</artifactId>
-		    <scope>provided</scope>
-	    </dependency>
+            +-->
 
     </dependencies>
 
