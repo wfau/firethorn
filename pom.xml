@@ -173,17 +173,6 @@
         <dependencies>
 
             <!--+
-                | JUnit test framework.
-                | http://www.junit.org/
-                +-->
-        	<dependency>
-        		<groupId>junit</groupId>
-        		<artifactId>junit</artifactId>
-                <version>${org.junit.version}</version>
-                <scope>test</scope>
-        	</dependency>
-
-            <!--+
                 | Apache commons libraries.
                 | https://commons.apache.org/
                 +-->
@@ -331,11 +320,31 @@
                 <version>2.5</version>
             </dependency>
 
+            <!--+
+                | HSQLDB Java database and JDBC driver.
+                | http://hsqldb.org/
+                +-->
+            <dependency>
+                <groupId>org.hsqldb</groupId>
+                <artifactId>hsqldb</artifactId>
+                <version>2.2.8</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
 
+        <!--+
+            | JUnit test framework.
+            | http://www.junit.org/
+            +-->
+    	<dependency>
+    		<groupId>junit</groupId>
+    		<artifactId>junit</artifactId>
+            <version>${org.junit.version}</version>
+            <scope>test</scope>
+    	</dependency>
 
     </dependencies>
 
