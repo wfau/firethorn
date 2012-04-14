@@ -1,0 +1,28 @@
+
+
+[Zarquan@zarquan ~]$
+
+    pushd /var/local/projects/wfau/firethorn
+
+        hg clone ssh://leucine//var/local/projects/wfau/firethorn/hg
+
+        pushd hg
+
+            mvn install
+
+            pushd firethorn-war
+
+                mvn tomcat7:run &
+
+                firefox 'http://localhost:8080/firethorn/test' &
+
+                # This doesn't work (yet).
+                mvn tomcat7:shutdown
+
+            popd
+
+        popd
+
+    popd
+
+
