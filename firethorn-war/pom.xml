@@ -227,7 +227,7 @@
         </profile>
 
         <profile>
-            <id>tomcat-astro-deploy</id>
+            <id>tomcat-alpha</id>
             <build>
                 <defaultGoal>tomcat7:deploy</defaultGoal>
                 <plugins>
@@ -240,7 +240,7 @@
                                 | Server user name and password in ~/.m2/settings.xml
                                 |
                                 +-->
-                            <server>tomcat-astro</server>
+                            <server>tomcat-alpha</server>
                             <url>http://alpha.virtual.metagrid.co.uk:8080/manager/html</url>
 
                             <!--+
