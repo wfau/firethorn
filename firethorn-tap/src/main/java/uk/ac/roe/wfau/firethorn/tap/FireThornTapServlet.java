@@ -19,6 +19,9 @@
  */
 package uk.ac.roe.wfau.firethorn.tap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -41,6 +44,12 @@ public class FireThornTapServlet
 extends HttpServlet
     {
 
+    /**
+     * Our debug logger.
+     * 
+     */
+    private static Logger logger = LoggerFactory.getLogger(FireThornTapServlet.class);
+
 	private static final long serialVersionUID = 1L;
 
 	private TAP tap = null;
@@ -48,6 +57,8 @@ extends HttpServlet
 	@Override
 	public void init() throws ServletException
 	    {
+logger.debug("servlet init()");
+
 		super.init();
 		try {
 			// 1. Create a TAP instance with the written ServiceConnection:
@@ -65,6 +76,8 @@ extends HttpServlet
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	    {
+logger.debug("servlet service()");
+
 		try {
 			// 2. Forward all requests to the TAP instance:
 			tap.executeRequest(request, response);

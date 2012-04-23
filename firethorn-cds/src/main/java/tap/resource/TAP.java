@@ -39,7 +39,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import tap.ServiceConnection;
 import tap.TAPException;
 import tap.Uws4Tap;
@@ -53,7 +52,14 @@ import uws.job.JobOwner;
 import uws.service.UWSUrl;
 import uws.service.controller.DestructionTimeController.DateField;
 
+//ZRQ
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class TAP implements VOSIResource {
+
+    //ZRQ
+    private static Logger logger = LoggerFactory.getLogger(TAP.class);
 
 	private static final long serialVersionUID = 1L;
 
@@ -66,6 +72,9 @@ public class TAP implements VOSIResource {
 	protected String homePageURI = null;
 
 	public TAP(ServiceConnection<?> serviceConnection) throws UWSException {
+//ZRQ
+logger.debug("TAP(ServiceConnection<?>)");
+
 		service = serviceConnection;
 		resources = new HashMap<String, TAPResource>();
 
@@ -261,6 +270,10 @@ public class TAP implements VOSIResource {
 	}
 
 	public void executeRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+//ZRQ
+logger.debug("executeRequest(HttpServletRequest, HttpServletResponse)");
+
 		response.setContentType("text/plain");
 
 		if (tapBaseURL == null)
@@ -270,6 +283,8 @@ public class TAP implements VOSIResource {
 			String[] resourcePath = (request.getPathInfo() == null) ? null : request.getPathInfo().split("/");
 			// Display the TAP Main Page:
 			if (resourcePath == null || resourcePath.length < 1){
+logger.debug("No resource specified");
+
 				response.setContentType("text/html");
 
 				JobOwner owner = null;
@@ -283,7 +298,9 @@ public class TAP implements VOSIResource {
 			// or Display/Execute the selected TAP Resource:
 			else{
 				String resourceName = resourcePath[1].trim().toLowerCase();
+logger.debug("Resource [{}]", resourceName);
 				TAPResource res = resources.get(resourceName);
+logger.debug("Resource [{}]", res);
 				try{
 					if (res != null)
 						res.executeResource(request, response);
@@ -315,6 +332,8 @@ public class TAP implements VOSIResource {
 			try{
 				input = new BufferedInputStream((new URL(homePageURI)).openStream());
 			}catch(MalformedURLException mue){
+File file = new File(homePageURI);
+System.out.print("File path [" + file.getAbsolutePath() + "]");
 				input = new BufferedInputStream(new FileInputStream(new File(homePageURI)));
 			}
 			if (input == null)

@@ -36,8 +36,15 @@ import uws.job.JobOwner;
 
 import uws.service.AbstractUWS;
 
+//ZRQ
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @SuppressWarnings("unchecked")
 public class Uws4Tap extends AbstractUWS<JobList<ADQLExecutor>, ADQLExecutor> {
+
+    //ZRQ
+    private static Logger logger = LoggerFactory.getLogger(Uws4Tap.class);
 
 	private static final long serialVersionUID = 1L;
 
@@ -45,11 +52,14 @@ public class Uws4Tap extends AbstractUWS<JobList<ADQLExecutor>, ADQLExecutor> {
 
 	public Uws4Tap(ServiceConnection service) {
 		super();
+logger.debug("Uws4Tap(ServiceConnection)");
+
 		this.service = service;
 	}
 
 	@Override
 	public ADQLExecutor<?> createJob(final Map<String, String> params, final JobOwner owner) throws UWSException {
+logger.debug("createJob(Map<String, String>, JobOwner)");
 		try{
 			ADQLExecutor<?> executor = service.getFactory().createExecutor(params, owner);
 			return executor;
@@ -60,6 +70,7 @@ public class Uws4Tap extends AbstractUWS<JobList<ADQLExecutor>, ADQLExecutor> {
 
 	@Override
 	public ADQLExecutor createJob(HttpServletRequest request, JobOwner owner) throws UWSException {
+logger.debug("createJob(HttpServletRequest, JobOwner)");
 		if (!service.isAvailable())
 			throw new UWSException(HttpServletResponse.SC_SERVICE_UNAVAILABLE, service.getAvailability());
 
@@ -76,6 +87,8 @@ public class Uws4Tap extends AbstractUWS<JobList<ADQLExecutor>, ADQLExecutor> {
 
 			// Create the job:
 			ADQLExecutor newJob = createJob(params, owner);
+
+logger.debug("Job created [{}]", newJob);
 
 			// Set its TAP parameters:
 			newJob.loadTAPParams(tapParams);
@@ -94,14 +107,17 @@ public class Uws4Tap extends AbstractUWS<JobList<ADQLExecutor>, ADQLExecutor> {
 
 	@Override
 	public Map<String, String> extractParameters(HttpServletRequest req) throws UWSException {
-		if (TAPParameters.isMultipartContent(req)){
+logger.debug("extractParameters(HttpServletRequest)");
+		if (TAPParameters.isMultipartContent(req))
+		    {
+logger.debug("Multipart request");
 			HashMap<String, String> params = new HashMap<String, String>();
-
 			try{
 				MultipartRequest multipart = new MultipartRequest(req, service.getUploadDirectory());
 				Enumeration<String> names = multipart.getParameterNames();
 				String name = null;
 				while(names.hasMoreElements()){
+logger.debug("param [{}]", name);
 					name = names.nextElement();
 					params.put(name.toLowerCase(), multipart.getParameter(name));
 				}
@@ -111,7 +127,20 @@ public class Uws4Tap extends AbstractUWS<JobList<ADQLExecutor>, ADQLExecutor> {
 
 			return params;
 		}else
-			return super.extractParameters(req);
+		    {
+logger.debug("Standard request");
+            return super.extractParameters(req);
+            }
 	}
 
-}
+    //ZRQ
+	public boolean executeRequest(HttpServletRequest request, HttpServletResponse response)
+	throws UWSException, IOException
+	    {
+        logger.debug("executeRequest(HttpServletRequest, HttpServletResponse)");
+        return super.executeRequest(
+            request,
+            response
+            );
+        }
+    }

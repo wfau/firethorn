@@ -33,6 +33,10 @@ import uws.UWSToolBox;
 
 import uws.job.AbstractJob;
 
+//ZRQ
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class helps managing with UWS URLs and URIs.
  * 
@@ -40,6 +44,10 @@ import uws.job.AbstractJob;
  * @version 05/2011
  */
 public class UWSUrl implements Serializable {
+
+    //ZRQ
+    private static Logger logger = LoggerFactory.getLogger(UWSUrl.class);
+
 	private static final long serialVersionUID = 1L;
 
 	/** The whole request URL (i.e. http://foo.org/mySite/uws/jobList/job1/results/report). */
@@ -70,12 +78,17 @@ public class UWSUrl implements Serializable {
 /* ************ */
 /* CONSTRUCTORS */	
 /* ************ */
+
 	/**
 	 * Builds a copy of the given UWSUrl.
 	 * 
 	 * @param toCopy	The UWSUrl to copy.
 	 */
 	public UWSUrl(UWSUrl toCopy){
+
+//ZRQ
+logger.debug("UWSUrl(UWSUrl)");
+
 		requestURL = toCopy.requestURL;
 		urlHeader = toCopy.urlHeader;
 		requestURI = toCopy.requestURI;
@@ -95,6 +108,10 @@ public class UWSUrl implements Serializable {
 	 * @throws UWSException		If the given baseURI is <i>null</i> or is an empty string.
 	 */
 	public UWSUrl(String baseURI) throws UWSException {
+
+//ZRQ
+logger.debug("UWSUrl(String)");
+
 		if (baseURI == null)
 			throw new UWSException(UWSException.INTERNAL_SERVER_ERROR, "[Create a UWS URL interpreter] The given base UWS URI is NULL !");
 		
@@ -114,7 +131,11 @@ public class UWSUrl implements Serializable {
 	 * @see #extractBaseURI(HttpServletRequest)
 	 */
 	public UWSUrl(HttpServletRequest request) throws UWSException {
-		String uri = extractBaseURI(request);
+
+//ZRQ
+logger.debug("UWSUrl(HttpServletRequest)");
+
+ 		String uri = extractBaseURI(request);
 		if (uri == null)
 			throw new UWSException(UWSException.INTERNAL_SERVER_ERROR, "[Create a UWS URL interpreter] The extracted base UWS URI is NULL !");
 		
@@ -188,6 +209,8 @@ public class UWSUrl implements Serializable {
 	 * @see #loadUwsURI()
 	 */
 	public void load(HttpServletRequest request){
+//ZRQ
+logger.debug("load(HttpServletRequest)");
 		if (request == null){
 			urlHeader = null;
 			requestURL = null;

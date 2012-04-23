@@ -36,6 +36,10 @@ import uws.service.AbstractUWS;
 import uws.service.UWSUrl;
 import uws.service.actions.UWSAction;
 
+//ZRQ
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * <p>Lets returning any UWS resource in a given format.</p>
  * By default two formats are already implemented:
@@ -51,6 +55,10 @@ import uws.service.actions.UWSAction;
  * @see JSONSerializer
  */
 public abstract class UWSSerializer implements Serializable {
+
+    //ZRQ
+    private static Logger logger = LoggerFactory.getLogger(UWSSerializer.class);
+
 	private static final long serialVersionUID = 1L;
 
 	/** MIME type for XML: application/xml */
@@ -81,6 +89,16 @@ public abstract class UWSSerializer implements Serializable {
 	 * @throws UWSException If the specified attribute/parameter/result does not exist.
 	 */
 	public String getJob(final AbstractJob job, final String[] attributes, final boolean root) throws UWSException {
+
+logger.debug("getJob(AbstractJob, String[], boolean)");
+if (attributes != null)
+    {
+    for(String attrib : attributes)
+        {
+        logger.debug("Attrib [{}]", attrib);
+        }
+    }
+
 		if (attributes == null || attributes.length <= 0)
 			return getJob(job, root);
 
@@ -174,6 +192,7 @@ public abstract class UWSSerializer implements Serializable {
 	 * @see UWSSerializer#getUWS(AbstractUWS, String)
 	 */
 	public String getUWS(final AbstractUWS<? extends JobList<? extends AbstractJob>, ? extends AbstractJob> uws) throws UWSException {
+logger.debug("getUWS(AbstractUWS)");
 		return getUWS(uws, null);
 	}
 

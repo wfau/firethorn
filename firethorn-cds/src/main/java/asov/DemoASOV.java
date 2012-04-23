@@ -24,14 +24,14 @@ import adql.db.DefaultDBTable;
 
 public class DemoASOV {
 
-	public final static String DB_NAME = "demoasov";
-	public final static String DB_OWNER = System.getProperty("user.name");
-	public final static String DB_PWD = "";
+	public final static String DB_NAME  = "cdsdata";
+	public final static String DB_OWNER = "cdsuser";
+	public final static String DB_PWD   = "wilbert";
 
 	public final static String SERVER_NAME = "localhost";
 
 	public final static String RESULT_ID = "result";
-	public final static String RESULT_DIR = "DemoResults";
+	public final static String RESULT_DIR = "/tmp";
 	public final static String RESULT_FILE_PREFIX = RESULT_ID;
 
 	public DemoASOV(){ ; }

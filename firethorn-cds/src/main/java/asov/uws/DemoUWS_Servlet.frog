@@ -11,6 +11,10 @@ import uws.UWSException;
 
 import uws.job.JobList;
 
+//ZRQ
+import uws.job.JobOwner;
+import uws.job.SimpleJobOwner;
+
 import uws.service.BasicUWS;
 import uws.service.QueuedBasicUWS;
 import uws.service.UWSUrl;
@@ -32,15 +36,26 @@ public class DemoUWS_Servlet extends HttpServlet {
 			uws.addJobList(new JobList<DemoUWS_Job>("jobs"));
 
 			// Change the home page (/asov/uwsHome.html):
-			uws.setHomePage("/asov/uwsHome.html");
+			uws.setHomePage("/demo/uwsHome.html");
 
 			// Identify users by their IP address:
 			uws.setUserIdentifier(new UserIdentifier() {
 				private static final long serialVersionUID = 1L;
+/*
 				@Override
 				public String extractUserId(UWSUrl url, HttpServletRequest request) throws UWSException {
 					return request.getRemoteAddr();
 				}
+ */
+				@Override
+				public JobOwner extractUserId(UWSUrl url, HttpServletRequest request)
+				throws UWSException
+				    {
+					return new SimpleJobOwner(
+					    request.getRemoteAddr()
+					    );
+				    }
+
 			});
 		} catch (UWSException e) {
 			throw new ServletException(e);

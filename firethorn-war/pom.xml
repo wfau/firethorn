@@ -65,8 +65,6 @@
         <pluginRepository>
             <id>apache-snapshot</id>
             <name>Apache snapshot</name>
-            <!--url>http://repository.apache.org/content/groups/snapshots</url-->
-            <!--url>http://repository.apache.org/content/groups/snapshots/</url-->
             <url>https://repository.apache.org/content/groups/snapshots/</url>
         </pluginRepository>
 
@@ -96,13 +94,37 @@
 
         <!--+
             | FireThorn TAP components.
-            +-->
         <dependency>
             <groupId>uk.ac.roe.wfau</groupId>
             <artifactId>firethorn-tap</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
+            +-->
+
+        <!--+
+            | FireThorn CDS components.
+            +-->
+        <dependency>
+            <groupId>uk.ac.roe.wfau</groupId>
+            <artifactId>firethorn-cds</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+
+	    <!--+
+	        | Servlet libraries.
+	        +-->
+	    <dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>servlet-api</artifactId>
+		    <scope>provided</scope>
+	    </dependency>
+	    <dependency>
+		    <groupId>javax.servlet.jsp</groupId>
+		    <artifactId>jsp-api</artifactId>
+		    <scope>provided</scope>
+	    </dependency>
 
         <!--+
             | QRCode generator.
@@ -140,6 +162,16 @@
             <artifactId>hsqldb</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!--+
+            | Postgresql JDBC driver.
+            | ** When deployed the container should provide the correct version of the driver.
+            +-->
+    	<dependency>
+    		<groupId>postgresql</groupId>
+    		<artifactId>postgresql</artifactId>
+            <scope>test</scope>
+    	</dependency>
 
     </dependencies>
 

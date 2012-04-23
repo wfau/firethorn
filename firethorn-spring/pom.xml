@@ -49,7 +49,7 @@
     <properties>
 
 		<org.spring.version>3.1.1.RELEASE</org.spring.version>
-        <org.hibernate.version>3.6.9.Final</org.hibernate.version>
+        <org.hibernate.version>4.1.2.Final</org.hibernate.version>
 		<!--org.aspectj.version>1.6.11</org.aspectj.version-->
 
     </properties>
@@ -139,12 +139,12 @@
         <!--+
             | Code Generation Library.
             | http://cglib.sourceforge.net/
+            +-->
         <dependency>
             <groupId>cglib</groupId>
-            <artifactId>cglib-nodep</artifactId>
+            <artifactId>cglib</artifactId>
             <version>2.2.2</version>
         </dependency>
-            +-->
 
         <!--+
             | Java bytecode manipulation (included by hibernate/spring).
@@ -249,6 +249,7 @@
         <!--+
             | JSTL libraries (required by Spring MVC).
             | http://www.mularien.com/blog/2008/02/19/tutorial-how-to-set-up-tomcat-6-to-work-with-jstl-12/
+            | http://forum.springsource.org/showthread.php?83953-pizza-shop-example-can-t-run-on-tomcat-5.5.15/page2
             +-->
 	    <!--+
 	    <dependency>
@@ -261,16 +262,6 @@
 		    <artifactId>jstl-impl</artifactId>
 		    <version>1.2</version>
 	    </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
-        </dependency>
-            +-->
-
-        <!--+
-            | JSTL libraries (required by Spring MVC).
-            | http://forum.springsource.org/showthread.php?83953-pizza-shop-example-can-t-run-on-tomcat-5.5.15/page2
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>com.springsource.javax.servlet.jsp</artifactId>

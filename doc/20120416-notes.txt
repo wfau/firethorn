@@ -1,0 +1,40 @@
+
+
+
+
+    website
+    
+        POST form
+
+    #
+    # Region query, with join on 2MASS cross. 
+    # ivo://wfau.roe.ac.uk/ukidssDR5-dsa 
+
+        SELECT
+            match.slaveObjID,
+            points.ra,
+            points.dec,
+            points.sourceID,
+            match.distanceMins
+        FROM
+            gcsPointSource AS points,
+            gcsSourceXtwomass_psc AS match
+        WHERE
+            match.ra Between '56.8' And '56.9'
+        AND
+            match.dec Between '24.0' And '24.1'
+        AND
+            match.distanceMins < 0.1
+        AND
+            match.sourceID=match.masterObjID
+        ORDER BY
+            match.slaveObjID ASC
+
+
+    #
+    # Get basic system working....
+
+    CDS TAP service ....
+
+
+

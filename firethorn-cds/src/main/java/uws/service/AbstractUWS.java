@@ -66,6 +66,10 @@ import uws.service.actions.UWSAction;
 import uws.service.controller.DestructionTimeController;
 import uws.service.controller.ExecutionDurationController;
 
+//ZRQ
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * <h3>General description</h3>
  * 
@@ -196,6 +200,10 @@ import uws.service.controller.ExecutionDurationController;
  * @see ExtendedUWS
  */
 public abstract class AbstractUWS<JL extends JobList<J>, J extends AbstractJob> extends SerializableUWSObject implements Iterable<JL>, HttpSessionBindingListener {
+
+    //ZRQ
+    private static Logger logger = LoggerFactory.getLogger(AbstractUWS.class);
+
 	private static final long serialVersionUID = 1L;
 
 	/** Name of this UWS. */
@@ -274,6 +282,8 @@ public abstract class AbstractUWS<JL extends JobList<J>, J extends AbstractJob> 
 	 * @see ShowHomePage
 	 */
 	public AbstractUWS() {
+//ZRQ
+logger.debug("AbstractUWS()");
 		// Initialize the list of jobs:
 		mapJobLists = new LinkedHashMap<String, JL>();
 
@@ -320,6 +330,8 @@ public abstract class AbstractUWS<JL extends JobList<J>, J extends AbstractJob> 
 	 */
 	protected AbstractUWS(String baseURI) throws UWSException {
 		this();
+//ZRQ
+logger.debug("AbstractUWS(String)");
 
 		// Extract the name of the UWS:
 		try{
@@ -337,6 +349,8 @@ public abstract class AbstractUWS<JL extends JobList<J>, J extends AbstractJob> 
 	 */
 	protected AbstractUWS(UWSUrl urlInterpreter) {
 		this();
+//ZRQ
+logger.debug("AbstractUWS(UWSUrl)");
 		setUrlInterpreter(urlInterpreter);
 	}
 
@@ -426,6 +440,8 @@ public abstract class AbstractUWS<JL extends JobList<J>, J extends AbstractJob> 
 	 * @param urlInterpreter	Its new UWS URL interpreter (may be <i>null</i>. In this case, it will be created from the next request ; see {@link #executeRequest(HttpServletRequest, HttpServletResponse)}).
 	 */
 	public final void setUrlInterpreter(UWSUrl urlInterpreter){
+//ZRQ
+logger.debug("setUrlInterpreter(UWSUrl)");
 		this.urlInterpreter = urlInterpreter;
 		reInitUrlInterpreter = false;
 		if (name == null && urlInterpreter != null)
@@ -1168,6 +1184,9 @@ public abstract class AbstractUWS<JL extends JobList<J>, J extends AbstractJob> 
 	 * @see UWSAction#apply(UWSUrl, String, HttpServletRequest, HttpServletResponse)
 	 */
 	public boolean executeRequest(HttpServletRequest request, HttpServletResponse response) throws UWSException, IOException {
+//ZRQ
+logger.debug("executeRequest(HttpServletRequest, HttpServletResponse)");
+
 		if (request == null || response == null)
 			return false;
 
@@ -1187,14 +1206,21 @@ public abstract class AbstractUWS<JL extends JobList<J>, J extends AbstractJob> 
 			urlInterpreter.load(request);
 
 			// Identify the user:
+//ZRQ
 			JobOwner user = (userIdentifier == null)?null:userIdentifier.extractUserId(urlInterpreter, request);
 
 			// Apply the appropriate UWS action:
+
 			for(int i=0; action == null && i<uwsActions.size(); i++){
+
+logger.debug("Checking action [{}]", uwsActions.get(i));
+
 				if (uwsActions.get(i).match(urlInterpreter, user, request)){
 					action = uwsActions.get(i);
+logger.debug("Found matching action [{}]", action);
 					choosenSerializer = null;
 					actionApplied = action.apply(urlInterpreter, user, request, response);
+logger.debug("Applied action [{}]", actionApplied);
 				}
 			}
 

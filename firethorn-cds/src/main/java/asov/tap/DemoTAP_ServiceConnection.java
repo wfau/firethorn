@@ -15,12 +15,16 @@ import tap.ServiceConnection;
 import tap.TAPException;
 import tap.TAPFactory;
 
-import tap.OutputFormat;
+//ZRQ
+//import tap.OutputFormat;
+import tap.formatter.OutputFormat;
 
 import tap.metadata.TAPMetadata;
 import uws.UWSException;
 
 import uws.job.LocalResult;
+import uws.job.JobOwner;
+import uws.job.SimpleJobOwner;
 
 import uws.service.UWSUrl;
 import uws.service.UserIdentifier;
@@ -53,9 +57,16 @@ public class DemoTAP_ServiceConnection implements ServiceConnection<ResultSet> {
 		identifier = new UserIdentifier() {
 			private static final long serialVersionUID = 1L;
 			@Override
-			public String extractUserId(UWSUrl urlInterpreter, HttpServletRequest request) throws UWSException {
+// ZRQ
+/*
+			public String ExtractUserId(UWSUrl urlInterpreter, HttpServletRequest request) throws UWSException {
 				return request.getRemoteAddr();
 			}
+ */
+			public JobOwner extractUserId(UWSUrl urlInterpreter, HttpServletRequest request) throws UWSException
+			    {
+			    return new SimpleJobOwner(request.getRemoteAddr());
+			    }
 		};
 	}
 
@@ -77,6 +88,16 @@ public class DemoTAP_ServiceConnection implements ServiceConnection<ResultSet> {
 			System.err.println(type+": "+msg);
 		}
 	}
+
+    //ZRQ
+	public void log(final Throwable error)
+	    {
+	    log(
+	        tap.ServiceConnection.LogType.ERROR,
+	        error.getMessage()
+	        );
+	    }
+
 
 	/* ******************** */
 	/* SERVICE AVAILABILITY */
@@ -108,9 +129,16 @@ public class DemoTAP_ServiceConnection implements ServiceConnection<ResultSet> {
 	/* ********************* */
 	/* SERVICE CONFIGURATION */
 	/* ********************* */
+	/* ZRQ
 	@Override
 	public long[] getExecutionDuration() {
 		return new long[]{3600, 7200};		// default = 1 hour , max = 2 hours
+	}
+	*/
+    // ZRQ
+	@Override
+	public int[] getExecutionDuration() {
+		return new int[]{3600, 7200};		// default = 1 hour , max = 2 hours
 	}
 
 	@Override

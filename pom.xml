@@ -29,6 +29,12 @@
         | https://maven.apache.org/ref/3.0.4/maven-model/maven.html
         +-->
 
+    <!--+
+        | Access to the latest version of Maven.
+        | http://repos.fedorapeople.org/repos/dchen/apache-maven/
+        | http://repos.fedorapeople.org/repos/dchen/apache-maven/fedora-apache-maven.repo
+        +-->
+        
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>uk.ac.roe.wfau</groupId>
@@ -329,6 +335,18 @@
                 <artifactId>hsqldb</artifactId>
                 <version>2.2.8</version>
             </dependency>
+
+            <!--+
+                | Postgresql JDBC driver.
+                | **When deployed the container should provide the correct version of the driver.
+                | http://jdbc.postgresql.org/
+                | http://mvnrepository.com/artifact/postgresql/postgresql
+                +-->
+        	<dependency>
+        		<groupId>postgresql</groupId>
+        		<artifactId>postgresql</artifactId>
+                <version>8.4-702.jdbc4</version>
+        	</dependency>
 
         </dependencies>
     </dependencyManagement>

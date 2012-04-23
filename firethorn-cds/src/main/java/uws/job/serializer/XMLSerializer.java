@@ -34,6 +34,10 @@ import uws.job.Result;
 import uws.service.AbstractUWS;
 import uws.service.UWSUrl;
 
+//ZRQ
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Lets serializing any UWS resource in XML.
  * 
@@ -41,6 +45,10 @@ import uws.service.UWSUrl;
  * @version 01/2012
  */
 public class XMLSerializer extends UWSSerializer {
+
+    //ZRQ
+    private static Logger logger = LoggerFactory.getLogger(XMLSerializer.class);
+
 	private static final long serialVersionUID = 1L;
 
 	/** Tab to add just before each next XML node. */
@@ -53,16 +61,21 @@ public class XMLSerializer extends UWSSerializer {
 	/**
 	 * Builds a XML serializer.
 	 */
-	public XMLSerializer(){ ; }
+	public XMLSerializer()
+	    {
+        logger.debug("XMLSerializer()");
+        }
 
 	/**
 	 * Builds a XML serializer with a XSLT link.
 	 * 
 	 * @param xsltPath	Path of a XSLT style-sheet.
 	 */
-	public XMLSerializer(final String xsltPath){
-		this.xsltPath = xsltPath;
-	}
+	public XMLSerializer(final String xsltPath)
+	    {
+        logger.debug("XMLSerializer(String)");
+        this.xsltPath = xsltPath;
+        }
 
 	/**
 	 * Gets the path/URL of the XSLT style-sheet to use.
@@ -135,6 +148,8 @@ public class XMLSerializer extends UWSSerializer {
 
 	@Override
 	public String getUWS(final AbstractUWS<? extends JobList<? extends AbstractJob>, ? extends AbstractJob> uws, final JobOwner user) {
+logger.debug("getUWS(AbstractUWS, JobOwner)");
+
 		String name = uws.getName(), description = uws.getDescription();
 		StringBuffer xml = new StringBuffer(getHeader());
 
@@ -161,6 +176,8 @@ public class XMLSerializer extends UWSSerializer {
 
 	@Override
 	public String getJobList(final JobList<? extends AbstractJob> jobsList, final JobOwner owner, final boolean root) throws UWSException {
+logger.debug("getJobList(JobList, JobOwner, boolean)");
+
 		String name = jobsList.getName();
 		StringBuffer xml = new StringBuffer(getHeader());
 
@@ -181,6 +198,7 @@ public class XMLSerializer extends UWSSerializer {
 
 	@Override
 	public String getJob(final AbstractJob job, final boolean root) {
+logger.debug("getJob(JobList, AbstractJob, boolean)");
 		StringBuffer xml = new StringBuffer(root?getHeader():"");
 		String newLine = "\n\t";
 
@@ -214,6 +232,7 @@ public class XMLSerializer extends UWSSerializer {
 
 	@Override
 	public String getJobRef(final AbstractJob job, final UWSUrl jobsListUrl){
+logger.debug("getJobRef(AbstractJob, UWSUrl)");
 		String url = null;
 		if (jobsListUrl != null){
 			jobsListUrl.setJobId(job.getJobId());
@@ -225,7 +244,10 @@ public class XMLSerializer extends UWSSerializer {
 		if (job.getRunId() != null && job.getRunId().length() > 0)
 			xml.append("\" runId=\"").append(escapeXMLAttribute(job.getRunId()));
 		xml.append("\" xlink:href=\"");
-		if (url!=null) xml.append(escapeURL(url));
+//ZRQ
+//		if (url!=null) xml.append(escapeURL(url));
+		if (url!=null) xml.append(escapeXMLAttribute(url));
+
 		xml.append("\">").append(getPhase(job, false)).append("</uws:jobRef>");
 
 		return xml.toString();
@@ -367,7 +389,15 @@ public class XMLSerializer extends UWSSerializer {
 		if (result.getHref() != null){
 			if (result.getType() != null)
 				xml.append(" xlink:type=\"").append(escapeXMLAttribute(result.getType())).append("\"");
-			xml.append(" xlink:href=\"").append(escapeURL(result.getHref())).append("\"");
+
+//ZRQ
+//			xml.append(" xlink:href=\"").append(escapeURL(result.getHref())).append("\"");
+			xml.append(" xlink:href='").append(
+			    escapeXMLAttribute(
+			        result.getHref()
+			        )
+			    ).append("'");
+
 		}
 		if (result.getMimeType() != null)
 			xml.append(" mime=\"").append(escapeXMLAttribute(result.getMimeType())).append("\"");
@@ -376,7 +406,7 @@ public class XMLSerializer extends UWSSerializer {
 
 
 	/* ************** */
-	/* ESCAPE METHODS */
+	/* ESCAPE    METHODS */
 	/* ************** */
 	/**
 	 * <p>Escapes the content of a node (data between the open and the close tags).</p>

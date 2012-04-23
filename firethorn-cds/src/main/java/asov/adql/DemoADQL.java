@@ -34,7 +34,9 @@ public class DemoADQL {
 			System.out.println("Correct ADQL !");
 
 		}catch(ParseException pe){
-			System.err.println("ADQL syntax incorrect between (l."+pe.getBeginLine()+",c."+pe.getBeginColumn()+") and (l."+pe.getEndLine()+",c."+pe.getEndColumn()+"): "+pe.getMessage());
+// ZRQ
+//			System.err.println("ADQL syntax incorrect between (l."+pe.getBeginLine()+",c."+pe.getBeginColumn()+") and (l."+pe.getEndLine()+",c."+pe.getEndColumn()+"): "+pe.getMessage());
+			System.err.println("ADQL syntax incorrect AT [" + pe.getPosition() + "][" + pe.getMessage() + "]");
 			System.exit(2);
 		}
 

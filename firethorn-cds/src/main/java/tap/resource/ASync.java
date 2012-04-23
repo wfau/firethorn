@@ -32,7 +32,14 @@ import tap.Uws4Tap;
 import uws.UWSException;
 import uws.job.JobList;
 
+//ZRQ
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ASync implements TAPResource {
+
+    //ZRQ
+    private static Logger logger = LoggerFactory.getLogger(ASync.class);
 
 	public static final String RESOURCE_NAME = "async";
 
@@ -42,6 +49,7 @@ public class ASync implements TAPResource {
 
 	@SuppressWarnings("unchecked")
 	public ASync(ServiceConnection service) throws UWSException {
+logger.debug("ASync(ServiceConnection)");
 		this.service = service;
 		uws = new Uws4Tap(this.service);
 		uws.addJobList(new JobList<ADQLExecutor>(getName()));
@@ -66,6 +74,8 @@ public class ASync implements TAPResource {
 	@Override
 	public boolean executeResource(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, TAPException {
 		try {
+//ZRQ
+logger.debug("executeResource(HttpServletRequest, HttpServletResponse)");
 			return uws.executeRequest(request, response);
 		} catch (UWSException e) {
 			throw new TAPException(e);

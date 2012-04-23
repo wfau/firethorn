@@ -10,19 +10,34 @@ import java.sql.ResultSet;
 import asov.DemoASOV;
 import tap.ADQLExecutor;
 import tap.TAPException;
-import tap.OutputFormat;
+//ZRQ
+//import tap.OutputFormat;
+import tap.formatter.OutputFormat;
 
 import uws.job.LocalResult;
 import uws.job.Result;
 
+//ZRQ
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class DemoTAP_Formatter implements OutputFormat<ResultSet> {
+
+    //ZRQ
+    private static Logger logger = LoggerFactory.getLogger(DemoTAP_Formatter.class);
 
 	public final Result writeResult(ResultSet queryResult, ADQLExecutor<ResultSet> job) throws TAPException {
 		return writeResult(queryResult, job, this);
 	}
 
 	public final static Result writeResult(ResultSet queryResult, ADQLExecutor<ResultSet> job, OutputFormat<ResultSet> formatter) throws TAPException {
-		File resultFile = new File(DemoASOV.RESULT_DIR+File.separator+DemoASOV.RESULT_FILE_PREFIX+System.currentTimeMillis()+"."+formatter.getFileExtension());
+logger.debug("writeResult()");
+
+		String name = DemoASOV.RESULT_DIR+File.separator+DemoASOV.RESULT_FILE_PREFIX+System.currentTimeMillis()+"."+formatter.getFileExtension();
+logger.debug("  Output file [{}]", name);
+
+		File resultFile = new File(name);
+
 		try{
 			OutputStream output = new FileOutputStream(resultFile);
 

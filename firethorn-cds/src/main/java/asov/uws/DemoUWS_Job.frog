@@ -33,17 +33,28 @@ import uws.UWSException;
 import uws.job.AbstractJob;
 import uws.job.LocalResult;
 
+//ZRQ
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DemoUWS_Job extends AbstractJob {
+
+    //ZRQ
+    private static Logger logger = LoggerFactory.getLogger(DemoUWS_Job.class);
+
 	private static final long serialVersionUID = 1L;
 
 	private String adql = null;
 
 	public DemoUWS_Job(Map<String, String> lstParam) throws UWSException {
 		super(lstParam);
+//ZQR
+logger.debug("DemoUWS_Job(Map<String, String>)");
 	}
 
 	@Override
 	protected boolean loadAdditionalParams() throws UWSException {
+logger.debug("loadAdditionalParams()");
 		// Get the ADQL query (at the initialization but also, each time this parameter is changed):
 		if (additionalParameters.containsKey("query")){
 			adql = additionalParameters.get("query");
@@ -54,7 +65,18 @@ public class DemoUWS_Job extends AbstractJob {
 
 	@Override
 	protected void jobWork() throws UWSException, InterruptedException {
+logger.debug("jobWork()");
+try {
+    logger.debug("Sleeping");
+    Thread.sleep(5000);
+    logger.debug("Wakeing");
+    }
+catch(Exception ouch)
+    {
+    logger.debug("Exception during sleep() {}", ouch);
+    }
 		try{
+
 			// 1. Build the ADQL parser:
 			ADQLParser parser = new ADQLParser();
 			parser.setQueryChecker(new DBChecker(DemoASOV.getDBTables()));
@@ -81,7 +103,14 @@ public class DemoUWS_Job extends AbstractJob {
 			addResult(new LocalResult(this, DemoASOV.RESULT_ID, resultFile));
 
 		} catch(ParseException pe){
-			throw new UWSException(HttpServletResponse.SC_BAD_REQUEST, pe, "Incorrect ADQL syntax between (l."+pe.getBeginLine()+",c."+pe.getBeginColumn()+") and (l."+pe.getEndLine()+",c."+pe.getEndColumn()+")");
+// ZRQ
+//			throw new UWSException(HttpServletResponse.SC_BAD_REQUEST, pe, "Incorrect ADQL syntax between (l."+pe.getBeginLine()+",c."+pe.getBeginColumn()+") and (l."+pe.getEndLine()+",c."+pe.getEndColumn()+")");
+			throw new UWSException(
+			    HttpServletResponse.SC_BAD_REQUEST,
+		        pe,
+		        "Incorrect ADQL syntax at [" + pe.getPosition() + "][" + pe.getMessage() + "]"
+		        );
+
 		} catch (TranslationException e) {
 			throw new UWSException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e, "Error when translating ADQL to SQL");
 		} catch (SQLException e) {

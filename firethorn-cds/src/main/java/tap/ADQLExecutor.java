@@ -51,7 +51,14 @@ import uws.job.ExecutionPhase;
 import uws.job.JobOwner;
 import uws.job.Result;
 
+//ZRQ
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ADQLExecutor<R> extends AbstractJob {
+
+    //ZRQ
+    private static Logger logger = LoggerFactory.getLogger(ADQLExecutor.class);
 
 	private static final long serialVersionUID = 1L;
 
@@ -75,6 +82,7 @@ public class ADQLExecutor<R> extends AbstractJob {
 
 	public ADQLExecutor(final ServiceConnection<R> service, final Map<String, String> params, final JobOwner owner) throws UWSException, TAPException {
 		super(owner, params);
+logger.debug("ADQLExecutor(ServiceConnection<R>, Map<String, String>, JobOwner)");
 		progression = ExecutionProgression.PENDING;
 		this.service = service;
 	}
@@ -85,10 +93,13 @@ public class ADQLExecutor<R> extends AbstractJob {
 			ErrorSummary errors, Map<String, String> additionalParams) throws UWSException {
 		super(jobId, jobName, owner, phase, startTime, endTime, maxDuration,
 				destructTime, results, errors, additionalParams);
+logger.debug("ADQLExecutor(ServiceConnection<R>, String, String, JobOwner, ExecutionPhase, Date, Date, long, Date, List<Result>, ErrorSummary, Map<String, String>)");
 		this.service = service;
 	}
 
 	public void loadTAPParams(TAPParameters params) {
+logger.debug("loadTAPParams(TAPParameters)");
+
 		adqlQuery = params.query;
 		additionalParameters.put(TAPParameters.PARAM_QUERY, adqlQuery);
 
@@ -125,7 +136,10 @@ public class ADQLExecutor<R> extends AbstractJob {
 		return progression;
 	}
 
-	protected final void setProgression(ExecutionProgression prog){
+	protected final void setProgression(ExecutionProgression prog)
+	    {
+logger.debug("setProgression()");
+logger.debug(" status [{}]", prog);
 		if (prog != null){
 			synchronized(execLock){
 				progression = prog;
@@ -180,7 +194,9 @@ public class ADQLExecutor<R> extends AbstractJob {
 		}
 	}
 
-	private final void uploadTables() throws TAPException {
+	private final void uploadTables() throws TAPException
+	    {
+logger.debug("uploadTables()");
 		if (tablesToUpload.length > 0){
 			service.log(LogType.INFO, "Job "+getJobId()+" - Loading uploaded tables ("+tablesToUpload.length+")...");
 			uploadSchema = service.getFactory().createUploader().upload(tablesToUpload);
@@ -188,7 +204,10 @@ public class ADQLExecutor<R> extends AbstractJob {
 		}
 	}
 
-	private final R executeADQL() throws ParseException, InterruptedException, TranslationException, SQLException, TAPException {
+	private final R executeADQL() throws ParseException, InterruptedException, TranslationException, SQLException, TAPException
+	    {
+logger.debug("executeADQL()");
+
 		setProgression(ExecutionProgression.PARSING);
 		ADQLQuery adql = parseADQL();
 
@@ -207,7 +226,9 @@ public class ADQLExecutor<R> extends AbstractJob {
 		return executeQuery(sqlQuery, adql);
 	}
 
-	public final void startSync(OutputStream output) throws TAPException, IOException {
+	public final void startSync(OutputStream output) throws TAPException, IOException
+	    {
+logger.debug("startSync(OutputStream)");
 		synchronized(execLock){
 			if (tablesToUpload != null){
 				try{
@@ -250,7 +271,20 @@ public class ADQLExecutor<R> extends AbstractJob {
 	}
 
 	@Override
-	protected synchronized final void jobWork() throws UWSException, InterruptedException {
+	protected synchronized final void jobWork() throws UWSException, InterruptedException
+	    {
+
+logger.debug("jobWork()");
+try {
+    logger.debug("Sleeping");
+    Thread.sleep(5000);
+    logger.debug("Wakeing");
+    }
+catch(Exception ouch)
+    {
+    logger.debug("Exception during sleep() {}", ouch);
+    }
+
 		synchronized(execLock){
 			try {
 				if (tablesToUpload != null){
@@ -266,8 +300,9 @@ public class ADQLExecutor<R> extends AbstractJob {
 				Result result = createUWSResult(queryResult);
 				if (queryResult != null && result != null)
 					addResult(result);
+//ZRQ
+//				service.log(LogType.INFO, "Job "+getJobId()+" - COMPLETED");
 
-				service.log(LogType.INFO, "Job "+getJobId()+" - COMPLETED");
 				setProgression(ExecutionProgression.FINISHED);
 			} catch (ParseException e) {
 				throw new UWSException(e);
@@ -291,34 +326,58 @@ public class ADQLExecutor<R> extends AbstractJob {
 		}
 	}
 
-	protected ADQLQuery parseADQL() throws ParseException, InterruptedException, TAPException {
+	protected ADQLQuery parseADQL() throws ParseException, InterruptedException, TAPException
+	    {
+logger.debug("parseADQL()");
 		ADQLParser parser = new ADQLParser(service.getFactory().createQueryChecker(uploadSchema));
 		parser.setCoordinateSystems(service.getCoordinateSystems());
 		parser.setDebug(false);
-		service.log(LogType.INFO, "Job "+getJobId()+" - 1/5 Parsing ADQL....");
+//ZRQ
+//		service.log(LogType.INFO, "Job "+getJobId()+" - 1/5 Parsing ADQL....");
 		return parser.parseQuery(adqlQuery);
 	}
 
-	protected String translateADQL(ADQLQuery query) throws TranslationException, InterruptedException, TAPException {
+	protected String translateADQL(ADQLQuery query) throws TranslationException, InterruptedException, TAPException
+	    {
+logger.debug("translateADQL()");
 		ADQLTranslator translator = service.getFactory().createADQLTranslator();
-		service.log(LogType.INFO, "Job "+getJobId()+" - 2/5 Translating ADQL...");
+//ZRQ
+//		service.log(LogType.INFO, "Job "+getJobId()+" - 2/5 Translating ADQL...");
 		return translator.translate(query);
 	}
 
-	protected R executeQuery(String sql, ADQLQuery adql) throws SQLException, InterruptedException, TAPException {
-		service.log(LogType.INFO, "Job "+getJobId()+" - 3/5 Creating DBConnection....");
+	protected R executeQuery(String sql, ADQLQuery adql) throws SQLException, InterruptedException, TAPException
+	    {
+logger.debug("executeQuery()");
+//ZRQ
+//		service.log(LogType.INFO, "Job "+getJobId()+" - 3/5 Creating DBConnection....");
 		DBConnection<R> dbConn = getDBConnection();
-		service.log(LogType.INFO, "Job "+getJobId()+" - 4/5 Executing query...\n"+sql);
+//ZRQ
+//		service.log(LogType.INFO, "Job "+getJobId()+" - 4/5 Executing query...\n"+sql);
+logger.debug("Executing query ..");
 		final long startTime = System.currentTimeMillis();
 		R result = dbConn.executeQuery(sql, adql);
+		final long doneTime = System.currentTimeMillis()-startTime;
+
 		if (result == null)
-			service.log(LogType.INFO, "Job "+getJobId()+" - QUERY ABORTED AFTER "+(System.currentTimeMillis()-startTime)+" MS !");
-		else
-			service.log(LogType.INFO, "Job "+getJobId()+" - QUERY SUCCESFULLY EXECUTED IN "+(System.currentTimeMillis()-startTime)+" MS !");
+		    {
+//ZRQ
+//			service.log(LogType.INFO, "Job "+getJobId()+" - QUERY ABORTED AFTER "+(System.currentTimeMillis()-startTime)+" MS !");
+logger.debug("Query failed [{}]", doneTime);
+
+            }
+		else {
+//ZRQ
+//			service.log(LogType.INFO, "Job "+getJobId()+" - QUERY SUCCESFULLY EXECUTED IN "+(System.currentTimeMillis()-startTime)+" MS !");
+logger.debug("Query completed [{}]", doneTime);
+			}
 		return result;
 	}
 
 	protected OutputFormat<R> getFormatter() throws TAPException {
+logger.debug("getFormatter()");
+logger.debug("  format [{}]", format);
+
 		// Search for the corresponding formatter:
 		OutputFormat<R> formatter = service.getOutputFormat((format == null)?"votable":format);
 		if (format != null && formatter == null)
@@ -331,16 +390,22 @@ public class ADQLExecutor<R> extends AbstractJob {
 		return formatter;
 	}
 
-	protected void writeResult(R queryResult, OutputStream output) throws InterruptedException, TAPException {
-		service.log(LogType.INFO, "Job "+getJobId()+" - 5/5 Writing result file...");
+	protected void writeResult(R queryResult, OutputStream output) throws InterruptedException, TAPException
+	    {
+logger.debug("writeResult(R, OutputStream)");
+//		service.log(LogType.INFO, "Job "+getJobId()+" - 5/5 Writing result file...");
 		getFormatter().writeResult(queryResult, output, this);
 	}
 
-	protected Result createUWSResult(R queryResult) throws InterruptedException, TAPException {
+	protected Result createUWSResult(R queryResult) throws InterruptedException, TAPException
+	    {
+logger.debug("createUWSResult(R)");
 		return getFormatter().writeResult(queryResult, this);
 	}
 
-	protected void dropUploadedTables() throws TAPException {
+	protected void dropUploadedTables() throws TAPException
+	    {
+logger.debug("dropUploadedTables()");
 		if (uploadSchema != null){
 			// Drop all uploaded tables:
 			DBConnection<R> dbConn = getDBConnection();
@@ -356,7 +421,10 @@ public class ADQLExecutor<R> extends AbstractJob {
 	}
 
 	@Override
-	protected void stop() {
+	protected void stop()
+	    {
+logger.debug("stop()");
+
 		if (!isStopped()){
 			try {
 				stopping = true;
@@ -370,7 +438,9 @@ public class ADQLExecutor<R> extends AbstractJob {
 		}
 	}
 
-	protected boolean deleteResultFiles(){
+	protected boolean deleteResultFiles()
+	    {
+logger.debug("deleteResultFiles()");
 		try{
 			service.deleteResults(this);
 			return true;
@@ -381,7 +451,9 @@ public class ADQLExecutor<R> extends AbstractJob {
 	}
 
 	@Override
-	public void clearResources() {
+	public void clearResources()
+	    {
+logger.debug("clearResources()");
 		super.clearResources();
 		deleteResultFiles();
 	}
