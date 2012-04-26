@@ -48,8 +48,7 @@
     
     <properties>
 
-        <ogsadai.major.version>4.1</ogsadai.major.version>
-        <ogsadai.minor.version>1.0</ogsadai.minor.version>
+        <ogsadai.version>4.2</ogsadai.version>
 
     </properties>
 
@@ -61,7 +60,7 @@
         <repository>
             <id>ogsadai-local</id>
             <name>Local repository for OGSA-DAI components</name>
-            <url>http://data.metagrid.co.uk/astrodabis/maven/ogsadai</url>
+            <url>http://data.metagrid.co.uk/roe/wfau/firethorn/maven/ogsadai/</url>
             <layout>default</layout>
         </repository>
 
@@ -70,175 +69,156 @@
     <dependencies>
 
         <!--+
-            | OGSA-DAI client libraries.
-            | Not available in a public repository, loaded from local repository.
+            | FireThorn logging components.
             +-->
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-common</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-client</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-clientserver</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-basic-client</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-axis-stubs</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-axis-client</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-axis-client-config</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-relational-client</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
+        <dependency>
+            <groupId>uk.ac.roe.wfau</groupId>
+            <artifactId>firethorn-logging</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
 
         <!--+
-            | OGSA-DAI server libraries.
-            | Not available in a public repository, loaded from local repository.
+            | FireThorn Spring components.
             +-->
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-relational-server</artifactId>
-            <version>${ogsadai.minor.version}</version>
-            <scope>provided</scope>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-server</artifactId>
-            <version>${ogsadai.minor.version}</version>
-            <scope>provided</scope>
-    	</dependency>
+        <dependency>
+            <groupId>uk.ac.roe.wfau</groupId>
+            <artifactId>firethorn-spring</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
 
+        <!--+
+            | OGSA-DAI libraries.
+            +-->
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-basic-server</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-jersey-common</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-file-server</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-sampledata</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-client</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-dqp-server</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-rdf-client</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-xmldb-client</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-dqp-jaxb-bindings</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-dqp-client</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-jersey-server</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-xmldb-server</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-clientserver</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-indexedfile-server</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-server</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-indexedfile-client</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-relational-server</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-rdf-server</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-file-client</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-jersey-client</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-views-server</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-basic-client</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-relational-client</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-common</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ogsadai</groupId>
+            <artifactId>ogsadai-scenarios</artifactId>
+            <version>${ogsadai.version}</version>
+        </dependency>
 
-
-<!--
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-axis-server</artifactId>
-            <version>${ogsadai.minor.version}</version>
-            <scope>provided</scope>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-axis-stubs</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-basic-server</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-dqp-client</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-dqp-jaxb-bindings</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-dqp-server</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-file-client</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-file-server</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-indexedfile-client</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-indexedfile-server</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-rdf-client</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-rdf-server</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-sampledata</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-scenarios</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-views-server</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-ws-core-server</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-ws-extensions-basic-client</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-ws-extensions-basic-server</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-xmldb-client</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>ogsadai-${ogsadai.major.version}-xmldb-server</artifactId>
-            <version>${ogsadai.minor.version}</version>
-    	</dependency>
--->
         <!--+
             | OGSA-DAI astronomy extensions to handle TAP and ADQL (from local repository).
-            +-->
     	<dependency>
             <groupId>ogsadai</groupId>
             <artifactId>ogsa-dai-astro-client</artifactId>
@@ -250,359 +230,231 @@
             <version>1.0</version>
             <scope>provided</scope>
     	</dependency>
-
-        <!--+
-            | Globus Commodity Grid (CoG).
-            | Not available in a public repository, loaded from local repository.
-            | http://dev.globus.org/wiki/CoG_jglobus
-    	<dependency>
-            <groupId>ogsadai</groupId>
-            <artifactId>cog-jglobus</artifactId>
-            <version>4.0.8</version>
-    	</dependency>
             +-->
 
         <!--+
-            | Axis libraries.
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledAxis
+            | 3rd party dependencies from the ogsa-dai source zip.
             +-->
         <dependency>
-            <groupId>org.apache.axis</groupId>
-            <artifactId>axis</artifactId>
-            <version>1.4</version>
-        </dependency>
-        <!--dependency>
-            <groupId>org.apache.axis</groupId>
-            <artifactId>axis-ant</artifactId>
-            <version>1.4</version>
-            <scope>provided</scope>
-        </dependency-->
-        <dependency>
-            <groupId>org.apache.axis</groupId>
-            <artifactId>axis-jaxrpc</artifactId>
-            <version>1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.axis</groupId>
-            <artifactId>axis-saaj</artifactId>
-            <version>1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>wsdl4j</groupId>
-            <artifactId>wsdl4j</artifactId>
-            <version>1.5.1</version>
-        </dependency>
-
-        <!--+
-            | WS-Addressing implementation used by Axis 1.4.
-            | http://addressing.sourceforge.net/
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledWSAddressing
-            | Version 1.0 is not available in a public repository, loaded from local repository.
-            +-->
-        <dependency>
-            <groupId>net.sourceforge.addressing</groupId>
-            <artifactId>addressing</artifactId>
-            <version>1.0</version>
-        </dependency>
-
-        <!--+
-            | ANTLR GUI Development Environment.
-            | http://www.antlr.org/
-            | http://www.antlr.org/works/index.html
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledANTLR
-            | Not available in a public repository.
-        <dependency>
-            <groupId>antlr</groupId>
-            <artifactId>antlrworks</artifactId>
-            <version>1.1.5</version>
-        </dependency>
-            +-->
-
-        <!--+
-            | Jena - Semantic Web tools for handling RDF and SPARQL.
-            | http://openjena.org/
-            | http://openjena.org/repo/
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledJena
-        <dependency>
-            <groupId>com.hp.hpl.jena</groupId>
-            <artifactId>jena</artifactId>
-            <version>2.6.2</version>
-        </dependency>
-        <dependency>
-               <groupId>com.hp.hpl.jena</groupId>
-               <artifactId>iri</artifactId>
-               <version>0.7</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hp.hpl.jena</groupId>
-            <artifactId>arq</artifactId>
-            <version>2.8.1</version>
-        </dependency>
-            +-->
-
-        <!--+
-            | Jena SPARQL database.
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledJenaSDB
-        <dependency>
-            <groupId>com.hp.hpl.jena</groupId>
-            <artifactId>sdb</artifactId>
-            <version>1.3.1</version>
-        </dependency>
-            +-->
-
-        <!--+
-            | ICU4J - Unicode and Globalization support, used by Jena SDB.
-            | http://site.icu-project.org/
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledICU4J
-        <dependency>
-            <groupId>com.ibm.icu</groupId>
-            <artifactId>icu4j</artifactId>
-            <version>3.4.4</version>
-        </dependency>
-            +-->
-
-        <!--+
-            | ASM - Java bytecode manipulation and analysis framework.
-            | http://asm.ow2.org/
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledJASM
-        <dependency>
-            <groupId>org.ow2.util.asm</groupId>
-            <artifactId>asm</artifactId>
-            <version>3.1</version>
-        </dependency>
-            +-->
-
-        <!--+
-            | Generic collections.
-            | http://larvalabs.com/collections/
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledCollections
-            +-->
-        <dependency>
-            <groupId>net.sourceforge.collections</groupId>
-            <artifactId>collections-generic</artifactId>
-            <version>4.01</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!--+
-            | Apache commons libraries.
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledDBCP
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledPool
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledCommonsCodec
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledCommonsHttpClient
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>1.3</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-pool</groupId>
-            <artifactId>commons-pool</artifactId>
-            <version>1.5.4</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.3</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-discovery</groupId>
-            <artifactId>commons-discovery</artifactId>
-            <version>0.2</version>
-        </dependency>
-            +-->
-
-        <!--+
-            | Apache commons logging, conflicts with the version used in Mallow.
-            | Version set in parent POM to resolve conflicts.
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.0.4</version>
-        </dependency>
-            +-->
-
-        <!--+
-            | eXist XML database.
-            | http://exist-db.org/
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledExist
-            | Version 1.1.1 is not available in a public repository, loaded from local repository.
-        <dependency>
-            <groupId>exist</groupId>
-            <artifactId>exist-xmldb</artifactId>
-            <version>1.1.1</version>
-        </dependency>
-            +-->
-
-        <!--+
-            | Not included, conflicts with the version included with Axis.
-        <dependency>
-            <groupId>javax.xml</groupId>
-            <artifactId>jaxrpc</artifactId>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
             <version>1.1</version>
-        </dependency>
-            +-->
-
-        <!--+
-            | JAXB reference implementation.
-            | http://jaxb.java.net/
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledJaxB
-            +-->
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>2.1.12</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-xjc</artifactId>
-            <version>2.1.12</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
             <version>1.1</version>
-            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.1</version>
         </dependency>
         <dependency>
             <groupId>javax.xml.stream</groupId>
             <artifactId>stax-api</artifactId>
             <version>1.0-2</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!--+
-            | Jersey, a JAX-RS (JSR 311) Reference Implementation for RESTful Web services.
-            | http://jersey.java.net/
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledJersey
-            | Not available in a public repository, loaded from local repository.
-        <dependency>
-            <groupId>jersey</groupId>
-            <artifactId>jersey-core</artifactId>
-            <version>1.1.5</version>
         </dependency>
         <dependency>
-            <groupId>jersey</groupId>
-            <artifactId>jersey-server</artifactId>
-            <version>1.1.5</version>
+            <groupId>jena</groupId>
+            <artifactId>jena</artifactId>
+            <version>2.6.2</version>
         </dependency>
-            +-->
-
-        <!--+
-            | Java API for RESTful Web Services 
-            | http://jersey.java.net/
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledJAXRS
-            +-->
         <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
-            <version>1.1.1</version>
-            <scope>provided</scope>
+            <groupId>jena</groupId>
+            <artifactId>jena-iri</artifactId>
+            <version>0.7</version>
         </dependency>
-
-        <!--+
-            | JUNG Graph.
-            | http://jung.sourceforge.net/
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledJungAPI
         <dependency>
-            <groupId>net.sf.jung</groupId>
-            <artifactId>jung-api</artifactId>
-            <version>2.0</version>
+            <groupId>jena</groupId>
+            <artifactId>jena-sdb</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>jena</groupId>
+            <artifactId>jena-arq</artifactId>
+            <version>2.8.1</version>
+        </dependency>
+        <dependency>
+            <groupId>jettison</groupId>
+            <artifactId>jettison</artifactId>
+            <version>1.3</version>
+        </dependency>
+        <!--dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.0.4</version>
+        </dependency-->
+        <dependency>
+            <groupId>asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>1.6</version>
         </dependency>
         <dependency>
             <groupId>net.sf.jung</groupId>
             <artifactId>jung-graph-impl</artifactId>
             <version>2.0</version>
         </dependency>
-            +-->
-
-        <!--+
-            | Lucene indexing and search.
-            | http://lucene.apache.org/
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledLucene
         <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-            <version>2.4.1</version>
-        </dependency>
-            +-->
-
-        <!--+
-            | Spring components.
-            | http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/BundledProducts.html#BundledSpring
-            +-->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-asm</artifactId>
-            <version>${org.spring.version}</version>
-            <scope>provided</scope>
+            <groupId>net.sf.jung</groupId>
+            <artifactId>jung-api</artifactId>
+            <version>2.0</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>${org.spring.version}</version>
-            <scope>provided</scope>
+            <groupId>net.sourceforge.collections</groupId>
+            <artifactId>collections-generic</artifactId>
+            <version>4.01</version>
         </dependency>
+        <!--dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.6.0</version>
+        </dependency-->
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-bundle</artifactId>
+            <version>1.10</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+            <version>2.1.12</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.1.12</version>
+        </dependency>
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <!--dependency>
+            <groupId>postgres</groupId>
+            <artifactId>postgres</artifactId>
+            <version>8.1.407</version>
+        </dependency-->
+        <!--dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.8</version>
+        </dependency-->
+        <!--dependency>
+            <groupId>tomcat</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>5.5.26</version>
+        </dependency-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>${org.spring.version}</version>
-            <scope>provided</scope>
+            <version>3.0.1.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>${org.spring.version}</version>
-            <scope>provided</scope>
+            <version>3.0.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>3.0.1.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
-            <version>${org.spring.version}</version>
-            <scope>provided</scope>
+            <version>3.0.1.RELEASE</version>
         </dependency>
-
-        <!--+
-            | HttpClient components.
-            | http://hc.apache.org/httpcomponents-core-ga/index.html
-            +-->
-    	<dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>${httpcomponents.version}</version>
-            <scope>provided</scope>
-    	</dependency>
-    	<dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpmime</artifactId>
-            <version>${httpcomponents.version}</version>
-            <scope>provided</scope>
-    	</dependency>
-    	<dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>${httpcomponents.version}</version>
-            <scope>provided</scope>
-    	</dependency>
-    	<dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient-cache</artifactId>
-            <version>${httpcomponents.version}</version>
-            <scope>provided</scope>
-    	</dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-asm</artifactId>
+            <version>3.0.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache</groupId>
+            <artifactId>commons-pool</artifactId>
+            <version>1.5.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache/lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>2.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.3</version>
+        </dependency>
+        <!--dependency>
+            <groupId>slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.5.6</version>
+        </dependency-->
+        <!--dependency>
+            <groupId>slf4j</groupId>
+            <artifactId>slf4j-log</artifactId>
+            <version>1.5.6</version>
+        </dependency-->
+        <!--dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector</artifactId>
+            <version>5.0.4</version>
+        </dependency-->
+        <dependency>
+            <groupId>exist</groupId>
+            <artifactId>exist-xmlrpc</artifactId>
+            <version>1.2-patched</version>
+        </dependency>
+        <dependency>
+            <groupId>exist</groupId>
+            <artifactId>exist</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>exist</groupId>
+            <artifactId>exist-xmldb</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>icu4j</groupId>
+            <artifactId>icu4j</artifactId>
+            <version>3.4.4</version>
+        </dependency>
+        <dependency>
+            <groupId>antlr</groupId>
+            <artifactId>antlrworks</artifactId>
+            <version>1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>globus</groupId>
+            <artifactId>cog-jglobus</artifactId>
+            <version>4.0.8</version>
+        </dependency>
+        <!--dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.6.2</version>
+        </dependency-->
+        <!--dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xmlParserAPIs</artifactId>
+            <version>2.6.2</version>
+        </dependency-->
 
         <!--+
             | Servlet API, originally from Tomcat 5.0.26 or 5.5.26.

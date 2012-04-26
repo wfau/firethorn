@@ -6,3 +6,9 @@ syntax: glob
 # Temp data directories.
 */tmp
 
+# External zip files.
+*/zip
+*/war
+
+# Experiments
+*.frog
