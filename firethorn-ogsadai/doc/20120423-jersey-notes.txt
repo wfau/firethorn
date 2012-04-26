@@ -1,0 +1,679 @@
+
+
+    #
+    # Home
+    # http://jersey.java.net/
+
+    #
+    # Wiki main page
+    # https://wikis.oracle.com/display/Jersey/Main
+
+    #
+    # Getting started
+    # http://jersey.java.net/nonav/documentation/latest/getting-started.html
+
+
+
+    #
+    # OGSA-DAI wiki
+    # http://sourceforge.net/apps/trac/ogsa-dai/wiki
+
+    #
+    # OGSA-DAI REST
+    # http://sourceforge.net/apps/trac/ogsa-dai/wiki/RestfulLayerImpl
+
+    #
+    # OGSA-DAI DQP  
+    # http://ogsa-dai.sourceforge.net/documentation/ogsadai4.2/ogsadai4.2-jersey/DQPPart.html
+
+
+    #
+    # Create MySQL database and data.
+    java uk.org.ogsadai.database.jdbc.book.CreateMySQLDatabase \
+      -url jdbc:mysql://server.ed.ac.uk:3306/mysql -rootuser admin -rootpassword adminPwd \
+      -database ogsadai -user ogsadai -password ogsadai
+
+    java uk.org.ogsadai.database.jdbc.book.CreateMySQLBookData \
+      -url jdbc:mysql://server.ed.ac.uk:3306/ogsadai -user mysqlUser -password 123456
+
+
+
+    #
+    # OGSA-DAI, invoked from TAP service
+
+    # 1) Client-server mode, with write to table.
+    # Results stored in database table, read back and serialised by TAP service.
+    # 2) Invoke directly on server side.
+
+    #
+    # Import the jersey based war file.
+    mvn install:install-file -DgroupId=ogsadai -DartifactId=ogsadai-webapp -Dversion=4.2 -Dpackaging=war -Dfile=ogsadai-4.2-jersey-1.10.war
+
+-----------------
+
+    #
+    # Create VM
+
+ssh root@kappa.virtual
+
+    yum -y install wget
+
+    mkdir ~/.ssh
+    mkdir ~/.ssh/keys
+    pushd ~/.ssh
+        pushd keys
+            wget http://data.metagrid.co.uk/sshkeys/zarquan.metagrid.co.uk.pub
+        popd
+        for key in keys/*
+        do
+            echo "Key [${key}]"
+            cat "${key}" >> authorized_keys2
+        done
+    popd
+    restorecon -R ~/.ssh
+
+    # Add tomcat 6
+
+    yum install java-1.6.0-openjdk-devel
+    yum install tomcat6 tomcat-native
+    yum install tomcat6-webapps tomcat6-admin-webapps
+
+    # Firewall
+
+    vi /etc/sysconfig/iptables
+
+        -A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+      + -A INPUT -m state --state NEW -m tcp -p tcp --dport 8080 -j ACCEPT
+        -A INPUT -j REJECT --reject-with icmp-host-prohibited
+
+    vi /etc/sysconfig/ip6tables
+
+        -A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+      + -A INPUT -m state --state NEW -m tcp -p tcp --dport 8080 -j ACCEPT
+        -A INPUT -j REJECT --reject-with icmp6-adm-prohibited
+
+    service iptables  restart
+    service ip6tables restart
+
+    # Add ogsadai war
+
+    mkdir -p /var/local/projects/ogsadai/lib
+    pushd /var/local/projects/ogsadai/lib
+        wget http://data.metagrid.co.uk/roe/wfau/firethorn/maven/external/ogsadai/ogsadai-webapp/4.2/ogsadai-webapp-4.2.war
+    popd
+
+    pushd /var/lib/tomcat6/webapps/
+        ln -s /var/local/projects/ogsadai/lib/ogsadai-webapp-4.2.war ogsadai.war
+    popd
+
+    # Manager
+    vi /etc/tomcat6/tomcat-users.xml 
+
+        <user name="tomcat" password="c234sb15wss-qa-qw-88" roles="manager,admin" />
+
+    # Startup
+    chkconfig tomcat6 on
+    service tomcat6 restart
+    
+    #
+    # Install Postgres.
+    yum install postgresql-server
+
+    #
+    # Initialise the database.
+    service postgresql initdb
+
+    #
+    # Trust localhost connections.
+    vi /var/lib/pgsql/data/pg_hba.conf
+    
+        # "local" is for Unix domain socket connections only
+        local   all         all                               ident
+        # IPv4 local connections:
+      - host    all         all         127.0.0.1/32          ident
+      + host    all         all         127.0.0.1/32          trust
+        # IPv6 local connections:
+      - host    all         all         ::1/128               ident
+      + host    all         all         ::1/128               trust
+
+    #
+    # Start the server.
+    chkconfig postgresql on
+    service postgresql start
+
+
+databaseuser=ogsadaiuser
+databasepass=xqw3r7s1q24
+
+    #
+    # Create database user account.
+    su postgres -c "createuser --no-superuser --no-createdb --no-createrole --pwprompt ${databaseuser}"
+
+    #
+    # Create our databases.
+    su postgres -c "createdb --owner ${databaseuser} ukidss"
+    su postgres -c "createdb --owner ${databaseuser} twomass"
+    su postgres -c "createdb --owner ${databaseuser} joins"
+    su postgres -c "createdb --owner ${databaseuser} results"
+
+
+    #
+    # Install the JDBC driver
+    yum -y install postgresql-jdbc
+
+    #
+    # Locate the driver jar.
+    rpm --query --list postgresql-jdbc-8.4.701-4.fc14.x86_64
+
+        ....
+        /usr/share/java/postgresql-jdbc.jar
+        ....
+
+    pushd /usr/share/java/tomcat6
+        ln -s /usr/share/java/postgresql-jdbc.jar
+    popd
+
+
+    #
+    # ROE 2MASS TAP service.
+    # http://wfaudata.roe.ac.uk/twomass-dsa
+
+        SELECT
+            count(pts_key)
+        FROM
+            twomass_psc
+        WHERE
+            ra  BETWEEN '55.0' AND '59.9' 
+        AND
+            dec BETWEEN '20.0' AND '24.9'
+
+
+        SELECT
+            twomass.*
+        FROM
+            twomass_psc
+        WHERE
+            ra  BETWEEN '55.0' AND '59.9' 
+        AND
+            dec BETWEEN '20.0' AND '24.9'
+        ORDER BY
+            pts_key
+
+    #
+    # Returns 86471 rows.
+    # http://wfaudata.roe.ac.uk/twomass-dsa//TAP/async/12ade441:136c533bd94:-5262
+
+    pushd /var/local/projects/wfau/data
+
+        wget -O twomass-86471.xml http://wfaudata.roe.ac.uk/twomass-dsa//TAP/async/12ade441:136c533bd94:-5262/results/result 
+
+    popd
+
+    #
+    # ROE UKIDSS.DR6 TAP service
+    # http://wfaudata.roe.ac.uk/ukidssDR6-dsa/
+
+        SELECT
+            count(sourceID)
+        FROM
+            gcsPointSource
+        WHERE
+            ra  BETWEEN '55.0' AND '59.9' 
+        AND
+            dec BETWEEN '20.0' AND '24.9'
+
+
+        SELECT
+            *
+        FROM
+            gcsPointSource
+        WHERE
+            ra  BETWEEN '55.0' AND '59.9' 
+        AND
+            dec BETWEEN '20.0' AND '24.9'
+
+    #
+    # Returns 98328 rows.
+    # http://wfaudata.roe.ac.uk/ukidssDR6-dsa//TAP/async/12ade441:136c533bd94:-5248
+
+    pushd /var/local/projects/wfau/data
+        wget -O ukidss-98328.xml http://wfaudata.roe.ac.uk/ukidssDR6-dsa//TAP/async/12ade441:136c533bd94:-5248/results/result 
+    popd
+
+    #
+    # ROE UKIDSS.DR6 TAP service
+    # http://wfaudata.roe.ac.uk/ukidssDR6-dsa/
+
+
+        SELECT
+            joins.*
+        FROM
+            gcsPointSource        AS data,
+            gcsSourceXtwomass_psc AS joins
+        WHERE
+            data.ra  BETWEEN '55.0' AND '59.9' 
+        AND
+            data.dec BETWEEN '20.0' AND '24.9'
+        AND
+            data.sourceID = joins.masterObjID
+
+    #
+    # Returns 58981 rows.
+    # http://wfaudata.roe.ac.uk/ukidssDR6-dsa//TAP/async/12ade441:136c533bd94:-4ff5
+    pushd /var/local/projects/wfau/data
+        wget -O joins-58981.xml http://wfaudata.roe.ac.uk/ukidssDR6-dsa//TAP/async/12ade441:136c533bd94:-4ff5/results/result 
+    popd
+
+
+    #
+    # Allow Postgres through the firewall.
+
+    vi /etc/sysconfig/iptables
+
+        -A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+        -A INPUT -m state --state NEW -m tcp -p tcp --dport 8080 -j ACCEPT
+      + -A INPUT -m state --state NEW -m tcp -p tcp --dport 5432 -j ACCEPT
+        -A INPUT -j REJECT --reject-with icmp-host-prohibited
+
+    vi /etc/sysconfig/ip6tables
+
+        -A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+        -A INPUT -m state --state NEW -m tcp -p tcp --dport 8080 -j ACCEPT
+      + -A INPUT -m state --state NEW -m tcp -p tcp --dport 5432 -j ACCEPT
+        -A INPUT -j REJECT --reject-with icmp6-adm-prohibited
+
+    service iptables  restart
+    service ip6tables restart
+
+    #
+    # Configure Postgres to listen on external port.
+
+    vi /var/lib/pgsql/data/pg_hba.conf 
+
+      + host    all         all         10.0.0.0/8            md5
+      + host    all         all    2001:8b0:be72:d4ea::/64    md5
+
+    vi /var/lib/pgsql/data/postgresql.conf 
+
+        listen_addresses = '*'  # what IP address(es) to listen on;
+                                # comma-separated list of addresses;
+                                # defaults to 'localhost', '*' = all
+
+    service postgresql restart
+
+    #
+    # Test connection from remote machine.
+    
+    databasehost=kappa.virtual.metagrid.co.uk
+    databaseuser=ogsadaiuser
+    databasepass=xqw3r7s1q24
+    databasename=twomass
+
+    psql --host ${databasehost} --username ${databaseuser} --dbname ${databasename}
+
+    #
+    # Import test data into databases.
+    mkdir lib
+    pushd lib
+
+        wget -O stilts-2.4.jar http://www.star.bris.ac.uk/~mbt/stilts/stilts.jar
+        #wget -O stil-3.0-3.jar http://www.star.bris.ac.uk/~mbt/stil/stil.jar
+        #wget -O stil-3.0-3.zip http://www.star.bris.ac.uk/~mbt/stil/stil_jars.zip
+
+    popd
+
+    databasename=twomass
+    databasedata=twomass-86471.xml
+    databasetable=psc
+
+    java \
+        -classpath lib/stilts-2.4.jar:/usr/share/java/postgresql-jdbc.jar \
+        -Djdbc.drivers=org.postgresql.Driver \
+        uk.ac.starlink.ttools.Stilts tpipe \
+        omode=tosql \
+        write=create \
+        protocol=postgresql  \
+        in=${databasedata}   \
+        host=${databasehost} \
+        db=${databasename}   \
+        dbtable=${databasetable} \
+        user=${databaseuser} \
+        password=${databasepass}
+
+    databasename=ukidss
+    databasedata=ukidss-98328.xml
+    databasetable=gcsPointSource
+
+    java \
+        -classpath lib/stilts-2.4.jar:/usr/share/java/postgresql-jdbc.jar \
+        -Djdbc.drivers=org.postgresql.Driver \
+        uk.ac.starlink.ttools.Stilts tpipe \
+        omode=tosql \
+        write=create \
+        protocol=postgresql  \
+        in=${databasedata}   \
+        host=${databasehost} \
+        db=${databasename}   \
+        dbtable=${databasetable} \
+        user=${databaseuser} \
+        password=${databasepass}
+
+    databasename=joins
+    databasedata=joins-58981.xml
+    databasetable=ukidsstwomass
+
+    java \
+        -classpath lib/stilts-2.4.jar:/usr/share/java/postgresql-jdbc.jar \
+        -Djdbc.drivers=org.postgresql.Driver \
+        uk.ac.starlink.ttools.Stilts tpipe \
+        omode=tosql \
+        write=create \
+        protocol=postgresql  \
+        in=${databasedata}   \
+        host=${databasehost} \
+        db=${databasename}   \
+        dbtable=${databasetable} \
+        user=${databaseuser} \
+        password=${databasepass}
+
+--------------------------------------
+
+    #
+    # Configure OGSA-DAI JDBC resources.
+    # http://ogsa-dai.sourceforge.net/documentation/ogsadai4.2/ogsadai4.2-jersey/DeployRelationalResource.html
+
+    pushd /var/lib/tomcat6/webapps/ogsadai/WEB-INF/etc/dai
+
+        vi logins.txt
+
+            id=twomass
+            userID=*
+            username=ogsadaiuser
+            password=xqw3r7s1q24
+            LOGIN-END
+            id=ukidss
+            userID=*
+            username=ogsadaiuser
+            password=xqw3r7s1q24
+            LOGIN-END
+            id=joins
+            userID=*
+            username=ogsadaiuser
+            password=xqw3r7s1q24
+            LOGIN-END
+            id=results
+            userID=*
+            username=ogsadaiuser
+            password=xqw3r7s1q24
+            LOGIN-END
+            END
+
+        vi resources/twomass
+
+            id=twomass
+            type=uk.org.ogsadai.DATA_RESOURCE
+            creationTime=null
+            terminationTime=null
+            PROPERTIES
+            END
+            CONFIG
+            dai.driver.class=org.postgresql.Driver
+            dai.data.resource.uri=jdbc:postgresql://localhost:5432/twomass
+            dai.login.provider=uk.org.ogsadai.LOGIN_PROVIDER
+            END
+            ACTIVITIES
+            uk.org.ogsadai.ExtractPhysicalSchemaToXML=uk.org.ogsadai.ExtractPhysicalSchemaToXMLPostgreSQL
+            uk.org.ogsadai.SQLNestedInClauseQuery=uk.org.ogsadai.SQLNestedInClauseQuery
+            uk.org.ogsadai.SQLUpdate=uk.org.ogsadai.SQLUpdate
+            uk.org.ogsadai.SQLParameterisedQuery=uk.org.ogsadai.SQLParameterisedQuery
+            uk.org.ogsadai.GetAvailableTables=uk.org.ogsadai.GetAvailableTables
+            uk.org.ogsadai.FilteredSQLQuery=uk.org.ogsadai.FilteredSQLQuery
+            uk.org.ogsadai.ExtractTableSchema=uk.org.ogsadai.ExtractTableSchema
+            uk.org.ogsadai.SQLStatement=uk.org.ogsadai.SQLStatement
+            uk.org.ogsadai.SQLBulkLoadTuple=uk.org.ogsadai.SQLBulkLoadTuple
+            uk.org.ogsadai.SQLQuery=uk.org.ogsadai.SQLQuery
+            uk.org.ogsadai.SQLParameterisedUpdate=uk.org.ogsadai.SQLParameterisedUpdate
+            uk.org.ogsadai.SQLNestedInClauseJoin=uk.org.ogsadai.SQLNestedInClauseJoin
+            END
+            dataResourceClass=uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource
+
+        vi resources/ukidss
+
+            id=ukidss
+            type=uk.org.ogsadai.DATA_RESOURCE
+            creationTime=null
+            terminationTime=null
+            PROPERTIES
+            END
+            CONFIG
+            dai.driver.class=org.postgresql.Driver
+            dai.data.resource.uri=jdbc:postgresql://localhost:5432/ukidss
+            dai.login.provider=uk.org.ogsadai.LOGIN_PROVIDER
+            END
+            ACTIVITIES
+            uk.org.ogsadai.SQLQuery=uk.org.ogsadai.SQLQuery
+            uk.org.ogsadai.SQLUpdate=uk.org.ogsadai.SQLUpdate
+            uk.org.ogsadai.SQLBulkLoadTuple=uk.org.ogsadai.SQLBulkLoadTuple
+            uk.org.ogsadai.GetAvailableTables=uk.org.ogsadai.GetAvailableTables
+            uk.org.ogsadai.SQLParameterisedQuery=uk.org.ogsadai.SQLParameterisedQuery
+            uk.org.ogsadai.SQLParameterisedUpdate=uk.org.ogsadai.SQLParameterisedUpdate
+            uk.org.ogsadai.ExtractTableSchema=uk.org.ogsadai.ExtractTableSchema
+            uk.org.ogsadai.SQLNestedInClauseQuery=uk.org.ogsadai.SQLNestedInClauseQuery
+            uk.org.ogsadai.SQLNestedInClauseJoin=uk.org.ogsadai.SQLNestedInClauseJoin
+            uk.org.ogsadai.ExtractPhysicalSchemaToXML=uk.org.ogsadai.ExtractPhysicalSchemaToXMLSimple
+            uk.org.ogsadai.FilteredSQLQuery=uk.org.ogsadai.FilteredSQLQuery
+            uk.org.ogsadai.SQLStatement=uk.org.ogsadai.SQLStatement
+            END
+            dataResourceClass=uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource
+
+        vi resources/joins
+
+            id=joins
+            type=uk.org.ogsadai.DATA_RESOURCE
+            creationTime=null
+            terminationTime=null
+            PROPERTIES
+            END
+            CONFIG
+            dai.driver.class=org.postgresql.Driver
+            dai.data.resource.uri=jdbc:postgresql://localhost:5432/joins
+            dai.login.provider=uk.org.ogsadai.LOGIN_PROVIDER
+            END
+            ACTIVITIES
+            uk.org.ogsadai.SQLQuery=uk.org.ogsadai.SQLQuery
+            uk.org.ogsadai.SQLUpdate=uk.org.ogsadai.SQLUpdate
+            uk.org.ogsadai.SQLBulkLoadTuple=uk.org.ogsadai.SQLBulkLoadTuple
+            uk.org.ogsadai.GetAvailableTables=uk.org.ogsadai.GetAvailableTables
+            uk.org.ogsadai.SQLParameterisedQuery=uk.org.ogsadai.SQLParameterisedQuery
+            uk.org.ogsadai.SQLParameterisedUpdate=uk.org.ogsadai.SQLParameterisedUpdate
+            uk.org.ogsadai.ExtractTableSchema=uk.org.ogsadai.ExtractTableSchema
+            uk.org.ogsadai.SQLNestedInClauseQuery=uk.org.ogsadai.SQLNestedInClauseQuery
+            uk.org.ogsadai.SQLNestedInClauseJoin=uk.org.ogsadai.SQLNestedInClauseJoin
+            uk.org.ogsadai.ExtractPhysicalSchemaToXML=uk.org.ogsadai.ExtractPhysicalSchemaToXMLSimple
+            uk.org.ogsadai.FilteredSQLQuery=uk.org.ogsadai.FilteredSQLQuery
+            uk.org.ogsadai.SQLStatement=uk.org.ogsadai.SQLStatement
+            END
+            dataResourceClass=uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource
+
+
+        vi resources/results
+
+            id=results
+            type=uk.org.ogsadai.DATA_RESOURCE
+            creationTime=null
+            terminationTime=null
+            PROPERTIES
+            END
+            CONFIG
+            dai.driver.class=org.postgresql.Driver
+            dai.data.resource.uri=jdbc:postgresql://localhost:5432/results
+            dai.login.provider=uk.org.ogsadai.LOGIN_PROVIDER
+            END
+            ACTIVITIES
+            uk.org.ogsadai.SQLQuery=uk.org.ogsadai.SQLQuery
+            uk.org.ogsadai.SQLUpdate=uk.org.ogsadai.SQLUpdate
+            uk.org.ogsadai.SQLBulkLoadTuple=uk.org.ogsadai.SQLBulkLoadTuple
+            uk.org.ogsadai.GetAvailableTables=uk.org.ogsadai.GetAvailableTables
+            uk.org.ogsadai.SQLParameterisedQuery=uk.org.ogsadai.SQLParameterisedQuery
+            uk.org.ogsadai.SQLParameterisedUpdate=uk.org.ogsadai.SQLParameterisedUpdate
+            uk.org.ogsadai.ExtractTableSchema=uk.org.ogsadai.ExtractTableSchema
+            uk.org.ogsadai.SQLNestedInClauseQuery=uk.org.ogsadai.SQLNestedInClauseQuery
+            uk.org.ogsadai.SQLNestedInClauseJoin=uk.org.ogsadai.SQLNestedInClauseJoin
+            uk.org.ogsadai.ExtractPhysicalSchemaToXML=uk.org.ogsadai.ExtractPhysicalSchemaToXMLSimple
+            uk.org.ogsadai.FilteredSQLQuery=uk.org.ogsadai.FilteredSQLQuery
+            uk.org.ogsadai.SQLStatement=uk.org.ogsadai.SQLStatement
+            END
+            dataResourceClass=uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource
+
+    #
+    # Run a simple client test ....
+    mvn -Dtest=SQLQueryTestCase test
+
+    #
+    # Push results back into separate database (userdata).
+
+#
+# Temp fix - create the table manually.
+
+    databasehost=kappa.virtual.metagrid.co.uk
+    databaseuser=ogsadaiuser
+    databasepass=xqw3r7s1q24
+    databasename=results
+
+    psql --host ${databasehost} --username ${databaseuser} --dbname ${databasename}
+
+        CREATE TABLE results(
+
+            cx              real,
+            cy              real,
+            cz              real,
+            htmID           integer,
+            ra              double precision,
+            dec             double precision,
+            err_maj         real,
+            err_min         real,
+            err_ang         integer,
+            designation     text,
+            j_m             real,
+            j_cmsig         real,
+            j_msigcom       real,
+            j_snr           real,
+            h_m             real,
+            h_cmsig         real,
+            h_msigcom       real,
+            h_snr           real,
+            k_m             real,
+            k_cmsig         real,
+            k_msigcom       real,
+            k_snr           real,
+            ph_qual         varchar(10),
+            rd_flg          varchar(10),
+            bl_flg          varchar(10),
+            cc_flg          varchar(10),
+            ndet            varchar(10),
+            prox            real,
+            pxpa            integer,
+            pxcntr          integer,
+            gal_contam      integer,
+            mp_flg          integer,
+            pts_key         varchar(10),
+            hemis           varchar(10),
+            date            varchar(10),
+            scan            integer,
+            glon            real,
+            glat            real,
+            x_scan          real,
+            jdate           real,
+            j_psfchi        real,
+            h_psfchi        real,
+            k_psfchi        real,
+            j_m_stdap       real,
+            j_msig_stdap    real,
+            h_m_stdap       real,
+            h_msig_stdap    real,
+            k_m_stdap       real,
+            k_msig_stdap    real,
+            dist_edge_ns    integer,
+            dist_edge_ew    integer,
+            dist_edge_flg   varchar(10),
+            use_src         integer,
+            a               varchar(10),
+            dist_opt        real,
+            phi_opt         integer,
+            b_m_opt         real,
+            vr_m_opt        real,
+            nopt_mchs       integer,
+            ext_key         integer,
+            scan_key        integer,
+            coadd_key       integer,
+            coadd           integer
+            
+            );
+
+#######################################
+
+#
+# Ok, so we need an Activity that creates database tables on demand ...
+
+file:///var/local/projects/wfau/firethorn/hg/firethorn-ogsadai/zip/ogsadai-4.2-jersey-1.10-bin/doc/javadoc/index.html
+
+/var/local/projects/wfau/firethorn/hg/firethorn-ogsadai/zip/ogsadai-4.2-jersey-1.10-src/src/extensions/relational/client/src/main/java/uk/org/ogsadai/client/toolkit/activities/sql
+/var/local/projects/wfau/firethorn/hg/firethorn-ogsadai/zip/ogsadai-4.2-jersey-1.10-src/src/extensions/relational/server/src/main/java/uk/org/ogsadai/activity/sql
+
+
+
+    scp target/firethorn-ogsadai-1.0-SNAPSHOT.jar root@kappa.virtual:/var/lib/tomcat6/webapps/ogsadai/WEB-INF/lib/
+    ssh root@kappa.virtual 'service tomcat6 restart'
+
+    #
+    # Add our Activity config
+    pushd /var/lib/tomcat6/webapps/ogsadai/WEB-INF/etc/dai
+
+        vi activities.txt 
+
+            id=uk.ac.roe.wfau.firethorn.ogsadai.activity.CreateTable
+            class=uk.ac.roe.wfau.firethorn.ogsadai.activity.CreateTableActivity
+            description=
+            CONFIG
+            END
+
+        vi resources/results
+
+            ACTIVITIES
+            ....
+            uk.ac.roe.wfau.firethorn.ogsadai.activity.CreateTable=uk.ac.roe.wfau.firethorn.ogsadai.activity.CreateTable
+            END
+
+#######################################
+    
+    Fails at inserting null data into integer field (twomass.htmID).
+    Quick fix, drop the empty column for now.
+
+    databasehost=kappa.virtual.metagrid.co.uk
+    databaseuser=ogsadaiuser
+    databasepass=xqw3r7s1q24
+    databasename=results
+
+    psql --host ${databasehost} --username ${databaseuser} --dbname ${databasename}
+
+        ALTER TABLE psc DROP COLUMN "htmID" ;
+
+
+    Basic create and insert works :-)
+    
+#######################################
+
+    # Auto increment the table ident ?
+    # Invoke from TAP service.
+    # Redirect URL for data access.
+    # Join query across databases.
+
+    # Metadata harvested from registry.
+
+    # Bundle it all in one Maven build - including databases ? 
+
+http://kappa.virtual:8080/ogsadai/
+http://ogsa-dai.sourceforge.net/documentation/ogsadai4.2/ogsadai4.2-jersey/SQLClient.html
+file:///var/local/projects/wfau/firethorn/hg/firethorn-ogsadai/zip/ogsadai-4.2-jersey-1.10-bin/doc/javadoc/index.html
+
+

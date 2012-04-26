@@ -1,0 +1,18 @@
+
+
+
+
+    http://ogsa-dai.sourceforge.net/documentation/ogsadai4.2/ogsadai4.2-jersey/SQLClient.html
+    Example is blank
+
+
+
+
+    uk.org.ogsadai.activity.sql.SQLBulkLoadTupleActivity
+    Database connection is private, preventing sub classes from using it.
+
+        private JDBCConnectionProvider mResource;
+        private Connection mConnection;
+
+
+

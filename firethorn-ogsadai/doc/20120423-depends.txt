@@ -1,0 +1,134 @@
+
+
+    #
+    # Tried running the 'common/dependencies' Ant build
+
+      [get] Getting: http://mirror.fubra.com/ftp.apache.org/ws/axis/1_4/axis-bin-1_4.zip
+      [get] To: /var/local/projects/wfau/firethorn/hg/firethorn-ogsadai/zip/ogsadai-4.2-jersey-1.10-src/src/common/dependencies/zips/axis.1.4.zip
+      [get] Error opening connection java.io.FileNotFoundException: http://mirror.fubra.com/ftp.apache.org/ws/axis/1_4/axis-bin-1_4.zip
+
+    #
+    # Could spend time trying to get this to work ... 
+
+    #
+    # Easier to create our own set.
+
+
+postgresql-8.1-407.jdbc3.jar
+mysql-connector-java-5.0.4-bin.jar
+
+exist-1.1.1.jar
+xmlrpc-1.2-patched.jar
+
+slf4j-log4j12-1.5.6.jar
+icu4j-3.4.4.jar
+activation-1.1.jar
+commons-codec-1.3.jar
+jstl-1.2.jar
+jaxb-api-2.1.jar
+cog-jglobus-4.0.8.jar
+commons-dbcp-1.3.jar
+commons-logging-1.0.4.jar
+joda-time-1.6.jar
+arq-2.8.1.jar
+jena-2.6.2.jar
+org.springframework.context-3.0.1.RELEASE.jar
+org.springframework.asm-3.0.1.RELEASE.jar
+org.springframework.expression-3.0.1.RELEASE.jar
+org.springframework.beans-3.0.1.RELEASE.jar
+org.springframework.core-3.0.1.RELEASE.jar
+jung-graph-impl-2.0.jar
+jaxb-impl-2.1.12.jar
+asm-3.1.jar
+xercesImpl-2.6.2.jar
+lucene-core-2.4.1.jar
+jaxb-xjc-2.1.12.jar
+jettison-1.3.jar
+servlet-api-5.5.26.jar
+xmlParserAPIs-2.6.2.jar
+jung-api-2.0.jar
+sdb-1.3.1.jar
+slf4j-api-1.5.6.jar
+xalan-2.6.0.jar
+exist-xmldb-1.1.1.jar
+commons-httpclient-3.1.jar
+antlrworks-1.3.jar
+commons-pool-1.5.4.jar
+jsr311-api-1.1.1.jar
+stax-api-1.0-2.jar
+collections-generic-4.01.jar
+jersey-bundle-1.10.jar
+iri-0.7.jar
+log4j-1.2.8.jar
+
+
+
+
+
+for name in $(find . -name 'ogsadai*.jar' | sed 's|\(./\)\([-a-z]*\)-4.2.jar|\2|')
+do
+    path="ogsadai/${name}/4.2"
+    #mkdir -p ${path}
+    #cp "${name}-4.2.jar" ${path}
+cat << EOF
+<dependency>
+    <groupId>ogsadai</groupId>
+    <artifactId>${name}</artifactId>
+    <version>4.2</version>
+</dependency>
+EOF
+done
+
+
+
+
+
+
+sed 's|\(.*\)/\(.*\)/\(.*\)/\(.*\)|<dependency>\n    <group>\1</group>\n    <name>\2</name>\n    <version>\3</version>\n</dependency>|' << EOF
+javax.ws.rs/jsr311-api/1.1/jsr311-api-1.1.1.jar
+javax.activation/activation/1.1/activation-1.1.jar
+javax.xml.bind/jaxb-api/2.1/jaxb-api-2.1.jar
+javax.xml.stream/stax-api/1.0-2/stax-api-1.0-2.jar
+jena/jena/2.6.2/jena-2.6.2.jar
+jena/jena-iri/0.7/iri-0.7.jar
+jena/jena-sdb/1.3.1/sdb-1.3.1.jar
+jena/jena-arq/2.8.1/arq-2.8.1.jar
+jettison/jettison/1.3/jettison-1.3.jar
+commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar
+asm/asm/3.1/asm-3.1.jar
+joda-time/joda-time/1.6/joda-time-1.6.jar
+net.sf.jung/jung-graph-impl/2.0/jung-graph-impl-2.0.jar
+net.sf.jung/jung-api/2.0/jung-api-2.0.jar
+net.sourceforge.collections/collections-generic/4.01/collections-generic-4.01.jar
+xalan/xalan/2.6.0/xalan-2.6.0.jar
+com.sun.jersey/jersey-bundle/1.10/jersey-bundle-1.10.jar
+com.sun.xml.bind/jaxb-xjc/2.1.12/jaxb-xjc-2.1.12.jar
+com.sun.xml.bind/jaxb-impl/2.1.12/jaxb-impl-2.1.12.jar
+jstl/jstl/1.2/jstl-1.2.jar
+postgres/postgres/8.1.407/postgresql-8.1-407.jdbc3.jar
+log4j/log4j/1.2.8/log4j-1.2.8.jar
+tomcat/servlet-api/5.5.26/servlet-api-5.5.26.jar
+org.springframework/spring-context/3.0.1.RELEASE/org.springframework.context-3.0.1.RELEASE.jar
+org.springframework/spring-core/3.0.1.RELEASE/org.springframework.core-3.0.1.RELEASE.jar
+org.springframework/spring-beans/3.0.1.RELEASE/org.springframework.beans-3.0.1.RELEASE.jar
+org.springframework/spring-expression/3.0.1.RELEASE/org.springframework.expression-3.0.1.RELEASE.jar
+org.springframework/spring-asm/3.0.1.RELEASE/org.springframework.asm-3.0.1.RELEASE.jar
+org.apache/commons-pool/1.5.4/commons-pool-1.5.4.jar
+org.apache/commons-codec/1.3/commons-codec-1.3.jar
+org.apache/commons-hc/3.1/commons-httpclient-3.1.jar
+org.apache/lucene/lucene-core/2.4.1/lucene-core-2.4.1.jar
+org.apache/commons-dbcp/1.3/commons-dbcp-1.3.jar
+slf4j/slf4j-api/1.5.6/slf4j-api-1.5.6.jar
+slf4j/slf4j-log/1.5.6/slf4j-log4j12-1.5.6.jar
+mysql/mysql-connector/5.0.4/mysql-connector-java-5.0.4-bin.jar
+exist/exist-xmlrpc/1.2/xmlrpc-1.2-patched.jar
+exist/exist/1.1.1/exist-1.1.1.jar
+exist/exist-xmldb/1.1.1/exist-xmldb-1.1.1.jar
+icu4j/icu4j/3.4.4/icu4j-3.4.4.jar
+antlr/antlrworks/1.3/antlrworks-1.3.jar
+globus/cog-jglobus/unknown/cog-jglobus-4.0.8.jar
+xerces/xercesImpl/2.6.2/xercesImpl-2.6.2.jar
+xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2.jar
+EOF
+
+
