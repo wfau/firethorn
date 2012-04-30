@@ -218,7 +218,7 @@ implements SimpleQueryActivity
      * Convert an ogsadai RequestExecutionStatus to our Status enum.
      *
      */
-    public void status(RequestExecutionStatus value)
+    protected void status(RequestExecutionStatus value)
         {
 logger.debug("SimpleQueryActivityImpl.status(RequestExecutionStatus)");
 logger.debug("  Value [{}]", value);

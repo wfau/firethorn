@@ -112,7 +112,7 @@ public class SimpleQueryActivityTestCase
       //String statement = "SELECT * FROM psc LIMIT 5" ;
         String statement = "SELECT * FROM psc" ;
         String resource  = "results" ;
-        String tablename = "test_003" ;
+        String tablename = "test_005" ;
 
         //
         // Create our query params.

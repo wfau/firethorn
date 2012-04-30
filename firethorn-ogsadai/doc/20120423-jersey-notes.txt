@@ -676,4 +676,11 @@ http://kappa.virtual:8080/ogsadai/
 http://ogsa-dai.sourceforge.net/documentation/ogsadai4.2/ogsadai4.2-jersey/SQLClient.html
 file:///var/local/projects/wfau/firethorn/hg/firethorn-ogsadai/zip/ogsadai-4.2-jersey-1.10-bin/doc/javadoc/index.html
 
+http://sourceforge.net/apps/trac/ogsa-dai/wiki/AstroData
+http://sourceforge.net/apps/trac/ogsa-dai/wiki/AstronomyActivities
+
+#######################################
+
+
+
 

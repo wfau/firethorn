@@ -1,0 +1,121 @@
+
+# Create an API to call for creating the table.
+# Could use the OGSA-DAI database connection.
+# Could use separate Hibernate process instead.
+
+
+public interface OgsadaiTableMetadata
+extends IvoaTableMetadata
+    {
+
+    public interface Factory
+        {
+
+        public OgsadaiTableMetadata create(QueryJob query, TupleMetadata metadata)
+            {
+            }
+
+        }
+
+    interface OgsadaiMetadata
+        {
+        // OGSA-DAI metadata from TupleMetadata
+        }
+    pubic OgsadaiMetadata ogsadai();
+    pubic OgsadaiMetadata ogsadai(TupleMetadata metadata);
+
+    }
+
+public interface IvoaCatalogueMetadata
+    {
+
+    Identifier ident() ;
+
+    Identity owner();
+
+    String name() ;
+
+    String text() ;
+
+    interface CatalogueTables
+        {
+        Iterable<IvoaTableMetadata> select();
+        }
+    public Tables tables();
+
+    }
+
+public interface IvoaTableMetadata
+    {
+
+    Identifier ident() ;
+
+    Identity owner();
+
+    String name() ;
+
+    String text() ;
+
+    interface TableColumns
+        {
+        Iterable<IvoaColumnMetadata> select();
+        }
+    public TableColumns columns();
+
+    }
+
+public interface IvoaColumnMetadata
+    {
+
+    Identifier ident() ;
+
+    Identity owner();
+
+    String name() ;
+
+    String text() ;
+
+    interface JdbcColumnMetadata
+        {
+        // JDBC data type, used to create the table.
+        }
+    pubic JdbcMetadata jdbc();
+
+    interface IvoaMetadata
+        {
+        // IVOA data type, used to create VOTable header
+        }
+    pubic IvoaMetadata ivoa();
+    pubic void ivoa(VOTableHeader metadata);
+
+    }
+
+----------------------------------------------------------
+
+
+    Wrapper 'view' classes ..?
+    
+
+        ColumnMetadata inner = service....create();
+
+
+        IvoaColumnMetadata ivoa = new IvoaColumnMetadata(inner);
+        ivoa.update(xml);
+
+        IvoaType type = ivoa.type();
+        ....
+
+        OgsaColumnMetadata ogsa = new OgsaColumnMetadata(inner);
+
+        TupleType type = ogsa.type();
+        ....
+
+        TupleMeta tuples = ...
+        ogsa.update(
+            tuples
+            );
+
+
+
+
+

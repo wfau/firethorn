@@ -246,8 +246,7 @@ implements ResourceActivity
             logger.debug("SQL [{}]", builder.toString()); 
 
             //
-            // Commit the database transaction.
-
+            // Create the database table.
             logger.debug("Creating table");
             Statement statement = connection.createStatement();
             int result = statement.executeUpdate(
@@ -260,7 +259,6 @@ implements ResourceActivity
             // Write the LIST_BEGIN marker and metadata
             writer.write(ControlBlock.LIST_BEGIN);
             writer.write(wrapper);
-            
             //
             // Process the tuples (pass through).
             logger.debug("Processing tuples");
@@ -268,17 +266,11 @@ implements ResourceActivity
             long count ;
             for(count = 0 ; ((tuple = (Tuple) tuples.nextValue()) != null) ; count++)
                 {
-                //
-                // Scan for nulls ?
-
-                //
-                // Write the new tuple to our output.
                 writer.write(
                     tuple
                     );
                 }
             logger.debug("Processing done [{}] tuples", count);
-
             //
             // Write the list end marker
             writer.write(ControlBlock.LIST_END);
@@ -328,6 +320,23 @@ implements ResourceActivity
             logger.warn("Exception during rollback", ouch);
             }
         }
+
+    /**
+     * Create our database table.
+     *
+     */
+    protected void createTable()
+        {
+        }
+
+    /**
+     * Iterate the tuples (pass through).
+     *
+     */
+    protected void processTuples()
+        {
+        }
+
 
     /**
      * Translate a tuple type into a SQL data type.
