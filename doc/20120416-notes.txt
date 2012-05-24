@@ -1,11 +1,3 @@
-
-
-
-
-    website
-    
-        POST form
-
     #
     # Region query, with join on 2MASS cross. 
     # ivo://wfau.roe.ac.uk/ukidssDR5-dsa 
@@ -29,12 +21,6 @@
             match.sourceID=match.masterObjID
         ORDER BY
             match.slaveObjID ASC
-
-
-    #
-    # Get basic system working....
-
-    CDS TAP service ....
 
 
 
