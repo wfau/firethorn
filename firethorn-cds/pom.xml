@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!--+
+    |
+    | Copyright (c) 2012, ROE (http://www.roe.ac.uk/)
+    | All rights reserved.
+    |
+    | This program is free software: you can redistribute it and/or modify
+    | it under the terms of the GNU General Public License as published by
+    | the Free Software Foundation, either version 3 of the License, or
+    | (at your option) any later version.
+    |
+    | This program is distributed in the hope that it will be useful,
+    | but WITHOUT ANY WARRANTY; without even the implied warranty of
+    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    | GNU General Public License for more details.
+    |
+    | You should have received a copy of the GNU General Public License
+    | along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    |
+    +-->
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+    >
+
+    <!--+
+        | Maven POM documentation.
+        | https://maven.apache.org/ref/3.0.4/maven-model/maven.html
+        +-->
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>uk.ac.roe.wfau</groupId>
+    <artifactId>firethorn-cds</artifactId>
+
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>FireThorn CDS components</name>
+    <description>
+        <![CDATA[
+        FireThorn CDS components.
+        ]]>
+    </description>
+
+    <!--+
+        | Maven parent/child projects.
+        | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
+        +-->
+    <modules>
+        <module>firethorn-cds-lib</module>
+        <module>firethorn-cds-tap</module>
+    </modules>
+
+</project>
+
+
+
