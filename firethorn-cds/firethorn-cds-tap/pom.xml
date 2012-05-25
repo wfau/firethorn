@@ -24,11 +24,6 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
     >
     <modelVersion>4.0.0</modelVersion>
-
-    <!--+
-        | Maven parent/child projects.
-        | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
-        +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-cds</artifactId>
@@ -37,9 +32,8 @@
 
     <artifactId>firethorn-cds-tap</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
 
-    <name>CDS TAP library</name>
+    <name>CDS TAP service</name>
     <description>
         <![CDATA[
         FireThorn customisation of the CDS TAP toolkit.
@@ -71,22 +65,22 @@
         <!--+
             | com.oreilly.servlet library
             | http://www.servlets.com/cos/
-            +-->
         <dependency>
             <groupId>com.servlets</groupId>
             <artifactId>cos</artifactId>
             <version>26Dec2008</version>
         </dependency>
+            +-->
 
         <!--+
             | kXML XML pull parser.
             | http://sourceforge.net/projects/kxml/
-            +-->
         <dependency>
 	        <groupId>net.sf.kxml</groupId>
 	        <artifactId>kxml2</artifactId>
 	        <version>2.3.0</version>
         </dependency>
+            +-->
 
 	    <!--+
 	        | Servlet libraries.
@@ -101,7 +95,6 @@
 		    <artifactId>jsp-api</artifactId>
 		    <scope>provided</scope>
 	    </dependency>
-
 
 	    <!--dependency>
             <groupId>cds.savot</groupId>
@@ -129,11 +122,11 @@
             <version>3.x</version>
 	    </dependency-->
 
-	    <dependency>
+	    <!--dependency>
             <groupId>cds</groupId>
             <artifactId>cds-lib</artifactId>
             <version>x.y</version>
-	    </dependency>
+	    </dependency-->
 
     </dependencies>
 

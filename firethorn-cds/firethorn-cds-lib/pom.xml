@@ -24,22 +24,16 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
     >
     <modelVersion>4.0.0</modelVersion>
-
-    <!--+
-        | Maven parent/child projects.
-        | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
-        +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-cds</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-
     <artifactId>firethorn-cds-lib</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <!--version>1.0-SNAPSHOT</version-->
 
-    <name>CDS TAP library</name>
+    <name>CDS libraries</name>
     <description>
         <![CDATA[
         Local build of the CDS TAP, UWS and ADQL toolkits.
@@ -57,16 +51,6 @@
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>
-
-        <!--+
-            | Big blob of things with no version from CDS.
-            | It looks like it may contains some unpublished classes as well.
-        <dependency>
-            <groupId>cds.blob</groupId>
-            <artifactId>cds.tap.blob</artifactId>
-            <version>20120327</version>
-        </dependency>
-            +-->
 
         <!--+
             | com.oreilly.servlet library
@@ -89,20 +73,8 @@
         </dependency>
 
 	    <!--+
-	        | Servlet libraries.
+	        | CDS SAVOT libraries.
 	        +-->
-	    <dependency>
-		    <groupId>javax.servlet</groupId>
-		    <artifactId>servlet-api</artifactId>
-		    <scope>provided</scope>
-	    </dependency>
-	    <dependency>
-		    <groupId>javax.servlet.jsp</groupId>
-		    <artifactId>jsp-api</artifactId>
-		    <scope>provided</scope>
-	    </dependency>
-
-
 	    <!--dependency>
             <groupId>cds.savot</groupId>
             <artifactId>cds.savot.common</artifactId>
@@ -128,11 +100,27 @@
             <artifactId>cds.savot.writer</artifactId>
             <version>3.x</version>
 	    </dependency-->
-
+	    <!--+
+	        | Temp fix until we get the versions fixed.
+	        +-->
 	    <dependency>
             <groupId>cds</groupId>
             <artifactId>cds-lib</artifactId>
             <version>x.y</version>
+	    </dependency>
+
+	    <!--+
+	        | Servlet libraries.
+	        +-->
+	    <dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>servlet-api</artifactId>
+		    <scope>provided</scope>
+	    </dependency>
+	    <dependency>
+		    <groupId>javax.servlet.jsp</groupId>
+		    <artifactId>jsp-api</artifactId>
+		    <scope>provided</scope>
 	    </dependency>
 
     </dependencies>
