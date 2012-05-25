@@ -27,8 +27,8 @@ import java.io.OutputStream;
 import tap.ADQLExecutor;
 import tap.TAPException;
 
-//import tap.formatter.OutputFormat;
-import tap.OutputFormat;
+import tap.formatter.OutputFormat;
+//import tap.OutputFormat;
 
 import uws.job.Result;
 

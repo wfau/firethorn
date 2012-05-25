@@ -170,7 +170,9 @@ extends AbstractJob
 
 	    catch(ParseException pe)
 	        {
-			throw new UWSException(HttpServletResponse.SC_BAD_REQUEST, pe, "Incorrect ADQL syntax between (l."+pe.getBeginLine()+",c."+pe.getBeginColumn()+") and (l."+pe.getEndLine()+",c."+pe.getEndColumn()+")");
+//			throw new UWSException(HttpServletResponse.SC_BAD_REQUEST, pe, "Incorrect ADQL syntax between (l."+pe.getBeginLine()+",c."+pe.getBeginColumn()+") and (l."+pe.getEndLine()+",c."+pe.getEndColumn()+")");
+// Update to use TextPosition
+			throw new UWSException(HttpServletResponse.SC_BAD_REQUEST, pe, "Incorrect ADQL syntax");
 		    }
 	    catch (TranslationException e)
 	        {

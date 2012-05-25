@@ -60,7 +60,7 @@
         <repository>
             <id>ogsadai-local</id>
             <name>Local repository for OGSA-DAI components</name>
-            <url>http://data.metagrid.co.uk/roe/wfau/firethorn/maven/ogsadai/</url>
+            <url>http://data-6.metagrid.co.uk/roe/wfau/firethorn/maven/ogsadai/</url>
             <layout>default</layout>
         </repository>
 

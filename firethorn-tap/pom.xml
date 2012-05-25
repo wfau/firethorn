@@ -67,17 +67,35 @@
         </dependency>
 
         <!--+
-            | Big blob of things from CDS.
-            | This is based on a pre-release version of the TAP code and may contains some unpublished classes from the other CDS projects.
-            | Once we get our own local version we can use that instead.
+            | Local build of the CDS tools.
+            | This is based on a pre-release version of the CDS TAP library.
+            | It contains some unpublished classes from the other CDS projects (cds-uws-3.1).
             +-->
-        <dependency>
+        <!--dependency>
             <groupId>cds</groupId>
             <artifactId>cds-tap</artifactId>
-            <!--version>1.0-beta</version-->
             <version>20120113</version>
+        </dependency-->
+        <dependency>
+            <groupId>uk.ac.roe.wfau</groupId>
+            <artifactId>firethorn-cds</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
         </dependency>
 
+	    <!--+
+	        | Servlet libraries.
+	        +-->
+	    <dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>servlet-api</artifactId>
+		    <scope>provided</scope>
+	    </dependency>
+	    <dependency>
+		    <groupId>javax.servlet.jsp</groupId>
+		    <artifactId>jsp-api</artifactId>
+		    <scope>provided</scope>
+	    </dependency>
 
         <!--+
             | Postgresql database driver.

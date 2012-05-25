@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import uws.UWSException;
 
 import uws.job.JobList;
-//import uws.job.JobOwner;
+import uws.job.JobOwner;
 
 import uws.service.BasicUWS;
 import uws.service.QueuedBasicUWS;
@@ -69,15 +69,15 @@ public class FireThornUwsServlet
 			    new UserIdentifier() 
 			        {
 				    private static final long serialVersionUID = 1L;
-
+/*
 			        @Override
 			        public String extractUserId(UWSUrl urlInterpreter, HttpServletRequest request)
 			        throws UWSException
 			            {
 				        return request.getRemoteAddr();
                         }
-
-/*
+ */
+/**/
 			        @Override
 			        public JobOwner extractUserId(UWSUrl urlInterpreter, HttpServletRequest request)
 			        throws UWSException
@@ -95,7 +95,7 @@ public class FireThornUwsServlet
                         	    }
 			                };
 			            }
- */
+ /**/
 			        }
 			    );
 		    }

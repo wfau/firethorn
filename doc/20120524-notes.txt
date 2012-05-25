@@ -1,0 +1,57 @@
+
+#######################################
+firethorn-tap
+20120323
+
+    #
+    # Give up trying to do proper version control for these and just dump a big blob in for now.
+
+    mvn install:install-file -DgroupId=cds.blob -DartifactId=cds.tap.blob -Dversion=20120113034428 -Dpackaging=jar -Dfile=cds-blob.jar
+
+
+#######################################
+firethorn-ogsadai
+20120423
+
+    Basic create and insert works :-)
+    
+#######################################
+
+    # Auto increment the table ident ?
+    # Invoke from TAP service.
+    # Redirect URL for data access.
+    # Join query across databases.
+
+    # Metadata harvested from registry.
+
+    # Bundle it all in one Maven build - including databases ? 
+
+http://kappa.virtual:8080/ogsadai/
+http://ogsa-dai.sourceforge.net/documentation/ogsadai4.2/ogsadai4.2-jersey/SQLClient.html
+file:///var/local/projects/wfau/firethorn/hg/firethorn-ogsadai/zip/ogsadai-4.2-jersey-1.10-bin/doc/javadoc/index.html
+
+http://sourceforge.net/apps/trac/ogsa-dai/wiki/AstroData
+http://sourceforge.net/apps/trac/ogsa-dai/wiki/AstronomyActivities
+
+#######################################
+
+
+
+TAP endpoint
+
+    Parse (validate) query
+        Create query metadata from tables
+
+    Initiate ogsa-dai call (webservice call)
+        Select query metadata
+
+        Parse (translate) query
+        Execute query
+
+        Update query metadata from tuple data
+        Create results table
+        Write results table
+
+
+
+

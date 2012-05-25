@@ -38,7 +38,7 @@ import tap.metadata.TAPMetadata;
 import uws.UWSException;
 
 //import uws.job.LocalResult;
-//import uws.job.JobOwner;
+import uws.job.JobOwner;
 
 import uws.service.UWSUrl;
 import uws.service.UserIdentifier;
@@ -76,15 +76,15 @@ implements ServiceConnection<FireThornTapResult>
 		// Create a way to identify users (by IP address):
 		identifier = new UserIdentifier() {
 			private static final long serialVersionUID = 1L;
-
+/**
 			@Override
 			public String extractUserId(UWSUrl urlInterpreter, HttpServletRequest request)
 			throws UWSException
 			    {
 				return request.getRemoteAddr();
 			    }
-
-/*
+**/
+/**/
 			@Override
 			public JobOwner extractUserId(UWSUrl urlInterpreter, HttpServletRequest request)
 			throws UWSException
@@ -102,7 +102,7 @@ implements ServiceConnection<FireThornTapResult>
                 	    }
 			        };
 			    }
- */
+ /**/
 		    };
 	    }
 
@@ -135,13 +135,13 @@ implements ServiceConnection<FireThornTapResult>
     		}
     	}
 
-/*
+/**/
 	@Override
 	public void log(Throwable ouch)
 	    {
 	    System.err.println("exception : " + ouch.getMessage());
         }
- */
+ /**/
 
 	/* ******************** */
 	/* SERVICE AVAILABILITY */
@@ -189,10 +189,10 @@ implements ServiceConnection<FireThornTapResult>
 	/* SERVICE CONFIGURATION */
 	/* ********************* */
 	@Override
-	//public int[] getExecutionDuration()
-	public long[] getExecutionDuration()
+	public int[] getExecutionDuration()
+	//public long[] getExecutionDuration()
 	    {
-		return new long[]{3600, 7200};		// default = 1 hour , max = 2 hours
+		return new int[]{3600, 7200};		// default = 1 hour , max = 2 hours
 	    }
 
 	@Override

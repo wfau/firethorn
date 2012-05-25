@@ -148,77 +148,21 @@
     <build>
 
         <plugins>
-            <!--+
-                | Tomcat 6 plugin.
-                | https://tomcat.apache.org/maven-plugin-2.0-SNAPSHOT/index.html
-                +-->
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat6-maven-plugin</artifactId>
-                <version>2.0-SNAPSHOT</version>
-                <configuration>
-                    <!--+
-                        | Enable JNDI nameing service.
-                        +-->
-                    <enableNaming>true</enableNaming>
-                    <!--+
-                        | Use the Maven test classpath.
-                        +-->
-                    <useTestClasspath>true</useTestClasspath>
-                    <!--+
-                        | The webapp context path.
-                        +-->
-                    <path>/firethorn</path>
-                    <!--+
-                        | The webapp context file.
-                        +-->
-                    <contextFile>src/test/cfg/test-context.xml</contextFile>
-                </configuration>
-            </plugin>
-            <!--+
-                | Tomcat 7 plugin.
-                | https://tomcat.apache.org/maven-plugin-2.0-SNAPSHOT/index.html
-                +-->
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.0-SNAPSHOT</version>
-                <configuration>
-                    <!--+
-                        | Enable JNDI nameing service.
-                        +-->
-                    <enableNaming>true</enableNaming>
-                    <!--+
-                        | Use the Maven test classpath.
-                        +-->
-                    <useTestClasspath>true</useTestClasspath>
-                    <!--+
-                        | The webapp context path.
-                        +-->
-                    <path>/firethorn</path>
-                    <!--+
-                        | The webapp context file.
-                        +-->
-                    <contextFile>src/test/cfg/test-context.xml</contextFile>
-                </configuration>
-            </plugin>
-
         </plugins>
 
         <resources>
-
         </resources>
 
         <testResources>
-
         </testResources>
 
     </build>
 
     <reporting>
-        <plugins>
 
+        <plugins>
         </plugins>
+
     </reporting>
 
 </project>
