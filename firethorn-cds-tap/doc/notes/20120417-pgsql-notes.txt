@@ -1,0 +1,39 @@
+
+
+#
+# Creating the test database.
+
+
+    #
+    # Create database user account.
+    su postgres -c "createuser --no-superuser --no-createdb --no-createrole --pwprompt cdsuser"
+    wilbert
+
+    #
+    # Create the database.
+    su postgres -c "createdb --owner cdsuser cdsdata"
+
+    #
+    # Load the pg_sphere functions.
+    psql --username postgres --dbname cdsdata --file /usr/share/pgsphere/pg_sphere.sql
+
+    #
+    # Load the pg_sphere functions.
+    psql --username postgres --dbname cdsdata
+
+
+        CREATE TABLE data (
+            id int8 PRIMARY KEY,
+            name varchar(100),
+            ra float8,
+            dec float8,
+            coord spoint,
+            type varchar(32)
+            );
+
+        \copy data (id,name,ra,dec,type) from './dumpDemoBase.csv' with csv header;
+
+        UPDATE data SET coord = spoint(radians(ra), radians(dec));
+
+        CREATE INDEX coord_idx ON data USING gist(coord);
+

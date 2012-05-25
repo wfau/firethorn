@@ -1,0 +1,170 @@
+<?xml version="1.0"?>
+<!--+
+    |
+    | Copyright (c) 2012, ROE (http://www.roe.ac.uk/)
+    | All rights reserved.
+    |
+    | This program is free software: you can redistribute it and/or modify
+    | it under the terms of the GNU General Public License as published by
+    | the Free Software Foundation, either version 3 of the License, or
+    | (at your option) any later version.
+    |
+    | This program is distributed in the hope that it will be useful,
+    | but WITHOUT ANY WARRANTY; without even the implied warranty of
+    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    | GNU General Public License for more details.
+    |
+    | You should have received a copy of the GNU General Public License
+    | along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    |
+    +-->
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+    >
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--+
+        | Maven parent/child projects.
+        | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
+        +-->
+    <parent>
+        <groupId>uk.ac.roe.wfau</groupId>
+        <artifactId>firethorn</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>firethorn-cds</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>CDS TAP library</name>
+    <description>
+        <![CDATA[
+        Local build of the CDS TAP library, to enable us to expeiment with changes.
+        ]]>
+    </description>
+    
+    <properties>
+
+    </properties>
+
+    <repositories>
+
+    </repositories>
+
+    <dependencies>
+
+        <!--+
+            | FireThorn logging components.
+            +-->
+        <dependency>
+            <groupId>uk.ac.roe.wfau</groupId>
+            <artifactId>firethorn-logging</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
+            | Big blob of things with no version from CDS.
+            | It looks like it may contains some unpublished classes as well.
+        <dependency>
+            <groupId>cds.blob</groupId>
+            <artifactId>cds.tap.blob</artifactId>
+            <version>20120327</version>
+        </dependency>
+            +-->
+
+        <!--+
+            | com.oreilly.servlet library
+            | http://www.servlets.com/cos/
+            +-->
+        <dependency>
+            <groupId>com.servlets</groupId>
+            <artifactId>cos</artifactId>
+            <version>26Dec2008</version>
+        </dependency>
+
+        <!--+
+            | kXML XML pull parser.
+            | http://sourceforge.net/projects/kxml/
+            +-->
+        <dependency>
+	        <groupId>net.sf.kxml</groupId>
+	        <artifactId>kxml2</artifactId>
+	        <version>2.3.0</version>
+        </dependency>
+
+	    <!--+
+	        | Servlet libraries.
+	        +-->
+	    <dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>servlet-api</artifactId>
+		    <scope>provided</scope>
+	    </dependency>
+	    <dependency>
+		    <groupId>javax.servlet.jsp</groupId>
+		    <artifactId>jsp-api</artifactId>
+		    <scope>provided</scope>
+	    </dependency>
+
+
+	    <!--dependency>
+            <groupId>cds.savot</groupId>
+            <artifactId>cds.savot.common</artifactId>
+            <version>3.0</version>
+	    </dependency>
+	    <dependency>
+            <groupId>cds.savot</groupId>
+            <artifactId>cds.savot.model</artifactId>
+            <version>3.0</version>
+	    </dependency>
+	    <dependency>
+            <groupId>cds.savot</groupId>
+            <artifactId>cds.savot.pull</artifactId>
+            <version>3.0</version>
+	    </dependency>
+	    <dependency>
+            <groupId>cds.savot</groupId>
+            <artifactId>cds.savot.sax</artifactId>
+            <version>3.0</version>
+	    </dependency>
+	    <dependency>
+            <groupId>cds.savot</groupId>
+            <artifactId>cds.savot.writer</artifactId>
+            <version>3.x</version>
+	    </dependency-->
+
+	    <dependency>
+            <groupId>cds</groupId>
+            <artifactId>cds-lib</artifactId>
+            <version>x.y</version>
+	    </dependency>
+
+    </dependencies>
+
+    <build>
+
+        <plugins>
+        </plugins>
+
+        <resources>
+        </resources>
+
+        <testResources>
+        </testResources>
+
+    </build>
+
+    <reporting>
+
+        <plugins>
+        </plugins>
+
+    </reporting>
+
+</project>
+
+

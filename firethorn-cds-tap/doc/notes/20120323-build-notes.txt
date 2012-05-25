@@ -1,0 +1,49 @@
+
+
+    #
+    # Try hosting unpublished files in external repository.
+
+
+    mvn install:install-file -DgroupId=com.servlets -DartifactId=cos -Dversion=26Dec2008 -Dpackaging=jar -Dfile=~/Downloads/cos-26Dec2008.jar
+
+
+    # http://cds.u-strasbg.fr/resources/doku.php?id=savot3.0
+
+    mvn install:install-file -DgroupId=cds.savot -DartifactId=cds.savot.common -Dversion=3.0 -Dpackaging=jar -Dfile=~/Downloads/cds.savot.common.jar
+    mvn install:install-file -DgroupId=cds.savot -DartifactId=cds.savot.model  -Dversion=3.0 -Dpackaging=jar -Dfile=~/Downloads/cds.savot.model.jar
+    mvn install:install-file -DgroupId=cds.savot -DartifactId=cds.savot.pull   -Dversion=3.0 -Dpackaging=jar -Dfile=~/Downloads/cds.savot.pull.jar
+    mvn install:install-file -DgroupId=cds.savot -DartifactId=cds.savot.sax    -Dversion=3.0 -Dpackaging=jar -Dfile=~/Downloads/cds.savot.sax.jar
+    mvn install:install-file -DgroupId=cds.savot -DartifactId=cds.savot.writer -Dversion=3.0 -Dpackaging=jar -Dfile=~/Downloads/cds.savot.writer.jar
+
+    #
+    # Fails to resolve savot component
+
+    source  : Uploader.java:[8,22]
+    symbol  : class DataBinaryReader
+    location: package cds.savot.model
+
+    #
+    # According to download page
+    # http://cds.u-strasbg.fr/resources/doku.php?id=downloads
+
+    version 3.0 was published (4/2010)
+
+        inside to zipfile, file dates are all 23 Dec 2010
+
+    #
+    # Binary blob packaged with TAP demo contains similar files.
+    # Also contains two additional classes with file dates 19 Sep 2011
+    
+        DataBinaryReader    19 Sep 2011
+        DataBinaryWriter    19 Sep 2011
+
+    #
+    # Give up trying to do proper version control for these and
+    # just dump a big blob in for now.
+
+    mvn install:install-file -DgroupId=cds.blob -DartifactId=cds.tap.blob -Dversion=20120113034428 -Dpackaging=jar -Dfile=/var/local/projects/wfau/firethorn/hg/firethorn-cds/lib/cds/cds-blob.jar
+
+
+
+
+
