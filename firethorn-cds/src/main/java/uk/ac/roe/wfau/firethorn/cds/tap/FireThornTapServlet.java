@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.tap;
+package uk.ac.roe.wfau.firethorn.cds.tap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import uk.ac.roe.wfau.firethorn.tap.FireThornMetaStuff;
+import uk.ac.roe.wfau.firethorn.cds.tap.FireThornMetaStuff;
 
 import tap.resource.TAP;
 

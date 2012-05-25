@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.tap;
+package uk.ac.roe.wfau.firethorn.cds.tap;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

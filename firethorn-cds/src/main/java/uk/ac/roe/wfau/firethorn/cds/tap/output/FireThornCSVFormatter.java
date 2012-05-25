@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.tap.output;
+package uk.ac.roe.wfau.firethorn.cds.tap.output;
 
 import java.io.OutputStream;
 
@@ -27,7 +27,7 @@ import java.sql.ResultSetMetaData;
 import tap.ADQLExecutor;
 import tap.TAPException;
 
-import uk.ac.roe.wfau.firethorn.tap.FireThornTapResult;
+import uk.ac.roe.wfau.firethorn.cds.tap.FireThornTapResult;
 
 public class FireThornCSVFormatter
 extends FireThornOutputFormat

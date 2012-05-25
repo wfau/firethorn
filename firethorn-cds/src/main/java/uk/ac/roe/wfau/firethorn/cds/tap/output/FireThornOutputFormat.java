@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.tap.output;
+package uk.ac.roe.wfau.firethorn.cds.tap.output;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,10 +32,10 @@ import tap.formatter.OutputFormat;
 
 import uws.job.Result;
 
-import uk.ac.roe.wfau.firethorn.tap.FireThornTapResult;
-import uk.ac.roe.wfau.firethorn.tap.FireThornMetaStuff;
+import uk.ac.roe.wfau.firethorn.cds.tap.FireThornTapResult;
+import uk.ac.roe.wfau.firethorn.cds.tap.FireThornMetaStuff;
 
-import uk.ac.roe.wfau.firethorn.uws.FireThornUwsResult;
+import uk.ac.roe.wfau.firethorn.cds.uws.FireThornUwsResult;
 
 public abstract class FireThornOutputFormat
 implements OutputFormat<FireThornTapResult>

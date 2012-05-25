@@ -17,17 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.tap;
+package uk.ac.roe.wfau.firethorn.cds.tap;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
-import uk.ac.roe.wfau.firethorn.tap.FireThornMetaStuff;
-import uk.ac.roe.wfau.firethorn.tap.output.FireThornOutputFormat;
-import uk.ac.roe.wfau.firethorn.tap.output.FireThornCSVFormatter;
-import uk.ac.roe.wfau.firethorn.tap.output.FireThornVOTableFormatter;
+import uk.ac.roe.wfau.firethorn.cds.tap.FireThornMetaStuff;
+import uk.ac.roe.wfau.firethorn.cds.tap.output.FireThornOutputFormat;
+import uk.ac.roe.wfau.firethorn.cds.tap.output.FireThornCSVFormatter;
+import uk.ac.roe.wfau.firethorn.cds.tap.output.FireThornVOTableFormatter;
 
 import tap.ADQLExecutor;
 import tap.ServiceConnection;

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.uws;
+package uk.ac.roe.wfau.firethorn.cds.uws;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.tap.output;
+package uk.ac.roe.wfau.firethorn.cds.tap.output;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -39,8 +39,8 @@ import tap.ServiceConnection.LogType;
 
 import tap.metadata.TAPColumn;
 
-import uk.ac.roe.wfau.firethorn.tap.FireThornTapResult;
-import uk.ac.roe.wfau.firethorn.tap.FireThornServiceConnection;
+import uk.ac.roe.wfau.firethorn.cds.tap.FireThornTapResult;
+import uk.ac.roe.wfau.firethorn.cds.tap.FireThornServiceConnection;
 
 public class FireThornVOTableFormatter
 extends FireThornOutputFormat

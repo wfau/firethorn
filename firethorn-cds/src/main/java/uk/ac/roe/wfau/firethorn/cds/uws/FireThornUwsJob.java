@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.uws;
+package uk.ac.roe.wfau.firethorn.cds.uws;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,7 +51,7 @@ import uws.job.AbstractJob;
 import uws.job.LocalResult;
 import uws.job.Result;
 
-import uk.ac.roe.wfau.firethorn.tap.FireThornMetaStuff;
+import uk.ac.roe.wfau.firethorn.cds.tap.FireThornMetaStuff;
 
 public class FireThornUwsJob
 extends AbstractJob

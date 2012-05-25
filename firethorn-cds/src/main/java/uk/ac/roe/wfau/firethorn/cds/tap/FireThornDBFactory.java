@@ -17,30 +17,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.tap;
+package uk.ac.roe.wfau.firethorn.cds.tap;
 
-import java.sql.ResultSet;
+import tap.AbstractTAPFactory;
+import tap.ServiceConnection;
+import tap.TAPException;
+import tap.db.DBConnection;
 
+import adql.translator.ADQLTranslator;
+import adql.translator.PgSphereTranslator;
 
-public class FireThornTapResult
+public class FireThornDBFactory
+extends AbstractTAPFactory<FireThornTapResult>
     {
 
-    protected ResultSet results ;
+	protected FireThornDBFactory(ServiceConnection<FireThornTapResult> service)
+	    {
+		super(service);
+	    }
 
-    public FireThornTapResult(ResultSet results)
-        {
-        this.results = results ;
+	@Override
+	public ADQLTranslator createADQLTranslator()
+	throws TAPException
+	    {
+		return new PgSphereTranslator();
+	    }
+
+	@Override
+	public DBConnection<FireThornTapResult> createDBConnection()
+    throws TAPException
+	    {
+		return new FireThornDBConnection();
         }
-
-    public ResultSet results()
-        {
-        return this.results ;
-        }
-
-    @Override
-    public String toString()
-        {
-        return "firethorn TAP result" ;
-        }
-
     }
+
