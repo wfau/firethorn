@@ -67,18 +67,23 @@
         </dependency>
 
         <!--+
+            | Our Spring components.
+            +-->
+        <dependency>
+            <groupId>uk.ac.roe.wfau</groupId>
+            <artifactId>firethorn-spring</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
             | Local build of the CDS tools.
             | This is based on a pre-release version of the CDS TAP library.
             | It contains some unpublished classes from the other CDS projects (cds-uws-3.1).
             +-->
-        <!--dependency>
-            <groupId>cds</groupId>
-            <artifactId>cds-tap</artifactId>
-            <version>20120113</version>
-        </dependency-->
         <dependency>
             <groupId>uk.ac.roe.wfau</groupId>
-            <artifactId>firethorn-cds</artifactId>
+            <artifactId>firethorn-cds-lib</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>

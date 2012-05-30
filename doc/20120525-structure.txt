@@ -1,0 +1,111 @@
+
+
+
+
+
+# FireThorn dependencies
+firethorn-pom
+
+    firethorn-spring-pom
+    firethorn-logging-pom
+
+# CDS components
+firethorn-cds
+
+    # CDS dependencies
+    firethorn-cds-pom
+
+    # CDS libraries
+    firethorn-cds-uws
+    firethorn-cds-tap
+    firethorn-cds-adql
+
+    # Service implementation
+    firethorn-cds-service
+
+# OGSA-DAI components
+firethorn-ogsadai
+
+    firethorn-ogsadai-common-pom
+
+    firethorn-ogsadai-client-pom
+    firethorn-ogsadai-client-jar
+
+    firethorn-ogsadai-server-pom
+    firethorn-ogsadai-server-jar
+    firethorn-ogsadai-server-war
+
+# FireThorn services
+
+firethorn-core
+
+    TAP service
+    TAP factory
+
+        spring controller
+        hibernate data
+
+    TAP service and TAP factory are just web front ends to our back end system
+    just pushing things around in our database    
+
+    why two separate services ?
+
+    tap service
+    (TAP service and TAP factory)
+
+        tap factory
+            create instance
+
+        tap instance
+            lifetime
+            using
+                service:alias
+                service:alias
+
+        tap query
+            instance ->
+            adql
+
+        uws job
+            owner ->
+            lifetime
+            status
+            results ->
+
+    identity
+
+        identity
+
+        action
+
+        group
+
+    storage
+    (local tables for user data)
+        user space
+            lifetime
+            status
+            owner ->
+            meta ->
+
+            user table
+                lifetime
+                status
+                owner ->
+                meta ->
+
+    metadata
+    (metadata from registry and vosi)
+        FTM service
+            FTM catalog
+                FTM schema
+                    FTM table
+                        FTM column
+
+
+    Allow Hibernate to manage our collections ?
+
+
+
+
+

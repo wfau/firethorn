@@ -1,0 +1,320 @@
+
+#
+# Misc URls.
+
+    ADQL lib
+    http://cdsportal.u-strasbg.fr/adqltuto/index.html
+
+    TAP lib
+    http://cdsportal.u-strasbg.fr/taptuto/
+
+    UWS lib
+    http://cdsportal.u-strasbg.fr/uwstuto/index.html
+
+    BNFL for ADQL
+    http://www.ivoa.net/internal/IVOA/IvoaVOQL/adql-bnf-v2.0.html
+
+#
+# Inherit womble from ADB.
+
+    #
+    # Resource metadata - 
+    WidgeonResource
+
+        String  name
+
+        URL endpoint
+        URI registration
+
+        Schemas schemas
+
+        Schema
+            WidgeonResource parent
+            String   name
+            Catalogs catalogs
+
+        Catalog
+            Schema parent
+            String name
+            Tables tables
+
+        Table
+            Catalog parent
+            String  name
+            Columns columns
+
+        Column
+            Table  parent
+            String name
+            String ucd
+            String type
+
+        Schemas
+            Schema create(String name)
+            Schema select(String name)
+            Iterable<Schema> select()
+
+        Catalogs
+            Catalog create(String name)
+            Catalog select(String name)
+            Iterable<Catalog> select()
+
+        Tables
+            Table create(String name)
+            Table select(String name)
+            Iterable<Table> select()
+
+        Columns
+            Column create(String name)
+            Column select(String name)
+            Iterable<Column> select()
+
+
+    #
+    # TAP service
+    MallardService
+
+        #
+        # TAP factory
+        Factory
+
+            MallardService create()
+            MallardService create(URI uri)
+            MallardService create(URI uri, String name)
+
+        #
+        # Component TAP services
+        Component
+
+            String  alias
+            WidgeonResource resource
+
+        Components components()
+
+            Iterable<Component> select()
+
+            ?? Component insert(WidgeonResource meta, String name)
+            Component insert(URI uri, String name)
+
+            Component select(URI uri)
+            Component select(String name)
+
+            void delete(URI uri)
+            void delete(String name)
+
+        #
+        # ADQL query
+        Query
+
+            Ident ident
+
+            enum Status
+
+            String adql
+            String format
+            Status status
+
+        Queries queries()
+
+            Query create(String adql, String format)
+
+            Query select(Ident ident)
+            Iterable<Query> select()
+            Iterable<Query> select(Status status)
+
+-----------------------
+
+    #
+    # Local catalog service.
+
+        #
+        # Create empty resource.
+        LocalWidgeonResource.create(
+            String name
+            )
+
+        #
+        # Create using JDBC metadata
+        LocalWidgeonResource.create(
+            String name,
+            DataSource source
+            )
+
+        #
+        # Load JDBC metadata.
+        LocalWidgeonResource.init(
+            DataSource source
+            )
+
+    #
+    # Remote service.
+
+        #
+        # Create from registry metadata.
+        RemoteWidgeonResource.create(
+            String name,
+            URI registration
+            )
+
+        #
+        # Create from vosi endpoint.
+        RemoteWidgeonResource.create(
+            String name,
+            URL endpoint
+            )
+
+        #
+        # Load from registry metadata.
+        RemoteWidgeonResource.init(
+            URI registration
+            );
+
+        #
+        # Load from vosi endpoint.
+        RemoteWidgeonResource.init(
+            URL endpoint
+            );
+
+
+    #
+    # Combined service.
+
+        #
+        # Create empty service.
+        MallardService mallard = MallardService.factory().create(
+            String name
+            )
+
+        #
+        # Add components.
+        mallard.components().insert(
+            String alias,
+            URI registration
+            )
+        mallard.components().insert(
+            String alias,
+            URL endpoint
+            )
+        mallard.components().insert(
+            String alias,
+            RemoteWidgeonResource.factory().select(
+                boolean create,
+                URL endpoint
+                )
+            )
+
+        mallard.components().insert(
+            String alias,
+            String name,
+            DataSource source
+            )
+        mallard.components().insert(
+            String alias,
+            LocalWidgeonResource.factory().create(
+                String name,
+                DataSource source
+                )
+            )
+
+    #
+    # Mark (admin) wants to create service metadata for each catalog.
+
+        LocalWidgeonResource.factory().create(
+            String name,
+            DataSource source
+            )
+
+        # Owner/creator chooses which tables are enabled.
+        # More than one WidgeonResource for the same DataSource - different names and different tables.
+        # Each instance gets its own URI/URL.
+
+    #
+    # Mark (admin) wants to create service metadata for the uber catalog.
+
+        LocalWidgeonResource.factory().create(
+            String name,
+            DataSource source
+            )
+
+        # Owner/creator chooses which tables are enabled.
+        # More than one WidgeonResource for the same DataSource - different names and different tables.
+        # Each instance gets its own URI/URL.
+
+
+    #
+    # Mark (admin) wants to create service metadata for a remote service.
+
+        #
+        # Create from registry metadata.
+        RemoteWidgeonResource.create(
+            String name,
+            URI registration
+            )
+
+        #
+        # Create from vosi endpoint.
+        RemoteWidgeonResource.create(
+            String name,
+            URL endpoint
+            )
+
+        # Owner/creator chooses which tables are enabled.
+        # More than one WidgeonResource for the same remote service - different names and different tables.
+        # Each instance gets its own local URI/URL.
+
+    #
+    # Mark (admin) wants to create combined TAP service.
+    # Using one or more local/remote metadata entries.
+
+        MallardService mallard = MallardService.factory.create(
+            String name
+            )
+        mallard.components().insert(
+            String alias,
+            Ident ident
+            )
+        mallard.components().insert(
+            String alias,
+            WidgeonResource.Factory.select(
+                Ident ident
+                )
+            )
+
+    #
+    # Stelios (user) wants to create combined TAP service.
+    # Using one or more registered metadata resources.
+
+        MallardService mallard = MallardService.factory.create(
+            String name
+            )
+        mallard.components().insert(
+            String alias,
+            URL endpoint
+            )
+        mallard.components().insert(
+            String alias,
+            WidgeonResource.Factory.select(
+                boolean create,
+                URI registration
+                )
+            )
+
+        # The select/create is done based on URI/URL
+        # If not already created, a new remote entry is created with all tables enabled.
+
+
+    #
+    # MallardService service instance may have limited lifetime.
+    # Admin created instances default to permanent.
+    # User created instances default to transient.
+    # Transient instances may get renewed on use.
+
+    #
+    # WidgeonResource component is related to an OGSA-DAI resource.
+
+
+
+
+
+
+
