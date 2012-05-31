@@ -1,0 +1,224 @@
+
+
+
+
+    //
+    // Resource metadata, definition of what IS.
+    interface WidgeonResource
+        {
+
+        String name();
+        void name(String name);
+
+        URL endpoint();
+        URI registration();
+
+        Schemas schemas();
+
+        interface Schemas
+            {
+            Schema create(String name);
+            Schema select(String name);
+            Iterable<Schema> select();
+            Schema select(Ident ident);
+            }
+
+        interface Catalogs
+            {
+            Catalog create(String name);
+            Catalog select(String name);
+            Iterable<Catalog> select();
+            Catalog select(Ident ident);
+            }
+
+        interface Tables
+            {
+            Table create(String name);
+            Table select(String name);
+            Iterable<Table> select();
+            Table select(Ident ident);
+            }
+
+        interface Columns
+            {
+            Column create(String name);
+            Column select(String name);
+            Iterable<Column> select();
+            Column select(Ident ident);
+            }
+
+        interface Schema
+            {
+            WidgeonResource parent();
+            String   name();
+            Catalogs catalogs();
+            }
+
+        interface Catalog
+            {
+            Schema parent();
+            String name();
+            Tables tables();
+            }
+
+        interface Table
+            {
+            Catalog parent();
+            String  name();
+            Columns columns();
+            }
+
+        interface Column
+            {
+            Table  parent();
+            String name();
+            String ucd();
+            String type();
+            }
+
+
+        }
+
+
+
+    //
+    // A customised view of a resource.
+    // Enable/disable parts
+    // Rename parts
+    interface WidgeonResourceView
+        {
+
+        WidgeonResource parent();
+
+        String name();
+        void name(String name);
+
+        SchemasView schemas();
+
+        interface SchemasView
+            {
+            SchemaView select(String name);
+            Iterable<SchemaView> select();
+            SchemaView select(Ident ident);
+            }
+
+        interface CatalogsView
+            {
+            CatalogView select(String name);
+            Iterable<CatalogView> select();
+            CatalogView select(Ident ident);
+            }
+
+        interface TablesView
+            {
+            TableView select(String name);
+            Iterable<TableView> select();
+            TableView select(Ident ident);
+            }
+
+        interface ColumnsView
+            {
+            ColumnView select(String name);
+            Iterable<ColumnView> select();
+            ColumnView select(Ident ident);
+            }
+
+        interface SchemaView
+            {
+            WidgeonResourceView parent();
+            CatalogsView catalogs();
+            String name();
+            void   name(String name);
+            }
+
+        interface CatalogView
+            {
+            SchemaView parent();
+            TablesView tables();
+            String name();
+            void   name(String name);
+            }
+
+        interface Table
+            {
+            CatalogView parent();
+            ColumnsView columns();
+            String name();
+            void   name(String name);
+            }
+
+        interface Column
+            {
+            TableView parent();
+            String name();
+            void   name(String name);
+            }
+
+        }
+
+
+
+
+
+
+    //
+    // TAP service instance
+    interface MallardService
+        {
+
+        #
+        # TAP factory
+        interface Factory
+            {
+            MallardService create();
+            MallardService create(URI uri);
+            MallardService create(URI uri, String name);
+            }
+
+        #
+        # Component TAP services
+        interface Component
+            {
+            String  alias();
+            WidgeonResource.View resource();
+            }
+
+        Components components();
+        interface Components
+            {
+            Iterable<Component> select();
+
+            ?? Component insert(WidgeonResource.View meta, String name);
+            Component insert(URI uri, String name);
+
+            Component select(URI uri);
+            Component select(String name);
+
+            void delete(URI uri);
+            void delete(String name);
+            }
+
+        #
+        # ADQL query
+        interface Query
+            {
+            MallardService service();
+
+            Ident ident();
+            enum Status();
+            String adql();
+            String format();
+            Status status();
+            }
+
+        Queries queries();
+        interface Queries
+            {
+            Query create(String adql, String format)
+            Query select(Ident ident)
+            Iterable<Query> select()
+            Iterable<Query> select(Status status)
+            }
+        }
+
+

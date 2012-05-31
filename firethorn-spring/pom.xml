@@ -49,7 +49,7 @@
     <properties>
 
 		<org.spring.version>3.1.1.RELEASE</org.spring.version>
-        <org.hibernate.version>4.1.2.Final</org.hibernate.version>
+        <org.hibernate.version>4.1.4.Final</org.hibernate.version>
 		<!--org.aspectj.version>1.6.11</org.aspectj.version-->
 
     </properties>
@@ -64,6 +64,40 @@
             <name>SpringSource Repository</name>
             <url>http://repo.springsource.org/release</url>
         </repository>
+
+<!--
+        <repository>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>central</id>
+          <name>release</name>
+          <url>http://repo.springsource.org/release</url>
+        </repository>
+        <repository>
+          <snapshots />
+          <id>snapshots</id>
+          <name>snapshot</name>
+          <url>http://repo.springsource.org/snapshot</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>central</id>
+          <name>plugins-release</name>
+          <url>http://repo.springsource.org/plugins-release</url>
+        </pluginRepository>
+        <pluginRepository>
+          <snapshots />
+          <id>snapshots</id>
+          <name>plugins-snapshot</name>
+          <url>http://repo.springsource.org/plugins-snapshot</url>
+        </pluginRepository>
+      </pluginRepositories>
+-->
 
         <!--+
             | JBoss/Hibernate repository.
@@ -163,7 +197,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${org.spring.version}</version>
-            <scope>test</scope>
+            <!--scope>test</scope-->
         </dependency>
 
         <!--+

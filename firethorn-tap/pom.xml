@@ -80,13 +80,13 @@
             | Local build of the CDS tools.
             | This is based on a pre-release version of the CDS TAP library.
             | It contains some unpublished classes from the other CDS projects (cds-uws-3.1).
-            +-->
         <dependency>
             <groupId>uk.ac.roe.wfau</groupId>
             <artifactId>firethorn-cds-lib</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
+            +-->
 
 	    <!--+
 	        | Servlet libraries.
@@ -127,6 +127,16 @@
     	</dependency>
             +-->
 
+        <!--+
+            | HSQLDB database and JDBC driver.
+            | http://hsqldb.org/
+            +-->
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -138,6 +148,18 @@
         </resources>
 
         <testResources>
+
+            <!--+
+                | Test configuration files.
+                +-->
+    		<testResource>
+    			<directory>${basedir}/src/test/conf</directory>
+                <includes>
+                    <include>*.properties</include>
+                    <include>*.xml</include>
+                </includes>
+    		</testResource>
+
         </testResources>
 
     </build>

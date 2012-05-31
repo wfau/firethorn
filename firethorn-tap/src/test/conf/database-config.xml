@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        "
+    >
+
+    <!--+
+        | Database settings for Postgresql test database.
+    <bean id="AstroDAbisDatabase" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="jdbc:postgresql://localhost/barberry"/>
+        <property name="username" value="astrodabis"/>
+        <property name="password" value="IC1-78-Wjnzku-etvryt-5Z-fijot-43"/>
+    </bean>
+        +-->
+
+    <!--+
+        | In memory HSQLDB test database.
+        | http://dwark.blogspot.co.uk/2006/10/maven-2-hibernate-hsqldb.html
+        | https://numberformat.wordpress.com/2010/06/03/creating-and-using-hsqldb-database-using-maven-in-10-minutes/
+        +-->
+    <bean id="FireThornDatabase" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+        <property name="url" value="jdbc:hsqldb:mem:firethorn"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+
+</beans>
+
