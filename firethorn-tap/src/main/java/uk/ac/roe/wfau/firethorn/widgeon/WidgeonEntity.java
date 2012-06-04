@@ -32,6 +32,12 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 /**
  * Core Widgeon implementations.
  *
+    uniqueConstraints=
+        @UniqueConstraint(
+            columnNames = {
+                AbstractEntity.DB_NAME_COL
+                }
+            )
  */
 @Entity
 @Table(
@@ -74,42 +80,53 @@ implements Widgeon
      */
     @Repository
     public static class Factory
-    extends AbstractFactory
+    extends AbstractFactory<Widgeon, WidgeonEntity>
     implements Widgeon.Factory
         {
 
         public Iterable<Widgeon> select()
             {
+            logger.debug("select()");
             return null ;
             }
 
         public WidgeonEntity select(Identifier ident)
             {
+            logger.debug("select(Identifier)");
             return null ;
             }
 
-        public WidgeonEntity create(String name, URI source)
+        public WidgeonEntity create(String name, URI uri)
             {
-            return new WidgeonEntity(
-                name,
-                source
-                ) ;
+            logger.debug("create(String, URI)");
+            return tools().insert(
+                new WidgeonEntity(
+                    name,
+                    uri
+                    )
+                );
             }
 
-        public WidgeonEntity create(String name, URL source)
+        public WidgeonEntity create(String name, URL url)
             {
-            return new WidgeonEntity(
-                name,
-                source
-                ) ;
+            logger.debug("create(String, URL)");
+            return tools().insert(
+                new WidgeonEntity(
+                    name,
+                    url
+                    )
+                );
             }
 
-        public WidgeonEntity create(String name, DataSource source)
+        public WidgeonEntity create(String name, DataSource src)
             {
-            return new WidgeonEntity(
-                name,
-                source
-                ) ;
+            logger.debug("create(String, DataSource)");
+            return tools().insert(
+                new WidgeonEntity(
+                    name,
+                    src
+                    )
+                );
             }
         }
 
@@ -139,6 +156,7 @@ implements Widgeon
     private WidgeonEntity()
         {
         super();
+        logger.debug("WidgeonEntity()");
         }
 
     /**
@@ -148,6 +166,7 @@ implements Widgeon
     private WidgeonEntity(String name, URI source)
         {
         super(name);
+        logger.debug("WidgeonEntity(String, URI)");
         this.init(
             source
             );
@@ -160,6 +179,7 @@ implements Widgeon
     private WidgeonEntity(String name, URL source)
         {
         super(name);
+        logger.debug("WidgeonEntity(String, URL)");
         this.init(
             source
             );
@@ -172,6 +192,7 @@ implements Widgeon
     private WidgeonEntity(String name, DataSource source)
         {
         super(name);
+        logger.debug("WidgeonEntity(String, DataSource)");
         this.init(
             source
             );
@@ -183,6 +204,7 @@ implements Widgeon
      */
     private void init(DataSource source)
         {
+        logger.debug("init(DataSource)");
         // Process the JDBC metadata.
         }
 
@@ -192,6 +214,7 @@ implements Widgeon
      */
     private void init(URI uri)
         {
+        logger.debug("init(URI)");
         // Resolve the URI into a VOSI endpoint URL.
         }
 
@@ -201,6 +224,7 @@ implements Widgeon
      */
     private void init(URL url)
         {
+        logger.debug("init(URL)");
         // Process the VOSI metadata.
         }
     }

@@ -57,7 +57,7 @@ public abstract class TestBase
         );
 
     /**
-     * Our Womble.
+     * Our test Womble.
      *
      */
     @Autowired

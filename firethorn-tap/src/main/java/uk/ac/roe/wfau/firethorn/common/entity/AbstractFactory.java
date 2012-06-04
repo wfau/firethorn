@@ -133,9 +133,8 @@ implements GenericEntity.Factory
                     statefull().session().save(
                         object
                         );
-                    this.flush();
+                    //this.flush();
                     }
-                return object ;
                 }
             catch (HibernateException ouch)
                 {
@@ -143,6 +142,7 @@ implements GenericEntity.Factory
                     ouch
                     );
                 }
+            return object ;
             }
 
         /**
@@ -187,7 +187,7 @@ implements GenericEntity.Factory
          * Update an object.
          *
          */
-        public void update(InterfaceType object)
+        public InterfaceType update(InterfaceType object)
             {
             logger.debug("update(InterfaceType)");
             try {
@@ -201,6 +201,7 @@ implements GenericEntity.Factory
                     ouch
                     );
                 }
+            return object ;
             }
 
         /**
@@ -318,7 +319,7 @@ implements GenericEntity.Factory
             }
         }
 
-    public HibernateTools<ObjectType> hibernate()
+    public HibernateTools<ObjectType> tools()
         {
         return new HibernateTools<ObjectType>();
         }

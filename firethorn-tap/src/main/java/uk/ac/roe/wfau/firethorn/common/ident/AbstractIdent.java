@@ -32,7 +32,13 @@ implements Identifier
     @Override
     public String toString()
         {
-        return this.value().toString();
+        if (null != this.value())
+            {
+            return this.value().toString();
+            }
+        else {
+            return null ;
+            }
         }
 
     }

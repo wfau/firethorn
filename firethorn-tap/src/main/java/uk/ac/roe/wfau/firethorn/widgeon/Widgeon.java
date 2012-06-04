@@ -28,7 +28,7 @@ extends GenericEntity
         {
         public Widgeon create(String name, URI uri);
         public Widgeon create(String name, URL url);
-        public Widgeon create(String name, DataSource source);
+        public Widgeon create(String name, DataSource src);
         }
 
     public NameSelector<Schema> schemas();

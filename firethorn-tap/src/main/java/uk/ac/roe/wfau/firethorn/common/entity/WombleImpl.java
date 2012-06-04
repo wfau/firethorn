@@ -229,9 +229,7 @@ implements Womble
                 public void stateness(StateFullNess state)
                     {
                     logger.debug("Setting stateness to [{}]", state);
-
 // Error checking goes here ....
-
                     stateness.set(
                         state
                         );
@@ -247,14 +245,21 @@ implements Womble
                 public StateLessState stateless()
                     {
                     logger.debug("stateless()");
-                    if (stateless.get() == null)
+// Error checking goes here ....
+                    if (stateness.get() == StateFullNess.STATE_LESS)
                         {
-                        logger.debug("Creating new StatelessState");
-                        stateless.set(
-                            new StateLessState()
-                            );
+                        if (stateless.get() == null)
+                            {
+                            logger.debug("Creating new StatelessState");
+                            stateless.set(
+                                new StateLessState()
+                                );
+                            }
+                        return stateless.get();
                         }
-                    return stateless.get();
+                    else {
+                        return null ;
+                        }
                     }
                 };
             }

@@ -66,6 +66,7 @@ implements GenericEntity
     protected AbstractEntity()
         {
         super();
+        logger.debug("AbstractEntity()");
         }
 
     /**
@@ -75,18 +76,23 @@ implements GenericEntity
     protected AbstractEntity(String name)
         {
         super();
+        logger.debug("AbstractEntity(String)");
+        logger.debug("  Name [{}]", name);
         this.name    = name ;
         this.created = new Date();
         }
 
     /**
      * The Entity Identifier.
+     * Note - unique=false because @Id already adds a unique primary key.
+     * https://hibernate.onjira.com/browse/HHH-5376
+     * http://sourceforge.net/projects/hsqldb/forums/forum/73674/topic/4537620
      *
      */
     @Id
     @Column(
         name = DB_IDENT_COL,
-        unique = true,
+        unique = false,
         nullable = false,
         updatable = false
         )
