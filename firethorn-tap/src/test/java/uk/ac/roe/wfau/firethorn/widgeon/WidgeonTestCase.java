@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional; 
 
 import uk.ac.roe.wfau.firethorn.common.entity.Womble;
+import uk.ac.roe.wfau.firethorn.common.entity.Womble.HibernateStuff;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
@@ -67,7 +68,7 @@ extends TestBase
             );
 
         assertEquals(
-            Womble.StateFullNess.STATE_FULL,
+            Womble.HibernateStuff.StateFullNess.STATE_FULL,
             womble().hibernate().stateness()
             );
 

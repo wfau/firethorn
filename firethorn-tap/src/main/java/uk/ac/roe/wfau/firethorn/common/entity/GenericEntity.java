@@ -16,7 +16,13 @@ public interface GenericEntity
 
     public interface Factory
         {
+
+        /**
+         * Create an Identifier from a String.
+         *
+         */
         public Identifier ident(String string);
+
         }
 
     public Identifier ident();

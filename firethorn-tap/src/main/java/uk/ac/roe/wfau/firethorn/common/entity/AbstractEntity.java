@@ -184,7 +184,24 @@ implements GenericEntity
         return this.modified ;
         }
 
-
+    /**
+     * Generic toString() method.
+     *
+     */
+    public String toString()
+        {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        builder.append(
+            this.getClass().getName()
+            );
+        builder.append("][");
+        builder.append(
+            this.ident
+            );
+        builder.append("]");
+        return builder.toString();
+        }
 
     }
 

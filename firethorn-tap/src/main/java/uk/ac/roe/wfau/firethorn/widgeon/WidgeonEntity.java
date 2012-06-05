@@ -84,18 +84,28 @@ implements Widgeon
     implements Widgeon.Factory
         {
 
+        @Override
+        public Class etype()
+            {
+            return WidgeonEntity.class ;
+            }
+
         public Iterable<Widgeon> select()
             {
             logger.debug("select()");
             return null ;
             }
 
+        @Override
         public WidgeonEntity select(Identifier ident)
             {
             logger.debug("select(Identifier)");
-            return null ;
+            return tools().select(
+                ident
+                );
             }
 
+        @Override
         public WidgeonEntity create(String name, URI uri)
             {
             logger.debug("create(String, URI)");
@@ -107,6 +117,7 @@ implements Widgeon
                 );
             }
 
+        @Override
         public WidgeonEntity create(String name, URL url)
             {
             logger.debug("create(String, URL)");
@@ -118,6 +129,7 @@ implements Widgeon
                 );
             }
 
+        @Override
         public WidgeonEntity create(String name, DataSource src)
             {
             logger.debug("create(String, DataSource)");

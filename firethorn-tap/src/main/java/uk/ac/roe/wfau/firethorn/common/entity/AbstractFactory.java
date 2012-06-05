@@ -17,9 +17,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
 import org.hibernate.HibernateException;
 
-import org.hibernate.ScrollMode;
-import org.hibernate.ScrollableResults;
-
 import org.springframework.stereotype.Repository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +29,7 @@ import uk.ac.roe.wfau.firethorn.common.ident.LongIdent;
  *
  */
 @Repository
-public abstract class AbstractFactory<InterfaceType extends GenericEntity, ObjectType extends InterfaceType>
+public abstract class AbstractFactory<InterfaceType extends GenericEntity, EntityType extends AbstractEntity>
 implements GenericEntity.Factory
     {
 
@@ -43,6 +40,15 @@ implements GenericEntity.Factory
     private static Logger logger = LoggerFactory.getLogger(
         AbstractFactory.class
         );
+
+    /**
+     * Get the class of Entity we manage.
+     * Required because we can't get this from the generics at runtime, because ....
+     * http://stackoverflow.com/questions/3403909/get-generic-type-of-class-at-runtime
+     * http://stackoverflow.com/questions/2225979/getting-t-class-despite-javas-type-erasure
+     *
+     */
+    public abstract Class etype();
 
     /**
      * Create an Identifier from a String.
@@ -67,11 +73,16 @@ implements GenericEntity.Factory
         return womble;
         }
 
+    public HibernateTools<InterfaceType, EntityType> tools()
+        {
+        return new HibernateTools<InterfaceType, EntityType>();
+        }
+
     /**
      * Inner class to wrap common Hibernate functions.
      *
      */
-    public class HibernateTools<ObjectType>
+    public class HibernateTools<InterfaceType extends GenericEntity, EntityType extends AbstractEntity>
         {
 
         /**
@@ -80,146 +91,82 @@ implements GenericEntity.Factory
          */
         public Query query(String name)
             {
-            logger.debug("query(String)");
-            try {
-                if (stateness() == Womble.StateFullNess.STATE_LESS)
-                    {
-                    logger.debug("Using state LESS session to fetch named query [{}]", name);
-                    Query query = stateless().session().getNamedQuery(
-                        name
-                        );
-                    if (query != null)
-                        {
-                        query.setCacheMode(null);
-                        query.setFlushMode(null);
-                        }
-                    else {
-                        logger.error("Unable to find query [{}]", name);
-                        }                        
-                    return query ;
-                    }
-                else {
-                    logger.debug("Using state FULL session to fetch named query [{}]", name);
-                    return statefull().session().getNamedQuery(
-                        name
-                        );
-                    }
-                }
-            catch (HibernateException ouch)
-                {
-                throw womble.hibernate().convert(
-                    ouch
-                    );
-                }
+            return womble.hibernate().query(
+                name
+                );
             }
 
         /**
-         * Insert a new persistent object.
+         * Insert a new Entity into the database.
          *
          */
-        public ObjectType insert(ObjectType object)
+        public EntityType insert(EntityType entity)
             {
-            logger.debug("insert(ObjectType)");
-            try {
-                if (stateness() == Womble.StateFullNess.STATE_LESS)
-                    {
-                    logger.debug("Using state LESS session to insert object [{}]", object);
-                    stateless().session().insert(
-                        object
-                        );
-                    }
-                else {
-                    logger.debug("Using state FULL session to insert object [{}]", object);
-                    statefull().session().save(
-                        object
-                        );
-                    //this.flush();
-                    }
-                }
-            catch (HibernateException ouch)
-                {
-                throw womble.hibernate().convert(
-                    ouch
-                    );
-                }
-            return object ;
+            logger.debug("insert(EntityType)");
+            logger.debug("  entity [{}]", entity);
+            return (EntityType) womble.hibernate().insert(
+                entity
+                );
             }
 
         /**
-         * Select a specific object.
+         * Select a specific Entity by Identifier.
          *
          */
-        public ObjectType select(Class type, Identifier ident)
+        public EntityType select(Identifier ident)
             {
             logger.debug("select(Class, Identifier)");
-            try {
-                if (ident == null)
-                    {
-                    return null ;
-                    }
-                else {
-                    if (stateness() == Womble.StateFullNess.STATE_LESS)
-                        {
-                        logger.debug("Using state LESS session to select object [{}][{}]", type, ident);
-                        return (ObjectType) stateless().session().get(
-                            type,
-                            ident.value()
-                            );
-                        }
-                    else {
-                        logger.debug("Using state FULL session to select object [{}][{}]", type, ident);
-                        return (ObjectType) statefull().session().get(
-                            type,
-                            ident.value()
-                            );
-                        }
-                    }
-                }
-            catch (HibernateException ouch)
+            logger.debug("  ident [{}]", (ident != null) ? null : ident.value());
+            return (EntityType) womble.hibernate().select(
+                etype(),
+                ident
+                );
+            }
+
+        /**
+         * Update an Entity.
+         *
+         */
+        public EntityType update(InterfaceType entity)
+            {
+            logger.debug("update(InterfaceType)");
+            logger.debug("  entity [{}]", entity);
+            if (etype().isInstance(entity))
                 {
-                throw womble.hibernate().convert(
-                    ouch
+                return (EntityType) womble.hibernate().update(
+                    (EntityType) entity
+                    );
+                }
+            else {
+                logger.error(
+                    "Update not supported for [" + entity.getClass().getName() + "]"
+                    );
+                throw new IllegalArgumentException(
+                    "Update not supported for [" + entity.getClass().getName() + "]"
                     );
                 }
             }
 
         /**
-         * Update an object.
+         * Delete an Entity.
          *
          */
-        public InterfaceType update(InterfaceType object)
+        public void delete(InterfaceType entity)
             {
-            logger.debug("update(InterfaceType)");
-            try {
-                statefull().session().update(
-                    object
-                    );
-                }
-            catch (HibernateException ouch)
+            logger.debug("delete(InterfaceType)");
+            logger.debug("  entity [{}]", entity);
+            if (etype().isInstance(entity))
                 {
-                throw womble.hibernate().convert(
-                    ouch
+                womble.hibernate().delete(
+                    (EntityType) entity
                     );
                 }
-            return object ;
-            }
-
-        /**
-         * Delete an object.
-         *
-         */
-        public void delete(InterfaceType object)
-            {
-            logger.debug("update(InterfaceType)");
-            try {
-                statefull().session().delete(
-                    object
+            else {
+                logger.error(
+                    "Delete not supported for [" + entity.getClass().getName() + "]"
                     );
-                }
-            catch (HibernateException ouch)
-                {
-                throw womble.hibernate().convert(
-                    ouch
+                throw new IllegalArgumentException(
+                    "Delete not supported for [" + entity.getClass().getName() + "]"
                     );
                 }
             }
@@ -230,16 +177,7 @@ implements GenericEntity.Factory
          */
         protected void flush()
             {
-            logger.debug("flush()");
-            try {
-                statefull().session().flush();
-                }
-            catch (HibernateException ouch)
-                {
-                throw womble.hibernate().convert(
-                    ouch
-                    );
-                }
+            womble.hibernate().flush();
             }
 
         /**
@@ -248,16 +186,7 @@ implements GenericEntity.Factory
          */
         protected void clear()
             {
-            logger.debug("clear()");
-            try {
-                statefull().session().clear();
-                }
-            catch (HibernateException ouch)
-                {
-                throw womble.hibernate().convert(
-                    ouch
-                    );
-                }
+            womble.hibernate().clear();
             }
 
         /**
@@ -266,33 +195,20 @@ implements GenericEntity.Factory
          */
         public InterfaceType single(Query query)
             {
-            return (InterfaceType) first(query);
+            return (InterfaceType) womble.hibernate().single(
+                query
+                );
             }
 
         /**
          * Return the first result of a query.
          *
          */
-        public ObjectType first(Query query)
+        public InterfaceType first(Query query)
             {
-            try {
-                ScrollableResults results = query.scroll(
-                    ScrollMode.FORWARD_ONLY
-                    );
-                if (results.next())
-                    {
-                    return (ObjectType) results.get(0);
-                    }
-                else {
-                    return null ;
-                    }
-                }
-            catch (HibernateException ouch)
-                {
-                throw womble.hibernate().convert(
-                    ouch
-                    );
-                }
+            return (InterfaceType) womble.hibernate().first(
+                query
+                );
             }
 
         /**
@@ -319,25 +235,6 @@ implements GenericEntity.Factory
             }
         }
 
-    public HibernateTools<ObjectType> tools()
-        {
-        return new HibernateTools<ObjectType>();
-        }
-
-    public Womble.StateFullNess stateness()
-        {
-        return womble.hibernate().stateness();
-        }
-
-    public Womble.StateFullState statefull()
-        {
-        return womble.hibernate().statefull();
-        }
-
-    public Womble.StateLessState stateless()
-        {
-        return womble.hibernate().stateless();
-        }
 
     }
 
