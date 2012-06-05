@@ -60,6 +60,15 @@ implements GenericEntity
     public static final String DB_MODIFIED_COL = "modified" ;
 
     /**
+     * Access to our Womble instance.
+     *
+     */
+    protected Womble womble()
+        {
+        return WombleImpl.womble();
+        }
+
+    /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *

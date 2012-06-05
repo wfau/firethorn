@@ -20,7 +20,7 @@ extends GenericEntity
     {
 
     /**
-     * Generic factory interface.
+     * Widgeon factory interface.
      *
      */
     public static interface Factory
@@ -29,9 +29,21 @@ extends GenericEntity
         public Widgeon create(String name, URI uri);
         public Widgeon create(String name, URL url);
         public Widgeon create(String name, DataSource src);
+
+        /**
+         * Our Schema factory.
+         * 
+         */
+        public Widgeon.Schema.Factory schemas();
+
         }
 
-    public NameSelector<Schema> schemas();
+    public interface Schemas
+    extends NameSelector<Widgeon.Schema>
+        {
+        public Widgeon.Schema create(String name);
+        }
+    public Schemas schemas();
 
     public interface Schema
     extends GenericEntity

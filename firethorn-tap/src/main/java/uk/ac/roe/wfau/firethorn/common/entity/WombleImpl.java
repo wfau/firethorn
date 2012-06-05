@@ -796,5 +796,22 @@ implements Womble
         {
         return this.widgeons ;
         }
+
+    /**
+     * Our Widgeon Schema factory.
+     * 
+    @Autowired
+    protected Widgeon.Schemas widgeonschema ;
+     */
+
+    /**
+     * Access to our Widgeon factory.
+     * 
+    public Widgeon.Schemas widgeonschema()
+        {
+        return this.widgeonschema ;
+        }
+     */
+
     }
 

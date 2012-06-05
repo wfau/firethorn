@@ -51,11 +51,23 @@ extends TestBase
         }
 
     @Test
-    @Transactional
     public void something()
         {
         logger.debug("something()");
+        assertNotNull(
+            womble()
+            );
+        assertNotNull(
+            womble().widgeons()
+            );
+        assertNotNull(
+            womble().widgeons().schemas()
+            );
+        }
 
+//    @Test
+    public void simple()
+        {
         assertNotNull(
             womble()
             );
@@ -76,9 +88,6 @@ extends TestBase
         assertNotNull(
             womble().hibernate().statefull().session()
             );
-
-//logger.debug("Session [{}]", womble().hibernate().statefull().session());
-//logger.debug("Transaction [{}]", womble().hibernate().statefull().session().getTransaction());
 
         Widgeon one = womble().widgeons().create(
             "albert",
@@ -107,16 +116,7 @@ extends TestBase
 
         logger.debug("Two [{}][{}]", two.ident(), two.name());
 
-//logger.debug("Session [{}]", womble().hibernate().statefull().session());
-//logger.debug("Transaction [{}]", womble().hibernate().statefull().session().getTransaction());
-
-//logger.debug("--");
-//logger.debug("Initiating session().flush()");
         womble().hibernate().statefull().session().flush();
-//logger.debug("--");
-
-//logger.debug("Session [{}]", womble().hibernate().statefull().session());
-//logger.debug("Transaction [{}]", womble().hibernate().statefull().session().getTransaction());
 
         for (Widgeon widgeon : womble().widgeons().select())
             {
@@ -124,5 +124,7 @@ extends TestBase
             }
 
         }
+
+
     }
 

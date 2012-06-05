@@ -21,6 +21,7 @@ import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NamedQueries;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;  
 
 import uk.ac.roe.wfau.firethorn.common.ident.Identifier;
 
@@ -73,13 +74,13 @@ implements Widgeon
         );
 
     /**
-     * Our database mapping values.
+     * Our database table name.
      * 
      */
     public static final String DB_TABLE_NAME = "widgeons" ;
 
     /**
-     * Generic factory interface.
+     * Widgeon factory.
      *
      */
     @Repository
@@ -148,12 +149,40 @@ implements Widgeon
                     )
                 );
             }
+
+        /**
+         * Our Schema factory.
+         * 
+         */
+        @Autowired
+        protected SchemaEntity.Factory schemas ;
+
+        /**
+         * Access to our Schema factory.
+         * 
+         */
+        @Override
+        public SchemaEntity.Factory schemas()
+            {
+            return this.schemas ;
+            }
+
         }
 
-    public NameSelector<Schema> schemas()
+    public Widgeon.Schemas schemas()
         {
-        return new NameSelector<Schema>()
+        return new Widgeon.Schemas()
             {
+            public Schema create(final String name)
+                {
+/*
+                return womble().widgeons().schemas().create(
+                    this,
+                    name
+                    ) ;
+ */
+                return null ;
+                }
             public Iterable<Schema> select()
                 {
                 return null ;
