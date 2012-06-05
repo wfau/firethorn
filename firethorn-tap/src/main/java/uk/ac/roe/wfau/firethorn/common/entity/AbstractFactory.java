@@ -73,169 +73,154 @@ implements GenericEntity.Factory
         return womble;
         }
 
-    public HibernateTools<InterfaceType, EntityType> tools()
+    /**
+     * Get a named query.
+     *
+     */
+    public Query query(String name)
         {
-        return new HibernateTools<InterfaceType, EntityType>();
+        return womble.hibernate().query(
+            name
+            );
         }
 
     /**
-     * Inner class to wrap common Hibernate functions.
+     * Insert a new Entity into the database.
      *
      */
-    public class HibernateTools<InterfaceType extends GenericEntity, EntityType extends AbstractEntity>
+    public EntityType insert(EntityType entity)
         {
+        logger.debug("insert(EntityType)");
+        logger.debug("  entity [{}]", entity);
+        return (EntityType) womble.hibernate().insert(
+            entity
+            );
+        }
 
-        /**
-         * Get a named query.
-         *
-         */
-        public Query query(String name)
+    /**
+     * Select a specific Entity by Identifier.
+     *
+     */
+    public EntityType select(Identifier ident)
+        {
+        logger.debug("select(Class, Identifier)");
+        logger.debug("  ident [{}]", (ident != null) ? null : ident.value());
+        return (EntityType) womble.hibernate().select(
+            etype(),
+            ident
+            );
+        }
+
+    /**
+     * Update an Entity.
+     *
+     */
+    public EntityType update(InterfaceType entity)
+        {
+        logger.debug("update(InterfaceType)");
+        logger.debug("  entity [{}]", entity);
+        if (etype().isInstance(entity))
             {
-            return womble.hibernate().query(
-                name
+            return (EntityType) womble.hibernate().update(
+                (EntityType) entity
                 );
             }
-
-        /**
-         * Insert a new Entity into the database.
-         *
-         */
-        public EntityType insert(EntityType entity)
-            {
-            logger.debug("insert(EntityType)");
-            logger.debug("  entity [{}]", entity);
-            return (EntityType) womble.hibernate().insert(
-                entity
+        else {
+            logger.error(
+                "Update not supported for [" + entity.getClass().getName() + "]"
                 );
-            }
-
-        /**
-         * Select a specific Entity by Identifier.
-         *
-         */
-        public EntityType select(Identifier ident)
-            {
-            logger.debug("select(Class, Identifier)");
-            logger.debug("  ident [{}]", (ident != null) ? null : ident.value());
-            return (EntityType) womble.hibernate().select(
-                etype(),
-                ident
+            throw new IllegalArgumentException(
+                "Update not supported for [" + entity.getClass().getName() + "]"
                 );
-            }
-
-        /**
-         * Update an Entity.
-         *
-         */
-        public EntityType update(InterfaceType entity)
-            {
-            logger.debug("update(InterfaceType)");
-            logger.debug("  entity [{}]", entity);
-            if (etype().isInstance(entity))
-                {
-                return (EntityType) womble.hibernate().update(
-                    (EntityType) entity
-                    );
-                }
-            else {
-                logger.error(
-                    "Update not supported for [" + entity.getClass().getName() + "]"
-                    );
-                throw new IllegalArgumentException(
-                    "Update not supported for [" + entity.getClass().getName() + "]"
-                    );
-                }
-            }
-
-        /**
-         * Delete an Entity.
-         *
-         */
-        public void delete(InterfaceType entity)
-            {
-            logger.debug("delete(InterfaceType)");
-            logger.debug("  entity [{}]", entity);
-            if (etype().isInstance(entity))
-                {
-                womble.hibernate().delete(
-                    (EntityType) entity
-                    );
-                }
-            else {
-                logger.error(
-                    "Delete not supported for [" + entity.getClass().getName() + "]"
-                    );
-                throw new IllegalArgumentException(
-                    "Delete not supported for [" + entity.getClass().getName() + "]"
-                    );
-                }
-            }
-
-        /**
-         * Flush changes to the database.
-         *
-         */
-        protected void flush()
-            {
-            womble.hibernate().flush();
-            }
-
-        /**
-         * Clear the session state, discarding unsaved changes.
-         *
-         */
-        protected void clear()
-            {
-            womble.hibernate().clear();
-            }
-
-        /**
-         * Select a single object.
-         *
-         */
-        public InterfaceType single(Query query)
-            {
-            return (InterfaceType) womble.hibernate().single(
-                query
-                );
-            }
-
-        /**
-         * Return the first result of a query.
-         *
-         */
-        public InterfaceType first(Query query)
-            {
-            return (InterfaceType) womble.hibernate().first(
-                query
-                );
-            }
-
-        /**
-         * Select an Iterable set of objects.
-         *
-         */
-        public Iterable<InterfaceType> iterable(final Query query)
-            {
-            return new Iterable<InterfaceType>()
-                {
-                public Iterator<InterfaceType> iterator()
-                    {
-                    try {
-                        return (Iterator<InterfaceType>) query.iterate();
-                        }
-                    catch (HibernateException ouch)
-                        {
-                        throw womble.hibernate().convert(
-                            ouch
-                            );
-                        }
-                    }
-                };
             }
         }
 
+    /**
+     * Delete an Entity.
+     *
+     */
+    public void delete(InterfaceType entity)
+        {
+        logger.debug("delete(InterfaceType)");
+        logger.debug("  entity [{}]", entity);
+        if (etype().isInstance(entity))
+            {
+            womble.hibernate().delete(
+                (EntityType) entity
+                );
+            }
+        else {
+            logger.error(
+                "Delete not supported for [" + entity.getClass().getName() + "]"
+                );
+            throw new IllegalArgumentException(
+                "Delete not supported for [" + entity.getClass().getName() + "]"
+                );
+            }
+        }
 
+    /**
+     * Flush changes to the database.
+     *
+     */
+    protected void flush()
+        {
+        womble.hibernate().flush();
+        }
+
+    /**
+     * Clear the session state, discarding unsaved changes.
+     *
+     */
+    protected void clear()
+        {
+        womble.hibernate().clear();
+        }
+
+    /**
+     * Select a single object.
+     *
+     */
+    public InterfaceType single(Query query)
+        {
+        return (InterfaceType) womble.hibernate().single(
+            query
+            );
+        }
+
+    /**
+     * Return the first result of a query.
+     *
+     */
+    public InterfaceType first(Query query)
+        {
+        return (InterfaceType) womble.hibernate().first(
+            query
+            );
+        }
+
+    /**
+     * Select an Iterable set of objects.
+     *
+     */
+    public Iterable<InterfaceType> iterable(final Query query)
+        {
+        return new Iterable<InterfaceType>()
+            {
+            public Iterator<InterfaceType> iterator()
+                {
+                try {
+                    return (Iterator<InterfaceType>) query.iterate();
+                    }
+                catch (HibernateException ouch)
+                    {
+                    throw womble.hibernate().convert(
+                        ouch
+                        );
+                    }
+                }
+            };
+        }
     }
 
 

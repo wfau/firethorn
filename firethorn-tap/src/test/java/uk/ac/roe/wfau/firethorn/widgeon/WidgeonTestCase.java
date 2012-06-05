@@ -80,8 +80,8 @@ extends TestBase
             womble().hibernate().statefull().session()
             );
 
-logger.debug("Session [{}]", womble().hibernate().statefull().session());
-logger.debug("Transaction [{}]", womble().hibernate().statefull().session().getTransaction());
+//logger.debug("Session [{}]", womble().hibernate().statefull().session());
+//logger.debug("Transaction [{}]", womble().hibernate().statefull().session().getTransaction());
 
         Widgeon one = womble().widgeons().create(
             "albert",
@@ -110,19 +110,21 @@ logger.debug("Transaction [{}]", womble().hibernate().statefull().session().getT
 
         logger.debug("Two [{}][{}]", two.ident(), two.name());
 
-logger.debug("Session [{}]", womble().hibernate().statefull().session());
-logger.debug("Transaction [{}]", womble().hibernate().statefull().session().getTransaction());
+//logger.debug("Session [{}]", womble().hibernate().statefull().session());
+//logger.debug("Transaction [{}]", womble().hibernate().statefull().session().getTransaction());
 
-logger.debug("--");
-logger.debug("Initiating session().flush()");
+//logger.debug("--");
+//logger.debug("Initiating session().flush()");
         womble().hibernate().statefull().session().flush();
-logger.debug("--");
+//logger.debug("--");
 
-logger.debug("Session [{}]", womble().hibernate().statefull().session());
-logger.debug("Transaction [{}]", womble().hibernate().statefull().session().getTransaction());
+//logger.debug("Session [{}]", womble().hibernate().statefull().session());
+//logger.debug("Transaction [{}]", womble().hibernate().statefull().session().getTransaction());
 
-        logger.debug("One [{}][{}]", one.ident(), one.name());
-        logger.debug("Two [{}][{}]", two.ident(), two.name());
+        for (Widgeon widgeon : womble().widgeons().select())
+            {
+            logger.debug("Widgeon [{}]", widgeon);
+            }
 
         }
     }

@@ -92,15 +92,17 @@ implements Widgeon
 
         public Iterable<Widgeon> select()
             {
-            logger.debug("select()");
-            return null ;
+            return iterable(
+                query(
+                    "widgeon-select-all"
+                    )
+                );
             }
 
         @Override
         public WidgeonEntity select(Identifier ident)
             {
-            logger.debug("select(Identifier)");
-            return tools().select(
+            return select(
                 ident
                 );
             }
@@ -108,8 +110,7 @@ implements Widgeon
         @Override
         public WidgeonEntity create(String name, URI uri)
             {
-            logger.debug("create(String, URI)");
-            return tools().insert(
+            return insert(
                 new WidgeonEntity(
                     name,
                     uri
@@ -120,8 +121,7 @@ implements Widgeon
         @Override
         public WidgeonEntity create(String name, URL url)
             {
-            logger.debug("create(String, URL)");
-            return tools().insert(
+            return insert(
                 new WidgeonEntity(
                     name,
                     url
@@ -132,8 +132,7 @@ implements Widgeon
         @Override
         public WidgeonEntity create(String name, DataSource src)
             {
-            logger.debug("create(String, DataSource)");
-            return tools().insert(
+            return insert(
                 new WidgeonEntity(
                     name,
                     src
@@ -178,7 +177,6 @@ implements Widgeon
     private WidgeonEntity(String name, URI source)
         {
         super(name);
-        logger.debug("WidgeonEntity(String, URI)");
         this.init(
             source
             );
@@ -191,7 +189,6 @@ implements Widgeon
     private WidgeonEntity(String name, URL source)
         {
         super(name);
-        logger.debug("WidgeonEntity(String, URL)");
         this.init(
             source
             );
@@ -204,7 +201,6 @@ implements Widgeon
     private WidgeonEntity(String name, DataSource source)
         {
         super(name);
-        logger.debug("WidgeonEntity(String, DataSource)");
         this.init(
             source
             );
