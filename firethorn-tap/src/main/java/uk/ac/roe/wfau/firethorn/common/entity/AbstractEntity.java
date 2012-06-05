@@ -60,7 +60,7 @@ implements GenericEntity
     public static final String DB_MODIFIED_COL = "modified" ;
 
     /**
-     * Access to our Womble instance.
+     * Access to our Womble instance - naff.
      *
      */
     protected Womble womble()

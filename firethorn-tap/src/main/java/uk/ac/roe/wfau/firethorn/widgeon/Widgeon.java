@@ -24,11 +24,13 @@ extends GenericEntity
      *
      */
     public static interface Factory
-    extends IdentSelector<Widgeon>
         {
         public Widgeon create(String name, URI uri);
         public Widgeon create(String name, URL url);
         public Widgeon create(String name, DataSource src);
+
+        public Iterable<Widgeon> select();
+        public Widgeon select(Identifier ident);
 
         /**
          * Our Schema factory.
@@ -38,35 +40,78 @@ extends GenericEntity
 
         }
 
+    public Schemas schemas();
     public interface Schemas
-    extends NameSelector<Widgeon.Schema>
         {
         public Widgeon.Schema create(String name);
+        public Widgeon.Schema select(String name);
+        public Iterable<Widgeon.Schema> select();
         }
-    public Schemas schemas();
 
     public interface Schema
     extends GenericEntity
         {
         public Widgeon parent();
-        public NameSelector<Catalog> catalogs();
+
+        public interface Factory
+            {
+            public Schema select(Identifier ident);
+            public Schema create(Widgeon parent, String name);
+            public Schema select(Widgeon parent, String name);
+            public Iterable<Schema> select();
+            public Iterable<Schema> select(Widgeon parent);
+            }
+
+        public Catalogs catalogs();
+        public interface Catalogs
+            {
+            public Schema.Catalog create(String name);
+            public Schema.Catalog select(String name);
+            public Iterable<Schema.Catalog> select();
+            }
 
         public interface Catalog
         extends GenericEntity
             {
             public Schema parent();
-            public NameSelector<Table> tables();
+
+            public interface Factory
+                {
+                }
+
+            public Tables tables();
+            public interface Tables
+                {
+                public Catalog.Table create(String name);
+                public Catalog.Table select(String name);
+                public Iterable<Catalog.Table> select();
+                }
 
             public interface Table
             extends GenericEntity
                 {
                 public Catalog parent();
-                public NameSelector<Column> columns();
+
+                public interface Factory
+                    {
+                    }
+
+                public Columns tables();
+                public interface Columns
+                    {
+                    public Table.Column create(String name);
+                    public Table.Column select(String name);
+                    public Iterable<Table.Column> select();
+                    }
 
                 public interface Column
                 extends GenericEntity
                     {
                     public Table parent();
+
+                    public interface Factory
+                        {
+                        }
                     }
                 }
             }

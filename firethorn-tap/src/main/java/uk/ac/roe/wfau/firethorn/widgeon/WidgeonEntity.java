@@ -25,6 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.common.ident.Identifier;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Womble;
+import uk.ac.roe.wfau.firethorn.common.entity.WombleImpl;
+
 import uk.ac.roe.wfau.firethorn.common.entity.NameSelector;
 import uk.ac.roe.wfau.firethorn.common.entity.IdentSelector;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
@@ -51,7 +54,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectIterableMethod;
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "widgeon-select-all",
+            name  = "widgeon-select",
             query = "FROM WidgeonEntity"
             ),
         @NamedQuery(
@@ -100,7 +103,7 @@ implements Widgeon
             {
             return this.iterable(
                 this.query(
-                    "widgeon-select-all"
+                    "widgeon-select"
                     )
                 );
             }
@@ -175,25 +178,32 @@ implements Widgeon
             {
             public Schema create(final String name)
                 {
-/*
-                return womble().widgeons().schemas().create(
-                    this,
+                return WombleImpl.womble().widgeons().schemas().create(
+                    WidgeonEntity.this,
                     name
                     ) ;
- */
-                return null ;
                 }
+
             public Iterable<Schema> select()
                 {
-                return null ;
+                return WombleImpl.womble().widgeons().schemas().select(
+                    WidgeonEntity.this
+                    ) ;
                 }
+
             public Schema select(final Identifier ident)
                 {
-                return null ;
+                return WombleImpl.womble().widgeons().schemas().select(
+                    ident
+                    ) ;
                 }
+
             public Schema select(final String name)
                 {
-                return null ;
+                return WombleImpl.womble().widgeons().schemas().select(
+                    WidgeonEntity.this,
+                    name
+                    ) ;
                 }
             };
         }

@@ -65,7 +65,7 @@ extends TestBase
             );
         }
 
-//    @Test
+    @Test
     public void simple()
         {
         assertNotNull(
@@ -125,6 +125,37 @@ extends TestBase
 
         }
 
+    @Test
+    @Transactional
+    public void nested()
+        {
+        Widgeon one = womble().widgeons().create(
+            "albert",
+            URI.create("ivo://org.astrogrid.test/0001")
+            );
+        womble().hibernate().statefull().session().flush();
+        one.schemas().create("one.left");
+        one.schemas().create("one.right");
+        womble().hibernate().statefull().session().flush();
+
+        Widgeon two = womble().widgeons().create(
+            "albert",
+            URI.create("ivo://org.astrogrid.test/0001")
+            );
+        womble().hibernate().statefull().session().flush();
+        two.schemas().create("two.left");
+        two.schemas().create("two.right");
+        womble().hibernate().statefull().session().flush();
+
+        for (Widgeon widgeon : womble().widgeons().select())
+            {
+            logger.debug("Widgeon [{}]", widgeon);
+            for (Widgeon.Schema schema : widgeon.schemas().select())
+                {
+                logger.debug("  Schema [{}]", schema);
+                }
+            }
+        }
 
     }
 
