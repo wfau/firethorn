@@ -29,6 +29,10 @@ import uk.ac.roe.wfau.firethorn.common.entity.IdentSelector;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectIterableMethod;
+
 /**
  * Core Widgeon implementations.
  *
@@ -90,27 +94,30 @@ implements Widgeon
             return WidgeonEntity.class ;
             }
 
+        @SelectIterableMethod
         public Iterable<Widgeon> select()
             {
-            return iterable(
-                query(
+            return this.iterable(
+                this.query(
                     "widgeon-select-all"
                     )
                 );
             }
 
         @Override
+        @SelectEntityMethod
         public WidgeonEntity select(final Identifier ident)
             {
-            return select(
+            return this.select(
                 ident
                 );
             }
 
         @Override
+        @CreateEntityMethod
         public WidgeonEntity create(final String name, final URI uri)
             {
-            return insert(
+            return this.insert(
                 new WidgeonEntity(
                     name,
                     uri
@@ -119,9 +126,10 @@ implements Widgeon
             }
 
         @Override
+        @CreateEntityMethod
         public WidgeonEntity create(final String name, final URL url)
             {
-            return insert(
+            return this.insert(
                 new WidgeonEntity(
                     name,
                     url
@@ -130,9 +138,10 @@ implements Widgeon
             }
 
         @Override
+        @CreateEntityMethod
         public WidgeonEntity create(final String name, final DataSource src)
             {
-            return insert(
+            return this.insert(
                 new WidgeonEntity(
                     name,
                     src
@@ -161,13 +170,16 @@ implements Widgeon
         }
 
     /**
-     * Private constructor.
+     * Default constructor needs to be protected not private.
+     * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    private WidgeonEntity()
+    protected WidgeonEntity()
         {
         super();
         logger.debug("WidgeonEntity()");
+        logger.debug("  this  [{}]",  this);
+        logger.debug("  ident [{}]", ident().value());
         }
 
     /**

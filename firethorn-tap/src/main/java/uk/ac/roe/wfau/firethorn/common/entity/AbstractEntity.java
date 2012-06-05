@@ -60,7 +60,8 @@ implements GenericEntity
     public static final String DB_MODIFIED_COL = "modified" ;
 
     /**
-     * Protected constructor.
+     * Default constructor needs to be protected not private.
+     * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
     protected AbstractEntity()

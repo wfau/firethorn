@@ -51,10 +51,7 @@ extends TestBase
         }
 
     @Test
-    @Transactional(
-        readOnly=false,
-        propagation=Propagation.REQUIRES_NEW
-        )
+    @Transactional
     public void something()
         {
         logger.debug("something()");
