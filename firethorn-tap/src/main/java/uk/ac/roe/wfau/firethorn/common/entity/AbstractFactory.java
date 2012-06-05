@@ -55,7 +55,7 @@ implements GenericEntity.Factory
      *
      */
     @Override
-    public Identifier ident(String string)
+    public Identifier ident(final String string)
         {
         return new LongIdent(
             string
@@ -77,7 +77,7 @@ implements GenericEntity.Factory
      * Get a named query.
      *
      */
-    public Query query(String name)
+    public Query query(final String name)
         {
         return womble.hibernate().query(
             name
@@ -88,7 +88,7 @@ implements GenericEntity.Factory
      * Insert a new Entity into the database.
      *
      */
-    public EntityType insert(EntityType entity)
+    public EntityType insert(final EntityType entity)
         {
         logger.debug("insert(EntityType)");
         logger.debug("  entity [{}]", entity);
@@ -101,7 +101,7 @@ implements GenericEntity.Factory
      * Select a specific Entity by Identifier.
      *
      */
-    public EntityType select(Identifier ident)
+    public EntityType select(final Identifier ident)
         {
         logger.debug("select(Class, Identifier)");
         logger.debug("  ident [{}]", (ident != null) ? null : ident.value());
@@ -115,7 +115,7 @@ implements GenericEntity.Factory
      * Update an Entity.
      *
      */
-    public EntityType update(InterfaceType entity)
+    public EntityType update(final InterfaceType entity)
         {
         logger.debug("update(InterfaceType)");
         logger.debug("  entity [{}]", entity);
@@ -139,7 +139,7 @@ implements GenericEntity.Factory
      * Delete an Entity.
      *
      */
-    public void delete(InterfaceType entity)
+    public void delete(final InterfaceType entity)
         {
         logger.debug("delete(InterfaceType)");
         logger.debug("  entity [{}]", entity);
@@ -181,7 +181,7 @@ implements GenericEntity.Factory
      * Select a single object.
      *
      */
-    public InterfaceType single(Query query)
+    public InterfaceType single(final Query query)
         {
         return (InterfaceType) womble.hibernate().single(
             query
@@ -192,7 +192,7 @@ implements GenericEntity.Factory
      * Return the first result of a query.
      *
      */
-    public InterfaceType first(Query query)
+    public InterfaceType first(final Query query)
         {
         return (InterfaceType) womble.hibernate().first(
             query

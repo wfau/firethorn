@@ -100,7 +100,7 @@ implements Widgeon
             }
 
         @Override
-        public WidgeonEntity select(Identifier ident)
+        public WidgeonEntity select(final Identifier ident)
             {
             return select(
                 ident
@@ -108,7 +108,7 @@ implements Widgeon
             }
 
         @Override
-        public WidgeonEntity create(String name, URI uri)
+        public WidgeonEntity create(final String name, final URI uri)
             {
             return insert(
                 new WidgeonEntity(
@@ -119,7 +119,7 @@ implements Widgeon
             }
 
         @Override
-        public WidgeonEntity create(String name, URL url)
+        public WidgeonEntity create(final String name, final URL url)
             {
             return insert(
                 new WidgeonEntity(
@@ -130,7 +130,7 @@ implements Widgeon
             }
 
         @Override
-        public WidgeonEntity create(String name, DataSource src)
+        public WidgeonEntity create(final String name, final DataSource src)
             {
             return insert(
                 new WidgeonEntity(
@@ -149,11 +149,11 @@ implements Widgeon
                 {
                 return null ;
                 }
-            public Schema select(Identifier ident)
+            public Schema select(final Identifier ident)
                 {
                 return null ;
                 }
-            public Schema select(String name)
+            public Schema select(final String name)
                 {
                 return null ;
                 }
@@ -174,7 +174,7 @@ implements Widgeon
      * Create a new entity from VOSI metadata.
      *
      */
-    private WidgeonEntity(String name, URI source)
+    private WidgeonEntity(final String name, final URI source)
         {
         super(name);
         this.init(
@@ -186,7 +186,7 @@ implements Widgeon
      * Create a new entity from VOSI metadata.
      *
      */
-    private WidgeonEntity(String name, URL source)
+    private WidgeonEntity(final String name, final URL source)
         {
         super(name);
         this.init(
@@ -198,7 +198,7 @@ implements Widgeon
      * Create a new entity from JDBC metadata.
      *
      */
-    private WidgeonEntity(String name, DataSource source)
+    private WidgeonEntity(final String name, final DataSource source)
         {
         super(name);
         this.init(
@@ -210,7 +210,7 @@ implements Widgeon
      * Initialise our data from the JDBC metadata.
      *
      */
-    private void init(DataSource source)
+    private void init(final DataSource source)
         {
         logger.debug("init(DataSource)");
         // Process the JDBC metadata.
@@ -220,7 +220,7 @@ implements Widgeon
      * Initialise our data from the VOSI metadata.
      *
      */
-    private void init(URI uri)
+    private void init(final URI uri)
         {
         logger.debug("init(URI)");
         // Resolve the URI into a VOSI endpoint URL.
@@ -230,7 +230,7 @@ implements Widgeon
      * Initialise our data from the VOSI metadata.
      *
      */
-    private void init(URL url)
+    private void init(final URL url)
         {
         logger.debug("init(URL)");
         // Process the VOSI metadata.

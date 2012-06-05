@@ -73,7 +73,7 @@ implements GenericEntity
      * Protected constructor, sets the create date.
      *
      */
-    protected AbstractEntity(String name)
+    protected AbstractEntity(final String name)
         {
         super();
         logger.debug("AbstractEntity(String)");
@@ -136,7 +136,7 @@ implements GenericEntity
         }
 
     @Override
-    public void name(String name)
+    public void name(final String name)
         {
         this.name = name ;
         }

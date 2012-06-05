@@ -70,7 +70,7 @@ implements Womble
      * Initialise our singleton instance.
      *
      */
-    public static void womble(Womble womble)
+    public static void womble(final Womble womble)
         {
         logger.debug("-- WOMBLE --");
         logger.debug("womble(Womble)");
@@ -176,7 +176,7 @@ implements Womble
          *
          */
         @Override
-        public DataAccessException convert(HibernateException ouch)
+        public DataAccessException convert(final HibernateException ouch)
             {
             logger.error(
                 "Error executing Hibernate query [{}][{}]",
@@ -203,7 +203,7 @@ implements Womble
          *
          */
         @Override
-        public Query query(String name)
+        public Query query(final String name)
             {
             logger.debug("query(String)");
             logger.debug("  name [{}]", name);
@@ -251,7 +251,7 @@ implements Womble
          *
          */
         @Override
-        public AbstractEntity insert(AbstractEntity entity)
+        public AbstractEntity insert(final AbstractEntity entity)
             {
             logger.debug("insert(AbstractEntity)");
             logger.debug("  entity [{}]", entity);
@@ -301,7 +301,7 @@ implements Womble
          *
          */
         @Override
-        public AbstractEntity select(Class type, Identifier ident)
+        public AbstractEntity select(final Class type, final Identifier ident)
             {
             logger.debug("select(Class, Identifier)");
             logger.debug("  class [{}]", type);
@@ -340,7 +340,7 @@ implements Womble
          *
          */
         @Override
-        public AbstractEntity update(AbstractEntity entity)
+        public AbstractEntity update(final AbstractEntity entity)
             {
             logger.debug("update(AbstractEntity)");
             logger.debug("  entity [{}]", entity);
@@ -392,7 +392,7 @@ implements Womble
          *
          */
         @Override
-        public void delete(AbstractEntity entity)
+        public void delete(final AbstractEntity entity)
             {
             logger.debug("delete(AbstractEntity)");
             logger.debug("  entity [{}]", entity);
@@ -490,7 +490,7 @@ implements Womble
          *
          */
         @Override
-        public AbstractEntity single(Query query)
+        public AbstractEntity single(final Query query)
             {
             return first(
                 query
@@ -502,7 +502,7 @@ implements Womble
          *
          */
         @Override
-        public AbstractEntity first(Query query)
+        public AbstractEntity first(final Query query)
             {
             if (query == null)
                 {
@@ -563,7 +563,7 @@ implements Womble
          *
          */
         @Override
-        public void stateness(StateFullNess state)
+        public void stateness(final StateFullNess state)
             {
             logger.debug("Setting stateness to [{}]", state);
 // Error checking goes here ....
