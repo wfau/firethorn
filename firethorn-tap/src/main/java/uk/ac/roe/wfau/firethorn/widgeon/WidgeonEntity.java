@@ -216,9 +216,6 @@ implements Widgeon
     protected WidgeonEntity()
         {
         super();
-        logger.debug("WidgeonEntity()");
-        logger.debug("  this  [{}]",  this);
-        logger.debug("  ident [{}]", ident().value());
         }
 
     /**

@@ -76,7 +76,6 @@ implements GenericEntity
     protected AbstractEntity()
         {
         super();
-        logger.debug("AbstractEntity()");
         }
 
     /**
@@ -86,8 +85,6 @@ implements GenericEntity
     protected AbstractEntity(final String name)
         {
         super();
-        logger.debug("AbstractEntity(String)");
-        logger.debug("  Name [{}]", name);
         this.name    = name ;
         this.created = new Date();
         }
