@@ -134,6 +134,13 @@ extends Entity
                 public Catalog create(Schema parent, String name);
                 public Catalog select(Schema parent, String name);
                 public Iterable<Catalog> select(Schema parent);
+
+                /**
+                 * Access to our Table factory.
+                 * 
+                 */
+                public Catalog.Table.Factory tables();
+
                 }
 
             public Tables tables();
@@ -155,9 +162,16 @@ extends Entity
                     public Table create(Catalog parent, String name);
                     public Table select(Catalog parent, String name);
                     public Iterable<Table> select(Catalog parent);
+
+                    /**
+                     * Access to our Column factory.
+                     * 
+                     */
+                    public Table.Column.Factory columns();
+
                     }
 
-                public Columns tables();
+                public Columns columns();
                 public interface Columns
                     {
                     public Table.Column create(String name);

@@ -77,7 +77,7 @@ implements Widgeon
      * Our database table name.
      * 
      */
-    public static final String DB_TABLE_NAME = "widgeons" ;
+    public static final String DB_TABLE_NAME = "widgeon_entity" ;
 
     /**
      * Widgeon factory.
@@ -212,7 +212,7 @@ implements Widgeon
         }
 
     /**
-     * Create a new entity from VOSI metadata.
+     * Create a new Widgeon from VOSI metadata.
      *
      */
     private WidgeonEntity(final String name, final URI source)
@@ -224,7 +224,7 @@ implements Widgeon
         }
 
     /**
-     * Create a new entity from VOSI metadata.
+     * Create a new Widgeon from VOSI metadata.
      *
      */
     private WidgeonEntity(final String name, final URL source)
@@ -236,7 +236,7 @@ implements Widgeon
         }
 
     /**
-     * Create a new entity from JDBC metadata.
+     * Create a new Widgeon from JDBC metadata.
      *
      */
     private WidgeonEntity(final String name, final DataSource source)

@@ -74,7 +74,7 @@ extends TestBase
             );
         logger.debug("Two [{}][{}]", two.ident(), two.name());
 
-        //womble().hibernate().statefull().session().flush();
+        womble().hibernate().statefull().session().flush();
 
         for (Widgeon widgeon : womble().widgeons().select())
             {
@@ -99,18 +99,13 @@ extends TestBase
                 )
             );
 
+        womble().hibernate().statefull().session().flush();
+
         for (Widgeon widgeon : womble().widgeons().select())
             {
-            logger.debug("-------");
-            logger.debug("Widgeon [{}]", widgeon);
-            for (Widgeon.Schema schema : widgeon.schemas().select())
-                {
-                logger.debug("  Schema [{}]", schema);
-                for (Widgeon.Schema.Catalog catalog : schema.catalogs().select())
-                    {
-                    logger.debug("  Catalog [{}]", catalog);
-                    }
-                }
+            display(
+                widgeon
+                );
             }
         }
 
@@ -130,12 +125,62 @@ extends TestBase
 
     public void nested(Widgeon.Schema schema)
         {
-        schema.catalogs().create(
-            "catalog-0001"
+        nested(
+            schema.catalogs().create(
+                "catalog-0001"
+                )
             );
-        schema.catalogs().create(
-            "catalog-0002"
+        nested(
+            schema.catalogs().create(
+                "catalog-0002"
+                )
             );
+        }
+
+    public void nested(Widgeon.Schema.Catalog catalog)
+        {
+        nested(
+            catalog.tables().create(
+                "table-0001"
+                )
+            );
+        nested(
+            catalog.tables().create(
+                "table-0002"
+                )
+            );
+        }
+
+    public void nested(Widgeon.Schema.Catalog.Table table)
+        {
+        table.columns().create(
+            "column-0001"
+            );
+        table.columns().create(
+            "column-0002"
+            );
+        }
+
+    public void display(Widgeon widgeon)
+        {
+        logger.debug("-------");
+        logger.debug("Widgeon [{}]", widgeon);
+        for (Widgeon.Schema schema : widgeon.schemas().select())
+            {
+            logger.debug("  Schema [{}]", schema);
+            for (Widgeon.Schema.Catalog catalog : schema.catalogs().select())
+                {
+                logger.debug("  Catalog [{}]", catalog);
+                for (Widgeon.Schema.Catalog.Table table : catalog.tables().select())
+                    {
+                    logger.debug("  Table [{}]", table);
+                    for (Widgeon.Schema.Catalog.Table.Column column : table.columns().select())
+                        {
+                        logger.debug("  Column [{}]", column);
+                        }
+                    }
+                }
+            }
         }
     }
 

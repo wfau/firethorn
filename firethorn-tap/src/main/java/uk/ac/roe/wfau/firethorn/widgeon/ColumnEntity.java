@@ -34,39 +34,39 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectIterableMethod;
 
 /**
- * Widgeon Schema Catalog implementation.
+ * Widgeon Column implementation.
  *
  */
 @Entity
 @Table(
-    name = WidgeonSchemaCatalogEntity.DB_TABLE_NAME,
+    name = ColumnEntity.DB_TABLE_NAME,
     uniqueConstraints=
         @UniqueConstraint(
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
-                WidgeonSchemaCatalogEntity.DB_PARENT_COL,
+                ColumnEntity.DB_PARENT_COL,
                 }
             )
     )
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "widgeon.schema.catalog-select-all",
-            query = "FROM WidgeonSchemaCatalogEntity"
+            name  = "widgeon.column-select-all",
+            query = "FROM ColumnEntity"
             ),
         @NamedQuery(
-            name  = "widgeon.schema.catalog-select-parent",
-            query = "FROM WidgeonSchemaCatalogEntity WHERE parent = :parent"
+            name  = "widgeon.column-select-parent",
+            query = "FROM ColumnEntity WHERE parent = :parent"
             ),
         @NamedQuery(
-            name  = "widgeon.schema.catalog-select-parent.name",
-            query = "FROM WidgeonSchemaCatalogEntity WHERE parent = :parent AND name = :name"
+            name  = "widgeon.column-select-parent.name",
+            query = "FROM ColumnEntity WHERE parent = :parent AND name = :name"
             )
         }
     )
-public class WidgeonSchemaCatalogEntity
+public class ColumnEntity
 extends AbstractEntity
-implements Widgeon.Schema.Catalog
+implements Widgeon.Schema.Catalog.Table.Column
     {
 
     /**
@@ -74,14 +74,14 @@ implements Widgeon.Schema.Catalog
      * 
      */
     private static Logger logger = LoggerFactory.getLogger(
-        WidgeonSchemaCatalogEntity.class
+        ColumnEntity.class
         );
 
     /**
      * Our database table name.
      * 
      */
-    public static final String DB_TABLE_NAME = "widgeon_schema_catalog" ;
+    public static final String DB_TABLE_NAME = "widgeon_column" ;
 
     /**
      * Our parent column name.
@@ -95,30 +95,30 @@ implements Widgeon.Schema.Catalog
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<Widgeon.Schema.Catalog>
-    implements Widgeon.Schema.Catalog.Factory
+    extends AbstractFactory<Widgeon.Schema.Catalog.Table.Column>
+    implements Widgeon.Schema.Catalog.Table.Column.Factory
         {
 
         @Override
         public Class etype()
             {
-            return WidgeonSchemaCatalogEntity.class ;
+            return ColumnEntity.class ;
             }
 
         @Override
         @SelectIterableMethod
-        public Iterable<Widgeon.Schema.Catalog> select()
+        public Iterable<Widgeon.Schema.Catalog.Table.Column> select()
             {
             return super.iterable(
                 super.query(
-                    "widgeon.schema.catalog-select-all"
+                    "widgeon.column-select-all"
                     )
                 );
             }
 
         @Override
         @SelectEntityMethod
-        public Widgeon.Schema.Catalog select(final Identifier ident)
+        public Widgeon.Schema.Catalog.Table.Column select(final Identifier ident)
             {
             return super.select(
                 ident
@@ -127,10 +127,10 @@ implements Widgeon.Schema.Catalog
 
         @Override
         @CreateEntityMethod
-        public Widgeon.Schema.Catalog create(final Widgeon.Schema parent, final String name)
+        public Widgeon.Schema.Catalog.Table.Column create(final Widgeon.Schema.Catalog.Table parent, final String name)
             {
             return super.insert(
-                new WidgeonSchemaCatalogEntity(
+                new ColumnEntity(
                     parent,
                     name
                     )
@@ -139,11 +139,11 @@ implements Widgeon.Schema.Catalog
 
         @Override
         @SelectIterableMethod
-        public Iterable<Widgeon.Schema.Catalog> select(final Widgeon.Schema parent)
+        public Iterable<Widgeon.Schema.Catalog.Table.Column> select(final Widgeon.Schema.Catalog.Table parent)
             {
             return super.iterable(
                 this.query(
-                    "widgeon.schema.catalog-select-parent"
+                    "widgeon.column-select-parent"
                     ).setEntity(
                         "parent",
                         parent
@@ -153,11 +153,11 @@ implements Widgeon.Schema.Catalog
 
         @Override
         @SelectEntityMethod
-        public Widgeon.Schema.Catalog select(final Widgeon.Schema parent, final String name)
+        public Widgeon.Schema.Catalog.Table.Column select(final Widgeon.Schema.Catalog.Table parent, final String name)
             {
             return super.single(
                 super.query(
-                    "widgeon.schema.catalog-select-parent.name"
+                    "widgeon.column-select-parent.name"
                     ).setEntity(
                         "parent",
                         parent
@@ -169,57 +169,33 @@ implements Widgeon.Schema.Catalog
             }
         }
 
-    @Override
-    public Tables tables()
-        {
-        return new Tables()
-            {
-            @Override
-            public Table create(String name)
-                {
-                return null ;
-                }
-            @Override
-            public Table select(String name)
-                {
-                return null ;
-                }
-            @Override
-            public Iterable<Table> select()
-                {
-                return null ;
-                }
-            };
-        }
-
     /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected WidgeonSchemaCatalogEntity()
+    protected ColumnEntity()
         {
         super();
         }
 
-
     /**
-     * Create a new Catalog.
+     * Create a new Column.
      *
      */
-    protected WidgeonSchemaCatalogEntity(final Widgeon.Schema parent, final String name)
+    protected ColumnEntity(final Widgeon.Schema.Catalog.Table parent, final String name)
         {
         super(name);
         this.parent = parent ;
         }
 
     /**
-     * Our parent Schema.
+     * Our parent Table.
      *
      */
     @ManyToOne(
         fetch = FetchType.LAZY,
-        targetEntity = WidgeonSchemaEntity.class
+        targetEntity = TableEntity.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,
@@ -227,14 +203,14 @@ implements Widgeon.Schema.Catalog
         nullable = false,
         updatable = false
         )
-    private Widgeon.Schema parent ;
+    private Widgeon.Schema.Catalog.Table parent ;
 
     /**
-     * Access to our parent Schema.
+     * Access to our parent Table.
      *
      */
     @Override
-    public Widgeon.Schema parent()
+    public Widgeon.Schema.Catalog.Table parent()
         {
         return this.parent ;
         }

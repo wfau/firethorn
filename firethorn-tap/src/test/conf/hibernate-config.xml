@@ -51,8 +51,10 @@
         <property name="annotatedClasses">
             <list>
                 <value>uk.ac.roe.wfau.firethorn.widgeon.WidgeonEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.WidgeonSchemaEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.WidgeonSchemaCatalogEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.SchemaEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.CatalogEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.TableEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.ColumnEntity</value>
             </list>
         </property>
 
