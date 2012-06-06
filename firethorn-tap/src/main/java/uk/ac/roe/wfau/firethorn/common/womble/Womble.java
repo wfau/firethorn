@@ -1,7 +1,7 @@
 /*
  *
  */
-package uk.ac.roe.wfau.firethorn.common.entity ;
+package uk.ac.roe.wfau.firethorn.common.womble ;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -16,7 +16,8 @@ import org.springframework.context.ApplicationContext;
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 
 import uk.ac.roe.wfau.firethorn.common.ident.Identifier;
-import uk.ac.roe.wfau.firethorn.common.entity.GenericEntity;
+//import uk.ac.roe.wfau.firethorn.common.entity.GenericEntity;
+import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 
 /**
  * Spring and Hibernate toolkit.

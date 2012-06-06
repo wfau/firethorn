@@ -1,7 +1,7 @@
 /*
  *
  */
-package uk.ac.roe.wfau.firethorn.common.entity ;
+package uk.ac.roe.wfau.firethorn.common.womble ;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 import uk.ac.roe.wfau.firethorn.common.ident.Identifier;
+
+import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 
 /**
  * Spring and Hibernate toolkit.

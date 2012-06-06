@@ -7,16 +7,14 @@ import javax.sql.DataSource;
 
 import uk.ac.roe.wfau.firethorn.common.ident.Identifier;
 
-import uk.ac.roe.wfau.firethorn.common.entity.GenericEntity;
-import uk.ac.roe.wfau.firethorn.common.entity.NameSelector;
-import uk.ac.roe.wfau.firethorn.common.entity.IdentSelector;
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 
 /**
  * Metadata structure describing a database resource.
  *
  */
 public interface Widgeon
-extends GenericEntity
+extends Entity
     {
 
     /**
@@ -24,32 +22,67 @@ extends GenericEntity
      *
      */
     public static interface Factory
+    extends Entity.Factory<Widgeon>
         {
+        /**
+         * Create a new Widgeon.
+         * 
+         */
         public Widgeon create(String name, URI uri);
-        public Widgeon create(String name, URL url);
-        public Widgeon create(String name, DataSource src);
-
-        public Iterable<Widgeon> select();
-        public Widgeon select(Identifier ident);
 
         /**
-         * Our Schema factory.
+         * Create a new Widgeon.
+         * 
+         */
+        public Widgeon create(String name, URL url);
+
+        /**
+         * Create a new Widgeon.
+         * 
+         */
+        public Widgeon create(String name, DataSource src);
+
+        /**
+         * Access to our Schema factory.
          * 
          */
         public Widgeon.Schema.Factory schemas();
 
         }
 
+    /**
+     * Factory for this Widgeon's Schema.
+     *
+     */
     public Schemas schemas();
+
+    /**
+     * Factory for this Widgeon's Schema.
+     *
+     */
     public interface Schemas
         {
+        /**
+         * Create a new Schema.
+         *
+         */
         public Widgeon.Schema create(String name);
+
+        /**
+         * Select a Schema by name.
+         *
+         */
         public Widgeon.Schema select(String name);
+
+        /**
+         * Select all Schema in this Widgeon.
+         *
+         */
         public Iterable<Widgeon.Schema> select();
         }
 
     public interface Schema
-    extends GenericEntity
+    extends Entity
         {
         public Widgeon parent();
 
@@ -71,7 +104,7 @@ extends GenericEntity
             }
 
         public interface Catalog
-        extends GenericEntity
+        extends Entity
             {
             public Schema parent();
 
@@ -88,7 +121,7 @@ extends GenericEntity
                 }
 
             public interface Table
-            extends GenericEntity
+            extends Entity
                 {
                 public Catalog parent();
 
@@ -105,7 +138,7 @@ extends GenericEntity
                     }
 
                 public interface Column
-                extends GenericEntity
+                extends Entity
                     {
                     public Table parent();
 
@@ -120,29 +153,28 @@ extends GenericEntity
     /**
      * A core resource built from what IS.
      *
-     */
     public interface Core
     extends Widgeon
         {
-        /**
-         * The views avaiable for this resource.
-         *
-         */
-        public NameSelector<Teal> views();
+        public interface Views
+            {
+            public Widgeon.Teal create(String name);
+            public Widgeon.Teal select(String name);
+            public Iterable<Widgeon.Teal> select();
+            }
         }
+     */
 
     /**
      * A customised view of a resource.
      *
-     */
     public interface Teal
     extends Widgeon
         {
-        /**
-         * The parent resource.
-         *
-         */
         public Widgeon parent();
         }
+     */
+
+
     }
 

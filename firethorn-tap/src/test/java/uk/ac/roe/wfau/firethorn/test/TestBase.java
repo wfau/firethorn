@@ -24,7 +24,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Womble;
+import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 
 /**
  * Base class for tests.

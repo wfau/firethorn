@@ -25,11 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.common.ident.Identifier;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Womble;
-import uk.ac.roe.wfau.firethorn.common.entity.WombleImpl;
+import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 
-import uk.ac.roe.wfau.firethorn.common.entity.NameSelector;
-import uk.ac.roe.wfau.firethorn.common.entity.IdentSelector;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 
@@ -178,7 +175,7 @@ implements Widgeon
             {
             public Schema create(final String name)
                 {
-                return WombleImpl.womble().widgeons().schemas().create(
+                return womble().widgeons().schemas().create(
                     WidgeonEntity.this,
                     name
                     ) ;
@@ -186,21 +183,21 @@ implements Widgeon
 
             public Iterable<Schema> select()
                 {
-                return WombleImpl.womble().widgeons().schemas().select(
+                return womble().widgeons().schemas().select(
                     WidgeonEntity.this
                     ) ;
                 }
 
             public Schema select(final Identifier ident)
                 {
-                return WombleImpl.womble().widgeons().schemas().select(
+                return womble().widgeons().schemas().select(
                     ident
                     ) ;
                 }
 
             public Schema select(final String name)
                 {
-                return WombleImpl.womble().widgeons().schemas().select(
+                return womble().widgeons().schemas().select(
                     WidgeonEntity.this,
                     name
                     ) ;

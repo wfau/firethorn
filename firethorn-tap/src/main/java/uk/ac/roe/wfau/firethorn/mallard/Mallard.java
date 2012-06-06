@@ -7,16 +7,14 @@ import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 
 import uk.ac.roe.wfau.firethorn.common.ident.Identifier;
 
-import uk.ac.roe.wfau.firethorn.common.entity.GenericEntity;
-import uk.ac.roe.wfau.firethorn.common.entity.NameSelector;
-import uk.ac.roe.wfau.firethorn.common.entity.IdentSelector;
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 
 /**
  * A TAP service instance.
  *
  */
 public interface Mallard
-extends GenericEntity
+extends Entity
     {
 
     /**
@@ -24,7 +22,6 @@ extends GenericEntity
      *
      */
     public static interface Factory
-    extends IdentSelector<Mallard>
         {
         public Mallard create(String name);
         public Mallard create(String name, URI uri);
@@ -35,7 +32,7 @@ extends GenericEntity
      *
      */
     public interface Component
-    extends GenericEntity
+    extends Entity
         {
         public Mallard parent();
         public Widgeon resource();
@@ -47,7 +44,6 @@ extends GenericEntity
      */
     public Components components();
     public interface Components
-    extends IdentSelector<Component>
         {
         public Component insert(String name, Widgeon resource);
         public Component insert(String name, URI uri);

@@ -21,6 +21,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import uk.ac.roe.wfau.firethorn.common.womble.Womble;
+
 import uk.ac.roe.wfau.firethorn.common.ident.Identifier;
 import uk.ac.roe.wfau.firethorn.common.ident.LongIdent;
 
@@ -29,8 +31,8 @@ import uk.ac.roe.wfau.firethorn.common.ident.LongIdent;
  *
  */
 @Repository
-public abstract class AbstractFactory<InterfaceType extends GenericEntity, EntityType extends AbstractEntity>
-implements GenericEntity.Factory
+public abstract class AbstractFactory<InterfaceType extends Entity, EntityType extends AbstractEntity>
+implements Entity.Factory<InterfaceType>
     {
 
     /**
@@ -101,11 +103,12 @@ implements GenericEntity.Factory
      * Select a specific Entity by Identifier.
      *
      */
-    public EntityType select(final Identifier ident)
+    @Override
+    public InterfaceType select(final Identifier ident)
         {
         logger.debug("select(Class, Identifier)");
         logger.debug("  ident [{}]", (ident != null) ? null : ident.value());
-        return (EntityType) womble.hibernate().select(
+        return (InterfaceType) womble.hibernate().select(
             etype(),
             ident
             );

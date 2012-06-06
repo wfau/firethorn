@@ -17,9 +17,6 @@ import static org.junit.Assert.*;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional; 
 
-import uk.ac.roe.wfau.firethorn.common.entity.Womble;
-import uk.ac.roe.wfau.firethorn.common.entity.Womble.HibernateStuff;
-
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
@@ -50,57 +47,19 @@ extends TestBase
         super.after();
         }
 
-    //@Test
-    public void something()
-        {
-        logger.debug("something()");
-        assertNotNull(
-            womble()
-            );
-        assertNotNull(
-            womble().widgeons()
-            );
-        assertNotNull(
-            womble().widgeons().schemas()
-            );
-        }
-
-    //@Test
+    @Test
     public void simple()
         {
-        assertNotNull(
-            womble()
-            );
-
-        assertNotNull(
-            womble().hibernate()
-            );
-
-        assertEquals(
-            Womble.HibernateStuff.StateFullNess.STATE_FULL,
-            womble().hibernate().stateness()
-            );
-
-        assertNotNull(
-            womble().hibernate().statefull()
-            );
-
-        assertNotNull(
-            womble().hibernate().statefull().session()
-            );
-
         Widgeon one = womble().widgeons().create(
             "albert",
             URI.create("ivo://org.astrogrid.test/0001")
             );
-
         assertNotNull(
             one
             );
         assertNotNull(
             one.name()
             );
-
         logger.debug("One [{}][{}]", one.ident(), one.name());
 
         Widgeon two = womble().widgeons().create(
@@ -113,10 +72,9 @@ extends TestBase
         assertNotNull(
             two.name()
             );
-
         logger.debug("Two [{}][{}]", two.ident(), two.name());
 
-        womble().hibernate().statefull().session().flush();
+        //womble().hibernate().statefull().session().flush();
 
         for (Widgeon widgeon : womble().widgeons().select())
             {
@@ -126,7 +84,6 @@ extends TestBase
         }
 
     @Test
-    @Transactional
     public void nested()
         {
         Widgeon one = womble().widgeons().create(
@@ -143,22 +100,17 @@ extends TestBase
         two.schemas().create("two.left");
         two.schemas().create("two.right");
 
-        womble().hibernate().statefull().session().flush();
+        //womble().hibernate().statefull().session().flush();
 
-logger.debug("---------------");
         for (Widgeon widgeon : womble().widgeons().select())
             {
-logger.debug("-------");
+            logger.debug("-------");
             logger.debug("Widgeon [{}]", widgeon);
             for (Widgeon.Schema schema : widgeon.schemas().select())
                 {
                 logger.debug("  Schema [{}]", schema);
                 }
-logger.debug("-------");
             }
-logger.debug("---------------");
-
         }
-
     }
 

@@ -25,6 +25,9 @@ import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.GenericGenerator;
 
+import uk.ac.roe.wfau.firethorn.common.womble.Womble;
+import uk.ac.roe.wfau.firethorn.common.womble.WombleImpl;
+
 import uk.ac.roe.wfau.firethorn.common.ident.Identifier;
 import uk.ac.roe.wfau.firethorn.common.ident.LongIdent;
 import uk.ac.roe.wfau.firethorn.common.ident.AbstractIdent;
@@ -35,7 +38,7 @@ import uk.ac.roe.wfau.firethorn.common.ident.AbstractIdent;
  */
 @MappedSuperclass
 public abstract class AbstractEntity
-implements GenericEntity
+implements Entity
     {
 
     /**
@@ -60,7 +63,7 @@ implements GenericEntity
     public static final String DB_MODIFIED_COL = "modified" ;
 
     /**
-     * Access to our Womble instance - naff.
+     * Access to our Womble instance - naff, but works.
      *
      */
     protected Womble womble()
