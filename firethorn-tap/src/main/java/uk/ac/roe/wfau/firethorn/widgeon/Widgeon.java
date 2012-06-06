@@ -57,7 +57,7 @@ extends Entity
     public Schemas schemas();
 
     /**
-     * Factory for this Widgeon's Schema.
+     * Factory for Widgeon Schema.
      *
      */
     public interface Schemas
@@ -87,12 +87,32 @@ extends Entity
         public Widgeon parent();
 
         public interface Factory
+        extends Entity.Factory<Schema>
             {
-            public Schema select(Identifier ident);
+            /**
+             * Create a new Schema.
+             *
+             */
             public Schema create(Widgeon parent, String name);
+
+            /**
+             * Select a Schema by name.
+             *
+             */
             public Schema select(Widgeon parent, String name);
-            public Iterable<Schema> select();
+
+            /**
+             * Select all the Schema for a parent Widgeon.
+             *
+             */
             public Iterable<Schema> select(Widgeon parent);
+
+            /**
+             * Access to our Catalog factory.
+             * 
+             */
+            public Schema.Catalog.Factory catalogs();
+
             }
 
         public Catalogs catalogs();
@@ -109,7 +129,11 @@ extends Entity
             public Schema parent();
 
             public interface Factory
+            extends Entity.Factory<Catalog>
                 {
+                public Catalog create(Schema parent, String name);
+                public Catalog select(Schema parent, String name);
+                public Iterable<Catalog> select(Schema parent);
                 }
 
             public Tables tables();
@@ -126,7 +150,11 @@ extends Entity
                 public Catalog parent();
 
                 public interface Factory
+                extends Entity.Factory<Table>
                     {
+                    public Table create(Catalog parent, String name);
+                    public Table select(Catalog parent, String name);
+                    public Iterable<Table> select(Catalog parent);
                     }
 
                 public Columns tables();
@@ -143,7 +171,11 @@ extends Entity
                     public Table parent();
 
                     public interface Factory
+                    extends Entity.Factory<Column>
                         {
+                        public Column create(Table parent, String name);
+                        public Column select(Table parent, String name);
+                        public Iterable<Column> select(Table parent);
                         }
                     }
                 }

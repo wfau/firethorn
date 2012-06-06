@@ -32,7 +32,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 import uk.ac.roe.wfau.firethorn.common.ident.Identifier;
 
-import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
+//import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 
 /**
  * Spring and Hibernate toolkit.
@@ -253,9 +254,9 @@ implements Womble
          *
          */
         @Override
-        public AbstractEntity insert(final AbstractEntity entity)
+        public Entity insert(final Entity entity)
             {
-            logger.debug("insert(AbstractEntity)");
+            logger.debug("insert(Entity)");
             logger.debug("  entity [{}]", entity);
             try {
                 if (entity == null)
@@ -303,7 +304,7 @@ implements Womble
          *
          */
         @Override
-        public AbstractEntity select(final Class type, final Identifier ident)
+        public Entity select(final Class type, final Identifier ident)
             {
             logger.debug("select(Class, Identifier)");
             logger.debug("  class [{}]", type);
@@ -316,14 +317,14 @@ implements Womble
                 if (stateness() == StateFullNess.STATE_LESS)
                     {
                     logger.debug("Using state LESS session to select entity [{}][{}]", type, ident.value());
-                    return (AbstractEntity) stateless().session().get(
+                    return (Entity) stateless().session().get(
                         type,
                         ident.value()
                         );
                     }
                 else {
                     logger.debug("Using state FULL session to select entity [{}][{}]", type, ident.value());
-                    return (AbstractEntity) statefull().session().get(
+                    return (Entity) statefull().session().get(
                         type,
                         ident.value()
                         );
@@ -342,9 +343,9 @@ implements Womble
          *
          */
         @Override
-        public AbstractEntity update(final AbstractEntity entity)
+        public Entity update(final Entity entity)
             {
-            logger.debug("update(AbstractEntity)");
+            logger.debug("update(Entity)");
             logger.debug("  entity [{}]", entity);
             try {
                 if (entity == null)
@@ -394,9 +395,9 @@ implements Womble
          *
          */
         @Override
-        public void delete(final AbstractEntity entity)
+        public void delete(final Entity entity)
             {
-            logger.debug("delete(AbstractEntity)");
+            logger.debug("delete(Entity)");
             logger.debug("  entity [{}]", entity);
             try {
                 if (entity == null)
@@ -492,7 +493,7 @@ implements Womble
          *
          */
         @Override
-        public AbstractEntity single(final Query query)
+        public Entity single(final Query query)
             {
             return first(
                 query
@@ -504,7 +505,7 @@ implements Womble
          *
          */
         @Override
-        public AbstractEntity first(final Query query)
+        public Entity first(final Query query)
             {
             if (query == null)
                 {
@@ -519,7 +520,7 @@ implements Womble
                     );
                 if (results.next())
                     {
-                    return (AbstractEntity) results.get(0);
+                    return (Entity) results.get(0);
                     }
                 else {
                     return null ;

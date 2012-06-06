@@ -85,7 +85,7 @@ implements Widgeon
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<Widgeon, WidgeonEntity>
+    extends AbstractFactory<Widgeon>
     implements Widgeon.Factory
         {
 
@@ -98,8 +98,8 @@ implements Widgeon
         @SelectIterableMethod
         public Iterable<Widgeon> select()
             {
-            return this.iterable(
-                this.query(
+            return super.iterable(
+                super.query(
                     "widgeon-select"
                     )
                 );
@@ -107,18 +107,18 @@ implements Widgeon
 
         @Override
         @SelectEntityMethod
-        public WidgeonEntity select(final Identifier ident)
+        public Widgeon select(final Identifier ident)
             {
-            return this.select(
+            return super.select(
                 ident
                 );
             }
 
         @Override
         @CreateEntityMethod
-        public WidgeonEntity create(final String name, final URI uri)
+        public Widgeon create(final String name, final URI uri)
             {
-            return this.insert(
+            return super.insert(
                 new WidgeonEntity(
                     name,
                     uri
@@ -128,9 +128,9 @@ implements Widgeon
 
         @Override
         @CreateEntityMethod
-        public WidgeonEntity create(final String name, final URL url)
+        public Widgeon create(final String name, final URL url)
             {
-            return this.insert(
+            return super.insert(
                 new WidgeonEntity(
                     name,
                     url
@@ -140,9 +140,9 @@ implements Widgeon
 
         @Override
         @CreateEntityMethod
-        public WidgeonEntity create(final String name, final DataSource src)
+        public Widgeon create(final String name, final DataSource src)
             {
-            return this.insert(
+            return super.insert(
                 new WidgeonEntity(
                     name,
                     src
@@ -151,28 +151,29 @@ implements Widgeon
             }
 
         /**
-         * Our Schema factory.
+         * Our Autowired Schema factory.
          * 
          */
         @Autowired
-        protected SchemaEntity.Factory schemas ;
+        protected Schema.Factory schemas ;
 
         /**
          * Access to our Schema factory.
          * 
          */
         @Override
-        public SchemaEntity.Factory schemas()
+        public Schema.Factory schemas()
             {
             return this.schemas ;
             }
-
         }
 
-    public Widgeon.Schemas schemas()
+    @Override
+    public Schemas schemas()
         {
-        return new Widgeon.Schemas()
+        return new Schemas()
             {
+            @Override
             public Schema create(final String name)
                 {
                 return womble().widgeons().schemas().create(
@@ -181,6 +182,7 @@ implements Widgeon
                     ) ;
                 }
 
+            @Override
             public Iterable<Schema> select()
                 {
                 return womble().widgeons().schemas().select(
@@ -188,13 +190,7 @@ implements Widgeon
                     ) ;
                 }
 
-            public Schema select(final Identifier ident)
-                {
-                return womble().widgeons().schemas().select(
-                    ident
-                    ) ;
-                }
-
+            @Override
             public Schema select(final String name)
                 {
                 return womble().widgeons().schemas().select(

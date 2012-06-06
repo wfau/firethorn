@@ -16,8 +16,8 @@ import org.springframework.context.ApplicationContext;
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 
 import uk.ac.roe.wfau.firethorn.common.ident.Identifier;
-//import uk.ac.roe.wfau.firethorn.common.entity.GenericEntity;
-import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
+//import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 
 /**
  * Spring and Hibernate toolkit.
@@ -81,25 +81,25 @@ public interface Womble
          * Insert a new Entity.
          *
          */
-        public AbstractEntity insert(AbstractEntity entity);
+        public Entity insert(Entity entity);
 
         /**
          * Select an existing existing Entity by Identifier.
          *
          */
-        public AbstractEntity select(Class type, Identifier ident);
+        public Entity select(Class type, Identifier ident);
 
         /**
          * Update an existing Entity.
          *
          */
-        public AbstractEntity update(AbstractEntity entity);
+        public Entity update(Entity entity);
 
         /**
          * Delete an existing Entity.
          *
          */
-        public void delete(AbstractEntity entity);
+        public void delete(Entity entity);
 
         /**
          * Flush current changes to the database.
@@ -117,13 +117,13 @@ public interface Womble
          * Select a single Entity from a Query.
          *
          */
-        public AbstractEntity single(Query query);
+        public Entity single(Query query);
 
         /**
          * Select the first Entity from a Query.
          *
          */
-        public AbstractEntity first(Query query);
+        public Entity first(Query query);
 
         /**
          * The statefullness of the current thread.

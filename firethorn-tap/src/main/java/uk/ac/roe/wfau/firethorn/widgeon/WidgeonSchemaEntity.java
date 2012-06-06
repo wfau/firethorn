@@ -22,11 +22,10 @@ import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NamedQueries;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;  
 
 import uk.ac.roe.wfau.firethorn.common.ident.Identifier;
 
-import uk.ac.roe.wfau.firethorn.common.entity.NameSelector;
-import uk.ac.roe.wfau.firethorn.common.entity.IdentSelector;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 
@@ -35,17 +34,17 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectIterableMethod;
 
 /**
- * Core Widgeon implementations.
+ * Widgeon Schema implementation.
  *
  */
 @Entity
 @Table(
-    name = SchemaEntity.DB_TABLE_NAME,
+    name = WidgeonSchemaEntity.DB_TABLE_NAME,
     uniqueConstraints=
         @UniqueConstraint(
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
-                SchemaEntity.DB_PARENT_COL,
+                WidgeonSchemaEntity.DB_PARENT_COL,
                 }
             )
     )
@@ -53,19 +52,19 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectIterableMethod;
         {
         @NamedQuery(
             name  = "widgeon.schema-select-all",
-            query = "FROM SchemaEntity"
+            query = "FROM WidgeonSchemaEntity"
             ),
         @NamedQuery(
             name  = "widgeon.schema-select-parent",
-            query = "FROM SchemaEntity WHERE parent = :parent"
+            query = "FROM WidgeonSchemaEntity WHERE parent = :parent"
             ),
         @NamedQuery(
             name  = "widgeon.schema-select-parent.name",
-            query = "FROM SchemaEntity WHERE parent = :parent AND name = :name"
+            query = "FROM WidgeonSchemaEntity WHERE parent = :parent AND name = :name"
             )
         }
     )
-public class SchemaEntity
+public class WidgeonSchemaEntity
 extends AbstractEntity
 implements Widgeon.Schema
     {
@@ -75,7 +74,7 @@ implements Widgeon.Schema
      * 
      */
     private static Logger logger = LoggerFactory.getLogger(
-        SchemaEntity.class
+        WidgeonSchemaEntity.class
         );
 
     /**
@@ -96,21 +95,21 @@ implements Widgeon.Schema
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<Widgeon.Schema, SchemaEntity>
+    extends AbstractFactory<Widgeon.Schema>
     implements Widgeon.Schema.Factory
         {
 
         @Override
         public Class etype()
             {
-            return SchemaEntity.class ;
+            return WidgeonSchemaEntity.class ;
             }
 
         @SelectIterableMethod
         public Iterable<Widgeon.Schema> select()
             {
-            return this.iterable(
-                this.query(
+            return super.iterable(
+                super.query(
                     "widgeon.schema-select-all"
                     )
                 );
@@ -118,19 +117,19 @@ implements Widgeon.Schema
 
         @Override
         @SelectEntityMethod
-        public SchemaEntity select(final Identifier ident)
+        public Widgeon.Schema select(final Identifier ident)
             {
-            return this.select(
+            return super.select(
                 ident
                 );
             }
 
         @Override
         @CreateEntityMethod
-        public SchemaEntity create(final Widgeon parent, final String name)
+        public Widgeon.Schema create(final Widgeon parent, final String name)
             {
-            return this.insert(
-                new SchemaEntity(
+            return super.insert(
+                new WidgeonSchemaEntity(
                     parent,
                     name
                     )
@@ -141,8 +140,8 @@ implements Widgeon.Schema
         @SelectIterableMethod
         public Iterable<Widgeon.Schema> select(final Widgeon parent)
             {
-            return this.iterable(
-                this.query(
+            return super.iterable(
+                super.query(
                     "widgeon.schema-select-parent"
                     ).setEntity(
                         "parent",
@@ -155,8 +154,8 @@ implements Widgeon.Schema
         @SelectEntityMethod
         public Widgeon.Schema select(final Widgeon parent, final String name)
             {
-            return this.single(
-                this.query(
+            return super.single(
+                super.query(
                     "widgeon.schema-select-parent.name"
                     ).setEntity(
                         "parent",
@@ -167,23 +166,54 @@ implements Widgeon.Schema
                     )
                 );
             }
+
+        /**
+         * Our Autowired Catalog factory.
+         * 
+         */
+        @Autowired
+        protected Widgeon.Schema.Catalog.Factory catalogs ;
+
+        /**
+         * Access to our Catalog factory.
+         * 
+         */
+        @Override
+        public Widgeon.Schema.Catalog.Factory catalogs()
+            {
+            return this.catalogs ;
+            }
         }
 
+    @Override
     public Catalogs catalogs()
         {
         return new Catalogs()
             {
+            @Override
             public Catalog create(String name)
                 {
-                return null ;
+                return womble().widgeons().schemas().catalogs().create(
+                    WidgeonSchemaEntity.this,
+                    name
+                    ) ;
                 }
+
+            @Override
             public Catalog select(String name)
                 {
-                return null ;
+                return womble().widgeons().schemas().catalogs().select(
+                    WidgeonSchemaEntity.this,
+                    name
+                    ) ;
                 }
+
+            @Override
             public Iterable<Catalog> select()
                 {
-                return null ;
+                return womble().widgeons().schemas().catalogs().select(
+                    WidgeonSchemaEntity.this
+                    ) ;
                 }
             };
         }
@@ -193,7 +223,7 @@ implements Widgeon.Schema
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected SchemaEntity()
+    protected WidgeonSchemaEntity()
         {
         super();
         }
@@ -203,7 +233,7 @@ implements Widgeon.Schema
      * Create a new Schema.
      *
      */
-    protected SchemaEntity(final Widgeon parent, final String name)
+    protected WidgeonSchemaEntity(final Widgeon parent, final String name)
         {
         super(name);
         this.parent = parent ;

@@ -31,8 +31,8 @@ import uk.ac.roe.wfau.firethorn.common.ident.LongIdent;
  *
  */
 @Repository
-public abstract class AbstractFactory<InterfaceType extends Entity, EntityType extends AbstractEntity>
-implements Entity.Factory<InterfaceType>
+public abstract class AbstractFactory<EntityType extends Entity>
+implements Entity.Factory<EntityType>
     {
 
     /**
@@ -104,11 +104,11 @@ implements Entity.Factory<InterfaceType>
      *
      */
     @Override
-    public InterfaceType select(final Identifier ident)
+    public EntityType select(final Identifier ident)
         {
         logger.debug("select(Class, Identifier)");
         logger.debug("  ident [{}]", (ident != null) ? null : ident.value());
-        return (InterfaceType) womble.hibernate().select(
+        return (EntityType) womble.hibernate().select(
             etype(),
             ident
             );
@@ -118,9 +118,9 @@ implements Entity.Factory<InterfaceType>
      * Update an Entity.
      *
      */
-    public EntityType update(final InterfaceType entity)
+    public EntityType update(final EntityType entity)
         {
-        logger.debug("update(InterfaceType)");
+        logger.debug("update(EntityType)");
         logger.debug("  entity [{}]", entity);
         if (etype().isInstance(entity))
             {
@@ -142,9 +142,9 @@ implements Entity.Factory<InterfaceType>
      * Delete an Entity.
      *
      */
-    public void delete(final InterfaceType entity)
+    public void delete(final EntityType entity)
         {
-        logger.debug("delete(InterfaceType)");
+        logger.debug("delete(EntityType)");
         logger.debug("  entity [{}]", entity);
         if (etype().isInstance(entity))
             {
@@ -184,9 +184,9 @@ implements Entity.Factory<InterfaceType>
      * Select a single object.
      *
      */
-    public InterfaceType single(final Query query)
+    public EntityType single(final Query query)
         {
-        return (InterfaceType) womble.hibernate().single(
+        return (EntityType) womble.hibernate().single(
             query
             );
         }
@@ -195,9 +195,9 @@ implements Entity.Factory<InterfaceType>
      * Return the first result of a query.
      *
      */
-    public InterfaceType first(final Query query)
+    public EntityType first(final Query query)
         {
-        return (InterfaceType) womble.hibernate().first(
+        return (EntityType) womble.hibernate().first(
             query
             );
         }
@@ -206,14 +206,14 @@ implements Entity.Factory<InterfaceType>
      * Select an Iterable set of objects.
      *
      */
-    public Iterable<InterfaceType> iterable(final Query query)
+    public Iterable<EntityType> iterable(final Query query)
         {
-        return new Iterable<InterfaceType>()
+        return new Iterable<EntityType>()
             {
-            public Iterator<InterfaceType> iterator()
+            public Iterator<EntityType> iterator()
                 {
                 try {
-                    return (Iterator<InterfaceType>) query.iterate();
+                    return (Iterator<EntityType>) query.iterate();
                     }
                 catch (HibernateException ouch)
                     {

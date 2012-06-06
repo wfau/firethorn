@@ -47,7 +47,7 @@ extends TestBase
         super.after();
         }
 
-    @Test
+    //@Test
     public void simple()
         {
         Widgeon one = womble().widgeons().create(
@@ -86,21 +86,18 @@ extends TestBase
     @Test
     public void nested()
         {
-        Widgeon one = womble().widgeons().create(
-            "albert",
-            URI.create("ivo://org.astrogrid.test/0001")
+        nested(
+            womble().widgeons().create(
+                "widgeon-0001",
+                URI.create("ivo://org.astrogrid.test/0001")
+                )
             );
-        one.schemas().create("one.left");
-        one.schemas().create("one.right");
-
-        Widgeon two = womble().widgeons().create(
-            "albert",
-            URI.create("ivo://org.astrogrid.test/0001")
+        nested(
+            womble().widgeons().create(
+                "widgeon-0002",
+                URI.create("ivo://org.astrogrid.test/0002")
+                )
             );
-        two.schemas().create("two.left");
-        two.schemas().create("two.right");
-
-        //womble().hibernate().statefull().session().flush();
 
         for (Widgeon widgeon : womble().widgeons().select())
             {
@@ -109,8 +106,36 @@ extends TestBase
             for (Widgeon.Schema schema : widgeon.schemas().select())
                 {
                 logger.debug("  Schema [{}]", schema);
+                for (Widgeon.Schema.Catalog catalog : schema.catalogs().select())
+                    {
+                    logger.debug("  Catalog [{}]", catalog);
+                    }
                 }
             }
+        }
+
+    public void nested(Widgeon widgeon)
+        {
+        nested(
+            widgeon.schemas().create(
+                "schema-0001"
+                )
+            );
+        nested(
+            widgeon.schemas().create(
+                "schema-0002"
+                )
+            );
+        }
+
+    public void nested(Widgeon.Schema schema)
+        {
+        schema.catalogs().create(
+            "catalog-0001"
+            );
+        schema.catalogs().create(
+            "catalog-0002"
+            );
         }
     }
 
