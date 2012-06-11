@@ -1,0 +1,138 @@
+
+
+
+Create a metadata tree from JDBC resource
+
+
+    //Widgeon.Factory.create(DataSource)
+    Widgeon.Core.Factory.create(DataSource)
+
+
+    Reads the metadata from the JDBC connection and creates the tree.
+    Admin (owner) then 'disables' some of the elements, and sets display name on others.
+    Each element has a enabled|disabled status, enum EnabledStatus { ENABLED(), DISABLED(); }
+    Each element has a display name, which defaults to the name if not set.
+    Each element has an owner (even if is anon-xxx), every web session creates a new owner.
+
+    // Create a view of a resource
+    widgeon.views().select()
+    widgeon.views().create(String name)
+
+    // Can we skip this step for now ?
+    // Is there anything prevent us creating two resources (Widgeons) from the same JDBC entity ?
+    // If so, then this is not a problem at the moment.
+    // Later, we want OGSA-DAI to be able to figure out that two tables are in fact the same JDBC entity.
+
+------------------
+
+    // TAP service built by combining one or more *resources* (Widgeons).
+
+    // One Widgeon for the main ROE SQLServer system
+    // Separate views for each of the TAP services
+    // Data is stored because we don't want to query and process the JDBC metedata every time
+    // Reload method to re-query the JDBC metadata (reload) - what about JDBC passwords etc ?
+    // New tables in JDBC DataSource are automatically harvested.
+
+    // Adding views allows Mark to control visibility of each table. 
+    // 2MASS view just shows the 2MASS tables, plus the relevant neighbour tables.
+
+    // One Widgeon for each users data space - one whole database each.
+    // Default view shows all of the users tables. 
+
+    // How do we create new databases when users register ?
+    // How do we create new OGSA-DAI resources when users register ?
+    // How do we create new Widgeon resources when users register ?
+
+
+    // A user can publish a new view of their data, providing public access to some datasets.
+
+
+    // Basic TAP service, based on a view of a local resource.
+    // Combined TAP service, based on local and remote resources.
+
+    TAPService
+
+        // The resources this service provides access to. 
+        Iter<Widgeon.View> views.select()
+        Widgeon.View views.insert(Widgeon.View)
+
+        // Requests via this service get mapped from the view to the real resources.
+        // Short term fix to use 'schema' as the view name ?
+
+
+
+
+    Core
+        Schema
+            Catalog
+                Table
+                    Column
+
+    View
+        Schema
+            Catalog
+                Table
+                    Column
+
+
+    View objects are manufactured from 
+
+        Core id
+        View id
+
+            SchemaView
+                Schema id
+                View   id
+
+            TableView
+                Table id
+                View   id
+
+    Update problems - what happens when a new Schema/Catalog/Table/Column is added to the resource ?
+    This can be
+        a) Remote VOSI resource modifed and re-harvested
+        b) Local JDBC resource modifed and re-harvested
+
+        c) Local user database modifed and re-harvested
+
+    If we default to 'enabled' then local TAP services will start to publish things that haven't been reviewed.
+    If we default to 'disabled', then how do we get things enabled.
+    3rd state - NEW, indicates that a resource is disabled because it hasn't been reviewed yet. 
+    Everything starts as NEW, and then gets set to ENABLED or DISABLED.
+
+---------------------------
+
+    Use case for Widgeon.Views
+
+    SQLServer system has a 'uber-database' that mounts read only copies of all the databases.
+
+    We want the TAP service for the 2MASS database to provide the 2MASS tables,
+    plus the relevant neighbour tables.
+
+    We want the UKIDSS service for the UKIDSS database to provide the UKIDSS tables,
+    plus the relevant neighbour tables.
+
+    We want to hide the uber-database from public view.
+
+    We want OGSA-DAI to know that the 2MASS and UKIDSS databases are part of the local uber-database
+    and not to try to re-write joins between them.
+
+    We want OGSA-DAI to know that the user data is visible as part of the local uber-database
+    and not to try to re-write joins between them.
+
+    We want OGSA-DAI to write to the separate user data database.
+
+    Widgeon.Views gives us a mecanism to perform the smoke and mirrors
+    required to implement the above.
+
+---------------------------
+
+    Initial system - ship the Widgeon.Views and just make TAP service
+    use one or more Widgeon as the metadata source.
+
+
+
+
+
+
+

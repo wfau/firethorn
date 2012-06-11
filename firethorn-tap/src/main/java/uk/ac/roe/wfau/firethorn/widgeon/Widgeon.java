@@ -51,13 +51,13 @@ extends Entity
         }
 
     /**
-     * Factory for this Widgeon's Schema.
+     * Access to this Widgeon's Schema.
      *
      */
     public Schemas schemas();
 
     /**
-     * Factory for Widgeon Schema.
+     * Access to this Widgeon's Schema.
      *
      */
     public interface Schemas
@@ -69,13 +69,13 @@ extends Entity
         public Widgeon.Schema create(String name);
 
         /**
-         * Select a Schema by name.
+         * Select a Schema by name (unique within this Widgeon).
          *
          */
         public Widgeon.Schema select(String name);
 
         /**
-         * Select all Schema in this Widgeon.
+         * Select all the Schema in this Widgeon.
          *
          */
         public Iterable<Widgeon.Schema> select();
@@ -204,9 +204,9 @@ extends Entity
         {
         public interface Views
             {
-            public Widgeon.Teal create(String name);
-            public Widgeon.Teal select(String name);
-            public Iterable<Widgeon.Teal> select();
+            public Widgeon.View create(String name);
+            public Widgeon.View select(String name);
+            public Iterable<Widgeon.View> select();
             }
         }
      */
@@ -214,7 +214,7 @@ extends Entity
     /**
      * A customised view of a resource.
      *
-    public interface Teal
+    public interface View
     extends Widgeon
         {
         public Widgeon parent();

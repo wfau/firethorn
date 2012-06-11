@@ -26,6 +26,14 @@ import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 import uk.ac.roe.wfau.firethorn.common.ident.Identifier;
 import uk.ac.roe.wfau.firethorn.common.ident.LongIdent;
 
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.DeleteAtomicMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.DeleteEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
+
 /**
  * Generic base class for a persistent Entity Factory.
  *
@@ -90,6 +98,7 @@ implements Entity.Factory<EntityType>
      * Insert a new Entity into the database.
      *
      */
+    @CreateEntityMethod
     public EntityType insert(final EntityType entity)
         {
         logger.debug("insert(EntityType)");
@@ -104,6 +113,7 @@ implements Entity.Factory<EntityType>
      *
      */
     @Override
+    @SelectEntityMethod
     public EntityType select(final Identifier ident)
         {
         logger.debug("select(Class, Identifier)");
@@ -118,6 +128,7 @@ implements Entity.Factory<EntityType>
      * Update an Entity.
      *
      */
+    @UpdateEntityMethod
     public EntityType update(final EntityType entity)
         {
         logger.debug("update(EntityType)");
@@ -142,6 +153,7 @@ implements Entity.Factory<EntityType>
      * Delete an Entity.
      *
      */
+    @DeleteEntityMethod
     public void delete(final EntityType entity)
         {
         logger.debug("delete(EntityType)");
@@ -184,6 +196,7 @@ implements Entity.Factory<EntityType>
      * Select a single object.
      *
      */
+    @SelectEntityMethod
     public EntityType single(final Query query)
         {
         return (EntityType) womble.hibernate().single(
@@ -195,6 +208,7 @@ implements Entity.Factory<EntityType>
      * Return the first result of a query.
      *
      */
+    @SelectEntityMethod
     public EntityType first(final Query query)
         {
         return (EntityType) womble.hibernate().first(
@@ -206,10 +220,12 @@ implements Entity.Factory<EntityType>
      * Select an Iterable set of objects.
      *
      */
+    @SelectEntityMethod
     public Iterable<EntityType> iterable(final Query query)
         {
         return new Iterable<EntityType>()
             {
+            @SelectEntityMethod
             public Iterator<EntityType> iterator()
                 {
                 try {

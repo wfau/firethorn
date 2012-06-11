@@ -13,11 +13,11 @@ import org.hibernate.HibernateException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.context.ApplicationContext;
 
-import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
-
-import uk.ac.roe.wfau.firethorn.common.ident.Identifier;
-//import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.common.ident.Identifier;
+
+import uk.ac.roe.wfau.firethorn.mallard.Mallard;
+import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 
 /**
  * Spring and Hibernate toolkit.
@@ -230,6 +230,12 @@ public interface Womble
      * 
      */
     public Widgeon.Factory widgeons();
+
+    /**
+     * Our Mallard factory.
+     * 
+     */
+    public Mallard.Factory mallards();
 
     }
 

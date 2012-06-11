@@ -29,11 +29,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;  
 
-import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.ident.Identifier;
 
-//import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
+import uk.ac.roe.wfau.firethorn.mallard.Mallard;
 
 /**
  * Spring and Hibernate toolkit.
@@ -798,6 +798,22 @@ implements Womble
     public Widgeon.Factory widgeons()
         {
         return this.widgeons ;
+        }
+
+    /**
+     * Our Mallard factory.
+     * 
+     */
+    @Autowired
+    protected Mallard.Factory mallards ;
+
+    /**
+     * Our Mallard factory.
+     * 
+     */
+    public Mallard.Factory mallards()
+        {
+        return this.mallards ;
         }
 
     }

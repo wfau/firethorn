@@ -16,9 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
     )
 @Transactional(
     readOnly=false,
-    propagation=Propagation.REQUIRED
+    propagation=Propagation.REQUIRES_NEW
     )
-public @interface CreateEntityMethod
+public @interface UpdateAtomicMethod
     {
     }
 

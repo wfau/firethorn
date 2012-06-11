@@ -22,32 +22,70 @@ extends Entity
      *
      */
     public static interface Factory
+    extends Entity.Factory<Mallard>
         {
         public Mallard create(String name);
-        public Mallard create(String name, URI uri);
+
+        /**
+         * Access to our Job factory.
+         * 
+         */
+        public Job.Factory jobs();
         }
 
     /**
-     * A service component containing a resource.
+     * The collection of resources used by this service.
      *
      */
-    public interface Component
+    public Widgeons widgeons();
+    public interface Widgeons
+    extends Entity.Factory<Widgeon>
+        {
+        public void insert(Widgeon widgeon);
+        }
+
+    /**
+     * An ADQL query.
+     *
+     */
+    public interface Job
     extends Entity
         {
-        public Mallard parent();
-        public Widgeon resource();
+
+        public interface Factory
+        extends Entity.Factory<Job>
+            {
+
+            public Job create(Mallard parent, String adql);
+            public Iterable<Job> select(Mallard parent);
+
+            }        
+
+        public Status status();
+        public enum Status
+            {
+            PENDING(),
+            RUNNING(),
+            COMPLETED(),
+            FAILED();
+            }; 
+
+        public String adql();
+
+        // Results
+
         }
 
     /**
-     * The collection of resources provided by this service.
+     * Job list for this TAP service.
      *
      */
-    public Components components();
-    public interface Components
+    public Jobs jobs();
+    public interface Jobs
         {
-        public Component insert(String name, Widgeon resource);
-        public Component insert(String name, URI uri);
-        public Component select(URI uri);
+        public Job create(String adql);
+        public Iterable<Job> select();
         }
+
     }
 

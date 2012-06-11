@@ -15,10 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
     RetentionPolicy.RUNTIME
     )
 @Transactional(
-    readOnly=true,
+    readOnly=false,
     propagation=Propagation.REQUIRED
     )
-public @interface SelectIterableMethod
+public @interface DeleteEntityMethod
     {
     }
 

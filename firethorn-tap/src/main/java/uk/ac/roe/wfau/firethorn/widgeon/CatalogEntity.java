@@ -31,7 +31,6 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectIterableMethod;
 
 /**
  * Widgeon Catalog implementation.
@@ -106,7 +105,7 @@ implements Widgeon.Schema.Catalog
             }
 
         @Override
-        @SelectIterableMethod
+        @SelectEntityMethod
         public Iterable<Widgeon.Schema.Catalog> select()
             {
             return super.iterable(
@@ -116,6 +115,7 @@ implements Widgeon.Schema.Catalog
                 );
             }
 
+/*
         @Override
         @SelectEntityMethod
         public Widgeon.Schema.Catalog select(final Identifier ident)
@@ -124,6 +124,7 @@ implements Widgeon.Schema.Catalog
                 ident
                 );
             }
+ */
 
         @Override
         @CreateEntityMethod
@@ -138,7 +139,7 @@ implements Widgeon.Schema.Catalog
             }
 
         @Override
-        @SelectIterableMethod
+        @SelectEntityMethod
         public Iterable<Widgeon.Schema.Catalog> select(final Widgeon.Schema parent)
             {
             return super.iterable(
