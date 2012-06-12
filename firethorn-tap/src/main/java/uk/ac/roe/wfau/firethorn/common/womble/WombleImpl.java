@@ -22,8 +22,7 @@ import org.springframework.context.ApplicationContext;
 
 import org.springframework.dao.DataAccessException;
 
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
-import org.springframework.orm.hibernate4.HibernateExceptionTranslator;
+//import org.springframework.orm.hibernate4.HibernateExceptionTranslator;
 
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.InitializingBean;
@@ -155,8 +154,8 @@ implements Womble
      * Our autowired Hibernate ExceptionTranslator.
      *
      */
-    @Autowired
-    private HibernateExceptionTranslator translator;
+//    @Autowired
+//    private HibernateExceptionTranslator translator;
 
     /**
      * Our Hibernate components.
@@ -186,9 +185,12 @@ implements Womble
                 ouch.getClass().getName(),
                 ouch.getMessage()
                 );
+            throw ouch ;
+/*
             return translator.translateExceptionIfPossible(
                 ouch
                 );
+ */
             }
 
         /**

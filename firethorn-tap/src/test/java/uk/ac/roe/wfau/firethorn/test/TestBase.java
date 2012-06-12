@@ -77,13 +77,13 @@ public abstract class TestBase
     public void after()
         {
         logger.debug("after()");
-        this.flush();
+        //this.flush();
         }
 
     public void flush()
         {
         logger.debug("flush()");
-//        womble().hibernate().flush();
+        //womble().hibernate().flush();
         }
 
     /**

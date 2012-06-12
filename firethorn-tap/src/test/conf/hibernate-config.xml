@@ -40,8 +40,9 @@
 
     <!--+
         | Spring factory for Hibernate SessionFactory.
-        +-->
     <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        +-->
+    <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
 
         <property name="dataSource" ref="FireThornDatabase"/>
 
@@ -50,6 +51,8 @@
             +-->
         <property name="annotatedClasses">
             <list>
+                <value>uk.ac.roe.wfau.firethorn.mallard.MallardEntity</value>
+
                 <value>uk.ac.roe.wfau.firethorn.widgeon.WidgeonEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.widgeon.SchemaEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.widgeon.CatalogEntity</value>
@@ -92,8 +95,11 @@ hibernate.jdbc.batch_size
 
     <!--+
         | Create our HibernateTransactionManager instance.
-        +-->
     <bean id="FireThornTransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="FireThornHibernateSessionFactory"/>
+    </bean>
+        +-->
+    <bean id="FireThornTransactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
         <property name="sessionFactory" ref="FireThornHibernateSessionFactory"/>
     </bean>
 

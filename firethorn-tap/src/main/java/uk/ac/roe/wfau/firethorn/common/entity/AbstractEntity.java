@@ -57,7 +57,7 @@ implements Entity
     public static final String DB_IDENT_COL  = "ident" ;
 
     public static final String DB_GEN_NAME   = "abstract-ident" ;
-    public static final String DB_GEN_METHOD = "hilo" ;
+    public static final String DB_GEN_METHOD = "identity" ;
 
     public static final String DB_CREATED_COL  = "created"  ;
     public static final String DB_MODIFIED_COL = "modified" ;
@@ -207,10 +207,53 @@ implements Entity
             );
         builder.append("][");
         builder.append(
-            this.ident
+            this.ident()
+            );
+        builder.append("][");
+        builder.append(
+            this.hashCode()
             );
         builder.append("]");
         return builder.toString();
+        }
+
+    /**
+     * Generic equals(Object) method.
+     *
+     */
+    @Override
+    public boolean equals(Object that)
+        {
+        if (that != null)
+            {
+            if (this == that)
+                {
+                return true ;
+                }                            
+            if (that instanceof Entity)
+                {
+                return this.ident().equals(
+                    ((Entity)that).ident()
+                    );
+                }
+            }
+        return false ;
+        }
+
+    /**
+     * Generic hashCode() method.
+     *
+     */
+    @Override
+    public int hashCode()
+        {
+        if (ident != null)
+            {
+            return ident.hashCode() ;
+            }
+        else {
+            return -1 ;
+            }        
         }
 
     }

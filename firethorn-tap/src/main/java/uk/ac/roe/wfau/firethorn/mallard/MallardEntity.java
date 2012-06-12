@@ -7,10 +7,21 @@ package uk.ac.roe.wfau.firethorn.mallard ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Iterator;
+
 import javax.persistence.Table;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.UniqueConstraint;
+
+import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
 
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQuery;
@@ -26,10 +37,12 @@ import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonEntity;
 
 /**
  * Core Widgeon implementations.
@@ -96,17 +109,6 @@ implements Mallard
                 );
             }
 
-        /*
-        @Override
-        @SelectEntityMethod
-        public Mallard select(final Identifier ident)
-            {
-            return super.select(
-                ident
-                );
-            }
-        */
-
         @Override
         @CreateEntityMethod
         public Mallard create(String name)
@@ -115,6 +117,20 @@ implements Mallard
                 new MallardEntity(
                     name
                     )
+                );
+            }
+
+        @Override
+        @CreateEntityMethod
+        public void join(Mallard mallard, Widgeon widgeon)
+            {
+logger.debug("join(Mallard, Widgeon)");
+logger.debug("  This [{}]", this);
+logger.debug("  That [{}]", mallard);
+logger.debug("  Theo [{}]", widgeon);
+
+            ((MallardEntity) mallard).xwidgeons.add(
+                (WidgeonEntity) widgeon
                 );
             }
 
@@ -182,19 +198,105 @@ implements Mallard
     /**
      * The collection of resources used by this service.
      *
+        fetch = FetchType.LAZY,
+        cascade = CascadeType.ALL,
+     */
+    @ManyToMany(
+        targetEntity = WidgeonEntity.class
+        )
+    @JoinTable(
+        name="mallard_widgeons",
+        joinColumns = @JoinColumn(
+            name="mallard_x",
+            nullable = false,
+            updatable = false
+            ),
+        inverseJoinColumns = @JoinColumn(
+            name="widgeon_x",
+            nullable = false,
+            updatable = false
+            )
+        )
+    private Set<Widgeon> xwidgeons = new HashSet<Widgeon>(0);
+    public Set<Widgeon> getWidgeons()
+        {
+        return xwidgeons ;
+        }
+    public void setWidgeons(Set<Widgeon> set)
+        {
+        this.xwidgeons = set ;
+        }
+
+/*
+*/
+
+
+/*
+@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable(name = "stock_category", catalog = "mkyongdb", joinColumns = { 
+			@JoinColumn(name = "STOCK_ID", nullable = false, updatable = false) }, 
+			inverseJoinColumns = { @JoinColumn(name = "CATEGORY_ID", 
+					nullable = false, updatable = false) })
+*/
+
+    /**
+     * The collection of resources used by this service.
+     * Need to wrap the Iterable because Java generics don't match interface to implementation.
+     *
      */
     @Override
     public Widgeons widgeons()
         {
-        return null ;
-        }
+        return new Widgeons()
+            {
+            public void insert(Widgeon widgeon)
+                {
+logger.debug("insert(Widgeon)");
+logger.debug("  This [{}]", MallardEntity.this);
+logger.debug("  That [{}]", widgeon);
+logger.debug("  Set  [{}]", xwidgeons);
 /*
-    public interface Widgeons
-    extends Entity.Factory<Widgeon>
-        {
-        public void insert(Widgeon widgeon);
-        }
-*/
+                womble().mallards().join(
+                    MallardEntity.this,
+                    widgeon
+                    );
+ */
+                xwidgeons.add(
+                    widgeon
+                    );
+                }
 
+            public Iterable<Widgeon> select()
+                {
+                return xwidgeons ;
+/*
+                return new Iterable<Widgeon>()
+                    {
+                    public Iterator<Widgeon> iterator()
+                        {
+                        return new Iterator<Widgeon>()
+                            {
+                            private Iterator<Widgeon> iter = xwidgeons.iterator();
+                            public Widgeon next()
+                                {
+                                return iter.next();
+                                }
+                            public boolean hasNext()
+                                {
+                                return iter.hasNext();
+                                }
+                            public void remove()
+                                {
+                                throw new UnsupportedOperationException(
+                                    "Iterator.remove() not supported"
+                                    );
+                                }
+                            };
+                        }
+                    };
+ */
+                }
+            };
+        }
     }
 

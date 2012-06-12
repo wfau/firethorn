@@ -26,6 +26,8 @@ extends Entity
         {
         public Mallard create(String name);
 
+        public void join(Mallard mallard, Widgeon widgeon);
+
         /**
          * Access to our Job factory.
          * 
@@ -39,9 +41,9 @@ extends Entity
      */
     public Widgeons widgeons();
     public interface Widgeons
-    extends Entity.Factory<Widgeon>
         {
         public void insert(Widgeon widgeon);
+        public Iterable<Widgeon> select();
         }
 
     /**
