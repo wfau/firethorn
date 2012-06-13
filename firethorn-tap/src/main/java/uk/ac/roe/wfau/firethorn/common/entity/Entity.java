@@ -71,5 +71,18 @@ public interface Entity
      */
     public Date modified();
 
+    /**
+     * Update (store) this Entity in the database.
+     *
+     */
+    public void update();
+
+    /**
+     * Delete this Entity from the database.
+     *
+     */
+    public void delete();
+
+
     }
 

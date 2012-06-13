@@ -22,6 +22,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.ac.roe.wfau.firethorn.common.womble.Womble;
@@ -40,7 +41,10 @@ import uk.ac.roe.wfau.firethorn.common.womble.Womble;
         "classpath:component-config.xml"
         }
     )  
-@Transactional
+@Transactional(
+    readOnly=false,
+    propagation=Propagation.REQUIRES_NEW
+    )
 @TransactionConfiguration(
     transactionManager="FireThornTransactionManager",
     defaultRollback = false
@@ -77,13 +81,11 @@ public abstract class TestBase
     public void after()
         {
         logger.debug("after()");
-        //this.flush();
         }
 
     public void flush()
         {
         logger.debug("flush()");
-        //womble().hibernate().flush();
         }
 
     /**

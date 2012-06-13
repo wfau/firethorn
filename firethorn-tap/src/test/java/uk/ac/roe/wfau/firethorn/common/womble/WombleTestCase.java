@@ -58,21 +58,20 @@ extends TestBase
             womble().hibernate()
             );
 
-        assertEquals(
-            Womble.HibernateStuff.StateFullNess.STATE_FULL,
-            womble().hibernate().stateness()
+        assertNotNull(
+            womble().hibernate().factory()
             );
 
         assertNotNull(
-            womble().hibernate().statefull()
-            );
-
-        assertNotNull(
-            womble().hibernate().statefull().session()
+            womble().hibernate().session()
             );
 
         assertNotNull(
             womble().widgeons()
+            );
+
+        assertNotNull(
+            womble().mallards()
             );
         }
     }

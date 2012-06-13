@@ -11,6 +11,7 @@ import org.hibernate.StatelessSession;
 import org.hibernate.HibernateException;
 
 import org.springframework.dao.DataAccessException;
+
 import org.springframework.context.ApplicationContext;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
@@ -72,6 +73,12 @@ public interface Womble
         public SessionFactory factory();
 
         /**
+         * Get the current Hibernate Session.
+         *
+         */
+        public Session session();
+
+        /**
          * Get a named query.
          *
          */
@@ -125,104 +132,6 @@ public interface Womble
          */
         public Entity first(Query query);
 
-        /**
-         * The statefullness of the current thread.
-         *
-         */
-        public enum StateFullNess
-            {
-            STATE_FULL(),
-            STATE_LESS();
-            }
-
-        /**
-         * Get the statefullness of the current thread.
-         *
-         */
-        public StateFullNess stateness();
-
-        /**
-         * Set the statefullness of the current thread.
-         *
-         */
-        public void stateness(StateFullNess state);
-
-        /**
-         * Access to the current state FULL state.
-         *
-         */
-        public StateFullState statefull();
-
-        /**
-         * Inner class to hold Hibernate state FULL Session state.
-         *
-         */
-        public interface StateFullState
-            {
-            /**
-             * The current Hibernate Session.
-             *
-             */
-            public Session session();
-
-            }
-
-        /**
-         * Access to the current state LESS state.
-         *
-         */
-        public StateLessState stateless();
-
-        /**
-         * Inner class to hold Hibernate state LESS Session state.
-         *
-         */
-        public interface StateLessState
-            {
-
-            /**
-             * The current StatelessSession.
-             *
-             */
-            public StatelessSession session();
-
-            /**
-             * The current Transaction.
-             *
-             */
-            public Transaction transaction();
-
-            /**
-             * Begin a new Transaction.
-             *
-             */
-            public void begin();
-
-            /**
-             * Commit the current Transaction.
-             *
-             */
-            public void commit();
-
-            /**
-             * Rollback the current Transaction.
-             *
-             */
-            public void rollback();
-
-            /**
-             * Close the current Transaction.
-             *
-             */
-            public void close();
-
-            /**
-             * Release the current StatelessState.
-             *
-             */
-            public void done();
-
-            }        
         }        
 
     /**

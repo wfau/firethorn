@@ -12,6 +12,8 @@ import java.net.URL;
 import javax.persistence.Table;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.ManyToOne;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -36,7 +38,10 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
  * Widgeon Schema implementation.
  *
  */
-@Entity
+@Entity()
+@Access(
+    AccessType.FIELD
+    )
 @Table(
     name = SchemaEntity.DB_TABLE_NAME,
     uniqueConstraints=
@@ -114,16 +119,6 @@ implements Widgeon.Schema
                 );
             }
 
-/*
-        @Override
-        @SelectEntityMethod
-        public Widgeon.Schema select(final Identifier ident)
-            {
-            return super.select(
-                ident
-                );
-            }
-*/
         @Override
         @CreateEntityMethod
         public Widgeon.Schema create(final Widgeon parent, final String name)

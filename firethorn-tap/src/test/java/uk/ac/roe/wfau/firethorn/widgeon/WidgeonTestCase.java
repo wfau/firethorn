@@ -17,6 +17,7 @@ import static org.junit.Assert.*;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional; 
 
+import uk.ac.roe.wfau.firethorn.common.ident.Identifier;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
@@ -47,7 +48,7 @@ extends TestBase
         super.after();
         }
 
-    //@Test
+    @Test
     public void simple()
         {
         Widgeon one = womble().widgeons().create(
@@ -74,7 +75,7 @@ extends TestBase
             );
         logger.debug("Two [{}][{}]", two.ident(), two.name());
 
-        womble().hibernate().statefull().session().flush();
+        womble().hibernate().flush();
 
         for (Widgeon widgeon : womble().widgeons().select())
             {
@@ -99,7 +100,7 @@ extends TestBase
                 )
             );
 
-        womble().hibernate().statefull().session().flush();
+        womble().hibernate().flush();
 
         for (Widgeon widgeon : womble().widgeons().select())
             {

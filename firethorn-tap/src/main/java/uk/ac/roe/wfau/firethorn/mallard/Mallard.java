@@ -26,8 +26,6 @@ extends Entity
         {
         public Mallard create(String name);
 
-        public void join(Mallard mallard, Widgeon widgeon);
-
         /**
          * Access to our Job factory.
          * 

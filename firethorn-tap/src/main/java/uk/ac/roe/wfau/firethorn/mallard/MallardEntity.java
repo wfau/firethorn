@@ -14,14 +14,15 @@ import java.util.Iterator;
 import javax.persistence.Table;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.UniqueConstraint;
-
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.FetchType;
+import javax.persistence.CascadeType;
 import javax.persistence.OneToMany;
 import javax.persistence.ManyToMany;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
-import javax.persistence.CascadeType;
-import javax.persistence.FetchType;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQuery;
@@ -48,7 +49,10 @@ import uk.ac.roe.wfau.firethorn.widgeon.WidgeonEntity;
  * Core Widgeon implementations.
  *
  */
-@Entity
+@Entity()
+@Access(
+    AccessType.FIELD
+    )
 @Table(
     name = MallardEntity.DB_TABLE_NAME
     )
@@ -120,20 +124,6 @@ implements Mallard
                 );
             }
 
-        @Override
-        @CreateEntityMethod
-        public void join(Mallard mallard, Widgeon widgeon)
-            {
-logger.debug("join(Mallard, Widgeon)");
-logger.debug("  This [{}]", this);
-logger.debug("  That [{}]", mallard);
-logger.debug("  Theo [{}]", widgeon);
-
-            ((MallardEntity) mallard).xwidgeons.add(
-                (WidgeonEntity) widgeon
-                );
-            }
-
         /**
          * Our Autowired Job factory.
          * 
@@ -166,7 +156,7 @@ logger.debug("  Theo [{}]", widgeon);
      * Create a new MallardEntity.
      *
      */
-    private MallardEntity(String name)
+    protected MallardEntity(String name)
         {
         super(name);
         }
@@ -198,10 +188,10 @@ logger.debug("  Theo [{}]", widgeon);
     /**
      * The collection of resources used by this service.
      *
-        fetch = FetchType.LAZY,
-        cascade = CascadeType.ALL,
      */
     @ManyToMany(
+        fetch = FetchType.LAZY,
+        cascade = CascadeType.ALL,
         targetEntity = WidgeonEntity.class
         )
     @JoinTable(
@@ -217,27 +207,15 @@ logger.debug("  Theo [{}]", widgeon);
             updatable = false
             )
         )
-    private Set<Widgeon> xwidgeons = new HashSet<Widgeon>(0);
-    public Set<Widgeon> getWidgeons()
+    private Set<WidgeonEntity> widgeons = new HashSet<WidgeonEntity>(0);
+    protected Set<WidgeonEntity> getWidgeons()
         {
-        return xwidgeons ;
+        return this.widgeons ;
         }
-    public void setWidgeons(Set<Widgeon> set)
+    protected void setWidgeons(Set<WidgeonEntity> set)
         {
-        this.xwidgeons = set ;
+        this.widgeons = set ;
         }
-
-/*
-*/
-
-
-/*
-@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinTable(name = "stock_category", catalog = "mkyongdb", joinColumns = { 
-			@JoinColumn(name = "STOCK_ID", nullable = false, updatable = false) }, 
-			inverseJoinColumns = { @JoinColumn(name = "CATEGORY_ID", 
-					nullable = false, updatable = false) })
-*/
 
     /**
      * The collection of resources used by this service.
@@ -254,47 +232,35 @@ logger.debug("  Theo [{}]", widgeon);
 logger.debug("insert(Widgeon)");
 logger.debug("  This [{}]", MallardEntity.this);
 logger.debug("  That [{}]", widgeon);
-logger.debug("  Set  [{}]", xwidgeons);
-/*
-                womble().mallards().join(
-                    MallardEntity.this,
-                    widgeon
-                    );
- */
-                xwidgeons.add(
-                    widgeon
+logger.debug("  Set  [{}]", widgeons);
+                widgeons.add(
+                    (WidgeonEntity) widgeon
                     );
                 }
-
             public Iterable<Widgeon> select()
                 {
-                return xwidgeons ;
-/*
                 return new Iterable<Widgeon>()
                     {
                     public Iterator<Widgeon> iterator()
                         {
                         return new Iterator<Widgeon>()
                             {
-                            private Iterator<Widgeon> iter = xwidgeons.iterator();
-                            public Widgeon next()
-                                {
-                                return iter.next();
-                                }
+                            private Iterator<WidgeonEntity> iter = widgeons.iterator();
                             public boolean hasNext()
                                 {
                                 return iter.hasNext();
                                 }
+                            public Widgeon next()
+                                {
+                                return (Widgeon) iter.next();
+                                }
                             public void remove()
                                 {
-                                throw new UnsupportedOperationException(
-                                    "Iterator.remove() not supported"
-                                    );
+                                iter.remove();
                                 }
                             };
                         }
                     };
- */
                 }
             };
         }

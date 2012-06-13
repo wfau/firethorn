@@ -66,10 +66,10 @@
         | http://stackoverflow.com/questions/1965454/spring-transaction-show-in-log
 	    +-->
 	<logger name="org.springframework.transaction">
-		<level value="INFO" />
+		<level value="DEBUG" />
 	</logger>
-	<logger name="org.springframework.orm.hibernate3">
-		<level value="INFO" />
+	<logger name="org.springframework.orm">
+		<level value="DEBUG" />
 	</logger>
 
 	<!--+

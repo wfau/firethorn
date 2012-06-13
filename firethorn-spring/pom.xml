@@ -50,8 +50,8 @@
 
 		<!--org.spring.version>3.0.5.RELEASE</org.spring.version-->
 		<org.spring.version>3.1.1.RELEASE</org.spring.version>
-        <org.hibernate.version>3.6.9.Final</org.hibernate.version>
-        <!--org.hibernate.version>4.1.4.Final</org.hibernate.version-->
+        <!--org.hibernate.version>3.6.9.Final</org.hibernate.version-->
+        <org.hibernate.version>4.1.4.Final</org.hibernate.version>
 
 		<!--org.aspectj.version>1.6.11</org.aspectj.version-->
 

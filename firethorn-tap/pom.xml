@@ -119,13 +119,12 @@
         <!--+
             | Postgresql database driver (for testing only).
             | When deployed the container should provide the correct version of the driver.
+            +-->
     	<dependency>
     		<groupId>postgresql</groupId>
     		<artifactId>postgresql</artifactId>
-            <version>8.4-701.jdbc4</version>
             <scope>test</scope>
     	</dependency>
-            +-->
 
         <!--+
             | HSQLDB database and JDBC driver.
@@ -136,6 +135,17 @@
             <artifactId>hsqldb</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!--+
+            | Project Lombok annotations.
+            | http://projectlombok.org/
+            +-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <!--scope>provided</scope-->
+        </dependency> 
+
 
     </dependencies>
 

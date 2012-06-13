@@ -21,6 +21,24 @@ extends SimpleIdent<Long>
             );
         }
 
+    public LongIdent(int value)
+        {
+        super(
+            new Long(
+                value
+                )
+            ) ;
+        }
+
+    public LongIdent(long value)
+        {
+        super(
+            new Long(
+                value
+                )
+            ) ;
+        }
+
     public LongIdent(Long value)
         {
         super(value) ;

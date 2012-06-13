@@ -130,9 +130,32 @@ Create a metadata tree from JDBC resource
     Initial system - ship the Widgeon.Views and just make TAP service
     use one or more Widgeon as the metadata source.
 
+---------------------------
+
+Debugging the Hibernate not working problem.
+
+    [AssertionFailure] HHH000099:
+        an assertion failure occured (this may indicate a bug in Hibernate, but is more likely due to unsafe use of the session):
+            org.hibernate.AssertionFailure: Interceptor.onPrepareStatement() returned null or empty string. 
+
+    [HibernateTransactionManager] Initiating transaction rollback after commit exception 
+    org.hibernate.AssertionFailure: Interceptor.onPrepareStatement() returned null or empty string.
+
+    #
+    # Actually - bug is more than problems with collection.
+    # Hibernate is just not updating any persisten entities.
 
 
+    #
+    # Tried using a PostgreSQL database instead.
 
+    #
+    # Create the test user.
+    su - postgres -c 'createuser --no-superuser --no-createdb --no-createrole --pwprompt mallard'
 
+    #
+    # Create the test database.
+    su - postgres -c 'createdb --owner mallard widgeon'
 
+---------------------------
 

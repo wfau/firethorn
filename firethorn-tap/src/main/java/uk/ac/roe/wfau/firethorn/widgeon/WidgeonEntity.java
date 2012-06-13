@@ -14,6 +14,8 @@ import javax.sql.DataSource;
 import javax.persistence.Table;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Index;
@@ -36,14 +38,11 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 /**
  * Core Widgeon implementations.
  *
-    uniqueConstraints=
-        @UniqueConstraint(
-            columnNames = {
-                AbstractEntity.DB_NAME_COL
-                }
-            )
  */
-@Entity
+@Entity()
+@Access(
+    AccessType.FIELD
+    )
 @Table(
     name = WidgeonEntity.DB_TABLE_NAME
     )
@@ -103,19 +102,6 @@ implements Widgeon
                     )
                 );
             }
-
-        /*
-         *
-        @Override
-        @SelectEntityMethod
-        public Widgeon select(final Identifier ident)
-            {
-            return super.select(
-                ident
-                );
-            }
-         *
-         */
 
         @Override
         @CreateEntityMethod

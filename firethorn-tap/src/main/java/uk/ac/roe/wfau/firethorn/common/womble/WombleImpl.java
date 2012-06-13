@@ -154,8 +154,8 @@ implements Womble
      * Our autowired Hibernate ExceptionTranslator.
      *
      */
-//    @Autowired
-//    private HibernateExceptionTranslator translator;
+//  @Autowired
+//  private HibernateExceptionTranslator translator;
 
     /**
      * Our Hibernate components.
@@ -204,6 +204,16 @@ implements Womble
             }
 
         /**
+         * Get the current Hibernate Session.
+         *
+         */
+        @Override
+        public Session session()
+            {
+            return factory.getCurrentSession();
+            }
+
+        /**
          * Get a named query.
          *
          */
@@ -220,25 +230,8 @@ implements Womble
                         "Query name required"
                         );
                     }
-                if (stateness() == StateFullNess.STATE_LESS)
-                    {
-                    logger.debug("Using state LESS session to fetch named query [{}]", name);
-                    Query query = stateless().session().getNamedQuery(
-                        name
-                        );
-                    if (query != null)
-                        {
-                        query.setCacheMode(null);
-                        query.setFlushMode(null);
-                        }
-                    else {
-                        logger.error("Unable to find query [{}]", name);
-                        }                        
-                    return query ;
-                    }
                 else {
-                    logger.debug("Using state FULL session to fetch named query [{}]", name);
-                    return statefull().session().getNamedQuery(
+                    return session().getNamedQuery(
                         name
                         );
                     }
@@ -268,7 +261,7 @@ implements Womble
                         "Inserting null entity"
                         );
                     }
-                if (entity.ident() != null)
+                else if (entity.ident() != null)
                     {
                     if (entity.ident().value() != null)
                         {
@@ -278,16 +271,11 @@ implements Womble
                             );
                         }
                     }
-                if (stateness() == StateFullNess.STATE_LESS)
-                    {
-                    logger.debug("Using state LESS session to insert entity [{}]", entity);
-                    stateless().session().insert(
-                        entity
-                        );
-                    }
                 else {
-                    logger.debug("Using state FULL session to insert entity [{}]", entity);
-                    statefull().session().save(
+Session current = session();
+logger.debug("Current session [{}]", current);
+logger.debug("Current transaction [{}]", current.getTransaction());
+                    current.save(
                         entity
                         );
                     }
@@ -310,23 +298,17 @@ implements Womble
             {
             logger.debug("select(Class, Identifier)");
             logger.debug("  class [{}]", type);
-            logger.debug("  ident [{}]", (ident != null) ? null : ident.value());
+            logger.debug("  ident [{}]", (ident != null) ? ident.value() : null);
             try {
                 if (ident == null)
                     {
                     return null ;
                     }
-                if (stateness() == StateFullNess.STATE_LESS)
-                    {
-                    logger.debug("Using state LESS session to select entity [{}][{}]", type, ident.value());
-                    return (Entity) stateless().session().get(
-                        type,
-                        ident.value()
-                        );
-                    }
                 else {
-                    logger.debug("Using state FULL session to select entity [{}][{}]", type, ident.value());
-                    return (Entity) statefull().session().get(
+Session current = session();
+logger.debug("Current session [{}]", current);
+logger.debug("Current transaction [{}]", current.getTransaction());
+                    return (Entity) session().get(
                         type,
                         ident.value()
                         );
@@ -357,28 +339,22 @@ implements Womble
                         "Updating null entity"
                         );
                     }
-                if (entity.ident() == null)
+                else if (entity.ident() == null)
                     {
                     logger.error("Updating entity with null ident");
                     throw new IllegalArgumentException(
                         "Updating entity with null ident"
                         );
                     }
-                if (entity.ident().value() == null)
+                else if (entity.ident().value() == null)
                     {
                     logger.error("Updating entity with null ident");
                     throw new IllegalArgumentException(
                         "Updating entity with null ident"
                         );
-                    }
-                if (stateness() == StateFullNess.STATE_LESS)
-                    {
-                    logger.debug("Using state LESS session to update entity [{}]", entity);
-                    throw new UnsupportedOperationException(); 
                     }
                 else {
-                    logger.debug("Using state FULL session to update entity [{}]", entity);
-                    statefull().session().update(
+                    session().merge(
                         entity
                         );
                     }
@@ -409,21 +385,15 @@ implements Womble
                         "Deleting null entity"
                         );
                     }
-                if (entity.ident() == null)
+                else if (entity.ident() == null)
                     {
                     logger.error("Deleting entity with null ident");
                     throw new IllegalArgumentException(
                         "Deleting entity with null ident"
                         );
                     }
-                if (stateness() == StateFullNess.STATE_LESS)
-                    {
-                    logger.debug("Using state LESS session to delete entity [{}]", entity);
-                    throw new UnsupportedOperationException(); 
-                    }
                 else {
-                    logger.debug("Using state FULL session to delete entity [{}]", entity);
-                    statefull().session().delete(
+                    session().delete(
                         entity
                         );
                     }
@@ -445,15 +415,7 @@ implements Womble
             {
             logger.debug("flush()");
             try {
-                if (stateness() == StateFullNess.STATE_LESS)
-                    {
-                    logger.debug("Flushing state LESS session");
-                    throw new UnsupportedOperationException(); 
-                    }
-                else {
-                    logger.debug("Flushing state FULL session");
-                    statefull().session().flush();
-                    }
+                session().flush();
                 }
             catch (HibernateException ouch)
                 {
@@ -472,15 +434,7 @@ implements Womble
             {
             logger.debug("clear()");
             try {
-                if (stateness() == StateFullNess.STATE_LESS)
-                    {
-                    logger.debug("Clearing state LESS session");
-                    throw new UnsupportedOperationException(); 
-                    }
-                else {
-                    logger.debug("Clearing state FULL session");
-                    statefull().session().clear();
-                    }
+                session().clear();
                 }
             catch (HibernateException ouch)
                 {
@@ -533,238 +487,6 @@ implements Womble
                 throw convert(
                     ouch
                     );
-                }
-            }
-
-
-        /**
-         * A ThreadLocal to hold the current StateFullNess.
-         *
-         */
-        protected ThreadLocal<StateFullNess> stateness = 
-             new ThreadLocal<StateFullNess>()
-                {
-                };
-
-        /**
-         * Get the statefullness of the current thread.
-         *
-         */
-        @Override
-        public StateFullNess stateness()
-            {
-            logger.debug("Checking stateness");
-            if (stateness.get() == null)
-                {
-                stateness(
-                    StateFullNess.STATE_FULL
-                    );
-                }
-            return stateness.get();
-            }
-
-        /**
-         * Set the statefullness of the current thread.
-         *
-         */
-        @Override
-        public void stateness(final StateFullNess state)
-            {
-            logger.debug("Setting stateness to [{}]", state);
-// Error checking goes here ....
-            stateness.set(
-                state
-                );
-            }
-
-        /**
-         * Access to the current state FULL state.
-         *
-         */
-        @Override
-        public StateFullState statefull()
-            {
-// Error checking goes here ....
-            return new StateFullState()
-                {
-                @Override
-                public Session session()
-                    {
-                    return factory.getCurrentSession();
-                    }
-                };
-            }
-
-        /**
-         * A ThreadLocal to hold the current StateLessState.
-         *
-         */
-        protected ThreadLocal<StateLessState> stateless = 
-             new ThreadLocal<StateLessState>()
-                {
-                };
-
-        /**
-         * Access to the current state LESS state.
-         *
-         */
-        @Override
-        public StateLessState stateless()
-            {
-            logger.debug("stateless()");
-// Error checking goes here ....
-            if (stateness.get() == StateFullNess.STATE_LESS)
-                {
-                if (stateless.get() == null)
-                    {
-                    logger.debug("Creating new StatelessState");
-                    stateless.set(
-                        new StateLessState()
-                            {
-                            /**
-                             * Our Hibernate StatelessSession.
-                             *
-                             */
-                            private StatelessSession session ;
-
-                            /**
-                             * Access to our Hibernate StatelessSession.
-                             *
-                             */
-                             @Override
-                            public StatelessSession session()
-                                {
-                                return this.session ;
-                                }
-
-                            /**
-                             * Our Hibernate Transaction.
-                             *
-                             */
-                            private Transaction transaction ;
-
-                            /**
-                             * Access to our Hibernate Transaction.
-                             *
-                             */
-                            @Override
-                            public Transaction transaction()
-                                {
-                                return this.transaction ;
-                                }
-
-                            /**
-                             * Begin a new StatelessSession Transaction.
-                             *
-                             */
-                            @Override
-                            public void begin()
-                                {
-                                logger.debug("begin()");
-                                if (this.session == null)
-                                    {
-                                    logger.debug("Starting new session");
-                                    this.session = hibernate().factory().openStatelessSession();
-                                    if (this.transaction == null)
-                                        {
-                                        logger.debug("transaction is null, starting new one");
-                                        this.transaction = this.session.beginTransaction();
-                                        }
-                                    else {
-                                        logger.warn("begin() called inside existing transaction");
-                                        }
-                                    }
-                                else {
-                                    logger.warn("begin() called inside existing session");
-                                    }
-                                }
-
-                            /**
-                             * Commit the current StatelessSession Transaction.
-                             *
-                             */
-                            @Override
-                            public void commit()
-                                {
-                                logger.debug("commit()");
-                                if (this.transaction == null)
-                                    {
-                                    logger.error("commit() called with no transaction");
-                                    }
-                                else {
-                                    logger.debug("Comitting current transaction");
-                                    this.transaction.commit();
-                                    this.transaction = null ;
-                                    this.close();
-                                    }
-                                }
-
-                            /**
-                             * Rollback the current StatelessSession Transaction.
-                             *
-                             */
-                            @Override
-                            public void rollback()
-                                {
-                                logger.debug("rollback()");
-                                if (this.transaction == null)
-                                    {
-                                    logger.error("rollback() called with no transaction");
-                                    }
-                                else {
-                                    logger.debug("Rolling back current transaction");
-                                    try {
-                                        this.transaction.rollback();
-                                        }
-                                    finally {
-                                        this.transaction = null ;
-                                        this.close();
-                                        }
-                                    }
-                                }
-
-                            /**
-                             * Close the current StatelessSession Transaction.
-                             *
-                             */
-                            @Override
-                            public void close()
-                                {
-                                logger.debug("close()");
-                                if (this.session == null)
-                                    {
-                                    logger.error("close() called with no session");
-                                    }
-                                else {
-                                    try {
-                                        this.session.close();
-                                        }
-                                    finally {
-                                        this.session = null ;
-                                        this.transaction = null ;
-                                        }
-                                    }
-                                }
-
-                            /**
-                             * Release the current StatelessState.
-                             *
-                             */
-                            @Override
-                            public void done()
-                                {
-                                logger.debug("done()");
-                                stateless.set(
-                                    null
-                                    );
-                                }
-                            }
-                        );
-                    }
-                return stateless.get();
-                }
-            else {
-                return null ;
                 }
             }
         };
