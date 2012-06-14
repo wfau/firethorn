@@ -3,12 +3,27 @@
  */
 package uk.ac.roe.wfau.firethorn.common.ident ;
 
+import java.io.Serializable;
+
 /**
  *
  */
-public abstract class AbstractIdent
+public abstract class AbstractIdent<T extends Serializable>
 implements Identifier
     {
+
+    public AbstractIdent(T value)
+        {
+        this.value = value ;
+        }
+
+    private T value ;
+
+    @Override
+    public Serializable value()
+        {
+        return this.value ;
+        }
 
     @Override
     public boolean equals(Object that)

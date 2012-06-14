@@ -3,13 +3,11 @@
  */
 package uk.ac.roe.wfau.firethorn.common.ident ;
 
-import java.io.Serializable;
-
 /**
  *
  */
 public class LongIdent
-extends SimpleIdent<Long>
+extends AbstractIdent<Long>
     {
 
     public LongIdent(String string)
