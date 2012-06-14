@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 
 import uk.ac.roe.wfau.firethorn.common.ident.Identifier;
-import uk.ac.roe.wfau.firethorn.common.ident.LongIdent;
+import uk.ac.roe.wfau.firethorn.common.ident.LongIdentifier;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
@@ -59,7 +59,7 @@ implements Entity.Factory<EntityType>
     @Override
     public Identifier ident(final String string)
         {
-        return new LongIdent(
+        return new LongIdentifier(
             string
             );
         }
