@@ -207,12 +207,12 @@ implements Mallard
             updatable = false
             )
         )
-    private Set<WidgeonEntity> widgeons = new HashSet<WidgeonEntity>(0);
-    protected Set<WidgeonEntity> getWidgeons()
+    private Set<Widgeon> widgeons = new HashSet<Widgeon>(0);
+    protected Set<Widgeon> getWidgeons()
         {
         return this.widgeons ;
         }
-    protected void setWidgeons(Set<WidgeonEntity> set)
+    protected void setWidgeons(Set<Widgeon> set)
         {
         this.widgeons = set ;
         }
@@ -234,11 +234,13 @@ logger.debug("  This [{}]", MallardEntity.this);
 logger.debug("  That [{}]", widgeon);
 logger.debug("  Set  [{}]", widgeons);
                 widgeons.add(
-                    (WidgeonEntity) widgeon
+                    (Widgeon) widgeon
                     );
                 }
             public Iterable<Widgeon> select()
                 {
+                return widgeons ;
+/*
                 return new Iterable<Widgeon>()
                     {
                     public Iterator<Widgeon> iterator()
@@ -261,6 +263,7 @@ logger.debug("  Set  [{}]", widgeons);
                             };
                         }
                     };
+ */
                 }
             };
         }

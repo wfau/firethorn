@@ -45,37 +45,28 @@ extends TestBase
     private static Identifier two ;
 
     @Test
-    public void aaaa()
+    public void test000()
         {
         Mallard object = womble().mallards().create(
             "albert"
             );
+        one = object.ident();
+
         assertTrue(
             womble().hibernate().session().isDirty()
-            );
-
-        assertNotNull(
-            object
-            );
-        assertNotNull(
-            object.ident()
             );
         assertEquals(
             "albert",
             object.name()
             );
-
-        one = object.ident();
-
         }
 
     @Test
-    public void bbbb()
+    public void test001()
         {
         Mallard object = womble().mallards().select(
             one
             );
-
 
         assertFalse(
             womble().hibernate().session().isDirty()
@@ -97,10 +88,13 @@ extends TestBase
         }
 
     @Test
-    public void cccc()
+    public void test002()
         {
         Mallard object = womble().mallards().select(
             one
+            );
+        assertFalse(
+            womble().hibernate().session().isDirty()
             );
         assertEquals(
             "Albert",
@@ -109,7 +103,7 @@ extends TestBase
         }
 
     @Test
-    public void dddd()
+    public void test003()
         {
         Mallard object = womble().mallards().select(
             one
@@ -127,31 +121,25 @@ extends TestBase
         assertTrue(
             womble().hibernate().session().isDirty()
             );
-
         }
 
 
     @Test
-    public void eeee()
+    public void test004()
         {
         Mallard object = womble().mallards().select(
             one
             );
-
-        int count = 0 ;
-        for (Widgeon widgeon : object.widgeons().select())
-            {
-            count++ ;
-            }
         assertEquals(
-            count,
-            1
+            1,
+            count(
+                object.widgeons().select()
+                )
             );
-
         }
 
     @Test
-    public void ffff()
+    public void test005()
         {
         Mallard object = womble().mallards().select(
             one
@@ -169,30 +157,24 @@ extends TestBase
         assertTrue(
             womble().hibernate().session().isDirty()
             );
-
         }
 
     @Test
-    public void gggg()
+    public void test006()
         {
         Mallard object = womble().mallards().select(
             one
             );
-
-        int count = 0 ;
-        for (Widgeon widgeon : object.widgeons().select())
-            {
-            count++ ;
-            }
         assertEquals(
-            count,
-            2
+            2,
+            count(
+                object.widgeons().select()
+                )
             );
-
         }
 
     @Test
-    public void hhhh()
+    public void test007()
         {
         Mallard object = womble().mallards().create(
             "albert"
@@ -201,12 +183,11 @@ extends TestBase
         }
 
     @Test
-    public void iiii()
+    public void test008()
         {
         Mallard frog = womble().mallards().select(
             one
             );
-
         Mallard toad = womble().mallards().select(
             two
             );
@@ -220,7 +201,7 @@ extends TestBase
         }
 
     @Test
-    public void jjjj()
+    public void test009()
         {
         Mallard object = womble().mallards().select(
             one
@@ -242,150 +223,32 @@ extends TestBase
         }
 
     @Test
-    public void kkkk()
+    public void test010()
         {
         Mallard object = womble().mallards().select(
             one
             );
-
-        int count = 0 ;
-        for (Widgeon widgeon : object.widgeons().select())
-            {
-            count++ ;
-            }
         assertEquals(
-            count,
-            3
+            3,
+            count(
+                object.widgeons().select()
+                )
             );
-
         }
 
     @Test
-    public void llll()
+    public void test011()
         {
         Mallard object = womble().mallards().select(
             two
             );
 
-        int count = 0 ;
-        for (Widgeon widgeon : object.widgeons().select())
-            {
-            count++ ;
-            }
         assertEquals(
-            count,
-            2
-            );
-
-        }
-
-/*
-    //@Test
-    @CreateAtomicMethod
-    public void bbbb()
-        {
-logger.debug("CREATE -------------");
-        Mallard created = womble().mallards().create(
-            "albert"
-            );
-logger.debug("Created [{}][{}][{}]", new Object[]{ created.getClass().getName(), created.ident(), created.name()});
-logger.debug("------------- DONE");
-
-logger.debug("FLUSH -------------");
-womble().hibernate().flush();
-logger.debug("------------- DONE");
-
-logger.debug("SELECT -------------");
-        Mallard selected = womble().mallards().select(
-            created.ident()
-            );
-logger.debug("Selected [{}][{}][{}]", new Object[]{ selected.getClass().getName(), selected.ident(), selected.name()});
-logger.debug("------------- DONE");
-
-        selected.name("Victoria");
-        selected.update();
-
-logger.debug("FLUSH -------------");
-womble().hibernate().flush();
-logger.debug("------------- DONE");
-
-        selected.name("Alexandrina Victoria");
-        selected.update();
-
-logger.debug("FLUSH -------------");
-womble().hibernate().flush();
-logger.debug("------------- DONE");
-
-        }
-
-
-    //Test
-    @CreateAtomicMethod
-    public void eeee()
-        {
-logger.debug("CREATE -------------");
-        Mallard created = womble().mallards().create(
-            "albert"
-            );
-logger.debug("Created [{}][{}][{}]", new Object[]{ created.getClass().getName(), created.ident(), created.name()});
-logger.debug("------------- DONE");
-
-
-logger.debug("CHANGE -------------");
-        created.name("Victoria");
-logger.debug("------------- DONE");
-
-logger.debug("FLUSH -------------");
-womble().hibernate().flush();
-logger.debug("------------- DONE");
-
-        }
-
-
-//    @Test
-    public void cccc()
-        {
-        Mallard found = womble().mallards().select(
-            new LongIdent(1)
-            );
-
-        if (null != found)
-            {
-            logger.debug("Found [{}][{}][{}]", new Object[]{ found.getClass().getName(), found.ident(), found.name()});
-            }
-        else {
-            logger.debug("Not found");
-            }
-        }
-
-    //@Test
-    public void simple()
-        {
-        Mallard one = womble().mallards().create(
-            "albert"
-            );
-        one.widgeons().insert(
-            womble().widgeons().create(
-                "0001",
-                URI.create("ivo://org.astrogrid.test/0001")
+            2,
+            count(
+                object.widgeons().select()
                 )
             );
-        one.widgeons().insert(
-            womble().widgeons().create(
-                "0002",
-                URI.create("ivo://org.astrogrid.test/0002")
-                )
-            );
-
-        for (Widgeon widgeon : one.widgeons().select())
-            {
-            logger.debug("Widgeon [{}][{}]", widgeon.ident(), widgeon.name());
-            }
-
-        womble().hibernate().flush();
-
         }
- */
-
     }
 

@@ -29,12 +29,10 @@ extends TestBase
     @Test
     public void aaaa()
         {
-        log.debug("aaaa ----");
         Widgeon object = womble().widgeons().create(
             "albert",
             URI.create("ivo://org.astrogrid.test/0001")
             );
-
         assertTrue(
             womble().hibernate().session().isDirty()
             );
@@ -54,9 +52,7 @@ extends TestBase
             object.name()
             );
 
-        log.debug("Created [{}][{}]", object.ident(), object.name());
         object.name("Albert");
-        log.debug("Created [{}][{}]", object.ident(), object.name());
 
         assertTrue(
             womble().hibernate().session().isDirty()
@@ -70,11 +66,9 @@ extends TestBase
     @Test
     public void bbbb()
         {
-        log.debug("bbbb ----");
         Widgeon object = womble().widgeons().select(
             ident
             );
-
         assertFalse(
             womble().hibernate().session().isDirty()
             );
@@ -83,9 +77,7 @@ extends TestBase
             object.name()
             );
 
-        log.debug("Selected [{}][{}]", object.ident(), object.name());
         object.name("Albert Augustus");
-        log.debug("Selected [{}][{}]", object.ident(), object.name());
 
         assertTrue(
             womble().hibernate().session().isDirty()
@@ -100,7 +92,6 @@ extends TestBase
     @Test
     public void cccc()
         {
-        log.debug("cccc ----");
         Widgeon object = womble().widgeons().select(
             ident
             );
@@ -113,9 +104,7 @@ extends TestBase
             object.name()
             );
 
-        log.debug("Selected [{}][{}]", object.ident(), object.name());
         object.name("Albert Augustus Charles Emmanuel");
-        log.debug("Selected [{}][{}]", object.ident(), object.name());
 
         assertTrue(
             womble().hibernate().session().isDirty()
