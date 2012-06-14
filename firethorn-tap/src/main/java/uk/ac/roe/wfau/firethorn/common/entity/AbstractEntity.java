@@ -33,8 +33,7 @@ import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 import uk.ac.roe.wfau.firethorn.common.womble.WombleImpl;
 
 import uk.ac.roe.wfau.firethorn.common.ident.Identifier;
-import uk.ac.roe.wfau.firethorn.common.ident.LongIdent;
-import uk.ac.roe.wfau.firethorn.common.ident.AbstractIdent;
+import uk.ac.roe.wfau.firethorn.common.ident.LongIdentifier;
 
 /**
  * Generic base class for a persistent Entity.
@@ -133,7 +132,7 @@ implements Entity
         {
         if (this.ident != null)
             {
-            return new LongIdent(
+            return new LongIdentifier(
                 this.ident
                 );
             }

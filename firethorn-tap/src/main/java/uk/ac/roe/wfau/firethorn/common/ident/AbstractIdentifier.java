@@ -23,11 +23,11 @@ import java.io.Serializable;
  * Generic implementation of the Identifier interface.
  *
  */
-public abstract class AbstractIdent<T extends Serializable>
+public abstract class AbstractIdentifier<T extends Serializable>
 implements Identifier
     {
 
-    public AbstractIdent(T value)
+    public AbstractIdentifier(T value)
         {
         this.value = value ;
         }

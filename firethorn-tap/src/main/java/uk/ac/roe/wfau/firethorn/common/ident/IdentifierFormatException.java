@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
-public class IdentFormatException
+public class IdentifierFormatException
 extends RuntimeException
     {
 
-    public IdentFormatException()
+    public IdentifierFormatException()
         {
         this(
             null,
@@ -23,7 +23,7 @@ extends RuntimeException
             );
         }
 
-    public IdentFormatException(String string)
+    public IdentifierFormatException(String string)
         {
         this(
             string,
@@ -31,7 +31,7 @@ extends RuntimeException
             );
         }
 
-    public IdentFormatException(Exception cause)
+    public IdentifierFormatException(Exception cause)
         {
         this(
             null,
@@ -39,7 +39,7 @@ extends RuntimeException
             );
         }
 
-    public IdentFormatException(String string, Exception cause)
+    public IdentifierFormatException(String string, Exception cause)
         {
         super(
             cause

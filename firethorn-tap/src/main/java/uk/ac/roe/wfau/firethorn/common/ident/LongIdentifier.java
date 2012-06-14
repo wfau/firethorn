@@ -18,14 +18,14 @@
 package uk.ac.roe.wfau.firethorn.common.ident ;
 
 /**
- * Long Identifier.
+ * Identifier containing a Long value.
  *
  */
-public class LongIdent
-extends AbstractIdent<Long>
+public class LongIdentifier
+extends AbstractIdentifier<Long>
     {
 
-    public LongIdent(String string)
+    public LongIdentifier(String string)
         {
         this(
             parse(
@@ -34,7 +34,7 @@ extends AbstractIdent<Long>
             );
         }
 
-    public LongIdent(int value)
+    public LongIdentifier(int value)
         {
         super(
             new Long(
@@ -43,7 +43,7 @@ extends AbstractIdent<Long>
             ) ;
         }
 
-    public LongIdent(long value)
+    public LongIdentifier(long value)
         {
         super(
             new Long(
@@ -52,7 +52,7 @@ extends AbstractIdent<Long>
             ) ;
         }
 
-    public LongIdent(Long value)
+    public LongIdentifier(Long value)
         {
         super(value) ;
         }
@@ -70,7 +70,7 @@ extends AbstractIdent<Long>
             }
         catch (NumberFormatException ouch)
             {
-            throw new IdentFormatException(
+            throw new IdentifierFormatException(
                 string,
                 ouch
                 );
@@ -84,15 +84,15 @@ extends AbstractIdent<Long>
     public static Identifier create(String string)
         {
         try {
-            return new LongIdent(
-                LongIdent.parse(
+            return new LongIdentifier(
+                LongIdentifier.parse(
                     string
                     )
                 );
             }
         catch (NumberFormatException ouch)
             {
-            throw new IdentFormatException(
+            throw new IdentifierFormatException(
                 string,
                 ouch
                 );
