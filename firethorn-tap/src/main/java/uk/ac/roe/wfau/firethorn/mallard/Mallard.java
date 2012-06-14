@@ -56,20 +56,41 @@ extends Entity
         extends Entity.Factory<Job>
             {
 
-            public Job create(Mallard parent, String adql);
-            public Iterable<Job> select(Mallard parent);
+            public Job create(Mallard mallard, String name, String text, String adql);
+
+            public Iterable<Job> select(Mallard mallard);
 
             }        
 
+        /**
+         * Access to the Job status.
+         *
+         */
         public Status status();
+
+        /**
+         * Job status values.
+         *
+         */
         public enum Status
             {
+            EDITING(),
             PENDING(),
             RUNNING(),
             COMPLETED(),
             FAILED();
             }; 
 
+        /**
+         * The parent Mallard.
+         *
+         */
+        public Mallard mallard();
+
+        /**
+         * The ADQL query.
+         *
+         */
         public String adql();
 
         // Results
@@ -83,7 +104,7 @@ extends Entity
     public Jobs jobs();
     public interface Jobs
         {
-        public Job create(String adql);
+        public Job create(String name, String text, String adql);
         public Iterable<Job> select();
         }
 

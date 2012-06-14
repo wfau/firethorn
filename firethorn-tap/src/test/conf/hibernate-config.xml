@@ -45,7 +45,12 @@
         +-->
     <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 
-        <property name="dataSource" ref="FireThornDatabase"/>
+        <!--+
+            | Database connection.
+        <property name="dataSource" ref="MemoryTestHsqldb"/>
+        <property name="dataSource" ref="LocalTestPostgres"/>
+            +-->
+        <property name="dataSource" ref="MemoryTestHsqldb"/>
 
         <!--+
             | List our annotated entity beans.
@@ -54,6 +59,7 @@
             <list>
 
                 <value>uk.ac.roe.wfau.firethorn.mallard.MallardEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.mallard.JobEntity</value>
 
                 <value>uk.ac.roe.wfau.firethorn.widgeon.WidgeonEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.widgeon.SchemaEntity</value>

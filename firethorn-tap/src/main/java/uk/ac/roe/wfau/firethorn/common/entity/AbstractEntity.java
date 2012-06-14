@@ -3,8 +3,7 @@
  */
 package uk.ac.roe.wfau.firethorn.common.entity ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
 
@@ -49,6 +48,7 @@ import uk.ac.roe.wfau.firethorn.common.ident.AbstractIdent;
  *   http://javaprogrammingtips4u.blogspot.co.uk/2010/04/field-versus-property-access-in.html 
  *
  */
+@Slf4j
 @MappedSuperclass
 @Access(
     AccessType.FIELD
@@ -56,14 +56,6 @@ import uk.ac.roe.wfau.firethorn.common.ident.AbstractIdent;
 public abstract class AbstractEntity
 implements Entity
     {
-
-    /**
-     * Our debug logger.
-     * 
-     */
-    private static Logger logger = LoggerFactory.getLogger(
-        AbstractEntity.class
-        );
 
     /*
      * Our database mapping values.
@@ -98,7 +90,8 @@ implements Entity
         }
 
     /**
-     * Protected constructor, sets the create date.
+     * Protected constructor, sets the name and create date.
+     * @todo Better default for the name.
      *
      */
     protected AbstractEntity(final String name)
@@ -106,6 +99,10 @@ implements Entity
         super();
         this.name    = name ;
         this.created = new Date();
+        if (this.name == null)
+            {
+            this.name = "no name" ;
+            }
         }
 
     /**
@@ -134,10 +131,10 @@ implements Entity
     @Override
     public Identifier ident()
         {
-        if (ident != null)
+        if (this.ident != null)
             {
             return new LongIdent(
-                ident
+                this.ident
                 );
             }
         else {

@@ -3,8 +3,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 import java.net.URL;
@@ -23,30 +22,10 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 /**
  *
  */
+@Slf4j
 public class WidgeonTestCase
 extends TestBase
     {
-    /**
-     * Our debug logger.
-     * 
-     */
-    private static Logger logger = LoggerFactory.getLogger(
-        WidgeonTestCase.class
-        );
-
-    @Before
-    public void before()
-        {
-        logger.debug("before()");
-        super.before();
-        }
-
-    @After
-    public void after()
-        {
-        logger.debug("after()");
-        super.after();
-        }
 
     @Test
     public void simple()
@@ -61,7 +40,7 @@ extends TestBase
         assertNotNull(
             one.name()
             );
-        logger.debug("One [{}][{}]", one.ident(), one.name());
+        log.debug("One [{}][{}]", one.ident(), one.name());
 
         Widgeon two = womble().widgeons().create(
             "albert",
@@ -73,13 +52,13 @@ extends TestBase
         assertNotNull(
             two.name()
             );
-        logger.debug("Two [{}][{}]", two.ident(), two.name());
+        log.debug("Two [{}][{}]", two.ident(), two.name());
 
-        womble().hibernate().flush();
+        //womble().hibernate().flush();
 
         for (Widgeon widgeon : womble().widgeons().select())
             {
-            logger.debug("Widgeon [{}]", widgeon);
+            log.debug("Widgeon [{}]", widgeon);
             }
 
         }
@@ -100,7 +79,7 @@ extends TestBase
                 )
             );
 
-        womble().hibernate().flush();
+        //womble().hibernate().flush();
 
         for (Widgeon widgeon : womble().widgeons().select())
             {
@@ -164,20 +143,20 @@ extends TestBase
 
     public void display(Widgeon widgeon)
         {
-        logger.debug("-------");
-        logger.debug("Widgeon [{}]", widgeon);
+        log.debug("-------");
+        log.debug("Widgeon [{}]", widgeon);
         for (Widgeon.Schema schema : widgeon.schemas().select())
             {
-            logger.debug("  Schema [{}]", schema);
+            log.debug("  Schema [{}]", schema);
             for (Widgeon.Schema.Catalog catalog : schema.catalogs().select())
                 {
-                logger.debug("  Catalog [{}]", catalog);
+                log.debug("  Catalog [{}]", catalog);
                 for (Widgeon.Schema.Catalog.Table table : catalog.tables().select())
                     {
-                    logger.debug("  Table [{}]", table);
+                    log.debug("  Table [{}]", table);
                     for (Widgeon.Schema.Catalog.Table.Column column : table.columns().select())
                         {
-                        logger.debug("  Column [{}]", column);
+                        log.debug("  Column [{}]", column);
                         }
                     }
                 }

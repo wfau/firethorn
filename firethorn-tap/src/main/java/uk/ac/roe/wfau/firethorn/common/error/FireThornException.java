@@ -3,9 +3,6 @@
  */
 package uk.ac.roe.wfau.firethorn.common.error ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * 
  *

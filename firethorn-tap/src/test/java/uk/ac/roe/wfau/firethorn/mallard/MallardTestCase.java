@@ -3,8 +3,7 @@
  */
 package uk.ac.roe.wfau.firethorn.mallard ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 import java.net.URL;
@@ -29,43 +28,32 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 /**
  *
  */
+@Slf4j
 public class MallardTestCase
 extends TestBase
     {
-    /**
-     * Our debug logger.
-     * 
-     */
-    private static Logger logger = LoggerFactory.getLogger(
-        MallardTestCase.class
-        );
 
-
-    private static Identifier one ;
-    private static Identifier two ;
+    private static Identifier[] ident = new Identifier[10] ;
 
     @Test
     public void test000()
         {
-        Mallard object = womble().mallards().create(
+        ident[0] = womble().mallards().create(
             "albert"
-            );
-        one = object.ident();
-
-        assertTrue(
-            womble().hibernate().session().isDirty()
-            );
-        assertEquals(
-            "albert",
-            object.name()
-            );
+            ).ident();
+        ident[1] = womble().mallards().create(
+            "albert"
+            ).ident();
         }
 
     @Test
     public void test001()
         {
+        assertNotNull(
+            ident[0]
+            );
         Mallard object = womble().mallards().select(
-            one
+            ident[0]
             );
 
         assertFalse(
@@ -90,8 +78,11 @@ extends TestBase
     @Test
     public void test002()
         {
+        assertNotNull(
+            ident[0]
+            );
         Mallard object = womble().mallards().select(
-            one
+            ident[0]
             );
         assertFalse(
             womble().hibernate().session().isDirty()
@@ -105,10 +96,12 @@ extends TestBase
     @Test
     public void test003()
         {
-        Mallard object = womble().mallards().select(
-            one
+        assertNotNull(
+            ident[0]
             );
-
+        Mallard object = womble().mallards().select(
+            ident[0]
+            );
         assertFalse(
             womble().hibernate().session().isDirty()
             );
@@ -127,8 +120,11 @@ extends TestBase
     @Test
     public void test004()
         {
+        assertNotNull(
+            ident[0]
+            );
         Mallard object = womble().mallards().select(
-            one
+            ident[0]
             );
         assertEquals(
             1,
@@ -141,10 +137,12 @@ extends TestBase
     @Test
     public void test005()
         {
-        Mallard object = womble().mallards().select(
-            one
+        assertNotNull(
+            ident[0]
             );
-
+        Mallard object = womble().mallards().select(
+            ident[0]
+            );
         assertFalse(
             womble().hibernate().session().isDirty()
             );
@@ -162,8 +160,11 @@ extends TestBase
     @Test
     public void test006()
         {
+        assertNotNull(
+            ident[0]
+            );
         Mallard object = womble().mallards().select(
-            one
+            ident[0]
             );
         assertEquals(
             2,
@@ -176,22 +177,18 @@ extends TestBase
     @Test
     public void test007()
         {
-        Mallard object = womble().mallards().create(
-            "albert"
+        assertNotNull(
+            ident[0]
             );
-        two = object.ident();
-        }
-
-    @Test
-    public void test008()
-        {
+        assertNotNull(
+            ident[1]
+            );
         Mallard frog = womble().mallards().select(
-            one
+            ident[0]
             );
         Mallard toad = womble().mallards().select(
-            two
+            ident[1]
             );
-
         for (Widgeon widgeon : frog.widgeons().select())
             {
             toad.widgeons().insert(
@@ -201,12 +198,14 @@ extends TestBase
         }
 
     @Test
-    public void test009()
+    public void test008()
         {
-        Mallard object = womble().mallards().select(
-            one
+        assertNotNull(
+            ident[0]
             );
-
+        Mallard object = womble().mallards().select(
+            ident[0]
+            );
         assertFalse(
             womble().hibernate().session().isDirty()
             );
@@ -223,10 +222,13 @@ extends TestBase
         }
 
     @Test
-    public void test010()
+    public void test009()
         {
+        assertNotNull(
+            ident[0]
+            );
         Mallard object = womble().mallards().select(
-            one
+            ident[0]
             );
         assertEquals(
             3,
@@ -237,12 +239,14 @@ extends TestBase
         }
 
     @Test
-    public void test011()
+    public void test010()
         {
-        Mallard object = womble().mallards().select(
-            two
+        assertNotNull(
+            ident[1]
             );
-
+        Mallard object = womble().mallards().select(
+            ident[1]
+            );
         assertEquals(
             2,
             count(

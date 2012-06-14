@@ -3,8 +3,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 import java.net.URL;
@@ -38,6 +37,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
  * Widgeon Catalog implementation.
  *
  */
+@Slf4j
 @Entity()
 @Access(
     AccessType.FIELD
@@ -56,15 +56,15 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
         {
         @NamedQuery(
             name  = "widgeon.catalog-select-all",
-            query = "FROM CatalogEntity"
+            query = "FROM CatalogEntity ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "widgeon.catalog-select-parent",
-            query = "FROM CatalogEntity WHERE parent = :parent"
+            query = "FROM CatalogEntity WHERE parent = :parent ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "widgeon.catalog-select-parent.name",
-            query = "FROM CatalogEntity WHERE parent = :parent AND name = :name"
+            query = "FROM CatalogEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
             )
         }
     )
@@ -72,14 +72,6 @@ public class CatalogEntity
 extends AbstractEntity
 implements Widgeon.Schema.Catalog
     {
-
-    /**
-     * Our debug logger.
-     * 
-     */
-    private static Logger logger = LoggerFactory.getLogger(
-        CatalogEntity.class
-        );
 
     /**
      * Our database table name.

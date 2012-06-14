@@ -4,8 +4,7 @@
  */
 package uk.ac.roe.wfau.firethorn.mallard ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -46,9 +45,10 @@ import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonEntity;
 
 /**
- * Core Widgeon implementations.
+ * Mallard implementation.
  *
  */
+@Slf4j
 @Entity()
 @Access(
     AccessType.FIELD
@@ -60,11 +60,11 @@ import uk.ac.roe.wfau.firethorn.widgeon.WidgeonEntity;
         {
         @NamedQuery(
             name  = "mallard-select",
-            query = "FROM MallardEntity"
+            query = "FROM MallardEntity ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "mallard-select-name",
-            query = "FROM MallardEntity WHERE name = :name"
+            query = "FROM MallardEntity WHERE name = :name ORDER BY ident desc"
             )
         }
     )
@@ -72,14 +72,6 @@ public class MallardEntity
 extends AbstractEntity
 implements Mallard
     {
-
-    /**
-     * Our debug logger.
-     * 
-     */
-    private static Logger logger = LoggerFactory.getLogger(
-        MallardEntity.class
-        );
 
     /**
      * Our database table name.
@@ -128,7 +120,7 @@ implements Mallard
          * Our Autowired Job factory.
          * 
          */
-        //@Autowired
+        @Autowired
         protected Job.Factory jobs ;
 
         /**
@@ -167,10 +159,12 @@ implements Mallard
         return new Jobs()
             {
             @Override
-            public Job create(String adql)
+            public Job create(String name, String text, String adql)
                 {
                 return womble().mallards().jobs().create(
                     MallardEntity.this,
+                    name,
+                    text,
                     adql
                     ) ;
                 }
@@ -218,8 +212,7 @@ implements Mallard
         }
 
     /**
-     * The collection of resources used by this service.
-     * Need to wrap the Iterable because Java generics don't match interface to implementation.
+     * Access to the resources used by this service.
      *
      */
     @Override
@@ -229,10 +222,6 @@ implements Mallard
             {
             public void insert(Widgeon widgeon)
                 {
-logger.debug("insert(Widgeon)");
-logger.debug("  This [{}]", MallardEntity.this);
-logger.debug("  That [{}]", widgeon);
-logger.debug("  Set  [{}]", widgeons);
                 widgeons.add(
                     (Widgeon) widgeon
                     );
@@ -240,30 +229,6 @@ logger.debug("  Set  [{}]", widgeons);
             public Iterable<Widgeon> select()
                 {
                 return widgeons ;
-/*
-                return new Iterable<Widgeon>()
-                    {
-                    public Iterator<Widgeon> iterator()
-                        {
-                        return new Iterator<Widgeon>()
-                            {
-                            private Iterator<WidgeonEntity> iter = widgeons.iterator();
-                            public boolean hasNext()
-                                {
-                                return iter.hasNext();
-                                }
-                            public Widgeon next()
-                                {
-                                return (Widgeon) iter.next();
-                                }
-                            public void remove()
-                                {
-                                iter.remove();
-                                }
-                            };
-                        }
-                    };
- */
                 }
             };
         }

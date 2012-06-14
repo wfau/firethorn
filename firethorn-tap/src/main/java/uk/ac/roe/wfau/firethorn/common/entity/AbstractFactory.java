@@ -3,8 +3,7 @@
  */
 package uk.ac.roe.wfau.firethorn.common.entity ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Iterator;
@@ -38,18 +37,11 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
  * Generic base class for a persistent Entity Factory.
  *
  */
+@Slf4j
 @Repository
 public abstract class AbstractFactory<EntityType extends Entity>
 implements Entity.Factory<EntityType>
     {
-
-    /**
-     * Our debug logger.
-     * 
-     */
-    private static Logger logger = LoggerFactory.getLogger(
-        AbstractFactory.class
-        );
 
     /**
      * Get the class of Entity we manage.
@@ -101,8 +93,8 @@ implements Entity.Factory<EntityType>
     @CreateEntityMethod
     public EntityType insert(final EntityType entity)
         {
-        logger.debug("insert(EntityType)");
-        logger.debug("  entity [{}]", entity);
+        log.debug("insert(EntityType)");
+        log.debug("  entity [{}]", entity);
         return (EntityType) womble.hibernate().insert(
             entity
             );
@@ -116,8 +108,8 @@ implements Entity.Factory<EntityType>
     @SelectEntityMethod
     public EntityType select(final Identifier ident)
         {
-        logger.debug("select(Class, Identifier)");
-        logger.debug("  ident [{}]", (ident != null) ? null : ident.value());
+        log.debug("select(Class, Identifier)");
+        log.debug("  ident [{}]", (ident != null) ? null : ident.value());
         return (EntityType) womble.hibernate().select(
             etype(),
             ident
@@ -131,8 +123,8 @@ implements Entity.Factory<EntityType>
     @UpdateEntityMethod
     public EntityType update(final EntityType entity)
         {
-        logger.debug("update(EntityType)");
-        logger.debug("  entity [{}]", entity);
+        log.debug("update(EntityType)");
+        log.debug("  entity [{}]", entity);
         if (etype().isInstance(entity))
             {
             return (EntityType) womble.hibernate().update(
@@ -140,7 +132,7 @@ implements Entity.Factory<EntityType>
                 );
             }
         else {
-            logger.error(
+            log.error(
                 "Update not supported for [" + entity.getClass().getName() + "]"
                 );
             throw new IllegalArgumentException(
@@ -156,8 +148,8 @@ implements Entity.Factory<EntityType>
     @DeleteEntityMethod
     public void delete(final EntityType entity)
         {
-        logger.debug("delete(EntityType)");
-        logger.debug("  entity [{}]", entity);
+        log.debug("delete(EntityType)");
+        log.debug("  entity [{}]", entity);
         if (etype().isInstance(entity))
             {
             womble.hibernate().delete(
@@ -165,7 +157,7 @@ implements Entity.Factory<EntityType>
                 );
             }
         else {
-            logger.error(
+            log.error(
                 "Delete not supported for [" + entity.getClass().getName() + "]"
                 );
             throw new IllegalArgumentException(

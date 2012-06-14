@@ -3,8 +3,7 @@
  */
 package uk.ac.roe.wfau.firethorn.common.womble ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PostConstruct;
 
@@ -38,18 +37,11 @@ import uk.ac.roe.wfau.firethorn.mallard.Mallard;
  * Spring and Hibernate toolkit.
  *
  */
+@Slf4j 
 @Component("womble")
 public class WombleImpl
 implements Womble
     {
-
-    /**
-     * Our debug logger.
-     * 
-     */
-    private static Logger logger = LoggerFactory.getLogger(
-        WombleImpl.class
-        );
 
     /**
      * Our global singleton instance.
@@ -63,8 +55,6 @@ implements Womble
      */
     public static Womble womble()
         {
-        logger.debug("-- WOMBLE --");
-        logger.debug("Womble instance is [{}]", instance);
         return instance ;
         }
 
@@ -74,23 +64,18 @@ implements Womble
      */
     public static void womble(final Womble womble)
         {
-        logger.debug("-- WOMBLE --");
-        logger.debug("womble(Womble)");
         if (instance == null)
             {
-            logger.debug("Womble instance is not set");
             if (womble != null)
                 {
-                logger.debug("Womble instance set to [{}]", womble);
                 instance = womble ;
                 }
             else {
-                logger.debug("Womble param was null :-(");
+                log.warn("Womble param was null :-(");
                 }
             }
         else {
-            logger.debug("Womble instance is already set to [{}]", instance);
-            logger.debug("Womble already done :-)");
+            log.warn("Womble instance is already set to [{}]", instance);
             }
         }
 
@@ -100,8 +85,6 @@ implements Womble
      */
     private WombleImpl()
         {
-        logger.debug("-- WOMBLE --");
-        logger.debug("Womble()");
         }
 
     /**
@@ -111,8 +94,6 @@ implements Womble
     @PostConstruct
     public void postConstruct()
         {
-        logger.debug("-- WOMBLE --");
-        logger.debug("Womble.postConstruct()");
         womble(
             (Womble) context.getBean(
                 Womble.class
@@ -153,9 +134,9 @@ implements Womble
     /**
      * Our autowired Hibernate ExceptionTranslator.
      *
+    @Autowired
+    private HibernateExceptionTranslator translator;
      */
-//  @Autowired
-//  private HibernateExceptionTranslator translator;
 
     /**
      * Our Hibernate components.
@@ -180,16 +161,18 @@ implements Womble
         @Override
         public DataAccessException convert(final HibernateException ouch)
             {
-            logger.error(
+            log.error(
                 "Error executing Hibernate query [{}][{}]",
                 ouch.getClass().getName(),
                 ouch.getMessage()
                 );
             throw ouch ;
 /*
+ *
             return translator.translateExceptionIfPossible(
                 ouch
                 );
+ *
  */
             }
 
@@ -220,12 +203,12 @@ implements Womble
         @Override
         public Query query(final String name)
             {
-            logger.debug("query(String)");
-            logger.debug("  name [{}]", name);
+            log.debug("query(String)");
+            log.debug("  name [{}]", name);
             try {
                 if (name == null)
                     {
-                    logger.error("Query name required");
+                    log.error("Query name required");
                     throw new IllegalArgumentException(
                         "Query name required"
                         );
@@ -251,31 +234,25 @@ implements Womble
         @Override
         public Entity insert(final Entity entity)
             {
-            logger.debug("insert(Entity)");
-            logger.debug("  entity [{}]", entity);
+            log.debug("insert(Entity)");
+            log.debug("  entity [{}]", entity);
             try {
                 if (entity == null)
                     {
-                    logger.error("Inserting null entity");
+                    log.error("Attempting to insert a null entity");
                     throw new IllegalArgumentException(
-                        "Inserting null entity"
+                        "Attempting to insert a null entity"
                         );
                     }
                 else if (entity.ident() != null)
                     {
-                    if (entity.ident().value() != null)
-                        {
-                        logger.error("Inserting entity with existing ident");
-                        throw new IllegalArgumentException(
-                            "Inserting entity with existing ident"
-                            );
-                        }
+                    log.error("Attempting to insert an entity with ident already set");
+                    throw new IllegalArgumentException(
+                        "Attempting to insert an entity with ident already set"
+                        );
                     }
                 else {
-Session current = session();
-logger.debug("Current session [{}]", current);
-logger.debug("Current transaction [{}]", current.getTransaction());
-                    current.save(
+                    session().save(
                         entity
                         );
                     }
@@ -296,18 +273,15 @@ logger.debug("Current transaction [{}]", current.getTransaction());
         @Override
         public Entity select(final Class type, final Identifier ident)
             {
-            logger.debug("select(Class, Identifier)");
-            logger.debug("  class [{}]", type);
-            logger.debug("  ident [{}]", (ident != null) ? ident.value() : null);
+            log.debug("select(Class, Identifier)");
+            log.debug("  class [{}]", type);
+            log.debug("  ident [{}]", (ident != null) ? ident.value() : null);
             try {
                 if (ident == null)
                     {
                     return null ;
                     }
                 else {
-Session current = session();
-logger.debug("Current session [{}]", current);
-logger.debug("Current transaction [{}]", current.getTransaction());
                     return (Entity) session().get(
                         type,
                         ident.value()
@@ -329,28 +303,21 @@ logger.debug("Current transaction [{}]", current.getTransaction());
         @Override
         public Entity update(final Entity entity)
             {
-            logger.debug("update(Entity)");
-            logger.debug("  entity [{}]", entity);
+            log.debug("update(Entity)");
+            log.debug("  entity [{}]", entity);
             try {
                 if (entity == null)
                     {
-                    logger.error("Updating null entity");
+                    log.error("Attempting to update a null entity");
                     throw new IllegalArgumentException(
-                        "Updating null entity"
+                        "Attempting to update null entity"
                         );
                     }
                 else if (entity.ident() == null)
                     {
-                    logger.error("Updating entity with null ident");
+                    log.error("Attempting to update an entity with a null ident");
                     throw new IllegalArgumentException(
-                        "Updating entity with null ident"
-                        );
-                    }
-                else if (entity.ident().value() == null)
-                    {
-                    logger.error("Updating entity with null ident");
-                    throw new IllegalArgumentException(
-                        "Updating entity with null ident"
+                        "Attempting to update an entity with a null ident"
                         );
                     }
                 else {
@@ -375,21 +342,21 @@ logger.debug("Current transaction [{}]", current.getTransaction());
         @Override
         public void delete(final Entity entity)
             {
-            logger.debug("delete(Entity)");
-            logger.debug("  entity [{}]", entity);
+            log.debug("delete(Entity)");
+            log.debug("  entity [{}]", entity);
             try {
                 if (entity == null)
                     {
-                    logger.error("Deleting null entity");
+                    log.error("Attempting to delete a null entity");
                     throw new IllegalArgumentException(
-                        "Deleting null entity"
+                        "Attempting to delete a null entity"
                         );
                     }
                 else if (entity.ident() == null)
                     {
-                    logger.error("Deleting entity with null ident");
+                    log.error("Attempting to delete an entity with a null ident");
                     throw new IllegalArgumentException(
-                        "Deleting entity with null ident"
+                        "Attempting to delete an entity with a null ident"
                         );
                     }
                 else {
@@ -413,7 +380,7 @@ logger.debug("Current transaction [{}]", current.getTransaction());
         @Override
         public void flush()
             {
-            logger.debug("flush()");
+            log.debug("flush()");
             try {
                 session().flush();
                 }
@@ -432,7 +399,7 @@ logger.debug("Current transaction [{}]", current.getTransaction());
         @Override
         public void clear()
             {
-            logger.debug("clear()");
+            log.debug("clear()");
             try {
                 session().clear();
                 }
@@ -465,9 +432,9 @@ logger.debug("Current transaction [{}]", current.getTransaction());
             {
             if (query == null)
                 {
-                logger.error("Null query");
+                log.error("Attempting to get data from a null query");
                 throw new IllegalArgumentException(
-                    "Null query"
+                    "Attempting to get data from a null query"
                     );
                 }
             try {

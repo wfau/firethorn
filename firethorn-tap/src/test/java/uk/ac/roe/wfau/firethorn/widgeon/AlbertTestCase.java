@@ -24,25 +24,30 @@ public class AlbertTestCase
 extends TestBase
     {
 
-    public static Identifier ident ;
+    private static Identifier[] ident = new Identifier[10] ;
 
     @Test
-    public void aaaa()
+    public void test000()
         {
         Widgeon object = womble().widgeons().create(
             "albert",
             URI.create("ivo://org.astrogrid.test/0001")
             );
+/*
+ * Not always true.
+ * True with Postgresql, false with Hsqldb.
         assertTrue(
             womble().hibernate().session().isDirty()
             );
+ *
+ */
         assertEquals(
             "albert",
             object.name()
             );
 
         womble().hibernate().flush();
-        ident = object.ident();
+        ident[0] = object.ident();
 
         assertFalse(
             womble().hibernate().session().isDirty()
@@ -64,10 +69,13 @@ extends TestBase
         }
 
     @Test
-    public void bbbb()
+    public void test001()
         {
+        assertNotNull(
+            ident[0]
+            );
         Widgeon object = womble().widgeons().select(
-            ident
+            ident[0]
             );
         assertFalse(
             womble().hibernate().session().isDirty()
@@ -90,10 +98,13 @@ extends TestBase
        }
 
     @Test
-    public void cccc()
+    public void test002()
         {
+        assertNotNull(
+            ident[0]
+            );
         Widgeon object = womble().widgeons().select(
-            ident
+            ident[0]
             );
 
         assertFalse(

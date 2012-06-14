@@ -3,8 +3,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 import java.net.URL;
@@ -39,6 +38,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
  * Core Widgeon implementations.
  *
  */
+@Slf4j
 @Entity()
 @Access(
     AccessType.FIELD
@@ -62,14 +62,6 @@ public class WidgeonEntity
 extends AbstractEntity
 implements Widgeon
     {
-
-    /**
-     * Our debug logger.
-     * 
-     */
-    private static Logger logger = LoggerFactory.getLogger(
-        WidgeonEntity.class
-        );
 
     /**
      * Our database table name.
@@ -242,7 +234,7 @@ implements Widgeon
      */
     private void init(final DataSource source)
         {
-        logger.debug("init(DataSource)");
+        log.debug("init(DataSource)");
         // Process the JDBC metadata.
         }
 
@@ -252,7 +244,7 @@ implements Widgeon
      */
     private void init(final URI uri)
         {
-        logger.debug("init(URI)");
+        log.debug("init(URI)");
         // Resolve the URI into a VOSI endpoint URL.
         }
 
@@ -262,7 +254,7 @@ implements Widgeon
      */
     private void init(final URL url)
         {
-        logger.debug("init(URL)");
+        log.debug("init(URL)");
         // Process the VOSI metadata.
         }
     }
