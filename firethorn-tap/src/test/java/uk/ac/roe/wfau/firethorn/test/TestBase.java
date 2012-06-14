@@ -1,14 +1,25 @@
 /*
+ *  Copyright (C) 2012 Royal Observatory, University of Edinburgh, UK
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 package uk.ac.roe.wfau.firethorn.test ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
-
-import java.util.Iterator;
 
 import org.junit.Test;
 import org.junit.After;
@@ -32,6 +43,7 @@ import uk.ac.roe.wfau.firethorn.common.womble.Womble;
  * The test is run using SpringJUnit4ClassRunner in order to support the @Autowired annotation.
  *
  */
+@Slf4j
 @RunWith(SpringJUnit4ClassRunner.class)  
 @ContextConfiguration(
     locations = {
@@ -53,14 +65,6 @@ public abstract class TestBase
     {
 
     /**
-     * Our debug logger.
-     * 
-     */
-    private static Logger logger = LoggerFactory.getLogger(
-        TestBase.class
-        );
-
-    /**
      * Our test Womble.
      *
      */
@@ -74,18 +78,18 @@ public abstract class TestBase
     @Before
     public void before()
         {
-        logger.debug("before()");
+        log.debug("before()");
         }
 
     @After
     public void after()
         {
-        logger.debug("after()");
+        log.debug("after()");
         }
 
     public void flush()
         {
-        logger.debug("flush()");
+        log.debug("flush()");
         }
 
     /**

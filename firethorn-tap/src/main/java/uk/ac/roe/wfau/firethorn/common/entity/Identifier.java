@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.common.ident ;
+package uk.ac.roe.wfau.firethorn.common.entity ;
 
 import java.io.Serializable;
 
