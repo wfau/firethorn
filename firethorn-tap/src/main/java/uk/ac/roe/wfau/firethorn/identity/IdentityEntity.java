@@ -184,7 +184,19 @@ implements Identity
      */
     protected IdentityEntity(String name)
         {
-        super(name);
+        super(name, null);
+        }
+
+    @Override
+    public Identity owner()
+        {
+        if (super.owner() == null)
+            {
+            return this ;
+            }
+        else {
+            return super.owner();
+            }
         }
     }
 

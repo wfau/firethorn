@@ -103,6 +103,13 @@ implements Womble
         }
 
     /**
+     * Our Spring ApplicationContext.
+     * 
+     */
+    @Autowired
+    private ApplicationContext appcontext ;
+
+    /**
      * Make this instance the singleton instance.
      * 
      */
@@ -110,18 +117,11 @@ implements Womble
     public void postConstruct()
         {
         womble(
-            (Womble) context.getBean(
+            (Womble) appcontext.getBean(
                 Womble.class
                 )
             );
         }
-
-    /**
-     * Our Spring ApplicationContext.
-     * 
-     */
-    @Autowired
-    private ApplicationContext context ;
 
     /**
      * Our Spring components.
@@ -134,7 +134,7 @@ implements Womble
             @Override
             public ApplicationContext context()
                 {
-                return context ;
+                return appcontext ;
                 }
             };
         }
@@ -540,6 +540,22 @@ implements Womble
         return this.identity ;
         }
 
+    /**
+     * Our Autowired Identity context.
+     * 
+     */
+    @Autowired
+    protected Identity.Context context ;
+
+    /**
+     * Access to the current Identity.
+     * 
+     */
+    @Override
+    public Identity actor()
+        {
+        return this.context.current();
+        }
 
     }
 

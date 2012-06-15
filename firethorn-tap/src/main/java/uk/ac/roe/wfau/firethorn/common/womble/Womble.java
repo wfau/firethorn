@@ -167,5 +167,11 @@ public interface Womble
      */
     public Identity.Factory identity();
 
+    /**
+     * Access to the current Identity.
+     * 
+     */
+    public Identity actor();
+
     }
 

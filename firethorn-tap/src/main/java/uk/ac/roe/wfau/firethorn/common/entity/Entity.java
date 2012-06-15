@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.common.entity ;
 
 import java.util.Date;
 
+import uk.ac.roe.wfau.firethorn.identity.Identity;
+
 /**
  * Common interface for a persistent Entity.
  *
@@ -72,6 +74,12 @@ public interface Entity
     public void name(String name);
 
     /**
+     * Get the Entity owner.
+     *
+     */
+    public Identity owner();
+
+    /**
      * The date/time when the Entity was created.
      *
      */
@@ -86,8 +94,8 @@ public interface Entity
     /**
      * Update (store) this Entity in the database.
      *
-     */
     public void update();
+     */
 
     /**
      * Delete this Entity from the database.

@@ -35,6 +35,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.MappedSuperclass;
 
+import javax.persistence.ManyToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 
@@ -42,6 +46,9 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.GenericGenerator;
+
+import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
 
 import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 import uk.ac.roe.wfau.firethorn.common.womble.WombleImpl;
@@ -71,20 +78,22 @@ implements Entity
      * Our database mapping values.
      * 
      */
-    public static final String DB_GEN_NAME   = "entity-ident" ;
-    public static final String DB_GEN_METHOD = "identity" ;
+    public static final String DB_GEN_NAME    = "entity-ident" ;
+    public static final String DB_GEN_METHOD  = "identity" ;
 
-    public static final String DB_NAME_COL   = "name"  ;
-    public static final String DB_IDENT_COL  = "ident" ;
+    public static final String DB_NAME_COL    = "name"  ;
+    public static final String DB_IDENT_COL   = "ident" ;
+    public static final String DB_OWNER_COL   = "owner" ;
 
     public static final String DB_CREATED_COL  = "created"  ;
     public static final String DB_MODIFIED_COL = "modified" ;
 
     /**
-     * Access to our Womble instance - naff, but works.
+     * Access to our Womble instance - naff, but works for now.
+     * @todo replace this with something, anything, else.
      *
      */
-    protected Womble womble()
+    protected static Womble womble()
         {
         return WombleImpl.womble();
         }
@@ -106,13 +115,44 @@ implements Entity
      */
     protected AbstractEntity(final String name)
         {
+        this(
+            name,
+            womble().actor()
+            );
+        }
+
+    /**
+     * Protected constructor, sets the name and create date.
+     * @todo Better default for the name.
+     *
+     */
+    protected AbstractEntity(final String name, final Identity owner)
+        {
         super();
-        this.name    = name ;
+        this.name  = name ;
+        this.owner = owner;
         this.created = new Date();
+
         if (this.name == null)
             {
             this.name = "no name" ;
             }
+/*
+2012-06-15 02:54:45,037 WARN  [main] [UnresolvedEntityInsertActions] HHH000437: Attempting to save one or more entities that have a non-nullable association with an unsaved transient entity. The unsaved transient entity must be saved in an operation prior to saving these dependent entities.
+	Unsaved transient entity: ([uk.ac.roe.wfau.firethorn.identity.IdentityEntity#<null>])
+	Dependent entities: ([[uk.ac.roe.wfau.firethorn.identity.IdentityEntity#<null>]])
+	Non-nullable association(s): ([uk.ac.roe.wfau.firethorn.identity.IdentityEntity.owner]) 
+2012-06-15 02:54:45,037 ERROR [main] [WombleImpl] Error executing Hibernate query [org.hibernate.TransientPropertyValueException][Not-null property references a transient value - transient instance must be saved before current operation: uk.ac.roe.wfau.firethorn.identity.IdentityEntity.owner -> uk.ac.roe.wfau.firethorn.identity.IdentityEntity] 
+
+        if (this.owner == null)
+            {
+            if (this instanceof Identity)
+                {
+                this.owner = (Identity) this ;
+                }
+            }
+ */
+
         }
 
     /**
@@ -182,6 +222,26 @@ implements Entity
     public void name(final String name)
         {
         this.name = name ;
+        }
+
+    /**
+     * The Entity owner.
+     *
+     */
+    @ManyToOne(
+        targetEntity = IdentityEntity.class
+        )
+    @JoinColumn(
+        name = DB_OWNER_COL,
+        unique = false,
+        nullable = true,
+        updatable = false
+        )
+    private Identity owner ;
+    @Override
+    public Identity owner()
+        {
+        return this.owner ;
         }
 
     /**
@@ -293,7 +353,6 @@ logger.debug("hashCode()");
     /**
      * Update (store) this Entity in the database.
      *
-     */
     @Override
     public void update()
         {
@@ -301,6 +360,7 @@ logger.debug("hashCode()");
             this
             );
         }
+     */
 
     /**
      * Delete this Entity from the database.
