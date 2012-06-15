@@ -47,6 +47,9 @@ import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.GenericGenerator;
 
+import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;  
+
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
 
