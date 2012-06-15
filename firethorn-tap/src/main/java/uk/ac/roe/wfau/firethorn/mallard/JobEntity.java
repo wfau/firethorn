@@ -147,13 +147,12 @@ implements Mallard.Job
 
         @Override
         @CreateEntityMethod
-        public Mallard.Job create(Mallard mallard, String name, String text, String adql)
+        public Mallard.Job create(Mallard mallard, String name, String adql)
             {
             return super.insert(
                 new JobEntity(
                     mallard,
                     name,
-                    text,
                     adql
                     )
                 );
@@ -174,7 +173,7 @@ implements Mallard.Job
      * Create a new JobEntity.
      *
      */
-    protected JobEntity(Mallard mallard, String name, String text, String adql)
+    protected JobEntity(Mallard mallard, String name, String adql)
         {
         super(name);
         this.adql = adql ;

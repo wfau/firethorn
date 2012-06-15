@@ -15,52 +15,45 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.common.womble ;
+package uk.ac.roe.wfau.firethorn.identity ;
 
-import lombok.extern.slf4j.Slf4j;
-
-import java.net.URI;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import uk.ac.roe.wfau.firethorn.test.TestBase;
-
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
+ * Public Identity interface.
  *
  */
-public class WombleTestCase
-extends TestBase
+public interface Identity
+extends Entity
     {
-
-    @Test
-    public void simple()
+    /**
+     * An Identity context.
+     *
+     */
+    public static interface Context
         {
-        assertNotNull(
-            womble()
-            );
-
-        assertNotNull(
-            womble().hibernate()
-            );
-
-        assertNotNull(
-            womble().hibernate().factory()
-            );
-
-        assertNotNull(
-            womble().hibernate().session()
-            );
-
-        assertNotNull(
-            womble().widgeon()
-            );
-
-        assertNotNull(
-            womble().mallard()
-            );
+        /**
+         * Get the current Identity.
+         *
+         */
+        public Identity current();
         }
-    }
 
+    /**
+     * An Identity factory.
+     *
+     */
+    public static interface Factory
+    extends Entity.Factory<Identity>
+        {
+        /**
+         * Create a new Identity.
+         *
+         */
+        public Identity create(String name);
+        }
+
+
+
+    }

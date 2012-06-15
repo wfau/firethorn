@@ -43,10 +43,10 @@ extends TestBase
     @Test
     public void test000()
         {
-        ident[0] = womble().mallards().create(
+        ident[0] = womble().mallard().create(
             "test-mallard"
             ).ident();
-        ident[1] = womble().mallards().create(
+        ident[1] = womble().mallard().create(
             "test-mallard"
             ).ident();
         }
@@ -57,7 +57,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        Mallard mallard = womble().mallards().select(
+        Mallard mallard = womble().mallard().select(
             ident[0]
             );
         assertFalse(
@@ -71,7 +71,6 @@ extends TestBase
             );
         mallard.jobs().create(
             "job-name",
-            "job-text",
             "job-adql"            
             );
         assertEquals(
@@ -88,7 +87,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        Mallard mallard = womble().mallards().select(
+        Mallard mallard = womble().mallard().select(
             ident[0]
             );
         assertFalse(
@@ -102,7 +101,6 @@ extends TestBase
             );
         mallard.jobs().create(
             "job-name",
-            "job-text",
             "job-adql"            
             );
         assertEquals(
@@ -119,7 +117,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        Mallard mallard = womble().mallards().select(
+        Mallard mallard = womble().mallard().select(
             ident[0]
             );
         assertFalse(
@@ -139,7 +137,7 @@ extends TestBase
         assertNotNull(
             ident[1]
             );
-        Mallard mallard = womble().mallards().select(
+        Mallard mallard = womble().mallard().select(
             ident[1]
             );
         assertFalse(
@@ -155,7 +153,6 @@ extends TestBase
             {
             mallard.jobs().create(
                 "job-name",
-                "job-text",
                 "job-adql"            
                 );
             }
@@ -173,7 +170,7 @@ extends TestBase
         assertNotNull(
             ident[1]
             );
-        Mallard mallard = womble().mallards().select(
+        Mallard mallard = womble().mallard().select(
             ident[1]
             );
         assertFalse(

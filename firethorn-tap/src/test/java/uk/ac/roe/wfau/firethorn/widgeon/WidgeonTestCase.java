@@ -39,7 +39,7 @@ extends TestBase
     @Test
     public void simple()
         {
-        Widgeon one = womble().widgeons().create(
+        Widgeon one = womble().widgeon().create(
             "albert",
             URI.create("ivo://org.astrogrid.test/0001")
             );
@@ -51,7 +51,7 @@ extends TestBase
             );
         log.debug("One [{}][{}]", one.ident(), one.name());
 
-        Widgeon two = womble().widgeons().create(
+        Widgeon two = womble().widgeon().create(
             "albert",
             URI.create("ivo://org.astrogrid.test/0001")
             );
@@ -65,7 +65,7 @@ extends TestBase
 
         //womble().hibernate().flush();
 
-        for (Widgeon widgeon : womble().widgeons().select())
+        for (Widgeon widgeon : womble().widgeon().select())
             {
             log.debug("Widgeon [{}]", widgeon);
             }
@@ -76,13 +76,13 @@ extends TestBase
     public void nested()
         {
         nested(
-            womble().widgeons().create(
+            womble().widgeon().create(
                 "widgeon-0001",
                 URI.create("ivo://org.astrogrid.test/0001")
                 )
             );
         nested(
-            womble().widgeons().create(
+            womble().widgeon().create(
                 "widgeon-0002",
                 URI.create("ivo://org.astrogrid.test/0002")
                 )
@@ -90,7 +90,7 @@ extends TestBase
 
         //womble().hibernate().flush();
 
-        for (Widgeon widgeon : womble().widgeons().select())
+        for (Widgeon widgeon : womble().widgeon().select())
             {
             display(
                 widgeon

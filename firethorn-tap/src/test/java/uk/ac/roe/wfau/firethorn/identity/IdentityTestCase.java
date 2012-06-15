@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.common.womble ;
+package uk.ac.roe.wfau.firethorn.identity ;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,36 +31,24 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 /**
  *
  */
-public class WombleTestCase
+@Slf4j
+public class IdentityTestCase
 extends TestBase
     {
 
+    private static Identifier[] ident = new Identifier[10] ;
+
     @Test
-    public void simple()
+    public void test000()
         {
-        assertNotNull(
-            womble()
-            );
-
-        assertNotNull(
-            womble().hibernate()
-            );
-
-        assertNotNull(
-            womble().hibernate().factory()
-            );
-
-        assertNotNull(
-            womble().hibernate().session()
-            );
-
-        assertNotNull(
-            womble().widgeon()
-            );
-
-        assertNotNull(
-            womble().mallard()
-            );
+        ident[0] = womble().identity().create(
+            "albert"
+            ).ident();
+        ident[1] = womble().identity().create(
+            "albert"
+            ).ident();
         }
+
+
     }
 

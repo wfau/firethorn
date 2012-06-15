@@ -46,6 +46,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 import uk.ac.roe.wfau.firethorn.mallard.Mallard;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  * Spring and Hibernate toolkit.
@@ -489,37 +490,56 @@ implements Womble
  */
 
     /**
-     * Our Widgeon factory.
+     * Our AutowiredWidgeon factory.
      * 
      */
     @Autowired
-    protected Widgeon.Factory widgeons ;
+    protected Widgeon.Factory widgeon ;
 
     /**
      * Access to our Widgeon factory.
      * 
      */
     @Override
-    public Widgeon.Factory widgeons()
+    public Widgeon.Factory widgeon()
         {
-        return this.widgeons ;
+        return this.widgeon ;
         }
 
     /**
-     * Our Mallard factory.
+     * Our Autowired Mallard factory.
      * 
      */
     @Autowired
-    protected Mallard.Factory mallards ;
+    protected Mallard.Factory mallard ;
 
     /**
-     * Our Mallard factory.
+     * Access to our Mallard factory.
      * 
      */
-    public Mallard.Factory mallards()
+    @Override
+    public Mallard.Factory mallard()
         {
-        return this.mallards ;
+        return this.mallard ;
         }
+
+    /**
+     * Our Autowired Identity factory.
+     * 
+     */
+    @Autowired
+    protected Identity.Factory identity ;
+
+    /**
+     * Access to our Identity factory.
+     * 
+     */
+    @Override
+    public Identity.Factory identity()
+        {
+        return this.identity ;
+        }
+
 
     }
 

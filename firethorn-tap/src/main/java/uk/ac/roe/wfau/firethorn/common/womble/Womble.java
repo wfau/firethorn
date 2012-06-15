@@ -33,6 +33,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 import uk.ac.roe.wfau.firethorn.mallard.Mallard;
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  * Spring and Hibernate toolkit.
@@ -149,16 +150,22 @@ public interface Womble
         }        
 
     /**
-     * Our Widgeon factory.
+     * Access to our Widgeon factory.
      * 
      */
-    public Widgeon.Factory widgeons();
+    public Widgeon.Factory widgeon();
 
     /**
-     * Our Mallard factory.
+     * Access to our Mallard factory.
      * 
      */
-    public Mallard.Factory mallards();
+    public Mallard.Factory mallard();
+
+    /**
+     * Access to our Identity factory.
+     * 
+     */
+    public Identity.Factory identity();
 
     }
 

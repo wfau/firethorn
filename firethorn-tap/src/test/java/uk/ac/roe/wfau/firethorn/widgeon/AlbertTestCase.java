@@ -41,7 +41,7 @@ extends TestBase
     @Test
     public void test000()
         {
-        Widgeon object = womble().widgeons().create(
+        Widgeon object = womble().widgeon().create(
             "albert",
             URI.create("ivo://org.astrogrid.test/0001")
             );
@@ -86,7 +86,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        Widgeon object = womble().widgeons().select(
+        Widgeon object = womble().widgeon().select(
             ident[0]
             );
         assertFalse(
@@ -115,7 +115,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        Widgeon object = womble().widgeons().select(
+        Widgeon object = womble().widgeon().select(
             ident[0]
             );
 

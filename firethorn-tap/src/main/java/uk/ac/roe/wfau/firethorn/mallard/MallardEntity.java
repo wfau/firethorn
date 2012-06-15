@@ -107,6 +107,7 @@ implements Mallard
             return MallardEntity.class ;
             }
 
+        @Override
         @SelectEntityMethod
         public Iterable<Mallard> select()
             {
@@ -171,12 +172,11 @@ implements Mallard
         return new Jobs()
             {
             @Override
-            public Job create(String name, String text, String adql)
+            public Job create(String name, String adql)
                 {
-                return womble().mallards().jobs().create(
+                return womble().mallard().jobs().create(
                     MallardEntity.this,
                     name,
-                    text,
                     adql
                     ) ;
                 }
@@ -184,7 +184,7 @@ implements Mallard
             @Override
             public Iterable<Job> select()
                 {
-                return womble().mallards().jobs().select(
+                return womble().mallard().jobs().select(
                     MallardEntity.this
                     ) ;
                 }
@@ -232,12 +232,14 @@ implements Mallard
         {
         return new Widgeons()
             {
+            @Override
             public void insert(Widgeon widgeon)
                 {
                 widgeons.add(
                     (Widgeon) widgeon
                     );
                 }
+            @Override
             public Iterable<Widgeon> select()
                 {
                 return widgeons ;

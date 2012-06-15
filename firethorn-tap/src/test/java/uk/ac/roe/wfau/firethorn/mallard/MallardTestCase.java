@@ -43,10 +43,10 @@ extends TestBase
     @Test
     public void test000()
         {
-        ident[0] = womble().mallards().create(
+        ident[0] = womble().mallard().create(
             "albert"
             ).ident();
-        ident[1] = womble().mallards().create(
+        ident[1] = womble().mallard().create(
             "albert"
             ).ident();
         }
@@ -57,7 +57,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        Mallard object = womble().mallards().select(
+        Mallard object = womble().mallard().select(
             ident[0]
             );
 
@@ -86,7 +86,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        Mallard object = womble().mallards().select(
+        Mallard object = womble().mallard().select(
             ident[0]
             );
         assertFalse(
@@ -104,14 +104,14 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        Mallard object = womble().mallards().select(
+        Mallard object = womble().mallard().select(
             ident[0]
             );
         assertFalse(
             womble().hibernate().session().isDirty()
             );
         object.widgeons().insert(
-            womble().widgeons().create(
+            womble().widgeon().create(
                 "0001",
                 URI.create("ivo://org.astrogrid.test/0001")
                 )
@@ -128,7 +128,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        Mallard object = womble().mallards().select(
+        Mallard object = womble().mallard().select(
             ident[0]
             );
         assertEquals(
@@ -145,14 +145,14 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        Mallard object = womble().mallards().select(
+        Mallard object = womble().mallard().select(
             ident[0]
             );
         assertFalse(
             womble().hibernate().session().isDirty()
             );
         object.widgeons().insert(
-            womble().widgeons().create(
+            womble().widgeon().create(
                 "0001",
                 URI.create("ivo://org.astrogrid.test/0001")
                 )
@@ -168,7 +168,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        Mallard object = womble().mallards().select(
+        Mallard object = womble().mallard().select(
             ident[0]
             );
         assertEquals(
@@ -188,10 +188,10 @@ extends TestBase
         assertNotNull(
             ident[1]
             );
-        Mallard frog = womble().mallards().select(
+        Mallard frog = womble().mallard().select(
             ident[0]
             );
-        Mallard toad = womble().mallards().select(
+        Mallard toad = womble().mallard().select(
             ident[1]
             );
         for (Widgeon widgeon : frog.widgeons().select())
@@ -208,14 +208,14 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        Mallard object = womble().mallards().select(
+        Mallard object = womble().mallard().select(
             ident[0]
             );
         assertFalse(
             womble().hibernate().session().isDirty()
             );
         object.widgeons().insert(
-            womble().widgeons().create(
+            womble().widgeon().create(
                 "0001",
                 URI.create("ivo://org.astrogrid.test/0001")
                 )
@@ -232,7 +232,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        Mallard object = womble().mallards().select(
+        Mallard object = womble().mallard().select(
             ident[0]
             );
         assertEquals(
@@ -249,7 +249,7 @@ extends TestBase
         assertNotNull(
             ident[1]
             );
-        Mallard object = womble().mallards().select(
+        Mallard object = womble().mallard().select(
             ident[1]
             );
         assertEquals(

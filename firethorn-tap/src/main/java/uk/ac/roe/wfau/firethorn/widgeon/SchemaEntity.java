@@ -193,7 +193,7 @@ implements Widgeon.Schema
             @Override
             public Catalog create(String name)
                 {
-                return womble().widgeons().schemas().catalogs().create(
+                return womble().widgeon().schemas().catalogs().create(
                     SchemaEntity.this,
                     name
                     ) ;
@@ -202,7 +202,7 @@ implements Widgeon.Schema
             @Override
             public Catalog select(String name)
                 {
-                return womble().widgeons().schemas().catalogs().select(
+                return womble().widgeon().schemas().catalogs().select(
                     SchemaEntity.this,
                     name
                     ) ;
@@ -211,7 +211,7 @@ implements Widgeon.Schema
             @Override
             public Iterable<Catalog> select()
                 {
-                return womble().widgeons().schemas().catalogs().select(
+                return womble().widgeon().schemas().catalogs().select(
                     SchemaEntity.this
                     ) ;
                 }

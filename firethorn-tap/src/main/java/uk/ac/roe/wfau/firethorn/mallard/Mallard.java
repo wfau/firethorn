@@ -72,7 +72,7 @@ extends Entity
         extends Entity.Factory<Job>
             {
 
-            public Job create(Mallard mallard, String name, String text, String adql);
+            public Job create(Mallard mallard, String name, String adql);
 
             public Iterable<Job> select(Mallard mallard);
 
@@ -120,7 +120,7 @@ extends Entity
     public Jobs jobs();
     public interface Jobs
         {
-        public Job create(String name, String text, String adql);
+        public Job create(String name, String adql);
         public Iterable<Job> select();
         }
 

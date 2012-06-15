@@ -170,7 +170,7 @@ implements Widgeon
             @Override
             public Schema create(final String name)
                 {
-                return womble().widgeons().schemas().create(
+                return womble().widgeon().schemas().create(
                     WidgeonEntity.this,
                     name
                     ) ;
@@ -179,7 +179,7 @@ implements Widgeon
             @Override
             public Iterable<Schema> select()
                 {
-                return womble().widgeons().schemas().select(
+                return womble().widgeon().schemas().select(
                     WidgeonEntity.this
                     ) ;
                 }
@@ -187,7 +187,7 @@ implements Widgeon
             @Override
             public Schema select(final String name)
                 {
-                return womble().widgeons().schemas().select(
+                return womble().widgeon().schemas().select(
                     WidgeonEntity.this,
                     name
                     ) ;
