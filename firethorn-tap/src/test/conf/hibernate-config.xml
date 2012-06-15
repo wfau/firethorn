@@ -58,6 +58,8 @@
         <property name="annotatedClasses">
             <list>
 
+                <value>uk.ac.roe.wfau.firethorn.identity.IdentityEntity</value>
+
                 <value>uk.ac.roe.wfau.firethorn.mallard.MallardEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.mallard.JobEntity</value>
 

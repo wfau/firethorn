@@ -40,6 +40,7 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NamedQueries;
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;  
 
@@ -89,9 +90,12 @@ implements Identity
     public static final String DB_TABLE_NAME = "identity_entity" ;
 
     /**
-     * Identity context.
+     * Identity context implementation.
+     * This implementation assumes a one to one match between Thread and Hibernate Session.
+     * A more complete implementation should check that the Identity Entity is part of the current Hibernate Session 
      *
      */
+    @Component
     public static class Context
     implements Identity.Context
         {
@@ -127,7 +131,7 @@ implements Identity
         }
 
     /**
-     * Identity factory.
+     * Identity factory implementation.
      *
      */
     @Repository

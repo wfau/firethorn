@@ -24,6 +24,8 @@ import java.net.URI;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import org.springframework.beans.factory.annotation.Autowired;  
+
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
@@ -49,6 +51,39 @@ extends TestBase
             ).ident();
         }
 
+    /**
+     * Our Autowired Identity context.
+     * 
+     */
+    @Autowired
+    protected Identity.Context context ;
+
+    @Test
+    public void test001()
+        {
+        assertNotNull(
+            context.current().ident()
+            );
+        ident[2] = context.current().ident();
+        }
+
+    @Test
+    public void test002()
+        {
+        assertNotNull(
+            context.current().ident()
+            );
+        ident[3] = context.current().ident();
+        }
+
+    @Test
+    public void test003()
+        {
+        assertEquals(
+            ident[2],
+            ident[3]
+            );
+        }
 
     }
 
