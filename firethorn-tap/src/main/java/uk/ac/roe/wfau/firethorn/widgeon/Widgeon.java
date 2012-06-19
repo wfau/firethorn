@@ -26,7 +26,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
- * Metadata structure describing a database resource.
+ * Public interface for describing a data resource (JDBC database OR TAP service).
+ * Called Widgeon because the word Resource has already been used so many times to mean different things in different places.
  *
  */
 public interface Widgeon
@@ -34,37 +35,53 @@ extends Entity
     {
 
     /**
-     * Widgeon factory interface.
+     * Enum representing the status of a Widgeon component.
      *
      */
-    public static interface Factory
-    extends Entity.Factory<Widgeon>
+    public enum Status
         {
-        /**
-         * Create a new Widgeon.
-         * 
-         */
-        public Widgeon create(String name, URI uri);
+        ENABLED(true),
+        DISABLED(false),
+        CREATED(false),
+        DELETED(false);
 
         /**
-         * Create a new Widgeon.
-         * 
+         * Private constructor.
+         *
          */
-        public Widgeon create(String name, URL url);
+        private Status(boolean enabled)
+            {
+            this.enabled = enabled ;
+            }
 
         /**
-         * Create a new Widgeon.
-         * 
+         * Private enabled flag.
+         *
          */
-        public Widgeon create(String name, DataSource src);
+        private boolean enabled ;
 
         /**
-         * Access to our Schema factory.
-         * 
+         * Check to see if a component with this status is enabled.
+         *
          */
-        public Widgeon.Schema.Factory schemas();
+        public boolean enabled()
+            {
+            return this.enabled ;
+            }        
 
         }
+
+    /**
+     * The status of this Widgeon.
+     *
+     */
+    public Status status();
+
+    /**
+     * Set the status of this Widgeon.
+     *
+     */
+    public void status(Status status);
 
     /**
      * Access to this Widgeon's Schema.
@@ -73,19 +90,13 @@ extends Entity
     public Schemas schemas();
 
     /**
-     * Access to this Widgeon's Schema.
+     * Public interface for accessing this Widgeon's Schema.
      *
      */
     public interface Schemas
         {
         /**
-         * Create a new Schema.
-         *
-         */
-        public Widgeon.Schema create(String name);
-
-        /**
-         * Select a Schema by name (unique within this Widgeon).
+         * Select a named Schema.
          *
          */
         public Widgeon.Schema select(String name);
@@ -97,146 +108,430 @@ extends Entity
         public Iterable<Widgeon.Schema> select();
         }
 
+    /**
+     * Public interface for Schema metadata.
+     *
+     */
     public interface Schema
     extends Entity
         {
+        /**
+         * Access to our parent Widgeon.
+         *
+         */
         public Widgeon parent();
 
-        public interface Factory
-        extends Entity.Factory<Schema>
-            {
-            /**
-             * Create a new Schema.
-             *
-             */
-            public Schema create(Widgeon parent, String name);
+        /**
+         * The status of this Schema.
+         *
+         */
+        public Status status();
 
-            /**
-             * Select a Schema by name.
-             *
-             */
-            public Schema select(Widgeon parent, String name);
+        /**
+         * Set the status of this Schema.
+         *
+         */
+        public void status(Status status);
 
-            /**
-             * Select all the Schema for a parent Widgeon.
-             *
-             */
-            public Iterable<Schema> select(Widgeon parent);
-
-            /**
-             * Access to our Catalog factory.
-             * 
-             */
-            public Schema.Catalog.Factory catalogs();
-
-            }
-
+        /**
+         * Access to this Schema's Catalogs.
+         *
+         */
         public Catalogs catalogs();
+
+        /**
+         * Public interface for accessing this Schema's Catalogs.
+         *
+         */
         public interface Catalogs
             {
-            public Schema.Catalog create(String name);
+            /**
+             * Select a named Catalog.
+             *
+             */
             public Schema.Catalog select(String name);
+
+            /**
+             * Select all the Catalogs in this Schema.
+             *
+             */
             public Iterable<Schema.Catalog> select();
             }
 
+        /**
+         * Public interface for Catalog metadata.
+         *
+         */
         public interface Catalog
         extends Entity
             {
+            /**
+             * Access to our parent Schema.
+             *
+             */
             public Schema parent();
 
-            public interface Factory
-            extends Entity.Factory<Catalog>
-                {
-                public Catalog create(Schema parent, String name);
-                public Catalog select(Schema parent, String name);
-                public Iterable<Catalog> select(Schema parent);
+            /**
+             * The status of this Catalog.
+             *
+             */
+            public Status status();
 
-                /**
-                 * Access to our Table factory.
-                 * 
-                 */
-                public Catalog.Table.Factory tables();
+            /**
+             * Set the status of this Catalog.
+             *
+             */
+            public void status(Status status);
 
-                }
-
+            /**
+             * Access to this Catalog's Tables.
+             *
+             */
             public Tables tables();
+
+            /**
+             * Public interface for accessing this Catalog's Tables.
+             *
+             */
             public interface Tables
                 {
-                public Catalog.Table create(String name);
+                /**
+                 * Select a named Table.
+                 *
+                 */
                 public Catalog.Table select(String name);
+
+                /**
+                 * Select all the Tables in this Catalog.
+                 *
+                 */
                 public Iterable<Catalog.Table> select();
                 }
 
+            /**
+             * Public interface for Table metadata.
+             *
+             */
             public interface Table
             extends Entity
                 {
+                /**
+                 * Access to our parent Catalog.
+                 *
+                 */
                 public Catalog parent();
 
-                public interface Factory
-                extends Entity.Factory<Table>
-                    {
-                    public Table create(Catalog parent, String name);
-                    public Table select(Catalog parent, String name);
-                    public Iterable<Table> select(Catalog parent);
+                /**
+                 * The status of this Table.
+                 *
+                 */
+                public Status status();
 
-                    /**
-                     * Access to our Column factory.
-                     * 
-                     */
-                    public Table.Column.Factory columns();
+                /**
+                 * Set the status of this Table.
+                 *
+                 */
+                public void status(Status status);
 
-                    }
-
+                /**
+                 * Access to this Table's Columns.
+                 *
+                 */
                 public Columns columns();
+
+                /**
+                 * Public interface for accessing this Table's Columns.
+                 *
+                 */
                 public interface Columns
                     {
-                    public Table.Column create(String name);
+                    /**
+                     * Select a named Column.
+                     *
+                     */
                     public Table.Column select(String name);
+
+                    /**
+                     * Set the status of this Column.
+                     *
+                     */
+                    public void status(Status status);
+
+                    /**
+                     * Select all the Columns in this Table.
+                     *
+                     */
                     public Iterable<Table.Column> select();
                     }
 
+                /**
+                 * Public interface for Column metadata.
+                 *
+                 */
                 public interface Column
                 extends Entity
                     {
+                    /**
+                     * Access to our parent Table.
+                     *
+                     */
                     public Table parent();
 
-                    public interface Factory
-                    extends Entity.Factory<Column>
-                        {
-                        public Column create(Table parent, String name);
-                        public Column select(Table parent, String name);
-                        public Iterable<Column> select(Table parent);
-                        }
+                    /**
+                     * The status of this Column.
+                     *
+                     */
+                    public Status status();
+
                     }
                 }
             }
         }
 
     /**
-     * A core resource built from what IS.
+     * Public interface for a base Widgeon, based on what IS.
      *
-    public interface Core
+     */
+    public interface Base
     extends Widgeon
         {
+
+        /**
+         * Factory interface for creating and selecting Widgeons.
+         *
+         */
+        public static interface Factory
+        extends Entity.Factory<Widgeon.Base>
+            {
+
+            /**
+             * Select all of the Widgeon Entities.
+             *
+             */
+            public Iterable<Widgeon.Base> select();
+
+            /**
+             * Create a Widgeon from a registry URI.
+             * 
+             */
+            public Widgeon.Base create(String name, URI uri);
+
+            /**
+             * Create a Widgeon from a VOSI URL.
+             * 
+             */
+            public Widgeon.Base create(String name, URL url);
+
+            /**
+             * Create a Widgeon from a JDBC DataSource.
+             * 
+             */
+            public Widgeon.Base create(String name, DataSource src);
+
+            /**
+             * Access to our View factory.
+             * 
+             */
+            public Widgeon.View.Factory views();
+
+            /**
+             * Access to our Schema factory.
+             * 
+             */
+            public Widgeon.Base.Schema.Factory schemas();
+
+            }
+
+        /**
+         * Public interface for accessing the Views of this Widgeon.
+         *
+         */
         public interface Views
             {
+            /*
+             * Create a new View of this Widgeon.
+             *
+             */
             public Widgeon.View create(String name);
-            public Widgeon.View select(String name);
+
+            /*
+             * Select all the Views of this Widgeon.
+             *
+             */
             public Iterable<Widgeon.View> select();
+
+            /*
+             * Select a named View of this Widgeon.
+             *
+             */
+            public Widgeon.View select(String name);
+
+            }
+
+        /**
+         * Access to the Views of this Widgeon.
+         *
+         */
+        public Views views();
+
+        /**
+         * Public interface for accessing this Widgeon's Schema.
+         *
+         */
+        public interface Schemas
+        extends Widgeon.Schemas
+            {
+            /**
+             * Create a new Schema for this Widgeon.
+             *
+             */
+            public Widgeon.Base.Schema create(String name);
+            }
+
+        /**
+         * Access to the Schema for this Widgeon.
+         *
+         */
+        public Schemas schemas();
+
+        /**
+         * Public interface for Schema metadata.
+         *
+         */
+        public interface Schema
+        extends Widgeon.Schema
+            {
+
+            /**
+             * Factory interface for creating and selecting Schema.
+             *
+             */
+            public static interface Factory
+            extends Entity.Factory<Widgeon.Base.Schema>
+                {
+                /**
+                 * Create a new Schema for a Base Widgeon.
+                 *
+                 */
+                public Widgeon.Base.Schema create(Widgeon.Base parent, String name);
+
+                /**
+                 * Select a named Schema for a Base Widgeon.
+                 *
+                 */
+                public Widgeon.Base.Schema select(Widgeon.Base parent, String name);
+
+                /**
+                 * Select all the Schema for a Base Widgeon.
+                 *
+                 */
+                public Iterable<Widgeon.Schema> select(Widgeon.Base parent);
+
+                /**
+                 * Access to our Catalog factory.
+                 * 
+                 */
+                //public Widgeon.Base.Schema.Catalog.Factory catalogs();
+
+                }
             }
         }
-     */
 
     /**
-     * A customised view of a resource.
+     * Public interface for a View of a Widgeon.
      *
+     */
     public interface View
     extends Widgeon
         {
-        public Widgeon parent();
+
+        /**
+         * Factory interface for creating and selecting Widgeon Views.
+         *
+         */
+        public static interface Factory
+        extends Entity.Factory<Widgeon.View>
+            {
+            /**
+             * Create a View of a Widgeon.
+             *
+             */
+            public Widgeon.View create(Widgeon.Base base, String name);
+
+            /**
+             * Select a named View of a Widgeon.
+             *
+             */
+            public Widgeon.View select(Widgeon.Base base, String name);
+
+            /**
+             * Select all the Views for a Widgeon.
+             *
+             */
+            public Iterable<Widgeon.View> select(Widgeon.Base base);
+
+            /**
+             * Access to our Schema factory.
+             * 
+             */
+            public Widgeon.View.Schema.Factory schemas();
+
+            }
+
+        /**
+         * Access to our base Widgeon.
+         *
+         */
+        public Widgeon.Base base();
+
+        /**
+         * Public inte4rface for a Schema View.
+         *
+         */
+        public interface Schema
+        extends Widgeon.Schema
+            {
+
+            /**
+             * Factory interface for creating and selecting Schema Views.
+             *
+             */
+            public static interface Factory
+            extends Entity.Factory<Widgeon.View.Schema>
+                {
+                /**
+                 * Create a View of a Schema.
+                 *
+                 */
+                public Widgeon.View.Schema create(Widgeon.Base.Schema base, Widgeon.View parent, String name);
+
+                /**
+                 * Select a named Schema from a Widgeon View.
+                 *
+                 */
+                public Widgeon.View.Schema select(Widgeon.View parent, String name);
+
+                /**
+                 * Select all the Schema from a Widgeon View.
+                 *
+                 */
+                public Iterable<Widgeon.Schema> select(Widgeon.View parent);
+
+                /**
+                 * Access to our Catalog factory.
+                 * 
+                 */
+                //public Widgeon.View.Schema.Catalog.Factory catalogs();
+
+                }
+
+            /**
+             * Access to our base Schema.
+             *
+             */
+            public Widgeon.Base.Schema base();
+
+            }
         }
-     */
-
-
     }
 

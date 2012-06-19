@@ -153,7 +153,7 @@ public interface Womble
      * Access to our Widgeon factory.
      * 
      */
-    public Widgeon.Factory widgeon();
+    public Widgeon.Base.Factory widgeon();
 
     /**
      * Access to our Mallard factory.

@@ -131,7 +131,7 @@ implements Identity
         }
 
     /**
-     * Identity factory implementation.
+     * Our Entity Factory implementation.
      *
      */
     @Repository
@@ -179,14 +179,21 @@ implements Identity
         }
 
     /**
-     * Create a new IdentityEntity.
+     * Create a new IdentityEntity, setting the owner to null.
      *
      */
     protected IdentityEntity(String name)
         {
-        super(name, null);
+        super(
+            null,
+            name
+            );
         }
 
+    /**
+     * Return this Identity as the Entity owner.
+     *
+     */
     @Override
     public Identity owner()
         {

@@ -52,6 +52,13 @@ extends Entity
          *
          */
         public Identity create(String name);
+
+        /**
+         * Select all the Identities.
+         *
+         */
+        public Iterable<Identity> select();
+
         }
 
 

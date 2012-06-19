@@ -34,7 +34,6 @@ public interface Entity
      */
     public interface Factory<EntityType extends Entity>
         {
-
         /**
          * Create an Identifier from a String.
          *
@@ -46,12 +45,6 @@ public interface Entity
          *
          */
         public EntityType select(final Identifier ident);
-
-        /**
-         * Select all of the Entities.
-         *
-         */
-        public Iterable<EntityType> select();
 
         }
 

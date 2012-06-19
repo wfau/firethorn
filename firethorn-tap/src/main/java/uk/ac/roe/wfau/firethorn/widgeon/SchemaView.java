@@ -23,10 +23,12 @@ import java.net.URI;
 import java.net.URL;
 
 import javax.persistence.Table;
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Column;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -56,80 +58,79 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
     AccessType.FIELD
     )
 @Table(
-    name = SchemaEntity.DB_TABLE_NAME,
+    name = SchemaView.DB_TABLE_NAME,
     uniqueConstraints=
         @UniqueConstraint(
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
-                SchemaEntity.DB_PARENT_COL,
+                SchemaView.DB_PARENT_COL,
                 }
             )
     )
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "widgeon.schema-select-all",
-            query = "FROM SchemaEntity ORDER BY ident desc"
+            name  = "widgeon.schema.view-select-parent",
+            query = "FROM SchemaView WHERE parent = :parent ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "widgeon.schema-select-parent",
-            query = "FROM SchemaEntity WHERE parent = :parent ORDER BY ident desc"
-            ),
-        @NamedQuery(
-            name  = "widgeon.schema-select-parent.name",
-            query = "FROM SchemaEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
+            name  = "widgeon.schema.view-select-parent.name",
+            query = "FROM SchemaView WHERE parent = :parent AND name = :name ORDER BY ident desc"
             )
         }
     )
-public class SchemaEntity
+public class SchemaView
 extends AbstractEntity
-implements Widgeon.Schema
+implements Widgeon.Schema, Widgeon.View.Schema
     {
 
     /**
-     * Our database table name.
+     * Our persistence table name.
      * 
      */
-    public static final String DB_TABLE_NAME = "widgeon_schema" ;
+    public static final String DB_TABLE_NAME = "widgeon_schema_view" ;
 
     /**
-     * Our parent column name.
+     * The persistence column name for our parent Widgeon.
      * 
      */
     public static final String DB_PARENT_COL = "parent" ;
 
     /**
-     * Schema factory interface.
+     * The persistence column name for our base Schema.
+     * 
+     */
+    public static final String DB_BASE_COL = "base" ;
+
+    /*
+     * The persistence column name for our status enum.
+     * 
+     */
+    public static final String DB_STATUS_COL  = "status" ;
+
+    /**
+     * Our Entity Factory implementation.
      *
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<Widgeon.Schema>
-    implements Widgeon.Schema.Factory
+    extends AbstractFactory<Widgeon.View.Schema>
+    implements Widgeon.View.Schema.Factory
         {
 
         @Override
         public Class etype()
             {
-            return SchemaEntity.class ;
-            }
-
-        @SelectEntityMethod
-        public Iterable<Widgeon.Schema> select()
-            {
-            return super.iterable(
-                super.query(
-                    "widgeon.schema-select-all"
-                    )
-                );
+            return SchemaView.class ;
             }
 
         @Override
         @CreateEntityMethod
-        public Widgeon.Schema create(final Widgeon parent, final String name)
+        public Widgeon.View.Schema create(final Widgeon.Base.Schema base, final Widgeon.View parent, final String name)
             {
             return super.insert(
-                new SchemaEntity(
+                new SchemaView(
+                    base,
                     parent,
                     name
                     )
@@ -138,25 +139,28 @@ implements Widgeon.Schema
 
         @Override
         @SelectEntityMethod
-        public Iterable<Widgeon.Schema> select(final Widgeon parent)
+        public Iterable<Widgeon.Schema> select(final Widgeon.View parent)
             {
+            return null;
+/*
             return super.iterable(
                 super.query(
-                    "widgeon.schema-select-parent"
+                    "widgeon.schema.view-select-parent"
                     ).setEntity(
                         "parent",
                         parent
                         )
                 );
+ */
             }
 
         @Override
         @SelectEntityMethod
-        public Widgeon.Schema select(final Widgeon parent, final String name)
+        public Widgeon.View.Schema select(final Widgeon.View parent, final String name)
             {
             return super.single(
                 super.query(
-                    "widgeon.schema-select-parent.name"
+                    "widgeon.schema.view-select-parent.name"
                     ).setEntity(
                         "parent",
                         parent
@@ -170,19 +174,20 @@ implements Widgeon.Schema
         /**
          * Our Autowired Catalog factory.
          * 
-         */
         @Autowired
         protected Widgeon.Schema.Catalog.Factory catalogs ;
+         */
 
         /**
          * Access to our Catalog factory.
          * 
-         */
         @Override
         public Widgeon.Schema.Catalog.Factory catalogs()
             {
-            return this.catalogs ;
+            return null ;
             }
+         */
+
         }
 
     @Override
@@ -190,32 +195,39 @@ implements Widgeon.Schema
         {
         return new Catalogs()
             {
-            @Override
+            //@Override
             public Catalog create(String name)
                 {
-                return womble().widgeon().schemas().catalogs().create(
-                    SchemaEntity.this,
-                    name
-                    ) ;
+                return null ;
                 }
 
             @Override
             public Catalog select(String name)
                 {
-                return womble().widgeon().schemas().catalogs().select(
-                    SchemaEntity.this,
-                    name
-                    ) ;
+                return null ;
                 }
 
             @Override
             public Iterable<Catalog> select()
                 {
-                return womble().widgeon().schemas().catalogs().select(
-                    SchemaEntity.this
-                    ) ;
+                return null ;
                 }
             };
+        }
+
+    /**
+     * Check a view name, using the base name if the given name is null or empty.
+     *
+     */
+    private static String name(final Widgeon.Base.Schema base, final String name)
+        {
+        if ((name == null) || (name.trim().length() == 0))
+            {
+            return base.name();
+            }
+        else {
+            return name.trim() ;
+            }
         }
 
     /**
@@ -223,18 +235,37 @@ implements Widgeon.Schema
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected SchemaEntity()
+    protected SchemaView()
         {
         super();
         }
 
     /**
-     * Create a new Schema.
+     * Create a new view.
      *
      */
-    protected SchemaEntity(final Widgeon parent, final String name)
+    protected SchemaView(final Widgeon.Base.Schema base, final Widgeon.View parent)
         {
-        super(name);
+        this(
+            base,
+            parent,
+            null
+            );
+        }
+
+    /**
+     * Create a new view.
+     *
+     */
+    protected SchemaView(final Widgeon.Base.Schema base, final Widgeon.View parent, final String name)
+        {
+        super(
+            name(
+                base,
+                name
+                )
+            );
+        this.base = base ;
         this.parent = parent ;
         }
 
@@ -243,8 +274,8 @@ implements Widgeon.Schema
      *
      */
     @ManyToOne(
-        fetch = FetchType.LAZY,
-        targetEntity = WidgeonEntity.class
+        fetch = FetchType.EAGER,
+        targetEntity = WidgeonView.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,
@@ -252,17 +283,81 @@ implements Widgeon.Schema
         nullable = false,
         updatable = false
         )
-    private Widgeon parent ;
+    private Widgeon.View parent ;
 
     /**
      * Access to our parent Widgeon.
      *
      */
     @Override
-    public Widgeon parent()
+    public Widgeon.View parent()
         {
         return this.parent ;
         }
 
-    }
+    /**
+     * Our underlying base Schema.
+     *
+     */
+    @ManyToOne(
+        fetch = FetchType.EAGER,
+        targetEntity = SchemaBase.class
+        )
+    @JoinColumn(
+        name = DB_BASE_COL,
+        unique = false,
+        nullable = false,
+        updatable = false
+        )
+    private Widgeon.Base.Schema base ;
 
+    /**
+     * Access to our base Schema.
+     *
+     */
+    @Override
+    public Widgeon.Base.Schema base()
+        {
+        return this.base ;
+        }
+
+    /**
+     * The status of this Schema.
+     *
+     */
+    @Column(
+        name = DB_STATUS_COL,
+        unique = false,
+        nullable = false,
+        updatable = true
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    private Widgeon.Status status = Widgeon.Status.CREATED ;
+
+    @Override
+    public Widgeon.Status status()
+        {
+        if (this.parent.status() == Widgeon.Status.ENABLED)
+            {
+            if (this.base.status() == Widgeon.Status.ENABLED)
+                {
+                return this.status ;
+                }
+            else {
+                return this.base.status();
+                }
+            }
+        else {
+            return this.parent.status();
+            }
+        }
+
+    @Override
+    public void status(Widgeon.Status status)
+        {
+        this.status = status ;
+        }
+
+    }

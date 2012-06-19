@@ -29,6 +29,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Index;
@@ -57,63 +59,70 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
     AccessType.FIELD
     )
 @Table(
-    name = WidgeonEntity.DB_TABLE_NAME
+    name = WidgeonBase.DB_TABLE_NAME
     )
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "widgeon-select",
-            query = "FROM WidgeonEntity"
+            name  = "widgeon.base-select-all",
+            query = "FROM WidgeonBase ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "widgeon-select-name",
-            query = "FROM WidgeonEntity WHERE name = :name"
+            name  = "widgeon.base-select-name",
+            query = "FROM WidgeonBase WHERE name = :name"
             )
         }
     )
-public class WidgeonEntity
+public class WidgeonBase
 extends AbstractEntity
-implements Widgeon
+implements Widgeon, Widgeon.Base
     {
 
     /**
-     * Our database table name.
+     * Our persistence table name.
      * 
      */
-    public static final String DB_TABLE_NAME = "widgeon_entity" ;
+    public static final String DB_TABLE_NAME = "widgeon_base" ;
+
+    /*
+     * The persistence column name for our status enum.
+     * 
+     */
+    public static final String DB_STATUS_COL = "status" ;
 
     /**
-     * Widgeon factory.
+     * Our Entity Factory implementation.
      *
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<Widgeon>
-    implements Widgeon.Factory
+    extends AbstractFactory<Widgeon.Base>
+    implements Widgeon.Base.Factory
         {
 
         @Override
         public Class etype()
             {
-            return WidgeonEntity.class ;
+            return WidgeonBase.class ;
             }
 
+        @Override
         @SelectEntityMethod
-        public Iterable<Widgeon> select()
+        public Iterable<Widgeon.Base> select()
             {
             return super.iterable(
                 super.query(
-                    "widgeon-select"
+                    "widgeon.base-select-all"
                     )
                 );
             }
 
         @Override
         @CreateEntityMethod
-        public Widgeon create(final String name, final URI uri)
+        public Widgeon.Base create(final String name, final URI uri)
             {
             return super.insert(
-                new WidgeonEntity(
+                new WidgeonBase(
                     name,
                     uri
                     )
@@ -122,10 +131,10 @@ implements Widgeon
 
         @Override
         @CreateEntityMethod
-        public Widgeon create(final String name, final URL url)
+        public Widgeon.Base create(final String name, final URL url)
             {
             return super.insert(
-                new WidgeonEntity(
+                new WidgeonBase(
                     name,
                     url
                     )
@@ -134,10 +143,10 @@ implements Widgeon
 
         @Override
         @CreateEntityMethod
-        public Widgeon create(final String name, final DataSource src)
+        public Widgeon.Base create(final String name, final DataSource src)
             {
             return super.insert(
-                new WidgeonEntity(
+                new WidgeonBase(
                     name,
                     src
                     )
@@ -145,50 +154,99 @@ implements Widgeon
             }
 
         /**
+         * Our Autowired View factory.
+         * 
+         */
+        @Autowired
+        protected Widgeon.View.Factory views ;
+
+        /**
+         * Access to our View factory.
+         * 
+         */
+        public Widgeon.View.Factory views()
+            {
+            return this.views ;
+            }
+
+        /**
          * Our Autowired Schema factory.
          * 
          */
         @Autowired
-        protected Schema.Factory schemas ;
+        protected Widgeon.Base.Schema.Factory schemas ;
 
         /**
          * Access to our Schema factory.
          * 
          */
         @Override
-        public Schema.Factory schemas()
+        public Widgeon.Base.Schema.Factory schemas()
             {
             return this.schemas ;
             }
         }
 
     @Override
-    public Schemas schemas()
+    public Widgeon.Base.Views views() 
         {
-        return new Schemas()
+        return new Views()
             {
             @Override
-            public Schema create(final String name)
+            public Widgeon.View create(String name)
                 {
-                return womble().widgeon().schemas().create(
-                    WidgeonEntity.this,
+                return womble().widgeon().views().create(
+                    WidgeonBase.this,
                     name
                     ) ;
                 }
 
             @Override
-            public Iterable<Schema> select()
+            public Iterable<Widgeon.View> select()
                 {
-                return womble().widgeon().schemas().select(
-                    WidgeonEntity.this
+                return womble().widgeon().views().select(
+                    WidgeonBase.this
                     ) ;
                 }
 
             @Override
-            public Schema select(final String name)
+            public Widgeon.View select(String name)
+                {
+                return womble().widgeon().views().select(
+                    WidgeonBase.this,
+                    name
+                    ) ;
+                }
+            };
+        }
+
+    @Override
+    public Widgeon.Base.Schemas schemas()
+        {
+        return new Widgeon.Base.Schemas()
+            {
+            @Override
+            public Widgeon.Base.Schema create(final String name)
+                {
+                return womble().widgeon().schemas().create(
+                    WidgeonBase.this,
+                    name
+                    ) ;
+                }
+
+            @Override
+            public Iterable<Widgeon.Schema> select()
                 {
                 return womble().widgeon().schemas().select(
-                    WidgeonEntity.this,
+                    WidgeonBase.this
+                    ) ;
+                }
+
+            @Override
+            public Widgeon.Base.Schema select(final String name)
+                {
+                return womble().widgeon().schemas().select(
+                    WidgeonBase.this,
                     name
                     ) ;
                 }
@@ -200,7 +258,7 @@ implements Widgeon
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected WidgeonEntity()
+    protected WidgeonBase()
         {
         super();
         }
@@ -209,7 +267,7 @@ implements Widgeon
      * Create a new Widgeon from VOSI metadata.
      *
      */
-    private WidgeonEntity(final String name, final URI source)
+    private WidgeonBase(final String name, final URI source)
         {
         super(name);
         this.init(
@@ -221,7 +279,7 @@ implements Widgeon
      * Create a new Widgeon from VOSI metadata.
      *
      */
-    private WidgeonEntity(final String name, final URL source)
+    private WidgeonBase(final String name, final URL source)
         {
         super(name);
         this.init(
@@ -233,12 +291,39 @@ implements Widgeon
      * Create a new Widgeon from JDBC metadata.
      *
      */
-    private WidgeonEntity(final String name, final DataSource source)
+    private WidgeonBase(final String name, final DataSource source)
         {
         super(name);
         this.init(
             source
             );
+        }
+
+    /**
+     * The status of this Widgeon.
+     *
+     */
+    @Column(
+        name = DB_STATUS_COL,
+        unique = false,
+        nullable = false,
+        updatable = true
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    private Widgeon.Status status = Widgeon.Status.CREATED ;
+
+    @Override
+    public Widgeon.Status status()
+        {
+        return this.status;
+        }
+
+    @Override
+    public void status(Widgeon.Status status)
+        {
+        this.status = status ;
         }
 
     /**

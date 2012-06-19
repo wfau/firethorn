@@ -52,9 +52,6 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
-import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonEntity;
-
 /**
  * Mallard.Job implementation.
  *
@@ -70,7 +67,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.WidgeonEntity;
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "mallard.job-select",
+            name  = "mallard.job-select-all",
             query = "FROM JobEntity ORDER BY ident desc"
             ),
         @NamedQuery(
@@ -107,7 +104,7 @@ implements Mallard.Job
     public static final String DB_MALLARD_COL = "mallard" ;
 
     /**
-     * Mallard.Job factory.
+     * Our Entity Factory implementation.
      *
      */
     @Repository
@@ -119,17 +116,6 @@ implements Mallard.Job
         public Class etype()
             {
             return JobEntity.class ;
-            }
-
-        @Override
-        @SelectEntityMethod
-        public Iterable<Mallard.Job> select()
-            {
-            return super.iterable(
-                super.query(
-                    "mallard.job-select"
-                    )
-                );
             }
 
         @SelectEntityMethod

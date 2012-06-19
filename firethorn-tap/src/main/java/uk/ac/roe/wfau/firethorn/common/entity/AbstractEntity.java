@@ -25,9 +25,11 @@ import java.io.Serializable;
 
 import javax.persistence.Id;
 import javax.persistence.Column;
+import javax.persistence.Version;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.Version;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.GenerationType;
@@ -92,8 +94,24 @@ implements Entity
     public static final String DB_MODIFIED_COL = "modified" ;
 
     /**
+     * Check an Entity name, returns the create date if the given name is null or empty.
+     * @todo Delegate this to a naming factory.
+     *
+     */
+    public static String name(final String name, final Entity entity)
+        {
+        if ((name == null) || (name.trim().length() == 0))
+            {
+            return entity.created().toString();
+            }
+        else {
+            return name.trim();
+            }
+        }
+
+    /**
      * Access to our Womble instance - naff, but works for now.
-     * @todo replace this with something, anything, else.
+     * @todo Replace this with something, anything, else.
      *
      */
     protected static Womble womble()
@@ -113,40 +131,57 @@ implements Entity
 
     /**
      * Protected constructor, sets the name and create date.
-     * @todo Better default for the name.
+     * The owner defaults to the current actor.
      *
      */
     protected AbstractEntity(final String name)
         {
         this(
-            name,
-            womble().actor()
+            womble().actor(),
+            name
             );
         }
 
     /**
-     * Protected constructor, sets the name and create date.
+     * Protected constructor, sets the owner, name and create date.
      * @todo Better default for the name.
      *
      */
-    protected AbstractEntity(final String name, final Identity owner)
+    protected AbstractEntity(final Identity owner)
+        {
+        this(
+            owner,
+            null
+            );        
+        }
+
+    /**
+     * Protected constructor, sets the owner, name and create date.
+     * @todo Better default for the name.
+     *
+     */
+    protected AbstractEntity(final Identity owner, final String name)
         {
         super();
-        this.name  = name ;
         this.owner = owner;
         this.created = new Date();
 
-        if (this.name == null)
-            {
-            this.name = "no name" ;
-            }
-/*
-2012-06-15 02:54:45,037 WARN  [main] [UnresolvedEntityInsertActions] HHH000437: Attempting to save one or more entities that have a non-nullable association with an unsaved transient entity. The unsaved transient entity must be saved in an operation prior to saving these dependent entities.
-	Unsaved transient entity: ([uk.ac.roe.wfau.firethorn.identity.IdentityEntity#<null>])
-	Dependent entities: ([[uk.ac.roe.wfau.firethorn.identity.IdentityEntity#<null>]])
-	Non-nullable association(s): ([uk.ac.roe.wfau.firethorn.identity.IdentityEntity.owner]) 
-2012-06-15 02:54:45,037 ERROR [main] [WombleImpl] Error executing Hibernate query [org.hibernate.TransientPropertyValueException][Not-null property references a transient value - transient instance must be saved before current operation: uk.ac.roe.wfau.firethorn.identity.IdentityEntity.owner -> uk.ac.roe.wfau.firethorn.identity.IdentityEntity] 
+        //
+        // We need to set a name because name can't be null.
+        // We can't use ident because it probably won't have been set yet.
+        this.name = name(
+            name,
+            this
+            );
 
+        /*
+         *
+         * [UnresolvedEntityInsertActions] HHH000437: Attempting to save one or more entities that have a non-nullable association with an unsaved transient entity. The unsaved transient entity must be saved in an operation prior to saving these dependent entities.
+         * Unsaved transient entity: ([uk.ac.roe.wfau.firethorn.identity.IdentityEntity#<null>])
+         * Dependent entities: ([[uk.ac.roe.wfau.firethorn.identity.IdentityEntity#<null>]])
+         * Non-nullable association(s): ([uk.ac.roe.wfau.firethorn.identity.IdentityEntity.owner]) 
+         * [WombleImpl] Error executing Hibernate query [org.hibernate.TransientPropertyValueException][Not-null property references a transient value - transient instance must be saved before current operation: uk.ac.roe.wfau.firethorn.identity.IdentityEntity.owner -> uk.ac.roe.wfau.firethorn.identity.IdentityEntity] 
+         *
         if (this.owner == null)
             {
             if (this instanceof Identity)
@@ -154,7 +189,8 @@ implements Entity
                 this.owner = (Identity) this ;
                 }
             }
- */
+         *
+         */
 
         }
 
@@ -224,7 +260,13 @@ implements Entity
     @Override
     public void name(final String name)
         {
-        this.name = name ;
+        if ((name != null) && (name.trim().length() > 0))
+            {
+            this.name = name ;
+            }
+        else {
+//throw a name error.
+            }
         }
 
     /**

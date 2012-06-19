@@ -40,7 +40,17 @@ extends Entity
     public static interface Factory
     extends Entity.Factory<Mallard>
         {
+        /**
+         * Create a new Mallard.
+         *
+         */
         public Mallard create(String name);
+
+        /**
+         * Select all the Mallards.
+         *
+         */
+        public Iterable<Mallard> select();
 
         /**
          * Access to our Job factory.
@@ -72,8 +82,16 @@ extends Entity
         extends Entity.Factory<Job>
             {
 
+            /**
+             * Create a new Job.
+             *
+             */
             public Job create(Mallard mallard, String name, String adql);
 
+            /**
+             * Select all the Jobs for a Mallard.
+             *
+             */
             public Iterable<Job> select(Mallard mallard);
 
             }        

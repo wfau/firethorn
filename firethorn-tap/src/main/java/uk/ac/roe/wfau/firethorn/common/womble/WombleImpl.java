@@ -490,18 +490,18 @@ implements Womble
  */
 
     /**
-     * Our AutowiredWidgeon factory.
+     * Our Autowired Widgeon factory.
      * 
      */
     @Autowired
-    protected Widgeon.Factory widgeon ;
+    protected Widgeon.Base.Factory widgeon ;
 
     /**
      * Access to our Widgeon factory.
      * 
      */
     @Override
-    public Widgeon.Factory widgeon()
+    public Widgeon.Base.Factory widgeon()
         {
         return this.widgeon ;
         }
