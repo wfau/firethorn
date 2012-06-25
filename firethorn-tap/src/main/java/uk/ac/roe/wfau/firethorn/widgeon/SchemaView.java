@@ -139,10 +139,8 @@ implements Widgeon.Schema, Widgeon.View.Schema
 
         @Override
         @SelectEntityMethod
-        public Iterable<Widgeon.Schema> select(final Widgeon.View parent)
+        public Iterable<Widgeon.View.Schema> select(final Widgeon.View parent)
             {
-            return null;
-/*
             return super.iterable(
                 super.query(
                     "widgeon.schema.view-select-parent"
@@ -151,7 +149,6 @@ implements Widgeon.Schema, Widgeon.View.Schema
                         parent
                         )
                 );
- */
             }
 
         @Override
@@ -175,25 +172,25 @@ implements Widgeon.Schema, Widgeon.View.Schema
          * Our Autowired Catalog factory.
          * 
         @Autowired
-        protected Widgeon.Schema.Catalog.Factory catalogs ;
+        protected Widgeon.View.Schema.Catalog.Factory catalogs ;
          */
 
         /**
          * Access to our Catalog factory.
          * 
+         */
         @Override
-        public Widgeon.Schema.Catalog.Factory catalogs()
+        public Widgeon.View.Schema.Catalog.Factory catalogs()
             {
             return null ;
             }
-         */
 
         }
 
     @Override
-    public Catalogs catalogs()
+    public Widgeon.View.Schema.Catalogs catalogs()
         {
-        return new Catalogs()
+        return new Widgeon.View.Schema.Catalogs()
             {
             //@Override
             public Catalog create(String name)

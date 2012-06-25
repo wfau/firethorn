@@ -39,7 +39,7 @@ extends TestBase
     @Test
     public void simple()
         {
-        Widgeon one = womble().widgeon().create(
+        Widgeon.Base one = womble().widgeon().create(
             "albert",
             URI.create("ivo://org.astrogrid.test/0001")
             );
@@ -51,7 +51,7 @@ extends TestBase
             );
         log.debug("One [{}][{}]", one.ident(), one.name());
 
-        Widgeon two = womble().widgeon().create(
+        Widgeon.Base two = womble().widgeon().create(
             "albert",
             URI.create("ivo://org.astrogrid.test/0001")
             );
@@ -63,9 +63,7 @@ extends TestBase
             );
         log.debug("Two [{}][{}]", two.ident(), two.name());
 
-        //womble().hibernate().flush();
-
-        for (Widgeon widgeon : womble().widgeon().select())
+        for (Widgeon.Base widgeon : womble().widgeon().select())
             {
             log.debug("Widgeon [{}]", widgeon);
             }
@@ -88,9 +86,7 @@ extends TestBase
                 )
             );
 
-        //womble().hibernate().flush();
-
-        for (Widgeon widgeon : womble().widgeon().select())
+        for (Widgeon.Base widgeon : womble().widgeon().select())
             {
             display(
                 widgeon
@@ -98,7 +94,7 @@ extends TestBase
             }
         }
 
-    public void nested(Widgeon widgeon)
+    public void nested(Widgeon.Base widgeon)
         {
         nested(
             widgeon.schemas().create(
@@ -112,7 +108,7 @@ extends TestBase
             );
         }
 
-    public void nested(Widgeon.Schema schema)
+    public void nested(Widgeon.Base.Schema schema)
         {
         nested(
             schema.catalogs().create(
@@ -128,6 +124,9 @@ extends TestBase
 
     public void nested(Widgeon.Schema.Catalog catalog)
         {
+        }
+
+/*
         nested(
             catalog.tables().create(
                 "table-0001"
@@ -149,12 +148,12 @@ extends TestBase
             "column-0002"
             );
         }
-
-    public void display(Widgeon widgeon)
+*/
+    public void display(Widgeon.Base widgeon)
         {
         log.debug("-------");
         log.debug("Widgeon [{}]", widgeon);
-        for (Widgeon.Schema schema : widgeon.schemas().select())
+        for (Widgeon.Base.Schema schema : widgeon.schemas().select())
             {
             log.debug("  Schema [{}]", schema);
             for (Widgeon.Schema.Catalog catalog : schema.catalogs().select())

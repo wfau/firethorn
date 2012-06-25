@@ -63,14 +63,17 @@
                 <value>uk.ac.roe.wfau.firethorn.mallard.MallardEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.mallard.JobEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.widgeon.WidgeonEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.SchemaEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.CatalogEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.TableEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.ColumnEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.WidgeonView</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.SchemaBase</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.SchemaView</value>
+
 
                 <!--+
                     |
+                <value>uk.ac.roe.wfau.firethorn.widgeon.CatalogEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.TableEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.ColumnEntity</value>
                     +-->
 
             </list>

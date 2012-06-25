@@ -178,23 +178,12 @@ implements Widgeon, Widgeon.View
         }
 
     @Override
-    public Schemas schemas()
+    public Widgeon.View.Schemas schemas()
         {
-        return new Schemas()
+        return new Widgeon.View.Schemas()
             {
-/*
             @Override
-            public Widgeon.View.Schema create(final String name)
-                {
-                return womble().widgeon().views().schemas().create(
-                    WidgeonView.this,
-                    name
-                    ) ;
-                }
- */
-
-            @Override
-            public Iterable<Widgeon.Schema> select()
+            public Iterable<Widgeon.View.Schema> select()
                 {
                 return womble().widgeon().views().schemas().select(
                     WidgeonView.this

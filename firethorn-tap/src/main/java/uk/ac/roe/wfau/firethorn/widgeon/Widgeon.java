@@ -93,19 +93,20 @@ extends Entity
      * Public interface for accessing this Widgeon's Schema.
      *
      */
-    public interface Schemas
+    public interface Schemas<SchemaType extends Widgeon.Schema>
         {
         /**
          * Select a named Schema.
          *
          */
-        public Widgeon.Schema select(String name);
+        public SchemaType select(String name);
 
         /**
          * Select all the Schema in this Widgeon.
          *
          */
-        public Iterable<Widgeon.Schema> select();
+        public Iterable<SchemaType> select();
+
         }
 
     /**
@@ -379,7 +380,7 @@ extends Entity
          *
          */
         public interface Schemas
-        extends Widgeon.Schemas
+        extends Widgeon.Schemas<Widgeon.Base.Schema>
             {
             /**
              * Create a new Schema for this Widgeon.
@@ -389,7 +390,7 @@ extends Entity
             }
 
         /**
-         * Access to the Schema for this Widgeon.
+         * Access to the Schemas for this Widgeon.
          *
          */
         public Schemas schemas();
@@ -416,24 +417,45 @@ extends Entity
                 public Widgeon.Base.Schema create(Widgeon.Base parent, String name);
 
                 /**
-                 * Select a named Schema for a Base Widgeon.
+                 * Select a named Schema for a Widgeon.
                  *
                  */
                 public Widgeon.Base.Schema select(Widgeon.Base parent, String name);
 
                 /**
-                 * Select all the Schema for a Base Widgeon.
+                 * Select all the Schema for a Widgeon.
                  *
                  */
-                public Iterable<Widgeon.Schema> select(Widgeon.Base parent);
+                public Iterable<Widgeon.Base.Schema> select(Widgeon.Base parent);
 
                 /**
                  * Access to our Catalog factory.
                  * 
                  */
-                //public Widgeon.Base.Schema.Catalog.Factory catalogs();
+                public Widgeon.Base.Schema.Catalog.Factory catalogs();
 
                 }
+
+            /**
+             * Public interface for accessing this Schema's Catalogs.
+             *
+             */
+            public interface Catalogs
+            extends Widgeon.Schema.Catalogs
+                {
+                /**
+                 * Create a new Table for this Catalog.
+                 *
+                 */
+                public Widgeon.Base.Schema.Catalog create(String name);
+                }
+
+            /**
+             * Access to the Catalogss for this Schema.
+             *
+             */
+            public Catalogs catalogs();
+
             }
         }
 
@@ -485,7 +507,22 @@ extends Entity
         public Widgeon.Base base();
 
         /**
-         * Public inte4rface for a Schema View.
+         * Public interface for accessing this Widgeon's Schema.
+         *
+         */
+        public interface Schemas
+        extends Widgeon.Schemas<Widgeon.View.Schema>
+            {
+            }
+
+        /**
+         * Access to the Schemas for this Widgeon.
+         *
+         */
+        public Schemas schemas();
+
+        /**
+         * Public interface for a Schema View.
          *
          */
         public interface Schema
@@ -515,13 +552,13 @@ extends Entity
                  * Select all the Schema from a Widgeon View.
                  *
                  */
-                public Iterable<Widgeon.Schema> select(Widgeon.View parent);
+                public Iterable<Widgeon.View.Schema> select(Widgeon.View parent);
 
                 /**
                  * Access to our Catalog factory.
                  * 
                  */
-                //public Widgeon.View.Schema.Catalog.Factory catalogs();
+                public Widgeon.View.Schema.Catalog.Factory catalogs();
 
                 }
 
@@ -530,6 +567,21 @@ extends Entity
              *
              */
             public Widgeon.Base.Schema base();
+
+            /**
+             * Public interface for accessing this Schema's Catalogs.
+             *
+             */
+            public interface Catalogs
+            extends Widgeon.Schema.Catalogs
+                {
+                }
+
+            /**
+             * Access to the Catalogss for this Schema.
+             *
+             */
+            public Catalogs catalogs();
 
             }
         }

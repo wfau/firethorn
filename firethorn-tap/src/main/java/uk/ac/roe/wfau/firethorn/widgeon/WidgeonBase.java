@@ -235,7 +235,7 @@ implements Widgeon, Widgeon.Base
                 }
 
             @Override
-            public Iterable<Widgeon.Schema> select()
+            public Iterable<Widgeon.Base.Schema> select()
                 {
                 return womble().widgeon().schemas().select(
                     WidgeonBase.this
