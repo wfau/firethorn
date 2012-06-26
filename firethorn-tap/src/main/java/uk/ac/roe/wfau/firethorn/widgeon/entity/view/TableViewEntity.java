@@ -51,6 +51,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.base.TableBaseEntity;
+
 
 /**
  * Table View implementation.
@@ -85,7 +87,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
     )
 public class TableViewEntity
 extends WidgeonStatusEntity
-implements Widgeon.View.Schema
+implements Widgeon.View.Schema.Catalog.Table
     {
 
     /**
@@ -182,7 +184,7 @@ implements Widgeon.View.Schema
         }
 
     @Override
-    public Widgeon.View.Schema.Catalog.Tables.Column columns()
+    public Widgeon.View.Schema.Catalog.Table.Columns columns()
         {
         return new Widgeon.View.Schema.Catalog.Table.Columns()
             {

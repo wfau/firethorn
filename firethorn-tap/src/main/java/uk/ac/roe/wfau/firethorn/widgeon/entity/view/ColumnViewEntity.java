@@ -51,6 +51,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.base.ColumnBaseEntity;
 
 /**
  * Column View implementation.
@@ -85,7 +86,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
     )
 public class ColumnViewEntity
 extends WidgeonStatusEntity
-implements Widgeon.View.Schema
+implements Widgeon.View.Schema.Catalog.Table.Column
     {
 
     /**

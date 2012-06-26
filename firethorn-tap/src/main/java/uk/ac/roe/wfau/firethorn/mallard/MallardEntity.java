@@ -54,7 +54,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.view.WidgeonViewEntity;
 
 /**
  * Mallard implementation.
@@ -192,13 +192,13 @@ implements Mallard
         }
 
     /**
-     * The collection of resources used by this service.
+     * The collection of resources published by this service.
      *
      */
     @ManyToMany(
         fetch = FetchType.LAZY,
         cascade = CascadeType.ALL,
-        targetEntity = WidgeonView.class
+        targetEntity = WidgeonViewEntity.class
         )
     @JoinTable(
         name="mallard_widgeons",

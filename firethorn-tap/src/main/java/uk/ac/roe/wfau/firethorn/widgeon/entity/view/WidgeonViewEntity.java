@@ -55,6 +55,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.base.WidgeonBaseEntity;
 
 /**
  * Widgeon View implementations.
@@ -252,7 +253,7 @@ implements Widgeon.View
      */
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = WidgeonBase.class
+        targetEntity = WidgeonBaseEntity.class
         )
     @JoinColumn(
         name = DB_BASE_COL,

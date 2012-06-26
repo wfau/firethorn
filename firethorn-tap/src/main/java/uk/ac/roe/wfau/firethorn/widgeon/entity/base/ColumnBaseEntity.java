@@ -130,7 +130,7 @@ implements Widgeon.Base.Schema.Catalog.Table.Column
 
         @Override
         @SelectEntityMethod
-        public Iterable<Widgeon.Base.Schema.Catalog.Table.Column> select(final Widgeon.Base.Schema.Catalog>table parent)
+        public Iterable<Widgeon.Base.Schema.Catalog.Table.Column> select(final Widgeon.Base.Schema.Catalog.Table parent)
             {
             return super.iterable(
                 super.query(

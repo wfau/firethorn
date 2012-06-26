@@ -63,17 +63,20 @@
                 <value>uk.ac.roe.wfau.firethorn.mallard.MallardEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.mallard.JobEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.WidgeonView</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.SchemaBase</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.SchemaView</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.WidgeonBaseEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.SchemaBaseEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.CatalogBaseEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.TableBaseEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.ColumnBaseEntity</value>
 
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.WidgeonViewEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.SchemaViewEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.CatalogViewEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.TableViewEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.ColumnViewEntity</value>
 
                 <!--+
                     |
-                <value>uk.ac.roe.wfau.firethorn.widgeon.CatalogEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.TableEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.ColumnEntity</value>
                     +-->
 
             </list>

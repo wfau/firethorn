@@ -17,6 +17,26 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.entity ;
 
+import lombok.extern.slf4j.Slf4j;
+
+import javax.persistence.Id;
+import javax.persistence.Column;
+import javax.persistence.Version;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.GenerationType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.UniqueConstraint;
+import javax.persistence.MappedSuperclass;
+
+import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonComponent;
+
 /**
  * Generic base class for a Widgeon component.
  *

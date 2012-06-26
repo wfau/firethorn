@@ -602,7 +602,7 @@ extends WidgeonStatus
             }
 
         /**
-         * Access to our base Widgeon.
+         * Access to our underlying Widgeon.
          *
          */
         public Widgeon.Base base();
@@ -639,7 +639,7 @@ extends WidgeonStatus
                 {
 
                 /**
-                 * Create a new View for a Schema.
+                 * Create a new View of a Schema.
                  *
                  */
                 public Widgeon.View.Schema create(Widgeon.Base.Schema base, Widgeon.View view, String name);
@@ -653,7 +653,7 @@ extends WidgeonStatus
                 }
 
             /**
-             * Access to our base Schema.
+             * Access to our underlying Schema.
              *
              */
             public Widgeon.Base.Schema base();
@@ -688,7 +688,26 @@ extends WidgeonStatus
                 public static interface Factory
                 extends Widgeon.Schema.Catalog.Factory<Widgeon.View.Schema, Widgeon.View.Schema.Catalog>
                     {
+
+                    /**
+                     * Create a new View of a Catalog.
+                     *
+                     */
+                    public Widgeon.View.Schema.Catalog create(Widgeon.Base.Schema.Catalog base, Widgeon.View.Schema parent, String name);
+
+                    /**
+                     * Access to our Table factory.
+                     * 
+                     */
+                    public Widgeon.View.Schema.Catalog.Table.Factory tables();
+                    
                     }
+
+                /**
+                 * Access to our underlying Catalog.
+                 *
+                 */
+                public Widgeon.Base.Schema.Catalog base();
 
                 /**
                  * Public interface for accessing the Tables for a Catalog.
@@ -720,7 +739,26 @@ extends WidgeonStatus
                     public static interface Factory
                     extends Widgeon.Schema.Catalog.Table.Factory<Widgeon.View.Schema.Catalog, Widgeon.View.Schema.Catalog.Table>
                         {
+
+                        /**
+                         * Create a new View of a Table.
+                         *
+                         */
+                        public Widgeon.View.Schema.Catalog.Table create(Widgeon.Base.Schema.Catalog.Table base, Widgeon.View.Schema.Catalog parent, String name);
+
+                        /**
+                         * Access to our Column factory.
+                         * 
+                         */
+                        public Widgeon.View.Schema.Catalog.Table.Column.Factory columns();
+
                         }
+
+                    /**
+                     * Access to our underlying Table.
+                     *
+                     */
+                    public Widgeon.Base.Schema.Catalog.Table base();
 
                     /**
                      * Public interface for accessing the Columns for a Table.
@@ -744,6 +782,28 @@ extends WidgeonStatus
                     public interface Column
                     extends Widgeon.Schema.Catalog.Table.Column<Widgeon.View.Schema.Catalog.Table>
                         {
+
+                        /**
+                         * Factory interface for creating and selecting Columns.
+                         *
+                         */
+                        public static interface Factory
+                        extends Widgeon.Schema.Catalog.Table.Column.Factory<Widgeon.View.Schema.Catalog.Table, Widgeon.View.Schema.Catalog.Table.Column>
+                            {
+
+                            /**
+                             * Create a new View of a Column.
+                             *
+                             */
+                            public Widgeon.View.Schema.Catalog.Table.Column create(Widgeon.Base.Schema.Catalog.Table.Column base, Widgeon.View.Schema.Catalog.Table parent, String name);
+
+                            }
+
+                        /**
+                         * Access to our underlying Column.
+                         *
+                         */
+                        public Widgeon.Base.Schema.Catalog.Table.Column base();
 
                         }
                     }
