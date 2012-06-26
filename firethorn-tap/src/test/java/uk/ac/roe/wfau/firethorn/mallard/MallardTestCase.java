@@ -22,6 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.net.URI;
 
 import org.junit.Test;
+import org.junit.After;
+import org.junit.Before;
 import static org.junit.Assert.*;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
@@ -43,10 +45,10 @@ extends TestBase
     @Test
     public void test000()
         {
-        ident[0] = womble().mallard().create(
+        ident[0] = womble().mallards().create(
             "albert"
             ).ident();
-        ident[1] = womble().mallard().create(
+        ident[1] = womble().mallards().create(
             "albert"
             ).ident();
         }
@@ -54,10 +56,8 @@ extends TestBase
     @Test
     public void test001()
         {
-        assertNotNull(
-            ident[0]
-            );
-        Mallard object = womble().mallard().select(
+log.debug("--- test001() ---");
+        Mallard mallard = womble().mallards().select(
             ident[0]
             );
 
@@ -66,27 +66,25 @@ extends TestBase
             );
         assertEquals(
             "albert",
-            object.name()
+            mallard.name()
             );
 
-        object.name("Albert");
+        mallard.name("Albert");
 
         assertTrue(
             womble().hibernate().session().isDirty()
             );
         assertEquals(
             "Albert",
-            object.name()
+            mallard.name()
             );
         }
 
     @Test
     public void test002()
         {
-        assertNotNull(
-            ident[0]
-            );
-        Mallard object = womble().mallard().select(
+log.debug("--- test002() ---");
+        Mallard mallard = womble().mallards().select(
             ident[0]
             );
         assertFalse(
@@ -94,87 +92,114 @@ extends TestBase
             );
         assertEquals(
             "Albert",
-            object.name()
+            mallard.name()
             );
         }
 
     @Test
     public void test003()
         {
-        assertNotNull(
-            ident[0]
-            );
-        Mallard object = womble().mallard().select(
-            ident[0]
-            );
+log.debug("--- test003() ---");
         assertFalse(
             womble().hibernate().session().isDirty()
             );
-        object.widgeons().insert(
-            womble().widgeon().create(
+        womble().mallards().select(
+            ident[0]
+            ).widgeons().insert(
+            womble().widgeons().create(
                 "0001",
                 URI.create("ivo://org.astrogrid.test/0001")
-                )
+                ).views().create(
+                    "default"
+                    )
             );
         assertTrue(
             womble().hibernate().session().isDirty()
             );
-        }
 
+        }
 
     @Test
     public void test004()
         {
-        assertNotNull(
-            ident[0]
-            );
-        Mallard object = womble().mallard().select(
-            ident[0]
-            );
+log.debug("--- test004() ---");
         assertEquals(
             1,
             count(
-                object.widgeons().select()
+                womble().mallards().select(
+                    ident[0]
+                    ).widgeons().select()
+                )
+            );
+        }
+
+/*
+ * Can't rely on the sequence that tests are run.
+ *
+ 
+    @Test
+    public void test004a()
+        {
+log.debug("--- test004a() ---");
+        assertEquals(
+            1,
+            count(
+                womble().mallards().select(
+                    ident[0]
+                    ).widgeons().select()
                 )
             );
         }
 
     @Test
+    public void test004b()
+        {
+log.debug("--- test004b() ---");
+        assertEquals(
+            1,
+            count(
+                womble().mallards().select(
+                    ident[0]
+                    ).widgeons().select()
+                )
+            );
+        }
+ *
+ */
+
+    @Test
     public void test005()
         {
-        assertNotNull(
-            ident[0]
-            );
-        Mallard object = womble().mallard().select(
-            ident[0]
-            );
+log.debug("--- test005() ---");
         assertFalse(
             womble().hibernate().session().isDirty()
             );
-        object.widgeons().insert(
-            womble().widgeon().create(
+        womble().mallards().select(
+            ident[0]
+            ).widgeons().insert(
+            womble().widgeons().create(
                 "0001",
                 URI.create("ivo://org.astrogrid.test/0001")
-                )
+                ).views().create(
+                    "default"
+                    )
             );
         assertTrue(
             womble().hibernate().session().isDirty()
             );
+
         }
 
     @Test
     public void test006()
         {
-        assertNotNull(
-            ident[0]
-            );
-        Mallard object = womble().mallard().select(
-            ident[0]
-            );
+log.debug("--- test006() ---");
         assertEquals(
             2,
             count(
-                object.widgeons().select()
+                womble().mallards().select(
+                    ident[0]
+                    ).widgeons().select()
                 )
             );
         }
@@ -182,63 +207,49 @@ extends TestBase
     @Test
     public void test007()
         {
-        assertNotNull(
-            ident[0]
-            );
-        assertNotNull(
-            ident[1]
-            );
-        Mallard frog = womble().mallard().select(
-            ident[0]
-            );
-        Mallard toad = womble().mallard().select(
-            ident[1]
-            );
-        for (Widgeon widgeon : frog.widgeons().select())
+log.debug("--- test007() ---");
+        for (Widgeon.View widgeon : womble().mallards().select(ident[0]).widgeons().select())
             {
-            toad.widgeons().insert(
-                widgeon
-                );
+            womble().mallards().select(
+                ident[1]
+                ).widgeons().insert(
+                    widgeon
+                    );
             }
         }
 
     @Test
     public void test008()
         {
-        assertNotNull(
-            ident[0]
-            );
-        Mallard object = womble().mallard().select(
-            ident[0]
-            );
+log.debug("--- test008() ---");
         assertFalse(
             womble().hibernate().session().isDirty()
             );
-        object.widgeons().insert(
-            womble().widgeon().create(
-                "0001",
-                URI.create("ivo://org.astrogrid.test/0001")
-                )
-            );
+        womble().mallards().select(
+            ident[0]
+            ).widgeons().insert(
+                womble().widgeons().create(
+                    "0001",
+                    URI.create("ivo://org.astrogrid.test/0001")
+                    ).views().create(
+                        "default"
+                        )
+                );
         assertTrue(
             womble().hibernate().session().isDirty()
             );
-
         }
 
     @Test
     public void test009()
         {
-        assertNotNull(
-            ident[0]
-            );
-        Mallard object = womble().mallard().select(
-            ident[0]
-            );
+log.debug("--- test009() ---");
         assertEquals(
             3,
             count(
-                object.widgeons().select()
+                womble().mallards().select(
+                    ident[0]
+                    ).widgeons().select()
                 )
             );
         }
@@ -246,16 +257,13 @@ extends TestBase
     @Test
     public void test010()
         {
-        assertNotNull(
-            ident[1]
-            );
-        Mallard object = womble().mallard().select(
-            ident[1]
-            );
+log.debug("--- test010() ---");
         assertEquals(
             2,
             count(
-                object.widgeons().select()
+                womble().mallards().select(
+                    ident[1]
+                    ).widgeons().select()
                 )
             );
         }

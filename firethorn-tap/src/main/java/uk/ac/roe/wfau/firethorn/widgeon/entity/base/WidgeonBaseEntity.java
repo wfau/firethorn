@@ -190,7 +190,7 @@ implements Widgeon.Base
             @Override
             public Widgeon.View create(String name)
                 {
-                return womble().widgeon().views().create(
+                return womble().widgeons().views().create(
                     WidgeonBaseEntity.this,
                     name
                     ) ;
@@ -199,7 +199,7 @@ implements Widgeon.Base
             @Override
             public Iterable<Widgeon.View> select()
                 {
-                return womble().widgeon().views().select(
+                return womble().widgeons().views().select(
                     WidgeonBaseEntity.this
                     ) ;
                 }
@@ -207,7 +207,7 @@ implements Widgeon.Base
             @Override
             public Widgeon.View select(String name)
                 {
-                return womble().widgeon().views().select(
+                return womble().widgeons().views().select(
                     WidgeonBaseEntity.this,
                     name
                     ) ;
@@ -223,7 +223,7 @@ implements Widgeon.Base
             @Override
             public Widgeon.Base.Schema create(final String name)
                 {
-                return womble().widgeon().schemas().create(
+                return womble().widgeons().schemas().create(
                     WidgeonBaseEntity.this,
                     name
                     ) ;
@@ -232,7 +232,7 @@ implements Widgeon.Base
             @Override
             public Iterable<Widgeon.Base.Schema> select()
                 {
-                return womble().widgeon().schemas().select(
+                return womble().widgeons().schemas().select(
                     WidgeonBaseEntity.this
                     ) ;
                 }
@@ -240,7 +240,7 @@ implements Widgeon.Base
             @Override
             public Widgeon.Base.Schema select(final String name)
                 {
-                return womble().widgeon().schemas().select(
+                return womble().widgeons().schemas().select(
                     WidgeonBaseEntity.this,
                     name
                     ) ;

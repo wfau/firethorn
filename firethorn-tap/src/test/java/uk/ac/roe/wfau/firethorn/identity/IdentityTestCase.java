@@ -43,10 +43,10 @@ extends TestBase
     @Test
     public void test000()
         {
-        ident[0] = womble().identity().create(
+        ident[0] = womble().identities().create(
             "albert"
             ).ident();
-        ident[1] = womble().identity().create(
+        ident[1] = womble().identities().create(
             "albert"
             ).ident();
         }

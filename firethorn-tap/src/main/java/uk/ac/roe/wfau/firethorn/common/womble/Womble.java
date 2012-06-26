@@ -153,19 +153,19 @@ public interface Womble
      * Access to our Widgeon factory.
      * 
      */
-    public Widgeon.Base.Factory widgeon();
+    public Widgeon.Base.Factory widgeons();
 
     /**
      * Access to our Mallard factory.
      * 
      */
-    public Mallard.Factory mallard();
+    public Mallard.Factory mallards();
 
     /**
      * Access to our Identity factory.
      * 
      */
-    public Identity.Factory identity();
+    public Identity.Factory identities();
 
     /**
      * Access to the current Identity.

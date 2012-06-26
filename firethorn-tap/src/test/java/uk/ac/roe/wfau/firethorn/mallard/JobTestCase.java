@@ -43,10 +43,10 @@ extends TestBase
     @Test
     public void test000()
         {
-        ident[0] = womble().mallard().create(
+        ident[0] = womble().mallards().create(
             "test-mallard"
             ).ident();
-        ident[1] = womble().mallard().create(
+        ident[1] = womble().mallards().create(
             "test-mallard"
             ).ident();
         }
@@ -57,7 +57,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        Mallard mallard = womble().mallard().select(
+        Mallard mallard = womble().mallards().select(
             ident[0]
             );
         assertFalse(
@@ -87,7 +87,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        Mallard mallard = womble().mallard().select(
+        Mallard mallard = womble().mallards().select(
             ident[0]
             );
         assertFalse(
@@ -117,7 +117,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        Mallard mallard = womble().mallard().select(
+        Mallard mallard = womble().mallards().select(
             ident[0]
             );
         assertFalse(
@@ -137,7 +137,7 @@ extends TestBase
         assertNotNull(
             ident[1]
             );
-        Mallard mallard = womble().mallard().select(
+        Mallard mallard = womble().mallards().select(
             ident[1]
             );
         assertFalse(
@@ -170,7 +170,7 @@ extends TestBase
         assertNotNull(
             ident[1]
             );
-        Mallard mallard = womble().mallard().select(
+        Mallard mallard = womble().mallards().select(
             ident[1]
             );
         assertFalse(

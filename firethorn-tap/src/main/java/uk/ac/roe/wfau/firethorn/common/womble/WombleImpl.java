@@ -250,7 +250,7 @@ implements Womble
         public Entity insert(final Entity entity)
             {
             log.debug("insert(Entity)");
-            log.debug("  entity [{}]", entity);
+            log.debug("  {}", entity);
             try {
                 if (entity == null)
                     {
@@ -319,7 +319,7 @@ implements Womble
         public Entity update(final Entity entity)
             {
             log.debug("update(Entity)");
-            log.debug("  entity [{}]", entity);
+            log.debug("  {}", entity);
             try {
                 if (entity == null)
                     {
@@ -358,7 +358,7 @@ implements Womble
         public void delete(final Entity entity)
             {
             log.debug("delete(Entity)");
-            log.debug("  entity [{}]", entity);
+            log.debug("  {}", entity);
             try {
                 if (entity == null)
                     {
@@ -494,16 +494,16 @@ implements Womble
      * 
      */
     @Autowired
-    protected Widgeon.Base.Factory widgeon ;
+    protected Widgeon.Base.Factory widgeons ;
 
     /**
      * Access to our Widgeon factory.
      * 
      */
     @Override
-    public Widgeon.Base.Factory widgeon()
+    public Widgeon.Base.Factory widgeons()
         {
-        return this.widgeon ;
+        return this.widgeons ;
         }
 
     /**
@@ -511,16 +511,16 @@ implements Womble
      * 
      */
     @Autowired
-    protected Mallard.Factory mallard ;
+    protected Mallard.Factory mallards ;
 
     /**
      * Access to our Mallard factory.
      * 
      */
     @Override
-    public Mallard.Factory mallard()
+    public Mallard.Factory mallards()
         {
-        return this.mallard ;
+        return this.mallards ;
         }
 
     /**
@@ -528,16 +528,16 @@ implements Womble
      * 
      */
     @Autowired
-    protected Identity.Factory identity ;
+    protected Identity.Factory identities ;
 
     /**
      * Access to our Identity factory.
      * 
      */
     @Override
-    public Identity.Factory identity()
+    public Identity.Factory identities()
         {
-        return this.identity ;
+        return this.identities ;
         }
 
     /**

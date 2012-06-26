@@ -60,14 +60,25 @@ extends Entity
         }
 
     /**
-     * The collection of resources used by this service.
+     * The collection of Widgeons (resources) used by this service.
      *
      */
     public Widgeons widgeons();
     public interface Widgeons
         {
-        public void insert(Widgeon widgeon);
-        public Iterable<Widgeon> select();
+
+        /**
+         * Add a Widgeon View to this service.
+         *
+         */
+        public void insert(Widgeon.View widgeon);
+
+        /**
+         * Select all the Widgeons used by this service.
+         *
+         */
+        public Iterable<Widgeon.View> select();
+
         }
 
     /**

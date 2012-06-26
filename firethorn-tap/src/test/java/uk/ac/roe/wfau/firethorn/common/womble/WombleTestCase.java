@@ -55,11 +55,11 @@ extends TestBase
             );
 
         assertNotNull(
-            womble().widgeon()
+            womble().widgeons()
             );
 
         assertNotNull(
-            womble().mallard()
+            womble().mallards()
             );
         }
     }

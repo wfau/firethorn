@@ -179,7 +179,7 @@ implements Widgeon.View
             @Override
             public Iterable<Widgeon.View.Schema> select()
                 {
-                return womble().widgeon().views().schemas().select(
+                return womble().widgeons().views().schemas().select(
                     WidgeonViewEntity.this
                     ) ;
                 }
@@ -187,7 +187,7 @@ implements Widgeon.View
             @Override
             public Widgeon.View.Schema select(final String name)
                 {
-                return womble().widgeon().views().schemas().select(
+                return womble().widgeons().views().schemas().select(
                     WidgeonViewEntity.this,
                     name
                     ) ;

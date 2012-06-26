@@ -71,7 +71,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.view.WidgeonViewEntity;
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "mallard-select",
+            name  = "mallard-select-all",
             query = "FROM MallardEntity ORDER BY ident desc"
             ),
         @NamedQuery(
@@ -113,7 +113,7 @@ implements Mallard
             {
             return super.iterable(
                 super.query(
-                    "mallard-select"
+                    "mallard-select-all"
                     )
                 );
             }
@@ -174,7 +174,7 @@ implements Mallard
             @Override
             public Job create(String name, String adql)
                 {
-                return womble().mallard().jobs().create(
+                return womble().mallards().jobs().create(
                     MallardEntity.this,
                     name,
                     adql
@@ -184,7 +184,7 @@ implements Mallard
             @Override
             public Iterable<Job> select()
                 {
-                return womble().mallard().jobs().select(
+                return womble().mallards().jobs().select(
                     MallardEntity.this
                     ) ;
                 }
@@ -213,12 +213,12 @@ implements Mallard
             updatable = false
             )
         )
-    private Set<Widgeon> widgeons = new HashSet<Widgeon>(0);
-    protected Set<Widgeon> getWidgeons()
+    private Set<Widgeon.View> widgeons = new HashSet<Widgeon.View>(0);
+    protected Set<Widgeon.View> getWidgeons()
         {
         return this.widgeons ;
         }
-    protected void setWidgeons(Set<Widgeon> set)
+    protected void setWidgeons(Set<Widgeon.View> set)
         {
         this.widgeons = set ;
         }
@@ -233,14 +233,14 @@ implements Mallard
         return new Widgeons()
             {
             @Override
-            public void insert(Widgeon widgeon)
+            public void insert(Widgeon.View widgeon)
                 {
                 widgeons.add(
-                    (Widgeon) widgeon
+                    widgeon
                     );
                 }
             @Override
-            public Iterable<Widgeon> select()
+            public Iterable<Widgeon.View> select()
                 {
                 return widgeons ;
                 }

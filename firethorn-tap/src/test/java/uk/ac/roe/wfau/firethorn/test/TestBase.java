@@ -70,6 +70,11 @@ public abstract class TestBase
      */
     @Autowired
     private Womble womble ;
+
+    /**
+     * Access to our test Womble.
+     *
+     */
     public Womble womble()
         {
         return this.womble;
@@ -129,7 +134,7 @@ public abstract class TestBase
      * Generate a unique string.
      *
      */
-    public String unique(String prefix)
+    public String unique(final String prefix)
         {
         StringBuilder builder = new StringBuilder();
         builder.append(
@@ -146,7 +151,7 @@ public abstract class TestBase
      * Generate a unique URI.
      *
      */
-    public URI unique(URI base)
+    public URI unique(final URI base)
         {
         return base.resolve(
             URI.create(
@@ -159,7 +164,7 @@ public abstract class TestBase
      * Count the members in a Iterable set.
      *
      */
-    public long count(Iterable iterable)
+    public long count(final Iterable iterable)
         {
         long count = 0 ;
         for (Object object : iterable)
