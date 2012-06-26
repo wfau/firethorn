@@ -122,11 +122,8 @@ extends TestBase
             );
         }
 
-    public void nested(Widgeon.Schema.Catalog catalog)
+    public void nested(Widgeon.Base.Schema.Catalog catalog)
         {
-        }
-
-/*
         nested(
             catalog.tables().create(
                 "table-0001"
@@ -139,7 +136,7 @@ extends TestBase
             );
         }
 
-    public void nested(Widgeon.Schema.Catalog.Table table)
+    public void nested(Widgeon.Base.Schema.Catalog.Table table)
         {
         table.columns().create(
             "column-0001"
@@ -148,7 +145,7 @@ extends TestBase
             "column-0002"
             );
         }
-*/
+
     public void display(Widgeon.Base widgeon)
         {
         log.debug("-------");
@@ -156,13 +153,13 @@ extends TestBase
         for (Widgeon.Base.Schema schema : widgeon.schemas().select())
             {
             log.debug("  Schema [{}]", schema);
-            for (Widgeon.Schema.Catalog catalog : schema.catalogs().select())
+            for (Widgeon.Base.Schema.Catalog catalog : schema.catalogs().select())
                 {
                 log.debug("  Catalog [{}]", catalog);
-                for (Widgeon.Schema.Catalog.Table table : catalog.tables().select())
+                for (Widgeon.Base.Schema.Catalog.Table table : catalog.tables().select())
                     {
                     log.debug("  Table [{}]", table);
-                    for (Widgeon.Schema.Catalog.Table.Column column : table.columns().select())
+                    for (Widgeon.Base.Schema.Catalog.Table.Column column : table.columns().select())
                         {
                         log.debug("  Column [{}]", column);
                         }

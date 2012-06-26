@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon ;
+package uk.ac.roe.wfau.firethorn.widgeon.entity.base ;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,8 +48,12 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
+import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
+
 /**
- * Widgeon Schema implementation.
+ * Catalog implementation.
  *
  */
 @Slf4j
@@ -58,49 +62,43 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
     AccessType.FIELD
     )
 @Table(
-    name = SchemaBase.DB_TABLE_NAME,
+    name = CatalogBaseEntity.DB_TABLE_NAME,
     uniqueConstraints=
         @UniqueConstraint(
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
-                SchemaBase.DB_PARENT_COL,
+                CatalogBaseEntity.DB_PARENT_COL,
                 }
             )
     )
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "widgeon.schema.base-select-parent",
-            query = "FROM SchemaBase WHERE parent = :parent ORDER BY ident desc"
+            name  = "widgeon.base.catalog-select-parent",
+            query = "FROM CatalogBaseEntity WHERE parent = :parent ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "widgeon.schema.base-select-parent.name",
-            query = "FROM SchemaBase WHERE parent = :parent AND name = :name ORDER BY ident desc"
+            name  = "widgeon.base.catalog-select-parent.name",
+            query = "FROM CatalogBaseEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
             )
         }
     )
-public class SchemaBase
-extends AbstractEntity
-implements Widgeon.Schema, Widgeon.Base.Schema
+public class CatalogBaseEntity
+extends WidgeonStatusEntity
+implements Widgeon.Base.Schema.Catalog
     {
 
     /**
      * Our persistence table name.
      * 
      */
-    public static final String DB_TABLE_NAME = "widgeon_schema_base" ;
+    public static final String DB_TABLE_NAME = "widgeon_base_catalog" ;
 
     /**
-     * The persistence column name for our parent Widgeon.
+     * The persistence column name for our parent Schema.
      * 
      */
     public static final String DB_PARENT_COL = "parent" ;
-
-    /*
-     * The persistence column name for our status enum.
-     * 
-     */
-    public static final String DB_STATUS_COL = "status" ;
 
     /**
      * Our Entity Factory implementation.
@@ -108,22 +106,22 @@ implements Widgeon.Schema, Widgeon.Base.Schema
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<Widgeon.Base.Schema>
-    implements Widgeon.Base.Schema.Factory
+    extends AbstractFactory<Widgeon.Base.Schema.Catalog>
+    implements Widgeon.Base.Schema.Catalog.Factory
         {
 
         @Override
         public Class etype()
             {
-            return SchemaBase.class ;
+            return CatalogBaseEntity.class ;
             }
 
         @Override
         @CreateEntityMethod
-        public Widgeon.Base.Schema create(final Widgeon.Base parent, final String name)
+        public Widgeon.Base.Schema.Catalog create(final Widgeon.Base.Schema parent, final String name)
             {
             return super.insert(
-                new SchemaBase(
+                new CatalogBaseEntity(
                     parent,
                     name
                     )
@@ -132,11 +130,11 @@ implements Widgeon.Schema, Widgeon.Base.Schema
 
         @Override
         @SelectEntityMethod
-        public Iterable<Widgeon.Base.Schema> select(final Widgeon.Base parent)
+        public Iterable<Widgeon.Base.Schema.Catalog> select(final Widgeon.Base.Schema parent)
             {
             return super.iterable(
                 super.query(
-                    "widgeon.schema.base-select-parent"
+                    "widgeon.base.catalog-select-parent"
                     ).setEntity(
                         "parent",
                         parent
@@ -146,11 +144,11 @@ implements Widgeon.Schema, Widgeon.Base.Schema
 
         @Override
         @SelectEntityMethod
-        public Widgeon.Base.Schema select(final Widgeon.Base parent, final String name)
+        public Widgeon.Base.Schema.Catalog select(final Widgeon.Base.Schema parent, final String name)
             {
             return super.single(
                 super.query(
-                    "widgeon.schema.base-select-parent.name"
+                    "widgeon.base.catalog-select-parent.name"
                     ).setEntity(
                         "parent",
                         parent
@@ -162,61 +160,52 @@ implements Widgeon.Schema, Widgeon.Base.Schema
             }
 
         /**
-         * Our Autowired Catalog factory.
+         * Our Autowired Table factory.
          * 
-        @Autowired
-        protected Widgeon.Base.Schema.Catalog.Factory catalogs ;
          */
+        @Autowired
+        protected Widgeon.Base.Schema.Catalog.Table.Factory tables ;
 
         /**
-         * Access to our Catalog factory.
+         * Access to our Table factory.
          * 
          */
         @Override
-        public Widgeon.Base.Schema.Catalog.Factory catalogs()
+        public Widgeon.Base.Schema.Catalog.Table.Factory tables()
             {
-            return null ;
+            return this.tables ;
             }
         }
 
     @Override
-    public Widgeon.Base.Schema.Catalogs catalogs()
+    public Widgeon.Base.Schema.Catalog.Tables tables()
         {
-        return new Widgeon.Base.Schema.Catalogs()
+        return new Widgeon.Base.Schema.Catalog.Tables()
             {
             @Override
-            public Widgeon.Base.Schema.Catalog create(String name)
+            public Widgeon.Base.Schema.Catalog.Table create(String name)
                 {
-/*
-                return womble().widgeon().schemas().catalogs().create(
-                    SchemaBase.this,
+                return womble().widgeon().schemas().catalogs().tables().create(
+                    CatalogBaseEntity.this,
                     name
                     ) ;
- */
-                return null ;
                 }
 
             @Override
-            public Widgeon.Base.Schema.Catalog select(String name)
+            public Widgeon.Base.Schema.Catalog.Table select(String name)
                 {
-/*
-                return womble().widgeon().schemas().catalogs().select(
-                    SchemaBase.this,
+                return womble().widgeon().schemas().catalogs().tables().select(
+                    CatalogBaseEntity.this,
                     name
                     ) ;
- */
-                return null ;
                 }
 
             @Override
-            public Iterable<Catalog> select()
+            public Iterable<Widgeon.Base.Schema.Catalog.Table> select()
                 {
-/*
-                return womble().widgeon().schemas().catalogs().select(
-                    SchemaBase.this
+                return womble().widgeon().schemas().catalogs().tables().select(
+                    CatalogBaseEntity.this
                     ) ;
- */
-                return null ;
                 }
             };
         }
@@ -226,7 +215,7 @@ implements Widgeon.Schema, Widgeon.Base.Schema
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected SchemaBase()
+    protected CatalogBaseEntity()
         {
         super();
         }
@@ -235,19 +224,19 @@ implements Widgeon.Schema, Widgeon.Base.Schema
      * Create a new Schema.
      *
      */
-    protected SchemaBase(final Widgeon.Base parent, final String name)
+    protected CatalogBaseEntity(final Widgeon.Base.Schema parent, final String name)
         {
         super(name);
         this.parent = parent ;
         }
 
     /**
-     * Our parent Widgeon.
+     * Our parent Schema.
      *
      */
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = WidgeonBase.class
+        targetEntity = SchemaBaseEntity.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,
@@ -255,50 +244,24 @@ implements Widgeon.Schema, Widgeon.Base.Schema
         nullable = false,
         updatable = false
         )
-    private Widgeon.Base parent ;
+    private Widgeon.Base.Schema parent ;
 
-    /**
-     * Access to our parent Widgeon.
-     *
-     */
     @Override
-    public Widgeon.Base parent()
+    public Widgeon.Base.Schema parent()
         {
         return this.parent ;
         }
 
-    /**
-     * The status of this Schema.
-     *
-     */
-    @Column(
-        name = DB_STATUS_COL,
-        unique = false,
-        nullable = false,
-        updatable = true
-        )
-    @Enumerated(
-        EnumType.STRING
-        )
-    private Widgeon.Status status = Widgeon.Status.CREATED ;
-
     @Override
     public Widgeon.Status status()
         {
-        if (this.parent.status() == Widgeon.Status.ENABLED)
+        if (this.parent().status() == Widgeon.Status.ENABLED)
             {
-            return this.status;
+            return super.status();
             }
         else {
-            return this.parent.status();
+            return this.parent().status();
             }
         }
-
-    @Override
-    public void status(Widgeon.Status status)
-        {
-        this.status = status ;
-        }
-
     }
 

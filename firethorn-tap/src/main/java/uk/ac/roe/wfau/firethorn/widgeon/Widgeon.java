@@ -23,7 +23,6 @@ import java.net.URL;
 import javax.sql.DataSource;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
  * Public interface for describing a data resource (JDBC database OR TAP service).
@@ -31,57 +30,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
  *
  */
 public interface Widgeon
-extends Entity
+extends WidgeonStatus
     {
-
-    /**
-     * Enum representing the status of a Widgeon component.
-     *
-     */
-    public enum Status
-        {
-        ENABLED(true),
-        DISABLED(false),
-        CREATED(false),
-        DELETED(false);
-
-        /**
-         * Private constructor.
-         *
-         */
-        private Status(boolean enabled)
-            {
-            this.enabled = enabled ;
-            }
-
-        /**
-         * Private enabled flag.
-         *
-         */
-        private boolean enabled ;
-
-        /**
-         * Check to see if a component with this status is enabled.
-         *
-         */
-        public boolean enabled()
-            {
-            return this.enabled ;
-            }        
-
-        }
-
-    /**
-     * The status of this Widgeon.
-     *
-     */
-    public Status status();
-
-    /**
-     * Set the status of this Widgeon.
-     *
-     */
-    public void status(Status status);
 
     /**
      * Access to this Widgeon's Schema.
@@ -90,19 +40,20 @@ extends Entity
     public Schemas schemas();
 
     /**
-     * Public interface for accessing this Widgeon's Schema.
+     * Public interface for accessing the Schema for a Widgeon.
      *
      */
     public interface Schemas<SchemaType extends Widgeon.Schema>
         {
+
         /**
-         * Select a named Schema.
+         * Select a named Schema from the Widgeon.
          *
          */
         public SchemaType select(String name);
 
         /**
-         * Select all the Schema in this Widgeon.
+         * Select all the Schema from the Widgeon.
          *
          */
         public Iterable<SchemaType> select();
@@ -113,26 +64,31 @@ extends Entity
      * Public interface for Schema metadata.
      *
      */
-    public interface Schema
-    extends Entity
+    public interface Schema<WidgeonType extends Widgeon>
+    extends WidgeonComponent<WidgeonType>
         {
-        /**
-         * Access to our parent Widgeon.
-         *
-         */
-        public Widgeon parent();
 
         /**
-         * The status of this Schema.
+         * Factory interface for creating and selecting Schema.
          *
          */
-        public Status status();
+        public static interface Factory<WidgeonType extends Widgeon, SchemaType extends Widgeon.Schema>
+        extends Entity.Factory<SchemaType>
+            {
 
-        /**
-         * Set the status of this Schema.
-         *
-         */
-        public void status(Status status);
+            /**
+             * Select a named Schema for a Widgeon.
+             *
+             */
+            public SchemaType select(WidgeonType parent, String name);
+
+            /**
+             * Select all the Schema for a Widgeon.
+             *
+             */
+            public Iterable<SchemaType> select(WidgeonType parent);
+
+            }
 
         /**
          * Access to this Schema's Catalogs.
@@ -141,48 +97,55 @@ extends Entity
         public Catalogs catalogs();
 
         /**
-         * Public interface for accessing this Schema's Catalogs.
+         * Public interface for accessing the Catalogs for a Schema.
          *
          */
-        public interface Catalogs
+        public interface Catalogs<CatalogType extends Widgeon.Schema.Catalog>
             {
-            /**
-             * Select a named Catalog.
-             *
-             */
-            public Schema.Catalog select(String name);
 
             /**
-             * Select all the Catalogs in this Schema.
+             * Select a named Catalog from the Schema.
              *
              */
-            public Iterable<Schema.Catalog> select();
+            public CatalogType select(String name);
+
+            /**
+             * Select all the Catalogs from the Schema.
+             *
+             */
+            public Iterable<CatalogType> select();
+
             }
 
         /**
          * Public interface for Catalog metadata.
          *
          */
-        public interface Catalog
-        extends Entity
+        public interface Catalog<SchemaType extends Widgeon.Schema>
+        extends WidgeonComponent<SchemaType>
             {
-            /**
-             * Access to our parent Schema.
-             *
-             */
-            public Schema parent();
 
             /**
-             * The status of this Catalog.
+             * Factory interface for creating and selecting Catalogs.
              *
              */
-            public Status status();
+            public static interface Factory<SchemaType extends Widgeon.Schema, CatalogType extends Widgeon.Schema.Catalog>
+            extends Entity.Factory<CatalogType>
+                {
 
-            /**
-             * Set the status of this Catalog.
-             *
-             */
-            public void status(Status status);
+                /**
+                 * Select a named Catalog for a Schema.
+                 *
+                 */
+                public CatalogType select(SchemaType parent, String name);
+
+                /**
+                 * Select all the Catalogs for a Schema.
+                 *
+                 */
+                public Iterable<CatalogType> select(SchemaType parent);
+
+                }
 
             /**
              * Access to this Catalog's Tables.
@@ -191,48 +154,55 @@ extends Entity
             public Tables tables();
 
             /**
-             * Public interface for accessing this Catalog's Tables.
+             * Public interface for accessing the Tables for a Catalog.
              *
              */
-            public interface Tables
+            public interface Tables<TableType extends Widgeon.Schema.Catalog.Table>
                 {
-                /**
-                 * Select a named Table.
-                 *
-                 */
-                public Catalog.Table select(String name);
 
                 /**
-                 * Select all the Tables in this Catalog.
+                 * Select a named Table from the Catalog.
                  *
                  */
-                public Iterable<Catalog.Table> select();
+                public TableType select(String name);
+
+                /**
+                 * Select all the Tables from the Catalog.
+                 *
+                 */
+                public Iterable<TableType> select();
+
                 }
 
             /**
              * Public interface for Table metadata.
              *
              */
-            public interface Table
-            extends Entity
+            public interface Table<CatalogType extends Widgeon.Schema.Catalog>
+            extends WidgeonComponent<CatalogType>
                 {
-                /**
-                 * Access to our parent Catalog.
-                 *
-                 */
-                public Catalog parent();
 
                 /**
-                 * The status of this Table.
+                 * Factory interface for creating and selecting Tables.
                  *
                  */
-                public Status status();
+                public static interface Factory<CatalogType extends Widgeon.Schema.Catalog, TableType extends Widgeon.Schema.Catalog.Table>
+                extends Entity.Factory<TableType>
+                    {
 
-                /**
-                 * Set the status of this Table.
-                 *
-                 */
-                public void status(Status status);
+                    /**
+                     * Select a named Table for a Catalog.
+                     *
+                     */
+                    public TableType select(CatalogType parent, String name);
+
+                    /**
+                     * Select all the Tables for a Catalog.
+                     *
+                     */
+                    public Iterable<TableType> select(CatalogType parent);
+
+                    }
 
                 /**
                  * Access to this Table's Columns.
@@ -241,48 +211,55 @@ extends Entity
                 public Columns columns();
 
                 /**
-                 * Public interface for accessing this Table's Columns.
+                 * Public interface for accessing the Columns for a Table.
                  *
                  */
-                public interface Columns
+                public interface Columns<ColumnType extends Widgeon.Schema.Catalog.Table.Column>
                     {
-                    /**
-                     * Select a named Column.
-                     *
-                     */
-                    public Table.Column select(String name);
 
                     /**
-                     * Set the status of this Column.
+                     * Select a named Column from the Table.
                      *
                      */
-                    public void status(Status status);
+                    public ColumnType select(String name);
 
                     /**
-                     * Select all the Columns in this Table.
+                     * Select all the Columns from the Table.
                      *
                      */
-                    public Iterable<Table.Column> select();
+                    public Iterable<ColumnType> select();
+
                     }
 
                 /**
                  * Public interface for Column metadata.
                  *
                  */
-                public interface Column
-                extends Entity
+                public interface Column<TableType extends Widgeon.Schema.Catalog.Table>
+                extends WidgeonComponent<TableType>
                     {
-                    /**
-                     * Access to our parent Table.
-                     *
-                     */
-                    public Table parent();
 
                     /**
-                     * The status of this Column.
+                     * Factory interface for creating and selecting Columns.
                      *
                      */
-                    public Status status();
+                    public static interface Factory<TableType extends Widgeon.Schema.Catalog.Table, ColumnType extends Widgeon.Schema.Catalog.Table.Column>
+                    extends Entity.Factory<ColumnType>
+                        {
+
+                        /**
+                         * Select a named Column for a Table.
+                         *
+                         */
+                        public ColumnType select(TableType parent, String name);
+
+                        /**
+                         * Select all the Columns for a Table.
+                         *
+                         */
+                        public Iterable<ColumnType> select(TableType parent);
+
+                        }
 
                     }
                 }
@@ -290,7 +267,7 @@ extends Entity
         }
 
     /**
-     * Public interface for a base Widgeon, based on what IS.
+     * Public interface for a base Widgeon, based on what is.
      *
      */
     public interface Base
@@ -344,25 +321,25 @@ extends Entity
             }
 
         /**
-         * Public interface for accessing the Views of this Widgeon.
+         * Public interface for accessing the Views of a Widgeon.
          *
          */
         public interface Views
             {
             /*
-             * Create a new View of this Widgeon.
+             * Create a new View of the Widgeon.
              *
              */
             public Widgeon.View create(String name);
 
             /*
-             * Select all the Views of this Widgeon.
+             * Select all the Views of the Widgeon.
              *
              */
             public Iterable<Widgeon.View> select();
 
             /*
-             * Select a named View of this Widgeon.
+             * Select a named View of the Widgeon.
              *
              */
             public Widgeon.View select(String name);
@@ -376,17 +353,19 @@ extends Entity
         public Views views();
 
         /**
-         * Public interface for accessing this Widgeon's Schema.
+         * Public interface for accessing the Schema for a Widgeon.
          *
          */
         public interface Schemas
         extends Widgeon.Schemas<Widgeon.Base.Schema>
             {
+
             /**
-             * Create a new Schema for this Widgeon.
+             * Create a new Schema for the Widgeon.
              *
              */
             public Widgeon.Base.Schema create(String name);
+
             }
 
         /**
@@ -400,7 +379,7 @@ extends Entity
          *
          */
         public interface Schema
-        extends Widgeon.Schema
+        extends Widgeon.Schema<Widgeon.Base>
             {
 
             /**
@@ -408,25 +387,14 @@ extends Entity
              *
              */
             public static interface Factory
-            extends Entity.Factory<Widgeon.Base.Schema>
+            extends Widgeon.Schema.Factory<Widgeon.Base, Widgeon.Base.Schema>
                 {
+
                 /**
-                 * Create a new Schema for a Base Widgeon.
+                 * Create a new Schema for a Widgeon.
                  *
                  */
                 public Widgeon.Base.Schema create(Widgeon.Base parent, String name);
-
-                /**
-                 * Select a named Schema for a Widgeon.
-                 *
-                 */
-                public Widgeon.Base.Schema select(Widgeon.Base parent, String name);
-
-                /**
-                 * Select all the Schema for a Widgeon.
-                 *
-                 */
-                public Iterable<Widgeon.Base.Schema> select(Widgeon.Base parent);
 
                 /**
                  * Access to our Catalog factory.
@@ -437,25 +405,157 @@ extends Entity
                 }
 
             /**
-             * Public interface for accessing this Schema's Catalogs.
+             * Public interface for accessing the Catalogs for a Schema.
              *
              */
             public interface Catalogs
-            extends Widgeon.Schema.Catalogs
+            extends Widgeon.Schema.Catalogs<Widgeon.Base.Schema.Catalog>
                 {
+
                 /**
-                 * Create a new Table for this Catalog.
+                 * Create a new Catalog for the Schema.
                  *
                  */
                 public Widgeon.Base.Schema.Catalog create(String name);
+
                 }
 
             /**
-             * Access to the Catalogss for this Schema.
+             * Access to the Catalogs for this Schema.
              *
              */
             public Catalogs catalogs();
 
+            /**
+             * Public interface for Catalog metadata.
+             *
+             */
+            public interface Catalog
+            extends Widgeon.Schema.Catalog
+                {
+
+                /**
+                 * Factory interface for creating and selecting Catalogs.
+                 *
+                 */
+                public static interface Factory
+                extends Widgeon.Schema.Catalog.Factory<Widgeon.Base.Schema, Widgeon.Base.Schema.Catalog>
+                    {
+
+                    /**
+                     * Create a new Catalog for a Schema.
+                     *
+                     */
+                    public Widgeon.Base.Schema.Catalog create(Widgeon.Base.Schema parent, String name);
+
+                    /**
+                     * Access to our Table factory.
+                     * 
+                     */
+                    public Widgeon.Base.Schema.Catalog.Table.Factory tables();
+
+                    }
+
+                /**
+                 * Public interface for accessing the Tables for a Catalog.
+                 *
+                 */
+                public interface Tables
+                extends Widgeon.Schema.Catalog.Tables<Widgeon.Base.Schema.Catalog.Table>
+                    {
+
+                    /**
+                     * Create a new Table for the Catalog.
+                     *
+                     */
+                    public Widgeon.Base.Schema.Catalog.Table create(String name);
+
+                    }
+
+                /**
+                 * Access to the Tables for this Catalog.
+                 *
+                 */
+                public Tables tables();
+
+                /**
+                 * Public interface for Table metadata.
+                 *
+                 */
+                public interface Table
+                extends Widgeon.Schema.Catalog.Table
+                    {
+
+                    /**
+                     * Factory interface for creating and selecting Tables.
+                     *
+                     */
+                    public static interface Factory
+                    extends Widgeon.Schema.Catalog.Table.Factory<Widgeon.Base.Schema.Catalog, Widgeon.Base.Schema.Catalog.Table>
+                        {
+
+                        /**
+                         * Create a new Table for a Catalog.
+                         *
+                         */
+                        public Widgeon.Base.Schema.Catalog.Table create(Widgeon.Base.Schema.Catalog parent, String name);
+
+                        /**
+                         * Access to our Column factory.
+                         * 
+                         */
+                        public Widgeon.Base.Schema.Catalog.Table.Column.Factory columns();
+
+                        }
+
+                    /**
+                     * Public interface for accessing the Columns for a Table.
+                     *
+                     */
+                    public interface Columns
+                    extends Widgeon.Schema.Catalog.Table.Columns<Widgeon.Base.Schema.Catalog.Table.Column>
+                        {
+
+                        /**
+                         * Create a new Column for the Table.
+                         *
+                         */
+                        public Widgeon.Base.Schema.Catalog.Table.Column create(String name);
+
+                        }
+
+                    /**
+                     * Access to the Columns for this Table.
+                     *
+                     */
+                    public Columns columns();
+
+                    /**
+                     * Public interface for Column metadata.
+                     *
+                     */
+                    public interface Column
+                    extends Widgeon.Schema.Catalog.Table.Column
+                        {
+
+                        /**
+                         * Factory interface for creating and selecting Columns.
+                         *
+                         */
+                        public static interface Factory
+                        extends Widgeon.Schema.Catalog.Table.Column.Factory<Widgeon.Base.Schema.Catalog.Table, Widgeon.Base.Schema.Catalog.Table.Column>
+                            {
+
+                            /**
+                             * Create a new Column for a Table.
+                             *
+                             */
+                            public Widgeon.Base.Schema.Catalog.Table.Column create(Widgeon.Base.Schema.Catalog.Table parent, String name);
+
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -474,6 +574,7 @@ extends Entity
         public static interface Factory
         extends Entity.Factory<Widgeon.View>
             {
+
             /**
              * Create a View of a Widgeon.
              *
@@ -507,7 +608,7 @@ extends Entity
         public Widgeon.Base base();
 
         /**
-         * Public interface for accessing this Widgeon's Schema.
+         * Public interface for accessing the Schema for a Widgeon.
          *
          */
         public interface Schemas
@@ -526,7 +627,7 @@ extends Entity
          *
          */
         public interface Schema
-        extends Widgeon.Schema
+        extends Widgeon.Schema<Widgeon.View>
             {
 
             /**
@@ -534,25 +635,14 @@ extends Entity
              *
              */
             public static interface Factory
-            extends Entity.Factory<Widgeon.View.Schema>
+            extends Widgeon.Schema.Factory<Widgeon.View, Widgeon.View.Schema>
                 {
-                /**
-                 * Create a View of a Schema.
-                 *
-                 */
-                public Widgeon.View.Schema create(Widgeon.Base.Schema base, Widgeon.View parent, String name);
 
                 /**
-                 * Select a named Schema from a Widgeon View.
+                 * Create a new View for a Schema.
                  *
                  */
-                public Widgeon.View.Schema select(Widgeon.View parent, String name);
-
-                /**
-                 * Select all the Schema from a Widgeon View.
-                 *
-                 */
-                public Iterable<Widgeon.View.Schema> select(Widgeon.View parent);
+                public Widgeon.View.Schema create(Widgeon.Base.Schema base, Widgeon.View view, String name);
 
                 /**
                  * Access to our Catalog factory.
@@ -569,11 +659,11 @@ extends Entity
             public Widgeon.Base.Schema base();
 
             /**
-             * Public interface for accessing this Schema's Catalogs.
+             * Public interface for accessing the Catalogs for a Schema.
              *
              */
             public interface Catalogs
-            extends Widgeon.Schema.Catalogs
+            extends Widgeon.Schema.Catalogs<Widgeon.View.Schema.Catalog>
                 {
                 }
 
@@ -583,6 +673,81 @@ extends Entity
              */
             public Catalogs catalogs();
 
+            /**
+             * Public interface for Catalog metadata.
+             *
+             */
+            public interface Catalog
+            extends Widgeon.Schema.Catalog<Widgeon.View.Schema>
+                {
+
+                /**
+                 * Factory interface for creating and selecting Catalogs.
+                 *
+                 */
+                public static interface Factory
+                extends Widgeon.Schema.Catalog.Factory<Widgeon.View.Schema, Widgeon.View.Schema.Catalog>
+                    {
+                    }
+
+                /**
+                 * Public interface for accessing the Tables for a Catalog.
+                 *
+                 */
+                public interface Tables
+                extends Widgeon.Schema.Catalog.Tables<Widgeon.View.Schema.Catalog.Table>
+                    {
+                    }
+
+                /**
+                 * Access to the Tables for this Catalog.
+                 *
+                 */
+                public Tables tables();
+
+                /**
+                 * Public interface for Table metadata.
+                 *
+                 */
+                public interface Table
+                extends Widgeon.Schema.Catalog.Table<Widgeon.View.Schema.Catalog>
+                    {
+
+                    /**
+                     * Factory interface for creating and selecting Tables.
+                     *
+                     */
+                    public static interface Factory
+                    extends Widgeon.Schema.Catalog.Table.Factory<Widgeon.View.Schema.Catalog, Widgeon.View.Schema.Catalog.Table>
+                        {
+                        }
+
+                    /**
+                     * Public interface for accessing the Columns for a Table.
+                     *
+                     */
+                    public interface Columns
+                    extends Widgeon.Schema.Catalog.Table.Columns<Widgeon.View.Schema.Catalog.Table.Column>
+                        {
+                        }
+
+                    /**
+                     * Access to the Columns for this Table.
+                     *
+                     */
+                    public Columns columns();
+
+                    /**
+                     * Public interface for Column metadata.
+                     *
+                     */
+                    public interface Column
+                    extends Widgeon.Schema.Catalog.Table.Column<Widgeon.View.Schema.Catalog.Table>
+                        {
+
+                        }
+                    }
+                }
             }
         }
     }

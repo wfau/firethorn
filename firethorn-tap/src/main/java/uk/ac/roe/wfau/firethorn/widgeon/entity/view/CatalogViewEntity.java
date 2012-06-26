@@ -15,18 +15,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon ;
+package uk.ac.roe.wfau.firethorn.widgeon.entity.view ;
 
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 import java.net.URL;
 
-import javax.sql.DataSource;
-
 import javax.persistence.Table;
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Column;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.EnumType;
@@ -43,8 +41,6 @@ import org.hibernate.annotations.NamedQueries;
 import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;  
 
-import uk.ac.roe.wfau.firethorn.common.womble.Womble;
-
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
@@ -52,8 +48,12 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
+import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
+
 /**
- * Core Widgeon implementations.
+ * Catalog View implementation.
  *
  */
 @Slf4j
@@ -62,43 +62,49 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
     AccessType.FIELD
     )
 @Table(
-    name = WidgeonView.DB_TABLE_NAME
+    name = CatalogViewEntity.DB_TABLE_NAME,
+    uniqueConstraints=
+        @UniqueConstraint(
+            columnNames = {
+                AbstractEntity.DB_NAME_COL,
+                CatalogViewEntity.DB_PARENT_COL,
+                }
+            )
     )
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "widgeon.view-select-base",
-            query = "FROM WidgeonView WHERE base = :base ORDER BY ident desc"
+            name  = "widgeon.view.catalog-select-parent",
+            query = "FROM CatalogViewEntity WHERE parent = :parent ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "widgeon.view-select-base.name",
-            query = "FROM WidgeonView WHERE base = :base AND name = :name"
+            name  = "widgeon.view.catalog-select-parent.name",
+            query = "FROM CatalogViewEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
             )
         }
     )
-public class WidgeonView
-extends AbstractEntity
-implements Widgeon, Widgeon.View
+public class CatalogViewEntity
+extends WidgeonStatusEntity
+implements Widgeon.View.Schema
     {
 
     /**
      * Our persistence table name.
      * 
      */
-    public static final String DB_TABLE_NAME = "widgeon_view" ;
+    public static final String DB_TABLE_NAME = "widgeon_view_catalog" ;
 
     /**
-     * The persistence column name for our base Widgeon.
+     * The persistence column name for our parent Schema.
+     * 
+     */
+    public static final String DB_PARENT_COL = "parent" ;
+
+    /**
+     * The persistence column name for our base Catalog.
      * 
      */
     public static final String DB_BASE_COL = "base" ;
-
-    /*
-     * The persistence column name for our status enum.
-     * 
-     */
-    public static final String DB_STATUS_COL  = "status" ;
-
 
     /**
      * Our Entity Factory implementation.
@@ -106,40 +112,53 @@ implements Widgeon, Widgeon.View
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<Widgeon.View>
-    implements Widgeon.View.Factory
+    extends AbstractFactory<Widgeon.View.Schema.Catalog>
+    implements Widgeon.View.Schema.Catalog.Factory
         {
 
         @Override
         public Class etype()
             {
-            return WidgeonView.class ;
+            return CatalogViewEntity.class ;
             }
 
         @Override
-        @SelectEntityMethod
-        public Iterable<Widgeon.View> select(final Widgeon.Base base)
+        @CreateEntityMethod
+        public Widgeon.View.Schema.Catalog create(final Widgeon.Base.Schema.Catalog base, final Widgeon.View.Schema parent, final String name)
             {
-            return super.iterable(
-                super.query(
-                    "widgeon.view-select-base"
-                    ).setEntity(
-                        "base",
-                        base
+            return super.insert(
+                new CatalogViewEntity(
+                    base,
+                    parent,
+                    name
                     )
                 );
             }
 
         @Override
         @SelectEntityMethod
-        public Widgeon.View select(final Widgeon.Base base, String name)
+        public Iterable<Widgeon.View.Schema.Catalog> select(final Widgeon.View.Schema parent)
+            {
+            return super.iterable(
+                super.query(
+                    "widgeon.view.catalog-select-parent"
+                    ).setEntity(
+                        "parent",
+                        parent
+                        )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Widgeon.View.Schema.Catalog select(final Widgeon.View.Schema parent, final String name)
             {
             return super.single(
                 super.query(
-                    "widgeon.view-select-base.name"
+                    "widgeon.view.catalog-select-parent.name"
                     ).setEntity(
-                        "base",
-                        base
+                        "parent",
+                        parent
                     ).setString(
                         "name",
                         name
@@ -147,57 +166,39 @@ implements Widgeon, Widgeon.View
                 );
             }
 
-        @Override
-        @CreateEntityMethod
-        public Widgeon.View create(final Widgeon.Base base, final String name)
-            {
-            return super.insert(
-                new WidgeonView(
-                    base,
-                    name
-                    )
-                );
-            }
-
         /**
-         * Our Autowired Schema factory.
+         * Our Autowired Table factory.
          * 
          */
         @Autowired
-        protected Widgeon.View.Schema.Factory schemas ;
+        protected Widgeon.View.Schema.Catalog.Table.Factory tables ;
 
-        /**
-         * Access to our Schema factory.
-         * 
-         */
         @Override
-        public Widgeon.View.Schema.Factory schemas()
+        public Widgeon.View.Schema.Catalog.Table.Factory tables()
             {
-            return schemas ;
+            return this.tables ;
             }
+
         }
 
     @Override
-    public Widgeon.View.Schemas schemas()
+    public Widgeon.View.Schema.Catalog.Tables tables()
         {
-        return new Widgeon.View.Schemas()
+        return new Widgeon.View.Schema.Catalog.Tables()
             {
+
             @Override
-            public Iterable<Widgeon.View.Schema> select()
+            public Widgeon.View.Schema.Catalog.Table select(String name)
                 {
-                return womble().widgeon().views().schemas().select(
-                    WidgeonView.this
-                    ) ;
+                return null ;
                 }
 
             @Override
-            public Widgeon.View.Schema select(final String name)
+            public Iterable<Widgeon.View.Schema.Catalog.Table> select()
                 {
-                return womble().widgeon().views().schemas().select(
-                    WidgeonView.this,
-                    name
-                    ) ;
+                return null ;
                 }
+
             };
         }
 
@@ -205,7 +206,7 @@ implements Widgeon, Widgeon.View
      * Check a view name, using the base name if the given name is null or empty.
      *
      */
-    private static String name(final Widgeon.Base base, final String name)
+    private static String name(final Widgeon.Base.Schema.Catalog base, final String name)
         {
         if ((name == null) || (name.trim().length() == 0))
             {
@@ -221,28 +222,29 @@ implements Widgeon, Widgeon.View
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected WidgeonView()
+    protected CatalogViewEntity()
         {
         super();
         }
 
     /**
-     * Create a new view of a Widgeon.
+     * Create a new view.
      *
      */
-    private WidgeonView(final Widgeon.Base base)
+    protected CatalogViewEntity(final Widgeon.Base.Schema.Catalog base, final Widgeon.View.Schema parent)
         {
         this(
             base,
+            parent,
             null
             );
         }
 
     /**
-     * Create a new view of a Widgeon.
+     * Create a new view.
      *
      */
-    private WidgeonView(final Widgeon.Base base, final String name)
+    protected CatalogViewEntity(final Widgeon.Base.Schema.Catalog base, final Widgeon.View.Schema parent, final String name)
         {
         super(
             name(
@@ -251,15 +253,38 @@ implements Widgeon, Widgeon.View
                 )
             );
         this.base = base ;
+        this.parent = parent ;
         }
 
     /**
-     * Our underlying base Widgeon.
+     * Our parent Schema.
      *
      */
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = WidgeonBase.class
+        targetEntity = SchemaViewEntity.class
+        )
+    @JoinColumn(
+        name = DB_PARENT_COL,
+        unique = false,
+        nullable = false,
+        updatable = false
+        )
+    private Widgeon.View.Schema parent ;
+
+    @Override
+    public Widgeon.View.Schema parent()
+        {
+        return this.parent ;
+        }
+
+    /**
+     * Our underlying Catalog.
+     *
+     */
+    @ManyToOne(
+        fetch = FetchType.EAGER,
+        targetEntity = CatalogBaseEntity.class
         )
     @JoinColumn(
         name = DB_BASE_COL,
@@ -267,50 +292,30 @@ implements Widgeon, Widgeon.View
         nullable = false,
         updatable = false
         )
-    private Widgeon.Base base ;
+    private Widgeon.Base.Schema.Catalog base ;
 
-    /**
-     * Access to our base Widgeon.
-     *
-     */
     @Override
-    public Widgeon.Base base()
+    public Widgeon.Base.Schema.Catalog base()
         {
         return this.base ;
         }
 
-    /**
-     * The status of this Widgeon.
-     *
-     */
-    @Column(
-        name = DB_STATUS_COL,
-        unique = false,
-        nullable = false,
-        updatable = true
-        )
-    @Enumerated(
-        EnumType.STRING
-        )
-    private Widgeon.Status status = Widgeon.Status.CREATED ;
-
     @Override
     public Widgeon.Status status()
         {
-        if (this.base.status() == Widgeon.Status.ENABLED)
+        if (this.parent().status() == Widgeon.Status.ENABLED)
             {
-            return this.status;
+            if (this.base().status() == Widgeon.Status.ENABLED)
+                {
+                return super.status() ;
+                }
+            else {
+                return this.base().status();
+                }
             }
         else {
-            return this.base.status();
+            return this.parent().status();
             }
         }
-
-    @Override
-    public void status(Widgeon.Status status)
-        {
-        this.status = status ;
-        }
-
     }
 

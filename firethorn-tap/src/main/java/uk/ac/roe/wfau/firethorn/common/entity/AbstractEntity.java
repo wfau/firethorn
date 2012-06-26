@@ -61,10 +61,8 @@ import uk.ac.roe.wfau.firethorn.common.womble.WombleImpl;
 /**
  * Generic base class for a persistent Entity.
  *
- * Problems with AccessType.FIELD and getter/setter methods
- * mean we have to have get/set methods on fields we want to modify.
- * If we don't have the get/set methods then Hibernate ignores the changes
- * and doesn't commit them to the database. 
+ * Problems with AccessType.FIELD means we still have to have get/set methods on fields we want to modify.
+ * If we don't include get/set methods, then Hibernate doesn't commit changes to the database. 
  *   https://forum.hibernate.org/viewtopic.php?f=1&t=1012254
  *   https://hibernate.onjira.com/browse/HHH-6581
  *   http://javaprogrammingtips4u.blogspot.co.uk/2010/04/field-versus-property-access-in.html 
@@ -168,6 +166,7 @@ implements Entity
 
         //
         // We need to set a name because name can't be null.
+        // Name can't be null because it is used in unique constraints.
         // We can't use ident because it probably won't have been set yet.
         this.name = name(
             name,
