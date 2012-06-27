@@ -39,7 +39,7 @@ public class CombinedTestCase
 extends TestBase
     {
 
-    private Widgeon.Base base  ;
+    private Widgeon.Base base ;
 
     @Before
     public void before()
@@ -114,6 +114,154 @@ extends TestBase
                 ).catalogs().select(
                     "catalog-A"
                     )
+            );
+        }
+
+    @Test
+    public void test004()
+        {
+        assertNotNull(
+            base.schemas().create(
+                "schema-A"
+                )
+            );
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                ).catalogs().create(
+                    "catalog-A"
+                    )
+            );
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).tables().create(
+                        "table-A"
+                        )
+            );
+
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                )
+            );
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    )
+            );
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).tables().select(
+                        "table-A"
+                        )
+            );
+        }
+
+    @Test
+    public void test005()
+        {
+        assertNotNull(
+            base.schemas().create(
+                "schema-A"
+                )
+            );
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                ).catalogs().create(
+                    "catalog-A"
+                    )
+            );
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).tables().create(
+                        "table-A"
+                        )
+            );
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).tables().select(
+                        "table-A"
+                        ).columns().create(
+                            "column-A"
+                            )
+            );
+
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                )
+            );
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    )
+            );
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).tables().select(
+                        "table-A"
+                        )
+            );
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).tables().select(
+                        "table-A"
+                        ).columns().select(
+                            "column-A"
+                            )
+            );
+        }
+
+
+
+    @Test
+    public void test006()
+        {
+        assertNotNull(
+            base.schemas().create(
+                "schema-A"
+                ).catalogs().create(
+                    "catalog-A"
+                    ).tables().create(
+                        "table-A"
+                        ).columns().create(
+                            "column-A"
+                            )
+            );
+
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).tables().select(
+                        "table-A"
+                        ).columns().select(
+                            "column-A"
+                            )
             );
         }
     }
