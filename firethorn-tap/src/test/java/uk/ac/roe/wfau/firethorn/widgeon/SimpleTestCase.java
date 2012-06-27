@@ -32,7 +32,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
  *
  */
 @Slf4j
-public class WidgeonTestCase
+public class SimpleTestCase
 extends TestBase
     {
 
