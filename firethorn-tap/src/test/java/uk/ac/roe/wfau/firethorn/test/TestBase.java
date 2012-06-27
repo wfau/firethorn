@@ -95,6 +95,7 @@ public abstract class TestBase
     public void flush()
         {
         log.debug("flush()");
+        womble().hibernate().flush();
         }
 
     /**
@@ -104,7 +105,7 @@ public abstract class TestBase
     protected static long start = System.currentTimeMillis() ;
 
     /**
-     * A counter for unique names.
+     * A shared counter for unique names.
      *
      */
     protected static long uniques = 0 ;
@@ -140,7 +141,7 @@ public abstract class TestBase
         builder.append(
             prefix
             );
-        builder.append("-");
+        builder.append(".");
         builder.append(
             unique()
             );

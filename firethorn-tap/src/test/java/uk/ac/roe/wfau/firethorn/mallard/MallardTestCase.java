@@ -40,10 +40,10 @@ public class MallardTestCase
 extends TestBase
     {
 
-    private static Identifier[] ident = new Identifier[10] ;
+    private Identifier[] ident = new Identifier[10] ;
 
-    @Test
-    public void test000()
+    @Before
+    public void before()
         {
         ident[0] = womble().mallards().create(
             "albert"
@@ -51,6 +51,7 @@ extends TestBase
         ident[1] = womble().mallards().create(
             "albert"
             ).ident();
+        flush();
         }
 
     @Test
@@ -91,6 +92,26 @@ log.debug("--- test002() ---");
             womble().hibernate().session().isDirty()
             );
         assertEquals(
+            "albert",
+            mallard.name()
+            );
+
+        mallard.name("Albert");
+
+        assertTrue(
+            womble().hibernate().session().isDirty()
+            );
+        assertEquals(
+            "Albert",
+            mallard.name()
+            );
+
+        flush();
+
+        assertFalse(
+            womble().hibernate().session().isDirty()
+            );
+        assertEquals(
             "Albert",
             mallard.name()
             );
@@ -100,6 +121,7 @@ log.debug("--- test002() ---");
     public void test003()
         {
 log.debug("--- test003() ---");
+
         assertFalse(
             womble().hibernate().session().isDirty()
             );
@@ -123,6 +145,24 @@ log.debug("--- test003() ---");
     public void test004()
         {
 log.debug("--- test004() ---");
+
+        assertFalse(
+            womble().hibernate().session().isDirty()
+            );
+        womble().mallards().select(
+            ident[0]
+            ).widgeons().insert(
+            womble().widgeons().create(
+                "0001",
+                URI.create("ivo://org.astrogrid.test/0001")
+                ).views().create(
+                    "default"
+                    )
+            );
+        assertTrue(
+            womble().hibernate().session().isDirty()
+            );
+
         assertEquals(
             1,
             count(
@@ -131,6 +171,7 @@ log.debug("--- test004() ---");
                     ).widgeons().select()
                 )
             );
+
         }
 
 /*
@@ -171,6 +212,7 @@ log.debug("--- test004b() ---");
     public void test005()
         {
 log.debug("--- test005() ---");
+
         assertFalse(
             womble().hibernate().session().isDirty()
             );
@@ -194,6 +236,39 @@ log.debug("--- test005() ---");
     public void test006()
         {
 log.debug("--- test006() ---");
+
+        assertFalse(
+            womble().hibernate().session().isDirty()
+            );
+
+        womble().mallards().select(
+            ident[0]
+            ).widgeons().insert(
+            womble().widgeons().create(
+                "0001",
+                URI.create("ivo://org.astrogrid.test/0001")
+                ).views().create(
+                    "default"
+                    )
+            );
+
+        womble().mallards().select(
+            ident[0]
+            ).widgeons().insert(
+            womble().widgeons().create(
+                "0001",
+                URI.create("ivo://org.astrogrid.test/0001")
+                ).views().create(
+                    "default"
+                    )
+            );
+
+        assertTrue(
+            womble().hibernate().session().isDirty()
+            );
+
+        flush();
+
         assertEquals(
             2,
             count(

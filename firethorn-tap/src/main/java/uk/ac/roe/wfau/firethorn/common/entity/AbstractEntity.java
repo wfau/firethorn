@@ -339,21 +339,25 @@ implements Entity
         {
         StringBuilder builder = new StringBuilder();
         builder.append("entity[");
+
             builder.append("class[");
             builder.append(
                 this.getClass().getName()
                 );
             builder.append("]");
+
             builder.append(" ident[");
             builder.append(
                 this.ident()
                 );
             builder.append("]");
+
             builder.append(" name[");
             builder.append(
-                this.hashCode()
+                this.name()
                 );
             builder.append("]");
+
         builder.append("]");
         return builder.toString();
         }

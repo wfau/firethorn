@@ -283,10 +283,16 @@ extends WidgeonStatus
             {
 
             /**
-             * Select all of the Widgeon Entities.
+             * Select all of the Widgeons.
              *
              */
             public Iterable<Widgeon.Base> select();
+
+            /**
+             * Select a Widgeon by name.
+             *
+             */
+            public Widgeon.Base select(String name);
 
             /**
              * Create a Widgeon from a registry URI.

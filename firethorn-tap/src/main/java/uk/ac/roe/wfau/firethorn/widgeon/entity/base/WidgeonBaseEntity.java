@@ -116,6 +116,20 @@ implements Widgeon.Base
             }
 
         @Override
+        @SelectEntityMethod
+        public Widgeon.Base select(String name)
+            {
+            return super.single(
+                super.query(
+                    "widgeon.base.entity-select-name"
+                    ).setString(
+                        "name",
+                        name
+                    )
+                );
+            }
+
+        @Override
         @CreateEntityMethod
         public Widgeon.Base create(final String name, final URI uri)
             {
