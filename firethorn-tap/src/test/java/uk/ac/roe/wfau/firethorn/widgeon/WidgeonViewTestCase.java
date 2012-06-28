@@ -144,8 +144,26 @@ extends TestBase
                 )
             );
         assertNotNull(
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    )
+            );
+        }
+
+    @Test
+    public void test005()
+    throws Exception
+        {
+        assertNotNull(
+            base.views().create(
+                "view-A"
+                )
+            );
+        assertNotNull(
             base.schemas().create(
-                "schema-B"
+                "schema-A"
                 )
             );
         assertNotNull(

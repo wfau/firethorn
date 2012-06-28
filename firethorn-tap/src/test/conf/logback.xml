@@ -63,6 +63,9 @@
 	<logger name="org.springframework.web">
 		<level value="INFO" />
 	</logger>
+	<logger name="org.springframework.aop">
+		<level value="INFO" />
+	</logger>
 
 	<!--+
 	    | Hibernate transactions.

@@ -171,7 +171,7 @@ implements Widgeon.View
             super.insert(
                 result
                 );
-            result.validate();
+            result.check();
             return result;
             }
 
@@ -229,6 +229,33 @@ implements Widgeon.View
                     base
                     ) ;
                 }
+
+            /**
+             * Check for a matching view.
+             *
+             */
+            public Widgeon.View.Schema check(Widgeon.Base.Schema base)
+                {
+                log.debug("Base schema [{}]", base);
+                //
+                // Check for a matching view.
+                Widgeon.View.Schema view = this.search(
+                    base
+                    );
+                //
+                // If we didn't find a match, create it.
+                if (view == null)
+                    {
+                    view = womble().widgeons().views().schemas().create(
+                        WidgeonViewEntity.this,
+                        base,
+                        null
+                        ) ;
+                    }
+                log.debug("View schema [{}]", view);
+                return view ;
+                }
+
             };
         }
 
@@ -319,48 +346,24 @@ implements Widgeon.View
         }
 
     /**
-     * Validate our child nodes.
+     * Check our child views.
      *
      */
-    public void validate()
+    public void check()
         {
-log.debug("validating data");
-
-List<Widgeon.Base.Schema> bases = new ArrayList<Widgeon.Base.Schema>();
-List<Widgeon.View.Schema> views = new ArrayList<Widgeon.View.Schema>();
+//List<Widgeon.Base.Schema> bases = new ArrayList<Widgeon.Base.Schema>();
+//List<Widgeon.View.Schema> views = new ArrayList<Widgeon.View.Schema>();
         //
-        // For each of our base Schema.
-        for (Widgeon.Base.Schema base : base().schemas().select() )
+        // Check each base schema for a matching view.
+        for (Widgeon.Base.Schema base : base().schemas().select())
             {
             //
-            // Check for a matching view Schema.
-            log.debug("Base schema [{}]", base);
-            Widgeon.View.Schema view = this.schemas().search(
+            // Check for a matching view.
+            Widgeon.View.Schema view = this.schemas().check(
                 base
-                );
-            //
-            // If we didn't find a match, create it.
-            if (view == null)
-                {
-                view = womble().widgeons().views().schemas().create(
-                    WidgeonViewEntity.this,
-                    base,
-                    null
-                    ) ;
-                }
-            //
-            // Keep track of what we found so far.
-            log.debug("View schema [{}]", view);
-            bases.add(
-                base
-                );
-            views.add(
-                view
                 );
             }
-
-
-
         }
+
     }
 

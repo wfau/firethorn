@@ -258,10 +258,23 @@ implements Widgeon.Base
             @Override
             public Widgeon.Base.Schema create(final String name)
                 {
+                Widgeon.Base.Schema base = womble().widgeons().schemas().create(
+                    WidgeonBaseEntity.this,
+                    name
+                    ) ;
+                for (Widgeon.View view : views().select())
+                    {
+                    view.schemas().check(
+                        base
+                        );
+                    }
+                return base ;
+/*
                 return womble().widgeons().schemas().create(
                     WidgeonBaseEntity.this,
                     name
                     ) ;
+ */
                 }
 
             @Override

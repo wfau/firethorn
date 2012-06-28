@@ -638,6 +638,12 @@ extends WidgeonStatus
         public Widgeon.Base base();
 
         /**
+         * Check our child schema.
+         *
+         */
+        public void check();
+
+        /**
          * Public interface for accessing the Schema for a Widgeon.
          *
          */
@@ -650,6 +656,12 @@ extends WidgeonStatus
              *
              */
             public Widgeon.View.Schema search(Widgeon.Base.Schema base);
+
+            /**
+             * Check for a matching view.
+             *
+             */
+            public Widgeon.View.Schema check(Widgeon.Base.Schema base);
 
             }
 
