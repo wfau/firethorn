@@ -82,12 +82,14 @@ public abstract class TestBase
 
     @Before
     public void before()
+    throws Exception
         {
         log.debug("before()");
         }
 
     @After
     public void after()
+    throws Exception
         {
         log.debug("after()");
         }

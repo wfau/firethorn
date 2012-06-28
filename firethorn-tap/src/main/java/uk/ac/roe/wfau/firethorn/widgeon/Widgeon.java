@@ -23,6 +23,7 @@ import java.net.URL;
 import javax.sql.DataSource;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
 /**
  * Public interface for describing a data resource (JDBC database OR TAP service).
@@ -50,7 +51,8 @@ extends WidgeonStatus
          * Select a named Schema from the Widgeon.
          *
          */
-        public SchemaType select(String name);
+        public SchemaType select(String name)
+        throws NameNotFoundException;
 
         /**
          * Select all the Schema from the Widgeon.
@@ -80,7 +82,8 @@ extends WidgeonStatus
              * Select a named Schema for a Widgeon.
              *
              */
-            public SchemaType select(WidgeonType parent, String name);
+            public SchemaType select(WidgeonType parent, String name)
+            throws NameNotFoundException;
 
             /**
              * Select all the Schema for a Widgeon.
@@ -107,7 +110,8 @@ extends WidgeonStatus
              * Select a named Catalog from the Schema.
              *
              */
-            public CatalogType select(String name);
+            public CatalogType select(String name)
+            throws NameNotFoundException;
 
             /**
              * Select all the Catalogs from the Schema.
@@ -137,7 +141,8 @@ extends WidgeonStatus
                  * Select a named Catalog for a Schema.
                  *
                  */
-                public CatalogType select(SchemaType parent, String name);
+                public CatalogType select(SchemaType parent, String name)
+                throws NameNotFoundException;
 
                 /**
                  * Select all the Catalogs for a Schema.
@@ -164,7 +169,8 @@ extends WidgeonStatus
                  * Select a named Table from the Catalog.
                  *
                  */
-                public TableType select(String name);
+                public TableType select(String name)
+                throws NameNotFoundException;
 
                 /**
                  * Select all the Tables from the Catalog.
@@ -194,7 +200,8 @@ extends WidgeonStatus
                      * Select a named Table for a Catalog.
                      *
                      */
-                    public TableType select(CatalogType parent, String name);
+                    public TableType select(CatalogType parent, String name)
+                    throws NameNotFoundException;
 
                     /**
                      * Select all the Tables for a Catalog.
@@ -221,7 +228,8 @@ extends WidgeonStatus
                      * Select a named Column from the Table.
                      *
                      */
-                    public ColumnType select(String name);
+                    public ColumnType select(String name)
+                    throws NameNotFoundException;
 
                     /**
                      * Select all the Columns from the Table.
@@ -251,7 +259,8 @@ extends WidgeonStatus
                          * Select a named Column for a Table.
                          *
                          */
-                        public ColumnType select(TableType parent, String name);
+                        public ColumnType select(TableType parent, String name)
+                        throws NameNotFoundException;
 
                         /**
                          * Select all the Columns for a Table.
@@ -292,7 +301,8 @@ extends WidgeonStatus
              * Select a Widgeon by name.
              *
              */
-            public Widgeon.Base select(String name);
+            public Widgeon.Base select(String name)
+            throws NameNotFoundException;
 
             /**
              * Create a Widgeon from a registry URI.
@@ -348,7 +358,8 @@ extends WidgeonStatus
              * Select a named View of the Widgeon.
              *
              */
-            public Widgeon.View select(String name);
+            public Widgeon.View select(String name)
+            throws NameNotFoundException;
 
             }
 
@@ -591,7 +602,8 @@ extends WidgeonStatus
              * Select a named View of a Widgeon.
              *
              */
-            public Widgeon.View select(Widgeon.Base base, String name);
+            public Widgeon.View select(Widgeon.Base base, String name)
+            throws NameNotFoundException;
 
             /**
              * Select all the Views for a Widgeon.

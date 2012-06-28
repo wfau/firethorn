@@ -44,6 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
@@ -145,18 +146,28 @@ implements Widgeon.Base.Schema.Catalog
         @Override
         @SelectEntityMethod
         public Widgeon.Base.Schema.Catalog select(final Widgeon.Base.Schema parent, final String name)
+        throws NameNotFoundException
             {
-            return super.single(
-                super.query(
-                    "widgeon.base.catalog-select-parent.name"
-                    ).setEntity(
-                        "parent",
-                        parent
-                    ).setString(
-                        "name",
-                        name
-                    )
-                );
+            try {
+                return super.single(
+                    super.query(
+                        "widgeon.base.catalog-select-parent.name"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        ).setString(
+                            "name",
+                            name
+                        )
+                    );
+                }
+            catch(EntityNotFoundException ouch)
+                {
+                throw new NameNotFoundException(
+                    name,
+                    ouch
+                    );
+                }
             }
 
         /**
@@ -193,6 +204,7 @@ implements Widgeon.Base.Schema.Catalog
 
             @Override
             public Widgeon.Base.Schema.Catalog.Table select(String name)
+            throws NameNotFoundException
                 {
                 return womble().widgeons().schemas().catalogs().tables().select(
                     CatalogBaseEntity.this,

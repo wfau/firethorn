@@ -42,6 +42,7 @@ extends TestBase
 
     @Test
     public void test000()
+    throws Exception
         {
         ident[0] = womble().mallards().create(
             "test-mallard"
@@ -53,6 +54,7 @@ extends TestBase
 
     @Test
     public void test001()
+    throws Exception
         {
         assertNotNull(
             ident[0]
@@ -83,6 +85,7 @@ extends TestBase
 
     @Test
     public void test002()
+    throws Exception
         {
         assertNotNull(
             ident[0]
@@ -113,6 +116,7 @@ extends TestBase
 
     @Test
     public void test003()
+    throws Exception
         {
         assertNotNull(
             ident[0]
@@ -133,6 +137,7 @@ extends TestBase
 
     @Test
     public void test004()
+    throws Exception
         {
         assertNotNull(
             ident[1]
@@ -166,6 +171,7 @@ extends TestBase
 
     @Test
     public void test005()
+    throws Exception
         {
         assertNotNull(
             ident[1]

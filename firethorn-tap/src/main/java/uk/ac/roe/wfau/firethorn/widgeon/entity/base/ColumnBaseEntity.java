@@ -44,6 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
@@ -145,18 +146,28 @@ implements Widgeon.Base.Schema.Catalog.Table.Column
         @Override
         @SelectEntityMethod
         public Widgeon.Base.Schema.Catalog.Table.Column select(final Widgeon.Base.Schema.Catalog.Table parent, final String name)
+        throws NameNotFoundException
             {
-            return super.single(
-                super.query(
-                    "widgeon.base.column-select-parent.name"
-                    ).setEntity(
-                        "parent",
-                        parent
-                    ).setString(
-                        "name",
-                        name
-                    )
-                );
+            try {
+                return super.single(
+                    super.query(
+                        "widgeon.base.column-select-parent.name"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        ).setString(
+                            "name",
+                            name
+                        )
+                    );
+                }
+            catch (EntityNotFoundException ouch)
+                {
+                throw new NameNotFoundException(
+                    name,
+                    ouch
+                    );
+                }
             }
         }
 

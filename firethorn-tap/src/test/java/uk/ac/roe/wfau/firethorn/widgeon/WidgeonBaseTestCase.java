@@ -29,13 +29,14 @@ import static org.junit.Assert.*;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
+
 
 /**
  *
  */
 @Slf4j
-public class CombinedTestCase
+public class WidgeonBaseTestCase
 extends TestBase
     {
 
@@ -43,6 +44,7 @@ extends TestBase
 
     @Before
     public void before()
+    throws Exception
         {
         base = womble().widgeons().create(
             this.unique(
@@ -56,6 +58,7 @@ extends TestBase
 
     @Test
     public void test000()
+    throws Exception
         {
         assertNotNull(
             base
@@ -64,6 +67,7 @@ extends TestBase
 
     @Test
     public void test001()
+    throws Exception
         {
         assertNotNull(
             base.schemas().create(
@@ -74,6 +78,7 @@ extends TestBase
 
     @Test
     public void test002()
+    throws Exception
         {
         assertNotNull(
             base.schemas().create(
@@ -89,6 +94,7 @@ extends TestBase
 
     @Test
     public void test003()
+    throws Exception
         {
         assertNotNull(
             base.schemas().create(
@@ -119,6 +125,7 @@ extends TestBase
 
     @Test
     public void test004()
+    throws Exception
         {
         assertNotNull(
             base.schemas().create(
@@ -167,6 +174,7 @@ extends TestBase
 
     @Test
     public void test005()
+    throws Exception
         {
         assertNotNull(
             base.schemas().create(
@@ -235,10 +243,9 @@ extends TestBase
             );
         }
 
-
-
     @Test
     public void test006()
+    throws Exception
         {
         assertNotNull(
             base.schemas().create(
@@ -263,6 +270,84 @@ extends TestBase
                             "column-A"
                             )
             );
+        }
+
+    @Test
+    public void test007()
+    throws Exception
+        {
+        assertNotNull(
+            base.schemas().create(
+                "schema-A"
+                ).catalogs().create(
+                    "catalog-A"
+                    ).tables().create(
+                        "table-A"
+                        ).columns().create(
+                            "column-A"
+                            )
+            );
+
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).tables().select(
+                        "table-A"
+                        ).columns().select(
+                            "column-A"
+                            )
+            );
+        }
+
+    @Test
+    public void test008()
+    throws Exception
+        {
+        assertNotNull(
+            base.schemas().create(
+                "schema-A"
+                ).catalogs().create(
+                    "catalog-A"
+                    ).tables().create(
+                        "table-A"
+                        ).columns().create(
+                            "column-A"
+                            )
+            );
+
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).tables().select(
+                        "table-A"
+                        ).columns().select(
+                            "column-A"
+                            )
+            );
+
+        try {
+            base.schemas().select(
+                "schema-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).tables().select(
+                        "table-A"
+                        ).columns().select(
+                            "column-a"
+                            );
+            fail("NameNotFoundException expected");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "column-a",
+                ouch.name()
+                );            
+            }
         }
     }
 

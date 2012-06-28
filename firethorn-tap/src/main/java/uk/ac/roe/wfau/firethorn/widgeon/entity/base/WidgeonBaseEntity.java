@@ -45,6 +45,7 @@ import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
@@ -118,15 +119,25 @@ implements Widgeon.Base
         @Override
         @SelectEntityMethod
         public Widgeon.Base select(String name)
+        throws NameNotFoundException
             {
-            return super.single(
-                super.query(
-                    "widgeon.base.entity-select-name"
-                    ).setString(
-                        "name",
-                        name
-                    )
-                );
+            try {
+                return super.single(
+                    super.query(
+                        "widgeon.base.entity-select-name"
+                        ).setString(
+                            "name",
+                            name
+                        )
+                    );
+                }
+            catch(EntityNotFoundException ouch)
+                {
+                throw new NameNotFoundException(
+                    name,
+                    ouch
+                    );
+                }
             }
 
         @Override
@@ -220,11 +231,21 @@ implements Widgeon.Base
 
             @Override
             public Widgeon.View select(String name)
+            throws NameNotFoundException
                 {
-                return womble().widgeons().views().select(
-                    WidgeonBaseEntity.this,
-                    name
-                    ) ;
+                try {
+                    return womble().widgeons().views().select(
+                        WidgeonBaseEntity.this,
+                        name
+                        ) ;
+                    }
+                catch(EntityNotFoundException ouch)
+                    {
+                    throw new NameNotFoundException(
+                        name,
+                        ouch
+                        );
+                    }
                 }
             };
         }
@@ -253,6 +274,7 @@ implements Widgeon.Base
 
             @Override
             public Widgeon.Base.Schema select(final String name)
+            throws NameNotFoundException
                 {
                 return womble().widgeons().schemas().select(
                     WidgeonBaseEntity.this,

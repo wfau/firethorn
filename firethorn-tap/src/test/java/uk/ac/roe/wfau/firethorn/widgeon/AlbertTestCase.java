@@ -40,6 +40,7 @@ extends TestBase
 
     @Test
     public void test000()
+    throws Exception
         {
         Widgeon object = womble().widgeons().create(
             "albert",
@@ -82,6 +83,7 @@ extends TestBase
 
     @Test
     public void test001()
+    throws Exception
         {
         assertNotNull(
             ident[0]
@@ -111,6 +113,7 @@ extends TestBase
 
     @Test
     public void test002()
+    throws Exception
         {
         assertNotNull(
             ident[0]

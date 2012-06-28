@@ -35,6 +35,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.common.womble.Womble;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
@@ -118,13 +119,23 @@ implements Entity.Factory<EntityType>
     @Override
     @SelectEntityMethod
     public EntityType select(final Identifier ident)
+    throws IdentifierNotFoundException
         {
         log.debug("select(Class, Identifier)");
         log.debug("  ident [{}]", (ident != null) ? null : ident.value());
-        return (EntityType) womble.hibernate().select(
+        EntityType result = (EntityType) womble.hibernate().select(
             etype(),
             ident
             );
+        if (result != null)
+            {
+            return result ;
+            }
+        else {
+            throw new IdentifierNotFoundException(
+                ident
+                );
+            }
         }
 
     /**
@@ -196,19 +207,27 @@ implements Entity.Factory<EntityType>
         }
 
     /**
-     * Select a single object.
+     * Select a single object from a query.
      *
      */
     @SelectEntityMethod
     public EntityType single(final Query query)
+    throws EntityNotFoundException
         {
-        return (EntityType) womble.hibernate().single(
+        EntityType result = (EntityType) womble.hibernate().single(
             query
             );
+        if (result != null)
+            {
+            return result ;
+            }
+        else {
+            throw new EntityNotFoundException();
+            }
         }
 
     /**
-     * Return the first result of a query.
+     * Return the first result of a query, or null if the results are empty.
      *
      */
     @SelectEntityMethod

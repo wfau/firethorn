@@ -20,29 +20,49 @@ package uk.ac.roe.wfau.firethorn.common.entity.exception ;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier ;
+
 /**
- * Base class for not found exceptions.
+ *
  *
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
-public class EntityNotFoundException
-extends Exception
+public class IdentifierNotFoundException
+extends EntityNotFoundException
     {
 
     /**
      * Default message for simple constructor.
      *
      */
-    public static final String DEFAULT_MESSAGE = "Object not found" ;
-    
+    public static final String DEFAULT_MESSAGE = "Unable to find object for ident [:ident:]" ;
+
+    /**
+     * Create a default message.
+     *
+     */
+    public static String message(Identifier ident)
+        {
+        if (ident != null)
+            {
+            return DEFAULT_MESSAGE.replace(":name:", ident.toString());
+            }
+        else {
+            return DEFAULT_MESSAGE.replace(":name:", null);
+            }
+        }
+
     /**
      * Public constructor, using default message.
      *
      */
-    public EntityNotFoundException()
+    public IdentifierNotFoundException(Identifier ident)
         {
         this(
-            DEFAULT_MESSAGE,
+            ident,
+            message(
+                ident
+                ),
             null
             );
         }
@@ -51,36 +71,48 @@ extends Exception
      * Public constructor, with specific message.
      *
      */
-    public EntityNotFoundException(String message)
+    public IdentifierNotFoundException(Identifier ident, String message)
         {
         this(
+            ident,
             message,
             null
             );
         }
 
     /**
-     * Public constructor, using default message.
+     * Public constructor, with specific cause.
      *
      */
-    public EntityNotFoundException(Throwable cause)
+    public IdentifierNotFoundException(Identifier ident, Throwable cause)
         {
         this(
-            DEFAULT_MESSAGE,
+            ident,
+            message(
+                ident
+                ),
             cause
             );
         }
 
     /**
-     * Public constructor, with specific message.
+     * Public constructor, with specific message and cause.
      *
      */
-    public EntityNotFoundException(String message, Throwable cause)
+    public IdentifierNotFoundException(Identifier ident, String message, Throwable cause)
         {
         super(
             message,
             cause
             );
+        this.ident = ident ;
+        }
+
+    private Identifier ident;
+
+    public Identifier ident()
+        {
+        return this.ident;
         }
     }
 

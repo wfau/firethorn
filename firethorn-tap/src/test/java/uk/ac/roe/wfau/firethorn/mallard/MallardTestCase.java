@@ -44,6 +44,7 @@ extends TestBase
 
     @Before
     public void before()
+    throws Exception
         {
         ident[0] = womble().mallards().create(
             "albert"
@@ -56,6 +57,7 @@ extends TestBase
 
     @Test
     public void test001()
+    throws Exception
         {
 log.debug("--- test001() ---");
         Mallard mallard = womble().mallards().select(
@@ -83,6 +85,7 @@ log.debug("--- test001() ---");
 
     @Test
     public void test002()
+    throws Exception
         {
 log.debug("--- test002() ---");
         Mallard mallard = womble().mallards().select(
@@ -119,6 +122,7 @@ log.debug("--- test002() ---");
 
     @Test
     public void test003()
+    throws Exception
         {
 log.debug("--- test003() ---");
 
@@ -143,6 +147,7 @@ log.debug("--- test003() ---");
 
     @Test
     public void test004()
+    throws Exception
         {
 log.debug("--- test004() ---");
 
@@ -180,6 +185,7 @@ log.debug("--- test004() ---");
  
     @Test
     public void test004a()
+    throws Exception
         {
 log.debug("--- test004a() ---");
         assertEquals(
@@ -194,6 +200,7 @@ log.debug("--- test004a() ---");
 
     @Test
     public void test004b()
+    throws Exception
         {
 log.debug("--- test004b() ---");
         assertEquals(
@@ -210,6 +217,7 @@ log.debug("--- test004b() ---");
 
     @Test
     public void test005()
+    throws Exception
         {
 log.debug("--- test005() ---");
 
@@ -234,6 +242,7 @@ log.debug("--- test005() ---");
 
     @Test
     public void test006()
+    throws Exception
         {
 log.debug("--- test006() ---");
 
@@ -281,6 +290,7 @@ log.debug("--- test006() ---");
 
     @Test
     public void test007()
+    throws Exception
         {
 log.debug("--- test007() ---");
         for (Widgeon.View widgeon : womble().mallards().select(ident[0]).widgeons().select())
@@ -295,6 +305,7 @@ log.debug("--- test007() ---");
 
     @Test
     public void test008()
+    throws Exception
         {
 log.debug("--- test008() ---");
         assertFalse(
@@ -317,6 +328,7 @@ log.debug("--- test008() ---");
 
     @Test
     public void test009()
+    throws Exception
         {
 log.debug("--- test009() ---");
         assertEquals(
@@ -331,6 +343,7 @@ log.debug("--- test009() ---");
 
     @Test
     public void test010()
+    throws Exception
         {
 log.debug("--- test010() ---");
         assertEquals(

@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.common.entity ;
 import java.util.Date;
 
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
 /**
  * Common interface for a persistent Entity.
@@ -44,7 +45,8 @@ public interface Entity
          * Select a specific Entity by Identifier.
          *
          */
-        public EntityType select(final Identifier ident);
+        public EntityType select(final Identifier ident)
+        throws IdentifierNotFoundException;
 
         }
 

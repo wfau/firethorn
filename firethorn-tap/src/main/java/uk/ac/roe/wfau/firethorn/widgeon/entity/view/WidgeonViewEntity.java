@@ -48,6 +48,7 @@ import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
@@ -131,18 +132,28 @@ implements Widgeon.View
         @Override
         @SelectEntityMethod
         public Widgeon.View select(final Widgeon.Base base, String name)
+        throws NameNotFoundException
             {
-            return super.single(
-                super.query(
-                    "widgeon.view.entity-select-base.name"
-                    ).setEntity(
-                        "base",
-                        base
-                    ).setString(
-                        "name",
-                        name
-                    )
-                );
+            try {
+                return super.single(
+                    super.query(
+                        "widgeon.view.entity-select-base.name"
+                        ).setEntity(
+                            "base",
+                            base
+                        ).setString(
+                            "name",
+                            name
+                        )
+                    );
+                }
+            catch(EntityNotFoundException ouch)
+                {
+                throw new NameNotFoundException(
+                    name,
+                    ouch
+                    );
+                }
             }
 
         @Override
@@ -186,6 +197,7 @@ implements Widgeon.View
 
             @Override
             public Widgeon.View.Schema select(final String name)
+            throws NameNotFoundException
                 {
                 return womble().widgeons().views().schemas().select(
                     WidgeonViewEntity.this,
