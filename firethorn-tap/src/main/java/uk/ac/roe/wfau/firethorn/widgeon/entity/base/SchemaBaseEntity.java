@@ -64,13 +64,14 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
     )
 @Table(
     name = SchemaBaseEntity.DB_TABLE_NAME,
-    uniqueConstraints=
+    uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
                 SchemaBaseEntity.DB_PARENT_COL,
                 }
             )
+        }
     )
 @NamedQueries(
         {
@@ -161,31 +162,7 @@ implements Widgeon.Base.Schema
                     name
                     );
                 }
-/*
-            try {
-                return super.single(
-                    super.query(
-                        "widgeon.base.schema-select-parent.name"
-                        ).setEntity(
-                            "parent",
-                            parent
-                        ).setString(
-                            "name",
-                            name
-                        )
-                    );
-
-                }
-            catch(EntityNotFoundException ouch)
-                {
-                throw new NameNotFoundException(
-                    name,
-                    ouch
-                    );
-                }
- */
             }
-
 
         @Override
         @SelectEntityMethod
@@ -203,7 +180,6 @@ implements Widgeon.Base.Schema
                     )
                 );
             }
-
 
         /**
          * Our Autowired Catalog factory.

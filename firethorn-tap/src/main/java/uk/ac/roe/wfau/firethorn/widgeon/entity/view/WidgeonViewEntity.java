@@ -71,7 +71,15 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.WidgeonBaseEntity;
     AccessType.FIELD
     )
 @Table(
-    name = WidgeonViewEntity.DB_TABLE_NAME
+    name = WidgeonViewEntity.DB_TABLE_NAME,
+    uniqueConstraints={
+        @UniqueConstraint(
+            columnNames = {
+                AbstractEntity.DB_NAME_COL,
+                WidgeonViewEntity.DB_BASE_COL
+                }
+            )
+        }
     )
 @NamedQueries(
         {
@@ -230,13 +238,10 @@ implements Widgeon.View
                     ) ;
                 }
 
-            /**
-             * Check for a matching view.
-             *
-             */
+            @Override
             public Widgeon.View.Schema check(Widgeon.Base.Schema base)
                 {
-                log.debug("Base schema [{}]", base);
+                log.debug("Checking view for base schema [{}]", base);
                 //
                 // Check for a matching view.
                 Widgeon.View.Schema view = this.search(
@@ -248,30 +253,14 @@ implements Widgeon.View
                     {
                     view = womble().widgeons().views().schemas().create(
                         WidgeonViewEntity.this,
-                        base,
-                        null
+                        base
                         ) ;
                     }
-                log.debug("View schema [{}]", view);
+                log.debug("Found view schema [{}]", view);
                 return view ;
                 }
 
             };
-        }
-
-    /**
-     * Check a view name, using the base name if the given name is null or empty.
-     *
-     */
-    private static String name(final Widgeon.Base base, final String name)
-        {
-        if ((name == null) || (name.trim().length() == 0))
-            {
-            return base.name();
-            }
-        else {
-            return name.trim() ;
-            }
         }
 
     /**
@@ -303,12 +292,21 @@ implements Widgeon.View
     private WidgeonViewEntity(final Widgeon.Base base, final String name)
         {
         super(
-            name(
-                base,
-                name
-                )
+            name
             );
         this.base = base ;
+        }
+
+    @Override
+    public String name()
+        {
+        if (this.name != null)
+            {
+            return this.name ;
+            }
+        else {
+            return base.name() ;
+            }
         }
 
     /**
@@ -351,6 +349,7 @@ implements Widgeon.View
      */
     public void check()
         {
+        log.debug("Checking views");
 //List<Widgeon.Base.Schema> bases = new ArrayList<Widgeon.Base.Schema>();
 //List<Widgeon.View.Schema> views = new ArrayList<Widgeon.View.Schema>();
         //

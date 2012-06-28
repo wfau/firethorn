@@ -56,7 +56,6 @@ extends TestBase
             );
         }
 
-/*
     @Test
     public void test000()
     throws Exception
@@ -128,7 +127,7 @@ extends TestBase
                 );            
             }
         }
- */
+
     @Test
     public void test004()
     throws Exception

@@ -65,6 +65,15 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
     )
 @Table(
     name = WidgeonBaseEntity.DB_TABLE_NAME
+/*
+    uniqueConstraints={
+        @UniqueConstraint(
+            columnNames = {
+                AbstractEntity.DB_NAME_COL
+                }
+            )
+        }
+ */
     )
 @NamedQueries(
         {
@@ -269,12 +278,6 @@ implements Widgeon.Base
                         );
                     }
                 return base ;
-/*
-                return womble().widgeons().schemas().create(
-                    WidgeonBaseEntity.this,
-                    name
-                    ) ;
- */
                 }
 
             @Override
@@ -350,6 +353,21 @@ implements Widgeon.Base
         this.init(
             source
             );
+        }
+
+    @Override
+    public void name(final String name)
+    throws NameFormatException
+        {
+        if ((name != null) && (name.trim().length() > 0))
+            {
+            this.name = name.trim() ;
+            }
+        else {
+            throw new NameFormatException(
+                name
+                );
+            }
         }
 
     /**

@@ -27,7 +27,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier ;
  *
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
-public class IdentifierFormatException
+public class NameFormatException
 extends RuntimeException
     {
 
@@ -35,62 +35,78 @@ extends RuntimeException
      * Default message for simple constructor.
      *
      */
-    public static final String DEFAULT_MESSAGE = "Invalid identifier [:ident:]" ;
+    public static final String DEFAULT_MESSAGE = "Invalid name [:name:]" ;
 
     /**
      * Create a default message.
      *
      */
-    public static String message(String ident)
+    public static String message(String name)
         {
-        return DEFAULT_MESSAGE.replace(":ident:", ident);
+        return DEFAULT_MESSAGE.replace(":name:", name);
         }
 
-    public IdentifierFormatException(String ident)
+    /**
+     * Public constructor, using default message.
+     *
+     */
+    public NameFormatException(String name)
         {
         this(
-            ident,
+            name,
             message(
-                ident
+                name
                 ),
             null
             );
         }
 
-    public IdentifierFormatException(String ident, String message)
+    /**
+     * Public constructor, with specific message.
+     *
+     */
+    public NameFormatException(String name, String message)
         {
         this(
-            ident,
+            name,
             message,
             null
             );
         }
 
-    public IdentifierFormatException(String ident, Throwable cause)
+    /**
+     * Public constructor, with specific cause.
+     *
+     */
+    public NameFormatException(String name, Throwable cause)
         {
         this(
-            ident,
+            name,
             message(
-                ident
+                name
                 ),
             cause
             );
         }
 
-    public IdentifierFormatException(String ident, String message, Throwable cause)
+    /**
+     * Public constructor, with specific message and cause.
+     *
+     */
+    public NameFormatException(String name, String message, Throwable cause)
         {
         super(
             message,
             cause
             );
-        this.ident = ident ;
+        this.name = name ;
         }
 
-    private String ident;
+    private String name;
 
-    public String ident()
+    public String name()
         {
-        return this.ident;
+        return this.name;
         }
     }
 

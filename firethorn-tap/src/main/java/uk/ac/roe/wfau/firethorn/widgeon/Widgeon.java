@@ -691,6 +691,12 @@ extends WidgeonStatus
                  * Create a new View of a Schema.
                  *
                  */
+                public Widgeon.View.Schema create(Widgeon.View parent, Widgeon.Base.Schema base);
+
+                /**
+                 * Create a new View of a Schema.
+                 *
+                 */
                 public Widgeon.View.Schema create(Widgeon.View parent, Widgeon.Base.Schema base, String name);
 
                 /**

@@ -65,21 +65,20 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.SchemaBaseEntity;
     )
 @Table(
     name = SchemaViewEntity.DB_TABLE_NAME,
-    uniqueConstraints=
+    uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
                 SchemaViewEntity.DB_PARENT_COL
                 }
-            )
-/*
+            ),
         @UniqueConstraint(
             columnNames = {
                 SchemaViewEntity.DB_BASE_COL,
                 SchemaViewEntity.DB_PARENT_COL
                 }
             )
- */
+        }
     )
 @NamedQueries(
         {
@@ -89,11 +88,11 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.SchemaBaseEntity;
             ),
         @NamedQuery(
             name  = "widgeon.view.schema-select-parent.name",
-            query = "FROM SchemaViewEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
+            query = "FROM SchemaViewEntity WHERE (parent = :parent) AND (((name IS NOT null) AND (name = :name)) OR ((name IS null) AND (base.name = :name))) ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "widgeon.view.schema-select-parent.base",
-            query = "FROM SchemaViewEntity WHERE parent = :parent AND base = :base ORDER BY ident desc"
+            query = "FROM SchemaViewEntity WHERE (parent = :parent) AND (base = :base) ORDER BY ident desc"
             )
         }
     )
@@ -134,6 +133,18 @@ implements Widgeon.View.Schema
         public Class etype()
             {
             return SchemaViewEntity.class ;
+            }
+
+        @Override
+        @CreateEntityMethod
+        public Widgeon.View.Schema create(final Widgeon.View parent, final Widgeon.Base.Schema base)
+            {
+            return super.insert(
+                new SchemaViewEntity(
+                    parent,
+                    base
+                    )
+                );
             }
 
         @Override
@@ -256,21 +267,6 @@ implements Widgeon.View.Schema
         }
 
     /**
-     * Check a view name, using the base name if the given name is null or empty.
-     *
-     */
-    private static String name(final Widgeon.Base.Schema base, final String name)
-        {
-        if ((name == null) || (name.trim().length() == 0))
-            {
-            return base.name();
-            }
-        else {
-            return name.trim() ;
-            }
-        }
-
-    /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
@@ -300,13 +296,22 @@ implements Widgeon.View.Schema
     protected SchemaViewEntity(final Widgeon.View parent, final Widgeon.Base.Schema base, final String name)
         {
         super(
-            name(
-                base,
-                name
-                )
+            name
             );
         this.base   = base   ;
         this.parent = parent ;
+        }
+
+    @Override
+    public String name()
+        {
+        if (this.name != null)
+            {
+            return this.name ;
+            }
+        else {
+            return base.name() ;
+            }
         }
 
     /**

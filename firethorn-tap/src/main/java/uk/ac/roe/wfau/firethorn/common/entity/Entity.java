@@ -66,7 +66,8 @@ public interface Entity
      * Set the Entity name.
      *
      */
-    public void name(String name);
+    public void name(String name)
+    throws NameFormatException;
 
     /**
      * Get the Entity owner.

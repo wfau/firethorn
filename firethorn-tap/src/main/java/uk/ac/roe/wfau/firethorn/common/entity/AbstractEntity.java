@@ -57,6 +57,7 @@ import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
 
 import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 import uk.ac.roe.wfau.firethorn.common.womble.WombleImpl;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
 /**
  * Generic base class for a persistent Entity.
@@ -95,7 +96,6 @@ implements Entity
      * Check an Entity name, returns the create date if the given name is null or empty.
      * @todo Delegate this to a naming factory.
      *
-     */
     public static String name(final String name, final Entity entity)
         {
         if ((name == null) || (name.trim().length() == 0))
@@ -106,6 +106,7 @@ implements Entity
             return name.trim();
             }
         }
+     */
 
     /**
      * Access to our Womble instance - naff, but works for now.
@@ -133,6 +134,7 @@ implements Entity
      *
      */
     protected AbstractEntity(final String name)
+    throws NameFormatException
         {
         this(
             womble().actor(),
@@ -146,6 +148,7 @@ implements Entity
      *
      */
     protected AbstractEntity(final Identity owner)
+    throws NameFormatException
         {
         this(
             owner,
@@ -159,18 +162,13 @@ implements Entity
      *
      */
     protected AbstractEntity(final Identity owner, final String name)
+    throws NameFormatException
         {
         super();
         this.owner = owner;
         this.created = new Date();
-
-        //
-        // We need to set a name because name can't be null.
-        // Name can't be null because it is used in unique constraints.
-        // We can't use ident because it probably won't have been set yet.
-        this.name = name(
-            name,
-            this
+        this.name(
+            name
             );
 
         /*
@@ -237,7 +235,7 @@ implements Entity
     @Column(
         name = DB_NAME_COL,
         unique = false,
-        nullable = false,
+        nullable = true,
         updatable = false
         )
     protected String getName()
@@ -248,7 +246,7 @@ implements Entity
         {
         this.name = name ;
         }
-    private String name ;
+    protected String name ;
 
     @Override
     public String name()
@@ -259,13 +257,7 @@ implements Entity
     @Override
     public void name(final String name)
         {
-        if ((name != null) && (name.trim().length() > 0))
-            {
-            this.name = name ;
-            }
-        else {
-//throw a name error.
-            }
+        this.name = name ;
         }
 
     /**
