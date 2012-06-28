@@ -126,12 +126,12 @@ implements Widgeon.View.Schema.Catalog.Table.Column
 
         @Override
         @CreateEntityMethod
-        public Widgeon.View.Schema.Catalog.Table.Column create(final Widgeon.Base.Schema.Catalog.Table.Column base, final Widgeon.View.Schema.Catalog.Table parent, final String name)
+        public Widgeon.View.Schema.Catalog.Table.Column create(final Widgeon.View.Schema.Catalog.Table parent, final Widgeon.Base.Schema.Catalog.Table.Column base, final String name)
             {
             return super.insert(
                 new ColumnViewEntity(
-                    base,
                     parent,
+                    base,
                     name
                     )
                 );
@@ -208,11 +208,11 @@ implements Widgeon.View.Schema.Catalog.Table.Column
      * Create a new view.
      *
      */
-    protected ColumnViewEntity(final Widgeon.Base.Schema.Catalog.Table.Column base, final Widgeon.View.Schema.Catalog.Table parent)
+    protected ColumnViewEntity(final Widgeon.View.Schema.Catalog.Table parent, final Widgeon.Base.Schema.Catalog.Table.Column base)
         {
         this(
-            base,
             parent,
+            base,
             null
             );
         }
@@ -221,7 +221,7 @@ implements Widgeon.View.Schema.Catalog.Table.Column
      * Create a new view.
      *
      */
-    protected ColumnViewEntity(final Widgeon.Base.Schema.Catalog.Table.Column base, final Widgeon.View.Schema.Catalog.Table parent, final String name)
+    protected ColumnViewEntity(final Widgeon.View.Schema.Catalog.Table parent, final Widgeon.Base.Schema.Catalog.Table.Column base, final String name)
         {
         super(
             name(
@@ -229,7 +229,7 @@ implements Widgeon.View.Schema.Catalog.Table.Column
                 name
                 )
             );
-        this.base = base ;
+        this.base   = base   ;
         this.parent = parent ;
         }
 

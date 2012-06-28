@@ -55,6 +55,12 @@ extends WidgeonStatus
         throws NameNotFoundException;
 
         /**
+         * Search for a named Schema from the Widgeon.
+         *
+         */
+        public SchemaType search(String name);
+
+        /**
          * Select all the Schema from the Widgeon.
          *
          */
@@ -84,6 +90,12 @@ extends WidgeonStatus
              */
             public SchemaType select(WidgeonType parent, String name)
             throws NameNotFoundException;
+
+            /**
+             * Select a named Schema for a Widgeon.
+             *
+             */
+            public SchemaType search(WidgeonType parent, String name);
 
             /**
              * Select all the Schema for a Widgeon.
@@ -632,6 +644,13 @@ extends WidgeonStatus
         public interface Schemas
         extends Widgeon.Schemas<Widgeon.View.Schema>
             {
+
+            /**
+             * Search for a View of a base Schema.
+             *
+             */
+            public Widgeon.View.Schema search(Widgeon.Base.Schema base);
+
             }
 
         /**
@@ -660,13 +679,19 @@ extends WidgeonStatus
                  * Create a new View of a Schema.
                  *
                  */
-                public Widgeon.View.Schema create(Widgeon.Base.Schema base, Widgeon.View view, String name);
+                public Widgeon.View.Schema create(Widgeon.View parent, Widgeon.Base.Schema base, String name);
 
                 /**
                  * Access to our Catalog factory.
                  * 
                  */
                 public Widgeon.View.Schema.Catalog.Factory catalogs();
+
+                /**
+                 * Search for a View of a Schema.
+                 *
+                 */
+                public Widgeon.View.Schema search(Widgeon.View parent, Widgeon.Base.Schema base);
 
                 }
 
@@ -711,7 +736,7 @@ extends WidgeonStatus
                      * Create a new View of a Catalog.
                      *
                      */
-                    public Widgeon.View.Schema.Catalog create(Widgeon.Base.Schema.Catalog base, Widgeon.View.Schema parent, String name);
+                    public Widgeon.View.Schema.Catalog create(Widgeon.View.Schema parent, Widgeon.Base.Schema.Catalog base, String name);
 
                     /**
                      * Access to our Table factory.
@@ -762,7 +787,7 @@ extends WidgeonStatus
                          * Create a new View of a Table.
                          *
                          */
-                        public Widgeon.View.Schema.Catalog.Table create(Widgeon.Base.Schema.Catalog.Table base, Widgeon.View.Schema.Catalog parent, String name);
+                        public Widgeon.View.Schema.Catalog.Table create(Widgeon.View.Schema.Catalog parent, Widgeon.Base.Schema.Catalog.Table base, String name);
 
                         /**
                          * Access to our Column factory.
@@ -813,7 +838,7 @@ extends WidgeonStatus
                              * Create a new View of a Column.
                              *
                              */
-                            public Widgeon.View.Schema.Catalog.Table.Column create(Widgeon.Base.Schema.Catalog.Table.Column base, Widgeon.View.Schema.Catalog.Table parent, String name);
+                            public Widgeon.View.Schema.Catalog.Table.Column create(Widgeon.View.Schema.Catalog.Table parent, Widgeon.Base.Schema.Catalog.Table.Column base, String name);
 
                             }
 

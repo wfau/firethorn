@@ -126,12 +126,12 @@ implements Widgeon.View.Schema.Catalog
 
         @Override
         @CreateEntityMethod
-        public Widgeon.View.Schema.Catalog create(final Widgeon.Base.Schema.Catalog base, final Widgeon.View.Schema parent, final String name)
+        public Widgeon.View.Schema.Catalog create(final Widgeon.View.Schema parent, final Widgeon.Base.Schema.Catalog base, final String name)
             {
             return super.insert(
                 new CatalogViewEntity(
-                    base,
                     parent,
+                    base,
                     name
                     )
                 );
@@ -244,11 +244,11 @@ implements Widgeon.View.Schema.Catalog
      * Create a new view.
      *
      */
-    protected CatalogViewEntity(final Widgeon.Base.Schema.Catalog base, final Widgeon.View.Schema parent)
+    protected CatalogViewEntity(final Widgeon.View.Schema parent, final Widgeon.Base.Schema.Catalog base)
         {
         this(
-            base,
             parent,
+            base,
             null
             );
         }
@@ -257,7 +257,7 @@ implements Widgeon.View.Schema.Catalog
      * Create a new view.
      *
      */
-    protected CatalogViewEntity(final Widgeon.Base.Schema.Catalog base, final Widgeon.View.Schema parent, final String name)
+    protected CatalogViewEntity(final Widgeon.View.Schema parent, final Widgeon.Base.Schema.Catalog base, final String name)
         {
         super(
             name(
@@ -265,7 +265,7 @@ implements Widgeon.View.Schema.Catalog
                 name
                 )
             );
-        this.base = base ;
+        this.base   = base   ;
         this.parent = parent ;
         }
 

@@ -69,9 +69,17 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.SchemaBaseEntity;
         @UniqueConstraint(
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
-                SchemaViewEntity.DB_PARENT_COL,
+                SchemaViewEntity.DB_PARENT_COL
                 }
             )
+/*
+        @UniqueConstraint(
+            columnNames = {
+                SchemaViewEntity.DB_BASE_COL,
+                SchemaViewEntity.DB_PARENT_COL
+                }
+            )
+ */
     )
 @NamedQueries(
         {
@@ -82,6 +90,10 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.SchemaBaseEntity;
         @NamedQuery(
             name  = "widgeon.view.schema-select-parent.name",
             query = "FROM SchemaViewEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "widgeon.view.schema-select-parent.base",
+            query = "FROM SchemaViewEntity WHERE parent = :parent AND base = :base ORDER BY ident desc"
             )
         }
     )
@@ -126,12 +138,12 @@ implements Widgeon.View.Schema
 
         @Override
         @CreateEntityMethod
-        public Widgeon.View.Schema create(final Widgeon.Base.Schema base, final Widgeon.View parent, final String name)
+        public Widgeon.View.Schema create(final Widgeon.View parent, final Widgeon.Base.Schema base, final String name)
             {
             return super.insert(
                 new SchemaViewEntity(
-                    base,
                     parent,
+                    base,
                     name
                     )
                 );
@@ -156,27 +168,55 @@ implements Widgeon.View.Schema
         public Widgeon.View.Schema select(final Widgeon.View parent, final String name)
         throws NameNotFoundException
             {
-            try {
-                return super.single(
-                    super.query(
-                        "widgeon.view.schema-select-parent.name"
-                        ).setEntity(
-                            "parent",
-                            parent
-                        ).setString(
-                            "name",
-                            name
-                        )
-                    );
-                }
-            catch(EntityNotFoundException ouch)
+            Widgeon.View.Schema result = search(
+                parent,
+                name
+                );
+            if (result != null)
                 {
+                return result ;
+                }
+            else {
                 throw new NameNotFoundException(
-                    name,
-                    ouch
+                    name
                     );
                 }
             }
+
+        @Override
+        @SelectEntityMethod
+        public Widgeon.View.Schema search(final Widgeon.View parent, final String name)
+            {
+            return super.first(
+                super.query(
+                    "widgeon.view.schema-select-parent.name"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "name",
+                        name
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Widgeon.View.Schema search(final Widgeon.View parent, final Widgeon.Base.Schema base)
+            {
+            return super.first(
+                super.query(
+                    "widgeon.view.schema-select-parent.base"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setEntity(
+                        "base",
+                        base
+                    )
+                );
+            }
+
 
         /**
          * Our Autowired Catalog factory.
@@ -244,11 +284,11 @@ implements Widgeon.View.Schema
      * Create a new view.
      *
      */
-    protected SchemaViewEntity(final Widgeon.Base.Schema base, final Widgeon.View parent)
+    protected SchemaViewEntity(final Widgeon.View parent, final Widgeon.Base.Schema base)
         {
         this(
-            base,
             parent,
+            base,
             null
             );
         }
@@ -257,7 +297,7 @@ implements Widgeon.View.Schema
      * Create a new view.
      *
      */
-    protected SchemaViewEntity(final Widgeon.Base.Schema base, final Widgeon.View parent, final String name)
+    protected SchemaViewEntity(final Widgeon.View parent, final Widgeon.Base.Schema base, final String name)
         {
         super(
             name(
@@ -265,7 +305,7 @@ implements Widgeon.View.Schema
                 name
                 )
             );
-        this.base = base ;
+        this.base   = base   ;
         this.parent = parent ;
         }
 

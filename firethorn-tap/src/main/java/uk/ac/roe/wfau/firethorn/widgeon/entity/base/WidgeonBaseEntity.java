@@ -281,6 +281,15 @@ implements Widgeon.Base
                     name
                     ) ;
                 }
+
+            @Override
+            public Widgeon.Base.Schema search(final String name)
+                {
+                return womble().widgeons().schemas().search(
+                    WidgeonBaseEntity.this,
+                    name
+                    ) ;
+                }
             };
         }
 

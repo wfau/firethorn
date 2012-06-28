@@ -148,6 +148,20 @@ implements Widgeon.Base.Schema
         public Widgeon.Base.Schema select(final Widgeon.Base parent, final String name)
         throws NameNotFoundException
             {
+            Widgeon.Base.Schema result = search(
+                parent,
+                name
+                );
+            if (result != null)
+                {
+                return result ;
+                }
+            else {
+                throw new NameNotFoundException(
+                    name
+                    );
+                }
+/*
             try {
                 return super.single(
                     super.query(
@@ -169,7 +183,27 @@ implements Widgeon.Base.Schema
                     ouch
                     );
                 }
+ */
             }
+
+
+        @Override
+        @SelectEntityMethod
+        public Widgeon.Base.Schema search(final Widgeon.Base parent, final String name)
+            {
+            return super.first(
+                super.query(
+                    "widgeon.base.schema-select-parent.name"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "name",
+                        name
+                    )
+                );
+            }
+
 
         /**
          * Our Autowired Catalog factory.

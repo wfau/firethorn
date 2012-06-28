@@ -22,6 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 import java.net.URI;
 import java.net.URL;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import javax.sql.DataSource;
 
 import javax.persistence.Table;
@@ -160,12 +163,16 @@ implements Widgeon.View
         @CreateEntityMethod
         public Widgeon.View create(final Widgeon.Base base, final String name)
             {
-            return super.insert(
+            WidgeonViewEntity result =
                 new WidgeonViewEntity(
                     base,
                     name
-                    )
+                    );
+            super.insert(
+                result
                 );
+            result.validate();
+            return result;
             }
 
         /**
@@ -202,6 +209,24 @@ implements Widgeon.View
                 return womble().widgeons().views().schemas().select(
                     WidgeonViewEntity.this,
                     name
+                    ) ;
+                }
+
+            @Override
+            public Widgeon.View.Schema search(final String name)
+                {
+                return womble().widgeons().views().schemas().search(
+                    WidgeonViewEntity.this,
+                    name
+                    ) ;
+                }
+
+            @Override
+            public Widgeon.View.Schema search(final Widgeon.Base.Schema base)
+                {
+                return womble().widgeons().views().schemas().search(
+                    WidgeonViewEntity.this,
+                    base
                     ) ;
                 }
             };
@@ -291,6 +316,51 @@ implements Widgeon.View
         else {
             return this.base().status();
             }
+        }
+
+    /**
+     * Validate our child nodes.
+     *
+     */
+    public void validate()
+        {
+log.debug("validating data");
+
+List<Widgeon.Base.Schema> bases = new ArrayList<Widgeon.Base.Schema>();
+List<Widgeon.View.Schema> views = new ArrayList<Widgeon.View.Schema>();
+        //
+        // For each of our base Schema.
+        for (Widgeon.Base.Schema base : base().schemas().select() )
+            {
+            //
+            // Check for a matching view Schema.
+            log.debug("Base schema [{}]", base);
+            Widgeon.View.Schema view = this.schemas().search(
+                base
+                );
+            //
+            // If we didn't find a match, create it.
+            if (view == null)
+                {
+                view = womble().widgeons().views().schemas().create(
+                    WidgeonViewEntity.this,
+                    base,
+                    null
+                    ) ;
+                }
+            //
+            // Keep track of what we found so far.
+            log.debug("View schema [{}]", view);
+            bases.add(
+                base
+                );
+            views.add(
+                view
+                );
+            }
+
+
+
         }
     }
 
