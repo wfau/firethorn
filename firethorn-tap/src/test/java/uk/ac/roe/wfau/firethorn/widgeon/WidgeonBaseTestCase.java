@@ -69,11 +69,19 @@ extends TestBase
     public void test001()
     throws Exception
         {
-        assertNotNull(
-            base.schemas().create(
+        try {
+            base.schemas().select(
                 "schema-A"
-                )
-            );
+                );
+            fail("NameNotFoundException expected");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "schema-A",
+                ouch.name()
+                );            
+            }
         }
 
     @Test
@@ -82,11 +90,6 @@ extends TestBase
         {
         assertNotNull(
             base.schemas().create(
-                "schema-A"
-                )
-            );
-        assertNotNull(
-            base.schemas().select(
                 "schema-A"
                 )
             );
@@ -104,22 +107,7 @@ extends TestBase
         assertNotNull(
             base.schemas().select(
                 "schema-A"
-                ).catalogs().create(
-                    "catalog-A"
-                    )
-            );
-
-        assertNotNull(
-            base.schemas().select(
-                "schema-A"
                 )
-            );
-        assertNotNull(
-            base.schemas().select(
-                "schema-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
             );
         }
 
@@ -132,44 +120,21 @@ extends TestBase
                 "schema-A"
                 )
             );
-        assertNotNull(
-            base.schemas().select(
-                "schema-A"
-                ).catalogs().create(
-                    "catalog-A"
-                    )
-            );
-        assertNotNull(
+        try {
             base.schemas().select(
                 "schema-A"
                 ).catalogs().select(
                     "catalog-A"
-                    ).tables().create(
-                        "table-A"
-                        )
-            );
-
-        assertNotNull(
-            base.schemas().select(
-                "schema-A"
-                )
-            );
-        assertNotNull(
-            base.schemas().select(
-                "schema-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
-            );
-        assertNotNull(
-            base.schemas().select(
-                "schema-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).tables().select(
-                        "table-A"
-                        )
-            );
+                    );
+            fail("NameNotFoundException expected");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "catalog-A",
+                ouch.name()
+                );            
+            }
         }
 
     @Test
@@ -179,67 +144,17 @@ extends TestBase
         assertNotNull(
             base.schemas().create(
                 "schema-A"
-                )
-            );
-        assertNotNull(
-            base.schemas().select(
-                "schema-A"
                 ).catalogs().create(
                     "catalog-A"
                     )
-            );
-        assertNotNull(
-            base.schemas().select(
-                "schema-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).tables().create(
-                        "table-A"
-                        )
-            );
-        assertNotNull(
-            base.schemas().select(
-                "schema-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).tables().select(
-                        "table-A"
-                        ).columns().create(
-                            "column-A"
-                            )
             );
 
         assertNotNull(
             base.schemas().select(
                 "schema-A"
-                )
-            );
-        assertNotNull(
-            base.schemas().select(
-                "schema-A"
                 ).catalogs().select(
                     "catalog-A"
                     )
-            );
-        assertNotNull(
-            base.schemas().select(
-                "schema-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).tables().select(
-                        "table-A"
-                        )
-            );
-        assertNotNull(
-            base.schemas().select(
-                "schema-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).tables().select(
-                        "table-A"
-                        ).columns().select(
-                            "column-A"
-                            )
             );
         }
 
@@ -252,24 +167,25 @@ extends TestBase
                 "schema-A"
                 ).catalogs().create(
                     "catalog-A"
-                    ).tables().create(
-                        "table-A"
-                        ).columns().create(
-                            "column-A"
-                            )
+                    )
             );
-
-        assertNotNull(
+        try {
             base.schemas().select(
                 "schema-A"
                 ).catalogs().select(
                     "catalog-A"
                     ).tables().select(
                         "table-A"
-                        ).columns().select(
-                            "column-A"
-                            )
-            );
+                        );
+            fail("NameNotFoundException expected");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "table-A",
+                ouch.name()
+                );            
+            }
         }
 
     @Test
@@ -283,9 +199,7 @@ extends TestBase
                     "catalog-A"
                     ).tables().create(
                         "table-A"
-                        ).columns().create(
-                            "column-A"
-                            )
+                        )
             );
 
         assertNotNull(
@@ -295,9 +209,7 @@ extends TestBase
                     "catalog-A"
                     ).tables().select(
                         "table-A"
-                        ).columns().select(
-                            "column-A"
-                            )
+                        )
             );
         }
 
@@ -312,6 +224,40 @@ extends TestBase
                     "catalog-A"
                     ).tables().create(
                         "table-A"
+                        )
+            );
+        try {
+            base.schemas().select(
+                "schema-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).tables().select(
+                        "table-A"
+                        ).columns().select(
+                            "column-A"
+                            );
+            fail("NameNotFoundException expected");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "column-A",
+                ouch.name()
+                );            
+            }
+        }
+
+    @Test
+    public void test009()
+    throws Exception
+        {
+        assertNotNull(
+            base.schemas().create(
+                "schema-A"
+                ).catalogs().create(
+                    "catalog-A"
+                    ).tables().create(
+                        "table-A"
                         ).columns().create(
                             "column-A"
                             )
@@ -325,6 +271,23 @@ extends TestBase
                     ).tables().select(
                         "table-A"
                         ).columns().select(
+                            "column-A"
+                            )
+            );
+        }
+
+    @Test
+    public void test010()
+    throws Exception
+        {
+        assertNotNull(
+            base.schemas().create(
+                "schema-A"
+                ).catalogs().create(
+                    "catalog-A"
+                    ).tables().create(
+                        "table-A"
+                        ).columns().create(
                             "column-A"
                             )
             );
@@ -345,6 +308,87 @@ extends TestBase
             {
             assertEquals(
                 "column-a",
+                ouch.name()
+                );            
+            }
+        }
+
+    @Test
+    public void test011()
+    throws Exception
+        {
+        assertNotNull(
+            base.schemas().create(
+                "schema-A"
+                ).catalogs().create(
+                    "catalog-A"
+                    ).tables().create(
+                        "table-A"
+                        ).columns().create(
+                            "column-A"
+                            )
+            );
+
+        try {
+            base.schemas().select(
+                "schema-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).tables().select(
+                        "table-A"
+                        ).columns().select(
+                            "column-a"
+                            );
+            fail("NameNotFoundException expected");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "column-a",
+                ouch.name()
+                );            
+            }
+
+        base.schemas().select(
+            "schema-A"
+            ).catalogs().select(
+                "catalog-A"
+                ).tables().select(
+                    "table-A"
+                    ).columns().select(
+                        "column-A"
+                        ).name(
+                            "column-a"
+                            );
+
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).tables().select(
+                        "table-A"
+                        ).columns().select(
+                            "column-a"
+                            )
+            );
+
+        try {
+            base.schemas().select(
+                "schema-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).tables().select(
+                        "table-A"
+                        ).columns().select(
+                            "column-A"
+                            );
+            fail("NameNotFoundException expected");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "column-A",
                 ouch.name()
                 );            
             }
