@@ -48,6 +48,12 @@ extends WidgeonStatus
         {
 
         /**
+         * Select all the Schema from the Widgeon.
+         *
+         */
+        public Iterable<SchemaType> select();
+
+        /**
          * Select a named Schema from the Widgeon.
          *
          */
@@ -59,12 +65,6 @@ extends WidgeonStatus
          *
          */
         public SchemaType search(String name);
-
-        /**
-         * Select all the Schema from the Widgeon.
-         *
-         */
-        public Iterable<SchemaType> select();
 
         }
 
@@ -85,23 +85,23 @@ extends WidgeonStatus
             {
 
             /**
-             * Select a named Schema for a Widgeon.
+             * Select all the Schema from a Widgeon.
+             *
+             */
+            public Iterable<SchemaType> select(WidgeonType parent);
+
+            /**
+             * Select a named Schema from a Widgeon.
              *
              */
             public SchemaType select(WidgeonType parent, String name)
             throws NameNotFoundException;
 
             /**
-             * Select a named Schema for a Widgeon.
+             * Search for a named Schema from a Widgeon.
              *
              */
             public SchemaType search(WidgeonType parent, String name);
-
-            /**
-             * Select all the Schema for a Widgeon.
-             *
-             */
-            public Iterable<SchemaType> select(WidgeonType parent);
 
             }
 
@@ -119,6 +119,12 @@ extends WidgeonStatus
             {
 
             /**
+             * Select all the Catalogs from the Schema.
+             *
+             */
+            public Iterable<CatalogType> select();
+
+            /**
              * Select a named Catalog from the Schema.
              *
              */
@@ -126,10 +132,10 @@ extends WidgeonStatus
             throws NameNotFoundException;
 
             /**
-             * Select all the Catalogs from the Schema.
+             * Search for a named Catalog from the Schema.
              *
              */
-            public Iterable<CatalogType> select();
+            public CatalogType search(String name);
 
             }
 
@@ -150,17 +156,23 @@ extends WidgeonStatus
                 {
 
                 /**
-                 * Select a named Catalog for a Schema.
+                 * Select all the Catalogs from a Schema.
+                 *
+                 */
+                public Iterable<CatalogType> select(SchemaType parent);
+
+                /**
+                 * Select a named Catalog from a Schema.
                  *
                  */
                 public CatalogType select(SchemaType parent, String name)
                 throws NameNotFoundException;
 
                 /**
-                 * Select all the Catalogs for a Schema.
+                 * Search for named Catalog from a Schema.
                  *
                  */
-                public Iterable<CatalogType> select(SchemaType parent);
+                public CatalogType search(SchemaType parent, String name);
 
                 }
 
@@ -178,6 +190,12 @@ extends WidgeonStatus
                 {
 
                 /**
+                 * Select all the Tables from the Catalog.
+                 *
+                 */
+                public Iterable<TableType> select();
+
+                /**
                  * Select a named Table from the Catalog.
                  *
                  */
@@ -185,10 +203,10 @@ extends WidgeonStatus
                 throws NameNotFoundException;
 
                 /**
-                 * Select all the Tables from the Catalog.
+                 * Search for a named Table from the Catalog.
                  *
                  */
-                public Iterable<TableType> select();
+                public TableType search(String name);
 
                 }
 
@@ -209,17 +227,23 @@ extends WidgeonStatus
                     {
 
                     /**
-                     * Select a named Table for a Catalog.
+                     * Select all the Tables from a Catalog.
+                     *
+                     */
+                    public Iterable<TableType> select(CatalogType parent);
+
+                    /**
+                     * Select a named Table from a Catalog.
                      *
                      */
                     public TableType select(CatalogType parent, String name)
                     throws NameNotFoundException;
 
                     /**
-                     * Select all the Tables for a Catalog.
+                     * Search for a named Table from a Catalog.
                      *
                      */
-                    public Iterable<TableType> select(CatalogType parent);
+                    public TableType search(CatalogType parent, String name);
 
                     }
 
@@ -237,6 +261,12 @@ extends WidgeonStatus
                     {
 
                     /**
+                     * Select all the Columns from the Table.
+                     *
+                     */
+                    public Iterable<ColumnType> select();
+
+                    /**
                      * Select a named Column from the Table.
                      *
                      */
@@ -244,10 +274,10 @@ extends WidgeonStatus
                     throws NameNotFoundException;
 
                     /**
-                     * Select all the Columns from the Table.
+                     * Search for a named Column from the Table.
                      *
                      */
-                    public Iterable<ColumnType> select();
+                    public ColumnType search(String name);
 
                     }
 
@@ -268,20 +298,25 @@ extends WidgeonStatus
                         {
 
                         /**
-                         * Select a named Column for a Table.
+                         * Select all the Columns from a Table.
+                         *
+                         */
+                        public Iterable<ColumnType> select(TableType parent);
+
+                        /**
+                         * Select a named Column from a Table.
                          *
                          */
                         public ColumnType select(TableType parent, String name)
                         throws NameNotFoundException;
 
                         /**
-                         * Select all the Columns for a Table.
+                         * Search for a named Column from a Table.
                          *
                          */
-                        public Iterable<ColumnType> select(TableType parent);
+                        public ColumnType search(TableType parent, String name);
 
                         }
-
                     }
                 }
             }
@@ -315,6 +350,12 @@ extends WidgeonStatus
              */
             public Widgeon.Base select(String name)
             throws NameNotFoundException;
+
+            /**
+             * Serahc for a Widgeon by name.
+             *
+             */
+            public Widgeon.Base search(String name);
 
             /**
              * Create a Widgeon from a registry URI.
@@ -367,11 +408,17 @@ extends WidgeonStatus
             public Iterable<Widgeon.View> select();
 
             /*
-             * Select a named View of the Widgeon.
+             * Select a named View from the Widgeon.
              *
              */
             public Widgeon.View select(String name)
             throws NameNotFoundException;
+
+            /*
+             * Search for a named View from the Widgeon.
+             *
+             */
+            public Widgeon.View search(String name);
 
             }
 
@@ -379,7 +426,7 @@ extends WidgeonStatus
          * Access to the Views of this Widgeon.
          *
          */
-        public Views views();
+        public Widgeon.Base.Views views();
 
         /**
          * Public interface for accessing the Schema for a Widgeon.
@@ -432,6 +479,27 @@ extends WidgeonStatus
                 public Widgeon.Base.Schema.Catalog.Factory catalogs();
 
                 }
+
+            /**
+             * Public interface for accessing the Views of a Schema.
+             *
+             */
+            public interface Views
+                {
+
+                /*
+                 * Select all the Views of the Schema.
+                 *
+                 */
+                public Iterable<Widgeon.View.Schema> select();
+
+                }
+
+            /**
+             * Access to the Views of this Schema.
+             *
+             */
+            public Widgeon.Base.Schema.Views views();
 
             /**
              * Public interface for accessing the Catalogs for a Schema.
@@ -611,6 +679,12 @@ extends WidgeonStatus
             public Widgeon.View create(Widgeon.Base base, String name);
 
             /**
+             * Select all the Views for a Widgeon.
+             *
+             */
+            public Iterable<Widgeon.View> select(Widgeon.Base base);
+
+            /**
              * Select a named View of a Widgeon.
              *
              */
@@ -618,10 +692,10 @@ extends WidgeonStatus
             throws NameNotFoundException;
 
             /**
-             * Select all the Views for a Widgeon.
+             * Search for a named View of a Widgeon.
              *
              */
-            public Iterable<Widgeon.View> select(Widgeon.Base base);
+            public Widgeon.View search(Widgeon.Base base, String name);
 
             /**
              * Access to our Schema factory.
@@ -652,13 +726,7 @@ extends WidgeonStatus
             {
 
             /**
-             * Search for a View of a base Schema.
-             *
-             */
-            public Widgeon.View.Schema search(Widgeon.Base.Schema base);
-
-            /**
-             * Check for a matching view.
+             * Check for a matching View of a base Schema.
              *
              */
             public Widgeon.View.Schema check(Widgeon.Base.Schema base);
@@ -700,16 +768,16 @@ extends WidgeonStatus
                 public Widgeon.View.Schema create(Widgeon.View parent, Widgeon.Base.Schema base, String name);
 
                 /**
+                 * Search for a View of a base Schema.
+                 *
+                 */
+                public Widgeon.View.Schema search(Widgeon.View parent, Widgeon.Base.Schema base);
+
+                /**
                  * Access to our Catalog factory.
                  * 
                  */
                 public Widgeon.View.Schema.Catalog.Factory catalogs();
-
-                /**
-                 * Search for a View of a Schema.
-                 *
-                 */
-                public Widgeon.View.Schema search(Widgeon.View parent, Widgeon.Base.Schema base);
 
                 }
 
@@ -726,6 +794,13 @@ extends WidgeonStatus
             public interface Catalogs
             extends Widgeon.Schema.Catalogs<Widgeon.View.Schema.Catalog>
                 {
+
+                /**
+                 * Check for a matching View of a base Catalog.
+                 *
+                 */
+                public Widgeon.View.Schema.Catalog check(Widgeon.Base.Schema.Catalog base);
+
                 }
 
             /**
@@ -755,6 +830,12 @@ extends WidgeonStatus
                      *
                      */
                     public Widgeon.View.Schema.Catalog create(Widgeon.View.Schema parent, Widgeon.Base.Schema.Catalog base, String name);
+
+                    /**
+                     * Search for a View of a base Catalog.
+                     *
+                     */
+                    public Widgeon.View.Schema.Catalog search(Widgeon.View parent, Widgeon.Base.Schema.Catalog base);
 
                     /**
                      * Access to our Table factory.

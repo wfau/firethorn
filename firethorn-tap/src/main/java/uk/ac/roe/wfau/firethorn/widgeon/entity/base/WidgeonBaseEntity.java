@@ -83,7 +83,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
             ),
         @NamedQuery(
             name  = "widgeon.base.entity-select-name",
-            query = "FROM WidgeonBaseEntity WHERE name = :name"
+            query = "FROM WidgeonBaseEntity WHERE (name = :name) ORDER BY ident desc"
             )
         }
     )
@@ -130,23 +130,32 @@ implements Widgeon.Base
         public Widgeon.Base select(String name)
         throws NameNotFoundException
             {
-            try {
-                return super.single(
-                    super.query(
-                        "widgeon.base.entity-select-name"
-                        ).setString(
-                            "name",
-                            name
-                        )
-                    );
-                }
-            catch(EntityNotFoundException ouch)
+            Widgeon.Base result = this.search(
+                name
+                );
+            if (result != null)
                 {
+                return result;
+                }
+            else {
                 throw new NameNotFoundException(
-                    name,
-                    ouch
+                    name
                     );
                 }
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Widgeon.Base search(String name)
+            {
+            return super.first(
+                super.query(
+                    "widgeon.base.entity-select-name"
+                    ).setString(
+                        "name",
+                        name
+                        )
+                );
             }
 
         @Override
@@ -219,7 +228,7 @@ implements Widgeon.Base
     @Override
     public Widgeon.Base.Views views() 
         {
-        return new Views()
+        return new Widgeon.Base.Views()
             {
             @Override
             public Widgeon.View create(String name)
@@ -227,7 +236,7 @@ implements Widgeon.Base
                 return womble().widgeons().views().create(
                     WidgeonBaseEntity.this,
                     name
-                    ) ;
+                    );
                 }
 
             @Override
@@ -235,26 +244,26 @@ implements Widgeon.Base
                 {
                 return womble().widgeons().views().select(
                     WidgeonBaseEntity.this
-                    ) ;
+                    );
                 }
 
             @Override
             public Widgeon.View select(String name)
             throws NameNotFoundException
                 {
-                try {
-                    return womble().widgeons().views().select(
-                        WidgeonBaseEntity.this,
-                        name
-                        ) ;
-                    }
-                catch(EntityNotFoundException ouch)
-                    {
-                    throw new NameNotFoundException(
-                        name,
-                        ouch
-                        );
-                    }
+                return womble().widgeons().views().select(
+                    WidgeonBaseEntity.this,
+                    name
+                    );
+                }
+
+            @Override
+            public Widgeon.View search(String name)
+                {
+                return womble().widgeons().views().search(
+                    WidgeonBaseEntity.this,
+                    name
+                    );
                 }
             };
         }
@@ -267,10 +276,14 @@ implements Widgeon.Base
             @Override
             public Widgeon.Base.Schema create(final String name)
                 {
+                //
+                // Create the base Schema.
                 Widgeon.Base.Schema base = womble().widgeons().schemas().create(
                     WidgeonBaseEntity.this,
                     name
                     ) ;
+                //
+                // Update all the views of this Widgeon.
                 for (Widgeon.View view : views().select())
                     {
                     view.schemas().check(
@@ -285,7 +298,7 @@ implements Widgeon.Base
                 {
                 return womble().widgeons().schemas().select(
                     WidgeonBaseEntity.this
-                    ) ;
+                    );
                 }
 
             @Override
@@ -295,7 +308,7 @@ implements Widgeon.Base
                 return womble().widgeons().schemas().select(
                     WidgeonBaseEntity.this,
                     name
-                    ) ;
+                    );
                 }
 
             @Override
@@ -304,7 +317,7 @@ implements Widgeon.Base
                 return womble().widgeons().schemas().search(
                     WidgeonBaseEntity.this,
                     name
-                    ) ;
+                    );
                 }
             };
         }

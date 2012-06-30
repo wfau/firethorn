@@ -84,15 +84,15 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.SchemaBaseEntity;
         {
         @NamedQuery(
             name  = "widgeon.view.schema-select-parent",
-            query = "FROM SchemaViewEntity WHERE parent = :parent ORDER BY ident desc"
+            query = "FROM SchemaViewEntity WHERE (parent = :parent) ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "widgeon.view.schema-select-parent.name",
-            query = "FROM SchemaViewEntity WHERE (parent = :parent) AND (((name IS NOT null) AND (name = :name)) OR ((name IS null) AND (base.name = :name))) ORDER BY ident desc"
+            query = "FROM SchemaViewEntity WHERE ((parent = :parent) AND (((name IS NOT null) AND (name = :name)) OR ((name IS null) AND (base.name = :name)))) ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "widgeon.view.schema-select-parent.base",
-            query = "FROM SchemaViewEntity WHERE (parent = :parent) AND (base = :base) ORDER BY ident desc"
+            query = "FROM SchemaViewEntity WHERE ((parent = :parent) AND (base = :base)) ORDER BY ident desc"
             )
         }
     )
@@ -228,7 +228,6 @@ implements Widgeon.View.Schema
                 );
             }
 
-
         /**
          * Our Autowired Catalog factory.
          * 
@@ -241,7 +240,6 @@ implements Widgeon.View.Schema
             {
             return this.catalogs ;
             }
-
         }
 
     @Override
@@ -251,18 +249,31 @@ implements Widgeon.View.Schema
             {
 
             @Override
-            public Widgeon.View.Schema.Catalog select(String name)
-            throws NameNotFoundException
+            public Iterable<Widgeon.View.Schema.Catalog> select()
                 {
-                return null ;
+                return womble().widgeons().views().schemas().catalogs().select(
+                    SchemaViewEntity.this
+                    ) ;
                 }
 
             @Override
-            public Iterable<Widgeon.View.Schema.Catalog> select()
+            public Widgeon.View.Schema.Catalog select(String name)
+            throws NameNotFoundException
                 {
-                return null ;
+                return womble().widgeons().views().schemas().catalogs().select(
+                    SchemaViewEntity.this,
+                    name
+                    ) ;
                 }
 
+            @Override
+            public Widgeon.View.Schema.Catalog search(String name)
+                {
+                return womble().widgeons().views().schemas().catalogs().search(
+                    SchemaViewEntity.this,
+                    name
+                    ) ;
+                }
             };
         }
 

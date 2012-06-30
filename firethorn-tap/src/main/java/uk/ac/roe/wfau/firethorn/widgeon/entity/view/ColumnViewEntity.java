@@ -177,6 +177,14 @@ implements Widgeon.View.Schema.Catalog.Table.Column
                     );
                 }
             }
+
+        @Override
+        @SelectEntityMethod
+        public Widgeon.View.Schema.Catalog.Table.Column search(final Widgeon.View.Schema.Catalog.Table parent, final String name)
+            {
+            return null ;
+            }
+
         }
 
     /**

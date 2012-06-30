@@ -148,26 +148,36 @@ implements Widgeon.Base.Schema.Catalog.Table
         public Widgeon.Base.Schema.Catalog.Table select(final Widgeon.Base.Schema.Catalog parent, final String name)
         throws NameNotFoundException
             {
-            try {
-                return super.single(
-                    super.query(
-                        "widgeon.base.table-select-parent.name"
-                        ).setEntity(
-                            "parent",
-                            parent
-                        ).setString(
-                            "name",
-                            name
-                        )
-                    );
-                }
-            catch(EntityNotFoundException ouch)
+            Widgeon.Base.Schema.Catalog.Table result = this.search(
+                parent,
+                name
+                );
+            if (result != null)
                 {
+                return result ;
+                }
+            else {
                 throw new NameNotFoundException(
-                    name,
-                    ouch
+                    name
                     );
                 }
+            }
+ 
+        @Override
+        @SelectEntityMethod
+        public Widgeon.Base.Schema.Catalog.Table search(final Widgeon.Base.Schema.Catalog parent, final String name)
+            {
+            return super.first(
+                super.query(
+                    "widgeon.base.table-select-parent.name"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "name",
+                        name
+                    )
+                );
             }
 
         /**
@@ -203,6 +213,14 @@ implements Widgeon.Base.Schema.Catalog.Table
                 }
 
             @Override
+            public Iterable<Widgeon.Base.Schema.Catalog.Table.Column> select()
+                {
+                return womble().widgeons().schemas().catalogs().tables().columns().select(
+                    TableBaseEntity.this
+                    ) ;
+                }
+
+            @Override
             public Widgeon.Base.Schema.Catalog.Table.Column select(String name)
             throws NameNotFoundException
                 {
@@ -213,10 +231,11 @@ implements Widgeon.Base.Schema.Catalog.Table
                 }
 
             @Override
-            public Iterable<Widgeon.Base.Schema.Catalog.Table.Column> select()
+            public Widgeon.Base.Schema.Catalog.Table.Column search(String name)
                 {
-                return womble().widgeons().schemas().catalogs().tables().columns().select(
-                    TableBaseEntity.this
+                return womble().widgeons().schemas().catalogs().tables().columns().search(
+                    TableBaseEntity.this,
+                    name
                     ) ;
                 }
             };

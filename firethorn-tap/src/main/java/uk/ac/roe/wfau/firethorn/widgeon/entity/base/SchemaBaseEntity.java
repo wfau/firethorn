@@ -77,11 +77,11 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
         {
         @NamedQuery(
             name  = "widgeon.base.schema-select-parent",
-            query = "FROM SchemaBaseEntity WHERE parent = :parent ORDER BY ident desc"
+            query = "FROM SchemaBaseEntity WHERE (parent = :parent) ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "widgeon.base.schema-select-parent.name",
-            query = "FROM SchemaBaseEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
+            query = "FROM SchemaBaseEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
             )
         }
     )
@@ -149,7 +149,7 @@ implements Widgeon.Base.Schema
         public Widgeon.Base.Schema select(final Widgeon.Base parent, final String name)
         throws NameNotFoundException
             {
-            Widgeon.Base.Schema result = search(
+            Widgeon.Base.Schema result = this.search(
                 parent,
                 name
                 );
@@ -200,6 +200,20 @@ implements Widgeon.Base.Schema
         }
 
     @Override
+    public Widgeon.Base.Schema.Views views()
+        {
+        return new Widgeon.Base.Schema.Views()
+            {
+            public Iterable<Widgeon.View.Schema> select()
+                {
+                return womble().widgeons().views().schemas().catalogs().select(
+                    SchemaBaseEntity.this
+                    );
+                }
+            };
+        }
+
+    @Override
     public Widgeon.Base.Schema.Catalogs catalogs()
         {
         return new Widgeon.Base.Schema.Catalogs()
@@ -207,10 +221,29 @@ implements Widgeon.Base.Schema
             @Override
             public Widgeon.Base.Schema.Catalog create(String name)
                 {
-                return womble().widgeons().schemas().catalogs().create(
+                //
+                // Create the base Catalog
+                Widgeon.Base.Schema.Catalog base = womble().widgeons().schemas().catalogs().create(
                     SchemaBaseEntity.this,
                     name
-                    ) ;
+                    );
+                //
+                // Update all the views of this Schema
+                for (Widgeon.View.Schema view : views().select())
+                    {
+                    view.catalogs().check(
+                        base
+                        );
+                    }
+                return base ;
+                }
+
+            @Override
+            public Iterable<Widgeon.Base.Schema.Catalog> select()
+                {
+                return womble().widgeons().schemas().catalogs().select(
+                    SchemaBaseEntity.this
+                    );
                 }
 
             @Override
@@ -220,15 +253,16 @@ implements Widgeon.Base.Schema
                 return womble().widgeons().schemas().catalogs().select(
                     SchemaBaseEntity.this,
                     name
-                    ) ;
+                    );
                 }
 
             @Override
-            public Iterable<Widgeon.Base.Schema.Catalog> select()
+            public Widgeon.Base.Schema.Catalog search(String name)
                 {
-                return womble().widgeons().schemas().catalogs().select(
-                    SchemaBaseEntity.this
-                    ) ;
+                return womble().widgeons().schemas().catalogs().search(
+                    SchemaBaseEntity.this,
+                    name
+                    );
                 }
             };
         }

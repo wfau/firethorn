@@ -37,31 +37,15 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
  */
 @Slf4j
 public class WidgeonBaseTestCase
-extends TestBase
+extends WidgeonBaseTestBase
     {
-
-    private Widgeon.Base base ;
-
-    @Before
-    public void before()
-    throws Exception
-        {
-        base = womble().widgeons().create(
-            this.unique(
-                "base"
-                ),
-            URI.create(
-                "ivo://org.astrogrid.test/test-data"
-                )
-            );
-        }
 
     @Test
     public void test000()
     throws Exception
         {
         assertNotNull(
-            base
+            base()
             );
         }
 
@@ -70,7 +54,7 @@ extends TestBase
     throws Exception
         {
         try {
-            base.schemas().select(
+            base().schemas().select(
                 "schema-A"
                 );
             fail("NameNotFoundException expected");
@@ -89,7 +73,7 @@ extends TestBase
     throws Exception
         {
         assertNotNull(
-            base.schemas().create(
+            base().schemas().create(
                 "schema-A"
                 )
             );
@@ -100,12 +84,12 @@ extends TestBase
     throws Exception
         {
         assertNotNull(
-            base.schemas().create(
+            base().schemas().create(
                 "schema-A"
                 )
             );
         assertNotNull(
-            base.schemas().select(
+            base().schemas().select(
                 "schema-A"
                 )
             );
@@ -116,12 +100,12 @@ extends TestBase
     throws Exception
         {
         assertNotNull(
-            base.schemas().create(
+            base().schemas().create(
                 "schema-A"
                 )
             );
         try {
-            base.schemas().select(
+            base().schemas().select(
                 "schema-A"
                 ).catalogs().select(
                     "catalog-A"
@@ -142,7 +126,7 @@ extends TestBase
     throws Exception
         {
         assertNotNull(
-            base.schemas().create(
+            base().schemas().create(
                 "schema-A"
                 ).catalogs().create(
                     "catalog-A"
@@ -150,7 +134,7 @@ extends TestBase
             );
 
         assertNotNull(
-            base.schemas().select(
+            base().schemas().select(
                 "schema-A"
                 ).catalogs().select(
                     "catalog-A"
@@ -163,14 +147,14 @@ extends TestBase
     throws Exception
         {
         assertNotNull(
-            base.schemas().create(
+            base().schemas().create(
                 "schema-A"
                 ).catalogs().create(
                     "catalog-A"
                     )
             );
         try {
-            base.schemas().select(
+            base().schemas().select(
                 "schema-A"
                 ).catalogs().select(
                     "catalog-A"
@@ -193,7 +177,7 @@ extends TestBase
     throws Exception
         {
         assertNotNull(
-            base.schemas().create(
+            base().schemas().create(
                 "schema-A"
                 ).catalogs().create(
                     "catalog-A"
@@ -203,7 +187,7 @@ extends TestBase
             );
 
         assertNotNull(
-            base.schemas().select(
+            base().schemas().select(
                 "schema-A"
                 ).catalogs().select(
                     "catalog-A"
@@ -218,7 +202,7 @@ extends TestBase
     throws Exception
         {
         assertNotNull(
-            base.schemas().create(
+            base().schemas().create(
                 "schema-A"
                 ).catalogs().create(
                     "catalog-A"
@@ -227,7 +211,7 @@ extends TestBase
                         )
             );
         try {
-            base.schemas().select(
+            base().schemas().select(
                 "schema-A"
                 ).catalogs().select(
                     "catalog-A"
@@ -252,7 +236,7 @@ extends TestBase
     throws Exception
         {
         assertNotNull(
-            base.schemas().create(
+            base().schemas().create(
                 "schema-A"
                 ).catalogs().create(
                     "catalog-A"
@@ -264,7 +248,7 @@ extends TestBase
             );
 
         assertNotNull(
-            base.schemas().select(
+            base().schemas().select(
                 "schema-A"
                 ).catalogs().select(
                     "catalog-A"
@@ -281,7 +265,7 @@ extends TestBase
     throws Exception
         {
         assertNotNull(
-            base.schemas().create(
+            base().schemas().create(
                 "schema-A"
                 ).catalogs().create(
                     "catalog-A"
@@ -293,7 +277,7 @@ extends TestBase
             );
 
         try {
-            base.schemas().select(
+            base().schemas().select(
                 "schema-A"
                 ).catalogs().select(
                     "catalog-A"
@@ -318,7 +302,7 @@ extends TestBase
     throws Exception
         {
         assertNotNull(
-            base.schemas().create(
+            base().schemas().create(
                 "schema-A"
                 ).catalogs().create(
                     "catalog-A"
@@ -330,7 +314,7 @@ extends TestBase
             );
 
         try {
-            base.schemas().select(
+            base().schemas().select(
                 "schema-A"
                 ).catalogs().select(
                     "catalog-A"
@@ -349,7 +333,7 @@ extends TestBase
                 );            
             }
 
-        base.schemas().select(
+        base().schemas().select(
             "schema-A"
             ).catalogs().select(
                 "catalog-A"
@@ -362,7 +346,7 @@ extends TestBase
                             );
 
         assertNotNull(
-            base.schemas().select(
+            base().schemas().select(
                 "schema-A"
                 ).catalogs().select(
                     "catalog-A"
@@ -374,7 +358,7 @@ extends TestBase
             );
 
         try {
-            base.schemas().select(
+            base().schemas().select(
                 "schema-A"
                 ).catalogs().select(
                     "catalog-A"

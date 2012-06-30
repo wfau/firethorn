@@ -77,11 +77,15 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.CatalogBaseEntity;
         {
         @NamedQuery(
             name  = "widgeon.view.catalog-select-parent",
-            query = "FROM CatalogViewEntity WHERE parent = :parent ORDER BY ident desc"
+            query = "FROM CatalogViewEntity WHERE (parent = :parent) ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "widgeon.view.catalog-select-parent.name",
-            query = "FROM CatalogViewEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
+            query = "FROM CatalogViewEntity WHERE ((parent = :parent) AND (((name IS NOT null) AND (name = :name)) OR ((name IS null) AND (base.name = :name)))) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "widgeon.view.schema-select-parent.base",
+            query = "FROM CatalogViewEntity WHERE ((parent = :parent) AND (base = :base)) ORDER BY ident desc"
             )
         }
     )
@@ -156,26 +160,53 @@ implements Widgeon.View.Schema.Catalog
         public Widgeon.View.Schema.Catalog select(final Widgeon.View.Schema parent, final String name)
         throws NameNotFoundException
             {
-            try {
-                return super.single(
-                    super.query(
-                        "widgeon.view.catalog-select-parent.name"
-                        ).setEntity(
-                            "parent",
-                            parent
-                        ).setString(
-                            "name",
-                            name
-                        )
-                    );
-                }
-            catch(EntityNotFoundException ouch)
+            Widgeon.View.Schema.Catalog result = search(
+                parent,
+                name
+                );
+            if (result != null)
                 {
+                return result ;
+                }
+            else {
                 throw new NameNotFoundException(
-                    name,
-                    ouch
+                    name
                     );
                 }
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Widgeon.View.Schema.Catalog search(final Widgeon.View.Schema parent, final String name)
+            {
+            return super.first(
+                super.query(
+                    "widgeon.view.catalog-select-parent.name"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "name",
+                        name
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Widgeon.View.Schema.Catalog search(final Widgeon.View parent, final Widgeon.Base.Schema.Catalog base)
+            {
+            return super.first(
+                super.query(
+                    "widgeon.view.catalog-select-parent.base"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setEntity(
+                        "base",
+                        base
+                    )
+                );
             }
 
         /**
@@ -200,6 +231,12 @@ implements Widgeon.View.Schema.Catalog
             {
 
             @Override
+            public Iterable<Widgeon.View.Schema.Catalog.Table> select()
+                {
+                return null ;
+                }
+
+            @Override
             public Widgeon.View.Schema.Catalog.Table select(String name)
             throws NameNotFoundException
                 {
@@ -207,27 +244,12 @@ implements Widgeon.View.Schema.Catalog
                 }
 
             @Override
-            public Iterable<Widgeon.View.Schema.Catalog.Table> select()
+            public Widgeon.View.Schema.Catalog.Table search(String name)
                 {
                 return null ;
                 }
 
             };
-        }
-
-    /**
-     * Check a view name, using the base name if the given name is null or empty.
-     *
-     */
-    private static String name(final Widgeon.Base.Schema.Catalog base, final String name)
-        {
-        if ((name == null) || (name.trim().length() == 0))
-            {
-            return base.name();
-            }
-        else {
-            return name.trim() ;
-            }
         }
 
     /**
@@ -260,13 +282,22 @@ implements Widgeon.View.Schema.Catalog
     protected CatalogViewEntity(final Widgeon.View.Schema parent, final Widgeon.Base.Schema.Catalog base, final String name)
         {
         super(
-            name(
-                base,
-                name
-                )
+            name
             );
         this.base   = base   ;
         this.parent = parent ;
+        }
+
+    @Override
+    public String name()
+        {
+        if (this.name != null)
+            {
+            return this.name ;
+            }
+        else {
+            return base.name() ;
+            }
         }
 
     /**

@@ -179,6 +179,13 @@ implements Widgeon.View.Schema.Catalog.Table
                 }
             }
 
+        @Override
+        @SelectEntityMethod
+        public Widgeon.View.Schema.Catalog.Table search(final Widgeon.View.Schema.Catalog parent, final String name)
+            {
+            return null ;
+            }
+
         /**
          * Our Autowired Column factory.
          * 
@@ -201,6 +208,12 @@ implements Widgeon.View.Schema.Catalog.Table
             {
 
             @Override
+            public Iterable<Widgeon.View.Schema.Catalog.Table.Column> select()
+                {
+                return null ;
+                }
+
+            @Override
             public Widgeon.View.Schema.Catalog.Table.Column select(String name)
             throws NameNotFoundException
                 {
@@ -208,7 +221,7 @@ implements Widgeon.View.Schema.Catalog.Table
                 }
 
             @Override
-            public Iterable<Widgeon.View.Schema.Catalog.Table.Column> select()
+            public Widgeon.View.Schema.Catalog.Table.Column search(String name)
                 {
                 return null ;
                 }

@@ -148,26 +148,36 @@ implements Widgeon.Base.Schema.Catalog.Table.Column
         public Widgeon.Base.Schema.Catalog.Table.Column select(final Widgeon.Base.Schema.Catalog.Table parent, final String name)
         throws NameNotFoundException
             {
-            try {
-                return super.single(
-                    super.query(
-                        "widgeon.base.column-select-parent.name"
-                        ).setEntity(
-                            "parent",
-                            parent
-                        ).setString(
-                            "name",
-                            name
-                        )
-                    );
-                }
-            catch (EntityNotFoundException ouch)
+            Widgeon.Base.Schema.Catalog.Table.Column result = this.search(
+                parent,
+                name
+                );
+            if (result != null)
                 {
+                return result ;
+                }
+            else {
                 throw new NameNotFoundException(
-                    name,
-                    ouch
+                    name
                     );
                 }
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Widgeon.Base.Schema.Catalog.Table.Column search(final Widgeon.Base.Schema.Catalog.Table parent, final String name)
+            {
+            return super.first(
+                super.query(
+                    "widgeon.base.column-select-parent.name"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "name",
+                        name
+                    )
+                );
             }
         }
 

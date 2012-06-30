@@ -85,11 +85,11 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.WidgeonBaseEntity;
         {
         @NamedQuery(
             name  = "widgeon.view.entity-select-base",
-            query = "FROM WidgeonViewEntity WHERE base = :base ORDER BY ident desc"
+            query = "FROM WidgeonViewEntity WHERE (base = :base) ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "widgeon.view.entity-select-base.name",
-            query = "FROM WidgeonViewEntity WHERE base = :base AND name = :name"
+            query = "FROM WidgeonViewEntity WHERE ((base = :base) AND (name = :name)) ORDER BY ident desc"
             )
         }
     )
@@ -127,6 +127,22 @@ implements Widgeon.View
             }
 
         @Override
+        @CreateEntityMethod
+        public Widgeon.View create(final Widgeon.Base base, final String name)
+            {
+            WidgeonViewEntity result =
+                new WidgeonViewEntity(
+                    base,
+                    name
+                    );
+            super.insert(
+                result
+                );
+            result.check();
+            return result;
+            }
+
+        @Override
         @SelectEntityMethod
         public Iterable<Widgeon.View> select(final Widgeon.Base base)
             {
@@ -145,42 +161,36 @@ implements Widgeon.View
         public Widgeon.View select(final Widgeon.Base base, String name)
         throws NameNotFoundException
             {
-            try {
-                return super.single(
-                    super.query(
-                        "widgeon.view.entity-select-base.name"
-                        ).setEntity(
-                            "base",
-                            base
-                        ).setString(
-                            "name",
-                            name
-                        )
-                    );
-                }
-            catch(EntityNotFoundException ouch)
+            Widgeon.View result = this.search(
+                base,
+                name
+                );
+            if (result != null)
                 {
+                return result ;
+                }
+            else {
                 throw new NameNotFoundException(
-                    name,
-                    ouch
+                    name
                     );
                 }
             }
 
         @Override
-        @CreateEntityMethod
-        public Widgeon.View create(final Widgeon.Base base, final String name)
+        @SelectEntityMethod
+        public Widgeon.View search(final Widgeon.Base base, String name)
             {
-            WidgeonViewEntity result =
-                new WidgeonViewEntity(
-                    base,
-                    name
-                    );
-            super.insert(
-                result
+            return super.first(
+                super.query(
+                    "widgeon.view.entity-select-base.name"
+                    ).setEntity(
+                        "base",
+                        base
+                    ).setString(
+                        "name",
+                        name
+                    )
                 );
-            result.check();
-            return result;
             }
 
         /**
@@ -230,23 +240,15 @@ implements Widgeon.View
                 }
 
             @Override
-            public Widgeon.View.Schema search(final Widgeon.Base.Schema base)
-                {
-                return womble().widgeons().views().schemas().search(
-                    WidgeonViewEntity.this,
-                    base
-                    ) ;
-                }
-
-            @Override
             public Widgeon.View.Schema check(Widgeon.Base.Schema base)
                 {
                 log.debug("Checking view for base schema [{}]", base);
                 //
                 // Check for a matching view.
-                Widgeon.View.Schema view = this.search(
+                Widgeon.View.Schema view = womble().widgeons().views().schemas().search(
+                    WidgeonViewEntity.this,
                     base
-                    );
+                    ) ;
                 //
                 // If we didn't find a match, create it.
                 if (view == null)
