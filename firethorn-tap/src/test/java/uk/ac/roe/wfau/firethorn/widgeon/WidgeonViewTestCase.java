@@ -60,6 +60,8 @@ extends TestBase
     public void test000()
     throws Exception
         {
+        //
+        // Select missing view fails.
         try {
             base.views().select(
                 "view-A"
@@ -79,6 +81,8 @@ extends TestBase
     public void test001()
     throws Exception
         {
+        //
+        // Create view.
         assertNotNull(
             base.views().create(
                 "view-A"
@@ -90,11 +94,15 @@ extends TestBase
     public void test002()
     throws Exception
         {
+        //
+        // Create view.
         assertNotNull(
             base.views().create(
                 "view-A"
                 )
             );
+        //
+        // Select view works.
         assertNotNull(
             base.views().select(
                 "view-A"
@@ -106,11 +114,15 @@ extends TestBase
     public void test003()
     throws Exception
         {
+        //
+        // Create view.
         assertNotNull(
             base.views().create(
                 "view-A"
                 )
             );
+        //
+        // Select missing view schema fails.
         try {
             base.views().select(
                 "view-A"
@@ -132,16 +144,22 @@ extends TestBase
     public void test004()
     throws Exception
         {
+        //
+        // Create base schema.
         assertNotNull(
             base.schemas().create(
                 "schema-A"
                 )
             );
+        //
+        // Create view.
         assertNotNull(
             base.views().create(
                 "view-A"
                 )
             );
+        //
+        // Select view schema.
         assertNotNull(
             base.views().select(
                 "view-A"
@@ -155,16 +173,22 @@ extends TestBase
     public void test005()
     throws Exception
         {
+        //
+        // Create view.
         assertNotNull(
             base.views().create(
                 "view-A"
                 )
             );
+        //
+        // Create base schema.
         assertNotNull(
             base.schemas().create(
                 "schema-A"
                 )
             );
+        //
+        // Select view schema.
         assertNotNull(
             base.views().select(
                 "view-A"
@@ -174,317 +198,664 @@ extends TestBase
             );
         }
 
-/*
-
-    @Test
-    public void test002()
-    throws Exception
-        {
-        assertNotNull(
-            base.schemas().create(
-                "schema-A"
-                )
-            );
-        }
-
-    @Test
-    public void test003()
-    throws Exception
-        {
-        assertNotNull(
-            base.schemas().create(
-                "schema-A"
-                )
-            );
-        assertNotNull(
-            base.schemas().select(
-                "schema-A"
-                )
-            );
-        }
-
-    @Test
-    public void test004()
-    throws Exception
-        {
-        assertNotNull(
-            base.schemas().create(
-                "schema-A"
-                )
-            );
-        try {
-            base.schemas().select(
-                "schema-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    );
-            fail("NameNotFoundException expected");
-            }
-        catch (NameNotFoundException ouch)
-            {
-            assertEquals(
-                "catalog-A",
-                ouch.name()
-                );            
-            }
-        }
-
-    @Test
-    public void test005()
-    throws Exception
-        {
-        assertNotNull(
-            base.schemas().create(
-                "schema-A"
-                ).catalogs().create(
-                    "catalog-A"
-                    )
-            );
-
-        assertNotNull(
-            base.schemas().select(
-                "schema-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
-            );
-        }
-
+    //
+    // Check that view name follows base name.
     @Test
     public void test006()
     throws Exception
         {
+        //
+        // Create view.
+        assertNotNull(
+            base.views().create(
+                "view-A"
+                )
+            );
+        //
+        // Create base schema.
         assertNotNull(
             base.schemas().create(
                 "schema-A"
-                ).catalogs().create(
-                    "catalog-A"
+                )
+            );
+        //
+        // Select base schema works.
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                )
+            );
+        //
+        // Select view schema works.
+        assertNotNull(
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
                     )
             );
+        //
+        // Change base schema name.
+        base.schemas().select(
+            "schema-A"
+            ).name(
+                "changed"
+                );
+        //
+        // Select base with old name fails.
         try {
             base.schemas().select(
                 "schema-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).tables().select(
-                        "table-A"
-                        );
-            fail("NameNotFoundException expected");
+                );
+            fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "table-A",
+                "schema-A",
                 ouch.name()
                 );            
             }
+
+        //
+        // Select view with old name fails.
+        try {
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    );
+            fail("NameNotFoundException");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "schema-A",
+                ouch.name()
+                );            
+            }
+
+        //
+        // Select base with new name works.
+        assertNotNull(
+            base.schemas().select(
+                "changed"
+                )
+            );
+        //
+        // Select view with new name works.
+        assertNotNull(
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "changed"
+                    )
+            );
         }
 
+    //
+    // Check that view name replaces base name.
     @Test
     public void test007()
     throws Exception
         {
+        //
+        // Create view.
+        assertNotNull(
+            base.views().create(
+                "view-A"
+                )
+            );
+        //
+        // Create base schema.
         assertNotNull(
             base.schemas().create(
                 "schema-A"
-                ).catalogs().create(
-                    "catalog-A"
-                    ).tables().create(
-                        "table-A"
-                        )
+                )
             );
 
+        //
+        // Select base schema works.
         assertNotNull(
             base.schemas().select(
                 "schema-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).tables().select(
-                        "table-A"
-                        )
+                )
+            );
+        //
+        // Select view schema works.
+        assertNotNull(
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    )
+            );
+        //
+        // Change view schema name.
+        base.views().select(
+            "view-A"
+            ).schemas().select(
+                "schema-A"
+                ).name(
+                    "changed"
+                    );
+        //
+        // Select base schema works.
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                )
+            );
+        //
+        // Select view schema with old name fails.        
+        try {
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    );
+            fail("NameNotFoundException");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "schema-A",
+                ouch.name()
+                );            
+            }
+        //
+        // Select view schema with new name works.        
+        assertNotNull(
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "changed"
+                    )
             );
         }
 
+    //
+    // Check that view name reverts to the  base name.
     @Test
     public void test008()
     throws Exception
         {
+        //
+        // Create the view.
+        assertNotNull(
+            base.views().create(
+                "view-A"
+                )
+            );
+        //
+        // Create base schema.
         assertNotNull(
             base.schemas().create(
                 "schema-A"
-                ).catalogs().create(
-                    "catalog-A"
-                    ).tables().create(
-                        "table-A"
-                        )
+                )
             );
-        try {
+        //
+        // Select base schema works.
+        assertNotNull(
             base.schemas().select(
                 "schema-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).tables().select(
-                        "table-A"
-                        ).columns().select(
-                            "column-A"
-                            );
-            fail("NameNotFoundException expected");
+                )
+            );
+        //
+        // Select view schema works.
+        assertNotNull(
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    )
+            );
+        //
+        // Change view schema name
+        base.views().select(
+            "view-A"
+            ).schemas().select(
+                "schema-A"
+                ).name(
+                    "view-changed"
+                    );
+        //
+        // Select base schema works.
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                )
+            );
+        //
+        // Select view schema with old name fails.
+        try {
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    );
+            fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "column-A",
+                "schema-A",
                 ouch.name()
                 );            
             }
+        //
+        // Select view schema with new name works.
+        assertNotNull(
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "view-changed"
+                    )
+            );
+        //
+        // Set view schema name to null.
+        base.views().select(
+            "view-A"
+            ).schemas().select(
+                "view-changed"
+                ).name(
+                    null
+                    );
+        //
+        // Select base schema works.
+        assertNotNull(
+            base.schemas().select(
+                "schema-A"
+                )
+            );
+        //
+        // Select view schema with new name fails.
+        try {
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "view-changed"
+                    );
+            fail("NameNotFoundException");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "view-changed",
+                ouch.name()
+                );            
+            }
+        //
+        // Select view schema with old name works.
+        assertNotNull(
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    )
+            );
         }
 
+    //
+    // Check that view name reverts to new base name.
     @Test
     public void test009()
     throws Exception
         {
+        //
+        // Create the view.
+        assertNotNull(
+            base.views().create(
+                "view-A"
+                )
+            );
+        //
+        // Create base schema.
         assertNotNull(
             base.schemas().create(
                 "schema-A"
-                ).catalogs().create(
-                    "catalog-A"
-                    ).tables().create(
-                        "table-A"
-                        ).columns().create(
-                            "column-A"
-                            )
+                )
             );
-
+        //
+        // Select base schema works.
         assertNotNull(
             base.schemas().select(
                 "schema-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).tables().select(
-                        "table-A"
-                        ).columns().select(
-                            "column-A"
-                            )
+                )
+            );
+        //
+        // Select view schema works.
+        assertNotNull(
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    )
+            );
+        //
+        // Change view schema name
+        base.views().select(
+            "view-A"
+            ).schemas().select(
+                "schema-A"
+                ).name(
+                    "view-changed"
+                    );
+        //
+        // Select view schema with old name fails.
+        try {
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    );
+            fail("NameNotFoundException");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "schema-A",
+                ouch.name()
+                );            
+            }
+        //
+        // Select view schema with new name works.
+        assertNotNull(
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "view-changed"
+                    )
+            );
+        //
+        // Change base schema name
+        base.schemas().select(
+            "schema-A"
+            ).name(
+                "base-changed"
+                );
+        //
+        // Select base schema with old name fails.
+        try {
+            base.schemas().select(
+                "schema-A"
+                );
+            fail("NameNotFoundException");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "schema-A",
+                ouch.name()
+                );            
+            }
+        //
+        // Select base schema with new name works.
+        assertNotNull(
+            base.schemas().select(
+                "base-changed"
+                )
+            );
+        //
+        // Set view schema name to null.
+        base.views().select(
+            "view-A"
+            ).schemas().select(
+                "view-changed"
+                ).name(
+                    null
+                    );
+        //
+        // Select base schema with old name fails.
+        try {
+            base.schemas().select(
+                "schema-A"
+                );
+            fail("NameNotFoundException");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "schema-A",
+                ouch.name()
+                );            
+            }
+        //
+        // Select base schema with new name works.
+        assertNotNull(
+            base.schemas().select(
+                "base-changed"
+                )
+            );
+        //
+        // Select view schema with old name fails.
+        try {
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    );
+            fail("NameNotFoundException");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "schema-A",
+                ouch.name()
+                );            
+            }
+        //
+        // Select view schema with new name fails.
+        try {
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "view-changed"
+                    );
+            fail("NameNotFoundException");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "view-changed",
+                ouch.name()
+                );            
+            }
+        //
+        // Select view schema with new base name works.
+        assertNotNull(
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "base-changed"
+                    )
             );
         }
 
+    //
+    // Check that view name reverts to new base name.
     @Test
     public void test010()
     throws Exception
         {
+        //
+        // Create the view.
+        assertNotNull(
+            base.views().create(
+                "view-A"
+                )
+            );
+        //
+        // Create base schema.
         assertNotNull(
             base.schemas().create(
                 "schema-A"
-                ).catalogs().create(
-                    "catalog-A"
-                    ).tables().create(
-                        "table-A"
-                        ).columns().create(
-                            "column-A"
-                            )
+                )
             );
-
-        try {
-            base.schemas().select(
-                "schema-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).tables().select(
-                        "table-A"
-                        ).columns().select(
-                            "column-a"
-                            );
-            fail("NameNotFoundException expected");
-            }
-        catch (NameNotFoundException ouch)
-            {
-            assertEquals(
-                "column-a",
-                ouch.name()
-                );            
-            }
-        }
-
-    @Test
-    public void test011()
-    throws Exception
-        {
+        //
+        // Select base schema works.
         assertNotNull(
-            base.schemas().create(
-                "schema-A"
-                ).catalogs().create(
-                    "catalog-A"
-                    ).tables().create(
-                        "table-A"
-                        ).columns().create(
-                            "column-A"
-                            )
-            );
-
-        try {
             base.schemas().select(
                 "schema-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).tables().select(
-                        "table-A"
-                        ).columns().select(
-                            "column-a"
-                            );
-            fail("NameNotFoundException expected");
-            }
-        catch (NameNotFoundException ouch)
-            {
-            assertEquals(
-                "column-a",
-                ouch.name()
-                );            
-            }
-
+                )
+            );
+        //
+        // Select view schema works.
+        assertNotNull(
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    )
+            );
+        //
+        // Change base schema name
         base.schemas().select(
             "schema-A"
-            ).catalogs().select(
-                "catalog-A"
-                ).tables().select(
-                    "table-A"
-                    ).columns().select(
-                        "column-A"
-                        ).name(
-                            "column-a"
-                            );
-
-        assertNotNull(
-            base.schemas().select(
-                "schema-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).tables().select(
-                        "table-A"
-                        ).columns().select(
-                            "column-a"
-                            )
-            );
-
+            ).name(
+                "base-changed"
+                );
+        //
+        // Select base schema with old name fails.
         try {
             base.schemas().select(
                 "schema-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).tables().select(
-                        "table-A"
-                        ).columns().select(
-                            "column-A"
-                            );
-            fail("NameNotFoundException expected");
+                );
+            fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "column-A",
+                "schema-A",
                 ouch.name()
                 );            
             }
+        //
+        // Select base schema with new name works.
+        assertNotNull(
+            base.schemas().select(
+                "base-changed"
+                )
+            );
+        //
+        // Change view schema name
+        base.views().select(
+            "view-A"
+            ).schemas().select(
+                "base-changed"
+                ).name(
+                    "view-changed"
+                    );
+        //
+        // Select view schema with old name fails.
+        try {
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    );
+            fail("NameNotFoundException");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "schema-A",
+                ouch.name()
+                );            
+            }
+        //
+        // Select view schema with new name works.
+        assertNotNull(
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "view-changed"
+                    )
+            );
+        //
+        // Set view schema name to null.
+        base.views().select(
+            "view-A"
+            ).schemas().select(
+                "view-changed"
+                ).name(
+                    null
+                    );
+        //
+        // Select base schema with old name fails.
+        try {
+            base.schemas().select(
+                "schema-A"
+                );
+            fail("NameNotFoundException");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "schema-A",
+                ouch.name()
+                );            
+            }
+        //
+        // Select base schema with new name works.
+        assertNotNull(
+            base.schemas().select(
+                "base-changed"
+                )
+            );
+        //
+        // Select view schema with old name fails.
+        try {
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    );
+            fail("NameNotFoundException");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "schema-A",
+                ouch.name()
+                );            
+            }
+        //
+        // Select view schema with new name fails.
+        try {
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "view-changed"
+                    );
+            fail("NameNotFoundException");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "view-changed",
+                ouch.name()
+                );            
+            }
+        //
+        // Select view schema with new base name works.
+        assertNotNull(
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "base-changed"
+                    )
+            );
         }
- */
+
+
+
+
+// What happens when we rename the base.
+// What happens when we rename the view.
+// What happens when we rename the base and view.
+// What happens when we rename the view and base.
+// What happens when we rename the view and base and reset view.
+
     }
 
