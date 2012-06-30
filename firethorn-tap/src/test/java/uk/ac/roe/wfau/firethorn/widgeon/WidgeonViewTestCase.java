@@ -848,14 +848,101 @@ extends TestBase
             );
         }
 
+    @Test
+    public void test011()
+    throws Exception
+        {
+        //
+        // Create view.
+        assertNotNull(
+            base.views().create(
+                "view-A"
+                )
+            );
+        //
+        // Create base schema.
+        assertNotNull(
+            base.schemas().create(
+                "schema-A"
+                )
+            );
+        //
+        // Select view schema works.
+        assertNotNull(
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    )
+            );
+        //
+        // Select missing view catalog fails.
+        try {
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    ).select(
+                        "catalog-A"
+                        );
+            fail("NameNotFoundException expected");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "catalog-A",
+                ouch.name()
+                );            
+            }
+        }
 
-
-
-// What happens when we rename the base.
-// What happens when we rename the view.
-// What happens when we rename the base and view.
-// What happens when we rename the view and base.
-// What happens when we rename the view and base and reset view.
-
+    @Test
+    public void test012()
+    throws Exception
+        {
+        //
+        // Create view.
+        assertNotNull(
+            base.views().create(
+                "view-A"
+                )
+            );
+        //
+        // Create base schema.
+        assertNotNull(
+            base.schemas().create(
+                "schema-A"
+                )
+            );
+        //
+        // Select view schema works.
+        assertNotNull(
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    )
+            );
+        //
+        // Create base catalog.
+        assertNotNull(
+            base.schemas().create(
+                "schema-A"
+                ).create(
+                    "catalog-A"
+                    );
+            );
+        //
+        // Select view catalog works.
+        assertNotNull(
+            base.views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    ).select(
+                        "catalog-A"
+                        );
+            );
+        }
     }
 
