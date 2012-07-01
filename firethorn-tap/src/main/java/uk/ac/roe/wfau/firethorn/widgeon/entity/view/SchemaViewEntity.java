@@ -335,16 +335,6 @@ implements Widgeon.View.Schema
                     name
                     ) ;
                 }
-/*
-            @Override
-            public Widgeon.View.Schema.Catalog cascade(Widgeon.Base.Schema.Catalog base)
-                {
-                return womble().widgeons().views().schemas().catalogs().cascade(
-                    SchemaViewEntity.this,
-                    base
-                    ) ;
-                }
- */
             };
         }
 

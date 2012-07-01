@@ -213,10 +213,6 @@ implements Widgeon.Base
         @Autowired
         protected Widgeon.Base.Schema.Factory schemas ;
 
-        /**
-         * Access to our Schema factory.
-         * 
-         */
         @Override
         public Widgeon.Base.Schema.Factory schemas()
             {
@@ -279,23 +275,6 @@ implements Widgeon.Base
                     WidgeonBaseEntity.this,
                     name
                     ) ;
-/*
-                //
-                // Create the base Schema.
-                Widgeon.Base.Schema base = womble().widgeons().schemas().create(
-                    WidgeonBaseEntity.this,
-                    name
-                    ) ;
-                //
-                // Update all of our views.
-                for (Widgeon.View view : views().select())
-                    {
-                    view.schemas().cascade(
-                        base
-                        );
-                    }
-                return base ;
- */
                 }
 
             @Override

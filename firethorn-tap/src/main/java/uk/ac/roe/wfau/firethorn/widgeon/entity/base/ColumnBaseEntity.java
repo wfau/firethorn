@@ -206,10 +206,6 @@ implements Widgeon.Base.Schema.Catalog.Table.Column
         @Autowired
         protected Widgeon.View.Schema.Catalog.Table.Column.Factory views ;
 
-        /**
-         * Access to our View factory.
-         * 
-         */
         @Override
         public Widgeon.View.Schema.Catalog.Table.Column.Factory views()
             {

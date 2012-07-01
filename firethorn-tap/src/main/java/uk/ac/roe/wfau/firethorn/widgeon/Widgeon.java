@@ -876,13 +876,6 @@ extends WidgeonStatus
             public interface Catalogs
             extends Widgeon.Schema.Catalogs<Widgeon.View.Schema.Catalog>
                 {
-
-                /**
-                 * Find an existing View of a Catalog, or create a new one.
-                 *
-                public Widgeon.View.Schema.Catalog cascade(Widgeon.Base.Schema.Catalog base);
-                 */
-
                 }
 
             /**
@@ -946,13 +939,6 @@ extends WidgeonStatus
                 public interface Tables
                 extends Widgeon.Schema.Catalog.Tables<Widgeon.View.Schema.Catalog.Table>
                     {
-
-                    /**
-                     * Check for a matching View of a Table.
-                     *
-                    public Widgeon.View.Schema.Catalog.Table cascade(Widgeon.Base.Schema.Catalog.Table base);
-                     */
-
                     }
 
                 /**
@@ -1016,13 +1002,6 @@ extends WidgeonStatus
                     public interface Columns
                     extends Widgeon.Schema.Catalog.Table.Columns<Widgeon.View.Schema.Catalog.Table.Column>
                         {
-
-                        /**
-                         * Find an existing View of a Column, or create a new one.
-                         *
-                        public Widgeon.View.Schema.Catalog.Table.Column cascade(Widgeon.Base.Schema.Catalog.Table.Column base);
-                         */
-
                         }
 
                     /**

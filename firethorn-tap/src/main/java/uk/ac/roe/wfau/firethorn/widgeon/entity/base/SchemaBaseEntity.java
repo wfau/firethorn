@@ -207,10 +207,6 @@ implements Widgeon.Base.Schema
         @Autowired
         protected Widgeon.View.Schema.Factory views ;
 
-        /**
-         * Access to our View factory.
-         * 
-         */
         @Override
         public Widgeon.View.Schema.Factory views()
             {
@@ -224,10 +220,6 @@ implements Widgeon.Base.Schema
         @Autowired
         protected Widgeon.Base.Schema.Catalog.Factory catalogs ;
 
-        /**
-         * Access to our Catalog factory.
-         * 
-         */
         @Override
         public Widgeon.Base.Schema.Catalog.Factory catalogs()
             {
@@ -261,23 +253,6 @@ implements Widgeon.Base.Schema
                     SchemaBaseEntity.this,
                     name
                     );
-/*
-                //
-                // Create the base Catalog.
-                Widgeon.Base.Schema.Catalog base = womble().widgeons().schemas().catalogs().create(
-                    SchemaBaseEntity.this,
-                    name
-                    );
-                //
-                // Update all of our views.
-                for (Widgeon.View.Schema view : views().select())
-                    {
-                    view.catalogs().cascade(
-                        base
-                        );
-                    }
-                return base ;
- */
                 }
 
             @Override

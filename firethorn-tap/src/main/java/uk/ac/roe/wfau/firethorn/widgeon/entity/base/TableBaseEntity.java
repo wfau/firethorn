@@ -206,10 +206,6 @@ implements Widgeon.Base.Schema.Catalog.Table
         @Autowired
         protected Widgeon.View.Schema.Catalog.Table.Factory views ;
 
-        /**
-         * Access to our View factory.
-         * 
-         */
         @Override
         public Widgeon.View.Schema.Catalog.Table.Factory views()
             {
@@ -223,10 +219,6 @@ implements Widgeon.Base.Schema.Catalog.Table
         @Autowired
         protected Widgeon.Base.Schema.Catalog.Table.Column.Factory columns ;
 
-        /**
-         * Access to our Column factory.
-         * 
-         */
         @Override
         public Widgeon.Base.Schema.Catalog.Table.Column.Factory columns()
             {
@@ -260,23 +252,6 @@ implements Widgeon.Base.Schema.Catalog.Table
                     TableBaseEntity.this,
                     name
                     );
-/*
-                //
-                // Create the base Column.
-                Widgeon.Base.Schema.Catalog.Table.Column base = womble().widgeons().schemas().catalogs().tables().columns().create(
-                    TableBaseEntity.this,
-                    name
-                    );
-                //
-                // Update all of our views.
-                for (Widgeon.View.Schema.Catalog.Table view : views().select())
-                    {
-                    view.columns().cascade(
-                        base
-                        );
-                    }
-                return base ;
- */
                 }
 
             @Override
