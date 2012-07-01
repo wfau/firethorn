@@ -51,7 +51,7 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Select missing view schema fails.
+        // Select missing schema view fails.
         try {
             base().views().select(
                 "view-A"
@@ -88,7 +88,7 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Select view schema.
+        // Select schema view.
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -117,7 +117,7 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Select view schema.
+        // Select schema view.
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -155,7 +155,7 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Select view schema works.
+        // Select schema view works.
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -251,7 +251,7 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Select view schema works.
+        // Select schema view works.
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -260,7 +260,7 @@ extends WidgeonViewTestBase
                     )
             );
         //
-        // Change view schema name.
+        // Change schema view name.
         base().views().select(
             "view-A"
             ).schemas().select(
@@ -276,7 +276,7 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Select view schema with old name fails.        
+        // Select schema view with old name fails.        
         try {
             base().views().select(
                 "view-A"
@@ -293,7 +293,7 @@ extends WidgeonViewTestBase
                 );            
             }
         //
-        // Select view schema with new name works.        
+        // Select schema view with new name works.        
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -331,7 +331,7 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Select view schema works.
+        // Select schema view works.
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -340,7 +340,7 @@ extends WidgeonViewTestBase
                     )
             );
         //
-        // Change view schema name
+        // Change schema view name
         base().views().select(
             "view-A"
             ).schemas().select(
@@ -356,7 +356,7 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Select view schema with old name fails.
+        // Select schema view with old name fails.
         try {
             base().views().select(
                 "view-A"
@@ -373,7 +373,7 @@ extends WidgeonViewTestBase
                 );            
             }
         //
-        // Select view schema with new name works.
+        // Select schema view with new name works.
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -382,7 +382,7 @@ extends WidgeonViewTestBase
                     )
             );
         //
-        // Set view schema name to null.
+        // Set schema view name to null.
         base().views().select(
             "view-A"
             ).schemas().select(
@@ -398,7 +398,7 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Select view schema with new name fails.
+        // Select schema view with new name fails.
         try {
             base().views().select(
                 "view-A"
@@ -415,7 +415,7 @@ extends WidgeonViewTestBase
                 );            
             }
         //
-        // Select view schema with old name works.
+        // Select schema view with old name works.
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -453,7 +453,7 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Select view schema works.
+        // Select schema view works.
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -462,7 +462,7 @@ extends WidgeonViewTestBase
                     )
             );
         //
-        // Change view schema name
+        // Change schema view name
         base().views().select(
             "view-A"
             ).schemas().select(
@@ -471,7 +471,7 @@ extends WidgeonViewTestBase
                     "view-changed"
                     );
         //
-        // Select view schema with old name fails.
+        // Select schema view with old name fails.
         try {
             base().views().select(
                 "view-A"
@@ -488,7 +488,7 @@ extends WidgeonViewTestBase
                 );            
             }
         //
-        // Select view schema with new name works.
+        // Select schema view with new name works.
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -526,7 +526,7 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Set view schema name to null.
+        // Set schema view name to null.
         base().views().select(
             "view-A"
             ).schemas().select(
@@ -557,7 +557,7 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Select view schema with old name fails.
+        // Select schema view with old name fails.
         try {
             base().views().select(
                 "view-A"
@@ -574,7 +574,7 @@ extends WidgeonViewTestBase
                 );            
             }
         //
-        // Select view schema with new name fails.
+        // Select schema view with new name fails.
         try {
             base().views().select(
                 "view-A"
@@ -591,7 +591,7 @@ extends WidgeonViewTestBase
                 );            
             }
         //
-        // Select view schema with new base name works.
+        // Select schema view with new base name works.
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -629,7 +629,7 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Select view schema works.
+        // Select schema view works.
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -667,7 +667,7 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Change view schema name
+        // Change schema view name
         base().views().select(
             "view-A"
             ).schemas().select(
@@ -676,7 +676,7 @@ extends WidgeonViewTestBase
                     "view-changed"
                     );
         //
-        // Select view schema with old name fails.
+        // Select schema view with old name fails.
         try {
             base().views().select(
                 "view-A"
@@ -693,7 +693,7 @@ extends WidgeonViewTestBase
                 );            
             }
         //
-        // Select view schema with new name works.
+        // Select schema view with new name works.
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -702,7 +702,7 @@ extends WidgeonViewTestBase
                     )
             );
         //
-        // Set view schema name to null.
+        // Set schema view name to null.
         base().views().select(
             "view-A"
             ).schemas().select(
@@ -733,7 +733,7 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Select view schema with old name fails.
+        // Select schema view with old name fails.
         try {
             base().views().select(
                 "view-A"
@@ -750,7 +750,7 @@ extends WidgeonViewTestBase
                 );            
             }
         //
-        // Select view schema with new name fails.
+        // Select schema view with new name fails.
         try {
             base().views().select(
                 "view-A"
@@ -767,7 +767,7 @@ extends WidgeonViewTestBase
                 );            
             }
         //
-        // Select view schema with new base name works.
+        // Select schema view with new base name works.
         assertNotNull(
             base().views().select(
                 "view-A"

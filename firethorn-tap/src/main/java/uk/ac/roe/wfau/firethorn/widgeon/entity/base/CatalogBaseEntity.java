@@ -128,7 +128,7 @@ implements Widgeon.Base.Schema.Catalog
                 );
             for (Widgeon.View.Schema view : entity.parent().views().select())
                 {
-                this.views.cascade(
+                this.views().cascade(
                     view,
                     entity
                     );

@@ -35,109 +35,12 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
  *
  */
 @Slf4j
-public class CatalogViewTestCase
+public class TableViewTestCase
 extends WidgeonViewTestBase
     {
 
     @Test
     public void test000()
-    throws Exception
-        {
-        //
-        // Create view.
-        assertNotNull(
-            base().views().create(
-                "view-A"
-                )
-            );
-        //
-        // Create base schema.
-        assertNotNull(
-            base().schemas().create(
-                "schema-A"
-                )
-            );
-        //
-        // Select schema view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).schemas().select(
-                    "schema-A"
-                    )
-            );
-        //
-        // Select missing catalog view fails.
-        try {
-            base().views().select(
-                "view-A"
-                ).schemas().select(
-                    "schema-A"
-                    ).catalogs().select(
-                        "catalog-A"
-                        );
-            fail("NameNotFoundException expected");
-            }
-        catch (NameNotFoundException ouch)
-            {
-            assertEquals(
-                "catalog-A",
-                ouch.name()
-                );            
-            }
-        }
-
-    @Test
-    public void test001()
-    throws Exception
-        {
-        //
-        // Create view.
-        assertNotNull(
-            base().views().create(
-                "view-A"
-                )
-            );
-        //
-        // Create base schema.
-        assertNotNull(
-            base().schemas().create(
-                "schema-A"
-                )
-            );
-        //
-        // Select schema view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).schemas().select(
-                    "schema-A"
-                    )
-            );
-        //
-        // Create base catalog.
-        assertNotNull(
-            base().schemas().select(
-                "schema-A"
-                ).catalogs().create(
-                    "catalog-A"
-                    )
-            );
-        //
-        // Select catalog view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).schemas().select(
-                    "schema-A"
-                    ).catalogs().select(
-                        "catalog-A"
-                        )
-            );
-        }
-
-    @Test
-    public void test002()
     throws Exception
         {
         //
@@ -157,7 +60,62 @@ extends WidgeonViewTestBase
                     )
             );
         //
-        // Select schema and catalog view works.
+        // Select catalog view works.
+        assertNotNull(
+            base().views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    ).catalogs().select(
+                        "catalog-A"
+                        )
+
+            );
+        //
+        // Select missing table view fails.
+        try {
+            base().views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    ).catalogs().select(
+                        "catalog-A"
+                        ).tables().select(
+                            "table-A"
+                            );
+            fail("NameNotFoundException expected");
+            }
+        catch (NameNotFoundException ouch)
+            {
+            assertEquals(
+                "table-A",
+                ouch.name()
+                );            
+            }
+        }
+
+    @Test
+    public void test001()
+    throws Exception
+        {
+        //
+        // Create view.
+        assertNotNull(
+            base().views().create(
+                "view-A"
+                )
+            );
+        //
+        // Create base schema and catalog.
+        assertNotNull(
+            base().schemas().create(
+                "schema-A"
+                ).catalogs().create(
+                    "catalog-A"
+                    )
+            );
+        //
+        // Select catalog view works.
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -167,7 +125,67 @@ extends WidgeonViewTestBase
                         "catalog-A"
                         )
             );
+        //
+        // Create base table.
+        assertNotNull(
+            base().schemas().select(
+                "schema-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).tables().create(
+                        "table-A"
+                        )
+            );
+        //
+        // Select table view works.
+        assertNotNull(
+            base().views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    ).catalogs().select(
+                        "catalog-A"
+                        ).tables().select(
+                            "table-A"
+                            )
+            );
         }
 
+    @Test
+    public void test002()
+    throws Exception
+        {
+        //
+        // Create view.
+        assertNotNull(
+            base().views().create(
+                "view-A"
+                )
+            );
+        //
+        // Create base schema, catalog and table.
+        assertNotNull(
+            base().schemas().create(
+                "schema-A"
+                ).catalogs().create(
+                    "catalog-A"
+                    ).tables().create(
+                        "table-A"
+                        )
+            );
+        //
+        // Select schema, catalog and table view works.
+        assertNotNull(
+            base().views().select(
+                "view-A"
+                ).schemas().select(
+                    "schema-A"
+                    ).catalogs().select(
+                        "catalog-A"
+                        ).tables().select(
+                            "table-A"
+                            )
+            );
+        }
     }
 

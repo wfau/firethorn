@@ -129,7 +129,7 @@ implements Widgeon.Base.Schema
                 );
             for (Widgeon.View view : entity.parent().views().select())
                 {
-                views.cascade(
+                this.views().cascade(
                     view,
                     entity
                     );

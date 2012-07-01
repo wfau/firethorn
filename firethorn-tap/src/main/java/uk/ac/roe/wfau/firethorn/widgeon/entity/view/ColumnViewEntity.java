@@ -226,7 +226,7 @@ implements Widgeon.View.Schema.Catalog.Table.Column
             {
             return super.iterable(
                 super.query(
-                    "widgeon.view.table-select-parent"
+                    "widgeon.view.column-select-parent"
                     ).setEntity(
                         "parent",
                         parent
@@ -260,7 +260,7 @@ implements Widgeon.View.Schema.Catalog.Table.Column
             {
             return super.first(
                 super.query(
-                    "widgeon.view.table-select-parent.name"
+                    "widgeon.view.column-select-parent.name"
                     ).setEntity(
                         "parent",
                         parent
