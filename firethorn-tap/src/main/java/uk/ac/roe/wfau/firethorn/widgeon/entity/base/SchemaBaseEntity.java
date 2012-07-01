@@ -206,7 +206,7 @@ implements Widgeon.Base.Schema
             {
             public Iterable<Widgeon.View.Schema> select()
                 {
-                return womble().widgeons().views().schemas().catalogs().select(
+                return womble().widgeons().views().schemas().select(
                     SchemaBaseEntity.this
                     );
                 }

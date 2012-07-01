@@ -679,7 +679,7 @@ extends WidgeonStatus
             public Widgeon.View create(Widgeon.Base base, String name);
 
             /**
-             * Select all the Views for a Widgeon.
+             * Select all the Views of a Widgeon.
              *
              */
             public Iterable<Widgeon.View> select(Widgeon.Base base);
@@ -768,10 +768,16 @@ extends WidgeonStatus
                 public Widgeon.View.Schema create(Widgeon.View parent, Widgeon.Base.Schema base, String name);
 
                 /**
-                 * Search for a View of a base Schema.
+                 * Search for a View of a Schema.
                  *
                  */
                 public Widgeon.View.Schema search(Widgeon.View parent, Widgeon.Base.Schema base);
+
+                /**
+                 * Select all the views of a Schema.
+                 *
+                 */
+                public Iterable<Widgeon.View.Schema> select(Widgeon.Base.Schema base);
 
                 /**
                  * Access to our Catalog factory.
@@ -829,13 +835,19 @@ extends WidgeonStatus
                      * Create a new View of a Catalog.
                      *
                      */
+                    public Widgeon.View.Schema.Catalog create(Widgeon.View.Schema parent, Widgeon.Base.Schema.Catalog base);
+
+                    /**
+                     * Create a new View of a Catalog.
+                     *
+                     */
                     public Widgeon.View.Schema.Catalog create(Widgeon.View.Schema parent, Widgeon.Base.Schema.Catalog base, String name);
 
                     /**
-                     * Search for a View of a base Catalog.
+                     * Search for a View of a Catalog.
                      *
                      */
-                    public Widgeon.View.Schema.Catalog search(Widgeon.View parent, Widgeon.Base.Schema.Catalog base);
+                    public Widgeon.View.Schema.Catalog search(Widgeon.View.Schema parent, Widgeon.Base.Schema.Catalog base);
 
                     /**
                      * Access to our Table factory.

@@ -242,7 +242,7 @@ implements Widgeon.View
             @Override
             public Widgeon.View.Schema check(Widgeon.Base.Schema base)
                 {
-                log.debug("Checking view for base schema [{}]", base);
+                log.debug("Checking view of Schema base [{}]", base);
                 //
                 // Check for a matching view.
                 Widgeon.View.Schema view = womble().widgeons().views().schemas().search(
@@ -258,10 +258,9 @@ implements Widgeon.View
                         base
                         ) ;
                     }
-                log.debug("Found view schema [{}]", view);
+                log.debug("Found Schema view [{}]", view);
                 return view ;
                 }
-
             };
         }
 

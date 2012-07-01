@@ -84,7 +84,11 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.CatalogBaseEntity;
             query = "FROM CatalogViewEntity WHERE ((parent = :parent) AND (((name IS NOT null) AND (name = :name)) OR ((name IS null) AND (base.name = :name)))) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "widgeon.view.schema-select-parent.base",
+            name  = "widgeon.view.catalog-select-base",
+            query = "FROM CatalogViewEntity WHERE (base = :base) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "widgeon.view.catalog-select-parent.base",
             query = "FROM CatalogViewEntity WHERE ((parent = :parent) AND (base = :base)) ORDER BY ident desc"
             )
         }
@@ -126,6 +130,18 @@ implements Widgeon.View.Schema.Catalog
         public Class etype()
             {
             return CatalogViewEntity.class ;
+            }
+
+        @Override
+        @CreateEntityMethod
+        public Widgeon.View.Schema.Catalog create(final Widgeon.View.Schema parent, final Widgeon.Base.Schema.Catalog base)
+            {
+            return super.insert(
+                new CatalogViewEntity(
+                    parent,
+                    base
+                    )
+                );
             }
 
         @Override
@@ -194,7 +210,7 @@ implements Widgeon.View.Schema.Catalog
 
         @Override
         @SelectEntityMethod
-        public Widgeon.View.Schema.Catalog search(final Widgeon.View parent, final Widgeon.Base.Schema.Catalog base)
+        public Widgeon.View.Schema.Catalog search(final Widgeon.View.Schema parent, final Widgeon.Base.Schema.Catalog base)
             {
             return super.first(
                 super.query(

@@ -91,9 +91,13 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.SchemaBaseEntity;
             query = "FROM SchemaViewEntity WHERE ((parent = :parent) AND (((name IS NOT null) AND (name = :name)) OR ((name IS null) AND (base.name = :name)))) ORDER BY ident desc"
             ),
         @NamedQuery(
+            name  = "widgeon.view.schema-select-base",
+            query = "FROM SchemaViewEntity WHERE (base = :base) ORDER BY ident desc"
+            ),
+        @NamedQuery(
             name  = "widgeon.view.schema-select-parent.base",
             query = "FROM SchemaViewEntity WHERE ((parent = :parent) AND (base = :base)) ORDER BY ident desc"
-            )
+            ),
         }
     )
 public class SchemaViewEntity
@@ -228,6 +232,20 @@ implements Widgeon.View.Schema
                 );
             }
 
+        @Override
+        @SelectEntityMethod
+        public Iterable<Widgeon.View.Schema> select(Widgeon.Base.Schema base)
+            {
+            return super.iterable(
+                super.query(
+                    "widgeon.view.schema-select-base"
+                    ).setEntity(
+                        "base",
+                        base
+                        )
+                );
+            }
+
         /**
          * Our Autowired Catalog factory.
          * 
@@ -273,6 +291,29 @@ implements Widgeon.View.Schema
                     SchemaViewEntity.this,
                     name
                     ) ;
+                }
+
+            @Override
+            public Widgeon.View.Schema.Catalog check(Widgeon.Base.Schema.Catalog base)
+                {
+                log.debug("Checking for view of Catalog base [{}]", base);
+                //
+                // Check for a matching view.
+                Widgeon.View.Schema.Catalog view = womble().widgeons().views().schemas().catalogs().search(
+                    SchemaViewEntity.this,
+                    base
+                    ) ;
+                //
+                // If we didn't find a match, create it.
+                if (view == null)
+                    {
+                    view = womble().widgeons().views().schemas().catalogs().create(
+                        SchemaViewEntity.this,
+                        base
+                        ) ;
+                    }
+                log.debug("Found Catalog view [{}]", view);
+                return view ;
                 }
             };
         }
