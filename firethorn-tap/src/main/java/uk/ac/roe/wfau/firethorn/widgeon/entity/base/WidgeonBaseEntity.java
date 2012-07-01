@@ -45,10 +45,9 @@ import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
@@ -276,6 +275,11 @@ implements Widgeon.Base
             @Override
             public Widgeon.Base.Schema create(final String name)
                 {
+                return womble().widgeons().schemas().create(
+                    WidgeonBaseEntity.this,
+                    name
+                    ) ;
+/*
                 //
                 // Create the base Schema.
                 Widgeon.Base.Schema base = womble().widgeons().schemas().create(
@@ -283,14 +287,15 @@ implements Widgeon.Base
                     name
                     ) ;
                 //
-                // Update all the views of this Widgeon.
+                // Update all of our views.
                 for (Widgeon.View view : views().select())
                     {
-                    view.schemas().check(
+                    view.schemas().cascade(
                         base
                         );
                     }
                 return base ;
+ */
                 }
 
             @Override

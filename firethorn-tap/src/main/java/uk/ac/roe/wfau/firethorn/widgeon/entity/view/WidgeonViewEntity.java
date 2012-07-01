@@ -51,10 +51,9 @@ import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
@@ -126,20 +125,36 @@ implements Widgeon.View
             return WidgeonViewEntity.class ;
             }
 
+        /**
+         * Insert a View into the database and create views for each child.
+         *
+         */
+        @CascadeEntityMethod
+        protected Widgeon.View insert(WidgeonViewEntity entity)
+            {
+            super.insert(
+                entity
+                );
+            for (Widgeon.Base.Schema schema : entity.base().schemas().select())
+                {
+                this.schemas().cascade(
+                    entity,
+                    schema
+                    );
+                }
+            return entity ;
+            }
+
         @Override
         @CreateEntityMethod
         public Widgeon.View create(final Widgeon.Base base, final String name)
             {
-            WidgeonViewEntity result =
+            return this.insert(
                 new WidgeonViewEntity(
                     base,
                     name
-                    );
-            super.insert(
-                result
+                    )
                 );
-            result.check();
-            return result;
             }
 
         @Override
@@ -238,29 +253,6 @@ implements Widgeon.View
                     name
                     ) ;
                 }
-
-            @Override
-            public Widgeon.View.Schema check(Widgeon.Base.Schema base)
-                {
-                log.debug("Checking view of Schema base [{}]", base);
-                //
-                // Check for a matching view.
-                Widgeon.View.Schema view = womble().widgeons().views().schemas().search(
-                    WidgeonViewEntity.this,
-                    base
-                    ) ;
-                //
-                // If we didn't find a match, create it.
-                if (view == null)
-                    {
-                    view = womble().widgeons().views().schemas().create(
-                        WidgeonViewEntity.this,
-                        base
-                        ) ;
-                    }
-                log.debug("Found Schema view [{}]", view);
-                return view ;
-                }
             };
         }
 
@@ -298,18 +290,6 @@ implements Widgeon.View
         this.base = base ;
         }
 
-    @Override
-    public String name()
-        {
-        if (this.name != null)
-            {
-            return this.name ;
-            }
-        else {
-            return base.name() ;
-            }
-        }
-
     /**
      * Our underlying Widgeon.
      *
@@ -333,6 +313,18 @@ implements Widgeon.View
         }
 
     @Override
+    public String name()
+        {
+        if (this.name != null)
+            {
+            return this.name ;
+            }
+        else {
+            return base.name() ;
+            }
+        }
+
+    @Override
     public Widgeon.Status status()
         {
         if (this.base().status() == Widgeon.Status.ENABLED)
@@ -343,27 +335,5 @@ implements Widgeon.View
             return this.base().status();
             }
         }
-
-    /**
-     * Check our child views.
-     *
-     */
-    public void check()
-        {
-        log.debug("Checking views");
-//List<Widgeon.Base.Schema> bases = new ArrayList<Widgeon.Base.Schema>();
-//List<Widgeon.View.Schema> views = new ArrayList<Widgeon.View.Schema>();
-        //
-        // Check each base schema for a matching view.
-        for (Widgeon.Base.Schema base : base().schemas().select())
-            {
-            //
-            // Check for a matching view.
-            Widgeon.View.Schema view = this.schemas().check(
-                base
-                );
-            }
-        }
-
     }
 

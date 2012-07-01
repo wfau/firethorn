@@ -44,10 +44,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
@@ -117,11 +116,31 @@ implements Widgeon.Base.Schema.Catalog.Table.Column
             return ColumnBaseEntity.class ;
             }
 
+        /**
+         * Insert a Column into the database and update all the parent views.
+         *
+         */
+        @CascadeEntityMethod
+        protected Widgeon.Base.Schema.Catalog.Table.Column insert(final ColumnBaseEntity entity)
+            {
+            super.insert(
+                entity
+                );
+            for (Widgeon.View.Schema.Catalog.Table view : entity.parent().views().select())
+                {
+                views.cascade(
+                    view,
+                    entity
+                    );
+                }
+            return entity ;
+            }
+
         @Override
         @CreateEntityMethod
         public Widgeon.Base.Schema.Catalog.Table.Column create(final Widgeon.Base.Schema.Catalog.Table parent, final String name)
             {
-            return super.insert(
+            return this.insert(
                 new ColumnBaseEntity(
                     parent,
                     name
@@ -179,6 +198,37 @@ implements Widgeon.Base.Schema.Catalog.Table.Column
                     )
                 );
             }
+
+        /**
+         * Our Autowired View factory.
+         * 
+         */
+        @Autowired
+        protected Widgeon.View.Schema.Catalog.Table.Column.Factory views ;
+
+        /**
+         * Access to our View factory.
+         * 
+         */
+        @Override
+        public Widgeon.View.Schema.Catalog.Table.Column.Factory views()
+            {
+            return this.views ;
+            }
+        }
+
+    @Override
+    public Widgeon.Base.Schema.Catalog.Table.Column.Views views()
+        {
+        return new Widgeon.Base.Schema.Catalog.Table.Column.Views()
+            {
+            public Iterable<Widgeon.View.Schema.Catalog.Table.Column> select()
+                {
+                return womble().widgeons().views().schemas().catalogs().tables().columns().select(
+                    ColumnBaseEntity.this
+                    );
+                }
+            };
         }
 
     /**

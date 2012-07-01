@@ -44,10 +44,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
@@ -117,11 +116,31 @@ implements Widgeon.Base.Schema.Catalog
             return CatalogBaseEntity.class ;
             }
 
+        /**
+         * Insert a Catalog into the database and update all the parent views.
+         *
+         */
+        @CascadeEntityMethod
+        protected Widgeon.Base.Schema.Catalog insert(final CatalogBaseEntity entity)
+            {
+            super.insert(
+                entity
+                );
+            for (Widgeon.View.Schema view : entity.parent().views().select())
+                {
+                this.views.cascade(
+                    view,
+                    entity
+                    );
+                }
+            return entity ;
+            }
+
         @Override
         @CreateEntityMethod
         public Widgeon.Base.Schema.Catalog create(final Widgeon.Base.Schema parent, final String name)
             {
-            return super.insert(
+            return this.insert(
                 new CatalogBaseEntity(
                     parent,
                     name
@@ -181,6 +200,23 @@ implements Widgeon.Base.Schema.Catalog
             }
 
         /**
+         * Our Autowired View factory.
+         * 
+         */
+        @Autowired
+        protected Widgeon.View.Schema.Catalog.Factory views ;
+
+        /**
+         * Access to our View factory.
+         * 
+         */
+        @Override
+        public Widgeon.View.Schema.Catalog.Factory views()
+            {
+            return this.views ;
+            }
+
+        /**
          * Our Autowired Table factory.
          * 
          */
@@ -199,6 +235,20 @@ implements Widgeon.Base.Schema.Catalog
         }
 
     @Override
+    public Widgeon.Base.Schema.Catalog.Views views()
+        {
+        return new Widgeon.Base.Schema.Catalog.Views()
+            {
+            public Iterable<Widgeon.View.Schema.Catalog> select()
+                {
+                return womble().widgeons().views().schemas().catalogs().select(
+                    CatalogBaseEntity.this
+                    );
+                }
+            };
+        }
+
+    @Override
     public Widgeon.Base.Schema.Catalog.Tables tables()
         {
         return new Widgeon.Base.Schema.Catalog.Tables()
@@ -209,7 +259,24 @@ implements Widgeon.Base.Schema.Catalog
                 return womble().widgeons().schemas().catalogs().tables().create(
                     CatalogBaseEntity.this,
                     name
-                    ) ;
+                    );
+/*
+                //
+                // Create the base Table.
+                Widgeon.Base.Schema.Catalog.Table base = womble().widgeons().schemas().catalogs().tables().create(
+                    CatalogBaseEntity.this,
+                    name
+                    );
+                //
+                // Update all of our views.
+                for (Widgeon.View.Schema.Catalog view : views().select())
+                    {
+                    view.tables().cascade(
+                        base
+                        );
+                    }
+                return base ;
+ */
                 }
 
             @Override

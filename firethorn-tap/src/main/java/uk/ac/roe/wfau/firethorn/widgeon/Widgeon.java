@@ -429,7 +429,7 @@ extends WidgeonStatus
         public Widgeon.Base.Views views();
 
         /**
-         * Public interface for accessing the Schema for a Widgeon.
+         * Public interface for accessing the Schema of a Widgeon.
          *
          */
         public interface Schemas
@@ -473,6 +473,12 @@ extends WidgeonStatus
                 public Widgeon.Base.Schema create(Widgeon.Base parent, String name);
 
                 /**
+                 * Access to our View factory.
+                 * 
+                 */
+                public Widgeon.View.Schema.Factory views();
+
+                /**
                  * Access to our Catalog factory.
                  * 
                  */
@@ -502,7 +508,7 @@ extends WidgeonStatus
             public Widgeon.Base.Schema.Views views();
 
             /**
-             * Public interface for accessing the Catalogs for a Schema.
+             * Public interface for accessing the Catalogs of a Schema.
              *
              */
             public interface Catalogs
@@ -546,6 +552,12 @@ extends WidgeonStatus
                     public Widgeon.Base.Schema.Catalog create(Widgeon.Base.Schema parent, String name);
 
                     /**
+                     * Access to our View factory.
+                     * 
+                     */
+                    public Widgeon.View.Schema.Catalog.Factory views();
+
+                    /**
                      * Access to our Table factory.
                      * 
                      */
@@ -554,7 +566,28 @@ extends WidgeonStatus
                     }
 
                 /**
-                 * Public interface for accessing the Tables for a Catalog.
+                 * Public interface for accessing the Views of a Catalog.
+                 *
+                 */
+                public interface Views
+                    {
+
+                    /*
+                     * Select all the Views of the Catalog.
+                     *
+                     */
+                    public Iterable<Widgeon.View.Schema.Catalog> select();
+
+                    }
+
+                /**
+                 * Access to the Views of this Catalog.
+                 *
+                 */
+                public Widgeon.Base.Schema.Catalog.Views views();
+
+                /**
+                 * Public interface for accessing the Tables of a Catalog.
                  *
                  */
                 public interface Tables
@@ -598,6 +631,12 @@ extends WidgeonStatus
                         public Widgeon.Base.Schema.Catalog.Table create(Widgeon.Base.Schema.Catalog parent, String name);
 
                         /**
+                         * Access to our View factory.
+                         * 
+                         */
+                        public Widgeon.View.Schema.Catalog.Table.Factory views();
+
+                        /**
                          * Access to our Column factory.
                          * 
                          */
@@ -606,7 +645,28 @@ extends WidgeonStatus
                         }
 
                     /**
-                     * Public interface for accessing the Columns for a Table.
+                     * Public interface for accessing the Views of a Table.
+                     *
+                     */
+                    public interface Views
+                        {
+
+                        /*
+                         * Select all the Views of the Table.
+                         *
+                         */
+                        public Iterable<Widgeon.View.Schema.Catalog.Table> select();
+
+                        }
+
+                    /**
+                     * Access to the Views of this Table.
+                     *
+                     */
+                    public Widgeon.Base.Schema.Catalog.Table.Views views();
+
+                    /**
+                     * Public interface for accessing the Columns of a Table.
                      *
                      */
                     public interface Columns
@@ -649,7 +709,35 @@ extends WidgeonStatus
                              */
                             public Widgeon.Base.Schema.Catalog.Table.Column create(Widgeon.Base.Schema.Catalog.Table parent, String name);
 
+                            /**
+                             * Access to our View factory.
+                             * 
+                             */
+                            public Widgeon.View.Schema.Catalog.Table.Column.Factory views();
+
                             }
+
+                        /**
+                         * Public interface for accessing the Views of a Column.
+                         *
+                         */
+                        public interface Views
+                            {
+
+                            /*
+                             * Select all the Views of the Column.
+                             *
+                             */
+                            public Iterable<Widgeon.View.Schema.Catalog.Table.Column> select();
+
+                            }
+
+                        /**
+                         * Access to the Views of this Column.
+                         *
+                         */
+                        public Widgeon.Base.Schema.Catalog.Table.Column.Views views();
+
                         }
                     }
                 }
@@ -712,13 +800,7 @@ extends WidgeonStatus
         public Widgeon.Base base();
 
         /**
-         * Check our child schema.
-         *
-         */
-        public void check();
-
-        /**
-         * Public interface for accessing the Schema for a Widgeon.
+         * Public interface for accessing the Schema of a Widgeon.
          *
          */
         public interface Schemas
@@ -726,10 +808,10 @@ extends WidgeonStatus
             {
 
             /**
-             * Check for a matching View of a base Schema.
+             * Find an existing View of a Schema, or create a new one.
              *
+            public Widgeon.View.Schema cascade(Widgeon.Base.Schema base);
              */
-            public Widgeon.View.Schema check(Widgeon.Base.Schema base);
 
             }
 
@@ -756,22 +838,16 @@ extends WidgeonStatus
                 {
 
                 /**
-                 * Create a new View of a Schema.
+                 * Find an existing View of a Schema, or create a new one.
                  *
                  */
-                public Widgeon.View.Schema create(Widgeon.View parent, Widgeon.Base.Schema base);
+                public Widgeon.View.Schema cascade(Widgeon.View parent, Widgeon.Base.Schema base);
 
                 /**
                  * Create a new View of a Schema.
                  *
                  */
                 public Widgeon.View.Schema create(Widgeon.View parent, Widgeon.Base.Schema base, String name);
-
-                /**
-                 * Search for a View of a Schema.
-                 *
-                 */
-                public Widgeon.View.Schema search(Widgeon.View parent, Widgeon.Base.Schema base);
 
                 /**
                  * Select all the views of a Schema.
@@ -794,7 +870,7 @@ extends WidgeonStatus
             public Widgeon.Base.Schema base();
 
             /**
-             * Public interface for accessing the Catalogs for a Schema.
+             * Public interface for accessing the Catalogs of a Schema.
              *
              */
             public interface Catalogs
@@ -802,10 +878,10 @@ extends WidgeonStatus
                 {
 
                 /**
-                 * Check for a matching View of a base Catalog.
+                 * Find an existing View of a Catalog, or create a new one.
                  *
+                public Widgeon.View.Schema.Catalog cascade(Widgeon.Base.Schema.Catalog base);
                  */
-                public Widgeon.View.Schema.Catalog check(Widgeon.Base.Schema.Catalog base);
 
                 }
 
@@ -832,10 +908,10 @@ extends WidgeonStatus
                     {
 
                     /**
-                     * Create a new View of a Catalog.
+                     * Find an existing View of a Catalog, or create a new one.
                      *
                      */
-                    public Widgeon.View.Schema.Catalog create(Widgeon.View.Schema parent, Widgeon.Base.Schema.Catalog base);
+                    public Widgeon.View.Schema.Catalog cascade(Widgeon.View.Schema parent, Widgeon.Base.Schema.Catalog base);
 
                     /**
                      * Create a new View of a Catalog.
@@ -844,10 +920,10 @@ extends WidgeonStatus
                     public Widgeon.View.Schema.Catalog create(Widgeon.View.Schema parent, Widgeon.Base.Schema.Catalog base, String name);
 
                     /**
-                     * Search for a View of a Catalog.
+                     * Select all the views of a Catalog.
                      *
                      */
-                    public Widgeon.View.Schema.Catalog search(Widgeon.View.Schema parent, Widgeon.Base.Schema.Catalog base);
+                    public Iterable<Widgeon.View.Schema.Catalog> select(Widgeon.Base.Schema.Catalog base);
 
                     /**
                      * Access to our Table factory.
@@ -864,12 +940,19 @@ extends WidgeonStatus
                 public Widgeon.Base.Schema.Catalog base();
 
                 /**
-                 * Public interface for accessing the Tables for a Catalog.
+                 * Public interface for accessing the Tables of a Catalog.
                  *
                  */
                 public interface Tables
                 extends Widgeon.Schema.Catalog.Tables<Widgeon.View.Schema.Catalog.Table>
                     {
+
+                    /**
+                     * Check for a matching View of a Table.
+                     *
+                    public Widgeon.View.Schema.Catalog.Table cascade(Widgeon.Base.Schema.Catalog.Table base);
+                     */
+
                     }
 
                 /**
@@ -895,10 +978,22 @@ extends WidgeonStatus
                         {
 
                         /**
+                         * Find an existing View of a Table, or create a new one.
+                         *
+                         */
+                        public Widgeon.View.Schema.Catalog.Table cascade(Widgeon.View.Schema.Catalog parent, Widgeon.Base.Schema.Catalog.Table base);
+
+                        /**
                          * Create a new View of a Table.
                          *
                          */
                         public Widgeon.View.Schema.Catalog.Table create(Widgeon.View.Schema.Catalog parent, Widgeon.Base.Schema.Catalog.Table base, String name);
+
+                        /**
+                         * Select all the views of a Table.
+                         *
+                         */
+                        public Iterable<Widgeon.View.Schema.Catalog.Table> select(Widgeon.Base.Schema.Catalog.Table base);
 
                         /**
                          * Access to our Column factory.
@@ -915,12 +1010,19 @@ extends WidgeonStatus
                     public Widgeon.Base.Schema.Catalog.Table base();
 
                     /**
-                     * Public interface for accessing the Columns for a Table.
+                     * Public interface for accessing the Columns of a Table.
                      *
                      */
                     public interface Columns
                     extends Widgeon.Schema.Catalog.Table.Columns<Widgeon.View.Schema.Catalog.Table.Column>
                         {
+
+                        /**
+                         * Find an existing View of a Column, or create a new one.
+                         *
+                        public Widgeon.View.Schema.Catalog.Table.Column cascade(Widgeon.Base.Schema.Catalog.Table.Column base);
+                         */
+
                         }
 
                     /**
@@ -946,10 +1048,22 @@ extends WidgeonStatus
                             {
 
                             /**
+                             * Find an existing View of a Column, or create a new one.
+                             *
+                             */
+                            public Widgeon.View.Schema.Catalog.Table.Column cascade(Widgeon.View.Schema.Catalog.Table parent, Widgeon.Base.Schema.Catalog.Table.Column base);
+
+                            /**
                              * Create a new View of a Column.
                              *
                              */
                             public Widgeon.View.Schema.Catalog.Table.Column create(Widgeon.View.Schema.Catalog.Table parent, Widgeon.Base.Schema.Catalog.Table.Column base, String name);
+
+                            /**
+                             * Select all the views of a Column.
+                             *
+                             */
+                            public Iterable<Widgeon.View.Schema.Catalog.Table.Column> select(Widgeon.Base.Schema.Catalog.Table.Column base);
 
                             }
 

@@ -44,10 +44,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
@@ -139,11 +138,34 @@ implements Widgeon.View.Schema
             return SchemaViewEntity.class ;
             }
 
-        @Override
-        @CreateEntityMethod
-        public Widgeon.View.Schema create(final Widgeon.View parent, final Widgeon.Base.Schema base)
+        /**
+         * Insert a View into the database and create views for each child.
+         *
+         */
+        @CascadeEntityMethod
+        protected Widgeon.View.Schema insert(SchemaViewEntity entity)
             {
-            return super.insert(
+            super.insert(
+                entity
+                );
+            for (Widgeon.Base.Schema.Catalog catalog : entity.base().catalogs().select())
+                {
+                this.catalogs().cascade(
+                    entity,
+                    catalog
+                    );
+                }
+            return entity ;
+            }
+
+        /**
+         * Create a default View of a Schema.
+         *
+         */
+        @CascadeEntityMethod
+        protected Widgeon.View.Schema create(final Widgeon.View parent, final Widgeon.Base.Schema base)
+            {
+            return this.insert(
                 new SchemaViewEntity(
                     parent,
                     base
@@ -151,11 +173,49 @@ implements Widgeon.View.Schema
                 );
             }
 
+        /**
+         * Search for an existing View of a Schema.
+         *
+         */
+        @SelectEntityMethod
+        protected Widgeon.View.Schema search(final Widgeon.View parent, final Widgeon.Base.Schema base)
+            {
+            return super.first(
+                super.query(
+                    "widgeon.view.schema-select-parent.base"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setEntity(
+                        "base",
+                        base
+                    )
+                );
+            }
+
+        @Override
+        @CascadeEntityMethod
+        public Widgeon.View.Schema cascade(final Widgeon.View parent, final Widgeon.Base.Schema base)
+            {
+            Widgeon.View.Schema result = this.search(
+                parent,
+                base
+                );
+            if (result == null)
+                {
+                result = this.create(
+                    parent,
+                    base
+                    );
+                }
+            return result ;
+            }
+
         @Override
         @CreateEntityMethod
         public Widgeon.View.Schema create(final Widgeon.View parent, final Widgeon.Base.Schema base, final String name)
             {
-            return super.insert(
+            return this.insert(
                 new SchemaViewEntity(
                     parent,
                     base,
@@ -183,7 +243,7 @@ implements Widgeon.View.Schema
         public Widgeon.View.Schema select(final Widgeon.View parent, final String name)
         throws NameNotFoundException
             {
-            Widgeon.View.Schema result = search(
+            Widgeon.View.Schema result = this.search(
                 parent,
                 name
                 );
@@ -217,24 +277,7 @@ implements Widgeon.View.Schema
 
         @Override
         @SelectEntityMethod
-        public Widgeon.View.Schema search(final Widgeon.View parent, final Widgeon.Base.Schema base)
-            {
-            return super.first(
-                super.query(
-                    "widgeon.view.schema-select-parent.base"
-                    ).setEntity(
-                        "parent",
-                        parent
-                    ).setEntity(
-                        "base",
-                        base
-                    )
-                );
-            }
-
-        @Override
-        @SelectEntityMethod
-        public Iterable<Widgeon.View.Schema> select(Widgeon.Base.Schema base)
+        public Iterable<Widgeon.View.Schema> select(final Widgeon.Base.Schema base)
             {
             return super.iterable(
                 super.query(
@@ -292,29 +335,16 @@ implements Widgeon.View.Schema
                     name
                     ) ;
                 }
-
+/*
             @Override
-            public Widgeon.View.Schema.Catalog check(Widgeon.Base.Schema.Catalog base)
+            public Widgeon.View.Schema.Catalog cascade(Widgeon.Base.Schema.Catalog base)
                 {
-                log.debug("Checking for view of Catalog base [{}]", base);
-                //
-                // Check for a matching view.
-                Widgeon.View.Schema.Catalog view = womble().widgeons().views().schemas().catalogs().search(
+                return womble().widgeons().views().schemas().catalogs().cascade(
                     SchemaViewEntity.this,
                     base
                     ) ;
-                //
-                // If we didn't find a match, create it.
-                if (view == null)
-                    {
-                    view = womble().widgeons().views().schemas().catalogs().create(
-                        SchemaViewEntity.this,
-                        base
-                        ) ;
-                    }
-                log.debug("Found Catalog view [{}]", view);
-                return view ;
                 }
+ */
             };
         }
 
@@ -352,18 +382,6 @@ implements Widgeon.View.Schema
             );
         this.base   = base   ;
         this.parent = parent ;
-        }
-
-    @Override
-    public String name()
-        {
-        if (this.name != null)
-            {
-            return this.name ;
-            }
-        else {
-            return base.name() ;
-            }
         }
 
     /**
@@ -408,6 +426,18 @@ implements Widgeon.View.Schema
     public Widgeon.Base.Schema base()
         {
         return this.base ;
+        }
+
+    @Override
+    public String name()
+        {
+        if (this.name != null)
+            {
+            return this.name ;
+            }
+        else {
+            return base.name() ;
+            }
         }
 
     @Override

@@ -44,10 +44,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
@@ -132,11 +131,34 @@ implements Widgeon.View.Schema.Catalog
             return CatalogViewEntity.class ;
             }
 
-        @Override
-        @CreateEntityMethod
-        public Widgeon.View.Schema.Catalog create(final Widgeon.View.Schema parent, final Widgeon.Base.Schema.Catalog base)
+        /**
+         * Insert a View into the database and create views for each child.
+         *
+         */
+        @CascadeEntityMethod
+        protected Widgeon.View.Schema.Catalog insert(CatalogViewEntity entity)
             {
-            return super.insert(
+            super.insert(
+                entity
+                );
+            for (Widgeon.Base.Schema.Catalog.Table table : entity.base().tables().select())
+                {
+                this.tables().cascade(
+                    entity,
+                    table
+                    );
+                }
+            return entity ;
+            }
+
+        /**
+         * Create a default View of a Catalog.
+         *
+         */
+        @CreateEntityMethod
+        protected Widgeon.View.Schema.Catalog create(final Widgeon.View.Schema parent, final Widgeon.Base.Schema.Catalog base)
+            {
+            return this.insert(
                 new CatalogViewEntity(
                     parent,
                     base
@@ -144,11 +166,49 @@ implements Widgeon.View.Schema.Catalog
                 );
             }
 
+        /**
+         * Search for an existing View of a Catalog.
+         *
+         */
+        @SelectEntityMethod
+        protected Widgeon.View.Schema.Catalog search(final Widgeon.View.Schema parent, final Widgeon.Base.Schema.Catalog base)
+            {
+            return super.first(
+                super.query(
+                    "widgeon.view.catalog-select-parent.base"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setEntity(
+                        "base",
+                        base
+                    )
+                );
+            }
+
+        @Override
+        @CreateEntityMethod
+        public Widgeon.View.Schema.Catalog cascade(final Widgeon.View.Schema parent, final Widgeon.Base.Schema.Catalog base)
+            {
+            Widgeon.View.Schema.Catalog result = this.search(
+                parent,
+                base
+                );
+            if (result == null)
+                {
+                result = this.create(
+                    parent,
+                    base
+                    );
+                }
+            return result ;
+            }
+
         @Override
         @CreateEntityMethod
         public Widgeon.View.Schema.Catalog create(final Widgeon.View.Schema parent, final Widgeon.Base.Schema.Catalog base, final String name)
             {
-            return super.insert(
+            return this.insert(
                 new CatalogViewEntity(
                     parent,
                     base,
@@ -176,7 +236,7 @@ implements Widgeon.View.Schema.Catalog
         public Widgeon.View.Schema.Catalog select(final Widgeon.View.Schema parent, final String name)
         throws NameNotFoundException
             {
-            Widgeon.View.Schema.Catalog result = search(
+            Widgeon.View.Schema.Catalog result = this.search(
                 parent,
                 name
                 );
@@ -210,18 +270,15 @@ implements Widgeon.View.Schema.Catalog
 
         @Override
         @SelectEntityMethod
-        public Widgeon.View.Schema.Catalog search(final Widgeon.View.Schema parent, final Widgeon.Base.Schema.Catalog base)
+        public Iterable<Widgeon.View.Schema.Catalog> select(final Widgeon.Base.Schema.Catalog base)
             {
-            return super.first(
+            return super.iterable(
                 super.query(
-                    "widgeon.view.catalog-select-parent.base"
-                    ).setEntity(
-                        "parent",
-                        parent
+                    "widgeon.view.catalog-select-base"
                     ).setEntity(
                         "base",
                         base
-                    )
+                        )
                 );
             }
 
@@ -237,7 +294,6 @@ implements Widgeon.View.Schema.Catalog
             {
             return this.tables ;
             }
-
         }
 
     @Override
@@ -249,22 +305,40 @@ implements Widgeon.View.Schema.Catalog
             @Override
             public Iterable<Widgeon.View.Schema.Catalog.Table> select()
                 {
-                return null ;
+                return womble().widgeons().views().schemas().catalogs().tables().select(
+                    CatalogViewEntity.this
+                    ) ;
                 }
 
             @Override
             public Widgeon.View.Schema.Catalog.Table select(String name)
             throws NameNotFoundException
                 {
-                return null ;
+                return womble().widgeons().views().schemas().catalogs().tables().select(
+                    CatalogViewEntity.this,
+                    name
+                    ) ;
                 }
 
             @Override
             public Widgeon.View.Schema.Catalog.Table search(String name)
                 {
-                return null ;
+                return womble().widgeons().views().schemas().catalogs().tables().search(
+                    CatalogViewEntity.this,
+                    name
+                    ) ;
                 }
 
+/*
+            @Override
+            public Widgeon.View.Schema.Catalog.Table cascade(Widgeon.Base.Schema.Catalog.Table base)
+                {
+                return womble().widgeons().views().schemas().catalogs().tables().cascade(
+                    CatalogViewEntity.this,
+                    base
+                    ) ;
+                }
+ */
             };
         }
 
@@ -302,18 +376,6 @@ implements Widgeon.View.Schema.Catalog
             );
         this.base   = base   ;
         this.parent = parent ;
-        }
-
-    @Override
-    public String name()
-        {
-        if (this.name != null)
-            {
-            return this.name ;
-            }
-        else {
-            return base.name() ;
-            }
         }
 
     /**
@@ -358,6 +420,18 @@ implements Widgeon.View.Schema.Catalog
     public Widgeon.Base.Schema.Catalog base()
         {
         return this.base ;
+        }
+
+    @Override
+    public String name()
+        {
+        if (this.name != null)
+            {
+            return this.name ;
+            }
+        else {
+            return base.name() ;
+            }
         }
 
     @Override

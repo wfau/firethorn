@@ -44,10 +44,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
@@ -78,11 +77,19 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.TableBaseEntity;
         {
         @NamedQuery(
             name  = "widgeon.view.table-select-parent",
-            query = "FROM TableViewEntity WHERE parent = :parent ORDER BY ident desc"
+            query = "FROM TableViewEntity WHERE (parent = :parent) ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "widgeon.view.table-select-parent.name",
-            query = "FROM TableViewEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
+            query = "FROM TableViewEntity WHERE ((parent = :parent) AND (((name IS NOT null) AND (name = :name)) OR ((name IS null) AND (base.name = :name)))) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "widgeon.view.table-select-base",
+            query = "FROM TableViewEntity WHERE (base = :base) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "widgeon.view.table-select-parent.base",
+            query = "FROM TableViewEntity WHERE ((parent = :parent) AND (base = :base)) ORDER BY ident desc"
             )
         }
     )
@@ -125,6 +132,79 @@ implements Widgeon.View.Schema.Catalog.Table
             return TableViewEntity.class ;
             }
 
+        /**
+         * Insert a View into the database and create views for each child.
+         *
+         */
+        @CascadeEntityMethod
+        protected Widgeon.View.Schema.Catalog.Table insert(TableViewEntity entity)
+            {
+            super.insert(
+                entity
+                );
+            for (Widgeon.Base.Schema.Catalog.Table.Column column : entity.base().columns().select())
+                {
+                this.columns().cascade(
+                    entity,
+                    column
+                    );
+                }
+            return entity ;
+            }
+
+        /**
+         * Create a default View of a Table.
+         *
+         */
+        @CascadeEntityMethod
+        protected Widgeon.View.Schema.Catalog.Table create(final Widgeon.View.Schema.Catalog parent, final Widgeon.Base.Schema.Catalog.Table base)
+            {
+            return this.insert(
+                new TableViewEntity(
+                    parent,
+                    base
+                    )
+                );
+            }
+
+        /**
+         * Search for an existing View of a Table.
+         *
+         */
+        @SelectEntityMethod
+        protected Widgeon.View.Schema.Catalog.Table search(final Widgeon.View.Schema.Catalog parent, final Widgeon.Base.Schema.Catalog.Table base)
+            {
+            return super.first(
+                super.query(
+                    "widgeon.view.table-select-parent.base"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setEntity(
+                        "base",
+                        base
+                    )
+                );
+            }
+
+        @Override
+        @CascadeEntityMethod
+        public Widgeon.View.Schema.Catalog.Table cascade(final Widgeon.View.Schema.Catalog parent, final Widgeon.Base.Schema.Catalog.Table base)
+            {
+            Widgeon.View.Schema.Catalog.Table result = this.search(
+                parent,
+                base
+                );
+            if (result == null)
+                {
+                result = this.create(
+                    parent,
+                    base
+                    );
+                }
+            return result ;
+            }
+
         @Override
         @CreateEntityMethod
         public Widgeon.View.Schema.Catalog.Table create(final Widgeon.View.Schema.Catalog parent, final Widgeon.Base.Schema.Catalog.Table base, final String name)
@@ -157,24 +237,17 @@ implements Widgeon.View.Schema.Catalog.Table
         public Widgeon.View.Schema.Catalog.Table select(final Widgeon.View.Schema.Catalog parent, final String name)
         throws NameNotFoundException
             {
-            try {
-                return super.single(
-                    super.query(
-                        "widgeon.view.table-select-parent.name"
-                        ).setEntity(
-                            "parent",
-                            parent
-                        ).setString(
-                            "name",
-                            name
-                        )
-                    );
-                }
-            catch(EntityNotFoundException ouch)
+            Widgeon.View.Schema.Catalog.Table result = this.search(
+                parent,
+                name
+                );
+            if (result != null)
                 {
+                return result ;
+                }
+            else {
                 throw new NameNotFoundException(
-                    name,
-                    ouch
+                    name
                     );
                 }
             }
@@ -183,7 +256,31 @@ implements Widgeon.View.Schema.Catalog.Table
         @SelectEntityMethod
         public Widgeon.View.Schema.Catalog.Table search(final Widgeon.View.Schema.Catalog parent, final String name)
             {
-            return null ;
+            return super.first(
+                super.query(
+                    "widgeon.view.table-select-parent.name"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "name",
+                        name
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<Widgeon.View.Schema.Catalog.Table> select(final Widgeon.Base.Schema.Catalog.Table base)
+            {
+            return super.iterable(
+                super.query(
+                    "widgeon.view.table-select-base"
+                    ).setEntity(
+                        "base",
+                        base
+                        )
+                );
             }
 
         /**
@@ -206,42 +303,43 @@ implements Widgeon.View.Schema.Catalog.Table
         {
         return new Widgeon.View.Schema.Catalog.Table.Columns()
             {
-
             @Override
             public Iterable<Widgeon.View.Schema.Catalog.Table.Column> select()
                 {
-                return null ;
+                return womble().widgeons().views().schemas().catalogs().tables().columns().select(
+                    TableViewEntity.this
+                    ) ;
                 }
 
             @Override
             public Widgeon.View.Schema.Catalog.Table.Column select(String name)
             throws NameNotFoundException
                 {
-                return null ;
+                return womble().widgeons().views().schemas().catalogs().tables().columns().select(
+                    TableViewEntity.this,
+                    name
+                    ) ;
                 }
 
             @Override
             public Widgeon.View.Schema.Catalog.Table.Column search(String name)
                 {
-                return null ;
+                return womble().widgeons().views().schemas().catalogs().tables().columns().search(
+                    TableViewEntity.this,
+                    name
+                    ) ;
                 }
-
+/*
+            @Override
+            public Widgeon.View.Schema.Catalog.Table.Column cascade(Widgeon.Base.Schema.Catalog.Table.Column base)
+                {
+                return womble().widgeons().views().schemas().catalogs().tables().columns().cascade(
+                    TableViewEntity.this,
+                    base
+                    ) ;
+                }
+ */
             };
-        }
-
-    /**
-     * Check a view name, using the base name if the given name is null or empty.
-     *
-     */
-    private static String name(final Widgeon.Base.Schema.Catalog.Table base, final String name)
-        {
-        if ((name == null) || (name.trim().length() == 0))
-            {
-            return base.name();
-            }
-        else {
-            return name.trim() ;
-            }
         }
 
     /**
@@ -274,10 +372,7 @@ implements Widgeon.View.Schema.Catalog.Table
     protected TableViewEntity(final Widgeon.View.Schema.Catalog parent, final Widgeon.Base.Schema.Catalog.Table base, final String name)
         {
         super(
-            name(
-                base,
-                name
-                )
+            name
             );
         this.base = base ;
         this.parent = parent ;
@@ -325,6 +420,18 @@ implements Widgeon.View.Schema.Catalog.Table
     public Widgeon.Base.Schema.Catalog.Table base()
         {
         return this.base ;
+        }
+
+    @Override
+    public String name()
+        {
+        if (this.name != null)
+            {
+            return this.name ;
+            }
+        else {
+            return base.name() ;
+            }
         }
 
     @Override
