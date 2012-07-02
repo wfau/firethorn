@@ -41,14 +41,14 @@ extends WidgeonStatus
     public Catalogs catalogs();
 
     /**
-     * Public interface for accessing the Catalog for a Widgeon.
+     * Public interface for accessing a Widgeon's Catalogs.
      *
      */
     public interface Catalogs<CatalogType extends Widgeon.Catalog>
         {
 
         /**
-         * Select all the Catalog from the Widgeon.
+         * Select all the Catalogs from the Widgeon.
          *
          */
         public Iterable<CatalogType> select();
@@ -77,7 +77,7 @@ extends WidgeonStatus
         {
 
         /**
-         * Factory interface for creating and selecting Catalog.
+         * Factory interface for creating and selecting Catalogs.
          *
          */
         public static interface Factory<WidgeonType extends Widgeon, CatalogType extends Widgeon.Catalog>
@@ -85,7 +85,7 @@ extends WidgeonStatus
             {
 
             /**
-             * Select all the Catalog from a Widgeon.
+             * Select all the Catalogs from a Widgeon.
              *
              */
             public Iterable<CatalogType> select(WidgeonType parent);
@@ -112,7 +112,7 @@ extends WidgeonStatus
         public Schemas schemas();
 
         /**
-         * Public interface for accessing the Schemas for a Catalog.
+         * Public interface for accessing a Catalog's Schemas.
          *
          */
         public interface Schemas<SchemaType extends Widgeon.Catalog.Schema>
@@ -183,7 +183,7 @@ extends WidgeonStatus
             public Tables tables();
 
             /**
-             * Public interface for accessing the Tables for a Schema.
+             * Public interface for accessing a Schema's Tables.
              *
              */
             public interface Tables<TableType extends Widgeon.Catalog.Schema.Table>
@@ -254,7 +254,7 @@ extends WidgeonStatus
                 public Columns columns();
 
                 /**
-                 * Public interface for accessing the Columns for a Table.
+                 * Public interface for accessing a Table's Columns.
                  *
                  */
                 public interface Columns<ColumnType extends Widgeon.Catalog.Schema.Table.Column>
@@ -352,7 +352,7 @@ extends WidgeonStatus
             throws NameNotFoundException;
 
             /**
-             * Serahc for a Widgeon by name.
+             * Search for a Widgeon by name.
              *
              */
             public Widgeon.Base search(String name);
@@ -390,11 +390,12 @@ extends WidgeonStatus
             }
 
         /**
-         * Public interface for accessing the Views of a Widgeon.
+         * Public interface for accessing a Widgeon's Views.
          *
          */
         public interface Views
             {
+
             /*
              * Create a new View of the Widgeon.
              *
@@ -423,7 +424,7 @@ extends WidgeonStatus
             }
 
         /**
-         * Access to the Views of this Widgeon.
+         * Access to this Widgeon's Views.
          *
          */
         public Widgeon.Base.Views views();
@@ -445,7 +446,7 @@ extends WidgeonStatus
             }
 
         /**
-         * Access to the Catalogs for this Widgeon.
+         * Access to this Widgeon's Catalogs.
          *
          */
         public Catalogs catalogs();
@@ -487,14 +488,14 @@ extends WidgeonStatus
                 }
 
             /**
-             * Public interface for accessing the Views of a Catalog.
+             * Public interface for accessing a Catalog's Views.
              *
              */
             public interface Views
                 {
 
                 /*
-                 * Select all the Views of the Catalog.
+                 * Select all the Catalog's Views.
                  *
                  */
                 public Iterable<Widgeon.View.Catalog> select();
@@ -502,13 +503,13 @@ extends WidgeonStatus
                 }
 
             /**
-             * Access to the Views of this Catalog.
+             * Access to this Catalog's Views.
              *
              */
             public Widgeon.Base.Catalog.Views views();
 
             /**
-             * Public interface for accessing the Schemas of a Catalog.
+             * Public interface for accessing a Catalog's Schemas.
              *
              */
             public interface Schemas
@@ -524,7 +525,7 @@ extends WidgeonStatus
                 }
 
             /**
-             * Access to the Schemas for this Catalog.
+             * Access to this Catalog's Schemas.
              *
              */
             public Schemas schemas();
@@ -566,14 +567,14 @@ extends WidgeonStatus
                     }
 
                 /**
-                 * Public interface for accessing the Views of a Schema.
+                 * Public interface for accessing a Schema's Views.
                  *
                  */
                 public interface Views
                     {
 
                     /*
-                     * Select all the Views of the Schema.
+                     * Select all the Schema's Views.
                      *
                      */
                     public Iterable<Widgeon.View.Catalog.Schema> select();
@@ -581,13 +582,13 @@ extends WidgeonStatus
                     }
 
                 /**
-                 * Access to the Views of this Schema.
+                 * Access to this Schema's Views.
                  *
                  */
                 public Widgeon.Base.Catalog.Schema.Views views();
 
                 /**
-                 * Public interface for accessing the Tables of a Schema.
+                 * Public interface for accessing a Schema's Tables.
                  *
                  */
                 public interface Tables
@@ -603,7 +604,7 @@ extends WidgeonStatus
                     }
 
                 /**
-                 * Access to the Tables for this Schema.
+                 * Access to this Schema's Tables.
                  *
                  */
                 public Tables tables();
@@ -645,14 +646,14 @@ extends WidgeonStatus
                         }
 
                     /**
-                     * Public interface for accessing the Views of a Table.
+                     * Public interface for accessing a Table's Views.
                      *
                      */
                     public interface Views
                         {
 
                         /*
-                         * Select all the Views of the Table.
+                         * Select all the Table's Views.
                          *
                          */
                         public Iterable<Widgeon.View.Catalog.Schema.Table> select();
@@ -660,13 +661,13 @@ extends WidgeonStatus
                         }
 
                     /**
-                     * Access to the Views of this Table.
+                     * Access to this Table's Views.
                      *
                      */
                     public Widgeon.Base.Catalog.Schema.Table.Views views();
 
                     /**
-                     * Public interface for accessing the Columns of a Table.
+                     * Public interface for accessing a Table's Columns.
                      *
                      */
                     public interface Columns
@@ -682,7 +683,7 @@ extends WidgeonStatus
                         }
 
                     /**
-                     * Access to the Columns for this Table.
+                     * Access to this Table's Columns.
                      *
                      */
                     public Columns columns();
@@ -718,7 +719,7 @@ extends WidgeonStatus
                             }
 
                         /**
-                         * Public interface for accessing the Views of a Column.
+                         * Public interface for accessing a Column's Views.
                          *
                          */
                         public interface Views
@@ -733,7 +734,7 @@ extends WidgeonStatus
                             }
 
                         /**
-                         * Access to the Views of this Column.
+                         * Access to this Column's Views.
                          *
                          */
                         public Widgeon.Base.Catalog.Schema.Table.Column.Views views();
@@ -800,23 +801,16 @@ extends WidgeonStatus
         public Widgeon.Base base();
 
         /**
-         * Public interface for accessing the Catalog of a Widgeon.
+         * Public interface for accessing a Widgeon's Catalogs.
          *
          */
         public interface Catalogs
         extends Widgeon.Catalogs<Widgeon.View.Catalog>
             {
-
-            /**
-             * Find an existing View of a Catalog, or create a new one.
-             *
-            public Widgeon.View.Catalog cascade(Widgeon.Base.Catalog base);
-             */
-
             }
 
         /**
-         * Access to the Catalogs for this Widgeon.
+         * Access to this Widgeon's Catalogs.
          *
          */
         public Catalogs catalogs();
@@ -870,7 +864,7 @@ extends WidgeonStatus
             public Widgeon.Base.Catalog base();
 
             /**
-             * Public interface for accessing the Schemas of a Catalog.
+             * Public interface for accessing a Catalog's Schemas.
              *
              */
             public interface Schemas
@@ -879,7 +873,7 @@ extends WidgeonStatus
                 }
 
             /**
-             * Access to the Schemass for this Catalog.
+             * Access to this Catalog's Schemas.
              *
              */
             public Schemas schemas();
@@ -933,7 +927,7 @@ extends WidgeonStatus
                 public Widgeon.Base.Catalog.Schema base();
 
                 /**
-                 * Public interface for accessing the Tables of a Schema.
+                 * Public interface for accessing a Schema's Tables.
                  *
                  */
                 public interface Tables
@@ -942,7 +936,7 @@ extends WidgeonStatus
                     }
 
                 /**
-                 * Access to the Tables for this Schema.
+                 * Access to this Schema's Tables.
                  *
                  */
                 public Tables tables();
@@ -996,7 +990,7 @@ extends WidgeonStatus
                     public Widgeon.Base.Catalog.Schema.Table base();
 
                     /**
-                     * Public interface for accessing the Columns of a Table.
+                     * Public interface for accessing a Table's Columns.
                      *
                      */
                     public interface Columns
@@ -1005,7 +999,7 @@ extends WidgeonStatus
                         }
 
                     /**
-                     * Access to the Columns for this Table.
+                     * Access to this Table's Columns.
                      *
                      */
                     public Columns columns();
