@@ -51,23 +51,23 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base schema and catalog.
+        // Create base sparrow and warbler.
         assertNotNull(
-            base().schemas().create(
-                "schema-A"
-                ).catalogs().create(
-                    "catalog-A"
+            base().sparrows().create(
+                "sparrow-A"
+                ).warblers().create(
+                    "warbler-A"
                     )
             );
         //
-        // Select catalog view works.
+        // Select warbler view works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
-                    ).catalogs().select(
-                        "catalog-A"
+                ).sparrows().select(
+                    "sparrow-A"
+                    ).warblers().select(
+                        "warbler-A"
                         )
 
             );
@@ -76,10 +76,10 @@ extends WidgeonViewTestBase
         try {
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
-                    ).catalogs().select(
-                        "catalog-A"
+                ).sparrows().select(
+                    "sparrow-A"
+                    ).warblers().select(
+                        "warbler-A"
                         ).tables().select(
                             "table-A"
                             );
@@ -106,32 +106,32 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base schema and catalog.
+        // Create base sparrow and warbler.
         assertNotNull(
-            base().schemas().create(
-                "schema-A"
-                ).catalogs().create(
-                    "catalog-A"
+            base().sparrows().create(
+                "sparrow-A"
+                ).warblers().create(
+                    "warbler-A"
                     )
             );
         //
-        // Select catalog view works.
+        // Select warbler view works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
-                    ).catalogs().select(
-                        "catalog-A"
+                ).sparrows().select(
+                    "sparrow-A"
+                    ).warblers().select(
+                        "warbler-A"
                         )
             );
         //
         // Create base table.
         assertNotNull(
-            base().schemas().select(
-                "schema-A"
-                ).catalogs().select(
-                    "catalog-A"
+            base().sparrows().select(
+                "sparrow-A"
+                ).warblers().select(
+                    "warbler-A"
                     ).tables().create(
                         "table-A"
                         )
@@ -141,10 +141,10 @@ extends WidgeonViewTestBase
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
-                    ).catalogs().select(
-                        "catalog-A"
+                ).sparrows().select(
+                    "sparrow-A"
+                    ).warblers().select(
+                        "warbler-A"
                         ).tables().select(
                             "table-A"
                             )
@@ -163,25 +163,25 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base schema, catalog and table.
+        // Create base sparrow, warbler and table.
         assertNotNull(
-            base().schemas().create(
-                "schema-A"
-                ).catalogs().create(
-                    "catalog-A"
+            base().sparrows().create(
+                "sparrow-A"
+                ).warblers().create(
+                    "warbler-A"
                     ).tables().create(
                         "table-A"
                         )
             );
         //
-        // Select schema, catalog and table view works.
+        // Select sparrow, warbler and table view works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
-                    ).catalogs().select(
-                        "catalog-A"
+                ).sparrows().select(
+                    "sparrow-A"
+                    ).warblers().select(
+                        "warbler-A"
                         ).tables().select(
                             "table-A"
                             )

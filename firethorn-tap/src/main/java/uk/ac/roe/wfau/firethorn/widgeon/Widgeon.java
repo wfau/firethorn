@@ -35,175 +35,175 @@ extends WidgeonStatus
     {
 
     /**
-     * Access to this Widgeon's Schema.
+     * Access to this Widgeon's Sparrow.
      *
      */
-    public Schemas schemas();
+    public Sparrows sparrows();
 
     /**
-     * Public interface for accessing the Schema for a Widgeon.
+     * Public interface for accessing the Sparrow for a Widgeon.
      *
      */
-    public interface Schemas<SchemaType extends Widgeon.Schema>
+    public interface Sparrows<SparrowType extends Widgeon.Sparrow>
         {
 
         /**
-         * Select all the Schema from the Widgeon.
+         * Select all the Sparrow from the Widgeon.
          *
          */
-        public Iterable<SchemaType> select();
+        public Iterable<SparrowType> select();
 
         /**
-         * Select a named Schema from the Widgeon.
+         * Select a named Sparrow from the Widgeon.
          *
          */
-        public SchemaType select(String name)
+        public SparrowType select(String name)
         throws NameNotFoundException;
 
         /**
-         * Search for a named Schema from the Widgeon.
+         * Search for a named Sparrow from the Widgeon.
          *
          */
-        public SchemaType search(String name);
+        public SparrowType search(String name);
 
         }
 
     /**
-     * Public interface for Schema metadata.
+     * Public interface for Sparrow metadata.
      *
      */
-    public interface Schema<WidgeonType extends Widgeon>
+    public interface Sparrow<WidgeonType extends Widgeon>
     extends WidgeonComponent<WidgeonType>
         {
 
         /**
-         * Factory interface for creating and selecting Schema.
+         * Factory interface for creating and selecting Sparrow.
          *
          */
-        public static interface Factory<WidgeonType extends Widgeon, SchemaType extends Widgeon.Schema>
-        extends Entity.Factory<SchemaType>
+        public static interface Factory<WidgeonType extends Widgeon, SparrowType extends Widgeon.Sparrow>
+        extends Entity.Factory<SparrowType>
             {
 
             /**
-             * Select all the Schema from a Widgeon.
+             * Select all the Sparrow from a Widgeon.
              *
              */
-            public Iterable<SchemaType> select(WidgeonType parent);
+            public Iterable<SparrowType> select(WidgeonType parent);
 
             /**
-             * Select a named Schema from a Widgeon.
+             * Select a named Sparrow from a Widgeon.
              *
              */
-            public SchemaType select(WidgeonType parent, String name)
+            public SparrowType select(WidgeonType parent, String name)
             throws NameNotFoundException;
 
             /**
-             * Search for a named Schema from a Widgeon.
+             * Search for a named Sparrow from a Widgeon.
              *
              */
-            public SchemaType search(WidgeonType parent, String name);
+            public SparrowType search(WidgeonType parent, String name);
 
             }
 
         /**
-         * Access to this Schema's Catalogs.
+         * Access to this Sparrow's Warblers.
          *
          */
-        public Catalogs catalogs();
+        public Warblers warblers();
 
         /**
-         * Public interface for accessing the Catalogs for a Schema.
+         * Public interface for accessing the Warblers for a Sparrow.
          *
          */
-        public interface Catalogs<CatalogType extends Widgeon.Schema.Catalog>
+        public interface Warblers<WarblerType extends Widgeon.Sparrow.Warbler>
             {
 
             /**
-             * Select all the Catalogs from the Schema.
+             * Select all the Warblers from the Sparrow.
              *
              */
-            public Iterable<CatalogType> select();
+            public Iterable<WarblerType> select();
 
             /**
-             * Select a named Catalog from the Schema.
+             * Select a named Warbler from the Sparrow.
              *
              */
-            public CatalogType select(String name)
+            public WarblerType select(String name)
             throws NameNotFoundException;
 
             /**
-             * Search for a named Catalog from the Schema.
+             * Search for a named Warbler from the Sparrow.
              *
              */
-            public CatalogType search(String name);
+            public WarblerType search(String name);
 
             }
 
         /**
-         * Public interface for Catalog metadata.
+         * Public interface for Warbler metadata.
          *
          */
-        public interface Catalog<SchemaType extends Widgeon.Schema>
-        extends WidgeonComponent<SchemaType>
+        public interface Warbler<SparrowType extends Widgeon.Sparrow>
+        extends WidgeonComponent<SparrowType>
             {
 
             /**
-             * Factory interface for creating and selecting Catalogs.
+             * Factory interface for creating and selecting Warblers.
              *
              */
-            public static interface Factory<SchemaType extends Widgeon.Schema, CatalogType extends Widgeon.Schema.Catalog>
-            extends Entity.Factory<CatalogType>
+            public static interface Factory<SparrowType extends Widgeon.Sparrow, WarblerType extends Widgeon.Sparrow.Warbler>
+            extends Entity.Factory<WarblerType>
                 {
 
                 /**
-                 * Select all the Catalogs from a Schema.
+                 * Select all the Warblers from a Sparrow.
                  *
                  */
-                public Iterable<CatalogType> select(SchemaType parent);
+                public Iterable<WarblerType> select(SparrowType parent);
 
                 /**
-                 * Select a named Catalog from a Schema.
+                 * Select a named Warbler from a Sparrow.
                  *
                  */
-                public CatalogType select(SchemaType parent, String name)
+                public WarblerType select(SparrowType parent, String name)
                 throws NameNotFoundException;
 
                 /**
-                 * Search for named Catalog from a Schema.
+                 * Search for named Warbler from a Sparrow.
                  *
                  */
-                public CatalogType search(SchemaType parent, String name);
+                public WarblerType search(SparrowType parent, String name);
 
                 }
 
             /**
-             * Access to this Catalog's Tables.
+             * Access to this Warbler's Tables.
              *
              */
             public Tables tables();
 
             /**
-             * Public interface for accessing the Tables for a Catalog.
+             * Public interface for accessing the Tables for a Warbler.
              *
              */
-            public interface Tables<TableType extends Widgeon.Schema.Catalog.Table>
+            public interface Tables<TableType extends Widgeon.Sparrow.Warbler.Table>
                 {
 
                 /**
-                 * Select all the Tables from the Catalog.
+                 * Select all the Tables from the Warbler.
                  *
                  */
                 public Iterable<TableType> select();
 
                 /**
-                 * Select a named Table from the Catalog.
+                 * Select a named Table from the Warbler.
                  *
                  */
                 public TableType select(String name)
                 throws NameNotFoundException;
 
                 /**
-                 * Search for a named Table from the Catalog.
+                 * Search for a named Table from the Warbler.
                  *
                  */
                 public TableType search(String name);
@@ -214,36 +214,36 @@ extends WidgeonStatus
              * Public interface for Table metadata.
              *
              */
-            public interface Table<CatalogType extends Widgeon.Schema.Catalog>
-            extends WidgeonComponent<CatalogType>
+            public interface Table<WarblerType extends Widgeon.Sparrow.Warbler>
+            extends WidgeonComponent<WarblerType>
                 {
 
                 /**
                  * Factory interface for creating and selecting Tables.
                  *
                  */
-                public static interface Factory<CatalogType extends Widgeon.Schema.Catalog, TableType extends Widgeon.Schema.Catalog.Table>
+                public static interface Factory<WarblerType extends Widgeon.Sparrow.Warbler, TableType extends Widgeon.Sparrow.Warbler.Table>
                 extends Entity.Factory<TableType>
                     {
 
                     /**
-                     * Select all the Tables from a Catalog.
+                     * Select all the Tables from a Warbler.
                      *
                      */
-                    public Iterable<TableType> select(CatalogType parent);
+                    public Iterable<TableType> select(WarblerType parent);
 
                     /**
-                     * Select a named Table from a Catalog.
+                     * Select a named Table from a Warbler.
                      *
                      */
-                    public TableType select(CatalogType parent, String name)
+                    public TableType select(WarblerType parent, String name)
                     throws NameNotFoundException;
 
                     /**
-                     * Search for a named Table from a Catalog.
+                     * Search for a named Table from a Warbler.
                      *
                      */
-                    public TableType search(CatalogType parent, String name);
+                    public TableType search(WarblerType parent, String name);
 
                     }
 
@@ -257,7 +257,7 @@ extends WidgeonStatus
                  * Public interface for accessing the Columns for a Table.
                  *
                  */
-                public interface Columns<ColumnType extends Widgeon.Schema.Catalog.Table.Column>
+                public interface Columns<ColumnType extends Widgeon.Sparrow.Warbler.Table.Column>
                     {
 
                     /**
@@ -285,7 +285,7 @@ extends WidgeonStatus
                  * Public interface for Column metadata.
                  *
                  */
-                public interface Column<TableType extends Widgeon.Schema.Catalog.Table>
+                public interface Column<TableType extends Widgeon.Sparrow.Warbler.Table>
                 extends WidgeonComponent<TableType>
                     {
 
@@ -293,7 +293,7 @@ extends WidgeonStatus
                      * Factory interface for creating and selecting Columns.
                      *
                      */
-                    public static interface Factory<TableType extends Widgeon.Schema.Catalog.Table, ColumnType extends Widgeon.Schema.Catalog.Table.Column>
+                    public static interface Factory<TableType extends Widgeon.Sparrow.Warbler.Table, ColumnType extends Widgeon.Sparrow.Warbler.Table.Column>
                     extends Entity.Factory<ColumnType>
                         {
 
@@ -382,10 +382,10 @@ extends WidgeonStatus
             public Widgeon.View.Factory views();
 
             /**
-             * Access to our Schema factory.
+             * Access to our Sparrow factory.
              * 
              */
-            public Widgeon.Base.Schema.Factory schemas();
+            public Widgeon.Base.Sparrow.Factory sparrows();
 
             }
 
@@ -429,181 +429,181 @@ extends WidgeonStatus
         public Widgeon.Base.Views views();
 
         /**
-         * Public interface for accessing the Schema of a Widgeon.
+         * Public interface for accessing a Widgeon's Sparrows.
          *
          */
-        public interface Schemas
-        extends Widgeon.Schemas<Widgeon.Base.Schema>
+        public interface Sparrows
+        extends Widgeon.Sparrows<Widgeon.Base.Sparrow>
             {
 
             /**
-             * Create a new Schema for the Widgeon.
+             * Create a new Sparrow for the Widgeon.
              *
              */
-            public Widgeon.Base.Schema create(String name);
+            public Widgeon.Base.Sparrow create(String name);
 
             }
 
         /**
-         * Access to the Schemas for this Widgeon.
+         * Access to the Sparrows for this Widgeon.
          *
          */
-        public Schemas schemas();
+        public Sparrows sparrows();
 
         /**
-         * Public interface for Schema metadata.
+         * Public interface for Sparrow metadata.
          *
          */
-        public interface Schema
-        extends Widgeon.Schema<Widgeon.Base>
+        public interface Sparrow
+        extends Widgeon.Sparrow<Widgeon.Base>
             {
 
             /**
-             * Factory interface for creating and selecting Schema.
+             * Factory interface for creating and selecting Sparrow.
              *
              */
             public static interface Factory
-            extends Widgeon.Schema.Factory<Widgeon.Base, Widgeon.Base.Schema>
+            extends Widgeon.Sparrow.Factory<Widgeon.Base, Widgeon.Base.Sparrow>
                 {
 
                 /**
-                 * Create a new Schema for a Widgeon.
+                 * Create a new Sparrow for a Widgeon.
                  *
                  */
-                public Widgeon.Base.Schema create(Widgeon.Base parent, String name);
+                public Widgeon.Base.Sparrow create(Widgeon.Base parent, String name);
 
                 /**
                  * Access to our View factory.
                  * 
                  */
-                public Widgeon.View.Schema.Factory views();
+                public Widgeon.View.Sparrow.Factory views();
 
                 /**
-                 * Access to our Catalog factory.
+                 * Access to our Warbler factory.
                  * 
                  */
-                public Widgeon.Base.Schema.Catalog.Factory catalogs();
+                public Widgeon.Base.Sparrow.Warbler.Factory warblers();
 
                 }
 
             /**
-             * Public interface for accessing the Views of a Schema.
+             * Public interface for accessing the Views of a Sparrow.
              *
              */
             public interface Views
                 {
 
                 /*
-                 * Select all the Views of the Schema.
+                 * Select all the Views of the Sparrow.
                  *
                  */
-                public Iterable<Widgeon.View.Schema> select();
+                public Iterable<Widgeon.View.Sparrow> select();
 
                 }
 
             /**
-             * Access to the Views of this Schema.
+             * Access to the Views of this Sparrow.
              *
              */
-            public Widgeon.Base.Schema.Views views();
+            public Widgeon.Base.Sparrow.Views views();
 
             /**
-             * Public interface for accessing the Catalogs of a Schema.
+             * Public interface for accessing the Warblers of a Sparrow.
              *
              */
-            public interface Catalogs
-            extends Widgeon.Schema.Catalogs<Widgeon.Base.Schema.Catalog>
+            public interface Warblers
+            extends Widgeon.Sparrow.Warblers<Widgeon.Base.Sparrow.Warbler>
                 {
 
                 /**
-                 * Create a new Catalog for the Schema.
+                 * Create a new Warbler for the Sparrow.
                  *
                  */
-                public Widgeon.Base.Schema.Catalog create(String name);
+                public Widgeon.Base.Sparrow.Warbler create(String name);
 
                 }
 
             /**
-             * Access to the Catalogs for this Schema.
+             * Access to the Warblers for this Sparrow.
              *
              */
-            public Catalogs catalogs();
+            public Warblers warblers();
 
             /**
-             * Public interface for Catalog metadata.
+             * Public interface for Warbler metadata.
              *
              */
-            public interface Catalog
-            extends Widgeon.Schema.Catalog
+            public interface Warbler
+            extends Widgeon.Sparrow.Warbler
                 {
 
                 /**
-                 * Factory interface for creating and selecting Catalogs.
+                 * Factory interface for creating and selecting Warblers.
                  *
                  */
                 public static interface Factory
-                extends Widgeon.Schema.Catalog.Factory<Widgeon.Base.Schema, Widgeon.Base.Schema.Catalog>
+                extends Widgeon.Sparrow.Warbler.Factory<Widgeon.Base.Sparrow, Widgeon.Base.Sparrow.Warbler>
                     {
 
                     /**
-                     * Create a new Catalog for a Schema.
+                     * Create a new Warbler for a Sparrow.
                      *
                      */
-                    public Widgeon.Base.Schema.Catalog create(Widgeon.Base.Schema parent, String name);
+                    public Widgeon.Base.Sparrow.Warbler create(Widgeon.Base.Sparrow parent, String name);
 
                     /**
                      * Access to our View factory.
                      * 
                      */
-                    public Widgeon.View.Schema.Catalog.Factory views();
+                    public Widgeon.View.Sparrow.Warbler.Factory views();
 
                     /**
                      * Access to our Table factory.
                      * 
                      */
-                    public Widgeon.Base.Schema.Catalog.Table.Factory tables();
+                    public Widgeon.Base.Sparrow.Warbler.Table.Factory tables();
 
                     }
 
                 /**
-                 * Public interface for accessing the Views of a Catalog.
+                 * Public interface for accessing the Views of a Warbler.
                  *
                  */
                 public interface Views
                     {
 
                     /*
-                     * Select all the Views of the Catalog.
+                     * Select all the Views of the Warbler.
                      *
                      */
-                    public Iterable<Widgeon.View.Schema.Catalog> select();
+                    public Iterable<Widgeon.View.Sparrow.Warbler> select();
 
                     }
 
                 /**
-                 * Access to the Views of this Catalog.
+                 * Access to the Views of this Warbler.
                  *
                  */
-                public Widgeon.Base.Schema.Catalog.Views views();
+                public Widgeon.Base.Sparrow.Warbler.Views views();
 
                 /**
-                 * Public interface for accessing the Tables of a Catalog.
+                 * Public interface for accessing the Tables of a Warbler.
                  *
                  */
                 public interface Tables
-                extends Widgeon.Schema.Catalog.Tables<Widgeon.Base.Schema.Catalog.Table>
+                extends Widgeon.Sparrow.Warbler.Tables<Widgeon.Base.Sparrow.Warbler.Table>
                     {
 
                     /**
-                     * Create a new Table for the Catalog.
+                     * Create a new Table for the Warbler.
                      *
                      */
-                    public Widgeon.Base.Schema.Catalog.Table create(String name);
+                    public Widgeon.Base.Sparrow.Warbler.Table create(String name);
 
                     }
 
                 /**
-                 * Access to the Tables for this Catalog.
+                 * Access to the Tables for this Warbler.
                  *
                  */
                 public Tables tables();
@@ -613,7 +613,7 @@ extends WidgeonStatus
                  *
                  */
                 public interface Table
-                extends Widgeon.Schema.Catalog.Table
+                extends Widgeon.Sparrow.Warbler.Table
                     {
 
                     /**
@@ -621,26 +621,26 @@ extends WidgeonStatus
                      *
                      */
                     public static interface Factory
-                    extends Widgeon.Schema.Catalog.Table.Factory<Widgeon.Base.Schema.Catalog, Widgeon.Base.Schema.Catalog.Table>
+                    extends Widgeon.Sparrow.Warbler.Table.Factory<Widgeon.Base.Sparrow.Warbler, Widgeon.Base.Sparrow.Warbler.Table>
                         {
 
                         /**
-                         * Create a new Table for a Catalog.
+                         * Create a new Table for a Warbler.
                          *
                          */
-                        public Widgeon.Base.Schema.Catalog.Table create(Widgeon.Base.Schema.Catalog parent, String name);
+                        public Widgeon.Base.Sparrow.Warbler.Table create(Widgeon.Base.Sparrow.Warbler parent, String name);
 
                         /**
                          * Access to our View factory.
                          * 
                          */
-                        public Widgeon.View.Schema.Catalog.Table.Factory views();
+                        public Widgeon.View.Sparrow.Warbler.Table.Factory views();
 
                         /**
                          * Access to our Column factory.
                          * 
                          */
-                        public Widgeon.Base.Schema.Catalog.Table.Column.Factory columns();
+                        public Widgeon.Base.Sparrow.Warbler.Table.Column.Factory columns();
 
                         }
 
@@ -655,7 +655,7 @@ extends WidgeonStatus
                          * Select all the Views of the Table.
                          *
                          */
-                        public Iterable<Widgeon.View.Schema.Catalog.Table> select();
+                        public Iterable<Widgeon.View.Sparrow.Warbler.Table> select();
 
                         }
 
@@ -663,21 +663,21 @@ extends WidgeonStatus
                      * Access to the Views of this Table.
                      *
                      */
-                    public Widgeon.Base.Schema.Catalog.Table.Views views();
+                    public Widgeon.Base.Sparrow.Warbler.Table.Views views();
 
                     /**
                      * Public interface for accessing the Columns of a Table.
                      *
                      */
                     public interface Columns
-                    extends Widgeon.Schema.Catalog.Table.Columns<Widgeon.Base.Schema.Catalog.Table.Column>
+                    extends Widgeon.Sparrow.Warbler.Table.Columns<Widgeon.Base.Sparrow.Warbler.Table.Column>
                         {
 
                         /**
                          * Create a new Column for the Table.
                          *
                          */
-                        public Widgeon.Base.Schema.Catalog.Table.Column create(String name);
+                        public Widgeon.Base.Sparrow.Warbler.Table.Column create(String name);
 
                         }
 
@@ -692,7 +692,7 @@ extends WidgeonStatus
                      *
                      */
                     public interface Column
-                    extends Widgeon.Schema.Catalog.Table.Column
+                    extends Widgeon.Sparrow.Warbler.Table.Column
                         {
 
                         /**
@@ -700,20 +700,20 @@ extends WidgeonStatus
                          *
                          */
                         public static interface Factory
-                        extends Widgeon.Schema.Catalog.Table.Column.Factory<Widgeon.Base.Schema.Catalog.Table, Widgeon.Base.Schema.Catalog.Table.Column>
+                        extends Widgeon.Sparrow.Warbler.Table.Column.Factory<Widgeon.Base.Sparrow.Warbler.Table, Widgeon.Base.Sparrow.Warbler.Table.Column>
                             {
 
                             /**
                              * Create a new Column for a Table.
                              *
                              */
-                            public Widgeon.Base.Schema.Catalog.Table.Column create(Widgeon.Base.Schema.Catalog.Table parent, String name);
+                            public Widgeon.Base.Sparrow.Warbler.Table.Column create(Widgeon.Base.Sparrow.Warbler.Table parent, String name);
 
                             /**
                              * Access to our View factory.
                              * 
                              */
-                            public Widgeon.View.Schema.Catalog.Table.Column.Factory views();
+                            public Widgeon.View.Sparrow.Warbler.Table.Column.Factory views();
 
                             }
 
@@ -728,7 +728,7 @@ extends WidgeonStatus
                              * Select all the Views of the Column.
                              *
                              */
-                            public Iterable<Widgeon.View.Schema.Catalog.Table.Column> select();
+                            public Iterable<Widgeon.View.Sparrow.Warbler.Table.Column> select();
 
                             }
 
@@ -736,7 +736,7 @@ extends WidgeonStatus
                          * Access to the Views of this Column.
                          *
                          */
-                        public Widgeon.Base.Schema.Catalog.Table.Column.Views views();
+                        public Widgeon.Base.Sparrow.Warbler.Table.Column.Views views();
 
                         }
                     }
@@ -786,10 +786,10 @@ extends WidgeonStatus
             public Widgeon.View search(Widgeon.Base base, String name);
 
             /**
-             * Access to our Schema factory.
+             * Access to our Sparrow factory.
              * 
              */
-            public Widgeon.View.Schema.Factory schemas();
+            public Widgeon.View.Sparrow.Factory sparrows();
 
             }
 
@@ -800,149 +800,149 @@ extends WidgeonStatus
         public Widgeon.Base base();
 
         /**
-         * Public interface for accessing the Schema of a Widgeon.
+         * Public interface for accessing the Sparrow of a Widgeon.
          *
          */
-        public interface Schemas
-        extends Widgeon.Schemas<Widgeon.View.Schema>
+        public interface Sparrows
+        extends Widgeon.Sparrows<Widgeon.View.Sparrow>
             {
 
             /**
-             * Find an existing View of a Schema, or create a new one.
+             * Find an existing View of a Sparrow, or create a new one.
              *
-            public Widgeon.View.Schema cascade(Widgeon.Base.Schema base);
+            public Widgeon.View.Sparrow cascade(Widgeon.Base.Sparrow base);
              */
 
             }
 
         /**
-         * Access to the Schemas for this Widgeon.
+         * Access to the Sparrows for this Widgeon.
          *
          */
-        public Schemas schemas();
+        public Sparrows sparrows();
 
         /**
-         * Public interface for a Schema View.
+         * Public interface for a Sparrow View.
          *
          */
-        public interface Schema
-        extends Widgeon.Schema<Widgeon.View>
+        public interface Sparrow
+        extends Widgeon.Sparrow<Widgeon.View>
             {
 
             /**
-             * Factory interface for creating and selecting Schema Views.
+             * Factory interface for creating and selecting Sparrow Views.
              *
              */
             public static interface Factory
-            extends Widgeon.Schema.Factory<Widgeon.View, Widgeon.View.Schema>
+            extends Widgeon.Sparrow.Factory<Widgeon.View, Widgeon.View.Sparrow>
                 {
 
                 /**
-                 * Find an existing View of a Schema, or create a new one.
+                 * Find an existing View of a Sparrow, or create a new one.
                  *
                  */
-                public Widgeon.View.Schema cascade(Widgeon.View parent, Widgeon.Base.Schema base);
+                public Widgeon.View.Sparrow cascade(Widgeon.View parent, Widgeon.Base.Sparrow base);
 
                 /**
-                 * Create a new View of a Schema.
+                 * Create a new View of a Sparrow.
                  *
                  */
-                public Widgeon.View.Schema create(Widgeon.View parent, Widgeon.Base.Schema base, String name);
+                public Widgeon.View.Sparrow create(Widgeon.View parent, Widgeon.Base.Sparrow base, String name);
 
                 /**
-                 * Select all the views of a Schema.
+                 * Select all the views of a Sparrow.
                  *
                  */
-                public Iterable<Widgeon.View.Schema> select(Widgeon.Base.Schema base);
+                public Iterable<Widgeon.View.Sparrow> select(Widgeon.Base.Sparrow base);
 
                 /**
-                 * Access to our Catalog factory.
+                 * Access to our Warbler factory.
                  * 
                  */
-                public Widgeon.View.Schema.Catalog.Factory catalogs();
+                public Widgeon.View.Sparrow.Warbler.Factory warblers();
 
                 }
 
             /**
-             * Access to our underlying Schema.
+             * Access to our underlying Sparrow.
              *
              */
-            public Widgeon.Base.Schema base();
+            public Widgeon.Base.Sparrow base();
 
             /**
-             * Public interface for accessing the Catalogs of a Schema.
+             * Public interface for accessing the Warblers of a Sparrow.
              *
              */
-            public interface Catalogs
-            extends Widgeon.Schema.Catalogs<Widgeon.View.Schema.Catalog>
+            public interface Warblers
+            extends Widgeon.Sparrow.Warblers<Widgeon.View.Sparrow.Warbler>
                 {
                 }
 
             /**
-             * Access to the Catalogss for this Schema.
+             * Access to the Warblerss for this Sparrow.
              *
              */
-            public Catalogs catalogs();
+            public Warblers warblers();
 
             /**
-             * Public interface for Catalog metadata.
+             * Public interface for Warbler metadata.
              *
              */
-            public interface Catalog
-            extends Widgeon.Schema.Catalog<Widgeon.View.Schema>
+            public interface Warbler
+            extends Widgeon.Sparrow.Warbler<Widgeon.View.Sparrow>
                 {
 
                 /**
-                 * Factory interface for creating and selecting Catalogs.
+                 * Factory interface for creating and selecting Warblers.
                  *
                  */
                 public static interface Factory
-                extends Widgeon.Schema.Catalog.Factory<Widgeon.View.Schema, Widgeon.View.Schema.Catalog>
+                extends Widgeon.Sparrow.Warbler.Factory<Widgeon.View.Sparrow, Widgeon.View.Sparrow.Warbler>
                     {
 
                     /**
-                     * Find an existing View of a Catalog, or create a new one.
+                     * Find an existing View of a Warbler, or create a new one.
                      *
                      */
-                    public Widgeon.View.Schema.Catalog cascade(Widgeon.View.Schema parent, Widgeon.Base.Schema.Catalog base);
+                    public Widgeon.View.Sparrow.Warbler cascade(Widgeon.View.Sparrow parent, Widgeon.Base.Sparrow.Warbler base);
 
                     /**
-                     * Create a new View of a Catalog.
+                     * Create a new View of a Warbler.
                      *
                      */
-                    public Widgeon.View.Schema.Catalog create(Widgeon.View.Schema parent, Widgeon.Base.Schema.Catalog base, String name);
+                    public Widgeon.View.Sparrow.Warbler create(Widgeon.View.Sparrow parent, Widgeon.Base.Sparrow.Warbler base, String name);
 
                     /**
-                     * Select all the views of a Catalog.
+                     * Select all the views of a Warbler.
                      *
                      */
-                    public Iterable<Widgeon.View.Schema.Catalog> select(Widgeon.Base.Schema.Catalog base);
+                    public Iterable<Widgeon.View.Sparrow.Warbler> select(Widgeon.Base.Sparrow.Warbler base);
 
                     /**
                      * Access to our Table factory.
                      * 
                      */
-                    public Widgeon.View.Schema.Catalog.Table.Factory tables();
+                    public Widgeon.View.Sparrow.Warbler.Table.Factory tables();
                     
                     }
 
                 /**
-                 * Access to our underlying Catalog.
+                 * Access to our underlying Warbler.
                  *
                  */
-                public Widgeon.Base.Schema.Catalog base();
+                public Widgeon.Base.Sparrow.Warbler base();
 
                 /**
-                 * Public interface for accessing the Tables of a Catalog.
+                 * Public interface for accessing the Tables of a Warbler.
                  *
                  */
                 public interface Tables
-                extends Widgeon.Schema.Catalog.Tables<Widgeon.View.Schema.Catalog.Table>
+                extends Widgeon.Sparrow.Warbler.Tables<Widgeon.View.Sparrow.Warbler.Table>
                     {
                     }
 
                 /**
-                 * Access to the Tables for this Catalog.
+                 * Access to the Tables for this Warbler.
                  *
                  */
                 public Tables tables();
@@ -952,7 +952,7 @@ extends WidgeonStatus
                  *
                  */
                 public interface Table
-                extends Widgeon.Schema.Catalog.Table<Widgeon.View.Schema.Catalog>
+                extends Widgeon.Sparrow.Warbler.Table<Widgeon.View.Sparrow.Warbler>
                     {
 
                     /**
@@ -960,32 +960,32 @@ extends WidgeonStatus
                      *
                      */
                     public static interface Factory
-                    extends Widgeon.Schema.Catalog.Table.Factory<Widgeon.View.Schema.Catalog, Widgeon.View.Schema.Catalog.Table>
+                    extends Widgeon.Sparrow.Warbler.Table.Factory<Widgeon.View.Sparrow.Warbler, Widgeon.View.Sparrow.Warbler.Table>
                         {
 
                         /**
                          * Find an existing View of a Table, or create a new one.
                          *
                          */
-                        public Widgeon.View.Schema.Catalog.Table cascade(Widgeon.View.Schema.Catalog parent, Widgeon.Base.Schema.Catalog.Table base);
+                        public Widgeon.View.Sparrow.Warbler.Table cascade(Widgeon.View.Sparrow.Warbler parent, Widgeon.Base.Sparrow.Warbler.Table base);
 
                         /**
                          * Create a new View of a Table.
                          *
                          */
-                        public Widgeon.View.Schema.Catalog.Table create(Widgeon.View.Schema.Catalog parent, Widgeon.Base.Schema.Catalog.Table base, String name);
+                        public Widgeon.View.Sparrow.Warbler.Table create(Widgeon.View.Sparrow.Warbler parent, Widgeon.Base.Sparrow.Warbler.Table base, String name);
 
                         /**
                          * Select all the views of a Table.
                          *
                          */
-                        public Iterable<Widgeon.View.Schema.Catalog.Table> select(Widgeon.Base.Schema.Catalog.Table base);
+                        public Iterable<Widgeon.View.Sparrow.Warbler.Table> select(Widgeon.Base.Sparrow.Warbler.Table base);
 
                         /**
                          * Access to our Column factory.
                          * 
                          */
-                        public Widgeon.View.Schema.Catalog.Table.Column.Factory columns();
+                        public Widgeon.View.Sparrow.Warbler.Table.Column.Factory columns();
 
                         }
 
@@ -993,14 +993,14 @@ extends WidgeonStatus
                      * Access to our underlying Table.
                      *
                      */
-                    public Widgeon.Base.Schema.Catalog.Table base();
+                    public Widgeon.Base.Sparrow.Warbler.Table base();
 
                     /**
                      * Public interface for accessing the Columns of a Table.
                      *
                      */
                     public interface Columns
-                    extends Widgeon.Schema.Catalog.Table.Columns<Widgeon.View.Schema.Catalog.Table.Column>
+                    extends Widgeon.Sparrow.Warbler.Table.Columns<Widgeon.View.Sparrow.Warbler.Table.Column>
                         {
                         }
 
@@ -1015,7 +1015,7 @@ extends WidgeonStatus
                      *
                      */
                     public interface Column
-                    extends Widgeon.Schema.Catalog.Table.Column<Widgeon.View.Schema.Catalog.Table>
+                    extends Widgeon.Sparrow.Warbler.Table.Column<Widgeon.View.Sparrow.Warbler.Table>
                         {
 
                         /**
@@ -1023,26 +1023,26 @@ extends WidgeonStatus
                          *
                          */
                         public static interface Factory
-                        extends Widgeon.Schema.Catalog.Table.Column.Factory<Widgeon.View.Schema.Catalog.Table, Widgeon.View.Schema.Catalog.Table.Column>
+                        extends Widgeon.Sparrow.Warbler.Table.Column.Factory<Widgeon.View.Sparrow.Warbler.Table, Widgeon.View.Sparrow.Warbler.Table.Column>
                             {
 
                             /**
                              * Find an existing View of a Column, or create a new one.
                              *
                              */
-                            public Widgeon.View.Schema.Catalog.Table.Column cascade(Widgeon.View.Schema.Catalog.Table parent, Widgeon.Base.Schema.Catalog.Table.Column base);
+                            public Widgeon.View.Sparrow.Warbler.Table.Column cascade(Widgeon.View.Sparrow.Warbler.Table parent, Widgeon.Base.Sparrow.Warbler.Table.Column base);
 
                             /**
                              * Create a new View of a Column.
                              *
                              */
-                            public Widgeon.View.Schema.Catalog.Table.Column create(Widgeon.View.Schema.Catalog.Table parent, Widgeon.Base.Schema.Catalog.Table.Column base, String name);
+                            public Widgeon.View.Sparrow.Warbler.Table.Column create(Widgeon.View.Sparrow.Warbler.Table parent, Widgeon.Base.Sparrow.Warbler.Table.Column base, String name);
 
                             /**
                              * Select all the views of a Column.
                              *
                              */
-                            public Iterable<Widgeon.View.Schema.Catalog.Table.Column> select(Widgeon.Base.Schema.Catalog.Table.Column base);
+                            public Iterable<Widgeon.View.Sparrow.Warbler.Table.Column> select(Widgeon.Base.Sparrow.Warbler.Table.Column base);
 
                             }
 
@@ -1050,7 +1050,7 @@ extends WidgeonStatus
                          * Access to our underlying Column.
                          *
                          */
-                        public Widgeon.Base.Schema.Catalog.Table.Column base();
+                        public Widgeon.Base.Sparrow.Warbler.Table.Column base();
 
                         }
                     }

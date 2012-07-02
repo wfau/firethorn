@@ -135,11 +135,11 @@ implements Widgeon.View
             super.insert(
                 entity
                 );
-            for (Widgeon.Base.Schema schema : entity.base().schemas().select())
+            for (Widgeon.Base.Sparrow sparrow : entity.base().sparrows().select())
                 {
-                this.schemas().cascade(
+                this.sparrows().cascade(
                     entity,
-                    schema
+                    sparrow
                     );
                 }
             return entity ;
@@ -209,46 +209,46 @@ implements Widgeon.View
             }
 
         /**
-         * Our Autowired Schema factory.
+         * Our Autowired Sparrow factory.
          * 
          */
         @Autowired
-        protected Widgeon.View.Schema.Factory schemas ;
+        protected Widgeon.View.Sparrow.Factory sparrows ;
 
         @Override
-        public Widgeon.View.Schema.Factory schemas()
+        public Widgeon.View.Sparrow.Factory sparrows()
             {
-            return schemas ;
+            return sparrows ;
             }
         }
 
     @Override
-    public Widgeon.View.Schemas schemas()
+    public Widgeon.View.Sparrows sparrows()
         {
-        return new Widgeon.View.Schemas()
+        return new Widgeon.View.Sparrows()
             {
             @Override
-            public Iterable<Widgeon.View.Schema> select()
+            public Iterable<Widgeon.View.Sparrow> select()
                 {
-                return womble().widgeons().views().schemas().select(
+                return womble().widgeons().views().sparrows().select(
                     WidgeonViewEntity.this
                     ) ;
                 }
 
             @Override
-            public Widgeon.View.Schema select(final String name)
+            public Widgeon.View.Sparrow select(final String name)
             throws NameNotFoundException
                 {
-                return womble().widgeons().views().schemas().select(
+                return womble().widgeons().views().sparrows().select(
                     WidgeonViewEntity.this,
                     name
                     ) ;
                 }
 
             @Override
-            public Widgeon.View.Schema search(final String name)
+            public Widgeon.View.Sparrow search(final String name)
                 {
-                return womble().widgeons().views().schemas().search(
+                return womble().widgeons().views().sparrows().search(
                     WidgeonViewEntity.this,
                     name
                     ) ;

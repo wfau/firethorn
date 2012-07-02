@@ -64,14 +64,14 @@
                 <value>uk.ac.roe.wfau.firethorn.mallard.JobEntity</value>
 
                 <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.WidgeonBaseEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.SchemaBaseEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.CatalogBaseEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.SparrowBaseEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.WarblerBaseEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.TableBaseEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.ColumnBaseEntity</value>
 
                 <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.WidgeonViewEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.SchemaViewEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.CatalogViewEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.SparrowViewEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.WarblerViewEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.TableViewEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.ColumnViewEntity</value>
 

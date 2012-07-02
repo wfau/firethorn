@@ -53,7 +53,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
 
 /**
- * Schema implementation.
+ * Sparrow implementation.
  *
  */
 @Slf4j
@@ -62,12 +62,12 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
     AccessType.FIELD
     )
 @Table(
-    name = SchemaBaseEntity.DB_TABLE_NAME,
+    name = SparrowBaseEntity.DB_TABLE_NAME,
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
-                SchemaBaseEntity.DB_PARENT_COL,
+                SparrowBaseEntity.DB_PARENT_COL,
                 }
             )
         }
@@ -75,25 +75,25 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "widgeon.base.schema-select-parent",
-            query = "FROM SchemaBaseEntity WHERE (parent = :parent) ORDER BY ident desc"
+            name  = "widgeon.base.sparrow-select-parent",
+            query = "FROM SparrowBaseEntity WHERE (parent = :parent) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "widgeon.base.schema-select-parent.name",
-            query = "FROM SchemaBaseEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
+            name  = "widgeon.base.sparrow-select-parent.name",
+            query = "FROM SparrowBaseEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
             )
         }
     )
-public class SchemaBaseEntity
+public class SparrowBaseEntity
 extends WidgeonStatusEntity
-implements Widgeon.Base.Schema
+implements Widgeon.Base.Sparrow
     {
 
     /**
      * Our persistence table name.
      * 
      */
-    public static final String DB_TABLE_NAME = "widgeon_base_schema" ;
+    public static final String DB_TABLE_NAME = "widgeon_base_sparrow" ;
 
     /**
      * The persistence column name for our parent Widgeon.
@@ -107,22 +107,22 @@ implements Widgeon.Base.Schema
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<Widgeon.Base.Schema>
-    implements Widgeon.Base.Schema.Factory
+    extends AbstractFactory<Widgeon.Base.Sparrow>
+    implements Widgeon.Base.Sparrow.Factory
         {
 
         @Override
         public Class etype()
             {
-            return SchemaBaseEntity.class ;
+            return SparrowBaseEntity.class ;
             }
 
         /**
-         * Insert a Schema into the database and update all the parent views.
+         * Insert a Sparrow into the database and update all the parent views.
          *
          */
         @CascadeEntityMethod
-        protected Widgeon.Base.Schema insert(final SchemaBaseEntity entity)
+        protected Widgeon.Base.Sparrow insert(final SparrowBaseEntity entity)
             {
             super.insert(
                 entity
@@ -139,10 +139,10 @@ implements Widgeon.Base.Schema
 
         @Override
         @CreateEntityMethod
-        public Widgeon.Base.Schema create(final Widgeon.Base parent, final String name)
+        public Widgeon.Base.Sparrow create(final Widgeon.Base parent, final String name)
             {
             return this.insert(
-                new SchemaBaseEntity(
+                new SparrowBaseEntity(
                     parent,
                     name
                     )
@@ -151,11 +151,11 @@ implements Widgeon.Base.Schema
 
         @Override
         @SelectEntityMethod
-        public Iterable<Widgeon.Base.Schema> select(final Widgeon.Base parent)
+        public Iterable<Widgeon.Base.Sparrow> select(final Widgeon.Base parent)
             {
             return super.iterable(
                 super.query(
-                    "widgeon.base.schema-select-parent"
+                    "widgeon.base.sparrow-select-parent"
                     ).setEntity(
                         "parent",
                         parent
@@ -165,10 +165,10 @@ implements Widgeon.Base.Schema
 
         @Override
         @SelectEntityMethod
-        public Widgeon.Base.Schema select(final Widgeon.Base parent, final String name)
+        public Widgeon.Base.Sparrow select(final Widgeon.Base parent, final String name)
         throws NameNotFoundException
             {
-            Widgeon.Base.Schema result = this.search(
+            Widgeon.Base.Sparrow result = this.search(
                 parent,
                 name
                 );
@@ -185,11 +185,11 @@ implements Widgeon.Base.Schema
 
         @Override
         @SelectEntityMethod
-        public Widgeon.Base.Schema search(final Widgeon.Base parent, final String name)
+        public Widgeon.Base.Sparrow search(final Widgeon.Base parent, final String name)
             {
             return super.first(
                 super.query(
-                    "widgeon.base.schema-select-parent.name"
+                    "widgeon.base.sparrow-select-parent.name"
                     ).setEntity(
                         "parent",
                         parent
@@ -205,79 +205,79 @@ implements Widgeon.Base.Schema
          * 
          */
         @Autowired
-        protected Widgeon.View.Schema.Factory views ;
+        protected Widgeon.View.Sparrow.Factory views ;
 
         @Override
-        public Widgeon.View.Schema.Factory views()
+        public Widgeon.View.Sparrow.Factory views()
             {
             return this.views ;
             }
 
         /**
-         * Our Autowired Catalog factory.
+         * Our Autowired Warbler factory.
          * 
          */
         @Autowired
-        protected Widgeon.Base.Schema.Catalog.Factory catalogs ;
+        protected Widgeon.Base.Sparrow.Warbler.Factory warblers ;
 
         @Override
-        public Widgeon.Base.Schema.Catalog.Factory catalogs()
+        public Widgeon.Base.Sparrow.Warbler.Factory warblers()
             {
-            return this.catalogs ;
+            return this.warblers ;
             }
         }
 
     @Override
-    public Widgeon.Base.Schema.Views views()
+    public Widgeon.Base.Sparrow.Views views()
         {
-        return new Widgeon.Base.Schema.Views()
+        return new Widgeon.Base.Sparrow.Views()
             {
-            public Iterable<Widgeon.View.Schema> select()
+            public Iterable<Widgeon.View.Sparrow> select()
                 {
-                return womble().widgeons().views().schemas().select(
-                    SchemaBaseEntity.this
+                return womble().widgeons().views().sparrows().select(
+                    SparrowBaseEntity.this
                     );
                 }
             };
         }
 
     @Override
-    public Widgeon.Base.Schema.Catalogs catalogs()
+    public Widgeon.Base.Sparrow.Warblers warblers()
         {
-        return new Widgeon.Base.Schema.Catalogs()
+        return new Widgeon.Base.Sparrow.Warblers()
             {
             @Override
-            public Widgeon.Base.Schema.Catalog create(String name)
+            public Widgeon.Base.Sparrow.Warbler create(String name)
                 {
-                return womble().widgeons().schemas().catalogs().create(
-                    SchemaBaseEntity.this,
+                return womble().widgeons().sparrows().warblers().create(
+                    SparrowBaseEntity.this,
                     name
                     );
                 }
 
             @Override
-            public Iterable<Widgeon.Base.Schema.Catalog> select()
+            public Iterable<Widgeon.Base.Sparrow.Warbler> select()
                 {
-                return womble().widgeons().schemas().catalogs().select(
-                    SchemaBaseEntity.this
+                return womble().widgeons().sparrows().warblers().select(
+                    SparrowBaseEntity.this
                     );
                 }
 
             @Override
-            public Widgeon.Base.Schema.Catalog select(String name)
+            public Widgeon.Base.Sparrow.Warbler select(String name)
             throws NameNotFoundException
                 {
-                return womble().widgeons().schemas().catalogs().select(
-                    SchemaBaseEntity.this,
+                return womble().widgeons().sparrows().warblers().select(
+                    SparrowBaseEntity.this,
                     name
                     );
                 }
 
             @Override
-            public Widgeon.Base.Schema.Catalog search(String name)
+            public Widgeon.Base.Sparrow.Warbler search(String name)
                 {
-                return womble().widgeons().schemas().catalogs().search(
-                    SchemaBaseEntity.this,
+                return womble().widgeons().sparrows().warblers().search(
+                    SparrowBaseEntity.this,
                     name
                     );
                 }
@@ -289,16 +289,16 @@ implements Widgeon.Base.Schema
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected SchemaBaseEntity()
+    protected SparrowBaseEntity()
         {
         super();
         }
 
     /**
-     * Create a new Schema.
+     * Create a new Sparrow.
      *
      */
-    protected SchemaBaseEntity(final Widgeon.Base parent, final String name)
+    protected SparrowBaseEntity(final Widgeon.Base parent, final String name)
         {
         super(name);
         this.parent = parent ;

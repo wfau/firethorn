@@ -35,7 +35,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
  *
  */
 @Slf4j
-public class SchemaViewTestCase
+public class SparrowViewTestCase
 extends WidgeonViewTestBase
     {
 
@@ -51,19 +51,19 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Select missing schema view fails.
+        // Select missing sparrow view fails.
         try {
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
+                ).sparrows().select(
+                    "sparrow-A"
                     );
             fail("NameNotFoundException expected");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "schema-A",
+                "sparrow-A",
                 ouch.name()
                 );            
             }
@@ -74,10 +74,10 @@ extends WidgeonViewTestBase
     throws Exception
         {
         //
-        // Create base schema.
+        // Create base sparrow.
         assertNotNull(
-            base().schemas().create(
-                "schema-A"
+            base().sparrows().create(
+                "sparrow-A"
                 )
             );
         //
@@ -88,12 +88,12 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Select schema view.
+        // Select sparrow view.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
+                ).sparrows().select(
+                    "sparrow-A"
                     )
             );
         }
@@ -110,19 +110,19 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base schema.
+        // Create base sparrow.
         assertNotNull(
-            base().schemas().create(
-                "schema-A"
+            base().sparrows().create(
+                "sparrow-A"
                 )
             );
         //
-        // Select schema view.
+        // Select sparrow view.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
+                ).sparrows().select(
+                    "sparrow-A"
                     )
             );
         }
@@ -141,47 +141,47 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base schema.
+        // Create base sparrow.
         assertNotNull(
-            base().schemas().create(
-                "schema-A"
+            base().sparrows().create(
+                "sparrow-A"
                 )
             );
         //
-        // Select base schema works.
+        // Select base sparrow works.
         assertNotNull(
-            base().schemas().select(
-                "schema-A"
+            base().sparrows().select(
+                "sparrow-A"
                 )
             );
         //
-        // Select schema view works.
+        // Select sparrow view works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
+                ).sparrows().select(
+                    "sparrow-A"
                     )
             );
         //
-        // Change base schema name.
-        base().schemas().select(
-            "schema-A"
+        // Change base sparrow name.
+        base().sparrows().select(
+            "sparrow-A"
             ).name(
                 "changed"
                 );
         //
         // Select base with old name fails.
         try {
-            base().schemas().select(
-                "schema-A"
+            base().sparrows().select(
+                "sparrow-A"
                 );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "schema-A",
+                "sparrow-A",
                 ouch.name()
                 );            
             }
@@ -191,15 +191,15 @@ extends WidgeonViewTestBase
         try {
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
+                ).sparrows().select(
+                    "sparrow-A"
                     );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "schema-A",
+                "sparrow-A",
                 ouch.name()
                 );            
             }
@@ -207,7 +207,7 @@ extends WidgeonViewTestBase
         //
         // Select base with new name works.
         assertNotNull(
-            base().schemas().select(
+            base().sparrows().select(
                 "changed"
                 )
             );
@@ -216,7 +216,7 @@ extends WidgeonViewTestBase
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).schemas().select(
+                ).sparrows().select(
                     "changed"
                     )
             );
@@ -236,68 +236,68 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base schema.
+        // Create base sparrow.
         assertNotNull(
-            base().schemas().create(
-                "schema-A"
+            base().sparrows().create(
+                "sparrow-A"
                 )
             );
 
         //
-        // Select base schema works.
+        // Select base sparrow works.
         assertNotNull(
-            base().schemas().select(
-                "schema-A"
+            base().sparrows().select(
+                "sparrow-A"
                 )
             );
         //
-        // Select schema view works.
+        // Select sparrow view works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
+                ).sparrows().select(
+                    "sparrow-A"
                     )
             );
         //
-        // Change schema view name.
+        // Change sparrow view name.
         base().views().select(
             "view-A"
-            ).schemas().select(
-                "schema-A"
+            ).sparrows().select(
+                "sparrow-A"
                 ).name(
                     "changed"
                     );
         //
-        // Select base schema works.
+        // Select base sparrow works.
         assertNotNull(
-            base().schemas().select(
-                "schema-A"
+            base().sparrows().select(
+                "sparrow-A"
                 )
             );
         //
-        // Select schema view with old name fails.        
+        // Select sparrow view with old name fails.        
         try {
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
+                ).sparrows().select(
+                    "sparrow-A"
                     );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "schema-A",
+                "sparrow-A",
                 ouch.name()
                 );            
             }
         //
-        // Select schema view with new name works.        
+        // Select sparrow view with new name works.        
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).schemas().select(
+                ).sparrows().select(
                     "changed"
                     )
             );
@@ -317,92 +317,92 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base schema.
+        // Create base sparrow.
         assertNotNull(
-            base().schemas().create(
-                "schema-A"
+            base().sparrows().create(
+                "sparrow-A"
                 )
             );
         //
-        // Select base schema works.
+        // Select base sparrow works.
         assertNotNull(
-            base().schemas().select(
-                "schema-A"
+            base().sparrows().select(
+                "sparrow-A"
                 )
             );
         //
-        // Select schema view works.
+        // Select sparrow view works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
+                ).sparrows().select(
+                    "sparrow-A"
                     )
             );
         //
-        // Change schema view name
+        // Change sparrow view name
         base().views().select(
             "view-A"
-            ).schemas().select(
-                "schema-A"
+            ).sparrows().select(
+                "sparrow-A"
                 ).name(
                     "view-changed"
                     );
         //
-        // Select base schema works.
+        // Select base sparrow works.
         assertNotNull(
-            base().schemas().select(
-                "schema-A"
+            base().sparrows().select(
+                "sparrow-A"
                 )
             );
         //
-        // Select schema view with old name fails.
+        // Select sparrow view with old name fails.
         try {
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
+                ).sparrows().select(
+                    "sparrow-A"
                     );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "schema-A",
+                "sparrow-A",
                 ouch.name()
                 );            
             }
         //
-        // Select schema view with new name works.
+        // Select sparrow view with new name works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).schemas().select(
+                ).sparrows().select(
                     "view-changed"
                     )
             );
         //
-        // Set schema view name to null.
+        // Set sparrow view name to null.
         base().views().select(
             "view-A"
-            ).schemas().select(
+            ).sparrows().select(
                 "view-changed"
                 ).name(
                     null
                     );
         //
-        // Select base schema works.
+        // Select base sparrow works.
         assertNotNull(
-            base().schemas().select(
-                "schema-A"
+            base().sparrows().select(
+                "sparrow-A"
                 )
             );
         //
-        // Select schema view with new name fails.
+        // Select sparrow view with new name fails.
         try {
             base().views().select(
                 "view-A"
-                ).schemas().select(
+                ).sparrows().select(
                     "view-changed"
                     );
             fail("NameNotFoundException");
@@ -415,12 +415,12 @@ extends WidgeonViewTestBase
                 );            
             }
         //
-        // Select schema view with old name works.
+        // Select sparrow view with old name works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
+                ).sparrows().select(
+                    "sparrow-A"
                     )
             );
         }
@@ -439,146 +439,146 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base schema.
+        // Create base sparrow.
         assertNotNull(
-            base().schemas().create(
-                "schema-A"
+            base().sparrows().create(
+                "sparrow-A"
                 )
             );
         //
-        // Select base schema works.
+        // Select base sparrow works.
         assertNotNull(
-            base().schemas().select(
-                "schema-A"
+            base().sparrows().select(
+                "sparrow-A"
                 )
             );
         //
-        // Select schema view works.
+        // Select sparrow view works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
+                ).sparrows().select(
+                    "sparrow-A"
                     )
             );
         //
-        // Change schema view name
+        // Change sparrow view name
         base().views().select(
             "view-A"
-            ).schemas().select(
-                "schema-A"
+            ).sparrows().select(
+                "sparrow-A"
                 ).name(
                     "view-changed"
                     );
         //
-        // Select schema view with old name fails.
+        // Select sparrow view with old name fails.
         try {
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
+                ).sparrows().select(
+                    "sparrow-A"
                     );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "schema-A",
+                "sparrow-A",
                 ouch.name()
                 );            
             }
         //
-        // Select schema view with new name works.
+        // Select sparrow view with new name works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).schemas().select(
+                ).sparrows().select(
                     "view-changed"
                     )
             );
         //
-        // Change base schema name
-        base().schemas().select(
-            "schema-A"
+        // Change base sparrow name
+        base().sparrows().select(
+            "sparrow-A"
             ).name(
                 "base-changed"
                 );
         //
-        // Select base schema with old name fails.
+        // Select base sparrow with old name fails.
         try {
-            base().schemas().select(
-                "schema-A"
+            base().sparrows().select(
+                "sparrow-A"
                 );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "schema-A",
+                "sparrow-A",
                 ouch.name()
                 );            
             }
         //
-        // Select base schema with new name works.
+        // Select base sparrow with new name works.
         assertNotNull(
-            base().schemas().select(
+            base().sparrows().select(
                 "base-changed"
                 )
             );
         //
-        // Set schema view name to null.
+        // Set sparrow view name to null.
         base().views().select(
             "view-A"
-            ).schemas().select(
+            ).sparrows().select(
                 "view-changed"
                 ).name(
                     null
                     );
         //
-        // Select base schema with old name fails.
+        // Select base sparrow with old name fails.
         try {
-            base().schemas().select(
-                "schema-A"
+            base().sparrows().select(
+                "sparrow-A"
                 );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "schema-A",
+                "sparrow-A",
                 ouch.name()
                 );            
             }
         //
-        // Select base schema with new name works.
+        // Select base sparrow with new name works.
         assertNotNull(
-            base().schemas().select(
+            base().sparrows().select(
                 "base-changed"
                 )
             );
         //
-        // Select schema view with old name fails.
+        // Select sparrow view with old name fails.
         try {
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
+                ).sparrows().select(
+                    "sparrow-A"
                     );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "schema-A",
+                "sparrow-A",
                 ouch.name()
                 );            
             }
         //
-        // Select schema view with new name fails.
+        // Select sparrow view with new name fails.
         try {
             base().views().select(
                 "view-A"
-                ).schemas().select(
+                ).sparrows().select(
                     "view-changed"
                     );
             fail("NameNotFoundException");
@@ -591,11 +591,11 @@ extends WidgeonViewTestBase
                 );            
             }
         //
-        // Select schema view with new base name works.
+        // Select sparrow view with new base name works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).schemas().select(
+                ).sparrows().select(
                     "base-changed"
                     )
             );
@@ -615,146 +615,146 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base schema.
+        // Create base sparrow.
         assertNotNull(
-            base().schemas().create(
-                "schema-A"
+            base().sparrows().create(
+                "sparrow-A"
                 )
             );
         //
-        // Select base schema works.
+        // Select base sparrow works.
         assertNotNull(
-            base().schemas().select(
-                "schema-A"
+            base().sparrows().select(
+                "sparrow-A"
                 )
             );
         //
-        // Select schema view works.
+        // Select sparrow view works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
+                ).sparrows().select(
+                    "sparrow-A"
                     )
             );
         //
-        // Change base schema name
-        base().schemas().select(
-            "schema-A"
+        // Change base sparrow name
+        base().sparrows().select(
+            "sparrow-A"
             ).name(
                 "base-changed"
                 );
         //
-        // Select base schema with old name fails.
+        // Select base sparrow with old name fails.
         try {
-            base().schemas().select(
-                "schema-A"
+            base().sparrows().select(
+                "sparrow-A"
                 );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "schema-A",
+                "sparrow-A",
                 ouch.name()
                 );            
             }
         //
-        // Select base schema with new name works.
+        // Select base sparrow with new name works.
         assertNotNull(
-            base().schemas().select(
+            base().sparrows().select(
                 "base-changed"
                 )
             );
         //
-        // Change schema view name
+        // Change sparrow view name
         base().views().select(
             "view-A"
-            ).schemas().select(
+            ).sparrows().select(
                 "base-changed"
                 ).name(
                     "view-changed"
                     );
         //
-        // Select schema view with old name fails.
+        // Select sparrow view with old name fails.
         try {
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
+                ).sparrows().select(
+                    "sparrow-A"
                     );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "schema-A",
+                "sparrow-A",
                 ouch.name()
                 );            
             }
         //
-        // Select schema view with new name works.
+        // Select sparrow view with new name works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).schemas().select(
+                ).sparrows().select(
                     "view-changed"
                     )
             );
         //
-        // Set schema view name to null.
+        // Set sparrow view name to null.
         base().views().select(
             "view-A"
-            ).schemas().select(
+            ).sparrows().select(
                 "view-changed"
                 ).name(
                     null
                     );
         //
-        // Select base schema with old name fails.
+        // Select base sparrow with old name fails.
         try {
-            base().schemas().select(
-                "schema-A"
+            base().sparrows().select(
+                "sparrow-A"
                 );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "schema-A",
+                "sparrow-A",
                 ouch.name()
                 );            
             }
         //
-        // Select base schema with new name works.
+        // Select base sparrow with new name works.
         assertNotNull(
-            base().schemas().select(
+            base().sparrows().select(
                 "base-changed"
                 )
             );
         //
-        // Select schema view with old name fails.
+        // Select sparrow view with old name fails.
         try {
             base().views().select(
                 "view-A"
-                ).schemas().select(
-                    "schema-A"
+                ).sparrows().select(
+                    "sparrow-A"
                     );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "schema-A",
+                "sparrow-A",
                 ouch.name()
                 );            
             }
         //
-        // Select schema view with new name fails.
+        // Select sparrow view with new name fails.
         try {
             base().views().select(
                 "view-A"
-                ).schemas().select(
+                ).sparrows().select(
                     "view-changed"
                     );
             fail("NameNotFoundException");
@@ -767,11 +767,11 @@ extends WidgeonViewTestBase
                 );            
             }
         //
-        // Select schema view with new base name works.
+        // Select sparrow view with new base name works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).schemas().select(
+                ).sparrows().select(
                     "base-changed"
                     )
             );

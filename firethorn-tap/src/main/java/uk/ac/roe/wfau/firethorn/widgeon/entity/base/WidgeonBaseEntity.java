@@ -207,16 +207,16 @@ implements Widgeon.Base
             }
 
         /**
-         * Our Autowired Schema factory.
+         * Our Autowired Sparrow factory.
          * 
          */
         @Autowired
-        protected Widgeon.Base.Schema.Factory schemas ;
+        protected Widgeon.Base.Sparrow.Factory sparrows ;
 
         @Override
-        public Widgeon.Base.Schema.Factory schemas()
+        public Widgeon.Base.Sparrow.Factory sparrows()
             {
-            return this.schemas ;
+            return this.sparrows ;
             }
         }
 
@@ -264,41 +264,41 @@ implements Widgeon.Base
         }
 
     @Override
-    public Widgeon.Base.Schemas schemas()
+    public Widgeon.Base.Sparrows sparrows()
         {
-        return new Widgeon.Base.Schemas()
+        return new Widgeon.Base.Sparrows()
             {
             @Override
-            public Widgeon.Base.Schema create(final String name)
+            public Widgeon.Base.Sparrow create(final String name)
                 {
-                return womble().widgeons().schemas().create(
+                return womble().widgeons().sparrows().create(
                     WidgeonBaseEntity.this,
                     name
                     ) ;
                 }
 
             @Override
-            public Iterable<Widgeon.Base.Schema> select()
+            public Iterable<Widgeon.Base.Sparrow> select()
                 {
-                return womble().widgeons().schemas().select(
+                return womble().widgeons().sparrows().select(
                     WidgeonBaseEntity.this
                     );
                 }
 
             @Override
-            public Widgeon.Base.Schema select(final String name)
+            public Widgeon.Base.Sparrow select(final String name)
             throws NameNotFoundException
                 {
-                return womble().widgeons().schemas().select(
+                return womble().widgeons().sparrows().select(
                     WidgeonBaseEntity.this,
                     name
                     );
                 }
 
             @Override
-            public Widgeon.Base.Schema search(final String name)
+            public Widgeon.Base.Sparrow search(final String name)
                 {
-                return womble().widgeons().schemas().search(
+                return womble().widgeons().sparrows().search(
                     WidgeonBaseEntity.this,
                     name
                     );
