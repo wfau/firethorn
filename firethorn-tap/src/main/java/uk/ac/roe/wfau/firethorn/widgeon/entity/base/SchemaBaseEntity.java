@@ -49,6 +49,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
 
@@ -85,7 +87,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
     )
 public class SchemaBaseEntity
 extends WidgeonStatusEntity
-implements Widgeon.Base.Catalog.Schema
+implements WidgeonBase.Catalog.Schema
     {
 
     /**
@@ -106,8 +108,8 @@ implements Widgeon.Base.Catalog.Schema
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<Widgeon.Base.Catalog.Schema>
-    implements Widgeon.Base.Catalog.Schema.Factory
+    extends AbstractFactory<WidgeonBase.Catalog.Schema>
+    implements WidgeonBase.Catalog.Schema.Factory
         {
 
         @Override
@@ -121,12 +123,12 @@ implements Widgeon.Base.Catalog.Schema
          *
          */
         @CascadeEntityMethod
-        protected Widgeon.Base.Catalog.Schema insert(final SchemaBaseEntity entity)
+        protected WidgeonBase.Catalog.Schema insert(final SchemaBaseEntity entity)
             {
             super.insert(
                 entity
                 );
-            for (Widgeon.View.Catalog view : entity.parent().views().select())
+            for (WidgeonView.Catalog view : entity.parent().views().select())
                 {
                 this.views().cascade(
                     view,
@@ -138,7 +140,7 @@ implements Widgeon.Base.Catalog.Schema
 
         @Override
         @CreateEntityMethod
-        public Widgeon.Base.Catalog.Schema create(final Widgeon.Base.Catalog parent, final String name)
+        public WidgeonBase.Catalog.Schema create(final WidgeonBase.Catalog parent, final String name)
             {
             return this.insert(
                 new SchemaBaseEntity(
@@ -150,7 +152,7 @@ implements Widgeon.Base.Catalog.Schema
 
         @Override
         @SelectEntityMethod
-        public Iterable<Widgeon.Base.Catalog.Schema> select(final Widgeon.Base.Catalog parent)
+        public Iterable<WidgeonBase.Catalog.Schema> select(final WidgeonBase.Catalog parent)
             {
             return super.iterable(
                 super.query(
@@ -164,10 +166,10 @@ implements Widgeon.Base.Catalog.Schema
 
         @Override
         @SelectEntityMethod
-        public Widgeon.Base.Catalog.Schema select(final Widgeon.Base.Catalog parent, final String name)
+        public WidgeonBase.Catalog.Schema select(final WidgeonBase.Catalog parent, final String name)
         throws NameNotFoundException
             {
-            Widgeon.Base.Catalog.Schema result = this.search(
+            WidgeonBase.Catalog.Schema result = this.search(
                 parent,
                 name
                 );
@@ -182,9 +184,12 @@ implements Widgeon.Base.Catalog.Schema
                 }
             }
 
-        @Override
+        /**
+         * Search for a named Schema in a Catalog.
+         *
+         */
         @SelectEntityMethod
-        public Widgeon.Base.Catalog.Schema search(final Widgeon.Base.Catalog parent, final String name)
+        protected WidgeonBase.Catalog.Schema search(final WidgeonBase.Catalog parent, final String name)
             {
             return super.first(
                 super.query(
@@ -204,10 +209,10 @@ implements Widgeon.Base.Catalog.Schema
          * 
          */
         @Autowired
-        protected Widgeon.View.Catalog.Schema.Factory views ;
+        protected WidgeonView.Catalog.Schema.Factory views ;
 
         @Override
-        public Widgeon.View.Catalog.Schema.Factory views()
+        public WidgeonView.Catalog.Schema.Factory views()
             {
             return this.views ;
             }
@@ -217,21 +222,21 @@ implements Widgeon.Base.Catalog.Schema
          * 
          */
         @Autowired
-        protected Widgeon.Base.Catalog.Schema.Table.Factory tables ;
+        protected WidgeonBase.Catalog.Schema.Table.Factory tables ;
 
         @Override
-        public Widgeon.Base.Catalog.Schema.Table.Factory tables()
+        public WidgeonBase.Catalog.Schema.Table.Factory tables()
             {
             return this.tables ;
             }
         }
 
     @Override
-    public Widgeon.Base.Catalog.Schema.Views views()
+    public WidgeonBase.Catalog.Schema.Views views()
         {
-        return new Widgeon.Base.Catalog.Schema.Views()
+        return new WidgeonBase.Catalog.Schema.Views()
             {
-            public Iterable<Widgeon.View.Catalog.Schema> select()
+            public Iterable<WidgeonView.Catalog.Schema> select()
                 {
                 return womble().widgeons().views().catalogs().schemas().select(
                     SchemaBaseEntity.this
@@ -241,12 +246,12 @@ implements Widgeon.Base.Catalog.Schema
         }
 
     @Override
-    public Widgeon.Base.Catalog.Schema.Tables tables()
+    public WidgeonBase.Catalog.Schema.Tables tables()
         {
-        return new Widgeon.Base.Catalog.Schema.Tables()
+        return new WidgeonBase.Catalog.Schema.Tables()
             {
             @Override
-            public Widgeon.Base.Catalog.Schema.Table create(String name)
+            public WidgeonBase.Catalog.Schema.Table create(String name)
                 {
                 return womble().widgeons().catalogs().schemas().tables().create(
                     SchemaBaseEntity.this,
@@ -255,7 +260,7 @@ implements Widgeon.Base.Catalog.Schema
                 }
 
             @Override
-            public Iterable<Widgeon.Base.Catalog.Schema.Table> select()
+            public Iterable<WidgeonBase.Catalog.Schema.Table> select()
                 {
                 return womble().widgeons().catalogs().schemas().tables().select(
                     SchemaBaseEntity.this
@@ -263,19 +268,10 @@ implements Widgeon.Base.Catalog.Schema
                 }
 
             @Override
-            public Widgeon.Base.Catalog.Schema.Table select(String name)
+            public WidgeonBase.Catalog.Schema.Table select(String name)
             throws NameNotFoundException
                 {
                 return womble().widgeons().catalogs().schemas().tables().select(
-                    SchemaBaseEntity.this,
-                    name
-                    ) ;
-                }
-
-            @Override
-            public Widgeon.Base.Catalog.Schema.Table search(String name)
-                {
-                return womble().widgeons().catalogs().schemas().tables().search(
                     SchemaBaseEntity.this,
                     name
                     ) ;
@@ -297,7 +293,7 @@ implements Widgeon.Base.Catalog.Schema
      * Create a new Catalog.
      *
      */
-    protected SchemaBaseEntity(final Widgeon.Base.Catalog parent, final String name)
+    protected SchemaBaseEntity(final WidgeonBase.Catalog parent, final String name)
         {
         super(name);
         this.parent = parent ;
@@ -317,10 +313,10 @@ implements Widgeon.Base.Catalog.Schema
         nullable = false,
         updatable = false
         )
-    private Widgeon.Base.Catalog parent ;
+    private WidgeonBase.Catalog parent ;
 
     @Override
-    public Widgeon.Base.Catalog parent()
+    public WidgeonBase.Catalog parent()
         {
         return this.parent ;
         }

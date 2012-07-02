@@ -54,6 +54,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.view.WidgeonViewEntity;
 
 /**
@@ -136,10 +138,6 @@ implements Mallard
         @Autowired
         protected Job.Factory jobs ;
 
-        /**
-         * Access to our Job factory.
-         * 
-         */
         @Override
         public Job.Factory jobs()
             {
@@ -203,44 +201,40 @@ implements Mallard
     @JoinTable(
         name="mallard_widgeons",
         joinColumns = @JoinColumn(
-            name="mallard_x",
+            name="mallard",
             nullable = false,
             updatable = false
             ),
         inverseJoinColumns = @JoinColumn(
-            name="widgeon_x",
+            name="widgeon",
             nullable = false,
             updatable = false
             )
         )
-    private Set<Widgeon.View> widgeons = new HashSet<Widgeon.View>(0);
-    protected Set<Widgeon.View> getWidgeons()
+    private Set<WidgeonView> widgeons = new HashSet<WidgeonView>(0);
+    protected Set<WidgeonView> getWidgeons()
         {
         return this.widgeons ;
         }
-    protected void setWidgeons(Set<Widgeon.View> set)
+    protected void setWidgeons(Set<WidgeonView> set)
         {
         this.widgeons = set ;
         }
 
-    /**
-     * Access to the resources used by this service.
-     *
-     */
     @Override
     public Widgeons widgeons()
         {
         return new Widgeons()
             {
             @Override
-            public void insert(Widgeon.View widgeon)
+            public void insert(WidgeonView widgeon)
                 {
                 widgeons.add(
                     widgeon
                     );
                 }
             @Override
-            public Iterable<Widgeon.View> select()
+            public Iterable<WidgeonView> select()
                 {
                 return widgeons ;
                 }

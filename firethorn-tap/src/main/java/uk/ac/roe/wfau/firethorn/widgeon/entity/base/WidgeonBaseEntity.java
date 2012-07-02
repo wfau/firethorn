@@ -50,6 +50,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
 
@@ -88,7 +90,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
     )
 public class WidgeonBaseEntity
 extends WidgeonStatusEntity
-implements Widgeon.Base
+implements WidgeonBase
     {
 
     /**
@@ -103,8 +105,8 @@ implements Widgeon.Base
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<Widgeon.Base>
-    implements Widgeon.Base.Factory
+    extends AbstractFactory<WidgeonBase>
+    implements WidgeonBase.Factory
         {
 
         @Override
@@ -115,7 +117,7 @@ implements Widgeon.Base
 
         @Override
         @SelectEntityMethod
-        public Iterable<Widgeon.Base> select()
+        public Iterable<WidgeonBase> select()
             {
             return super.iterable(
                 super.query(
@@ -126,10 +128,10 @@ implements Widgeon.Base
 
         @Override
         @SelectEntityMethod
-        public Widgeon.Base select(String name)
+        public WidgeonBase select(String name)
         throws NameNotFoundException
             {
-            Widgeon.Base result = this.search(
+            WidgeonBase result = this.search(
                 name
                 );
             if (result != null)
@@ -143,9 +145,12 @@ implements Widgeon.Base
                 }
             }
 
-        @Override
+        /**
+         * Search for a named Widgeon.
+         *
+         */
         @SelectEntityMethod
-        public Widgeon.Base search(String name)
+        protected WidgeonBase search(String name)
             {
             return super.first(
                 super.query(
@@ -159,7 +164,7 @@ implements Widgeon.Base
 
         @Override
         @CreateEntityMethod
-        public Widgeon.Base create(final String name, final URI uri)
+        public WidgeonBase create(final String name, final URI uri)
             {
             return super.insert(
                 new WidgeonBaseEntity(
@@ -171,7 +176,7 @@ implements Widgeon.Base
 
         @Override
         @CreateEntityMethod
-        public Widgeon.Base create(final String name, final URL url)
+        public WidgeonBase create(final String name, final URL url)
             {
             return super.insert(
                 new WidgeonBaseEntity(
@@ -183,7 +188,7 @@ implements Widgeon.Base
 
         @Override
         @CreateEntityMethod
-        public Widgeon.Base create(final String name, final DataSource src)
+        public WidgeonBase create(final String name, final DataSource src)
             {
             return super.insert(
                 new WidgeonBaseEntity(
@@ -198,10 +203,10 @@ implements Widgeon.Base
          * 
          */
         @Autowired
-        protected Widgeon.View.Factory views ;
+        protected WidgeonView.Factory views ;
 
         @Override
-        public Widgeon.View.Factory views()
+        public WidgeonView.Factory views()
             {
             return this.views ;
             }
@@ -211,22 +216,22 @@ implements Widgeon.Base
          * 
          */
         @Autowired
-        protected Widgeon.Base.Catalog.Factory catalogs ;
+        protected WidgeonBase.Catalog.Factory catalogs ;
 
         @Override
-        public Widgeon.Base.Catalog.Factory catalogs()
+        public WidgeonBase.Catalog.Factory catalogs()
             {
             return this.catalogs ;
             }
         }
 
     @Override
-    public Widgeon.Base.Views views() 
+    public WidgeonBase.Views views() 
         {
-        return new Widgeon.Base.Views()
+        return new WidgeonBase.Views()
             {
             @Override
-            public Widgeon.View create(String name)
+            public WidgeonView create(String name)
                 {
                 return womble().widgeons().views().create(
                     WidgeonBaseEntity.this,
@@ -235,7 +240,7 @@ implements Widgeon.Base
                 }
 
             @Override
-            public Iterable<Widgeon.View> select()
+            public Iterable<WidgeonView> select()
                 {
                 return womble().widgeons().views().select(
                     WidgeonBaseEntity.this
@@ -243,19 +248,10 @@ implements Widgeon.Base
                 }
 
             @Override
-            public Widgeon.View select(String name)
+            public WidgeonView select(String name)
             throws NameNotFoundException
                 {
                 return womble().widgeons().views().select(
-                    WidgeonBaseEntity.this,
-                    name
-                    );
-                }
-
-            @Override
-            public Widgeon.View search(String name)
-                {
-                return womble().widgeons().views().search(
                     WidgeonBaseEntity.this,
                     name
                     );
@@ -264,12 +260,12 @@ implements Widgeon.Base
         }
 
     @Override
-    public Widgeon.Base.Catalogs catalogs()
+    public WidgeonBase.Catalogs catalogs()
         {
-        return new Widgeon.Base.Catalogs()
+        return new WidgeonBase.Catalogs()
             {
             @Override
-            public Widgeon.Base.Catalog create(final String name)
+            public WidgeonBase.Catalog create(final String name)
                 {
                 return womble().widgeons().catalogs().create(
                     WidgeonBaseEntity.this,
@@ -278,7 +274,7 @@ implements Widgeon.Base
                 }
 
             @Override
-            public Iterable<Widgeon.Base.Catalog> select()
+            public Iterable<WidgeonBase.Catalog> select()
                 {
                 return womble().widgeons().catalogs().select(
                     WidgeonBaseEntity.this
@@ -286,19 +282,10 @@ implements Widgeon.Base
                 }
 
             @Override
-            public Widgeon.Base.Catalog select(final String name)
+            public WidgeonBase.Catalog select(final String name)
             throws NameNotFoundException
                 {
                 return womble().widgeons().catalogs().select(
-                    WidgeonBaseEntity.this,
-                    name
-                    );
-                }
-
-            @Override
-            public Widgeon.Base.Catalog search(final String name)
-                {
-                return womble().widgeons().catalogs().search(
                     WidgeonBaseEntity.this,
                     name
                     );

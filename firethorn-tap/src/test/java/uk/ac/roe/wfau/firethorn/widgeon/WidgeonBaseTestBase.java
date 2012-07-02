@@ -39,9 +39,9 @@ public class WidgeonBaseTestBase
 extends TestBase
     {
 
-    private Widgeon.Base base ;
+    private WidgeonBase base ;
 
-    protected Widgeon.Base base()
+    protected WidgeonBase base()
         {
         return this.base;
         }

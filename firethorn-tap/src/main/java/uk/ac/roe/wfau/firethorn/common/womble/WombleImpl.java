@@ -46,6 +46,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
 import uk.ac.roe.wfau.firethorn.mallard.Mallard;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
@@ -495,14 +497,10 @@ implements Womble
      * 
      */
     @Autowired
-    protected Widgeon.Base.Factory widgeons ;
+    protected WidgeonBase.Factory widgeons ;
 
-    /**
-     * Access to our Widgeon factory.
-     * 
-     */
     @Override
-    public Widgeon.Base.Factory widgeons()
+    public WidgeonBase.Factory widgeons()
         {
         return this.widgeons ;
         }
@@ -514,10 +512,6 @@ implements Womble
     @Autowired
     protected Mallard.Factory mallards ;
 
-    /**
-     * Access to our Mallard factory.
-     * 
-     */
     @Override
     public Mallard.Factory mallards()
         {
@@ -531,10 +525,6 @@ implements Womble
     @Autowired
     protected Identity.Factory identities ;
 
-    /**
-     * Access to our Identity factory.
-     * 
-     */
     @Override
     public Identity.Factory identities()
         {
@@ -548,10 +538,6 @@ implements Womble
     @Autowired
     protected Identity.Context context ;
 
-    /**
-     * Access to the current Identity.
-     * 
-     */
     @Override
     public Identity actor()
         {

@@ -31,6 +31,8 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
 
 /**
  *
@@ -293,7 +295,7 @@ log.debug("--- test006() ---");
     throws Exception
         {
 log.debug("--- test007() ---");
-        for (Widgeon.View widgeon : womble().mallards().select(ident[0]).widgeons().select())
+        for (WidgeonView widgeon : womble().mallards().select(ident[0]).widgeons().select())
             {
             womble().mallards().select(
                 ident[1]

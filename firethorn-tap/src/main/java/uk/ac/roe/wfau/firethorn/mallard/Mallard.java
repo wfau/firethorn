@@ -21,6 +21,8 @@ import java.net.URL;
 import java.net.URI;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
@@ -68,16 +70,16 @@ extends Entity
         {
 
         /**
-         * Add a Widgeon View to this service.
+         * Add a Widgeon to this service.
          *
          */
-        public void insert(Widgeon.View widgeon);
+        public void insert(WidgeonView widgeon);
 
         /**
          * Select all the Widgeons used by this service.
          *
          */
-        public Iterable<Widgeon.View> select();
+        public Iterable<WidgeonView> select();
 
         }
 

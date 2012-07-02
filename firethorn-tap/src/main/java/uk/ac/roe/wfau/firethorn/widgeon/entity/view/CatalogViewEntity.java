@@ -49,6 +49,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.base.CatalogBaseEntity;
@@ -101,7 +103,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.CatalogBaseEntity;
     )
 public class CatalogViewEntity
 extends WidgeonStatusEntity
-implements Widgeon.View.Catalog
+implements WidgeonView.Catalog
     {
 
     /**
@@ -128,8 +130,8 @@ implements Widgeon.View.Catalog
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<Widgeon.View.Catalog>
-    implements Widgeon.View.Catalog.Factory
+    extends AbstractFactory<WidgeonView.Catalog>
+    implements WidgeonView.Catalog.Factory
         {
 
         @Override
@@ -143,12 +145,12 @@ implements Widgeon.View.Catalog
          *
          */
         @CascadeEntityMethod
-        protected Widgeon.View.Catalog insert(CatalogViewEntity entity)
+        protected WidgeonView.Catalog insert(CatalogViewEntity entity)
             {
             super.insert(
                 entity
                 );
-            for (Widgeon.Base.Catalog.Schema schema : entity.base().schemas().select())
+            for (WidgeonBase.Catalog.Schema schema : entity.base().schemas().select())
                 {
                 this.schemas().cascade(
                     entity,
@@ -163,7 +165,7 @@ implements Widgeon.View.Catalog
          *
          */
         @CascadeEntityMethod
-        protected Widgeon.View.Catalog create(final Widgeon.View parent, final Widgeon.Base.Catalog base)
+        protected WidgeonView.Catalog create(final WidgeonView parent, final WidgeonBase.Catalog base)
             {
             return this.insert(
                 new CatalogViewEntity(
@@ -178,7 +180,7 @@ implements Widgeon.View.Catalog
          *
          */
         @SelectEntityMethod
-        protected Widgeon.View.Catalog search(final Widgeon.View parent, final Widgeon.Base.Catalog base)
+        protected WidgeonView.Catalog search(final WidgeonView parent, final WidgeonBase.Catalog base)
             {
             return super.first(
                 super.query(
@@ -195,9 +197,9 @@ implements Widgeon.View.Catalog
 
         @Override
         @CascadeEntityMethod
-        public Widgeon.View.Catalog cascade(final Widgeon.View parent, final Widgeon.Base.Catalog base)
+        public WidgeonView.Catalog cascade(final WidgeonView parent, final WidgeonBase.Catalog base)
             {
-            Widgeon.View.Catalog result = this.search(
+            WidgeonView.Catalog result = this.search(
                 parent,
                 base
                 );
@@ -213,7 +215,7 @@ implements Widgeon.View.Catalog
 
         @Override
         @CreateEntityMethod
-        public Widgeon.View.Catalog create(final Widgeon.View parent, final Widgeon.Base.Catalog base, final String name)
+        public WidgeonView.Catalog create(final WidgeonView parent, final WidgeonBase.Catalog base, final String name)
             {
             return this.insert(
                 new CatalogViewEntity(
@@ -226,7 +228,7 @@ implements Widgeon.View.Catalog
 
         @Override
         @SelectEntityMethod
-        public Iterable<Widgeon.View.Catalog> select(final Widgeon.View parent)
+        public Iterable<WidgeonView.Catalog> select(final WidgeonView parent)
             {
             return super.iterable(
                 super.query(
@@ -240,10 +242,10 @@ implements Widgeon.View.Catalog
 
         @Override
         @SelectEntityMethod
-        public Widgeon.View.Catalog select(final Widgeon.View parent, final String name)
+        public WidgeonView.Catalog select(final WidgeonView parent, final String name)
         throws NameNotFoundException
             {
-            Widgeon.View.Catalog result = this.search(
+            WidgeonView.Catalog result = this.search(
                 parent,
                 name
                 );
@@ -258,9 +260,12 @@ implements Widgeon.View.Catalog
                 }
             }
 
-        @Override
+        /**
+         * Search for a named Catalog in a Widgeon.
+         *
+         */
         @SelectEntityMethod
-        public Widgeon.View.Catalog search(final Widgeon.View parent, final String name)
+        protected WidgeonView.Catalog search(final WidgeonView parent, final String name)
             {
             return super.first(
                 super.query(
@@ -277,7 +282,7 @@ implements Widgeon.View.Catalog
 
         @Override
         @SelectEntityMethod
-        public Iterable<Widgeon.View.Catalog> select(final Widgeon.Base.Catalog base)
+        public Iterable<WidgeonView.Catalog> select(final WidgeonBase.Catalog base)
             {
             return super.iterable(
                 super.query(
@@ -294,23 +299,23 @@ implements Widgeon.View.Catalog
          * 
          */
         @Autowired
-        protected Widgeon.View.Catalog.Schema.Factory schemas ;
+        protected WidgeonView.Catalog.Schema.Factory schemas ;
 
         @Override
-        public Widgeon.View.Catalog.Schema.Factory schemas()
+        public WidgeonView.Catalog.Schema.Factory schemas()
             {
             return this.schemas ;
             }
         }
 
     @Override
-    public Widgeon.View.Catalog.Schemas schemas()
+    public WidgeonView.Catalog.Schemas schemas()
         {
-        return new Widgeon.View.Catalog.Schemas()
+        return new WidgeonView.Catalog.Schemas()
             {
 
             @Override
-            public Iterable<Widgeon.View.Catalog.Schema> select()
+            public Iterable<WidgeonView.Catalog.Schema> select()
                 {
                 return womble().widgeons().views().catalogs().schemas().select(
                     CatalogViewEntity.this
@@ -318,19 +323,10 @@ implements Widgeon.View.Catalog
                 }
 
             @Override
-            public Widgeon.View.Catalog.Schema select(String name)
+            public WidgeonView.Catalog.Schema select(String name)
             throws NameNotFoundException
                 {
                 return womble().widgeons().views().catalogs().schemas().select(
-                    CatalogViewEntity.this,
-                    name
-                    ) ;
-                }
-
-            @Override
-            public Widgeon.View.Catalog.Schema search(String name)
-                {
-                return womble().widgeons().views().catalogs().schemas().search(
                     CatalogViewEntity.this,
                     name
                     ) ;
@@ -352,7 +348,7 @@ implements Widgeon.View.Catalog
      * Create a new view.
      *
      */
-    protected CatalogViewEntity(final Widgeon.View parent, final Widgeon.Base.Catalog base)
+    protected CatalogViewEntity(final WidgeonView parent, final WidgeonBase.Catalog base)
         {
         this(
             parent,
@@ -365,7 +361,7 @@ implements Widgeon.View.Catalog
      * Create a new view.
      *
      */
-    protected CatalogViewEntity(final Widgeon.View parent, final Widgeon.Base.Catalog base, final String name)
+    protected CatalogViewEntity(final WidgeonView parent, final WidgeonBase.Catalog base, final String name)
         {
         super(
             name
@@ -388,10 +384,10 @@ implements Widgeon.View.Catalog
         nullable = false,
         updatable = false
         )
-    private Widgeon.View parent ;
+    private WidgeonView parent ;
 
     @Override
-    public Widgeon.View parent()
+    public WidgeonView parent()
         {
         return this.parent ;
         }
@@ -410,10 +406,10 @@ implements Widgeon.View.Catalog
         nullable = false,
         updatable = false
         )
-    private Widgeon.Base.Catalog base ;
+    private WidgeonBase.Catalog base ;
 
     @Override
-    public Widgeon.Base.Catalog base()
+    public WidgeonBase.Catalog base()
         {
         return this.base ;
         }

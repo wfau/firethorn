@@ -49,6 +49,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.base.ColumnBaseEntity;
@@ -94,7 +96,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.ColumnBaseEntity;
     )
 public class ColumnViewEntity
 extends WidgeonStatusEntity
-implements Widgeon.View.Catalog.Schema.Table.Column
+implements WidgeonView.Catalog.Schema.Table.Column
     {
 
     /**
@@ -121,8 +123,8 @@ implements Widgeon.View.Catalog.Schema.Table.Column
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<Widgeon.View.Catalog.Schema.Table.Column>
-    implements Widgeon.View.Catalog.Schema.Table.Column.Factory
+    extends AbstractFactory<WidgeonView.Catalog.Schema.Table.Column>
+    implements WidgeonView.Catalog.Schema.Table.Column.Factory
         {
 
         @Override
@@ -136,14 +138,14 @@ implements Widgeon.View.Catalog.Schema.Table.Column
          *
          */
         @CascadeEntityMethod
-        protected Widgeon.View.Catalog.Schema.Table.Column insert(ColumnViewEntity entity)
+        protected WidgeonView.Catalog.Schema.Table.Column insert(ColumnViewEntity entity)
             {
             super.insert(
                 entity
                 );
 /*
  * When we have children ...
-            for (Widgeon.Base.Catalog.Schema.Table.Column column : entity.base().columns().select())
+            for (WidgeonBase.Catalog.Schema.Table.Column column : entity.base().columns().select())
                 {
                 this.columns().cascade(
                     entity,
@@ -159,7 +161,7 @@ implements Widgeon.View.Catalog.Schema.Table.Column
          *
          */
         @CascadeEntityMethod
-        protected Widgeon.View.Catalog.Schema.Table.Column create(final Widgeon.View.Catalog.Schema.Table parent, final Widgeon.Base.Catalog.Schema.Table.Column base)
+        protected WidgeonView.Catalog.Schema.Table.Column create(final WidgeonView.Catalog.Schema.Table parent, final WidgeonBase.Catalog.Schema.Table.Column base)
             {
             return this.insert(
                 new ColumnViewEntity(
@@ -174,7 +176,7 @@ implements Widgeon.View.Catalog.Schema.Table.Column
          *
          */
         @SelectEntityMethod
-        protected Widgeon.View.Catalog.Schema.Table.Column search(final Widgeon.View.Catalog.Schema.Table parent, final Widgeon.Base.Catalog.Schema.Table.Column base)
+        protected WidgeonView.Catalog.Schema.Table.Column search(final WidgeonView.Catalog.Schema.Table parent, final WidgeonBase.Catalog.Schema.Table.Column base)
             {
             return super.first(
                 super.query(
@@ -191,9 +193,9 @@ implements Widgeon.View.Catalog.Schema.Table.Column
 
         @Override
         @CascadeEntityMethod
-        public Widgeon.View.Catalog.Schema.Table.Column cascade(final Widgeon.View.Catalog.Schema.Table parent, final Widgeon.Base.Catalog.Schema.Table.Column base)
+        public WidgeonView.Catalog.Schema.Table.Column cascade(final WidgeonView.Catalog.Schema.Table parent, final WidgeonBase.Catalog.Schema.Table.Column base)
             {
-            Widgeon.View.Catalog.Schema.Table.Column result = this.search(
+            WidgeonView.Catalog.Schema.Table.Column result = this.search(
                 parent,
                 base
                 );
@@ -209,7 +211,7 @@ implements Widgeon.View.Catalog.Schema.Table.Column
 
         @Override
         @CreateEntityMethod
-        public Widgeon.View.Catalog.Schema.Table.Column create(final Widgeon.View.Catalog.Schema.Table parent, final Widgeon.Base.Catalog.Schema.Table.Column base, final String name)
+        public WidgeonView.Catalog.Schema.Table.Column create(final WidgeonView.Catalog.Schema.Table parent, final WidgeonBase.Catalog.Schema.Table.Column base, final String name)
             {
             return this.insert(
                 new ColumnViewEntity(
@@ -222,7 +224,7 @@ implements Widgeon.View.Catalog.Schema.Table.Column
 
         @Override
         @SelectEntityMethod
-        public Iterable<Widgeon.View.Catalog.Schema.Table.Column> select(final Widgeon.View.Catalog.Schema.Table parent)
+        public Iterable<WidgeonView.Catalog.Schema.Table.Column> select(final WidgeonView.Catalog.Schema.Table parent)
             {
             return super.iterable(
                 super.query(
@@ -236,10 +238,10 @@ implements Widgeon.View.Catalog.Schema.Table.Column
 
         @Override
         @SelectEntityMethod
-        public Widgeon.View.Catalog.Schema.Table.Column select(final Widgeon.View.Catalog.Schema.Table parent, final String name)
+        public WidgeonView.Catalog.Schema.Table.Column select(final WidgeonView.Catalog.Schema.Table parent, final String name)
         throws NameNotFoundException
             {
-            Widgeon.View.Catalog.Schema.Table.Column result = this.search(
+            WidgeonView.Catalog.Schema.Table.Column result = this.search(
                 parent,
                 name
                 );
@@ -254,9 +256,12 @@ implements Widgeon.View.Catalog.Schema.Table.Column
                 }
             }
 
-        @Override
+        /**
+         * Search for a named Column in a Table.
+         *
+         */
         @SelectEntityMethod
-        public Widgeon.View.Catalog.Schema.Table.Column search(final Widgeon.View.Catalog.Schema.Table parent, final String name)
+        protected WidgeonView.Catalog.Schema.Table.Column search(final WidgeonView.Catalog.Schema.Table parent, final String name)
             {
             return super.first(
                 super.query(
@@ -273,7 +278,7 @@ implements Widgeon.View.Catalog.Schema.Table.Column
 
         @Override
         @SelectEntityMethod
-        public Iterable<Widgeon.View.Catalog.Schema.Table.Column> select(final Widgeon.Base.Catalog.Schema.Table.Column base)
+        public Iterable<WidgeonView.Catalog.Schema.Table.Column> select(final WidgeonBase.Catalog.Schema.Table.Column base)
             {
             return super.iterable(
                 super.query(
@@ -300,7 +305,7 @@ implements Widgeon.View.Catalog.Schema.Table.Column
      * Create a new view.
      *
      */
-    protected ColumnViewEntity(final Widgeon.View.Catalog.Schema.Table parent, final Widgeon.Base.Catalog.Schema.Table.Column base)
+    protected ColumnViewEntity(final WidgeonView.Catalog.Schema.Table parent, final WidgeonBase.Catalog.Schema.Table.Column base)
         {
         this(
             parent,
@@ -313,7 +318,7 @@ implements Widgeon.View.Catalog.Schema.Table.Column
      * Create a new view.
      *
      */
-    protected ColumnViewEntity(final Widgeon.View.Catalog.Schema.Table parent, final Widgeon.Base.Catalog.Schema.Table.Column base, final String name)
+    protected ColumnViewEntity(final WidgeonView.Catalog.Schema.Table parent, final WidgeonBase.Catalog.Schema.Table.Column base, final String name)
         {
         super(
             name
@@ -336,10 +341,10 @@ implements Widgeon.View.Catalog.Schema.Table.Column
         nullable = false,
         updatable = false
         )
-    private Widgeon.View.Catalog.Schema.Table parent ;
+    private WidgeonView.Catalog.Schema.Table parent ;
 
     @Override
-    public Widgeon.View.Catalog.Schema.Table parent()
+    public WidgeonView.Catalog.Schema.Table parent()
         {
         return this.parent ;
         }
@@ -358,10 +363,10 @@ implements Widgeon.View.Catalog.Schema.Table.Column
         nullable = false,
         updatable = false
         )
-    private Widgeon.Base.Catalog.Schema.Table.Column base ;
+    private WidgeonBase.Catalog.Schema.Table.Column base ;
 
     @Override
-    public Widgeon.Base.Catalog.Schema.Table.Column base()
+    public WidgeonBase.Catalog.Schema.Table.Column base()
         {
         return this.base ;
         }

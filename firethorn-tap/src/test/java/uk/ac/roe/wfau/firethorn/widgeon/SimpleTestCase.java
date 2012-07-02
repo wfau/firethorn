@@ -39,7 +39,7 @@ extends TestBase
     @Test
     public void simple()
         {
-        Widgeon.Base one = womble().widgeons().create(
+        WidgeonBase one = womble().widgeons().create(
             "albert",
             URI.create("ivo://org.astrogrid.test/0001")
             );
@@ -51,7 +51,7 @@ extends TestBase
             );
         log.debug("One [{}][{}]", one.ident(), one.name());
 
-        Widgeon.Base two = womble().widgeons().create(
+        WidgeonBase two = womble().widgeons().create(
             "albert",
             URI.create("ivo://org.astrogrid.test/0001")
             );
@@ -63,7 +63,7 @@ extends TestBase
             );
         log.debug("Two [{}][{}]", two.ident(), two.name());
 
-        for (Widgeon.Base widgeon : womble().widgeons().select())
+        for (WidgeonBase widgeon : womble().widgeons().select())
             {
             log.debug("Widgeon [{}]", widgeon);
             }
@@ -86,7 +86,7 @@ extends TestBase
                 )
             );
 
-        for (Widgeon.Base widgeon : womble().widgeons().select())
+        for (WidgeonBase widgeon : womble().widgeons().select())
             {
             display(
                 widgeon
@@ -94,7 +94,7 @@ extends TestBase
             }
         }
 
-    public void nested(Widgeon.Base widgeon)
+    public void nested(WidgeonBase widgeon)
         {
         nested(
             widgeon.catalogs().create(
@@ -108,7 +108,7 @@ extends TestBase
             );
         }
 
-    public void nested(Widgeon.Base.Catalog catalog)
+    public void nested(WidgeonBase.Catalog catalog)
         {
         nested(
             catalog.schemas().create(
@@ -122,7 +122,7 @@ extends TestBase
             );
         }
 
-    public void nested(Widgeon.Base.Catalog.Schema schema)
+    public void nested(WidgeonBase.Catalog.Schema schema)
         {
         nested(
             schema.tables().create(
@@ -136,7 +136,7 @@ extends TestBase
             );
         }
 
-    public void nested(Widgeon.Base.Catalog.Schema.Table table)
+    public void nested(WidgeonBase.Catalog.Schema.Table table)
         {
         table.columns().create(
             "column-0001"
@@ -146,20 +146,20 @@ extends TestBase
             );
         }
 
-    public void display(Widgeon.Base widgeon)
+    public void display(WidgeonBase widgeon)
         {
         log.debug("-------");
         log.debug("Widgeon [{}]", widgeon);
-        for (Widgeon.Base.Catalog catalog : widgeon.catalogs().select())
+        for (WidgeonBase.Catalog catalog : widgeon.catalogs().select())
             {
             log.debug("  Catalog [{}]", catalog);
-            for (Widgeon.Base.Catalog.Schema schema : catalog.schemas().select())
+            for (WidgeonBase.Catalog.Schema schema : catalog.schemas().select())
                 {
                 log.debug("  Schema [{}]", schema);
-                for (Widgeon.Base.Catalog.Schema.Table table : schema.tables().select())
+                for (WidgeonBase.Catalog.Schema.Table table : schema.tables().select())
                     {
                     log.debug("  Table [{}]", table);
-                    for (Widgeon.Base.Catalog.Schema.Table.Column column : table.columns().select())
+                    for (WidgeonBase.Catalog.Schema.Table.Column column : table.columns().select())
                         {
                         log.debug("  Column [{}]", column);
                         }

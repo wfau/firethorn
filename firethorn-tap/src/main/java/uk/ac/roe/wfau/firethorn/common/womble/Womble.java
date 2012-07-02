@@ -33,6 +33,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 import uk.ac.roe.wfau.firethorn.mallard.Mallard;
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
@@ -153,7 +155,7 @@ public interface Womble
      * Access to our Widgeon factory.
      * 
      */
-    public Widgeon.Base.Factory widgeons();
+    public WidgeonBase.Factory widgeons();
 
     /**
      * Access to our Mallard factory.

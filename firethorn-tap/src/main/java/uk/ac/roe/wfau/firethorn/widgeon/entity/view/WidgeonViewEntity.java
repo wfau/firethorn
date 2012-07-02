@@ -56,6 +56,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
+import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.base.WidgeonBaseEntity;
@@ -94,7 +96,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.WidgeonBaseEntity;
     )
 public class WidgeonViewEntity
 extends WidgeonStatusEntity
-implements Widgeon.View
+implements WidgeonView
     {
 
     /**
@@ -115,8 +117,8 @@ implements Widgeon.View
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<Widgeon.View>
-    implements Widgeon.View.Factory
+    extends AbstractFactory<WidgeonView>
+    implements WidgeonView.Factory
         {
 
         @Override
@@ -130,12 +132,12 @@ implements Widgeon.View
          *
          */
         @CascadeEntityMethod
-        protected Widgeon.View insert(WidgeonViewEntity entity)
+        protected WidgeonView insert(WidgeonViewEntity entity)
             {
             super.insert(
                 entity
                 );
-            for (Widgeon.Base.Catalog catalog : entity.base().catalogs().select())
+            for (WidgeonBase.Catalog catalog : entity.base().catalogs().select())
                 {
                 this.catalogs().cascade(
                     entity,
@@ -147,7 +149,7 @@ implements Widgeon.View
 
         @Override
         @CreateEntityMethod
-        public Widgeon.View create(final Widgeon.Base base, final String name)
+        public WidgeonView create(final WidgeonBase base, final String name)
             {
             return this.insert(
                 new WidgeonViewEntity(
@@ -159,7 +161,7 @@ implements Widgeon.View
 
         @Override
         @SelectEntityMethod
-        public Iterable<Widgeon.View> select(final Widgeon.Base base)
+        public Iterable<WidgeonView> select(final WidgeonBase base)
             {
             return super.iterable(
                 super.query(
@@ -173,10 +175,10 @@ implements Widgeon.View
 
         @Override
         @SelectEntityMethod
-        public Widgeon.View select(final Widgeon.Base base, String name)
+        public WidgeonView select(final WidgeonBase base, String name)
         throws NameNotFoundException
             {
-            Widgeon.View result = this.search(
+            WidgeonView result = this.search(
                 base,
                 name
                 );
@@ -191,9 +193,12 @@ implements Widgeon.View
                 }
             }
 
-        @Override
+        /**
+         * Search for a named View of a Widgeon.
+         *
+         */
         @SelectEntityMethod
-        public Widgeon.View search(final Widgeon.Base base, String name)
+        protected WidgeonView search(final WidgeonBase base, String name)
             {
             return super.first(
                 super.query(
@@ -213,22 +218,22 @@ implements Widgeon.View
          * 
          */
         @Autowired
-        protected Widgeon.View.Catalog.Factory catalogs ;
+        protected WidgeonView.Catalog.Factory catalogs ;
 
         @Override
-        public Widgeon.View.Catalog.Factory catalogs()
+        public WidgeonView.Catalog.Factory catalogs()
             {
             return catalogs ;
             }
         }
 
     @Override
-    public Widgeon.View.Catalogs catalogs()
+    public WidgeonView.Catalogs catalogs()
         {
-        return new Widgeon.View.Catalogs()
+        return new WidgeonView.Catalogs()
             {
             @Override
-            public Iterable<Widgeon.View.Catalog> select()
+            public Iterable<WidgeonView.Catalog> select()
                 {
                 return womble().widgeons().views().catalogs().select(
                     WidgeonViewEntity.this
@@ -236,19 +241,10 @@ implements Widgeon.View
                 }
 
             @Override
-            public Widgeon.View.Catalog select(final String name)
+            public WidgeonView.Catalog select(final String name)
             throws NameNotFoundException
                 {
                 return womble().widgeons().views().catalogs().select(
-                    WidgeonViewEntity.this,
-                    name
-                    ) ;
-                }
-
-            @Override
-            public Widgeon.View.Catalog search(final String name)
-                {
-                return womble().widgeons().views().catalogs().search(
                     WidgeonViewEntity.this,
                     name
                     ) ;
@@ -270,7 +266,7 @@ implements Widgeon.View
      * Create a new view of a Widgeon.
      *
      */
-    private WidgeonViewEntity(final Widgeon.Base base)
+    private WidgeonViewEntity(final WidgeonBase base)
         {
         this(
             base,
@@ -282,7 +278,7 @@ implements Widgeon.View
      * Create a new view of a Widgeon.
      *
      */
-    private WidgeonViewEntity(final Widgeon.Base base, final String name)
+    private WidgeonViewEntity(final WidgeonBase base, final String name)
         {
         super(
             name
@@ -304,10 +300,10 @@ implements Widgeon.View
         nullable = false,
         updatable = false
         )
-    private Widgeon.Base base ;
+    private WidgeonBase base ;
 
     @Override
-    public Widgeon.Base base()
+    public WidgeonBase base()
         {
         return this.base ;
         }
