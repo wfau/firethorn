@@ -1,0 +1,124 @@
+
+
+
+    Schemas
+    schemas
+
+    Schema
+    schema
+
+    SchemaType
+
+    Catalogs
+    catalogs
+
+    Catalog
+    catalog
+
+    CatalogType
+
+------------------------------
+
+    Schema      Sparrow
+    schema      sparrow
+
+    Catalog     Warbler
+    catalog     warbler
+
+    find . -name 'Schema*'
+        ./src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/base/SchemaBaseEntity.java
+        ./src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/view/SchemaViewEntity.java
+        ./src/test/java/uk/ac/roe/wfau/firethorn/widgeon/SchemaViewTestCase.java
+
+    find . -name 'Catalog*'
+        ./src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/base/CatalogBaseEntity.java
+        ./src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/view/CatalogViewEntity.java
+        ./src/test/java/uk/ac/roe/wfau/firethorn/widgeon/CatalogViewTestCase.java
+
+
+    hg mv   src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/base/SchemaBaseEntity.java \
+            src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/base/SparrowBaseEntity.java
+
+    hg mv   src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/view/SchemaViewEntity.java \
+            src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/view/SparrowViewEntity.java
+
+    hg mv   src/test/java/uk/ac/roe/wfau/firethorn/widgeon/SchemaViewTestCase.java \
+            src/test/java/uk/ac/roe/wfau/firethorn/widgeon/SparrowViewTestCase.java
+
+
+    hg mv   src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/base/CatalogBaseEntity.java \
+            src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/base/WarblerBaseEntity.java
+
+    hg mv   src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/view/CatalogViewEntity.java \
+            src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/view/WarblerViewEntity.java
+
+    hg mv   src/test/java/uk/ac/roe/wfau/firethorn/widgeon/CatalogViewTestCase.java \
+            src/test/java/uk/ac/roe/wfau/firethorn/widgeon/WarblerViewTestCase.java
+
+
+    mvn clean test
+
+    hg commit -m "Half way between Schema/Catalog swap"
+
+------------------------------
+
+    Schema      Sparrow     Catalog
+    schema      sparrow     catalog
+
+    Catalog     Warbler     Schema
+    catalog     warbler     schema
+
+    find . -name 'Sparrow*'
+
+        ./src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/base/SparrowBaseEntity.java
+        ./src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/view/SparrowViewEntity.java
+        ./src/test/java/uk/ac/roe/wfau/firethorn/widgeon/SparrowViewTestCase.java
+
+    find . -name 'Warbler*'
+
+        ./src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/base/WarblerBaseEntity.java
+        ./src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/view/WarblerViewEntity.java
+        ./src/test/java/uk/ac/roe/wfau/firethorn/widgeon/WarblerViewTestCase.java
+
+
+
+    hg mv   src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/base/SparrowBaseEntity.java \
+            src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/base/CatalogBaseEntity.java
+
+    hg mv   src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/view/SparrowViewEntity.java \
+            src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/view/CatalogViewEntity.java
+
+    hg mv   src/test/java/uk/ac/roe/wfau/firethorn/widgeon/SparrowViewTestCase.java \
+            src/test/java/uk/ac/roe/wfau/firethorn/widgeon/CatalogViewTestCase.java
+
+    hg mv   src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/base/WarblerBaseEntity.java \
+            src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/base/SchemaBaseEntity.java
+
+    hg mv   src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/view/WarblerViewEntity.java \
+            src/main/java/uk/ac/roe/wfau/firethorn/widgeon/entity/view/SchemaViewEntity.java
+
+    hg mv   src/test/java/uk/ac/roe/wfau/firethorn/widgeon/WarblerViewTestCase.java \
+            src/test/java/uk/ac/roe/wfau/firethorn/widgeon/SchemaViewTestCase.java
+
+    mvn clean test
+
+    hg commit -m "Completed Schema/Catalog swap"
+
+------------------------------
+
+    hg branches
+
+        swap-names  76:c663a8fdff81
+        default     73:bb7588b58796 (inactive)
+
+    hg update 'swap-names'
+    hg commit -m 'Closing swap-names branch' --close-branch
+    hg update 'default'
+    hg merge  'swap-names'
+
+    mvn clean test
+
+    hg commit -m 'Merged swap-names branch'
+
+
+
