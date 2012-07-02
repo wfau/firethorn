@@ -135,11 +135,11 @@ implements Widgeon.View
             super.insert(
                 entity
                 );
-            for (Widgeon.Base.Sparrow sparrow : entity.base().sparrows().select())
+            for (Widgeon.Base.Catalog catalog : entity.base().catalogs().select())
                 {
-                this.sparrows().cascade(
+                this.catalogs().cascade(
                     entity,
-                    sparrow
+                    catalog
                     );
                 }
             return entity ;
@@ -209,46 +209,46 @@ implements Widgeon.View
             }
 
         /**
-         * Our Autowired Sparrow factory.
+         * Our Autowired Catalog factory.
          * 
          */
         @Autowired
-        protected Widgeon.View.Sparrow.Factory sparrows ;
+        protected Widgeon.View.Catalog.Factory catalogs ;
 
         @Override
-        public Widgeon.View.Sparrow.Factory sparrows()
+        public Widgeon.View.Catalog.Factory catalogs()
             {
-            return sparrows ;
+            return catalogs ;
             }
         }
 
     @Override
-    public Widgeon.View.Sparrows sparrows()
+    public Widgeon.View.Catalogs catalogs()
         {
-        return new Widgeon.View.Sparrows()
+        return new Widgeon.View.Catalogs()
             {
             @Override
-            public Iterable<Widgeon.View.Sparrow> select()
+            public Iterable<Widgeon.View.Catalog> select()
                 {
-                return womble().widgeons().views().sparrows().select(
+                return womble().widgeons().views().catalogs().select(
                     WidgeonViewEntity.this
                     ) ;
                 }
 
             @Override
-            public Widgeon.View.Sparrow select(final String name)
+            public Widgeon.View.Catalog select(final String name)
             throws NameNotFoundException
                 {
-                return womble().widgeons().views().sparrows().select(
+                return womble().widgeons().views().catalogs().select(
                     WidgeonViewEntity.this,
                     name
                     ) ;
                 }
 
             @Override
-            public Widgeon.View.Sparrow search(final String name)
+            public Widgeon.View.Catalog search(final String name)
                 {
-                return womble().widgeons().views().sparrows().search(
+                return womble().widgeons().views().catalogs().search(
                     WidgeonViewEntity.this,
                     name
                     ) ;

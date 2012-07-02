@@ -54,15 +54,15 @@ extends WidgeonBaseTestBase
     throws Exception
         {
         try {
-            base().sparrows().select(
-                "sparrow-A"
+            base().catalogs().select(
+                "catalog-A"
                 );
             fail("NameNotFoundException expected");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "sparrow-A",
+                "catalog-A",
                 ouch.name()
                 );            
             }
@@ -73,8 +73,8 @@ extends WidgeonBaseTestBase
     throws Exception
         {
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
+            base().catalogs().create(
+                "catalog-A"
                 )
             );
         }
@@ -84,13 +84,13 @@ extends WidgeonBaseTestBase
     throws Exception
         {
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
+            base().catalogs().create(
+                "catalog-A"
                 )
             );
         assertNotNull(
-            base().sparrows().select(
-                "sparrow-A"
+            base().catalogs().select(
+                "catalog-A"
                 )
             );
         }
@@ -100,22 +100,22 @@ extends WidgeonBaseTestBase
     throws Exception
         {
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
+            base().catalogs().create(
+                "catalog-A"
                 )
             );
         try {
-            base().sparrows().select(
-                "sparrow-A"
-                ).warblers().select(
-                    "warbler-A"
+            base().catalogs().select(
+                "catalog-A"
+                ).schemas().select(
+                    "schema-A"
                     );
             fail("NameNotFoundException expected");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "warbler-A",
+                "schema-A",
                 ouch.name()
                 );            
             }
@@ -126,18 +126,18 @@ extends WidgeonBaseTestBase
     throws Exception
         {
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
-                ).warblers().create(
-                    "warbler-A"
+            base().catalogs().create(
+                "catalog-A"
+                ).schemas().create(
+                    "schema-A"
                     )
             );
 
         assertNotNull(
-            base().sparrows().select(
-                "sparrow-A"
-                ).warblers().select(
-                    "warbler-A"
+            base().catalogs().select(
+                "catalog-A"
+                ).schemas().select(
+                    "schema-A"
                     )
             );
         }
@@ -147,17 +147,17 @@ extends WidgeonBaseTestBase
     throws Exception
         {
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
-                ).warblers().create(
-                    "warbler-A"
+            base().catalogs().create(
+                "catalog-A"
+                ).schemas().create(
+                    "schema-A"
                     )
             );
         try {
-            base().sparrows().select(
-                "sparrow-A"
-                ).warblers().select(
-                    "warbler-A"
+            base().catalogs().select(
+                "catalog-A"
+                ).schemas().select(
+                    "schema-A"
                     ).tables().select(
                         "table-A"
                         );
@@ -177,20 +177,20 @@ extends WidgeonBaseTestBase
     throws Exception
         {
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
-                ).warblers().create(
-                    "warbler-A"
+            base().catalogs().create(
+                "catalog-A"
+                ).schemas().create(
+                    "schema-A"
                     ).tables().create(
                         "table-A"
                         )
             );
 
         assertNotNull(
-            base().sparrows().select(
-                "sparrow-A"
-                ).warblers().select(
-                    "warbler-A"
+            base().catalogs().select(
+                "catalog-A"
+                ).schemas().select(
+                    "schema-A"
                     ).tables().select(
                         "table-A"
                         )
@@ -202,19 +202,19 @@ extends WidgeonBaseTestBase
     throws Exception
         {
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
-                ).warblers().create(
-                    "warbler-A"
+            base().catalogs().create(
+                "catalog-A"
+                ).schemas().create(
+                    "schema-A"
                     ).tables().create(
                         "table-A"
                         )
             );
         try {
-            base().sparrows().select(
-                "sparrow-A"
-                ).warblers().select(
-                    "warbler-A"
+            base().catalogs().select(
+                "catalog-A"
+                ).schemas().select(
+                    "schema-A"
                     ).tables().select(
                         "table-A"
                         ).columns().select(
@@ -236,10 +236,10 @@ extends WidgeonBaseTestBase
     throws Exception
         {
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
-                ).warblers().create(
-                    "warbler-A"
+            base().catalogs().create(
+                "catalog-A"
+                ).schemas().create(
+                    "schema-A"
                     ).tables().create(
                         "table-A"
                         ).columns().create(
@@ -248,10 +248,10 @@ extends WidgeonBaseTestBase
             );
 
         assertNotNull(
-            base().sparrows().select(
-                "sparrow-A"
-                ).warblers().select(
-                    "warbler-A"
+            base().catalogs().select(
+                "catalog-A"
+                ).schemas().select(
+                    "schema-A"
                     ).tables().select(
                         "table-A"
                         ).columns().select(
@@ -265,10 +265,10 @@ extends WidgeonBaseTestBase
     throws Exception
         {
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
-                ).warblers().create(
-                    "warbler-A"
+            base().catalogs().create(
+                "catalog-A"
+                ).schemas().create(
+                    "schema-A"
                     ).tables().create(
                         "table-A"
                         ).columns().create(
@@ -277,10 +277,10 @@ extends WidgeonBaseTestBase
             );
 
         try {
-            base().sparrows().select(
-                "sparrow-A"
-                ).warblers().select(
-                    "warbler-A"
+            base().catalogs().select(
+                "catalog-A"
+                ).schemas().select(
+                    "schema-A"
                     ).tables().select(
                         "table-A"
                         ).columns().select(
@@ -302,10 +302,10 @@ extends WidgeonBaseTestBase
     throws Exception
         {
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
-                ).warblers().create(
-                    "warbler-A"
+            base().catalogs().create(
+                "catalog-A"
+                ).schemas().create(
+                    "schema-A"
                     ).tables().create(
                         "table-A"
                         ).columns().create(
@@ -314,10 +314,10 @@ extends WidgeonBaseTestBase
             );
 
         try {
-            base().sparrows().select(
-                "sparrow-A"
-                ).warblers().select(
-                    "warbler-A"
+            base().catalogs().select(
+                "catalog-A"
+                ).schemas().select(
+                    "schema-A"
                     ).tables().select(
                         "table-A"
                         ).columns().select(
@@ -333,10 +333,10 @@ extends WidgeonBaseTestBase
                 );            
             }
 
-        base().sparrows().select(
-            "sparrow-A"
-            ).warblers().select(
-                "warbler-A"
+        base().catalogs().select(
+            "catalog-A"
+            ).schemas().select(
+                "schema-A"
                 ).tables().select(
                     "table-A"
                     ).columns().select(
@@ -346,10 +346,10 @@ extends WidgeonBaseTestBase
                             );
 
         assertNotNull(
-            base().sparrows().select(
-                "sparrow-A"
-                ).warblers().select(
-                    "warbler-A"
+            base().catalogs().select(
+                "catalog-A"
+                ).schemas().select(
+                    "schema-A"
                     ).tables().select(
                         "table-A"
                         ).columns().select(
@@ -358,10 +358,10 @@ extends WidgeonBaseTestBase
             );
 
         try {
-            base().sparrows().select(
-                "sparrow-A"
-                ).warblers().select(
-                    "warbler-A"
+            base().catalogs().select(
+                "catalog-A"
+                ).schemas().select(
+                    "schema-A"
                     ).tables().select(
                         "table-A"
                         ).columns().select(

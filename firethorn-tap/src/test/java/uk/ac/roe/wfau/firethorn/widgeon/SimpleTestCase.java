@@ -97,46 +97,46 @@ extends TestBase
     public void nested(Widgeon.Base widgeon)
         {
         nested(
-            widgeon.sparrows().create(
-                "sparrow-0001"
+            widgeon.catalogs().create(
+                "catalog-0001"
                 )
             );
         nested(
-            widgeon.sparrows().create(
-                "sparrow-0002"
-                )
-            );
-        }
-
-    public void nested(Widgeon.Base.Sparrow sparrow)
-        {
-        nested(
-            sparrow.warblers().create(
-                "warbler-0001"
-                )
-            );
-        nested(
-            sparrow.warblers().create(
-                "warbler-0002"
+            widgeon.catalogs().create(
+                "catalog-0002"
                 )
             );
         }
 
-    public void nested(Widgeon.Base.Sparrow.Warbler warbler)
+    public void nested(Widgeon.Base.Catalog catalog)
         {
         nested(
-            warbler.tables().create(
+            catalog.schemas().create(
+                "schema-0001"
+                )
+            );
+        nested(
+            catalog.schemas().create(
+                "schema-0002"
+                )
+            );
+        }
+
+    public void nested(Widgeon.Base.Catalog.Schema schema)
+        {
+        nested(
+            schema.tables().create(
                 "table-0001"
                 )
             );
         nested(
-            warbler.tables().create(
+            schema.tables().create(
                 "table-0002"
                 )
             );
         }
 
-    public void nested(Widgeon.Base.Sparrow.Warbler.Table table)
+    public void nested(Widgeon.Base.Catalog.Schema.Table table)
         {
         table.columns().create(
             "column-0001"
@@ -150,16 +150,16 @@ extends TestBase
         {
         log.debug("-------");
         log.debug("Widgeon [{}]", widgeon);
-        for (Widgeon.Base.Sparrow sparrow : widgeon.sparrows().select())
+        for (Widgeon.Base.Catalog catalog : widgeon.catalogs().select())
             {
-            log.debug("  Sparrow [{}]", sparrow);
-            for (Widgeon.Base.Sparrow.Warbler warbler : sparrow.warblers().select())
+            log.debug("  Catalog [{}]", catalog);
+            for (Widgeon.Base.Catalog.Schema schema : catalog.schemas().select())
                 {
-                log.debug("  Warbler [{}]", warbler);
-                for (Widgeon.Base.Sparrow.Warbler.Table table : warbler.tables().select())
+                log.debug("  Schema [{}]", schema);
+                for (Widgeon.Base.Catalog.Schema.Table table : schema.tables().select())
                     {
                     log.debug("  Table [{}]", table);
-                    for (Widgeon.Base.Sparrow.Warbler.Table.Column column : table.columns().select())
+                    for (Widgeon.Base.Catalog.Schema.Table.Column column : table.columns().select())
                         {
                         log.debug("  Column [{}]", column);
                         }

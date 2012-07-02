@@ -35,7 +35,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
  *
  */
 @Slf4j
-public class SparrowViewTestCase
+public class CatalogViewTestCase
 extends WidgeonViewTestBase
     {
 
@@ -51,19 +51,19 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Select missing sparrow view fails.
+        // Select missing catalog view fails.
         try {
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
+                ).catalogs().select(
+                    "catalog-A"
                     );
             fail("NameNotFoundException expected");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "sparrow-A",
+                "catalog-A",
                 ouch.name()
                 );            
             }
@@ -74,10 +74,10 @@ extends WidgeonViewTestBase
     throws Exception
         {
         //
-        // Create base sparrow.
+        // Create base catalog.
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
+            base().catalogs().create(
+                "catalog-A"
                 )
             );
         //
@@ -88,12 +88,12 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Select sparrow view.
+        // Select catalog view.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
+                ).catalogs().select(
+                    "catalog-A"
                     )
             );
         }
@@ -110,19 +110,19 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base sparrow.
+        // Create base catalog.
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
+            base().catalogs().create(
+                "catalog-A"
                 )
             );
         //
-        // Select sparrow view.
+        // Select catalog view.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
+                ).catalogs().select(
+                    "catalog-A"
                     )
             );
         }
@@ -141,47 +141,47 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base sparrow.
+        // Create base catalog.
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
+            base().catalogs().create(
+                "catalog-A"
                 )
             );
         //
-        // Select base sparrow works.
+        // Select base catalog works.
         assertNotNull(
-            base().sparrows().select(
-                "sparrow-A"
+            base().catalogs().select(
+                "catalog-A"
                 )
             );
         //
-        // Select sparrow view works.
+        // Select catalog view works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
+                ).catalogs().select(
+                    "catalog-A"
                     )
             );
         //
-        // Change base sparrow name.
-        base().sparrows().select(
-            "sparrow-A"
+        // Change base catalog name.
+        base().catalogs().select(
+            "catalog-A"
             ).name(
                 "changed"
                 );
         //
         // Select base with old name fails.
         try {
-            base().sparrows().select(
-                "sparrow-A"
+            base().catalogs().select(
+                "catalog-A"
                 );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "sparrow-A",
+                "catalog-A",
                 ouch.name()
                 );            
             }
@@ -191,15 +191,15 @@ extends WidgeonViewTestBase
         try {
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
+                ).catalogs().select(
+                    "catalog-A"
                     );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "sparrow-A",
+                "catalog-A",
                 ouch.name()
                 );            
             }
@@ -207,7 +207,7 @@ extends WidgeonViewTestBase
         //
         // Select base with new name works.
         assertNotNull(
-            base().sparrows().select(
+            base().catalogs().select(
                 "changed"
                 )
             );
@@ -216,7 +216,7 @@ extends WidgeonViewTestBase
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).sparrows().select(
+                ).catalogs().select(
                     "changed"
                     )
             );
@@ -236,68 +236,68 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base sparrow.
+        // Create base catalog.
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
+            base().catalogs().create(
+                "catalog-A"
                 )
             );
 
         //
-        // Select base sparrow works.
+        // Select base catalog works.
         assertNotNull(
-            base().sparrows().select(
-                "sparrow-A"
+            base().catalogs().select(
+                "catalog-A"
                 )
             );
         //
-        // Select sparrow view works.
+        // Select catalog view works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
+                ).catalogs().select(
+                    "catalog-A"
                     )
             );
         //
-        // Change sparrow view name.
+        // Change catalog view name.
         base().views().select(
             "view-A"
-            ).sparrows().select(
-                "sparrow-A"
+            ).catalogs().select(
+                "catalog-A"
                 ).name(
                     "changed"
                     );
         //
-        // Select base sparrow works.
+        // Select base catalog works.
         assertNotNull(
-            base().sparrows().select(
-                "sparrow-A"
+            base().catalogs().select(
+                "catalog-A"
                 )
             );
         //
-        // Select sparrow view with old name fails.        
+        // Select catalog view with old name fails.        
         try {
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
+                ).catalogs().select(
+                    "catalog-A"
                     );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "sparrow-A",
+                "catalog-A",
                 ouch.name()
                 );            
             }
         //
-        // Select sparrow view with new name works.        
+        // Select catalog view with new name works.        
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).sparrows().select(
+                ).catalogs().select(
                     "changed"
                     )
             );
@@ -317,92 +317,92 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base sparrow.
+        // Create base catalog.
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
+            base().catalogs().create(
+                "catalog-A"
                 )
             );
         //
-        // Select base sparrow works.
+        // Select base catalog works.
         assertNotNull(
-            base().sparrows().select(
-                "sparrow-A"
+            base().catalogs().select(
+                "catalog-A"
                 )
             );
         //
-        // Select sparrow view works.
+        // Select catalog view works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
+                ).catalogs().select(
+                    "catalog-A"
                     )
             );
         //
-        // Change sparrow view name
+        // Change catalog view name
         base().views().select(
             "view-A"
-            ).sparrows().select(
-                "sparrow-A"
+            ).catalogs().select(
+                "catalog-A"
                 ).name(
                     "view-changed"
                     );
         //
-        // Select base sparrow works.
+        // Select base catalog works.
         assertNotNull(
-            base().sparrows().select(
-                "sparrow-A"
+            base().catalogs().select(
+                "catalog-A"
                 )
             );
         //
-        // Select sparrow view with old name fails.
+        // Select catalog view with old name fails.
         try {
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
+                ).catalogs().select(
+                    "catalog-A"
                     );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "sparrow-A",
+                "catalog-A",
                 ouch.name()
                 );            
             }
         //
-        // Select sparrow view with new name works.
+        // Select catalog view with new name works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).sparrows().select(
+                ).catalogs().select(
                     "view-changed"
                     )
             );
         //
-        // Set sparrow view name to null.
+        // Set catalog view name to null.
         base().views().select(
             "view-A"
-            ).sparrows().select(
+            ).catalogs().select(
                 "view-changed"
                 ).name(
                     null
                     );
         //
-        // Select base sparrow works.
+        // Select base catalog works.
         assertNotNull(
-            base().sparrows().select(
-                "sparrow-A"
+            base().catalogs().select(
+                "catalog-A"
                 )
             );
         //
-        // Select sparrow view with new name fails.
+        // Select catalog view with new name fails.
         try {
             base().views().select(
                 "view-A"
-                ).sparrows().select(
+                ).catalogs().select(
                     "view-changed"
                     );
             fail("NameNotFoundException");
@@ -415,12 +415,12 @@ extends WidgeonViewTestBase
                 );            
             }
         //
-        // Select sparrow view with old name works.
+        // Select catalog view with old name works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
+                ).catalogs().select(
+                    "catalog-A"
                     )
             );
         }
@@ -439,146 +439,146 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base sparrow.
+        // Create base catalog.
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
+            base().catalogs().create(
+                "catalog-A"
                 )
             );
         //
-        // Select base sparrow works.
+        // Select base catalog works.
         assertNotNull(
-            base().sparrows().select(
-                "sparrow-A"
+            base().catalogs().select(
+                "catalog-A"
                 )
             );
         //
-        // Select sparrow view works.
+        // Select catalog view works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
+                ).catalogs().select(
+                    "catalog-A"
                     )
             );
         //
-        // Change sparrow view name
+        // Change catalog view name
         base().views().select(
             "view-A"
-            ).sparrows().select(
-                "sparrow-A"
+            ).catalogs().select(
+                "catalog-A"
                 ).name(
                     "view-changed"
                     );
         //
-        // Select sparrow view with old name fails.
+        // Select catalog view with old name fails.
         try {
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
+                ).catalogs().select(
+                    "catalog-A"
                     );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "sparrow-A",
+                "catalog-A",
                 ouch.name()
                 );            
             }
         //
-        // Select sparrow view with new name works.
+        // Select catalog view with new name works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).sparrows().select(
+                ).catalogs().select(
                     "view-changed"
                     )
             );
         //
-        // Change base sparrow name
-        base().sparrows().select(
-            "sparrow-A"
+        // Change base catalog name
+        base().catalogs().select(
+            "catalog-A"
             ).name(
                 "base-changed"
                 );
         //
-        // Select base sparrow with old name fails.
+        // Select base catalog with old name fails.
         try {
-            base().sparrows().select(
-                "sparrow-A"
+            base().catalogs().select(
+                "catalog-A"
                 );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "sparrow-A",
+                "catalog-A",
                 ouch.name()
                 );            
             }
         //
-        // Select base sparrow with new name works.
+        // Select base catalog with new name works.
         assertNotNull(
-            base().sparrows().select(
+            base().catalogs().select(
                 "base-changed"
                 )
             );
         //
-        // Set sparrow view name to null.
+        // Set catalog view name to null.
         base().views().select(
             "view-A"
-            ).sparrows().select(
+            ).catalogs().select(
                 "view-changed"
                 ).name(
                     null
                     );
         //
-        // Select base sparrow with old name fails.
+        // Select base catalog with old name fails.
         try {
-            base().sparrows().select(
-                "sparrow-A"
+            base().catalogs().select(
+                "catalog-A"
                 );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "sparrow-A",
+                "catalog-A",
                 ouch.name()
                 );            
             }
         //
-        // Select base sparrow with new name works.
+        // Select base catalog with new name works.
         assertNotNull(
-            base().sparrows().select(
+            base().catalogs().select(
                 "base-changed"
                 )
             );
         //
-        // Select sparrow view with old name fails.
+        // Select catalog view with old name fails.
         try {
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
+                ).catalogs().select(
+                    "catalog-A"
                     );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "sparrow-A",
+                "catalog-A",
                 ouch.name()
                 );            
             }
         //
-        // Select sparrow view with new name fails.
+        // Select catalog view with new name fails.
         try {
             base().views().select(
                 "view-A"
-                ).sparrows().select(
+                ).catalogs().select(
                     "view-changed"
                     );
             fail("NameNotFoundException");
@@ -591,11 +591,11 @@ extends WidgeonViewTestBase
                 );            
             }
         //
-        // Select sparrow view with new base name works.
+        // Select catalog view with new base name works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).sparrows().select(
+                ).catalogs().select(
                     "base-changed"
                     )
             );
@@ -615,146 +615,146 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base sparrow.
+        // Create base catalog.
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
+            base().catalogs().create(
+                "catalog-A"
                 )
             );
         //
-        // Select base sparrow works.
+        // Select base catalog works.
         assertNotNull(
-            base().sparrows().select(
-                "sparrow-A"
+            base().catalogs().select(
+                "catalog-A"
                 )
             );
         //
-        // Select sparrow view works.
+        // Select catalog view works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
+                ).catalogs().select(
+                    "catalog-A"
                     )
             );
         //
-        // Change base sparrow name
-        base().sparrows().select(
-            "sparrow-A"
+        // Change base catalog name
+        base().catalogs().select(
+            "catalog-A"
             ).name(
                 "base-changed"
                 );
         //
-        // Select base sparrow with old name fails.
+        // Select base catalog with old name fails.
         try {
-            base().sparrows().select(
-                "sparrow-A"
+            base().catalogs().select(
+                "catalog-A"
                 );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "sparrow-A",
+                "catalog-A",
                 ouch.name()
                 );            
             }
         //
-        // Select base sparrow with new name works.
+        // Select base catalog with new name works.
         assertNotNull(
-            base().sparrows().select(
+            base().catalogs().select(
                 "base-changed"
                 )
             );
         //
-        // Change sparrow view name
+        // Change catalog view name
         base().views().select(
             "view-A"
-            ).sparrows().select(
+            ).catalogs().select(
                 "base-changed"
                 ).name(
                     "view-changed"
                     );
         //
-        // Select sparrow view with old name fails.
+        // Select catalog view with old name fails.
         try {
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
+                ).catalogs().select(
+                    "catalog-A"
                     );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "sparrow-A",
+                "catalog-A",
                 ouch.name()
                 );            
             }
         //
-        // Select sparrow view with new name works.
+        // Select catalog view with new name works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).sparrows().select(
+                ).catalogs().select(
                     "view-changed"
                     )
             );
         //
-        // Set sparrow view name to null.
+        // Set catalog view name to null.
         base().views().select(
             "view-A"
-            ).sparrows().select(
+            ).catalogs().select(
                 "view-changed"
                 ).name(
                     null
                     );
         //
-        // Select base sparrow with old name fails.
+        // Select base catalog with old name fails.
         try {
-            base().sparrows().select(
-                "sparrow-A"
+            base().catalogs().select(
+                "catalog-A"
                 );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "sparrow-A",
+                "catalog-A",
                 ouch.name()
                 );            
             }
         //
-        // Select base sparrow with new name works.
+        // Select base catalog with new name works.
         assertNotNull(
-            base().sparrows().select(
+            base().catalogs().select(
                 "base-changed"
                 )
             );
         //
-        // Select sparrow view with old name fails.
+        // Select catalog view with old name fails.
         try {
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
+                ).catalogs().select(
+                    "catalog-A"
                     );
             fail("NameNotFoundException");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "sparrow-A",
+                "catalog-A",
                 ouch.name()
                 );            
             }
         //
-        // Select sparrow view with new name fails.
+        // Select catalog view with new name fails.
         try {
             base().views().select(
                 "view-A"
-                ).sparrows().select(
+                ).catalogs().select(
                     "view-changed"
                     );
             fail("NameNotFoundException");
@@ -767,11 +767,11 @@ extends WidgeonViewTestBase
                 );            
             }
         //
-        // Select sparrow view with new base name works.
+        // Select catalog view with new base name works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).sparrows().select(
+                ).catalogs().select(
                     "base-changed"
                     )
             );

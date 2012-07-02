@@ -207,16 +207,16 @@ implements Widgeon.Base
             }
 
         /**
-         * Our Autowired Sparrow factory.
+         * Our Autowired Catalog factory.
          * 
          */
         @Autowired
-        protected Widgeon.Base.Sparrow.Factory sparrows ;
+        protected Widgeon.Base.Catalog.Factory catalogs ;
 
         @Override
-        public Widgeon.Base.Sparrow.Factory sparrows()
+        public Widgeon.Base.Catalog.Factory catalogs()
             {
-            return this.sparrows ;
+            return this.catalogs ;
             }
         }
 
@@ -264,41 +264,41 @@ implements Widgeon.Base
         }
 
     @Override
-    public Widgeon.Base.Sparrows sparrows()
+    public Widgeon.Base.Catalogs catalogs()
         {
-        return new Widgeon.Base.Sparrows()
+        return new Widgeon.Base.Catalogs()
             {
             @Override
-            public Widgeon.Base.Sparrow create(final String name)
+            public Widgeon.Base.Catalog create(final String name)
                 {
-                return womble().widgeons().sparrows().create(
+                return womble().widgeons().catalogs().create(
                     WidgeonBaseEntity.this,
                     name
                     ) ;
                 }
 
             @Override
-            public Iterable<Widgeon.Base.Sparrow> select()
+            public Iterable<Widgeon.Base.Catalog> select()
                 {
-                return womble().widgeons().sparrows().select(
+                return womble().widgeons().catalogs().select(
                     WidgeonBaseEntity.this
                     );
                 }
 
             @Override
-            public Widgeon.Base.Sparrow select(final String name)
+            public Widgeon.Base.Catalog select(final String name)
             throws NameNotFoundException
                 {
-                return womble().widgeons().sparrows().select(
+                return womble().widgeons().catalogs().select(
                     WidgeonBaseEntity.this,
                     name
                     );
                 }
 
             @Override
-            public Widgeon.Base.Sparrow search(final String name)
+            public Widgeon.Base.Catalog search(final String name)
                 {
-                return womble().widgeons().sparrows().search(
+                return womble().widgeons().catalogs().search(
                     WidgeonBaseEntity.this,
                     name
                     );

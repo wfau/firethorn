@@ -53,7 +53,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
 
 /**
- * Warbler implementation.
+ * Schema implementation.
  *
  */
 @Slf4j
@@ -62,40 +62,40 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
     AccessType.FIELD
     )
 @Table(
-    name = WarblerBaseEntity.DB_TABLE_NAME,
+    name = SchemaBaseEntity.DB_TABLE_NAME,
     uniqueConstraints=
         @UniqueConstraint(
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
-                WarblerBaseEntity.DB_PARENT_COL,
+                SchemaBaseEntity.DB_PARENT_COL,
                 }
             )
     )
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "widgeon.base.warbler-select-parent",
-            query = "FROM WarblerBaseEntity WHERE parent = :parent ORDER BY ident desc"
+            name  = "widgeon.base.schema-select-parent",
+            query = "FROM SchemaBaseEntity WHERE parent = :parent ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "widgeon.base.warbler-select-parent.name",
-            query = "FROM WarblerBaseEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
+            name  = "widgeon.base.schema-select-parent.name",
+            query = "FROM SchemaBaseEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
             )
         }
     )
-public class WarblerBaseEntity
+public class SchemaBaseEntity
 extends WidgeonStatusEntity
-implements Widgeon.Base.Sparrow.Warbler
+implements Widgeon.Base.Catalog.Schema
     {
 
     /**
      * Our persistence table name.
      * 
      */
-    public static final String DB_TABLE_NAME = "widgeon_base_warbler" ;
+    public static final String DB_TABLE_NAME = "widgeon_base_schema" ;
 
     /**
-     * The persistence column name for our parent Sparrow.
+     * The persistence column name for our parent Catalog.
      * 
      */
     public static final String DB_PARENT_COL = "parent" ;
@@ -106,27 +106,27 @@ implements Widgeon.Base.Sparrow.Warbler
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<Widgeon.Base.Sparrow.Warbler>
-    implements Widgeon.Base.Sparrow.Warbler.Factory
+    extends AbstractFactory<Widgeon.Base.Catalog.Schema>
+    implements Widgeon.Base.Catalog.Schema.Factory
         {
 
         @Override
         public Class etype()
             {
-            return WarblerBaseEntity.class ;
+            return SchemaBaseEntity.class ;
             }
 
         /**
-         * Insert a Warbler into the database and update all the parent views.
+         * Insert a Schema into the database and update all the parent views.
          *
          */
         @CascadeEntityMethod
-        protected Widgeon.Base.Sparrow.Warbler insert(final WarblerBaseEntity entity)
+        protected Widgeon.Base.Catalog.Schema insert(final SchemaBaseEntity entity)
             {
             super.insert(
                 entity
                 );
-            for (Widgeon.View.Sparrow view : entity.parent().views().select())
+            for (Widgeon.View.Catalog view : entity.parent().views().select())
                 {
                 this.views().cascade(
                     view,
@@ -138,10 +138,10 @@ implements Widgeon.Base.Sparrow.Warbler
 
         @Override
         @CreateEntityMethod
-        public Widgeon.Base.Sparrow.Warbler create(final Widgeon.Base.Sparrow parent, final String name)
+        public Widgeon.Base.Catalog.Schema create(final Widgeon.Base.Catalog parent, final String name)
             {
             return this.insert(
-                new WarblerBaseEntity(
+                new SchemaBaseEntity(
                     parent,
                     name
                     )
@@ -150,11 +150,11 @@ implements Widgeon.Base.Sparrow.Warbler
 
         @Override
         @SelectEntityMethod
-        public Iterable<Widgeon.Base.Sparrow.Warbler> select(final Widgeon.Base.Sparrow parent)
+        public Iterable<Widgeon.Base.Catalog.Schema> select(final Widgeon.Base.Catalog parent)
             {
             return super.iterable(
                 super.query(
-                    "widgeon.base.warbler-select-parent"
+                    "widgeon.base.schema-select-parent"
                     ).setEntity(
                         "parent",
                         parent
@@ -164,10 +164,10 @@ implements Widgeon.Base.Sparrow.Warbler
 
         @Override
         @SelectEntityMethod
-        public Widgeon.Base.Sparrow.Warbler select(final Widgeon.Base.Sparrow parent, final String name)
+        public Widgeon.Base.Catalog.Schema select(final Widgeon.Base.Catalog parent, final String name)
         throws NameNotFoundException
             {
-            Widgeon.Base.Sparrow.Warbler result = this.search(
+            Widgeon.Base.Catalog.Schema result = this.search(
                 parent,
                 name
                 );
@@ -184,11 +184,11 @@ implements Widgeon.Base.Sparrow.Warbler
 
         @Override
         @SelectEntityMethod
-        public Widgeon.Base.Sparrow.Warbler search(final Widgeon.Base.Sparrow parent, final String name)
+        public Widgeon.Base.Catalog.Schema search(final Widgeon.Base.Catalog parent, final String name)
             {
             return super.first(
                 super.query(
-                    "widgeon.base.warbler-select-parent.name"
+                    "widgeon.base.schema-select-parent.name"
                     ).setEntity(
                         "parent",
                         parent
@@ -204,10 +204,10 @@ implements Widgeon.Base.Sparrow.Warbler
          * 
          */
         @Autowired
-        protected Widgeon.View.Sparrow.Warbler.Factory views ;
+        protected Widgeon.View.Catalog.Schema.Factory views ;
 
         @Override
-        public Widgeon.View.Sparrow.Warbler.Factory views()
+        public Widgeon.View.Catalog.Schema.Factory views()
             {
             return this.views ;
             }
@@ -217,66 +217,66 @@ implements Widgeon.Base.Sparrow.Warbler
          * 
          */
         @Autowired
-        protected Widgeon.Base.Sparrow.Warbler.Table.Factory tables ;
+        protected Widgeon.Base.Catalog.Schema.Table.Factory tables ;
 
         @Override
-        public Widgeon.Base.Sparrow.Warbler.Table.Factory tables()
+        public Widgeon.Base.Catalog.Schema.Table.Factory tables()
             {
             return this.tables ;
             }
         }
 
     @Override
-    public Widgeon.Base.Sparrow.Warbler.Views views()
+    public Widgeon.Base.Catalog.Schema.Views views()
         {
-        return new Widgeon.Base.Sparrow.Warbler.Views()
+        return new Widgeon.Base.Catalog.Schema.Views()
             {
-            public Iterable<Widgeon.View.Sparrow.Warbler> select()
+            public Iterable<Widgeon.View.Catalog.Schema> select()
                 {
-                return womble().widgeons().views().sparrows().warblers().select(
-                    WarblerBaseEntity.this
+                return womble().widgeons().views().catalogs().schemas().select(
+                    SchemaBaseEntity.this
                     );
                 }
             };
         }
 
     @Override
-    public Widgeon.Base.Sparrow.Warbler.Tables tables()
+    public Widgeon.Base.Catalog.Schema.Tables tables()
         {
-        return new Widgeon.Base.Sparrow.Warbler.Tables()
+        return new Widgeon.Base.Catalog.Schema.Tables()
             {
             @Override
-            public Widgeon.Base.Sparrow.Warbler.Table create(String name)
+            public Widgeon.Base.Catalog.Schema.Table create(String name)
                 {
-                return womble().widgeons().sparrows().warblers().tables().create(
-                    WarblerBaseEntity.this,
+                return womble().widgeons().catalogs().schemas().tables().create(
+                    SchemaBaseEntity.this,
                     name
                     );
                 }
 
             @Override
-            public Iterable<Widgeon.Base.Sparrow.Warbler.Table> select()
+            public Iterable<Widgeon.Base.Catalog.Schema.Table> select()
                 {
-                return womble().widgeons().sparrows().warblers().tables().select(
-                    WarblerBaseEntity.this
+                return womble().widgeons().catalogs().schemas().tables().select(
+                    SchemaBaseEntity.this
                     ) ;
                 }
 
             @Override
-            public Widgeon.Base.Sparrow.Warbler.Table select(String name)
+            public Widgeon.Base.Catalog.Schema.Table select(String name)
             throws NameNotFoundException
                 {
-                return womble().widgeons().sparrows().warblers().tables().select(
-                    WarblerBaseEntity.this,
+                return womble().widgeons().catalogs().schemas().tables().select(
+                    SchemaBaseEntity.this,
                     name
                     ) ;
                 }
 
             @Override
-            public Widgeon.Base.Sparrow.Warbler.Table search(String name)
+            public Widgeon.Base.Catalog.Schema.Table search(String name)
                 {
-                return womble().widgeons().sparrows().warblers().tables().search(
-                    WarblerBaseEntity.this,
+                return womble().widgeons().catalogs().schemas().tables().search(
+                    SchemaBaseEntity.this,
                     name
                     ) ;
                 }
@@ -288,28 +288,28 @@ implements Widgeon.Base.Sparrow.Warbler
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected WarblerBaseEntity()
+    protected SchemaBaseEntity()
         {
         super();
         }
 
     /**
-     * Create a new Sparrow.
+     * Create a new Catalog.
      *
      */
-    protected WarblerBaseEntity(final Widgeon.Base.Sparrow parent, final String name)
+    protected SchemaBaseEntity(final Widgeon.Base.Catalog parent, final String name)
         {
         super(name);
         this.parent = parent ;
         }
 
     /**
-     * Our parent Sparrow.
+     * Our parent Catalog.
      *
      */
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = SparrowBaseEntity.class
+        targetEntity = CatalogBaseEntity.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,
@@ -317,10 +317,10 @@ implements Widgeon.Base.Sparrow.Warbler
         nullable = false,
         updatable = false
         )
-    private Widgeon.Base.Sparrow parent ;
+    private Widgeon.Base.Catalog parent ;
 
     @Override
-    public Widgeon.Base.Sparrow parent()
+    public Widgeon.Base.Catalog parent()
         {
         return this.parent ;
         }

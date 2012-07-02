@@ -35,7 +35,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
  *
  */
 @Slf4j
-public class WarblerViewTestCase
+public class SchemaViewTestCase
 extends WidgeonViewTestBase
     {
 
@@ -51,37 +51,37 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base sparrow.
+        // Create base catalog.
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
+            base().catalogs().create(
+                "catalog-A"
                 )
             );
         //
-        // Select sparrow view works.
+        // Select catalog view works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
+                ).catalogs().select(
+                    "catalog-A"
                     )
             );
         //
-        // Select missing warbler view fails.
+        // Select missing schema view fails.
         try {
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
-                    ).warblers().select(
-                        "warbler-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).schemas().select(
+                        "schema-A"
                         );
             fail("NameNotFoundException expected");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "warbler-A",
+                "schema-A",
                 ouch.name()
                 );            
             }
@@ -99,39 +99,39 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base sparrow.
+        // Create base catalog.
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
+            base().catalogs().create(
+                "catalog-A"
                 )
             );
         //
-        // Select sparrow view works.
+        // Select catalog view works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
+                ).catalogs().select(
+                    "catalog-A"
                     )
             );
         //
-        // Create base warbler.
+        // Create base schema.
         assertNotNull(
-            base().sparrows().select(
-                "sparrow-A"
-                ).warblers().create(
-                    "warbler-A"
+            base().catalogs().select(
+                "catalog-A"
+                ).schemas().create(
+                    "schema-A"
                     )
             );
         //
-        // Select warbler view works.
+        // Select schema view works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
-                    ).warblers().select(
-                        "warbler-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).schemas().select(
+                        "schema-A"
                         )
             );
         }
@@ -148,23 +148,23 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base sparrow and warbler.
+        // Create base catalog and schema.
         assertNotNull(
-            base().sparrows().create(
-                "sparrow-A"
-                ).warblers().create(
-                    "warbler-A"
+            base().catalogs().create(
+                "catalog-A"
+                ).schemas().create(
+                    "schema-A"
                     )
             );
         //
-        // Select sparrow and warbler view works.
+        // Select catalog and schema view works.
         assertNotNull(
             base().views().select(
                 "view-A"
-                ).sparrows().select(
-                    "sparrow-A"
-                    ).warblers().select(
-                        "warbler-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).schemas().select(
+                        "schema-A"
                         )
             );
         }
