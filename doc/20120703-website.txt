@@ -1,0 +1,450 @@
+
+#
+# Configuration of WFAU linode machine.
+
+
+#
+# Linode manager
+# Re-build the VM with a clean install of CentOS.
+# https://manager.linode.com/linodes/dashboard/linode162434
+[Zarquan@leucine ~]$ 
+
+    ssh root@wfau.metagrid.co.uk
+
+#
+# Install SSH server.
+[root@li276-93 ~]# 
+
+    if [ -z "$(which sshd 2> /dev/null)" ]
+    then
+        yum install -y install openssh-server
+    fi
+
+#
+# Install basic tools.
+[root@li276-93 ~]# 
+
+    if [ -z "$(which unzip 2> /dev/null)" ]
+    then
+        yum install -y install unzip
+    fi
+
+    if [ -z "$(which wget 2> /dev/null)" ]
+    then
+        yum install -y install wget
+    fi
+
+#
+# Add our ssh keys (needed to access clone source).
+[root@li276-93 ~]# 
+
+    echo "Checking SSH config directory"
+    if [ ! -e ${HOME}/.ssh ]
+    then
+        echo "Creating SSH config directory"
+        mkdir ${HOME}/.ssh
+    fi
+    
+    pushd ${HOME}/.ssh
+
+        echo "Checking SSH authorized_keys file"
+        if [ ! -e authorized_keys ]
+        then
+
+            echo "Checking SSH keys directory"
+            if [ ! -e keys ]
+            then
+                echo "Creating SSH keys directory"
+                mkdir keys
+                pushd keys
+                    echo "Downloading SSH keys"
+                    wget http://data.metagrid.co.uk/sshkeys/zarquan.metagrid.co.uk.pub
+                    wget http://data.metagrid.co.uk/sshkeys/jenifer.metagrid.co.uk.pub
+                popd
+            fi
+
+            echo "Creating SSH authorized_keys file"
+            for key in $(ls -1 keys/*.pub)
+            do
+                echo "Adding SSH key [${key}]"
+                cat $key >> authorized_keys
+            done
+        fi
+
+    popd
+
+#
+# Configure SSH servre to accept keys only.
+[root@li276-93 ~]# 
+
+    vi /etc/ssh/sshd_config 
+
+        # To disable tunneled clear text passwords, change to no here!
+      - PasswordAuthentication yes
+      + PasswordAuthentication no
+
+    service sshd restart
+
+#
+# Install Apache
+[root@li276-93 ~]# 
+
+    echo "Checking for Apache web server"
+    if [ -z "$(which httpd 2> /dev/null)" ]
+    then
+        echo "Installing for Apache web server"
+        yum install -y install httpd
+    fi
+
+#
+# Install Mercurial
+[root@li276-93 ~]# 
+
+    echo "Checking for Mercurial version control"
+    if [ -z "$(which hg 2> /dev/null)" ]
+    then
+        echo "Installing Mercurial version control"
+        yum install -y install mercurial
+    fi
+
+#
+# Create initial test site.
+[root@li276-93 ~]# 
+
+    if [ ! -e /var/local/wfau/test ]
+    then
+
+        mkdir /var/local/wfau
+        pushd /var/local/wfau
+            hg init test
+        popd
+
+    fi
+
+    pushd /var/local/wfau/test
+    
+        mkdir site
+        vi site/index.html
+
+            <html>
+                <body>
+                    <p>
+                        Test page ....
+                    </p>
+                </body>
+            </html>
+
+        mkdir conf
+        vi conf/wfau.metagrid.co.uk.conf
+
+            <VirtualHost *:80>
+                ServerAdmin  wfau@metagrid.co.uk
+                DocumentRoot /var/local/wfau/test/site
+                ServerName   wfau.metagrid.co.uk
+                ErrorLog     logs/wfau.metagrid.co.uk.error.log
+                CustomLog    logs/wfau.metagrid.co.uk.access.log common
+
+                <Directory /var/local/wfau/test/site>
+
+                    Options FollowSymLinks
+
+                </Directory>
+
+            </VirtualHost>
+
+    popd
+
+#
+# Add the test site config to Apache.
+[root@li276-93 ~]# 
+
+    pushd /etc/httpd/conf.d
+
+        ln -s /var/local/wfau/test/conf/wfau.metagrid.co.uk.conf
+
+    popd
+
+#
+# Enable name-based virtual hosting.
+[root@li276-93 ~]#
+
+    vi /etc/httpd/conf/httpd.conf 
+
+        #
+        # Use name-based virtual hosting.
+      - #NameVirtualHost *:80
+      + NameVirtualHost *:80
+
+#
+# Reload Apache config.
+[root@li276-93 ~]#
+
+    service httpd start
+    chkconfig httpd on
+
+#
+# Test our site ..
+[Zarquan@leucine ~]$ 
+
+    curl --head 'http://wfau.metagrid.co.uk/'
+    curl 'http://wfau.metagrid.co.uk/'
+    
+    firefox 'http://wfau.metagrid.co.uk/' &
+
+#
+# Commit the test site changes
+[root@li276-93 ~]#
+
+    hguser="wfau@metagrid.co.uk"
+    hgopts="--config ui.username=${hguser}"
+
+    pushd /var/local/wfau/test
+
+        hg ${hgopts} add
+        hg ${hgopts} commit -m "Added initial test site"
+
+    popd
+
+#
+# Need to 'clean' our local repository to remove 3rd party files and libraries.
+# See http://mercurial.selenic.com/wiki/ConvertExtension
+
+#
+# Add the Mercurial identities extension.
+[Zarquan@leucine ~]$ 
+
+    mkdir .hgext
+    pushd .hgext
+    
+        wget https://bitbucket.org/runeh/identities/raw/0f9ac5a19e48/identities.py
+
+    popd
+
+    vi ${HOME}/.hgrc
+
+        [extensions]
+      + hgext.identities = ~/.hgext/identities.py
+
+#
+# Add the Mercurial convert extension
+[Zarquan@leucine ~]$ 
+
+    vi ${HOME}/.hgrc
+
+        [extensions]
+      + hgext.convert =
+
+#
+# Create a clean version of our repository.
+[Zarquan@leucine ~]$ 
+
+    pushd /var/local/projects/wfau/firethorn
+
+        tar -cvzf firethorn-20120704.tar.gz hg
+
+        mv hg hg-old
+
+cat > hg-map << EOF
+exclude "firethorn-ogsadai/war"
+exclude "firethorn-ogsadai/zip"
+exclude "firethorn-cds/firethorn-cds-lib/lib"
+EOF
+
+cat > hg-who << EOF
+Zarquan <zarquan@metagrid.co.uk>=Dave Morris <dave.morris@bristol.ac.uk>
+EOF
+
+        hg convert --authors hg-who --filemap hg-map --sourcesort hg-old hg-new
+
+        pushd hg-new
+            hg status
+            hg update
+        popd
+
+        ln -s hg-new hg
+
+    popd
+
+#
+# Clean build ... tweaks.
+
+
+-----------------------------------------------------------
+
+#
+# Clone the repository to web server.
+[root@li276-93 ~]#
+
+    sshport=22
+    sshuser=Zarquan
+    sshhost=leucine.metagrid.co.uk
+    sshpath=/var/local/projects/wfau/firethorn/hg
+
+    mkdir /var/local/wfau/projects
+    pushd /var/local/wfau/projects
+
+        mkdir firethorn
+        mkdir firethorn/site
+        mkdir firethorn/data
+        mkdir firethorn/conf
+
+        pushd firethorn
+            hg clone ssh://${sshuser}@${sshhost}:${sshport}/${sshpath} code
+        popd
+
+    popd
+
+#
+# Check where Mercurial code is installed.
+[root@li276-93 ~]#
+
+    rpm -q --list mercurial | grep wsgi
+
+        /usr/lib64/python2.6/site-packages/mercurial/hgweb/wsgicgi.py
+        /usr/lib64/python2.6/site-packages/mercurial/hgweb/wsgicgi.pyc
+        /usr/lib64/python2.6/site-packages/mercurial/hgweb/wsgicgi.pyo
+
+#
+# Add the Mercurial plugin to apache.
+# http://mercurial.selenic.com/wiki/modwsgi
+# http://mercurial.selenic.com/wiki/PublishingRepositories#hgweb
+[root@li276-93 ~]#
+
+    #
+    # Install the module.
+    yum install mod_wsgi
+
+    #
+    # Load the module.
+    vi /var/local/wfau/test/conf/wfau.metagrid.co.uk.conf
+
+        LoadModule wsgi_module modules/mod_wsgi.so
+
+        WSGIScriptAlias /code  /var/local/wfau/test/conf/wsgi/firethorn.wsgi
+
+        <Directory /var/local/wfau/test/conf/wsgi>
+
+            Options ExecCGI FollowSymlinks
+
+            AddHandler wsgi-script .wsgi
+
+            #AllowOverride None
+            #Order allow,deny
+            #Allow from all
+
+        </Directory>
+
+        <Directory /var/local/wfau/test/site>
+
+            Options FollowSymLinks
+
+        </Directory>
+
+    #
+    # Initial WSGI config.
+    vi /var/local/wfau/test/conf/wsgi/firethorn.wsgi
+
+        from mercurial import demandimport; demandimport.enable()
+        from mercurial.hgweb.hgwebdir_mod import hgwebdir
+
+        application = hgwebdir(
+            '/var/local/wfau/test/conf/wsgi/firethorn.conf'
+            )
+
+    #
+    # Mercurial config.
+    vi  /var/local/wfau/test/conf/wsgi/firethorn.conf
+
+        [web]
+        style = coal
+
+        [paths]
+        firethorn = /var/local/wfau/projects/firethorn/code
+
+#
+# Test our site ..
+[root@li276-93 ~]#
+
+    service httpd restart
+
+    tail -f /var/log/httpd/wfau.metagrid.co.uk.error.log
+
+[Zarquan@leucine ~]$ 
+
+    #
+    # Browser GUI
+    firefox 'http://wfau.metagrid.co.uk/code' &
+
+    #
+    # Mercurial API
+    mkdir ~/frog
+    pushd ~/frog
+        hg clone 'http://wfau.metagrid.co.uk/code/firethorn'
+    popd
+
+#
+# Fix changes on local and pull to remote.
+[Zarquan@leucine ~]$ 
+
+    pushd /var/local/projects/wfau/firethorn/hg
+
+        # Bug fixes ...
+        hg commit -m "Fixing sequence dependent unit tests"
+
+    popd
+
+[root@li276-93 ~]#
+
+    pushd /var/local/wfau/projects/firethorn/code
+
+        hg pull
+
+            searching for changes
+            adding changesets
+            adding manifests
+            adding file changes
+            added 1 changesets with 3 changes to 3 files
+            (run 'hg update' to get a working copy)
+
+        hg update
+
+            3 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+    popd
+
+#
+# Test build ..
+[root@li276-93 ~]#
+
+    #
+    # Need Maven 2 to run our build.
+    # Not available in CentOS+EPEL.
+    wget http://mirror.bytemark.co.uk/fedora/epel/6/i386/epel-release-6-7.noarch.rpm
+    yum install epel-release-6-7.noarch.rpm
+    yum install maven2
+
+    #
+    # Need an alternative OS ....
+    # Fedora .. Ubuntu .. ?
+
+    # http://www.davehodgkinson.com/blog/2011/04/installing-maven-on-a-fresh-redhatcentos-5-5/
+
+
+
+        
+
+
+    popd
+
+
+
+
+
+
+
+
+
+
+
+
+
