@@ -50,6 +50,8 @@
 
 		<!--org.spring.version>3.0.5.RELEASE</org.spring.version-->
 		<org.spring.version>3.1.1.RELEASE</org.spring.version>
+        <org.spring.reference>http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/index.html</org.spring.reference>
+
         <!--org.hibernate.version>3.6.9.Final</org.hibernate.version-->
         <org.hibernate.version>4.1.4.Final</org.hibernate.version>
 
@@ -116,6 +118,11 @@
     <dependencies>
 
         <!--+
+        <url>http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/index.html</url>
+        <url>${org.spring.reference}</url>
+            +-->
+
+        <!--+
             | Spring core.
             | http://static.springsource.org/spring/docs/3.0.5.RELEASE/reference/overview.html#d0e276
             +-->
@@ -123,6 +130,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
             <version>${org.spring.version}</version>
+            <url>${org.spring.reference}</url>
         </dependency>
 
         <!--+
@@ -133,6 +141,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
             <version>${org.spring.version}</version>
+            <url>${org.spring.reference}</url>
         </dependency>
 
         <!--+

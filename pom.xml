@@ -52,7 +52,8 @@
         moth <i>(Phyllonorycter leucographella)</i>.
         ]]>
     </description>
-    <url>http://hempriggs.roe.ac.uk/redmine/projects/wva</url>
+
+    <url>http://redmine.roe.ac.uk/projects/wva</url>
 
     <organization>
         <name>The Royal Observatory, Edinburgh</name>
@@ -62,7 +63,8 @@
     <licenses>
         <license>
             <name>GPLv3</name>
-            <url>https://www.gnu.org/copyleft/gpl.html</url>
+            <!--url>https://www.gnu.org/copyleft/gpl.html</url-->
+            <url>https://www.gnu.org/licenses/gpl-3.0-standalone.html</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -71,22 +73,22 @@
 
         <developer>
             <name>Mark Holliman</name>
-            <url>http://hempriggs.roe.ac.uk/redmine/users/1</url>
+            <url>http://redmine.roe.ac.uk/users/1</url>
         </developer>
 
         <developer>
             <name>Dave Morris</name>
-            <url>http://hempriggs.roe.ac.uk/redmine/users/3</url>
+            <url>http://redmine.roe.ac.uk/users/3</url>
         </developer>
 
         <developer>
             <name>Keith Noddle</name>
-            <url>http://hempriggs.roe.ac.uk/redmine/users/4</url>
+            <url>http://redmine.roe.ac.uk/users/4</url>
         </developer>
 
         <developer>
             <name>Stelios Voutsinas</name>
-            <url>http://hempriggs.roe.ac.uk/redmine/users/5</url>
+            <url>http://redmine.roe.ac.uk/users/5</url>
         </developer>
 
     </developers>
@@ -95,21 +97,24 @@
 
         <contributor>
             <name>Bob Mann</name>
-            <url>http://hempriggs.roe.ac.uk/redmine/users/6</url>
+            <url>http://redmine.roe.ac.uk/users/6</url>
         </contributor>
 
     </contributors>
 
     <scm>
+        <tag>tip</tag>
+        <url>http://wfau.metagrid.co.uk/code/firethorn/file/tip/</url>
+        <connection>scm:hg:file://${basedir}</connection>
+        <developerConnection>scm:hg:file://${basedir}</developerConnection>
         <!--+
-        <connection>...</connection>
-        <url>....</url>
-        +-->
+        <connection>scm:hg:http://wfau.metagrid.co.uk/code/firethorn/</connection>
+            +-->
     </scm>
 
     <issueManagement>
         <system>redmine</system>
-        <url>http://hempriggs.roe.ac.uk/redmine/projects/wva</url>
+        <url>http://redmine.roe.ac.uk/projects/wva/issues</url>
     </issueManagement>
 
     <ciManagement>
@@ -436,6 +441,11 @@
         <plugins>
 
             <!--+
+                | Project Info Reports
+                | https://maven.apache.org/plugins/maven-project-info-reports-plugin/
+                +-->
+
+            <!--+
                 | SureFire unit test report.
                 | https://maven.apache.org/plugins/maven-surefire-plugin/
                 | https://maven.apache.org/plugins/maven-surefire-plugin/examples/junit.html
@@ -443,6 +453,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.7</version>
             </plugin>
 
             <!--+
@@ -465,7 +476,6 @@
                 | PMD report.
                 | http://pmd.sourceforge.net/
                 | https://maven.apache.org/plugins/maven-pmd-plugin/
-                +-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
@@ -475,6 +485,7 @@
                     <targetjdk>${project.javaversion}</targetjdk>
                 </configuration>
             </plugin>
+                +-->
 
             <!--+
                 | Checkstyle report.
@@ -485,6 +496,78 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
             </plugin>
+
+            <!--+
+                | JavaDoc reports.
+                | https://maven.apache.org/plugins/maven-javadoc-plugin/
+                | https://maven.apache.org/plugins/maven-javadoc-plugin/usage.html
+                +-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <id>html</id>
+                        <configuration>
+                        </configuration>
+                        <reports>
+                            <report>javadoc</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <id>test-html</id>
+                        <configuration>
+                        </configuration>
+                        <reports>
+                            <report>test-javadoc</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <!--+
+                | ChangeLog reports.
+                | https://maven.apache.org/plugins/maven-changelog-plugin/
+                +-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changelog-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <!--dateFormat>yyyy/MM/dd HH:mm:ss</dateFormat-->
+                    <!--        Mon Jul 02 03:26:38 2012 +0100    -->
+                    <dateFormat>EEE MMM dd HH:mm:ss yyyy Z</dateFormat>
+                </configuration>
+
+                <reportSets>
+                    <reportSet>
+                        <id>dual-report</id>
+                        <configuration>
+                            <type>range</type>
+                            <range>30</range>
+                        </configuration>
+                        <reports>
+                            <report>changelog</report>
+                            <report>file-activity</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <linkJavadoc>true</linkJavadoc>
+                    <!--+
+                    <javadocDir>/path/to/javadocs</javadocDir>
+                        +-->
+                </configuration>
+            </plugin>
+
+
+
 
         </plugins>
     </reporting>
