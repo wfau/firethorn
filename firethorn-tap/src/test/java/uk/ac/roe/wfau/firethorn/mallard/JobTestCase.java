@@ -114,6 +114,8 @@ extends TestBase
             );
         }
 
+/*
+ * Don't rely on test sequence.
     @Test
     public void test003()
     throws Exception
@@ -189,5 +191,7 @@ extends TestBase
                 )
             );
         }
+ *
+ */
     }
 

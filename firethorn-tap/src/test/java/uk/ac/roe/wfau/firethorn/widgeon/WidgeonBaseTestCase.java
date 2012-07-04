@@ -26,11 +26,8 @@ import org.junit.After;
 import org.junit.Before;
 import static org.junit.Assert.*;
 
-import uk.ac.roe.wfau.firethorn.test.TestBase;
-
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
-
+import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
 /**
  *
