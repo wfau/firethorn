@@ -150,7 +150,7 @@ implements WidgeonView.Catalog
             super.insert(
                 entity
                 );
-            for (WidgeonBase.Catalog.Schema schema : entity.base().schemas().select())
+            for (WidgeonBase.Schema schema : entity.base().schemas().select())
                 {
                 this.schemas().cascade(
                     entity,
@@ -299,10 +299,10 @@ implements WidgeonView.Catalog
          * 
          */
         @Autowired
-        protected WidgeonView.Catalog.Schema.Factory schemas ;
+        protected WidgeonView.Schema.Factory schemas ;
 
         @Override
-        public WidgeonView.Catalog.Schema.Factory schemas()
+        public WidgeonView.Schema.Factory schemas()
             {
             return this.schemas ;
             }
@@ -315,7 +315,7 @@ implements WidgeonView.Catalog
             {
 
             @Override
-            public Iterable<WidgeonView.Catalog.Schema> select()
+            public Iterable<WidgeonView.Schema> select()
                 {
                 return womble().widgeons().views().catalogs().schemas().select(
                     CatalogViewEntity.this
@@ -323,7 +323,7 @@ implements WidgeonView.Catalog
                 }
 
             @Override
-            public WidgeonView.Catalog.Schema select(String name)
+            public WidgeonView.Schema select(String name)
             throws NameNotFoundException
                 {
                 return womble().widgeons().views().catalogs().schemas().select(

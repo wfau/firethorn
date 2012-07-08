@@ -103,7 +103,7 @@ extends WidgeonStatus
          * Public interface for accessing a Catalog's Schemas.
          *
          */
-        public interface Schemas<SchemaType extends Widgeon.Catalog.Schema>
+        public interface Schemas<SchemaType extends Widgeon.Schema>
             {
 
             /**
@@ -120,157 +120,157 @@ extends WidgeonStatus
             throws NameNotFoundException;
 
             }
+        }
+
+    /**
+     * Public interface for Schema metadata.
+     *
+     */
+    public interface Schema<CatalogType extends Widgeon.Catalog>
+    extends WidgeonComponent<CatalogType>
+        {
 
         /**
-         * Public interface for Schema metadata.
+         * Factory interface for creating and selecting Schemas.
          *
          */
-        public interface Schema<CatalogType extends Widgeon.Catalog>
-        extends WidgeonComponent<CatalogType>
+        public static interface Factory<CatalogType extends Widgeon.Catalog, SchemaType extends Widgeon.Schema>
+        extends Entity.Factory<SchemaType>
             {
 
             /**
-             * Factory interface for creating and selecting Schemas.
+             * Select all the Schemas from a Catalog.
              *
              */
-            public static interface Factory<CatalogType extends Widgeon.Catalog, SchemaType extends Widgeon.Catalog.Schema>
-            extends Entity.Factory<SchemaType>
-                {
-
-                /**
-                 * Select all the Schemas from a Catalog.
-                 *
-                 */
-                public Iterable<SchemaType> select(CatalogType parent);
-
-                /**
-                 * Select a named Schema from a Catalog.
-                 *
-                 */
-                public SchemaType select(CatalogType parent, String name)
-                throws NameNotFoundException;
-
-                }
+            public Iterable<SchemaType> select(CatalogType parent);
 
             /**
-             * Access to this Schema's Tables.
+             * Select a named Schema from a Catalog.
              *
              */
-            public Tables tables();
+            public SchemaType select(CatalogType parent, String name)
+            throws NameNotFoundException;
+
+            }
+
+        /**
+         * Access to this Schema's Tables.
+         *
+         */
+        public Tables tables();
+
+        /**
+         * Public interface for accessing a Schema's Tables.
+         *
+         */
+        public interface Tables<TableType extends Widgeon.Table>
+            {
 
             /**
-             * Public interface for accessing a Schema's Tables.
+             * Select all the Tables from the Schema.
              *
              */
-            public interface Tables<TableType extends Widgeon.Catalog.Schema.Table>
-                {
-
-                /**
-                 * Select all the Tables from the Schema.
-                 *
-                 */
-                public Iterable<TableType> select();
-
-                /**
-                 * Select a named Table from the Schema.
-                 *
-                 */
-                public TableType select(String name)
-                throws NameNotFoundException;
-
-                }
+            public Iterable<TableType> select();
 
             /**
-             * Public interface for Table metadata.
+             * Select a named Table from the Schema.
              *
              */
-            public interface Table<SchemaType extends Widgeon.Catalog.Schema>
-            extends WidgeonComponent<SchemaType>
-                {
+            public TableType select(String name)
+            throws NameNotFoundException;
 
-                /**
-                 * Factory interface for creating and selecting Tables.
-                 *
-                 */
-                public static interface Factory<SchemaType extends Widgeon.Catalog.Schema, TableType extends Widgeon.Catalog.Schema.Table>
-                extends Entity.Factory<TableType>
-                    {
+            }
+        }
 
-                    /**
-                     * Select all the Tables from a Schema.
-                     *
-                     */
-                    public Iterable<TableType> select(SchemaType parent);
+    /**
+     * Public interface for Table metadata.
+     *
+     */
+    public interface Table<SchemaType extends Widgeon.Schema>
+    extends WidgeonComponent<SchemaType>
+        {
 
-                    /**
-                     * Select a named Table from a Schema.
-                     *
-                     */
-                    public TableType select(SchemaType parent, String name)
-                    throws NameNotFoundException;
+        /**
+         * Factory interface for creating and selecting Tables.
+         *
+         */
+        public static interface Factory<SchemaType extends Widgeon.Schema, TableType extends Widgeon.Table>
+        extends Entity.Factory<TableType>
+            {
 
-                    }
+            /**
+             * Select all the Tables from a Schema.
+             *
+             */
+            public Iterable<TableType> select(SchemaType parent);
 
-                /**
-                 * Access to this Table's Columns.
-                 *
-                 */
-                public Columns columns();
+            /**
+             * Select a named Table from a Schema.
+             *
+             */
+            public TableType select(SchemaType parent, String name)
+            throws NameNotFoundException;
 
-                /**
-                 * Public interface for accessing a Table's Columns.
-                 *
-                 */
-                public interface Columns<ColumnType extends Widgeon.Catalog.Schema.Table.Column>
-                    {
+            }
 
-                    /**
-                     * Select all the Columns from the Table.
-                     *
-                     */
-                    public Iterable<ColumnType> select();
+        /**
+         * Access to this Table's Columns.
+         *
+         */
+        public Columns columns();
 
-                    /**
-                     * Select a named Column from the Table.
-                     *
-                     */
-                    public ColumnType select(String name)
-                    throws NameNotFoundException;
+        /**
+         * Public interface for accessing a Table's Columns.
+         *
+         */
+        public interface Columns<ColumnType extends Widgeon.Column>
+            {
 
-                    }
+            /**
+             * Select all the Columns from the Table.
+             *
+             */
+            public Iterable<ColumnType> select();
 
-                /**
-                 * Public interface for Column metadata.
-                 *
-                 */
-                public interface Column<TableType extends Widgeon.Catalog.Schema.Table>
-                extends WidgeonComponent<TableType>
-                    {
+            /**
+             * Select a named Column from the Table.
+             *
+             */
+            public ColumnType select(String name)
+            throws NameNotFoundException;
 
-                    /**
-                     * Factory interface for creating and selecting Columns.
-                     *
-                     */
-                    public static interface Factory<TableType extends Widgeon.Catalog.Schema.Table, ColumnType extends Widgeon.Catalog.Schema.Table.Column>
-                    extends Entity.Factory<ColumnType>
-                        {
+            }
+        }
 
-                        /**
-                         * Select all the Columns from a Table.
-                         *
-                         */
-                        public Iterable<ColumnType> select(TableType parent);
+    /**
+     * Public interface for Column metadata.
+     *
+     */
+    public interface Column<TableType extends Widgeon.Table>
+    extends WidgeonComponent<TableType>
+        {
 
-                        /**
-                         * Select a named Column from a Table.
-                         *
-                         */
-                        public ColumnType select(TableType parent, String name)
-                        throws NameNotFoundException;
+        /**
+         * Factory interface for creating and selecting Columns.
+         *
+         */
+        public static interface Factory<TableType extends Widgeon.Table, ColumnType extends Widgeon.Column>
+        extends Entity.Factory<ColumnType>
+            {
 
-                        }
-                    }
-                }
+            /**
+             * Select all the Columns from a Table.
+             *
+             */
+            public Iterable<ColumnType> select(TableType parent);
+
+            /**
+             * Select a named Column from a Table.
+             *
+             */
+            public ColumnType select(TableType parent, String name)
+            throws NameNotFoundException;
+
             }
         }
     }

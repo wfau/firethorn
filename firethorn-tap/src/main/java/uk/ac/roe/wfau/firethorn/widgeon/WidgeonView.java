@@ -127,7 +127,7 @@ extends Widgeon
              * Access to our Schema factory.
              * 
              */
-            public WidgeonView.Catalog.Schema.Factory schemas();
+            public WidgeonView.Schema.Factory schemas();
 
             }
 
@@ -142,7 +142,7 @@ extends Widgeon
          *
          */
         public interface Schemas
-        extends Widgeon.Catalog.Schemas<WidgeonView.Catalog.Schema>
+        extends Widgeon.Catalog.Schemas<WidgeonView.Schema>
             {
             }
 
@@ -152,177 +152,180 @@ extends Widgeon
          */
         public Schemas schemas();
 
+        }
+
+    /**
+     * Public interface for Schema metadata.
+     *
+     */
+    public interface Schema
+    extends Widgeon.Schema<WidgeonView.Catalog>
+        {
+
         /**
-         * Public interface for Schema metadata.
+         * Factory interface for creating and selecting Schemas.
          *
          */
-        public interface Schema
-        extends Widgeon.Catalog.Schema<WidgeonView.Catalog>
+        public static interface Factory
+        extends Widgeon.Schema.Factory<WidgeonView.Catalog, WidgeonView.Schema>
             {
 
             /**
-             * Factory interface for creating and selecting Schemas.
+             * Find an existing View of a Schema, or create a new one.
              *
              */
-            public static interface Factory
-            extends Widgeon.Catalog.Schema.Factory<WidgeonView.Catalog, WidgeonView.Catalog.Schema>
-                {
-
-                /**
-                 * Find an existing View of a Schema, or create a new one.
-                 *
-                 */
-                public WidgeonView.Catalog.Schema cascade(WidgeonView.Catalog parent, WidgeonBase.Catalog.Schema base);
-
-                /**
-                 * Create a new View of a Schema.
-                 *
-                 */
-                public WidgeonView.Catalog.Schema create(WidgeonView.Catalog parent, WidgeonBase.Catalog.Schema base, String name);
-
-                /**
-                 * Select all the views of a Schema.
-                 *
-                 */
-                public Iterable<WidgeonView.Catalog.Schema> select(WidgeonBase.Catalog.Schema base);
-
-                /**
-                 * Access to our Table factory.
-                 * 
-                 */
-                public WidgeonView.Catalog.Schema.Table.Factory tables();
-                
-                }
+            public WidgeonView.Schema cascade(WidgeonView.Catalog parent, WidgeonBase.Schema base);
 
             /**
-             * Access to our underlying Schema.
+             * Create a new View of a Schema.
              *
              */
-            public WidgeonBase.Catalog.Schema base();
+            public WidgeonView.Schema create(WidgeonView.Catalog parent, WidgeonBase.Schema base, String name);
 
             /**
-             * Public interface for accessing a Schema's Tables.
+             * Select all the views of a Schema.
              *
              */
-            public interface Tables
-            extends Widgeon.Catalog.Schema.Tables<WidgeonView.Catalog.Schema.Table>
-                {
-                }
+            public Iterable<WidgeonView.Schema> select(WidgeonBase.Schema base);
 
             /**
-             * Access to this Schema's Tables.
-             *
+             * Access to our Table factory.
+             * 
              */
-            public Tables tables();
-
-            /**
-             * Public interface for Table metadata.
-             *
-             */
-            public interface Table
-            extends Widgeon.Catalog.Schema.Table<WidgeonView.Catalog.Schema>
-                {
-
-                /**
-                 * Factory interface for creating and selecting Tables.
-                 *
-                 */
-                public static interface Factory
-                extends Widgeon.Catalog.Schema.Table.Factory<WidgeonView.Catalog.Schema, WidgeonView.Catalog.Schema.Table>
-                    {
-
-                    /**
-                     * Find an existing View of a Table, or create a new one.
-                     *
-                     */
-                    public WidgeonView.Catalog.Schema.Table cascade(WidgeonView.Catalog.Schema parent, WidgeonBase.Catalog.Schema.Table base);
-
-                    /**
-                     * Create a new View of a Table.
-                     *
-                     */
-                    public WidgeonView.Catalog.Schema.Table create(WidgeonView.Catalog.Schema parent, WidgeonBase.Catalog.Schema.Table base, String name);
-
-                    /**
-                     * Select all the views of a Table.
-                     *
-                     */
-                    public Iterable<WidgeonView.Catalog.Schema.Table> select(WidgeonBase.Catalog.Schema.Table base);
-
-                    /**
-                     * Access to our Column factory.
-                     * 
-                     */
-                    public WidgeonView.Catalog.Schema.Table.Column.Factory columns();
-
-                    }
-
-                /**
-                 * Access to our underlying Table.
-                 *
-                 */
-                public WidgeonBase.Catalog.Schema.Table base();
-
-                /**
-                 * Public interface for accessing a Table's Columns.
-                 *
-                 */
-                public interface Columns
-                extends Widgeon.Catalog.Schema.Table.Columns<WidgeonView.Catalog.Schema.Table.Column>
-                    {
-                    }
-
-                /**
-                 * Access to this Table's Columns.
-                 *
-                 */
-                public Columns columns();
-
-                /**
-                 * Public interface for Column metadata.
-                 *
-                 */
-                public interface Column
-                extends Widgeon.Catalog.Schema.Table.Column<WidgeonView.Catalog.Schema.Table>
-                    {
-
-                    /**
-                     * Factory interface for creating and selecting Columns.
-                     *
-                     */
-                    public static interface Factory
-                    extends Widgeon.Catalog.Schema.Table.Column.Factory<WidgeonView.Catalog.Schema.Table, WidgeonView.Catalog.Schema.Table.Column>
-                        {
-
-                        /**
-                         * Find an existing View of a Column, or create a new one.
-                         *
-                         */
-                        public WidgeonView.Catalog.Schema.Table.Column cascade(WidgeonView.Catalog.Schema.Table parent, WidgeonBase.Catalog.Schema.Table.Column base);
-
-                        /**
-                         * Create a new View of a Column.
-                         *
-                         */
-                        public WidgeonView.Catalog.Schema.Table.Column create(WidgeonView.Catalog.Schema.Table parent, WidgeonBase.Catalog.Schema.Table.Column base, String name);
-
-                        /**
-                         * Select all the views of a Column.
-                         *
-                         */
-                        public Iterable<WidgeonView.Catalog.Schema.Table.Column> select(WidgeonBase.Catalog.Schema.Table.Column base);
-
-                        }
-
-                    /**
-                     * Access to our underlying Column.
-                     *
-                     */
-                    public WidgeonBase.Catalog.Schema.Table.Column base();
-
-                    }
-                }
+            public WidgeonView.Table.Factory tables();
+            
             }
+
+        /**
+         * Access to our underlying Schema.
+         *
+         */
+        public WidgeonBase.Schema base();
+
+        /**
+         * Public interface for accessing a Schema's Tables.
+         *
+         */
+        public interface Tables
+        extends Widgeon.Schema.Tables<WidgeonView.Table>
+            {
+            }
+
+        /**
+         * Access to this Schema's Tables.
+         *
+         */
+        public Tables tables();
+
+        }
+
+    /**
+     * Public interface for Table metadata.
+     *
+     */
+    public interface Table
+    extends Widgeon.Table<WidgeonView.Schema>
+        {
+
+        /**
+         * Factory interface for creating and selecting Tables.
+         *
+         */
+        public static interface Factory
+        extends Widgeon.Table.Factory<WidgeonView.Schema, WidgeonView.Table>
+            {
+
+            /**
+             * Find an existing View of a Table, or create a new one.
+             *
+             */
+            public WidgeonView.Table cascade(WidgeonView.Schema parent, WidgeonBase.Table base);
+
+            /**
+             * Create a new View of a Table.
+             *
+             */
+            public WidgeonView.Table create(WidgeonView.Schema parent, WidgeonBase.Table base, String name);
+
+            /**
+             * Select all the views of a Table.
+             *
+             */
+            public Iterable<WidgeonView.Table> select(WidgeonBase.Table base);
+
+            /**
+             * Access to our Column factory.
+             * 
+             */
+            public WidgeonView.Column.Factory columns();
+
+            }
+
+        /**
+         * Access to our underlying Table.
+         *
+         */
+        public WidgeonBase.Table base();
+
+        /**
+         * Public interface for accessing a Table's Columns.
+         *
+         */
+        public interface Columns
+        extends Widgeon.Table.Columns<WidgeonView.Column>
+            {
+            }
+
+        /**
+         * Access to this Table's Columns.
+         *
+         */
+        public Columns columns();
+
+        }
+
+    /**
+     * Public interface for Column metadata.
+     *
+     */
+    public interface Column
+    extends Widgeon.Column<WidgeonView.Table>
+        {
+
+        /**
+         * Factory interface for creating and selecting Columns.
+         *
+         */
+        public static interface Factory
+        extends Widgeon.Column.Factory<WidgeonView.Table, WidgeonView.Column>
+            {
+
+            /**
+             * Find an existing View of a Column, or create a new one.
+             *
+             */
+            public WidgeonView.Column cascade(WidgeonView.Table parent, WidgeonBase.Column base);
+
+            /**
+             * Create a new View of a Column.
+             *
+             */
+            public WidgeonView.Column create(WidgeonView.Table parent, WidgeonBase.Column base, String name);
+
+            /**
+             * Select all the views of a Column.
+             *
+             */
+            public Iterable<WidgeonView.Column> select(WidgeonBase.Column base);
+
+            }
+
+        /**
+         * Access to our underlying Column.
+         *
+         */
+        public WidgeonBase.Column base();
+
         }
     }
 

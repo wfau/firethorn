@@ -18,15 +18,16 @@
 package uk.ac.roe.wfau.firethorn.widgeon ;
 
 /**
- * Public interface for a Widgeon component.
+ * Public interface for a component in a Widgeon metadata tree.
  *
  */
-public interface WidgeonComponent<ParentType>
+public interface WidgeonComponent<ParentType extends WidgeonStatus>
 extends WidgeonStatus
     {
 
     /**
-     * Access to our parent component.
+     * Access to our parent.
+     * @return Our parent component.
      *
      */
     public ParentType parent();

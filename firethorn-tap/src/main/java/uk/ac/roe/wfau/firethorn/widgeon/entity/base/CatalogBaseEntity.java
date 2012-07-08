@@ -223,10 +223,10 @@ implements WidgeonBase.Catalog
          * 
          */
         @Autowired
-        protected WidgeonBase.Catalog.Schema.Factory schemas ;
+        protected WidgeonBase.Schema.Factory schemas ;
 
         @Override
-        public WidgeonBase.Catalog.Schema.Factory schemas()
+        public WidgeonBase.Schema.Factory schemas()
             {
             return this.schemas ;
             }
@@ -252,7 +252,7 @@ implements WidgeonBase.Catalog
         return new WidgeonBase.Catalog.Schemas()
             {
             @Override
-            public WidgeonBase.Catalog.Schema create(String name)
+            public WidgeonBase.Schema create(String name)
                 {
                 return womble().widgeons().catalogs().schemas().create(
                     CatalogBaseEntity.this,
@@ -261,7 +261,7 @@ implements WidgeonBase.Catalog
                 }
 
             @Override
-            public Iterable<WidgeonBase.Catalog.Schema> select()
+            public Iterable<WidgeonBase.Schema> select()
                 {
                 return womble().widgeons().catalogs().schemas().select(
                     CatalogBaseEntity.this
@@ -269,7 +269,7 @@ implements WidgeonBase.Catalog
                 }
 
             @Override
-            public WidgeonBase.Catalog.Schema select(String name)
+            public WidgeonBase.Schema select(String name)
             throws NameNotFoundException
                 {
                 return womble().widgeons().catalogs().schemas().select(
