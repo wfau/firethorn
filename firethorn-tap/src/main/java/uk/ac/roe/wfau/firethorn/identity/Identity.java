@@ -18,26 +18,45 @@
 package uk.ac.roe.wfau.firethorn.identity ;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
- * Public Identity interface.
+ * Public interface fo an Identity.
  *
  */
 public interface Identity
 extends Entity
     {
+
     /**
      * An Identity context.
      *
      */
     public static interface Context
         {
+
         /**
-         * Get the current Identity.
+         * An Identity Context factory.
          *
          */
-        public Identity current();
+        public static interface Factory
+            {
+
+            /**
+             * Get the current Identity Context.
+             * @returns The current Identity Context.
+             *
+             */
+            public Context context();
+
+            }
+
+        /**
+         * Get the current Identity.
+         * @returns The current Identity in this context.
+         *
+         */
+        public Identity identity();
+
         }
 
     /**
@@ -47,20 +66,22 @@ extends Entity
     public static interface Factory
     extends Entity.Factory<Identity>
         {
+
         /**
          * Create a new Identity.
+         * @param name - The new Identity name.
+         * @returns A new Identity. 
          *
          */
         public Identity create(String name);
 
         /**
-         * Select all the Identities.
+         * Select all the Identities managed by this Factory.
+         * @returns An Iterable iterator of all the Identities managed by this Factory.
          *
          */
         public Iterable<Identity> select();
 
         }
-
-
-
     }
+
