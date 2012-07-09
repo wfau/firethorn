@@ -60,6 +60,12 @@ extends WidgeonStatus
         public CatalogType select(String name)
         throws NameNotFoundException;
 
+        /**
+         * Search for a named Catalog from the Widgeon.
+         *
+         */
+        public CatalogType search(String name);
+
         }
 
     /**
@@ -91,6 +97,12 @@ extends WidgeonStatus
             public CatalogType select(WidgeonType parent, String name)
             throws NameNotFoundException;
 
+            /**
+             * Search for a named Catalog from a Widgeon.
+             *
+             */
+            public CatalogType search(WidgeonType parent, String name);
+
             }
 
         /**
@@ -118,6 +130,12 @@ extends WidgeonStatus
              */
             public SchemaType select(String name)
             throws NameNotFoundException;
+
+            /**
+             * Search for a named Schema from the Catalog.
+             *
+             */
+            public SchemaType search(String name);
 
             }
         }
@@ -151,6 +169,12 @@ extends WidgeonStatus
             public SchemaType select(CatalogType parent, String name)
             throws NameNotFoundException;
 
+            /**
+             * Search for a named Schema from a Catalog.
+             *
+             */
+            public SchemaType search(CatalogType parent, String name);
+
             }
 
         /**
@@ -178,6 +202,12 @@ extends WidgeonStatus
              */
             public TableType select(String name)
             throws NameNotFoundException;
+
+            /**
+             * Search for a named Table from the Schema.
+             *
+             */
+            public TableType search(String name);
 
             }
         }
@@ -211,6 +241,12 @@ extends WidgeonStatus
             public TableType select(SchemaType parent, String name)
             throws NameNotFoundException;
 
+            /**
+             * Search for a named Table from a Schema.
+             *
+             */
+            public TableType search(SchemaType parent, String name);
+
             }
 
         /**
@@ -238,6 +274,12 @@ extends WidgeonStatus
              */
             public ColumnType select(String name)
             throws NameNotFoundException;
+
+            /**
+             * Search for a named Column from the Table.
+             *
+             */
+            public ColumnType search(String name);
 
             }
         }
@@ -270,6 +312,12 @@ extends WidgeonStatus
              */
             public ColumnType select(TableType parent, String name)
             throws NameNotFoundException;
+
+            /**
+             * Search for a named Column from a Table.
+             *
+             */
+            public ColumnType search(TableType parent, String name);
 
             }
         }

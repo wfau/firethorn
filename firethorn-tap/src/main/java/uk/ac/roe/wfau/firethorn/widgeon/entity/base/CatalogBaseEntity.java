@@ -185,12 +185,9 @@ implements WidgeonBase.Catalog
                 }
             }
 
-        /**
-         * Search for a named Catalog in a Widgeon.
-         *
-         */
+        @Override
         @SelectEntityMethod
-        protected WidgeonBase.Catalog search(final WidgeonBase parent, final String name)
+        public WidgeonBase.Catalog search(final WidgeonBase parent, final String name)
             {
             return super.first(
                 super.query(
@@ -237,9 +234,19 @@ implements WidgeonBase.Catalog
         {
         return new WidgeonBase.Catalog.Views()
             {
+            @Override
             public Iterable<WidgeonView.Catalog> select()
                 {
                 return womble().widgeons().views().catalogs().select(
+                    CatalogBaseEntity.this
+                    );
+                }
+
+            @Override
+            public WidgeonView.Catalog search(WidgeonView parent)
+                {
+                return womble().widgeons().views().catalogs().search(
+                    parent,
                     CatalogBaseEntity.this
                     );
                 }
@@ -273,6 +280,15 @@ implements WidgeonBase.Catalog
             throws NameNotFoundException
                 {
                 return womble().widgeons().catalogs().schemas().select(
+                    CatalogBaseEntity.this,
+                    name
+                    );
+                }
+
+            @Override
+            public WidgeonBase.Schema search(String name)
+                {
+                return womble().widgeons().catalogs().schemas().search(
                     CatalogBaseEntity.this,
                     name
                     );
@@ -332,6 +348,12 @@ implements WidgeonBase.Catalog
         else {
             return this.parent().status();
             }
+        }
+
+    @Override
+    public WidgeonBase widgeon()
+        {
+        return this.parent;
         }
     }
 

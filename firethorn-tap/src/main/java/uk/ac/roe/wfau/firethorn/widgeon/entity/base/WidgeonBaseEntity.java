@@ -290,6 +290,15 @@ implements WidgeonBase
                     name
                     );
                 }
+
+            @Override
+            public WidgeonBase.Catalog search(final String name)
+                {
+                return womble().widgeons().catalogs().search(
+                    WidgeonBaseEntity.this,
+                    name
+                    );
+                }
             };
         }
 

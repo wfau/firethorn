@@ -98,7 +98,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.CatalogBaseEntity;
         @NamedQuery(
             name  = "widgeon.view.catalog-select-parent.base",
             query = "FROM CatalogViewEntity WHERE ((parent = :parent) AND (base = :base)) ORDER BY ident desc"
-            ),
+            )
         }
     )
 public class CatalogViewEntity
@@ -175,12 +175,9 @@ implements WidgeonView.Catalog
                 );
             }
 
-        /**
-         * Search for an existing View of a Catalog.
-         *
-         */
+        @Override
         @SelectEntityMethod
-        protected WidgeonView.Catalog search(final WidgeonView parent, final WidgeonBase.Catalog base)
+        public WidgeonView.Catalog search(final WidgeonView parent, final WidgeonBase.Catalog base)
             {
             return super.first(
                 super.query(
@@ -260,12 +257,9 @@ implements WidgeonView.Catalog
                 }
             }
 
-        /**
-         * Search for a named Catalog in a Widgeon.
-         *
-         */
+        @Override
         @SelectEntityMethod
-        protected WidgeonView.Catalog search(final WidgeonView parent, final String name)
+        public WidgeonView.Catalog search(final WidgeonView parent, final String name)
             {
             return super.first(
                 super.query(
@@ -327,6 +321,15 @@ implements WidgeonView.Catalog
             throws NameNotFoundException
                 {
                 return womble().widgeons().views().catalogs().schemas().select(
+                    CatalogViewEntity.this,
+                    name
+                    ) ;
+                }
+
+            @Override
+            public WidgeonView.Schema search(String name)
+                {
+                return womble().widgeons().views().catalogs().schemas().search(
                     CatalogViewEntity.this,
                     name
                     ) ;
@@ -442,6 +445,12 @@ implements WidgeonView.Catalog
         else {
             return this.parent().status();
             }
+        }
+
+    @Override
+    public WidgeonView widgeon()
+        {
+        return this.parent;
         }
     }
 

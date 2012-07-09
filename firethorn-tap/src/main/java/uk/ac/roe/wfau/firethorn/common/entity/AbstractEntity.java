@@ -93,22 +93,6 @@ implements Entity
     public static final String DB_MODIFIED_COL = "modified" ;
 
     /**
-     * Check an Entity name, returns the create date if the given name is null or empty.
-     * @todo Delegate this to a naming factory.
-     *
-    public static String name(final String name, final Entity entity)
-        {
-        if ((name == null) || (name.trim().length() == 0))
-            {
-            return entity.created().toString();
-            }
-        else {
-            return name.trim();
-            }
-        }
-     */
-
-    /**
      * Access to our Womble instance - naff, but works for now.
      * @todo Replace this with something, anything, else.
      *
@@ -137,7 +121,7 @@ implements Entity
     throws NameFormatException
         {
         this(
-            womble().actor(),
+            womble().context().identity(),
             name
             );
         }

@@ -19,10 +19,6 @@ package uk.ac.roe.wfau.firethorn.identity ;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Iterator;
-
 import javax.persistence.Table;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -88,47 +84,6 @@ implements Identity
      * 
      */
     public static final String DB_TABLE_NAME = "identity_entity" ;
-
-    /**
-     * Identity context implementation.
-     * This implementation assumes a one to one match between Thread and Hibernate Session.
-     * A more complete implementation should check that the Identity Entity is part of the current Hibernate Session 
-     *
-     */
-    @Component
-    public static class Context
-    implements Identity.Context
-        {
-        /**
-         * Autowired Identity Factory.
-         *
-         */
-        @Autowired
-        private Identity.Factory factory ;
-
-        /**
-         * ThreadLocal storage for the current Identity.
-         *
-         */
-        private final ThreadLocal<Identity> tracker = new ThreadLocal<Identity>()
-            {
-            @Override
-            protected Identity initialValue()
-                {
-                log.debug("initial()");
-                return factory.create(
-                    "anon-identity"
-                    );
-                }            
-            };
-
-        @Override
-        public Identity current()
-            {
-            log.debug("current()");
-            return tracker.get();
-            }
-        }
 
     /**
      * Our Entity Factory implementation.

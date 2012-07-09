@@ -77,16 +77,15 @@
         </dependency>
 
         <!--+
-            | Local build of the CDS tools.
-            | This is based on a pre-release version of the CDS TAP library.
-            | It contains some unpublished classes from the other CDS projects (cds-uws-3.1).
+            | Local build of the CDS tools based on a pre-release version of the CDS TAP library.
+            | This may contain some unpublished classes from the other CDS projects (cds-uws-3.1).
+            +-->
         <dependency>
             <groupId>uk.ac.roe.wfau</groupId>
             <artifactId>firethorn-cds-lib</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-            +-->
 
 	    <!--+
 	        | Servlet libraries.

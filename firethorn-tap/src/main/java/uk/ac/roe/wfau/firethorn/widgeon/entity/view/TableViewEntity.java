@@ -92,6 +92,10 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.TableBaseEntity;
         @NamedQuery(
             name  = "widgeon.view.table-select-parent.base",
             query = "FROM TableViewEntity WHERE ((parent = :parent) AND (base = :base)) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "widgeon.view.table-select-view.base",
+            query = "FROM TableViewEntity WHERE ((parent.parent.parent = :view) AND (base = :base)) ORDER BY ident desc"
             )
         }
     )
@@ -169,12 +173,9 @@ implements WidgeonView.Table
                 );
             }
 
-        /**
-         * Search for an existing View of a Table.
-         *
-         */
+        @Override
         @SelectEntityMethod
-        protected WidgeonView.Table search(final WidgeonView.Schema parent, final WidgeonBase.Table base)
+        public WidgeonView.Table search(final WidgeonView.Schema parent, final WidgeonBase.Table base)
             {
             return super.first(
                 super.query(
@@ -254,12 +255,9 @@ implements WidgeonView.Table
                 }
             }
 
-        /**
-         * Search for a named Table in a Schema.
-         *
-         */
+        @Override
         @SelectEntityMethod
-        protected WidgeonView.Table search(final WidgeonView.Schema parent, final String name)
+        public WidgeonView.Table search(final WidgeonView.Schema parent, final String name)
             {
             return super.first(
                 super.query(
@@ -300,7 +298,6 @@ implements WidgeonView.Table
             {
             return this.columns ;
             }
-
         }
 
     @Override
@@ -324,6 +321,24 @@ implements WidgeonView.Table
                     TableViewEntity.this,
                     name
                     ) ;
+                }
+
+            @Override
+            public WidgeonView.Column search(String name)
+                {
+                return womble().widgeons().views().catalogs().schemas().tables().columns().search(
+                    TableViewEntity.this,
+                    name
+                    ) ;
+                }
+
+            @Override
+            public WidgeonView.Column search(WidgeonBase.Column base)
+                {
+                return womble().widgeons().views().catalogs().schemas().tables().columns().search(
+                    TableViewEntity.this,
+                    base
+                    );
                 }
             };
         }
@@ -436,6 +451,24 @@ implements WidgeonView.Table
         else {
             return this.parent().status();
             }
+        }
+
+    @Override
+    public WidgeonView widgeon()
+        {
+        return this.parent.catalog().widgeon();
+        }
+
+    @Override
+    public WidgeonView.Catalog catalog()
+        {
+        return this.parent.catalog();
+        }
+
+    @Override
+    public WidgeonView.Schema schema()
+        {
+        return this.parent;
         }
     }
 

@@ -42,23 +42,29 @@ extends Widgeon
         {
 
         /**
-         * Create a View of a Widgeon.
+         * Create a view of a Widgeon.
          *
          */
         public WidgeonView create(WidgeonBase base, String name);
 
         /**
-         * Select all the Views of a Widgeon.
+         * Select all the views of a Widgeon.
          *
          */
         public Iterable<WidgeonView> select(WidgeonBase base);
 
         /**
-         * Select a named View of a Widgeon.
+         * Select a named view of a Widgeon.
          *
          */
         public WidgeonView select(WidgeonBase base, String name)
         throws NameNotFoundException;
+
+        /**
+         * Search for a named view of a Widgeon.
+         *
+         */
+        public WidgeonView search(WidgeonBase base, String name);
 
         /**
          * Access to our Catalog factory.
@@ -69,7 +75,7 @@ extends Widgeon
         }
 
     /**
-     * Access to our underlying Widgeon.
+     * Access to our base Widgeon.
      *
      */
     public WidgeonBase base();
@@ -124,6 +130,12 @@ extends Widgeon
             public Iterable<WidgeonView.Catalog> select(WidgeonBase.Catalog base);
 
             /**
+             * Search for a specific view of a Catalog.
+             *
+             */
+            public WidgeonView.Catalog search(WidgeonView parent, WidgeonBase.Catalog base);
+
+            /**
              * Access to our Schema factory.
              * 
              */
@@ -132,7 +144,7 @@ extends Widgeon
             }
 
         /**
-         * Access to our underlying Catalog.
+         * Access to our base Catalog.
          *
          */
         public WidgeonBase.Catalog base();
@@ -151,6 +163,12 @@ extends Widgeon
          *
          */
         public Schemas schemas();
+
+        /**
+         * Access to our parent Widgeon.
+         *
+         */
+        public WidgeonView widgeon();
 
         }
 
@@ -189,6 +207,12 @@ extends Widgeon
             public Iterable<WidgeonView.Schema> select(WidgeonBase.Schema base);
 
             /**
+             * Search for a specific view of a Schema.
+             *
+             */
+            public WidgeonView.Schema search(WidgeonView.Catalog parent, WidgeonBase.Schema base);
+
+            /**
              * Access to our Table factory.
              * 
              */
@@ -197,7 +221,7 @@ extends Widgeon
             }
 
         /**
-         * Access to our underlying Schema.
+         * Access to our base Schema.
          *
          */
         public WidgeonBase.Schema base();
@@ -216,6 +240,18 @@ extends Widgeon
          *
          */
         public Tables tables();
+
+        /**
+         * Access to our parent Widgeon.
+         *
+         */
+        public WidgeonView widgeon();
+
+        /**
+         * Access to our parent Catalog.
+         *
+         */
+        public WidgeonView.Catalog catalog();
 
         }
 
@@ -254,6 +290,12 @@ extends Widgeon
             public Iterable<WidgeonView.Table> select(WidgeonBase.Table base);
 
             /**
+             * Search for a specific view of a Table.
+             *
+             */
+            public WidgeonView.Table search(WidgeonView.Schema parent, WidgeonBase.Table base);
+
+            /**
              * Access to our Column factory.
              * 
              */
@@ -262,7 +304,7 @@ extends Widgeon
             }
 
         /**
-         * Access to our underlying Table.
+         * Access to our base Table.
          *
          */
         public WidgeonBase.Table base();
@@ -274,6 +316,13 @@ extends Widgeon
         public interface Columns
         extends Widgeon.Table.Columns<WidgeonView.Column>
             {
+
+            /**
+             * Search for a view of a spcific column.
+             *
+             */
+            public WidgeonView.Column search(WidgeonBase.Column base);
+
             }
 
         /**
@@ -281,6 +330,24 @@ extends Widgeon
          *
          */
         public Columns columns();
+
+        /**
+         * Access to our parent Widgeon.
+         *
+         */
+        public WidgeonView widgeon();
+
+        /**
+         * Access to our parent Catalog.
+         *
+         */
+        public WidgeonView.Catalog catalog();
+
+        /**
+         * Access to our parent Schema.
+         *
+         */
+        public WidgeonView.Schema schema();
 
         }
 
@@ -313,6 +380,12 @@ extends Widgeon
             public WidgeonView.Column create(WidgeonView.Table parent, WidgeonBase.Column base, String name);
 
             /**
+             * Search for a specific view of a Column.
+             *
+             */
+            public WidgeonView.Column search(WidgeonView.Table parent, WidgeonBase.Column base);
+
+            /**
              * Select all the views of a Column.
              *
              */
@@ -321,10 +394,34 @@ extends Widgeon
             }
 
         /**
-         * Access to our underlying Column.
+         * Access to our base Column.
          *
          */
         public WidgeonBase.Column base();
+
+        /**
+         * Access to our parent Widgeon.
+         *
+         */
+        public WidgeonView widgeon();
+
+        /**
+         * Access to our parent Catalog.
+         *
+         */
+        public WidgeonView.Catalog catalog();
+
+        /**
+         * Access to our parent Schema.
+         *
+         */
+        public WidgeonView.Schema schema();
+
+        /**
+         * Access to our parent Table.
+         *
+         */
+        public WidgeonView.Table table();
 
         }
     }

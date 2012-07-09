@@ -184,12 +184,9 @@ implements WidgeonBase.Schema
                 }
             }
 
-        /**
-         * Search for a named Schema in a Catalog.
-         *
-         */
+        @Override
         @SelectEntityMethod
-        protected WidgeonBase.Schema search(final WidgeonBase.Catalog parent, final String name)
+        public WidgeonBase.Schema search(final WidgeonBase.Catalog parent, final String name)
             {
             return super.first(
                 super.query(
@@ -236,9 +233,19 @@ implements WidgeonBase.Schema
         {
         return new WidgeonBase.Schema.Views()
             {
+            @Override
             public Iterable<WidgeonView.Schema> select()
                 {
                 return womble().widgeons().views().catalogs().schemas().select(
+                    SchemaBaseEntity.this
+                    );
+                }
+
+            @Override
+            public WidgeonView.Schema search(WidgeonView.Catalog parent)
+                {
+                return womble().widgeons().views().catalogs().schemas().search(
+                    parent,
                     SchemaBaseEntity.this
                     );
                 }
@@ -272,6 +279,15 @@ implements WidgeonBase.Schema
             throws NameNotFoundException
                 {
                 return womble().widgeons().catalogs().schemas().tables().select(
+                    SchemaBaseEntity.this,
+                    name
+                    ) ;
+                }
+
+            @Override
+            public WidgeonBase.Table search(String name)
+                {
+                return womble().widgeons().catalogs().schemas().tables().search(
                     SchemaBaseEntity.this,
                     name
                     ) ;
@@ -331,6 +347,18 @@ implements WidgeonBase.Schema
         else {
             return this.parent().status();
             }
+        }
+
+    @Override
+    public WidgeonBase widgeon()
+        {
+        return this.parent.widgeon();
+        }
+
+    @Override
+    public WidgeonBase.Catalog catalog()
+        {
+        return this.parent;
         }
     }
 

@@ -184,12 +184,9 @@ implements WidgeonBase.Column
                 }
             }
 
-        /**
-         * Search for a named Column in a Table.
-         *
-         */
+        @Override
         @SelectEntityMethod
-        protected WidgeonBase.Column search(final WidgeonBase.Table parent, final String name)
+        public WidgeonBase.Column search(final WidgeonBase.Table parent, final String name)
             {
             return super.first(
                 super.query(
@@ -223,9 +220,19 @@ implements WidgeonBase.Column
         {
         return new WidgeonBase.Column.Views()
             {
+            @Override
             public Iterable<WidgeonView.Column> select()
                 {
                 return womble().widgeons().views().catalogs().schemas().tables().columns().select(
+                    ColumnBaseEntity.this
+                    );
+                }
+
+            @Override
+            public WidgeonView.Column search(WidgeonView.Table parent)
+                {
+                return womble().widgeons().views().catalogs().schemas().tables().columns().search(
+                    parent,
                     ColumnBaseEntity.this
                     );
                 }
@@ -284,6 +291,30 @@ implements WidgeonBase.Column
         else {
             return this.parent().status();
             }
+        }
+
+    @Override
+    public WidgeonBase widgeon()
+        {
+        return this.parent.schema().catalog().widgeon();
+        }
+
+    @Override
+    public WidgeonBase.Catalog catalog()
+        {
+        return this.parent.schema().catalog();
+        }
+
+    @Override
+    public WidgeonBase.Schema schema()
+        {
+        return this.parent.schema();
+        }
+
+    @Override
+    public WidgeonBase.Table table()
+        {
+        return this.parent;
         }
     }
 

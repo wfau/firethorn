@@ -184,12 +184,9 @@ implements WidgeonBase.Table
                 }
             }
  
-        /**
-         * Search for a named Table in a Schema.
-         *
-         */
+        @Override
         @SelectEntityMethod
-        protected WidgeonBase.Table search(final WidgeonBase.Schema parent, final String name)
+        public WidgeonBase.Table search(final WidgeonBase.Schema parent, final String name)
             {
             return super.first(
                 super.query(
@@ -236,9 +233,19 @@ implements WidgeonBase.Table
         {
         return new WidgeonBase.Table.Views()
             {
+            @Override
             public Iterable<WidgeonView.Table> select()
                 {
                 return womble().widgeons().views().catalogs().schemas().tables().select(
+                    TableBaseEntity.this
+                    );
+                }
+
+            @Override
+            public WidgeonView.Table search(WidgeonView.Schema parent)
+                {
+                return womble().widgeons().views().catalogs().schemas().tables().search(
+                    parent,
                     TableBaseEntity.this
                     );
                 }
@@ -272,6 +279,15 @@ implements WidgeonBase.Table
             throws NameNotFoundException
                 {
                 return womble().widgeons().catalogs().schemas().tables().columns().select(
+                    TableBaseEntity.this,
+                    name
+                    ) ;
+                }
+
+            @Override
+            public WidgeonBase.Column search(String name)
+                {
+                return womble().widgeons().catalogs().schemas().tables().columns().search(
                     TableBaseEntity.this,
                     name
                     ) ;
@@ -331,6 +347,24 @@ implements WidgeonBase.Table
         else {
             return this.parent().status();
             }
+        }
+
+    @Override
+    public WidgeonBase widgeon()
+        {
+        return this.parent.catalog().widgeon();
+        }
+
+    @Override
+    public WidgeonBase.Catalog catalog()
+        {
+        return this.parent.catalog();
+        }
+
+    @Override
+    public WidgeonBase.Schema schema()
+        {
+        return this.parent;
         }
     }
 

@@ -170,10 +170,10 @@ public interface Womble
     public Identity.Factory identities();
 
     /**
-     * Access to the current Identity.
+     * Access to the current Identity context.
      * 
      */
-    public Identity actor();
+    public Identity.Context context();
 
     }
 

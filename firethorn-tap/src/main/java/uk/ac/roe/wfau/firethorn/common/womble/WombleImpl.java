@@ -532,16 +532,16 @@ implements Womble
         }
 
     /**
-     * Our Autowired Identity context.
+     * Our Autowired Identity context factory.
      * 
      */
     @Autowired
-    protected Identity.Context context ;
+    protected Identity.Context.Factory contexts ;
 
     @Override
-    public Identity actor()
+    public Identity.Context context()
         {
-        return this.context.current();
+        return this.contexts.context();
         }
 
     }

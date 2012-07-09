@@ -175,7 +175,7 @@ implements WidgeonView
 
         @Override
         @SelectEntityMethod
-        public WidgeonView select(final WidgeonBase base, String name)
+        public WidgeonView select(final WidgeonBase base, final String name)
         throws NameNotFoundException
             {
             WidgeonView result = this.search(
@@ -193,12 +193,9 @@ implements WidgeonView
                 }
             }
 
-        /**
-         * Search for a named View of a Widgeon.
-         *
-         */
+        @Override
         @SelectEntityMethod
-        protected WidgeonView search(final WidgeonBase base, String name)
+        public WidgeonView search(final WidgeonBase base, final String name)
             {
             return super.first(
                 super.query(
@@ -245,6 +242,15 @@ implements WidgeonView
             throws NameNotFoundException
                 {
                 return womble().widgeons().views().catalogs().select(
+                    WidgeonViewEntity.this,
+                    name
+                    ) ;
+                }
+
+            @Override
+            public WidgeonView.Catalog search(final String name)
+                {
+                return womble().widgeons().views().catalogs().search(
                     WidgeonViewEntity.this,
                     name
                     ) ;

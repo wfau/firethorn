@@ -171,12 +171,9 @@ implements WidgeonView.Column
                 );
             }
 
-        /**
-         * Search for an existing View of a Column.
-         *
-         */
+        @Override
         @SelectEntityMethod
-        protected WidgeonView.Column search(final WidgeonView.Table parent, final WidgeonBase.Column base)
+        public WidgeonView.Column search(final WidgeonView.Table parent, final WidgeonBase.Column base)
             {
             return super.first(
                 super.query(
@@ -256,12 +253,9 @@ implements WidgeonView.Column
                 }
             }
 
-        /**
-         * Search for a named Column in a Table.
-         *
-         */
+        @Override
         @SelectEntityMethod
-        protected WidgeonView.Column search(final WidgeonView.Table parent, final String name)
+        public WidgeonView.Column search(final WidgeonView.Table parent, final String name)
             {
             return super.first(
                 super.query(
@@ -400,5 +394,30 @@ implements WidgeonView.Column
             return this.parent().status();
             }
         }
+
+    @Override
+    public WidgeonView widgeon()
+        {
+        return this.parent.schema().catalog().widgeon();
+        }
+
+    @Override
+    public WidgeonView.Catalog catalog()
+        {
+        return this.parent.schema().catalog();
+        }
+
+    @Override
+    public WidgeonView.Schema schema()
+        {
+        return this.parent.schema();
+        }
+
+    @Override
+    public WidgeonView.Table table()
+        {
+        return this.parent;
+        }
+
     }
 

@@ -168,12 +168,9 @@ implements WidgeonView.Schema
                 );
             }
 
-        /**
-         * Search for an existing View of a Schema.
-         *
-         */
+        @Override
         @SelectEntityMethod
-        protected WidgeonView.Schema search(final WidgeonView.Catalog parent, final WidgeonBase.Schema base)
+        public WidgeonView.Schema search(final WidgeonView.Catalog parent, final WidgeonBase.Schema base)
             {
             return super.first(
                 super.query(
@@ -253,12 +250,9 @@ implements WidgeonView.Schema
                 }
             }
 
-        /**
-         * Search for a named Schema in a Catalog.
-         *
-         */
+        @Override
         @SelectEntityMethod
-        protected WidgeonView.Schema search(final WidgeonView.Catalog parent, final String name)
+        public WidgeonView.Schema search(final WidgeonView.Catalog parent, final String name)
             {
             return super.first(
                 super.query(
@@ -320,6 +314,15 @@ implements WidgeonView.Schema
             throws NameNotFoundException
                 {
                 return womble().widgeons().views().catalogs().schemas().tables().select(
+                    SchemaViewEntity.this,
+                    name
+                    ) ;
+                }
+
+            @Override
+            public WidgeonView.Table search(String name)
+                {
+                return womble().widgeons().views().catalogs().schemas().tables().search(
                     SchemaViewEntity.this,
                     name
                     ) ;
@@ -435,6 +438,18 @@ implements WidgeonView.Schema
         else {
             return this.parent().status();
             }
+        }
+
+    @Override
+    public WidgeonView widgeon()
+        {
+        return this.parent.widgeon();
+        }
+
+    @Override
+    public WidgeonView.Catalog catalog()
+        {
+        return this.parent;
         }
     }
 

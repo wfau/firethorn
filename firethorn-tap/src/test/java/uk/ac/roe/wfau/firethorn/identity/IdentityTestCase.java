@@ -62,18 +62,18 @@ extends TestBase
     public void test001()
         {
         assertNotNull(
-            context.current().ident()
+            context.identity().ident()
             );
-        ident[2] = context.current().ident();
+        ident[2] = context.identity().ident();
         }
 
     @Test
     public void test002()
         {
         assertNotNull(
-            context.current().ident()
+            context.identity().ident()
             );
-        ident[3] = context.current().ident();
+        ident[3] = context.identity().ident();
         }
 
     @Test
