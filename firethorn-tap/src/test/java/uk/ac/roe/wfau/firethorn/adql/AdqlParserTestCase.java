@@ -57,102 +57,103 @@ public class AdqlParserTestCase
 extends WidgeonViewTestBase
     {
 
-//    @Test
+    @Test
     public void test000()
     throws Exception
         {
 
-        try{
+        // Create a parser:
+        ADQLParser parser = new ADQLParser();
 
-            // Create a parser:
-            ADQLParser parser = new ADQLParser();
+        //
+        // Create our table description.
+        DefaultDBTable dbtable = new DefaultDBTable(
+            "jdbc_catalog",
+            "adql_catalog",
+            "jdbc_schema",
+            "adql_schema",
+            "jdbc_table",
+            "adql_table"
+            );
 
-            //
-            // Create our table description.
-            DefaultDBTable dbtable = new DefaultDBTable(
-                "jdbc_catalog",
-                "adql_catalog",
-                "jdbc_schema",
-                "adql_schema",
-                "jdbc_table",
-                "twomass_psc"
-                );
+        dbtable.addColumn(
+            new DefaultDBColumn(
+                "jdbc_ra",
+                "adql_ra",
+                dbtable)
+            );
+        dbtable.addColumn(
+            new DefaultDBColumn(
+                "jdbc_dec",
+                "adql_dec",
+                dbtable
+                )
+            );
+        dbtable.addColumn(
+            new DefaultDBColumn(
+                "jdbc_pts",
+                "adql_pts",
+                dbtable
+                )
+            );
 
-            dbtable.addColumn(
-                new DefaultDBColumn("ra", dbtable)
-                );
-            dbtable.addColumn(
-                new DefaultDBColumn("dec", dbtable)
-                );
-            dbtable.addColumn(
-                new DefaultDBColumn("pts_key", dbtable)
-                );
+        //
+        // Create a list of tables.
+        ArrayList tables = new ArrayList();
+        tables.add(dbtable);
 
-            //
-            // Create a list of tables.
-            ArrayList tables = new ArrayList();
-            tables.add(dbtable);
+        //
+        // Create our QueryChecker:
+        QueryChecker checker = new DBChecker(tables);
 
-            //
-            // Create our QueryChecker:
-            QueryChecker checker = new DBChecker(tables);
+        //
+        // Add our checker to our parser.
+        parser.setQueryChecker(checker);
 
-            //
-            // Add our checker to our parser.
-            parser.setQueryChecker(checker);
+        // Parse some ADQL.
+        ADQLQuery query = parser.parseQuery(
+            new StringBufferInputStream(
+                  "SELECT"
+                + "    adql_ra  as ra,"
+                + "    adql_dec as dec,"
+                + "    adql_pts as pts"
+                + " FROM"
+                + "    adql_table as psc"
+                + " WHERE"
+                + "    adql_ra  Between '56.0' AND '57.9'"
+                + " AND"
+                + "    adql_dec Between '24.0' AND '24.2'"
+                )
+            );
 
-            // Parse some ADQL.
-            ADQLQuery query = parser.parseQuery(
-                new StringBufferInputStream(
-                      "SELECT"
-                    + "    ra,"
-                    + "    dec,"
-                    + "    pts_key"
-                    + " FROM"
-                    + "    twomass_psc"
-                    + " WHERE"
-                    + "    ra  Between '56.0' AND '57.9'"
-                    + " AND"
-                    + "    dec Between '24.0' AND '24.2'"
-                    )
-                );
+        log.debug("Got query [{}]", query.getName());
 
-            log.debug("Got query [{}]", query.getName());
-
-            log.debug("From tables --");
-            FromContent from = query.getFrom();
-            for (ADQLTable table : from.getTables())
-                {
-                log.debug(" Table [{}][{}]", table.getTableName(), table.getFullTableName());
-                }
-
-            log.debug("From columns --");
-            for (DBColumn column : from.getDBColumns())
-                {
-
-                log.debug(" ADQL [{}][{}][{}][{}]", new String[]{
-                    column.getADQLName(),
-                    column.getTable().getADQLName(),
-                    column.getTable().getADQLSchemaName(),
-                    column.getTable().getADQLCatalogName()
-                    });
-
-                log.debug(" JDBC [{}][{}][{}][{}]", new String[]{
-                    column.getDBName(),
-                    column.getTable().getDBName(),
-                    column.getTable().getDBSchemaName(),
-                    column.getTable().getDBCatalogName()
-                    });
-
-                }
-
-            }
-
-        catch(ParseException ouch)
+        log.debug("From tables --");
+        FromContent from = query.getFrom();
+        for (ADQLTable table : from.getTables())
             {
-            log.debug("ADQL syntax error [{}] at [{}]", ouch.getMessage(), ouch.getPosition());
+            log.debug(" Table [{}][{}]", table.getTableName(), table.getFullTableName());
             }
 
+        log.debug("From columns --");
+        for (DBColumn column : from.getDBColumns())
+            {
+
+            log.debug(" ADQL [{}][{}][{}][{}]", new String[]{
+                column.getADQLName(),
+                column.getTable().getADQLName(),
+                column.getTable().getADQLSchemaName(),
+                column.getTable().getADQLCatalogName()
+                });
+
+            log.debug(" JDBC [{}][{}][{}][{}]", new String[]{
+                column.getDBName(),
+                column.getTable().getDBName(),
+                column.getTable().getDBSchemaName(),
+                column.getTable().getDBCatalogName()
+                });
+
+            }
         }
 
     public static class TestDBTable
@@ -194,14 +195,14 @@ log.debug("TestDBTable({}, {}, {})", new String[]{ table.name(), jdbcName, adqlN
         @Override
         public String getADQLName()
             {
-log.debug("TestDBTable.getADQLName()");
+//log.debug("TestDBTable.getADQLName()");
             if (this.adqlName != null)
                 {
-log.debug(" Name [{}]", this.adqlName);
+//log.debug(" Name [{}]", this.adqlName);
                 return this.adqlName ;
                 } 
             else {            
-log.debug(" Name [{}]", table.name());
+//log.debug(" Name [{}]", table.name());
                 return table.name();
                 }
             }
@@ -225,14 +226,14 @@ log.debug(" Name [{}]", table.name());
         @Override
         public String getDBName()
             {
-log.debug("TestDBTable.getDBName()");
+//log.debug("TestDBTable.getDBName()");
             if (this.jdbcName != null)
                 {
-log.debug(" Name [{}]", this.jdbcName);
+//log.debug(" Name [{}]", this.jdbcName);
                 return this.jdbcName ;
                 } 
             else {            
-log.debug(" Name [{}]", table.base().name());
+//log.debug(" Name [{}]", table.base().name());
                 return table.base().name();
                 }
             }
@@ -530,11 +531,11 @@ log.debug(" Name [{}]", table.base().name());
         ADQLQuery query = parser.parseQuery(
             new StringBufferInputStream(
                   "SELECT"
-                + "    adql_ra,"
-                + "    adql_dec,"
-                + "    adql_pts"
+                + "    psc.adql_ra  as ra,"
+                + "    psc.adql_dec as dec,"
+                + "    psc.adql_pts as pts"
                 + " FROM"
-                + "    adql_table"
+                + "    adql_table as psc"
                 + " WHERE"
                 + "    adql_ra Between '56.0' AND '57.9'"
                 + " AND"
