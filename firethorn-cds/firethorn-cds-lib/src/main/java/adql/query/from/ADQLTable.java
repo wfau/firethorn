@@ -341,11 +341,9 @@ public class ADQLTable implements ADQLObject, FromContent {
 			DefaultDBTable dbTable = new DefaultDBTable(alias);
 			DBColumn[] columns = subQuery.getResultingColumns();
 			for(DBColumn dbCol : columns)
-			    {
 //ZRQ?
 //				dbTable.addColumn(dbCol.copy(dbCol.getADQLName(), dbCol.getADQLName(), dbTable));
 				dbTable.addColumn(dbCol.copy(dbCol.getDBName(), dbCol.getADQLName(), dbTable));
-                }
 			dbLink = dbTable;
 		}
 	}
