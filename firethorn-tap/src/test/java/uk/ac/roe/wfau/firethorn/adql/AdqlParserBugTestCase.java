@@ -60,6 +60,10 @@ public class AdqlParserBugTestCase
 extends TestBase
     {
 
+    /**
+     * ADQL query using column names (adql_ra, adql_dec) in the WHERE clause.
+     *
+     */
     private static final String PASS_ADQL =
           "SELECT"
         + "    adql_ra  as ra,"
@@ -73,6 +77,10 @@ extends TestBase
         + "    adql_dec Between '24.0' AND '24.2'"
         ;
 
+    /**
+     * ADQL query using column aliases (ra, dec) in the WHERE clause.
+     *
+     */
     private static final String FAIL_ADQL =
           "SELECT"
         + "    adql_ra  as ra,"
@@ -86,8 +94,16 @@ extends TestBase
         + "    dec Between '24.0' AND '24.2'"
         ;
 
+    /**
+     * Select the ADQL query to use for the tests.
+     *
+     */
     private static final String TEST_ADQL = FAIL_ADQL ;
 
+    /**
+     * This test always passes, producing valid generic SQL.
+     *
+     */
     @Test
     public void test000()
     throws Exception
@@ -111,6 +127,11 @@ extends TestBase
         }
 
 
+    /**
+     * This test passes with PASS_ADQL, but fails with FAIL_ADQL.
+     * Adding the DBTable metadata means the parser does not recognise the column aliases for ra and dec.
+     *
+     */
     @Test
     public void test001()
     throws Exception
