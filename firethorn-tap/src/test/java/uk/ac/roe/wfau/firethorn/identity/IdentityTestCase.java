@@ -22,6 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.net.URI;
 
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.After;
 import static org.junit.Assert.*;
 
 import org.springframework.beans.factory.annotation.Autowired;  
@@ -40,6 +42,25 @@ extends TestBase
 
     private static Identifier[] ident = new Identifier[10] ;
 
+    /**
+     * Our Autowired Identity.Context.Factory.
+     * 
+     */
+    @Autowired
+    protected Identity.Context.Factory factory ;
+
+    /**
+     * Our current Identity.Context.
+     * 
+     */
+    protected Identity.Context context ;
+
+    @Before
+    public void before()
+        {
+        context = factory.context();
+        }
+
     @Test
     public void test000()
         {
@@ -50,13 +71,6 @@ extends TestBase
             "albert"
             ).ident();
         }
-
-    /**
-     * Our Autowired Identity context.
-     * 
-     */
-    @Autowired
-    protected Identity.Context context ;
 
     @Test
     public void test001()
