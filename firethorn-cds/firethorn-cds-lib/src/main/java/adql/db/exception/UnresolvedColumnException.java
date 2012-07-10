@@ -35,6 +35,7 @@ import adql.query.operand.ADQLColumn;
 public class UnresolvedColumnException extends ParseException {
 	private static final long serialVersionUID = 1L;
 
+	private final String columnName;
 
 	/* ************ */
 	/* CONSTRUCTORS */
@@ -49,6 +50,7 @@ public class UnresolvedColumnException extends ParseException {
 	public UnresolvedColumnException(ADQLColumn c){
 		super(buildMessage("Unknown column", c));
 		initPosition(c);
+		columnName = (c!=null)?c.getColumnName():null;
 	}
 
 	/**
@@ -66,10 +68,15 @@ public class UnresolvedColumnException extends ParseException {
 	public UnresolvedColumnException(ADQLColumn c, String col1, String col2){
 		super(buildMessage("Ambiguous column name", c, col1, col2));
 		initPosition(c);
+		columnName = (c!=null)?c.getColumnName():null;
 	}
 
 	protected final void initPosition(final ADQLColumn c){
 		position = c.getPosition();
+	}
+
+	public final String getColumnName(){
+		return columnName;
 	}
 
 	private static final String buildMessage(String msgStart, ADQLColumn c){

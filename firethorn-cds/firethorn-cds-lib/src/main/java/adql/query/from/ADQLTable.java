@@ -25,6 +25,7 @@ import java.util.NoSuchElementException;
 import adql.db.DBChecker;
 import adql.db.DBColumn;
 import adql.db.DBTable;
+import adql.db.DefaultDBTable;
 import adql.db.SearchColumnList;
 import adql.query.ADQLIterator;
 import adql.query.ADQLObject;
@@ -103,10 +104,11 @@ public class ADQLTable implements ADQLObject, FromContent {
 	 * Builds a reference to a sub-query.
 	 * 
 	 * @param query	Sub-query.
+	 * 
+	 * @see #setSubQuery(ADQLQuery)
 	 */
 	public ADQLTable(ADQLQuery query){
-		subQuery = query;
-		table = null;
+		setSubQuery(query);
 	}
 
 	/**
@@ -308,15 +310,39 @@ public class ADQLTable implements ADQLObject, FromContent {
 	 * Sets the sub-query to use as table.
 	 * 
 	 * @param query	Sub-query (MUST NOT BE NULL).
+	 * 
+	 * @see #refreshDBLink()
 	 */
 	public final void setSubQuery(final ADQLQuery query){
 		if (query != null){
+			// set all ADQLTable attributes:
 			subQuery = query;
 			catalog = null;
 			schema = null;
 			table = null;
 			dbLink = null;
 			position = null;
+
+			// set the DB link:
+			refreshDBLink();
+		}
+	}
+
+	/**
+	 * (Re-)Builds a default description of this ADQL table <u>ONLY IF it is a sub-query AND there is an alias</u>.
+	 * This method has no effect if this table is not a sub-query or has no alias.
+	 * 
+	 * @see DefaultDBTable
+	 * @see ADQLQuery#getResultingColumns()
+	 * @see DBColumn#copy(String, String, DBTable)
+	 */
+	public final void refreshDBLink(){
+		if (isSubQuery() && hasAlias()){
+			DefaultDBTable dbTable = new DefaultDBTable(alias);
+			DBColumn[] columns = subQuery.getResultingColumns();
+			for(DBColumn dbCol : columns)
+				dbTable.addColumn(dbCol.copy(dbCol.getADQLName(), dbCol.getADQLName(), dbTable));
+			dbLink = dbTable;
 		}
 	}
 
@@ -453,6 +479,8 @@ public class ADQLTable implements ADQLObject, FromContent {
 
 	public SearchColumnList getDBColumns(){
 		SearchColumnList list = new SearchColumnList();
+		if (isSubQuery() && dbLink == null)
+			refreshDBLink();
 		if (dbLink != null){
 			for(DBColumn dbCol : dbLink)
 				list.add(dbCol);

@@ -45,6 +45,9 @@ import adql.db.DBChecker;
 import adql.db.DefaultDBTable;
 import adql.db.DefaultDBColumn;
 
+import adql.translator.ADQLTranslator;
+import adql.translator.PostgreSQLTranslator;
+
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView ;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonViewTestBase ;
@@ -154,6 +157,10 @@ extends WidgeonViewTestBase
                 });
 
             }
+
+        ADQLTranslator translator = new PostgreSQLTranslator();
+        log.debug("SQL [{}]", translator.translate(query));
+
         }
 
     public static class TestDBTable
@@ -161,6 +168,8 @@ extends WidgeonViewTestBase
         {
 
         private WidgeonView.Table table ;
+        private String adqlName ;
+        private String jdbcName ;
 
         public TestDBTable(WidgeonView.Table table)
             {
@@ -171,19 +180,15 @@ extends WidgeonViewTestBase
                 );
             }
 
-        public TestDBTable(WidgeonView.Table table, java.lang.String jdbcName, java.lang.String adqlName)
+        public TestDBTable(WidgeonView.Table table, String jdbcName, String adqlName)
             {
-log.debug("TestDBTable({}, {}, {})", new String[]{ table.name(), jdbcName, adqlName});
             this.table = table ;
             this.jdbcName = jdbcName;
             this.adqlName = adqlName;
             }
 
-        private String adqlName ;
-        private String jdbcName ;
-
         @Override
-        public DBTable copy(java.lang.String jdbcName, java.lang.String adqlName)
+        public DBTable copy(String jdbcName, String adqlName)
             {
             return new TestDBTable(
                 table,
@@ -195,14 +200,11 @@ log.debug("TestDBTable({}, {}, {})", new String[]{ table.name(), jdbcName, adqlN
         @Override
         public String getADQLName()
             {
-//log.debug("TestDBTable.getADQLName()");
             if (this.adqlName != null)
                 {
-//log.debug(" Name [{}]", this.adqlName);
                 return this.adqlName ;
                 } 
             else {            
-//log.debug(" Name [{}]", table.name());
                 return table.name();
                 }
             }
@@ -210,30 +212,23 @@ log.debug("TestDBTable({}, {}, {})", new String[]{ table.name(), jdbcName, adqlN
         @Override
         public String getADQLSchemaName()
             {
-//log.debug("TestDBTable.getADQLSchemaName()");
-//log.debug(" Name [{}]", table.schema().name());
             return table.parent().name();
             }
 
         @Override
         public String getADQLCatalogName()
             {
-//log.debug("TestDBTable.getADQLCatalogName()");
-//log.debug(" Name [{}]", table.catalog().name());
             return table.parent().parent().name();
             }
 
         @Override
         public String getDBName()
             {
-//log.debug("TestDBTable.getDBName()");
             if (this.jdbcName != null)
                 {
-//log.debug(" Name [{}]", this.jdbcName);
                 return this.jdbcName ;
                 } 
             else {            
-//log.debug(" Name [{}]", table.base().name());
                 return table.base().name();
                 }
             }
@@ -241,23 +236,18 @@ log.debug("TestDBTable({}, {}, {})", new String[]{ table.name(), jdbcName, adqlN
         @Override
         public String getDBSchemaName()
             {
-//log.debug("TestDBTable.getDBSchemaName()");
-//log.debug(" Name [{}]", table.base().schema().name());
             return table.base().parent().name();
             }
 
         @Override
         public String getDBCatalogName()
             {
-//log.debug("TestDBTable.getDBCatalogName()");
-//log.debug(" Name [{}]", table.base().catalog().name());
             return table.base().parent().parent().name();
             }
         
         @Override
-        public DBColumn getColumn(java.lang.String name, boolean adql)
+        public DBColumn getColumn(String name, boolean adql)
             {
-//log.debug("TestDBTable.getColumn({},{})", name, adql);
             WidgeonView.Column column ;
             if (adql)
                 {
@@ -287,7 +277,6 @@ log.debug("TestDBTable({}, {}, {})", new String[]{ table.name(), jdbcName, adqlN
 
         public Iterator<DBColumn> iterator()
             {
-//log.debug("TestDBTable.iterator()");
             return new Iterator<DBColumn>()
                 {
 
@@ -296,7 +285,6 @@ log.debug("TestDBTable({}, {}, {})", new String[]{ table.name(), jdbcName, adqlN
                 @Override
                 public DBColumn next()
                     {
-//log.debug("TestDBTable.iterator().next()");
                     return new TestDBColumn(
                         TestDBTable.this,
                         iter.next()
@@ -324,42 +312,68 @@ log.debug("TestDBTable({}, {}, {})", new String[]{ table.name(), jdbcName, adqlN
     implements DBColumn
         {
 
-        private TestDBTable parent ;
+        private DBTable parent ;
         private WidgeonView.Column column ;
 
-        public TestDBColumn(TestDBTable parent, WidgeonView.Column column)
+        private String adqlName ;
+        private String jdbcName ;
+
+        public TestDBColumn(DBTable parent, WidgeonView.Column column)
             {
-//log.debug("TestDBColumn()");
+            this(
+                parent,
+                column,
+                null,
+                null
+                );
+            }
+
+        public TestDBColumn(DBTable parent, WidgeonView.Column column, String jdbcName, String adqlName)
+            {
             this.parent = parent ;
             this.column = column ;
+            this.jdbcName = jdbcName;
+            this.adqlName = adqlName;
             }
 
         @Override
-        public DBColumn copy(java.lang.String dbName, java.lang.String adqlName, DBTable dbTable)
+        public DBColumn copy(String dbName, String adqlName, DBTable parent)
             {
-            throw new UnsupportedOperationException(
-                "DBColumn.copy() is not supported"
+            return new TestDBColumn(
+                parent,
+                this.column,
+                jdbcName,
+                adqlName
                 );
             }
 
         @Override
         public String getADQLName()
             {
-//log.debug("TestDBColumn.getADQLName()");
-            return column.name();
+            if (this.adqlName != null)
+                {
+                return this.adqlName ;
+                } 
+            else {            
+                return column.name();
+                }
             }
 
         @Override
         public String getDBName()
             {
-//log.debug("TestDBColumn.getDBName()");
-            return column.base().name();
+            if (this.jdbcName != null)
+                {
+                return this.jdbcName ;
+                } 
+            else {            
+                return column.base().name();
+                }
             }
-                
+
         @Override
         public DBTable getTable()
             {
-//log.debug("TestDBColumn.getTable()");
             return parent;
             }
         }
@@ -543,6 +557,19 @@ log.debug("TestDBTable({}, {}, {})", new String[]{ table.name(), jdbcName, adqlN
                 )
             );
 
+/*
+SELECT
+psc.adql_ra  as ra,
+psc.adql_dec as dec,
+psc.adql_pts as pts
+FROM
+adql_table as psc
+WHERE
+ra Between '56.0' AND '57.9'
+AND
+dec Between '24.0' AND '24.2'
+ */
+
         log.debug("Got query [{}]", query.getName());
 
         log.debug("From tables --");
@@ -571,5 +598,10 @@ log.debug("TestDBTable({}, {}, {})", new String[]{ table.name(), jdbcName, adqlN
                 });
 
             }
+
+
+        ADQLTranslator translator = new PostgreSQLTranslator();
+        log.debug("SQL [{}]", translator.translate(query));
+
         }
     }

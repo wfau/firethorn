@@ -37,7 +37,7 @@ import adql.parser.ParseException;
  * </p>
  * 
  * @author Gr&eacute;gory Mantelet (CDS)
- * @version 01/2012
+ * @version 06/2012
  * 
  * @see DBChecker
  */
@@ -46,6 +46,7 @@ public class UnresolvedIdentifiersException extends ParseException implements It
 
 	/** List of exceptions (one per unresolved identifier). */
 	protected ArrayList<ParseException> exceptions;
+	private String unresolvedIdentifiers = null;
 
 	/**
 	 * Build an empty {@link UnresolvedIdentifiersException} (that's to say: there is no unresolved identifier).
@@ -60,7 +61,34 @@ public class UnresolvedIdentifiersException extends ParseException implements It
 	 * @param pe	An exception.
 	 */
 	public final void addException(final ParseException pe){
-		exceptions.add(pe);
+		if (pe != null){
+			exceptions.add(pe);
+			if (pe instanceof UnresolvedColumnException){
+				String colName = ((UnresolvedColumnException)pe).getColumnName();
+				if (colName != null && !colName.trim().isEmpty())
+					addIdentifierName(colName+" "+pe.getPosition());
+			}else if (pe instanceof UnresolvedTableException){
+				String tableName = ((UnresolvedTableException)pe).getTableName();
+				if (tableName != null && !tableName.trim().isEmpty())
+					addIdentifierName(tableName+" "+pe.getPosition());
+			}else if (pe instanceof UnresolvedIdentifiersException)
+				addIdentifierName(((UnresolvedIdentifiersException)pe).unresolvedIdentifiers);
+		}
+	}
+
+	/**
+	 * Adds the name (or the description) into the string list of all the unresolved identifiers.
+	 * 
+	 * @param name	Name (or description) of the identifier to add.
+	 */
+	private final void addIdentifierName(final String name){
+		if (name != null && !name.trim().isEmpty()){
+			if (unresolvedIdentifiers == null)
+				unresolvedIdentifiers = "";
+			else
+				unresolvedIdentifiers += ", ";
+			unresolvedIdentifiers += name;
+		}
 	}
 
 	/**
@@ -92,7 +120,7 @@ public class UnresolvedIdentifiersException extends ParseException implements It
 	 */
 	@Override
 	public String getMessage() {
-		return exceptions.size()+" unresolved identifiers !";
+		return exceptions.size()+" unresolved identifiers"+((unresolvedIdentifiers!=null)?(": "+unresolvedIdentifiers):"")+" !";
 	}
 
 

@@ -38,6 +38,7 @@ import adql.query.operand.ADQLColumn;
 public class UnresolvedTableException extends ParseException {
 	private static final long serialVersionUID = 1L;
 
+	private final String tableName;
 
 	/* ************ */
 	/* CONSTRUCTORS */
@@ -52,6 +53,7 @@ public class UnresolvedTableException extends ParseException {
 	public UnresolvedTableException(ADQLTable table) {
 		super(buildMessage("Unknown table", table));
 		initPosition(table);
+		tableName = (table!=null)?table.getTableName():null;
 	}
 
 	/**
@@ -69,6 +71,7 @@ public class UnresolvedTableException extends ParseException {
 	public UnresolvedTableException(ADQLTable table, String t1, String t2){
 		super(buildMessage("Ambiguous table name", table, t1, t2));
 		initPosition(table);
+		tableName = (table!=null)?table.getTableName():null;
 	}
 
 	/**
@@ -90,6 +93,7 @@ public class UnresolvedTableException extends ParseException {
 	public UnresolvedTableException(ADQLColumn column){
 		super(buildMessage("Unknown table reference", column));
 		initPosition(column);
+		tableName = (column!=null)?column.getTableName():null;
 	}
 
 	/**
@@ -107,6 +111,7 @@ public class UnresolvedTableException extends ParseException {
 	public UnresolvedTableException(ADQLColumn column, String table1, String table2){
 		super(buildMessage("Ambiguous table reference", column, table1, table2));
 		initPosition(column);
+		tableName = (column!=null)?column.getTableName():null;
 	}
 
 	protected final void initPosition(ADQLColumn column){
@@ -150,6 +155,10 @@ public class UnresolvedTableException extends ParseException {
 			return msg.toString();
 		}else
 			return buildMessage(msgStart, c);
+	}
+
+	public final String getTableName() {
+		return tableName;
 	}
 
 }

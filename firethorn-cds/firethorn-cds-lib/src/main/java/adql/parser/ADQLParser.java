@@ -5101,7 +5101,7 @@ public class ADQLParser implements ADQLParserConstants {
 	}
 
 	private int trace_indent = 0;
-	private boolean trace_enabled = false;
+	private boolean trace_enabled = true;
 
 	/** Enable tracing. */
 	final public void enable_tracing() {

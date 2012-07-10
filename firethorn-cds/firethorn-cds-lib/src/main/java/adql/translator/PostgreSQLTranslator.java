@@ -430,7 +430,7 @@ public class PostgreSQLTranslator implements ADQLTranslator {
 
 		if (!join.isNatural()){
 			if (join.getJoinCondition() != null)
-				sql.append("ON ").append(translate(join.getJoinCondition()));
+				sql.append(translate(join.getJoinCondition()));
 			else if (join.hasJoinedColumns()) {
 				StringBuffer cols = new StringBuffer();
 				Iterator<ADQLColumn> it = join.getJoinedColumns();
