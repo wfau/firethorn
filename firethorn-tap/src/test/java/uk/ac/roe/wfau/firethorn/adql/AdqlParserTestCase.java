@@ -21,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 
+import java.util.List;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.ArrayList;
 
@@ -28,6 +30,8 @@ import java.io.StringBufferInputStream;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import adql.query.ADQLQuery;
 import adql.query.from.ADQLTable;
@@ -52,6 +56,8 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView ;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonViewTestBase ;
 
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTable ;
+
 /**
  *
  */
@@ -60,16 +66,227 @@ public class AdqlParserTestCase
 extends WidgeonViewTestBase
     {
 
-    @Test
-    public void test000()
+    /**
+     * Our autowired factory.
+     *
+     */
+    @Autowired
+    private AdqlTable.Factory factory ;
+
+    /**
+     * Simple ADQL query with no aliases.
+     *
+     */
+    private static final String[] SIMPLE_QUERY = {
+
+          "SELECT"
+        + "    adql_ra,"
+        + "    adql_dec,"
+        + "    adql_pts"
+        + " FROM"
+        + "    adql_table"
+        + " WHERE"
+        + "    adql_ra  Between '56.0' AND '57.9'"
+        + " AND"
+        + "    adql_dec Between '24.0' AND '24.2'"
+        + "",
+
+        "adql_table",
+        null,           // I would have expected a valid schema name here.
+        null,           // I would expected a valid catalog name here.
+        "adql_table",   // Full table name ??
+
+        "adql_table",
+        "adql_schema",
+        "adql_catalog",
+
+        "jdbc_table",
+        "jdbc_schema",
+        "jdbc_catalog",
+
+        "adql_ra",
+        "adql_dec",
+        "adql_pts",
+
+        "jdbc_ra",
+        "jdbc_dec",
+        "jdbc_pts"
+
+        };
+
+    /**
+     * ADQL query with column aliases, using column names (adql_ra, adql_dec) in the WHERE clause.
+     *
+     */
+    private static final String[] QUERY_000 = {
+
+          "SELECT"
+        + "    adql_ra  as ra,"
+        + "    adql_dec as dec,"
+        + "    adql_pts as pts"
+        + " FROM"
+        + "    adql_table"
+        + " WHERE"
+        + "    adql_ra  Between '56.0' AND '57.9'"
+        + " AND"
+        + "    adql_dec Between '24.0' AND '24.2'"
+        + "",
+
+        "adql_table",
+        null,           // I would have expected a valid schema name here.
+        null,           // I would expected a valid catalog name here.
+        "adql_table",   // Full table name ??
+
+        "adql_table",
+        "adql_schema",
+        "adql_catalog",
+
+        "jdbc_table",
+        "jdbc_schema",
+        "jdbc_catalog",
+
+        "adql_ra",      // We still get the original names rather than the aliases.
+        "adql_dec",     // We still get the original names rather than the aliases.
+        "adql_pts",     // We still get the original names rather than the aliases.
+
+        "jdbc_ra",
+        "jdbc_dec",
+        "jdbc_pts"
+
+        };
+
+    /**
+     * ADQL query with column aliases, using column aliases (ra, dec) in the WHERE clause.
+     *
+     */
+    private static final String[] QUERY_001 = {
+
+          "SELECT"
+        + "    adql_ra  as ra,"
+        + "    adql_dec as dec,"
+        + "    adql_pts as pts"
+        + " FROM"
+        + "    adql_table"
+        + " WHERE"
+        + "    ra  Between '56.0' AND '57.9'"
+        + " AND"
+        + "    dec Between '24.0' AND '24.2'"
+        + "",
+
+        "adql_table",
+        null,           // I would have expected a valid schema name here.
+        null,           // I would expected a valid catalog name here.
+        "adql_table",   // Full table name ??
+
+        "adql_table",
+        "adql_schema",
+        "adql_catalog",
+
+        "jdbc_table",
+        "jdbc_schema",
+        "jdbc_catalog",
+
+        "adql_ra",      // We still get the original names rather than the aliases.
+        "adql_dec",     // We still get the original names rather than the aliases.
+        "adql_pts",     // We still get the original names rather than the aliases.
+
+        "jdbc_ra",
+        "jdbc_dec",
+        "jdbc_pts"
+
+        };
+
+    /**
+     * ADQL query with column and table aliases, using column names (adql_ra, adql_dec) in the WHERE clause.
+     *
+     */
+    private static final String[] QUERY_002 = {
+
+          "SELECT"
+        + "    adql_ra  as ra,"
+        + "    adql_dec as dec,"
+        + "    adql_pts as pts"
+        + " FROM"
+        + "    adql_table as psc"
+        + " WHERE"
+        + "    adql_ra  Between '56.0' AND '57.9'"
+        + " AND"
+        + "    adql_dec Between '24.0' AND '24.2'"
+        + "",
+
+        "adql_table",   // I would have expected the alias 'psc' here, NOT the table name.
+        null,
+        null,
+        "adql_table",   // Full table name ??
+
+        "psc",          // Table alias
+        null,           // Aliased table does not have schema or catalog
+        null,           // Aliased table does not have schema or catalog
+
+        "jdbc_table",   // Aliased table still maps to the original JDBC table. 
+        "jdbc_schema",  // Aliased table still maps to the original JDBC table.
+        "jdbc_catalog", // Aliased table still maps to the original JDBC table.
+
+        "adql_ra",      // We still get the original names rather than the aliases.
+        "adql_dec",     // We still get the original names rather than the aliases.
+        "adql_pts",     // We still get the original names rather than the aliases.
+
+        "jdbc_ra",
+        "jdbc_dec",
+        "jdbc_pts"
+
+        };
+
+    /**
+     * ADQL query with column and table aliases, using table and column names in the FROM clause.
+     *
+     */
+    private static final String[] QUERY_003 = {
+
+          "SELECT"
+        + "    psc.adql_ra  as ra,"
+        + "    psc.adql_dec as dec,"
+        + "    psc.adql_pts as pts"
+        + " FROM"
+        + "    adql_table as psc"
+        + " WHERE"
+        + "    adql_ra  Between '56.0' AND '57.9'"
+        + " AND"
+        + "    adql_dec Between '24.0' AND '24.2'"
+        + "",
+
+        "adql_table",   // I would have expected the alias 'psc' here, NOT the table name.
+        null,
+        null,
+        "adql_table",   // Full table name ??
+
+        "psc",          // Table alias
+        null,           // Aliased table does not have schema or catalog
+        null,           // Aliased table does not have schema or catalog
+
+        "jdbc_table",   // Aliased table still maps to the original JDBC table. 
+        "jdbc_schema",  // Aliased table still maps to the original JDBC table.
+        "jdbc_catalog", // Aliased table still maps to the original JDBC table.
+
+        "adql_ra",      // We still get the original names rather than the aliases.
+        "adql_dec",     // We still get the original names rather than the aliases.
+        "adql_pts",     // We still get the original names rather than the aliases.
+
+        "jdbc_ra",
+        "jdbc_dec",
+        "jdbc_pts"
+
+        };
+
+    /**
+     * Use DefaultDBTable to create a DBTable metadata.
+     *
+     */
+    public DBTable dbTable()
     throws Exception
         {
-
-        // Create a parser:
-        ADQLParser parser = new ADQLParser();
-
         //
-        // Create our table description.
+        // Create our table metadata.
         DefaultDBTable dbtable = new DefaultDBTable(
             "jdbc_catalog",
             "adql_catalog",
@@ -78,12 +295,14 @@ extends WidgeonViewTestBase
             "jdbc_table",
             "adql_table"
             );
-
+        //
+        // Add the column metadata.
         dbtable.addColumn(
             new DefaultDBColumn(
                 "jdbc_ra",
                 "adql_ra",
-                dbtable)
+                dbtable
+                )
             );
         dbtable.addColumn(
             new DefaultDBColumn(
@@ -100,340 +319,60 @@ extends WidgeonViewTestBase
                 )
             );
 
-        //
-        // Create a list of tables.
-        ArrayList tables = new ArrayList();
-        tables.add(dbtable);
-
-        //
-        // Create our QueryChecker:
-        QueryChecker checker = new DBChecker(tables);
-
-        //
-        // Add our checker to our parser.
-        parser.setQueryChecker(checker);
-
-        // Parse some ADQL.
-        ADQLQuery query = parser.parseQuery(
-            new StringBufferInputStream(
-                  "SELECT"
-                + "    adql_ra  as ra,"
-                + "    adql_dec as dec,"
-                + "    adql_pts as pts"
-                + " FROM"
-                + "    adql_table as psc"
-                + " WHERE"
-                + "    adql_ra  Between '56.0' AND '57.9'"
-                + " AND"
-                + "    adql_dec Between '24.0' AND '24.2'"
-                )
-            );
-
-        log.debug("Got query [{}]", query.getName());
-
-        log.debug("From tables --");
-        FromContent from = query.getFrom();
-        for (ADQLTable table : from.getTables())
-            {
-            log.debug(" Table [{}][{}]", table.getTableName(), table.getFullTableName());
-            }
-
-        log.debug("From columns --");
-        for (DBColumn column : from.getDBColumns())
-            {
-
-            log.debug(" ADQL [{}][{}][{}][{}]", new String[]{
-                column.getADQLName(),
-                column.getTable().getADQLName(),
-                column.getTable().getADQLSchemaName(),
-                column.getTable().getADQLCatalogName()
-                });
-
-            log.debug(" JDBC [{}][{}][{}][{}]", new String[]{
-                column.getDBName(),
-                column.getTable().getDBName(),
-                column.getTable().getDBSchemaName(),
-                column.getTable().getDBCatalogName()
-                });
-
-            }
-
-        ADQLTranslator translator = new PostgreSQLTranslator();
-        log.debug("SQL [{}]", translator.translate(query));
-
+        return dbtable ;
         }
 
-    public static class TestDBTable
-    implements DBTable
-        {
-
-        private WidgeonView.Table table ;
-        private String adqlName ;
-        private String jdbcName ;
-
-        public TestDBTable(WidgeonView.Table table)
-            {
-            this(
-                table,
-                null,
-                null
-                );
-            }
-
-        public TestDBTable(WidgeonView.Table table, String jdbcName, String adqlName)
-            {
-            this.table = table ;
-            this.jdbcName = jdbcName;
-            this.adqlName = adqlName;
-            }
-
-        @Override
-        public DBTable copy(String jdbcName, String adqlName)
-            {
-            return new TestDBTable(
-                table,
-                jdbcName, 
-                adqlName
-                );
-            }
-
-        @Override
-        public String getADQLName()
-            {
-            if (this.adqlName != null)
-                {
-                return this.adqlName ;
-                } 
-            else {            
-                return table.name();
-                }
-            }
-
-        @Override
-        public String getADQLSchemaName()
-            {
-            return table.parent().name();
-            }
-
-        @Override
-        public String getADQLCatalogName()
-            {
-            return table.parent().parent().name();
-            }
-
-        @Override
-        public String getDBName()
-            {
-            if (this.jdbcName != null)
-                {
-                return this.jdbcName ;
-                } 
-            else {            
-                return table.base().name();
-                }
-            }
-
-        @Override
-        public String getDBSchemaName()
-            {
-            return table.base().parent().name();
-            }
-
-        @Override
-        public String getDBCatalogName()
-            {
-            return table.base().parent().parent().name();
-            }
-        
-        @Override
-        public DBColumn getColumn(String name, boolean adql)
-            {
-            WidgeonView.Column column ;
-            if (adql)
-                {
-                column = table.columns().search(
-                    name
-                    );
-                }
-            else {
-                column = table.columns().search(
-                    table.base().columns().search(
-                        name
-                        )
-                    );
-                }
-
-            if (column != null)
-                {
-                return new TestDBColumn(
-                    this,
-                    column
-                    );
-                }
-            else {
-                return null ;
-                }
-            }
-
-        public Iterator<DBColumn> iterator()
-            {
-            return new Iterator<DBColumn>()
-                {
-
-                private Iterator<WidgeonView.Column> iter = table.columns().select().iterator();
-
-                @Override
-                public DBColumn next()
-                    {
-                    return new TestDBColumn(
-                        TestDBTable.this,
-                        iter.next()
-                        );
-                    }
-
-                @Override
-                public boolean hasNext()
-                    {
-                    return iter.hasNext();
-                    }
-
-                @Override
-                public void remove()
-                    {
-                    throw new UnsupportedOperationException(
-                        "Iterator.remove() is not supported"
-                        );
-                    }
-                };
-            }
-        }
-
-    public static class TestDBColumn
-    implements DBColumn
-        {
-
-        private DBTable parent ;
-        private WidgeonView.Column column ;
-
-        private String adqlName ;
-        private String jdbcName ;
-
-        public TestDBColumn(DBTable parent, WidgeonView.Column column)
-            {
-            this(
-                parent,
-                column,
-                null,
-                null
-                );
-            }
-
-        public TestDBColumn(DBTable parent, WidgeonView.Column column, String jdbcName, String adqlName)
-            {
-            this.parent = parent ;
-            this.column = column ;
-            this.jdbcName = jdbcName;
-            this.adqlName = adqlName;
-            }
-
-        @Override
-        public DBColumn copy(String dbName, String adqlName, DBTable parent)
-            {
-            return new TestDBColumn(
-                parent,
-                this.column,
-                jdbcName,
-                adqlName
-                );
-            }
-
-        @Override
-        public String getADQLName()
-            {
-            if (this.adqlName != null)
-                {
-                return this.adqlName ;
-                } 
-            else {            
-                return column.name();
-                }
-            }
-
-        @Override
-        public String getDBName()
-            {
-            if (this.jdbcName != null)
-                {
-                return this.jdbcName ;
-                } 
-            else {            
-                return column.base().name();
-                }
-            }
-
-        @Override
-        public DBTable getTable()
-            {
-            return parent;
-            }
-        }
-
-    @Test
-    public void test001()
+    /**
+     * Use AdqlTable to create a DBTable metadata based on a WidgeonView.
+     *
+     */
+    public DBTable adqlTable()
     throws Exception
         {
         //
         // Create base catalog, schema and table.
-        assertNotNull(
-            base().catalogs().create(
-                "jdbc_catalog"
-                ).schemas().create(
-                    "jdbc_schema"
-                    ).tables().create(
-                        "jdbc_table"
-                        )
-            );
+        base().catalogs().create(
+            "jdbc_catalog"
+            ).schemas().create(
+                "jdbc_schema"
+                ).tables().create(
+                    "jdbc_table"
+                    );
         //
         // Create the columns.
-        assertNotNull(
-            base().catalogs().select(
-                "jdbc_catalog"
-                ).schemas().select(
-                    "jdbc_schema"
-                    ).tables().select(
-                        "jdbc_table"
-                        ).columns().create(
-                            "jdbc_ra"
-                            )
-            );
-        assertNotNull(
-            base().catalogs().select(
-                "jdbc_catalog"
-                ).schemas().select(
-                    "jdbc_schema"
-                    ).tables().select(
-                        "jdbc_table"
-                        ).columns().create(
-                            "jdbc_dec"
-                            )
-            );
-        assertNotNull(
-            base().catalogs().select(
-                "jdbc_catalog"
-                ).schemas().select(
-                    "jdbc_schema"
-                    ).tables().select(
-                        "jdbc_table"
-                        ).columns().create(
-                            "jdbc_pts"
-                            )
-            );
+        base().catalogs().select(
+            "jdbc_catalog"
+            ).schemas().select(
+                "jdbc_schema"
+                ).tables().select(
+                    "jdbc_table"
+                    ).columns().create(
+                        "jdbc_ra"
+                        );
+
+        base().catalogs().select(
+            "jdbc_catalog"
+            ).schemas().select(
+                "jdbc_schema"
+                ).tables().select(
+                    "jdbc_table"
+                    ).columns().create(
+                        "jdbc_dec"
+                        );
+
+        base().catalogs().select(
+            "jdbc_catalog"
+            ).schemas().select(
+                "jdbc_schema"
+                ).tables().select(
+                    "jdbc_table"
+                    ).columns().create(
+                        "jdbc_pts"
+                        );
         //
-        // Create our view.
-        assertNotNull(
-            base().views().create(
-                "adql_view"
-                )
+        // Create our ADQL view.
+        base().views().create(
+            "adql_view"
             );
 
         //
@@ -510,12 +449,9 @@ extends WidgeonViewTestBase
                                 "adql_pts"
                                 );
 
-        // Create our parser:
-        ADQLParser parser = new ADQLParser();
-
         //
-        // Create our parser data.
-        DBTable dbtable = new TestDBTable(
+        // Wrap the WidgeonView.Table in an AdqlTable.
+        return factory.create(
             base().views().select(
                 "adql_view"
                 ).catalogs().select(
@@ -526,82 +462,298 @@ extends WidgeonViewTestBase
                             "adql_table"
                             )
             );
+        }
 
-
-        ArrayList tables = new ArrayList<DBTable>();
-        tables.add(
-            dbtable
-            );
+    /**
+     * Parse a query and check the results.
+     *
+     */
+    public void check(DBTable metadata, String[] data)
+    throws Exception
+        {
         //
-        // Create our QueryChecker:
-        QueryChecker checker = new DBChecker(
-            tables
-            );
+        // Create a parser:
+        ADQLParser parser = new ADQLParser();
         //
-        // Add our checker to our parser.
-        parser.setQueryChecker(checker);
-
-        // Parse some ADQL.
-        ADQLQuery query = parser.parseQuery(
-            new StringBufferInputStream(
-                  "SELECT"
-                + "    psc.adql_ra  as ra,"
-                + "    psc.adql_dec as dec,"
-                + "    psc.adql_pts as pts"
-                + " FROM"
-                + "    adql_table as psc"
-                + " WHERE"
-                + "    adql_ra Between '56.0' AND '57.9'"
-                + " AND"
-                + "    adql_dec Between '24.0' AND '24.2'"
+        // Add the metadata to our parser.
+        parser.setQueryChecker(
+            new DBChecker(
+                Arrays.asList(
+                    metadata
+                    )
                 )
             );
+        //
+        // Parse a query and check the results.
+        check(
+            parser.parseQuery(
+                data[0]
+                ),
+            data
+            );
+        }
 
+    /**
+     * Check the results of an ADQL query.
+     *
+     */
+    public void check(ADQLQuery query, String[] data)
+    throws Exception
+        {
+        //
+        // Check the parsed ADQLTable. 
+        assertEquals(
+            data[1],
+            query.getFrom().getTables().get(0).getTableName()
+            );
+        assertEquals(
+            data[2],
+            query.getFrom().getTables().get(0).getSchemaName()
+            );
+        assertEquals(
+            data[3],
+            query.getFrom().getTables().get(0).getCatalogName()
+            );
+        assertEquals(
+            data[4],
+            query.getFrom().getTables().get(0).getFullTableName()
+            );
+        //
+        // Check the DBTable ADQL names.
+        assertEquals(
+            data[5],
+            query.getFrom().getTables().get(0).getDBLink().getADQLName()
+            );
+        assertEquals(
+            data[6],
+            query.getFrom().getTables().get(0).getDBLink().getADQLSchemaName()
+            );
+        assertEquals(
+            data[7],
+            query.getFrom().getTables().get(0).getDBLink().getADQLCatalogName()
+            );
+        //
+        // Check the DBTable JDBC names.
+        assertEquals(
+            data[8],
+            query.getFrom().getTables().get(0).getDBLink().getDBName()
+            );
 /*
-SELECT
-psc.adql_ra  as ra,
-psc.adql_dec as dec,
-psc.adql_pts as pts
-FROM
-adql_table as psc
-WHERE
-ra Between '56.0' AND '57.9'
-AND
-dec Between '24.0' AND '24.2'
+ * The CDS implementation behaves differently with aliased tables.
+ * The CDS implementation sets the JDBC schema and catalog to null.
+ * I think the JDBC schema and catalog should still match the original.
+        assertEquals(
+            data[9],
+            query.getFrom().getTables().get(0).getDBLink().getDBSchemaName()
+            );
+        assertEquals(
+            data[10],
+            query.getFrom().getTables().get(0).getDBLink().getDBCatalogName()
+            );
+ *
  */
-
-        log.debug("Got query [{}]", query.getName());
-
-        log.debug("From tables --");
-        FromContent from = query.getFrom();
-        for (ADQLTable table : from.getTables())
-            {
-            log.debug(" Table [{}][{}]", table.getTableName(), table.getFullTableName());
-            }
-
-        log.debug("From columns --");
-        for (DBColumn column : from.getDBColumns())
-            {
-
-            log.debug(" ADQL [{}][{}][{}][{}]", new String[]{
-                column.getADQLName(),
-                column.getTable().getADQLName(),
-                column.getTable().getADQLSchemaName(),
-                column.getTable().getADQLCatalogName()
-                });
-
-            log.debug(" JDBC [{}][{}][{}][{}]", new String[]{
-                column.getDBName(),
-                column.getTable().getDBName(),
-                column.getTable().getDBSchemaName(),
-                column.getTable().getDBCatalogName()
-                });
-
-            }
-
-
-        ADQLTranslator translator = new PostgreSQLTranslator();
-        log.debug("SQL [{}]", translator.translate(query));
+        //
+        // Check the associated DBColumn ADQL names.
+        assertEquals(
+            data[11],
+            query.getFrom().getDBColumns().get(0).getADQLName()
+            );
+        assertEquals(
+            data[12],
+            query.getFrom().getDBColumns().get(1).getADQLName()
+            );
+        assertEquals(
+            data[13],
+            query.getFrom().getDBColumns().get(2).getADQLName()
+            );
+        //
+        // Check the associated DBColumn JDBC names.
+        assertEquals(
+            data[14],
+            query.getFrom().getDBColumns().get(0).getDBName()
+            );
+        assertEquals(
+            data[15],
+            query.getFrom().getDBColumns().get(1).getDBName()
+            );
+        assertEquals(
+            data[16],
+            query.getFrom().getDBColumns().get(2).getDBName()
+            );
 
         }
+
+
+    /**
+     * Simple test with no table checker.
+     *
+     */
+    @Test
+    public void test000()
+    throws Exception
+        {
+        //
+        // Create a parser:
+        ADQLParser parser = new ADQLParser();
+        //
+        // Parse the test query.
+        ADQLQuery query = parser.parseQuery(
+            SIMPLE_QUERY[0]
+            );
+        //
+        // Check the parsed ADQL tree. 
+        assertEquals(
+            1,
+            query.getFrom().getTables().size()
+            );
+        assertEquals(
+            "adql_table",
+            query.getFrom().getTables().get(0).getTableName()
+            );
+        }
+
+    /**
+     * Use DefaultDBTable based metadata for the QueryChecker.
+     *
+     */
+    @Test
+    public void testDBTableSimpleQuery()
+    throws Exception
+        {
+        check(
+            dbTable(),
+            SIMPLE_QUERY
+            );
+        }
+    
+    /**
+     * Use AdqlTable based metadata for the QueryChecker.
+     *
+     */
+    @Test
+    public void testAdqlTableSimpleQuery()
+    throws Exception
+        {
+        check(
+            adqlTable(),
+            SIMPLE_QUERY
+            );
+        }
+
+    /**
+     * Use DefaultDBTable based metadata for the QueryChecker.
+     *
+     */
+    @Test
+    public void testDBTableQuery000()
+    throws Exception
+        {
+        check(
+            dbTable(),
+            QUERY_000
+            );
+        }
+    
+    /**
+     * Use AdqlTable based metadata for the QueryChecker.
+     *
+     */
+    @Test
+    public void testAdqlTableQuery000()
+    throws Exception
+        {
+        check(
+            adqlTable(),
+            QUERY_000
+            );
+        }
+
+    /**
+     * Use DefaultDBTable based metadata for the QueryChecker.
+     * Unresolved identifiers: ra [l.1 c.94 - l.1 c.96], dec [l.1 c.131 - l.1 c.134]
+     *
+    @Test
+    public void testDBTableQuery001()
+    throws Exception
+        {
+        check(
+            dbTable(),
+            QUERY_001
+            );
+        }
+     */
+    
+    /**
+     * Use AdqlTable based metadata for the QueryChecker.
+     * Unresolved identifiers: ra [l.1 c.94 - l.1 c.96], dec [l.1 c.131 - l.1 c.134]
+     *
+    @Test
+    public void testAdqlTableQuery001()
+    throws Exception
+        {
+        check(
+            adqlTable(),
+            QUERY_001
+            );
+        }
+     */
+
+    /**
+     * Use DefaultDBTable based metadata for the QueryChecker.
+     *
+     */
+    @Test
+    public void testDBTableQuery002()
+    throws Exception
+        {
+        check(
+            dbTable(),
+            QUERY_002
+            );
+        }
+    
+    /**
+     * Use AdqlTable based metadata for the QueryChecker.
+     *
+     */
+    @Test
+    public void testAdqlTableQuery002()
+    throws Exception
+        {
+        check(
+            adqlTable(),
+            QUERY_002
+            );
+        }
+
+    /**
+     * Use DefaultDBTable based metadata for the QueryChecker.
+     *
+     */
+    @Test
+    public void testDBTableQuery003()
+    throws Exception
+        {
+        check(
+            dbTable(),
+            QUERY_003
+            );
+        }
+    
+    /**
+     * Use AdqlTable based metadata for the QueryChecker.
+     *
+     */
+    @Test
+    public void testAdqlTableQuery003()
+    throws Exception
+        {
+        check(
+            adqlTable(),
+            QUERY_003
+            );
+        }
+
+
     }
+

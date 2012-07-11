@@ -98,7 +98,7 @@ extends TestBase
      * Select the ADQL query to use for the tests.
      *
      */
-    private static final String TEST_ADQL = FAIL_ADQL ;
+    private static final String TEST_ADQL = PASS_ADQL ;
 
     /**
      * This test always passes, producing valid generic SQL.
