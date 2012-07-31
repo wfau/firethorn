@@ -131,6 +131,7 @@
     <modules>
         <module>firethorn-logging</module>
         <module>firethorn-spring</module>
+        <module>firethorn-cds</module>
         <module>firethorn-tap</module>
         <!--module>firethorn-war</module-->
     </modules>

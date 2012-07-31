@@ -35,13 +35,13 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>firethorn-tap</artifactId>
+    <artifactId>experiment</artifactId>
     <packaging>jar</packaging>
 
-    <name>WFAU FireThorn TAP service</name>
+    <name>WFAU FireThorn experiment</name>
     <description>
         <![CDATA[
-        WFAU FireThorn TAP service.
+        WFAU FireThorn experiment.
         ]]>
     </description>
     
@@ -54,6 +54,26 @@
     </repositories>
 
     <dependencies>
+
+        <!--+
+            | The MetaGrid gatekeeper libraries.
+            +-->
+        <dependency>
+            <groupId>org.metagrid</groupId>
+            <artifactId>metagrid-gatekeeper</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+        </dependency>
+
+        <!--+
+            | Our TAP service components.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-tap</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
 
         <!--+
             | Our logging components.
@@ -101,31 +121,7 @@
 	    </dependency>
 
         <!--+
-            | Postgresql database driver.
-            | Linked to the local OS installed driver for our database.
-            | Deployed webapps will need to provide their own.
-            | ** nice idea, works for JUnit testing but fails in the tomcat:run goal **
-    	<dependency>
-    		<groupId>postgresql</groupId>
-    		<artifactId>postgresql</artifactId>
-            <version>local</version>
-            <scope>system</scope>
-            <systemPath>/usr/share/java/postgresql-jdbc.jar</systemPath>
-    	</dependency>
-            +-->
-
-        <!--+
-            | Postgresql database driver (for testing only).
-            | When deployed the container should provide the correct version of the driver.
-            +-->
-    	<dependency>
-    		<groupId>postgresql</groupId>
-    		<artifactId>postgresql</artifactId>
-            <scope>test</scope>
-    	</dependency>
-
-        <!--+
-            | HSQLDB database and JDBC driver.
+            | HSQLDB database and JDBC driver for testing.
             | http://hsqldb.org/
             +-->
         <dependency>

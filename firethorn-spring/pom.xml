@@ -37,7 +37,6 @@
 
     <artifactId>firethorn-spring</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
 
     <name>WFAU FireThorn Spring components</name>
     <description>

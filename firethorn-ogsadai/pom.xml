@@ -37,7 +37,6 @@
 
     <artifactId>firethorn-ogsadai</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
 
     <name>WFAU FireThorn OGSA-DAI components</name>
     <description>
@@ -72,7 +71,7 @@
             | FireThorn logging components.
             +-->
         <dependency>
-            <groupId>uk.ac.roe.wfau</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-logging</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
@@ -82,7 +81,7 @@
             | FireThorn Spring components.
             +-->
         <dependency>
-            <groupId>uk.ac.roe.wfau</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-spring</artifactId>
             <version>${project.version}</version>
             <type>pom</type>

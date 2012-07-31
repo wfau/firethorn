@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    |  Copyright (c) 2011, AstroDAbis
+    |  All rights reserved.
+    |
+    |  Redistribution and use in source and binary forms, with or without modification,
+    |  are permitted provided that the following conditions are met:
+    |
+    |      * Redistributions of source code must retain the above copyright notice,
+    |        this list of conditions and the following disclaimer.
+    |      * Redistributions in binary form must reproduce the above copyright notice,
+    |        this list of conditions and the following disclaimer in the documentation
+    |        and/or other materials provided with the distribution.
+    |
+    |  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+    |  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    |  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+    |  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+    |  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+    |  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+    |  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+    |  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+    |  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+    |  OF THE POSSIBILITY OF SUCH DAMAGE.
+    |
+    +-->
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:txn="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+        "
+    >
+
+    <!--+
+        | Spring factory for Hibernate SessionFactory.
+    <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+    <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        +-->
+    <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+
+        <!--+
+            | Database connection.
+        <property name="dataSource" ref="MemoryTestHsqldb"/>
+        <property name="dataSource" ref="LocalTestPostgres"/>
+            +-->
+        <property name="dataSource" ref="MemoryTestHsqldb"/>
+
+        <!--+
+            | List our annotated entity beans.
+            +-->
+        <property name="annotatedClasses">
+            <list>
+
+                <value>uk.ac.roe.wfau.firethorn.identity.IdentityEntity</value>
+
+                <value>uk.ac.roe.wfau.firethorn.mallard.MallardEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.mallard.JobEntity</value>
+
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.WidgeonBaseEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.CatalogBaseEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.SchemaBaseEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.TableBaseEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.ColumnBaseEntity</value>
+
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.WidgeonViewEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.CatalogViewEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.SchemaViewEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.TableViewEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.ColumnViewEntity</value>
+
+                <!--+
+                    |
+                    +-->
+
+            </list>
+        </property>
+
+        <!--+
+            | Replace the Hibernate config with bean properties.
+            | http://docs.jboss.org/hibernate/core/3.3/reference/en/html/session-configuration.html
+            +-->
+        <property name="hibernateProperties">
+            <props>
+                <!--+
+                    | "In most cases Hibernate will be able to choose the correct org.hibernate.dialect.Dialect
+                    | implementation based on the JDBC metadata returned by the JDBC driver."
+                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+                    +-->
+                <!--+
+                    | Automatically update the database tables (test only).
+                    +-->
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.show_sql">false</prop>
+
+            </props>
+        </property>
+
+    </bean>
+
+    <!--+
+        | Create our SessionFactoryUtils instance.
+    <bean id="FireThornSessionFactoryUtils" class="org.springframework.orm.hibernate4.SessionFactoryUtils">
+    </bean>
+        +-->
+
+    <!--+
+        | Create our HibernateTransactionManager instance.
+    <bean id="FireThornTransactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <bean id="FireThornTransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        +-->
+    <bean id="FireThornTransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="FireThornHibernateSessionFactory"/>
+    </bean>
+
+    <!--+
+        | Provide support for the @Transactional annotation.
+        | The transaction-manager attribute is optional if the TransactionManager bean is called 'transactionManager'.
+        | The proxy-target-class setting is needed to solve apparent clash between @Autowired and @Transactional
+        | http://forum.springsource.org/showthread.php?57995-Strange-clash-Transactional-Autowired
+        +-->
+    <txn:annotation-driven
+        transaction-manager="FireThornTransactionManager"
+         proxy-target-class="true"
+         />
+
+    <!--+
+        | Create a HibernateTemplate to wrap our HibernateSessionFactory.
+    <bean id="FireThornHibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+        <property name="sessionFactory" ref="FireThornHibernateSessionFactory"/>
+    </bean>
+        +-->
+
+</beans>

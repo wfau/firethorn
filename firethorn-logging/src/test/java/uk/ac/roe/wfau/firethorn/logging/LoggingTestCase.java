@@ -10,7 +10,7 @@ import org.junit.Test;
 /**
  *
  */
-//@Slf4j
+@Slf4j
 @Logged
 public class LoggingTestCase
     {

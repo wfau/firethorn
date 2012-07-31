@@ -1,5 +1,8 @@
 syntax: glob
 
+# Text editor backups
+*.*~
+
 # Maven build directories.
 */target
 
