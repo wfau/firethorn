@@ -1,2 +1,4 @@
 Text file to test Mercurial settings ...
 
+Copied .hg/authormap from leucine
+
