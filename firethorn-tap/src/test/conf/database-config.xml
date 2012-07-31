@@ -10,13 +10,13 @@
 
     <!--+
         | Database settings for Postgresql test database.
-        +-->
     <bean id="LocalTestPostgres" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.postgresql.Driver"/>
         <property name="url" value="jdbc:postgresql://localhost/widgeon"/>
         <property name="username" value="mallard"/>
         <property name="password" value="waak-qw32-eblj-hk09m-asdk-984"/>
     </bean>
+        +-->
 
     <!--+
         | In memory HSQLDB test database.
