@@ -1,4 +1,26 @@
 Text file to test Mercurial settings ...
 
-Copied .hg/authormap from leucine
+#
+# Copied .hg/authormap from leucine
+[Zarquan@zarquan ~]$ 
+
+   cat > ${HOME}/.hg/authormap << EOF
+Zarquan <zarquan@metagrid.co.uk>=Dave Morris <dave.morris@bristol.ac.uk>
+EOF
+
+#
+# Added the Mercurial identities extension.
+[Zarquan@zarquan ~]$ 
+
+    mkdir ${HOME}/.hgext
+    pushd ${HOME}/.hgext
+    
+        wget https://bitbucket.org/runeh/identities/raw/0f9ac5a19e48/identities.py
+
+    popd
+
+    vi ${HOME}/.hgrc
+
+        [extensions]
+      + hgext.identities = ~/.hgext/identities.py
 
