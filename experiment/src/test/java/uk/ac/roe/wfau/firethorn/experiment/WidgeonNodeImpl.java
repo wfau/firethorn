@@ -25,12 +25,13 @@ import java.util.Date;
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon ;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase ;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
-
+import org.metagrid.gatekeeper.node.Node;
 import org.metagrid.gatekeeper.node.NodeImpl;
+
 import org.metagrid.gatekeeper.node.ident.IdentBuilder;
+
 import org.metagrid.gatekeeper.node.property.DateProperty;
+import org.metagrid.gatekeeper.node.property.StringProperty;
 import org.metagrid.gatekeeper.node.property.ReadOnlyProperty;
 
 /**
@@ -47,12 +48,6 @@ implements WidgeonNode
      * 
      */
     private Widgeon widgeon;
-
-    @Override
-    public Widgeon object()
-        {
-        return this.widgeon;
-        }
 
     /**
      * Access to our Widgeon.
@@ -73,6 +68,26 @@ implements WidgeonNode
         log.debug("  Widgeon [{}]", widgeon);
         this.widgeon = widgeon;
         this.builder = builder;
+
+        //
+        // Object name.
+        this.init(
+            new StringProperty(
+                this,
+                WidgeonNode.NAME_PROPERTY_URI
+                ){
+                @Override
+                protected String getString()
+                    {
+                    return widgeon().name();
+                    }
+                @Override
+                protected void setString(String value)
+                    {
+                    widgeon().name(value);
+                    }
+                }
+            );
         //
         // Created date.
         this.init(

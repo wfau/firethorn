@@ -24,16 +24,13 @@ import java.net.URI;
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon ;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase ;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
-
-import org.metagrid.gatekeeper.test.object.node.ObjectNode;
+import org.metagrid.gatekeeper.node.Node;
 
 /**
  *
  */
 public interface WidgeonNode
-extends ObjectNode<Widgeon>
+extends Node
     {
 
     /**

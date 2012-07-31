@@ -35,6 +35,10 @@ import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
+import org.metagrid.gatekeeper.node.Node;
+import org.metagrid.gatekeeper.node.NodeServer;
+import org.metagrid.gatekeeper.node.NodeServerImpl;
+
 import org.metagrid.gatekeeper.node.ident.IdentBuilder;
 import org.metagrid.gatekeeper.common.io.test.StringResource;
 import org.metagrid.gatekeeper.common.xml.reader.node.XMLNodeReader;
@@ -211,7 +215,7 @@ extends TestBase
             }
         }
 
-    @Test
+//  @Test
     public void test002()
     throws Exception
         {
@@ -227,7 +231,7 @@ extends TestBase
         WidgeonNode node = new WidgeonNodeImpl(
             new WidgeonIdentBuilder(
                 URI.create(
-                    "urn:widgeons"
+                    "urn://test-widgeons/"
                     )
                 ),
             base().views().select(
@@ -254,7 +258,193 @@ extends TestBase
         log.debug(resource.data());
         log.debug("----");
 
+        }
 
+
+    /**
+     * A WidgeonNode server.
+     * 
+     */
+    public class WidgeonNodeServerImpl
+    extends NodeServerImpl<WidgeonNode>
+    implements NodeServer<WidgeonNode>
+        {
+
+        /**
+         * Public constructor.
+         * 
+         */
+        public WidgeonNodeServerImpl(IdentBuilder<String, Widgeon> builder)
+            {
+            super(WidgeonNode.NODE_TYPE_URI);
+            this.builder = builder;
+            }
+
+        /**
+         * Our ident builder.
+         * 
+         */
+        private IdentBuilder<String, Widgeon> builder;
+
+        @Override
+        protected WidgeonNode create(URI ident, URI type)
+            {
+            log.debug("WidgeonNodeServerImpl.create(URI, URI)");
+            log.debug("  Ident [{}]", ident);
+            log.debug("  Type  [{}]", type);
+            try {
+                return new WidgeonNodeImpl(
+                    builder,
+                    womble().widgeons().create(
+                        unique(
+                            "frog"
+                            ),
+                        URI.create(
+                            "ivo://org.astrogrid.test/test-data"
+                            )
+                        )
+                    );
+                }
+            catch (Exception ouch)
+                {
+                log.debug("Ouch []", ouch);
+                return null ;
+                }
+            }
+
+        @Override
+        protected WidgeonNode select(URI ident, URI type)
+            {
+            log.debug("WidgeonNodeServerImpl.select(URI, URI)");
+            log.debug("  Ident [{}]", ident);
+            log.debug("  Type  [{}]", type);
+            try {
+                return new WidgeonNodeImpl(
+                    builder,
+                    womble().widgeons().select(
+                        builder.parse(
+                            ident
+                            )
+                        )
+                    );
+                }
+            catch (Exception ouch)
+                {
+                log.debug("Ouch []", ouch);
+                return null ;
+                }
+            }
+
+        @Override
+        protected WidgeonNode update(URI ident, URI type)
+            {
+            log.debug("WidgeonNodeServerImpl.update(URI, URI)");
+            log.debug("  Ident [{}]", ident);
+            log.debug("  Type  [{}]", type);
+            // Mismatch between different models.
+            // FireThorn doesn't distinguish between read and read/write objects.
+            try {
+                return new WidgeonNodeImpl(
+                    builder,
+                    womble().widgeons().select(
+                        builder.parse(
+                            ident
+                            )
+                        )
+                    );
+                }
+            catch (Exception ouch)
+                {
+                log.debug("Ouch []", ouch);
+                return null ;
+                }
+            }
+        }
+
+    @Test
+    public void test003()
+    throws Exception
+        {
+        //
+        // Create our Widgeon NodeServer.
+        final NodeServer<WidgeonNode> server = new WidgeonNodeServerImpl(
+            new WidgeonIdentBuilder(
+                URI.create(
+                    "urn://test-widgeons/"
+                    )
+                )
+            );
+        //
+        // Create our XMLNodeReader.
+        final XMLNodeReader<WidgeonNode> creator = new XMLNodeReaderImpl<WidgeonNode>(
+            server.creator()
+            );
+        //
+        // Parse some XML to create a WidgeonNode.
+        final WidgeonNode created = creator.read(
+            new StringResource(
+                "<node xmlns='urn:metagrid' type='urn:uk.ac.roe.wfau.firethorn.widgeon'>"
+              + "  <properties>"
+              + "    <property type='urn:uk.ac.roe.wfau.firethorn.name'>Albert Augustus Charles Emmanuel</property>"
+              + "  </properties>"
+              + "</node>"
+                ).reader()
+            );
+
+        //
+        // Check the Node name.
+        assertEquals(
+            "Albert Augustus Charles Emmanuel",
+            created.properties().get(
+                WidgeonNode.NAME_PROPERTY_URI
+                ).value()
+            );
+
+        //
+        // Check the Widgeon name.
+        assertEquals(
+            "Albert Augustus Charles Emmanuel",
+            created.widgeon().name()
+            );
+
+        //
+        // Create our response.
+        StringResource response = new StringResource(
+            "response"
+            );
+        //
+        // Create our Node writer.
+        XMLNodeWriter<WidgeonNode> writer = new XMLNodeWriterImpl<WidgeonNode>();
+        //
+        // Write the node ....
+        writer.write(
+            response,
+            created
+            );
+
+        log.debug("----");
+        log.debug(response.data());
+        log.debug("----");
+
+/*
+ *
+    <zdef1128698001:node
+        xmlns=""
+        xmlns:zdef1128698001="urn:metagrid"
+        ident="urn://test-widgeons/2"
+        type="urn:uk.ac.roe.wfau.firethorn.widgeon"
+        >
+        <properties xmlns="urn:metagrid">
+            <property type="urn:uk.ac.roe.wfau.firethorn.created">2012-07-31T19:54:15.452+0100</property>
+            <property type="urn:uk.ac.roe.wfau.firethorn.modified">2012-07-31T19:54:15.453+0100</property>
+            <property type="urn:uk.ac.roe.wfau.firethorn.name">Albert Augustus Charles Emmanuel</property>
+        </properties>
+    </zdef1128698001:node> 
+
+ *
+ */
+
+                
         }
     }
 
