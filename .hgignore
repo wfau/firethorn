@@ -15,3 +15,10 @@ syntax: glob
 
 # Experiments
 *.frog
+
+# Eclipse junk
+.project
+.classpath
+.settings
+.factorypath
+

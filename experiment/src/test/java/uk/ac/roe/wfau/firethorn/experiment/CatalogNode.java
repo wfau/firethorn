@@ -23,63 +23,29 @@ import java.net.URI;
 
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon ;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase ;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
 
-import org.metagrid.gatekeeper.node.NestedNode;
 import org.metagrid.gatekeeper.node.Node;
 
 /**
  *
  */
-public interface WidgeonNode
-extends NestedNode<CatalogNodeSet>
+public interface CatalogNode
+extends Node
     {
 
     /**
-     * The Node type URI for a Widgeon.
+     * The Node type URI for a Catalog.
      * 
      */
     public static final URI NODE_TYPE_URI = URI.create(
-        "urn:uk.ac.roe.wfau.firethorn.widgeon"
+        "urn:uk.ac.roe.wfau.firethorn.catalog"
         );
 
     /**
-     * The Widgeon name property URI.
+     * Access to our Catalog.
      * 
      */
-    public static final URI NAME_PROPERTY_URI = URI.create(
-        "urn:uk.ac.roe.wfau.firethorn.name"
-        );
-
-    /**
-     * The Widgeon status property URI.
-     * 
-     */
-    public static final URI STATUS_PROPERTY_URI = URI.create(
-        "urn:uk.ac.roe.wfau.firethorn.status"
-        );
-
-    /**
-     * The Widgeon created property URI.
-     * 
-     */
-    public static final URI CREATED_PROPERTY_URI = URI.create(
-        "urn:uk.ac.roe.wfau.firethorn.created"
-        );
-
-    /**
-     * The Widgeon modified property URI.
-     * 
-     */
-    public static final URI MODIFIED_PROPERTY_URI = URI.create(
-        "urn:uk.ac.roe.wfau.firethorn.modified"
-        );
-
-    /**
-     * Access to our Widgeon.
-     * 
-     */
-    public Widgeon widgeon();
+    public Widgeon.Catalog catalog();
 
     }
 

@@ -40,39 +40,39 @@ import org.metagrid.gatekeeper.node.property.ReadOnlyProperty;
  *
  */
 @Slf4j
-public class WidgeonNodeImpl
+public class CatalogNodeImpl
 extends NodeImpl
-implements WidgeonNode
+implements CatalogNode
     {
 
     /**
-     * Reference to our Widgeon.
+     * Reference to our Catalog.
      * 
      */
-    private Widgeon widgeon;
+    private WidgeonBase.Catalog catalog;
 
     /**
-     * Access to our Widgeon.
+     * Access to our Catalog.
      * 
      */
-    public Widgeon widgeon()
+    public WidgeonBase.Catalog catalog()
         {
-        return this.widgeon;
+        return this.catalog;
         }
 
     /**
      * Public constructor.
      * 
      */
-    public WidgeonNodeImpl(IdentBuilder<String, Widgeon> builder, Widgeon widgeon)
+    public CatalogNodeImpl(IdentBuilder<String, WidgeonBase.Catalog> builder, WidgeonBase.Catalog catalog)
         {
-        log.debug("WidgeonNode(IdentBuilder<String, Widgeon>, Widgeon)");
-        log.debug("  Widgeon [{}]", widgeon);
-        this.widgeon = widgeon;
+        log.debug("CatalogNodeImpl(IdentBuilder<String, Widgeon.Catalog>, Widgeon.Catalog)");
+        log.debug("  Catalog [{}]", catalog);
+        this.catalog = catalog;
         this.builder = builder;
 
         //
-        // Widgeon name.
+        // Catalog name.
         this.init(
             new StringProperty(
                 this,
@@ -81,12 +81,12 @@ implements WidgeonNode
                 @Override
                 protected String getString()
                     {
-                    return widgeon().name();
+                    return catalog().name();
                     }
                 @Override
                 protected void setString(String value)
                     {
-                    widgeon().name(value);
+                    catalog().name(value);
                     }
                 }
             );
@@ -101,12 +101,12 @@ implements WidgeonNode
                 @Override
                 protected WidgeonStatus.Status getEnum()
                     {
-                    return widgeon().status();
+                    return catalog().status();
                     }
                 @Override
                 protected void setEnum(String value)
                     {
-                    widgeon().status(
+                    catalog().status(
                         WidgeonStatus.Status.valueOf(
                             value
                             )
@@ -126,7 +126,7 @@ implements WidgeonNode
                     @Override
                     protected Date getDate()
                         {
-                        return widgeon().created();
+                        return catalog().created();
                         }
                     @Override
                     protected void setDate(Date value)
@@ -146,7 +146,7 @@ implements WidgeonNode
                     @Override
                     protected Date getDate()
                         {
-                        return widgeon().modified();
+                        return catalog().modified();
                         }
                     @Override
                     protected void setDate(Date value)
@@ -161,37 +161,24 @@ implements WidgeonNode
      * Our ident parser.
      * 
      */
-    private IdentBuilder<String, Widgeon> builder;
+    private IdentBuilder<String, WidgeonBase.Catalog> builder;
 
     @Override
     public URI ident()
         {
-        log.debug("WidgeonNodeImpl.ident()");
-        log.debug("  Widgeon [{}]", widgeon);
+        log.debug("CatalogNodeImpl.ident()");
+        log.debug("  Catalog [{}]", catalog);
         return builder.build(
-            widgeon
+            catalog
             );
         }
 
     @Override
     public URI type()
         {
-        log.debug("WidgeonNodeImpl.type()");
-        log.debug("  Widgeon [{}]", widgeon);
-        return WidgeonNode.NODE_TYPE_URI;
+        log.debug("CatalogNodeImpl.type()");
+        log.debug("  Catalog [{}]", catalog);
+        return CatalogNode.NODE_TYPE_URI;
         }
-
-	@Override
-	public CatalogNodeSet node()
-		{
-		return null;
-		}
-
-	@Override
-	public void node(CatalogNodeSet catalogs)
-	throws UnsupportedOperationException
-		{
-		}
-
     }
 

@@ -19,7 +19,10 @@ package uk.ac.roe.wfau.firethorn.experiment ;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.Reader;
 import java.net.URI;
+
+import javax.xml.stream.XMLEventReader;
 
 import org.junit.Test;
 import org.junit.After;
@@ -34,15 +37,26 @@ import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
+import uk.ac.roe.wfau.firethorn.experiment.FirstTestCase.CatalogNodeSetReader;
 
+import org.metagrid.gatekeeper.node.NestedNode;
 import org.metagrid.gatekeeper.node.Node;
+import org.metagrid.gatekeeper.node.NodeFactory;
 import org.metagrid.gatekeeper.node.NodeServer;
 import org.metagrid.gatekeeper.node.NodeServerImpl;
 
 import org.metagrid.gatekeeper.node.ident.IdentBuilder;
+import org.metagrid.gatekeeper.oper.create.node.CreateOperationNode;
+import org.metagrid.gatekeeper.test.apple.node.AppleNode;
 import org.metagrid.gatekeeper.common.io.test.StringResource;
+import org.metagrid.gatekeeper.common.uri.URIHandler;
+import org.metagrid.gatekeeper.common.xml.reader.XMLReaderException;
+import org.metagrid.gatekeeper.common.xml.reader.node.NestedXMLNodeReaderImpl;
 import org.metagrid.gatekeeper.common.xml.reader.node.XMLNodeReader;
 import org.metagrid.gatekeeper.common.xml.reader.node.XMLNodeReaderImpl;
+import org.metagrid.gatekeeper.common.xml.reader.node.XMLNodeSetReader;
+import org.metagrid.gatekeeper.common.xml.reader.node.XMLNodeSetReaderImpl;
+import org.metagrid.gatekeeper.common.xml.reader.object.XMLObjectReader;
 import org.metagrid.gatekeeper.common.xml.writer.node.XMLNodeWriter;
 import org.metagrid.gatekeeper.common.xml.writer.node.XMLNodeWriterImpl;
 
@@ -305,6 +319,7 @@ extends TestBase
                         )
                     );
                 }
+            // TODO Need to address the mismatch between MetaGrid and FireThorn exceptions.
             catch (Exception ouch)
                 {
                 log.debug("Ouch []", ouch);
@@ -328,6 +343,7 @@ extends TestBase
                         )
                     );
                 }
+            // TODO Need to address the mismatch between MetaGrid and FireThorn exceptions.
             catch (Exception ouch)
                 {
                 log.debug("Ouch []", ouch);
@@ -353,6 +369,7 @@ extends TestBase
                         )
                     );
                 }
+            // TODO Need to address the mismatch between MetaGrid and FireThorn exceptions.
             catch (Exception ouch)
                 {
                 log.debug("Ouch []", ouch);
@@ -361,7 +378,7 @@ extends TestBase
             }
         }
 
-    @Test
+//  @Test
     public void test003()
     throws Exception
         {
@@ -386,6 +403,7 @@ extends TestBase
                 "<node xmlns='urn:metagrid' type='urn:uk.ac.roe.wfau.firethorn.widgeon'>"
               + "  <properties>"
               + "    <property type='urn:uk.ac.roe.wfau.firethorn.name'>Albert Augustus Charles Emmanuel</property>"
+              + "    <property type='urn:uk.ac.roe.wfau.firethorn.status'>ENABLED</property>"
               + "  </properties>"
               + "</node>"
                 ).reader()
@@ -426,25 +444,171 @@ extends TestBase
         log.debug(response.data());
         log.debug("----");
 
+        }
+
 /*
  *
-    <zdef1128698001:node
-        xmlns=""
-        xmlns:zdef1128698001="urn:metagrid"
-        ident="urn://test-widgeons/2"
-        type="urn:uk.ac.roe.wfau.firethorn.widgeon"
-        >
-        <properties xmlns="urn:metagrid">
-            <property type="urn:uk.ac.roe.wfau.firethorn.created">2012-07-31T19:54:15.452+0100</property>
-            <property type="urn:uk.ac.roe.wfau.firethorn.modified">2012-07-31T19:54:15.453+0100</property>
-            <property type="urn:uk.ac.roe.wfau.firethorn.name">Albert Augustus Charles Emmanuel</property>
-        </properties>
-    </zdef1128698001:node> 
+<widgeon>
 
+    <properties>
+        <property/>
+        <property/>
+    </properties>
+
+    <catalogs>
+
+        <catalog>
+            <properties>
+                <property/>
+                <property/>
+            </properties>
+        </catalog>
+
+        <catalog>
+            <properties>
+                <property/>
+                <property/>
+            </properties>
+        </catalog>
+
+    </catalogs>
+
+</widgeon>
  *
  */
+    
 
-                
+/*
+ * 
+ * widgeon 
+ *   catalogs <-- is a node
+ *     catalog
+ * 
+ * Need a node to represent a set of nodes.    
+ * 
+ */
+
+
+    public static class WidgeonNodeReader
+    extends NestedXMLNodeReaderImpl<WidgeonNode, CatalogNodeSet>
+    	{
+    	public WidgeonNodeReader(NodeFactory<WidgeonNode> factory, CatalogNodeSetReader reader)
+    		{
+    		super(factory, reader);
+			}
+
+        protected void content(XMLEventReader reader, WidgeonNode node)
+        throws XMLReaderException
+            {
+        	
+            }
+    	}
+
+    public static class CatalogNodeSetReader
+    extends XMLNodeSetReaderImpl<CatalogNode>
+	implements XMLNodeReader<CatalogNodeSet>
+    	{
+		public CatalogNodeSetReader(CatalogNodeReader reader)
+			{
+			super(reader);
+			}
+
+		@Override
+		public CatalogNodeSet read(NodeFactory<CatalogNodeSet> arg0, Reader arg1)
+				throws XMLReaderException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public CatalogNodeSet read(NodeFactory<CatalogNodeSet> arg0,
+				Reader arg1, URIHandler arg2) throws XMLReaderException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public CatalogNodeSet read(NodeFactory<CatalogNodeSet> arg0,
+				XMLEventReader arg1) throws XMLReaderException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public CatalogNodeSet read(NodeFactory<CatalogNodeSet> arg0,
+				XMLEventReader arg1, URIHandler arg2) throws XMLReaderException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+    	}
+    
+    public static class CatalogNodeReader
+    extends XMLNodeReaderImpl<CatalogNode>
+    implements XMLNodeReader<CatalogNode>
+    	{
+		public CatalogNodeReader(NodeFactory<CatalogNode> nodefactory)
+			{
+			super(nodefactory);
+			}
+    	}
+
+/*
+ *
+public interface XMLNodeSetReader<N extends Node>
+extends XMLObjectReader<Iterable<N>>
+ *
+ */
+    
+    @Test
+    public void test004()
+    throws Exception
+        {
+
+        //
+        // Create our Widgeon NodeServer.
+        final NodeServer<WidgeonNode> server = new WidgeonNodeServerImpl(
+            new WidgeonIdentBuilder(
+                URI.create(
+                    "urn://test-widgeons/"
+                    )
+                )
+            );
+
+        //
+        // Create our XMLNodeReader.
+        final WidgeonNodeReader reader= new WidgeonNodeReader(
+    		server.creator(),
+    		new CatalogNodeSetReader(
+				new CatalogNodeReader(
+					null
+					)
+				)
+            );
+
+        //
+        // Parse some XML to create a WidgeonNode.
+        final WidgeonNode created = creator.read(
+            server.creator(),
+            new StringResource(
+                "<node xmlns='urn:metagrid' type='urn:uk.ac.roe.wfau.firethorn.widgeon'>"
+              + "  <properties>"
+              + "    <property type='urn:uk.ac.roe.wfau.firethorn.name'>Albert Augustus Charles Emmanuel</property>"
+              + "    <property type='urn:uk.ac.roe.wfau.firethorn.status'>ENABLED</property>"
+              + "  </properties>"
+
+              + "  <node type='urn:uk.ac.roe.wfau.firethorn.catalogs'>"
+
+              + "      <node type='urn:uk.ac.roe.wfau.firethorn.catalog'>"
+              + "        <properties>"
+              + "          <property type='urn:uk.ac.roe.wfau.firethorn.status'>ENABLED</property>"
+              + "        </properties>"
+              + "      </node>"
+
+              + "  </node>"
+
+              + "</node>"
+                ).reader()
+            );
         }
     }
-
