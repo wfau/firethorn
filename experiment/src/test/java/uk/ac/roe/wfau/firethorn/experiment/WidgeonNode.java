@@ -32,7 +32,8 @@ import org.metagrid.gatekeeper.node.Node;
  *
  */
 public interface WidgeonNode
-extends NestedNode<CatalogNodeSet>
+//extends NestedNode<CatalogNodeSet>
+extends Node
     {
 
     /**
@@ -79,7 +80,7 @@ extends NestedNode<CatalogNodeSet>
      * Access to our Widgeon.
      * 
      */
-    public Widgeon widgeon();
+    public WidgeonBase widgeon();
 
     }
 

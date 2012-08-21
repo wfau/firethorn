@@ -54,8 +54,6 @@ import org.metagrid.gatekeeper.common.xml.reader.XMLReaderException;
 import org.metagrid.gatekeeper.common.xml.reader.node.NestedXMLNodeReaderImpl;
 import org.metagrid.gatekeeper.common.xml.reader.node.XMLNodeReader;
 import org.metagrid.gatekeeper.common.xml.reader.node.XMLNodeReaderImpl;
-import org.metagrid.gatekeeper.common.xml.reader.node.XMLNodeSetReader;
-import org.metagrid.gatekeeper.common.xml.reader.node.XMLNodeSetReaderImpl;
 import org.metagrid.gatekeeper.common.xml.reader.object.XMLObjectReader;
 import org.metagrid.gatekeeper.common.xml.writer.node.XMLNodeWriter;
 import org.metagrid.gatekeeper.common.xml.writer.node.XMLNodeWriterImpl;
@@ -478,17 +476,6 @@ extends TestBase
  */
     
 
-/*
- * 
- * widgeon 
- *   catalogs <-- is a node
- *     catalog
- * 
- * Need a node to represent a set of nodes.    
- * 
- */
-
-
     public static class WidgeonNodeReader
     extends NestedXMLNodeReaderImpl<WidgeonNode, CatalogNodeSet>
     	{
@@ -512,34 +499,6 @@ extends TestBase
 			{
 			super(reader);
 			}
-
-		@Override
-		public CatalogNodeSet read(NodeFactory<CatalogNodeSet> arg0, Reader arg1)
-				throws XMLReaderException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public CatalogNodeSet read(NodeFactory<CatalogNodeSet> arg0,
-				Reader arg1, URIHandler arg2) throws XMLReaderException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public CatalogNodeSet read(NodeFactory<CatalogNodeSet> arg0,
-				XMLEventReader arg1) throws XMLReaderException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public CatalogNodeSet read(NodeFactory<CatalogNodeSet> arg0,
-				XMLEventReader arg1, URIHandler arg2) throws XMLReaderException {
-			// TODO Auto-generated method stub
-			return null;
-		}
 
     	}
     
@@ -588,7 +547,7 @@ extends XMLObjectReader<Iterable<N>>
 
         //
         // Parse some XML to create a WidgeonNode.
-        final WidgeonNode created = creator.read(
+        final WidgeonNode created = reader.read(
             server.creator(),
             new StringResource(
                 "<node xmlns='urn:metagrid' type='urn:uk.ac.roe.wfau.firethorn.widgeon'>"

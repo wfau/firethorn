@@ -45,7 +45,7 @@ extends Node
      * Access to our Catalog.
      * 
      */
-    public Widgeon.Catalog catalog();
+    public WidgeonBase.Catalog catalog();
 
     }
 

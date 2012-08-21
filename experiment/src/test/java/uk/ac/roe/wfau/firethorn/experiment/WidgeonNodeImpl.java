@@ -49,13 +49,13 @@ implements WidgeonNode
      * Reference to our Widgeon.
      * 
      */
-    private Widgeon widgeon;
+    private WidgeonBase widgeon;
 
     /**
      * Access to our Widgeon.
      * 
      */
-    public Widgeon widgeon()
+    public WidgeonBase widgeon()
         {
         return this.widgeon;
         }
@@ -64,7 +64,7 @@ implements WidgeonNode
      * Public constructor.
      * 
      */
-    public WidgeonNodeImpl(IdentBuilder<String, Widgeon> builder, Widgeon widgeon)
+    public WidgeonNodeImpl(IdentBuilder<String, Widgeon> builder, WidgeonBase widgeon)
         {
         log.debug("WidgeonNode(IdentBuilder<String, Widgeon>, Widgeon)");
         log.debug("  Widgeon [{}]", widgeon);
@@ -180,18 +180,6 @@ implements WidgeonNode
         log.debug("  Widgeon [{}]", widgeon);
         return WidgeonNode.NODE_TYPE_URI;
         }
-
-	@Override
-	public CatalogNodeSet node()
-		{
-		return null;
-		}
-
-	@Override
-	public void node(CatalogNodeSet catalogs)
-	throws UnsupportedOperationException
-		{
-		}
 
     }
 
