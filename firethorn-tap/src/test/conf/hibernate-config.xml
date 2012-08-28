@@ -60,7 +60,7 @@
 
                 <value>uk.ac.roe.wfau.firethorn.identity.IdentityEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.mallard.MallardEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.mallard.CatalogServiceEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.mallard.JobEntity</value>
 
                 <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.WidgeonBaseEntity</value>

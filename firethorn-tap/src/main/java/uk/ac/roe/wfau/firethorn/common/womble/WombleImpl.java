@@ -48,7 +48,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
-import uk.ac.roe.wfau.firethorn.mallard.Mallard;
+import uk.ac.roe.wfau.firethorn.mallard.CatalogService;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
@@ -506,16 +506,16 @@ implements Womble
         }
 
     /**
-     * Our Autowired Mallard factory.
+     * Our Autowired CatalogService factory.
      * 
      */
     @Autowired
-    protected Mallard.Factory mallards ;
+    protected CatalogService.Factory services ;
 
     @Override
-    public Mallard.Factory mallards()
+    public CatalogService.Factory services()
         {
-        return this.mallards ;
+        return this.services ;
         }
 
     /**

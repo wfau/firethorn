@@ -31,7 +31,7 @@ import org.springframework.context.ApplicationContext;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
-import uk.ac.roe.wfau.firethorn.mallard.Mallard;
+import uk.ac.roe.wfau.firethorn.mallard.CatalogService;
 import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
@@ -158,10 +158,10 @@ public interface Womble
     public WidgeonBase.Factory widgeons();
 
     /**
-     * Access to our Mallard factory.
+     * Access to our CatalogService factory.
      * 
      */
-    public Mallard.Factory mallards();
+    public CatalogService.Factory services();
 
     /**
      * Access to our Identity factory.

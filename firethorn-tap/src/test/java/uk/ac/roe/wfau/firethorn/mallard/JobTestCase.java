@@ -44,10 +44,10 @@ extends TestBase
     public void test000()
     throws Exception
         {
-        ident[0] = womble().mallards().create(
+        ident[0] = womble().services().create(
             "test-mallard"
             ).ident();
-        ident[1] = womble().mallards().create(
+        ident[1] = womble().services().create(
             "test-mallard"
             ).ident();
         }
@@ -59,7 +59,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        Mallard mallard = womble().mallards().select(
+        CatalogService service = womble().services().select(
             ident[0]
             );
         assertFalse(
@@ -68,17 +68,17 @@ extends TestBase
         assertEquals(
             0,
             count(
-                mallard.jobs().select()
+                service.jobs().select()
                 )
             );
-        mallard.jobs().create(
+        service.jobs().create(
             "job-name",
             "job-adql"            
             );
         assertEquals(
             1,
             count(
-                mallard.jobs().select()
+                service.jobs().select()
                 )
             );
         }
@@ -90,7 +90,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        Mallard mallard = womble().mallards().select(
+        CatalogService service = womble().services().select(
             ident[0]
             );
         assertFalse(
@@ -99,17 +99,17 @@ extends TestBase
         assertEquals(
             1,
             count(
-                mallard.jobs().select()
+                service.jobs().select()
                 )
             );
-        mallard.jobs().create(
+        service.jobs().create(
             "job-name",
             "job-adql"            
             );
         assertEquals(
             2,
             count(
-                mallard.jobs().select()
+                service.jobs().select()
                 )
             );
         }
@@ -123,7 +123,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        Mallard mallard = womble().mallards().select(
+        CatalogService mallard = womble().mallards().select(
             ident[0]
             );
         assertFalse(
@@ -144,7 +144,7 @@ extends TestBase
         assertNotNull(
             ident[1]
             );
-        Mallard mallard = womble().mallards().select(
+        CatalogService mallard = womble().mallards().select(
             ident[1]
             );
         assertFalse(
@@ -178,7 +178,7 @@ extends TestBase
         assertNotNull(
             ident[1]
             );
-        Mallard mallard = womble().mallards().select(
+        CatalogService mallard = womble().mallards().select(
             ident[1]
             );
         assertFalse(

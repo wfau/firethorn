@@ -59,7 +59,7 @@ extends TestBase
             );
 
         assertNotNull(
-            womble().mallards()
+            womble().services()
             );
         }
     }

@@ -43,14 +43,14 @@ public class MallardTestCase
 extends TestBase
     {
 
-    private Mallard alpha ;
-    public  Mallard alpha()
+    private CatalogService alpha ;
+    public  CatalogService alpha()
         {
         return this.alpha ;
         }
 
-    private Mallard beta ;
-    public  Mallard beta()
+    private CatalogService beta ;
+    public  CatalogService beta()
         {
         return this.beta ;
         }
@@ -59,12 +59,12 @@ extends TestBase
     public void before()
     throws Exception
         {
-        alpha = womble().mallards().create(
+        alpha = womble().services().create(
             this.unique(
                 "mallard-A"
                 )
             );
-        beta = womble().mallards().create(
+        beta = womble().services().create(
             this.unique(
                 "mallard-B"
                 )
@@ -203,7 +203,7 @@ extends TestBase
         assertEquals(
             1,
             count(
-                womble().mallards().select(
+                womble().services().select(
                     alpha().ident()
                     ).widgeons().select()
                 )

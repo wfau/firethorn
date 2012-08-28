@@ -31,7 +31,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
  * A TAP service instance.
  *
  */
-public interface Mallard
+public interface CatalogService
 extends Entity
     {
 
@@ -40,19 +40,19 @@ extends Entity
      *
      */
     public static interface Factory
-    extends Entity.Factory<Mallard>
+    extends Entity.Factory<CatalogService>
         {
         /**
-         * Create a new Mallard.
+         * Create a new CatalogService.
          *
          */
-        public Mallard create(String name);
+        public CatalogService create(String name);
 
         /**
          * Select all the Mallards.
          *
          */
-        public Iterable<Mallard> select();
+        public Iterable<CatalogService> select();
 
         /**
          * Access to our Job factory.
@@ -99,13 +99,13 @@ extends Entity
              * Create a new Job.
              *
              */
-            public Job create(Mallard mallard, String name, String adql);
+            public Job create(CatalogService service, String name, String adql);
 
             /**
-             * Select all the Jobs for a Mallard.
+             * Select all the Jobs for a CatalogService.
              *
              */
-            public Iterable<Job> select(Mallard mallard);
+            public Iterable<Job> select(CatalogService service);
 
             }        
 
@@ -129,10 +129,10 @@ extends Entity
             }; 
 
         /**
-         * The parent Mallard.
+         * The parent CatalogService.
          *
          */
-        public Mallard mallard();
+        public CatalogService service();
 
         /**
          * The ADQL query.

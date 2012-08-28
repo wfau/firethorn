@@ -53,7 +53,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
 /**
- * Mallard.Job implementation.
+ * CatalogService.Job implementation.
  *
  */
 @Slf4j
@@ -67,26 +67,26 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "mallard.job-select-all",
+            name  = "service.job-select-all",
             query = "FROM JobEntity ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "mallard.job-select-mallard",
-            query = "FROM JobEntity WHERE mallard = :mallard ORDER BY ident desc"
+            name  = "service.job-select-service",
+            query = "FROM JobEntity WHERE service = :service ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "mallard.job-select-status",
+            name  = "service.job-select-status",
             query = "FROM JobEntity WHERE status = :status ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "mallard.job-select-mallard.status",
-            query = "FROM JobEntity WHERE mallard = :mallard AND status = :status ORDER BY ident desc"
+            name  = "service.job-select-service.status",
+            query = "FROM JobEntity WHERE service = :service AND status = :status ORDER BY ident desc"
             )
         }
     )
 public class JobEntity
 extends AbstractEntity
-implements Mallard.Job
+implements CatalogService.Job
     {
 
     /**
@@ -101,7 +101,7 @@ implements Mallard.Job
      */
     public static final String DB_ADQL_COL    = "adql"   ;
     public static final String DB_STATUS_COL  = "status" ;
-    public static final String DB_MALLARD_COL = "mallard" ;
+    public static final String DB_MALLARD_COL = "service" ;
 
     /**
      * Our Entity Factory implementation.
@@ -109,8 +109,8 @@ implements Mallard.Job
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<Mallard.Job>
-    implements Mallard.Job.Factory
+    extends AbstractFactory<CatalogService.Job>
+    implements CatalogService.Job.Factory
         {
         @Override
         public Class etype()
@@ -119,25 +119,25 @@ implements Mallard.Job
             }
 
         @SelectEntityMethod
-        public Iterable<Mallard.Job> select(Mallard mallard)
+        public Iterable<CatalogService.Job> select(CatalogService service)
             {
             return super.iterable(
                 super.query(
-                    "mallard.job-select-mallard"
+                    "service.job-select-service"
                     ).setEntity(
-                        "mallard",
-                        mallard
+                        "service",
+                        service
                         )
                 );
             }
 
         @Override
         @CreateEntityMethod
-        public Mallard.Job create(Mallard mallard, String name, String adql)
+        public CatalogService.Job create(CatalogService service, String name, String adql)
             {
             return super.insert(
                 new JobEntity(
-                    mallard,
+                    service,
                     name,
                     adql
                     )
@@ -159,20 +159,20 @@ implements Mallard.Job
      * Create a new JobEntity.
      *
      */
-    protected JobEntity(Mallard mallard, String name, String adql)
+    protected JobEntity(CatalogService service, String name, String adql)
         {
         super(name);
         this.adql = adql ;
-        this.mallard = mallard ;
+        this.service = service ;
         }
 
     /**
-     * Our parent Mallard.
+     * Our parent CatalogService.
      *
      */
     @ManyToOne(
         fetch = FetchType.LAZY,
-        targetEntity = MallardEntity.class
+        targetEntity = CatalogServiceEntity.class
         )
     @JoinColumn(
         name = DB_MALLARD_COL,
@@ -180,11 +180,11 @@ implements Mallard.Job
         nullable = false,
         updatable = false
         )
-    private Mallard mallard ;
+    private CatalogService service ;
     @Override
-    public Mallard mallard()
+    public CatalogService service()
         {
-        return this.mallard ;
+        return this.service ;
         }
 
     /**
@@ -200,9 +200,9 @@ implements Mallard.Job
     @Enumerated(
         EnumType.STRING
         )
-    private Mallard.Job.Status status = Mallard.Job.Status.EDITING ;
+    private CatalogService.Job.Status status = CatalogService.Job.Status.EDITING ;
     @Override
-    public  Mallard.Job.Status status()
+    public  CatalogService.Job.Status status()
         {
         return this.status;
         }

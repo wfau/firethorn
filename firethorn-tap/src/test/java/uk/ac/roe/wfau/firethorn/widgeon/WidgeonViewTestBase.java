@@ -39,6 +39,5 @@ public class WidgeonViewTestBase
 extends WidgeonBaseTestBase
     {
 
-
     }
 

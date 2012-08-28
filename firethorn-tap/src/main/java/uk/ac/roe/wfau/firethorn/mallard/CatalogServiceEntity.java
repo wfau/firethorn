@@ -59,7 +59,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.view.WidgeonViewEntity;
 
 /**
- * Mallard implementation.
+ * CatalogService implementation.
  *
  */
 @Slf4j
@@ -68,30 +68,30 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.view.WidgeonViewEntity;
     AccessType.FIELD
     )
 @Table(
-    name = MallardEntity.DB_TABLE_NAME
+    name = CatalogServiceEntity.DB_TABLE_NAME
     )
 @NamedQueries(
         {
         @NamedQuery(
             name  = "mallard-select-all",
-            query = "FROM MallardEntity ORDER BY ident desc"
+            query = "FROM CatalogServiceEntity ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "mallard-select-name",
-            query = "FROM MallardEntity WHERE name = :name ORDER BY ident desc"
+            query = "FROM CatalogServiceEntity WHERE name = :name ORDER BY ident desc"
             )
         }
     )
-public class MallardEntity
+public class CatalogServiceEntity
 extends AbstractEntity
-implements Mallard
+implements CatalogService
     {
 
     /**
      * Our database table name.
      * 
      */
-    public static final String DB_TABLE_NAME = "mallard_entity" ;
+    public static final String DB_TABLE_NAME = "service_entity" ;
 
     /**
      * Our Entity Factory implementation.
@@ -99,19 +99,19 @@ implements Mallard
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<Mallard>
-    implements Mallard.Factory
+    extends AbstractFactory<CatalogService>
+    implements CatalogService.Factory
         {
 
         @Override
         public Class etype()
             {
-            return MallardEntity.class ;
+            return CatalogServiceEntity.class ;
             }
 
         @Override
         @SelectEntityMethod
-        public Iterable<Mallard> select()
+        public Iterable<CatalogService> select()
             {
             return super.iterable(
                 super.query(
@@ -122,10 +122,10 @@ implements Mallard
 
         @Override
         @CreateEntityMethod
-        public Mallard create(String name)
+        public CatalogService create(String name)
             {
             return super.insert(
-                new MallardEntity(
+                new CatalogServiceEntity(
                     name
                     )
                 );
@@ -150,16 +150,16 @@ implements Mallard
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected MallardEntity()
+    protected CatalogServiceEntity()
         {
         super();
         }
 
     /**
-     * Create a new MallardEntity.
+     * Create a new CatalogServiceEntity.
      *
      */
-    protected MallardEntity(String name)
+    protected CatalogServiceEntity(String name)
         {
         super(name);
         }
@@ -172,8 +172,8 @@ implements Mallard
             @Override
             public Job create(String name, String adql)
                 {
-                return womble().mallards().jobs().create(
-                    MallardEntity.this,
+                return womble().services().jobs().create(
+                    CatalogServiceEntity.this,
                     name,
                     adql
                     ) ;
@@ -182,8 +182,8 @@ implements Mallard
             @Override
             public Iterable<Job> select()
                 {
-                return womble().mallards().jobs().select(
-                    MallardEntity.this
+                return womble().services().jobs().select(
+                    CatalogServiceEntity.this
                     ) ;
                 }
             };
