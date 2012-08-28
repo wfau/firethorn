@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.context.request.WebRequest;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,24 +24,43 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @Controller
 @RequestMapping("test")
 public class TestController
+extends ControllerBase
     {
 
     /**
-     * Page counter.
+     * Request counter.
      *
      */
     private static long count ;
 
     /**
+     * Create our ControllerData for this request.
+     * Always tries to create this, even if not required.
+     *
+    @ModelAttribute(ControllerData.MODEL_ATTRIB)
+    public ControllerData<Long> data(
+        WebRequest request,
+        @PathVariable("ident") String ident
+        ){
+        return new ControllerData<Long>(
+            request,
+            new Long(
+                count
+                )
+            );
+        }
+     */
+
+    /**
      * Get request.
      * 
      */
-	@RequestMapping(method=RequestMethod.GET)
+	@RequestMapping(value={"", "/", "/frog"}, method=RequestMethod.GET)
 	public ModelAndView page(
 	    ModelAndView model
 	    ){
 
-        log.debug("page access [{}]", count++);
+        log.debug("count [{}]", count++);
 
 		model.setViewName(
 		    "test"
@@ -49,5 +69,44 @@ public class TestController
         return model ;
 
         }
+
+    /**
+     * Get request.
+     * 
+     */
+	@RequestMapping(value="/{ident}", method=RequestMethod.GET)
+	public ModelAndView page(
+        @PathVariable("ident") String ident,
+        WebRequest request,
+	    ModelAndView model
+	    ){
+        return page(
+            new ControllerData<Long>(
+                request,
+                new Long(
+                    count
+                    )
+                ),
+            model
+            );
+        }
+
+	public ModelAndView page(
+        ControllerData<Long> data,
+	    ModelAndView model
+	    ){
+        log.debug("count [{}]", count++);
+        log.debug("ident [{}]", data.target());
+
+		model.setViewName(
+		    "test"
+		    );
+
+        return model ;
+
+        }
+
+
+
     }
 
