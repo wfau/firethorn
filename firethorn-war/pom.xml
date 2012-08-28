@@ -93,20 +93,21 @@
 
         <!--+
             | FireThorn TAP components.
+            +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-tap</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-            +-->
 
         <!--+
-            | FireThorn CDS components.
+            | Local build of the CDS tools based on a pre-release version of the CDS TAP library.
+            | This may contain some unpublished classes from the other CDS projects (cds-uws-3.1).
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-cds</artifactId>
+            <artifactId>firethorn-cds-lib</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
@@ -127,7 +128,6 @@
 
         <!--+
             | QRCode generator.
-            +-->
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>zxing-core</artifactId>
@@ -138,6 +138,7 @@
             <artifactId>zxing-javase</artifactId>
             <version>1.7</version>
         </dependency>
+            +-->
 
         <!--+
             | Apache file upload.
@@ -159,7 +160,7 @@
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <scope>test</scope>
+            <!--scope>test</scope-->
         </dependency>
 
         <!--+

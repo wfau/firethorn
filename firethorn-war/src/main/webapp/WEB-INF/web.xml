@@ -64,11 +64,11 @@
     <!--+
         | Map the spring-servlet to the 'root' path.
         | http://stackoverflow.com/questions/2129876/using-spring-mapping-to-root-in-web-xml-static-resources-arent-found
+        +-->
     <servlet-mapping>
         <servlet-name>spring-servlet</servlet-name>
-        <url-pattern>/spring</url-pattern>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
-        +-->
 
     <!--+
         | CDS TAP demo servlets.
@@ -82,15 +82,15 @@
         <servlet-name>DemoUWS_Servlet</servlet-name>
         <url-pattern>/cds-uws/*</url-pattern>
     </servlet-mapping-->
-    <servlet>
+    <!--servlet>
         <display-name>Demo TAP ASOV</display-name>
         <servlet-name>DemoTAP_Servlet</servlet-name>
         <servlet-class>asov.tap.DemoTAP_Servlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
+    </servlet-->
+    <!--servlet-mapping>
         <servlet-name>DemoTAP_Servlet</servlet-name>
         <url-pattern>/cds-tap/*</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping-->
 
 	<!--+
 	    | Spring transaction filter.
@@ -98,7 +98,8 @@
 	    +-->
     <filter>
         <filter-name>spring-filter</filter-name>
-        <filter-class>org.springframework.orm.hibernate3.support.OpenSessionInViewFilter</filter-class>
+        <!--filter-class>org.springframework.orm.hibernate3.support.OpenSessionInViewFilter</filter-class-->
+        <filter-class>org.springframework.orm.hibernate4.support.OpenSessionInViewFilter</filter-class>
         <init-param>
             <param-name>entityManagerFactoryBeanName</param-name>
             <param-value>reportsEntityManagerFactory</param-value>

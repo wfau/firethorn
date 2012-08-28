@@ -4,8 +4,7 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Controller;
 
@@ -20,16 +19,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
  * Test MVC controller.
  *
  */
+@Slf4j 
 @Controller
-@RequestMapping("frog")
+@RequestMapping("tap")
 public class TapController
     {
-
-    /**
-     * Our debug logger.
-     * 
-     */
-    private static Logger logger = LoggerFactory.getLogger(TapController.class);
 
     /**
      * Page counter.
@@ -46,7 +40,7 @@ public class TapController
 	    ModelAndView model
 	    ){
 
-        logger.debug("page access {}", count++);
+        log.debug("page access [{}]", count++);
 
 		model.setViewName(
 		    "test"
@@ -65,7 +59,7 @@ public class TapController
 	    ModelAndView model
 	    ){
 
-        logger.debug("page access {}", count++);
+        log.debug("page access [{}]", count++);
 
 		model.setViewName(
 		    "test"
