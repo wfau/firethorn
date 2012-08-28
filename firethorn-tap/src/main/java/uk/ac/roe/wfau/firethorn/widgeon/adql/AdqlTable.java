@@ -22,10 +22,10 @@ import adql.db.DBColumn;
 
 import java.util.Iterator;
 
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView ;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView ;
 
 /**
- * WidgeonView.Table based extension of the DBTable interface.
+ * DataResourceView.Table based extension of the DBTable interface.
  * See http://cdsportal.u-strasbg.fr/adqltuto/gettingstarted.html
  *
  */
@@ -43,15 +43,15 @@ extends DBTable
          * Create a new AdqlTable.
          *
          */
-        public AdqlTable create(WidgeonView.Table meta);
+        public AdqlTable create(DataResourceView.Table meta);
 
         }
 
     /**
-     * Access to our WidgeonView.Table metadata.
+     * Access to our DataResourceView.Table metadata.
      *
      */
-    public WidgeonView.Table meta();
+    public DataResourceView.Table meta();
 
     /**
      * Access to our columns as AdqlColumns.
@@ -71,7 +71,7 @@ extends DBTable
     public Columns columns();
 
     /**
-     * WidgeonView.Column based extension of the DBColumn interface.
+     * DataResourceView.Column based extension of the DBColumn interface.
      *
      */
     public interface AdqlColumn
@@ -79,10 +79,10 @@ extends DBTable
         {
 
         /**
-         * Access to our WidgeonView.Column metadata.
+         * Access to our DataResourceView.Column metadata.
          *
          */
-        public WidgeonView.Column meta();
+        public DataResourceView.Column meta();
 
         }
     }

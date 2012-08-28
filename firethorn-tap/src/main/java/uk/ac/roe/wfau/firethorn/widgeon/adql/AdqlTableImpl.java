@@ -28,10 +28,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import adql.db.DBTable;
 import adql.db.DBColumn;
 
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView ;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView ;
 
 /**
- * Implementation of the CDS DBTable interface, using data from a WidgeonView.Table.
+ * Implementation of the CDS DBTable interface, using data from a DataResourceView.Table.
  * See http://cdsportal.u-strasbg.fr/adqltuto/gettingstarted.html
  *
  */
@@ -52,7 +52,7 @@ implements AdqlTable
          * Create a new AdqlTable.
          *
          */
-        public AdqlTableImpl create(WidgeonView.Table table)
+        public AdqlTableImpl create(DataResourceView.Table table)
             {
             return new AdqlTableImpl(
                 table
@@ -61,25 +61,25 @@ implements AdqlTable
         }
 
     /**
-     * Our WidgeonView.Table metadata source.
+     * Our DataResourceView.Table metadata source.
      *
      */
-    private WidgeonView.Table table ;
+    private DataResourceView.Table table ;
 
     @Override
-    public WidgeonView.Table meta()
+    public DataResourceView.Table meta()
         {
         return this.table;
         }
 
     /**
-     * Local ADQL name, if different to the original WidgeonView.Table.
+     * Local ADQL name, if different to the original DataResourceView.Table.
      *
      */
     private String adqlName ;
 
     /**
-     * Local JDBC name, if different to the original WidgeonBase.Table.
+     * Local JDBC name, if different to the original DataResourceBase.Table.
      *
      */
     private String jdbcName ;
@@ -88,7 +88,7 @@ implements AdqlTable
      * Protected constructor.
      *
      */
-    private AdqlTableImpl(WidgeonView.Table table)
+    private AdqlTableImpl(DataResourceView.Table table)
         {
         this(
             table,
@@ -101,11 +101,11 @@ implements AdqlTable
      * Protected constructor, used by the copy method.
      *
      */
-    private AdqlTableImpl(WidgeonView.Table table, String jdbcName, String adqlName)
+    private AdqlTableImpl(DataResourceView.Table table, String jdbcName, String adqlName)
         {
         this.table = table ;
         //
-        // Only set the ADQL name if it is not the same as the WidgeonView.Table name.
+        // Only set the ADQL name if it is not the same as the DataResourceView.Table name.
         if (adqlName != null)
             {
             if (adqlName.length() > 0)
@@ -117,7 +117,7 @@ implements AdqlTable
                 }
             }
         //
-        // Only set the JDBC name if it is not the same as the WidgeonBase.Table name.
+        // Only set the JDBC name if it is not the same as the DataResourceBase.Table name.
         if (jdbcName != null)
             {
             if (jdbcName.length() > 0)
@@ -255,9 +255,9 @@ implements AdqlTable
     @Override
     public DBColumn getColumn(String name, boolean adql)
         {
-        WidgeonView.Column column ;
+        DataResourceView.Column column ;
         //
-        // If 'name' is an ADQL name, then search the WidgeonView.
+        // If 'name' is an ADQL name, then search the DataResourceView.
         if (adql)
             {
             column = table.columns().search(
@@ -265,7 +265,7 @@ implements AdqlTable
                 );
             }
         //
-        // If 'name' is not an ADQL name, then search the WidgeonBase.
+        // If 'name' is not an ADQL name, then search the DataResourceBase.
         else {
             column = table.columns().search(
                 table.base().columns().search(
@@ -291,7 +291,7 @@ implements AdqlTable
         return new Iterator<DBColumn>()
             {
 
-            private Iterator<WidgeonView.Column> iter = table.columns().select().iterator();
+            private Iterator<DataResourceView.Column> iter = table.columns().select().iterator();
 
             @Override
             public DBColumn next()
@@ -330,7 +330,7 @@ implements AdqlTable
                 return new Iterator<AdqlColumn>()
                     {
 
-                    private Iterator<WidgeonView.Column> iter = table.columns().select().iterator();
+                    private Iterator<DataResourceView.Column> iter = table.columns().select().iterator();
 
                     @Override
                     public AdqlColumn next()
@@ -362,7 +362,7 @@ implements AdqlTable
      * Create a new column metadata.
      *
      */
-    private AdqlColumnImpl wrap(WidgeonView.Column column)
+    private AdqlColumnImpl wrap(DataResourceView.Column column)
         {
         return new AdqlColumnImpl(
             column
@@ -373,7 +373,7 @@ implements AdqlTable
      * Create a new column metadata.
      *
      */
-    private AdqlColumnImpl wrap(WidgeonView.Column column, String jdbcName, String adqlName, DBTable parent)
+    private AdqlColumnImpl wrap(DataResourceView.Column column, String jdbcName, String adqlName, DBTable parent)
         {
         return new AdqlColumnImpl(
             column,
@@ -392,13 +392,13 @@ implements AdqlTable
         {
 
         /**
-         * Our WidgeonView.Column metadata source.
+         * Our DataResourceView.Column metadata source.
          *
          */
-        private WidgeonView.Column column ;
+        private DataResourceView.Column column ;
 
         @Override
-        public WidgeonView.Column meta()
+        public DataResourceView.Column meta()
             {
             return this.column ;
             }
@@ -410,7 +410,7 @@ implements AdqlTable
         private DBTable parent ;
 
         /**
-         * Local ADQL name, if different to the original WidgeonView.Column.
+         * Local ADQL name, if different to the original DataResourceView.Column.
          *
          */
         private String adqlName ;
@@ -425,7 +425,7 @@ implements AdqlTable
          * Private constructor.
          *
          */
-        private AdqlColumnImpl(WidgeonView.Column column)
+        private AdqlColumnImpl(DataResourceView.Column column)
             {
             this(
                 column,
@@ -439,7 +439,7 @@ implements AdqlTable
          * Private constructor, used by the copy method.
          *
          */
-        private AdqlColumnImpl(WidgeonView.Column column, String jdbcName, String adqlName, DBTable parent)
+        private AdqlColumnImpl(DataResourceView.Column column, String jdbcName, String adqlName, DBTable parent)
             {
             this.parent = parent ;
             this.column = column ;

@@ -39,7 +39,7 @@ extends TestBase
     @Test
     public void simple()
         {
-        WidgeonBase one = womble().widgeons().create(
+        DataResourceBase one = womble().widgeons().create(
             "albert",
             URI.create("ivo://org.astrogrid.test/0001")
             );
@@ -51,7 +51,7 @@ extends TestBase
             );
         log.debug("One [{}][{}]", one.ident(), one.name());
 
-        WidgeonBase two = womble().widgeons().create(
+        DataResourceBase two = womble().widgeons().create(
             "albert",
             URI.create("ivo://org.astrogrid.test/0001")
             );
@@ -63,9 +63,9 @@ extends TestBase
             );
         log.debug("Two [{}][{}]", two.ident(), two.name());
 
-        for (WidgeonBase widgeon : womble().widgeons().select())
+        for (DataResourceBase widgeon : womble().widgeons().select())
             {
-            log.debug("Widgeon [{}]", widgeon);
+            log.debug("DataResource [{}]", widgeon);
             }
 
         }
@@ -86,7 +86,7 @@ extends TestBase
                 )
             );
 
-        for (WidgeonBase widgeon : womble().widgeons().select())
+        for (DataResourceBase widgeon : womble().widgeons().select())
             {
             display(
                 widgeon
@@ -94,7 +94,7 @@ extends TestBase
             }
         }
 
-    public void nested(WidgeonBase widgeon)
+    public void nested(DataResourceBase widgeon)
         {
         nested(
             widgeon.catalogs().create(
@@ -108,7 +108,7 @@ extends TestBase
             );
         }
 
-    public void nested(WidgeonBase.Catalog catalog)
+    public void nested(DataResourceBase.Catalog catalog)
         {
         nested(
             catalog.schemas().create(
@@ -122,7 +122,7 @@ extends TestBase
             );
         }
 
-    public void nested(WidgeonBase.Schema schema)
+    public void nested(DataResourceBase.Schema schema)
         {
         nested(
             schema.tables().create(
@@ -136,7 +136,7 @@ extends TestBase
             );
         }
 
-    public void nested(WidgeonBase.Table table)
+    public void nested(DataResourceBase.Table table)
         {
         table.columns().create(
             "column-0001"
@@ -146,20 +146,20 @@ extends TestBase
             );
         }
 
-    public void display(WidgeonBase widgeon)
+    public void display(DataResourceBase widgeon)
         {
         log.debug("-------");
-        log.debug("Widgeon [{}]", widgeon);
-        for (WidgeonBase.Catalog catalog : widgeon.catalogs().select())
+        log.debug("DataResource [{}]", widgeon);
+        for (DataResourceBase.Catalog catalog : widgeon.catalogs().select())
             {
             log.debug("  Catalog [{}]", catalog);
-            for (WidgeonBase.Schema schema : catalog.schemas().select())
+            for (DataResourceBase.Schema schema : catalog.schemas().select())
                 {
                 log.debug("  Schema [{}]", schema);
-                for (WidgeonBase.Table table : schema.tables().select())
+                for (DataResourceBase.Table table : schema.tables().select())
                     {
                     log.debug("  Table [{}]", table);
-                    for (WidgeonBase.Column column : table.columns().select())
+                    for (DataResourceBase.Column column : table.columns().select())
                         {
                         log.debug("  Column [{}]", column);
                         }

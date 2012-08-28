@@ -20,9 +20,9 @@ package uk.ac.roe.wfau.firethorn.mallard ;
 import java.net.URL;
 import java.net.URI;
 
-import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
@@ -31,7 +31,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
  * A TAP service instance.
  *
  */
-public interface CatalogService
+public interface DataService
 extends Entity
     {
 
@@ -40,19 +40,19 @@ extends Entity
      *
      */
     public static interface Factory
-    extends Entity.Factory<CatalogService>
+    extends Entity.Factory<DataService>
         {
         /**
-         * Create a new CatalogService.
+         * Create a new DataService.
          *
          */
-        public CatalogService create(String name);
+        public DataService create(String name);
 
         /**
          * Select all the Mallards.
          *
          */
-        public Iterable<CatalogService> select();
+        public Iterable<DataService> select();
 
         /**
          * Access to our Job factory.
@@ -70,16 +70,16 @@ extends Entity
         {
 
         /**
-         * Add a Widgeon to this service.
+         * Add a DataResource to this service.
          *
          */
-        public void insert(WidgeonView widgeon);
+        public void insert(DataResourceView widgeon);
 
         /**
          * Select all the Widgeons used by this service.
          *
          */
-        public Iterable<WidgeonView> select();
+        public Iterable<DataResourceView> select();
 
         }
 
@@ -99,13 +99,13 @@ extends Entity
              * Create a new Job.
              *
              */
-            public Job create(CatalogService service, String name, String adql);
+            public Job create(DataService service, String name, String adql);
 
             /**
-             * Select all the Jobs for a CatalogService.
+             * Select all the Jobs for a DataService.
              *
              */
-            public Iterable<Job> select(CatalogService service);
+            public Iterable<Job> select(DataService service);
 
             }        
 
@@ -129,10 +129,10 @@ extends Entity
             }; 
 
         /**
-         * The parent CatalogService.
+         * The parent DataService.
          *
          */
-        public CatalogService service();
+        public DataService service();
 
         /**
          * The ADQL query.

@@ -26,71 +26,71 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
 /**
- * Public interface for a Widgeon view, describing a modifiable view an underlying base Widgeon.
+ * Public interface for a DataResource view, describing a modifiable view an underlying base DataResource.
  *
  */
-public interface WidgeonView
-extends Widgeon
+public interface DataResourceView
+extends DataResource
     {
 
     /**
-     * Factory interface for creating and selecting Widgeon Views.
+     * Factory interface for creating and selecting DataResource Views.
      *
      */
     public static interface Factory
-    extends Entity.Factory<WidgeonView>
+    extends Entity.Factory<DataResourceView>
         {
 
         /**
-         * Create a view of a Widgeon.
+         * Create a view of a DataResource.
          *
          */
-        public WidgeonView create(WidgeonBase base, String name);
+        public DataResourceView create(DataResourceBase base, String name);
 
         /**
-         * Select all the views of a Widgeon.
+         * Select all the views of a DataResource.
          *
          */
-        public Iterable<WidgeonView> select(WidgeonBase base);
+        public Iterable<DataResourceView> select(DataResourceBase base);
 
         /**
-         * Select a named view of a Widgeon.
+         * Select a named view of a DataResource.
          *
          */
-        public WidgeonView select(WidgeonBase base, String name)
+        public DataResourceView select(DataResourceBase base, String name)
         throws NameNotFoundException;
 
         /**
-         * Search for a named view of a Widgeon.
+         * Search for a named view of a DataResource.
          *
          */
-        public WidgeonView search(WidgeonBase base, String name);
+        public DataResourceView search(DataResourceBase base, String name);
 
         /**
          * Access to our Catalog factory.
          * 
          */
-        public WidgeonView.Catalog.Factory catalogs();
+        public DataResourceView.Catalog.Factory catalogs();
 
         }
 
     /**
-     * Access to our base Widgeon.
+     * Access to our base DataResource.
      *
      */
-    public WidgeonBase base();
+    public DataResourceBase base();
 
     /**
-     * Public interface for accessing a Widgeon's Catalogs.
+     * Public interface for accessing a DataResource's Catalogs.
      *
      */
     public interface Catalogs
-    extends Widgeon.Catalogs<WidgeonView.Catalog>
+    extends DataResource.Catalogs<DataResourceView.Catalog>
         {
         }
 
     /**
-     * Access to this Widgeon's Catalogs.
+     * Access to this DataResource's Catalogs.
      *
      */
     public Catalogs catalogs();
@@ -100,7 +100,7 @@ extends Widgeon
      *
      */
     public interface Catalog
-    extends Widgeon.Catalog<WidgeonView>
+    extends DataResource.Catalog<DataResourceView>
         {
 
         /**
@@ -108,38 +108,38 @@ extends Widgeon
          *
          */
         public static interface Factory
-        extends Widgeon.Catalog.Factory<WidgeonView, WidgeonView.Catalog>
+        extends DataResource.Catalog.Factory<DataResourceView, DataResourceView.Catalog>
             {
 
             /**
              * Find an existing View of a Catalog, or create a new one.
              *
              */
-            public WidgeonView.Catalog cascade(WidgeonView parent, WidgeonBase.Catalog base);
+            public DataResourceView.Catalog cascade(DataResourceView parent, DataResourceBase.Catalog base);
 
             /**
              * Create a new View of a Catalog.
              *
              */
-            public WidgeonView.Catalog create(WidgeonView parent, WidgeonBase.Catalog base, String name);
+            public DataResourceView.Catalog create(DataResourceView parent, DataResourceBase.Catalog base, String name);
 
             /**
              * Select all the views of a Catalog.
              *
              */
-            public Iterable<WidgeonView.Catalog> select(WidgeonBase.Catalog base);
+            public Iterable<DataResourceView.Catalog> select(DataResourceBase.Catalog base);
 
             /**
              * Search for a specific view of a Catalog.
              *
              */
-            public WidgeonView.Catalog search(WidgeonView parent, WidgeonBase.Catalog base);
+            public DataResourceView.Catalog search(DataResourceView parent, DataResourceBase.Catalog base);
 
             /**
              * Access to our Schema factory.
              * 
              */
-            public WidgeonView.Schema.Factory schemas();
+            public DataResourceView.Schema.Factory schemas();
 
             }
 
@@ -147,14 +147,14 @@ extends Widgeon
          * Access to our base Catalog.
          *
          */
-        public WidgeonBase.Catalog base();
+        public DataResourceBase.Catalog base();
 
         /**
          * Public interface for accessing a Catalog's Schemas.
          *
          */
         public interface Schemas
-        extends Widgeon.Catalog.Schemas<WidgeonView.Schema>
+        extends DataResource.Catalog.Schemas<DataResourceView.Schema>
             {
             }
 
@@ -165,10 +165,10 @@ extends Widgeon
         public Schemas schemas();
 
         /**
-         * Access to our parent Widgeon.
+         * Access to our parent DataResource.
          *
          */
-        public WidgeonView widgeon();
+        public DataResourceView widgeon();
 
         }
 
@@ -177,7 +177,7 @@ extends Widgeon
      *
      */
     public interface Schema
-    extends Widgeon.Schema<WidgeonView.Catalog>
+    extends DataResource.Schema<DataResourceView.Catalog>
         {
 
         /**
@@ -185,38 +185,38 @@ extends Widgeon
          *
          */
         public static interface Factory
-        extends Widgeon.Schema.Factory<WidgeonView.Catalog, WidgeonView.Schema>
+        extends DataResource.Schema.Factory<DataResourceView.Catalog, DataResourceView.Schema>
             {
 
             /**
              * Find an existing View of a Schema, or create a new one.
              *
              */
-            public WidgeonView.Schema cascade(WidgeonView.Catalog parent, WidgeonBase.Schema base);
+            public DataResourceView.Schema cascade(DataResourceView.Catalog parent, DataResourceBase.Schema base);
 
             /**
              * Create a new View of a Schema.
              *
              */
-            public WidgeonView.Schema create(WidgeonView.Catalog parent, WidgeonBase.Schema base, String name);
+            public DataResourceView.Schema create(DataResourceView.Catalog parent, DataResourceBase.Schema base, String name);
 
             /**
              * Select all the views of a Schema.
              *
              */
-            public Iterable<WidgeonView.Schema> select(WidgeonBase.Schema base);
+            public Iterable<DataResourceView.Schema> select(DataResourceBase.Schema base);
 
             /**
              * Search for a specific view of a Schema.
              *
              */
-            public WidgeonView.Schema search(WidgeonView.Catalog parent, WidgeonBase.Schema base);
+            public DataResourceView.Schema search(DataResourceView.Catalog parent, DataResourceBase.Schema base);
 
             /**
              * Access to our Table factory.
              * 
              */
-            public WidgeonView.Table.Factory tables();
+            public DataResourceView.Table.Factory tables();
             
             }
 
@@ -224,14 +224,14 @@ extends Widgeon
          * Access to our base Schema.
          *
          */
-        public WidgeonBase.Schema base();
+        public DataResourceBase.Schema base();
 
         /**
          * Public interface for accessing a Schema's Tables.
          *
          */
         public interface Tables
-        extends Widgeon.Schema.Tables<WidgeonView.Table>
+        extends DataResource.Schema.Tables<DataResourceView.Table>
             {
             }
 
@@ -242,16 +242,16 @@ extends Widgeon
         public Tables tables();
 
         /**
-         * Access to our parent Widgeon.
+         * Access to our parent DataResource.
          *
          */
-        public WidgeonView widgeon();
+        public DataResourceView widgeon();
 
         /**
          * Access to our parent Catalog.
          *
          */
-        public WidgeonView.Catalog catalog();
+        public DataResourceView.Catalog catalog();
 
         }
 
@@ -260,7 +260,7 @@ extends Widgeon
      *
      */
     public interface Table
-    extends Widgeon.Table<WidgeonView.Schema>
+    extends DataResource.Table<DataResourceView.Schema>
         {
 
         /**
@@ -268,38 +268,38 @@ extends Widgeon
          *
          */
         public static interface Factory
-        extends Widgeon.Table.Factory<WidgeonView.Schema, WidgeonView.Table>
+        extends DataResource.Table.Factory<DataResourceView.Schema, DataResourceView.Table>
             {
 
             /**
              * Find an existing View of a Table, or create a new one.
              *
              */
-            public WidgeonView.Table cascade(WidgeonView.Schema parent, WidgeonBase.Table base);
+            public DataResourceView.Table cascade(DataResourceView.Schema parent, DataResourceBase.Table base);
 
             /**
              * Create a new View of a Table.
              *
              */
-            public WidgeonView.Table create(WidgeonView.Schema parent, WidgeonBase.Table base, String name);
+            public DataResourceView.Table create(DataResourceView.Schema parent, DataResourceBase.Table base, String name);
 
             /**
              * Select all the views of a Table.
              *
              */
-            public Iterable<WidgeonView.Table> select(WidgeonBase.Table base);
+            public Iterable<DataResourceView.Table> select(DataResourceBase.Table base);
 
             /**
              * Search for a specific view of a Table.
              *
              */
-            public WidgeonView.Table search(WidgeonView.Schema parent, WidgeonBase.Table base);
+            public DataResourceView.Table search(DataResourceView.Schema parent, DataResourceBase.Table base);
 
             /**
              * Access to our Column factory.
              * 
              */
-            public WidgeonView.Column.Factory columns();
+            public DataResourceView.Column.Factory columns();
 
             }
 
@@ -307,21 +307,21 @@ extends Widgeon
          * Access to our base Table.
          *
          */
-        public WidgeonBase.Table base();
+        public DataResourceBase.Table base();
 
         /**
          * Public interface for accessing a Table's Columns.
          *
          */
         public interface Columns
-        extends Widgeon.Table.Columns<WidgeonView.Column>
+        extends DataResource.Table.Columns<DataResourceView.Column>
             {
 
             /**
              * Search for a view of a spcific column.
              *
              */
-            public WidgeonView.Column search(WidgeonBase.Column base);
+            public DataResourceView.Column search(DataResourceBase.Column base);
 
             }
 
@@ -332,22 +332,22 @@ extends Widgeon
         public Columns columns();
 
         /**
-         * Access to our parent Widgeon.
+         * Access to our parent DataResource.
          *
          */
-        public WidgeonView widgeon();
+        public DataResourceView widgeon();
 
         /**
          * Access to our parent Catalog.
          *
          */
-        public WidgeonView.Catalog catalog();
+        public DataResourceView.Catalog catalog();
 
         /**
          * Access to our parent Schema.
          *
          */
-        public WidgeonView.Schema schema();
+        public DataResourceView.Schema schema();
 
         }
 
@@ -356,7 +356,7 @@ extends Widgeon
      *
      */
     public interface Column
-    extends Widgeon.Column<WidgeonView.Table>
+    extends DataResource.Column<DataResourceView.Table>
         {
 
         /**
@@ -364,32 +364,32 @@ extends Widgeon
          *
          */
         public static interface Factory
-        extends Widgeon.Column.Factory<WidgeonView.Table, WidgeonView.Column>
+        extends DataResource.Column.Factory<DataResourceView.Table, DataResourceView.Column>
             {
 
             /**
              * Find an existing View of a Column, or create a new one.
              *
              */
-            public WidgeonView.Column cascade(WidgeonView.Table parent, WidgeonBase.Column base);
+            public DataResourceView.Column cascade(DataResourceView.Table parent, DataResourceBase.Column base);
 
             /**
              * Create a new View of a Column.
              *
              */
-            public WidgeonView.Column create(WidgeonView.Table parent, WidgeonBase.Column base, String name);
+            public DataResourceView.Column create(DataResourceView.Table parent, DataResourceBase.Column base, String name);
 
             /**
              * Search for a specific view of a Column.
              *
              */
-            public WidgeonView.Column search(WidgeonView.Table parent, WidgeonBase.Column base);
+            public DataResourceView.Column search(DataResourceView.Table parent, DataResourceBase.Column base);
 
             /**
              * Select all the views of a Column.
              *
              */
-            public Iterable<WidgeonView.Column> select(WidgeonBase.Column base);
+            public Iterable<DataResourceView.Column> select(DataResourceBase.Column base);
 
             }
 
@@ -397,31 +397,31 @@ extends Widgeon
          * Access to our base Column.
          *
          */
-        public WidgeonBase.Column base();
+        public DataResourceBase.Column base();
 
         /**
-         * Access to our parent Widgeon.
+         * Access to our parent DataResource.
          *
          */
-        public WidgeonView widgeon();
+        public DataResourceView widgeon();
 
         /**
          * Access to our parent Catalog.
          *
          */
-        public WidgeonView.Catalog catalog();
+        public DataResourceView.Catalog catalog();
 
         /**
          * Access to our parent Schema.
          *
          */
-        public WidgeonView.Schema schema();
+        public DataResourceView.Schema schema();
 
         /**
          * Access to our parent Table.
          *
          */
-        public WidgeonView.Table table();
+        public DataResourceView.Table table();
 
         }
     }

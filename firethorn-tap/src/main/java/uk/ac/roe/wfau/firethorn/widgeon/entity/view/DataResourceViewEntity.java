@@ -55,15 +55,15 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
-import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.base.WidgeonBaseEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.DataResourceEntityBase;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.base.DataResourceBaseEntity;
 
 /**
- * Widgeon View implementations.
+ * DataResource View implementations.
  *
  */
 @Slf4j
@@ -72,12 +72,12 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.WidgeonBaseEntity;
     AccessType.FIELD
     )
 @Table(
-    name = WidgeonViewEntity.DB_TABLE_NAME,
+    name = DataResourceViewEntity.DB_TABLE_NAME,
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
-                WidgeonViewEntity.DB_BASE_COL
+                DataResourceViewEntity.DB_BASE_COL
                 }
             )
         }
@@ -86,17 +86,17 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.WidgeonBaseEntity;
         {
         @NamedQuery(
             name  = "widgeon.view.entity-select-base",
-            query = "FROM WidgeonViewEntity WHERE (base = :base) ORDER BY ident desc"
+            query = "FROM DataResourceViewEntity WHERE (base = :base) ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "widgeon.view.entity-select-base.name",
-            query = "FROM WidgeonViewEntity WHERE ((base = :base) AND (name = :name)) ORDER BY ident desc"
+            query = "FROM DataResourceViewEntity WHERE ((base = :base) AND (name = :name)) ORDER BY ident desc"
             )
         }
     )
-public class WidgeonViewEntity
-extends WidgeonStatusEntity
-implements WidgeonView
+public class DataResourceViewEntity
+extends DataResourceEntityBase
+implements DataResourceView
     {
 
     /**
@@ -106,7 +106,7 @@ implements WidgeonView
     public static final String DB_TABLE_NAME = "widgeon_view_entity" ;
 
     /**
-     * The persistence column name for our base Widgeon.
+     * The persistence column name for our base DataResource.
      * 
      */
     public static final String DB_BASE_COL = "base" ;
@@ -117,14 +117,14 @@ implements WidgeonView
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<WidgeonView>
-    implements WidgeonView.Factory
+    extends AbstractFactory<DataResourceView>
+    implements DataResourceView.Factory
         {
 
         @Override
         public Class etype()
             {
-            return WidgeonViewEntity.class ;
+            return DataResourceViewEntity.class ;
             }
 
         /**
@@ -132,12 +132,12 @@ implements WidgeonView
          *
          */
         @CascadeEntityMethod
-        protected WidgeonView insert(WidgeonViewEntity entity)
+        protected DataResourceView insert(DataResourceViewEntity entity)
             {
             super.insert(
                 entity
                 );
-            for (WidgeonBase.Catalog catalog : entity.base().catalogs().select())
+            for (DataResourceBase.Catalog catalog : entity.base().catalogs().select())
                 {
                 this.catalogs().cascade(
                     entity,
@@ -149,10 +149,10 @@ implements WidgeonView
 
         @Override
         @CreateEntityMethod
-        public WidgeonView create(final WidgeonBase base, final String name)
+        public DataResourceView create(final DataResourceBase base, final String name)
             {
             return this.insert(
-                new WidgeonViewEntity(
+                new DataResourceViewEntity(
                     base,
                     name
                     )
@@ -161,7 +161,7 @@ implements WidgeonView
 
         @Override
         @SelectEntityMethod
-        public Iterable<WidgeonView> select(final WidgeonBase base)
+        public Iterable<DataResourceView> select(final DataResourceBase base)
             {
             return super.iterable(
                 super.query(
@@ -175,10 +175,10 @@ implements WidgeonView
 
         @Override
         @SelectEntityMethod
-        public WidgeonView select(final WidgeonBase base, final String name)
+        public DataResourceView select(final DataResourceBase base, final String name)
         throws NameNotFoundException
             {
-            WidgeonView result = this.search(
+            DataResourceView result = this.search(
                 base,
                 name
                 );
@@ -195,7 +195,7 @@ implements WidgeonView
 
         @Override
         @SelectEntityMethod
-        public WidgeonView search(final WidgeonBase base, final String name)
+        public DataResourceView search(final DataResourceBase base, final String name)
             {
             return super.first(
                 super.query(
@@ -215,43 +215,43 @@ implements WidgeonView
          * 
          */
         @Autowired
-        protected WidgeonView.Catalog.Factory catalogs ;
+        protected DataResourceView.Catalog.Factory catalogs ;
 
         @Override
-        public WidgeonView.Catalog.Factory catalogs()
+        public DataResourceView.Catalog.Factory catalogs()
             {
             return catalogs ;
             }
         }
 
     @Override
-    public WidgeonView.Catalogs catalogs()
+    public DataResourceView.Catalogs catalogs()
         {
-        return new WidgeonView.Catalogs()
+        return new DataResourceView.Catalogs()
             {
             @Override
-            public Iterable<WidgeonView.Catalog> select()
+            public Iterable<DataResourceView.Catalog> select()
                 {
                 return womble().widgeons().views().catalogs().select(
-                    WidgeonViewEntity.this
+                    DataResourceViewEntity.this
                     ) ;
                 }
 
             @Override
-            public WidgeonView.Catalog select(final String name)
+            public DataResourceView.Catalog select(final String name)
             throws NameNotFoundException
                 {
                 return womble().widgeons().views().catalogs().select(
-                    WidgeonViewEntity.this,
+                    DataResourceViewEntity.this,
                     name
                     ) ;
                 }
 
             @Override
-            public WidgeonView.Catalog search(final String name)
+            public DataResourceView.Catalog search(final String name)
                 {
                 return womble().widgeons().views().catalogs().search(
-                    WidgeonViewEntity.this,
+                    DataResourceViewEntity.this,
                     name
                     ) ;
                 }
@@ -263,16 +263,16 @@ implements WidgeonView
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected WidgeonViewEntity()
+    protected DataResourceViewEntity()
         {
         super();
         }
 
     /**
-     * Create a new view of a Widgeon.
+     * Create a new view of a DataResource.
      *
      */
-    private WidgeonViewEntity(final WidgeonBase base)
+    private DataResourceViewEntity(final DataResourceBase base)
         {
         this(
             base,
@@ -281,10 +281,10 @@ implements WidgeonView
         }
 
     /**
-     * Create a new view of a Widgeon.
+     * Create a new view of a DataResource.
      *
      */
-    private WidgeonViewEntity(final WidgeonBase base, final String name)
+    private DataResourceViewEntity(final DataResourceBase base, final String name)
         {
         super(
             name
@@ -293,12 +293,12 @@ implements WidgeonView
         }
 
     /**
-     * Our underlying Widgeon.
+     * Our underlying DataResource.
      *
      */
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = WidgeonBaseEntity.class
+        targetEntity = DataResourceBaseEntity.class
         )
     @JoinColumn(
         name = DB_BASE_COL,
@@ -306,10 +306,10 @@ implements WidgeonView
         nullable = false,
         updatable = false
         )
-    private WidgeonBase base ;
+    private DataResourceBase base ;
 
     @Override
-    public WidgeonBase base()
+    public DataResourceBase base()
         {
         return this.base ;
         }
@@ -327,9 +327,9 @@ implements WidgeonView
         }
 
     @Override
-    public Widgeon.Status status()
+    public DataResource.Status status()
         {
-        if (this.base().status() == Widgeon.Status.ENABLED)
+        if (this.base().status() == DataResource.Status.ENABLED)
             {
             return super.status();
             }

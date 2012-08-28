@@ -49,14 +49,14 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
-import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.DataResourceEntityBase;
 
 /**
- * Widgeon implementations.
+ * DataResource implementations.
  *
  */
 @Slf4j
@@ -65,7 +65,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
     AccessType.FIELD
     )
 @Table(
-    name = WidgeonBaseEntity.DB_TABLE_NAME
+    name = DataResourceBaseEntity.DB_TABLE_NAME
 /*
     uniqueConstraints={
         @UniqueConstraint(
@@ -80,17 +80,17 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
         {
         @NamedQuery(
             name  = "widgeon.base.entity-select-all",
-            query = "FROM WidgeonBaseEntity ORDER BY ident desc"
+            query = "FROM DataResourceBaseEntity ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "widgeon.base.entity-select-name",
-            query = "FROM WidgeonBaseEntity WHERE (name = :name) ORDER BY ident desc"
+            query = "FROM DataResourceBaseEntity WHERE (name = :name) ORDER BY ident desc"
             )
         }
     )
-public class WidgeonBaseEntity
-extends WidgeonStatusEntity
-implements WidgeonBase
+public class DataResourceBaseEntity
+extends DataResourceEntityBase
+implements DataResourceBase
     {
 
     /**
@@ -105,19 +105,19 @@ implements WidgeonBase
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<WidgeonBase>
-    implements WidgeonBase.Factory
+    extends AbstractFactory<DataResourceBase>
+    implements DataResourceBase.Factory
         {
 
         @Override
         public Class etype()
             {
-            return WidgeonBaseEntity.class ;
+            return DataResourceBaseEntity.class ;
             }
 
         @Override
         @SelectEntityMethod
-        public Iterable<WidgeonBase> select()
+        public Iterable<DataResourceBase> select()
             {
             return super.iterable(
                 super.query(
@@ -128,10 +128,10 @@ implements WidgeonBase
 
         @Override
         @SelectEntityMethod
-        public WidgeonBase select(String name)
+        public DataResourceBase select(String name)
         throws NameNotFoundException
             {
-            WidgeonBase result = this.search(
+            DataResourceBase result = this.search(
                 name
                 );
             if (result != null)
@@ -146,11 +146,11 @@ implements WidgeonBase
             }
 
         /**
-         * Search for a named Widgeon.
+         * Search for a named DataResource.
          *
          */
         @SelectEntityMethod
-        protected WidgeonBase search(String name)
+        protected DataResourceBase search(String name)
             {
             return super.first(
                 super.query(
@@ -164,10 +164,10 @@ implements WidgeonBase
 
         @Override
         @CreateEntityMethod
-        public WidgeonBase create(final String name, final URI uri)
+        public DataResourceBase create(final String name, final URI uri)
             {
             return super.insert(
-                new WidgeonBaseEntity(
+                new DataResourceBaseEntity(
                     name,
                     uri
                     )
@@ -176,10 +176,10 @@ implements WidgeonBase
 
         @Override
         @CreateEntityMethod
-        public WidgeonBase create(final String name, final URL url)
+        public DataResourceBase create(final String name, final URL url)
             {
             return super.insert(
-                new WidgeonBaseEntity(
+                new DataResourceBaseEntity(
                     name,
                     url
                     )
@@ -188,10 +188,10 @@ implements WidgeonBase
 
         @Override
         @CreateEntityMethod
-        public WidgeonBase create(final String name, final DataSource src)
+        public DataResourceBase create(final String name, final DataSource src)
             {
             return super.insert(
-                new WidgeonBaseEntity(
+                new DataResourceBaseEntity(
                     name,
                     src
                     )
@@ -203,10 +203,10 @@ implements WidgeonBase
          * 
          */
         @Autowired
-        protected WidgeonView.Factory views ;
+        protected DataResourceView.Factory views ;
 
         @Override
-        public WidgeonView.Factory views()
+        public DataResourceView.Factory views()
             {
             return this.views ;
             }
@@ -216,43 +216,43 @@ implements WidgeonBase
          * 
          */
         @Autowired
-        protected WidgeonBase.Catalog.Factory catalogs ;
+        protected DataResourceBase.Catalog.Factory catalogs ;
 
         @Override
-        public WidgeonBase.Catalog.Factory catalogs()
+        public DataResourceBase.Catalog.Factory catalogs()
             {
             return this.catalogs ;
             }
         }
 
     @Override
-    public WidgeonBase.Views views() 
+    public DataResourceBase.Views views() 
         {
-        return new WidgeonBase.Views()
+        return new DataResourceBase.Views()
             {
             @Override
-            public WidgeonView create(String name)
+            public DataResourceView create(String name)
                 {
                 return womble().widgeons().views().create(
-                    WidgeonBaseEntity.this,
+                    DataResourceBaseEntity.this,
                     name
                     );
                 }
 
             @Override
-            public Iterable<WidgeonView> select()
+            public Iterable<DataResourceView> select()
                 {
                 return womble().widgeons().views().select(
-                    WidgeonBaseEntity.this
+                    DataResourceBaseEntity.this
                     );
                 }
 
             @Override
-            public WidgeonView select(String name)
+            public DataResourceView select(String name)
             throws NameNotFoundException
                 {
                 return womble().widgeons().views().select(
-                    WidgeonBaseEntity.this,
+                    DataResourceBaseEntity.this,
                     name
                     );
                 }
@@ -260,42 +260,42 @@ implements WidgeonBase
         }
 
     @Override
-    public WidgeonBase.Catalogs catalogs()
+    public DataResourceBase.Catalogs catalogs()
         {
-        return new WidgeonBase.Catalogs()
+        return new DataResourceBase.Catalogs()
             {
             @Override
-            public WidgeonBase.Catalog create(final String name)
+            public DataResourceBase.Catalog create(final String name)
                 {
                 return womble().widgeons().catalogs().create(
-                    WidgeonBaseEntity.this,
+                    DataResourceBaseEntity.this,
                     name
                     ) ;
                 }
 
             @Override
-            public Iterable<WidgeonBase.Catalog> select()
+            public Iterable<DataResourceBase.Catalog> select()
                 {
                 return womble().widgeons().catalogs().select(
-                    WidgeonBaseEntity.this
+                    DataResourceBaseEntity.this
                     );
                 }
 
             @Override
-            public WidgeonBase.Catalog select(final String name)
+            public DataResourceBase.Catalog select(final String name)
             throws NameNotFoundException
                 {
                 return womble().widgeons().catalogs().select(
-                    WidgeonBaseEntity.this,
+                    DataResourceBaseEntity.this,
                     name
                     );
                 }
 
             @Override
-            public WidgeonBase.Catalog search(final String name)
+            public DataResourceBase.Catalog search(final String name)
                 {
                 return womble().widgeons().catalogs().search(
-                    WidgeonBaseEntity.this,
+                    DataResourceBaseEntity.this,
                     name
                     );
                 }
@@ -307,16 +307,16 @@ implements WidgeonBase
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected WidgeonBaseEntity()
+    protected DataResourceBaseEntity()
         {
         super();
         }
 
     /**
-     * Create a new Widgeon from VOSI metadata.
+     * Create a new DataResource from VOSI metadata.
      *
      */
-    private WidgeonBaseEntity(final String name, final URI source)
+    private DataResourceBaseEntity(final String name, final URI source)
         {
         super(name);
         this.init(
@@ -325,10 +325,10 @@ implements WidgeonBase
         }
 
     /**
-     * Create a new Widgeon from VOSI metadata.
+     * Create a new DataResource from VOSI metadata.
      *
      */
-    private WidgeonBaseEntity(final String name, final URL source)
+    private DataResourceBaseEntity(final String name, final URL source)
         {
         super(name);
         this.init(
@@ -337,10 +337,10 @@ implements WidgeonBase
         }
 
     /**
-     * Create a new Widgeon from JDBC metadata.
+     * Create a new DataResource from JDBC metadata.
      *
      */
-    private WidgeonBaseEntity(final String name, final DataSource source)
+    private DataResourceBaseEntity(final String name, final DataSource source)
         {
         super(name);
         this.init(

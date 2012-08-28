@@ -48,11 +48,11 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
-import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.DataResourceEntityBase;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.base.CatalogBaseEntity;
 
 /**
@@ -102,8 +102,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.CatalogBaseEntity;
         }
     )
 public class CatalogViewEntity
-extends WidgeonStatusEntity
-implements WidgeonView.Catalog
+extends DataResourceEntityBase
+implements DataResourceView.Catalog
     {
 
     /**
@@ -113,7 +113,7 @@ implements WidgeonView.Catalog
     public static final String DB_TABLE_NAME = "widgeon_view_catalog" ;
 
     /**
-     * The persistence column name for our parent Widgeon.
+     * The persistence column name for our parent DataResource.
      * 
      */
     public static final String DB_PARENT_COL = "parent" ;
@@ -130,8 +130,8 @@ implements WidgeonView.Catalog
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<WidgeonView.Catalog>
-    implements WidgeonView.Catalog.Factory
+    extends AbstractFactory<DataResourceView.Catalog>
+    implements DataResourceView.Catalog.Factory
         {
 
         @Override
@@ -145,12 +145,12 @@ implements WidgeonView.Catalog
          *
          */
         @CascadeEntityMethod
-        protected WidgeonView.Catalog insert(CatalogViewEntity entity)
+        protected DataResourceView.Catalog insert(CatalogViewEntity entity)
             {
             super.insert(
                 entity
                 );
-            for (WidgeonBase.Schema schema : entity.base().schemas().select())
+            for (DataResourceBase.Schema schema : entity.base().schemas().select())
                 {
                 this.schemas().cascade(
                     entity,
@@ -165,7 +165,7 @@ implements WidgeonView.Catalog
          *
          */
         @CascadeEntityMethod
-        protected WidgeonView.Catalog create(final WidgeonView parent, final WidgeonBase.Catalog base)
+        protected DataResourceView.Catalog create(final DataResourceView parent, final DataResourceBase.Catalog base)
             {
             return this.insert(
                 new CatalogViewEntity(
@@ -177,7 +177,7 @@ implements WidgeonView.Catalog
 
         @Override
         @SelectEntityMethod
-        public WidgeonView.Catalog search(final WidgeonView parent, final WidgeonBase.Catalog base)
+        public DataResourceView.Catalog search(final DataResourceView parent, final DataResourceBase.Catalog base)
             {
             return super.first(
                 super.query(
@@ -194,9 +194,9 @@ implements WidgeonView.Catalog
 
         @Override
         @CascadeEntityMethod
-        public WidgeonView.Catalog cascade(final WidgeonView parent, final WidgeonBase.Catalog base)
+        public DataResourceView.Catalog cascade(final DataResourceView parent, final DataResourceBase.Catalog base)
             {
-            WidgeonView.Catalog result = this.search(
+            DataResourceView.Catalog result = this.search(
                 parent,
                 base
                 );
@@ -212,7 +212,7 @@ implements WidgeonView.Catalog
 
         @Override
         @CreateEntityMethod
-        public WidgeonView.Catalog create(final WidgeonView parent, final WidgeonBase.Catalog base, final String name)
+        public DataResourceView.Catalog create(final DataResourceView parent, final DataResourceBase.Catalog base, final String name)
             {
             return this.insert(
                 new CatalogViewEntity(
@@ -225,7 +225,7 @@ implements WidgeonView.Catalog
 
         @Override
         @SelectEntityMethod
-        public Iterable<WidgeonView.Catalog> select(final WidgeonView parent)
+        public Iterable<DataResourceView.Catalog> select(final DataResourceView parent)
             {
             return super.iterable(
                 super.query(
@@ -239,10 +239,10 @@ implements WidgeonView.Catalog
 
         @Override
         @SelectEntityMethod
-        public WidgeonView.Catalog select(final WidgeonView parent, final String name)
+        public DataResourceView.Catalog select(final DataResourceView parent, final String name)
         throws NameNotFoundException
             {
-            WidgeonView.Catalog result = this.search(
+            DataResourceView.Catalog result = this.search(
                 parent,
                 name
                 );
@@ -259,7 +259,7 @@ implements WidgeonView.Catalog
 
         @Override
         @SelectEntityMethod
-        public WidgeonView.Catalog search(final WidgeonView parent, final String name)
+        public DataResourceView.Catalog search(final DataResourceView parent, final String name)
             {
             return super.first(
                 super.query(
@@ -276,7 +276,7 @@ implements WidgeonView.Catalog
 
         @Override
         @SelectEntityMethod
-        public Iterable<WidgeonView.Catalog> select(final WidgeonBase.Catalog base)
+        public Iterable<DataResourceView.Catalog> select(final DataResourceBase.Catalog base)
             {
             return super.iterable(
                 super.query(
@@ -293,23 +293,23 @@ implements WidgeonView.Catalog
          * 
          */
         @Autowired
-        protected WidgeonView.Schema.Factory schemas ;
+        protected DataResourceView.Schema.Factory schemas ;
 
         @Override
-        public WidgeonView.Schema.Factory schemas()
+        public DataResourceView.Schema.Factory schemas()
             {
             return this.schemas ;
             }
         }
 
     @Override
-    public WidgeonView.Catalog.Schemas schemas()
+    public DataResourceView.Catalog.Schemas schemas()
         {
-        return new WidgeonView.Catalog.Schemas()
+        return new DataResourceView.Catalog.Schemas()
             {
 
             @Override
-            public Iterable<WidgeonView.Schema> select()
+            public Iterable<DataResourceView.Schema> select()
                 {
                 return womble().widgeons().views().catalogs().schemas().select(
                     CatalogViewEntity.this
@@ -317,7 +317,7 @@ implements WidgeonView.Catalog
                 }
 
             @Override
-            public WidgeonView.Schema select(String name)
+            public DataResourceView.Schema select(String name)
             throws NameNotFoundException
                 {
                 return womble().widgeons().views().catalogs().schemas().select(
@@ -327,7 +327,7 @@ implements WidgeonView.Catalog
                 }
 
             @Override
-            public WidgeonView.Schema search(String name)
+            public DataResourceView.Schema search(String name)
                 {
                 return womble().widgeons().views().catalogs().schemas().search(
                     CatalogViewEntity.this,
@@ -351,7 +351,7 @@ implements WidgeonView.Catalog
      * Create a new view.
      *
      */
-    protected CatalogViewEntity(final WidgeonView parent, final WidgeonBase.Catalog base)
+    protected CatalogViewEntity(final DataResourceView parent, final DataResourceBase.Catalog base)
         {
         this(
             parent,
@@ -364,7 +364,7 @@ implements WidgeonView.Catalog
      * Create a new view.
      *
      */
-    protected CatalogViewEntity(final WidgeonView parent, final WidgeonBase.Catalog base, final String name)
+    protected CatalogViewEntity(final DataResourceView parent, final DataResourceBase.Catalog base, final String name)
         {
         super(
             name
@@ -374,12 +374,12 @@ implements WidgeonView.Catalog
         }
 
     /**
-     * Our parent Widgeon.
+     * Our parent DataResource.
      *
      */
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = WidgeonViewEntity.class
+        targetEntity = DataResourceViewEntity.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,
@@ -387,10 +387,10 @@ implements WidgeonView.Catalog
         nullable = false,
         updatable = false
         )
-    private WidgeonView parent ;
+    private DataResourceView parent ;
 
     @Override
-    public WidgeonView parent()
+    public DataResourceView parent()
         {
         return this.parent ;
         }
@@ -409,10 +409,10 @@ implements WidgeonView.Catalog
         nullable = false,
         updatable = false
         )
-    private WidgeonBase.Catalog base ;
+    private DataResourceBase.Catalog base ;
 
     @Override
-    public WidgeonBase.Catalog base()
+    public DataResourceBase.Catalog base()
         {
         return this.base ;
         }
@@ -430,11 +430,11 @@ implements WidgeonView.Catalog
         }
 
     @Override
-    public Widgeon.Status status()
+    public DataResource.Status status()
         {
-        if (this.parent().status() == Widgeon.Status.ENABLED)
+        if (this.parent().status() == DataResource.Status.ENABLED)
             {
-            if (this.base().status() == Widgeon.Status.ENABLED)
+            if (this.base().status() == DataResource.Status.ENABLED)
                 {
                 return super.status() ;
                 }
@@ -448,7 +448,7 @@ implements WidgeonView.Catalog
         }
 
     @Override
-    public WidgeonView widgeon()
+    public DataResourceView widgeon()
         {
         return this.parent;
         }

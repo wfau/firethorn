@@ -48,11 +48,11 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
-import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.DataResourceEntityBase;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.base.ColumnBaseEntity;
 
 /**
@@ -95,8 +95,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.ColumnBaseEntity;
         }
     )
 public class ColumnViewEntity
-extends WidgeonStatusEntity
-implements WidgeonView.Column
+extends DataResourceEntityBase
+implements DataResourceView.Column
     {
 
     /**
@@ -123,8 +123,8 @@ implements WidgeonView.Column
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<WidgeonView.Column>
-    implements WidgeonView.Column.Factory
+    extends AbstractFactory<DataResourceView.Column>
+    implements DataResourceView.Column.Factory
         {
 
         @Override
@@ -138,14 +138,14 @@ implements WidgeonView.Column
          *
          */
         @CascadeEntityMethod
-        protected WidgeonView.Column insert(ColumnViewEntity entity)
+        protected DataResourceView.Column insert(ColumnViewEntity entity)
             {
             super.insert(
                 entity
                 );
 /*
  * When we have children ...
-            for (WidgeonBase.Column column : entity.base().columns().select())
+            for (DataResourceBase.Column column : entity.base().columns().select())
                 {
                 this.columns().cascade(
                     entity,
@@ -161,7 +161,7 @@ implements WidgeonView.Column
          *
          */
         @CascadeEntityMethod
-        protected WidgeonView.Column create(final WidgeonView.Table parent, final WidgeonBase.Column base)
+        protected DataResourceView.Column create(final DataResourceView.Table parent, final DataResourceBase.Column base)
             {
             return this.insert(
                 new ColumnViewEntity(
@@ -173,7 +173,7 @@ implements WidgeonView.Column
 
         @Override
         @SelectEntityMethod
-        public WidgeonView.Column search(final WidgeonView.Table parent, final WidgeonBase.Column base)
+        public DataResourceView.Column search(final DataResourceView.Table parent, final DataResourceBase.Column base)
             {
             return super.first(
                 super.query(
@@ -190,9 +190,9 @@ implements WidgeonView.Column
 
         @Override
         @CascadeEntityMethod
-        public WidgeonView.Column cascade(final WidgeonView.Table parent, final WidgeonBase.Column base)
+        public DataResourceView.Column cascade(final DataResourceView.Table parent, final DataResourceBase.Column base)
             {
-            WidgeonView.Column result = this.search(
+            DataResourceView.Column result = this.search(
                 parent,
                 base
                 );
@@ -208,7 +208,7 @@ implements WidgeonView.Column
 
         @Override
         @CreateEntityMethod
-        public WidgeonView.Column create(final WidgeonView.Table parent, final WidgeonBase.Column base, final String name)
+        public DataResourceView.Column create(final DataResourceView.Table parent, final DataResourceBase.Column base, final String name)
             {
             return this.insert(
                 new ColumnViewEntity(
@@ -221,7 +221,7 @@ implements WidgeonView.Column
 
         @Override
         @SelectEntityMethod
-        public Iterable<WidgeonView.Column> select(final WidgeonView.Table parent)
+        public Iterable<DataResourceView.Column> select(final DataResourceView.Table parent)
             {
             return super.iterable(
                 super.query(
@@ -235,10 +235,10 @@ implements WidgeonView.Column
 
         @Override
         @SelectEntityMethod
-        public WidgeonView.Column select(final WidgeonView.Table parent, final String name)
+        public DataResourceView.Column select(final DataResourceView.Table parent, final String name)
         throws NameNotFoundException
             {
-            WidgeonView.Column result = this.search(
+            DataResourceView.Column result = this.search(
                 parent,
                 name
                 );
@@ -255,7 +255,7 @@ implements WidgeonView.Column
 
         @Override
         @SelectEntityMethod
-        public WidgeonView.Column search(final WidgeonView.Table parent, final String name)
+        public DataResourceView.Column search(final DataResourceView.Table parent, final String name)
             {
             return super.first(
                 super.query(
@@ -272,7 +272,7 @@ implements WidgeonView.Column
 
         @Override
         @SelectEntityMethod
-        public Iterable<WidgeonView.Column> select(final WidgeonBase.Column base)
+        public Iterable<DataResourceView.Column> select(final DataResourceBase.Column base)
             {
             return super.iterable(
                 super.query(
@@ -299,7 +299,7 @@ implements WidgeonView.Column
      * Create a new view.
      *
      */
-    protected ColumnViewEntity(final WidgeonView.Table parent, final WidgeonBase.Column base)
+    protected ColumnViewEntity(final DataResourceView.Table parent, final DataResourceBase.Column base)
         {
         this(
             parent,
@@ -312,7 +312,7 @@ implements WidgeonView.Column
      * Create a new view.
      *
      */
-    protected ColumnViewEntity(final WidgeonView.Table parent, final WidgeonBase.Column base, final String name)
+    protected ColumnViewEntity(final DataResourceView.Table parent, final DataResourceBase.Column base, final String name)
         {
         super(
             name
@@ -335,10 +335,10 @@ implements WidgeonView.Column
         nullable = false,
         updatable = false
         )
-    private WidgeonView.Table parent ;
+    private DataResourceView.Table parent ;
 
     @Override
-    public WidgeonView.Table parent()
+    public DataResourceView.Table parent()
         {
         return this.parent ;
         }
@@ -357,10 +357,10 @@ implements WidgeonView.Column
         nullable = false,
         updatable = false
         )
-    private WidgeonBase.Column base ;
+    private DataResourceBase.Column base ;
 
     @Override
-    public WidgeonBase.Column base()
+    public DataResourceBase.Column base()
         {
         return this.base ;
         }
@@ -378,11 +378,11 @@ implements WidgeonView.Column
         }
 
     @Override
-    public Widgeon.Status status()
+    public DataResource.Status status()
         {
-        if (this.parent().status() == Widgeon.Status.ENABLED)
+        if (this.parent().status() == DataResource.Status.ENABLED)
             {
-            if (this.base().status() == Widgeon.Status.ENABLED)
+            if (this.base().status() == DataResource.Status.ENABLED)
                 {
                 return super.status() ;
                 }
@@ -396,25 +396,25 @@ implements WidgeonView.Column
         }
 
     @Override
-    public WidgeonView widgeon()
+    public DataResourceView widgeon()
         {
         return this.parent.schema().catalog().widgeon();
         }
 
     @Override
-    public WidgeonView.Catalog catalog()
+    public DataResourceView.Catalog catalog()
         {
         return this.parent.schema().catalog();
         }
 
     @Override
-    public WidgeonView.Schema schema()
+    public DataResourceView.Schema schema()
         {
         return this.parent.schema();
         }
 
     @Override
-    public WidgeonView.Table table()
+    public DataResourceView.Table table()
         {
         return this.parent;
         }

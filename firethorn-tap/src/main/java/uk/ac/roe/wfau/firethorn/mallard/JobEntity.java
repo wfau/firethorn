@@ -53,7 +53,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
 /**
- * CatalogService.Job implementation.
+ * DataService.Job implementation.
  *
  */
 @Slf4j
@@ -86,7 +86,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
     )
 public class JobEntity
 extends AbstractEntity
-implements CatalogService.Job
+implements DataService.Job
     {
 
     /**
@@ -109,8 +109,8 @@ implements CatalogService.Job
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<CatalogService.Job>
-    implements CatalogService.Job.Factory
+    extends AbstractFactory<DataService.Job>
+    implements DataService.Job.Factory
         {
         @Override
         public Class etype()
@@ -119,7 +119,7 @@ implements CatalogService.Job
             }
 
         @SelectEntityMethod
-        public Iterable<CatalogService.Job> select(CatalogService service)
+        public Iterable<DataService.Job> select(DataService service)
             {
             return super.iterable(
                 super.query(
@@ -133,7 +133,7 @@ implements CatalogService.Job
 
         @Override
         @CreateEntityMethod
-        public CatalogService.Job create(CatalogService service, String name, String adql)
+        public DataService.Job create(DataService service, String name, String adql)
             {
             return super.insert(
                 new JobEntity(
@@ -159,7 +159,7 @@ implements CatalogService.Job
      * Create a new JobEntity.
      *
      */
-    protected JobEntity(CatalogService service, String name, String adql)
+    protected JobEntity(DataService service, String name, String adql)
         {
         super(name);
         this.adql = adql ;
@@ -167,12 +167,12 @@ implements CatalogService.Job
         }
 
     /**
-     * Our parent CatalogService.
+     * Our parent DataService.
      *
      */
     @ManyToOne(
         fetch = FetchType.LAZY,
-        targetEntity = CatalogServiceEntity.class
+        targetEntity = DataServiceEntity.class
         )
     @JoinColumn(
         name = DB_MALLARD_COL,
@@ -180,9 +180,9 @@ implements CatalogService.Job
         nullable = false,
         updatable = false
         )
-    private CatalogService service ;
+    private DataService service ;
     @Override
-    public CatalogService service()
+    public DataService service()
         {
         return this.service ;
         }
@@ -200,9 +200,9 @@ implements CatalogService.Job
     @Enumerated(
         EnumType.STRING
         )
-    private CatalogService.Job.Status status = CatalogService.Job.Status.EDITING ;
+    private DataService.Job.Status status = DataService.Job.Status.EDITING ;
     @Override
-    public  CatalogService.Job.Status status()
+    public  DataService.Job.Status status()
         {
         return this.status;
         }

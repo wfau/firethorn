@@ -59,7 +59,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        CatalogService service = womble().services().select(
+        DataService service = womble().services().select(
             ident[0]
             );
         assertFalse(
@@ -90,7 +90,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        CatalogService service = womble().services().select(
+        DataService service = womble().services().select(
             ident[0]
             );
         assertFalse(
@@ -123,7 +123,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        CatalogService mallard = womble().mallards().select(
+        DataService mallard = womble().mallards().select(
             ident[0]
             );
         assertFalse(
@@ -144,7 +144,7 @@ extends TestBase
         assertNotNull(
             ident[1]
             );
-        CatalogService mallard = womble().mallards().select(
+        DataService mallard = womble().mallards().select(
             ident[1]
             );
         assertFalse(
@@ -178,7 +178,7 @@ extends TestBase
         assertNotNull(
             ident[1]
             );
-        CatalogService mallard = womble().mallards().select(
+        DataService mallard = womble().mallards().select(
             ident[1]
             );
         assertFalse(

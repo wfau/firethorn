@@ -39,9 +39,9 @@ public class WidgeonBaseTestBase
 extends TestBase
     {
 
-    private WidgeonBase base ;
+    private DataResourceBase base ;
 
-    protected WidgeonBase base()
+    protected DataResourceBase base()
         {
         return this.base;
         }

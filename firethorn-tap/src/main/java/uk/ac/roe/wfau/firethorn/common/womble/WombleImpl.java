@@ -45,10 +45,10 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
-import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
-import uk.ac.roe.wfau.firethorn.mallard.CatalogService;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
+import uk.ac.roe.wfau.firethorn.mallard.DataService;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
@@ -493,27 +493,27 @@ implements Womble
  */
 
     /**
-     * Our Autowired Widgeon factory.
+     * Our Autowired DataResource factory.
      * 
      */
     @Autowired
-    protected WidgeonBase.Factory widgeons ;
+    protected DataResourceBase.Factory widgeons ;
 
     @Override
-    public WidgeonBase.Factory widgeons()
+    public DataResourceBase.Factory widgeons()
         {
         return this.widgeons ;
         }
 
     /**
-     * Our Autowired CatalogService factory.
+     * Our Autowired DataService factory.
      * 
      */
     @Autowired
-    protected CatalogService.Factory services ;
+    protected DataService.Factory services ;
 
     @Override
-    public CatalogService.Factory services()
+    public DataService.Factory services()
         {
         return this.services ;
         }

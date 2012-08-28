@@ -28,9 +28,9 @@ import static org.junit.Assert.*;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
-import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
@@ -43,14 +43,14 @@ public class MallardTestCase
 extends TestBase
     {
 
-    private CatalogService alpha ;
-    public  CatalogService alpha()
+    private DataService alpha ;
+    public  DataService alpha()
         {
         return this.alpha ;
         }
 
-    private CatalogService beta ;
-    public  CatalogService beta()
+    private DataService beta ;
+    public  DataService beta()
         {
         return this.beta ;
         }
@@ -252,7 +252,7 @@ extends TestBase
     public void test005()
     throws Exception
         {
-        WidgeonBase base = womble().widgeons().create(
+        DataResourceBase base = womble().widgeons().create(
             this.unique(
                 "widgeon-A"
                 ),

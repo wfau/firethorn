@@ -43,11 +43,11 @@ import javax.persistence.AccessType;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 
-import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
 
 /**
- * Generic base class for a Widgeon Entities.
+ * Generic base class for a DataResource Entities.
  *
  * Problems with AccessType.FIELD means we still have to have get/set methods on fields we want to modify.
  * If we don't include get/set methods, then Hibernate doesn't commit changes to the database. 
@@ -61,9 +61,9 @@ import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
 @Access(
     AccessType.FIELD
     )
-public abstract class WidgeonStatusEntity
+public abstract class DataResourceEntityBase
 extends AbstractEntity
-implements WidgeonStatus
+implements DataResourceEntity
     {
 
     /*
@@ -77,7 +77,7 @@ implements WidgeonStatus
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected WidgeonStatusEntity()
+    protected DataResourceEntityBase()
         {
         super();
         }
@@ -86,7 +86,7 @@ implements WidgeonStatus
      * Protected constructor, owner defaults to the current actor.
      *
      */
-    protected WidgeonStatusEntity(final String name)
+    protected DataResourceEntityBase(final String name)
         {
         super(
             name
@@ -106,16 +106,16 @@ implements WidgeonStatus
     @Enumerated(
         EnumType.STRING
         )
-    private Widgeon.Status status = Widgeon.Status.CREATED ;
+    private DataResource.Status status = DataResource.Status.CREATED ;
 
     @Override
-    public Widgeon.Status status()
+    public DataResource.Status status()
         {
         return this.status;
         }
 
     @Override
-    public void status(Widgeon.Status status)
+    public void status(DataResource.Status status)
         {
         this.status = status ;
         }

@@ -24,15 +24,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * Public interface for an Entity with a status.
- * Move this to Widgeon ?
+ * Move this to DataResource ?
  *
  */
-public interface WidgeonStatus
+public interface DataResourceEntity
 extends Entity
     {
 
     /**
-     * Enum representing the status of a Widgeon component.
+     * Enum representing the status of a DataResource component.
      *
      */
     public enum Status
@@ -109,7 +109,7 @@ extends Entity
          * Create a default message.
          *
          */
-        public static String message(WidgeonStatus.Status status)
+        public static String message(DataResourceEntity.Status status)
             {
             return message(
                 status.toString()
@@ -120,7 +120,7 @@ extends Entity
          * Public constructor, using default message.
          *
          */
-        public InvalidStatusException(WidgeonStatus.Status status)
+        public InvalidStatusException(DataResourceEntity.Status status)
             {
             this(
                 status,
@@ -134,7 +134,7 @@ extends Entity
          * Public constructor, with specific message.
          *
          */
-        public InvalidStatusException(WidgeonStatus.Status status, String message)
+        public InvalidStatusException(DataResourceEntity.Status status, String message)
             {
             super(
                 message
@@ -142,9 +142,9 @@ extends Entity
             this.status = status ;
             }
 
-        private WidgeonStatus.Status status;
+        private DataResourceEntity.Status status;
 
-        public WidgeonStatus.Status status()
+        public DataResourceEntity.Status status()
             {
             return this.status;
             }

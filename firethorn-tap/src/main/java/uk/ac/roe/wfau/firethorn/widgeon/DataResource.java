@@ -27,41 +27,41 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
 /**
  * Public interface for describing a data resource (JDBC database OR TAP service).
- * Called Widgeon because the word Resource has already been used so many times to mean different things in different places.
+ * Called DataResource because the word Resource has already been used so many times to mean different things in different places.
  *
  */
-public interface Widgeon
-extends WidgeonStatus
+public interface DataResource
+extends DataResourceEntity
     {
 
     /**
-     * Access to this Widgeon's Catalog.
+     * Access to this DataResource's Catalog.
      *
      */
     public Catalogs catalogs();
 
     /**
-     * Public interface for accessing a Widgeon's Catalogs.
+     * Public interface for accessing a DataResource's Catalogs.
      *
      */
-    public interface Catalogs<CatalogType extends Widgeon.Catalog>
+    public interface Catalogs<CatalogType extends DataResource.Catalog>
         {
 
         /**
-         * Select all the Catalogs from the Widgeon.
+         * Select all the Catalogs from the DataResource.
          *
          */
         public Iterable<CatalogType> select();
 
         /**
-         * Select a named Catalog from the Widgeon.
+         * Select a named Catalog from the DataResource.
          *
          */
         public CatalogType select(String name)
         throws NameNotFoundException;
 
         /**
-         * Search for a named Catalog from the Widgeon.
+         * Search for a named Catalog from the DataResource.
          *
          */
         public CatalogType search(String name);
@@ -72,33 +72,33 @@ extends WidgeonStatus
      * Public interface for Catalog metadata.
      *
      */
-    public interface Catalog<WidgeonType extends Widgeon>
-    extends WidgeonComponent<WidgeonType>
+    public interface Catalog<WidgeonType extends DataResource>
+    extends DataResourceComponent<WidgeonType>
         {
 
         /**
          * Factory interface for creating and selecting Catalogs.
          *
          */
-        public static interface Factory<WidgeonType extends Widgeon, CatalogType extends Widgeon.Catalog>
+        public static interface Factory<WidgeonType extends DataResource, CatalogType extends DataResource.Catalog>
         extends Entity.Factory<CatalogType>
             {
 
             /**
-             * Select all the Catalogs from a Widgeon.
+             * Select all the Catalogs from a DataResource.
              *
              */
             public Iterable<CatalogType> select(WidgeonType parent);
 
             /**
-             * Select a named Catalog from a Widgeon.
+             * Select a named Catalog from a DataResource.
              *
              */
             public CatalogType select(WidgeonType parent, String name)
             throws NameNotFoundException;
 
             /**
-             * Search for a named Catalog from a Widgeon.
+             * Search for a named Catalog from a DataResource.
              *
              */
             public CatalogType search(WidgeonType parent, String name);
@@ -115,7 +115,7 @@ extends WidgeonStatus
          * Public interface for accessing a Catalog's Schemas.
          *
          */
-        public interface Schemas<SchemaType extends Widgeon.Schema>
+        public interface Schemas<SchemaType extends DataResource.Schema>
             {
 
             /**
@@ -144,15 +144,15 @@ extends WidgeonStatus
      * Public interface for Schema metadata.
      *
      */
-    public interface Schema<CatalogType extends Widgeon.Catalog>
-    extends WidgeonComponent<CatalogType>
+    public interface Schema<CatalogType extends DataResource.Catalog>
+    extends DataResourceComponent<CatalogType>
         {
 
         /**
          * Factory interface for creating and selecting Schemas.
          *
          */
-        public static interface Factory<CatalogType extends Widgeon.Catalog, SchemaType extends Widgeon.Schema>
+        public static interface Factory<CatalogType extends DataResource.Catalog, SchemaType extends DataResource.Schema>
         extends Entity.Factory<SchemaType>
             {
 
@@ -187,7 +187,7 @@ extends WidgeonStatus
          * Public interface for accessing a Schema's Tables.
          *
          */
-        public interface Tables<TableType extends Widgeon.Table>
+        public interface Tables<TableType extends DataResource.Table>
             {
 
             /**
@@ -216,15 +216,15 @@ extends WidgeonStatus
      * Public interface for Table metadata.
      *
      */
-    public interface Table<SchemaType extends Widgeon.Schema>
-    extends WidgeonComponent<SchemaType>
+    public interface Table<SchemaType extends DataResource.Schema>
+    extends DataResourceComponent<SchemaType>
         {
 
         /**
          * Factory interface for creating and selecting Tables.
          *
          */
-        public static interface Factory<SchemaType extends Widgeon.Schema, TableType extends Widgeon.Table>
+        public static interface Factory<SchemaType extends DataResource.Schema, TableType extends DataResource.Table>
         extends Entity.Factory<TableType>
             {
 
@@ -259,7 +259,7 @@ extends WidgeonStatus
          * Public interface for accessing a Table's Columns.
          *
          */
-        public interface Columns<ColumnType extends Widgeon.Column>
+        public interface Columns<ColumnType extends DataResource.Column>
             {
 
             /**
@@ -288,15 +288,15 @@ extends WidgeonStatus
      * Public interface for Column metadata.
      *
      */
-    public interface Column<TableType extends Widgeon.Table>
-    extends WidgeonComponent<TableType>
+    public interface Column<TableType extends DataResource.Table>
+    extends DataResourceComponent<TableType>
         {
 
         /**
          * Factory interface for creating and selecting Columns.
          *
          */
-        public static interface Factory<TableType extends Widgeon.Table, ColumnType extends Widgeon.Column>
+        public static interface Factory<TableType extends DataResource.Table, ColumnType extends DataResource.Column>
         extends Entity.Factory<ColumnType>
             {
 

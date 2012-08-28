@@ -53,7 +53,7 @@ import adql.translator.ADQLTranslator;
 import adql.translator.PostgreSQLTranslator;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView ;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView ;
 import uk.ac.roe.wfau.firethorn.widgeon.WidgeonViewTestBase ;
 
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTable ;
@@ -323,7 +323,7 @@ extends WidgeonViewTestBase
         }
 
     /**
-     * Use AdqlTable to create a DBTable metadata based on a WidgeonView.
+     * Use AdqlTable to create a DBTable metadata based on a DataResourceView.
      *
      */
     public DBTable adqlTable()
@@ -450,7 +450,7 @@ extends WidgeonViewTestBase
                                 );
 
         //
-        // Wrap the WidgeonView.Table in an AdqlTable.
+        // Wrap the DataResourceView.Table in an AdqlTable.
         return factory.create(
             base().views().select(
                 "adql_view"

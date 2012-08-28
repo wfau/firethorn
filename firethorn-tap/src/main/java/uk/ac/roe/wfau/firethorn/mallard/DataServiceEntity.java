@@ -53,13 +53,13 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
-import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.view.WidgeonViewEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.view.DataResourceViewEntity;
 
 /**
- * CatalogService implementation.
+ * DataService implementation.
  *
  */
 @Slf4j
@@ -68,23 +68,23 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.view.WidgeonViewEntity;
     AccessType.FIELD
     )
 @Table(
-    name = CatalogServiceEntity.DB_TABLE_NAME
+    name = DataServiceEntity.DB_TABLE_NAME
     )
 @NamedQueries(
         {
         @NamedQuery(
             name  = "mallard-select-all",
-            query = "FROM CatalogServiceEntity ORDER BY ident desc"
+            query = "FROM DataServiceEntity ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "mallard-select-name",
-            query = "FROM CatalogServiceEntity WHERE name = :name ORDER BY ident desc"
+            query = "FROM DataServiceEntity WHERE name = :name ORDER BY ident desc"
             )
         }
     )
-public class CatalogServiceEntity
+public class DataServiceEntity
 extends AbstractEntity
-implements CatalogService
+implements DataService
     {
 
     /**
@@ -99,19 +99,19 @@ implements CatalogService
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<CatalogService>
-    implements CatalogService.Factory
+    extends AbstractFactory<DataService>
+    implements DataService.Factory
         {
 
         @Override
         public Class etype()
             {
-            return CatalogServiceEntity.class ;
+            return DataServiceEntity.class ;
             }
 
         @Override
         @SelectEntityMethod
-        public Iterable<CatalogService> select()
+        public Iterable<DataService> select()
             {
             return super.iterable(
                 super.query(
@@ -122,10 +122,10 @@ implements CatalogService
 
         @Override
         @CreateEntityMethod
-        public CatalogService create(String name)
+        public DataService create(String name)
             {
             return super.insert(
-                new CatalogServiceEntity(
+                new DataServiceEntity(
                     name
                     )
                 );
@@ -150,16 +150,16 @@ implements CatalogService
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected CatalogServiceEntity()
+    protected DataServiceEntity()
         {
         super();
         }
 
     /**
-     * Create a new CatalogServiceEntity.
+     * Create a new DataServiceEntity.
      *
      */
-    protected CatalogServiceEntity(String name)
+    protected DataServiceEntity(String name)
         {
         super(name);
         }
@@ -173,7 +173,7 @@ implements CatalogService
             public Job create(String name, String adql)
                 {
                 return womble().services().jobs().create(
-                    CatalogServiceEntity.this,
+                    DataServiceEntity.this,
                     name,
                     adql
                     ) ;
@@ -183,7 +183,7 @@ implements CatalogService
             public Iterable<Job> select()
                 {
                 return womble().services().jobs().select(
-                    CatalogServiceEntity.this
+                    DataServiceEntity.this
                     ) ;
                 }
             };
@@ -196,7 +196,7 @@ implements CatalogService
     @ManyToMany(
         fetch = FetchType.LAZY,
         cascade = CascadeType.ALL,
-        targetEntity = WidgeonViewEntity.class
+        targetEntity = DataResourceViewEntity.class
         )
     @JoinTable(
         name="mallard_widgeons",
@@ -211,12 +211,12 @@ implements CatalogService
             updatable = false
             )
         )
-    private Set<WidgeonView> widgeons = new HashSet<WidgeonView>(0);
-    protected Set<WidgeonView> getWidgeons()
+    private Set<DataResourceView> widgeons = new HashSet<DataResourceView>(0);
+    protected Set<DataResourceView> getWidgeons()
         {
         return this.widgeons ;
         }
-    protected void setWidgeons(Set<WidgeonView> set)
+    protected void setWidgeons(Set<DataResourceView> set)
         {
         this.widgeons = set ;
         }
@@ -227,14 +227,14 @@ implements CatalogService
         return new Widgeons()
             {
             @Override
-            public void insert(WidgeonView widgeon)
+            public void insert(DataResourceView widgeon)
                 {
                 widgeons.add(
                     widgeon
                     );
                 }
             @Override
-            public Iterable<WidgeonView> select()
+            public Iterable<DataResourceView> select()
                 {
                 return widgeons ;
                 }

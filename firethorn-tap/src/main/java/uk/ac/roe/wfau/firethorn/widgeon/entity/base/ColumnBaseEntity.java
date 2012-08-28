@@ -48,11 +48,11 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
-import uk.ac.roe.wfau.firethorn.widgeon.Widgeon;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonBase;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonView;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonStatus;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.DataResourceEntityBase;
 
 /**
  * Column implementation.
@@ -86,8 +86,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.WidgeonStatusEntity;
         }
     )
 public class ColumnBaseEntity
-extends WidgeonStatusEntity
-implements WidgeonBase.Column
+extends DataResourceEntityBase
+implements DataResourceBase.Column
     {
 
     /**
@@ -108,8 +108,8 @@ implements WidgeonBase.Column
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<WidgeonBase.Column>
-    implements WidgeonBase.Column.Factory
+    extends AbstractFactory<DataResourceBase.Column>
+    implements DataResourceBase.Column.Factory
         {
 
         @Override
@@ -123,12 +123,12 @@ implements WidgeonBase.Column
          *
          */
         @CascadeEntityMethod
-        protected WidgeonBase.Column insert(final ColumnBaseEntity entity)
+        protected DataResourceBase.Column insert(final ColumnBaseEntity entity)
             {
             super.insert(
                 entity
                 );
-            for (WidgeonView.Table view : entity.parent().views().select())
+            for (DataResourceView.Table view : entity.parent().views().select())
                 {
                 this.views().cascade(
                     view,
@@ -140,7 +140,7 @@ implements WidgeonBase.Column
 
         @Override
         @CreateEntityMethod
-        public WidgeonBase.Column create(final WidgeonBase.Table parent, final String name)
+        public DataResourceBase.Column create(final DataResourceBase.Table parent, final String name)
             {
             return this.insert(
                 new ColumnBaseEntity(
@@ -152,7 +152,7 @@ implements WidgeonBase.Column
 
         @Override
         @SelectEntityMethod
-        public Iterable<WidgeonBase.Column> select(final WidgeonBase.Table parent)
+        public Iterable<DataResourceBase.Column> select(final DataResourceBase.Table parent)
             {
             return super.iterable(
                 super.query(
@@ -166,10 +166,10 @@ implements WidgeonBase.Column
 
         @Override
         @SelectEntityMethod
-        public WidgeonBase.Column select(final WidgeonBase.Table parent, final String name)
+        public DataResourceBase.Column select(final DataResourceBase.Table parent, final String name)
         throws NameNotFoundException
             {
-            WidgeonBase.Column result = this.search(
+            DataResourceBase.Column result = this.search(
                 parent,
                 name
                 );
@@ -186,7 +186,7 @@ implements WidgeonBase.Column
 
         @Override
         @SelectEntityMethod
-        public WidgeonBase.Column search(final WidgeonBase.Table parent, final String name)
+        public DataResourceBase.Column search(final DataResourceBase.Table parent, final String name)
             {
             return super.first(
                 super.query(
@@ -206,22 +206,22 @@ implements WidgeonBase.Column
          * 
          */
         @Autowired
-        protected WidgeonView.Column.Factory views ;
+        protected DataResourceView.Column.Factory views ;
 
         @Override
-        public WidgeonView.Column.Factory views()
+        public DataResourceView.Column.Factory views()
             {
             return this.views ;
             }
         }
 
     @Override
-    public WidgeonBase.Column.Views views()
+    public DataResourceBase.Column.Views views()
         {
-        return new WidgeonBase.Column.Views()
+        return new DataResourceBase.Column.Views()
             {
             @Override
-            public Iterable<WidgeonView.Column> select()
+            public Iterable<DataResourceView.Column> select()
                 {
                 return womble().widgeons().views().catalogs().schemas().tables().columns().select(
                     ColumnBaseEntity.this
@@ -229,7 +229,7 @@ implements WidgeonBase.Column
                 }
 
             @Override
-            public WidgeonView.Column search(WidgeonView.Table parent)
+            public DataResourceView.Column search(DataResourceView.Table parent)
                 {
                 return womble().widgeons().views().catalogs().schemas().tables().columns().search(
                     parent,
@@ -253,7 +253,7 @@ implements WidgeonBase.Column
      * Create a new Catalog.
      *
      */
-    protected ColumnBaseEntity(final WidgeonBase.Table parent, final String name)
+    protected ColumnBaseEntity(final DataResourceBase.Table parent, final String name)
         {
         super(name);
         this.parent = parent ;
@@ -273,18 +273,18 @@ implements WidgeonBase.Column
         nullable = false,
         updatable = false
         )
-    private WidgeonBase.Table parent ;
+    private DataResourceBase.Table parent ;
 
     @Override
-    public WidgeonBase.Table parent()
+    public DataResourceBase.Table parent()
         {
         return this.parent ;
         }
 
     @Override
-    public Widgeon.Status status()
+    public DataResource.Status status()
         {
-        if (this.parent().status() == Widgeon.Status.ENABLED)
+        if (this.parent().status() == DataResource.Status.ENABLED)
             {
             return super.status();
             }
@@ -294,25 +294,25 @@ implements WidgeonBase.Column
         }
 
     @Override
-    public WidgeonBase widgeon()
+    public DataResourceBase widgeon()
         {
         return this.parent.schema().catalog().widgeon();
         }
 
     @Override
-    public WidgeonBase.Catalog catalog()
+    public DataResourceBase.Catalog catalog()
         {
         return this.parent.schema().catalog();
         }
 
     @Override
-    public WidgeonBase.Schema schema()
+    public DataResourceBase.Schema schema()
         {
         return this.parent.schema();
         }
 
     @Override
-    public WidgeonBase.Table table()
+    public DataResourceBase.Table table()
         {
         return this.parent;
         }
