@@ -1,13 +1,16 @@
 <%@ taglib prefix="jstl-core"   uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring-tags" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="spring-form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="test"        uri="/WEB-INF/tlds/test-tags.xml"%>
 <%@ page
-    import="java.util.Iterator"
+    import="uk.ac.roe.wfau.firethorn.webapp.control.ControllerData"
     session="true"
 %><%
-//
-// Java code before page is generated
-//
+
+ControllerData<Long> data = (ControllerData<Long>) request.getAttribute(
+    ControllerData.MODEL_ATTRIB
+    ) ;
+
 %>
 <html>
     <head>
@@ -17,6 +20,17 @@
     <body>
         <div>
             Hello world :-)
+        </div>
+
+        <div>
+            Data : <%= data.target() %>
+        </div>
+
+        <div>
+            Frog : <test:simple  name='green' size='<%= data.target() %>'/>
+        </div>
+        <div>
+            Toad : <test:complex name='brown' size='22'/>
         </div>
 
         <div>

@@ -98,6 +98,11 @@ extends ControllerBase
         log.debug("count [{}]", count++);
         log.debug("ident [{}]", data.target());
 
+		model.addObject(
+		    ControllerData.MODEL_ATTRIB,
+		    data
+		    );
+
 		model.setViewName(
 		    "test"
 		    );
@@ -105,8 +110,6 @@ extends ControllerBase
         return model ;
 
         }
-
-
 
     }
 

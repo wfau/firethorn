@@ -1,0 +1,85 @@
+
+
+    #
+    # User identity
+
+    /identity/{uid}
+
+    #
+    # User account (profile)
+
+    /account/{aid}
+
+    #
+    # Public TAP/ADQL service and views
+
+    /adql/service/{sid}
+    /adql/service/{sid}/resources
+
+    /adql/resource/{rid}
+    /adql/resource/{rid}/catalog
+
+    /adql/catalog/{cid}
+    /adql/catalog/{cid}/schemas
+
+    /adql/schema/{sid}
+    /adql/schema/{sid}/tables
+
+    /adql/table/{tid}
+    /adql/table/{tid}/indexes
+    /adql/table/{tid}/columns
+
+    /adql/column/{cid}
+    /adql/column/{cid}
+
+    #
+    # Local JDBC resources
+
+    /jdbc/resource/{rid}
+    /jdbc/resource/{rid}/views
+    /jdbc/resource/{rid}/catalogs
+
+    /jdbc/catalog/{cid}
+    /jdbc/catalog/{cid}/views
+    /jdbc/catalog/{cid}/schemas
+
+    /jdbc/schema/{sid}
+    /jdbc/schema/{sid}/views
+    /jdbc/schema/{sid}/tables
+
+    /jdbc/table/{tid}
+    /jdbc/table/{tid}/views
+    /jdbc/table/{tid}/indexes
+    /jdbc/table/{tid}/columns
+
+    /jdbc/column/{cid}
+    /jdbc/column/{cid}/views
+
+    #
+    # External IVOA resources
+
+    /ivoa/resource/{rid}
+    /ivoa/resource/{rid}/views
+    /ivoa/resource/{rid}/catalogs
+
+    /ivoa/catalog/{cid}
+    /ivoa/catalog/{cid}/views
+    /ivoa/catalog/{cid}/schemas
+    
+    /ivoa/schema/{sid}
+    /ivoa/schema/{sid}/views
+    /ivoa/schema/{sid}/tables
+
+    /ivoa/table/{tid}
+    /ivoa/table/{tid}/views
+    /ivoa/table/{tid}/indexes
+    /ivoa/table/{tid}/columns
+
+    /ivoa/column/{cid}
+    /ivoa/column/{cid}/views
+
+    #
+    # Job control
+    /job/{jid}
+
+
