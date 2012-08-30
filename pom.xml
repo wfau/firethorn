@@ -390,7 +390,6 @@
                 <artifactId>maven-deploy-plugin</artifactId>
             </plugin>
 
-
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>

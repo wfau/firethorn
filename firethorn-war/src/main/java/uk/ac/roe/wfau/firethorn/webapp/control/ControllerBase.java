@@ -25,21 +25,22 @@ public class ControllerBase
     {
 
     /**
-     * Session attribute name for the current user ID.
-     * 
-     */
-    public static final String SESSION_UID = "firethorn.uid" ;
-
-    /**
      * Get the Session ID from a WebRequest.
      * 
      */
-    public String sid(WebRequest request)
+    public static String sid(WebRequest request)
         {
         return request.getSessionId();
         }
 
+    /**
+     * Get our webapp context from a WebRequest.
+     *
+     */
+    public static String context(WebRequest request)
+        {
+        return request.getContextPath();
+        }
 
-    
     }
 

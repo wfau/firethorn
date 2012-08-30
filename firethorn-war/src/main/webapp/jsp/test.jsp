@@ -7,7 +7,7 @@
     session="true"
 %><%
 
-ControllerData<Long> data = (ControllerData<Long>) request.getAttribute(
+ControllerData data = (ControllerData) request.getAttribute(
     ControllerData.MODEL_ATTRIB
     ) ;
 
@@ -27,16 +27,10 @@ ControllerData<Long> data = (ControllerData<Long>) request.getAttribute(
         </div>
 
         <div>
-            Frog : <test:simple  name='green' size='<%= data.target() %>'/>
+            Frog : <test:simple  name='green' size='11'/>
         </div>
         <div>
             Toad : <test:complex name='brown' size='22'/>
-        </div>
-
-        <div>
-	        Some simple math: ${2+2}
-		    <br/>
-		    Some simple math with c:out: <jstl-core:out value="${2+2}"/>
         </div>
 
     </body>

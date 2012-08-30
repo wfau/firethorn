@@ -1,0 +1,69 @@
+
+For now, concentrate on the HTML forms, not web service API.
+
+    #
+    # Service metadata.
+    GET /adql/services
+    => html meta
+
+    #
+    # Select all.
+    GET /adql/services/select
+    => List<Service> 
+
+    #
+    # Select by name
+    GET /adql/services/select?name=albert
+    => List<Service> 
+
+    #
+    # Search by text (form)
+    GET /adql/services/search
+    => HTML form
+
+    #
+    # Search by text
+    GET /adql/services/search?text=albert
+    => List<Service> 
+
+
+    #
+    # Create form
+    GET /adql/services/create
+    => HTML form
+
+    #
+    # Create operation
+    POST /adql/services/create 
+    => 201 created, location:/adql/service/{sid}
+
+
+    #
+    # Details of a specific service (singular).
+    GET /adql/service/{sid}
+    => Service
+
+    #
+    # Metadata for the service resource list.
+    GET /adql/service/{sid}/resources
+    => html meta
+
+    #
+    # Select all
+    GET /adql/service/{sid}/resources/select
+    => List<Resource>
+
+    #
+    # Select by name
+    GET /adql/service/{sid}/resources/select?name=xxxx
+    => List<Resource>
+
+    #
+    # Search by text
+    GET /adql/service/{sid}/resources/search?text=xxxx
+    => List<Resource>
+
+
+
+
+

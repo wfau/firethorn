@@ -41,7 +41,7 @@
         <attribute>
             <name>size</name>
             <required>false</required>
-            <!--rtexprvalue>true</rtexprvalue-->
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
 </taglib>

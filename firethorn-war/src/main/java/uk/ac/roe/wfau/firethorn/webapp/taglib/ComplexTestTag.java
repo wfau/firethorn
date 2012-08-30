@@ -36,15 +36,14 @@ extends TagSupport
         {
         log.debug("ComplexTestTag.doStartTag()");
 
-        ControllerData<Long> data = (ControllerData<Long>) this.pageContext.getAttribute(
-            ControllerData.MODEL_ATTRIB,
+        ControllerData data = (ControllerData) this.pageContext.getAttribute(
+            ControllerData.MODEL_PROPERTY,
             PageContext.REQUEST_SCOPE
             );
 
         JspWriter out = this.pageContext.getOut();
         try {
-            out.print("vdthfvdrhdfsg [" + this.name + "][" + this.size + "] dfw45tdaesfA");
-            out.print("vdthfvdrhdfsg [" + data.target() + "] dfw45tdaesfA");
+            out.print("[" + this.name + "][" + this.size + "]");
             }
         catch (IOException ouch)
             {

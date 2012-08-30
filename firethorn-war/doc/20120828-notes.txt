@@ -1,36 +1,116 @@
 
+#
+# http://www.markbaker.ca/2002/08/HowContainersWork/
+# "If you want to create a resource, POST a representation of its state to a container that will assign it a URI."
 
     #
     # User identity
 
-    /identity/{uid}
+        GET /identity/{uid}
+        => Identity
 
     #
     # User account (profile)
 
-    /account/{aid}
+        GET /account/{uid}
+        => Account
 
     #
-    # Public TAP/ADQL service and views
+    # Public TAP/ADQL service and resources
 
-    /adql/service/{sid}
-    /adql/service/{sid}/resources
+        GET /adql/services
+        => List<Service> 
 
-    /adql/resource/{rid}
-    /adql/resource/{rid}/catalog
+        GET /adql/services?ident=xxxx
+        => Service 
 
-    /adql/catalog/{cid}
-    /adql/catalog/{cid}/schemas
+        GET /adql/services?name=albert
+        => List<Service> 
 
-    /adql/schema/{sid}
-    /adql/schema/{sid}/tables
+        GET /adql/services?text=albert
+        => List<Service> 
 
-    /adql/table/{tid}
-    /adql/table/{tid}/indexes
-    /adql/table/{tid}/columns
+        POST /adql/services 
+        => 201 created, location:/adql/service/{sid}
 
-    /adql/column/{cid}
-    /adql/column/{cid}
+        GET /adql/services/{sid}
+        => Service
+
+
+        GET /adql/services/{sid}/resources
+        => List<Resource>
+
+        GET /adql/resource/{rid}
+        => Resource
+
+
+        How to add/remove from the list of service resources ?
+
+        # Mimic 'create' .. but is this is actually 'insert' not 'create'.
+        POST /adql/service/{sid}/resources?ident=xxxx
+        => 201 created, location:/adql/resource/{rid}
+
+        # How to remove an item from the list ?
+        # Is it 'delete' on the resource ?
+        DELETE /adql/service/{sid}/resources?ident=xxxx
+        => 204 No Content
+
+
+
+
+        GET /adql/service/{sid}/resources/select
+        => List<Resource> (as a Node, with metadata)
+
+        GET /adql/service/{sid}/resources/select?name=xxxx
+        => List<Resource> (as a Node, with metadata)
+
+        GET /adql/service/{sid}/resources/search?text=xxxx
+        => List<Resource> (as a Node, with metadata)
+
+        GET  /adql/service/{sid}/resources/insert
+        => ServiceNode metadata 
+        POST /adql/service/{sid}/resources/insert?ident=xxxx
+        => 204 No Content
+
+        GET  /adql/service/{sid}/resources/remove
+        => ServiceNode metadata
+        POST /adql/service/{sid}/resources/remove?ident=xxxx
+        => 204 No Content
+
+
+
+
+
+
+
+
+
+        GET /adql/resource/{rid}/catalogs
+        => List<Catalog>
+
+        GET /adql/catalog/{cid}
+        => Catalog
+
+        GET /adql/catalog/{cid}/schemas
+        => List<Schema>
+
+        GET /adql/schema/{sid}
+        => Schema
+
+        GET /adql/schema/{sid}/tables
+        => List<Table>
+
+        GET /adql/table/{tid}
+        => Table
+
+        GET /adql/table/{tid}/indexes
+        => List<Index>
+
+        GET /adql/table/{tid}/columns
+        => List<Column>
+
+        GET /adql/column/{cid}
+        => Column
 
     #
     # Local JDBC resources
@@ -56,7 +136,9 @@
     /jdbc/column/{cid}/views
 
     #
-    # External IVOA resources
+    # External IVOA resources (TAP services)
+    # Create a new one using web form, IVORN, VOSI endpoint, etc
+    /ivoa/resource/create
 
     /ivoa/resource/{rid}
     /ivoa/resource/{rid}/views
