@@ -209,7 +209,7 @@ extends ControllerBase
         log.debug("AdqlServicesController.create()");
 
 		model.setViewName(
-		    "adql/services/create-form"
+		    "adql/services/create"
 		    );
 
         return model ;
@@ -226,9 +226,13 @@ extends ControllerBase
 	    ){
         log.debug("AdqlServicesController.create(String name)");
 
+		model.addObject(
+		    CREATE_NAME_PROPERTY,
+            name
+		    );
 
 		model.setViewName(
-		    "adql/services/create-done"
+		    "adql/services/create"
 		    );
 
         return model ;

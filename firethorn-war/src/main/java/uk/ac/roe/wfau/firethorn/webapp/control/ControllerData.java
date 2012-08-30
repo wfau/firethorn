@@ -40,7 +40,7 @@ public class ControllerData
      * Spring MVC property name.
      *
      */
-    public static final String MODEL_PROPERTY = "firethorn.request.data" ;
+    public static final String MODEL_PROPERTY = "firethorn.controller.data" ;
 
    
     /**

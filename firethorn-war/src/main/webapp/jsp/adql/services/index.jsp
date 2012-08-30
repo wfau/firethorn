@@ -20,14 +20,23 @@ PathBuilder paths = new PathBuilder(
         <div>
             ADQL TAP Services
             <div>
-                <form metod='GET' action='<%= paths.path("adql/services/select") %>'>
-                    Select by name <input type='text' name='<%= ServicesController.SELECT_NAME_PROPERTY %>' value=''/>
+                Select a service by name
+                <form method='GET' action='<%= paths.path("adql/services/select") %>'>
+                    Name <input type='text' name='<%= ServicesController.SELECT_NAME_PROPERTY %>' value=''/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>
             <div>
-                <form metod='GET' action='<%= paths.path("adql/services/search") %>'>
-                    Search by text <input type='text' name='<%= ServicesController.SEARCH_TEXT_PROPERTY %>' value=''/>
+                Search for services with text
+                <form method='GET' action='<%= paths.path("adql/services/search") %>'>
+                    Text <input type='text' name='<%= ServicesController.SEARCH_TEXT_PROPERTY %>' value=''/>
+                    <input type='submit' value='Go'/>
+                </form>
+            </div>
+            <div>
+                Create new service
+                <form method='POST' action='<%= paths.path("adql/services/create") %>'>
+                    Name <input type='text' name='<%= ServicesController.CREATE_NAME_PROPERTY %>' value=''/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>
