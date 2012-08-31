@@ -62,10 +62,10 @@ extends ControllerBase
     public static final String CONTROLLER_PATH = "adql/services" ;
 
     /**
-     * MVC property for a list of Service(s).
+     * MVC property for a Iterable list of Service(s).
      * 
      */
-    public static final String SERVICE_LIST_PROPERTY = "adql.services.list" ;
+    public static final String SERVICE_ITER_PROPERTY = "adql.services.iterator" ;
 
     /**
      * MVC property for the Service name.
@@ -120,6 +120,13 @@ extends ControllerBase
 	    ){
         log.debug("AdqlServicesController.select()");
 
+        Iterable<DataService> iter = womble().services().select();
+
+		model.addObject(
+		    SERVICE_ITER_PROPERTY,
+		    iter
+		    );
+
 		model.setViewName(
 		    "adql/services/select"
 		    );
@@ -146,7 +153,7 @@ extends ControllerBase
 		    );
 
 		model.addObject(
-		    SERVICE_LIST_PROPERTY,
+		    SERVICE_ITER_PROPERTY,
             new ArrayList()		    
 		    );
 
@@ -195,7 +202,7 @@ extends ControllerBase
 		    );
 
 		model.addObject(
-		    SERVICE_LIST_PROPERTY,
+		    SERVICE_ITER_PROPERTY,
             new ArrayList()
 		    );
 
@@ -208,7 +215,8 @@ extends ControllerBase
 
 
     /**
-     * GET request to create a new entity.
+     * GET request to create a new DataService.
+     * Displays the HTML form. 
      * 
      */
 	@RequestMapping(value="create", method=RequestMethod.GET)
@@ -226,7 +234,7 @@ extends ControllerBase
         }
 
     /**
-     * POST request to create a new entity.
+     * POST request to create a new DataService.
      *
      */
 	@RequestMapping(value="create", method=RequestMethod.POST)
@@ -237,7 +245,6 @@ extends ControllerBase
 	    ){
         log.debug("AdqlServicesController.create(String name)");
         log.debug("  Name [{}]", name);
-
 
         //
         // Try creating the service.
