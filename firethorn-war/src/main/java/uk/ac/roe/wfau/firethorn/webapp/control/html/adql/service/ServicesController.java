@@ -35,13 +35,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
 import uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder;
 import uk.ac.roe.wfau.firethorn.webapp.control.SpringPathBuilder;
+import uk.ac.roe.wfau.firethorn.webapp.control.LocationHeaders;
 
 import uk.ac.roe.wfau.firethorn.mallard.DataService ;
 
@@ -245,23 +245,14 @@ extends ControllerBase
             name
             );
 
-        log.debug("  Created [{}][{}]", created.ident(), created.name());
+        log.debug("  Created [{}]", created);
 
         PathBuilder builder = new SpringPathBuilder(
             request
             );
 
-        /*
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(
-            builder.location(
-                "adql/service",
-                created
-                )
-            );
-        */
         return new ResponseEntity<String>(
-            new LocationHeader(
+            new LocationHeaders(
                 builder.location(
                     "adql/service",
                     created
@@ -270,19 +261,5 @@ extends ControllerBase
             HttpStatus.SEE_OTHER
             );
         }
-
-
-    public static class LocationHeader
-    extends HttpHeaders
-        {
-        public LocationHeader(URI location)
-            {
-            super();
-            this.setLocation(
-                location
-                );
-            }
-        }
-
     }
 
