@@ -42,7 +42,7 @@
 		<level value="DEBUG"/>
 	</logger>
 	<logger name="uk.ac.roe.wfau.firethorn.womble">
-		<level value="WARN"/>
+		<level value="INFO"/>
 	</logger>
 
 	<!--+
@@ -52,10 +52,10 @@
 		<level value="INFO" />
 	</logger>
 	<logger name="org.springframework.beans">
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</logger>
 	<logger name="org.springframework.context">
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</logger>
 	<logger name="org.springframework.http">
 		<level value="INFO" />
@@ -72,20 +72,20 @@
         | http://stackoverflow.com/questions/1965454/spring-transaction-show-in-log
 	    +-->
 	<logger name="org.springframework.transaction">
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</logger>
 	<logger name="org.springframework.orm">
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</logger>
 
 	<!--+
 	    | Hibernate loggers.
 	    +-->
 	<logger name="org.hibernate">
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</logger>
 	<logger name="org.hibernate.SQL">
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</logger>
 
 	<!--+
