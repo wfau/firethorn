@@ -98,12 +98,11 @@
 	    +-->
     <filter>
         <filter-name>spring-filter</filter-name>
-        <!--filter-class>org.springframework.orm.hibernate3.support.OpenSessionInViewFilter</filter-class-->
         <filter-class>org.springframework.orm.hibernate4.support.OpenSessionInViewFilter</filter-class>
-        <init-param>
+        <!--init-param>
             <param-name>entityManagerFactoryBeanName</param-name>
             <param-value>reportsEntityManagerFactory</param-value>
-        </init-param>
+        </init-param-->
         <init-param>
             <param-name>sessionFactoryBeanName</param-name>
             <param-value>FireThornHibernateSessionFactory</param-value>

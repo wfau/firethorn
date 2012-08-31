@@ -125,8 +125,8 @@
         +-->
     <txn:annotation-driven
         transaction-manager="FireThornTransactionManager"
-         proxy-target-class="true"
-         />
+        proxy-target-class="true"
+        />
 
     <!--+
         | Create a HibernateTemplate to wrap our HibernateSessionFactory.
