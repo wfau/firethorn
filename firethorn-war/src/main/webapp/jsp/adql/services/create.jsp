@@ -4,10 +4,11 @@
 <%@ taglib prefix="test"        uri="/WEB-INF/tlds/service-tags.xml"%>
 <%@ page
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
+    import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.html.adql.service.ServicesController"
     session="true"
 %><%
-PathBuilder paths = new PathBuilder(
+PathBuilder paths = new ServletPathBuilder(
     request
     );
 %>

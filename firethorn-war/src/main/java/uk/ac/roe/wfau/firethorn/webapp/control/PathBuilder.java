@@ -17,52 +17,35 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control ;
 
+import java.net.URI;
+
 import lombok.extern.slf4j.Slf4j;
 
-import javax.servlet.http.HttpServletRequest;
-import org.springframework.web.context.request.WebRequest;
+import uk.ac.roe.wfau.firethorn.common.entity.Entity ;
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier ;
 
 /**
  * A webapp path builder.
+ * @todo Add URI handling to create Location headers.
  *
  */
 @Slf4j
-public class PathBuilder
+public abstract class PathBuilder
     {
+
+    /**
+     * Protected constructor.
+     *
+     */
+    protected PathBuilder()
+        {
+        }
 
     /**
      * URL path delimiter.
      *
      */
     public static final String DELIMITER = "/" ;
-
-    /**
-     * Public constructor.
-     *
-     */
-    public PathBuilder(HttpServletRequest request)
-        {
-        log.debug("PathBuilder(HttpServletRequest)");
-        log.debug(" Request [{}]", request.getRequestURI());
-        log.debug(" Context [{}]", request.getContextPath());
-        log.debug(" Servlet [{}]", request.getServletPath());
-        this.request = request ;
-        }
-
-    /**
-     * Our ServletRequest.
-     *
-     */
-    private HttpServletRequest request ;
-
-    /**
-     * Access to our ServletRequest.
-     *
-     */
-    public HttpServletRequest request()
-        {
-        return this.request ;
-        }
 
     /**
      * Spring redirect URL scheme.
@@ -72,12 +55,14 @@ public class PathBuilder
 
     /**
      * The URL path for our Spring dispatcher servlet.
+     * @todo This should be configurable rather than hard coded.
      * 
      */
     public static final String SERVLET_PATH = "" ;
 
     /**
      * The URL path for our static content.
+     * @todo This should be configurable rather than hard coded.
      * 
      */
     public static final String STATIC_PATH = "static" ;
@@ -86,10 +71,7 @@ public class PathBuilder
      * Get the request context path.
      *
      */
-    public String getContextPath()
-        {
-        return request.getContextPath();
-        }
+    public abstract String getContextPath();
 
     /**
      * Get our Servlet path.
@@ -110,24 +92,71 @@ public class PathBuilder
         }
 
     /**
-     * Create a Spring redirect URL.
+     * Create a Spring redirect String.
      *
      */
-    public Path redirect(String path)
+    public String redirect(final String path)
         {
         log.debug("PathBuilder.redirect(String)");
         log.debug("  Path [{}]", path);
         return new Path(
             REDIRECT_SCHEME,
             path
+            ).toString();
+        }
+
+    /**
+     * Create a Spring redirect String.
+     *
+     */
+    public String redirect(final String base, final String path)
+        {
+        log.debug("PathBuilder.redirect(String, String)");
+        log.debug("  Base [{}]", base);
+        log.debug("  Path [{}]", path);
+        return new Path(
+            REDIRECT_SCHEME,
+            base,
+            path
+            ).toString();
+        }
+
+    /**
+     * Create a Spring redirect String.
+     *
+     */
+    public String redirect(final String base, final Identifier ident)
+        {
+        log.debug("PathBuilder.redirect(String, Identifier)");
+        log.debug("  Base  [{}]", base);
+        log.debug("  Ident [{}]", ident);
+        return redirect(
+            base,
+            ident.toString()
             );
         }
+
+    /**
+     * Create a Spring redirect String.
+     *
+     */
+    public String redirect(final String base, final Entity entity)
+        {
+        log.debug("PathBuilder.redirect(String, Entity)");
+        log.debug("  Base   [{}]", base);
+        log.debug("  Entity [{}]", entity);
+        return redirect(
+            base,
+            entity.ident()
+            );
+        }
+
 
     /**
      * Create an internal webapp path.
      *
      */
-    public Path path(String path)
+    public Path path(final String path)
         {
         log.debug("PathBuilder.path(String)");
         log.debug("  Path [{}]", path);
@@ -139,10 +168,57 @@ public class PathBuilder
         }
 
     /**
+     * Create an internal webapp path.
+     *
+     */
+    public Path path(final String base, final String path)
+        {
+        log.debug("PathBuilder.path(String, String)");
+        log.debug("  Base [{}]", base);
+        log.debug("  Path [{}]", path);
+        return new Path(
+            this.getContextPath(),
+            this.getServletPath(),
+            base,
+            path
+            );
+        }
+
+    /**
+     * Create an internal webapp path.
+     *
+     */
+    public Path path(final String base, final Identifier ident)
+        {
+        log.debug("PathBuilder.path(String, Identifier)");
+        log.debug("  Base  [{}]", base);
+        log.debug("  Ident [{}]", ident);
+        return path(
+            base,
+            ident.toString()
+            );
+        }
+
+    /**
+     * Create an internal webapp path.
+     *
+     */
+    public Path path(final String base, final Entity entity)
+        {
+        log.debug("PathBuilder.path(String, Entity)");
+        log.debug("  Base   [{}]", base);
+        log.debug("  Entity [{}]", entity);
+        return path(
+            base,
+            entity.ident()
+            );
+        }
+
+    /**
      * Create a static file path.
      *
      */
-    public Path file(String path)
+    public Path file(final String path)
         {
         log.debug("PathBuilder.file(String)");
         log.debug("  Path [{}]", path);
@@ -150,6 +226,68 @@ public class PathBuilder
             this.getContextPath(),
             this.getStaticPath(),
             path
+            );
+        }
+
+    /**
+     * Create a location URI.
+     *
+     */
+    public URI location(final String path)
+        {
+        log.debug("PathBuilder.location(String)");
+        log.debug("  Path [{}]", path);
+        return new Path(
+            this.getContextPath(),
+            this.getServletPath(),
+            path
+            ).toUri();
+        }
+
+    /**
+     * Create a location URI.
+     *
+     */
+    public URI location(final String base, final String path)
+        {
+        log.debug("PathBuilder.location(String, String)");
+        log.debug("  Base [{}]", base);
+        log.debug("  Path [{}]", path);
+        return new Path(
+            this.getContextPath(),
+            this.getServletPath(),
+            base,
+            path
+            ).toUri();
+        }
+
+    /**
+     * Create a location URI.
+     *
+     */
+    public URI location(final String base, final Identifier ident)
+        {
+        log.debug("PathBuilder.location(String, Identifier)");
+        log.debug("  Base  [{}]", base);
+        log.debug("  Ident [{}]", ident);
+        return location(
+            base,
+            ident.toString()
+            );
+        }
+
+    /**
+     * Create a location URI.
+     *
+     */
+    public URI location(final String base, final Entity entity)
+        {
+        log.debug("PathBuilder.location(String, Entity)");
+        log.debug("  Base   [{}]", base);
+        log.debug("  Entity [{}]", entity);
+        return location(
+            base,
+            entity.ident()
             );
         }
 
@@ -164,7 +302,7 @@ public class PathBuilder
          * Public constructor.
          *
          */
-        public Path(String base)
+        public Path(final String base)
             {
             log.debug("PathBuilder.Path(String)");
             log.debug("  Base [{}]", base);
@@ -177,7 +315,7 @@ public class PathBuilder
          * Public constructor.
          *
          */
-        public Path(String base, String... paths)
+        public Path(final String base, final String... paths)
             {
             this(
                 base
@@ -197,7 +335,7 @@ public class PathBuilder
          * Append a set of paths.
          *
          */
-        public void append(String... paths)
+        public void append(final String... paths)
             {
             for(String path : paths)
                 {
@@ -211,17 +349,20 @@ public class PathBuilder
          * Append a path.
          *
          */
-        public void append(String path)
+        public void append(final String path)
             {
             log.debug("PathBuilder.Path.append(String)");
             log.debug("  Path [{}]", path);
-            if (path.startsWith(DELIMITER))
+
+            String trim = path.trim() ;
+
+            if (trim.length() > 0)
                 {
-                builder.append(path);
-                }
-            else {
-                builder.append(DELIMITER);
-                builder.append(path);
+                if (trim.startsWith(DELIMITER) == false)
+                    {
+                    builder.append(DELIMITER);
+                    }
+                builder.append(trim);
                 }
             }
 
@@ -232,6 +373,17 @@ public class PathBuilder
         public String toString()
             {
             return builder.toString();
+            }
+
+        /**
+         * Convert to a URI.
+         *
+         */
+        public URI toUri()
+            {
+            return URI.create(
+                this.toString()
+                );
             }
         }
     }

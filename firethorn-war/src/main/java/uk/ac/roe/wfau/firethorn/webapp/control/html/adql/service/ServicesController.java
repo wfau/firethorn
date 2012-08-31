@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control.html.adql.service;
 
+import java.net.URI;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -33,7 +35,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
+import uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder;
+import uk.ac.roe.wfau.firethorn.webapp.control.SpringPathBuilder;
+
+import uk.ac.roe.wfau.firethorn.mallard.DataService ;
 
 /**
  * Spring MVC controller for AdqlServices.
@@ -52,22 +62,10 @@ extends ControllerBase
     public static final String CONTROLLER_PATH = "adql/services" ;
 
     /**
-     * MVC property for a form submit button.
-     * 
-    public static final String FORM_SUBMIT_BUTTON = "adql.services.action" ;
-     */
-
-    /**
      * MVC property for a list of Service(s).
      * 
      */
     public static final String SERVICE_LIST_PROPERTY = "adql.services.list" ;
-
-    /**
-     * MVC property for a Service.
-     * 
-     */
-    public static final String SERVICE_PROPERTY = "adql.services.object" ;
 
     /**
      * MVC property for the Service name.
@@ -88,11 +86,18 @@ extends ControllerBase
     public static final String CREATE_NAME_PROPERTY = "adql.services.create.name" ;
 
     /**
+     * MVC property for a created Service.
+     * 
+     */
+    public static final String CREATE_SERVICE_ENTITY = "adql.services.create.entity" ;
+
+    /**
      * GET request for the index page.
      * 
      */
 	@RequestMapping(value="", method=RequestMethod.GET)
 	public ModelAndView index(
+        WebRequest request,
 	    ModelAndView model
 	    ){
         log.debug("AdqlServicesController.index()");
@@ -110,6 +115,7 @@ extends ControllerBase
      */
 	@RequestMapping(value="select", method=RequestMethod.GET)
 	public ModelAndView select(
+        WebRequest request,
 	    ModelAndView model
 	    ){
         log.debug("AdqlServicesController.select()");
@@ -129,6 +135,7 @@ extends ControllerBase
 	@RequestMapping(value="select", method=RequestMethod.GET, params=SELECT_NAME_PROPERTY)
 	public ModelAndView select(
         @RequestParam(SELECT_NAME_PROPERTY) String name,
+        WebRequest request,
 	    ModelAndView model
 	    ){
         log.debug("AdqlServicesController.select(String name)");
@@ -157,6 +164,7 @@ extends ControllerBase
      */
 	@RequestMapping(value="search", method=RequestMethod.GET)
 	public ModelAndView search(
+        WebRequest request,
 	    ModelAndView model
 	    ){
         log.debug("AdqlServicesController.search()");
@@ -176,6 +184,7 @@ extends ControllerBase
 	@RequestMapping(value="search", method=RequestMethod.GET, params=SEARCH_TEXT_PROPERTY)
 	public ModelAndView search(
         @RequestParam(SEARCH_TEXT_PROPERTY) String text,
+        WebRequest request,
 	    ModelAndView model
 	    ){
         log.debug("AdqlServicesController.search(String text)");
@@ -204,6 +213,7 @@ extends ControllerBase
      */
 	@RequestMapping(value="create", method=RequestMethod.GET)
 	public ModelAndView create(
+        WebRequest request,
 	    ModelAndView model
 	    ){
         log.debug("AdqlServicesController.create()");
@@ -220,22 +230,59 @@ extends ControllerBase
      *
      */
 	@RequestMapping(value="create", method=RequestMethod.POST)
-	public ModelAndView create(
+	public ResponseEntity<String> create(
         @RequestParam(CREATE_NAME_PROPERTY) String name,
+        WebRequest request,
 	    ModelAndView model
 	    ){
         log.debug("AdqlServicesController.create(String name)");
+        log.debug("  Name [{}]", name);
 
-		model.addObject(
-		    CREATE_NAME_PROPERTY,
+
+        //
+        // Try creating the service.
+        DataService created = womble().services().create(
             name
-		    );
+            );
 
-		model.setViewName(
-		    "adql/services/create"
-		    );
+        log.debug("  Created [{}][{}]", created.ident(), created.name());
 
-        return model ;
+        PathBuilder builder = new SpringPathBuilder(
+            request
+            );
+
+        /*
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(
+            builder.location(
+                "adql/service",
+                created
+                )
+            );
+        */
+        return new ResponseEntity<String>(
+            new LocationHeader(
+                builder.location(
+                    "adql/service",
+                    created
+                    )
+                ),
+            HttpStatus.SEE_OTHER
+            );
+        }
+
+
+    public static class LocationHeader
+    extends HttpHeaders
+        {
+        public LocationHeader(URI location)
+            {
+            super();
+            this.setLocation(
+                location
+                );
+            }
         }
 
     }
+

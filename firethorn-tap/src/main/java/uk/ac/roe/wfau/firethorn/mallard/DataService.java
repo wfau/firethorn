@@ -28,7 +28,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
- * A TAP service instance.
+ * A service instance.
  *
  */
 public interface DataService
@@ -62,21 +62,21 @@ extends Entity
         }
 
     /**
-     * The collection of Widgeons (resources) used by this service.
+     * The collection of resources used by this service.
      *
      */
-    public Widgeons widgeons();
-    public interface Widgeons
+    public Resources resources();
+    public interface Resources
         {
 
         /**
          * Add a DataResource to this service.
          *
          */
-        public void insert(DataResourceView widgeon);
+        public void insert(DataResourceView resource);
 
         /**
-         * Select all the Widgeons used by this service.
+         * Select all the DataResources used by this service.
          *
          */
         public Iterable<DataResourceView> select();
@@ -84,7 +84,7 @@ extends Entity
         }
 
     /**
-     * An ADQL query.
+     * An ADQL query job.
      *
      */
     public interface Job

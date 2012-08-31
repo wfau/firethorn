@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import uk.ac.roe.wfau.firethorn.common.womble.Womble;
+
 /**
  * Test MVC controller.
  *
@@ -27,20 +30,46 @@ public class ControllerBase
     /**
      * Get the Session ID from a WebRequest.
      * 
-     */
     public static String sid(WebRequest request)
         {
         return request.getSessionId();
         }
+     */
 
     /**
-     * Get our webapp context from a WebRequest.
+     * Autowired service access point.
      *
      */
-    public static String context(WebRequest request)
+    @Autowired
+    private Womble womble ;
+
+    /**
+     * Our service access point.
+     *
+     */
+    public Womble womble()
         {
-        return request.getContextPath();
+        return this.womble ;
         }
+
+    /**
+     * MVC property for the Spring WebRequest PathBuilder.
+     * 
+    public static final String SPRING_PATH_BUILDER = "spring.path.builder" ;
+     */
+
+    /**
+     * Create the PathBuilder for a request.
+     *
+    @ModelAttribute(SPRING_PATH_BUILDER)
+    public PathBuilder paths(
+        WebRequest request
+        ){
+        return new SpringPathBuilder(
+            request
+            );
+        }
+     */
 
     }
 
