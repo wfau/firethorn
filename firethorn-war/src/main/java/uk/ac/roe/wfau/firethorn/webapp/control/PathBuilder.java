@@ -97,8 +97,8 @@ public abstract class PathBuilder
      */
     public String redirect(final String path)
         {
-        log.debug("PathBuilder.redirect(String)");
-        log.debug("  Path [{}]", path);
+        //log.debug("PathBuilder.redirect(String)");
+        //log.debug("  Path [{}]", path);
         return new Path(
             REDIRECT_SCHEME,
             path
@@ -111,9 +111,9 @@ public abstract class PathBuilder
      */
     public String redirect(final String base, final String path)
         {
-        log.debug("PathBuilder.redirect(String, String)");
-        log.debug("  Base [{}]", base);
-        log.debug("  Path [{}]", path);
+        //log.debug("PathBuilder.redirect(String, String)");
+        //log.debug("  Base [{}]", base);
+        //log.debug("  Path [{}]", path);
         return new Path(
             REDIRECT_SCHEME,
             base,
@@ -127,9 +127,9 @@ public abstract class PathBuilder
      */
     public String redirect(final String base, final Identifier ident)
         {
-        log.debug("PathBuilder.redirect(String, Identifier)");
-        log.debug("  Base  [{}]", base);
-        log.debug("  Ident [{}]", ident);
+        //log.debug("PathBuilder.redirect(String, Identifier)");
+        //log.debug("  Base  [{}]", base);
+        //log.debug("  Ident [{}]", ident);
         return redirect(
             base,
             ident.toString()
@@ -142,9 +142,9 @@ public abstract class PathBuilder
      */
     public String redirect(final String base, final Entity entity)
         {
-        log.debug("PathBuilder.redirect(String, Entity)");
-        log.debug("  Base   [{}]", base);
-        log.debug("  Entity [{}]", entity);
+        //log.debug("PathBuilder.redirect(String, Entity)");
+        //log.debug("  Base   [{}]", base);
+        //log.debug("  Entity [{}]", entity);
         return redirect(
             base,
             entity.ident()
@@ -158,8 +158,8 @@ public abstract class PathBuilder
      */
     public Path path(final String path)
         {
-        log.debug("PathBuilder.path(String)");
-        log.debug("  Path [{}]", path);
+        //log.debug("PathBuilder.path(String)");
+        //log.debug("  Path [{}]", path);
         return new Path(
             this.getContextPath(),
             this.getServletPath(),
@@ -173,9 +173,9 @@ public abstract class PathBuilder
      */
     public Path path(final String base, final String path)
         {
-        log.debug("PathBuilder.path(String, String)");
-        log.debug("  Base [{}]", base);
-        log.debug("  Path [{}]", path);
+        //log.debug("PathBuilder.path(String, String)");
+        //log.debug("  Base [{}]", base);
+        //log.debug("  Path [{}]", path);
         return new Path(
             this.getContextPath(),
             this.getServletPath(),
@@ -190,9 +190,9 @@ public abstract class PathBuilder
      */
     public Path path(final String base, final Identifier ident)
         {
-        log.debug("PathBuilder.path(String, Identifier)");
-        log.debug("  Base  [{}]", base);
-        log.debug("  Ident [{}]", ident);
+        //log.debug("PathBuilder.path(String, Identifier)");
+        //log.debug("  Base  [{}]", base);
+        //log.debug("  Ident [{}]", ident);
         return path(
             base,
             ident.toString()
@@ -205,9 +205,9 @@ public abstract class PathBuilder
      */
     public Path path(final String base, final Entity entity)
         {
-        log.debug("PathBuilder.path(String, Entity)");
-        log.debug("  Base   [{}]", base);
-        log.debug("  Entity [{}]", entity);
+        //log.debug("PathBuilder.path(String, Entity)");
+        //log.debug("  Base   [{}]", base);
+        //log.debug("  Entity [{}]", entity);
         return path(
             base,
             entity.ident()
@@ -220,8 +220,8 @@ public abstract class PathBuilder
      */
     public Path file(final String path)
         {
-        log.debug("PathBuilder.file(String)");
-        log.debug("  Path [{}]", path);
+        //log.debug("PathBuilder.file(String)");
+        //log.debug("  Path [{}]", path);
         return new Path(
             this.getContextPath(),
             this.getStaticPath(),
@@ -235,8 +235,8 @@ public abstract class PathBuilder
      */
     public URI location(final String path)
         {
-        log.debug("PathBuilder.location(String)");
-        log.debug("  Path [{}]", path);
+        //log.debug("PathBuilder.location(String)");
+        //log.debug("  Path [{}]", path);
         return new Path(
             this.getContextPath(),
             this.getServletPath(),
@@ -250,9 +250,9 @@ public abstract class PathBuilder
      */
     public URI location(final String base, final String path)
         {
-        log.debug("PathBuilder.location(String, String)");
-        log.debug("  Base [{}]", base);
-        log.debug("  Path [{}]", path);
+        //log.debug("PathBuilder.location(String, String)");
+        //log.debug("  Base [{}]", base);
+        //log.debug("  Path [{}]", path);
         return new Path(
             this.getContextPath(),
             this.getServletPath(),
@@ -267,9 +267,9 @@ public abstract class PathBuilder
      */
     public URI location(final String base, final Identifier ident)
         {
-        log.debug("PathBuilder.location(String, Identifier)");
-        log.debug("  Base  [{}]", base);
-        log.debug("  Ident [{}]", ident);
+        //log.debug("PathBuilder.location(String, Identifier)");
+        //log.debug("  Base  [{}]", base);
+        //log.debug("  Ident [{}]", ident);
         return location(
             base,
             ident.toString()
@@ -282,9 +282,9 @@ public abstract class PathBuilder
      */
     public URI location(final String base, final Entity entity)
         {
-        log.debug("PathBuilder.location(String, Entity)");
-        log.debug("  Base   [{}]", base);
-        log.debug("  Entity [{}]", entity);
+        //log.debug("PathBuilder.location(String, Entity)");
+        //log.debug("  Base   [{}]", base);
+        //log.debug("  Entity [{}]", entity);
         return location(
             base,
             entity.ident()
@@ -304,8 +304,8 @@ public abstract class PathBuilder
          */
         public Path(final String base)
             {
-            log.debug("PathBuilder.Path(String)");
-            log.debug("  Base [{}]", base);
+            //log.debug("PathBuilder.Path(String)");
+            //log.debug("  Base [{}]", base);
             builder = new StringBuilder(
                 base
                 ) ;
@@ -351,8 +351,8 @@ public abstract class PathBuilder
          */
         public void append(final String path)
             {
-            log.debug("PathBuilder.Path.append(String)");
-            log.debug("  Path [{}]", path);
+            //log.debug("PathBuilder.Path.append(String)");
+            //log.debug("  Path [{}]", path);
 
             String trim = path.trim() ;
 
