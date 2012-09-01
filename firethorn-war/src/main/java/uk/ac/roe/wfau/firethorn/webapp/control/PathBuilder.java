@@ -25,7 +25,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity ;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier ;
 
 import uk.ac.roe.wfau.firethorn.mallard.DataService ;
-import uk.ac.roe.wfau.firethorn.webapp.control.html.adql.service.ServiceController ;
+import uk.ac.roe.wfau.firethorn.webapp.mallard.ServiceController;
 
 /**
  * A webapp path builder.

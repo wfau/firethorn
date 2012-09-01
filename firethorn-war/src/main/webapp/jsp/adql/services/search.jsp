@@ -5,8 +5,8 @@
 <%@ page
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
-    import="uk.ac.roe.wfau.firethorn.webapp.control.html.adql.service.ServiceController"
-    import="uk.ac.roe.wfau.firethorn.webapp.control.html.adql.service.ServicesController"
+    import="uk.ac.roe.wfau.firethorn.webapp.mallard.ServiceController"
+    import="uk.ac.roe.wfau.firethorn.webapp.mallard.ServicesController"
     import="uk.ac.roe.wfau.firethorn.mallard.DataService"
     session="true"
 %><%
