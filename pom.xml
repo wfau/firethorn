@@ -137,7 +137,7 @@
         <module>firethorn-spring</module>
         <module>firethorn-cds</module>
         <module>firethorn-tap</module>
-        <!--module>firethorn-war</module-->
+        <module>firethorn-war</module>
     </modules>
 
     <properties>

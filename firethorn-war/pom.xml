@@ -53,7 +53,6 @@
     </description>
     
     <properties>
-        <tomcat.version>7.0.27</tomcat.version>
     </properties>
 
     <pluginRepositories>
@@ -205,6 +204,7 @@
                     <contextFile>src/test/cfg/test-context.xml</contextFile>
                 </configuration>
             </plugin>
+
             <!--+
                 | Tomcat 7 plugin.
                 | https://tomcat.apache.org/maven-plugin-2.0-SNAPSHOT/index.html
