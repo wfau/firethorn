@@ -11,6 +11,11 @@
 PathBuilder paths = new ServletPathBuilder(
     request
     );
+
+String name = (String) request.getAttribute(
+    ServicesController.CREATE_NAME_PROPERTY
+    );
+
 %>
 <html>
     <head>
@@ -19,10 +24,15 @@ PathBuilder paths = new ServletPathBuilder(
     </head>
     <body>
         <div>
+            <span>[<a href='<%= paths.path("adql/services/search") %>'>search</a>]</span>
+            <span>[<a href='<%= paths.path("adql/services/select") %>'>select</a>]</span>
+            <span>[<a href='<%= paths.path("adql/services/create") %>'>create</a>]</span>
+        </div>
+        <div>
             Create an ADQL TAP Service
             <div>
                 <form method='POST' action='<%= paths.path("adql/services/create") %>'>
-                    Name <input type='text' name='<%= ServicesController.CREATE_NAME_PROPERTY %>' value='<%= request.getAttribute(ServicesController.CREATE_NAME_PROPERTY) %>'/>
+                    Name <input type='text' name='<%= ServicesController.CREATE_NAME_PROPERTY %>' value='<%= ((name != null) ? name : "") %>'/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>

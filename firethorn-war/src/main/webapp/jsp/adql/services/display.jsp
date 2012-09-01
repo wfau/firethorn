@@ -28,20 +28,25 @@ DataService service = (DataService) request.getAttribute(
     </head>
     <body>
         <div>
+            <span>[<a href='<%= paths.path("adql/services/search") %>'>search</a>]</span>
+            <span>[<a href='<%= paths.path("adql/services/select") %>'>select</a>]</span>
+            <span>[<a href='<%= paths.path("adql/services/create") %>'>create</a>]</span>
+        </div>
+        <div>
             ADQL TAP Service
             <div>
-                <table>
+                <table border='1'>
                     <tr>
                         <td>Ident</td>
                         <td><%= service.ident() %></td>
                     </tr>
                     <tr>
                         <td>Name</td>
-                        <td><%= service.name() %></td>
+                        <td><a href='<%= paths.link(service) %>'><%= service.name() %></a></td>
                     </tr>
                     <tr>
                         <td>Owner</td>
-                        <td><%= service.owner() %></td>
+                        <td><%= service.owner().name() %></td>
                     </tr>
                 </table>
             </div>

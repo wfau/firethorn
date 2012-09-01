@@ -30,6 +30,11 @@ Iterable<DataService> services = (Iterable<DataService>) request.getAttribute(
     </head>
     <body>
         <div>
+            <span>[<a href='<%= paths.path("adql/services/search") %>'>search</a>]</span>
+            <span>[<a href='<%= paths.path("adql/services/select") %>'>select</a>]</span>
+            <span>[<a href='<%= paths.path("adql/services/create") %>'>create</a>]</span>
+        </div>
+        <div>
             Select ADQL TAP Services by name
             <div>
                 <form method='GET' action='<%= paths.path("adql/services/select") %>'>
@@ -45,9 +50,8 @@ Iterable<DataService> services = (Iterable<DataService>) request.getAttribute(
                     {
                     %>
                     <tr>
-                        <td><%= service.ident() %></td>
-                        <td><%= service.name() %></td>
-                        <td><%= service.owner() %></td>
+                        <td><a href='<%= paths.link(service) %>'><%= service.name() %></a></td>
+                        <td><%= service.owner().name() %></td>
                         <td><%= service.created() %></td>
                         <td><%= service.modified() %></td>
                     </tr>
