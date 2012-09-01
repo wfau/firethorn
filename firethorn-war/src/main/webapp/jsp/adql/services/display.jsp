@@ -5,21 +5,19 @@
 <%@ page
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
+    import="uk.ac.roe.wfau.firethorn.webapp.control.html.adql.service.ServiceController"
     import="uk.ac.roe.wfau.firethorn.webapp.control.html.adql.service.ServicesController"
     import="uk.ac.roe.wfau.firethorn.mallard.DataService"
 
     session="true"
 %><%
+
 PathBuilder paths = new ServletPathBuilder(
     request
     );
 
-String name = (String) request.getAttribute(
-    ServicesController.SELECT_NAME_PROPERTY
-    );
-
-Iterable<DataService> services = (Iterable<DataService>) request.getAttribute(
-    ServicesController.SERVICE_ITER_PROPERTY
+DataService service = (DataService) request.getAttribute(
+    ServiceController.SERVICE_ENTITY_PROPERTY
     ) ;
 
 %>
@@ -30,31 +28,23 @@ Iterable<DataService> services = (Iterable<DataService>) request.getAttribute(
     </head>
     <body>
         <div>
-            Select ADQL TAP Services by name
+            ADQL TAP Service
             <div>
-                <form method='GET' action='<%= paths.path("adql/services/select") %>'>
-                    Name <input type='text' name='<%= ServicesController.SELECT_NAME_PROPERTY %>' value='<%= ((name != null) ? name : "" ) %>'/>
-                    <input type='submit' value='Go'/>
-                </form>
-            </div>
-        </div>
-        <div>
-            <table border='1'>
-                <%
-                for (DataService service : services)
-                    {
-                    %>
+                <table>
                     <tr>
+                        <td>Ident</td>
                         <td><%= service.ident() %></td>
-                        <td><%= service.name() %></td>
-                        <td><%= service.owner() %></td>
-                        <td><%= service.created() %></td>
-                        <td><%= service.modified() %></td>
                     </tr>
-                    <%
-                    }
-                %>
-            </table>
+                    <tr>
+                        <td>Name</td>
+                        <td><%= service.name() %></td>
+                    </tr>
+                    <tr>
+                        <td>Owner</td>
+                        <td><%= service.owner() %></td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </body>
 </html>

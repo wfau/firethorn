@@ -24,6 +24,9 @@ import java.net.URI;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity ;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier ;
 
+import uk.ac.roe.wfau.firethorn.mallard.DataService ;
+import uk.ac.roe.wfau.firethorn.webapp.control.html.adql.service.ServiceController ;
+
 /**
  * A webapp path builder.
  * @todo Add URI handling to create Location headers.
@@ -193,10 +196,22 @@ public abstract class PathBuilder
         //log.debug("PathBuilder.path(String, Identifier)");
         //log.debug("  Base  [{}]", base);
         //log.debug("  Ident [{}]", ident);
-        return path(
-            base,
-            ident.toString()
-            );
+        if (base.contains("{ident}"))
+            {
+            return path(
+                base.replaceFirst(
+                    "\\{ident\\}",
+                    ident.toString()
+                    )
+                );
+            
+            }
+        else {
+            return path(
+                base,
+                ident.toString()
+                );
+            }
         }
 
     /**
@@ -386,6 +401,18 @@ public abstract class PathBuilder
                 this.toString()
                 );
             }
+        }
+
+    /**
+     * Create a link for a dataService.
+     *
+     */
+    public Path link(DataService target)
+        {
+        return path(
+            ServiceController.CONTROLLER_PATH,
+            target
+            );
         }
     }
 

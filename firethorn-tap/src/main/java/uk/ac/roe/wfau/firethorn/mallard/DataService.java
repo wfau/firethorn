@@ -55,6 +55,18 @@ extends Entity
         public Iterable<DataService> select();
 
         /**
+         * Select services by name.
+         *
+         */
+        public Iterable<DataService> select(String name);
+
+        /**
+         * Search for Services by name.
+         *
+         */
+        public Iterable<DataService> search(String text);
+
+        /**
          * Access to our Job factory.
          * 
          */

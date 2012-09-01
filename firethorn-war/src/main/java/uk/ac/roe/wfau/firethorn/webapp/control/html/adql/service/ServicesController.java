@@ -114,11 +114,11 @@ extends ControllerBase
 	    ){
         log.debug("AdqlServicesController.select()");
 
-        final Iterable<DataService> iter = womble().services().select();
+        final Iterable<DataService> services = womble().services().select();
 
 		model.addObject(
 		    SERVICE_ITER_PROPERTY,
-		    iter
+		    services
 		    );
 
 		model.setViewName(
@@ -141,6 +141,10 @@ extends ControllerBase
 	    ){
         log.debug("AdqlServicesController.select(String name)");
 
+        final Iterable<DataService> services = womble().services().select(
+            name
+            );
+
 		model.addObject(
 		    SELECT_NAME_PROPERTY,
             name
@@ -148,7 +152,7 @@ extends ControllerBase
 
 		model.addObject(
 		    SERVICE_ITER_PROPERTY,
-            new ArrayList<DataService>()
+            services
 		    );
 
 		model.setViewName(
@@ -160,7 +164,8 @@ extends ControllerBase
         }
 
     /**
-     * GET request to search all.
+     * GET request to search with no params.
+     * (displays the HTML form)
      *
      */
 	@RequestMapping(value="search", method=RequestMethod.GET)
@@ -190,6 +195,10 @@ extends ControllerBase
 	    ){
         log.debug("AdqlServicesController.search(String text)");
 
+        final Iterable<DataService> services = womble().services().search(
+            text
+            );
+
 		model.addObject(
 		    SEARCH_TEXT_PROPERTY,
             text
@@ -197,7 +206,7 @@ extends ControllerBase
 
 		model.addObject(
 		    SERVICE_ITER_PROPERTY,
-            new ArrayList<DataService>()
+            services
 		    );
 
 		model.setViewName(
@@ -210,7 +219,7 @@ extends ControllerBase
 
     /**
      * GET request to create a new DataService.
-     * Displays the HTML form.
+     * (displays the HTML form)
      *
      */
 	@RequestMapping(value="create", method=RequestMethod.GET)
@@ -242,11 +251,9 @@ extends ControllerBase
 
         //
         // Try creating the service.
-        final DataService created = womble().services().create(
+        final DataService service = womble().services().create(
             name
             );
-
-        log.debug("  Created [{}]", created);
 
         final PathBuilder builder = new SpringPathBuilder(
             request
@@ -256,7 +263,7 @@ extends ControllerBase
             new LocationHeaders(
                 builder.location(
                     "adql/service",
-                    created
+                    service
                     )
                 ),
             HttpStatus.SEE_OTHER

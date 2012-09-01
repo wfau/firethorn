@@ -79,6 +79,10 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.view.DataResourceViewEntity;
         @NamedQuery(
             name  = "mallard-select-name",
             query = "FROM DataServiceEntity WHERE name = :name ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "mallard-search-text",
+            query = "FROM DataServiceEntity WHERE name LIKE :text ORDER BY ident desc"
             )
         }
     )
@@ -117,6 +121,40 @@ implements DataService
                 super.query(
                     "mallard-select-all"
                     )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<DataService> select(String name)
+            {
+            return super.iterable(
+                super.query(
+                    "mallard-select-name"
+                    ).setString(
+                        "name",
+                        name
+                        )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<DataService> search(String text)
+            {
+            //
+            // Using wildcards in a HQL query with named parameters.
+            // http://www.stpe.se/2008/07/hibernate-hql-like-query-named-parameters/
+            String match = new StringBuilder(text).append("%").toString();
+            log.debug("search(String)");
+            log.debug("  Match [{}]", match);
+            return super.iterable(
+                super.query(
+                    "mallard-search-text"
+                    ).setString(
+                        "text",
+                        match
+                        )
                 );
             }
 
