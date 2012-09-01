@@ -25,7 +25,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity ;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier ;
 
 import uk.ac.roe.wfau.firethorn.mallard.DataService ;
-import uk.ac.roe.wfau.firethorn.webapp.mallard.ServiceController;
+import uk.ac.roe.wfau.firethorn.webapp.mallard.DataServiceController;
 
 /**
  * A webapp path builder.
@@ -410,7 +410,7 @@ public abstract class PathBuilder
     public Path link(DataService target)
         {
         return path(
-            ServiceController.CONTROLLER_PATH,
+            DataServiceController.CONTROLLER_PATH,
             target
             );
         }

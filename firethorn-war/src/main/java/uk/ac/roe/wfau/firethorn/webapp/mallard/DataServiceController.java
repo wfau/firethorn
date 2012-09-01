@@ -46,8 +46,8 @@ import uk.ac.roe.wfau.firethorn.mallard.DataService ;
  */
 @Slf4j
 @Controller
-@RequestMapping(ServiceController.CONTROLLER_PATH)
-public class ServiceController
+@RequestMapping(DataServiceController.CONTROLLER_PATH)
+public class DataServiceController
 extends ControllerBase
     {
     /**

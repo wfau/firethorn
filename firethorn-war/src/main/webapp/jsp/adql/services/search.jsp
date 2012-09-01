@@ -5,8 +5,8 @@
 <%@ page
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
-    import="uk.ac.roe.wfau.firethorn.webapp.mallard.ServiceController"
-    import="uk.ac.roe.wfau.firethorn.webapp.mallard.ServicesController"
+    import="uk.ac.roe.wfau.firethorn.webapp.mallard.DataServiceController"
+    import="uk.ac.roe.wfau.firethorn.webapp.mallard.DataServicesController"
     import="uk.ac.roe.wfau.firethorn.mallard.DataService"
     session="true"
 %><%
@@ -15,11 +15,11 @@ PathBuilder paths = new ServletPathBuilder(
     );
 
 String text = (String) request.getAttribute(
-    ServicesController.SEARCH_TEXT_PROPERTY
+    DataServicesController.SEARCH_TEXT_PROPERTY
     );
 
 Iterable<DataService> services = (Iterable<DataService>) request.getAttribute(
-    ServicesController.SERVICE_ITER_PROPERTY
+    DataServicesController.SERVICE_ITER_PROPERTY
     ) ;
 
 %>
@@ -38,7 +38,7 @@ Iterable<DataService> services = (Iterable<DataService>) request.getAttribute(
             Search for ADQL TAP Services
             <div>
                 <form method='GET' action='<%= paths.path("adql/services/search") %>'>
-                    Text <input type='text' name='<%= ServicesController.SEARCH_TEXT_PROPERTY %>' value='<%= ((text != null) ? text : "" ) %>'/>
+                    Text <input type='text' name='<%= DataServicesController.SEARCH_TEXT_PROPERTY %>' value='<%= ((text != null) ? text : "" ) %>'/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>

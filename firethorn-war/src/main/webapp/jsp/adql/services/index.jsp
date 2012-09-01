@@ -5,7 +5,7 @@
 <%@ page
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
-    import="uk.ac.roe.wfau.firethorn.webapp.mallard.ServicesController"
+    import="uk.ac.roe.wfau.firethorn.webapp.mallard.DataServicesController"
     session="true"
 %><%
 PathBuilder paths = new ServletPathBuilder(
@@ -23,21 +23,21 @@ PathBuilder paths = new ServletPathBuilder(
             <div>
                 Select a service by name
                 <form method='GET' action='<%= paths.path("adql/services/select") %>'>
-                    Name <input type='text' name='<%= ServicesController.SELECT_NAME_PROPERTY %>' value=''/>
+                    Name <input type='text' name='<%= DataServicesController.SELECT_NAME_PROPERTY %>' value=''/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>
             <div>
                 Search for services with text
                 <form method='GET' action='<%= paths.path("adql/services/search") %>'>
-                    Text <input type='text' name='<%= ServicesController.SEARCH_TEXT_PROPERTY %>' value=''/>
+                    Text <input type='text' name='<%= DataServicesController.SEARCH_TEXT_PROPERTY %>' value=''/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>
             <div>
                 Create new service
                 <form method='POST' action='<%= paths.path("adql/services/create") %>'>
-                    Name <input type='text' name='<%= ServicesController.CREATE_NAME_PROPERTY %>' value=''/>
+                    Name <input type='text' name='<%= DataServicesController.CREATE_NAME_PROPERTY %>' value=''/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>

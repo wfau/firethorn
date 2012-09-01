@@ -5,8 +5,8 @@
 <%@ page
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
-    import="uk.ac.roe.wfau.firethorn.webapp.mallard.ServiceController"
-    import="uk.ac.roe.wfau.firethorn.webapp.mallard.ServicesController"
+    import="uk.ac.roe.wfau.firethorn.webapp.mallard.DataServiceController"
+    import="uk.ac.roe.wfau.firethorn.webapp.mallard.DataServicesController"
     import="uk.ac.roe.wfau.firethorn.mallard.DataService"
 
     session="true"
@@ -17,7 +17,7 @@ PathBuilder paths = new ServletPathBuilder(
     );
 
 DataService service = (DataService) request.getAttribute(
-    ServiceController.SERVICE_ENTITY_PROPERTY
+    DataServiceController.SERVICE_ENTITY_PROPERTY
     ) ;
 
 %>

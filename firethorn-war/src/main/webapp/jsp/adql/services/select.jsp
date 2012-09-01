@@ -5,7 +5,7 @@
 <%@ page
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
-    import="uk.ac.roe.wfau.firethorn.webapp.mallard.ServicesController"
+    import="uk.ac.roe.wfau.firethorn.webapp.mallard.DataServicesController"
     import="uk.ac.roe.wfau.firethorn.mallard.DataService"
 
     session="true"
@@ -15,11 +15,11 @@ PathBuilder paths = new ServletPathBuilder(
     );
 
 String name = (String) request.getAttribute(
-    ServicesController.SELECT_NAME_PROPERTY
+    DataServicesController.SELECT_NAME_PROPERTY
     );
 
 Iterable<DataService> services = (Iterable<DataService>) request.getAttribute(
-    ServicesController.SERVICE_ITER_PROPERTY
+    DataServicesController.SERVICE_ITER_PROPERTY
     ) ;
 
 %>
@@ -38,7 +38,7 @@ Iterable<DataService> services = (Iterable<DataService>) request.getAttribute(
             Select ADQL TAP Services by name
             <div>
                 <form method='GET' action='<%= paths.path("adql/services/select") %>'>
-                    Name <input type='text' name='<%= ServicesController.SELECT_NAME_PROPERTY %>' value='<%= ((name != null) ? name : "" ) %>'/>
+                    Name <input type='text' name='<%= DataServicesController.SELECT_NAME_PROPERTY %>' value='<%= ((name != null) ? name : "" ) %>'/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>

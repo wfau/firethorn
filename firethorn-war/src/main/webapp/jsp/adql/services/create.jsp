@@ -5,7 +5,7 @@
 <%@ page
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
-    import="uk.ac.roe.wfau.firethorn.webapp.mallard.ServicesController"
+    import="uk.ac.roe.wfau.firethorn.webapp.mallard.DataServicesController"
     session="true"
 %><%
 PathBuilder paths = new ServletPathBuilder(
@@ -13,7 +13,7 @@ PathBuilder paths = new ServletPathBuilder(
     );
 
 String name = (String) request.getAttribute(
-    ServicesController.CREATE_NAME_PROPERTY
+    DataServicesController.CREATE_NAME_PROPERTY
     );
 
 %>
@@ -32,7 +32,7 @@ String name = (String) request.getAttribute(
             Create an ADQL TAP Service
             <div>
                 <form method='POST' action='<%= paths.path("adql/services/create") %>'>
-                    Name <input type='text' name='<%= ServicesController.CREATE_NAME_PROPERTY %>' value='<%= ((name != null) ? name : "") %>'/>
+                    Name <input type='text' name='<%= DataServicesController.CREATE_NAME_PROPERTY %>' value='<%= ((name != null) ? name : "") %>'/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>
