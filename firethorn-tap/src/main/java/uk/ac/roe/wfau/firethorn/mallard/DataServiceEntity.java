@@ -199,44 +199,44 @@ implements DataService
         targetEntity = DataResourceViewEntity.class
         )
     @JoinTable(
-        name="mallard_widgeons",
+        name="service_resources",
         joinColumns = @JoinColumn(
-            name="mallard",
+            name="service",
             nullable = false,
             updatable = false
             ),
         inverseJoinColumns = @JoinColumn(
-            name="widgeon",
+            name="resource",
             nullable = false,
             updatable = false
             )
         )
-    private Set<DataResourceView> widgeons = new HashSet<DataResourceView>(0);
-    protected Set<DataResourceView> getWidgeons()
+    private Set<DataResourceView> resources = new HashSet<DataResourceView>(0);
+    protected Set<DataResourceView> getResources()
         {
-        return this.widgeons ;
+        return this.resources ;
         }
-    protected void setWidgeons(Set<DataResourceView> set)
+    protected void setResources(Set<DataResourceView> resources)
         {
-        this.widgeons = set ;
+        this.resources = resources ;
         }
 
     @Override
-    public Widgeons widgeons()
+    public Resources resources()
         {
-        return new Widgeons()
+        return new Resources()
             {
             @Override
-            public void insert(DataResourceView widgeon)
+            public void insert(DataResourceView resource)
                 {
-                widgeons.add(
-                    widgeon
+                resources.add(
+                    resource
                     );
                 }
             @Override
             public Iterable<DataResourceView> select()
                 {
-                return widgeons ;
+                return resources ;
                 }
             };
         }

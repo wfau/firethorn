@@ -232,7 +232,7 @@ implements DataResourceView
             @Override
             public Iterable<DataResourceView.Catalog> select()
                 {
-                return womble().widgeons().views().catalogs().select(
+                return womble().resources().views().catalogs().select(
                     DataResourceViewEntity.this
                     ) ;
                 }
@@ -241,7 +241,7 @@ implements DataResourceView
             public DataResourceView.Catalog select(final String name)
             throws NameNotFoundException
                 {
-                return womble().widgeons().views().catalogs().select(
+                return womble().resources().views().catalogs().select(
                     DataResourceViewEntity.this,
                     name
                     ) ;
@@ -250,7 +250,7 @@ implements DataResourceView
             @Override
             public DataResourceView.Catalog search(final String name)
                 {
-                return womble().widgeons().views().catalogs().search(
+                return womble().resources().views().catalogs().search(
                     DataResourceViewEntity.this,
                     name
                     ) ;

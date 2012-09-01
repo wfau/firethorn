@@ -17,22 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.stereotype.Controller;
-
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.context.request.WebRequest;
-
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
  * Test MVC controller data.
  *
  */
-@Slf4j 
 public class ControllerData
     {
 
@@ -42,12 +32,12 @@ public class ControllerData
      */
     public static final String MODEL_PROPERTY = "firethorn.controller.data" ;
 
-   
+
     /**
      * Protected constructor.
      *
      */
-    protected ControllerData(WebRequest request)
+    protected ControllerData(final WebRequest request)
         {
         this.request = request ;
         }
@@ -56,7 +46,7 @@ public class ControllerData
      * Our web request.
      *
      */
-    private WebRequest request ;
+    private final WebRequest request ;
 
     /**
      * Access to our web request.

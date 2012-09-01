@@ -47,7 +47,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
 
 /**
- * Generic base class for a DataResource Entities.
+ * Generic super class for a DataResource Entities.
  *
  * Problems with AccessType.FIELD means we still have to have get/set methods on fields we want to modify.
  * If we don't include get/set methods, then Hibernate doesn't commit changes to the database. 

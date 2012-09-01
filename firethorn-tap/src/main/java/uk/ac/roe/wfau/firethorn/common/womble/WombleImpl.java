@@ -497,12 +497,12 @@ implements Womble
      * 
      */
     @Autowired
-    protected DataResourceBase.Factory widgeons ;
+    protected DataResourceBase.Factory resources ;
 
     @Override
-    public DataResourceBase.Factory widgeons()
+    public DataResourceBase.Factory resources()
         {
-        return this.widgeons ;
+        return this.resources ;
         }
 
     /**

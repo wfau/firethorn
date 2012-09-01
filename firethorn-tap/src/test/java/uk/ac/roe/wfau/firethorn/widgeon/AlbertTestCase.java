@@ -42,7 +42,7 @@ extends TestBase
     public void test000()
     throws Exception
         {
-        DataResource object = womble().widgeons().create(
+        DataResource object = womble().resources().create(
             "albert",
             URI.create("ivo://org.astrogrid.test/0001")
             );
@@ -88,7 +88,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        DataResource object = womble().widgeons().select(
+        DataResource object = womble().resources().select(
             ident[0]
             );
         assertFalse(
@@ -118,7 +118,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        DataResource object = womble().widgeons().select(
+        DataResource object = womble().resources().select(
             ident[0]
             );
 

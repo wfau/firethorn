@@ -308,7 +308,7 @@ implements DataResourceView.Table
             @Override
             public Iterable<DataResourceView.Column> select()
                 {
-                return womble().widgeons().views().catalogs().schemas().tables().columns().select(
+                return womble().resources().views().catalogs().schemas().tables().columns().select(
                     TableViewEntity.this
                     ) ;
                 }
@@ -317,7 +317,7 @@ implements DataResourceView.Table
             public DataResourceView.Column select(String name)
             throws NameNotFoundException
                 {
-                return womble().widgeons().views().catalogs().schemas().tables().columns().select(
+                return womble().resources().views().catalogs().schemas().tables().columns().select(
                     TableViewEntity.this,
                     name
                     ) ;
@@ -326,7 +326,7 @@ implements DataResourceView.Table
             @Override
             public DataResourceView.Column search(String name)
                 {
-                return womble().widgeons().views().catalogs().schemas().tables().columns().search(
+                return womble().resources().views().catalogs().schemas().tables().columns().search(
                     TableViewEntity.this,
                     name
                     ) ;
@@ -335,7 +335,7 @@ implements DataResourceView.Table
             @Override
             public DataResourceView.Column search(DataResourceBase.Column base)
                 {
-                return womble().widgeons().views().catalogs().schemas().tables().columns().search(
+                return womble().resources().views().catalogs().schemas().tables().columns().search(
                     TableViewEntity.this,
                     base
                     );

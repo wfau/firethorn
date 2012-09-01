@@ -125,8 +125,8 @@ extends TestBase
             womble().hibernate().session().isDirty()
             );
 
-        alpha().widgeons().insert(
-            womble().widgeons().create(
+        alpha().resources().insert(
+            womble().resources().create(
                 this.unique(
                     "widgeon-A"
                     ),
@@ -154,8 +154,8 @@ extends TestBase
             womble().hibernate().session().isDirty()
             );
 
-        alpha().widgeons().insert(
-            womble().widgeons().create(
+        alpha().resources().insert(
+            womble().resources().create(
                 this.unique(
                     "widgeon-A"
                     ),
@@ -178,7 +178,7 @@ extends TestBase
         assertEquals(
             1,
             count(
-                alpha().widgeons().select()
+                alpha().resources().select()
                 )
             );
         }
@@ -187,8 +187,8 @@ extends TestBase
     public void test003()
     throws Exception
         {
-        alpha().widgeons().insert(
-            womble().widgeons().create(
+        alpha().resources().insert(
+            womble().resources().create(
                 this.unique(
                     "widgeon-A"
                     ),
@@ -205,7 +205,7 @@ extends TestBase
             count(
                 womble().services().select(
                     alpha().ident()
-                    ).widgeons().select()
+                    ).resources().select()
                 )
             );
         }
@@ -214,8 +214,8 @@ extends TestBase
     public void test004()
     throws Exception
         {
-        alpha().widgeons().insert(
-            womble().widgeons().create(
+        alpha().resources().insert(
+            womble().resources().create(
                 this.unique(
                     "widgeon-A"
                     ),
@@ -226,8 +226,8 @@ extends TestBase
                     "default"
                     )
             );
-        alpha().widgeons().insert(
-            womble().widgeons().create(
+        alpha().resources().insert(
+            womble().resources().create(
                 this.unique(
                     "widgeon-B"
                     ),
@@ -242,7 +242,7 @@ extends TestBase
         assertEquals(
             2,
             count(
-                alpha().widgeons().select()
+                alpha().resources().select()
                 )
             );
         }
@@ -252,7 +252,7 @@ extends TestBase
     public void test005()
     throws Exception
         {
-        DataResourceBase base = womble().widgeons().create(
+        DataResourceBase base = womble().resources().create(
             this.unique(
                 "widgeon-A"
                 ),
@@ -261,12 +261,12 @@ extends TestBase
                 )
             );
 
-        alpha().widgeons().insert(
+        alpha().resources().insert(
             base.views().create(
                 "view-A"
                 )
             );
-        alpha().widgeons().insert(
+        alpha().resources().insert(
             base.views().create(
                 "view-B"
                 )
@@ -275,7 +275,7 @@ extends TestBase
         assertEquals(
             2,
             count(
-                alpha().widgeons().select()
+                alpha().resources().select()
                 )
             );
         }

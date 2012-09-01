@@ -34,7 +34,7 @@ extends PathBuilder
      * Public constructor.
      *
      */
-    public SpringPathBuilder(WebRequest request)
+    public SpringPathBuilder(final WebRequest request)
         {
         log.debug("SpringPathBuilder(WebRequest)");
         log.debug(" Context [{}]", request.getContextPath());
@@ -45,7 +45,7 @@ extends PathBuilder
      * Our WebRequest.
      *
      */
-    private WebRequest request ;
+    private final WebRequest request ;
 
     /**
      * Access to our WebRequest.
@@ -60,6 +60,7 @@ extends PathBuilder
      * Get the request context path.
      *
      */
+    @Override
     public String getContextPath()
         {
         return request.getContextPath();

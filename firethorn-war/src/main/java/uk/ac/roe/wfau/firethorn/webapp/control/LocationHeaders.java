@@ -19,22 +19,19 @@ package uk.ac.roe.wfau.firethorn.webapp.control ;
 
 import java.net.URI;
 
-import lombok.extern.slf4j.Slf4j;
+//import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpHeaders;
-
-import uk.ac.roe.wfau.firethorn.common.entity.Entity ;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier ;
 
 /**
  * Extension of the Spring HttpHeaders to set the location.
  *
  */
-@Slf4j
+//@Slf4j
 public class LocationHeaders
 extends HttpHeaders
     {
-    public LocationHeaders(URI location)
+    public LocationHeaders(final URI location)
         {
         super();
         this.setLocation(

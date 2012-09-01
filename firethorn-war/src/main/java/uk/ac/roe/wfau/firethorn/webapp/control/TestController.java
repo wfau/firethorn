@@ -53,8 +53,8 @@ extends ControllerBase
      */
     @ModelAttribute(ControllerData.MODEL_PROPERTY)
     public ControllerData data(
-        WebRequest request,
-        @PathVariable("ident") String ident
+        final WebRequest request,
+        @PathVariable("ident") final String ident
         ){
         log.debug("TestController.data() [{}]", ident);
 
@@ -66,11 +66,11 @@ extends ControllerBase
 
     /**
      * Get request.
-     * 
+     *
      */
 	@RequestMapping(value={"", "/", "/frog"}, method=RequestMethod.GET)
 	public ModelAndView page(
-	    ModelAndView model
+	    final ModelAndView model
 	    ){
         log.debug("TestController.page( [{}]");
         log.debug("count [{}]", count++);
@@ -85,9 +85,9 @@ extends ControllerBase
 
 	@RequestMapping(value="/{ident}", method=RequestMethod.GET)
 	public ModelAndView page(
-	    @ModelAttribute(ControllerData.MODEL_PROPERTY)
+	    @ModelAttribute(ControllerData.MODEL_PROPERTY) final
 	    ControllerData data,
-	    ModelAndView model
+	    final ModelAndView model
 	    ){
         log.debug("TestController.page( [{}]");
         log.debug("count [{}]", count++);
@@ -103,7 +103,7 @@ extends ControllerBase
 
     /**
      * Get request.
-     * 
+     *
 	@RequestMapping(value="/{ident}", method=RequestMethod.GET)
 	public ModelAndView page(
         @PathVariable("ident") String ident,

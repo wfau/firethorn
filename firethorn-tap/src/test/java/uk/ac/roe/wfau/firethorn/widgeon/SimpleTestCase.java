@@ -39,7 +39,7 @@ extends TestBase
     @Test
     public void simple()
         {
-        DataResourceBase one = womble().widgeons().create(
+        DataResourceBase one = womble().resources().create(
             "albert",
             URI.create("ivo://org.astrogrid.test/0001")
             );
@@ -51,7 +51,7 @@ extends TestBase
             );
         log.debug("One [{}][{}]", one.ident(), one.name());
 
-        DataResourceBase two = womble().widgeons().create(
+        DataResourceBase two = womble().resources().create(
             "albert",
             URI.create("ivo://org.astrogrid.test/0001")
             );
@@ -63,7 +63,7 @@ extends TestBase
             );
         log.debug("Two [{}][{}]", two.ident(), two.name());
 
-        for (DataResourceBase widgeon : womble().widgeons().select())
+        for (DataResourceBase widgeon : womble().resources().select())
             {
             log.debug("DataResource [{}]", widgeon);
             }
@@ -74,19 +74,19 @@ extends TestBase
     public void nested()
         {
         nested(
-            womble().widgeons().create(
+            womble().resources().create(
                 "widgeon-0001",
                 URI.create("ivo://org.astrogrid.test/0001")
                 )
             );
         nested(
-            womble().widgeons().create(
+            womble().resources().create(
                 "widgeon-0002",
                 URI.create("ivo://org.astrogrid.test/0002")
                 )
             );
 
-        for (DataResourceBase widgeon : womble().widgeons().select())
+        for (DataResourceBase widgeon : womble().resources().select())
             {
             display(
                 widgeon

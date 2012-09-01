@@ -8,13 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
-import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
-
-import uk.ac.roe.wfau.firethorn.webapp.control.ControllerData;
 
 /**
  *
@@ -25,27 +22,30 @@ public class ComplexTestTag
 extends TagSupport
     {
 
+    private static final long serialVersionUID = 4467879046665729363L;
+
     public ComplexTestTag()
         {
         super();
         log.debug("ComplexTestTag()");
         }
 
+    @Override
     public int doStartTag()
     throws JspException
         {
         log.debug("ComplexTestTag.doStartTag()");
-
+/*
         ControllerData data = (ControllerData) this.pageContext.getAttribute(
             ControllerData.MODEL_PROPERTY,
             PageContext.REQUEST_SCOPE
             );
-
-        JspWriter out = this.pageContext.getOut();
+ */
+        final JspWriter out = this.pageContext.getOut();
         try {
             out.print("[" + this.name + "][" + this.size + "]");
             }
-        catch (IOException ouch)
+        catch (final IOException ouch)
             {
             log.error("Exception writing tag body [{}]", ouch);
             }
@@ -54,6 +54,7 @@ extends TagSupport
 
         }
 
+    @Override
     public int doEndTag()
     throws JspException
         {
@@ -62,7 +63,7 @@ extends TagSupport
         }
 
     private String name ;
-    public void setName(String name)
+    public void setName(final String name)
         {
         log.debug("ComplexTestTag.setName() [{}]:[{}]", this.name, name);
         this.name = name ;
@@ -74,7 +75,7 @@ extends TagSupport
         }
 
     private Long size ;
-    public void setSize(Long size)
+    public void setSize(final Long size)
         {
         log.debug("ComplexTestTag.setSize() [{}]:[{}]", this.size, size);
         this.size = size ;

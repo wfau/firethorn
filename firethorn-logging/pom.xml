@@ -317,7 +317,7 @@
                     <version>1.1.1</version>
                     <scope>provided</scope>
                 </dependency>
-
+  
             </dependencies>
 
         </profile>
@@ -418,6 +418,11 @@
                 <dependency>
                     <groupId>ch.qos.logback</groupId>
                     <artifactId>logback-classic</artifactId>
+                    <version>${org.logback.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-access</artifactId>
                     <version>${org.logback.version}</version>
                 </dependency>
 

@@ -17,9 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control.html.adql.service;
 
-import java.net.URI;
-
-import java.util.List;
 import java.util.ArrayList;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,12 +26,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.context.request.WebRequest;
 
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -57,48 +51,48 @@ extends ControllerBase
     {
     /**
      * URL path for this Controller.
-     * 
+     *
      */
     public static final String CONTROLLER_PATH = "adql/services" ;
 
     /**
      * MVC property for a Iterable list of Service(s).
-     * 
+     *
      */
     public static final String SERVICE_ITER_PROPERTY = "adql.services.iterator" ;
 
     /**
      * MVC property for the Service name.
-     * 
+     *
      */
     public static final String SELECT_NAME_PROPERTY = "adql.services.select.name" ;
 
     /**
      * MVC property for the search text.
-     * 
+     *
      */
     public static final String SEARCH_TEXT_PROPERTY = "adql.services.search.text" ;
 
     /**
      * MVC property for the Service name.
-     * 
+     *
      */
     public static final String CREATE_NAME_PROPERTY = "adql.services.create.name" ;
 
     /**
      * MVC property for a created Service.
-     * 
+     *
      */
     public static final String CREATE_SERVICE_ENTITY = "adql.services.create.entity" ;
 
     /**
      * GET request for the index page.
-     * 
+     *
      */
 	@RequestMapping(value="", method=RequestMethod.GET)
 	public ModelAndView index(
-        WebRequest request,
-	    ModelAndView model
+        final WebRequest request,
+	    final ModelAndView model
 	    ){
         log.debug("AdqlServicesController.index()");
 
@@ -111,16 +105,16 @@ extends ControllerBase
 
     /**
      * GET request to select all.
-     * 
+     *
      */
 	@RequestMapping(value="select", method=RequestMethod.GET)
 	public ModelAndView select(
-        WebRequest request,
-	    ModelAndView model
+        final WebRequest request,
+	    final ModelAndView model
 	    ){
         log.debug("AdqlServicesController.select()");
 
-        Iterable<DataService> iter = womble().services().select();
+        final Iterable<DataService> iter = womble().services().select();
 
 		model.addObject(
 		    SERVICE_ITER_PROPERTY,
@@ -137,13 +131,13 @@ extends ControllerBase
 
     /**
      * GET request to select by name.
-     * 
+     *
      */
 	@RequestMapping(value="select", method=RequestMethod.GET, params=SELECT_NAME_PROPERTY)
 	public ModelAndView select(
-        @RequestParam(SELECT_NAME_PROPERTY) String name,
-        WebRequest request,
-	    ModelAndView model
+        @RequestParam(SELECT_NAME_PROPERTY) final String name,
+        final WebRequest request,
+	    final ModelAndView model
 	    ){
         log.debug("AdqlServicesController.select(String name)");
 
@@ -154,7 +148,7 @@ extends ControllerBase
 
 		model.addObject(
 		    SERVICE_ITER_PROPERTY,
-            new ArrayList()		    
+            new ArrayList<DataService>()
 		    );
 
 		model.setViewName(
@@ -167,12 +161,12 @@ extends ControllerBase
 
     /**
      * GET request to search all.
-     * 
+     *
      */
 	@RequestMapping(value="search", method=RequestMethod.GET)
 	public ModelAndView search(
-        WebRequest request,
-	    ModelAndView model
+        final WebRequest request,
+	    final ModelAndView model
 	    ){
         log.debug("AdqlServicesController.search()");
 
@@ -186,13 +180,13 @@ extends ControllerBase
 
     /**
      * GET request to search by text.
-     * 
+     *
      */
 	@RequestMapping(value="search", method=RequestMethod.GET, params=SEARCH_TEXT_PROPERTY)
 	public ModelAndView search(
-        @RequestParam(SEARCH_TEXT_PROPERTY) String text,
-        WebRequest request,
-	    ModelAndView model
+        @RequestParam(SEARCH_TEXT_PROPERTY) final String text,
+        final WebRequest request,
+	    final ModelAndView model
 	    ){
         log.debug("AdqlServicesController.search(String text)");
 
@@ -203,7 +197,7 @@ extends ControllerBase
 
 		model.addObject(
 		    SERVICE_ITER_PROPERTY,
-            new ArrayList()
+            new ArrayList<DataService>()
 		    );
 
 		model.setViewName(
@@ -216,13 +210,13 @@ extends ControllerBase
 
     /**
      * GET request to create a new DataService.
-     * Displays the HTML form. 
-     * 
+     * Displays the HTML form.
+     *
      */
 	@RequestMapping(value="create", method=RequestMethod.GET)
 	public ModelAndView create(
-        WebRequest request,
-	    ModelAndView model
+        final WebRequest request,
+	    final ModelAndView model
 	    ){
         log.debug("AdqlServicesController.create()");
 
@@ -239,22 +233,22 @@ extends ControllerBase
      */
 	@RequestMapping(value="create", method=RequestMethod.POST)
 	public ResponseEntity<String> create(
-        @RequestParam(CREATE_NAME_PROPERTY) String name,
-        WebRequest request,
-	    ModelAndView model
+        @RequestParam(CREATE_NAME_PROPERTY) final String name,
+        final WebRequest request,
+	    final ModelAndView model
 	    ){
         log.debug("AdqlServicesController.create(String name)");
         log.debug("  Name [{}]", name);
 
         //
         // Try creating the service.
-        DataService created = womble().services().create(
+        final DataService created = womble().services().create(
             name
             );
 
         log.debug("  Created [{}]", created);
 
-        PathBuilder builder = new SpringPathBuilder(
+        final PathBuilder builder = new SpringPathBuilder(
             request
             );
 

@@ -24,9 +24,6 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-
-import uk.ac.roe.wfau.firethorn.webapp.control.ControllerData;
 
 /**
  *
@@ -43,22 +40,23 @@ extends SimpleTagSupport
         log.debug("SimpleTestTag()");
         }
 
+    @Override
     public void doTag()
     throws JspException, IOException
         {
         log.debug("SimpleTestTag.doTag()");
-
+/*
         ControllerData data = (ControllerData) this.getJspContext().getAttribute(
             ControllerData.MODEL_PROPERTY,
             PageContext.REQUEST_SCOPE
             );
-
-        JspWriter out = this.getJspContext().getOut();
+ */
+        final JspWriter out = this.getJspContext().getOut();
         out.print("[" + this.name + "][" + this.size + "]");
         }
 
     private String name ;
-    public void setName(String name)
+    public void setName(final String name)
         {
         log.debug("SimpleTestTag.setName() [{}]:[{}]", this.name, name);
         this.name = name ;
@@ -70,7 +68,7 @@ extends SimpleTagSupport
         }
 
     private Long size ;
-    public void setSize(Long size)
+    public void setSize(final Long size)
         {
         log.debug("SimpleTestTag.setSize() [{}]:[{}]", this.size, size);
         this.size = size ;

@@ -50,7 +50,7 @@ extends TestBase
     public void before()
     throws Exception
         {
-        base = womble().widgeons().create(
+        base = womble().resources().create(
             this.unique(
                 "base"
                 ),

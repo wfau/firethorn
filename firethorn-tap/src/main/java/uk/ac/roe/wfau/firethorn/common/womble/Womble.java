@@ -155,7 +155,7 @@ public interface Womble
      * Access to our DataResource factory.
      * 
      */
-    public DataResourceBase.Factory widgeons();
+    public DataResourceBase.Factory resources();
 
     /**
      * Access to our DataService factory.

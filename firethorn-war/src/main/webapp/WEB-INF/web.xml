@@ -19,17 +19,13 @@
     |
     +-->
 <web-app
-    xmlns:web="http://java.sun.com/xml/ns/javaee" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="
-        http://java.sun.com/xml/ns/javaee
-        http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd
-        " 
-    id="albert" version="2.5"
-    >
-<!--
-    id="WebApp_ID" version="2.5"
--->
+	version="2.5"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://java.sun.com/xml/ns/javaee
+		http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+		>
 
     <display-name>FireThorn webapp</display-name>
 
@@ -91,6 +87,30 @@
         <servlet-name>DemoTAP_Servlet</servlet-name>
         <url-pattern>/cds-tap/*</url-pattern>
     </servlet-mapping-->
+
+    <!--+
+        | Logging servlets.
+        | http://gordondickens.com/wordpress/2012/07/03/enterprise-spring-best-practices-part-1-project-config/
+        +-->
+ 	<servlet>
+    	<servlet-name>LogbackStatusMessages</servlet-name>
+    	<servlet-class>ch.qos.logback.classic.ViewStatusMessagesServlet</servlet-class>
+  	</servlet>
+
+  	<servlet-mapping>
+    	<servlet-name>LogbackStatusMessages</servlet-name>
+    	<url-pattern>/logback</url-pattern>
+  	</servlet-mapping>
+
+	<filter>
+    	<filter-name>LogbackTeeFilter</filter-name>
+    	<filter-class>ch.qos.logback.access.servlet.TeeFilter</filter-class>
+  	</filter>
+
+  	<filter-mapping>
+    	<filter-name>LogbackTeeFilter</filter-name>
+    	<url-pattern>/*</url-pattern>
+  	</filter-mapping>
 
 	<!--+
 	    | Spring transaction filter.

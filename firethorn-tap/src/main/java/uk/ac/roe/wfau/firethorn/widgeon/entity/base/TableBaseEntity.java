@@ -236,7 +236,7 @@ implements DataResourceBase.Table
             @Override
             public Iterable<DataResourceView.Table> select()
                 {
-                return womble().widgeons().views().catalogs().schemas().tables().select(
+                return womble().resources().views().catalogs().schemas().tables().select(
                     TableBaseEntity.this
                     );
                 }
@@ -244,7 +244,7 @@ implements DataResourceBase.Table
             @Override
             public DataResourceView.Table search(DataResourceView.Schema parent)
                 {
-                return womble().widgeons().views().catalogs().schemas().tables().search(
+                return womble().resources().views().catalogs().schemas().tables().search(
                     parent,
                     TableBaseEntity.this
                     );
@@ -260,7 +260,7 @@ implements DataResourceBase.Table
             @Override
             public DataResourceBase.Column create(String name)
                 {
-                return womble().widgeons().catalogs().schemas().tables().columns().create(
+                return womble().resources().catalogs().schemas().tables().columns().create(
                     TableBaseEntity.this,
                     name
                     );
@@ -269,7 +269,7 @@ implements DataResourceBase.Table
             @Override
             public Iterable<DataResourceBase.Column> select()
                 {
-                return womble().widgeons().catalogs().schemas().tables().columns().select(
+                return womble().resources().catalogs().schemas().tables().columns().select(
                     TableBaseEntity.this
                     ) ;
                 }
@@ -278,7 +278,7 @@ implements DataResourceBase.Table
             public DataResourceBase.Column select(String name)
             throws NameNotFoundException
                 {
-                return womble().widgeons().catalogs().schemas().tables().columns().select(
+                return womble().resources().catalogs().schemas().tables().columns().select(
                     TableBaseEntity.this,
                     name
                     ) ;
@@ -287,7 +287,7 @@ implements DataResourceBase.Table
             @Override
             public DataResourceBase.Column search(String name)
                 {
-                return womble().widgeons().catalogs().schemas().tables().columns().search(
+                return womble().resources().catalogs().schemas().tables().columns().search(
                     TableBaseEntity.this,
                     name
                     ) ;

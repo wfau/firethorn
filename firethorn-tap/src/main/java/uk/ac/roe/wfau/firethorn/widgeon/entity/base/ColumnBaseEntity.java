@@ -223,7 +223,7 @@ implements DataResourceBase.Column
             @Override
             public Iterable<DataResourceView.Column> select()
                 {
-                return womble().widgeons().views().catalogs().schemas().tables().columns().select(
+                return womble().resources().views().catalogs().schemas().tables().columns().select(
                     ColumnBaseEntity.this
                     );
                 }
@@ -231,7 +231,7 @@ implements DataResourceBase.Column
             @Override
             public DataResourceView.Column search(DataResourceView.Table parent)
                 {
-                return womble().widgeons().views().catalogs().schemas().tables().columns().search(
+                return womble().resources().views().catalogs().schemas().tables().columns().search(
                     parent,
                     ColumnBaseEntity.this
                     );

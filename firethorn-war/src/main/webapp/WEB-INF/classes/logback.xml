@@ -19,7 +19,6 @@
     |
     +-->
 <configuration>
-
 	<!--+
 	    | Default console appender (e.g. tomcat/logs/catalina.out).
 	    | http://logback.qos.ch/manual/configuration.html

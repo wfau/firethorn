@@ -34,7 +34,7 @@ extends PathBuilder
      * Public constructor.
      *
      */
-    public ServletPathBuilder(HttpServletRequest request)
+    public ServletPathBuilder(final HttpServletRequest request)
         {
         log.debug("ServletPathBuilder(HttpServletRequest)");
         log.debug(" Request [{}]", request.getRequestURI());
@@ -47,7 +47,7 @@ extends PathBuilder
      * Our ServletRequest.
      *
      */
-    private HttpServletRequest request ;
+    private final HttpServletRequest request ;
 
     /**
      * Access to our ServletRequest.
@@ -62,6 +62,7 @@ extends PathBuilder
      * Get the request context path.
      *
      */
+    @Override
     public String getContextPath()
         {
         return request.getContextPath();

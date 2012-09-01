@@ -237,7 +237,7 @@ implements DataResourceBase.Catalog
             @Override
             public Iterable<DataResourceView.Catalog> select()
                 {
-                return womble().widgeons().views().catalogs().select(
+                return womble().resources().views().catalogs().select(
                     CatalogBaseEntity.this
                     );
                 }
@@ -245,7 +245,7 @@ implements DataResourceBase.Catalog
             @Override
             public DataResourceView.Catalog search(DataResourceView parent)
                 {
-                return womble().widgeons().views().catalogs().search(
+                return womble().resources().views().catalogs().search(
                     parent,
                     CatalogBaseEntity.this
                     );
@@ -261,7 +261,7 @@ implements DataResourceBase.Catalog
             @Override
             public DataResourceBase.Schema create(String name)
                 {
-                return womble().widgeons().catalogs().schemas().create(
+                return womble().resources().catalogs().schemas().create(
                     CatalogBaseEntity.this,
                     name
                     );
@@ -270,7 +270,7 @@ implements DataResourceBase.Catalog
             @Override
             public Iterable<DataResourceBase.Schema> select()
                 {
-                return womble().widgeons().catalogs().schemas().select(
+                return womble().resources().catalogs().schemas().select(
                     CatalogBaseEntity.this
                     );
                 }
@@ -279,7 +279,7 @@ implements DataResourceBase.Catalog
             public DataResourceBase.Schema select(String name)
             throws NameNotFoundException
                 {
-                return womble().widgeons().catalogs().schemas().select(
+                return womble().resources().catalogs().schemas().select(
                     CatalogBaseEntity.this,
                     name
                     );
@@ -288,7 +288,7 @@ implements DataResourceBase.Catalog
             @Override
             public DataResourceBase.Schema search(String name)
                 {
-                return womble().widgeons().catalogs().schemas().search(
+                return womble().resources().catalogs().schemas().search(
                     CatalogBaseEntity.this,
                     name
                     );

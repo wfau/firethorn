@@ -79,11 +79,11 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.DataResourceEntityBase;
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "widgeon.base.entity-select-all",
+            name  = "resource.base.entity-select-all",
             query = "FROM DataResourceBaseEntity ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "widgeon.base.entity-select-name",
+            name  = "resource.base.entity-select-name",
             query = "FROM DataResourceBaseEntity WHERE (name = :name) ORDER BY ident desc"
             )
         }
@@ -97,7 +97,7 @@ implements DataResourceBase
      * Our persistence table name.
      * 
      */
-    public static final String DB_TABLE_NAME = "widgeon_base_entity" ;
+    public static final String DB_TABLE_NAME = "resource_base_entity" ;
 
     /**
      * Our Entity Factory implementation.
@@ -121,7 +121,7 @@ implements DataResourceBase
             {
             return super.iterable(
                 super.query(
-                    "widgeon.base.entity-select-all"
+                    "resource.base.entity-select-all"
                     )
                 );
             }
@@ -154,7 +154,7 @@ implements DataResourceBase
             {
             return super.first(
                 super.query(
-                    "widgeon.base.entity-select-name"
+                    "resource.base.entity-select-name"
                     ).setString(
                         "name",
                         name
@@ -233,7 +233,7 @@ implements DataResourceBase
             @Override
             public DataResourceView create(String name)
                 {
-                return womble().widgeons().views().create(
+                return womble().resources().views().create(
                     DataResourceBaseEntity.this,
                     name
                     );
@@ -242,7 +242,7 @@ implements DataResourceBase
             @Override
             public Iterable<DataResourceView> select()
                 {
-                return womble().widgeons().views().select(
+                return womble().resources().views().select(
                     DataResourceBaseEntity.this
                     );
                 }
@@ -251,7 +251,7 @@ implements DataResourceBase
             public DataResourceView select(String name)
             throws NameNotFoundException
                 {
-                return womble().widgeons().views().select(
+                return womble().resources().views().select(
                     DataResourceBaseEntity.this,
                     name
                     );
@@ -267,7 +267,7 @@ implements DataResourceBase
             @Override
             public DataResourceBase.Catalog create(final String name)
                 {
-                return womble().widgeons().catalogs().create(
+                return womble().resources().catalogs().create(
                     DataResourceBaseEntity.this,
                     name
                     ) ;
@@ -276,7 +276,7 @@ implements DataResourceBase
             @Override
             public Iterable<DataResourceBase.Catalog> select()
                 {
-                return womble().widgeons().catalogs().select(
+                return womble().resources().catalogs().select(
                     DataResourceBaseEntity.this
                     );
                 }
@@ -285,7 +285,7 @@ implements DataResourceBase
             public DataResourceBase.Catalog select(final String name)
             throws NameNotFoundException
                 {
-                return womble().widgeons().catalogs().select(
+                return womble().resources().catalogs().select(
                     DataResourceBaseEntity.this,
                     name
                     );
@@ -294,7 +294,7 @@ implements DataResourceBase
             @Override
             public DataResourceBase.Catalog search(final String name)
                 {
-                return womble().widgeons().catalogs().search(
+                return womble().resources().catalogs().search(
                     DataResourceBaseEntity.this,
                     name
                     );

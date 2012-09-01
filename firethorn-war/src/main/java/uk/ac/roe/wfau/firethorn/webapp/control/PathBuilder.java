@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.webapp.control ;
 
 import java.net.URI;
 
-import lombok.extern.slf4j.Slf4j;
+//import lombok.extern.slf4j.Slf4j;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity ;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier ;
@@ -29,7 +29,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier ;
  * @todo Add URI handling to create Location headers.
  *
  */
-@Slf4j
+//@Slf4j
 public abstract class PathBuilder
     {
 
@@ -56,14 +56,14 @@ public abstract class PathBuilder
     /**
      * The URL path for our Spring dispatcher servlet.
      * @todo This should be configurable rather than hard coded.
-     * 
+     *
      */
     public static final String SERVLET_PATH = "" ;
 
     /**
      * The URL path for our static content.
      * @todo This should be configurable rather than hard coded.
-     * 
+     *
      */
     public static final String STATIC_PATH = "static" ;
 
@@ -337,7 +337,7 @@ public abstract class PathBuilder
          */
         public void append(final String... paths)
             {
-            for(String path : paths)
+            for(final String path : paths)
                 {
                 append(
                     path
@@ -354,7 +354,7 @@ public abstract class PathBuilder
             //log.debug("PathBuilder.Path.append(String)");
             //log.debug("  Path [{}]", path);
 
-            String trim = path.trim() ;
+            final String trim = path.trim() ;
 
             if (trim.length() > 0)
                 {
@@ -370,6 +370,7 @@ public abstract class PathBuilder
          * Convert to a String.
          *
          */
+        @Override
         public String toString()
             {
             return builder.toString();

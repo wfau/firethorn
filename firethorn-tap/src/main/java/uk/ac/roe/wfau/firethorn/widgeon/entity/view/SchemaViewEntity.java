@@ -304,7 +304,7 @@ implements DataResourceView.Schema
             @Override
             public Iterable<DataResourceView.Table> select()
                 {
-                return womble().widgeons().views().catalogs().schemas().tables().select(
+                return womble().resources().views().catalogs().schemas().tables().select(
                     SchemaViewEntity.this
                     ) ;
                 }
@@ -313,7 +313,7 @@ implements DataResourceView.Schema
             public DataResourceView.Table select(String name)
             throws NameNotFoundException
                 {
-                return womble().widgeons().views().catalogs().schemas().tables().select(
+                return womble().resources().views().catalogs().schemas().tables().select(
                     SchemaViewEntity.this,
                     name
                     ) ;
@@ -322,7 +322,7 @@ implements DataResourceView.Schema
             @Override
             public DataResourceView.Table search(String name)
                 {
-                return womble().widgeons().views().catalogs().schemas().tables().search(
+                return womble().resources().views().catalogs().schemas().tables().search(
                     SchemaViewEntity.this,
                     name
                     ) ;

@@ -55,7 +55,7 @@ extends TestBase
             );
 
         assertNotNull(
-            womble().widgeons()
+            womble().resources()
             );
 
         assertNotNull(
