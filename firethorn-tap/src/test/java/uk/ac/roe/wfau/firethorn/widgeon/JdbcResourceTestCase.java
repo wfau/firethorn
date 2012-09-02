@@ -33,8 +33,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
  *
  */
 @Slf4j
-public class WidgeonBaseTestCase
-extends WidgeonBaseTestBase
+public class JdbcResourceTestCase
+extends DataResourceTestBase
     {
 
     @Test

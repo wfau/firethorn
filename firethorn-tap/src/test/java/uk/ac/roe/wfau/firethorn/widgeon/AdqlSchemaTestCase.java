@@ -35,8 +35,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
  *
  */
 @Slf4j
-public class ColumnViewTestCase
-extends WidgeonViewTestBase
+public class AdqlSchemaTestCase
+extends DataResourceTestBase
     {
 
     @Test
@@ -51,31 +51,23 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base catalog, schema and table.
+        // Create base catalog.
         assertNotNull(
             base().catalogs().create(
                 "catalog-A"
-                ).schemas().create(
-                    "schema-A"
-                    ).tables().create(
-                        "table-A"
-                        )
+                )
             );
         //
-        // Select table view works.
+        // Select catalog view works.
         assertNotNull(
             base().views().select(
                 "view-A"
                 ).catalogs().select(
                     "catalog-A"
-                    ).schemas().select(
-                        "schema-A"
-                        ).tables().select(
-                            "table-A"
-                            )
+                    )
             );
         //
-        // Select missing column view fails.
+        // Select missing schema view fails.
         try {
             base().views().select(
                 "view-A"
@@ -83,17 +75,13 @@ extends WidgeonViewTestBase
                     "catalog-A"
                     ).schemas().select(
                         "schema-A"
-                        ).tables().select(
-                            "table-A"
-                            ).columns().select(
-                                "column-A"
-                                );
+                        );
             fail("NameNotFoundException expected");
             }
         catch (NameNotFoundException ouch)
             {
             assertEquals(
-                "column-A",
+                "schema-A",
                 ouch.name()
                 );            
             }
@@ -111,44 +99,32 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base catalog, schema and table.
+        // Create base catalog.
         assertNotNull(
             base().catalogs().create(
                 "catalog-A"
-                ).schemas().create(
-                    "schema-A"
-                    ).tables().create(
-                        "table-A"
-                        )
+                )
             );
         //
-        // Select table view works.
+        // Select catalog view works.
         assertNotNull(
             base().views().select(
                 "view-A"
                 ).catalogs().select(
                     "catalog-A"
-                    ).schemas().select(
-                        "schema-A"
-                        ).tables().select(
-                            "table-A"
-                            )
+                    )
             );
         //
-        // Create base column.
+        // Create base schema.
         assertNotNull(
             base().catalogs().select(
                 "catalog-A"
-                ).schemas().select(
+                ).schemas().create(
                     "schema-A"
-                    ).tables().select(
-                        "table-A"
-                        ).columns().create(
-                            "column-A"
-                            )
+                    )
             );
         //
-        // Select column view works.
+        // Select schema view works.
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -156,11 +132,7 @@ extends WidgeonViewTestBase
                     "catalog-A"
                     ).schemas().select(
                         "schema-A"
-                        ).tables().select(
-                            "table-A"
-                            ).columns().select(
-                                "column-A"
-                                )
+                        )
             );
         }
 
@@ -176,20 +148,16 @@ extends WidgeonViewTestBase
                 )
             );
         //
-        // Create base catalog, schema, table and column.
+        // Create base catalog and schema.
         assertNotNull(
             base().catalogs().create(
                 "catalog-A"
                 ).schemas().create(
                     "schema-A"
-                    ).tables().create(
-                        "table-A"
-                        ).columns().create(
-                            "column-A"
-                            )
+                    )
             );
         //
-        // Select catalog, schema, table and column view works.
+        // Select catalog and schema view works.
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -197,12 +165,9 @@ extends WidgeonViewTestBase
                     "catalog-A"
                     ).schemas().select(
                         "schema-A"
-                        ).tables().select(
-                            "table-A"
-                            ).columns().select(
-                                "column-A"
-                                )
+                        )
             );
         }
+
     }
 

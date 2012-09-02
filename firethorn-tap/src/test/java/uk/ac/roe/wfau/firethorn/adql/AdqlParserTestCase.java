@@ -17,53 +17,30 @@
  */
 package uk.ac.roe.wfau.firethorn.adql ;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Arrays;
+
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.URI;
-
-import java.util.List;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.ArrayList;
-
-import java.io.StringBufferInputStream;
-
 import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
-import adql.query.ADQLQuery;
-import adql.query.from.ADQLTable;
-import adql.query.from.FromContent;
-
-import adql.parser.ADQLParser;
-import adql.parser.QueryChecker;
-import adql.parser.ParseException;
-
-import adql.db.DBTable;
-import adql.db.DBColumn;
-import adql.db.SearchColumnList;
-
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceTestBase;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTable;
 import adql.db.DBChecker;
-import adql.db.DefaultDBTable;
+import adql.db.DBTable;
 import adql.db.DefaultDBColumn;
-
-import adql.translator.ADQLTranslator;
-import adql.translator.PostgreSQLTranslator;
-
-import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView ;
-import uk.ac.roe.wfau.firethorn.widgeon.WidgeonViewTestBase ;
-
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTable ;
+import adql.db.DefaultDBTable;
+import adql.parser.ADQLParser;
+import adql.query.ADQLQuery;
 
 /**
  *
  */
 @Slf4j
 public class AdqlParserTestCase
-extends WidgeonViewTestBase
+extends DataResourceTestBase
     {
 
     /**

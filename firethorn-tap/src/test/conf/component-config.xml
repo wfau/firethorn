@@ -40,20 +40,6 @@
     >
 
     <!--+
-        | Enable automatic @Autowired component injection.
-        | http://amin-mc.blogspot.com/2008/02/configurable-example-with-spring-25.html
-    <cxt:annotation-config/>
-    <cxt:spring-configured/>
-        +-->
-
-<!--
-    <bean
-        id="AstroDAbisAccountPasswords"
-        class="org.jasypt.util.password.StrongPasswordEncryptor"
-        />
--->
-
-    <!--+
         | Scan for Spring annotated classes.
         +-->
     <cxt:component-scan base-package="uk.ac.roe.wfau.firethorn"/>

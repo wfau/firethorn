@@ -35,8 +35,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
  *
  */
 @Slf4j
-public class WidgeonViewTestCase
-extends WidgeonViewTestBase
+public class AdqlResourceTestCase
+extends DataResourceTestBase
     {
 
     @Test

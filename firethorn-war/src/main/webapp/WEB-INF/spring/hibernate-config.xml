@@ -67,11 +67,11 @@
                 <value>uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcTableEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcColumnEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.AdqlResourceEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.AdqlCatalogEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.AdqlSchemaEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.AdqlTableEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.AdqlColumnEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.adql.AdqlResourceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.adql.AdqlCatalogEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.adql.AdqlSchemaEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.adql.AdqlTableEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.adql.AdqlColumnEntity</value>
 
                 <!--+
                     |

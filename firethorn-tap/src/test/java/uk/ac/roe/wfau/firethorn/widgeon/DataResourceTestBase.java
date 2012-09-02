@@ -35,13 +35,13 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
  *
  */
 @Slf4j
-public class WidgeonBaseTestBase
+public class DataResourceTestBase
 extends TestBase
     {
 
     private DataResourceBase base ;
 
-    protected DataResourceBase base()
+    public DataResourceBase base()
         {
         return this.base;
         }
