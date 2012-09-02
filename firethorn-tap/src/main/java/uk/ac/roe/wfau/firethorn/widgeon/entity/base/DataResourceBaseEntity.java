@@ -132,10 +132,9 @@ implements DataResourceBase
 
         @Override
         @SelectEntityMethod
-        public DataResourceBase select(final String name)
-        throws NameNotFoundException
+        public Iterable<DataResourceBase> select(final String name)
             {
-            DataResourceBase result = super.first(
+            return super.iterable(
                 super.query(
                     "resource.base.entity-select-name"
                     ).setString(
@@ -143,15 +142,6 @@ implements DataResourceBase
                         name
                         )
                 );
-            if (result != null)
-                {
-                return result;
-                }
-            else {
-                throw new NameNotFoundException(
-                    name
-                    );
-                }
             }
 
         @Override

@@ -117,11 +117,11 @@ extends ControllerBase
 	    ){
         log.debug("select()");
 
-        final Iterable<DataResourceBase> services = womble().resources().select();
+        final Iterable<DataResourceBase> resources = womble().resources().select();
 
 		model.addObject(
 		    SELECT_RESULT,
-		    services
+		    resources
 		    );
 
 		model.setViewName(
@@ -144,16 +144,9 @@ extends ControllerBase
 	    ){
         log.debug("select(String name)");
 
-        DataResourceBase resource = null ;
-        try {
-            resource = womble().resources().select(
-                name
-                );
-            }
-        catch (NameNotFoundException ouch)
-            {
-            log.error("Unable to find matching resource [{}]", name);
-            }
+        final Iterable<DataResourceBase> resources = womble().resources().select(
+            name
+            );
 
 		model.addObject(
 		    SELECT_NAME,
@@ -162,7 +155,7 @@ extends ControllerBase
 
 		model.addObject(
 		    SELECT_RESULT,
-		    resource 
+		    resources 
 		    );
 
 		model.setViewName(

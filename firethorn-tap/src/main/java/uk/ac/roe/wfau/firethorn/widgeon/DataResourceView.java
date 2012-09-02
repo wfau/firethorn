@@ -54,14 +54,14 @@ extends DataResource
         public Iterable<DataResourceView> select(DataResourceBase base);
 
         /**
-         * Select a named view of a DataResource.
+         * Select a view of a DataResource by name.
          *
          */
         public DataResourceView select(DataResourceBase base, String name)
         throws NameNotFoundException;
 
         /**
-         * Search for a named view of a DataResource.
+         * Search for a view of a DataResource by name.
          *
          */
         public DataResourceView search(DataResourceBase base, String name);

@@ -48,14 +48,13 @@ extends DataResource
         public Iterable<DataResourceBase> select();
 
         /**
-         * Select a DataResource by name.
+         * Select DataResource(s) by name.
          *
          */
-        public DataResourceBase select(String name)
-        throws NameNotFoundException;
+        public Iterable<DataResourceBase> select(String name);
 
         /**
-         * Search for DataResource(s).
+         * Search for DataResource(s) by name.
          *
          */
         public Iterable<DataResourceBase> search(String text);
