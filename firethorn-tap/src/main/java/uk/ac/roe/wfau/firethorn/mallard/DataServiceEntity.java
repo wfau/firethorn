@@ -56,7 +56,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.view.DataResourceViewEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.view.AdqlResourceEntity;
 
 /**
  * DataService implementation.
@@ -234,7 +234,7 @@ implements DataService
     @ManyToMany(
         fetch = FetchType.LAZY,
         cascade = CascadeType.ALL,
-        targetEntity = DataResourceViewEntity.class
+        targetEntity = AdqlResourceEntity.class
         )
     @JoinTable(
         name="service_resources",

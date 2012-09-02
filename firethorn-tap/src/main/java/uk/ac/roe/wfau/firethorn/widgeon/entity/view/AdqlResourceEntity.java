@@ -72,12 +72,12 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcResourceEntity;
     AccessType.FIELD
     )
 @Table(
-    name = DataResourceViewEntity.DB_TABLE_NAME,
+    name = AdqlResourceEntity.DB_TABLE_NAME,
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
-                DataResourceViewEntity.DB_BASE_COL
+                AdqlResourceEntity.DB_BASE_COL
                 }
             )
         }
@@ -85,16 +85,16 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcResourceEntity;
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "widgeon.view.entity-select-base",
-            query = "FROM DataResourceViewEntity WHERE (base = :base) ORDER BY ident desc"
+            name  = "adql.entity-select-base",
+            query = "FROM AdqlResourceEntity WHERE (base = :base) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "widgeon.view.entity-select-base.name",
-            query = "FROM DataResourceViewEntity WHERE ((base = :base) AND (name = :name)) ORDER BY ident desc"
+            name  = "adql.entity-select-base.name",
+            query = "FROM AdqlResourceEntity WHERE ((base = :base) AND (name = :name)) ORDER BY ident desc"
             )
         }
     )
-public class DataResourceViewEntity
+public class AdqlResourceEntity
 extends DataResourceEntity
 implements DataResourceView
     {
@@ -103,7 +103,7 @@ implements DataResourceView
      * Our persistence table name.
      * 
      */
-    public static final String DB_TABLE_NAME = "widgeon_view_entity" ;
+    public static final String DB_TABLE_NAME = "adql_resource" ;
 
     /**
      * The persistence column name for our base DataResource.
@@ -124,7 +124,7 @@ implements DataResourceView
         @Override
         public Class etype()
             {
-            return DataResourceViewEntity.class ;
+            return AdqlResourceEntity.class ;
             }
 
         /**
@@ -132,7 +132,7 @@ implements DataResourceView
          *
          */
         @CascadeEntityMethod
-        protected DataResourceView insert(DataResourceViewEntity entity)
+        protected DataResourceView insert(AdqlResourceEntity entity)
             {
             super.insert(
                 entity
@@ -152,7 +152,7 @@ implements DataResourceView
         public DataResourceView create(final DataResourceBase base, final String name)
             {
             return this.insert(
-                new DataResourceViewEntity(
+                new AdqlResourceEntity(
                     base,
                     name
                     )
@@ -165,7 +165,7 @@ implements DataResourceView
             {
             return super.iterable(
                 super.query(
-                    "widgeon.view.entity-select-base"
+                    "adql.entity-select-base"
                     ).setEntity(
                         "base",
                         base
@@ -199,7 +199,7 @@ implements DataResourceView
             {
             return super.first(
                 super.query(
-                    "widgeon.view.entity-select-base.name"
+                    "adql.entity-select-base.name"
                     ).setEntity(
                         "base",
                         base
@@ -233,7 +233,7 @@ implements DataResourceView
             public Iterable<DataResourceView.Catalog> select()
                 {
                 return womble().resources().views().catalogs().select(
-                    DataResourceViewEntity.this
+                    AdqlResourceEntity.this
                     ) ;
                 }
 
@@ -242,7 +242,7 @@ implements DataResourceView
             throws NameNotFoundException
                 {
                 return womble().resources().views().catalogs().select(
-                    DataResourceViewEntity.this,
+                    AdqlResourceEntity.this,
                     name
                     ) ;
                 }
@@ -251,7 +251,7 @@ implements DataResourceView
             public DataResourceView.Catalog search(final String name)
                 {
                 return womble().resources().views().catalogs().search(
-                    DataResourceViewEntity.this,
+                    AdqlResourceEntity.this,
                     name
                     ) ;
                 }
@@ -263,7 +263,7 @@ implements DataResourceView
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected DataResourceViewEntity()
+    protected AdqlResourceEntity()
         {
         super();
         }
@@ -272,7 +272,7 @@ implements DataResourceView
      * Create a new view of a DataResource.
      *
      */
-    private DataResourceViewEntity(final DataResourceBase base)
+    private AdqlResourceEntity(final DataResourceBase base)
         {
         this(
             base,
@@ -284,7 +284,7 @@ implements DataResourceView
      * Create a new view of a DataResource.
      *
      */
-    private DataResourceViewEntity(final DataResourceBase base, final String name)
+    private AdqlResourceEntity(final DataResourceBase base, final String name)
         {
         super(
             name

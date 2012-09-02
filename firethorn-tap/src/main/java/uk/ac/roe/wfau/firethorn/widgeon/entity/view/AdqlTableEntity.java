@@ -66,40 +66,40 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcTableEntity;
     AccessType.FIELD
     )
 @Table(
-    name = TableViewEntity.DB_TABLE_NAME,
+    name = AdqlTableEntity.DB_TABLE_NAME,
     uniqueConstraints=
         @UniqueConstraint(
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
-                TableViewEntity.DB_PARENT_COL,
+                AdqlTableEntity.DB_PARENT_COL,
                 }
             )
     )
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "widgeon.view.table-select-parent",
-            query = "FROM TableViewEntity WHERE (parent = :parent) ORDER BY ident desc"
+            name  = "adql.table-select-parent",
+            query = "FROM AdqlTableEntity WHERE (parent = :parent) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "widgeon.view.table-select-parent.name",
-            query = "FROM TableViewEntity WHERE ((parent = :parent) AND (((name IS NOT null) AND (name = :name)) OR ((name IS null) AND (base.name = :name)))) ORDER BY ident desc"
+            name  = "adql.table-select-parent.name",
+            query = "FROM AdqlTableEntity WHERE ((parent = :parent) AND (((name IS NOT null) AND (name = :name)) OR ((name IS null) AND (base.name = :name)))) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "widgeon.view.table-select-base",
-            query = "FROM TableViewEntity WHERE (base = :base) ORDER BY ident desc"
+            name  = "adql.table-select-base",
+            query = "FROM AdqlTableEntity WHERE (base = :base) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "widgeon.view.table-select-parent.base",
-            query = "FROM TableViewEntity WHERE ((parent = :parent) AND (base = :base)) ORDER BY ident desc"
+            name  = "adql.table-select-parent.base",
+            query = "FROM AdqlTableEntity WHERE ((parent = :parent) AND (base = :base)) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "widgeon.view.table-select-view.base",
-            query = "FROM TableViewEntity WHERE ((parent.parent.parent = :view) AND (base = :base)) ORDER BY ident desc"
+            name  = "adql.table-select-view.base",
+            query = "FROM AdqlTableEntity WHERE ((parent.parent.parent = :view) AND (base = :base)) ORDER BY ident desc"
             )
         }
     )
-public class TableViewEntity
+public class AdqlTableEntity
 extends DataResourceEntity
 implements DataResourceView.Table
     {
@@ -108,7 +108,7 @@ implements DataResourceView.Table
      * Our persistence table name.
      * 
      */
-    public static final String DB_TABLE_NAME = "widgeon_view_table" ;
+    public static final String DB_TABLE_NAME = "adql_table" ;
 
     /**
      * The persistence column name for our parent Schema.
@@ -135,7 +135,7 @@ implements DataResourceView.Table
         @Override
         public Class etype()
             {
-            return TableViewEntity.class ;
+            return AdqlTableEntity.class ;
             }
 
         /**
@@ -143,7 +143,7 @@ implements DataResourceView.Table
          *
          */
         @CascadeEntityMethod
-        protected DataResourceView.Table insert(TableViewEntity entity)
+        protected DataResourceView.Table insert(AdqlTableEntity entity)
             {
             super.insert(
                 entity
@@ -166,7 +166,7 @@ implements DataResourceView.Table
         protected DataResourceView.Table create(final DataResourceView.Schema parent, final DataResourceBase.Table base)
             {
             return this.insert(
-                new TableViewEntity(
+                new AdqlTableEntity(
                     parent,
                     base
                     )
@@ -179,7 +179,7 @@ implements DataResourceView.Table
             {
             return super.first(
                 super.query(
-                    "widgeon.view.table-select-parent.base"
+                    "adql.table-select-parent.base"
                     ).setEntity(
                         "parent",
                         parent
@@ -213,7 +213,7 @@ implements DataResourceView.Table
         public DataResourceView.Table create(final DataResourceView.Schema parent, final DataResourceBase.Table base, final String name)
             {
             return super.insert(
-                new TableViewEntity(
+                new AdqlTableEntity(
                     parent,
                     base,
                     name
@@ -227,7 +227,7 @@ implements DataResourceView.Table
             {
             return super.iterable(
                 super.query(
-                    "widgeon.view.table-select-parent"
+                    "adql.table-select-parent"
                     ).setEntity(
                         "parent",
                         parent
@@ -261,7 +261,7 @@ implements DataResourceView.Table
             {
             return super.first(
                 super.query(
-                    "widgeon.view.table-select-parent.name"
+                    "adql.table-select-parent.name"
                     ).setEntity(
                         "parent",
                         parent
@@ -278,7 +278,7 @@ implements DataResourceView.Table
             {
             return super.iterable(
                 super.query(
-                    "widgeon.view.table-select-base"
+                    "adql.table-select-base"
                     ).setEntity(
                         "base",
                         base
@@ -309,7 +309,7 @@ implements DataResourceView.Table
             public Iterable<DataResourceView.Column> select()
                 {
                 return womble().resources().views().catalogs().schemas().tables().columns().select(
-                    TableViewEntity.this
+                    AdqlTableEntity.this
                     ) ;
                 }
 
@@ -318,7 +318,7 @@ implements DataResourceView.Table
             throws NameNotFoundException
                 {
                 return womble().resources().views().catalogs().schemas().tables().columns().select(
-                    TableViewEntity.this,
+                    AdqlTableEntity.this,
                     name
                     ) ;
                 }
@@ -327,7 +327,7 @@ implements DataResourceView.Table
             public DataResourceView.Column search(String name)
                 {
                 return womble().resources().views().catalogs().schemas().tables().columns().search(
-                    TableViewEntity.this,
+                    AdqlTableEntity.this,
                     name
                     ) ;
                 }
@@ -336,7 +336,7 @@ implements DataResourceView.Table
             public DataResourceView.Column search(DataResourceBase.Column base)
                 {
                 return womble().resources().views().catalogs().schemas().tables().columns().search(
-                    TableViewEntity.this,
+                    AdqlTableEntity.this,
                     base
                     );
                 }
@@ -348,7 +348,7 @@ implements DataResourceView.Table
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected TableViewEntity()
+    protected AdqlTableEntity()
         {
         super();
         }
@@ -357,7 +357,7 @@ implements DataResourceView.Table
      * Create a new view.
      *
      */
-    protected TableViewEntity(final DataResourceView.Schema parent, final DataResourceBase.Table base)
+    protected AdqlTableEntity(final DataResourceView.Schema parent, final DataResourceBase.Table base)
         {
         this(
             parent,
@@ -370,7 +370,7 @@ implements DataResourceView.Table
      * Create a new view.
      *
      */
-    protected TableViewEntity(final DataResourceView.Schema parent, final DataResourceBase.Table base, final String name)
+    protected AdqlTableEntity(final DataResourceView.Schema parent, final DataResourceBase.Table base, final String name)
         {
         super(
             name
@@ -385,7 +385,7 @@ implements DataResourceView.Table
      */
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = SchemaViewEntity.class
+        targetEntity = AdqlSchemaEntity.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,
