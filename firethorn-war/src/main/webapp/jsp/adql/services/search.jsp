@@ -15,11 +15,11 @@ PathBuilder paths = new ServletPathBuilder(
     );
 
 String text = (String) request.getAttribute(
-    DataServicesController.SEARCH_TEXT_PROPERTY
+    DataServicesController.SEARCH_TEXT
     );
 
 Iterable<DataService> services = (Iterable<DataService>) request.getAttribute(
-    DataServicesController.SERVICE_ITER_PROPERTY
+    DataServicesController.SEARCH_RESULT
     ) ;
 
 %>
@@ -30,15 +30,15 @@ Iterable<DataService> services = (Iterable<DataService>) request.getAttribute(
     </head>
     <body>
         <div>
-            <span>[<a href='<%= paths.path("adql/services/search") %>'>search</a>]</span>
-            <span>[<a href='<%= paths.path("adql/services/select") %>'>select</a>]</span>
-            <span>[<a href='<%= paths.path("adql/services/create") %>'>create</a>]</span>
+            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
+            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
+            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>
         </div>
         <div>
             Search for ADQL TAP Services
             <div>
-                <form method='GET' action='<%= paths.path("adql/services/search") %>'>
-                    Text <input type='text' name='<%= DataServicesController.SEARCH_TEXT_PROPERTY %>' value='<%= ((text != null) ? text : "" ) %>'/>
+                <form method='GET' action='<%= paths.path(DataServicesController.CONTROLLER_PATH, "search") %>'>
+                    Text <input type='text' name='<%= DataServicesController.SEARCH_TEXT %>' value='<%= ((text != null) ? text : "" ) %>'/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>

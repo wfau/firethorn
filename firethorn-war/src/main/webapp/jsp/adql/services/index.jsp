@@ -5,7 +5,9 @@
 <%@ page
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
+    import="uk.ac.roe.wfau.firethorn.webapp.mallard.DataServiceController"
     import="uk.ac.roe.wfau.firethorn.webapp.mallard.DataServicesController"
+    import="uk.ac.roe.wfau.firethorn.mallard.DataService"
     session="true"
 %><%
 PathBuilder paths = new ServletPathBuilder(
@@ -19,25 +21,30 @@ PathBuilder paths = new ServletPathBuilder(
     </head>
     <body>
         <div>
+            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
+            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
+            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>
+        </div>
+        <div>
             ADQL TAP Services
             <div>
                 Select a service by name
-                <form method='GET' action='<%= paths.path("adql/services/select") %>'>
-                    Name <input type='text' name='<%= DataServicesController.SELECT_NAME_PROPERTY %>' value=''/>
+                <form method='GET' action='<%= paths.path(DataServicesController.CONTROLLER_PATH, "select") %>'>
+                    Name <input type='text' name='<%= DataServicesController.SELECT_NAME %>' value=''/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>
             <div>
                 Search for services with text
-                <form method='GET' action='<%= paths.path("adql/services/search") %>'>
-                    Text <input type='text' name='<%= DataServicesController.SEARCH_TEXT_PROPERTY %>' value=''/>
+                <form method='GET' action='<%= paths.path(DataServicesController.CONTROLLER_PATH, "search") %>'>
+                    Text <input type='text' name='<%= DataServicesController.SEARCH_TEXT %>' value=''/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>
             <div>
                 Create new service
-                <form method='POST' action='<%= paths.path("adql/services/create") %>'>
-                    Name <input type='text' name='<%= DataServicesController.CREATE_NAME_PROPERTY %>' value=''/>
+                <form method='POST' action='<%= paths.path(DataServicesController.CONTROLLER_PATH, "create") %>'>
+                    Name <input type='text' name='<%= DataServicesController.CREATE_NAME %>' value=''/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>

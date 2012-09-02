@@ -5,20 +5,18 @@
 <%@ page
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
-    import="uk.ac.roe.wfau.firethorn.webapp.mallard.DataServiceController"
-    import="uk.ac.roe.wfau.firethorn.webapp.mallard.DataServicesController"
-    import="uk.ac.roe.wfau.firethorn.mallard.DataService"
+    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.DataResourceController"
+    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.DataResourcesController"
+    import="uk.ac.roe.wfau.firethorn.widgeon.DataResource"
     session="true"
 %><%
-
 PathBuilder paths = new ServletPathBuilder(
     request
     );
 
-DataService service = (DataService) request.getAttribute(
-    DataServiceController.SERVICE_ENTITY
+DataResource resource = (DataResource) request.getAttribute(
+    DataResourceController.RESOURCE_ENTITY
     ) ;
-
 %>
 <html>
     <head>
@@ -27,25 +25,25 @@ DataService service = (DataService) request.getAttribute(
     </head>
     <body>
         <div>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>
+            <span>[<a href='<%= paths.path(DataResourcesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
+            <span>[<a href='<%= paths.path(DataResourcesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
+            <span>[<a href='<%= paths.path(DataResourcesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>
         </div>
         <div>
-            ADQL TAP Service
+            Resource
             <div>
                 <table border='1'>
                     <tr>
                         <td>Ident</td>
-                        <td><%= service.ident() %></td>
+                        <td><%= resource.ident() %></td>
                     </tr>
                     <tr>
                         <td>Name</td>
-                        <td><a href='<%= paths.link(service) %>'><%= service.name() %></a></td>
+                        <td><a href='<%= paths.link(resource) %>'><%= resource.name() %></a></td>
                     </tr>
                     <tr>
                         <td>Owner</td>
-                        <td><%= service.owner().name() %></td>
+                        <td><%= resource.owner().name() %></td>
                     </tr>
                 </table>
             </div>

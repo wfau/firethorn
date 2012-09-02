@@ -53,7 +53,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.DataResourceEntityBase;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.AbstractDataResourceEntity;
 
 /**
  * DataResource implementations.
@@ -82,14 +82,18 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.DataResourceEntityBase;
             name  = "resource.base.entity-select-all",
             query = "FROM DataResourceBaseEntity ORDER BY ident desc"
             ),
+            @NamedQuery(
+                name  = "resource.base.entity-select-name",
+                query = "FROM DataResourceBaseEntity WHERE (name = :name) ORDER BY ident desc"
+                ),
         @NamedQuery(
-            name  = "resource.base.entity-select-name",
-            query = "FROM DataResourceBaseEntity WHERE (name = :name) ORDER BY ident desc"
+            name  = "resource.base.entity-search-text",
+            query = "FROM DataResourceBaseEntity WHERE (name LIKE :text) ORDER BY ident desc"
             )
         }
     )
 public class DataResourceBaseEntity
-extends DataResourceEntityBase
+extends AbstractDataResourceEntity
 implements DataResourceBase
     {
 
@@ -128,11 +132,16 @@ implements DataResourceBase
 
         @Override
         @SelectEntityMethod
-        public DataResourceBase select(String name)
+        public DataResourceBase select(final String name)
         throws NameNotFoundException
             {
-            DataResourceBase result = this.search(
-                name
+            DataResourceBase result = super.first(
+                super.query(
+                    "resource.base.entity-select-name"
+                    ).setString(
+                        "name",
+                        name
+                        )
                 );
             if (result != null)
                 {
@@ -145,19 +154,17 @@ implements DataResourceBase
                 }
             }
 
-        /**
-         * Search for a named DataResource.
-         *
-         */
+        @Override
         @SelectEntityMethod
-        protected DataResourceBase search(String name)
+        public Iterable<DataResourceBase> search(final String text)
             {
-            return super.first(
+            String match = new StringBuilder(text).append("%").toString();
+            return super.iterable(
                 super.query(
-                    "resource.base.entity-select-name"
+                    "resource.base.entity-search-text"
                     ).setString(
-                        "name",
-                        name
+                        "text",
+                        match 
                         )
                 );
             }

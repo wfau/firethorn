@@ -61,7 +61,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
 @Access(
     AccessType.FIELD
     )
-public abstract class DataResourceEntityBase
+public abstract class AbstractDataResourceEntity
 extends AbstractEntity
 implements DataResourceEntity
     {
@@ -77,7 +77,7 @@ implements DataResourceEntity
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected DataResourceEntityBase()
+    protected AbstractDataResourceEntity()
         {
         super();
         }
@@ -86,7 +86,7 @@ implements DataResourceEntity
      * Protected constructor, owner defaults to the current actor.
      *
      */
-    protected DataResourceEntityBase(final String name)
+    protected AbstractDataResourceEntity(final String name)
         {
         super(
             name

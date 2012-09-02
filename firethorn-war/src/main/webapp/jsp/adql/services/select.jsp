@@ -5,9 +5,9 @@
 <%@ page
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
+    import="uk.ac.roe.wfau.firethorn.webapp.mallard.DataServiceController"
     import="uk.ac.roe.wfau.firethorn.webapp.mallard.DataServicesController"
     import="uk.ac.roe.wfau.firethorn.mallard.DataService"
-
     session="true"
 %><%
 PathBuilder paths = new ServletPathBuilder(
@@ -15,11 +15,11 @@ PathBuilder paths = new ServletPathBuilder(
     );
 
 String name = (String) request.getAttribute(
-    DataServicesController.SELECT_NAME_PROPERTY
+    DataServicesController.SELECT_NAME
     );
 
 Iterable<DataService> services = (Iterable<DataService>) request.getAttribute(
-    DataServicesController.SERVICE_ITER_PROPERTY
+    DataServicesController.SELECT_RESULT
     ) ;
 
 %>
@@ -30,15 +30,15 @@ Iterable<DataService> services = (Iterable<DataService>) request.getAttribute(
     </head>
     <body>
         <div>
-            <span>[<a href='<%= paths.path("adql/services/search") %>'>search</a>]</span>
-            <span>[<a href='<%= paths.path("adql/services/select") %>'>select</a>]</span>
-            <span>[<a href='<%= paths.path("adql/services/create") %>'>create</a>]</span>
+            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
+            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
+            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>
         </div>
         <div>
             Select ADQL TAP Services by name
             <div>
-                <form method='GET' action='<%= paths.path("adql/services/select") %>'>
-                    Name <input type='text' name='<%= DataServicesController.SELECT_NAME_PROPERTY %>' value='<%= ((name != null) ? name : "" ) %>'/>
+                <form method='GET' action='<%= paths.path(DataServicesController.CONTROLLER_PATH, "select") %>'>
+                    Name <input type='text' name='<%= DataServicesController.SELECT_NAME %>' value='<%= ((name != null) ? name : "" ) %>'/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>
@@ -46,16 +46,19 @@ Iterable<DataService> services = (Iterable<DataService>) request.getAttribute(
         <div>
             <table border='1'>
                 <%
-                for (DataService service : services)
+                if (services != null)
                     {
-                    %>
-                    <tr>
-                        <td><a href='<%= paths.link(service) %>'><%= service.name() %></a></td>
-                        <td><%= service.owner().name() %></td>
-                        <td><%= service.created() %></td>
-                        <td><%= service.modified() %></td>
-                    </tr>
-                    <%
+                    for (DataService service : services)
+                        {
+                        %>
+                        <tr>
+                            <td><a href='<%= paths.link(service) %>'><%= service.name() %></a></td>
+                            <td><%= service.owner().name() %></td>
+                            <td><%= service.created() %></td>
+                            <td><%= service.modified() %></td>
+                        </tr>
+                        <%
+                        }
                     }
                 %>
             </table>

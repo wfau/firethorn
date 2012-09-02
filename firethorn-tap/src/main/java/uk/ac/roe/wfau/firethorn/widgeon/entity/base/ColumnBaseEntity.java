@@ -52,7 +52,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.DataResourceEntityBase;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.AbstractDataResourceEntity;
 
 /**
  * Column implementation.
@@ -86,7 +86,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.DataResourceEntityBase;
         }
     )
 public class ColumnBaseEntity
-extends DataResourceEntityBase
+extends AbstractDataResourceEntity
 implements DataResourceBase.Column
     {
 

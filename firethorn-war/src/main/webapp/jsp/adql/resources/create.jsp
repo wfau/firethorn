@@ -5,9 +5,9 @@
 <%@ page
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
-    import="uk.ac.roe.wfau.firethorn.webapp.mallard.DataServiceController"
-    import="uk.ac.roe.wfau.firethorn.webapp.mallard.DataServicesController"
-    import="uk.ac.roe.wfau.firethorn.mallard.DataService"
+    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.DataResourceController"
+    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.DataResourcesController"
+    import="uk.ac.roe.wfau.firethorn.widgeon.DataResource"
     session="true"
 %><%
 PathBuilder paths = new ServletPathBuilder(
@@ -15,9 +15,8 @@ PathBuilder paths = new ServletPathBuilder(
     );
 
 String name = (String) request.getAttribute(
-    DataServicesController.CREATE_NAME
+    DataResourcesController.CREATE_NAME
     );
-
 %>
 <html>
     <head>
@@ -26,15 +25,15 @@ String name = (String) request.getAttribute(
     </head>
     <body>
         <div>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>
+            <span>[<a href='<%= paths.path(DataResourcesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
+            <span>[<a href='<%= paths.path(DataResourcesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
+            <span>[<a href='<%= paths.path(DataResourcesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>
         </div>
         <div>
-            Create an ADQL TAP Service
+            Create a (base)  Resource
             <div>
-                <form method='POST' action='<%= paths.path(DataServicesController.CONTROLLER_PATH, "create") %>'>
-                    Name <input type='text' name='<%= DataServicesController.CREATE_NAME %>' value='<%= ((name != null) ? name : "") %>'/>
+                <form method='POST' action='<%= paths.path(DataResourcesController.CONTROLLER_PATH, "create") %>'>
+                    Name <input type='text' name='<%= DataResourcesController.CREATE_NAME %>' value='<%= ((name != null) ? name : "") %>'/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>

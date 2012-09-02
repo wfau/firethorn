@@ -52,7 +52,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.DataResourceEntityBase;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.AbstractDataResourceEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.base.CatalogBaseEntity;
 
 /**
@@ -102,7 +102,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.CatalogBaseEntity;
         }
     )
 public class CatalogViewEntity
-extends DataResourceEntityBase
+extends AbstractDataResourceEntity
 implements DataResourceView.Catalog
     {
 

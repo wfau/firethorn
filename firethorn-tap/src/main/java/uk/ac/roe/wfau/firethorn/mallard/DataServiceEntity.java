@@ -108,7 +108,7 @@ implements DataService
         {
 
         @Override
-        public Class etype()
+        public Class<DataServiceEntity> etype()
             {
             return DataServiceEntity.class ;
             }

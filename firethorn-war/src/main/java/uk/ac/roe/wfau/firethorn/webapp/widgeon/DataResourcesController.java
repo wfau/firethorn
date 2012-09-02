@@ -15,9 +15,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.mallard;
+package uk.ac.roe.wfau.firethorn.webapp.widgeon;
 
-import java.util.ArrayList;
+import java.net.URI;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,7 +36,10 @@ import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
 import uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder;
 import uk.ac.roe.wfau.firethorn.webapp.control.SpringPathBuilder;
 import uk.ac.roe.wfau.firethorn.webapp.control.LocationHeaders;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
 
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.mallard.DataService ;
 
 /**
@@ -45,45 +48,45 @@ import uk.ac.roe.wfau.firethorn.mallard.DataService ;
  */
 @Slf4j
 @Controller
-@RequestMapping(DataServicesController.CONTROLLER_PATH)
-public class DataServicesController
+@RequestMapping(DataResourcesController.CONTROLLER_PATH)
+public class DataResourcesController
 extends ControllerBase
     {
     /**
      * URL path for this Controller.
      *
      */
-    public static final String CONTROLLER_PATH = "adql/services" ;
+    public static final String CONTROLLER_PATH = "adql/resources" ;
 
     /**
-     * MVC property for the Service name.
+     * MVC property for the Resource name.
      *
      */
-    public static final String SELECT_NAME = "adql.services.select.name" ;
+    public static final String SELECT_NAME = "adql.resources.select.name" ;
 
     /**
-     * MVC property for the selected Service(s).
+     * MVC property for the selected Resource(s).
      *
      */
-    public static final String SELECT_RESULT = "adql.services.select.result" ;
+    public static final String SELECT_RESULT = "adql.resources.select.result" ;
 
     /**
      * MVC property for the search text.
      *
      */
-    public static final String SEARCH_TEXT = "adql.services.search.text" ;
+    public static final String SEARCH_TEXT = "adql.resources.search.text" ;
 
     /**
-     * MVC property for the selected Service(s).
+     * MVC property for the selected Resource(s).
      *
      */
-    public static final String SEARCH_RESULT = "adql.services.search.result" ;
+    public static final String SEARCH_RESULT = "adql.resources.search.result" ;
 
     /**
-     * MVC property for the Service name.
+     * MVC property for the Resource name.
      *
      */
-    public static final String CREATE_NAME = "adql.services.create.name" ;
+    public static final String CREATE_NAME = "adql.resources.create.name" ;
 
     /**
      * GET request for the index page.
@@ -97,7 +100,7 @@ extends ControllerBase
         log.debug("index()");
 
 		model.setViewName(
-		    "adql/services/index"
+		    "adql/resources/index"
 		    );
 
         return model ;
@@ -114,7 +117,7 @@ extends ControllerBase
 	    ){
         log.debug("select()");
 
-        final Iterable<DataService> services = womble().services().select();
+        final Iterable<DataResourceBase> services = womble().resources().select();
 
 		model.addObject(
 		    SELECT_RESULT,
@@ -122,7 +125,7 @@ extends ControllerBase
 		    );
 
 		model.setViewName(
-		    "adql/services/select"
+		    "adql/resources/select"
 		    );
 
         return model ;
@@ -141,9 +144,16 @@ extends ControllerBase
 	    ){
         log.debug("select(String name)");
 
-        final Iterable<DataService> services = womble().services().select(
-            name
-            );
+        DataResourceBase resource = null ;
+        try {
+            resource = womble().resources().select(
+                name
+                );
+            }
+        catch (NameNotFoundException ouch)
+            {
+            log.error("Unable to find matching resource [{}]", name);
+            }
 
 		model.addObject(
 		    SELECT_NAME,
@@ -152,11 +162,11 @@ extends ControllerBase
 
 		model.addObject(
 		    SELECT_RESULT,
-            services
+		    resource 
 		    );
 
 		model.setViewName(
-		    "adql/services/select"
+		    "adql/resources/select"
 		    );
 
         return model ;
@@ -176,7 +186,7 @@ extends ControllerBase
         log.debug("search()");
 
 		model.setViewName(
-		    "adql/services/search"
+		    "adql/resources/search"
 		    );
 
         return model ;
@@ -195,7 +205,7 @@ extends ControllerBase
 	    ){
         log.debug("search(String text)");
 
-        final Iterable<DataService> services = womble().services().search(
+        final Iterable<DataResourceBase> resources = womble().resources().search(
             text
             );
 
@@ -206,11 +216,11 @@ extends ControllerBase
 
 		model.addObject(
 		    SEARCH_RESULT,
-            services
+		    resources
 		    );
 
 		model.setViewName(
-		    "adql/services/search"
+		    "adql/resources/search"
 		    );
 
         return model ;
@@ -218,7 +228,7 @@ extends ControllerBase
 
 
     /**
-     * GET request to create a new DataService.
+     * GET request to create a new DataResource.
      * (displays the HTML form)
      *
      */
@@ -230,14 +240,14 @@ extends ControllerBase
         log.debug("create()");
 
 		model.setViewName(
-		    "adql/services/create"
+		    "adql/resources/create"
 		    );
 
         return model ;
         }
 
     /**
-     * POST request to create a new DataService.
+     * POST request to create a new DataResource.
      *
      */
 	@RequestMapping(value="create", method=RequestMethod.POST)
@@ -250,9 +260,10 @@ extends ControllerBase
         log.debug("  Name [{}]", name);
 
         //
-        // Create the service.
-        final DataService service = womble().services().create(
-            name
+        // Try creating the resource.
+        final DataResource resource = womble().resources().create(
+            name,
+            (URI) null
             );
 
         final PathBuilder builder = new SpringPathBuilder(
@@ -262,8 +273,8 @@ extends ControllerBase
         return new ResponseEntity<String>(
             new LocationHeaders(
                 builder.location(
-                    "adql/service",
-                    service
+                    "adql/resource",
+                    resource
                     )
                 ),
             HttpStatus.SEE_OTHER

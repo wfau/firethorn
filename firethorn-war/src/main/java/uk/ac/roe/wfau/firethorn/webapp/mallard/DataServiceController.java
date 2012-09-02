@@ -60,7 +60,7 @@ extends ControllerBase
      * MVC property for a Service entity.
      *
      */
-    public static final String SERVICE_ENTITY_PROPERTY = "adql.services.create.entity" ;
+    public static final String SERVICE_ENTITY = "adql.service.entity" ;
 
     /**
      * GET request for a service.
@@ -72,7 +72,7 @@ extends ControllerBase
         final WebRequest request,
 	    final ModelAndView model
 	    ){
-        log.debug("AdqlServiceController.select(String ident)");
+        log.debug("select(String ident)");
         log.debug("  Ident [{}]", ident);
 
         //
@@ -85,7 +85,7 @@ extends ControllerBase
                 );
 
 		    model.addObject(
-		        SERVICE_ENTITY_PROPERTY,
+		        SERVICE_ENTITY,
 		        service
 		        );
 
@@ -101,6 +101,5 @@ extends ControllerBase
             return null ;
             }
         }
-
     }
 

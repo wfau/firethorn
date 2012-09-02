@@ -55,6 +55,12 @@ extends DataResource
         throws NameNotFoundException;
 
         /**
+         * Search for DataResource(s).
+         *
+         */
+        public Iterable<DataResourceBase> search(String text);
+
+        /**
          * Create a DataResource from a registry URI.
          * 
          */

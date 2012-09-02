@@ -59,7 +59,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.DataResourceEntityBase;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.AbstractDataResourceEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.base.DataResourceBaseEntity;
 
 /**
@@ -95,7 +95,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.DataResourceBaseEntity;
         }
     )
 public class DataResourceViewEntity
-extends DataResourceEntityBase
+extends AbstractDataResourceEntity
 implements DataResourceView
     {
 
