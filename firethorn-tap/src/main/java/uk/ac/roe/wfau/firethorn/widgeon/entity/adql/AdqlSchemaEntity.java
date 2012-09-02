@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.entity.view ;
+package uk.ac.roe.wfau.firethorn.widgeon.entity.adql ;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,11 +53,10 @@ import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceStatus;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcTableEntity;
-
+import uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcSchemaEntity;
 
 /**
- * Table View implementation.
+ * Schema View implementation.
  *
  */
 @Slf4j
@@ -66,58 +65,54 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcTableEntity;
     AccessType.FIELD
     )
 @Table(
-    name = AdqlTableEntity.DB_TABLE_NAME,
+    name = AdqlSchemaEntity.DB_TABLE_NAME,
     uniqueConstraints=
         @UniqueConstraint(
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
-                AdqlTableEntity.DB_PARENT_COL,
+                AdqlSchemaEntity.DB_PARENT_COL,
                 }
             )
     )
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "adql.table-select-parent",
-            query = "FROM AdqlTableEntity WHERE (parent = :parent) ORDER BY ident desc"
+            name  = "adql.schema-select-parent",
+            query = "FROM AdqlSchemaEntity WHERE (parent = :parent) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "adql.table-select-parent.name",
-            query = "FROM AdqlTableEntity WHERE ((parent = :parent) AND (((name IS NOT null) AND (name = :name)) OR ((name IS null) AND (base.name = :name)))) ORDER BY ident desc"
+            name  = "adql.schema-select-parent.name",
+            query = "FROM AdqlSchemaEntity WHERE ((parent = :parent) AND (((name IS NOT null) AND (name = :name)) OR ((name IS null) AND (base.name = :name)))) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "adql.table-select-base",
-            query = "FROM AdqlTableEntity WHERE (base = :base) ORDER BY ident desc"
+            name  = "adql.schema-select-base",
+            query = "FROM AdqlSchemaEntity WHERE (base = :base) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "adql.table-select-parent.base",
-            query = "FROM AdqlTableEntity WHERE ((parent = :parent) AND (base = :base)) ORDER BY ident desc"
-            ),
-        @NamedQuery(
-            name  = "adql.table-select-view.base",
-            query = "FROM AdqlTableEntity WHERE ((parent.parent.parent = :view) AND (base = :base)) ORDER BY ident desc"
+            name  = "adql.schema-select-parent.base",
+            query = "FROM AdqlSchemaEntity WHERE ((parent = :parent) AND (base = :base)) ORDER BY ident desc"
             )
         }
     )
-public class AdqlTableEntity
+public class AdqlSchemaEntity
 extends DataResourceEntity
-implements DataResourceView.Table
+implements DataResourceView.Schema
     {
 
     /**
      * Our persistence table name.
      * 
      */
-    public static final String DB_TABLE_NAME = "adql_table" ;
+    public static final String DB_TABLE_NAME = "adql_schema" ;
 
     /**
-     * The persistence column name for our parent Schema.
+     * The persistence column name for our parent Catalog.
      * 
      */
     public static final String DB_PARENT_COL = "parent" ;
 
     /**
-     * The persistence column name for our base Table.
+     * The persistence column name for our base Schema.
      * 
      */
     public static final String DB_BASE_COL = "base" ;
@@ -128,14 +123,14 @@ implements DataResourceView.Table
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<DataResourceView.Table>
-    implements DataResourceView.Table.Factory
+    extends AbstractFactory<DataResourceView.Schema>
+    implements DataResourceView.Schema.Factory
         {
 
         @Override
         public Class etype()
             {
-            return AdqlTableEntity.class ;
+            return AdqlSchemaEntity.class ;
             }
 
         /**
@@ -143,30 +138,30 @@ implements DataResourceView.Table
          *
          */
         @CascadeEntityMethod
-        protected DataResourceView.Table insert(AdqlTableEntity entity)
+        protected DataResourceView.Schema insert(AdqlSchemaEntity entity)
             {
             super.insert(
                 entity
                 );
-            for (DataResourceBase.Column column : entity.base().columns().select())
+            for (DataResourceBase.Table table : entity.base().tables().select())
                 {
-                this.columns().cascade(
+                this.tables().cascade(
                     entity,
-                    column
+                    table
                     );
                 }
             return entity ;
             }
 
         /**
-         * Create a default View of a Table.
+         * Create a default View of a Schema.
          *
          */
-        @CascadeEntityMethod
-        protected DataResourceView.Table create(final DataResourceView.Schema parent, final DataResourceBase.Table base)
+        @CreateEntityMethod
+        protected DataResourceView.Schema create(final DataResourceView.Catalog parent, final DataResourceBase.Schema base)
             {
             return this.insert(
-                new AdqlTableEntity(
+                new AdqlSchemaEntity(
                     parent,
                     base
                     )
@@ -175,11 +170,11 @@ implements DataResourceView.Table
 
         @Override
         @SelectEntityMethod
-        public DataResourceView.Table search(final DataResourceView.Schema parent, final DataResourceBase.Table base)
+        public DataResourceView.Schema search(final DataResourceView.Catalog parent, final DataResourceBase.Schema base)
             {
             return super.first(
                 super.query(
-                    "adql.table-select-parent.base"
+                    "adql.schema-select-parent.base"
                     ).setEntity(
                         "parent",
                         parent
@@ -191,10 +186,10 @@ implements DataResourceView.Table
             }
 
         @Override
-        @CascadeEntityMethod
-        public DataResourceView.Table cascade(final DataResourceView.Schema parent, final DataResourceBase.Table base)
+        @CreateEntityMethod
+        public DataResourceView.Schema cascade(final DataResourceView.Catalog parent, final DataResourceBase.Schema base)
             {
-            DataResourceView.Table result = this.search(
+            DataResourceView.Schema result = this.search(
                 parent,
                 base
                 );
@@ -210,10 +205,10 @@ implements DataResourceView.Table
 
         @Override
         @CreateEntityMethod
-        public DataResourceView.Table create(final DataResourceView.Schema parent, final DataResourceBase.Table base, final String name)
+        public DataResourceView.Schema create(final DataResourceView.Catalog parent, final DataResourceBase.Schema base, final String name)
             {
-            return super.insert(
-                new AdqlTableEntity(
+            return this.insert(
+                new AdqlSchemaEntity(
                     parent,
                     base,
                     name
@@ -223,11 +218,11 @@ implements DataResourceView.Table
 
         @Override
         @SelectEntityMethod
-        public Iterable<DataResourceView.Table> select(final DataResourceView.Schema parent)
+        public Iterable<DataResourceView.Schema> select(final DataResourceView.Catalog parent)
             {
             return super.iterable(
                 super.query(
-                    "adql.table-select-parent"
+                    "adql.schema-select-parent"
                     ).setEntity(
                         "parent",
                         parent
@@ -237,10 +232,10 @@ implements DataResourceView.Table
 
         @Override
         @SelectEntityMethod
-        public DataResourceView.Table select(final DataResourceView.Schema parent, final String name)
+        public DataResourceView.Schema select(final DataResourceView.Catalog parent, final String name)
         throws NameNotFoundException
             {
-            DataResourceView.Table result = this.search(
+            DataResourceView.Schema result = this.search(
                 parent,
                 name
                 );
@@ -257,11 +252,11 @@ implements DataResourceView.Table
 
         @Override
         @SelectEntityMethod
-        public DataResourceView.Table search(final DataResourceView.Schema parent, final String name)
+        public DataResourceView.Schema search(final DataResourceView.Catalog parent, final String name)
             {
             return super.first(
                 super.query(
-                    "adql.table-select-parent.name"
+                    "adql.schema-select-parent.name"
                     ).setEntity(
                         "parent",
                         parent
@@ -274,11 +269,11 @@ implements DataResourceView.Table
 
         @Override
         @SelectEntityMethod
-        public Iterable<DataResourceView.Table> select(final DataResourceBase.Table base)
+        public Iterable<DataResourceView.Schema> select(final DataResourceBase.Schema base)
             {
             return super.iterable(
                 super.query(
-                    "adql.table-select-base"
+                    "adql.schema-select-base"
                     ).setEntity(
                         "base",
                         base
@@ -287,58 +282,50 @@ implements DataResourceView.Table
             }
 
         /**
-         * Our Autowired Column factory.
+         * Our Autowired Table factory.
          * 
          */
         @Autowired
-        protected DataResourceView.Column.Factory columns ;
+        protected DataResourceView.Table.Factory tables ;
 
         @Override
-        public DataResourceView.Column.Factory columns()
+        public DataResourceView.Table.Factory tables()
             {
-            return this.columns ;
+            return this.tables ;
             }
         }
 
     @Override
-    public DataResourceView.Table.Columns columns()
+    public DataResourceView.Schema.Tables tables()
         {
-        return new DataResourceView.Table.Columns()
+        return new DataResourceView.Schema.Tables()
             {
+
             @Override
-            public Iterable<DataResourceView.Column> select()
+            public Iterable<DataResourceView.Table> select()
                 {
-                return womble().resources().views().catalogs().schemas().tables().columns().select(
-                    AdqlTableEntity.this
+                return womble().resources().views().catalogs().schemas().tables().select(
+                    AdqlSchemaEntity.this
                     ) ;
                 }
 
             @Override
-            public DataResourceView.Column select(String name)
+            public DataResourceView.Table select(String name)
             throws NameNotFoundException
                 {
-                return womble().resources().views().catalogs().schemas().tables().columns().select(
-                    AdqlTableEntity.this,
+                return womble().resources().views().catalogs().schemas().tables().select(
+                    AdqlSchemaEntity.this,
                     name
                     ) ;
                 }
 
             @Override
-            public DataResourceView.Column search(String name)
+            public DataResourceView.Table search(String name)
                 {
-                return womble().resources().views().catalogs().schemas().tables().columns().search(
-                    AdqlTableEntity.this,
+                return womble().resources().views().catalogs().schemas().tables().search(
+                    AdqlSchemaEntity.this,
                     name
                     ) ;
-                }
-
-            @Override
-            public DataResourceView.Column search(DataResourceBase.Column base)
-                {
-                return womble().resources().views().catalogs().schemas().tables().columns().search(
-                    AdqlTableEntity.this,
-                    base
-                    );
                 }
             };
         }
@@ -348,7 +335,7 @@ implements DataResourceView.Table
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected AdqlTableEntity()
+    protected AdqlSchemaEntity()
         {
         super();
         }
@@ -357,7 +344,7 @@ implements DataResourceView.Table
      * Create a new view.
      *
      */
-    protected AdqlTableEntity(final DataResourceView.Schema parent, final DataResourceBase.Table base)
+    protected AdqlSchemaEntity(final DataResourceView.Catalog parent, final DataResourceBase.Schema base)
         {
         this(
             parent,
@@ -370,22 +357,22 @@ implements DataResourceView.Table
      * Create a new view.
      *
      */
-    protected AdqlTableEntity(final DataResourceView.Schema parent, final DataResourceBase.Table base, final String name)
+    protected AdqlSchemaEntity(final DataResourceView.Catalog parent, final DataResourceBase.Schema base, final String name)
         {
         super(
             name
             );
-        this.base = base ;
+        this.base   = base   ;
         this.parent = parent ;
         }
 
     /**
-     * Our parent Schema.
+     * Our parent Catalog.
      *
      */
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = AdqlSchemaEntity.class
+        targetEntity = AdqlCatalogEntity.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,
@@ -393,21 +380,21 @@ implements DataResourceView.Table
         nullable = false,
         updatable = false
         )
-    private DataResourceView.Schema parent ;
+    private DataResourceView.Catalog parent ;
 
     @Override
-    public DataResourceView.Schema parent()
+    public DataResourceView.Catalog parent()
         {
         return this.parent ;
         }
 
     /**
-     * Our underlying Table.
+     * Our underlying Schema.
      *
      */
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = JdbcTableEntity.class
+        targetEntity = JdbcSchemaEntity.class
         )
     @JoinColumn(
         name = DB_BASE_COL,
@@ -415,10 +402,10 @@ implements DataResourceView.Table
         nullable = false,
         updatable = false
         )
-    private DataResourceBase.Table base ;
+    private DataResourceBase.Schema base ;
 
     @Override
-    public DataResourceBase.Table base()
+    public DataResourceBase.Schema base()
         {
         return this.base ;
         }
@@ -456,17 +443,11 @@ implements DataResourceView.Table
     @Override
     public DataResourceView widgeon()
         {
-        return this.parent.catalog().widgeon();
+        return this.parent.widgeon();
         }
 
     @Override
     public DataResourceView.Catalog catalog()
-        {
-        return this.parent.catalog();
-        }
-
-    @Override
-    public DataResourceView.Schema schema()
         {
         return this.parent;
         }
