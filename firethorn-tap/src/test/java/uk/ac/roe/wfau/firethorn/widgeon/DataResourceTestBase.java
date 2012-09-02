@@ -19,17 +19,9 @@ package uk.ac.roe.wfau.firethorn.widgeon ;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.URI;
-
-import org.junit.Test;
-import org.junit.After;
 import org.junit.Before;
-import static org.junit.Assert.*;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
 /**
  *
