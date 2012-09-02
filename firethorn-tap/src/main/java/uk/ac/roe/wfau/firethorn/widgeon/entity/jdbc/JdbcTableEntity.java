@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.entity.base ;
+package uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc ;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,12 +50,12 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.AbstractDataResourceEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceStatus;
 
 /**
- * Catalog implementation.
+ * Table implementation.
  *
  */
 @Slf4j
@@ -64,41 +64,40 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.AbstractDataResourceEntity;
     AccessType.FIELD
     )
 @Table(
-    name = CatalogBaseEntity.DB_TABLE_NAME,
-    uniqueConstraints={
+    name = JdbcTableEntity.DB_TABLE_NAME,
+    uniqueConstraints=
         @UniqueConstraint(
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
-                CatalogBaseEntity.DB_PARENT_COL,
+                JdbcTableEntity.DB_PARENT_COL,
                 }
             )
-        }
     )
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "widgeon.base.catalog-select-parent",
-            query = "FROM CatalogBaseEntity WHERE (parent = :parent) ORDER BY ident desc"
+            name  = "jdbc.table-select-parent",
+            query = "FROM JdbcTableEntity WHERE parent = :parent ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "widgeon.base.catalog-select-parent.name",
-            query = "FROM CatalogBaseEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
+            name  = "jdbc.table-select-parent.name",
+            query = "FROM JdbcTableEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
             )
         }
     )
-public class CatalogBaseEntity
-extends AbstractDataResourceEntity
-implements DataResourceBase.Catalog
+public class JdbcTableEntity
+extends DataResourceEntity
+implements DataResourceBase.Table
     {
 
     /**
      * Our persistence table name.
      * 
      */
-    public static final String DB_TABLE_NAME = "widgeon_base_catalog" ;
+    public static final String DB_TABLE_NAME = "jdbc_table" ;
 
     /**
-     * The persistence column name for our parent DataResource.
+     * The persistence column name for our parent Schema.
      * 
      */
     public static final String DB_PARENT_COL = "parent" ;
@@ -109,27 +108,27 @@ implements DataResourceBase.Catalog
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<DataResourceBase.Catalog>
-    implements DataResourceBase.Catalog.Factory
+    extends AbstractFactory<DataResourceBase.Table>
+    implements DataResourceBase.Table.Factory
         {
 
         @Override
         public Class etype()
             {
-            return CatalogBaseEntity.class ;
+            return JdbcTableEntity.class ;
             }
 
         /**
-         * Insert a Catalog into the database and update all the parent views.
+         * Insert a Table into the database and update all the parent views.
          *
          */
         @CascadeEntityMethod
-        protected DataResourceBase.Catalog insert(final CatalogBaseEntity entity)
+        protected DataResourceBase.Table insert(final JdbcTableEntity entity)
             {
             super.insert(
                 entity
                 );
-            for (DataResourceView view : entity.parent().views().select())
+            for (DataResourceView.Schema view : entity.parent().views().select())
                 {
                 this.views().cascade(
                     view,
@@ -141,10 +140,10 @@ implements DataResourceBase.Catalog
 
         @Override
         @CreateEntityMethod
-        public DataResourceBase.Catalog create(final DataResourceBase parent, final String name)
+        public DataResourceBase.Table create(final DataResourceBase.Schema parent, final String name)
             {
             return this.insert(
-                new CatalogBaseEntity(
+                new JdbcTableEntity(
                     parent,
                     name
                     )
@@ -153,11 +152,11 @@ implements DataResourceBase.Catalog
 
         @Override
         @SelectEntityMethod
-        public Iterable<DataResourceBase.Catalog> select(final DataResourceBase parent)
+        public Iterable<DataResourceBase.Table> select(final DataResourceBase.Schema parent)
             {
             return super.iterable(
                 super.query(
-                    "widgeon.base.catalog-select-parent"
+                    "jdbc.table-select-parent"
                     ).setEntity(
                         "parent",
                         parent
@@ -167,10 +166,10 @@ implements DataResourceBase.Catalog
 
         @Override
         @SelectEntityMethod
-        public DataResourceBase.Catalog select(final DataResourceBase parent, final String name)
+        public DataResourceBase.Table select(final DataResourceBase.Schema parent, final String name)
         throws NameNotFoundException
             {
-            DataResourceBase.Catalog result = this.search(
+            DataResourceBase.Table result = this.search(
                 parent,
                 name
                 );
@@ -184,14 +183,14 @@ implements DataResourceBase.Catalog
                     );
                 }
             }
-
+ 
         @Override
         @SelectEntityMethod
-        public DataResourceBase.Catalog search(final DataResourceBase parent, final String name)
+        public DataResourceBase.Table search(final DataResourceBase.Schema parent, final String name)
             {
             return super.first(
                 super.query(
-                    "widgeon.base.catalog-select-parent.name"
+                    "jdbc.table-select-parent.name"
                     ).setEntity(
                         "parent",
                         parent
@@ -207,91 +206,91 @@ implements DataResourceBase.Catalog
          * 
          */
         @Autowired
-        protected DataResourceView.Catalog.Factory views ;
+        protected DataResourceView.Table.Factory views ;
 
         @Override
-        public DataResourceView.Catalog.Factory views()
+        public DataResourceView.Table.Factory views()
             {
             return this.views ;
             }
 
         /**
-         * Our Autowired Schema factory.
+         * Our Autowired Column factory.
          * 
          */
         @Autowired
-        protected DataResourceBase.Schema.Factory schemas ;
+        protected DataResourceBase.Column.Factory columns ;
 
         @Override
-        public DataResourceBase.Schema.Factory schemas()
+        public DataResourceBase.Column.Factory columns()
             {
-            return this.schemas ;
+            return this.columns ;
             }
         }
 
     @Override
-    public DataResourceBase.Catalog.Views views()
+    public DataResourceBase.Table.Views views()
         {
-        return new DataResourceBase.Catalog.Views()
+        return new DataResourceBase.Table.Views()
             {
             @Override
-            public Iterable<DataResourceView.Catalog> select()
+            public Iterable<DataResourceView.Table> select()
                 {
-                return womble().resources().views().catalogs().select(
-                    CatalogBaseEntity.this
+                return womble().resources().views().catalogs().schemas().tables().select(
+                    JdbcTableEntity.this
                     );
                 }
 
             @Override
-            public DataResourceView.Catalog search(DataResourceView parent)
+            public DataResourceView.Table search(DataResourceView.Schema parent)
                 {
-                return womble().resources().views().catalogs().search(
+                return womble().resources().views().catalogs().schemas().tables().search(
                     parent,
-                    CatalogBaseEntity.this
+                    JdbcTableEntity.this
                     );
                 }
             };
         }
 
     @Override
-    public DataResourceBase.Catalog.Schemas schemas()
+    public DataResourceBase.Table.Columns columns()
         {
-        return new DataResourceBase.Catalog.Schemas()
+        return new DataResourceBase.Table.Columns()
             {
             @Override
-            public DataResourceBase.Schema create(String name)
+            public DataResourceBase.Column create(String name)
                 {
-                return womble().resources().catalogs().schemas().create(
-                    CatalogBaseEntity.this,
+                return womble().resources().catalogs().schemas().tables().columns().create(
+                    JdbcTableEntity.this,
                     name
                     );
                 }
 
             @Override
-            public Iterable<DataResourceBase.Schema> select()
+            public Iterable<DataResourceBase.Column> select()
                 {
-                return womble().resources().catalogs().schemas().select(
-                    CatalogBaseEntity.this
-                    );
+                return womble().resources().catalogs().schemas().tables().columns().select(
+                    JdbcTableEntity.this
+                    ) ;
                 }
 
             @Override
-            public DataResourceBase.Schema select(String name)
+            public DataResourceBase.Column select(String name)
             throws NameNotFoundException
                 {
-                return womble().resources().catalogs().schemas().select(
-                    CatalogBaseEntity.this,
+                return womble().resources().catalogs().schemas().tables().columns().select(
+                    JdbcTableEntity.this,
                     name
-                    );
+                    ) ;
                 }
 
             @Override
-            public DataResourceBase.Schema search(String name)
+            public DataResourceBase.Column search(String name)
                 {
-                return womble().resources().catalogs().schemas().search(
-                    CatalogBaseEntity.this,
+                return womble().resources().catalogs().schemas().tables().columns().search(
+                    JdbcTableEntity.this,
                     name
-                    );
+                    ) ;
                 }
             };
         }
@@ -301,7 +300,7 @@ implements DataResourceBase.Catalog
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected CatalogBaseEntity()
+    protected JdbcTableEntity()
         {
         super();
         }
@@ -310,19 +309,19 @@ implements DataResourceBase.Catalog
      * Create a new Catalog.
      *
      */
-    protected CatalogBaseEntity(final DataResourceBase parent, final String name)
+    protected JdbcTableEntity(final DataResourceBase.Schema parent, final String name)
         {
         super(name);
         this.parent = parent ;
         }
 
     /**
-     * Our parent DataResource.
+     * Our parent Column.
      *
      */
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = DataResourceBaseEntity.class
+        targetEntity = JdbcSchemaEntity.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,
@@ -330,10 +329,10 @@ implements DataResourceBase.Catalog
         nullable = false,
         updatable = false
         )
-    private DataResourceBase parent ;
+    private DataResourceBase.Schema parent ;
 
     @Override
-    public DataResourceBase parent()
+    public DataResourceBase.Schema parent()
         {
         return this.parent ;
         }
@@ -352,6 +351,18 @@ implements DataResourceBase.Catalog
 
     @Override
     public DataResourceBase widgeon()
+        {
+        return this.parent.catalog().widgeon();
+        }
+
+    @Override
+    public DataResourceBase.Catalog catalog()
+        {
+        return this.parent.catalog();
+        }
+
+    @Override
+    public DataResourceBase.Schema schema()
         {
         return this.parent;
         }

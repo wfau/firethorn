@@ -26,7 +26,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
 /**
- * Public interface for a base DataResource, describing a real data resource (JDBC database OR TAP service).
+ * Public interface for a physical DataResource, describing a real data resource (JDBC database OR TAP service).
  *
  */
 public interface DataResourceBase
@@ -42,7 +42,7 @@ extends DataResource
         {
 
         /**
-         * Select all of the Widgeons.
+         * Select all of the DataResource(s).
          *
          */
         public Iterable<DataResourceBase> select();
@@ -60,22 +60,10 @@ extends DataResource
         public Iterable<DataResourceBase> search(String text);
 
         /**
-         * Create a DataResource from a registry URI.
+         * Create a DataResource.
          * 
          */
-        public DataResourceBase create(String name, URI uri);
-
-        /**
-         * Create a DataResource from a VOSI URL.
-         * 
-         */
-        public DataResourceBase create(String name, URL url);
-
-        /**
-         * Create a DataResource from a JDBC DataSource.
-         * 
-         */
-        public DataResourceBase create(String name, DataSource src);
+        public DataResourceBase create(String name);
 
         /**
          * Access to our View factory.
@@ -98,19 +86,19 @@ extends DataResource
     public interface Views
         {
 
-        /*
+        /**
          * Create a new view of the DataResource.
          *
          */
         public DataResourceView create(String name);
 
-        /*
+        /**
          * Select all the views of the DataResource.
          *
          */
         public Iterable<DataResourceView> select();
 
-        /*
+        /**
          * Select a named view of the DataResource.
          *
          */
@@ -148,7 +136,7 @@ extends DataResource
     public Catalogs catalogs();
 
     /**
-     * Public interface for Catalog metadata.
+     * Public interface for a Catalog.
      *
      */
     public interface Catalog
@@ -190,7 +178,7 @@ extends DataResource
         public interface Views
             {
 
-            /*
+            /**
              * Select all the views of the Catalog.
              *
              */
@@ -241,7 +229,7 @@ extends DataResource
         }
 
     /**
-     * Public interface for Schema metadata.
+     * Public interface for a Schema.
      *
      */
     public interface Schema
@@ -283,7 +271,7 @@ extends DataResource
         public interface Views
             {
 
-            /*
+            /**
              * Select all the views of the Schema.
              *
              */
@@ -340,7 +328,7 @@ extends DataResource
         }
 
     /**
-     * Public interface for Table metadata.
+     * Public interface for a Table.
      *
      */
     public interface Table
@@ -382,7 +370,7 @@ extends DataResource
         public interface Views
             {
 
-            /*
+            /**
              * Select all the views of the Table.
              *
              */
@@ -445,7 +433,7 @@ extends DataResource
         }
 
     /**
-     * Public interface for Column metadata.
+     * Public interface for a Column.
      *
      */
     public interface Column
@@ -481,7 +469,7 @@ extends DataResource
         public interface Views
             {
 
-            /*
+            /**
              * Select all the views of the Column.
              *
              */

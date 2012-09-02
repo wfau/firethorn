@@ -26,7 +26,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
 /**
- * Public interface for a DataResource view, describing a modifiable view an underlying base DataResource.
+ * Public interface for a modifiable view of a DataResourceBase.
  *
  */
 public interface DataResourceView

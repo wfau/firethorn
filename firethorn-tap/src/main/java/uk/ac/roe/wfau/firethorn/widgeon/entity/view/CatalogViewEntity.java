@@ -50,10 +50,10 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.AbstractDataResourceEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.base.CatalogBaseEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceStatus;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcCatalogEntity;
 
 /**
  * Catalog View implementation.
@@ -102,7 +102,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.CatalogBaseEntity;
         }
     )
 public class CatalogViewEntity
-extends AbstractDataResourceEntity
+extends DataResourceEntity
 implements DataResourceView.Catalog
     {
 
@@ -401,7 +401,7 @@ implements DataResourceView.Catalog
      */
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = CatalogBaseEntity.class
+        targetEntity = JdbcCatalogEntity.class
         )
     @JoinColumn(
         name = DB_BASE_COL,

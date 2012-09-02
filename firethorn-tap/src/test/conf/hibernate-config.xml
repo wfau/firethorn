@@ -63,11 +63,11 @@
                 <value>uk.ac.roe.wfau.firethorn.mallard.DataServiceEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.mallard.JobEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.DataResourceBaseEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.CatalogBaseEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.SchemaBaseEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.TableBaseEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.ColumnBaseEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcResourceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcCatalogEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcSchemaEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcTableEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcColumnEntity</value>
 
                 <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.DataResourceViewEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.widgeon.entity.view.CatalogViewEntity</value>

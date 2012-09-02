@@ -43,8 +43,7 @@ extends TestBase
     throws Exception
         {
         DataResource object = womble().resources().create(
-            "albert",
-            URI.create("ivo://org.astrogrid.test/0001")
+            "albert"
             );
 /*
  * Not always true.

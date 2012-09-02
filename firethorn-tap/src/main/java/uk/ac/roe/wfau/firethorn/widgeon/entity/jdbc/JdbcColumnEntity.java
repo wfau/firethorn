@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.entity.base ;
+package uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc ;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,12 +50,12 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.AbstractDataResourceEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceStatus;
 
 /**
- * Table implementation.
+ * Column implementation.
  *
  */
 @Slf4j
@@ -64,40 +64,40 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.AbstractDataResourceEntity;
     AccessType.FIELD
     )
 @Table(
-    name = TableBaseEntity.DB_TABLE_NAME,
+    name = JdbcColumnEntity.DB_TABLE_NAME,
     uniqueConstraints=
         @UniqueConstraint(
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
-                TableBaseEntity.DB_PARENT_COL,
+                JdbcColumnEntity.DB_PARENT_COL,
                 }
             )
     )
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "widgeon.base.table-select-parent",
-            query = "FROM TableBaseEntity WHERE parent = :parent ORDER BY ident desc"
+            name  = "jdbc.column-select-parent",
+            query = "FROM JdbcColumnEntity WHERE parent = :parent ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "widgeon.base.table-select-parent.name",
-            query = "FROM TableBaseEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
+            name  = "jdbc.column-select-parent.name",
+            query = "FROM JdbcColumnEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
             )
         }
     )
-public class TableBaseEntity
-extends AbstractDataResourceEntity
-implements DataResourceBase.Table
+public class JdbcColumnEntity
+extends DataResourceEntity
+implements DataResourceBase.Column
     {
 
     /**
      * Our persistence table name.
      * 
      */
-    public static final String DB_TABLE_NAME = "widgeon_base_table" ;
+    public static final String DB_TABLE_NAME = "jdbc_column" ;
 
     /**
-     * The persistence column name for our parent Schema.
+     * The persistence column name for our parent Table.
      * 
      */
     public static final String DB_PARENT_COL = "parent" ;
@@ -108,27 +108,27 @@ implements DataResourceBase.Table
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<DataResourceBase.Table>
-    implements DataResourceBase.Table.Factory
+    extends AbstractFactory<DataResourceBase.Column>
+    implements DataResourceBase.Column.Factory
         {
 
         @Override
         public Class etype()
             {
-            return TableBaseEntity.class ;
+            return JdbcColumnEntity.class ;
             }
 
         /**
-         * Insert a Table into the database and update all the parent views.
+         * Insert a Column into the database and update all the parent views.
          *
          */
         @CascadeEntityMethod
-        protected DataResourceBase.Table insert(final TableBaseEntity entity)
+        protected DataResourceBase.Column insert(final JdbcColumnEntity entity)
             {
             super.insert(
                 entity
                 );
-            for (DataResourceView.Schema view : entity.parent().views().select())
+            for (DataResourceView.Table view : entity.parent().views().select())
                 {
                 this.views().cascade(
                     view,
@@ -140,10 +140,10 @@ implements DataResourceBase.Table
 
         @Override
         @CreateEntityMethod
-        public DataResourceBase.Table create(final DataResourceBase.Schema parent, final String name)
+        public DataResourceBase.Column create(final DataResourceBase.Table parent, final String name)
             {
             return this.insert(
-                new TableBaseEntity(
+                new JdbcColumnEntity(
                     parent,
                     name
                     )
@@ -152,11 +152,11 @@ implements DataResourceBase.Table
 
         @Override
         @SelectEntityMethod
-        public Iterable<DataResourceBase.Table> select(final DataResourceBase.Schema parent)
+        public Iterable<DataResourceBase.Column> select(final DataResourceBase.Table parent)
             {
             return super.iterable(
                 super.query(
-                    "widgeon.base.table-select-parent"
+                    "jdbc.column-select-parent"
                     ).setEntity(
                         "parent",
                         parent
@@ -166,10 +166,10 @@ implements DataResourceBase.Table
 
         @Override
         @SelectEntityMethod
-        public DataResourceBase.Table select(final DataResourceBase.Schema parent, final String name)
+        public DataResourceBase.Column select(final DataResourceBase.Table parent, final String name)
         throws NameNotFoundException
             {
-            DataResourceBase.Table result = this.search(
+            DataResourceBase.Column result = this.search(
                 parent,
                 name
                 );
@@ -183,14 +183,14 @@ implements DataResourceBase.Table
                     );
                 }
             }
- 
+
         @Override
         @SelectEntityMethod
-        public DataResourceBase.Table search(final DataResourceBase.Schema parent, final String name)
+        public DataResourceBase.Column search(final DataResourceBase.Table parent, final String name)
             {
             return super.first(
                 super.query(
-                    "widgeon.base.table-select-parent.name"
+                    "jdbc.column-select-parent.name"
                     ).setEntity(
                         "parent",
                         parent
@@ -206,91 +206,35 @@ implements DataResourceBase.Table
          * 
          */
         @Autowired
-        protected DataResourceView.Table.Factory views ;
+        protected DataResourceView.Column.Factory views ;
 
         @Override
-        public DataResourceView.Table.Factory views()
+        public DataResourceView.Column.Factory views()
             {
             return this.views ;
             }
-
-        /**
-         * Our Autowired Column factory.
-         * 
-         */
-        @Autowired
-        protected DataResourceBase.Column.Factory columns ;
-
-        @Override
-        public DataResourceBase.Column.Factory columns()
-            {
-            return this.columns ;
-            }
         }
 
     @Override
-    public DataResourceBase.Table.Views views()
+    public DataResourceBase.Column.Views views()
         {
-        return new DataResourceBase.Table.Views()
+        return new DataResourceBase.Column.Views()
             {
             @Override
-            public Iterable<DataResourceView.Table> select()
+            public Iterable<DataResourceView.Column> select()
                 {
-                return womble().resources().views().catalogs().schemas().tables().select(
-                    TableBaseEntity.this
+                return womble().resources().views().catalogs().schemas().tables().columns().select(
+                    JdbcColumnEntity.this
                     );
                 }
 
             @Override
-            public DataResourceView.Table search(DataResourceView.Schema parent)
+            public DataResourceView.Column search(DataResourceView.Table parent)
                 {
-                return womble().resources().views().catalogs().schemas().tables().search(
+                return womble().resources().views().catalogs().schemas().tables().columns().search(
                     parent,
-                    TableBaseEntity.this
+                    JdbcColumnEntity.this
                     );
-                }
-            };
-        }
-
-    @Override
-    public DataResourceBase.Table.Columns columns()
-        {
-        return new DataResourceBase.Table.Columns()
-            {
-            @Override
-            public DataResourceBase.Column create(String name)
-                {
-                return womble().resources().catalogs().schemas().tables().columns().create(
-                    TableBaseEntity.this,
-                    name
-                    );
-                }
-
-            @Override
-            public Iterable<DataResourceBase.Column> select()
-                {
-                return womble().resources().catalogs().schemas().tables().columns().select(
-                    TableBaseEntity.this
-                    ) ;
-                }
-
-            @Override
-            public DataResourceBase.Column select(String name)
-            throws NameNotFoundException
-                {
-                return womble().resources().catalogs().schemas().tables().columns().select(
-                    TableBaseEntity.this,
-                    name
-                    ) ;
-                }
-
-            @Override
-            public DataResourceBase.Column search(String name)
-                {
-                return womble().resources().catalogs().schemas().tables().columns().search(
-                    TableBaseEntity.this,
-                    name
-                    ) ;
                 }
             };
         }
@@ -300,7 +244,7 @@ implements DataResourceBase.Table
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected TableBaseEntity()
+    protected JdbcColumnEntity()
         {
         super();
         }
@@ -309,7 +253,7 @@ implements DataResourceBase.Table
      * Create a new Catalog.
      *
      */
-    protected TableBaseEntity(final DataResourceBase.Schema parent, final String name)
+    protected JdbcColumnEntity(final DataResourceBase.Table parent, final String name)
         {
         super(name);
         this.parent = parent ;
@@ -321,7 +265,7 @@ implements DataResourceBase.Table
      */
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = SchemaBaseEntity.class
+        targetEntity = JdbcTableEntity.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,
@@ -329,10 +273,10 @@ implements DataResourceBase.Table
         nullable = false,
         updatable = false
         )
-    private DataResourceBase.Schema parent ;
+    private DataResourceBase.Table parent ;
 
     @Override
-    public DataResourceBase.Schema parent()
+    public DataResourceBase.Table parent()
         {
         return this.parent ;
         }
@@ -352,17 +296,23 @@ implements DataResourceBase.Table
     @Override
     public DataResourceBase widgeon()
         {
-        return this.parent.catalog().widgeon();
+        return this.parent.schema().catalog().widgeon();
         }
 
     @Override
     public DataResourceBase.Catalog catalog()
         {
-        return this.parent.catalog();
+        return this.parent.schema().catalog();
         }
 
     @Override
     public DataResourceBase.Schema schema()
+        {
+        return this.parent.schema();
+        }
+
+    @Override
+    public DataResourceBase.Table table()
         {
         return this.parent;
         }

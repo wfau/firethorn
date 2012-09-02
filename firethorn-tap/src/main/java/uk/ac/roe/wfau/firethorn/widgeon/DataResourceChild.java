@@ -18,11 +18,11 @@
 package uk.ac.roe.wfau.firethorn.widgeon ;
 
 /**
- * Public interface for a component in a DataResource metadata tree.
+ * Public interface for a component in a tree of DataResource(s).
  *
  */
-public interface DataResourceComponent<ParentType extends DataResourceEntity>
-extends DataResourceEntity
+public interface DataResourceChild<ParentType extends DataResourceStatus>
+extends DataResourceStatus
     {
 
     /**

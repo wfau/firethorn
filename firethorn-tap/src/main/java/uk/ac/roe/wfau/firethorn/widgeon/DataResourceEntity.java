@@ -17,137 +17,105 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon ;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import javax.persistence.Id;
+import javax.persistence.Column;
+import javax.persistence.Version;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.GenerationType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.UniqueConstraint;
+import javax.persistence.MappedSuperclass;
+
+import javax.persistence.ManyToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
+
 
 /**
- * Public interface for an Entity with a status.
- * Move this to DataResource ?
+ * Generic super class for a DataResource Entities.
+ *
+ * Problems with AccessType.FIELD means we still have to have get/set methods on fields we want to modify.
+ * If we don't include get/set methods, then Hibernate doesn't commit changes to the database. 
+ *   https://forum.hibernate.org/viewtopic.php?f=1&t=1012254
+ *   https://hibernate.onjira.com/browse/HHH-6581
+ *   http://javaprogrammingtips4u.blogspot.co.uk/2010/04/field-versus-property-access-in.html 
  *
  */
-public interface DataResourceEntity
-extends Entity
+@Slf4j
+@MappedSuperclass
+@Access(
+    AccessType.FIELD
+    )
+public abstract class DataResourceEntity
+extends AbstractEntity
+implements DataResourceStatus
     {
 
+    /*
+     * The persistence column name for our status enum.
+     * 
+     */
+    public static final String DB_STATUS_COL = "status" ;
+
     /**
-     * Enum representing the status of a DataResource component.
+     * Default constructor needs to be protected not private.
+     * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    public enum Status
+    protected DataResourceEntity()
         {
-        ENABLED(true),
-        DISABLED(false),
-        CREATED(false),
-        DELETED(false);
+        super();
+        }
 
-        /**
-         * Private constructor.
-         *
-         */
-        private Status(boolean enabled)
-            {
-            this.enabled = enabled ;
-            }
-
-        /**
-         * Private enabled flag.
-         *
-         */
-        private boolean enabled ;
-
-        /**
-         * Check if this status means the component is enabled.
-         *
-         */
-        public boolean enabled()
-            {
-            return this.enabled ;
-            }        
-
+    /**
+     * Protected constructor, owner defaults to the current actor.
+     *
+     */
+    protected DataResourceEntity(final String name)
+        {
+        super(
+            name
+            );
         }
 
     /**
      * The component status.
      *
      */
-    public Status status();
+    @Column(
+        name = DB_STATUS_COL,
+        unique = false,
+        nullable = false,
+        updatable = true
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    private DataResource.Status status = DataResource.Status.CREATED ;
 
-    /**
-     * Set the component status.
-     *
-     */
-    public void status(Status status)
-    throws InvalidStatusException ;
-
-    /**
-     * Exception to describe an invalid status.
-     *
-     */
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public static class InvalidStatusException
-    extends RuntimeException
+    @Override
+    public DataResource.Status status()
         {
-
-        /**
-         * Default message for simple constructor.
-         *
-         */
-        public static final String DEFAULT_MESSAGE = "Invalid status [:status:]" ;
-
-        /**
-         * Create a default message.
-         *
-         */
-        public static String message(String status)
-            {
-            return DEFAULT_MESSAGE.replace(":status:", status);
-            }
-
-        /**
-         * Create a default message.
-         *
-         */
-        public static String message(DataResourceEntity.Status status)
-            {
-            return message(
-                status.toString()
-                );
-            }
-
-        /**
-         * Public constructor, using default message.
-         *
-         */
-        public InvalidStatusException(DataResourceEntity.Status status)
-            {
-            this(
-                status,
-                message(
-                    status
-                    )
-                );
-            }
-
-        /**
-         * Public constructor, with specific message.
-         *
-         */
-        public InvalidStatusException(DataResourceEntity.Status status, String message)
-            {
-            super(
-                message
-                );
-            this.status = status ;
-            }
-
-        private DataResourceEntity.Status status;
-
-        public DataResourceEntity.Status status()
-            {
-            return this.status;
-            }
+        return this.status;
         }
-    }
 
+    @Override
+    public void status(DataResource.Status status)
+        {
+        this.status = status ;
+        }
+
+    }

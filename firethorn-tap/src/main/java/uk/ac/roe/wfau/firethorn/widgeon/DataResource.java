@@ -31,7 +31,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
  *
  */
 public interface DataResource
-extends DataResourceEntity
+extends DataResourceStatus
     {
 
     /**
@@ -73,7 +73,7 @@ extends DataResourceEntity
      *
      */
     public interface Catalog<WidgeonType extends DataResource>
-    extends DataResourceComponent<WidgeonType>
+    extends DataResourceChild<WidgeonType>
         {
 
         /**
@@ -145,7 +145,7 @@ extends DataResourceEntity
      *
      */
     public interface Schema<CatalogType extends DataResource.Catalog>
-    extends DataResourceComponent<CatalogType>
+    extends DataResourceChild<CatalogType>
         {
 
         /**
@@ -217,7 +217,7 @@ extends DataResourceEntity
      *
      */
     public interface Table<SchemaType extends DataResource.Schema>
-    extends DataResourceComponent<SchemaType>
+    extends DataResourceChild<SchemaType>
         {
 
         /**
@@ -289,7 +289,7 @@ extends DataResourceEntity
      *
      */
     public interface Column<TableType extends DataResource.Table>
-    extends DataResourceComponent<TableType>
+    extends DataResourceChild<TableType>
         {
 
         /**

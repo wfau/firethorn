@@ -50,10 +50,10 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.AbstractDataResourceEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.base.SchemaBaseEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceStatus;
+import uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcSchemaEntity;
 
 /**
  * Schema View implementation.
@@ -95,7 +95,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.SchemaBaseEntity;
         }
     )
 public class SchemaViewEntity
-extends AbstractDataResourceEntity
+extends DataResourceEntity
 implements DataResourceView.Schema
     {
 
@@ -394,7 +394,7 @@ implements DataResourceView.Schema
      */
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = SchemaBaseEntity.class
+        targetEntity = JdbcSchemaEntity.class
         )
     @JoinColumn(
         name = DB_BASE_COL,

@@ -129,8 +129,7 @@ extends TestBase
             womble().resources().create(
                 this.unique(
                     "widgeon-A"
-                    ),
-                URI.create("ivo://org.astrogrid.test/0000")
+                    )
                 ).views().create(
                     "default"
                     )
@@ -158,9 +157,6 @@ extends TestBase
             womble().resources().create(
                 this.unique(
                     "widgeon-A"
-                    ),
-                URI.create(
-                    "ivo://org.astrogrid.test/0000"
                     )
                 ).views().create(
                     "default"
@@ -191,9 +187,6 @@ extends TestBase
             womble().resources().create(
                 this.unique(
                     "widgeon-A"
-                    ),
-                URI.create(
-                    "ivo://org.astrogrid.test/0000"
                     )
                 ).views().create(
                     "default"
@@ -218,9 +211,6 @@ extends TestBase
             womble().resources().create(
                 this.unique(
                     "widgeon-A"
-                    ),
-                URI.create(
-                    "ivo://org.astrogrid.test/0000"
                     )
                 ).views().create(
                     "default"
@@ -230,9 +220,6 @@ extends TestBase
             womble().resources().create(
                 this.unique(
                     "widgeon-B"
-                    ),
-                URI.create(
-                    "ivo://org.astrogrid.test/0001"
                     )
                 ).views().create(
                     "default"
@@ -255,9 +242,6 @@ extends TestBase
         DataResourceBase base = womble().resources().create(
             this.unique(
                 "widgeon-A"
-                ),
-            URI.create(
-                "ivo://org.astrogrid.test/0000"
                 )
             );
 

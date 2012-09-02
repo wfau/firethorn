@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.entity.base ;
+package uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc ;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,9 +50,9 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.AbstractDataResourceEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceStatus;
 
 /**
  * Schema implementation.
@@ -64,29 +64,29 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.AbstractDataResourceEntity;
     AccessType.FIELD
     )
 @Table(
-    name = SchemaBaseEntity.DB_TABLE_NAME,
+    name = JdbcSchemaEntity.DB_TABLE_NAME,
     uniqueConstraints=
         @UniqueConstraint(
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
-                SchemaBaseEntity.DB_PARENT_COL,
+                JdbcSchemaEntity.DB_PARENT_COL,
                 }
             )
     )
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "widgeon.base.schema-select-parent",
-            query = "FROM SchemaBaseEntity WHERE parent = :parent ORDER BY ident desc"
+            name  = "jdbc.schema-select-parent",
+            query = "FROM JdbcSchemaEntity WHERE parent = :parent ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "widgeon.base.schema-select-parent.name",
-            query = "FROM SchemaBaseEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
+            name  = "jdbc.schema-select-parent.name",
+            query = "FROM JdbcSchemaEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
             )
         }
     )
-public class SchemaBaseEntity
-extends AbstractDataResourceEntity
+public class JdbcSchemaEntity
+extends DataResourceEntity
 implements DataResourceBase.Schema
     {
 
@@ -94,7 +94,7 @@ implements DataResourceBase.Schema
      * Our persistence table name.
      * 
      */
-    public static final String DB_TABLE_NAME = "widgeon_base_schema" ;
+    public static final String DB_TABLE_NAME = "jdbc_schema" ;
 
     /**
      * The persistence column name for our parent Catalog.
@@ -115,7 +115,7 @@ implements DataResourceBase.Schema
         @Override
         public Class etype()
             {
-            return SchemaBaseEntity.class ;
+            return JdbcSchemaEntity.class ;
             }
 
         /**
@@ -123,7 +123,7 @@ implements DataResourceBase.Schema
          *
          */
         @CascadeEntityMethod
-        protected DataResourceBase.Schema insert(final SchemaBaseEntity entity)
+        protected DataResourceBase.Schema insert(final JdbcSchemaEntity entity)
             {
             super.insert(
                 entity
@@ -143,7 +143,7 @@ implements DataResourceBase.Schema
         public DataResourceBase.Schema create(final DataResourceBase.Catalog parent, final String name)
             {
             return this.insert(
-                new SchemaBaseEntity(
+                new JdbcSchemaEntity(
                     parent,
                     name
                     )
@@ -156,7 +156,7 @@ implements DataResourceBase.Schema
             {
             return super.iterable(
                 super.query(
-                    "widgeon.base.schema-select-parent"
+                    "jdbc.schema-select-parent"
                     ).setEntity(
                         "parent",
                         parent
@@ -190,7 +190,7 @@ implements DataResourceBase.Schema
             {
             return super.first(
                 super.query(
-                    "widgeon.base.schema-select-parent.name"
+                    "jdbc.schema-select-parent.name"
                     ).setEntity(
                         "parent",
                         parent
@@ -237,7 +237,7 @@ implements DataResourceBase.Schema
             public Iterable<DataResourceView.Schema> select()
                 {
                 return womble().resources().views().catalogs().schemas().select(
-                    SchemaBaseEntity.this
+                    JdbcSchemaEntity.this
                     );
                 }
 
@@ -246,7 +246,7 @@ implements DataResourceBase.Schema
                 {
                 return womble().resources().views().catalogs().schemas().search(
                     parent,
-                    SchemaBaseEntity.this
+                    JdbcSchemaEntity.this
                     );
                 }
             };
@@ -261,7 +261,7 @@ implements DataResourceBase.Schema
             public DataResourceBase.Table create(String name)
                 {
                 return womble().resources().catalogs().schemas().tables().create(
-                    SchemaBaseEntity.this,
+                    JdbcSchemaEntity.this,
                     name
                     );
                 }
@@ -270,7 +270,7 @@ implements DataResourceBase.Schema
             public Iterable<DataResourceBase.Table> select()
                 {
                 return womble().resources().catalogs().schemas().tables().select(
-                    SchemaBaseEntity.this
+                    JdbcSchemaEntity.this
                     ) ;
                 }
 
@@ -279,7 +279,7 @@ implements DataResourceBase.Schema
             throws NameNotFoundException
                 {
                 return womble().resources().catalogs().schemas().tables().select(
-                    SchemaBaseEntity.this,
+                    JdbcSchemaEntity.this,
                     name
                     ) ;
                 }
@@ -288,7 +288,7 @@ implements DataResourceBase.Schema
             public DataResourceBase.Table search(String name)
                 {
                 return womble().resources().catalogs().schemas().tables().search(
-                    SchemaBaseEntity.this,
+                    JdbcSchemaEntity.this,
                     name
                     ) ;
                 }
@@ -300,7 +300,7 @@ implements DataResourceBase.Schema
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected SchemaBaseEntity()
+    protected JdbcSchemaEntity()
         {
         super();
         }
@@ -309,7 +309,7 @@ implements DataResourceBase.Schema
      * Create a new Catalog.
      *
      */
-    protected SchemaBaseEntity(final DataResourceBase.Catalog parent, final String name)
+    protected JdbcSchemaEntity(final DataResourceBase.Catalog parent, final String name)
         {
         super(name);
         this.parent = parent ;
@@ -321,7 +321,7 @@ implements DataResourceBase.Schema
      */
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = CatalogBaseEntity.class
+        targetEntity = JdbcCatalogEntity.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,

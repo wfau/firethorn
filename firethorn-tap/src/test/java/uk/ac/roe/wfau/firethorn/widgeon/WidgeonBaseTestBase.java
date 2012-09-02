@@ -53,9 +53,6 @@ extends TestBase
         base = womble().resources().create(
             this.unique(
                 "base"
-                ),
-            URI.create(
-                "ivo://org.astrogrid.test/test-data"
                 )
             );
         }

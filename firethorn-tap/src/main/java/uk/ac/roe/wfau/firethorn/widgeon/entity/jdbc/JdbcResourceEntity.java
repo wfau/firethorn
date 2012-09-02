@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.entity.base ;
+package uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc ;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,9 +51,9 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
 
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.AbstractDataResourceEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResourceStatus;
 
 /**
  * DataResource implementations.
@@ -65,7 +65,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.AbstractDataResourceEntity;
     AccessType.FIELD
     )
 @Table(
-    name = DataResourceBaseEntity.DB_TABLE_NAME
+    name = JdbcResourceEntity.DB_TABLE_NAME
 /*
     uniqueConstraints={
         @UniqueConstraint(
@@ -79,21 +79,21 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.AbstractDataResourceEntity;
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "resource.base.entity-select-all",
-            query = "FROM DataResourceBaseEntity ORDER BY ident desc"
+            name  = "jdbc.resource-select-all",
+            query = "FROM JdbcResourceEntity ORDER BY ident desc"
             ),
             @NamedQuery(
-                name  = "resource.base.entity-select-name",
-                query = "FROM DataResourceBaseEntity WHERE (name = :name) ORDER BY ident desc"
+                name  = "jdbc.resource-select-name",
+                query = "FROM JdbcResourceEntity WHERE (name = :name) ORDER BY ident desc"
                 ),
         @NamedQuery(
-            name  = "resource.base.entity-search-text",
-            query = "FROM DataResourceBaseEntity WHERE (name LIKE :text) ORDER BY ident desc"
+            name  = "jdbc.resource-search-text",
+            query = "FROM JdbcResourceEntity WHERE (name LIKE :text) ORDER BY ident desc"
             )
         }
     )
-public class DataResourceBaseEntity
-extends AbstractDataResourceEntity
+public class JdbcResourceEntity
+extends DataResourceEntity
 implements DataResourceBase
     {
 
@@ -101,7 +101,7 @@ implements DataResourceBase
      * Our persistence table name.
      * 
      */
-    public static final String DB_TABLE_NAME = "resource_base_entity" ;
+    public static final String DB_TABLE_NAME = "jdbc_resource" ;
 
     /**
      * Our Entity Factory implementation.
@@ -114,9 +114,9 @@ implements DataResourceBase
         {
 
         @Override
-        public Class etype()
+        public Class<JdbcResourceEntity> etype()
             {
-            return DataResourceBaseEntity.class ;
+            return JdbcResourceEntity.class ;
             }
 
         @Override
@@ -125,7 +125,7 @@ implements DataResourceBase
             {
             return super.iterable(
                 super.query(
-                    "resource.base.entity-select-all"
+                    "jdbc.resource-select-all"
                     )
                 );
             }
@@ -136,7 +136,7 @@ implements DataResourceBase
             {
             return super.iterable(
                 super.query(
-                    "resource.base.entity-select-name"
+                    "jdbc.resource-select-name"
                     ).setString(
                         "name",
                         name
@@ -151,7 +151,7 @@ implements DataResourceBase
             String match = new StringBuilder(text).append("%").toString();
             return super.iterable(
                 super.query(
-                    "resource.base.entity-search-text"
+                    "jdbc.resource-search-text"
                     ).setString(
                         "text",
                         match 
@@ -161,40 +161,15 @@ implements DataResourceBase
 
         @Override
         @CreateEntityMethod
-        public DataResourceBase create(final String name, final URI uri)
+        public DataResourceBase create(final String name)
             {
             return super.insert(
-                new DataResourceBaseEntity(
-                    name,
-                    uri
+                new JdbcResourceEntity(
+                    name
                     )
                 );
             }
-
-        @Override
-        @CreateEntityMethod
-        public DataResourceBase create(final String name, final URL url)
-            {
-            return super.insert(
-                new DataResourceBaseEntity(
-                    name,
-                    url
-                    )
-                );
-            }
-
-        @Override
-        @CreateEntityMethod
-        public DataResourceBase create(final String name, final DataSource src)
-            {
-            return super.insert(
-                new DataResourceBaseEntity(
-                    name,
-                    src
-                    )
-                );
-            }
-
+        
         /**
          * Our Autowired View factory.
          * 
@@ -231,7 +206,7 @@ implements DataResourceBase
             public DataResourceView create(String name)
                 {
                 return womble().resources().views().create(
-                    DataResourceBaseEntity.this,
+                    JdbcResourceEntity.this,
                     name
                     );
                 }
@@ -240,7 +215,7 @@ implements DataResourceBase
             public Iterable<DataResourceView> select()
                 {
                 return womble().resources().views().select(
-                    DataResourceBaseEntity.this
+                    JdbcResourceEntity.this
                     );
                 }
 
@@ -249,7 +224,7 @@ implements DataResourceBase
             throws NameNotFoundException
                 {
                 return womble().resources().views().select(
-                    DataResourceBaseEntity.this,
+                    JdbcResourceEntity.this,
                     name
                     );
                 }
@@ -265,7 +240,7 @@ implements DataResourceBase
             public DataResourceBase.Catalog create(final String name)
                 {
                 return womble().resources().catalogs().create(
-                    DataResourceBaseEntity.this,
+                    JdbcResourceEntity.this,
                     name
                     ) ;
                 }
@@ -274,7 +249,7 @@ implements DataResourceBase
             public Iterable<DataResourceBase.Catalog> select()
                 {
                 return womble().resources().catalogs().select(
-                    DataResourceBaseEntity.this
+                    JdbcResourceEntity.this
                     );
                 }
 
@@ -283,7 +258,7 @@ implements DataResourceBase
             throws NameNotFoundException
                 {
                 return womble().resources().catalogs().select(
-                    DataResourceBaseEntity.this,
+                    JdbcResourceEntity.this,
                     name
                     );
                 }
@@ -292,7 +267,7 @@ implements DataResourceBase
             public DataResourceBase.Catalog search(final String name)
                 {
                 return womble().resources().catalogs().search(
-                    DataResourceBaseEntity.this,
+                    JdbcResourceEntity.this,
                     name
                     );
                 }
@@ -304,45 +279,18 @@ implements DataResourceBase
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected DataResourceBaseEntity()
+    protected JdbcResourceEntity()
         {
         super();
         }
 
     /**
-     * Create a new DataResource from VOSI metadata.
+     * Create a new DataResource.
      *
      */
-    private DataResourceBaseEntity(final String name, final URI source)
+    private JdbcResourceEntity(final String name)
         {
         super(name);
-        this.init(
-            source
-            );
-        }
-
-    /**
-     * Create a new DataResource from VOSI metadata.
-     *
-     */
-    private DataResourceBaseEntity(final String name, final URL source)
-        {
-        super(name);
-        this.init(
-            source
-            );
-        }
-
-    /**
-     * Create a new DataResource from JDBC metadata.
-     *
-     */
-    private DataResourceBaseEntity(final String name, final DataSource source)
-        {
-        super(name);
-        this.init(
-            source
-            );
         }
 
     @Override
@@ -358,36 +306,6 @@ implements DataResourceBase
                 name
                 );
             }
-        }
-
-    /**
-     * Initialise our data from the JDBC metadata.
-     *
-     */
-    private void init(final DataSource source)
-        {
-        log.debug("init(DataSource)");
-        // Process the JDBC metadata.
-        }
-
-    /**
-     * Initialise our data from the VOSI metadata.
-     *
-     */
-    private void init(final URI uri)
-        {
-        log.debug("init(URI)");
-        // Resolve the URI into a VOSI endpoint URL.
-        }
-
-    /**
-     * Initialise our data from the VOSI metadata.
-     *
-     */
-    private void init(final URL url)
-        {
-        log.debug("init(URL)");
-        // Process the VOSI metadata.
         }
     }
 

@@ -255,8 +255,7 @@ extends ControllerBase
         //
         // Try creating the resource.
         final DataResource resource = womble().resources().create(
-            name,
-            (URI) null
+            name
             );
 
         final PathBuilder builder = new SpringPathBuilder(

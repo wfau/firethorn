@@ -40,8 +40,7 @@ extends TestBase
     public void simple()
         {
         DataResourceBase one = womble().resources().create(
-            "albert",
-            URI.create("ivo://org.astrogrid.test/0001")
+            "albert"
             );
         assertNotNull(
             one
@@ -52,8 +51,7 @@ extends TestBase
         log.debug("One [{}][{}]", one.ident(), one.name());
 
         DataResourceBase two = womble().resources().create(
-            "albert",
-            URI.create("ivo://org.astrogrid.test/0001")
+            "albert"
             );
         assertNotNull(
             two
@@ -75,14 +73,12 @@ extends TestBase
         {
         nested(
             womble().resources().create(
-                "widgeon-0001",
-                URI.create("ivo://org.astrogrid.test/0001")
+                "widgeon-0001"
                 )
             );
         nested(
             womble().resources().create(
-                "widgeon-0002",
-                URI.create("ivo://org.astrogrid.test/0002")
+                "widgeon-0002"
                 )
             );
 
