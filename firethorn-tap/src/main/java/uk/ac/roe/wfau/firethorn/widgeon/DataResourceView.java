@@ -26,7 +26,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
 /**
- * Public interface for a modifiable view of a DataResourceBase.
+ * Public interface for a ADQL view of a DataResource.
  *
  */
 public interface DataResourceView
