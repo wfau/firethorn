@@ -17,21 +17,37 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon ;
 
+import lombok.extern.slf4j.Slf4j;
+
+import org.junit.Before;
+
+import uk.ac.roe.wfau.firethorn.test.TestBase;
+
 /**
- * Public interface for a component in a tree of DataResource(s).
- * @deprecated - just add it to the individual interfaces
- * 
+ *
  */
-public interface DataResourceChild<ParentType extends ResourceStatus>
-extends ResourceStatus
+@Slf4j
+public class JdbcResourceTestBase
+extends TestBase
     {
 
-    /**
-     * Access to our parent.
-     * @return Our parent component.
-     *
-    public ParentType parent();
-     */
+    private JdbcResource base ;
 
+    public JdbcResource base()
+        {
+        return this.base;
+        }
+
+    @Before
+    public void before()
+    throws Exception
+        {
+        base = womble().resources().jdbc().create(
+            this.unique(
+                "base"
+                )
+            );
+        }
 
     }
+

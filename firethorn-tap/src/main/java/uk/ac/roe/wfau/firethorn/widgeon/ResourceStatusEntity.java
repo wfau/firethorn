@@ -17,30 +17,14 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon ;
 
-import lombok.extern.slf4j.Slf4j;
-
-import javax.persistence.Id;
-import javax.persistence.Column;
-import javax.persistence.Version;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.GenerationType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.UniqueConstraint;
 import javax.persistence.MappedSuperclass;
 
-import javax.persistence.ManyToOne;
-import javax.persistence.JoinTable;
-import javax.persistence.JoinColumn;
-
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 
 
@@ -59,9 +43,9 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 @Access(
     AccessType.FIELD
     )
-public abstract class DataResourceEntity
+public abstract class ResourceStatusEntity
 extends AbstractEntity
-implements DataResourceStatus
+implements ResourceStatus
     {
 
     /*
@@ -75,7 +59,7 @@ implements DataResourceStatus
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected DataResourceEntity()
+    protected ResourceStatusEntity()
         {
         super();
         }
@@ -84,11 +68,12 @@ implements DataResourceStatus
      * Protected constructor, owner defaults to the current actor.
      *
      */
-    protected DataResourceEntity(final String name)
+    protected ResourceStatusEntity(final String name)
         {
         super(
             name
             );
+        log.debug("new([{}]", name);
         }
 
     /**
@@ -104,16 +89,16 @@ implements DataResourceStatus
     @Enumerated(
         EnumType.STRING
         )
-    private DataResource.Status status = DataResource.Status.CREATED ;
+    private Status status = Status.CREATED ;
 
     @Override
-    public DataResource.Status status()
+    public Status status()
         {
         return this.status;
         }
 
     @Override
-    public void status(DataResource.Status status)
+    public void status(Status status)
         {
         this.status = status ;
         }

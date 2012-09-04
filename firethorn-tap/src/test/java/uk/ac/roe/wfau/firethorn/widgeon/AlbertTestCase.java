@@ -17,16 +17,16 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon ;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.URI;
-
 import org.junit.Test;
-import static org.junit.Assert.*;
-
-import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
  *
@@ -42,7 +42,7 @@ extends TestBase
     public void test000()
     throws Exception
         {
-        DataResource object = womble().resources().create(
+        DataResource object = womble().resources().jdbc().create(
             "albert"
             );
 /*
@@ -87,7 +87,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        DataResource object = womble().resources().select(
+        DataResource object = womble().resources().jdbc().select(
             ident[0]
             );
         assertFalse(
@@ -117,7 +117,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        DataResource object = womble().resources().select(
+        DataResource object = womble().resources().jdbc().select(
             ident[0]
             );
 

@@ -17,26 +17,23 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql ;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.Iterator;
 
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
-import org.springframework.beans.factory.annotation.Autowired;  
 
-import adql.db.DBTable;
+import uk.ac.roe.wfau.firethorn.widgeon.AdqlResource;
+
 import adql.db.DBColumn;
+import adql.db.DBTable;
 
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView ;
 
 /**
- * Implementation of the CDS DBTable interface, using data from a DataResourceView.Table.
+ * Implementation of the CDS DBTable interface, using data from a AdqlResource.AdqlTable.
  * See http://cdsportal.u-strasbg.fr/adqltuto/gettingstarted.html
  *
  */
-public class AdqlTableImpl
-implements AdqlTable
+public class AdqlDBTableImpl
+implements AdqlDBTable
     {
 
     /**
@@ -45,41 +42,41 @@ implements AdqlTable
      */
     @Component
     public static class Factory
-    implements AdqlTable.Factory
+    implements AdqlDBTable.Factory
         {
 
         /**
-         * Create a new AdqlTable.
+         * Create a new AdqlDBTable.
          *
          */
-        public AdqlTableImpl create(DataResourceView.Table table)
+        public AdqlDBTableImpl create(AdqlResource.AdqlTable adqlTable)
             {
-            return new AdqlTableImpl(
-                table
+            return new AdqlDBTableImpl(
+                adqlTable
                 );
             }
         }
 
     /**
-     * Our DataResourceView.Table metadata source.
+     * Our AdqlResource.AdqlTable metadata source.
      *
      */
-    private DataResourceView.Table table ;
+    private AdqlResource.AdqlTable adqlTable ;
 
     @Override
-    public DataResourceView.Table meta()
+    public AdqlResource.AdqlTable meta()
         {
-        return this.table;
+        return this.adqlTable;
         }
 
     /**
-     * Local ADQL name, if different to the original DataResourceView.Table.
+     * Local ADQL name, if different to the original AdqlResource.AdqlTable.
      *
      */
     private String adqlName ;
 
     /**
-     * Local JDBC name, if different to the original DataResourceBase.Table.
+     * Local JDBC name, if different to the original BaseResource.BaseTable.
      *
      */
     private String jdbcName ;
@@ -88,10 +85,10 @@ implements AdqlTable
      * Protected constructor.
      *
      */
-    private AdqlTableImpl(DataResourceView.Table table)
+    private AdqlDBTableImpl(AdqlResource.AdqlTable adqlTable)
         {
         this(
-            table,
+            adqlTable,
             null,
             null
             );
@@ -101,28 +98,28 @@ implements AdqlTable
      * Protected constructor, used by the copy method.
      *
      */
-    private AdqlTableImpl(DataResourceView.Table table, String jdbcName, String adqlName)
+    private AdqlDBTableImpl(AdqlResource.AdqlTable adqlTable, String jdbcName, String adqlName)
         {
-        this.table = table ;
+        this.adqlTable = adqlTable ;
         //
-        // Only set the ADQL name if it is not the same as the DataResourceView.Table name.
+        // Only set the ADQL name if it is not the same as the AdqlResource.AdqlTable name.
         if (adqlName != null)
             {
             if (adqlName.length() > 0)
                 {
-                if (adqlName.equals(table.name()) == false)
+                if (adqlName.equals(adqlTable.name()) == false)
                     {
                     this.adqlName = adqlName;
                     }
                 }
             }
         //
-        // Only set the JDBC name if it is not the same as the DataResourceBase.Table name.
+        // Only set the JDBC name if it is not the same as the BaseResource.BaseTable name.
         if (jdbcName != null)
             {
             if (jdbcName.length() > 0)
                 {
-                if (jdbcName.equals(table.base().name()) == false)
+                if (jdbcName.equals(adqlTable.base().name()) == false)
                     {
                     this.jdbcName = jdbcName;
                     }
@@ -132,12 +129,12 @@ implements AdqlTable
 
     @Override
     /**
-     * Make a copy of the AdqlTable, changing the ADQL and JDBC names.
-     * @param jdbcName - The new JDBC name (optional). If this is null, then the new AdqlTable inherits its JDBC name, schema and catalog from the original.
+     * Make a copy of the AdqlDBTable, changing the ADQL and JDBC names.
+     * @param jdbcName - The new JDBC name (optional). If this is null, then the new AdqlDBTable inherits its JDBC name, schema and catalog from the original.
      * @param adqlName - The new ADQL name (required). This can't be null or empty.
      *
      */
-    public AdqlTable copy(String jdbcName, String adqlName)
+    public AdqlDBTable copy(String jdbcName, String adqlName)
         {
         if ((adqlName == null) || (adqlName.length() == 0))
             {
@@ -145,15 +142,15 @@ implements AdqlTable
                 "AdqlName is required"
                 );
             }
-        return new AdqlTableImpl(
-            this.table,
+        return new AdqlDBTableImpl(
+            this.adqlTable,
             jdbcName, 
             adqlName
             );
         }
 
     /**
-     * Get the ADQL table name.
+     * Get the ADQL adqlTable name.
      *
      */
     @Override
@@ -164,13 +161,13 @@ implements AdqlTable
             return this.adqlName ;
             } 
         else {            
-            return table.name();
+            return adqlTable.name();
             }
         }
 
     /**
      * Get the ADQL schema name.
-     * If the ADQL table name was changed using copy, then the ADQL schema name will be null.
+     * If the ADQL adqlTable name was changed using copy, then the ADQL schema name will be null.
      *
      */
     @Override
@@ -181,13 +178,13 @@ implements AdqlTable
             return null ;
             } 
         else {            
-            return table.parent().name();
+            return adqlTable.parent().name();
             }
         }
 
     /**
      * Get the ADQL catalog name.
-     * If the ADQL table name was changed using copy, then the ADQL catalog name will be null.
+     * If the ADQL adqlTable name was changed using copy, then the ADQL catalog name will be null.
      *
      */
     @Override
@@ -198,12 +195,12 @@ implements AdqlTable
             return null ;
             } 
         else {            
-            return table.parent().parent().name();
+            return adqlTable.parent().parent().name();
             }
         }
 
     /**
-     * Get the JDBC table name.
+     * Get the JDBC adqlTable name.
      *
      */
     @Override
@@ -214,13 +211,13 @@ implements AdqlTable
             return this.jdbcName ;
             } 
         else {            
-            return table.base().name();
+            return adqlTable.base().name();
             }
         }
 
     /**
      * Get the JDBC schema name.
-     * If the JDBC table name was changed using copy, then the JDBC schema name will be null.
+     * If the JDBC adqlTable name was changed using copy, then the JDBC schema name will be null.
      *
      */
     @Override
@@ -231,13 +228,13 @@ implements AdqlTable
             return null ;
             }
         else {
-            return table.base().parent().name();
+            return adqlTable.base().parent().name();
             }
         }
 
     /**
      * Get the JDBC catalog name.
-     * If the JDBC table name was changed using copy, then the JDBC catalog name will be null.
+     * If the JDBC adqlTable name was changed using copy, then the JDBC catalog name will be null.
      *
      */
     @Override
@@ -248,36 +245,36 @@ implements AdqlTable
             return null ;
             }
         else {
-            return table.base().parent().parent().name();
+            return adqlTable.base().parent().parent().name();
             }
         }
     
     @Override
     public DBColumn getColumn(String name, boolean adql)
         {
-        DataResourceView.Column column ;
+        AdqlResource.AdqlColumn adqlColumn ;
         //
-        // If 'name' is an ADQL name, then search the DataResourceView.
+        // If 'name' is an ADQL name, then search the AdqlResource.
         if (adql)
             {
-            column = table.columns().search(
+            adqlColumn = adqlTable.columns().search(
                 name
                 );
             }
         //
-        // If 'name' is not an ADQL name, then search the DataResourceBase.
+        // If 'name' is not an ADQL name, then search the BaseResource.
         else {
-            column = table.columns().search(
-                table.base().columns().search(
+            adqlColumn = adqlTable.columns().search(
+                adqlTable.base().columns().search(
                     name
                     )
                 );
             }
 
-        if (column != null)
+        if (adqlColumn != null)
             {
             return wrap(
-                column
+                adqlColumn
                 );
             }
         else {
@@ -291,7 +288,7 @@ implements AdqlTable
         return new Iterator<DBColumn>()
             {
 
-            private Iterator<DataResourceView.Column> iter = table.columns().select().iterator();
+            private Iterator<AdqlResource.AdqlColumn> iter = adqlTable.columns().select().iterator();
 
             @Override
             public DBColumn next()
@@ -321,19 +318,19 @@ implements AdqlTable
      * Access to our columns as AdqlColumns rather than DBColumns.
      *
      */
-    public AdqlTable.Columns columns()
+    public AdqlDBTable.Columns columns()
         {
-        return new AdqlTable.Columns()
+        return new AdqlDBTable.Columns()
             {
-            public Iterator<AdqlColumn> select()
+            public Iterator<AdqlDBColumn> select()
                 {
-                return new Iterator<AdqlColumn>()
+                return new Iterator<AdqlDBColumn>()
                     {
 
-                    private Iterator<DataResourceView.Column> iter = table.columns().select().iterator();
+                    private Iterator<AdqlResource.AdqlColumn> iter = adqlTable.columns().select().iterator();
 
                     @Override
-                    public AdqlColumn next()
+                    public AdqlDBColumn next()
                         {
                         return wrap(
                             iter.next()
@@ -359,24 +356,24 @@ implements AdqlTable
         }
 
     /**
-     * Create a new column metadata.
+     * Create a new adqlColumn metadata.
      *
      */
-    private AdqlColumnImpl wrap(DataResourceView.Column column)
+    private AdqlColumnImpl wrap(AdqlResource.AdqlColumn adqlColumn)
         {
         return new AdqlColumnImpl(
-            column
+            adqlColumn
             );
         }
 
     /**
-     * Create a new column metadata.
+     * Create a new adqlColumn metadata.
      *
      */
-    private AdqlColumnImpl wrap(DataResourceView.Column column, String jdbcName, String adqlName, DBTable parent)
+    private AdqlColumnImpl wrap(AdqlResource.AdqlColumn adqlColumn, String jdbcName, String adqlName, DBTable parent)
         {
         return new AdqlColumnImpl(
-            column,
+            adqlColumn,
             jdbcName,
             adqlName,
             parent
@@ -384,33 +381,33 @@ implements AdqlTable
         } 
 
     /**
-     * Inner class to represent a table column.
+     * Inner class to represent a adqlTable adqlColumn.
      *
      */
     public class AdqlColumnImpl
-    implements AdqlColumn
+    implements AdqlDBColumn
         {
 
         /**
-         * Our DataResourceView.Column metadata source.
+         * Our AdqlResource.AdqlColumn metadata source.
          *
          */
-        private DataResourceView.Column column ;
+        private AdqlResource.AdqlColumn adqlColumn ;
 
         @Override
-        public DataResourceView.Column meta()
+        public AdqlResource.AdqlColumn meta()
             {
-            return this.column ;
+            return this.adqlColumn ;
             }
 
         /**
-         * Local parent table, if different to the original AdqlTable.
+         * Local parent adqlTable, if different to the original AdqlDBTable.
          *
          */
         private DBTable parent ;
 
         /**
-         * Local ADQL name, if different to the original DataResourceView.Column.
+         * Local ADQL name, if different to the original AdqlResource.AdqlColumn.
          *
          */
         private String adqlName ;
@@ -425,10 +422,10 @@ implements AdqlTable
          * Private constructor.
          *
          */
-        private AdqlColumnImpl(DataResourceView.Column column)
+        private AdqlColumnImpl(AdqlResource.AdqlColumn adqlColumn)
             {
             this(
-                column,
+                adqlColumn,
                 null,
                 null,
                 null
@@ -439,10 +436,10 @@ implements AdqlTable
          * Private constructor, used by the copy method.
          *
          */
-        private AdqlColumnImpl(DataResourceView.Column column, String jdbcName, String adqlName, DBTable parent)
+        private AdqlColumnImpl(AdqlResource.AdqlColumn adqlColumn, String jdbcName, String adqlName, DBTable parent)
             {
             this.parent = parent ;
-            this.column = column ;
+            this.adqlColumn = adqlColumn ;
             this.jdbcName = jdbcName;
             this.adqlName = adqlName;
             }
@@ -450,8 +447,8 @@ implements AdqlTable
         @Override
         public AdqlColumnImpl copy(String dbName, String adqlName, DBTable parent)
             {
-            return AdqlTableImpl.this.wrap(
-                this.column,
+            return AdqlDBTableImpl.this.wrap(
+                this.adqlColumn,
                 jdbcName,
                 adqlName,
                 parent
@@ -466,7 +463,7 @@ implements AdqlTable
                 return this.adqlName ;
                 } 
             else {            
-                return column.name();
+                return adqlColumn.name();
                 }
             }
 
@@ -478,7 +475,7 @@ implements AdqlTable
                 return this.jdbcName ;
                 } 
             else {            
-                return column.base().name();
+                return adqlColumn.base().name();
                 }
             }
 
@@ -490,7 +487,7 @@ implements AdqlTable
                 return this.parent ;
                 }
             else {
-                return AdqlTableImpl.this;
+                return AdqlDBTableImpl.this;
                 }
             }
         }

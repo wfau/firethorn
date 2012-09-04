@@ -399,6 +399,14 @@
 
     </dependencies>
 
+<!--+
+firefox 'http://docs.jboss.org/hibernate/core/4.0/manual/en-US/html/inheritance.html' &
+firefox 'http://viralpatel.net/blogs/hibernate-inheritence-table-per-hierarchy-mapping/' &
+firefox 'http://docs.oracle.com/javase/6/docs/api/index.html' &
+firefox 'http://static.springsource.org/spring/docs/current/spring-framework-reference/html/mvc.html' &
++-->
+
+
 </project>
 
 

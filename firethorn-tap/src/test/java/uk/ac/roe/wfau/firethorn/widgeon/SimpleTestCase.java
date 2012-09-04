@@ -17,16 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon ;
 
+import static org.junit.Assert.assertNotNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.URI;
-
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
  *
@@ -39,7 +35,7 @@ extends TestBase
     @Test
     public void simple()
         {
-        DataResourceBase one = womble().resources().create(
+        BaseResource one = womble().resources().jdbc().create(
             "albert"
             );
         assertNotNull(
@@ -50,7 +46,7 @@ extends TestBase
             );
         log.debug("One [{}][{}]", one.ident(), one.name());
 
-        DataResourceBase two = womble().resources().create(
+        BaseResource two = womble().resources().jdbc().create(
             "albert"
             );
         assertNotNull(
@@ -61,7 +57,7 @@ extends TestBase
             );
         log.debug("Two [{}][{}]", two.ident(), two.name());
 
-        for (DataResourceBase widgeon : womble().resources().select())
+        for (BaseResource widgeon : womble().resources().jdbc().select())
             {
             log.debug("DataResource [{}]", widgeon);
             }
@@ -72,17 +68,17 @@ extends TestBase
     public void nested()
         {
         nested(
-            womble().resources().create(
+            womble().resources().jdbc().create(
                 "widgeon-0001"
                 )
             );
         nested(
-            womble().resources().create(
+            womble().resources().jdbc().create(
                 "widgeon-0002"
                 )
             );
 
-        for (DataResourceBase widgeon : womble().resources().select())
+        for (JdbcResource widgeon : womble().resources().jdbc().select())
             {
             display(
                 widgeon
@@ -90,7 +86,7 @@ extends TestBase
             }
         }
 
-    public void nested(DataResourceBase widgeon)
+    public void nested(JdbcResource widgeon)
         {
         nested(
             widgeon.catalogs().create(
@@ -104,7 +100,7 @@ extends TestBase
             );
         }
 
-    public void nested(DataResourceBase.Catalog catalog)
+    public void nested(JdbcResource.JdbcCatalog catalog)
         {
         nested(
             catalog.schemas().create(
@@ -118,7 +114,7 @@ extends TestBase
             );
         }
 
-    public void nested(DataResourceBase.Schema schema)
+    public void nested(JdbcResource.JdbcSchema schema)
         {
         nested(
             schema.tables().create(
@@ -132,7 +128,7 @@ extends TestBase
             );
         }
 
-    public void nested(DataResourceBase.Table table)
+    public void nested(JdbcResource.JdbcTable table)
         {
         table.columns().create(
             "column-0001"
@@ -142,22 +138,22 @@ extends TestBase
             );
         }
 
-    public void display(DataResourceBase widgeon)
+    public void display(BaseResource widgeon)
         {
         log.debug("-------");
         log.debug("DataResource [{}]", widgeon);
-        for (DataResourceBase.Catalog catalog : widgeon.catalogs().select())
+        for (BaseResource.BaseCatalog<?> catalog : widgeon.catalogs().select())
             {
-            log.debug("  Catalog [{}]", catalog);
-            for (DataResourceBase.Schema schema : catalog.schemas().select())
+            log.debug("  DataCatalog [{}]", catalog);
+            for (BaseResource.BaseSchema<?> schema : catalog.schemas().select())
                 {
-                log.debug("  Schema [{}]", schema);
-                for (DataResourceBase.Table table : schema.tables().select())
+                log.debug("  DataSchema [{}]", schema);
+                for (BaseResource.BaseTable<?> table : schema.tables().select())
                     {
-                    log.debug("  Table [{}]", table);
-                    for (DataResourceBase.Column column : table.columns().select())
+                    log.debug("  DataTable [{}]", table);
+                    for (BaseResource.BaseColumn<?> column : table.columns().select())
                         {
-                        log.debug("  Column [{}]", column);
+                        log.debug("  DataColumn [{}]", column);
                         }
                     }
                 }

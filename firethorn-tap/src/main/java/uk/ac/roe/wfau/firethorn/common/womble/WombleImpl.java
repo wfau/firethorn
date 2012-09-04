@@ -45,9 +45,11 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
+import uk.ac.roe.wfau.firethorn.widgeon.BaseResource.Factory;
+import uk.ac.roe.wfau.firethorn.widgeon.AdqlResource;
+import uk.ac.roe.wfau.firethorn.widgeon.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
+import uk.ac.roe.wfau.firethorn.widgeon.JdbcResource;
 import uk.ac.roe.wfau.firethorn.mallard.DataService;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
@@ -492,19 +494,39 @@ implements Womble
  *
  */
 
+        
     /**
-     * Our Autowired DataResource factory.
+     * Our Autowired BaseResource factory.
      * 
      */
     @Autowired
-    protected DataResourceBase.Factory resources ;
+    protected BaseResource.Factory baseResources ;
 
+    /**
+     * Our Autowired JdbcResource factory.
+     * 
+     */
+    @Autowired
+    protected JdbcResource.Factory jdbcResources ;
+    
+   
     @Override
-    public DataResourceBase.Factory resources()
+    public ResourceFactories resources()
         {
-        return this.resources ;
-        }
+        return new ResourceFactories()
+            {
+            public BaseResource.Factory base()
+                {
+                return baseResources;
+                }
 
+            public JdbcResource.Factory jdbc()
+                {
+                return jdbcResources ;
+                }
+            };
+        }
+    
     /**
      * Our Autowired DataService factory.
      * 

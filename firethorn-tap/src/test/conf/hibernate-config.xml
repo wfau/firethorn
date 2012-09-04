@@ -61,6 +61,8 @@
                 <value>uk.ac.roe.wfau.firethorn.mallard.DataServiceEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.mallard.JobEntity</value>
 
+                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.BaseResourceEntity</value>
+
                 <value>uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcResourceEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcCatalogEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcSchemaEntity</value>

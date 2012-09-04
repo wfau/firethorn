@@ -26,8 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceTestBase;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.widgeon.JdbcResourceTestBase;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlDBTable;
 import adql.db.DBChecker;
 import adql.db.DBTable;
 import adql.db.DefaultDBColumn;
@@ -40,7 +40,7 @@ import adql.query.ADQLQuery;
  */
 @Slf4j
 public class AdqlParserTestCase
-extends DataResourceTestBase
+extends JdbcResourceTestBase
     {
 
     /**
@@ -48,7 +48,7 @@ extends DataResourceTestBase
      *
      */
     @Autowired
-    private AdqlTable.Factory factory ;
+    private AdqlDBTable.Factory factory ;
 
     /**
      * Simple ADQL query with no aliases.
@@ -196,7 +196,7 @@ extends DataResourceTestBase
         null,
         "adql_table",   // Full table name ??
 
-        "psc",          // Table alias
+        "psc",          // DataTable alias
         null,           // Aliased table does not have schema or catalog
         null,           // Aliased table does not have schema or catalog
 
@@ -237,7 +237,7 @@ extends DataResourceTestBase
         null,
         "adql_table",   // Full table name ??
 
-        "psc",          // Table alias
+        "psc",          // DataTable alias
         null,           // Aliased table does not have schema or catalog
         null,           // Aliased table does not have schema or catalog
 
@@ -300,7 +300,7 @@ extends DataResourceTestBase
         }
 
     /**
-     * Use AdqlTable to create a DBTable metadata based on a DataResourceView.
+     * Use AdqlDBTable to create a DBTable metadata based on a AdqlResource.
      *
      */
     public DBTable adqlTable()
@@ -427,7 +427,7 @@ extends DataResourceTestBase
                                 );
 
         //
-        // Wrap the DataResourceView.Table in an AdqlTable.
+        // Wrap the AdqlResource.AdqlTable in an AdqlDBTable.
         return factory.create(
             base().views().select(
                 "adql_view"
@@ -604,7 +604,7 @@ extends DataResourceTestBase
         }
     
     /**
-     * Use AdqlTable based metadata for the QueryChecker.
+     * Use AdqlDBTable based metadata for the QueryChecker.
      *
      */
     @Test
@@ -632,7 +632,7 @@ extends DataResourceTestBase
         }
     
     /**
-     * Use AdqlTable based metadata for the QueryChecker.
+     * Use AdqlDBTable based metadata for the QueryChecker.
      *
      */
     @Test
@@ -661,7 +661,7 @@ extends DataResourceTestBase
      */
     
     /**
-     * Use AdqlTable based metadata for the QueryChecker.
+     * Use AdqlDBTable based metadata for the QueryChecker.
      * Unresolved identifiers: ra [l.1 c.94 - l.1 c.96], dec [l.1 c.131 - l.1 c.134]
      *
     @Test
@@ -690,7 +690,7 @@ extends DataResourceTestBase
         }
     
     /**
-     * Use AdqlTable based metadata for the QueryChecker.
+     * Use AdqlDBTable based metadata for the QueryChecker.
      *
      */
     @Test
@@ -718,7 +718,7 @@ extends DataResourceTestBase
         }
     
     /**
-     * Use AdqlTable based metadata for the QueryChecker.
+     * Use AdqlDBTable based metadata for the QueryChecker.
      *
      */
     @Test

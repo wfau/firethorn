@@ -15,12 +15,17 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc ;
+package uk.ac.roe.wfau.firethorn.widgeon.entity.base ;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,15 +35,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.AdqlResource;
-import uk.ac.roe.wfau.firethorn.widgeon.JdbcResource;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.base.BaseResourceEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
 
 /**
- * BaseResource implementations.
+ * BaseResource implementation.
  *
  */
 @Slf4j
@@ -46,35 +51,66 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.base.BaseResourceEntity;
 @Access(
     AccessType.FIELD
     )
+@Inheritance(
+    strategy=InheritanceType.SINGLE_TABLE
+    )
+@DiscriminatorColumn(
+    name=BaseResourceEntity.DB_CLASS_NAME,
+    discriminatorType=DiscriminatorType.STRING
+    )
 @DiscriminatorValue(
-    value=JdbcResourceEntity.DB_CLASS_TYPE
+    value=BaseResourceEntity.DB_CLASS_TYPE
+    )
+@Table(
+    name = BaseResourceEntity.DB_TABLE_NAME
+/*
+    uniqueConstraints={
+        @UniqueConstraint(
+            columnNames = {
+                AbstractEntity.DB_NAME_COL
+                }
+            )
+        }
+ */
     )
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "jdbc.resource-select-all",
-            query = "FROM JdbcResourceEntity ORDER BY ident desc"
+            name  = "base.resource-select-all",
+            query = "FROM BaseResourceEntity ORDER BY ident desc"
             ),
             @NamedQuery(
-                name  = "jdbc.resource-select-name",
-                query = "FROM JdbcResourceEntity WHERE (name = :name) ORDER BY ident desc"
+                name  = "base.resource-select-name",
+                query = "FROM BaseResourceEntity WHERE (name = :name) ORDER BY ident desc"
                 ),
         @NamedQuery(
-            name  = "jdbc.resource-search-text",
-            query = "FROM JdbcResourceEntity WHERE (name LIKE :text) ORDER BY ident desc"
+            name  = "base.resource-search-text",
+            query = "FROM BaseResourceEntity WHERE (name LIKE :text) ORDER BY ident desc"
             )
         }
     )
-public class JdbcResourceEntity
-extends BaseResourceEntity
-implements JdbcResource
+public abstract class BaseResourceEntity
+extends ResourceStatusEntity
+implements BaseResource
     {
+
+    /**
+     * Our persistence table name.
+     * 
+     */
+    public static final String DB_TABLE_NAME = "base_resource" ;
+
+    /**
+     * Our persistence type column.
+     * 
+     */
+    public static final String DB_CLASS_NAME = "resource_type" ;
 
     /**
      * Our persistence type value.
      * 
      */
-    public static final String DB_CLASS_TYPE = "JDBC" ;
+    public static final String DB_CLASS_TYPE = "BASE" ;
 
     /**
      * Our Entity Factory implementation.
@@ -82,34 +118,34 @@ implements JdbcResource
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<JdbcResource>
-    implements JdbcResource.Factory
+    extends AbstractFactory<BaseResource>
+    implements BaseResource.Factory
         {
 
         @Override
         public Class<?> etype()
             {
-            return JdbcResourceEntity.class ;
+            return BaseResourceEntity.class ;
             }
 
         @Override
         @SelectEntityMethod
-        public Iterable<JdbcResource> select()
+        public Iterable<BaseResource> select()
             {
             return super.iterable(
                 super.query(
-                    "jdbc.resource-select-all"
+                    "base.resource-select-all"
                     )
                 );
             }
 
         @Override
         @SelectEntityMethod
-        public Iterable<JdbcResource> select(final String name)
+        public Iterable<BaseResource> select(final String name)
             {
             return super.iterable(
                 super.query(
-                    "jdbc.resource-select-name"
+                    "base.resource-select-name"
                     ).setString(
                         "name",
                         name
@@ -119,12 +155,12 @@ implements JdbcResource
 
         @Override
         @SelectEntityMethod
-        public Iterable<JdbcResource> search(final String text)
+        public Iterable<BaseResource> search(final String text)
             {
             String match = new StringBuilder(text).append("%").toString();
             return super.iterable(
                 super.query(
-                    "jdbc.resource-search-text"
+                    "base.resource-search-text"
                     ).setString(
                         "text",
                         match 
@@ -132,17 +168,19 @@ implements JdbcResource
                 );
             }
 
+        /*
         @Override
         @CreateEntityMethod
-        public JdbcResource create(final String name)
+        public BaseResource create(final String name)
             {
             return super.insert(
-                new JdbcResourceEntity(
+                new BaseResourceEntity(
                     name
                     )
                 );
             }
-        
+        */
+
         /**
          * Our Autowired view factory.
          * 
@@ -155,58 +193,36 @@ implements JdbcResource
             {
             return this.views ;
             }
-
-        /**
-         * Our Autowired catalog factory.
-         * 
-         */
-        @Autowired
-        protected JdbcResource.JdbcCatalog.Factory catalogs ;
-
-        @Override
-        public JdbcResource.JdbcCatalog.Factory catalogs()
-            {
-            return this.catalogs ;
-            }
         }
 
     @Override
-    public JdbcResource.Catalogs catalogs()
+    public BaseResource.Views views() 
         {
-        return new JdbcResource.Catalogs()
+        return new BaseResource.Views()
             {
             @Override
-            public JdbcCatalog create(String name)
+            public AdqlResource create(String name)
                 {
-                return womble().resources().jdbc().catalogs().create(
-                    JdbcResourceEntity.this,
+                return womble().resources().base().views().create(
+                    BaseResourceEntity.this,
                     name
                     );
                 }
 
             @Override
-            public Iterable<JdbcResource.JdbcCatalog> select()
+            public Iterable<AdqlResource> select()
                 {
-                return womble().resources().jdbc().catalogs().select(
-                    JdbcResourceEntity.this
+                return womble().resources().base().views().select(
+                    BaseResourceEntity.this
                     );
                 }
 
             @Override
-            public JdbcResource.JdbcCatalog select(final String name)
+            public AdqlResource select(String name)
             throws NameNotFoundException
                 {
-                return womble().resources().jdbc().catalogs().select(
-                    JdbcResourceEntity.this,
-                    name
-                    );
-                }
-
-            @Override
-            public JdbcResource.JdbcCatalog search(final String name)
-                {
-                return womble().resources().jdbc().catalogs().search(
-                    JdbcResourceEntity.this,
+                return womble().resources().base().views().select(
+                    BaseResourceEntity.this,
                     name
                     );
                 }
@@ -218,7 +234,7 @@ implements JdbcResource
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected JdbcResourceEntity()
+    protected BaseResourceEntity()
         {
         super();
         }
@@ -227,10 +243,25 @@ implements JdbcResource
      * Create a new resource.
      *
      */
-    private JdbcResourceEntity(final String name)
+    protected BaseResourceEntity(final String name)
         {
         super(name);
-        log.debug("new([{}]", name);
+        log.debug("BaseResourceEntity([{}]", name);
+        }
+
+    @Override
+    public void name(final String name)
+    throws NameFormatException
+        {
+        if ((name != null) && (name.trim().length() > 0))
+            {
+            this.name = name.trim() ;
+            }
+        else {
+            throw new NameFormatException(
+                name
+                );
+            }
         }
     }
 

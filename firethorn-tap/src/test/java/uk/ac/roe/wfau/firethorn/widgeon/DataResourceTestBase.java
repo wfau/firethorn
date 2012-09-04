@@ -31,9 +31,9 @@ public class DataResourceTestBase
 extends TestBase
     {
 
-    private DataResourceBase base ;
+    private BaseResource base ;
 
-    public DataResourceBase base()
+    public BaseResource base()
         {
         return this.base;
         }
@@ -42,7 +42,7 @@ extends TestBase
     public void before()
     throws Exception
         {
-        base = womble().resources().create(
+        base = womble().resources().jdbc().create(
             this.unique(
                 "base"
                 )

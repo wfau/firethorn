@@ -17,24 +17,21 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon ;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.URI;
-
 import org.junit.Test;
-import org.junit.After;
-import org.junit.Before;
-import static org.junit.Assert.*;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 
 /**
  *
  */
 @Slf4j
 public class JdbcResourceTestCase
-extends DataResourceTestBase
+extends JdbcResourceTestBase
     {
 
     @Test

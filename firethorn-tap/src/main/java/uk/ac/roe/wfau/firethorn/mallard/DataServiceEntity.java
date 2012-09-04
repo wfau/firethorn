@@ -53,9 +53,9 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
+import uk.ac.roe.wfau.firethorn.widgeon.AdqlResource;
+import uk.ac.roe.wfau.firethorn.widgeon.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.adql.AdqlResourceEntity;
 
 /**
@@ -249,12 +249,12 @@ implements DataService
             updatable = false
             )
         )
-    private Set<DataResourceView> resources = new HashSet<DataResourceView>(0);
-    protected Set<DataResourceView> getResources()
+    private Set<AdqlResource> resources = new HashSet<AdqlResource>(0);
+    protected Set<AdqlResource> getResources()
         {
         return this.resources ;
         }
-    protected void setResources(Set<DataResourceView> resources)
+    protected void setResources(Set<AdqlResource> resources)
         {
         this.resources = resources ;
         }
@@ -265,14 +265,14 @@ implements DataService
         return new Resources()
             {
             @Override
-            public void insert(DataResourceView resource)
+            public void insert(AdqlResource resource)
                 {
                 resources.add(
                     resource
                     );
                 }
             @Override
-            public Iterable<DataResourceView> select()
+            public Iterable<AdqlResource> select()
                 {
                 return resources ;
                 }

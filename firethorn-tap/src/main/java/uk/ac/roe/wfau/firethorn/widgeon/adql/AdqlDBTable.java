@@ -22,14 +22,15 @@ import adql.db.DBColumn;
 
 import java.util.Iterator;
 
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView ;
+import uk.ac.roe.wfau.firethorn.widgeon.AdqlResource;
+
 
 /**
- * DataResourceView.Table based extension of the DBTable interface.
+ * AdqlResource.AdqlTable based extension of the DBTable interface.
  * See http://cdsportal.u-strasbg.fr/adqltuto/gettingstarted.html
  *
  */
-public interface AdqlTable
+public interface AdqlDBTable
 extends DBTable
     {
 
@@ -40,18 +41,18 @@ extends DBTable
     public static interface Factory
         {
         /**
-         * Create a new AdqlTable.
+         * Create a new AdqlDBTable.
          *
          */
-        public AdqlTable create(DataResourceView.Table meta);
+        public AdqlDBTable create(AdqlResource.AdqlTable meta);
 
         }
 
     /**
-     * Access to our DataResourceView.Table metadata.
+     * Access to our AdqlResource.AdqlTable metadata.
      *
      */
-    public DataResourceView.Table meta();
+    public AdqlResource.AdqlTable meta();
 
     /**
      * Access to our columns as AdqlColumns.
@@ -60,7 +61,7 @@ extends DBTable
     public interface Columns
         {
 
-        public Iterator<AdqlColumn> select();
+        public Iterator<AdqlDBColumn> select();
 
         }
 
@@ -71,18 +72,18 @@ extends DBTable
     public Columns columns();
 
     /**
-     * DataResourceView.Column based extension of the DBColumn interface.
+     * AdqlResource.AdqlColumn based extension of the DBColumn interface.
      *
      */
-    public interface AdqlColumn
+    public interface AdqlDBColumn
     extends DBColumn
         {
 
         /**
-         * Access to our DataResourceView.Column metadata.
+         * Access to our AdqlResource.AdqlColumn metadata.
          *
          */
-        public DataResourceView.Column meta();
+        public AdqlResource.AdqlColumn meta();
 
         }
     }

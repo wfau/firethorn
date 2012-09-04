@@ -20,9 +20,9 @@ package uk.ac.roe.wfau.firethorn.mallard ;
 import java.net.URL;
 import java.net.URI;
 
+import uk.ac.roe.wfau.firethorn.widgeon.AdqlResource;
+import uk.ac.roe.wfau.firethorn.widgeon.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
@@ -85,13 +85,13 @@ extends Entity
          * Add a DataResource to this service.
          *
          */
-        public void insert(DataResourceView resource);
+        public void insert(AdqlResource resource);
 
         /**
          * Select all the DataResources used by this service.
          *
          */
-        public Iterable<DataResourceView> select();
+        public Iterable<AdqlResource> select();
 
         }
 

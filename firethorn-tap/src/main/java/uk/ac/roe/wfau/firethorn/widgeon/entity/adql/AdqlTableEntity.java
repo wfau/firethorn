@@ -17,47 +17,36 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.entity.adql ;
 
-import lombok.extern.slf4j.Slf4j;
-
-import java.net.URI;
-import java.net.URL;
-
-import javax.persistence.Table;
-import javax.persistence.Entity;
-import javax.persistence.Column;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ManyToOne;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.Index;
-import org.hibernate.annotations.NamedQuery;
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.annotations.NamedQueries;
-
+import org.hibernate.annotations.NamedQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.beans.factory.annotation.Autowired;  
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
-
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
-
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceStatus;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.widgeon.AdqlResource;
+import uk.ac.roe.wfau.firethorn.widgeon.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcTableEntity;
 
 
 /**
- * Table View implementation.
+ * AdqlResource.AdqlTable implementation.
  *
  */
 @Slf4j
@@ -100,8 +89,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcTableEntity;
         }
     )
 public class AdqlTableEntity
-extends DataResourceEntity
-implements DataResourceView.Table
+extends ResourceStatusEntity
+implements AdqlResource.AdqlTable
     {
 
     /**
@@ -111,13 +100,13 @@ implements DataResourceView.Table
     public static final String DB_TABLE_NAME = "adql_table" ;
 
     /**
-     * The persistence column name for our parent Schema.
+     * The persistence column name for our parent schema.
      * 
      */
     public static final String DB_PARENT_COL = "parent" ;
 
     /**
-     * The persistence column name for our base Table.
+     * The persistence column name for our base table.
      * 
      */
     public static final String DB_BASE_COL = "base" ;
@@ -128,29 +117,29 @@ implements DataResourceView.Table
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<DataResourceView.Table>
-    implements DataResourceView.Table.Factory
+    extends AbstractFactory<AdqlResource.AdqlTable>
+    implements AdqlResource.AdqlTable.Factory
         {
 
         @Override
-        public Class etype()
+        public Class<?> etype()
             {
             return AdqlTableEntity.class ;
             }
 
         /**
-         * Insert a View into the database and create views for each child.
+         * Insert a view into the database and create views for each child.
          *
          */
         @CascadeEntityMethod
-        protected DataResourceView.Table insert(AdqlTableEntity entity)
+        protected AdqlResource.AdqlTable insert(AdqlTableEntity entity)
             {
             super.insert(
                 entity
                 );
-            for (DataResourceBase.Column column : entity.base().columns().select())
+            for (BaseResource.BaseColumn<?> column : entity.base().columns().select())
                 {
-                this.columns().cascade(
+                this.adqlColumns().cascade(
                     entity,
                     column
                     );
@@ -159,11 +148,11 @@ implements DataResourceView.Table
             }
 
         /**
-         * Create a default View of a Table.
+         * Create a default view of a table.
          *
          */
         @CascadeEntityMethod
-        protected DataResourceView.Table create(final DataResourceView.Schema parent, final DataResourceBase.Table base)
+        protected AdqlResource.AdqlTable create(final AdqlResource.AdqlSchema parent, final BaseResource.BaseTable<?> base)
             {
             return this.insert(
                 new AdqlTableEntity(
@@ -175,7 +164,7 @@ implements DataResourceView.Table
 
         @Override
         @SelectEntityMethod
-        public DataResourceView.Table search(final DataResourceView.Schema parent, final DataResourceBase.Table base)
+        public AdqlResource.AdqlTable search(final AdqlResource.AdqlSchema parent, final BaseResource.BaseTable<?> base)
             {
             return super.first(
                 super.query(
@@ -192,9 +181,9 @@ implements DataResourceView.Table
 
         @Override
         @CascadeEntityMethod
-        public DataResourceView.Table cascade(final DataResourceView.Schema parent, final DataResourceBase.Table base)
+        public AdqlResource.AdqlTable cascade(final AdqlResource.AdqlSchema parent, final BaseResource.BaseTable<?> base)
             {
-            DataResourceView.Table result = this.search(
+            AdqlResource.AdqlTable result = this.search(
                 parent,
                 base
                 );
@@ -210,7 +199,7 @@ implements DataResourceView.Table
 
         @Override
         @CreateEntityMethod
-        public DataResourceView.Table create(final DataResourceView.Schema parent, final DataResourceBase.Table base, final String name)
+        public AdqlResource.AdqlTable create(final AdqlResource.AdqlSchema parent, final BaseResource.BaseTable<?> base, final String name)
             {
             return super.insert(
                 new AdqlTableEntity(
@@ -223,7 +212,7 @@ implements DataResourceView.Table
 
         @Override
         @SelectEntityMethod
-        public Iterable<DataResourceView.Table> select(final DataResourceView.Schema parent)
+        public Iterable<AdqlResource.AdqlTable> select(final AdqlResource.AdqlSchema parent)
             {
             return super.iterable(
                 super.query(
@@ -237,10 +226,10 @@ implements DataResourceView.Table
 
         @Override
         @SelectEntityMethod
-        public DataResourceView.Table select(final DataResourceView.Schema parent, final String name)
+        public AdqlResource.AdqlTable select(final AdqlResource.AdqlSchema parent, final String name)
         throws NameNotFoundException
             {
-            DataResourceView.Table result = this.search(
+            AdqlResource.AdqlTable result = this.search(
                 parent,
                 name
                 );
@@ -257,7 +246,7 @@ implements DataResourceView.Table
 
         @Override
         @SelectEntityMethod
-        public DataResourceView.Table search(final DataResourceView.Schema parent, final String name)
+        public AdqlResource.AdqlTable search(final AdqlResource.AdqlSchema parent, final String name)
             {
             return super.first(
                 super.query(
@@ -274,7 +263,7 @@ implements DataResourceView.Table
 
         @Override
         @SelectEntityMethod
-        public Iterable<DataResourceView.Table> select(final DataResourceBase.Table base)
+        public Iterable<AdqlResource.AdqlTable> select(final BaseResource.BaseTable<?> base)
             {
             return super.iterable(
                 super.query(
@@ -287,55 +276,55 @@ implements DataResourceView.Table
             }
 
         /**
-         * Our Autowired Column factory.
+         * Our Autowired column factory.
          * 
          */
         @Autowired
-        protected DataResourceView.Column.Factory columns ;
+        protected AdqlResource.AdqlColumn.Factory adqlColumns ;
 
         @Override
-        public DataResourceView.Column.Factory columns()
+        public AdqlResource.AdqlColumn.Factory adqlColumns()
             {
-            return this.columns ;
+            return this.adqlColumns ;
             }
         }
 
     @Override
-    public DataResourceView.Table.Columns columns()
+    public AdqlResource.AdqlTable.Columns columns()
         {
-        return new DataResourceView.Table.Columns()
+        return new AdqlResource.AdqlTable.Columns()
             {
             @Override
-            public Iterable<DataResourceView.Column> select()
+            public Iterable<AdqlResource.AdqlColumn> select()
                 {
-                return womble().resources().views().catalogs().schemas().tables().columns().select(
+                return womble().resources().base().views().catalogs().schemas().tables().adqlColumns().select(
                     AdqlTableEntity.this
                     ) ;
                 }
 
             @Override
-            public DataResourceView.Column select(String name)
+            public AdqlResource.AdqlColumn select(String name)
             throws NameNotFoundException
                 {
-                return womble().resources().views().catalogs().schemas().tables().columns().select(
+                return womble().resources().base().views().catalogs().schemas().tables().adqlColumns().select(
                     AdqlTableEntity.this,
                     name
                     ) ;
                 }
 
             @Override
-            public DataResourceView.Column search(String name)
+            public AdqlResource.AdqlColumn search(String name)
                 {
-                return womble().resources().views().catalogs().schemas().tables().columns().search(
+                return womble().resources().base().views().catalogs().schemas().tables().adqlColumns().search(
                     AdqlTableEntity.this,
                     name
                     ) ;
                 }
 
             @Override
-            public DataResourceView.Column search(DataResourceBase.Column base)
+            public AdqlResource.AdqlColumn search(BaseResource.BaseColumn<?> base)
                 {
-                return womble().resources().views().catalogs().schemas().tables().columns().search(
+                return womble().resources().base().views().catalogs().schemas().tables().adqlColumns().search(
                     AdqlTableEntity.this,
                     base
                     );
@@ -357,7 +346,7 @@ implements DataResourceView.Table
      * Create a new view.
      *
      */
-    protected AdqlTableEntity(final DataResourceView.Schema parent, final DataResourceBase.Table base)
+    protected AdqlTableEntity(final AdqlResource.AdqlSchema parent, final BaseResource.BaseTable<?> base)
         {
         this(
             parent,
@@ -370,17 +359,18 @@ implements DataResourceView.Table
      * Create a new view.
      *
      */
-    protected AdqlTableEntity(final DataResourceView.Schema parent, final DataResourceBase.Table base, final String name)
+    protected AdqlTableEntity(final AdqlResource.AdqlSchema parent, final BaseResource.BaseTable<?> base, final String name)
         {
         super(
             name
             );
+        log.debug("new([{}]", name);
         this.base = base ;
         this.parent = parent ;
         }
 
     /**
-     * Our parent Schema.
+     * Our parent schema.
      *
      */
     @ManyToOne(
@@ -393,17 +383,18 @@ implements DataResourceView.Table
         nullable = false,
         updatable = false
         )
-    private DataResourceView.Schema parent ;
+    private AdqlResource.AdqlSchema parent ;
 
     @Override
-    public DataResourceView.Schema parent()
+    public AdqlResource.AdqlSchema parent()
         {
         return this.parent ;
         }
 
     /**
-     * Our underlying Table.
-     *
+     * Our underlying table.
+     * @todo BaseTableEntity.class
+     * 
      */
     @ManyToOne(
         fetch = FetchType.EAGER,
@@ -415,10 +406,10 @@ implements DataResourceView.Table
         nullable = false,
         updatable = false
         )
-    private DataResourceBase.Table base ;
+    private BaseResource.BaseTable<?> base ;
 
     @Override
-    public DataResourceBase.Table base()
+    public BaseResource.BaseTable<?> base()
         {
         return this.base ;
         }
@@ -436,11 +427,11 @@ implements DataResourceView.Table
         }
 
     @Override
-    public DataResource.Status status()
+    public Status status()
         {
-        if (this.parent().status() == DataResource.Status.ENABLED)
+        if (this.parent().status() == Status.ENABLED)
             {
-            if (this.base().status() == DataResource.Status.ENABLED)
+            if (this.base().status() == Status.ENABLED)
                 {
                 return super.status() ;
                 }
@@ -454,19 +445,19 @@ implements DataResourceView.Table
         }
 
     @Override
-    public DataResourceView widgeon()
+    public AdqlResource resource()
         {
-        return this.parent.catalog().widgeon();
+        return this.parent.catalog().resource();
         }
 
     @Override
-    public DataResourceView.Catalog catalog()
+    public AdqlResource.AdqlCatalog catalog()
         {
         return this.parent.catalog();
         }
 
     @Override
-    public DataResourceView.Schema schema()
+    public AdqlResource.AdqlSchema schema()
         {
         return this.parent;
         }

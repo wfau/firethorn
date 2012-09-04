@@ -17,46 +17,36 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.entity.adql ;
 
-import lombok.extern.slf4j.Slf4j;
-
-import java.net.URI;
-import java.net.URL;
-
-import javax.persistence.Table;
-import javax.persistence.Entity;
-import javax.persistence.Column;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ManyToOne;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.Index;
-import org.hibernate.annotations.NamedQuery;
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.annotations.NamedQueries;
-
+import org.hibernate.annotations.NamedQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.beans.factory.annotation.Autowired;  
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
-
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.*;
-
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.widgeon.AdqlResource;
+import uk.ac.roe.wfau.firethorn.widgeon.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceStatus;
+import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcCatalogEntity;
 
 /**
- * Catalog View implementation.
+ * AdqlCatalog implementation.
  *
  */
 @Slf4j
@@ -102,8 +92,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcCatalogEntity;
         }
     )
 public class AdqlCatalogEntity
-extends DataResourceEntity
-implements DataResourceView.Catalog
+extends ResourceStatusEntity
+implements AdqlResource.AdqlCatalog
     {
 
     /**
@@ -113,13 +103,13 @@ implements DataResourceView.Catalog
     public static final String DB_TABLE_NAME = "adql_catalog" ;
 
     /**
-     * The persistence column name for our parent DataResource.
+     * The persistence column name for our parent resource.
      * 
      */
     public static final String DB_PARENT_COL = "parent" ;
 
     /**
-     * The persistence column name for our base Catalog.
+     * The persistence column name for our base catalog.
      * 
      */
     public static final String DB_BASE_COL = "base" ;
@@ -130,12 +120,12 @@ implements DataResourceView.Catalog
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<DataResourceView.Catalog>
-    implements DataResourceView.Catalog.Factory
+    extends AbstractFactory<AdqlResource.AdqlCatalog>
+    implements AdqlResource.AdqlCatalog.Factory
         {
 
         @Override
-        public Class etype()
+        public Class<?> etype()
             {
             return AdqlCatalogEntity.class ;
             }
@@ -145,12 +135,12 @@ implements DataResourceView.Catalog
          *
          */
         @CascadeEntityMethod
-        protected DataResourceView.Catalog insert(AdqlCatalogEntity entity)
+        protected AdqlResource.AdqlCatalog insert(AdqlCatalogEntity entity)
             {
             super.insert(
                 entity
                 );
-            for (DataResourceBase.Schema schema : entity.base().schemas().select())
+            for (BaseResource.BaseSchema<?> schema : entity.base().schemas().select())
                 {
                 this.schemas().cascade(
                     entity,
@@ -161,11 +151,11 @@ implements DataResourceView.Catalog
             }
 
         /**
-         * Create a default View of a Catalog.
+         * Create a default view of a catalog.
          *
          */
         @CascadeEntityMethod
-        protected DataResourceView.Catalog create(final DataResourceView parent, final DataResourceBase.Catalog base)
+        protected AdqlResource.AdqlCatalog create(final AdqlResource parent, final BaseResource.BaseCatalog<?> base)
             {
             return this.insert(
                 new AdqlCatalogEntity(
@@ -177,7 +167,7 @@ implements DataResourceView.Catalog
 
         @Override
         @SelectEntityMethod
-        public DataResourceView.Catalog search(final DataResourceView parent, final DataResourceBase.Catalog base)
+        public AdqlResource.AdqlCatalog search(final AdqlResource parent, final BaseResource.BaseCatalog<?> base)
             {
             return super.first(
                 super.query(
@@ -194,9 +184,9 @@ implements DataResourceView.Catalog
 
         @Override
         @CascadeEntityMethod
-        public DataResourceView.Catalog cascade(final DataResourceView parent, final DataResourceBase.Catalog base)
+        public AdqlResource.AdqlCatalog cascade(final AdqlResource parent, final BaseResource.BaseCatalog<?> base)
             {
-            DataResourceView.Catalog result = this.search(
+            AdqlResource.AdqlCatalog result = this.search(
                 parent,
                 base
                 );
@@ -212,7 +202,7 @@ implements DataResourceView.Catalog
 
         @Override
         @CreateEntityMethod
-        public DataResourceView.Catalog create(final DataResourceView parent, final DataResourceBase.Catalog base, final String name)
+        public AdqlResource.AdqlCatalog create(final AdqlResource parent, final BaseResource.BaseCatalog<?> base, final String name)
             {
             return this.insert(
                 new AdqlCatalogEntity(
@@ -225,7 +215,7 @@ implements DataResourceView.Catalog
 
         @Override
         @SelectEntityMethod
-        public Iterable<DataResourceView.Catalog> select(final DataResourceView parent)
+        public Iterable<AdqlResource.AdqlCatalog> select(final AdqlResource parent)
             {
             return super.iterable(
                 super.query(
@@ -239,10 +229,10 @@ implements DataResourceView.Catalog
 
         @Override
         @SelectEntityMethod
-        public DataResourceView.Catalog select(final DataResourceView parent, final String name)
+        public AdqlResource.AdqlCatalog select(final AdqlResource parent, final String name)
         throws NameNotFoundException
             {
-            DataResourceView.Catalog result = this.search(
+            AdqlResource.AdqlCatalog result = this.search(
                 parent,
                 name
                 );
@@ -259,7 +249,7 @@ implements DataResourceView.Catalog
 
         @Override
         @SelectEntityMethod
-        public DataResourceView.Catalog search(final DataResourceView parent, final String name)
+        public AdqlResource.AdqlCatalog search(final AdqlResource parent, final String name)
             {
             return super.first(
                 super.query(
@@ -276,7 +266,7 @@ implements DataResourceView.Catalog
 
         @Override
         @SelectEntityMethod
-        public Iterable<DataResourceView.Catalog> select(final DataResourceBase.Catalog base)
+        public Iterable<AdqlResource.AdqlCatalog> select(final BaseResource.BaseCatalog<?> base)
             {
             return super.iterable(
                 super.query(
@@ -289,47 +279,47 @@ implements DataResourceView.Catalog
             }
 
         /**
-         * Our Autowired Schema factory.
+         * Our Autowired DataSchema factory.
          * 
          */
         @Autowired
-        protected DataResourceView.Schema.Factory schemas ;
+        protected AdqlResource.AdqlSchema.Factory adqlSchemas ;
 
         @Override
-        public DataResourceView.Schema.Factory schemas()
+        public AdqlResource.AdqlSchema.Factory schemas()
             {
-            return this.schemas ;
+            return this.adqlSchemas ;
             }
         }
 
     @Override
-    public DataResourceView.Catalog.Schemas schemas()
+    public AdqlResource.AdqlCatalog.Schemas schemas()
         {
-        return new DataResourceView.Catalog.Schemas()
+        return new AdqlResource.AdqlCatalog.Schemas()
             {
 
             @Override
-            public Iterable<DataResourceView.Schema> select()
+            public Iterable<AdqlResource.AdqlSchema> select()
                 {
-                return womble().resources().views().catalogs().schemas().select(
+                return womble().resources().base().views().catalogs().schemas().select(
                     AdqlCatalogEntity.this
                     ) ;
                 }
 
             @Override
-            public DataResourceView.Schema select(String name)
+            public AdqlResource.AdqlSchema select(String name)
             throws NameNotFoundException
                 {
-                return womble().resources().views().catalogs().schemas().select(
+                return womble().resources().base().views().catalogs().schemas().select(
                     AdqlCatalogEntity.this,
                     name
                     ) ;
                 }
 
             @Override
-            public DataResourceView.Schema search(String name)
+            public AdqlResource.AdqlSchema search(String name)
                 {
-                return womble().resources().views().catalogs().schemas().search(
+                return womble().resources().base().views().catalogs().schemas().search(
                     AdqlCatalogEntity.this,
                     name
                     ) ;
@@ -351,7 +341,7 @@ implements DataResourceView.Catalog
      * Create a new view.
      *
      */
-    protected AdqlCatalogEntity(final DataResourceView parent, final DataResourceBase.Catalog base)
+    protected AdqlCatalogEntity(final AdqlResource parent, final BaseResource.BaseCatalog<?> base)
         {
         this(
             parent,
@@ -364,17 +354,18 @@ implements DataResourceView.Catalog
      * Create a new view.
      *
      */
-    protected AdqlCatalogEntity(final DataResourceView parent, final DataResourceBase.Catalog base, final String name)
+    protected AdqlCatalogEntity(final AdqlResource parent, final BaseResource.BaseCatalog<?> base, final String name)
         {
         super(
             name
             );
+        log.debug("new([{}]", name);
         this.base   = base   ;
         this.parent = parent ;
         }
 
     /**
-     * Our parent DataResource.
+     * Our parent resource.
      *
      */
     @ManyToOne(
@@ -387,16 +378,17 @@ implements DataResourceView.Catalog
         nullable = false,
         updatable = false
         )
-    private DataResourceView parent ;
+    private AdqlResource parent ;
 
     @Override
-    public DataResourceView parent()
+    public AdqlResource parent()
         {
         return this.parent ;
         }
 
     /**
-     * Our underlying Catalog.
+     * Our underlying base catalog.
+     * @todo BaseCatalogEntity.class
      *
      */
     @ManyToOne(
@@ -409,10 +401,10 @@ implements DataResourceView.Catalog
         nullable = false,
         updatable = false
         )
-    private DataResourceBase.Catalog base ;
+    private BaseResource.BaseCatalog<?> base ;
 
     @Override
-    public DataResourceBase.Catalog base()
+    public BaseResource.BaseCatalog<?> base()
         {
         return this.base ;
         }
@@ -448,7 +440,7 @@ implements DataResourceView.Catalog
         }
 
     @Override
-    public DataResourceView widgeon()
+    public AdqlResource resource()
         {
         return this.parent;
         }

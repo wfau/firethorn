@@ -28,9 +28,9 @@ import static org.junit.Assert.*;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
+import uk.ac.roe.wfau.firethorn.widgeon.AdqlResource;
+import uk.ac.roe.wfau.firethorn.widgeon.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
@@ -126,7 +126,7 @@ extends TestBase
             );
 
         alpha().resources().insert(
-            womble().resources().create(
+            womble().resources().jdbc().create(
                 this.unique(
                     "widgeon-A"
                     )
@@ -154,7 +154,7 @@ extends TestBase
             );
 
         alpha().resources().insert(
-            womble().resources().create(
+            womble().resources().jdbc().create(
                 this.unique(
                     "widgeon-A"
                     )
@@ -184,7 +184,7 @@ extends TestBase
     throws Exception
         {
         alpha().resources().insert(
-            womble().resources().create(
+            womble().resources().jdbc().create(
                 this.unique(
                     "widgeon-A"
                     )
@@ -208,7 +208,7 @@ extends TestBase
     throws Exception
         {
         alpha().resources().insert(
-            womble().resources().create(
+            womble().resources().jdbc().create(
                 this.unique(
                     "widgeon-A"
                     )
@@ -217,7 +217,7 @@ extends TestBase
                     )
             );
         alpha().resources().insert(
-            womble().resources().create(
+            womble().resources().jdbc().create(
                 this.unique(
                     "widgeon-B"
                     )
@@ -239,7 +239,7 @@ extends TestBase
     public void test005()
     throws Exception
         {
-        DataResourceBase base = womble().resources().create(
+        BaseResource base = womble().resources().jdbc().create(
             this.unique(
                 "widgeon-A"
                 )

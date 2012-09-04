@@ -17,13 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon ;
 
-import java.net.URI;
-import java.net.URL;
-
-import javax.sql.DataSource;
-
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 
 /**
  * Public interface for describing a data resource (JDBC database OR TAP service).
@@ -31,37 +26,37 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
  *
  */
 public interface DataResource
-extends DataResourceStatus
+extends ResourceStatus
     {
 
     /**
-     * Access to this DataResource's Catalog.
+     * Access to this resource's catalogs.
      *
      */
-    public Catalogs catalogs();
+    public Catalogs<?> catalogs();
 
     /**
-     * Public interface for accessing a DataResource's Catalogs.
+     * Public interface for accessing a resource's catalogs.
      *
      */
-    public interface Catalogs<CatalogType extends DataResource.Catalog>
+    public interface Catalogs<CatalogType extends DataResource.DataCatalog<?>>
         {
 
         /**
-         * Select all the Catalogs from the DataResource.
+         * Select all the catalogs from the resource.
          *
          */
         public Iterable<CatalogType> select();
 
         /**
-         * Select a named Catalog from the DataResource.
+         * Select a named catalog from the resource.
          *
          */
         public CatalogType select(String name)
         throws NameNotFoundException;
 
         /**
-         * Search for a named Catalog from the DataResource.
+         * Search for a named catalog from the resource.
          *
          */
         public CatalogType search(String name);
@@ -69,70 +64,76 @@ extends DataResourceStatus
         }
 
     /**
-     * Public interface for Catalog metadata.
+     * Public interface for a catalog.
      *
      */
-    public interface Catalog<WidgeonType extends DataResource>
-    extends DataResourceChild<WidgeonType>
+    public interface DataCatalog<ResourceType extends DataResource>
+    extends ResourceStatus
         {
 
         /**
-         * Factory interface for creating and selecting Catalogs.
+         * Factory interface for creating and selecting catalogs.
          *
          */
-        public static interface Factory<WidgeonType extends DataResource, CatalogType extends DataResource.Catalog>
+        public static interface Factory<ResourceType extends DataResource, CatalogType extends DataResource.DataCatalog<?>>
         extends Entity.Factory<CatalogType>
             {
 
             /**
-             * Select all the Catalogs from a DataResource.
+             * Select all the catalogs for a resource.
              *
              */
-            public Iterable<CatalogType> select(WidgeonType parent);
+            public Iterable<CatalogType> select(ResourceType parent);
 
             /**
-             * Select a named Catalog from a DataResource.
+             * Select a named catalog for a resource.
              *
              */
-            public CatalogType select(WidgeonType parent, String name)
+            public CatalogType select(ResourceType parent, String name)
             throws NameNotFoundException;
 
             /**
-             * Search for a named Catalog from a DataResource.
+             * Search for a named catalog from a resource.
              *
              */
-            public CatalogType search(WidgeonType parent, String name);
+            public CatalogType search(ResourceType parent, String name);
 
             }
 
         /**
-         * Access to this Catalog's Schemas.
+         * Access to our parent resource.
          *
          */
-        public Schemas schemas();
+        public ResourceType parent();
+        
+        /**
+         * Access to this catalog's schemas.
+         *
+         */
+        public Schemas<?> schemas();
 
         /**
-         * Public interface for accessing a Catalog's Schemas.
+         * Public interface for accessing a catalog's schemas.
          *
          */
-        public interface Schemas<SchemaType extends DataResource.Schema>
+        public interface Schemas<SchemaType extends DataResource.DataSchema<?>>
             {
 
             /**
-             * Select all the Schemas from the Catalog.
+             * Select all the schemas from the catalog.
              *
              */
             public Iterable<SchemaType> select();
 
             /**
-             * Select a named Schema from the Catalog.
+             * Select a named schema from the catalog.
              *
              */
             public SchemaType select(String name)
             throws NameNotFoundException;
 
             /**
-             * Search for a named Schema from the Catalog.
+             * Search for a named schema from the catalog.
              *
              */
             public SchemaType search(String name);
@@ -141,36 +142,36 @@ extends DataResourceStatus
         }
 
     /**
-     * Public interface for Schema metadata.
+     * Public interface for a schema.
      *
      */
-    public interface Schema<CatalogType extends DataResource.Catalog>
-    extends DataResourceChild<CatalogType>
+    public interface DataSchema<CatalogType extends DataResource.DataCatalog<?>>
+    extends ResourceStatus
         {
 
         /**
-         * Factory interface for creating and selecting Schemas.
+         * Factory interface for creating and selecting schemas.
          *
          */
-        public static interface Factory<CatalogType extends DataResource.Catalog, SchemaType extends DataResource.Schema>
+        public static interface Factory<CatalogType extends DataResource.DataCatalog<?>, SchemaType extends DataResource.DataSchema<?>>
         extends Entity.Factory<SchemaType>
             {
 
             /**
-             * Select all the Schemas from a Catalog.
+             * Select all the schemas from a catalog.
              *
              */
             public Iterable<SchemaType> select(CatalogType parent);
 
             /**
-             * Select a named Schema from a Catalog.
+             * Select a named schema from a catalog.
              *
              */
             public SchemaType select(CatalogType parent, String name)
             throws NameNotFoundException;
 
             /**
-             * Search for a named Schema from a Catalog.
+             * Search for a named schema from a catalog.
              *
              */
             public SchemaType search(CatalogType parent, String name);
@@ -178,33 +179,39 @@ extends DataResourceStatus
             }
 
         /**
-         * Access to this Schema's Tables.
+         * Access to our parent catalog.
          *
          */
-        public Tables tables();
+        public CatalogType parent();
 
         /**
-         * Public interface for accessing a Schema's Tables.
+         * Access to this schema's Tables.
          *
          */
-        public interface Tables<TableType extends DataResource.Table>
+        public Tables<?> tables();
+
+        /**
+         * Public interface for accessing a schema's tables.
+         *
+         */
+        public interface Tables<TableType extends DataResource.DataTable<?>>
             {
 
             /**
-             * Select all the Tables from the Schema.
+             * Select all the tables from the schema.
              *
              */
             public Iterable<TableType> select();
 
             /**
-             * Select a named Table from the Schema.
+             * Select a named table from the schema.
              *
              */
             public TableType select(String name)
             throws NameNotFoundException;
 
             /**
-             * Search for a named Table from the Schema.
+             * Search for a named table from the schema.
              *
              */
             public TableType search(String name);
@@ -213,36 +220,36 @@ extends DataResourceStatus
         }
 
     /**
-     * Public interface for Table metadata.
+     * Public interface for a table.
      *
      */
-    public interface Table<SchemaType extends DataResource.Schema>
-    extends DataResourceChild<SchemaType>
+    public interface DataTable<SchemaType extends DataResource.DataSchema<?>>
+    extends ResourceStatus
         {
 
         /**
-         * Factory interface for creating and selecting Tables.
+         * Factory interface for creating and selecting tables.
          *
          */
-        public static interface Factory<SchemaType extends DataResource.Schema, TableType extends DataResource.Table>
+        public static interface Factory<SchemaType extends DataResource.DataSchema<?>, TableType extends DataResource.DataTable<?>>
         extends Entity.Factory<TableType>
             {
 
             /**
-             * Select all the Tables from a Schema.
+             * Select all the tables from a schema.
              *
              */
             public Iterable<TableType> select(SchemaType parent);
 
             /**
-             * Select a named Table from a Schema.
+             * Select a named table from a schema.
              *
              */
             public TableType select(SchemaType parent, String name)
             throws NameNotFoundException;
 
             /**
-             * Search for a named Table from a Schema.
+             * Search for a named table from a schema.
              *
              */
             public TableType search(SchemaType parent, String name);
@@ -250,33 +257,39 @@ extends DataResourceStatus
             }
 
         /**
-         * Access to this Table's Columns.
+         * Access to our parent schema.
          *
          */
-        public Columns columns();
+        public SchemaType parent();
 
         /**
-         * Public interface for accessing a Table's Columns.
+         * Access to this table's columns.
          *
          */
-        public interface Columns<ColumnType extends DataResource.Column>
+        public Columns<?> columns();
+
+        /**
+         * Public interface for accessing a table's columns.
+         *
+         */
+        public interface Columns<ColumnType extends DataResource.DataColumn<?>>
             {
 
             /**
-             * Select all the Columns from the Table.
+             * Select all the columns from the table.
              *
              */
             public Iterable<ColumnType> select();
 
             /**
-             * Select a named Column from the Table.
+             * Select a named column from the table.
              *
              */
             public ColumnType select(String name)
             throws NameNotFoundException;
 
             /**
-             * Search for a named Column from the Table.
+             * Search for a named column from the table.
              *
              */
             public ColumnType search(String name);
@@ -285,41 +298,48 @@ extends DataResourceStatus
         }
 
     /**
-     * Public interface for Column metadata.
+     * Public interface for a column.
      *
      */
-    public interface Column<TableType extends DataResource.Table>
-    extends DataResourceChild<TableType>
+    public interface DataColumn<TableType extends DataResource.DataTable<?>>
+    extends ResourceStatus
         {
 
         /**
-         * Factory interface for creating and selecting Columns.
+         * Factory interface for creating and selecting columns.
          *
          */
-        public static interface Factory<TableType extends DataResource.Table, ColumnType extends DataResource.Column>
+        public static interface Factory<TableType extends DataResource.DataTable<?>, ColumnType extends DataResource.DataColumn<?>>
         extends Entity.Factory<ColumnType>
             {
 
             /**
-             * Select all the Columns from a Table.
+             * Select all the adqlColumns from a table.
              *
              */
             public Iterable<ColumnType> select(TableType parent);
 
             /**
-             * Select a named Column from a Table.
+             * Select a named column from a table.
              *
              */
             public ColumnType select(TableType parent, String name)
             throws NameNotFoundException;
 
             /**
-             * Search for a named Column from a Table.
+             * Search for a named column from a table.
              *
              */
             public ColumnType search(TableType parent, String name);
 
             }
+
+        /**
+         * Access to our parent table.
+         *
+         */
+        public TableType parent();
+
         }
     }
 

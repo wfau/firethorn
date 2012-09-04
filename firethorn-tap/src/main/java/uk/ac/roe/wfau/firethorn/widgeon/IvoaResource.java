@@ -15,23 +15,30 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon ;
+package uk.ac.roe.wfau.firethorn.widgeon;
+
 
 /**
- * Public interface for a component in a tree of DataResource(s).
- * @deprecated - just add it to the individual interfaces
- * 
+ *
+ *
  */
-public interface DataResourceChild<ParentType extends ResourceStatus>
-extends ResourceStatus
+public interface IvoaResource
+    extends BaseResource
     {
 
     /**
-     * Access to our parent.
-     * @return Our parent component.
+     * Factory interface for creating and selecting resources.
      *
-    public ParentType parent();
      */
-
+    public static interface Factory
+    extends FactoryTemplate<IvoaResource>
+        {
+        /**
+         * Create a new resource.
+         * 
+         */
+        public IvoaResource create(String name);
+        
+        }
 
     }

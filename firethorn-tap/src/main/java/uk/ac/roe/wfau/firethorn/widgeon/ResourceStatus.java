@@ -24,10 +24,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * Public interface for an Entity with a status.
- * Move this to DataResource ?
  *
  */
-public interface DataResourceStatus
+public interface ResourceStatus
 extends Entity
     {
 
@@ -91,6 +90,12 @@ extends Entity
         {
 
         /**
+         * 
+         *
+         */
+        private static final long serialVersionUID = 6595169286734884311L;
+
+        /**
          * Default message for simple constructor.
          *
          */
@@ -109,7 +114,7 @@ extends Entity
          * Create a default message.
          *
          */
-        public static String message(DataResourceStatus.Status status)
+        public static String message(ResourceStatus.Status status)
             {
             return message(
                 status.toString()
@@ -120,7 +125,7 @@ extends Entity
          * Public constructor, using default message.
          *
          */
-        public InvalidStatusException(DataResourceStatus.Status status)
+        public InvalidStatusException(ResourceStatus.Status status)
             {
             this(
                 status,
@@ -134,7 +139,7 @@ extends Entity
          * Public constructor, with specific message.
          *
          */
-        public InvalidStatusException(DataResourceStatus.Status status, String message)
+        public InvalidStatusException(ResourceStatus.Status status, String message)
             {
             super(
                 message
@@ -142,9 +147,9 @@ extends Entity
             this.status = status ;
             }
 
-        private DataResourceStatus.Status status;
+        private ResourceStatus.Status status;
 
-        public DataResourceStatus.Status status()
+        public ResourceStatus.Status status()
             {
             return this.status;
             }
