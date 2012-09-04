@@ -66,8 +66,8 @@ public class DataResourceController
         //
         // Try locating the resource.
         try {
-            final DataResource resource = womble().resources().select(
-                womble().resources().ident(
+            final DataResource resource = womble().resources().base().select(
+                womble().resources().base().ident(
                     ident
                     )
                 );

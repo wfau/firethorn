@@ -45,6 +45,10 @@ DataResource resource = (DataResource) request.getAttribute(
                         <td>Owner</td>
                         <td><%= resource.owner().name() %></td>
                     </tr>
+                    <tr>
+                        <td>Type</td>
+                        <td><%= resource.getClass().getName() %></td>
+                    </tr>
                 </table>
             </div>
         </div>

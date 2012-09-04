@@ -17,30 +17,22 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.widgeon;
 
-import java.net.URI;
-
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.stereotype.Controller;
-
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.context.request.WebRequest;
-
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
+import uk.ac.roe.wfau.firethorn.webapp.control.LocationHeaders;
 import uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder;
 import uk.ac.roe.wfau.firethorn.webapp.control.SpringPathBuilder;
-import uk.ac.roe.wfau.firethorn.webapp.control.LocationHeaders;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceBase;
-
-import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.mallard.DataService ;
+import uk.ac.roe.wfau.firethorn.widgeon.BaseResource;
 
 /**
  * Spring MVC controller for AdqlServices.
@@ -117,7 +109,7 @@ extends ControllerBase
 	    ){
         log.debug("select()");
 
-        final Iterable<DataResourceBase> resources = womble().resources().select();
+        final Iterable<BaseResource> resources = womble().resources().base().select();
 
 		model.addObject(
 		    SELECT_RESULT,
@@ -144,7 +136,7 @@ extends ControllerBase
 	    ){
         log.debug("select(String name)");
 
-        final Iterable<DataResourceBase> resources = womble().resources().select(
+        final Iterable<BaseResource> resources = womble().resources().base().select(
             name
             );
 
@@ -198,7 +190,7 @@ extends ControllerBase
 	    ){
         log.debug("search(String text)");
 
-        final Iterable<DataResourceBase> resources = womble().resources().search(
+        final Iterable<BaseResource> resources = womble().resources().base().search(
             text
             );
 
@@ -254,7 +246,7 @@ extends ControllerBase
 
         //
         // Try creating the resource.
-        final DataResource resource = womble().resources().create(
+        final BaseResource resource = womble().resources().jdbc().create(
             name
             );
 
