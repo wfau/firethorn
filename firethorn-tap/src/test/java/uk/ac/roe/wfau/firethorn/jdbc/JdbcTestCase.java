@@ -17,6 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.jdbc;
 
+import java.io.FileInputStream;
+import java.sql.Connection;
+
 import javax.sql.DataSource;
 
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +30,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
+import uk.ac.roe.wfau.firethorn.votable.VOTableStarTableParser;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.JdbcCatalog;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.JdbcColumn;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.JdbcTable;
+import uk.ac.starlink.table.ColumnInfo;
+import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.table.jdbc.JDBCFormatter;
+import uk.ac.starlink.table.jdbc.WriteMode;
+import uk.ac.starlink.table.jdbc.JDBCFormatter.SqlColumn;
 
 /**
  *
@@ -51,19 +64,77 @@ extends TestBase
     public void testOne()
     throws Exception
         {
-        DataSource source = (DataSource) spring.getBean("TestData");
-        
+        String catname = "Francis"  ;
+        String schname = "Albert"   ;
+        String tabname = "Augustus" ;
+        //
+        // Connect to the test database.
+        DataSource source = (DataSource) spring.getBean("MemData");
+        Connection connection = source.getConnection();
+
+        connection.createStatement().executeUpdate(
+            "CREATE SCHEMA " + schname + " AUTHORIZATION DBA ;"
+            );
+        connection.createStatement().executeUpdate(
+            "SET SCHEMA " + schname + " ;"
+            );
+
+        //
+        // Load test data from file.
+        Iterable<StarTable> iter = VOTableStarTableParser.iterable(
+            new FileInputStream(
+                "src/test/data/votable/random/random-10.xml"
+                )
+            ); 
+        //
+        // Extract the first table.
+        StarTable stars = iter.iterator().next();
+        //
+        // Alter the column names (if required). 
+        stars.getColumnInfo(0).setName("one");
+        stars.getColumnInfo(1).setName("two");
+        //
+        // Wrap the table in a JDBCFormatter. 
+        JDBCFormatter formatter = new JDBCFormatter(
+            connection,
+            stars
+            );
+        //
+        // Write the data to the database. 
+        formatter.createJDBCTable(
+            tabname,
+            WriteMode.DROP_CREATE
+            );
+        //
+        // Create an empty resource tree.
         resource = womble().resources().jdbc().create(
             this.unique(
                 "base"
                 ),
             source
             );
-
-        log.debug("Runing diff ... ");
-
-        resource.diff(true);        
-        
+        //
+        // Pull the metadata from the database
+        resource.diff(
+            true
+            );        
+        //
+        // Verify we got what we expected.
+        for (JdbcCatalog catalog : resource.catalogs().select())
+            {
+            log.debug("- Catalog [{}]", catalog.name());
+            for (JdbcSchema schema : catalog.schemas().select())
+                {
+                log.debug("-- Schema [{}]", schema.name());
+                for (JdbcTable table : schema.tables().select())
+                    {
+                    log.debug("--- Table [{}]", table.name());
+                    for (JdbcColumn column : table.columns().select())
+                        {
+                        log.debug("---- Column [{}]", column.name());
+                        }
+                    }
+                }
+            }
         }
-    
     }

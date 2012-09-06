@@ -61,19 +61,19 @@
                 <value>uk.ac.roe.wfau.firethorn.mallard.DataServiceEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.mallard.JobEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.base.BaseResourceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcResourceEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcCatalogEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcSchemaEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcTableEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcColumnEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalogEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchemaEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTableEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcColumnEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.adql.AdqlResourceEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.adql.AdqlCatalogEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.adql.AdqlSchemaEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.adql.AdqlTableEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.entity.adql.AdqlColumnEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResourceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlCatalogEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlSchemaEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumnEntity</value>
 
                 <!--+
                     |
