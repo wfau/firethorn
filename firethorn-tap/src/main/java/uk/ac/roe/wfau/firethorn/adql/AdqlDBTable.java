@@ -22,7 +22,7 @@ import adql.db.DBColumn;
 
 import java.util.Iterator;
 
-import uk.ac.roe.wfau.firethorn.widgeon.AdqlResource;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 
 
 /**

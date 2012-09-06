@@ -28,9 +28,9 @@ import static org.junit.Assert.*;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
-import uk.ac.roe.wfau.firethorn.widgeon.AdqlResource;
-import uk.ac.roe.wfau.firethorn.widgeon.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.*;

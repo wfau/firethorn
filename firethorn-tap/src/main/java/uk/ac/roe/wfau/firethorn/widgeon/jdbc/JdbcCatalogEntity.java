@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc ;
+package uk.ac.roe.wfau.firethorn.widgeon.jdbc ;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -36,7 +36,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
-import org.hibernate.metamodel.relational.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -46,14 +45,14 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.widgeon.AdqlResource;
-import uk.ac.roe.wfau.firethorn.widgeon.BaseResource;
-import uk.ac.roe.wfau.firethorn.widgeon.JdbcResource;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatus.Status;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.JdbcCatalog;
 
 /**
- * BaseResource.BaseTable implementation.
+ * BaseResource.BaseCatalog implementation.
  *
  */
 @Slf4j
@@ -62,40 +61,41 @@ import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatus.Status;
     AccessType.FIELD
     )
 @Table(
-    name = JdbcTableEntity.DB_TABLE_NAME,
-    uniqueConstraints=
+    name = JdbcCatalogEntity.DB_TABLE_NAME,
+    uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
-                JdbcTableEntity.DB_PARENT_COL,
+                JdbcCatalogEntity.DB_PARENT_COL,
                 }
             )
+        }
     )
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "jdbc.table-select-parent",
-            query = "FROM JdbcTableEntity WHERE parent = :parent ORDER BY ident desc"
+            name  = "jdbc.catalog-select-parent",
+            query = "FROM JdbcCatalogEntity WHERE (parent = :parent) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "jdbc.table-select-parent.name",
-            query = "FROM JdbcTableEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
+            name  = "jdbc.catalog-select-parent.name",
+            query = "FROM JdbcCatalogEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
             )
         }
     )
-public class JdbcTableEntity
+public class JdbcCatalogEntity
 extends ResourceStatusEntity
-implements JdbcResource.JdbcTable
+implements JdbcResource.JdbcCatalog
     {
 
     /**
      * Our persistence table name.
      * 
      */
-    public static final String DB_TABLE_NAME = "jdbc_table" ;
+    public static final String DB_TABLE_NAME = "jdbc_catalog" ;
 
     /**
-     * The persistence column name for our parent schema.
+     * The persistence column name for our parent resource.
      * 
      */
     public static final String DB_PARENT_COL = "parent" ;
@@ -106,27 +106,27 @@ implements JdbcResource.JdbcTable
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<JdbcResource.JdbcTable>
-    implements JdbcResource.JdbcTable.Factory
+    extends AbstractFactory<JdbcResource.JdbcCatalog>
+    implements JdbcResource.JdbcCatalog.Factory
         {
 
         @Override
         public Class<?> etype()
             {
-            return JdbcTableEntity.class ;
+            return JdbcCatalogEntity.class ;
             }
 
         /**
-         * Insert a table into the database and update all the parent views.
+         * Insert a catalog into the database and update all the views of the parent resource.
          *
          */
         @CascadeEntityMethod
-        protected JdbcResource.JdbcTable insert(final JdbcTableEntity entity)
+        protected JdbcResource.JdbcCatalog insert(final JdbcCatalogEntity entity)
             {
             super.insert(
                 entity
                 );
-            for (AdqlResource.AdqlSchema view : entity.parent().views().select())
+            for (AdqlResource view : entity.parent().views().select())
                 {
                 this.views().cascade(
                     view,
@@ -138,10 +138,10 @@ implements JdbcResource.JdbcTable
 
         @Override
         @CreateEntityMethod
-        public JdbcResource.JdbcTable create(final JdbcResource.JdbcSchema parent, final String name)
+        public JdbcResource.JdbcCatalog create(final JdbcResource parent, final String name)
             {
             return this.insert(
-                new JdbcTableEntity(
+                new JdbcCatalogEntity(
                     parent,
                     name
                     )
@@ -150,11 +150,11 @@ implements JdbcResource.JdbcTable
 
         @Override
         @SelectEntityMethod
-        public Iterable<JdbcResource.JdbcTable> select(final JdbcResource.JdbcSchema parent)
+        public Iterable<JdbcResource.JdbcCatalog> select(final JdbcResource parent)
             {
             return super.iterable(
                 super.query(
-                    "jdbc.table-select-parent"
+                    "jdbc.catalog-select-parent"
                     ).setEntity(
                         "parent",
                         parent
@@ -164,10 +164,10 @@ implements JdbcResource.JdbcTable
 
         @Override
         @SelectEntityMethod
-        public JdbcResource.JdbcTable select(final JdbcResource.JdbcSchema parent, final String name)
+        public JdbcResource.JdbcCatalog select(final JdbcResource parent, final String name)
         throws NameNotFoundException
             {
-            JdbcResource.JdbcTable result = this.search(
+            JdbcResource.JdbcCatalog result = this.search(
                 parent,
                 name
                 );
@@ -181,14 +181,14 @@ implements JdbcResource.JdbcTable
                     );
                 }
             }
- 
+
         @Override
         @SelectEntityMethod
-        public JdbcResource.JdbcTable search(final JdbcResource.JdbcSchema parent, final String name)
+        public JdbcResource.JdbcCatalog search(final JdbcResource parent, final String name)
             {
             return super.first(
                 super.query(
-                    "jdbc.table-select-parent.name"
+                    "jdbc.catalog-select-parent.name"
                     ).setEntity(
                         "parent",
                         parent
@@ -204,91 +204,91 @@ implements JdbcResource.JdbcTable
          * 
          */
         @Autowired
-        protected AdqlResource.AdqlTable.Factory views ;
+        protected AdqlResource.AdqlCatalog.Factory views ;
 
         @Override
-        public AdqlResource.AdqlTable.Factory views()
+        public AdqlResource.AdqlCatalog.Factory views()
             {
             return this.views ;
             }
 
         /**
-         * Our Autowired column factory.
+         * Our Autowired schema factory.
          * 
          */
         @Autowired
-        protected JdbcResource.JdbcColumn.Factory columns ;
+        protected JdbcResource.JdbcSchema.Factory schemas ;
 
         @Override
-        public JdbcResource.JdbcColumn.Factory columns()
+        public JdbcResource.JdbcSchema.Factory schemas()
             {
-            return this.columns ;
+            return this.schemas ;
             }
         }
 
     @Override
-    public BaseResource.BaseTable.Views views()
+    public JdbcResource.JdbcCatalog.Views views()
         {
-        return new BaseResource.BaseTable.Views()
+        return new JdbcResource.JdbcCatalog.Views()
             {
             @Override
-            public Iterable<AdqlResource.AdqlTable> select()
+            public Iterable<AdqlResource.AdqlCatalog> select()
                 {
-                return womble().resources().jdbc().views().catalogs().schemas().tables().select(
-                    JdbcTableEntity.this
+                return womble().resources().jdbc().views().catalogs().select(
+                    JdbcCatalogEntity.this
                     );
                 }
 
             @Override
-            public AdqlResource.AdqlTable search(AdqlResource.AdqlSchema parent)
+            public AdqlResource.AdqlCatalog search(AdqlResource parent)
                 {
-                return womble().resources().jdbc().views().catalogs().schemas().tables().search(
+                return womble().resources().jdbc().views().catalogs().search(
                     parent,
-                    JdbcTableEntity.this
+                    JdbcCatalogEntity.this
                     );
                 }
             };
         }
 
     @Override
-    public JdbcResource.JdbcTable.Columns columns()
+    public JdbcResource.JdbcCatalog.Schemas schemas()
         {
-        return new JdbcResource.JdbcTable.Columns()
+        return new JdbcResource.JdbcCatalog.Schemas()
             {
             @Override
-            public JdbcResource.JdbcColumn create(String name)
+            public JdbcResource.JdbcSchema create(String name)
                 {
-                return womble().resources().jdbc().catalogs().schemas().tables().columns().create(
-                    JdbcTableEntity.this,
+                return womble().resources().jdbc().catalogs().schemas().create(
+                    JdbcCatalogEntity.this,
                     name
                     );
                 }
 
             @Override
-            public Iterable<JdbcResource.JdbcColumn> select()
+            public Iterable<JdbcResource.JdbcSchema> select()
                 {
-                return womble().resources().jdbc().catalogs().schemas().tables().columns().select(
-                    JdbcTableEntity.this
-                    ) ;
+                return womble().resources().jdbc().catalogs().schemas().select(
+                    JdbcCatalogEntity.this
+                    );
                 }
 
             @Override
-            public JdbcResource.JdbcColumn select(String name)
+            public JdbcResource.JdbcSchema select(String name)
             throws NameNotFoundException
                 {
-                return womble().resources().jdbc().catalogs().schemas().tables().columns().select(
-                    JdbcTableEntity.this,
+                return womble().resources().jdbc().catalogs().schemas().select(
+                    JdbcCatalogEntity.this,
                     name
-                    ) ;
+                    );
                 }
 
             @Override
-            public JdbcResource.JdbcColumn search(String name)
+            public JdbcResource.JdbcSchema search(String name)
                 {
-                return womble().resources().jdbc().catalogs().schemas().tables().columns().search(
-                    JdbcTableEntity.this,
+                return womble().resources().jdbc().catalogs().schemas().search(
+                    JdbcCatalogEntity.this,
                     name
-                    ) ;
+                    );
                 }
 
             @Override
@@ -303,53 +303,52 @@ implements JdbcResource.JdbcTable
             @Override
             public void diff(DatabaseMetaData metadata, boolean pull)
                 {
-                log.debug("Comparing columns for table [{}]", name());
+                log.debug("Comparing schema for catalog [{}]", name());
                 try {
                     //
-                    // Scan the DatabaseMetaData for columns.
-                    ResultSet columns = metadata.getColumns(
-                        catalog().name(),
-                        schema().name(),
+                    // Scan the DatabaseMetaData for schema.
+                    ResultSet schemas = metadata.getSchemas(
                         name(),
                         null
                         );
 
-                    Map<String, JdbcResource.JdbcColumn> found = new HashMap<String, JdbcResource.JdbcColumn>();
-                    while (columns.next())
+                    Map<String, JdbcResource.JdbcSchema> found = new HashMap<String, JdbcResource.JdbcSchema>();
+                    while (schemas.next())
                         {
-                        String name = columns.getString(JdbcResource.JDBC_META_COLUMN_NAME);
-                        String type = columns.getString(JdbcResource.JDBC_META_COLUMN_TYPE_NAME);
-                        log.debug("Checking database column [{}][{}]", name, type);
+                        String name = schemas.getString(
+                            JdbcResource.JDBC_META_TABLE_SCHEM
+                            );
+                        log.debug("Checking database schema [{}]", name);
     
-                        JdbcResource.JdbcColumn column = this.search(
+                        JdbcResource.JdbcSchema schema = this.search(
                             name
                             );
-                        if (column == null)
+                        if (schema == null)
                             {
-                            log.debug("Database column[{}] is not registered", name);
+                            log.debug("Database schema [{}] is not registered", name);
                             if (pull)
                                 {
-                                log.debug("Registering missing column[{}]", name);
-                                column= this.create(
+                                log.debug("Registering missing schema [{}]", name);
+                                schema = this.create(
                                     name
                                     );
                                 }
                             }
                         found.put(
                             name,
-                            column
+                            schema
                             );
                         }
                     //
                     // Scan our own list of schema.
-                    for (JdbcResource.JdbcColumn column : select())
+                    for (JdbcResource.JdbcSchema schema : select())
                         {
-                        log.debug("Checking registered column[{}]", column.name());
-                        JdbcResource.JdbcColumn match = found.get(
-                            column.name()
+                        log.debug("Checking registered schema [{}]", schema.name());
+                        JdbcResource.JdbcSchema match = found.get(
+                            schema.name()
                             );
                         //
-                        // If we found a match, scan the column.
+                        // If we found a match, scan the schema.
                         if (match != null)
                             {
                             match.diff(
@@ -360,11 +359,11 @@ implements JdbcResource.JdbcTable
                         //
                         // If we didn't find a match, disable our entry.
                         else {
-                            log.debug("Registered column [{}] is not in database", column.name());
+                            log.debug("Registered schema [{}] is not in database", schema.name());
                             if (pull)
                                 {
-                                log.debug("Disabling registered column [{}]", column.name());
-                                column.status(
+                                log.debug("Disabling registered schema [{}]", schema.name());
+                                schema.status(
                                     Status.MISSING
                                     );
                                 }
@@ -384,7 +383,7 @@ implements JdbcResource.JdbcTable
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected JdbcTableEntity()
+    protected JdbcCatalogEntity()
         {
         super();
         }
@@ -393,7 +392,7 @@ implements JdbcResource.JdbcTable
      * Create a new catalog.
      *
      */
-    protected JdbcTableEntity(final JdbcResource.JdbcSchema parent, final String name)
+    protected JdbcCatalogEntity(final JdbcResource parent, final String name)
         {
         super(name);
         log.debug("new([{}]", name);
@@ -401,12 +400,12 @@ implements JdbcResource.JdbcTable
         }
 
     /**
-     * Our parent column.
+     * Our parent resource.
      *
      */
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = JdbcSchemaEntity.class
+        targetEntity = JdbcResourceEntity.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,
@@ -414,10 +413,10 @@ implements JdbcResource.JdbcTable
         nullable = false,
         updatable = false
         )
-    private JdbcResource.JdbcSchema parent ;
+    private JdbcResource parent ;
 
     @Override
-    public JdbcResource.JdbcSchema parent()
+    public JdbcResource parent()
         {
         return this.parent ;
         }
@@ -425,7 +424,7 @@ implements JdbcResource.JdbcTable
     @Override
     public Status status()
         {
-        if (this.parent().status() == Status.ENABLED)
+        if (this.parent().status() == DataResource.Status.ENABLED)
             {
             return super.status();
             }
@@ -436,18 +435,6 @@ implements JdbcResource.JdbcTable
 
     @Override
     public JdbcResource resource()
-        {
-        return this.parent.catalog().resource();
-        }
-
-    @Override
-    public JdbcResource.JdbcCatalog catalog()
-        {
-        return this.parent.catalog();
-        }
-
-    @Override
-    public JdbcResource.JdbcSchema schema()
         {
         return this.parent;
         }
@@ -465,12 +452,11 @@ implements JdbcResource.JdbcTable
     public void diff(DatabaseMetaData metadata, boolean pull)
         {
         //
-        // Check this table.
+        // Check this catalog.
         // ....
-
         //
-        // Check our columns.
-        this.columns().diff(
+        // Check our schemas.
+        this.schemas().diff(
             metadata,
             pull
             );

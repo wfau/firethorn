@@ -15,10 +15,21 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon ;
+package uk.ac.roe.wfau.firethorn.widgeon.base ;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource.Catalogs;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataCatalog;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataColumn;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataTable;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataCatalog.Schemas;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataColumn.Factory;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataSchema.Tables;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataTable.Columns;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 
 /**
  * Public interface for a physical resource, describing a real data resource (JDBC database OR TAP service).

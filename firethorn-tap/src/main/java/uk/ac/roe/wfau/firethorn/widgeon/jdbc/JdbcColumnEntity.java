@@ -15,7 +15,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.entity.adql ;
+package uk.ac.roe.wfau.firethorn.widgeon.jdbc ;
+
+import java.sql.DatabaseMetaData;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -39,14 +41,11 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.widgeon.AdqlResource;
-import uk.ac.roe.wfau.firethorn.widgeon.BaseResource;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcResourceEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 
 /**
- * AdqlResource implementations.
+ * BaseResource.BaseColumn implementation.
  *
  */
 @Slf4j
@@ -55,44 +54,43 @@ import uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc.JdbcResourceEntity;
     AccessType.FIELD
     )
 @Table(
-    name = AdqlResourceEntity.DB_TABLE_NAME,
-    uniqueConstraints={
+    name = JdbcColumnEntity.DB_TABLE_NAME,
+    uniqueConstraints=
         @UniqueConstraint(
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
-                AdqlResourceEntity.DB_BASE_COL
+                JdbcColumnEntity.DB_PARENT_COL,
                 }
             )
-        }
     )
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "adql.resource-select-base",
-            query = "FROM AdqlResourceEntity WHERE (base = :base) ORDER BY ident desc"
+            name  = "jdbc.column-select-parent",
+            query = "FROM JdbcColumnEntity WHERE parent = :parent ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "adql.resource-select-base.name",
-            query = "FROM AdqlResourceEntity WHERE ((base = :base) AND (name = :name)) ORDER BY ident desc"
+            name  = "jdbc.column-select-parent.name",
+            query = "FROM JdbcColumnEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
             )
         }
     )
-public class AdqlResourceEntity
+public class JdbcColumnEntity
 extends ResourceStatusEntity
-implements AdqlResource
+implements JdbcResource.JdbcColumn
     {
 
     /**
      * Our persistence table name.
      * 
      */
-    public static final String DB_TABLE_NAME = "adql_resource" ;
+    public static final String DB_TABLE_NAME = "jdbc_column" ;
 
     /**
-     * The persistence column name for our base DataResource.
+     * The persistence column name for our parent table.
      * 
      */
-    public static final String DB_BASE_COL = "base" ;
+    public static final String DB_PARENT_COL = "parent" ;
 
     /**
      * Our Entity Factory implementation.
@@ -100,31 +98,31 @@ implements AdqlResource
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<AdqlResource>
-    implements AdqlResource.Factory
+    extends AbstractFactory<JdbcResource.JdbcColumn>
+    implements JdbcResource.JdbcColumn.Factory
         {
 
         @Override
         public Class<?> etype()
             {
-            return AdqlResourceEntity.class ;
+            return JdbcColumnEntity.class ;
             }
 
         /**
-         * Insert a View into the database and create views for each child.
+         * Insert a column into the database and update all the parent table views.
          *
          */
         @CascadeEntityMethod
-        protected AdqlResource insert(AdqlResourceEntity entity)
+        protected JdbcResource.JdbcColumn insert(final JdbcColumnEntity entity)
             {
             super.insert(
                 entity
                 );
-            for (BaseResource.BaseCatalog<?> catalog : entity.base().catalogs().select())
+            for (AdqlResource.AdqlTable view : entity.parent().views().select())
                 {
-                this.catalogs().cascade(
-                    entity,
-                    catalog
+                this.views().cascade(
+                    view,
+                    entity
                     );
                 }
             return entity ;
@@ -132,11 +130,11 @@ implements AdqlResource
 
         @Override
         @CreateEntityMethod
-        public AdqlResource create(final BaseResource base, final String name)
+        public JdbcResource.JdbcColumn create(final JdbcResource.JdbcTable parent, final String name)
             {
             return this.insert(
-                new AdqlResourceEntity(
-                    base,
+                new JdbcColumnEntity(
+                    parent,
                     name
                     )
                 );
@@ -144,25 +142,25 @@ implements AdqlResource
 
         @Override
         @SelectEntityMethod
-        public Iterable<AdqlResource> select(final BaseResource base)
+        public Iterable<JdbcResource.JdbcColumn> select(final JdbcResource.JdbcTable parent)
             {
             return super.iterable(
                 super.query(
-                    "adql.resource-select-base"
+                    "jdbc.column-select-parent"
                     ).setEntity(
-                        "base",
-                        base
-                    )
+                        "parent",
+                        parent
+                        )
                 );
             }
 
         @Override
         @SelectEntityMethod
-        public AdqlResource select(final BaseResource base, final String name)
+        public JdbcResource.JdbcColumn select(final JdbcResource.JdbcTable parent, final String name)
         throws NameNotFoundException
             {
-            AdqlResource result = this.search(
-                base,
+            JdbcResource.JdbcColumn result = this.search(
+                parent,
                 name
                 );
             if (result != null)
@@ -178,14 +176,14 @@ implements AdqlResource
 
         @Override
         @SelectEntityMethod
-        public AdqlResource search(final BaseResource base, final String name)
+        public JdbcResource.JdbcColumn search(final JdbcResource.JdbcTable parent, final String name)
             {
             return super.first(
                 super.query(
-                    "adql.resource-select-base.name"
+                    "jdbc.column-select-parent.name"
                     ).setEntity(
-                        "base",
-                        base
+                        "parent",
+                        parent
                     ).setString(
                         "name",
                         name
@@ -194,49 +192,39 @@ implements AdqlResource
             }
 
         /**
-         * Our Autowired catalog factory.
+         * Our Autowired view factory.
          * 
          */
         @Autowired
-        protected AdqlResource.AdqlCatalog.Factory catalogs ;
+        protected AdqlResource.AdqlColumn.Factory views ;
 
         @Override
-        public AdqlResource.AdqlCatalog.Factory catalogs()
+        public AdqlResource.AdqlColumn.Factory views()
             {
-            return catalogs ;
+            return this.views ;
             }
         }
 
     @Override
-    public AdqlResource.Catalogs catalogs()
+    public JdbcResource.JdbcColumn.Views views()
         {
-        return new AdqlResource.Catalogs()
+        return new JdbcResource.JdbcColumn.Views()
             {
             @Override
-            public Iterable<AdqlResource.AdqlCatalog> select()
+            public Iterable<AdqlResource.AdqlColumn> select()
                 {
-                return womble().resources().base().views().catalogs().select(
-                    AdqlResourceEntity.this
-                    ) ;
+                return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().select(
+                    JdbcColumnEntity.this
+                    );
                 }
 
             @Override
-            public AdqlResource.AdqlCatalog select(final String name)
-            throws NameNotFoundException
+            public AdqlResource.AdqlColumn search(AdqlResource.AdqlTable parent)
                 {
-                return womble().resources().base().views().catalogs().select(
-                    AdqlResourceEntity.this,
-                    name
-                    ) ;
-                }
-
-            @Override
-            public AdqlResource.AdqlCatalog search(final String name)
-                {
-                return womble().resources().base().views().catalogs().search(
-                    AdqlResourceEntity.this,
-                    name
-                    ) ;
+                return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().search(
+                    parent,
+                    JdbcColumnEntity.this
+                    );
                 }
             };
         }
@@ -246,80 +234,95 @@ implements AdqlResource
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected AdqlResourceEntity()
+    protected JdbcColumnEntity()
         {
         super();
         }
 
     /**
-     * Create a new view of a resource.
-     *
-    private AdqlResourceEntity(final BaseResource base)
-        {
-        this(
-            base,
-            null
-            );
-        }
-     */
-
-    /**
-     * Create a new view of a resource.
+     * Create a new catalog.
      *
      */
-    private AdqlResourceEntity(final BaseResource base, final String name)
+    protected JdbcColumnEntity(final JdbcResource.JdbcTable parent, final String name)
         {
-        super(
-            name
-            );
+        super(name);
         log.debug("new([{}]", name);
-        this.base = base ;
+        this.parent = parent ;
         }
 
     /**
-     * Our underlying base resource.
+     * Our parent column.
      *
      */
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = JdbcResourceEntity.class
+        targetEntity = JdbcTableEntity.class
         )
     @JoinColumn(
-        name = DB_BASE_COL,
+        name = DB_PARENT_COL,
         unique = false,
         nullable = false,
         updatable = false
         )
-    private BaseResource base ;
+    private JdbcResource.JdbcTable parent ;
 
     @Override
-    public BaseResource base()
+    public JdbcResource.JdbcTable parent()
         {
-        return this.base ;
+        return this.parent ;
         }
 
     @Override
-    public String name()
+    public Status status()
         {
-        if (this.name != null)
-            {
-            return this.name ;
-            }
-        else {
-            return base.name() ;
-            }
-        }
-
-    @Override
-    public DataResource.Status status()
-        {
-        if (this.base().status() == DataResource.Status.ENABLED)
+        if (this.parent().status() == Status.ENABLED)
             {
             return super.status();
             }
         else {
-            return this.base().status();
+            return this.parent().status();
             }
+        }
+
+    @Override
+    public JdbcResource resource()
+        {
+        return this.parent.schema().catalog().resource();
+        }
+
+    @Override
+    public JdbcResource.JdbcCatalog catalog()
+        {
+        return this.parent.schema().catalog();
+        }
+
+    @Override
+    public JdbcResource.JdbcSchema schema()
+        {
+        return this.parent.schema();
+        }
+
+    @Override
+    public JdbcResource.JdbcTable table()
+        {
+        return this.parent;
+        }
+
+    @Override
+    public void diff(boolean pull)
+        {
+        diff(
+            resource().metadata(),
+            pull
+            );
+        }
+
+    @Override
+    public void diff(DatabaseMetaData metadata, boolean pull)
+        {
+        //
+        // Check this column.
+        // ....
         }
     }
 

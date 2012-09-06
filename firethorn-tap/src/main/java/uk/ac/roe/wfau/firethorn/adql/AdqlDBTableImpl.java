@@ -21,7 +21,7 @@ import java.util.Iterator;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.widgeon.AdqlResource;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 
 import adql.db.DBColumn;
 import adql.db.DBTable;

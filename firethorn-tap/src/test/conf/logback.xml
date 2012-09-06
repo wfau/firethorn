@@ -89,6 +89,14 @@
 	</logger>
 
 	<!--+
+	    | StarLink VOTable parser.
+	    +-->
+	<logger name="uk.ac.starlink">
+		<level value="INFO" />
+	</logger>
+
+
+	<!--+
 	    | Root logger.
 	    +-->
 	<root>

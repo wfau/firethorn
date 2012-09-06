@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.widgeon.JdbcResource;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
  *

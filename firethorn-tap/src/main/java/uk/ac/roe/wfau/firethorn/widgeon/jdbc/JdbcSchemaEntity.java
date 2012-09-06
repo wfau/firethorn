@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc ;
+package uk.ac.roe.wfau.firethorn.widgeon.jdbc ;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -45,10 +45,9 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.widgeon.AdqlResource;
-import uk.ac.roe.wfau.firethorn.widgeon.JdbcResource;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatus.Status;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 
 /**
  * BaseResource.BaseSchema implementation.

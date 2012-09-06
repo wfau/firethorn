@@ -15,12 +15,24 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon;
+package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 
 import javax.sql.DataSource;
+
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.BaseCatalog;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.BaseColumn;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.BaseSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.BaseTable;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.Catalogs;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.FactoryTemplate;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.BaseCatalog.Schemas;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.BaseSchema.Tables;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.BaseTable.Columns;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.BaseTable.Factory;
 
 
 /**

@@ -144,6 +144,7 @@ extends JdbcResourceTestBase
                 WriteMode.DROP_CREATE
                 );
 
+            // HSQLDB specific 'save to disc' command.
             connection.createStatement().execute("SHUTDOWN;");
             connection.close();
 
