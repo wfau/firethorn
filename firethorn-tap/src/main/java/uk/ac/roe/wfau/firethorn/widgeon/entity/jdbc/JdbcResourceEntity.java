@@ -17,10 +17,20 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc ;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.management.RuntimeErrorException;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
+import javax.sql.DataSource;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -138,7 +148,20 @@ implements JdbcResource
             {
             return super.insert(
                 new JdbcResourceEntity(
-                    name
+                    name,
+                    null
+                    )
+                );
+            }
+
+        @Override
+        @CreateEntityMethod
+        public JdbcResource create(final String name, DataSource source)
+            {
+            return super.insert(
+                new JdbcResourceEntity(
+                    name,
+                    source
                     )
                 );
             }
@@ -169,6 +192,7 @@ implements JdbcResource
             return this.catalogs ;
             }
         }
+  
 
     @Override
     public JdbcResource.Catalogs catalogs()
@@ -210,6 +234,87 @@ implements JdbcResource
                     name
                     );
                 }
+
+            @Override
+            public void diff(boolean pull)
+                {
+                diff(
+                    metadata(),
+                    pull
+                    );
+                }
+
+            @Override
+            public void diff(DatabaseMetaData metadata, boolean pull)
+                {
+                log.debug("Comparing catalogs for resource [{}]", name());
+                try {
+                    //
+                    // Scan the DatabaseMetaData for catalogs.
+                    ResultSet catalogs = metadata.getCatalogs();
+                    Map<String, JdbcResource.JdbcCatalog> found = new HashMap<String, JdbcResource.JdbcCatalog>();
+                    while (catalogs.next())
+                        {
+                        String name = catalogs.getString(
+                            JdbcResource.JDBC_META_TABLE_CAT
+                            );
+                        log.debug("Checking database catalog [{}]", name);
+    
+                        JdbcCatalog catalog = this.search(
+                            name
+                            );
+                        if (catalog == null)
+                            {
+                            log.debug("Database catalog [{}] is not registered", name);
+                            if (pull)
+                                {
+                                log.debug("Registering missing catalog [{}]", name);
+                                catalog = this.create(
+                                    name
+                                    );
+                                }
+                            }
+                        found.put(
+                            name,
+                            catalog
+                            );
+                        }
+                    //
+                    // Scan our own list of catalogs.
+                    for (JdbcResource.JdbcCatalog catalog : select())
+                        {
+                        log.debug("Checking registered catalog [{}]", catalog.name());
+                        JdbcResource.JdbcCatalog match = found.get(
+                            catalog.name()
+                            );
+                        //
+                        // If we found a match, scan the catalog.
+                        if (match != null)
+                            {
+                            match.diff(
+                                metadata,
+                                pull
+                                );
+                            }
+                        //
+                        // If we didn't find a match, disable our entry.
+                        else {
+                            log.debug("Registered catalog [{}] is not in database", catalog.name());
+                            if (pull)
+                                {
+                                log.debug("Disabling registered catalog [{}]", catalog.name());
+                                catalog.status(
+                                    Status.MISSING
+                                    );
+                                }
+                            }
+                        }
+                    }
+                catch (SQLException ouch)
+                    {
+                    log.error("Error processing JDBC catalogs", ouch);
+                    }
+                }
             };
         }
 
@@ -227,10 +332,140 @@ implements JdbcResource
      * Create a new resource.
      *
      */
-    private JdbcResourceEntity(final String name)
+    private JdbcResourceEntity(final String name, DataSource source)
         {
         super(name);
         log.debug("new([{}]", name);
+        this.source = source ;
+        }
+
+    @Transient
+    private DataSource source ;
+
+    @Override
+    public DataSource source()
+        {
+        return this.source ;
+        }
+    
+    @Override
+    public Connection connect()
+        {
+        try {
+            return source.getConnection() ;
+            }
+        catch (SQLException ouch)
+            {
+            log.error("Error connecting to database", ouch);
+            throw new RuntimeException(
+                ouch
+                );
+            }
+        }
+
+    @Override
+    public DatabaseMetaData metadata()
+        {
+        try {
+            return connect().getMetaData();
+            }
+        catch (SQLException ouch)
+            {
+            log.error("Error fetching database metadata", ouch);
+            throw new RuntimeException(
+                ouch
+                );
+            }
+        }
+
+    @Override
+    public void diff(boolean pull)
+        {
+        diff(
+            metadata(),
+            pull
+            );
+        }
+
+    @Override
+    public void diff(DatabaseMetaData metadata, boolean pull)
+        {
+        log.debug("Comparing resource [{}]", name());
+        //
+        // Check this resource.
+        // ....
+        //
+        // Check our catalogs.
+        this.catalogs().diff(
+            metadata ,
+            pull
+            );
+
+        /*
+        try {
+            Connection connection = this.connect();
+            DatabaseMetaData meta = connection.getMetaData();
+
+            ResultSet catnames = meta.getCatalogs();
+            while (catnames.next())
+                {
+                String catname = catnames.getString(JDBC_META_TABLE_CAT);
+                log.debug("Catalog [{}]", catname);
+
+                JdbcCatalog catalog = catalogs().search(catname);
+                if (catalog == null)
+                    {
+                    log.debug("Catalog [{}] is not registered", catname);
+                    }
+                else {
+                    ResultSet schnames = meta.getSchemas(
+                        catname,
+                        null
+                        );
+    
+                    while (schnames.next())
+                        {
+                        String schname = schnames.getString(JDBC_META_TABLE_SCHEM);
+                        log.debug("  Schema [{}]", schname);
+
+                        JdbcSchema schema = catalog.schemas().search(schname);
+                        if (schema == null)
+                            {
+                            log.debug("Schema [{}] is not registered", schname);
+                            }
+                        else {
+                            ResultSet tabenames = meta.getTables(
+                                catname,
+                                schname,
+                                null,
+                                new String[]{
+                                    JDBC_META_TABLE_TYPE_TABLE,
+                                    JDBC_META_TABLE_TYPE_VIEW
+                                    }
+                                );
+         
+                            while (tabenames.next())
+                                {
+                                String tabname = tabenames.getString(JDBC_META_TABLE_NAME);
+                                String tabtype = tabenames.getString(JDBC_META_TABLE_TYPE);
+                                log.debug("    Table [{}][{}]", tabname, tabtype);
+                                
+                                JdbcTable table = schema.tables().search(tabname);
+                                if (table == null)
+                                    {
+                                    log.debug("Table [{}] is not registered", tabname);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        catch (SQLException ouch)
+            {
+            log.error("Error doing stuff ..", ouch);
+            }  
+ */
         }
     }
 

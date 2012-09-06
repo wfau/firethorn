@@ -17,6 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc ;
 
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -42,6 +48,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.JdbcResource;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatus.Status;
 
 /**
  * BaseResource.BaseSchema implementation.
@@ -281,6 +288,96 @@ implements JdbcResource.JdbcSchema
                     name
                     ) ;
                 }
+
+            @Override
+            public void diff(boolean pull)
+                {
+                diff(
+                    resource().metadata(),
+                    pull
+                    );
+                }
+
+            @Override
+            public void diff(DatabaseMetaData metadata, boolean pull)
+                {
+                log.debug("Comparing tables for schema [{}]", name());
+                try {
+                    //
+                    // Scan the DatabaseMetaData for tables and views.
+                    ResultSet tables = metadata.getTables(
+                        catalog().name(),
+                        name(),
+                        null,
+                        new String[]
+                            {
+                            JdbcResource.JDBC_META_TABLE_TYPE_TABLE,
+                            JdbcResource.JDBC_META_TABLE_TYPE_VIEW
+                            }   
+                        );
+
+                    Map<String, JdbcResource.JdbcTable> found = new HashMap<String, JdbcResource.JdbcTable>();
+                    while (tables.next())
+                        {
+                        String name = tables.getString(JdbcResource.JDBC_META_TABLE_NAME);
+                        String type = tables.getString(JdbcResource.JDBC_META_TABLE_TYPE);
+                        log.debug("Checking database table [{}][{}]", name, type);
+    
+                        JdbcResource.JdbcTable table = this.search(
+                            name
+                            );
+                        if (table == null)
+                            {
+                            log.debug("Database table [{}] is not registered", name);
+                            if (pull)
+                                {
+                                log.debug("Registering missing table [{}]", name);
+                                table = this.create(
+                                    name
+                                    );
+                                }
+                            }
+                        found.put(
+                            name,
+                            table
+                            );
+                        }
+                    //
+                    // Scan our own list of schema.
+                    for (JdbcResource.JdbcTable table : select())
+                        {
+                        log.debug("Checking registered table [{}]", table.name());
+                        JdbcResource.JdbcTable match = found.get(
+                            table.name()
+                            );
+                        //
+                        // If we found a match, scan the table.
+                        if (match != null)
+                            {
+                            match.diff(
+                                metadata,
+                                pull
+                                );
+                            }
+                        //
+                        // If we didn't find a match, disable our entry.
+                        else {
+                            log.debug("Registered table [{}] is not in database", table.name());
+                            if (pull)
+                                {
+                                log.debug("Disabling registered table [{}]", table.name());
+                                table.status(
+                                    Status.MISSING
+                                    );
+                                }
+                            }
+                        }
+                    }
+                catch (SQLException ouch)
+                    {
+                    log.error("Error processing JDBC catalogs", ouch);
+                    }
+                }
             };
         }
 
@@ -349,6 +446,29 @@ implements JdbcResource.JdbcSchema
     public JdbcResource.JdbcCatalog catalog()
         {
         return this.parent;
+        }
+
+    @Override
+    public void diff(boolean pull)
+        {
+        diff(
+            resource().metadata(),
+            pull
+            );
+        }
+
+    @Override
+    public void diff(DatabaseMetaData metadata, boolean pull)
+        {
+        //
+        // Check this schema.
+        // ....
+        //
+        // Check our tables.
+        this.tables().diff(
+            metadata,
+            pull
+            );
         }
     }
 

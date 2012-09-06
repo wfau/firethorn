@@ -38,6 +38,7 @@ extends Entity
         {
         ENABLED(true),
         DISABLED(false),
+        MISSING(false),
         CREATED(false),
         DELETED(false);
 

@@ -17,6 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc ;
 
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -30,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.hibernate.metamodel.relational.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -43,6 +50,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.JdbcResource;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatus.Status;
 
 /**
  * BaseResource.BaseTable implementation.
@@ -282,6 +290,92 @@ implements JdbcResource.JdbcTable
                     name
                     ) ;
                 }
+
+            @Override
+            public void diff(boolean pull)
+                {
+                diff(
+                    resource().metadata(),
+                    pull
+                    );
+                }
+
+            @Override
+            public void diff(DatabaseMetaData metadata, boolean pull)
+                {
+                log.debug("Comparing columns for table [{}]", name());
+                try {
+                    //
+                    // Scan the DatabaseMetaData for columns.
+                    ResultSet columns = metadata.getColumns(
+                        catalog().name(),
+                        schema().name(),
+                        name(),
+                        null
+                        );
+
+                    Map<String, JdbcResource.JdbcColumn> found = new HashMap<String, JdbcResource.JdbcColumn>();
+                    while (columns.next())
+                        {
+                        String name = columns.getString(JdbcResource.JDBC_META_COLUMN_NAME);
+                        String type = columns.getString(JdbcResource.JDBC_META_COLUMN_TYPE_NAME);
+                        log.debug("Checking database column [{}][{}]", name, type);
+    
+                        JdbcResource.JdbcColumn column = this.search(
+                            name
+                            );
+                        if (column == null)
+                            {
+                            log.debug("Database column[{}] is not registered", name);
+                            if (pull)
+                                {
+                                log.debug("Registering missing column[{}]", name);
+                                column= this.create(
+                                    name
+                                    );
+                                }
+                            }
+                        found.put(
+                            name,
+                            column
+                            );
+                        }
+                    //
+                    // Scan our own list of schema.
+                    for (JdbcResource.JdbcColumn column : select())
+                        {
+                        log.debug("Checking registered column[{}]", column.name());
+                        JdbcResource.JdbcColumn match = found.get(
+                            column.name()
+                            );
+                        //
+                        // If we found a match, scan the column.
+                        if (match != null)
+                            {
+                            match.diff(
+                                metadata,
+                                pull
+                                );
+                            }
+                        //
+                        // If we didn't find a match, disable our entry.
+                        else {
+                            log.debug("Registered column [{}] is not in database", column.name());
+                            if (pull)
+                                {
+                                log.debug("Disabling registered column [{}]", column.name());
+                                column.status(
+                                    Status.MISSING
+                                    );
+                                }
+                            }
+                        }
+                    }
+                catch (SQLException ouch)
+                    {
+                    log.error("Error processing JDBC catalogs", ouch);
+                    }
+                }
             };
         }
 
@@ -356,6 +450,30 @@ implements JdbcResource.JdbcTable
     public JdbcResource.JdbcSchema schema()
         {
         return this.parent;
+        }
+
+    @Override
+    public void diff(boolean pull)
+        {
+        diff(
+            resource().metadata(),
+            pull
+            );
+        }
+
+    @Override
+    public void diff(DatabaseMetaData metadata, boolean pull)
+        {
+        //
+        // Check this table.
+        // ....
+
+        //
+        // Check our columns.
+        this.columns().diff(
+            metadata,
+            pull
+            );
         }
     }
 

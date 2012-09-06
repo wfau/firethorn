@@ -17,6 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+
+import javax.sql.DataSource;
+
 
 /**
  *
@@ -40,6 +45,12 @@ extends BaseResource
         public JdbcResource create(String name);
 
         /**
+         * Create a new resource.
+         * 
+         */
+        public JdbcResource create(String name, DataSource source);
+
+        /**
          * Access to our catalog factory.
          * 
          */
@@ -54,12 +65,26 @@ extends BaseResource
     public interface Catalogs
     extends BaseResource.Catalogs<JdbcCatalog>
         {
-
         /**
          * Create a new catalog.
          *
          */
         public JdbcResource.JdbcCatalog create(String name);
+
+        /**
+         * Compare our data with DatabaseMetaData from our DataSource. 
+         * @param pull Update our data to match the DatabaseMetaData. 
+         *
+         */
+        public void diff(boolean pull);
+
+        /**
+         * Compare our data with DatabaseMetaData from our DataSource. 
+         * @param metadata The DatabaseMetaData to compare against.
+         * @param pull Update our data to match the DatabaseMetaData. 
+         *
+         */
+        public void diff(DatabaseMetaData metadata, boolean pull);
 
         }
 
@@ -73,7 +98,6 @@ extends BaseResource
     public interface JdbcCatalog
     extends BaseResource.BaseCatalog<JdbcResource>
         {
-
         /**
          * Factory interface for accessing catalogs.
          *
@@ -103,13 +127,27 @@ extends BaseResource
         public interface Schemas
         extends BaseResource.BaseCatalog.Schemas<JdbcResource.JdbcSchema>
             {
-
             /**
              * Create a new schema.
              *
              */
             public JdbcResource.JdbcSchema create(String name);
-            
+
+            /**
+             * Compare our data with DatabaseMetaData from our DataSource. 
+             * @param pull Update our data to match the DatabaseMetaData. 
+             *
+             */
+            public void diff(boolean pull);
+
+            /**
+             * Compare our data with DatabaseMetaData from our DataSource. 
+             * @param metadata The DatabaseMetaData to compare against.
+             * @param pull Update our data to match the DatabaseMetaData. 
+             *
+             */
+            public void diff(DatabaseMetaData metadata, boolean pull);
+
             }
 
         @Override
@@ -117,6 +155,21 @@ extends BaseResource
 
         @Override
         public JdbcResource resource();
+
+        /**
+         * Compare our data with DatabaseMetaData from our DataSource. 
+         * @param pull Update our data to match the DatabaseMetaData. 
+         *
+         */
+        public void diff(boolean pull);
+
+        /**
+         * Compare our data with DatabaseMetaData from our DataSource. 
+         * @param metadata The DatabaseMetaData to compare against.
+         * @param pull Update our data to match the DatabaseMetaData. 
+         *
+         */
+        public void diff(DatabaseMetaData metadata, boolean pull);
 
         }
     
@@ -164,6 +217,21 @@ extends BaseResource
              */
             public JdbcResource.JdbcTable create(String name);
 
+            /**
+             * Compare our data with DatabaseMetaData from our DataSource. 
+             * @param pull Update our data to match the DatabaseMetaData. 
+             *
+             */
+            public void diff(boolean pull);
+
+            /**
+             * Compare our data with DatabaseMetaData from our DataSource. 
+             * @param metadata The DatabaseMetaData to compare against.
+             * @param pull Update our data to match the DatabaseMetaData. 
+             *
+             */
+            public void diff(DatabaseMetaData metadata, boolean pull);
+            
             }
 
         @Override
@@ -175,6 +243,21 @@ extends BaseResource
         @Override
         public JdbcResource.JdbcCatalog catalog();
 
+        /**
+         * Compare our data with DatabaseMetaData from our DataSource. 
+         * @param pull Update our data to match the DatabaseMetaData. 
+         *
+         */
+        public void diff(boolean pull);
+
+        /**
+         * Compare our data with DatabaseMetaData from our DataSource. 
+         * @param metadata The DatabaseMetaData to compare against.
+         * @param pull Update our data to match the DatabaseMetaData. 
+         *
+         */
+        public void diff(DatabaseMetaData metadata, boolean pull);
+        
         }
     
     /**
@@ -221,6 +304,21 @@ extends BaseResource
              */
             public JdbcResource.JdbcColumn create(String name);
 
+            /**
+             * Compare our data with DatabaseMetaData from our DataSource. 
+             * @param pull Update our data to match the DatabaseMetaData. 
+             *
+             */
+            public void diff(boolean pull);
+
+            /**
+             * Compare our data with DatabaseMetaData from our DataSource. 
+             * @param metadata The DatabaseMetaData to compare against.
+             * @param pull Update our data to match the DatabaseMetaData. 
+             *
+             */
+            public void diff(DatabaseMetaData metadata, boolean pull);
+
             }
 
         @Override
@@ -234,7 +332,22 @@ extends BaseResource
 
         @Override
         public JdbcResource.JdbcSchema schema();
-        
+
+        /**
+         * Compare our data with DatabaseMetaData from our DataSource. 
+         * @param pull Update our data to match the DatabaseMetaData. 
+         *
+         */
+        public void diff(boolean pull);
+
+        /**
+         * Compare our data with DatabaseMetaData from our DataSource. 
+         * @param metadata The DatabaseMetaData to compare against.
+         * @param pull Update our data to match the DatabaseMetaData. 
+         *
+         */
+        public void diff(DatabaseMetaData metadata, boolean pull);
+
         }
     
     /**
@@ -273,5 +386,76 @@ extends BaseResource
         @Override
         public JdbcResource.JdbcTable table();
 
+        /**
+         * Compare our data with DatabaseMetaData from our DataSource. 
+         * @param pull Update our data to match the DatabaseMetaData. 
+         *
+         */
+        public void diff(boolean pull);
+
+        /**
+         * Compare our data with DatabaseMetaData from our DataSource. 
+         * @param metadata The DatabaseMetaData to compare against.
+         * @param pull Update our data to match the DatabaseMetaData. 
+         *
+         */
+        public void diff(DatabaseMetaData metadata, boolean pull);
+
         }
+
+    /**
+     * JDBC DatabaseMetaData column names.
+     * @see DatabaseMetaData
+     * @todo Move this to a local sub-interface.
+     *  
+     */
+    public static final String JDBC_META_TABLE_CAT   = "TABLE_CAT" ;
+    public static final String JDBC_META_TABLE_TYPE  = "TABLE_TYPE" ;
+    public static final String JDBC_META_TABLE_NAME  = "TABLE_NAME" ;
+    public static final String JDBC_META_TABLE_SCHEM = "TABLE_SCHEM" ;
+
+    public static final String JDBC_META_TABLE_TYPE_VIEW  = "VIEW" ;
+    public static final String JDBC_META_TABLE_TYPE_TABLE = "TABLE" ;
+
+    public static final String JDBC_META_COLUMN_NAME      = "COLUMN_NAME" ;
+    public static final String JDBC_META_COLUMN_TYPE_TYPE = "DATA_TYPE";
+    public static final String JDBC_META_COLUMN_TYPE_NAME = "TYPE_NAME";
+    public static final String JDBC_META_COLUMN_SIZE      = "COLUMN_SIZE";
+    
+    /**
+     * Access to our underlying DataSource.
+     * @todo Move this to a local sub-interface.
+     *
+     */
+    public DataSource source(); 
+
+    /**
+     * Open a connection to ourDataSource.
+     * @todo Move this to a local sub-interface.
+     *
+     */
+    public Connection connect();
+
+    /**
+     * Get the DatabaseMetaData from our DataSource.
+     * @todo Move this to a local sub-interface.
+     *
+     */
+    public DatabaseMetaData metadata();
+    
+    /**
+     * Compare our data with DatabaseMetaData from our DataSource. 
+     * @param pull Update our data to match the DatabaseMetaData. 
+     *
+     */
+    public void diff(boolean pull);
+
+    /**
+     * Compare our data with DatabaseMetaData from our DataSource. 
+     * @param metadata The DatabaseMetaData to compare against.
+     * @param pull Update our data to match the DatabaseMetaData. 
+     *
+     */
+    public void diff(DatabaseMetaData metadata, boolean pull);
+
     }

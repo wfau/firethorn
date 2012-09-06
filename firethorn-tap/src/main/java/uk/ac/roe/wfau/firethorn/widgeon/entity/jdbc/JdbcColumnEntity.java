@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc ;
 
+import java.sql.DatabaseMetaData;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -305,6 +307,23 @@ implements JdbcResource.JdbcColumn
     public JdbcResource.JdbcTable table()
         {
         return this.parent;
+        }
+
+    @Override
+    public void diff(boolean pull)
+        {
+        diff(
+            resource().metadata(),
+            pull
+            );
+        }
+
+    @Override
+    public void diff(DatabaseMetaData metadata, boolean pull)
+        {
+        //
+        // Check this column.
+        // ....
         }
     }
 

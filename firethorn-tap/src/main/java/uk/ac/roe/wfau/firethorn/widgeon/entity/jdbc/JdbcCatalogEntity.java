@@ -17,6 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.entity.jdbc ;
 
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -43,6 +49,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.JdbcResource;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.JdbcResource.JdbcCatalog;
+import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatus.Status;
 
 /**
  * BaseResource.BaseCatalog implementation.
@@ -246,7 +254,7 @@ implements JdbcResource.JdbcCatalog
     @Override
     public JdbcResource.JdbcCatalog.Schemas schemas()
         {
-        return new JdbcResource.JdbcCatalog.Schemas()
+        return new Schemas()
             {
             @Override
             public JdbcResource.JdbcSchema create(String name)
@@ -282,6 +290,91 @@ implements JdbcResource.JdbcCatalog
                     JdbcCatalogEntity.this,
                     name
                     );
+                }
+
+            @Override
+            public void diff(boolean pull)
+                {
+                diff(
+                    resource().metadata(),
+                    pull
+                    );
+                }
+
+            @Override
+            public void diff(DatabaseMetaData metadata, boolean pull)
+                {
+                log.debug("Comparing schema for catalog [{}]", name());
+                try {
+                    //
+                    // Scan the DatabaseMetaData for schema.
+                    ResultSet schemas = metadata.getSchemas(
+                        name(),
+                        null
+                        );
+
+                    Map<String, JdbcResource.JdbcSchema> found = new HashMap<String, JdbcResource.JdbcSchema>();
+                    while (schemas.next())
+                        {
+                        String name = schemas.getString(
+                            JdbcResource.JDBC_META_TABLE_SCHEM
+                            );
+                        log.debug("Checking database schema [{}]", name);
+    
+                        JdbcResource.JdbcSchema schema = this.search(
+                            name
+                            );
+                        if (schema == null)
+                            {
+                            log.debug("Database schema [{}] is not registered", name);
+                            if (pull)
+                                {
+                                log.debug("Registering missing schema [{}]", name);
+                                schema = this.create(
+                                    name
+                                    );
+                                }
+                            }
+                        found.put(
+                            name,
+                            schema
+                            );
+                        }
+                    //
+                    // Scan our own list of schema.
+                    for (JdbcResource.JdbcSchema schema : select())
+                        {
+                        log.debug("Checking registered schema [{}]", schema.name());
+                        JdbcResource.JdbcSchema match = found.get(
+                            schema.name()
+                            );
+                        //
+                        // If we found a match, scan the schema.
+                        if (match != null)
+                            {
+                            match.diff(
+                                metadata,
+                                pull
+                                );
+                            }
+                        //
+                        // If we didn't find a match, disable our entry.
+                        else {
+                            log.debug("Registered schema [{}] is not in database", schema.name());
+                            if (pull)
+                                {
+                                log.debug("Disabling registered schema [{}]", schema.name());
+                                schema.status(
+                                    Status.MISSING
+                                    );
+                                }
+                            }
+                        }
+                    }
+                catch (SQLException ouch)
+                    {
+                    log.error("Error processing JDBC catalogs", ouch);
+                    }
                 }
             };
         }
@@ -345,6 +438,29 @@ implements JdbcResource.JdbcCatalog
     public JdbcResource resource()
         {
         return this.parent;
+        }
+
+    @Override
+    public void diff(boolean pull)
+        {
+        diff(
+            resource().metadata(),
+            pull
+            );
+        }
+
+    @Override
+    public void diff(DatabaseMetaData metadata, boolean pull)
+        {
+        //
+        // Check this catalog.
+        // ....
+        //
+        // Check our schemas.
+        this.schemas().diff(
+            metadata,
+            pull
+            );
         }
     }
 
