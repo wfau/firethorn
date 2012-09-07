@@ -29,6 +29,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataCatalog.Schemas;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataColumn.Factory;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataSchema.Tables;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataTable.Columns;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlTable;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.BaseCatalog;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.BaseColumn;
@@ -128,7 +129,7 @@ extends DataResource
             public AdqlResource.AdqlCatalog cascade(AdqlResource parent, BaseResource.BaseCatalog<?> base);
 
             /**
-             * Create a new view of a catalog.
+             * Create a view of a catalog.
              *
              */
             public AdqlResource.AdqlCatalog create(AdqlResource parent, BaseResource.BaseCatalog<?> base, String name);
@@ -140,7 +141,7 @@ extends DataResource
             public Iterable<AdqlResource.AdqlCatalog> select(BaseResource.BaseCatalog<?> base);
 
             /**
-             * Search for a specific view of a catalog.
+             * Search for a catalog view based on parent resource.
              *
              */
             public AdqlResource.AdqlCatalog search(AdqlResource parent, BaseResource.BaseCatalog<?> base);
@@ -217,7 +218,13 @@ extends DataResource
             public Iterable<AdqlResource.AdqlSchema> select(BaseResource.BaseSchema<?> base);
 
             /**
-             * Search for a specific view of a schema.
+             * Search for a schema view based on parent resource.
+             *
+             */
+            public AdqlResource.AdqlSchema search(AdqlResource parent, BaseResource.BaseSchema<?> base);
+
+            /**
+             * Search for a schema view based on parent catalog.
              *
              */
             public AdqlResource.AdqlSchema search(AdqlResource.AdqlCatalog parent, BaseResource.BaseSchema<?> base);
@@ -300,7 +307,19 @@ extends DataResource
             public Iterable<AdqlResource.AdqlTable> select(BaseResource.BaseTable<?> base);
 
             /**
-             * Search for a specific view of a table.
+             * Search for a table view based on parent resource.
+             *
+             */
+            public AdqlResource.AdqlTable search(AdqlResource parent, BaseResource.BaseTable<?> base);
+            
+            /**
+             * Search for a table view based on parent catalog.
+             *
+             */
+            public AdqlResource.AdqlTable search(AdqlResource.AdqlCatalog parent, BaseResource.BaseTable<?> base);
+            
+            /**
+             * Search for a table view based on parent schema.
              *
              */
             public AdqlResource.AdqlTable search(AdqlResource.AdqlSchema parent, BaseResource.BaseTable<?> base);
@@ -390,16 +409,34 @@ extends DataResource
             public AdqlResource.AdqlColumn create(AdqlResource.AdqlTable parent, BaseResource.BaseColumn<?> base, String name);
 
             /**
-             * Search for a specific view of a column.
-             *
-             */
-            public AdqlResource.AdqlColumn search(AdqlResource.AdqlTable parent, BaseResource.BaseColumn<?> base);
-
-            /**
              * Select all the views of a column.
              *
              */
             public Iterable<AdqlResource.AdqlColumn> select(BaseResource.BaseColumn<?> base);
+
+            /**
+             * Search for a column view based on parent resource.
+             *
+             */
+            public AdqlResource.AdqlColumn search(AdqlResource parent, BaseResource.BaseColumn<?> base);
+
+            /**
+             * Search for a column view based on parent catalog.
+             *
+             */
+            public AdqlResource.AdqlColumn search(AdqlResource.AdqlCatalog parent, BaseResource.BaseColumn<?> base);
+
+            /**
+             * Search for a column view based on parent schema.
+             *
+             */
+            public AdqlResource.AdqlColumn search(AdqlResource.AdqlSchema parent, BaseResource.BaseColumn<?> base);
+
+            /**
+             * Search for a column view based on parent table.
+             *
+             */
+            public AdqlResource.AdqlColumn search(AdqlResource.AdqlTable parent, BaseResource.BaseColumn<?> base);
 
             }
 

@@ -78,6 +78,18 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcColumnEntity;
         @NamedQuery(
             name  = "adql.column-select-parent.base",
             query = "FROM AdqlColumnEntity WHERE ((parent = :parent) AND (base = :base)) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "adql.column-select-parent.parent.base",
+            query = "FROM AdqlColumnEntity WHERE ((parent.parent = :parent) AND (base = :base)) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "adql.column-select-parent.parent.parent.base",
+            query = "FROM AdqlColumnEntity WHERE ((parent.parent.parent = :parent) AND (base = :base)) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "adql.column-select-parent.parent.parent.parent.base",
+            query = "FROM AdqlColumnEntity WHERE ((parent.parent.parent.parent = :parent) AND (base = :base)) ORDER BY ident desc"
             )
         }
     )
@@ -154,6 +166,57 @@ implements AdqlResource.AdqlColumn
                 new AdqlColumnEntity(
                     parent,
                     base
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public AdqlResource.AdqlColumn search(final AdqlResource parent, final BaseResource.BaseColumn<?> base)
+            {
+            return super.first(
+                super.query(
+                    "adql.column-select-parent.parent.parent.parent.base"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setEntity(
+                        "base",
+                        base
+                    )
+                );
+            }
+        
+        @Override
+        @SelectEntityMethod
+        public AdqlResource.AdqlColumn search(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseColumn<?> base)
+            {
+            return super.first(
+                super.query(
+                    "adql.column-select-parent.parent.parent.base"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setEntity(
+                        "base",
+                        base
+                    )
+                );
+            }
+        
+        @Override
+        @SelectEntityMethod
+        public AdqlResource.AdqlColumn search(final AdqlResource.AdqlSchema parent, final BaseResource.BaseColumn<?> base)
+            {
+            return super.first(
+                super.query(
+                    "adql.column-select-parent.parent.base"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setEntity(
+                        "base",
+                        base
                     )
                 );
             }

@@ -40,7 +40,10 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlCatalog;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlTable;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.BaseTable;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTableEntity;
 
 
@@ -70,7 +73,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTableEntity;
             query = "FROM AdqlTableEntity WHERE (parent = :parent) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "adql.table-select-parent.name",
+            name  = "adql.table-select-parent-name",
             query = "FROM AdqlTableEntity WHERE ((parent = :parent) AND (((name IS NOT null) AND (name = :name)) OR ((name IS null) AND (base.name = :name)))) ORDER BY ident desc"
             ),
         @NamedQuery(
@@ -78,12 +81,16 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTableEntity;
             query = "FROM AdqlTableEntity WHERE (base = :base) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "adql.table-select-parent.base",
+            name  = "adql.table-select-parent-base",
             query = "FROM AdqlTableEntity WHERE ((parent = :parent) AND (base = :base)) ORDER BY ident desc"
             ),
+            @NamedQuery(
+                name  = "adql.table-select-parent.parent-base",
+                query = "FROM AdqlTableEntity WHERE ((parent.parent = :parent) AND (base = :base)) ORDER BY ident desc"
+                ),
         @NamedQuery(
-            name  = "adql.table-select-view.base",
-            query = "FROM AdqlTableEntity WHERE ((parent.parent.parent = :view) AND (base = :base)) ORDER BY ident desc"
+            name  = "adql.table-select-parent.parent.parent-base",
+            query = "FROM AdqlTableEntity WHERE ((parent.parent.parent = :parent) AND (base = :base)) ORDER BY ident desc"
             )
         }
     )
@@ -163,11 +170,45 @@ implements AdqlResource.AdqlTable
 
         @Override
         @SelectEntityMethod
+        public AdqlTable search(final AdqlResource parent, final BaseResource.BaseTable<?> base)
+            {
+            return super.first(
+                super.query(
+                    "adql.table-select-parent.parent.parent-base"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setEntity(
+                        "base",
+                        base
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public AdqlTable search(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseTable<?> base)
+            {
+            return super.first(
+                super.query(
+                    "adql.table-select-parent.parent-base"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setEntity(
+                        "base",
+                        base
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
         public AdqlResource.AdqlTable search(final AdqlResource.AdqlSchema parent, final BaseResource.BaseTable<?> base)
             {
             return super.first(
                 super.query(
-                    "adql.table-select-parent.base"
+                    "adql.table-select-parent-base"
                     ).setEntity(
                         "parent",
                         parent
@@ -249,7 +290,7 @@ implements AdqlResource.AdqlTable
             {
             return super.first(
                 super.query(
-                    "adql.table-select-parent.name"
+                    "adql.table-select-parent-name"
                     ).setEntity(
                         "parent",
                         parent

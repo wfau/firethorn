@@ -18,6 +18,8 @@
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc ;
 
 import java.sql.DatabaseMetaData;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -43,6 +45,10 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlCatalog;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.Diference;
 
 /**
  * BaseResource.BaseColumn implementation.
@@ -70,7 +76,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
             query = "FROM JdbcColumnEntity WHERE parent = :parent ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "jdbc.column-select-parent.name",
+            name  = "jdbc.column-select-parent-name",
             query = "FROM JdbcColumnEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
             )
         }
@@ -180,7 +186,7 @@ implements JdbcResource.JdbcColumn
             {
             return super.first(
                 super.query(
-                    "jdbc.column-select-parent.name"
+                    "jdbc.column-select-parent-name"
                     ).setEntity(
                         "parent",
                         parent
@@ -214,6 +220,33 @@ implements JdbcResource.JdbcColumn
             public Iterable<AdqlResource.AdqlColumn> select()
                 {
                 return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().select(
+                    JdbcColumnEntity.this
+                    );
+                }
+
+            @Override
+            public AdqlColumn search(AdqlResource parent)
+                {
+                return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().search(
+                    parent,
+                    JdbcColumnEntity.this
+                    );
+                }
+
+            @Override
+            public AdqlColumn search(AdqlCatalog parent)
+                {
+                return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().search(
+                    parent,
+                    JdbcColumnEntity.this
+                    );
+                }
+
+            @Override
+            public AdqlColumn search(AdqlSchema parent)
+                {
+                return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().search(
+                    parent,
                     JdbcColumnEntity.this
                     );
                 }
@@ -309,20 +342,23 @@ implements JdbcResource.JdbcColumn
         }
 
     @Override
-    public void diff(boolean pull)
+    public List<JdbcResource.Diference> diff(boolean push, boolean pull)
         {
-        diff(
+        return diff(
             resource().metadata(),
+            new ArrayList<JdbcResource.Diference>(),
+            push,
             pull
             );
         }
 
     @Override
-    public void diff(DatabaseMetaData metadata, boolean pull)
+    public List<Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull)
         {
         //
         // Check this column.
         // ....
+        return results ;
         }
     }
 

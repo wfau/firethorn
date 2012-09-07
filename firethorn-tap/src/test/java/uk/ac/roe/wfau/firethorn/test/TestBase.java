@@ -113,6 +113,12 @@ public abstract class TestBase
     protected static long uniques = 0 ;
 
     /**
+     * Glue for generated names.
+     *
+     */
+    public static final String UNIQUE_NAME_GLUE = "." ;
+
+    /**
      * Generate a unique string.
      *
      */
@@ -124,7 +130,9 @@ public abstract class TestBase
                 start
                 )
             );
-        builder.append("-");
+        builder.append(
+            UNIQUE_NAME_GLUE
+            );
         builder.append(
             String.valueOf(
                 uniques++
@@ -143,7 +151,9 @@ public abstract class TestBase
         builder.append(
             prefix
             );
-        builder.append(".");
+        builder.append(
+            UNIQUE_NAME_GLUE
+            );
         builder.append(
             unique()
             );

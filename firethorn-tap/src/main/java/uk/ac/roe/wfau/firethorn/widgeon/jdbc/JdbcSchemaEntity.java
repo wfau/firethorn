@@ -17,10 +17,14 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc ;
 
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Access;
@@ -48,6 +52,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatus.Status;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.Diference;
 
 /**
  * BaseResource.BaseSchema implementation.
@@ -75,7 +81,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
             query = "FROM JdbcSchemaEntity WHERE parent = :parent ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "jdbc.schema-select-parent.name",
+            name  = "jdbc.schema-select-parent-name",
             query = "FROM JdbcSchemaEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
             )
         }
@@ -185,7 +191,7 @@ implements JdbcResource.JdbcSchema
             {
             return super.first(
                 super.query(
-                    "jdbc.schema-select-parent.name"
+                    "jdbc.schema-select-parent-name"
                     ).setEntity(
                         "parent",
                         parent
@@ -244,6 +250,15 @@ implements JdbcResource.JdbcSchema
                     JdbcSchemaEntity.this
                     );
                 }
+
+            @Override
+            public AdqlResource.AdqlSchema search(AdqlResource parent)
+                {
+                return womble().resources().jdbc().views().catalogs().schemas().search(
+                    parent,
+                    JdbcSchemaEntity.this
+                    );
+                }
             };
         }
 
@@ -289,16 +304,18 @@ implements JdbcResource.JdbcSchema
                 }
 
             @Override
-            public void diff(boolean pull)
+            public List<JdbcResource.Diference> diff(boolean push, boolean pull)
                 {
-                diff(
+                return diff(
                     resource().metadata(),
+                    new ArrayList<JdbcResource.Diference>(),
+                    push,
                     pull
                     );
                 }
 
             @Override
-            public void diff(DatabaseMetaData metadata, boolean pull)
+            public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull)
                 {
                 log.debug("Comparing tables for schema [{}]", name());
                 try {
@@ -335,11 +352,44 @@ implements JdbcResource.JdbcSchema
                                     name
                                     );
                                 }
+                            else if (push)
+                                {
+                                log.debug("Deleting database table [{}]", name);
+                                try {
+                                    String sql = "DROP TABLE {table} ;".replace(
+                                        "{table}",
+                                        name
+                                        );
+                                    log.debug("SQL [{}]", sql);
+                                    Connection connection = metadata.getConnection();
+                                    Statement  statement  = connection.createStatement();
+                                    statement.executeUpdate(sql);
+                                    }
+                                catch (SQLException ouch)
+                                    {
+                                    log.error("Exception dropping table [{}]", name);
+                                    throw new RuntimeException(
+                                        ouch
+                                        );
+                                    }
+                                }
+                            else {
+                                results.add(
+                                    new JdbcResource.Diference(
+                                        JdbcResource.Diference.Type.TABLE,
+                                        null,
+                                        name
+                                        )
+                                    );                                
+                                }
                             }
-                        found.put(
-                            name,
-                            table
-                            );
+                        if (table != null)
+                            {
+                            found.put(
+                                name,
+                                table
+                                );
+                            }
                         }
                     //
                     // Scan our own list of schema.
@@ -350,25 +400,59 @@ implements JdbcResource.JdbcSchema
                             table.name()
                             );
                         //
-                        // If we found a match, scan the table.
-                        if (match != null)
+                        // If we didn't find a match, create the object or disable our entry.
+                        if (match == null)
                             {
-                            match.diff(
-                                metadata,
-                                pull
-                                );
-                            }
-                        //
-                        // If we didn't find a match, disable our entry.
-                        else {
                             log.debug("Registered table [{}] is not in database", table.name());
-                            if (pull)
+                            if (push)
+                                {
+                                log.debug("Creating database table [{}]", table.name());
+                                try {
+                                    String sql = "CREATE TABLE {table} () ;".replace(
+                                        "{table}",
+                                        table.name()
+                                        );
+                                    log.debug("SQL [{}]", sql);
+                                    Connection connection = metadata.getConnection();
+                                    Statement  statement  = connection.createStatement();
+                                    statement.executeUpdate(sql);
+                                    }
+                                catch (SQLException ouch)
+                                    {
+                                    log.error("Exception creating table [{}]", table.name());
+                                    throw new RuntimeException(
+                                        ouch
+                                        );
+                                    }
+                                match = table ;
+                                }
+                            else if (pull)
                                 {
                                 log.debug("Disabling registered table [{}]", table.name());
                                 table.status(
                                     Status.MISSING
                                     );
                                 }
+                            else {
+                                results.add(
+                                    new JdbcResource.Diference(
+                                        JdbcResource.Diference.Type.TABLE,
+                                        table.name(),
+                                        null
+                                        )
+                                    );                                
+                                }
+                            }
+                        //
+                        // If we have a match, then scan it.
+                        if (match != null)
+                            {
+                            match.diff(
+                                metadata,
+                                results,
+                                push,
+                                pull
+                                );
                             }
                         }
                     }
@@ -376,6 +460,7 @@ implements JdbcResource.JdbcSchema
                     {
                     log.error("Error processing JDBC catalogs", ouch);
                     }
+                return results ;
                 }
             };
         }
@@ -448,24 +533,28 @@ implements JdbcResource.JdbcSchema
         }
 
     @Override
-    public void diff(boolean pull)
+    public List<JdbcResource.Diference> diff(boolean push, boolean pull)
         {
-        diff(
+        return diff(
             resource().metadata(),
+            new ArrayList<JdbcResource.Diference>(),
+            push,
             pull
             );
         }
 
     @Override
-    public void diff(DatabaseMetaData metadata, boolean pull)
+    public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull)
         {
         //
         // Check this schema.
         // ....
         //
         // Check our tables.
-        this.tables().diff(
+        return this.tables().diff(
             metadata,
+            results,
+            push,
             pull
             );
         }

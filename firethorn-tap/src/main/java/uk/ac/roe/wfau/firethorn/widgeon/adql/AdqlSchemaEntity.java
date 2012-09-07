@@ -40,7 +40,9 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.BaseSchema;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchemaEntity;
 
 /**
@@ -79,6 +81,10 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchemaEntity;
         @NamedQuery(
             name  = "adql.schema-select-parent.base",
             query = "FROM AdqlSchemaEntity WHERE ((parent = :parent) AND (base = :base)) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "adql.schema-select-parent.parent.base",
+            query = "FROM AdqlSchemaEntity WHERE ((parent.parent = :parent) AND (base = :base)) ORDER BY ident desc"
             )
         }
     )
@@ -152,6 +158,23 @@ implements AdqlResource.AdqlSchema
                 new AdqlSchemaEntity(
                     parent,
                     base
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public AdqlSchema search(AdqlResource parent, final BaseResource.BaseSchema<?> base)
+            {
+            return super.first(
+                super.query(
+                    "adql.schema-select-parent.parent.base"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setEntity(
+                        "base",
+                        base
                     )
                 );
             }

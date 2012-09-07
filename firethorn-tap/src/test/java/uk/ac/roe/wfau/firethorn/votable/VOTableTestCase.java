@@ -115,7 +115,7 @@ extends JdbcResourceTestBase
                     );
                 }
 
-            DataSource source = (DataSource) spring.getBean("TestData"); 
+            DataSource source = (DataSource) spring.getBean("MemData"); 
             Connection connection = source.getConnection();
 
             //connection.createStatement().execute("CREATE SCHEMA albert AUTHORIZATION DBA ;");
@@ -145,8 +145,8 @@ extends JdbcResourceTestBase
                 );
 
             // HSQLDB specific 'save to disc' command.
-            connection.createStatement().execute("SHUTDOWN;");
-            connection.close();
+            //connection.createStatement().execute("SHUTDOWN;");
+            //connection.close();
 
             }
         }

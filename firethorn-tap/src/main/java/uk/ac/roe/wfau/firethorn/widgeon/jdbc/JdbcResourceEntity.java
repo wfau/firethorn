@@ -21,7 +21,9 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.management.RuntimeErrorException;
@@ -45,6 +47,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.Diference;
 
 /**
  * BaseResource implementations.
@@ -235,16 +238,18 @@ implements JdbcResource
                 }
 
             @Override
-            public void diff(boolean pull)
+            public List<JdbcResource.Diference> diff(boolean push, boolean pull)
                 {
-                diff(
+                return diff(
                     metadata(),
+                    new ArrayList<JdbcResource.Diference>(),
+                    push,
                     pull
                     );
                 }
 
             @Override
-            public void diff(DatabaseMetaData metadata, boolean pull)
+            public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference>  results, boolean push, boolean pull)
                 {
                 log.debug("Comparing catalogs for resource [{}]", name());
                 try {
@@ -272,11 +277,28 @@ implements JdbcResource
                                     name
                                     );
                                 }
+                            else if (push)
+                                {
+                                log.debug("Deleting database catalog [{}]", name);
+                                log.error("-- delete catalog -- ");
+                                }
+                            else {
+                                results.add(
+                                    new JdbcResource.Diference(
+                                        JdbcResource.Diference.Type.CATALOG,
+                                        null,
+                                        name
+                                        )
+                                    );                                
+                                }
                             }
-                        found.put(
-                            name,
-                            catalog
-                            );
+                        if (catalog != null)
+                            {
+                            found.put(
+                                name,
+                                catalog
+                                );
+                            }
                         }
                     //
                     // Scan our own list of catalogs.
@@ -287,25 +309,43 @@ implements JdbcResource
                             catalog.name()
                             );
                         //
-                        // If we found a match, scan the catalog.
-                        if (match != null)
+                        // If we didn't find a match, create the object or disable our entry.
+                        if (match == null)
                             {
-                            match.diff(
-                                metadata,
-                                pull
-                                );
-                            }
-                        //
-                        // If we didn't find a match, disable our entry.
-                        else {
                             log.debug("Registered catalog [{}] is not in database", catalog.name());
-                            if (pull)
+                            if (push)
+                                {
+                                log.debug("Creating database catalog [{}]", catalog.name());
+                                log.error("-- create catalog -- ");
+                                match = catalog ;
+                                }
+                            else if (pull)
                                 {
                                 log.debug("Disabling registered catalog [{}]", catalog.name());
                                 catalog.status(
                                     Status.MISSING
                                     );
                                 }
+                            else {
+                                results.add(
+                                    new JdbcResource.Diference(
+                                        JdbcResource.Diference.Type.CATALOG,
+                                        catalog.name(),
+                                        null
+                                        )
+                                    );                                
+                                }
+                            }
+                        //
+                        // If we have a match, then scan it.
+                        if (match != null)
+                            {
+                            match.diff(
+                                metadata,
+                                results,
+                                push,
+                                pull
+                                );
                             }
                         }
                     }
@@ -313,6 +353,7 @@ implements JdbcResource
                     {
                     log.error("Error processing JDBC catalogs", ouch);
                     }
+                return results ;
                 }
             };
         }
@@ -378,16 +419,18 @@ implements JdbcResource
         }
 
     @Override
-    public void diff(boolean pull)
+    public List<JdbcResource.Diference> diff(boolean push, boolean pull)
         {
-        diff(
+        return diff(
             metadata(),
+            new ArrayList<JdbcResource.Diference>(),
+            push,
             pull
             );
         }
 
     @Override
-    public void diff(DatabaseMetaData metadata, boolean pull)
+    public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull)
         {
         log.debug("Comparing resource [{}]", name());
         //
@@ -395,76 +438,12 @@ implements JdbcResource
         // ....
         //
         // Check our catalogs.
-        this.catalogs().diff(
-            metadata ,
+        return this.catalogs().diff(
+            metadata,
+            results,
+            push,
             pull
             );
-
-        /*
-        try {
-            Connection connection = this.connect();
-            DatabaseMetaData meta = connection.getMetaData();
-
-            ResultSet catnames = meta.getCatalogs();
-            while (catnames.next())
-                {
-                String catname = catnames.getString(JDBC_META_TABLE_CAT);
-                log.debug("Catalog [{}]", catname);
-
-                JdbcCatalog catalog = catalogs().search(catname);
-                if (catalog == null)
-                    {
-                    log.debug("Catalog [{}] is not registered", catname);
-                    }
-                else {
-                    ResultSet schnames = meta.getSchemas(
-                        catname,
-                        null
-                        );
-    
-                    while (schnames.next())
-                        {
-                        String schname = schnames.getString(JDBC_META_TABLE_SCHEM);
-                        log.debug("  Schema [{}]", schname);
-
-                        JdbcSchema schema = catalog.schemas().search(schname);
-                        if (schema == null)
-                            {
-                            log.debug("Schema [{}] is not registered", schname);
-                            }
-                        else {
-                            ResultSet tabenames = meta.getTables(
-                                catname,
-                                schname,
-                                null,
-                                new String[]{
-                                    JDBC_META_TABLE_TYPE_TABLE,
-                                    JDBC_META_TABLE_TYPE_VIEW
-                                    }
-                                );
-         
-                            while (tabenames.next())
-                                {
-                                String tabname = tabenames.getString(JDBC_META_TABLE_NAME);
-                                String tabtype = tabenames.getString(JDBC_META_TABLE_TYPE);
-                                log.debug("    Table [{}][{}]", tabname, tabtype);
-                                
-                                JdbcTable table = schema.tables().search(tabname);
-                                if (table == null)
-                                    {
-                                    log.debug("Table [{}] is not registered", tabname);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        catch (SQLException ouch)
-            {
-            log.error("Error doing stuff ..", ouch);
-            }  
- */
         }
     }
 

@@ -223,8 +223,8 @@ implements Womble
         @Override
         public Query query(final String name)
             {
-            log.debug("query(String)");
-            log.debug("  name [{}]", name);
+            //log.debug("query(String)");
+            //log.debug("  name [{}]", name);
             try {
                 if (name == null)
                     {
@@ -254,8 +254,8 @@ implements Womble
         @Override
         public Entity insert(final Entity entity)
             {
-            log.debug("insert(Entity)");
-            log.debug("  {}", entity);
+            //log.debug("insert(Entity)");
+            //log.debug("  {}", entity);
             try {
                 if (entity == null)
                     {
@@ -293,9 +293,9 @@ implements Womble
         @Override
         public Entity select(final Class type, final Identifier ident)
             {
-            log.debug("select(Class, Identifier)");
-            log.debug("  class [{}]", type);
-            log.debug("  ident [{}]", (ident != null) ? ident.value() : null);
+            //log.debug("select(Class, Identifier)");
+            //log.debug("  class [{}]", type);
+            //log.debug("  ident [{}]", (ident != null) ? ident.value() : null);
             try {
                 if (ident == null)
                     {
@@ -323,8 +323,8 @@ implements Womble
         @Override
         public Entity update(final Entity entity)
             {
-            log.debug("update(Entity)");
-            log.debug("  {}", entity);
+            //log.debug("update(Entity)");
+            //log.debug("  {}", entity);
             try {
                 if (entity == null)
                     {
@@ -362,8 +362,8 @@ implements Womble
         @Override
         public void delete(final Entity entity)
             {
-            log.debug("delete(Entity)");
-            log.debug("  {}", entity);
+            //log.debug("delete(Entity)");
+            //log.debug("  {}", entity);
             try {
                 if (entity == null)
                     {
@@ -400,7 +400,7 @@ implements Womble
         @Override
         public void flush()
             {
-            log.debug("flush()");
+            //log.debug("flush()");
             try {
                 session().flush();
                 }
@@ -419,7 +419,7 @@ implements Womble
         @Override
         public void clear()
             {
-            log.debug("clear()");
+            //log.debug("clear()");
             try {
                 session().clear();
                 }
@@ -565,6 +565,5 @@ implements Womble
         {
         return this.contexts.context();
         }
-
     }
 

@@ -164,7 +164,7 @@ extends DataResource
             public Iterable<AdqlResource.AdqlCatalog> select();
 
             /**
-             * Search for a specific view of the catalog.
+             * Search for catalog view based on parent resource.
              *
              */
             public AdqlResource.AdqlCatalog search(AdqlResource parent);
@@ -235,11 +235,17 @@ extends DataResource
             public Iterable<AdqlResource.AdqlSchema> select();
 
             /**
-             * Search for a specific view of the schema.
+             * Search for schema view based on parent resource.
+             *
+             */
+            public AdqlResource.AdqlSchema search(AdqlResource parent);
+
+            /**
+             * Search for schema view based on parent catalog.
              *
              */
             public AdqlResource.AdqlSchema search(AdqlResource.AdqlCatalog parent);
-
+            
             }
 
         /**
@@ -312,7 +318,19 @@ extends DataResource
             public Iterable<AdqlResource.AdqlTable> select();
 
             /**
-             * Search for a specific view of the table.
+             * Search for table view based on parent resource.
+             *
+             */
+            public AdqlResource.AdqlTable search(AdqlResource parent);
+
+            /**
+             * Search for table view based on parent catalog.
+             *
+             */
+            public AdqlResource.AdqlTable search(AdqlResource.AdqlCatalog parent);
+            
+            /**
+             * Search for table view based on parent schema.
              *
              */
             public AdqlResource.AdqlTable search(AdqlResource.AdqlSchema parent);
@@ -395,7 +413,25 @@ extends DataResource
             public Iterable<AdqlResource.AdqlColumn> select();
 
             /**
-             * Search for a specific view of the column.
+             * Search for column view based on parent resource.
+             *
+             */
+            public AdqlResource.AdqlColumn search(AdqlResource parent);
+
+            /**
+             * Search for column view based on parent catalog.
+             *
+             */
+            public AdqlResource.AdqlColumn search(AdqlResource.AdqlCatalog parent);
+
+            /**
+             * Search for column view based on parent schema.
+             *
+             */
+            public AdqlResource.AdqlColumn search(AdqlResource.AdqlSchema parent);
+
+            /**
+             * Search for column view based on parent table.
              *
              */
             public AdqlResource.AdqlColumn search(AdqlResource.AdqlTable parent);

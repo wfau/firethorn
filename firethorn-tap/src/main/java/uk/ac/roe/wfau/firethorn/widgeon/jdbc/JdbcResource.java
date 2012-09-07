@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -85,18 +86,20 @@ extends BaseResource
 
         /**
          * Compare our data with DatabaseMetaData from our DataSource. 
-         * @param pull Update our data to match the DatabaseMetaData. 
+         * @param pull Update our metadata to match the DatabaseMetaData. 
+         * @param push Update our database to match our metadata. 
          *
          */
-        public void diff(boolean pull);
+        public List<JdbcResource.Diference> diff(boolean push, boolean pull);
 
         /**
          * Compare our data with DatabaseMetaData from our DataSource. 
          * @param metadata The DatabaseMetaData to compare against.
-         * @param pull Update our data to match the DatabaseMetaData. 
+         * @param pull Update our metadata to match the DatabaseMetaData. 
+         * @param push Update our database to match our metadata. 
          *
          */
-        public void diff(DatabaseMetaData metadata, boolean pull);
+        public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull);
 
         }
 
@@ -147,18 +150,20 @@ extends BaseResource
 
             /**
              * Compare our data with DatabaseMetaData from our DataSource. 
-             * @param pull Update our data to match the DatabaseMetaData. 
+             * @param pull Update our metadata to match the DatabaseMetaData. 
+             * @param push Update our database to match our metadata. 
              *
              */
-            public void diff(boolean pull);
+            public List<JdbcResource.Diference> diff(boolean push, boolean pull);
 
             /**
              * Compare our data with DatabaseMetaData from our DataSource. 
              * @param metadata The DatabaseMetaData to compare against.
-             * @param pull Update our data to match the DatabaseMetaData. 
+             * @param pull Update our metadata to match the DatabaseMetaData. 
+             * @param push Update our database to match our metadata. 
              *
              */
-            public void diff(DatabaseMetaData metadata, boolean pull);
+            public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull);
 
             }
 
@@ -170,18 +175,20 @@ extends BaseResource
 
         /**
          * Compare our data with DatabaseMetaData from our DataSource. 
-         * @param pull Update our data to match the DatabaseMetaData. 
+         * @param pull Update our metadata to match the DatabaseMetaData. 
+         * @param push Update our database to match our metadata. 
          *
          */
-        public void diff(boolean pull);
+        public List<JdbcResource.Diference> diff(boolean push, boolean pull);
 
         /**
          * Compare our data with DatabaseMetaData from our DataSource. 
          * @param metadata The DatabaseMetaData to compare against.
-         * @param pull Update our data to match the DatabaseMetaData. 
+         * @param pull Update our metadata to match the DatabaseMetaData. 
+         * @param push Update our database to match our metadata. 
          *
          */
-        public void diff(DatabaseMetaData metadata, boolean pull);
+        public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull);
 
         }
     
@@ -231,18 +238,20 @@ extends BaseResource
 
             /**
              * Compare our data with DatabaseMetaData from our DataSource. 
-             * @param pull Update our data to match the DatabaseMetaData. 
+             * @param pull Update our metadata to match the DatabaseMetaData. 
+             * @param push Update our database to match our metadata. 
              *
              */
-            public void diff(boolean pull);
+            public List<JdbcResource.Diference> diff(boolean push, boolean pull);
 
             /**
              * Compare our data with DatabaseMetaData from our DataSource. 
              * @param metadata The DatabaseMetaData to compare against.
-             * @param pull Update our data to match the DatabaseMetaData. 
+             * @param pull Update our metadata to match the DatabaseMetaData. 
+             * @param push Update our database to match our metadata. 
              *
              */
-            public void diff(DatabaseMetaData metadata, boolean pull);
+            public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull);
             
             }
 
@@ -257,18 +266,20 @@ extends BaseResource
 
         /**
          * Compare our data with DatabaseMetaData from our DataSource. 
-         * @param pull Update our data to match the DatabaseMetaData. 
+         * @param pull Update our metadata to match the DatabaseMetaData. 
+         * @param push Update our database to match our metadata. 
          *
          */
-        public void diff(boolean pull);
+        public List<JdbcResource.Diference> diff(boolean push, boolean pull);
 
         /**
          * Compare our data with DatabaseMetaData from our DataSource. 
          * @param metadata The DatabaseMetaData to compare against.
-         * @param pull Update our data to match the DatabaseMetaData. 
+         * @param pull Update our metadata to match the DatabaseMetaData. 
+         * @param push Update our database to match our metadata. 
          *
          */
-        public void diff(DatabaseMetaData metadata, boolean pull);
+        public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull);
         
         }
     
@@ -318,18 +329,20 @@ extends BaseResource
 
             /**
              * Compare our data with DatabaseMetaData from our DataSource. 
-             * @param pull Update our data to match the DatabaseMetaData. 
+             * @param pull Update our metadata to match the DatabaseMetaData. 
+             * @param push Update our database to match our metadata. 
              *
              */
-            public void diff(boolean pull);
+            public List<JdbcResource.Diference> diff(boolean push, boolean pull);
 
             /**
              * Compare our data with DatabaseMetaData from our DataSource. 
              * @param metadata The DatabaseMetaData to compare against.
-             * @param pull Update our data to match the DatabaseMetaData. 
+             * @param pull Update our metadata to match the DatabaseMetaData. 
+             * @param push Update our database to match our metadata. 
              *
              */
-            public void diff(DatabaseMetaData metadata, boolean pull);
+            public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull);
 
             }
 
@@ -347,18 +360,20 @@ extends BaseResource
 
         /**
          * Compare our data with DatabaseMetaData from our DataSource. 
-         * @param pull Update our data to match the DatabaseMetaData. 
+         * @param pull Update our metadata to match the DatabaseMetaData. 
+         * @param push Update our database to match our metadata. 
          *
          */
-        public void diff(boolean pull);
+        public List<JdbcResource.Diference> diff(boolean push, boolean pull);
 
         /**
          * Compare our data with DatabaseMetaData from our DataSource. 
          * @param metadata The DatabaseMetaData to compare against.
-         * @param pull Update our data to match the DatabaseMetaData. 
+         * @param pull Update our metadata to match the DatabaseMetaData. 
+         * @param push Update our database to match our metadata. 
          *
          */
-        public void diff(DatabaseMetaData metadata, boolean pull);
+        public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull);
 
         }
     
@@ -400,18 +415,20 @@ extends BaseResource
 
         /**
          * Compare our data with DatabaseMetaData from our DataSource. 
-         * @param pull Update our data to match the DatabaseMetaData. 
+         * @param pull Update our metadata to match the DatabaseMetaData. 
+         * @param push Update our database to match our metadata. 
          *
          */
-        public void diff(boolean pull);
+        public List<JdbcResource.Diference> diff(boolean push, boolean pull);
 
         /**
          * Compare our data with DatabaseMetaData from our DataSource. 
          * @param metadata The DatabaseMetaData to compare against.
-         * @param pull Update our data to match the DatabaseMetaData. 
+         * @param pull Update our metadata to match the DatabaseMetaData. 
+         * @param push Update our database to match our metadata. 
          *
          */
-        public void diff(DatabaseMetaData metadata, boolean pull);
+        public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull);
 
         }
 
@@ -457,17 +474,105 @@ extends BaseResource
     
     /**
      * Compare our data with DatabaseMetaData from our DataSource. 
-     * @param pull Update our data to match the DatabaseMetaData. 
+     * @param pull Update our metadata to match the DatabaseMetaData. 
+     * @param push Update our database to match our metadata. 
      *
      */
-    public void diff(boolean pull);
+    public List<Diference> diff(boolean push, boolean pull);
 
     /**
      * Compare our data with DatabaseMetaData from our DataSource. 
      * @param metadata The DatabaseMetaData to compare against.
-     * @param pull Update our data to match the DatabaseMetaData. 
+     * @param pull Update our metadata to match the DatabaseMetaData. 
+     * @param push Update our database to match our metadata. 
      *
      */
-    public void diff(DatabaseMetaData metadata, boolean pull);
+    public List<Diference> diff(DatabaseMetaData metadata, List<Diference> results, boolean push, boolean pull);
 
+    /**
+     * Class to represent differences between the our metadata and the database.
+     *
+     */
+    public static class Diference
+        {
+
+        public enum Type
+            {
+            CATALOG(),
+            SCHEMA(),
+            TABLE(),
+            COLUMN()
+            };
+
+        public Diference(Type type, String meta, String real)
+            {
+            this.type = type;
+            this.meta = meta;
+            this.real = real;
+            }
+
+        private Type type;
+        public Type type()
+            {
+            return this.type;
+            }
+            
+        private String meta ;
+        public String meta()
+            {
+            return this.meta;
+            }
+
+        private String real ;
+        public String real()
+            {
+            return this.real;
+            }
+
+        public boolean equals(Object that)
+            {
+            if (that !=null)
+                {
+                if (that instanceof Diference)
+                    {
+                    return this.equals(
+                        (Diference) that
+                        );
+                    }
+                }
+            return false ;
+            }
+
+        public boolean equals(Diference that)
+            {
+            if (that == null) return false ;
+
+            if ((this.type() != null) && (that.type() == null)) return false ;
+            if ((this.type() == null) && (that.type() != null)) return false ;
+
+            if ((this.meta() != null) && (that.meta() == null)) return false ;
+            if ((this.meta() == null) && (that.meta() != null)) return false ;
+
+            if ((this.real() != null) && (that.real() == null)) return false ;
+            if ((this.real() == null) && (that.real() != null)) return false ;
+
+            if (this.type() != null)
+                {
+                if (this.type().equals(that.type()) == false) return false ;                 
+                }
+
+            if (this.meta() != null)
+                {
+                if (this.meta().equals(that.meta()) == false) return false ;             
+                }
+
+            if (this.real() != null)
+                {
+                if (this.real().equals(that.real()) == false) return false ;
+                }
+
+            return true ;
+
+            }
+        }
     }

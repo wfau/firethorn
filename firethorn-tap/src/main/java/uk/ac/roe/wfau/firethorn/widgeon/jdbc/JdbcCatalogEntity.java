@@ -20,7 +20,9 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc ;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Access;
@@ -49,6 +51,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatus.Status;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.Diference;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.JdbcCatalog;
 
 /**
@@ -78,7 +81,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.JdbcCatalog;
             query = "FROM JdbcCatalogEntity WHERE (parent = :parent) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "jdbc.catalog-select-parent.name",
+            name  = "jdbc.catalog-select-parent-name",
             query = "FROM JdbcCatalogEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
             )
         }
@@ -188,7 +191,7 @@ implements JdbcResource.JdbcCatalog
             {
             return super.first(
                 super.query(
-                    "jdbc.catalog-select-parent.name"
+                    "jdbc.catalog-select-parent-name"
                     ).setEntity(
                         "parent",
                         parent
@@ -292,16 +295,18 @@ implements JdbcResource.JdbcCatalog
                 }
 
             @Override
-            public void diff(boolean pull)
+            public List<JdbcResource.Diference> diff(boolean push, boolean pull)
                 {
-                diff(
+                return diff(
                     resource().metadata(),
+                    new ArrayList<JdbcResource.Diference>(),
+                    push,
                     pull
                     );
                 }
 
             @Override
-            public void diff(DatabaseMetaData metadata, boolean pull)
+            public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull)
                 {
                 log.debug("Comparing schema for catalog [{}]", name());
                 try {
@@ -333,6 +338,20 @@ implements JdbcResource.JdbcCatalog
                                     name
                                     );
                                 }
+                            else if (push)
+                                {
+                                log.debug("Deleting database schema [{}]", name);
+                                log.error("-- delete schema  -- ");
+                                }
+                            else {
+                                results.add(
+                                    new JdbcResource.Diference(
+                                        JdbcResource.Diference.Type.SCHEMA,
+                                        null,
+                                        name
+                                        )
+                                    );                                
+                                }
                             }
                         found.put(
                             name,
@@ -348,25 +367,43 @@ implements JdbcResource.JdbcCatalog
                             schema.name()
                             );
                         //
-                        // If we found a match, scan the schema.
-                        if (match != null)
+                        // If we didn't find a match, create the object or disable our entry.
+                        if (match == null)
                             {
-                            match.diff(
-                                metadata,
-                                pull
-                                );
-                            }
-                        //
-                        // If we didn't find a match, disable our entry.
-                        else {
                             log.debug("Registered schema [{}] is not in database", schema.name());
-                            if (pull)
+                            if (push)
+                                {
+                                log.debug("Creating database schema [{}]", schema.name());
+                                log.error("-- create table -- ");
+                                match = schema ;
+                                }
+                            else if (pull)
                                 {
                                 log.debug("Disabling registered schema [{}]", schema.name());
                                 schema.status(
                                     Status.MISSING
                                     );
                                 }
+                            else {
+                                results.add(
+                                    new JdbcResource.Diference(
+                                        JdbcResource.Diference.Type.SCHEMA,
+                                        schema.name(),
+                                        null
+                                        )
+                                    );                                
+                                }
+                            }
+                        //
+                        // If we have a match, then scan it.
+                        if (match != null)
+                            {
+                            match.diff(
+                                metadata,
+                                results,
+                                push,
+                                pull
+                                );
                             }
                         }
                     }
@@ -374,6 +411,7 @@ implements JdbcResource.JdbcCatalog
                     {
                     log.error("Error processing JDBC catalogs", ouch);
                     }
+                return results ;
                 }
             };
         }
@@ -440,24 +478,28 @@ implements JdbcResource.JdbcCatalog
         }
 
     @Override
-    public void diff(boolean pull)
+    public List<JdbcResource.Diference> diff(boolean push, boolean pull)
         {
-        diff(
+        return diff(
             resource().metadata(),
+            new ArrayList<JdbcResource.Diference>(),
+            push,
             pull
             );
         }
 
     @Override
-    public void diff(DatabaseMetaData metadata, boolean pull)
+    public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull)
         {
         //
         // Check this catalog.
         // ....
         //
         // Check our schemas.
-        this.schemas().diff(
+        return this.schemas().diff(
             metadata,
+            results,
+            push,
             pull
             );
         }
