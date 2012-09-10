@@ -253,6 +253,21 @@ extends TestBase
                 log.debug("Column [{}]", columnInfo.getName());
                 //
                 // Create our JdbcColumn.
+/*
+ *
+ * Code is available in private methods of uk.ac.starlink.table.jdbc.JDBCFormatter.
+ * Copy into our own class and modify so that we can be consistent on both sides of our service.
+ * http://starjava.jach.hawaii.edu/viewvc/trunk/table/src/main/uk/ac/starlink/table/jdbc/JDBCFormatter.java?view=annotate
+ * 
+ * 
+ * http://www.postgresql.org/docs/9.2/static/datatype-character.html
+ * http://hsqldb.org/doc/guide/ch09.html#alter_table-section
+ * http://www.star.bristol.ac.uk/~mbt/stil/
+ * https://docs.jboss.org/hibernate/orm/4.1/javadocs/org/hibernate/dialect/Dialect.html
+ * 
+ */
+
+                
                 JdbcColumn jdbcColumn = jdbcTable.columns().create(
                     clean(
                         unique(
@@ -263,6 +278,9 @@ extends TestBase
                 //
                 // Add the column to our expected errors.
 /*
+ * If the table hasn't been created yet,
+ * then a call to diff() won't pick up the columns.
+ *  
                 expected.add(
                     new JdbcResource.Diference(
                         JdbcResource.Diference.Type.COLUMN,

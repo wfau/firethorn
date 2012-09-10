@@ -32,7 +32,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
 import uk.ac.roe.wfau.firethorn.webapp.control.LocationHeaders;
 import uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder;
 import uk.ac.roe.wfau.firethorn.webapp.control.SpringPathBuilder;
-import uk.ac.roe.wfau.firethorn.widgeon.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 
 /**
  * Spring MVC controller for AdqlServices.

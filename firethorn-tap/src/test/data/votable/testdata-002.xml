@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<VOTABLE version="1.0">
+    <DEFINITIONS>
+    </DEFINITIONS>
+    <RESOURCE>
+        <TABLE name="test-data-alpha">
+            <DESCRIPTION>Test data Alpha</DESCRIPTION>
+            <FIELD name="alpha-string"  datatype="char" arraysize="20"/>
+            <FIELD name="alpha-integer" datatype="int"/>
+            <FIELD name="alpha-float"   datatype="float"/> 
+            <DATA>
+                <TABLEDATA>
+                    <TR><TD>270902046</TD><TD>2790411884</TD><TD>0.11563206</TD></TR>
+                    <TR><TD>2999015096</TD><TD>1033826</TD><TD>0.843523555</TD></TR>
+                    <TR><TD>2458627903</TD><TD>2398830668</TD><TD>0.2393923850</TD></TR>
+                    <TR><TD>141615028</TD><TD>588317169</TD><TD>0.138439685</TD></TR>
+                    <TR><TD>212903894</TD><TD>104254793</TD><TD>0.1488323284</TD></TR>
+                    <TR><TD>2333621778</TD><TD>163653539</TD><TD>0.801229177</TD></TR>
+                    <TR><TD>2090621231</TD><TD>2878119331</TD><TD>0.2357821048</TD></TR>
+                    <TR><TD>127441465</TD><TD>2310223675</TD><TD>0.6356170</TD></TR>
+                    <TR><TD>111420588</TD><TD>573813401</TD><TD>0.2210626499</TD></TR>
+                    <TR><TD>907618192</TD><TD>225416979</TD><TD>0.2827647</TD></TR>
+                </TABLEDATA>
+            </DATA>
+        </TABLE>
+        <TABLE name="test-data-beta">
+            <DESCRIPTION>Test data Beta</DESCRIPTION>
+            <FIELD name="beta-string"  datatype="char" arraysize="21"/>
+            <FIELD name="beta-integer" datatype="int"/>
+            <FIELD name="beta-float"   datatype="float"/> 
+            <DATA>
+                <TABLEDATA>
+                    <TR><TD>270902046</TD><TD>2790411884</TD><TD>0.11563206</TD></TR>
+                    <TR><TD>2999015096</TD><TD>1033826</TD><TD>0.843523555</TD></TR>
+                    <TR><TD>2458627903</TD><TD>2398830668</TD><TD>0.2393923850</TD></TR>
+                    <TR><TD>141615028</TD><TD>588317169</TD><TD>0.138439685</TD></TR>
+                    <TR><TD>212903894</TD><TD>104254793</TD><TD>0.1488323284</TD></TR>
+                    <TR><TD>2333621778</TD><TD>163653539</TD><TD>0.801229177</TD></TR>
+                    <TR><TD>2090621231</TD><TD>2878119331</TD><TD>0.2357821048</TD></TR>
+                    <TR><TD>127441465</TD><TD>2310223675</TD><TD>0.6356170</TD></TR>
+                    <TR><TD>111420588</TD><TD>573813401</TD><TD>0.2210626499</TD></TR>
+                    <TR><TD>907618192</TD><TD>225416979</TD><TD>0.2827647</TD></TR>
+                </TABLEDATA>
+            </DATA>
+        </TABLE>
+    </RESOURCE>
+</VOTABLE>

@@ -24,3 +24,9 @@
 
 
 
+
+hg clone ssh://Dave@wfau.metagrid.co.uk:22//var/local/projects/wfau/firethorn/hg
+
+hg clone ssh://Stelios@wfau.metagrid.co.uk:22//var/local/wfau/projects/firethorn/code
+
+
