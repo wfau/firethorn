@@ -1,0 +1,72 @@
+
+#
+# Useful documentation
+http://hgbook.red-bean.com/read/index.html
+http://hgbook.red-bean.com/read/a-tour-of-mercurial-merging-work.html
+
+
+[Zarquan@zarquan ~]$
+
+    ssh root@wfau.metagrid.co.uk
+
+[root@li276-93 ~]# 
+
+    #
+    # Create an empty repository.
+    mkdir /var/local/wfau/projects/clearwing
+    pushd /var/local/wfau/projects/clearwing
+
+        hg init code
+
+        chgrp -R users code
+        chmod -R g+w code
+        pushd code
+            find . -type d -exec chmod g+ws '{}' \;
+        popd
+
+    popd
+
+
+    #
+    # Update the Apache Mercurial config.
+    vi  /var/local/wfau/test/conf/wsgi/firethorn.conf
+
+        [web]
+        style = coal
+
+        [paths]
+        firethorn = /var/local/wfau/projects/firethorn/code
+        clearwing = /var/local/wfau/projects/clearwing/code
+
+
+
+[Zarquan@zarquan ~]$
+
+    mkdir /var/local/projects/wfau/clearwing
+    pushd /var/local/projects/wfau/clearwing
+
+        hg clone ssh://Dave@wfau.metagrid.co.uk:22//var/local/wfau/projects/clearwing/code hg
+
+        pushd hg
+
+            vi .hg/hgrc
+
+                [paths]
+                default = ssh://Dave@wfau.metagrid.co.uk:22//var/local/wfau/projects/clearwing/code
+
+                [ui]
+                username = Dave Morris <dave.morris@bristol.ac.uk>
+
+            hg pull ssh://Dave@wfau.metagrid.co.uk:22//var/local/wfau/projects/clearwing/code
+            vi readme.txt
+            hg add
+            hg push ssh://Dave@wfau.metagrid.co.uk:22//var/local/wfau/projects/clearwing/code
+
+        popd
+    popd
+    
+    
+To get a local copy
+hg clone ssh://Stelios@wfau.metagrid.co.uk:22//var/local/wfau/projects/clearwing/code clearwing
+
+

@@ -1,0 +1,343 @@
+
+Work in progress .... 
+CatalogNodeSetTestCase
+-----------------
+
+Widgeon
+    {
+    Catalogs catalogs()
+        {
+        Iter<Catalog> select();
+        Catalog create();
+        }
+    }
+
+Catalog
+    {
+    }
+    
+
+WidgeonNode
+    {
+    URI ident();
+
+    Widgeon widgeon();
+
+    CatalogNodeSet catalogs();
+
+    }
+
+CatalogNodeSet
+    {
+    Factory
+        {
+        CatalogNodeSet node(URI ident, CatalogNodeFactory factory)
+        CatalogNodeSet node(URI ident, URI type, CatalogNodeFactory factory)
+        }
+
+    URI ident();
+    Iter<CatalogNode> iter();
+
+    }
+
+CatalogNode
+    {
+    Factory
+        {
+        CatalogNode node(URI ident)
+        CatalogNode node(URI ident, URI type)
+        }
+
+    URI ident();
+    }
+
+
+
+WidgeonNodeReader
+
+    // Only be one CatalogNodeSet
+    // Why the iterable list of reader types ?
+    // Because we have declared it to be a complex node :-? ... with a specific type inside :-(
+
+----------------------------------------------------------------------------------------------------------
+
+// All this started because we wanted to have the whole set in one get response.
+// Which is causing untold problems trying to get nested sets to work.
+
+// If we treate them as separate nodes.
+
+<node ident='uri://widgeon/000' type='urn:widgeon'>
+    <properties>
+        <property type='urn:widgeon.catalogs'>uri://widgeon/000/catalogs</property>
+    </properties>
+</node>
+    
+<node ident='uri://widgeon/000/catalogs' type='urn:widgeon.catalogs'>
+    <properties>
+    </properties>
+    <nodes>
+
+        <node ident='uri://catalog/000' type='urn:catalog'>
+            <properties/>
+        </node>
+        <node ident='uri://catalog/001' type='urn:catalog'>
+            <properties/>
+        </node>
+
+    </nodes>
+</node>
+
+// Tempting to follow the file system equivalent, and treat a widgeon as set of catalogs.
+// Which it is ... but it might contain other things too.
+
+A column has
+
+    jdbc type
+    jdbc name
+
+    adql type
+    adql name
+    adql ucd1
+    adql ucd1plus
+
+A table has two sets of children.
+
+    columns
+    indexes
+
+So
+    * Widgeon HasA set of catalogs
+rather than
+    * Widgeon IsA set of catalogs
+
+
+------------------------------------------------------------------------------------------------------------------
+
+    We could just create default (unique) name, and then allow you to change the name immediately.
+
+    If we don't commit the transaction until later, then no one will notice ?
+    Hibernate requires a name ?
+
+
+
+    Create a proxy for the real Catalog, trigger the commit when the properties are done.
+    Add a commit() method to Node that triggers the real Catalog to be created.
+
+    We could be sneakier, and trigger the create when the name is set.
+    but .. what happens if the name isn't set ?
+    how do we reject it.
+
+    or we could break the model again, stack up the properties
+    until we have a name, then do the real create.
+    
+    class CatalogProxy
+        {
+        public Catalog commit();
+        }
+
+    class CatalogProxyImpl
+    implements Catalog, CatalogProxy
+        {
+        Widgeon widgeon ;        
+        Catalog catalog ;        
+
+        public  String ident()
+            {
+            if (null != catalog)
+                {
+                return catalog.ident();
+                }
+            else {
+                return null ;
+                }
+            } 
+
+        private String name ;
+        public  String name()
+            {
+            if (null != catalog)
+                {
+                return catalog.name();
+                }
+            else {
+                return this.name ;
+                }
+            } 
+
+        public Catalog commit()
+            {
+            if (null != catalog)
+                {
+                // done
+                }
+            if (null == name)
+                {
+                // no name
+                }
+
+            catalog = widgeon.catalogs().create(
+                name
+                );
+
+            return catalog ;
+            }
+        }
+
+
+-----------------------------------------------------------------------
+
+    Widgeon
+        {
+        AccessList access()
+        set of Acl where target = this AND component = ''
+
+        interface Catalogs
+            {
+            // Implied or generated from the parent Widgeon.
+            AccessList access()
+            Identity owner()
+            set of Acl where target = Widgeon.this AND component = 'catalogs'
+
+            Catalog create(String name)
+            Catalog select(String name)
+            Iterable<Catalog> select()
+
+            }
+
+        }
+
+-------------------------
+
+    WidgeonService
+
+        GET widgeon/21
+        <node ident='widgeon/21' type='widgeon'>
+            <properties>
+                <property ident='access'>access/992</property>
+                <property ident='catalogs'>widgeon/21/catalogs</property>
+                <property ident='catalogs'>catalogs/21</property>
+            </properties>
+        </node>
+
+    CatalogsService
+
+        GET widgeon/21/catalogs
+        <node ident='widgeon/21/catalogs' type='catalogservice'>
+            <properties>
+                <!--+
+                    +-->
+                <property ident='owner'>identity/2</property>
+                <property ident='access'>access/234</property>
+                <property ident='access'>widgeon/21/catalogs/access</property>
+                <property ident='widgeon'>widgeon/21</property>
+            </properties>
+            <nodes>
+                <node ident='catalog/776' type='catalog'>
+                </node>
+                <node ident='catalog/346' type='catalog'>
+                </node>
+            </nodes>
+        </node>
+
+        GET widgeon/21/catalogs?name=fred
+        <node ident='widgeon/21/catalogs?name=fred' type='catalogservice'>
+            <properties>
+                <!--+
+                    +-->
+                <property ident='owner'>identity/2</property>
+                <property ident='access'>access/234</property>
+                <property ident='access'>widgeon/21/catalogs/access</property>
+                <property ident='widgeon'>widgeon/21</property>
+            </properties>
+            <nodes>
+                <node ident='catalog/776' type='catalog'>
+                </node>
+                <node ident='catalog/346' type='catalog'>
+                </node>
+            </nodes>
+        </node>
+
+        PUT 
+        <node ident='albert' type='catalog'>
+            <properties/>
+        </node>
+        HTTP 303 --> catalog/623
+
+        GET catalog/623
+        <node ident='catalog/623' type='catalog'>
+            <properties>
+                <property ident='name'>albert</property>
+                <property ident='widgeon'>widgeon/21</property>
+            </properties>
+        </node>
+
+-----------------------------------------------------------------------
+
+    Widgeon
+        {
+        Access access()
+        set of Acl where target = this
+
+        interface Catalogs
+            {
+            Catalog create(String name)
+            Catalog select(String name)
+            Iterable<Catalog> select()
+            }
+
+        }
+
+-------------------------
+
+    WidgeonService
+
+        GET widgeon/21
+        <node ident='widgeon/21' type='widgeon'>
+            <properties>
+                <property ident='owner'>identity/2</property>
+                <property ident='access'>access/992</property>
+                <property ident='catalogs'>widgeon/21/catalogs</property>
+                <property ident='catalogs'>catalogs/21</property>
+            </properties>
+        </node>
+
+    CatalogsService
+
+        GET widgeon/21/catalogs
+        <nodes ident='widgeon/21/catalogs' type='catalogservice'>
+            <!--+
+                | No way to link this back to the parent Widgeon.
+                +-->
+            <node ident='catalog/776' type='catalog'>
+            </node>
+            <node ident='catalog/346' type='catalog'>
+            </node>
+        </nodes>
+
+        GET widgeon/21/catalogs?name=fred
+        <nodes ident='widgeon/21/catalogs?name=fred' type='catalogservice'>
+            <!--+
+                | No way to link this back to the parent Widgeon.
+                +-->
+            <node ident='catalog/776' type='catalog'>
+            </node>
+            <node ident='catalog/346' type='catalog'>
+            </node>
+        </nodes>
+
+        PUT 
+        <node ident='albert' type='catalog'>
+            <properties/>
+        </node>
+        HTTP 303 --> catalog/623
+
+        GET catalog/623
+        <node ident='catalog/623' type='catalog'>
+            <properties>
+                <property ident='name'>albert</property>
+            </properties>
+        </node>
+
+
+
+
