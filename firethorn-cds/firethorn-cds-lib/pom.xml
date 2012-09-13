@@ -35,7 +35,7 @@
     <name>CDS libraries</name>
     <description>
         <![CDATA[
-        Local build of the CDS TAP, UWS and ADQL toolkits.
+        Local build of the CDS TAP, UWS and ADQL libraries.
         ]]>
     </description>
     

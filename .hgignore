@@ -4,6 +4,7 @@ syntax: glob
 *.*~
 
 # Maven build directories.
+target
 */target
 
 # Temp data directories.

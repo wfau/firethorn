@@ -38,12 +38,14 @@
     <artifactId>firethorn-spring</artifactId>
     <packaging>pom</packaging>
 
-    <name>WFAU FireThorn Spring components</name>
+    <name>Spring components</name>
     <description>
         <![CDATA[
-        This is a placeholder POM to include all of the Spring and Hibernate related dependencies in one place.
+        A placeholder POM to include all of the Spring and Hibernate related dependencies in one place.
         ]]>
     </description>
+
+    <url>http://redmine.roe.ac.uk/projects/wva</url>
 
     <properties>
 
@@ -399,13 +401,44 @@
 
     </dependencies>
 
-<!--+
-firefox 'http://docs.jboss.org/hibernate/core/4.0/manual/en-US/html/inheritance.html' &
-firefox 'http://viralpatel.net/blogs/hibernate-inheritence-table-per-hierarchy-mapping/' &
-firefox 'http://docs.oracle.com/javase/6/docs/api/index.html' &
-firefox 'http://static.springsource.org/spring/docs/current/spring-framework-reference/html/mvc.html' &
-+-->
+    <reporting>
+        <plugins>
 
+            <!--+
+                | Project reports.
+                | https://maven.apache.org/plugins/maven-project-info-reports-plugin/
+                +-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.1.2</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>index</report>
+                            <report>summary</report>
+                            <report>license</report>
+                            <report>project-team</report>
+                            <report>scm</report>
+                            <report>issue-tracking</report>
+                            <!--report>cim</report-->
+                            <report>dependencies</report>
+                            <!--report>dependency-convergence</report-->
+                            <!--report>dependency-info</report-->
+                            <!--report>dependency-management</report-->
+                            <!--report>distribution-management</report-->
+                            <!--report>help</report-->
+                            <!--report>mailing-list</report-->
+                            <!--report>modules</report-->
+                            <!--report>plugin-management</report-->
+                            <report>plugins</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+        </plugins>
+    </reporting>
 
 </project>
 

@@ -35,10 +35,10 @@
 
     <packaging>pom</packaging>
 
-    <name>FireThorn CDS components</name>
+    <name>CDS components</name>
     <description>
         <![CDATA[
-        FireThorn CDS components.
+        Maven build for components from CDS.
         ]]>
     </description>
 

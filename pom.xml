@@ -47,7 +47,7 @@
         <maven>2.2.1</maven>
     </prerequisites>
 
-    <name>WFAU FireThorn project</name>
+    <name>FireThorn project</name>
     <description>
         <![CDATA[
         WFAU FireThorn project.
@@ -109,11 +109,14 @@
     <scm>
         <tag>tip</tag>
         <url>http://wfau.metagrid.co.uk/code/firethorn/file/tip/</url>
-        <connection>scm:hg:file://${basedir}</connection>
-        <developerConnection>scm:hg:file://${basedir}</developerConnection>
         <!--+
+            | https://maven.apache.org/scm/
+            | https://maven.apache.org/scm/mercurial.html
+        <connection>scm:hg:file://${basedir}</connection>
         <connection>scm:hg:http://wfau.metagrid.co.uk/code/firethorn/</connection>
+        <developerConnection>scm:hg:file://${basedir}</developerConnection>
             +-->
+        <connection>scm:hg:http://wfau.metagrid.co.uk/code/firethorn/</connection>
     </scm>
 
     <issueManagement>
@@ -127,6 +130,35 @@
         <url>...</url>
         +-->
     </ciManagement>
+
+    <distributionManagement>
+
+        <repository>
+            <id>temp-repo</id>
+            <url>file:///tmp/firethorn/repo</url>
+            <name>temp-repo</name>
+ 
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy> fail</checksumPolicy>
+            </releases>
+
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy> fail</checksumPolicy>
+            </snapshots>
+ 
+        </repository>
+
+        <site>
+            <id>temp-site</id>
+            <url>file:///tmp/firethorn/site</url>
+            <name>temp-site</name>
+        </site>
+
+    </distributionManagement>
 
     <!--+
         | Maven parent/child projects.
@@ -278,16 +310,19 @@
                 | http://www.star.bris.ac.uk/~mbt/stil/
                 +-->
             <dependency>
+                <!--url>http://www.star.bris.ac.uk/~mbt/stil/</url-->
                 <groupId>uk.ac.starlink</groupId>
                 <artifactId>stil-util</artifactId>
                 <version>3.0.2</version>
             </dependency>
             <dependency>
+                <!--url>http://www.star.bris.ac.uk/~mbt/stil/</url-->
                 <groupId>uk.ac.starlink</groupId>
                 <artifactId>stil-table</artifactId>
                 <version>3.0.2</version>
             </dependency>
             <dependency>
+                <!--url>http://www.star.bris.ac.uk/~mbt/stil/</url-->
                 <groupId>uk.ac.starlink</groupId>
                 <artifactId>stil-votable</artifactId>
                 <version>3.0.2</version>
@@ -560,21 +595,60 @@
         <plugins>
 
             <!--+
+                | Site plugin.
+                | https://maven.apache.org/plugins/maven-site-plugin/
+                | https://maven.apache.org/plugins/maven-site-plugin/examples/sitedescriptor.html
+                | https://maven.apache.org/doxia/doxia-sitetools/doxia-decoration-model/decoration.html
+                +-->
+
+            <!--+
+                | Project reports.
+                | https://maven.apache.org/plugins/maven-project-info-reports-plugin/
+                +-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.1.2</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>index</report>
+                            <report>summary</report>
+                            <report>license</report>
+                            <report>project-team</report>
+                            <report>scm</report>
+                            <report>issue-tracking</report>
+                            <!--report>cim</report-->
+                            <!--report>dependencies</report-->
+                            <!--report>dependency-convergence</report-->
+                            <!--report>dependency-info</report-->
+                            <report>dependency-management</report>
+                            <!--report>distribution-management</report-->
+                            <!--report>help</report-->
+                            <!--report>mailing-list</report-->
+                            <!--report>modules</report-->
+                            <!--report>plugin-management</report-->
+                            <report>plugins</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <!--+
                 | SureFire unit test report.
                 | https://maven.apache.org/plugins/maven-surefire-plugin/
                 | https://maven.apache.org/plugins/maven-surefire-plugin/examples/junit.html
-                +-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
                 <version>2.12.3</version>
             </plugin>
+                +-->
 
             <!--+
                 | Cobertura code coverage report.
                 | http://cobertura.sourceforge.net/
                 | http://mojo.codehaus.org/cobertura-maven-plugin/
-                +-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
@@ -586,12 +660,12 @@
                     </formats>
                 </configuration>
             </plugin>
+                +-->
 
             <!--+
                 | PMD report.
                 | http://pmd.sourceforge.net/
                 | https://maven.apache.org/plugins/maven-pmd-plugin/
-                +-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
@@ -602,23 +676,23 @@
                     <targetjdk>${project.javaversion}</targetjdk>
                 </configuration>
             </plugin>
+                +-->
 
             <!--+
                 | Checkstyle report.
                 | http://checkstyle.sourceforge.net/
                 | https://maven.apache.org/plugins/maven-checkstyle-plugin/
-                +-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>2.9.1</version>
             </plugin>
+                +-->
 
             <!--+
                 | JavaDoc report.
                 | https://maven.apache.org/plugins/maven-javadoc-plugin/
                 | https://maven.apache.org/plugins/maven-javadoc-plugin/usage.html
-                +-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -642,6 +716,7 @@
                     </reportSet>
                 </reportSets>
             </plugin>
+                +-->
 
             <!--+
                 | ChangeLog report.
@@ -674,18 +749,18 @@
             <!--+
                 | Maven JXR Plugin
                 | http://maven.apache.org/plugins/maven-jxr-plugin/
-                +-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
                 <version>2.3</version>
                 <configuration>
                     <linkJavadoc>true</linkJavadoc>
-                    <!--+
+                    <!==+
                     <javadocDir>/path/to/javadocs</javadocDir>
-                        +-->
+                        +==>
                 </configuration>
             </plugin>
+                +-->
 
 
         </plugins>
