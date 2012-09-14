@@ -103,11 +103,11 @@ extends ControllerBase
 	 * Bean wrapper to enable the JSON converter to process a DataService.  
 	 *
 	 */
-	public class DataServiceBean
+	public static class DataServiceBean
 	    {
         private String url ;
         private DataService service ;
-        private DataServiceBean(String url , DataService service)
+        public DataServiceBean(String url , DataService service)
             {
             this.url = url ;
             this.service = service ;

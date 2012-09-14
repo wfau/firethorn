@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.mallard;
 
+import java.util.Iterator;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Controller;
@@ -27,6 +29,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -34,6 +37,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
 import uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder;
 import uk.ac.roe.wfau.firethorn.webapp.control.SpringPathBuilder;
 import uk.ac.roe.wfau.firethorn.webapp.control.LocationHeaders;
+import uk.ac.roe.wfau.firethorn.webapp.mallard.DataServiceController.DataServiceBean;
 
 import uk.ac.roe.wfau.firethorn.mallard.DataService ;
 
@@ -145,6 +149,49 @@ extends ControllerBase
 
         }
 
+    /**
+     * GET request to select all.
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces="application/json")
+    public Iterable<DataServiceController.DataServiceBean> jsonSelect(
+        final WebRequest request,
+        final ModelAndView model
+        ){
+        log.debug("select()");
+
+        final Iterable<DataService> services = womble().services().select();
+
+        return new Iterable<DataServiceController.DataServiceBean>()
+            {
+            public Iterator<DataServiceBean> iterator()
+                {
+                return new Iterator<DataServiceBean>()
+                    {
+                    Iterator<DataService> inner = services.iterator();
+                    public boolean hasNext()
+                        {
+                        return inner.hasNext();
+                        }
+
+                    public DataServiceBean next()
+                        {
+                        return new DataServiceBean(
+                            null,
+                            inner.next()
+                            );
+                        }
+                    public void remove()
+                        {
+                        inner.remove();
+                        }
+                    };
+                }
+            };
+        }
+	
+	
     /**
      * GET request to select by name.
      *
