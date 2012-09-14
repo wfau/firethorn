@@ -21,29 +21,29 @@ PathBuilder paths = new ServletPathBuilder(
     </head>
     <body>
         <div>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>
+            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.SEARCH_PATH) %>'>search</a>]</span>
+            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.SELECT_PATH) %>'>select</a>]</span>
+            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.CREATE_PATH) %>'>create</a>]</span>
         </div>
         <div>
             ADQL TAP Services
             <div>
-                Select a service by name
-                <form method='GET' action='<%= paths.path(DataServicesController.CONTROLLER_PATH, "select") %>'>
-                    Name <input type='text' name='<%= DataServicesController.SELECT_NAME %>' value=''/>
-                    <input type='submit' value='Go'/>
-                </form>
-            </div>
-            <div>
                 Search for services with text
-                <form method='GET' action='<%= paths.path(DataServicesController.CONTROLLER_PATH, "search") %>'>
+                <form method='GET' action='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.SEARCH_PATH) %>'>
                     Text <input type='text' name='<%= DataServicesController.SEARCH_TEXT %>' value=''/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>
             <div>
+                Select a service by name
+                <form method='GET' action='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.SELECT_PATH) %>'>
+                    Name <input type='text' name='<%= DataServicesController.SELECT_NAME %>' value=''/>
+                    <input type='submit' value='Go'/>
+                </form>
+            </div>
+            <div>
                 Create new service
-                <form method='POST' action='<%= paths.path(DataServicesController.CONTROLLER_PATH, "create") %>'>
+                <form method='POST' action='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.CREATE_PATH) %>'>
                     Name <input type='text' name='<%= DataServicesController.CREATE_NAME %>' value=''/>
                     <input type='submit' value='Go'/>
                 </form>

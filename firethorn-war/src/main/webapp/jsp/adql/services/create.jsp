@@ -26,14 +26,14 @@ String name = (String) request.getAttribute(
     </head>
     <body>
         <div>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>
+            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.SEARCH_PATH) %>'>search</a>]</span>
+            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.SELECT_PATH) %>'>select</a>]</span>
+            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.CREATE_PATH) %>'>create</a>]</span>
         </div>
         <div>
             Create an ADQL TAP Service
             <div>
-                <form method='POST' action='<%= paths.path(DataServicesController.CONTROLLER_PATH, "create") %>'>
+                <form method='POST' action='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.CREATE_PATH) %>'>
                     Name <input type='text' name='<%= DataServicesController.CREATE_NAME %>' value='<%= ((name != null) ? name : "") %>'/>
                     <input type='submit' value='Go'/>
                 </form>

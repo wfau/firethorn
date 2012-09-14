@@ -30,14 +30,14 @@ Iterable<DataService> services = (Iterable<DataService>) request.getAttribute(
     </head>
     <body>
         <div>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>
+            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.SEARCH_PATH) %>'>search</a>]</span>
+            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.SELECT_PATH) %>'>select</a>]</span>
+            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.CREATE_PATH) %>'>create</a>]</span>
         </div>
         <div>
             Search for ADQL TAP Services
             <div>
-                <form method='GET' action='<%= paths.path(DataServicesController.CONTROLLER_PATH, "search") %>'>
+                <form method='GET' action='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.SEARCH_PATH) %>'>
                     Text <input type='text' name='<%= DataServicesController.SEARCH_TEXT %>' value='<%= ((text != null) ? text : "" ) %>'/>
                     <input type='submit' value='Go'/>
                 </form>

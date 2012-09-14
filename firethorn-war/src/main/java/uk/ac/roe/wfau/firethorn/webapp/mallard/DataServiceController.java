@@ -17,6 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.mallard;
 
+import java.net.URL;
+import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Controller;
@@ -27,6 +32,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
 import uk.ac.roe.wfau.firethorn.mallard.DataService ;
 
@@ -86,6 +93,70 @@ extends ControllerBase
             return model ;
             }
 
+        catch (final Exception ouch)
+            {
+            return null ;
+            }
+        }
+
+	/**
+	 * Bean wrapper to enable the JSON converter to process a DataService.  
+	 *
+	 */
+	public class DataServiceBean
+	    {
+        private String url ;
+        private DataService service ;
+        private DataServiceBean(String url , DataService service)
+            {
+            this.url = url ;
+            this.service = service ;
+            }
+	    public String getUrl()
+	        {
+	        return this.url;
+	        }
+        public String getIdent()
+            {
+            return service.ident().toString();
+            }
+        public String getName()
+            {
+            return service.name();
+            }
+        public Date getCreated()
+            {
+            return service.created();
+            }
+        public Date getModified()
+            {
+            return service.modified();
+            }
+	    }
+
+	/**
+     * JSON GET request.
+     *
+     */
+	@ResponseBody
+    @RequestMapping(method=RequestMethod.GET, produces="application/json")
+    public DataServiceBean jsonGet(
+        @PathVariable("ident") final String ident,
+        final HttpServletRequest request,
+        final ModelAndView model
+        ){
+        log.debug("select(String ident)");
+        log.debug("  Ident [{}]", ident);
+        try {
+            return new DataServiceBean(
+                request.getRequestURL().toString(),
+                womble().services().select(
+                    womble().services().ident(
+                        ident
+                        )
+                    )
+                );
+            }
         catch (final Exception ouch)
             {
             return null ;

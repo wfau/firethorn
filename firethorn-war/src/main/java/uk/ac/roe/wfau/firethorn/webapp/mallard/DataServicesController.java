@@ -54,6 +54,24 @@ extends ControllerBase
     public static final String CONTROLLER_PATH = "adql/services" ;
 
     /**
+     * URL path for the select method.
+     * 
+     */
+    public static final String SELECT_PATH = "select" ;
+
+    /**
+     * URL path for the search method.
+     * 
+     */
+    public static final String SEARCH_PATH = "search" ;
+
+    /**
+     * URL path for the create method.
+     * 
+     */
+    public static final String CREATE_PATH = "create" ;
+
+    /**
      * MVC property for the Service name.
      *
      */
@@ -105,7 +123,7 @@ extends ControllerBase
      * GET request to select all.
      *
      */
-	@RequestMapping(value="select", method=RequestMethod.GET)
+	@RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
 	public ModelAndView select(
         final WebRequest request,
 	    final ModelAndView model
@@ -131,7 +149,7 @@ extends ControllerBase
      * GET request to select by name.
      *
      */
-	@RequestMapping(value="select", method=RequestMethod.GET, params=SELECT_NAME)
+	@RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, params=SELECT_NAME)
 	public ModelAndView select(
         @RequestParam(SELECT_NAME) final String name,
         final WebRequest request,
@@ -166,7 +184,7 @@ extends ControllerBase
      * (displays the HTML form)
      *
      */
-	@RequestMapping(value="search", method=RequestMethod.GET)
+	@RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
 	public ModelAndView search(
         final WebRequest request,
 	    final ModelAndView model
@@ -185,7 +203,7 @@ extends ControllerBase
      * GET request to search by text.
      *
      */
-	@RequestMapping(value="search", method=RequestMethod.GET, params=SEARCH_TEXT)
+	@RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET, params=SEARCH_TEXT)
 	public ModelAndView search(
         @RequestParam(SEARCH_TEXT) final String text,
         final WebRequest request,
@@ -220,7 +238,7 @@ extends ControllerBase
      * (displays the HTML form)
      *
      */
-	@RequestMapping(value="create", method=RequestMethod.GET)
+	@RequestMapping(value=CREATE_PATH, method=RequestMethod.GET)
 	public ModelAndView create(
         final WebRequest request,
 	    final ModelAndView model
@@ -238,7 +256,7 @@ extends ControllerBase
      * POST request to create a new DataService.
      *
      */
-	@RequestMapping(value="create", method=RequestMethod.POST)
+	@RequestMapping(value=CREATE_PATH, method=RequestMethod.POST)
 	public ResponseEntity<String> create(
         @RequestParam(CREATE_NAME) final String name,
         final WebRequest request,
@@ -260,6 +278,7 @@ extends ControllerBase
         return new ResponseEntity<String>(
             new LocationHeaders(
                 builder.location(
+                    //DataServiceController.CONTROLLER_PATH,
                     "adql/service",
                     service
                     )
