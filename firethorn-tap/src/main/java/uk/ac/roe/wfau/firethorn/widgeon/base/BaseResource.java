@@ -20,15 +20,6 @@ package uk.ac.roe.wfau.firethorn.widgeon.base ;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource.Catalogs;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataCatalog;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataColumn;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataSchema;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataTable;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataCatalog.Schemas;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataColumn.Factory;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataSchema.Tables;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataTable.Columns;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 
 /**
@@ -64,17 +55,17 @@ extends DataResource
          * Select resources by name.
          *
          */
-        public Iterable<ResourceType> select(String name);
+        public Iterable<ResourceType> select(final String name);
 
         /**
          * Search for resources by name.
          *
          */
-        public Iterable<ResourceType> search(String text);
+        public Iterable<ResourceType> search(final String text);
 
         /**
          * Access to our view factory.
-         * 
+         *
          */
         public AdqlResource.Factory views();
 
@@ -90,7 +81,7 @@ extends DataResource
          * Create a new view of the resource.
          *
          */
-        public AdqlResource create(String name);
+        public AdqlResource create(final String name);
 
         /**
          * Select all the views of the resource.
@@ -102,7 +93,7 @@ extends DataResource
          * Select a named view of the resource.
          *
          */
-        public AdqlResource select(String name)
+        public AdqlResource select(final String name)
         throws NameNotFoundException;
 
         }
@@ -126,6 +117,7 @@ extends DataResource
      * Access to this resource's catalogs.
      *
      */
+    @Override
     public Catalogs<?> catalogs();
 
     /**
@@ -144,7 +136,7 @@ extends DataResource
             {
             /**
              * Access to our View factory.
-             * 
+             *
              */
             public AdqlResource.AdqlCatalog.Factory views();
 
@@ -167,7 +159,7 @@ extends DataResource
              * Search for catalog view based on parent resource.
              *
              */
-            public AdqlResource.AdqlCatalog search(AdqlResource parent);
+            public AdqlResource.AdqlCatalog search(final AdqlResource parent);
 
             }
 
@@ -190,6 +182,7 @@ extends DataResource
          * Access to this catalog's schemas.
          *
          */
+        @Override
         public BaseResource.BaseCatalog.Schemas<?> schemas();
 
         /**
@@ -216,7 +209,7 @@ extends DataResource
             {
             /**
              * Access to our View factory.
-             * 
+             *
              */
             public AdqlResource.AdqlSchema.Factory views();
 
@@ -238,14 +231,14 @@ extends DataResource
              * Search for schema view based on parent resource.
              *
              */
-            public AdqlResource.AdqlSchema search(AdqlResource parent);
+            public AdqlResource.AdqlSchema search(final AdqlResource parent);
 
             /**
              * Search for schema view based on parent catalog.
              *
              */
-            public AdqlResource.AdqlSchema search(AdqlResource.AdqlCatalog parent);
-            
+            public AdqlResource.AdqlSchema search(final AdqlResource.AdqlCatalog parent);
+
             }
 
         /**
@@ -267,6 +260,7 @@ extends DataResource
          * Access to this schema's tables.
          *
          */
+        @Override
         public Tables<?> tables();
 
         /**
@@ -299,7 +293,7 @@ extends DataResource
             {
             /**
              * Access to our view factory.
-             * 
+             *
              */
             public AdqlResource.AdqlTable.Factory views();
 
@@ -321,19 +315,19 @@ extends DataResource
              * Search for table view based on parent resource.
              *
              */
-            public AdqlResource.AdqlTable search(AdqlResource parent);
+            public AdqlResource.AdqlTable search(final AdqlResource parent);
 
             /**
              * Search for table view based on parent catalog.
              *
              */
-            public AdqlResource.AdqlTable search(AdqlResource.AdqlCatalog parent);
-            
+            public AdqlResource.AdqlTable search(final AdqlResource.AdqlCatalog parent);
+
             /**
              * Search for table view based on parent schema.
              *
              */
-            public AdqlResource.AdqlTable search(AdqlResource.AdqlSchema parent);
+            public AdqlResource.AdqlTable search(final AdqlResource.AdqlSchema parent);
 
             }
 
@@ -356,6 +350,7 @@ extends DataResource
          * Access to this table's Columns.
          *
          */
+        @Override
         public Columns<?> columns();
 
         /**
@@ -394,7 +389,7 @@ extends DataResource
             {
             /**
              * Access to our view factory.
-             * 
+             *
              */
             public AdqlResource.AdqlColumn.Factory views();
 
@@ -416,25 +411,25 @@ extends DataResource
              * Search for column view based on parent resource.
              *
              */
-            public AdqlResource.AdqlColumn search(AdqlResource parent);
+            public AdqlResource.AdqlColumn search(final AdqlResource parent);
 
             /**
              * Search for column view based on parent catalog.
              *
              */
-            public AdqlResource.AdqlColumn search(AdqlResource.AdqlCatalog parent);
+            public AdqlResource.AdqlColumn search(final AdqlResource.AdqlCatalog parent);
 
             /**
              * Search for column view based on parent schema.
              *
              */
-            public AdqlResource.AdqlColumn search(AdqlResource.AdqlSchema parent);
+            public AdqlResource.AdqlColumn search(final AdqlResource.AdqlSchema parent);
 
             /**
              * Search for column view based on parent table.
              *
              */
-            public AdqlResource.AdqlColumn search(AdqlResource.AdqlTable parent);
+            public AdqlResource.AdqlColumn search(final AdqlResource.AdqlTable parent);
 
             }
 

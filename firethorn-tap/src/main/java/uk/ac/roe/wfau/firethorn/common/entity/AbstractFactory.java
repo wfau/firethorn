@@ -17,33 +17,22 @@
  */
 package uk.ac.roe.wfau.firethorn.common.entity ;
 
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
 import java.util.Iterator;
 
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.CacheMode;
-import org.hibernate.Transaction;
-import org.hibernate.SessionFactory;
-import org.hibernate.StatelessSession;
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.HibernateException;
-
-import org.springframework.stereotype.Repository;
-import org.springframework.dao.DataAccessException;
+import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.common.womble.Womble;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
-
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateEntityMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.DeleteAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.DeleteEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 
 /**
  * Generic base class for a persistent Entity Factory.
@@ -62,7 +51,7 @@ implements Entity.Factory<EntityType>
      * http://stackoverflow.com/questions/2225979/getting-t-class-despite-javas-type-erasure
      *
      */
-    public abstract Class etype();
+    public abstract Class<?> etype();
 
     /**
      * Create an Identifier from a String.
@@ -103,6 +92,7 @@ implements Entity.Factory<EntityType>
      *
      */
     @CreateEntityMethod
+    @SuppressWarnings("unchecked")
     public EntityType insert(final EntityType entity)
         {
         log.debug("insert(EntityType)");
@@ -122,7 +112,9 @@ implements Entity.Factory<EntityType>
     throws IdentifierNotFoundException
         {
         log.debug("select(Class, Identifier)");
-        log.debug("  ident [{}]", (ident != null) ? null : ident.value());
+        log.debug("  ident [{}]", (ident != null) ? ident.value() : null);
+        @SuppressWarnings("unchecked")
+        final
         EntityType result = (EntityType) womble.hibernate().select(
             etype(),
             ident
@@ -143,6 +135,7 @@ implements Entity.Factory<EntityType>
      *
      */
     @UpdateEntityMethod
+    @SuppressWarnings("unchecked")
     public EntityType update(final EntityType entity)
         {
         log.debug("update(EntityType)");
@@ -150,7 +143,7 @@ implements Entity.Factory<EntityType>
         if (etype().isInstance(entity))
             {
             return (EntityType) womble.hibernate().update(
-                (EntityType) entity
+                entity
                 );
             }
         else {
@@ -175,7 +168,7 @@ implements Entity.Factory<EntityType>
         if (etype().isInstance(entity))
             {
             womble.hibernate().delete(
-                (EntityType) entity
+                entity
                 );
             }
         else {
@@ -214,7 +207,8 @@ implements Entity.Factory<EntityType>
     public EntityType single(final Query query)
     throws EntityNotFoundException
         {
-        EntityType result = (EntityType) womble.hibernate().single(
+        @SuppressWarnings("unchecked")
+        final EntityType result = (EntityType) womble.hibernate().single(
             query
             );
         if (result != null)
@@ -230,6 +224,7 @@ implements Entity.Factory<EntityType>
      * Return the first result of a query, or null if the results are empty.
      *
      */
+    @SuppressWarnings("unchecked")
     @SelectEntityMethod
     public EntityType first(final Query query)
         {
@@ -247,13 +242,15 @@ implements Entity.Factory<EntityType>
         {
         return new Iterable<EntityType>()
             {
+            @Override
             @SelectEntityMethod
+            @SuppressWarnings("unchecked")
             public Iterator<EntityType> iterator()
                 {
                 try {
-                    return (Iterator<EntityType>) query.iterate();
+                    return query.iterate();
                     }
-                catch (HibernateException ouch)
+                catch (final HibernateException ouch)
                     {
                     throw womble.hibernate().convert(
                         ouch

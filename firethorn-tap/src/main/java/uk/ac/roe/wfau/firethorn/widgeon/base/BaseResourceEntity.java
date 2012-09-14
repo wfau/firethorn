@@ -95,19 +95,19 @@ implements BaseResource
 
     /**
      * Our persistence table name.
-     * 
+     *
      */
     public static final String DB_TABLE_NAME = "base_resource" ;
 
     /**
      * Our persistence type column.
-     * 
+     *
      */
     public static final String DB_CLASS_NAME = "resource_type" ;
 
     /**
      * Our persistence type value.
-     * 
+     *
      */
     public static final String DB_CLASS_TYPE = "BASE" ;
 
@@ -156,13 +156,13 @@ implements BaseResource
         @SelectEntityMethod
         public Iterable<BaseResource> search(final String text)
             {
-            String match = new StringBuilder(text).append("%").toString();
+            final String match = new StringBuilder(text).append("%").toString();
             return super.iterable(
                 super.query(
                     "base.resource-search-text"
                     ).setString(
                         "text",
-                        match 
+                        match
                         )
                 );
             }
@@ -182,7 +182,7 @@ implements BaseResource
 
         /**
          * Our Autowired view factory.
-         * 
+         *
          */
         @Autowired
         protected AdqlResource.Factory views ;
@@ -195,12 +195,12 @@ implements BaseResource
         }
 
     @Override
-    public BaseResource.Views views() 
+    public BaseResource.Views views()
         {
         return new BaseResource.Views()
             {
             @Override
-            public AdqlResource create(String name)
+            public AdqlResource create(final String name)
                 {
                 return womble().resources().base().views().create(
                     BaseResourceEntity.this,
@@ -217,7 +217,7 @@ implements BaseResource
                 }
 
             @Override
-            public AdqlResource select(String name)
+            public AdqlResource select(final String name)
             throws NameNotFoundException
                 {
                 return womble().resources().base().views().select(

@@ -83,13 +83,13 @@ implements AdqlResource
 
     /**
      * Our persistence table name.
-     * 
+     *
      */
     public static final String DB_TABLE_NAME = "adql_resource" ;
 
     /**
      * The persistence column name for our base DataResource.
-     * 
+     *
      */
     public static final String DB_BASE_COL = "base" ;
 
@@ -114,12 +114,12 @@ implements AdqlResource
          *
          */
         @CascadeEntityMethod
-        protected AdqlResource insert(AdqlResourceEntity entity)
+        protected AdqlResource insert(final AdqlResourceEntity entity)
             {
             super.insert(
                 entity
                 );
-            for (BaseResource.BaseCatalog<?> catalog : entity.base().catalogs().select())
+            for (final BaseResource.BaseCatalog<?> catalog : entity.base().catalogs().select())
                 {
                 this.catalogs().cascade(
                     entity,
@@ -160,7 +160,7 @@ implements AdqlResource
         public AdqlResource select(final BaseResource base, final String name)
         throws NameNotFoundException
             {
-            AdqlResource result = this.search(
+            final AdqlResource result = this.search(
                 base,
                 name
                 );
@@ -194,7 +194,7 @@ implements AdqlResource
 
         /**
          * Our Autowired catalog factory.
-         * 
+         *
          */
         @Autowired
         protected AdqlResource.AdqlCatalog.Factory catalogs ;

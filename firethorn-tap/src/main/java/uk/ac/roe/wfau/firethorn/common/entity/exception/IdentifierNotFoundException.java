@@ -32,6 +32,11 @@ extends EntityNotFoundException
     {
 
     /**
+     * 
+     *
+     */
+    private static final long serialVersionUID = 2020955869837050984L;
+    /**
      * Default message for simple constructor.
      *
      */
@@ -41,7 +46,7 @@ extends EntityNotFoundException
      * Create a default message.
      *
      */
-    public static String message(Identifier ident)
+    public static String message(final Identifier ident)
         {
         if (ident != null)
             {
@@ -56,7 +61,7 @@ extends EntityNotFoundException
      * Public constructor, using default message.
      *
      */
-    public IdentifierNotFoundException(Identifier ident)
+    public IdentifierNotFoundException(final Identifier ident)
         {
         this(
             ident,
@@ -71,7 +76,7 @@ extends EntityNotFoundException
      * Public constructor, with specific message.
      *
      */
-    public IdentifierNotFoundException(Identifier ident, String message)
+    public IdentifierNotFoundException(final Identifier ident, final String message)
         {
         this(
             ident,
@@ -84,7 +89,7 @@ extends EntityNotFoundException
      * Public constructor, with specific cause.
      *
      */
-    public IdentifierNotFoundException(Identifier ident, Throwable cause)
+    public IdentifierNotFoundException(final Identifier ident, final Throwable cause)
         {
         this(
             ident,
@@ -99,7 +104,7 @@ extends EntityNotFoundException
      * Public constructor, with specific message and cause.
      *
      */
-    public IdentifierNotFoundException(Identifier ident, String message, Throwable cause)
+    public IdentifierNotFoundException(final Identifier ident, final String message, final Throwable cause)
         {
         super(
             message,
@@ -108,7 +113,7 @@ extends EntityNotFoundException
         this.ident = ident ;
         }
 
-    private Identifier ident;
+    private final Identifier ident;
 
     public Identifier ident()
         {

@@ -27,12 +27,12 @@ public abstract class AbstractIdentifier<T extends Serializable>
 implements Identifier
     {
 
-    public AbstractIdentifier(T value)
+    public AbstractIdentifier(final T value)
         {
         this.value = value ;
         }
 
-    private T value ;
+    private final T value ;
 
     @Override
     public Serializable value()
@@ -41,14 +41,14 @@ implements Identifier
         }
 
     @Override
-    public boolean equals(Object that)
+    public boolean equals(final Object that)
         {
         if (that != null)
             {
             if (this == that)
                 {
                 return true ;
-                }                            
+                }
             if (that instanceof Identifier)
                 {
                 return this.value().equals(

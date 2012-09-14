@@ -88,13 +88,13 @@ implements JdbcResource.JdbcColumn
 
     /**
      * Our persistence table name.
-     * 
+     *
      */
     public static final String DB_TABLE_NAME = "jdbc_column" ;
 
     /**
      * The persistence column name for our parent table.
-     * 
+     *
      */
     public static final String DB_PARENT_COL = "parent" ;
 
@@ -124,7 +124,7 @@ implements JdbcResource.JdbcColumn
             super.insert(
                 entity
                 );
-            for (AdqlResource.AdqlTable view : entity.parent().views().select())
+            for (final AdqlResource.AdqlTable view : entity.parent().views().select())
                 {
                 this.views().cascade(
                     view,
@@ -165,7 +165,7 @@ implements JdbcResource.JdbcColumn
         public JdbcResource.JdbcColumn select(final JdbcResource.JdbcTable parent, final String name)
         throws NameNotFoundException
             {
-            JdbcResource.JdbcColumn result = this.search(
+            final JdbcResource.JdbcColumn result = this.search(
                 parent,
                 name
                 );
@@ -199,7 +199,7 @@ implements JdbcResource.JdbcColumn
 
         /**
          * Our Autowired view factory.
-         * 
+         *
          */
         @Autowired
         protected AdqlResource.AdqlColumn.Factory views ;
@@ -225,7 +225,7 @@ implements JdbcResource.JdbcColumn
                 }
 
             @Override
-            public AdqlColumn search(AdqlResource parent)
+            public AdqlColumn search(final AdqlResource parent)
                 {
                 return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().search(
                     parent,
@@ -234,7 +234,7 @@ implements JdbcResource.JdbcColumn
                 }
 
             @Override
-            public AdqlColumn search(AdqlCatalog parent)
+            public AdqlColumn search(final AdqlCatalog parent)
                 {
                 return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().search(
                     parent,
@@ -243,7 +243,7 @@ implements JdbcResource.JdbcColumn
                 }
 
             @Override
-            public AdqlColumn search(AdqlSchema parent)
+            public AdqlColumn search(final AdqlSchema parent)
                 {
                 return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().search(
                     parent,
@@ -252,7 +252,7 @@ implements JdbcResource.JdbcColumn
                 }
 
             @Override
-            public AdqlResource.AdqlColumn search(AdqlResource.AdqlTable parent)
+            public AdqlResource.AdqlColumn search(final AdqlResource.AdqlTable parent)
                 {
                 return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().search(
                     parent,
@@ -342,7 +342,7 @@ implements JdbcResource.JdbcColumn
         }
 
     @Override
-    public List<JdbcResource.Diference> diff(boolean push, boolean pull)
+    public List<JdbcResource.Diference> diff(final boolean push, final boolean pull)
         {
         return diff(
             resource().metadata(),
@@ -353,7 +353,7 @@ implements JdbcResource.JdbcColumn
         }
 
     @Override
-    public List<Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull)
+    public List<Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull)
         {
         //
         // Check this column.

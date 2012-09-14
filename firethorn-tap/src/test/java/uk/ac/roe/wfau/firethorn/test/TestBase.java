@@ -24,13 +24,12 @@ import java.net.URI;
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.runner.RunWith;  
+import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.test.context.ContextConfiguration;  
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;  
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import org.springframework.transaction.annotation.Propagation;
@@ -44,7 +43,7 @@ import uk.ac.roe.wfau.firethorn.common.womble.Womble;
  *
  */
 @Slf4j
-@RunWith(SpringJUnit4ClassRunner.class)  
+@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
     locations = {
         "classpath:database-config.xml",
@@ -52,7 +51,7 @@ import uk.ac.roe.wfau.firethorn.common.womble.Womble;
         "classpath:scheduler-config.xml",
         "classpath:component-config.xml"
         }
-    )  
+    )
 @Transactional(
     readOnly=false,
     propagation=Propagation.REQUIRES_NEW
@@ -124,7 +123,7 @@ public abstract class TestBase
      */
     public String unique()
         {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append(
             String.valueOf(
                 start
@@ -147,7 +146,7 @@ public abstract class TestBase
      */
     public String unique(final String prefix)
         {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append(
             prefix
             );
@@ -177,10 +176,10 @@ public abstract class TestBase
      * Count the members in a Iterable set.
      *
      */
-    public long count(final Iterable iterable)
+    public long count(final Iterable<?> iterable)
         {
         long count = 0 ;
-        for (Object object : iterable)
+        for (final Object object : iterable)
             {
             count++ ;
             }

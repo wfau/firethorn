@@ -46,7 +46,7 @@ extends Entity
          * Private constructor.
          *
          */
-        private Status(boolean enabled)
+        private Status(final boolean enabled)
             {
             this.enabled = enabled ;
             }
@@ -55,7 +55,7 @@ extends Entity
          * Private enabled flag.
          *
          */
-        private boolean enabled ;
+        private final boolean enabled ;
 
         /**
          * Check if this status means the component is enabled.
@@ -64,7 +64,7 @@ extends Entity
         public boolean enabled()
             {
             return this.enabled ;
-            }        
+            }
 
         }
 
@@ -78,7 +78,7 @@ extends Entity
      * Set the component status.
      *
      */
-    public void status(Status status)
+    public void status(final Status status)
     throws InvalidStatusException ;
 
     /**
@@ -91,7 +91,7 @@ extends Entity
         {
 
         /**
-         * 
+         *
          *
          */
         private static final long serialVersionUID = 6595169286734884311L;
@@ -106,7 +106,7 @@ extends Entity
          * Create a default message.
          *
          */
-        public static String message(String status)
+        public static String message(final String status)
             {
             return DEFAULT_MESSAGE.replace(":status:", status);
             }
@@ -115,7 +115,7 @@ extends Entity
          * Create a default message.
          *
          */
-        public static String message(ResourceStatus.Status status)
+        public static String message(final ResourceStatus.Status status)
             {
             return message(
                 status.toString()
@@ -126,7 +126,7 @@ extends Entity
          * Public constructor, using default message.
          *
          */
-        public InvalidStatusException(ResourceStatus.Status status)
+        public InvalidStatusException(final ResourceStatus.Status status)
             {
             this(
                 status,
@@ -140,7 +140,7 @@ extends Entity
          * Public constructor, with specific message.
          *
          */
-        public InvalidStatusException(ResourceStatus.Status status, String message)
+        public InvalidStatusException(final ResourceStatus.Status status, final String message)
             {
             super(
                 message
@@ -148,7 +148,7 @@ extends Entity
             this.status = status ;
             }
 
-        private ResourceStatus.Status status;
+        private final ResourceStatus.Status status;
 
         public ResourceStatus.Status status()
             {

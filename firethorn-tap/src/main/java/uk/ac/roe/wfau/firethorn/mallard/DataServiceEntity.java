@@ -17,46 +17,32 @@
  */
 package uk.ac.roe.wfau.firethorn.mallard ;
 
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.Set;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Set;
 
-import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.FetchType;
 import javax.persistence.CascadeType;
-import javax.persistence.OneToMany;
-import javax.persistence.ManyToMany;
-import javax.persistence.JoinTable;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
-import org.hibernate.annotations.Index;
-import org.hibernate.annotations.NamedQuery;
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.annotations.NamedQueries;
-
+import org.hibernate.annotations.NamedQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.beans.factory.annotation.Autowired;  
 
-import uk.ac.roe.wfau.firethorn.common.womble.Womble;
-
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
-
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
-
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResourceEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 
 /**
  * DataService implementation.
@@ -93,7 +79,7 @@ implements DataService
 
     /**
      * Our database table name.
-     * 
+     *
      */
     public static final String DB_TABLE_NAME = "service_entity" ;
 
@@ -126,7 +112,7 @@ implements DataService
 
         @Override
         @SelectEntityMethod
-        public Iterable<DataService> select(String name)
+        public Iterable<DataService> select(final String name)
             {
             return super.iterable(
                 super.query(
@@ -140,12 +126,12 @@ implements DataService
 
         @Override
         @SelectEntityMethod
-        public Iterable<DataService> search(String text)
+        public Iterable<DataService> search(final String text)
             {
             //
             // Using wildcards in a HQL query with named parameters.
             // http://www.stpe.se/2008/07/hibernate-hql-like-query-named-parameters/
-            String match = new StringBuilder(text).append("%").toString();
+            final String match = new StringBuilder(text).append("%").toString();
             log.debug("search(String)");
             log.debug("  Match [{}]", match);
             return super.iterable(
@@ -160,7 +146,7 @@ implements DataService
 
         @Override
         @CreateEntityMethod
-        public DataService create(String name)
+        public DataService create(final String name)
             {
             return super.insert(
                 new DataServiceEntity(
@@ -171,7 +157,7 @@ implements DataService
 
         /**
          * Our Autowired Job factory.
-         * 
+         *
          */
         @Autowired
         protected Job.Factory jobs ;
@@ -197,7 +183,7 @@ implements DataService
      * Create a new DataServiceEntity.
      *
      */
-    protected DataServiceEntity(String name)
+    protected DataServiceEntity(final String name)
         {
         super(name);
         }
@@ -208,7 +194,7 @@ implements DataService
         return new Jobs()
             {
             @Override
-            public Job create(String name, String adql)
+            public Job create(final String name, final String adql)
                 {
                 return womble().services().jobs().create(
                     DataServiceEntity.this,
@@ -254,7 +240,7 @@ implements DataService
         {
         return this.resources ;
         }
-    protected void setResources(Set<AdqlResource> resources)
+    protected void setResources(final Set<AdqlResource> resources)
         {
         this.resources = resources ;
         }
@@ -265,7 +251,7 @@ implements DataService
         return new Resources()
             {
             @Override
-            public void insert(AdqlResource resource)
+            public void insert(final AdqlResource resource)
                 {
                 resources.add(
                     resource

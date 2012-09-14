@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.FactoryTemplate;
 
 
 /**
@@ -38,10 +37,10 @@ public interface IvoaResource
         {
         /**
          * Create a new resource.
-         * 
+         *
          */
-        public IvoaResource create(String name);
-        
+        public IvoaResource create(final String name);
+
         }
 
     }

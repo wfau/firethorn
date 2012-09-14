@@ -50,10 +50,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatus.Status;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlSchema;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.Diference;
 
 /**
  * BaseResource.BaseSchema implementation.
@@ -93,13 +90,13 @@ implements JdbcResource.JdbcSchema
 
     /**
      * Our persistence table name.
-     * 
+     *
      */
     public static final String DB_TABLE_NAME = "jdbc_schema" ;
 
     /**
      * The persistence column name for our parent catalog.
-     * 
+     *
      */
     public static final String DB_PARENT_COL = "parent" ;
 
@@ -129,7 +126,7 @@ implements JdbcResource.JdbcSchema
             super.insert(
                 entity
                 );
-            for (AdqlResource.AdqlCatalog view : entity.parent().views().select())
+            for (final AdqlResource.AdqlCatalog view : entity.parent().views().select())
                 {
                 this.views().cascade(
                     view,
@@ -170,7 +167,7 @@ implements JdbcResource.JdbcSchema
         public JdbcResource.JdbcSchema select(final JdbcResource.JdbcCatalog parent, final String name)
         throws NameNotFoundException
             {
-            JdbcResource.JdbcSchema result = this.search(
+            final JdbcResource.JdbcSchema result = this.search(
                 parent,
                 name
                 );
@@ -204,7 +201,7 @@ implements JdbcResource.JdbcSchema
 
         /**
          * Our Autowired view factory.
-         * 
+         *
          */
         @Autowired
         protected AdqlResource.AdqlSchema.Factory views ;
@@ -217,7 +214,7 @@ implements JdbcResource.JdbcSchema
 
         /**
          * Our Autowired table factory.
-         * 
+         *
          */
         @Autowired
         protected JdbcResource.JdbcTable.Factory tables ;
@@ -243,7 +240,7 @@ implements JdbcResource.JdbcSchema
                 }
 
             @Override
-            public AdqlResource.AdqlSchema search(AdqlResource.AdqlCatalog parent)
+            public AdqlResource.AdqlSchema search(final AdqlResource.AdqlCatalog parent)
                 {
                 return womble().resources().jdbc().views().catalogs().schemas().search(
                     parent,
@@ -252,7 +249,7 @@ implements JdbcResource.JdbcSchema
                 }
 
             @Override
-            public AdqlResource.AdqlSchema search(AdqlResource parent)
+            public AdqlResource.AdqlSchema search(final AdqlResource parent)
                 {
                 return womble().resources().jdbc().views().catalogs().schemas().search(
                     parent,
@@ -268,7 +265,7 @@ implements JdbcResource.JdbcSchema
         return new JdbcResource.JdbcSchema.Tables()
             {
             @Override
-            public JdbcResource.JdbcTable create(String name)
+            public JdbcResource.JdbcTable create(final String name)
                 {
                 return womble().resources().jdbc().catalogs().schemas().tables().create(
                     JdbcSchemaEntity.this,
@@ -285,7 +282,7 @@ implements JdbcResource.JdbcSchema
                 }
 
             @Override
-            public JdbcResource.JdbcTable select(String name)
+            public JdbcResource.JdbcTable select(final String name)
             throws NameNotFoundException
                 {
                 return womble().resources().jdbc().catalogs().schemas().tables().select(
@@ -295,7 +292,7 @@ implements JdbcResource.JdbcSchema
                 }
 
             @Override
-            public JdbcResource.JdbcTable search(String name)
+            public JdbcResource.JdbcTable search(final String name)
                 {
                 return womble().resources().jdbc().catalogs().schemas().tables().search(
                     JdbcSchemaEntity.this,
@@ -304,7 +301,7 @@ implements JdbcResource.JdbcSchema
                 }
 
             @Override
-            public List<JdbcResource.Diference> diff(boolean push, boolean pull)
+            public List<JdbcResource.Diference> diff(final boolean push, final boolean pull)
                 {
                 return diff(
                     resource().metadata(),
@@ -315,13 +312,13 @@ implements JdbcResource.JdbcSchema
                 }
 
             @Override
-            public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull)
+            public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull)
                 {
                 log.debug("Comparing tables for schema [{}]", name());
                 try {
                     //
                     // Scan the DatabaseMetaData for tables and views.
-                    ResultSet tables = metadata.getTables(
+                    final ResultSet tables = metadata.getTables(
                         catalog().name(),
                         name(),
                         null,
@@ -329,16 +326,16 @@ implements JdbcResource.JdbcSchema
                             {
                             JdbcResource.JDBC_META_TABLE_TYPE_TABLE,
                             JdbcResource.JDBC_META_TABLE_TYPE_VIEW
-                            }   
+                            }
                         );
 
-                    Map<String, JdbcResource.JdbcTable> found = new HashMap<String, JdbcResource.JdbcTable>();
+                    final Map<String, JdbcResource.JdbcTable> found = new HashMap<String, JdbcResource.JdbcTable>();
                     while (tables.next())
                         {
-                        String name = tables.getString(JdbcResource.JDBC_META_TABLE_NAME);
-                        String type = tables.getString(JdbcResource.JDBC_META_TABLE_TYPE);
+                        final String name = tables.getString(JdbcResource.JDBC_META_TABLE_NAME);
+                        final String type = tables.getString(JdbcResource.JDBC_META_TABLE_TYPE);
                         log.debug("Checking database table [{}][{}]", name, type);
-    
+
                         JdbcResource.JdbcTable table = this.search(
                             name
                             );
@@ -356,16 +353,16 @@ implements JdbcResource.JdbcSchema
                                 {
                                 log.debug("Deleting database table [{}]", name);
                                 try {
-                                    String sql = "DROP TABLE {table} ;".replace(
+                                    final String sql = "DROP TABLE {table} ;".replace(
                                         "{table}",
                                         name
                                         );
                                     log.debug("SQL [{}]", sql);
-                                    Connection connection = metadata.getConnection();
-                                    Statement  statement  = connection.createStatement();
+                                    final Connection connection = metadata.getConnection();
+                                    final Statement  statement  = connection.createStatement();
                                     statement.executeUpdate(sql);
                                     }
-                                catch (SQLException ouch)
+                                catch (final SQLException ouch)
                                     {
                                     log.error("Exception dropping table [{}]", name);
                                     throw new RuntimeException(
@@ -380,7 +377,7 @@ implements JdbcResource.JdbcSchema
                                         null,
                                         name
                                         )
-                                    );                                
+                                    );
                                 }
                             }
                         if (table != null)
@@ -393,7 +390,7 @@ implements JdbcResource.JdbcSchema
                         }
                     //
                     // Scan our own list of schema.
-                    for (JdbcResource.JdbcTable table : select())
+                    for (final JdbcResource.JdbcTable table : select())
                         {
                         log.debug("Checking registered table [{}]", table.name());
                         JdbcResource.JdbcTable match = found.get(
@@ -408,16 +405,16 @@ implements JdbcResource.JdbcSchema
                                 {
                                 log.debug("Creating database table [{}]", table.name());
                                 try {
-                                    String sql = "CREATE TABLE {table} () ;".replace(
+                                    final String sql = "CREATE TABLE {table} () ;".replace(
                                         "{table}",
                                         table.name()
                                         );
                                     log.debug("SQL [{}]", sql);
-                                    Connection connection = metadata.getConnection();
-                                    Statement  statement  = connection.createStatement();
+                                    final Connection connection = metadata.getConnection();
+                                    final Statement  statement  = connection.createStatement();
                                     statement.executeUpdate(sql);
                                     }
-                                catch (SQLException ouch)
+                                catch (final SQLException ouch)
                                     {
                                     log.error("Exception creating table [{}]", table.name());
                                     throw new RuntimeException(
@@ -440,7 +437,7 @@ implements JdbcResource.JdbcSchema
                                         table.name(),
                                         null
                                         )
-                                    );                                
+                                    );
                                 }
                             }
                         //
@@ -456,7 +453,7 @@ implements JdbcResource.JdbcSchema
                             }
                         }
                     }
-                catch (SQLException ouch)
+                catch (final SQLException ouch)
                     {
                     log.error("Error processing JDBC catalogs", ouch);
                     }
@@ -533,7 +530,7 @@ implements JdbcResource.JdbcSchema
         }
 
     @Override
-    public List<JdbcResource.Diference> diff(boolean push, boolean pull)
+    public List<JdbcResource.Diference> diff(final boolean push, final boolean pull)
         {
         return diff(
             resource().metadata(),
@@ -544,7 +541,7 @@ implements JdbcResource.JdbcSchema
         }
 
     @Override
-    public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull)
+    public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull)
         {
         //
         // Check this schema.

@@ -97,19 +97,19 @@ implements AdqlResource.AdqlCatalog
 
     /**
      * Our persistence table name.
-     * 
+     *
      */
     public static final String DB_TABLE_NAME = "adql_catalog" ;
 
     /**
      * The persistence column name for our parent resource.
-     * 
+     *
      */
     public static final String DB_PARENT_COL = "parent" ;
 
     /**
      * The persistence column name for our base catalog.
-     * 
+     *
      */
     public static final String DB_BASE_COL = "base" ;
 
@@ -134,12 +134,12 @@ implements AdqlResource.AdqlCatalog
          *
          */
         @CascadeEntityMethod
-        protected AdqlResource.AdqlCatalog insert(AdqlCatalogEntity entity)
+        protected AdqlResource.AdqlCatalog insert(final AdqlCatalogEntity entity)
             {
             super.insert(
                 entity
                 );
-            for (BaseResource.BaseSchema<?> schema : entity.base().schemas().select())
+            for (final BaseResource.BaseSchema<?> schema : entity.base().schemas().select())
                 {
                 this.schemas().cascade(
                     entity,
@@ -231,7 +231,7 @@ implements AdqlResource.AdqlCatalog
         public AdqlResource.AdqlCatalog select(final AdqlResource parent, final String name)
         throws NameNotFoundException
             {
-            AdqlResource.AdqlCatalog result = this.search(
+            final AdqlResource.AdqlCatalog result = this.search(
                 parent,
                 name
                 );
@@ -279,7 +279,7 @@ implements AdqlResource.AdqlCatalog
 
         /**
          * Our Autowired DataSchema factory.
-         * 
+         *
          */
         @Autowired
         protected AdqlResource.AdqlSchema.Factory adqlSchemas ;
@@ -306,7 +306,7 @@ implements AdqlResource.AdqlCatalog
                 }
 
             @Override
-            public AdqlResource.AdqlSchema select(String name)
+            public AdqlResource.AdqlSchema select(final String name)
             throws NameNotFoundException
                 {
                 return womble().resources().base().views().catalogs().schemas().select(
@@ -316,7 +316,7 @@ implements AdqlResource.AdqlCatalog
                 }
 
             @Override
-            public AdqlResource.AdqlSchema search(String name)
+            public AdqlResource.AdqlSchema search(final String name)
                 {
                 return womble().resources().base().views().catalogs().schemas().search(
                     AdqlCatalogEntity.this,

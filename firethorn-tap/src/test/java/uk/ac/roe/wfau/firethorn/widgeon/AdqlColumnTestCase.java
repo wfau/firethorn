@@ -85,12 +85,12 @@ extends JdbcResourceTestBase
                                 );
             fail("NameNotFoundException expected");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "column-A",
                 ouch.name()
-                );            
+                );
             }
         }
 

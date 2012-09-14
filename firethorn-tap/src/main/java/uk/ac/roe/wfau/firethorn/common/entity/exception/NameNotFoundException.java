@@ -20,8 +20,6 @@ package uk.ac.roe.wfau.firethorn.common.entity.exception ;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier ;
-
 /**
  *
  *
@@ -32,6 +30,11 @@ extends EntityNotFoundException
     {
 
     /**
+     * 
+     *
+     */
+    private static final long serialVersionUID = 2101176775725340270L;
+    /**
      * Default message for simple constructor.
      *
      */
@@ -41,7 +44,7 @@ extends EntityNotFoundException
      * Create a default message.
      *
      */
-    public static String message(String name)
+    public static String message(final String name)
         {
         return DEFAULT_MESSAGE.replace(":name:", name);
         }
@@ -50,7 +53,7 @@ extends EntityNotFoundException
      * Public constructor, using default message.
      *
      */
-    public NameNotFoundException(String name)
+    public NameNotFoundException(final String name)
         {
         this(
             name,
@@ -65,7 +68,7 @@ extends EntityNotFoundException
      * Public constructor, with specific message.
      *
      */
-    public NameNotFoundException(String name, String message)
+    public NameNotFoundException(final String name, final String message)
         {
         this(
             name,
@@ -78,7 +81,7 @@ extends EntityNotFoundException
      * Public constructor, with specific cause.
      *
      */
-    public NameNotFoundException(String name, Throwable cause)
+    public NameNotFoundException(final String name, final Throwable cause)
         {
         this(
             name,
@@ -93,7 +96,7 @@ extends EntityNotFoundException
      * Public constructor, with specific message and cause.
      *
      */
-    public NameNotFoundException(String name, String message, Throwable cause)
+    public NameNotFoundException(final String name, final String message, final Throwable cause)
         {
         super(
             message,
@@ -102,7 +105,7 @@ extends EntityNotFoundException
         this.name = name ;
         }
 
-    private String name;
+    private final String name;
 
     public String name()
         {

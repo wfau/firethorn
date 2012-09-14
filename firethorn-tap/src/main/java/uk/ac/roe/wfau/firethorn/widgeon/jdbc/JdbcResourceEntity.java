@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.management.RuntimeErrorException;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.DiscriminatorValue;
@@ -47,7 +46,6 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.Diference;
 
 /**
  * BaseResource implementations.
@@ -84,7 +82,7 @@ implements JdbcResource
 
     /**
      * Our persistence type value.
-     * 
+     *
      */
     public static final String DB_CLASS_TYPE = "JDBC" ;
 
@@ -133,13 +131,13 @@ implements JdbcResource
         @SelectEntityMethod
         public Iterable<JdbcResource> search(final String text)
             {
-            String match = new StringBuilder(text).append("%").toString();
+            final String match = new StringBuilder(text).append("%").toString();
             return super.iterable(
                 super.query(
                     "jdbc.resource-search-text"
                     ).setString(
                         "text",
-                        match 
+                        match
                         )
                 );
             }
@@ -158,7 +156,7 @@ implements JdbcResource
 
         @Override
         @CreateEntityMethod
-        public JdbcResource create(final String name, DataSource source)
+        public JdbcResource create(final String name, final DataSource source)
             {
             return super.insert(
                 new JdbcResourceEntity(
@@ -167,10 +165,10 @@ implements JdbcResource
                     )
                 );
             }
-        
+
         /**
          * Our Autowired view factory.
-         * 
+         *
          */
         @Autowired
         protected AdqlResource.Factory views ;
@@ -183,7 +181,7 @@ implements JdbcResource
 
         /**
          * Our Autowired catalog factory.
-         * 
+         *
          */
         @Autowired
         protected JdbcResource.JdbcCatalog.Factory catalogs ;
@@ -194,7 +192,7 @@ implements JdbcResource
             return this.catalogs ;
             }
         }
-  
+
 
     @Override
     public JdbcResource.Catalogs catalogs()
@@ -202,7 +200,7 @@ implements JdbcResource
         return new JdbcResource.Catalogs()
             {
             @Override
-            public JdbcCatalog create(String name)
+            public JdbcCatalog create(final String name)
                 {
                 return womble().resources().jdbc().catalogs().create(
                     JdbcResourceEntity.this,
@@ -238,7 +236,7 @@ implements JdbcResource
                 }
 
             @Override
-            public List<JdbcResource.Diference> diff(boolean push, boolean pull)
+            public List<JdbcResource.Diference> diff(final boolean push, final boolean pull)
                 {
                 return diff(
                     metadata(),
@@ -249,21 +247,21 @@ implements JdbcResource
                 }
 
             @Override
-            public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference>  results, boolean push, boolean pull)
+            public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference>  results, final boolean push, final boolean pull)
                 {
                 log.debug("Comparing catalogs for resource [{}]", name());
                 try {
                     //
                     // Scan the DatabaseMetaData for catalogs.
-                    ResultSet catalogs = metadata.getCatalogs();
-                    Map<String, JdbcResource.JdbcCatalog> found = new HashMap<String, JdbcResource.JdbcCatalog>();
+                    final ResultSet catalogs = metadata.getCatalogs();
+                    final Map<String, JdbcResource.JdbcCatalog> found = new HashMap<String, JdbcResource.JdbcCatalog>();
                     while (catalogs.next())
                         {
-                        String name = catalogs.getString(
+                        final String name = catalogs.getString(
                             JdbcResource.JDBC_META_TABLE_CAT
                             );
                         log.debug("Checking database catalog [{}]", name);
-    
+
                         JdbcCatalog catalog = this.search(
                             name
                             );
@@ -289,7 +287,7 @@ implements JdbcResource
                                         null,
                                         name
                                         )
-                                    );                                
+                                    );
                                 }
                             }
                         if (catalog != null)
@@ -302,7 +300,7 @@ implements JdbcResource
                         }
                     //
                     // Scan our own list of catalogs.
-                    for (JdbcResource.JdbcCatalog catalog : select())
+                    for (final JdbcResource.JdbcCatalog catalog : select())
                         {
                         log.debug("Checking registered catalog [{}]", catalog.name());
                         JdbcResource.JdbcCatalog match = found.get(
@@ -333,7 +331,7 @@ implements JdbcResource
                                         catalog.name(),
                                         null
                                         )
-                                    );                                
+                                    );
                                 }
                             }
                         //
@@ -349,7 +347,7 @@ implements JdbcResource
                             }
                         }
                     }
-                catch (SQLException ouch)
+                catch (final SQLException ouch)
                     {
                     log.error("Error processing JDBC catalogs", ouch);
                     }
@@ -372,7 +370,7 @@ implements JdbcResource
      * Create a new resource.
      *
      */
-    private JdbcResourceEntity(final String name, DataSource source)
+    private JdbcResourceEntity(final String name, final DataSource source)
         {
         super(name);
         log.debug("new([{}]", name);
@@ -387,14 +385,14 @@ implements JdbcResource
         {
         return this.source ;
         }
-    
+
     @Override
     public Connection connect()
         {
         try {
             return source.getConnection() ;
             }
-        catch (SQLException ouch)
+        catch (final SQLException ouch)
             {
             log.error("Error connecting to database", ouch);
             throw new RuntimeException(
@@ -409,7 +407,7 @@ implements JdbcResource
         try {
             return connect().getMetaData();
             }
-        catch (SQLException ouch)
+        catch (final SQLException ouch)
             {
             log.error("Error fetching database metadata", ouch);
             throw new RuntimeException(
@@ -419,7 +417,7 @@ implements JdbcResource
         }
 
     @Override
-    public List<JdbcResource.Diference> diff(boolean push, boolean pull)
+    public List<JdbcResource.Diference> diff(final boolean push, final boolean pull)
         {
         return diff(
             metadata(),
@@ -430,7 +428,7 @@ implements JdbcResource
         }
 
     @Override
-    public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull)
+    public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull)
         {
         log.debug("Comparing resource [{}]", name());
         //

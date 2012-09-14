@@ -40,7 +40,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
-import org.hibernate.metamodel.relational.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -51,12 +50,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatus.Status;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlCatalog;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlTable;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.Diference;
 
 /**
  * BaseResource.BaseTable implementation.
@@ -96,13 +91,13 @@ implements JdbcResource.JdbcTable
 
     /**
      * Our persistence table name.
-     * 
+     *
      */
     public static final String DB_TABLE_NAME = "jdbc_table" ;
 
     /**
      * The persistence column name for our parent schema.
-     * 
+     *
      */
     public static final String DB_PARENT_COL = "parent" ;
 
@@ -132,7 +127,7 @@ implements JdbcResource.JdbcTable
             super.insert(
                 entity
                 );
-            for (AdqlResource.AdqlSchema view : entity.parent().views().select())
+            for (final AdqlResource.AdqlSchema view : entity.parent().views().select())
                 {
                 this.views().cascade(
                     view,
@@ -173,7 +168,7 @@ implements JdbcResource.JdbcTable
         public JdbcResource.JdbcTable select(final JdbcResource.JdbcSchema parent, final String name)
         throws NameNotFoundException
             {
-            JdbcResource.JdbcTable result = this.search(
+            final JdbcResource.JdbcTable result = this.search(
                 parent,
                 name
                 );
@@ -187,7 +182,7 @@ implements JdbcResource.JdbcTable
                     );
                 }
             }
- 
+
         @Override
         @SelectEntityMethod
         public JdbcResource.JdbcTable search(final JdbcResource.JdbcSchema parent, final String name)
@@ -207,7 +202,7 @@ implements JdbcResource.JdbcTable
 
         /**
          * Our Autowired view factory.
-         * 
+         *
          */
         @Autowired
         protected AdqlResource.AdqlTable.Factory views ;
@@ -220,7 +215,7 @@ implements JdbcResource.JdbcTable
 
         /**
          * Our Autowired column factory.
-         * 
+         *
          */
         @Autowired
         protected JdbcResource.JdbcColumn.Factory columns ;
@@ -246,7 +241,7 @@ implements JdbcResource.JdbcTable
                 }
 
             @Override
-            public AdqlResource.AdqlTable search(AdqlResource parent)
+            public AdqlResource.AdqlTable search(final AdqlResource parent)
                 {
                 return womble().resources().jdbc().views().catalogs().schemas().tables().search(
                     parent,
@@ -255,7 +250,7 @@ implements JdbcResource.JdbcTable
                 }
 
             @Override
-            public AdqlResource.AdqlTable search(AdqlResource.AdqlCatalog parent)
+            public AdqlResource.AdqlTable search(final AdqlResource.AdqlCatalog parent)
                 {
                 return womble().resources().jdbc().views().catalogs().schemas().tables().search(
                     parent,
@@ -264,7 +259,7 @@ implements JdbcResource.JdbcTable
                 }
 
             @Override
-            public AdqlResource.AdqlTable search(AdqlResource.AdqlSchema parent)
+            public AdqlResource.AdqlTable search(final AdqlResource.AdqlSchema parent)
                 {
                 return womble().resources().jdbc().views().catalogs().schemas().tables().search(
                     parent,
@@ -280,7 +275,7 @@ implements JdbcResource.JdbcTable
         return new JdbcResource.JdbcTable.Columns()
             {
             @Override
-            public JdbcResource.JdbcColumn create(String name)
+            public JdbcResource.JdbcColumn create(final String name)
                 {
                 return womble().resources().jdbc().catalogs().schemas().tables().columns().create(
                     JdbcTableEntity.this,
@@ -297,7 +292,7 @@ implements JdbcResource.JdbcTable
                 }
 
             @Override
-            public JdbcResource.JdbcColumn select(String name)
+            public JdbcResource.JdbcColumn select(final String name)
             throws NameNotFoundException
                 {
                 return womble().resources().jdbc().catalogs().schemas().tables().columns().select(
@@ -307,7 +302,7 @@ implements JdbcResource.JdbcTable
                 }
 
             @Override
-            public JdbcResource.JdbcColumn search(String name)
+            public JdbcResource.JdbcColumn search(final String name)
                 {
                 return womble().resources().jdbc().catalogs().schemas().tables().columns().search(
                     JdbcTableEntity.this,
@@ -316,7 +311,7 @@ implements JdbcResource.JdbcTable
                 }
 
             @Override
-            public List<JdbcResource.Diference> diff(boolean push, boolean pull)
+            public List<JdbcResource.Diference> diff(final boolean push, final boolean pull)
                 {
                 return diff(
                     resource().metadata(),
@@ -327,27 +322,27 @@ implements JdbcResource.JdbcTable
                 }
 
             @Override
-            public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull)
+            public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull)
                 {
                 log.debug("Comparing columns for table [{}]", name());
                 try {
                     //
                     // Scan the DatabaseMetaData for columns.
-                    ResultSet columns = metadata.getColumns(
+                    final ResultSet columns = metadata.getColumns(
                         catalog().name(),
                         schema().name(),
                         name(),
                         null
                         );
 
-                    Map<String, JdbcResource.JdbcColumn> found = new HashMap<String, JdbcResource.JdbcColumn>();
+                    final Map<String, JdbcResource.JdbcColumn> found = new HashMap<String, JdbcResource.JdbcColumn>();
                     while (columns.next())
                         {
-                        String table = columns.getString(JdbcResource.JDBC_META_TABLE_NAME);
-                        String name  = columns.getString(JdbcResource.JDBC_META_COLUMN_NAME);
-                        String type  = columns.getString(JdbcResource.JDBC_META_COLUMN_TYPE_NAME);
+                        final String table = columns.getString(JdbcResource.JDBC_META_TABLE_NAME);
+                        final String name  = columns.getString(JdbcResource.JDBC_META_COLUMN_NAME);
+                        final String type  = columns.getString(JdbcResource.JDBC_META_COLUMN_TYPE_NAME);
                         log.debug("Checking database column [{}][{}]", name, type);
-    
+
                         JdbcResource.JdbcColumn column = this.search(
                             name
                             );
@@ -366,7 +361,7 @@ implements JdbcResource.JdbcTable
                                 log.debug("Deleting database column [{}]", name);
                                 log.error("-- delete column -- ");
                                 try {
-                                    String sql = "ALTER TABLE {table} DROP COLUMN {column} ;".replace(
+                                    final String sql = "ALTER TABLE {table} DROP COLUMN {column} ;".replace(
                                         "{table}",
                                         table
                                         ).replace(
@@ -374,11 +369,11 @@ implements JdbcResource.JdbcTable
                                             name
                                             );
                                     log.debug("SQL [{}]", sql);
-                                    Connection connection = metadata.getConnection();
-                                    Statement  statement  = connection.createStatement();
+                                    final Connection connection = metadata.getConnection();
+                                    final Statement  statement  = connection.createStatement();
                                     statement.executeUpdate(sql);
                                     }
-                                catch (SQLException ouch)
+                                catch (final SQLException ouch)
                                     {
                                     log.error("Exception dropping column [{}]", column);
                                     throw new RuntimeException(
@@ -393,7 +388,7 @@ implements JdbcResource.JdbcTable
                                         null,
                                         name
                                         )
-                                    );                                
+                                    );
                                 }
                             }
                         if (column != null)
@@ -406,7 +401,7 @@ implements JdbcResource.JdbcTable
                         }
                     //
                     // Scan our own list of schema.
-                    for (JdbcResource.JdbcColumn column : select())
+                    for (final JdbcResource.JdbcColumn column : select())
                         {
                         log.debug("Checking registered column[{}]", column.name());
                         JdbcResource.JdbcColumn match = found.get(
@@ -421,7 +416,7 @@ implements JdbcResource.JdbcTable
                                 {
                                 log.debug("Creating database column [{}]", column.name());
                                 try {
-                                    String sql = "ALTER TABLE {table} ADD COLUMN {column} VARCHAR(10) ;".replace(
+                                    final String sql = "ALTER TABLE {table} ADD COLUMN {column} VARCHAR(10) ;".replace(
                                         "{table}",
                                         column.parent().name()
                                         ).replace(
@@ -429,11 +424,11 @@ implements JdbcResource.JdbcTable
                                             column.name()
                                             );
                                     log.debug("SQL [{}]", sql);
-                                    Connection connection = metadata.getConnection();
-                                    Statement  statement  = connection.createStatement();
+                                    final Connection connection = metadata.getConnection();
+                                    final Statement  statement  = connection.createStatement();
                                     statement.executeUpdate(sql);
                                     }
-                                catch (SQLException ouch)
+                                catch (final SQLException ouch)
                                     {
                                     log.error("Exception creating column [{}]", column.name());
                                     throw new RuntimeException(
@@ -456,7 +451,7 @@ implements JdbcResource.JdbcTable
                                         column.name(),
                                         null
                                         )
-                                    );                                
+                                    );
                                 }
                             }
                         //
@@ -472,7 +467,7 @@ implements JdbcResource.JdbcTable
                             }
                         }
                     }
-                catch (SQLException ouch)
+                catch (final SQLException ouch)
                     {
                     log.error("Error processing JDBC catalogs", ouch);
                     }
@@ -555,7 +550,7 @@ implements JdbcResource.JdbcTable
         }
 
     @Override
-    public List<JdbcResource.Diference> diff(boolean push, boolean pull)
+    public List<JdbcResource.Diference> diff(final boolean push, final boolean pull)
         {
         return diff(
             resource().metadata(),
@@ -566,7 +561,7 @@ implements JdbcResource.JdbcTable
         }
 
     @Override
-    public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull)
+    public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull)
         {
         //
         // Check this table.

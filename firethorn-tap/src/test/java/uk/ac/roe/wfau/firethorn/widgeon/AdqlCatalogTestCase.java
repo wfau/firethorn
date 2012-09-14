@@ -55,12 +55,12 @@ extends JdbcResourceTestBase
                     );
             fail("NameNotFoundException expected");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "catalog-A",
                 ouch.name()
-                );            
+                );
             }
         }
 
@@ -173,12 +173,12 @@ extends JdbcResourceTestBase
                 );
             fail("NameNotFoundException");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "catalog-A",
                 ouch.name()
-                );            
+                );
             }
 
         //
@@ -191,12 +191,12 @@ extends JdbcResourceTestBase
                     );
             fail("NameNotFoundException");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "catalog-A",
                 ouch.name()
-                );            
+                );
             }
 
         //
@@ -271,7 +271,7 @@ extends JdbcResourceTestBase
                 )
             );
         //
-        // Select catalog view with old name fails.        
+        // Select catalog view with old name fails.
         try {
             base().views().select(
                 "view-A"
@@ -280,15 +280,15 @@ extends JdbcResourceTestBase
                     );
             fail("NameNotFoundException");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "catalog-A",
                 ouch.name()
-                );            
+                );
             }
         //
-        // Select catalog view with new name works.        
+        // Select catalog view with new name works.
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -360,12 +360,12 @@ extends JdbcResourceTestBase
                     );
             fail("NameNotFoundException");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "catalog-A",
                 ouch.name()
-                );            
+                );
             }
         //
         // Select catalog view with new name works.
@@ -402,12 +402,12 @@ extends JdbcResourceTestBase
                     );
             fail("NameNotFoundException");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "view-changed",
                 ouch.name()
-                );            
+                );
             }
         //
         // Select catalog view with old name works.
@@ -475,12 +475,12 @@ extends JdbcResourceTestBase
                     );
             fail("NameNotFoundException");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "catalog-A",
                 ouch.name()
-                );            
+                );
             }
         //
         // Select catalog view with new name works.
@@ -506,12 +506,12 @@ extends JdbcResourceTestBase
                 );
             fail("NameNotFoundException");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "catalog-A",
                 ouch.name()
-                );            
+                );
             }
         //
         // Select base catalog with new name works.
@@ -537,12 +537,12 @@ extends JdbcResourceTestBase
                 );
             fail("NameNotFoundException");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "catalog-A",
                 ouch.name()
-                );            
+                );
             }
         //
         // Select base catalog with new name works.
@@ -561,12 +561,12 @@ extends JdbcResourceTestBase
                     );
             fail("NameNotFoundException");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "catalog-A",
                 ouch.name()
-                );            
+                );
             }
         //
         // Select catalog view with new name fails.
@@ -578,12 +578,12 @@ extends JdbcResourceTestBase
                     );
             fail("NameNotFoundException");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "view-changed",
                 ouch.name()
-                );            
+                );
             }
         //
         // Select catalog view with new base name works.
@@ -647,12 +647,12 @@ extends JdbcResourceTestBase
                 );
             fail("NameNotFoundException");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "catalog-A",
                 ouch.name()
-                );            
+                );
             }
         //
         // Select base catalog with new name works.
@@ -680,12 +680,12 @@ extends JdbcResourceTestBase
                     );
             fail("NameNotFoundException");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "catalog-A",
                 ouch.name()
-                );            
+                );
             }
         //
         // Select catalog view with new name works.
@@ -713,12 +713,12 @@ extends JdbcResourceTestBase
                 );
             fail("NameNotFoundException");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "catalog-A",
                 ouch.name()
-                );            
+                );
             }
         //
         // Select base catalog with new name works.
@@ -737,12 +737,12 @@ extends JdbcResourceTestBase
                     );
             fail("NameNotFoundException");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "catalog-A",
                 ouch.name()
-                );            
+                );
             }
         //
         // Select catalog view with new name fails.
@@ -754,12 +754,12 @@ extends JdbcResourceTestBase
                     );
             fail("NameNotFoundException");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "view-changed",
                 ouch.name()
-                );            
+                );
             }
         //
         // Select catalog view with new base name works.

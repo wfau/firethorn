@@ -32,10 +32,10 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
  * Generic super class for a DataResource Entities.
  *
  * Problems with AccessType.FIELD means we still have to have get/set methods on fields we want to modify.
- * If we don't include get/set methods, then Hibernate doesn't commit changes to the database. 
+ * If we don't include get/set methods, then Hibernate doesn't commit changes to the database.
  *   https://forum.hibernate.org/viewtopic.php?f=1&t=1012254
  *   https://hibernate.onjira.com/browse/HHH-6581
- *   http://javaprogrammingtips4u.blogspot.co.uk/2010/04/field-versus-property-access-in.html 
+ *   http://javaprogrammingtips4u.blogspot.co.uk/2010/04/field-versus-property-access-in.html
  *
  */
 @Slf4j
@@ -50,7 +50,7 @@ implements ResourceStatus
 
     /*
      * The persistence column name for our status enum.
-     * 
+     *
      */
     public static final String DB_STATUS_COL = "status" ;
 
@@ -98,7 +98,7 @@ implements ResourceStatus
         }
 
     @Override
-    public void status(Status status)
+    public void status(final Status status)
         {
         this.status = status ;
         }

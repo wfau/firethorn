@@ -17,24 +17,20 @@
  */
 package uk.ac.roe.wfau.firethorn.votable;
 
-import java.util.Iterator;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.w3c.dom.NodeList;
-
 import org.xml.sax.SAXException;
 
 import uk.ac.starlink.table.StarTable;
-
+import uk.ac.starlink.votable.TableElement;
 import uk.ac.starlink.votable.VOElement;
 import uk.ac.starlink.votable.VOElementFactory;
 import uk.ac.starlink.votable.VOStarTable;
-import uk.ac.starlink.votable.TableElement;
 
 
 /**
@@ -54,6 +50,7 @@ implements Iterator<StarTable>
         {
         return new Iterable<StarTable>()
             {
+            @Override
             public Iterator<StarTable> iterator()
                 {
                 try {
@@ -61,7 +58,7 @@ implements Iterator<StarTable>
                         stream
                         );
                     }
-                catch (Exception ouch)
+                catch (final Exception ouch)
                     {
                     throw new RuntimeException(
                         "Unable to create Iterable<StarTable> from an InputStream",
@@ -71,12 +68,12 @@ implements Iterator<StarTable>
                 }
             };
         }
-            
+
     /**
      * Public constructor from an InputStream.
      *
      */
-    public VOTableStarTableParser(InputStream stream)
+    public VOTableStarTableParser(final InputStream stream)
         {
         super();
         this.init(stream);
@@ -126,7 +123,7 @@ implements Iterator<StarTable>
      * Initialise our VOTable parser from an InputStream.
      *
      */
-    protected void init(InputStream stream)
+    protected void init(final InputStream stream)
         {
         try {
             this.init(
@@ -136,21 +133,21 @@ implements Iterator<StarTable>
                     )
                 );
             }
-        catch (SAXException ouch)
+        catch (final SAXException ouch)
             {
             log.error("SAXException while processing VOTable [" + ouch.getMessage() + "]");
             }
-        catch (IOException ouch)
+        catch (final IOException ouch)
             {
             log.error("IOException while processing VOTable [" + ouch.getMessage() + "]");
             }
-        }    
+        }
 
     /**
      * Initialise our VOTable parser from top level VOElement.
      *
      */
-    protected void init(VOElement top)
+    protected void init(final VOElement top)
     throws IOException
         {
         //
@@ -168,9 +165,9 @@ implements Iterator<StarTable>
         log.debug("Resources [" + resourceIndex + "][" + resourceCount + "]");
         if (resourceIndex < resourceCount)
             {
-            // 
+            //
             // Get the TABLE elements using VOElement method.
-            VOElement resource = (VOElement) resourceList.item(
+            final VOElement resource = (VOElement) resourceList.item(
                 resourceIndex++
                 );
             tableArray = resource.getChildrenByName("TABLE");
@@ -202,6 +199,7 @@ implements Iterator<StarTable>
             }
         }
 
+    @Override
     public StarTable next()
         {
         log.debug("VOTableParser.next()");
@@ -210,7 +208,7 @@ implements Iterator<StarTable>
                 nextTable()
                 );
             }
-        catch (IOException ouch)
+        catch (final IOException ouch)
             {
             log.error("IOException while processing VOTable [" + ouch.getMessage() + "]");
             throw new IllegalStateException(

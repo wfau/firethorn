@@ -44,7 +44,7 @@ extends DBTable
          * Create a new AdqlDBTable.
          *
          */
-        public AdqlDBTable create(AdqlResource.AdqlTable meta);
+        public AdqlDBTable create(final AdqlResource.AdqlTable meta);
 
         }
 

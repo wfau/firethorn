@@ -17,20 +17,16 @@
  */
 package uk.ac.roe.wfau.firethorn.identity ;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.URI;
-
-import org.junit.Test;
 import org.junit.Before;
-import org.junit.After;
-import static org.junit.Assert.*;
-
-import org.springframework.beans.factory.annotation.Autowired;  
-
-import uk.ac.roe.wfau.firethorn.test.TestBase;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
  *
@@ -44,17 +40,18 @@ extends TestBase
 
     /**
      * Our Autowired Identity.Context.Factory.
-     * 
+     *
      */
     @Autowired
     protected Identity.Context.Factory factory ;
 
     /**
      * Our current Identity.Context.
-     * 
+     *
      */
     protected Identity.Context context ;
 
+    @Override
     @Before
     public void before()
         {

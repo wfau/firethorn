@@ -100,19 +100,19 @@ implements AdqlResource.AdqlColumn
 
     /**
      * Our persistence table name.
-     * 
+     *
      */
     public static final String DB_TABLE_NAME = "adql_column" ;
 
     /**
      * The persistence column name for our parent table.
-     * 
+     *
      */
     public static final String DB_PARENT_COL = "parent" ;
 
     /**
      * The persistence column name for our base column.
-     * 
+     *
      */
     public static final String DB_BASE_COL = "base" ;
 
@@ -137,7 +137,7 @@ implements AdqlResource.AdqlColumn
          *
          */
         @CascadeEntityMethod
-        protected AdqlResource.AdqlColumn insert(AdqlColumnEntity entity)
+        protected AdqlResource.AdqlColumn insert(final AdqlColumnEntity entity)
             {
             super.insert(
                 entity
@@ -186,7 +186,7 @@ implements AdqlResource.AdqlColumn
                     )
                 );
             }
-        
+
         @Override
         @SelectEntityMethod
         public AdqlResource.AdqlColumn search(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseColumn<?> base)
@@ -203,7 +203,7 @@ implements AdqlResource.AdqlColumn
                     )
                 );
             }
-        
+
         @Override
         @SelectEntityMethod
         public AdqlResource.AdqlColumn search(final AdqlResource.AdqlSchema parent, final BaseResource.BaseColumn<?> base)
@@ -288,7 +288,7 @@ implements AdqlResource.AdqlColumn
         public AdqlResource.AdqlColumn select(final AdqlResource.AdqlTable parent, final String name)
         throws NameNotFoundException
             {
-            AdqlResource.AdqlColumn result = this.search(
+            final AdqlResource.AdqlColumn result = this.search(
                 parent,
                 name
                 );

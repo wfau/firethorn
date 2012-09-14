@@ -19,21 +19,13 @@ package uk.ac.roe.wfau.firethorn.mallard ;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.URI;
-
 import org.junit.Test;
-import org.junit.After;
 import org.junit.Before;
 import static org.junit.Assert.*;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
-
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
 
 /**
  *
@@ -55,6 +47,7 @@ extends TestBase
         return this.beta ;
         }
 
+    @Override
     @Before
     public void before()
     throws Exception
@@ -75,8 +68,8 @@ extends TestBase
     public void test000()
     throws Exception
         {
-        String prev = alpha().name();
-        String next = this.unique(
+        final String prev = alpha().name();
+        final String next = this.unique(
             "mallard-a"
             );
         assertFalse(
@@ -239,7 +232,7 @@ extends TestBase
     public void test005()
     throws Exception
         {
-        BaseResource base = womble().resources().jdbc().create(
+        final BaseResource base = womble().resources().jdbc().create(
             this.unique(
                 "widgeon-A"
                 )

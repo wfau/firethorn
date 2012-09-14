@@ -17,56 +17,38 @@
  */
 package uk.ac.roe.wfau.firethorn.common.entity ;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.Date;
 
-import java.io.Serializable;
-
-import javax.persistence.Id;
-import javax.persistence.Column;
-import javax.persistence.Version;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.GenerationType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.UniqueConstraint;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 
-import javax.persistence.ManyToOne;
-import javax.persistence.JoinTable;
-import javax.persistence.JoinColumn;
+import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-
-import org.hibernate.annotations.Index;
-import org.hibernate.annotations.NamedQuery;
-import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.GenericGenerator;
 
-import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Autowired;  
-
-import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
-
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 import uk.ac.roe.wfau.firethorn.common.womble.WombleImpl;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
 
 /**
  * Generic base class for a persistent Entity.
  *
  * Problems with AccessType.FIELD means we still have to have get/set methods on fields we want to modify.
- * If we don't include get/set methods, then Hibernate doesn't commit changes to the database. 
+ * If we don't include get/set methods, then Hibernate doesn't commit changes to the database.
  *   https://forum.hibernate.org/viewtopic.php?f=1&t=1012254
  *   https://hibernate.onjira.com/browse/HHH-6581
- *   http://javaprogrammingtips4u.blogspot.co.uk/2010/04/field-versus-property-access-in.html 
+ *   http://javaprogrammingtips4u.blogspot.co.uk/2010/04/field-versus-property-access-in.html
  *
  */
 @Slf4j
@@ -80,7 +62,7 @@ implements Entity
 
     /*
      * Our database mapping values.
-     * 
+     *
      */
     public static final String DB_GEN_NAME    = "entity-ident" ;
     public static final String DB_GEN_METHOD  = "identity" ;
@@ -137,7 +119,7 @@ implements Entity
         this(
             owner,
             null
-            );        
+            );
         }
 
     /**
@@ -160,8 +142,8 @@ implements Entity
          * [UnresolvedEntityInsertActions] HHH000437: Attempting to save one or more entities that have a non-nullable association with an unsaved transient entity. The unsaved transient entity must be saved in an operation prior to saving these dependent entities.
          * Unsaved transient entity: ([uk.ac.roe.wfau.firethorn.identity.IdentityEntity#<null>])
          * Dependent entities: ([[uk.ac.roe.wfau.firethorn.identity.IdentityEntity#<null>]])
-         * Non-nullable association(s): ([uk.ac.roe.wfau.firethorn.identity.IdentityEntity.owner]) 
-         * [WombleImpl] Error executing Hibernate query [org.hibernate.TransientPropertyValueException][Not-null property references a transient value - transient instance must be saved before current operation: uk.ac.roe.wfau.firethorn.identity.IdentityEntity.owner -> uk.ac.roe.wfau.firethorn.identity.IdentityEntity] 
+         * Non-nullable association(s): ([uk.ac.roe.wfau.firethorn.identity.IdentityEntity.owner])
+         * [WombleImpl] Error executing Hibernate query [org.hibernate.TransientPropertyValueException][Not-null property references a transient value - transient instance must be saved before current operation: uk.ac.roe.wfau.firethorn.identity.IdentityEntity.owner -> uk.ac.roe.wfau.firethorn.identity.IdentityEntity]
          *
         if (this.owner == null)
             {
@@ -311,9 +293,10 @@ implements Entity
      * Object toString() method.
      *
      */
+    @Override
     public String toString()
         {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("entity[");
 
             builder.append("class[");
@@ -343,14 +326,14 @@ implements Entity
      *
      */
     @Override
-    public boolean equals(Object that)
+    public boolean equals(final Object that)
         {
         if (that != null)
             {
             if (this == that)
                 {
                 return true ;
-                }                            
+                }
             if (that instanceof Entity)
                 {
                 return this.ident().equals(
@@ -374,7 +357,7 @@ logger.debug("hashCode()");
             }
         else {
             return -1 ;
-            }        
+            }
         }
      */
 

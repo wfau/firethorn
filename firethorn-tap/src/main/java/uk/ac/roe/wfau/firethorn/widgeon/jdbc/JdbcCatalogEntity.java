@@ -49,10 +49,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatus.Status;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.Diference;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.JdbcCatalog;
 
 /**
  * BaseResource.BaseCatalog implementation.
@@ -93,13 +90,13 @@ implements JdbcResource.JdbcCatalog
 
     /**
      * Our persistence table name.
-     * 
+     *
      */
     public static final String DB_TABLE_NAME = "jdbc_catalog" ;
 
     /**
      * The persistence column name for our parent resource.
-     * 
+     *
      */
     public static final String DB_PARENT_COL = "parent" ;
 
@@ -129,7 +126,7 @@ implements JdbcResource.JdbcCatalog
             super.insert(
                 entity
                 );
-            for (AdqlResource view : entity.parent().views().select())
+            for (final AdqlResource view : entity.parent().views().select())
                 {
                 this.views().cascade(
                     view,
@@ -170,7 +167,7 @@ implements JdbcResource.JdbcCatalog
         public JdbcResource.JdbcCatalog select(final JdbcResource parent, final String name)
         throws NameNotFoundException
             {
-            JdbcResource.JdbcCatalog result = this.search(
+            final JdbcResource.JdbcCatalog result = this.search(
                 parent,
                 name
                 );
@@ -204,7 +201,7 @@ implements JdbcResource.JdbcCatalog
 
         /**
          * Our Autowired view factory.
-         * 
+         *
          */
         @Autowired
         protected AdqlResource.AdqlCatalog.Factory views ;
@@ -217,7 +214,7 @@ implements JdbcResource.JdbcCatalog
 
         /**
          * Our Autowired schema factory.
-         * 
+         *
          */
         @Autowired
         protected JdbcResource.JdbcSchema.Factory schemas ;
@@ -243,7 +240,7 @@ implements JdbcResource.JdbcCatalog
                 }
 
             @Override
-            public AdqlResource.AdqlCatalog search(AdqlResource parent)
+            public AdqlResource.AdqlCatalog search(final AdqlResource parent)
                 {
                 return womble().resources().jdbc().views().catalogs().search(
                     parent,
@@ -259,7 +256,7 @@ implements JdbcResource.JdbcCatalog
         return new JdbcResource.JdbcCatalog.Schemas()
             {
             @Override
-            public JdbcResource.JdbcSchema create(String name)
+            public JdbcResource.JdbcSchema create(final String name)
                 {
                 return womble().resources().jdbc().catalogs().schemas().create(
                     JdbcCatalogEntity.this,
@@ -276,7 +273,7 @@ implements JdbcResource.JdbcCatalog
                 }
 
             @Override
-            public JdbcResource.JdbcSchema select(String name)
+            public JdbcResource.JdbcSchema select(final String name)
             throws NameNotFoundException
                 {
                 return womble().resources().jdbc().catalogs().schemas().select(
@@ -286,7 +283,7 @@ implements JdbcResource.JdbcCatalog
                 }
 
             @Override
-            public JdbcResource.JdbcSchema search(String name)
+            public JdbcResource.JdbcSchema search(final String name)
                 {
                 return womble().resources().jdbc().catalogs().schemas().search(
                     JdbcCatalogEntity.this,
@@ -295,7 +292,7 @@ implements JdbcResource.JdbcCatalog
                 }
 
             @Override
-            public List<JdbcResource.Diference> diff(boolean push, boolean pull)
+            public List<JdbcResource.Diference> diff(final boolean push, final boolean pull)
                 {
                 return diff(
                     resource().metadata(),
@@ -306,25 +303,25 @@ implements JdbcResource.JdbcCatalog
                 }
 
             @Override
-            public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull)
+            public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull)
                 {
                 log.debug("Comparing schema for catalog [{}]", name());
                 try {
                     //
                     // Scan the DatabaseMetaData for schema.
-                    ResultSet schemas = metadata.getSchemas(
+                    final ResultSet schemas = metadata.getSchemas(
                         name(),
                         null
                         );
 
-                    Map<String, JdbcResource.JdbcSchema> found = new HashMap<String, JdbcResource.JdbcSchema>();
+                    final Map<String, JdbcResource.JdbcSchema> found = new HashMap<String, JdbcResource.JdbcSchema>();
                     while (schemas.next())
                         {
-                        String name = schemas.getString(
+                        final String name = schemas.getString(
                             JdbcResource.JDBC_META_TABLE_SCHEM
                             );
                         log.debug("Checking database schema [{}]", name);
-    
+
                         JdbcResource.JdbcSchema schema = this.search(
                             name
                             );
@@ -350,7 +347,7 @@ implements JdbcResource.JdbcCatalog
                                         null,
                                         name
                                         )
-                                    );                                
+                                    );
                                 }
                             }
                         found.put(
@@ -360,7 +357,7 @@ implements JdbcResource.JdbcCatalog
                         }
                     //
                     // Scan our own list of schema.
-                    for (JdbcResource.JdbcSchema schema : select())
+                    for (final JdbcResource.JdbcSchema schema : select())
                         {
                         log.debug("Checking registered schema [{}]", schema.name());
                         JdbcResource.JdbcSchema match = found.get(
@@ -391,7 +388,7 @@ implements JdbcResource.JdbcCatalog
                                         schema.name(),
                                         null
                                         )
-                                    );                                
+                                    );
                                 }
                             }
                         //
@@ -407,7 +404,7 @@ implements JdbcResource.JdbcCatalog
                             }
                         }
                     }
-                catch (SQLException ouch)
+                catch (final SQLException ouch)
                     {
                     log.error("Error processing JDBC catalogs", ouch);
                     }
@@ -478,7 +475,7 @@ implements JdbcResource.JdbcCatalog
         }
 
     @Override
-    public List<JdbcResource.Diference> diff(boolean push, boolean pull)
+    public List<JdbcResource.Diference> diff(final boolean push, final boolean pull)
         {
         return diff(
             resource().metadata(),
@@ -489,7 +486,7 @@ implements JdbcResource.JdbcCatalog
         }
 
     @Override
-    public List<JdbcResource.Diference> diff(DatabaseMetaData metadata, List<JdbcResource.Diference> results, boolean push, boolean pull)
+    public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull)
         {
         //
         // Check this catalog.

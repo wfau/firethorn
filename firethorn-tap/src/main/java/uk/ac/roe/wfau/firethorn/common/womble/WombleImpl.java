@@ -23,9 +23,7 @@ import javax.annotation.PostConstruct;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.SessionFactory;
-import org.hibernate.StatelessSession;
 import org.hibernate.HibernateException;
 
 import org.hibernate.ScrollMode;
@@ -38,18 +36,12 @@ import org.springframework.dao.DataAccessException;
 //import org.springframework.orm.hibernate4.HibernateExceptionTranslator;
 
 import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;  
+import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
-
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.Factory;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.mallard.DataService;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
@@ -57,7 +49,7 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
  * Spring and Hibernate toolkit.
  *
  */
-@Slf4j 
+@Slf4j
 @Component("womble")
 public class WombleImpl
 implements Womble
@@ -109,20 +101,20 @@ implements Womble
 
     /**
      * Our Spring ApplicationContext.
-     * 
+     *
      */
     @Autowired
     private ApplicationContext appcontext ;
 
     /**
      * Make this instance the singleton instance.
-     * 
+     *
      */
     @PostConstruct
     public void postConstruct()
         {
         womble(
-            (Womble) appcontext.getBean(
+            appcontext.getBean(
                 Womble.class
                 )
             );
@@ -130,8 +122,9 @@ implements Womble
 
     /**
      * Our Spring components.
-     * 
+     *
      */
+    @Override
     public SpringStuff spring()
         {
         return new SpringStuff()
@@ -160,8 +153,9 @@ implements Womble
 
     /**
      * Our Hibernate components.
-     * 
+     *
      */
+    @Override
     public HibernateStuff hibernate()
         {
         return this.hibernate ;
@@ -169,9 +163,9 @@ implements Womble
 
     /**
      * Our Hibernate components.
-     * 
+     *
      */
-    private HibernateStuff hibernate = new HibernateStuff()
+    private final HibernateStuff hibernate = new HibernateStuff()
         {
 
         /**
@@ -239,7 +233,7 @@ implements Womble
                         );
                     }
                 }
-            catch (HibernateException ouch)
+            catch (final HibernateException ouch)
                 {
                 throw convert(
                     ouch
@@ -277,7 +271,7 @@ implements Womble
                         );
                     }
                 }
-            catch (HibernateException ouch)
+            catch (final HibernateException ouch)
                 {
                 throw convert(
                     ouch
@@ -291,7 +285,7 @@ implements Womble
          *
          */
         @Override
-        public Entity select(final Class type, final Identifier ident)
+        public Entity select(final Class<?> type, final Identifier ident)
             {
             //log.debug("select(Class, Identifier)");
             //log.debug("  class [{}]", type);
@@ -308,7 +302,7 @@ implements Womble
                         );
                     }
                 }
-            catch (HibernateException ouch)
+            catch (final HibernateException ouch)
                 {
                 throw convert(
                     ouch
@@ -346,7 +340,7 @@ implements Womble
                         );
                     }
                 }
-            catch (HibernateException ouch)
+            catch (final HibernateException ouch)
                 {
                 throw convert(
                     ouch
@@ -385,7 +379,7 @@ implements Womble
                         );
                     }
                 }
-            catch (HibernateException ouch)
+            catch (final HibernateException ouch)
                 {
                 throw convert(
                     ouch
@@ -404,7 +398,7 @@ implements Womble
             try {
                 session().flush();
                 }
-            catch (HibernateException ouch)
+            catch (final HibernateException ouch)
                 {
                 throw convert(
                     ouch
@@ -423,7 +417,7 @@ implements Womble
             try {
                 session().clear();
                 }
-            catch (HibernateException ouch)
+            catch (final HibernateException ouch)
                 {
                 throw convert(
                     ouch
@@ -458,7 +452,7 @@ implements Womble
                     );
                 }
             try {
-                ScrollableResults results = query.scroll(
+                final ScrollableResults results = query.scroll(
                     ScrollMode.FORWARD_ONLY
                     );
                 if (results.next())
@@ -469,7 +463,7 @@ implements Womble
                     return null ;
                     }
                 }
-            catch (HibernateException ouch)
+            catch (final HibernateException ouch)
                 {
                 throw convert(
                     ouch
@@ -494,42 +488,44 @@ implements Womble
  *
  */
 
-        
+
     /**
      * Our Autowired BaseResource factory.
-     * 
+     *
      */
     @Autowired
     protected BaseResource.Factory baseResources ;
 
     /**
      * Our Autowired JdbcResource factory.
-     * 
+     *
      */
     @Autowired
     protected JdbcResource.Factory jdbcResources ;
-    
-   
+
+
     @Override
     public ResourceFactories resources()
         {
         return new ResourceFactories()
             {
+            @Override
             public BaseResource.Factory base()
                 {
                 return baseResources;
                 }
 
+            @Override
             public JdbcResource.Factory jdbc()
                 {
                 return jdbcResources ;
                 }
             };
         }
-    
+
     /**
      * Our Autowired DataService factory.
-     * 
+     *
      */
     @Autowired
     protected DataService.Factory services ;
@@ -542,7 +538,7 @@ implements Womble
 
     /**
      * Our Autowired Identity factory.
-     * 
+     *
      */
     @Autowired
     protected Identity.Factory identities ;
@@ -555,7 +551,7 @@ implements Womble
 
     /**
      * Our Autowired Identity context factory.
-     * 
+     *
      */
     @Autowired
     protected Identity.Context.Factory contexts ;

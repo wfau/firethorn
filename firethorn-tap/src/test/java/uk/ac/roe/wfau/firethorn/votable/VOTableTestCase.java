@@ -46,24 +46,24 @@ extends JdbcResourceTestBase
 
     @Autowired
     ApplicationContext spring ;
-    
+
     @Test
     public void testVotableParser()
     throws Exception
         {
-        Iterable<StarTable> iter = VOTableStarTableParser.iterable(
+        final Iterable<StarTable> iter = VOTableStarTableParser.iterable(
             new FileInputStream(
                 "src/test/data/votable/random/random-10.xml"
                 )
-            ); 
-        
-        for (StarTable table : iter)
+            );
+
+        for (final StarTable table : iter)
             {
             log.debug("Table [{}][{}]",
                 table.getRowCount(),
                 table.getColumnCount()
-                );            
-            
+                );
+
             for (int index = 0 ; index < table.getColumnCount() ; index++)
                 {
                 log.debug(
@@ -74,11 +74,11 @@ extends JdbcResourceTestBase
                 }
             }
         }
-    
+
     /**
      * https://numberformat.wordpress.com/2010/06/03/creating-and-using-hsqldb-database-using-maven-in-10-minutes/
      * http://stackoverflow.com/questions/9403561/reload-database-connection-in-springhibernate-test-case
-     * 
+     *
      *
      */
     @Test
@@ -86,24 +86,24 @@ extends JdbcResourceTestBase
     throws Exception
         {
 
-        Iterable<StarTable> iter = VOTableStarTableParser.iterable(
+        final Iterable<StarTable> iter = VOTableStarTableParser.iterable(
             new FileInputStream(
                 "src/test/data/votable/random/random-10.xml"
                 )
-            ); 
-        
-        for (StarTable table : iter)
+            );
+
+        for (final StarTable table : iter)
             {
             log.debug("Table [{}][{}]",
                 table.getRowCount(),
                 table.getColumnCount()
-                );            
+                );
 
             //
             // Change the column names (ADQL => JDBC)
             for (int index = 0 ; index < table.getColumnCount() ; index++)
                 {
-                ColumnInfo column = table.getColumnInfo(index);
+                final ColumnInfo column = table.getColumnInfo(index);
                 log.debug(
                     "Column [{}]",
                     column.getName()
@@ -115,13 +115,13 @@ extends JdbcResourceTestBase
                     );
                 }
 
-            DataSource source = (DataSource) spring.getBean("MemData"); 
-            Connection connection = source.getConnection();
+            final DataSource source = (DataSource) spring.getBean("MemData");
+            final Connection connection = source.getConnection();
 
             //connection.createStatement().execute("CREATE SCHEMA albert AUTHORIZATION DBA ;");
             //connection.createStatement().execute("SET SCHEMA albert ;");
-            
-            JDBCFormatter formatter = new JDBCFormatter(
+
+            final JDBCFormatter formatter = new JDBCFormatter(
                 connection,
                 table
                 );
@@ -131,14 +131,14 @@ extends JdbcResourceTestBase
 
             for (int index = 0 ; index < table.getColumnCount() ; index++)
                 {
-                SqlColumn column = formatter.getColumn(index);
+                final SqlColumn column = formatter.getColumn(index);
                 log.debug(
                     "Column [{}][{}]",
                     column.getColumnName(),
                     column.getTypeSpec()
                     );
                 }
-            
+
             formatter.createJDBCTable(
                 "mytable",
                 WriteMode.DROP_CREATE

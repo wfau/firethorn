@@ -17,16 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.common.womble ;
 
-import lombok.extern.slf4j.Slf4j;
-
-import java.net.URI;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
  *

@@ -17,40 +17,21 @@
  */
 package uk.ac.roe.wfau.firethorn.adql ;
 
+import java.util.Arrays;
+
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.URI;
-
-import java.util.List;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.ArrayList;
-
-import java.io.StringBufferInputStream;
-
 import org.junit.Test;
-import static org.junit.Assert.*;
-
-import adql.query.ADQLQuery;
-import adql.query.from.ADQLTable;
-import adql.query.from.FromContent;
-
-import adql.parser.ADQLParser;
-import adql.parser.QueryChecker;
-import adql.parser.ParseException;
-
-import adql.db.DBTable;
-import adql.db.DBColumn;
-import adql.db.SearchColumnList;
-
-import adql.db.DBChecker;
-import adql.db.DefaultDBTable;
-import adql.db.DefaultDBColumn;
-
-import adql.translator.ADQLTranslator;
-import adql.translator.PostgreSQLTranslator;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
+import adql.db.DBChecker;
+import adql.db.DBTable;
+import adql.db.DefaultDBColumn;
+import adql.db.DefaultDBTable;
+import adql.parser.ADQLParser;
+import adql.query.ADQLQuery;
+import adql.translator.ADQLTranslator;
+import adql.translator.PostgreSQLTranslator;
 
 /**
  *
@@ -111,17 +92,17 @@ extends TestBase
 
         //
         // Create a parser:
-        ADQLParser parser = new ADQLParser();
+        final ADQLParser parser = new ADQLParser();
 
         //
         // Parse the test ADQL.
-        ADQLQuery query = parser.parseQuery(
+        final ADQLQuery query = parser.parseQuery(
             TEST_ADQL
             );
 
         //
         // Translate into SQL.
-        ADQLTranslator translator = new PostgreSQLTranslator();
+        final ADQLTranslator translator = new PostgreSQLTranslator();
         log.debug("SQL [{}]", translator.translate(query));
 
         }
@@ -139,11 +120,11 @@ extends TestBase
 
         //
         // Create a parser:
-        ADQLParser parser = new ADQLParser();
+        final ADQLParser parser = new ADQLParser();
 
         //
         // Create our table metadata.
-        DefaultDBTable dbtable = new DefaultDBTable(
+        final DefaultDBTable dbtable = new DefaultDBTable(
             "jdbc_catalog",
             "adql_catalog",
             "jdbc_schema",
@@ -183,13 +164,13 @@ extends TestBase
 
         //
         // Parse the test ADQL.
-        ADQLQuery query = parser.parseQuery(
+        final ADQLQuery query = parser.parseQuery(
             TEST_ADQL
             );
 
         //
         // Translate into SQL.
-        ADQLTranslator translator = new PostgreSQLTranslator();
+        final ADQLTranslator translator = new PostgreSQLTranslator();
         log.debug("SQL [{}]", translator.translate(query));
 
         }

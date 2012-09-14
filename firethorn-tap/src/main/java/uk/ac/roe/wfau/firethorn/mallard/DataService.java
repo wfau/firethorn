@@ -17,15 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.mallard ;
 
-import java.net.URL;
-import java.net.URI;
-
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
-
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 
 /**
  * A service instance.
@@ -46,7 +39,7 @@ extends Entity
          * Create a new DataService.
          *
          */
-        public DataService create(String name);
+        public DataService create(final String name);
 
         /**
          * Select all the Mallards.
@@ -58,17 +51,17 @@ extends Entity
          * Select Service(s) by name.
          *
          */
-        public Iterable<DataService> select(String name);
+        public Iterable<DataService> select(final String name);
 
         /**
          * Search for Service(s) by name.
          *
          */
-        public Iterable<DataService> search(String text);
+        public Iterable<DataService> search(final String text);
 
         /**
          * Access to our Job factory.
-         * 
+         *
          */
         public Job.Factory jobs();
         }
@@ -85,7 +78,7 @@ extends Entity
          * Add a DataResource to this service.
          *
          */
-        public void insert(AdqlResource resource);
+        public void insert(final AdqlResource resource);
 
         /**
          * Select all the DataResources used by this service.
@@ -111,15 +104,15 @@ extends Entity
              * Create a new Job.
              *
              */
-            public Job create(DataService service, String name, String adql);
+            public Job create(final DataService service, final String name, final String adql);
 
             /**
              * Select all the Jobs for a DataService.
              *
              */
-            public Iterable<Job> select(DataService service);
+            public Iterable<Job> select(final DataService service);
 
-            }        
+            }
 
         /**
          * Access to the Job status.
@@ -138,7 +131,7 @@ extends Entity
             RUNNING(),
             COMPLETED(),
             FAILED();
-            }; 
+            };
 
         /**
          * The parent DataService.
@@ -163,7 +156,7 @@ extends Entity
     public Jobs jobs();
     public interface Jobs
         {
-        public Job create(String name, String adql);
+        public Job create(final String name, final String adql);
         public Iterable<Job> select();
         }
 

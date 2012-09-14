@@ -20,8 +20,9 @@ package uk.ac.roe.wfau.firethorn.widgeon ;
 /**
  * Public interface for a component in a tree of DataResource(s).
  * @deprecated - just add it to the individual interfaces
- * 
+ *
  */
+@Deprecated
 public interface DataResourceChild<ParentType extends ResourceStatus>
 extends ResourceStatus
     {

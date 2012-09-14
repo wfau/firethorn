@@ -30,11 +30,16 @@ extends Exception
     {
 
     /**
+     * 
+     *
+     */
+    private static final long serialVersionUID = 2424668742190703687L;
+    /**
      * Default message for simple constructor.
      *
      */
     public static final String DEFAULT_MESSAGE = "Object not found" ;
-    
+
     /**
      * Public constructor, using default message.
      *
@@ -51,7 +56,7 @@ extends Exception
      * Public constructor, with specific message.
      *
      */
-    public EntityNotFoundException(String message)
+    public EntityNotFoundException(final String message)
         {
         this(
             message,
@@ -63,7 +68,7 @@ extends Exception
      * Public constructor, using default message.
      *
      */
-    public EntityNotFoundException(Throwable cause)
+    public EntityNotFoundException(final Throwable cause)
         {
         this(
             DEFAULT_MESSAGE,
@@ -75,7 +80,7 @@ extends Exception
      * Public constructor, with specific message.
      *
      */
-    public EntityNotFoundException(String message, Throwable cause)
+    public EntityNotFoundException(final String message, final Throwable cause)
         {
         super(
             message,

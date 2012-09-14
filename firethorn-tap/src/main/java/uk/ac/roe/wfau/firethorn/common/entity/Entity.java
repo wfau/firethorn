@@ -39,7 +39,7 @@ public interface Entity
          * Create an Identifier from a String.
          *
          */
-        public Identifier ident(String string);
+        public Identifier ident(final String string);
 
         /**
          * Select a specific Entity by Identifier.
@@ -66,7 +66,7 @@ public interface Entity
      * Set the Entity name.
      *
      */
-    public void name(String name)
+    public void name(final String name)
     throws NameFormatException;
 
     /**

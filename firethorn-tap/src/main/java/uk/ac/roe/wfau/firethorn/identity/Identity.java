@@ -70,10 +70,10 @@ extends Entity
         /**
          * Create a new Identity.
          * @param name - The new Identity name.
-         * @returns A new Identity. 
+         * @returns A new Identity.
          *
          */
-        public Identity create(String name);
+        public Identity create(final String name);
 
         /**
          * Select all the Identities managed by this Factory.

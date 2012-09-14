@@ -20,21 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql ;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource.Catalogs;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataCatalog;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataColumn;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataSchema;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataTable;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataCatalog.Schemas;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataColumn.Factory;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataSchema.Tables;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource.DataTable.Columns;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlTable;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.BaseCatalog;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.BaseColumn;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.BaseSchema;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.BaseTable;
 
 /**
  * Public interface for a ADQL view of a DataResource.
@@ -56,30 +42,30 @@ extends DataResource
          * Create a view of a resource.
          *
          */
-        public AdqlResource create(BaseResource base, String name);
+        public AdqlResource create(final BaseResource base, final String name);
 
         /**
          * Select all the views of a resource.
          *
          */
-        public Iterable<AdqlResource> select(BaseResource base);
+        public Iterable<AdqlResource> select(final BaseResource base);
 
         /**
          * Select a view of a resource by name.
          *
          */
-        public AdqlResource select(BaseResource base, String name)
+        public AdqlResource select(final BaseResource base, final String name)
         throws NameNotFoundException;
 
         /**
          * Search for a view of a resource by name.
          *
          */
-        public AdqlResource search(BaseResource base, String name);
+        public AdqlResource search(final BaseResource base, final String name);
 
         /**
          * Access to our catalog factory.
-         * 
+         *
          */
         public AdqlResource.AdqlCatalog.Factory catalogs();
 
@@ -104,6 +90,7 @@ extends DataResource
      * Access to this resource's catalogs.
      *
      */
+    @Override
     public Catalogs catalogs();
 
     /**
@@ -126,29 +113,29 @@ extends DataResource
              * Find an existing catalog view, or create a new one.
              *
              */
-            public AdqlResource.AdqlCatalog cascade(AdqlResource parent, BaseResource.BaseCatalog<?> base);
+            public AdqlResource.AdqlCatalog cascade(final AdqlResource parent, final BaseResource.BaseCatalog<?> base);
 
             /**
              * Create a view of a catalog.
              *
              */
-            public AdqlResource.AdqlCatalog create(AdqlResource parent, BaseResource.BaseCatalog<?> base, String name);
+            public AdqlResource.AdqlCatalog create(final AdqlResource parent, final BaseResource.BaseCatalog<?> base, final String name);
 
             /**
              * Select all the views of a catalog.
              *
              */
-            public Iterable<AdqlResource.AdqlCatalog> select(BaseResource.BaseCatalog<?> base);
+            public Iterable<AdqlResource.AdqlCatalog> select(final BaseResource.BaseCatalog<?> base);
 
             /**
              * Search for a catalog view based on parent resource.
              *
              */
-            public AdqlResource.AdqlCatalog search(AdqlResource parent, BaseResource.BaseCatalog<?> base);
+            public AdqlResource.AdqlCatalog search(final AdqlResource parent, final BaseResource.BaseCatalog<?> base);
 
             /**
              * Access to our schema factory.
-             * 
+             *
              */
             public AdqlResource.AdqlSchema.Factory schemas();
 
@@ -173,6 +160,7 @@ extends DataResource
          * Access to this catalog's schemas.
          *
          */
+        @Override
         public Schemas schemas();
 
         /**
@@ -203,38 +191,38 @@ extends DataResource
              * Find an existing schema view, or create a new one.
              *
              */
-            public AdqlResource.AdqlSchema cascade(AdqlResource.AdqlCatalog parent, BaseResource.BaseSchema<?> base);
+            public AdqlResource.AdqlSchema cascade(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseSchema<?> base);
 
             /**
              * Create a new view of a schema.
              *
              */
-            public AdqlResource.AdqlSchema create(AdqlResource.AdqlCatalog parent, BaseResource.BaseSchema<?> base, String name);
+            public AdqlResource.AdqlSchema create(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseSchema<?> base, final String name);
 
             /**
              * Select all the views of a schema.
              *
              */
-            public Iterable<AdqlResource.AdqlSchema> select(BaseResource.BaseSchema<?> base);
+            public Iterable<AdqlResource.AdqlSchema> select(final BaseResource.BaseSchema<?> base);
 
             /**
              * Search for a schema view based on parent resource.
              *
              */
-            public AdqlResource.AdqlSchema search(AdqlResource parent, BaseResource.BaseSchema<?> base);
+            public AdqlResource.AdqlSchema search(final AdqlResource parent, final BaseResource.BaseSchema<?> base);
 
             /**
              * Search for a schema view based on parent catalog.
              *
              */
-            public AdqlResource.AdqlSchema search(AdqlResource.AdqlCatalog parent, BaseResource.BaseSchema<?> base);
+            public AdqlResource.AdqlSchema search(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseSchema<?> base);
 
             /**
              * Access to our table factory.
-             * 
+             *
              */
             public AdqlResource.AdqlTable.Factory tables();
-            
+
             }
 
         /**
@@ -256,6 +244,7 @@ extends DataResource
          * Access to this schema's tables.
          *
          */
+        @Override
         public Tables tables();
 
         /**
@@ -292,41 +281,41 @@ extends DataResource
              * Find an existing table view, or create a new one.
              *
              */
-            public AdqlResource.AdqlTable cascade(AdqlResource.AdqlSchema parent, BaseResource.BaseTable<?> base);
+            public AdqlResource.AdqlTable cascade(final AdqlResource.AdqlSchema parent, final BaseResource.BaseTable<?> base);
 
             /**
              * Create a new view of a table.
              *
              */
-            public AdqlResource.AdqlTable create(AdqlResource.AdqlSchema parent, BaseResource.BaseTable<?> base, String name);
+            public AdqlResource.AdqlTable create(final AdqlResource.AdqlSchema parent, final BaseResource.BaseTable<?> base, final String name);
 
             /**
              * Select all the views of a table.
              *
              */
-            public Iterable<AdqlResource.AdqlTable> select(BaseResource.BaseTable<?> base);
+            public Iterable<AdqlResource.AdqlTable> select(final BaseResource.BaseTable<?> base);
 
             /**
              * Search for a table view based on parent resource.
              *
              */
-            public AdqlResource.AdqlTable search(AdqlResource parent, BaseResource.BaseTable<?> base);
-            
+            public AdqlResource.AdqlTable search(final AdqlResource parent, final BaseResource.BaseTable<?> base);
+
             /**
              * Search for a table view based on parent catalog.
              *
              */
-            public AdqlResource.AdqlTable search(AdqlResource.AdqlCatalog parent, BaseResource.BaseTable<?> base);
-            
+            public AdqlResource.AdqlTable search(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseTable<?> base);
+
             /**
              * Search for a table view based on parent schema.
              *
              */
-            public AdqlResource.AdqlTable search(AdqlResource.AdqlSchema parent, BaseResource.BaseTable<?> base);
+            public AdqlResource.AdqlTable search(final AdqlResource.AdqlSchema parent, final BaseResource.BaseTable<?> base);
 
             /**
              * Access to our column factory.
-             * 
+             *
              */
             public AdqlResource.AdqlColumn.Factory adqlColumns();
 
@@ -350,7 +339,7 @@ extends DataResource
              * Search for a view of a specific column.
              *
              */
-            public AdqlResource.AdqlColumn search(BaseResource.BaseColumn<?> base);
+            public AdqlResource.AdqlColumn search(final BaseResource.BaseColumn<?> base);
 
             }
 
@@ -358,6 +347,7 @@ extends DataResource
          * Access to this table's adqlColumns.
          *
          */
+        @Override
         public Columns columns();
 
         /**
@@ -400,43 +390,43 @@ extends DataResource
              * Find an existing column view, or create a new one.
              *
              */
-            public AdqlResource.AdqlColumn cascade(AdqlResource.AdqlTable parent, BaseResource.BaseColumn<?> base);
+            public AdqlResource.AdqlColumn cascade(final AdqlResource.AdqlTable parent, final BaseResource.BaseColumn<?> base);
 
             /**
              * Create a new View of a column.
              *
              */
-            public AdqlResource.AdqlColumn create(AdqlResource.AdqlTable parent, BaseResource.BaseColumn<?> base, String name);
+            public AdqlResource.AdqlColumn create(final AdqlResource.AdqlTable parent, final BaseResource.BaseColumn<?> base, final String name);
 
             /**
              * Select all the views of a column.
              *
              */
-            public Iterable<AdqlResource.AdqlColumn> select(BaseResource.BaseColumn<?> base);
+            public Iterable<AdqlResource.AdqlColumn> select(final BaseResource.BaseColumn<?> base);
 
             /**
              * Search for a column view based on parent resource.
              *
              */
-            public AdqlResource.AdqlColumn search(AdqlResource parent, BaseResource.BaseColumn<?> base);
+            public AdqlResource.AdqlColumn search(final AdqlResource parent, final BaseResource.BaseColumn<?> base);
 
             /**
              * Search for a column view based on parent catalog.
              *
              */
-            public AdqlResource.AdqlColumn search(AdqlResource.AdqlCatalog parent, BaseResource.BaseColumn<?> base);
+            public AdqlResource.AdqlColumn search(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseColumn<?> base);
 
             /**
              * Search for a column view based on parent schema.
              *
              */
-            public AdqlResource.AdqlColumn search(AdqlResource.AdqlSchema parent, BaseResource.BaseColumn<?> base);
+            public AdqlResource.AdqlColumn search(final AdqlResource.AdqlSchema parent, final BaseResource.BaseColumn<?> base);
 
             /**
              * Search for a column view based on parent table.
              *
              */
-            public AdqlResource.AdqlColumn search(AdqlResource.AdqlTable parent, BaseResource.BaseColumn<?> base);
+            public AdqlResource.AdqlColumn search(final AdqlResource.AdqlTable parent, final BaseResource.BaseColumn<?> base);
 
             }
 

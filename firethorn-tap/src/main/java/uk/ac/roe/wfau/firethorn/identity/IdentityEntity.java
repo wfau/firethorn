@@ -17,36 +17,19 @@
  */
 package uk.ac.roe.wfau.firethorn.identity ;
 
-import lombok.extern.slf4j.Slf4j;
-
-import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.FetchType;
-import javax.persistence.CascadeType;
-import javax.persistence.OneToMany;
-import javax.persistence.ManyToMany;
-import javax.persistence.JoinTable;
-import javax.persistence.JoinColumn;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-import org.hibernate.annotations.Index;
-import org.hibernate.annotations.NamedQuery;
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.annotations.NamedQueries;
-
-import org.springframework.stereotype.Component;
+import org.hibernate.annotations.NamedQuery;
 import org.springframework.stereotype.Repository;
-import org.springframework.beans.factory.annotation.Autowired;  
 
-import uk.ac.roe.wfau.firethorn.common.womble.Womble;
-
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
-
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
@@ -81,7 +64,7 @@ implements Identity
 
     /**
      * Our database table name.
-     * 
+     *
      */
     public static final String DB_TABLE_NAME = "identity_entity" ;
 
@@ -95,7 +78,7 @@ implements Identity
     implements Identity.Factory
         {
         @Override
-        public Class etype()
+        public Class<?> etype()
             {
             return IdentityEntity.class ;
             }
@@ -113,7 +96,7 @@ implements Identity
 
         @Override
         @CreateEntityMethod
-        public Identity create(String name)
+        public Identity create(final String name)
             {
             return super.insert(
                 new IdentityEntity(
@@ -137,7 +120,7 @@ implements Identity
      * Create a new IdentityEntity, setting the owner to null.
      *
      */
-    protected IdentityEntity(String name)
+    protected IdentityEntity(final String name)
         {
         super(
             null,

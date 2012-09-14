@@ -20,8 +20,6 @@ package uk.ac.roe.wfau.firethorn.common.entity.exception ;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier ;
-
 /**
  *
  *
@@ -32,6 +30,11 @@ extends RuntimeException
     {
 
     /**
+     * 
+     *
+     */
+    private static final long serialVersionUID = -5574299798502620244L;
+    /**
      * Default message for simple constructor.
      *
      */
@@ -41,7 +44,7 @@ extends RuntimeException
      * Create a default message.
      *
      */
-    public static String message(String name)
+    public static String message(final String name)
         {
         return DEFAULT_MESSAGE.replace(":name:", name);
         }
@@ -50,7 +53,7 @@ extends RuntimeException
      * Public constructor, using default message.
      *
      */
-    public NameFormatException(String name)
+    public NameFormatException(final String name)
         {
         this(
             name,
@@ -65,7 +68,7 @@ extends RuntimeException
      * Public constructor, with specific message.
      *
      */
-    public NameFormatException(String name, String message)
+    public NameFormatException(final String name, final String message)
         {
         this(
             name,
@@ -78,7 +81,7 @@ extends RuntimeException
      * Public constructor, with specific cause.
      *
      */
-    public NameFormatException(String name, Throwable cause)
+    public NameFormatException(final String name, final Throwable cause)
         {
         this(
             name,
@@ -93,7 +96,7 @@ extends RuntimeException
      * Public constructor, with specific message and cause.
      *
      */
-    public NameFormatException(String name, String message, Throwable cause)
+    public NameFormatException(final String name, final String message, final Throwable cause)
         {
         super(
             message,
@@ -102,7 +105,7 @@ extends RuntimeException
         this.name = name ;
         }
 
-    private String name;
+    private final String name;
 
     public String name()
         {

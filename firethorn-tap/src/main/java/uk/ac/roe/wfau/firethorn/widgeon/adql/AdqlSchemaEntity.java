@@ -42,7 +42,6 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource.BaseSchema;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchemaEntity;
 
 /**
@@ -95,19 +94,19 @@ implements AdqlResource.AdqlSchema
 
     /**
      * Our persistence table name.
-     * 
+     *
      */
     public static final String DB_TABLE_NAME = "adql_schema" ;
 
     /**
      * The persistence column name for our parent catalog.
-     * 
+     *
      */
     public static final String DB_PARENT_COL = "parent" ;
 
     /**
      * The persistence column name for our base schema.
-     * 
+     *
      */
     public static final String DB_BASE_COL = "base" ;
 
@@ -132,12 +131,12 @@ implements AdqlResource.AdqlSchema
          *
          */
         @CascadeEntityMethod
-        protected AdqlResource.AdqlSchema insert(AdqlSchemaEntity entity)
+        protected AdqlResource.AdqlSchema insert(final AdqlSchemaEntity entity)
             {
             super.insert(
                 entity
                 );
-            for (BaseResource.BaseTable<?> baseTable : entity.base().tables().select())
+            for (final BaseResource.BaseTable<?> baseTable : entity.base().tables().select())
                 {
                 this.tables().cascade(
                     entity,
@@ -164,7 +163,7 @@ implements AdqlResource.AdqlSchema
 
         @Override
         @SelectEntityMethod
-        public AdqlSchema search(AdqlResource parent, final BaseResource.BaseSchema<?> base)
+        public AdqlSchema search(final AdqlResource parent, final BaseResource.BaseSchema<?> base)
             {
             return super.first(
                 super.query(
@@ -246,7 +245,7 @@ implements AdqlResource.AdqlSchema
         public AdqlResource.AdqlSchema select(final AdqlResource.AdqlCatalog parent, final String name)
         throws NameNotFoundException
             {
-            AdqlResource.AdqlSchema result = this.search(
+            final AdqlResource.AdqlSchema result = this.search(
                 parent,
                 name
                 );
@@ -294,7 +293,7 @@ implements AdqlResource.AdqlSchema
 
         /**
          * Our Autowired table factory.
-         * 
+         *
          */
         @Autowired
         protected AdqlResource.AdqlTable.Factory tables ;
@@ -321,7 +320,7 @@ implements AdqlResource.AdqlSchema
                 }
 
             @Override
-            public AdqlResource.AdqlTable select(String name)
+            public AdqlResource.AdqlTable select(final String name)
             throws NameNotFoundException
                 {
                 return womble().resources().base().views().catalogs().schemas().tables().select(
@@ -331,7 +330,7 @@ implements AdqlResource.AdqlSchema
                 }
 
             @Override
-            public AdqlResource.AdqlTable search(String name)
+            public AdqlResource.AdqlTable search(final String name)
                 {
                 return womble().resources().base().views().catalogs().schemas().tables().search(
                     AdqlSchemaEntity.this,
@@ -403,7 +402,7 @@ implements AdqlResource.AdqlSchema
     /**
      * Our underlying schema.
      * @todo BaseSchemaEntity.class
-     * 
+     *
      */
     @ManyToOne(
         fetch = FetchType.EAGER,

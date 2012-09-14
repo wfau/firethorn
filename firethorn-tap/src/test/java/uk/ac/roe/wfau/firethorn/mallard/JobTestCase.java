@@ -17,16 +17,15 @@
  */
 package uk.ac.roe.wfau.firethorn.mallard ;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.URI;
-
 import org.junit.Test;
-import static org.junit.Assert.*;
-
-import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
  *
@@ -59,7 +58,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        DataService service = womble().services().select(
+        final DataService service = womble().services().select(
             ident[0]
             );
         assertFalse(
@@ -73,7 +72,7 @@ extends TestBase
             );
         service.jobs().create(
             "job-name",
-            "job-adql"            
+            "job-adql"
             );
         assertEquals(
             1,
@@ -90,7 +89,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        DataService service = womble().services().select(
+        final DataService service = womble().services().select(
             ident[0]
             );
         assertFalse(
@@ -104,7 +103,7 @@ extends TestBase
             );
         service.jobs().create(
             "job-name",
-            "job-adql"            
+            "job-adql"
             );
         assertEquals(
             2,
@@ -160,7 +159,7 @@ extends TestBase
             {
             mallard.jobs().create(
                 "job-name",
-                "job-adql"            
+                "job-adql"
                 );
             }
         assertEquals(

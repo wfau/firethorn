@@ -21,8 +21,6 @@ import static org.junit.Assert.*;
 
 import java.io.FileInputStream;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +28,6 @@ import javax.sql.DataSource;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.hsqldb.lib.Collection;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -63,7 +60,7 @@ extends TestBase
     @Autowired
     ApplicationContext spring ;
 
-    public String clean(String string)
+    public String clean(final String string)
         {
         String temp = string ;
         temp = temp.replace(
@@ -76,19 +73,19 @@ extends TestBase
             );
         return temp ;
         }
-    
+
     @Test
     public void testPull()
     throws Exception
         {
-        String catname = clean(unique("catalog"));
-        String schname = clean(unique("schema"));
-        String tabname = clean(unique("table"));
+        final String catname = clean(unique("catalog"));
+        final String schname = clean(unique("schema"));
+        final String tabname = clean(unique("table"));
 
         //
         // Connect to the test database.
-        DataSource source = (DataSource) spring.getBean("MemData");
-        Connection connection = source.getConnection();
+        final DataSource source = (DataSource) spring.getBean("MemData");
+        final Connection connection = source.getConnection();
 
         //
         // Create a new schema (HSQLDB specific).
@@ -101,14 +98,14 @@ extends TestBase
 
         //
         // Load our test data from file.
-        Iterable<StarTable> iter = VOTableStarTableParser.iterable(
+        final Iterable<StarTable> iter = VOTableStarTableParser.iterable(
             new FileInputStream(
                 "src/test/data/votable/testdata-001.xml"
                 )
-            ); 
+            );
         //
         // Extract each of the StarTables.
-        for (StarTable stars : iter)
+        for (final StarTable stars : iter)
             {
             //
             // Alter the table name (if required).
@@ -121,20 +118,20 @@ extends TestBase
             stars.getColumnInfo(0).setName("one");
             stars.getColumnInfo(1).setName("two");
             //
-            // Wrap the table in a JDBCFormatter. 
-            JDBCFormatter formatter = new JDBCFormatter(
+            // Wrap the table in a JDBCFormatter.
+            final JDBCFormatter formatter = new JDBCFormatter(
                 connection,
                 stars
                 );
             //
-            // Write the data to the database. 
+            // Write the data to the database.
             formatter.createJDBCTable(
                 stars.getName(),
                 WriteMode.DROP_CREATE
                 );
             //
             // Create an empty resource tree.
-            JdbcResource resource = womble().resources().jdbc().create(
+            final JdbcResource resource = womble().resources().jdbc().create(
                 this.unique(
                     "base"
                     ),
@@ -162,11 +159,11 @@ extends TestBase
 
         //
         // Connect to the test database.
-        DataSource source = (DataSource) spring.getBean("MemData");
-        Connection connection = source.getConnection();
+        final DataSource source = (DataSource) spring.getBean("MemData");
+        final Connection connection = source.getConnection();
         //
         // Create our JdbcResource.
-        JdbcResource jdbcResource = womble().resources().jdbc().create(
+        final JdbcResource jdbcResource = womble().resources().jdbc().create(
             unique(
                 "jdbc-resource"
                 ),
@@ -180,37 +177,37 @@ extends TestBase
             );
         //
         // Select our catalog and schema.
-        JdbcCatalog jdbcCatalog = jdbcResource.catalogs().select(
+        final JdbcCatalog jdbcCatalog = jdbcResource.catalogs().select(
             "PUBLIC"
             );
-        JdbcSchema jdbcSchema = jdbcCatalog.schemas().select(
+        final JdbcSchema jdbcSchema = jdbcCatalog.schemas().select(
             "PUBLIC"
-            ); 
+            );
         //
         // Create our AdqlResource.
-        AdqlResource adqlResource = jdbcResource.views().create(
+        final AdqlResource adqlResource = jdbcResource.views().create(
             unique(
                 "adql-resource"
                 )
-            ); 
+            );
 
         //
         // Load our test data from file.
-        Iterable<StarTable> iter = VOTableStarTableParser.iterable(
+        final Iterable<StarTable> iter = VOTableStarTableParser.iterable(
             new FileInputStream(
                 "src/test/data/votable/testdata-002.xml"
                 )
-            ); 
+            );
         //
         // Iterate the tables.
-        for (StarTable stars : iter)
+        for (final StarTable stars : iter)
             {
             //
             // Expected errors.
-            List<JdbcResource.Diference> expected = new ArrayList<JdbcResource.Diference>();
+            final List<JdbcResource.Diference> expected = new ArrayList<JdbcResource.Diference>();
             //
             // Create JdbcTable.
-            JdbcTable jdbcTable = jdbcSchema.tables().create(
+            final JdbcTable jdbcTable = jdbcSchema.tables().create(
                 clean(
                     unique(
                         "jdbc-table"
@@ -228,9 +225,9 @@ extends TestBase
                 );
             //
             // Find our AdqlTable.
-            AdqlTable adqlTable = jdbcTable.views().search(
+            final AdqlTable adqlTable = jdbcTable.views().search(
                 adqlResource
-                ); 
+                );
             //
             // Rename our AdqlTable to use the StarTable name.
             adqlTable.name(
@@ -249,7 +246,7 @@ extends TestBase
             // Iterate the StarTable columns.
             for (int index = 0 ; index < stars.getColumnCount() ; index++)
                 {
-                ColumnInfo columnInfo = stars.getColumnInfo(index);
+                final ColumnInfo columnInfo = stars.getColumnInfo(index);
                 log.debug("Column [{}]", columnInfo.getName());
                 //
                 // Create our JdbcColumn.
@@ -258,17 +255,17 @@ extends TestBase
  * Code is available in private methods of uk.ac.starlink.table.jdbc.JDBCFormatter.
  * Copy into our own class and modify so that we can be consistent on both sides of our service.
  * http://starjava.jach.hawaii.edu/viewvc/trunk/table/src/main/uk/ac/starlink/table/jdbc/JDBCFormatter.java?view=annotate
- * 
- * 
+ *
+ *
  * http://www.postgresql.org/docs/9.2/static/datatype-character.html
  * http://hsqldb.org/doc/guide/ch09.html#alter_table-section
  * http://www.star.bristol.ac.uk/~mbt/stil/
  * https://docs.jboss.org/hibernate/orm/4.1/javadocs/org/hibernate/dialect/Dialect.html
- * 
+ *
  */
 
-                
-                JdbcColumn jdbcColumn = jdbcTable.columns().create(
+
+                final JdbcColumn jdbcColumn = jdbcTable.columns().create(
                     clean(
                         unique(
                             "jdbc-column"
@@ -280,7 +277,7 @@ extends TestBase
 /*
  * If the table hasn't been created yet,
  * then a call to diff() won't pick up the columns.
- *  
+ *
                 expected.add(
                     new JdbcResource.Diference(
                         JdbcResource.Diference.Type.COLUMN,
@@ -291,7 +288,7 @@ extends TestBase
 */
                 //
                 // Find our AdqlColumn.
-                AdqlColumn adqlColumn = jdbcColumn.views().search(
+                final AdqlColumn adqlColumn = jdbcColumn.views().search(
                     adqlResource
                     );
                 //
@@ -302,14 +299,14 @@ extends TestBase
                         )
                     );
                 //
-                // Rename ColumnInfo to use the JdbcColumn name. 
+                // Rename ColumnInfo to use the JdbcColumn name.
                 columnInfo.setName(
                     jdbcColumn.name()
                     );
                 }
             //
             // Check the differences.
-            List<JdbcResource.Diference> before = jdbcResource.diff(
+            final List<JdbcResource.Diference> before = jdbcResource.diff(
                 false,
                 false
                 );
@@ -317,7 +314,7 @@ extends TestBase
                 expected.size(),
                 before.size()
                 );
-            for (JdbcResource.Diference diff : expected)
+            for (final JdbcResource.Diference diff : expected)
                 {
                 assertContains(
                     before,
@@ -332,11 +329,11 @@ extends TestBase
                 );
             //
             // Check the differences.
-            List<JdbcResource.Diference> after = jdbcResource.diff(
+            final List<JdbcResource.Diference> after = jdbcResource.diff(
                 false,
                 false
                 );
-for (JdbcResource.Diference diff : after)
+for (final JdbcResource.Diference diff : after)
     {
     log.debug("----- Diff [{}][{}]", diff.type(), diff.meta());
     }
@@ -346,7 +343,7 @@ for (JdbcResource.Diference diff : after)
                 );
             //
             // Insert the test data into the database.
-            
+
             }
         //
         // Display what we got.
@@ -355,21 +352,21 @@ for (JdbcResource.Diference diff : after)
             );
         }
 
-    public void display(JdbcResource resource)
+    public void display(final JdbcResource resource)
         {
         log.debug("---");
         log.debug("- Resource [{}]", resource.name());
 
-        for (JdbcCatalog catalog : resource.catalogs().select())
+        for (final JdbcCatalog catalog : resource.catalogs().select())
             {
             log.debug("-- Catalog [{}]", catalog.name());
-            for (JdbcSchema schema : catalog.schemas().select())
+            for (final JdbcSchema schema : catalog.schemas().select())
                 {
                 log.debug("--- Schema [{}]", schema.name());
-                for (JdbcTable table : schema.tables().select())
+                for (final JdbcTable table : schema.tables().select())
                     {
                     log.debug("---- Table [{}]", table.name());
-                    for (JdbcColumn column : table.columns().select())
+                    for (final JdbcColumn column : table.columns().select())
                         {
                         log.debug("----- Column [{}]", column.name());
                         }
@@ -378,19 +375,19 @@ for (JdbcResource.Diference diff : after)
             }
 
         log.debug("---");
-        for (AdqlResource view : resource.views().select())
+        for (final AdqlResource view : resource.views().select())
             {
             log.debug("- View [{}]", resource.name());
-            for (AdqlCatalog catalog : view.catalogs().select())
+            for (final AdqlCatalog catalog : view.catalogs().select())
                 {
                 log.debug("-- Catalog [{}]", catalog.name());
-                for (AdqlSchema schema : catalog.schemas().select())
+                for (final AdqlSchema schema : catalog.schemas().select())
                     {
                     log.debug("--- Schema [{}]", schema.name());
-                    for (AdqlTable table : schema.tables().select())
+                    for (final AdqlTable table : schema.tables().select())
                         {
                         log.debug("---- Table [{}]", table.name());
-                        for (AdqlColumn column : table.columns().select())
+                        for (final AdqlColumn column : table.columns().select())
                             {
                             log.debug("----- Column [{}]", column.name());
                             }
@@ -400,7 +397,7 @@ for (JdbcResource.Diference diff : after)
             }
         }
 
-    public void assertContains(List<?> collection, Object object)
+    public void assertContains(final List<?> collection, final Object object)
         {
         assertTrue(
             collection.contains(

@@ -46,12 +46,12 @@ extends DataResourceTestBase
                 );
             fail("NameNotFoundException expected");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "view-A",
                 ouch.name()
-                );            
+                );
             }
         }
 

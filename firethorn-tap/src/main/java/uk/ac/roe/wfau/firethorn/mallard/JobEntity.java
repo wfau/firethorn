@@ -17,38 +17,25 @@
  */
 package uk.ac.roe.wfau.firethorn.mallard ;
 
-import lombok.extern.slf4j.Slf4j;
-
-import javax.persistence.Table;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Access;
 import javax.persistence.EnumType;
-import javax.persistence.FetchType;
-import javax.persistence.AccessType;
-import javax.persistence.CascadeType;
 import javax.persistence.Enumerated;
-import javax.persistence.OneToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.ManyToMany;
-import javax.persistence.JoinTable;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-import org.hibernate.annotations.Index;
-import org.hibernate.annotations.NamedQuery;
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.annotations.NamedQueries;
-
+import org.hibernate.annotations.NamedQuery;
 import org.springframework.stereotype.Repository;
-import org.springframework.beans.factory.annotation.Autowired;  
 
-import uk.ac.roe.wfau.firethorn.common.womble.Womble;
-
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
-
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
@@ -91,13 +78,13 @@ implements DataService.Job
 
     /**
      * Our database table name.
-     * 
+     *
      */
     public static final String DB_TABLE_NAME = "job_entity" ;
 
     /*
      * Our database mapping values.
-     * 
+     *
      */
     public static final String DB_ADQL_COL    = "adql"   ;
     public static final String DB_STATUS_COL  = "status" ;
@@ -113,13 +100,14 @@ implements DataService.Job
     implements DataService.Job.Factory
         {
         @Override
-        public Class etype()
+        public Class<?> etype()
             {
             return JobEntity.class ;
             }
 
+        @Override
         @SelectEntityMethod
-        public Iterable<DataService.Job> select(DataService service)
+        public Iterable<DataService.Job> select(final DataService service)
             {
             return super.iterable(
                 super.query(
@@ -133,7 +121,7 @@ implements DataService.Job
 
         @Override
         @CreateEntityMethod
-        public DataService.Job create(DataService service, String name, String adql)
+        public DataService.Job create(final DataService service, final String name, final String adql)
             {
             return super.insert(
                 new JobEntity(
@@ -159,7 +147,7 @@ implements DataService.Job
      * Create a new JobEntity.
      *
      */
-    protected JobEntity(DataService service, String name, String adql)
+    protected JobEntity(final DataService service, final String name, final String adql)
         {
         super(name);
         this.adql = adql ;
@@ -200,7 +188,7 @@ implements DataService.Job
     @Enumerated(
         EnumType.STRING
         )
-    private DataService.Job.Status status = DataService.Job.Status.EDITING ;
+    private final DataService.Job.Status status = DataService.Job.Status.EDITING ;
     @Override
     public  DataService.Job.Status status()
         {

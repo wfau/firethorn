@@ -200,7 +200,7 @@ extends JdbcResourceTestBase
         null,           // Aliased table does not have schema or catalog
         null,           // Aliased table does not have schema or catalog
 
-        "jdbc_table",   // Aliased table still maps to the original JDBC table. 
+        "jdbc_table",   // Aliased table still maps to the original JDBC table.
         "jdbc_schema",  // Aliased table still maps to the original JDBC table.
         "jdbc_catalog", // Aliased table still maps to the original JDBC table.
 
@@ -241,7 +241,7 @@ extends JdbcResourceTestBase
         null,           // Aliased table does not have schema or catalog
         null,           // Aliased table does not have schema or catalog
 
-        "jdbc_table",   // Aliased table still maps to the original JDBC table. 
+        "jdbc_table",   // Aliased table still maps to the original JDBC table.
         "jdbc_schema",  // Aliased table still maps to the original JDBC table.
         "jdbc_catalog", // Aliased table still maps to the original JDBC table.
 
@@ -264,7 +264,7 @@ extends JdbcResourceTestBase
         {
         //
         // Create our table metadata.
-        DefaultDBTable dbtable = new DefaultDBTable(
+        final DefaultDBTable dbtable = new DefaultDBTable(
             "jdbc_catalog",
             "adql_catalog",
             "jdbc_schema",
@@ -445,12 +445,12 @@ extends JdbcResourceTestBase
      * Parse a query and check the results.
      *
      */
-    public void check(DBTable metadata, String[] data)
+    public void check(final DBTable metadata, final String[] data)
     throws Exception
         {
         //
         // Create a parser:
-        ADQLParser parser = new ADQLParser();
+        final ADQLParser parser = new ADQLParser();
         //
         // Add the metadata to our parser.
         parser.setQueryChecker(
@@ -474,11 +474,11 @@ extends JdbcResourceTestBase
      * Check the results of an ADQL query.
      *
      */
-    public void check(ADQLQuery query, String[] data)
+    public void check(final ADQLQuery query, final String[] data)
     throws Exception
         {
         //
-        // Check the parsed ADQLTable. 
+        // Check the parsed ADQLTable.
         assertEquals(
             data[1],
             query.getFrom().getTables().get(0).getTableName()
@@ -571,14 +571,14 @@ extends JdbcResourceTestBase
         {
         //
         // Create a parser:
-        ADQLParser parser = new ADQLParser();
+        final ADQLParser parser = new ADQLParser();
         //
         // Parse the test query.
-        ADQLQuery query = parser.parseQuery(
+        final ADQLQuery query = parser.parseQuery(
             SIMPLE_QUERY[0]
             );
         //
-        // Check the parsed ADQL tree. 
+        // Check the parsed ADQL tree.
         assertEquals(
             1,
             query.getFrom().getTables().size()
@@ -602,7 +602,7 @@ extends JdbcResourceTestBase
             SIMPLE_QUERY
             );
         }
-    
+
     /**
      * Use AdqlDBTable based metadata for the QueryChecker.
      *
@@ -630,7 +630,7 @@ extends JdbcResourceTestBase
             QUERY_000
             );
         }
-    
+
     /**
      * Use AdqlDBTable based metadata for the QueryChecker.
      *
@@ -659,7 +659,7 @@ extends JdbcResourceTestBase
             );
         }
      */
-    
+
     /**
      * Use AdqlDBTable based metadata for the QueryChecker.
      * Unresolved identifiers: ra [l.1 c.94 - l.1 c.96], dec [l.1 c.131 - l.1 c.134]
@@ -688,7 +688,7 @@ extends JdbcResourceTestBase
             QUERY_002
             );
         }
-    
+
     /**
      * Use AdqlDBTable based metadata for the QueryChecker.
      *
@@ -716,7 +716,7 @@ extends JdbcResourceTestBase
             QUERY_003
             );
         }
-    
+
     /**
      * Use AdqlDBTable based metadata for the QueryChecker.
      *

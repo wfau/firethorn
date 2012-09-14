@@ -52,14 +52,14 @@ extends ResourceStatus
          * Select a named catalog from the resource.
          *
          */
-        public CatalogType select(String name)
+        public CatalogType select(final String name)
         throws NameNotFoundException;
 
         /**
          * Search for a named catalog from the resource.
          *
          */
-        public CatalogType search(String name);
+        public CatalogType search(final String name);
 
         }
 
@@ -83,20 +83,20 @@ extends ResourceStatus
              * Select all the catalogs for a resource.
              *
              */
-            public Iterable<CatalogType> select(ResourceType parent);
+            public Iterable<CatalogType> select(final ResourceType parent);
 
             /**
              * Select a named catalog for a resource.
              *
              */
-            public CatalogType select(ResourceType parent, String name)
+            public CatalogType select(final ResourceType parent, final String name)
             throws NameNotFoundException;
 
             /**
              * Search for a named catalog from a resource.
              *
              */
-            public CatalogType search(ResourceType parent, String name);
+            public CatalogType search(final ResourceType parent, final String name);
 
             }
 
@@ -105,7 +105,7 @@ extends ResourceStatus
          *
          */
         public ResourceType parent();
-        
+
         /**
          * Access to this catalog's schemas.
          *
@@ -129,14 +129,14 @@ extends ResourceStatus
              * Select a named schema from the catalog.
              *
              */
-            public SchemaType select(String name)
+            public SchemaType select(final String name)
             throws NameNotFoundException;
 
             /**
              * Search for a named schema from the catalog.
              *
              */
-            public SchemaType search(String name);
+            public SchemaType search(final String name);
 
             }
         }
@@ -161,20 +161,20 @@ extends ResourceStatus
              * Select all the schemas from a catalog.
              *
              */
-            public Iterable<SchemaType> select(CatalogType parent);
+            public Iterable<SchemaType> select(final CatalogType parent);
 
             /**
              * Select a named schema from a catalog.
              *
              */
-            public SchemaType select(CatalogType parent, String name)
+            public SchemaType select(final CatalogType parent, final String name)
             throws NameNotFoundException;
 
             /**
              * Search for a named schema from a catalog.
              *
              */
-            public SchemaType search(CatalogType parent, String name);
+            public SchemaType search(final CatalogType parent, final String name);
 
             }
 
@@ -207,14 +207,14 @@ extends ResourceStatus
              * Select a named table from the schema.
              *
              */
-            public TableType select(String name)
+            public TableType select(final String name)
             throws NameNotFoundException;
 
             /**
              * Search for a named table from the schema.
              *
              */
-            public TableType search(String name);
+            public TableType search(final String name);
 
             }
         }
@@ -239,20 +239,20 @@ extends ResourceStatus
              * Select all the tables from a schema.
              *
              */
-            public Iterable<TableType> select(SchemaType parent);
+            public Iterable<TableType> select(final SchemaType parent);
 
             /**
              * Select a named table from a schema.
              *
              */
-            public TableType select(SchemaType parent, String name)
+            public TableType select(final SchemaType parent, final String name)
             throws NameNotFoundException;
 
             /**
              * Search for a named table from a schema.
              *
              */
-            public TableType search(SchemaType parent, String name);
+            public TableType search(final SchemaType parent, final String name);
 
             }
 
@@ -285,14 +285,14 @@ extends ResourceStatus
              * Select a named column from the table.
              *
              */
-            public ColumnType select(String name)
+            public ColumnType select(final String name)
             throws NameNotFoundException;
 
             /**
              * Search for a named column from the table.
              *
              */
-            public ColumnType search(String name);
+            public ColumnType search(final String name);
 
             }
         }
@@ -317,20 +317,20 @@ extends ResourceStatus
              * Select all the adqlColumns from a table.
              *
              */
-            public Iterable<ColumnType> select(TableType parent);
+            public Iterable<ColumnType> select(final TableType parent);
 
             /**
              * Select a named column from a table.
              *
              */
-            public ColumnType select(TableType parent, String name)
+            public ColumnType select(final TableType parent, final String name)
             throws NameNotFoundException;
 
             /**
              * Search for a named column from a table.
              *
              */
-            public ColumnType search(TableType parent, String name);
+            public ColumnType search(final TableType parent, final String name);
 
             }
 

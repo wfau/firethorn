@@ -53,12 +53,12 @@ extends JdbcResourceTestBase
                 );
             fail("NameNotFoundException expected");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "catalog-A",
                 ouch.name()
-                );            
+                );
             }
         }
 
@@ -106,12 +106,12 @@ extends JdbcResourceTestBase
                     );
             fail("NameNotFoundException expected");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "schema-A",
                 ouch.name()
-                );            
+                );
             }
         }
 
@@ -157,12 +157,12 @@ extends JdbcResourceTestBase
                         );
             fail("NameNotFoundException expected");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "table-A",
                 ouch.name()
-                );            
+                );
             }
         }
 
@@ -216,12 +216,12 @@ extends JdbcResourceTestBase
                             );
             fail("NameNotFoundException expected");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "column-A",
                 ouch.name()
-                );            
+                );
             }
         }
 
@@ -282,12 +282,12 @@ extends JdbcResourceTestBase
                             );
             fail("NameNotFoundException expected");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "column-a",
                 ouch.name()
-                );            
+                );
             }
         }
 
@@ -319,12 +319,12 @@ extends JdbcResourceTestBase
                             );
             fail("NameNotFoundException expected");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "column-a",
                 ouch.name()
-                );            
+                );
             }
 
         base().catalogs().select(
@@ -363,12 +363,12 @@ extends JdbcResourceTestBase
                             );
             fail("NameNotFoundException expected");
             }
-        catch (NameNotFoundException ouch)
+        catch (final NameNotFoundException ouch)
             {
             assertEquals(
                 "column-A",
                 ouch.name()
-                );            
+                );
             }
         }
     }

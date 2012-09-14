@@ -19,14 +19,13 @@ package uk.ac.roe.wfau.firethorn.identity ;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
-import org.springframework.beans.factory.annotation.Autowired;  
 
 /**
  * Identity context implementation.
  * This implementation assumes a one to one match between the current Thread and a Hibernate Session.
- * A more complete implementation should check that the Identity Entity is part of the current Hibernate Session 
+ * A more complete implementation should check that the Identity Entity is part of the current Hibernate Session
  *
  */
 @Slf4j
@@ -54,7 +53,7 @@ implements Identity.Context
          * ThreadLocal storage for the current Identity.
          *
          */
-        private ThreadLocal<Identity> tracker = new ThreadLocal<Identity>()
+        private final ThreadLocal<Identity> tracker = new ThreadLocal<Identity>()
             {
             @Override
             protected Identity initialValue()
@@ -63,7 +62,7 @@ implements Identity.Context
                 return factory.create(
                     "anon-identity"
                     );
-                }            
+                }
             };
 
         @Override
@@ -80,7 +79,7 @@ implements Identity.Context
      * Protected constructor.
      *
      */
-    protected SimpleContext(Identity identity)
+    protected SimpleContext(final Identity identity)
         {
         log.debug("SimpleContext()");
         this.identity = identity ;
@@ -90,7 +89,7 @@ implements Identity.Context
      * The current identity.
      *
      */
-    private Identity identity ;
+    private final Identity identity ;
 
     @Override
     public Identity identity()

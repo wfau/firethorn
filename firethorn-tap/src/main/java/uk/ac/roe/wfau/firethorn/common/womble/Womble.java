@@ -19,9 +19,7 @@ package uk.ac.roe.wfau.firethorn.common.womble ;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.SessionFactory;
-import org.hibernate.StatelessSession;
 import org.hibernate.HibernateException;
 
 import org.springframework.dao.DataAccessException;
@@ -32,8 +30,6 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 import uk.ac.roe.wfau.firethorn.mallard.DataService;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
@@ -47,19 +43,19 @@ public interface Womble
 
     /**
      * Our Spring stuff.
-     * 
+     *
      */
     public SpringStuff spring();
 
     /**
      * Inner class to handle Spring suff.
-     * 
+     *
      */
     public interface SpringStuff
         {
         /**
          * The current ApplicationContext.
-         * 
+         *
          */
         public ApplicationContext context();
 
@@ -67,13 +63,13 @@ public interface Womble
 
     /**
      * Our Hibernate stuff.
-     * 
+     *
      */
     public HibernateStuff hibernate();
 
     /**
      * Inner class to handle Hibernate stuff.
-     * 
+     *
      */
     public interface HibernateStuff
         {
@@ -82,7 +78,7 @@ public interface Womble
          * Wrap a Hibernate Exception.
          *
          */
-        public DataAccessException convert(HibernateException ouch);
+        public DataAccessException convert(final HibernateException ouch);
 
         /**
          * Get the current Hibernate SessionFactory.
@@ -100,31 +96,31 @@ public interface Womble
          * Get a named query.
          *
          */
-        public Query query(String name);
+        public Query query(final String name);
 
         /**
          * Insert a new Entity.
          *
          */
-        public Entity insert(Entity entity);
+        public Entity insert(final Entity entity);
 
         /**
          * Select an existing existing Entity by Identifier.
          *
          */
-        public Entity select(Class type, Identifier ident);
+        public Entity select(final Class<?> type, final Identifier ident);
 
         /**
          * Update an existing Entity.
          *
          */
-        public Entity update(Entity entity);
+        public Entity update(final Entity entity);
 
         /**
          * Delete an existing Entity.
          *
          */
-        public void delete(Entity entity);
+        public void delete(final Entity entity);
 
         /**
          * Flush current changes to the database.
@@ -142,21 +138,21 @@ public interface Womble
          * Select a single Entity from a Query.
          *
          */
-        public Entity single(Query query);
+        public Entity single(final Query query);
 
         /**
          * Select the first Entity from a Query.
          *
          */
-        public Entity first(Query query);
+        public Entity first(final Query query);
 
-        }        
+        }
 
     /**
      * Factory interface for accessing our resource factories..
-     * 
+     *
      */
-    public interface ResourceFactories 
+    public interface ResourceFactories
         {
 
         public BaseResource.Factory base();
@@ -167,25 +163,25 @@ public interface Womble
 
     /**
      * Access to our DataResource factory.
-     * 
+     *
      */
     public ResourceFactories resources();
 
     /**
      * Access to our DataService factory.
-     * 
+     *
      */
     public DataService.Factory services();
 
     /**
      * Access to our Identity factory.
-     * 
+     *
      */
     public Identity.Factory identities();
 
     /**
      * Access to the current Identity context.
-     * 
+     *
      */
     public Identity.Context context();
 

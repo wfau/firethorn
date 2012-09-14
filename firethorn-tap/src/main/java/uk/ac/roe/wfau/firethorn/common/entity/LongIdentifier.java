@@ -27,7 +27,7 @@ public class LongIdentifier
 extends AbstractIdentifier<Long>
     {
 
-    public LongIdentifier(String string)
+    public LongIdentifier(final String string)
         {
         this(
             parse(
@@ -36,7 +36,7 @@ extends AbstractIdentifier<Long>
             );
         }
 
-    public LongIdentifier(int value)
+    public LongIdentifier(final int value)
         {
         super(
             new Long(
@@ -45,7 +45,7 @@ extends AbstractIdentifier<Long>
             ) ;
         }
 
-    public LongIdentifier(long value)
+    public LongIdentifier(final long value)
         {
         super(
             new Long(
@@ -54,7 +54,7 @@ extends AbstractIdentifier<Long>
             ) ;
         }
 
-    public LongIdentifier(Long value)
+    public LongIdentifier(final Long value)
         {
         super(value) ;
         }
@@ -63,14 +63,14 @@ extends AbstractIdentifier<Long>
      * Parse a string.
      *
      */
-    public static Long parse(String string)
+    public static Long parse(final String string)
         {
         try {
             return Long.valueOf(
                 string
                 );
             }
-        catch (NumberFormatException ouch)
+        catch (final NumberFormatException ouch)
             {
             throw new IdentifierFormatException(
                 string,
@@ -83,7 +83,7 @@ extends AbstractIdentifier<Long>
      * Create an Identifier from a string.
      *
      */
-    public static Identifier create(String string)
+    public static Identifier create(final String string)
         {
         try {
             return new LongIdentifier(
@@ -92,7 +92,7 @@ extends AbstractIdentifier<Long>
                     )
                 );
             }
-        catch (NumberFormatException ouch)
+        catch (final NumberFormatException ouch)
             {
             throw new IdentifierFormatException(
                 string,

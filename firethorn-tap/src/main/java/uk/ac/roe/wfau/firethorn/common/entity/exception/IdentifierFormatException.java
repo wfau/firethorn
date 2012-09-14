@@ -20,8 +20,6 @@ package uk.ac.roe.wfau.firethorn.common.entity.exception ;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier ;
-
 /**
  *
  *
@@ -32,6 +30,11 @@ extends RuntimeException
     {
 
     /**
+     * 
+     *
+     */
+    private static final long serialVersionUID = -7604911350682400120L;
+    /**
      * Default message for simple constructor.
      *
      */
@@ -41,12 +44,12 @@ extends RuntimeException
      * Create a default message.
      *
      */
-    public static String message(String ident)
+    public static String message(final String ident)
         {
         return DEFAULT_MESSAGE.replace(":ident:", ident);
         }
 
-    public IdentifierFormatException(String ident)
+    public IdentifierFormatException(final String ident)
         {
         this(
             ident,
@@ -57,7 +60,7 @@ extends RuntimeException
             );
         }
 
-    public IdentifierFormatException(String ident, String message)
+    public IdentifierFormatException(final String ident, final String message)
         {
         this(
             ident,
@@ -66,7 +69,7 @@ extends RuntimeException
             );
         }
 
-    public IdentifierFormatException(String ident, Throwable cause)
+    public IdentifierFormatException(final String ident, final Throwable cause)
         {
         this(
             ident,
@@ -77,7 +80,7 @@ extends RuntimeException
             );
         }
 
-    public IdentifierFormatException(String ident, String message, Throwable cause)
+    public IdentifierFormatException(final String ident, final String message, final Throwable cause)
         {
         super(
             message,
@@ -86,7 +89,7 @@ extends RuntimeException
         this.ident = ident ;
         }
 
-    private String ident;
+    private final String ident;
 
     public String ident()
         {
