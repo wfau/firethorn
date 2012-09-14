@@ -17,7 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.mallard;
 
-import java.util.Date;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 import uk.ac.roe.wfau.firethorn.mallard.DataService;
 
@@ -27,7 +29,8 @@ import uk.ac.roe.wfau.firethorn.mallard.DataService;
  */
 public class DataServiceBean
     {
-    
+
+    private DateTimeFormatter formatter = ISODateTimeFormat.dateHourMinuteSecondFraction().withZoneUTC()  ; 
     private String url ;
     
     private DataService service ;
@@ -77,13 +80,21 @@ public class DataServiceBean
         return service.name();
         }
     
-    public Date getCreated()
+    public String getCreated()
         {
-        return service.created();
+        return formatter.print(
+            new DateTime(
+                service.created()
+                )
+            );
         }
     
-    public Date getModified()
+    public String getModified()
         {
-        return service.modified();
+        return formatter.print(
+            new DateTime(
+                service.modified()
+                )
+            );
         }
     }

@@ -171,6 +171,15 @@
             <scope>test</scope>
     	</dependency>
 
+        <!--+
+            | Joda Time Libraries.
+            | http://joda-time.sourceforge.net/
+            +-->	
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
