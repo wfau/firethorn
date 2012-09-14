@@ -206,7 +206,7 @@ public abstract class PathBuilder
                     ident.toString()
                     )
                 );
-            
+
             }
         else {
             return path(
@@ -409,7 +409,7 @@ public abstract class PathBuilder
      * Create a link for a DataService.
      *
      */
-    public Path link(DataService target)
+    public Path link(final DataService target)
         {
         return path(
             DataServiceController.CONTROLLER_PATH,
@@ -421,7 +421,7 @@ public abstract class PathBuilder
      * Create a link for a DataResource.
      *
      */
-    public Path link(DataResource target)
+    public Path link(final DataResource target)
         {
         return path(
             DataResourceController.CONTROLLER_PATH,

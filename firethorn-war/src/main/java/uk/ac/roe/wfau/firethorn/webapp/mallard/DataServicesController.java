@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.mallard;
 
-import java.util.ArrayList;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Controller;

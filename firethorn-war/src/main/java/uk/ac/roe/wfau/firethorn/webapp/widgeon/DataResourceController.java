@@ -49,7 +49,7 @@ public class DataResourceController
      *
      */
     public static final String RESOURCE_ENTITY = "adql.resource.entity" ;
-    
+
     /**
      * GET request for a Resource.
      *
@@ -84,10 +84,10 @@ public class DataResourceController
             return model ;
             }
 
-        catch (Exception ouch)
+        catch (final Exception ouch)
             {
             return null ;
             }
         }
-    
+
     }

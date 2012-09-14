@@ -147,7 +147,7 @@ extends ControllerBase
 
 		model.addObject(
 		    SELECT_RESULT,
-		    resources 
+		    resources
 		    );
 
 		model.setViewName(

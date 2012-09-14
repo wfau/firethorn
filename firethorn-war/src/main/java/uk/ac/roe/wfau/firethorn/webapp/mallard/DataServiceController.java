@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.mallard;
 
-import java.util.ArrayList;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Controller;
@@ -27,17 +25,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.context.request.WebRequest;
 
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
-import uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder;
-import uk.ac.roe.wfau.firethorn.webapp.control.SpringPathBuilder;
-import uk.ac.roe.wfau.firethorn.webapp.control.LocationHeaders;
-
 import uk.ac.roe.wfau.firethorn.mallard.DataService ;
 
 /**
@@ -96,7 +86,7 @@ extends ControllerBase
             return model ;
             }
 
-        catch (Exception ouch)
+        catch (final Exception ouch)
             {
             return null ;
             }
