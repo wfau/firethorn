@@ -192,7 +192,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.1.2</version>
+                <version>2.5.1</version>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -237,7 +237,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.5.1</version>
+                <version>2.5.2</version>
                 <configuration>
                     <formats>
                         <format>html</format>
@@ -277,6 +277,7 @@
                 | JavaDoc report.
                 | https://maven.apache.org/plugins/maven-javadoc-plugin/
                 | https://maven.apache.org/plugins/maven-javadoc-plugin/usage.html
+                | http://docs.oracle.com/javase/6/docs/technotes/tools/solaris/javadoc.html#@inheritDoc
                 +-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -303,6 +304,7 @@
 
                         <link>http://hsqldb.org/doc/2.0/apidocs/index.html</link>
                         <link>http://jdbc.postgresql.org/documentation/publicapi/</link>
+                        <link>http://ogsa-dai.sourceforge.net/documentation/ogsadai4.2/ogsadai4.2-jersey-javadoc/</link>
 
                         <!--+
                             | Replace these with our own versions ?

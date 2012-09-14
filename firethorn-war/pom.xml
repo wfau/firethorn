@@ -251,7 +251,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.1.2</version>
+                <version>2.5.1</version>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -296,7 +296,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.5.1</version>
+                <version>2.5.2</version>
                 <configuration>
                     <formats>
                         <format>html</format>

@@ -90,7 +90,7 @@ public class SQLQueryTestCase
      * Test disabled, as it requires a JDBC connection to local test database. 
      *
      */
-    @Test
+    //@Test
     public void frog001()
     throws Exception
         {

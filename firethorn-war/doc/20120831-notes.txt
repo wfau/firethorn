@@ -2,12 +2,12 @@
 
     #
     # Create the Eclipse project files.
-    mvn eclipse:eclipse -DdownloadSources=true -DdownloadJavadocs=true
+    mvn eclipse:eclipse -D downloadSources=true -D downloadJavadocs=true
 
     #
     # Add the Maven repository to the Eclipse workspace.
     # (only required once per maven workspace)
-    # mvn -Declipse.workspace=/var/local/projects/eclipse eclipse:add-maven-repo
+    # mvn -D eclipse.workspace=/var/local/projects/eclipse eclipse:add-maven-repo
 
 
 #
@@ -23,7 +23,7 @@
 
     #
     # Display Dependency Tree
-    mvn dependency:tree -Ddetail
+    mvn dependency:tree -D detail
 
     #
     # Display Dependency List
