@@ -37,7 +37,6 @@ import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
 import uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder;
 import uk.ac.roe.wfau.firethorn.webapp.control.SpringPathBuilder;
 import uk.ac.roe.wfau.firethorn.webapp.control.LocationHeaders;
-import uk.ac.roe.wfau.firethorn.webapp.mallard.DataServiceController.DataServiceBean;
 
 import uk.ac.roe.wfau.firethorn.mallard.DataService ;
 
@@ -150,47 +149,19 @@ extends ControllerBase
         }
 
     /**
-     * GET request to select all.
+     * JSON GET request to select all.
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces="application/json")
-    public Iterable<DataServiceController.DataServiceBean> jsonSelect(
+    public Iterable<DataServiceBean> jsonSelect(
         final WebRequest request,
         final ModelAndView model
         ){
-        log.debug("select()");
-
-        final Iterable<DataService> services = womble().services().select();
-
-        return new Iterable<DataServiceController.DataServiceBean>()
-            {
-            public Iterator<DataServiceBean> iterator()
-                {
-                return new Iterator<DataServiceBean>()
-                    {
-                    Iterator<DataService> inner = services.iterator();
-                    public boolean hasNext()
-                        {
-                        return inner.hasNext();
-                        }
-
-                    public DataServiceBean next()
-                        {
-                        return new DataServiceBean(
-                            null,
-                            inner.next()
-                            );
-                        }
-                    public void remove()
-                        {
-                        inner.remove();
-                        }
-                    };
-                }
-            };
+        return new DataServiceBeanIterable(
+            womble().services().select()
+            );
         }
-	
 	
     /**
      * GET request to select by name.
@@ -226,6 +197,24 @@ extends ControllerBase
 
         }
 
+    /**
+     * JSON GET request to select by name.
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, params=SELECT_NAME, produces="application/json")
+    public Iterable<DataServiceBean> jsonSelect(
+        @RequestParam(SELECT_NAME) final String name,
+        final WebRequest request,
+        final ModelAndView model
+        ){
+        return new DataServiceBeanIterable(
+            womble().services().select(
+                name
+                )
+            );
+        }
+	
     /**
      * GET request to search with no params.
      * (displays the HTML form)
@@ -279,6 +268,23 @@ extends ControllerBase
         return model ;
         }
 
+    /**
+     * JSON GET request to search by text.
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET, params=SEARCH_TEXT, produces="application/json")
+    public Iterable<DataServiceBean> jsonSearch(
+        @RequestParam(SEARCH_TEXT) final String text,
+        final WebRequest request,
+        final ModelAndView model
+        ){
+        return new DataServiceBeanIterable(
+            womble().services().search(
+                text
+                )
+            );
+        }
 
     /**
      * GET request to create a new DataService.

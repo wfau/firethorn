@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.webapp.mallard;
 
 import java.net.URL;
-import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -98,41 +97,6 @@ extends ControllerBase
             return null ;
             }
         }
-
-	/**
-	 * Bean wrapper to enable the JSON converter to process a DataService.  
-	 *
-	 */
-	public static class DataServiceBean
-	    {
-        private String url ;
-        private DataService service ;
-        public DataServiceBean(String url , DataService service)
-            {
-            this.url = url ;
-            this.service = service ;
-            }
-	    public String getUrl()
-	        {
-	        return this.url;
-	        }
-        public String getIdent()
-            {
-            return service.ident().toString();
-            }
-        public String getName()
-            {
-            return service.name();
-            }
-        public Date getCreated()
-            {
-            return service.created();
-            }
-        public Date getModified()
-            {
-            return service.modified();
-            }
-	    }
 
 	/**
      * JSON GET request.
