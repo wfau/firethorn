@@ -164,10 +164,10 @@ extends ControllerBase
         }
 	
     /**
-     * GET request to select by name.
+     * GET or POST request to select by name.
      *
      */
-	@RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, params=SELECT_NAME)
+	@RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
 	public ModelAndView select(
         @RequestParam(SELECT_NAME) final String name,
         final WebRequest request,
@@ -198,11 +198,11 @@ extends ControllerBase
         }
 
     /**
-     * JSON GET request to select by name.
+     * JSON GET or POST request to select by name.
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, params=SELECT_NAME, produces="application/json")
+    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces="application/json")
     public Iterable<DataServiceBean> jsonSelect(
         @RequestParam(SELECT_NAME) final String name,
         final WebRequest request,
@@ -217,7 +217,7 @@ extends ControllerBase
 	
     /**
      * GET request to search with no params.
-     * (displays the HTML form)
+     * This just displays the HTML form.
      *
      */
 	@RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
@@ -236,10 +236,10 @@ extends ControllerBase
         }
 
     /**
-     * GET request to search by text.
+     * GET or POST request to search by text.
      *
      */
-	@RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET, params=SEARCH_TEXT)
+	@RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
 	public ModelAndView search(
         @RequestParam(SEARCH_TEXT) final String text,
         final WebRequest request,
@@ -269,11 +269,11 @@ extends ControllerBase
         }
 
     /**
-     * JSON GET request to search by text.
+     * JSON GET or POST request to search by text.
      *
      */
     @ResponseBody
-    @RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET, params=SEARCH_TEXT, produces="application/json")
+    @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces="application/json")
     public Iterable<DataServiceBean> jsonSearch(
         @RequestParam(SEARCH_TEXT) final String text,
         final WebRequest request,
