@@ -4,27 +4,23 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 
+import org.springframework.web.bind.annotation.ModelAttribute;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
 import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 
 /**
- * Test MVC controller.
+ * Base class for our MVC controllers.
  *
  */
 @Controller
 public class ControllerBase
     {
-
-    /**
-     * Get the Session ID from a WebRequest.
-     *
-    public static String sid(WebRequest request)
-        {
-        return request.getSessionId();
-        }
-     */
 
     /**
      * Autowired service access point.
@@ -40,6 +36,23 @@ public class ControllerBase
     public Womble womble()
         {
         return this.womble ;
+        }
+
+    /**
+     * MVC property for the request URL.
+     *
+     */
+    public static final String REQUEST_URL = "firethorn.servlet.request.url" ;
+
+    /**
+     * Extract the request URL.
+     *
+     */
+    @ModelAttribute(REQUEST_URL)
+    public String requestUrl(
+        final HttpServletRequest request
+        ){
+        return request.getRequestURL().toString();
         }
 
     /**

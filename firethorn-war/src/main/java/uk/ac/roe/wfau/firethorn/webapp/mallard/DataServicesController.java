@@ -21,8 +21,6 @@ import java.util.Iterator;
 
 import lombok.extern.slf4j.Slf4j;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 
 import org.springframework.web.servlet.ModelAndView;
@@ -107,23 +105,6 @@ extends ControllerBase
      *
      */
     public static final String CREATE_NAME = "adql.services.create.name" ;
-
-    /**
-     * MVC property for the request URL.
-     *
-     */
-    public static final String REQUEST_URL = "firethorn.servlet.request.url" ;
-
-    /**
-     * Extract the request URL.
-     *
-     */
-    @ModelAttribute(REQUEST_URL)
-    public String requestUrl(
-        final HttpServletRequest request
-        ){
-        return request.getRequestURL().toString();
-        }
 
     /**
      * HTML GET request to display the index page.

@@ -19,8 +19,6 @@ package uk.ac.roe.wfau.firethorn.webapp.mallard;
 
 import java.net.URL;
 
-import javax.servlet.http.HttpServletRequest;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Controller;
@@ -32,6 +30,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
 import uk.ac.roe.wfau.firethorn.mallard.DataService ;
@@ -59,36 +58,27 @@ extends ControllerBase
     public static final String SERVICE_ENTITY = "adql.service.entity" ;
 
     /**
-     * GET request for a service.
+     * HTML GET request for a service.
      *
      */
 	@RequestMapping(method=RequestMethod.GET)
-	public ModelAndView select(
+	public ModelAndView htmlSelect(
+	    @ModelAttribute(REQUEST_URL) final String url,
 	    @PathVariable("ident") final String ident,
-        final WebRequest request,
 	    final ModelAndView model
 	    ){
-        log.debug("select(String ident)");
-        log.debug("  Ident [{}]", ident);
-
-        //
-        // Try locating the service.
         try {
-            final DataService service = womble().services().select(
-                womble().services().ident(
-                    ident
-                    )
-                );
-
 		    model.addObject(
 		        SERVICE_ENTITY,
-		        service
+                womble().services().select(
+                    womble().services().ident(
+                        ident
+                        )
+                    )
 		        );
-
 		    model.setViewName(
 		        "adql/services/display"
 		        );
-
             return model ;
             }
 
@@ -99,21 +89,21 @@ extends ControllerBase
         }
 
 	/**
-     * JSON GET request.
+     * JSON GET request for a service.
      *
      */
 	@ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces="application/json")
     public DataServiceBean jsonGet(
+	    @ModelAttribute(REQUEST_URL) final String url,
         @PathVariable("ident") final String ident,
-        final HttpServletRequest request,
         final ModelAndView model
         ){
         log.debug("select(String ident)");
         log.debug("  Ident [{}]", ident);
         try {
             return new DataServiceBean(
-                request.getRequestURL().toString(),
+                url,
                 womble().services().select(
                     womble().services().ident(
                         ident
