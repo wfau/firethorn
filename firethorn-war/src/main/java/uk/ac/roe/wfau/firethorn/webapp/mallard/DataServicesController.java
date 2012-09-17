@@ -105,7 +105,7 @@ extends ControllerBase
     public static final String CREATE_NAME = "adql.services.create.name" ;
 
     /**
-     * GET request for the index page.
+     * GET request to display the index page.
      *
      */
 	@RequestMapping(value="", method=RequestMethod.GET)
@@ -216,8 +216,7 @@ extends ControllerBase
         }
 	
     /**
-     * GET request to search with no params.
-     * This just displays the HTML form.
+     * GET request to display the HTML search form.
      *
      */
 	@RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
@@ -287,8 +286,7 @@ extends ControllerBase
         }
 
     /**
-     * GET request to create a new DataService.
-     * (displays the HTML form)
+     * GET request to display the HTML create form.
      *
      */
 	@RequestMapping(value=CREATE_PATH, method=RequestMethod.GET)
@@ -339,5 +337,41 @@ extends ControllerBase
             HttpStatus.SEE_OTHER
             );
         }
+
+    /**
+     * JSON POST request to create a new DataService.
+     *
+	@RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces="application/json")
+	public ResponseEntity<String> create(
+        @RequestParam(CREATE_NAME) final String name,
+        final WebRequest request,
+	    final ModelAndView model
+	    ){
+        log.debug("create(String name)");
+        log.debug("  Name [{}]", name);
+
+        //
+        // Create the service.
+        final DataService service = womble().services().create(
+            name
+            );
+
+        final PathBuilder builder = new SpringPathBuilder(
+            request
+            );
+
+        return new ResponseEntity<String>(
+            new LocationHeaders(
+                builder.location(
+                    //DataServiceController.CONTROLLER_PATH,
+                    "adql/service",
+                    service
+                    )
+                ),
+            HttpStatus.SEE_OTHER
+            );
+        }
+     */
+
     }
 
