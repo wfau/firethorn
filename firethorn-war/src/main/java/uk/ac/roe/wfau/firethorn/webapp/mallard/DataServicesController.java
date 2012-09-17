@@ -105,47 +105,37 @@ extends ControllerBase
     public static final String CREATE_NAME = "adql.services.create.name" ;
 
     /**
-     * GET request to display the index page.
+     * HTML GET request to display the index page.
      *
      */
 	@RequestMapping(value="", method=RequestMethod.GET)
-	public ModelAndView index(
+	public ModelAndView htmlIndex(
         final WebRequest request,
 	    final ModelAndView model
 	    ){
-        log.debug("index()");
-
 		model.setViewName(
 		    "adql/services/index"
 		    );
-
         return model ;
         }
 
     /**
-     * GET request to select all.
+     * HTML GET request to select all.
      *
      */
 	@RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
-	public ModelAndView select(
+	public ModelAndView htmlSelect(
         final WebRequest request,
 	    final ModelAndView model
 	    ){
-        log.debug("select()");
-
-        final Iterable<DataService> services = womble().services().select();
-
 		model.addObject(
 		    SELECT_RESULT,
-		    services
+            womble().services().select()
 		    );
-
 		model.setViewName(
 		    "adql/services/select"
 		    );
-
         return model ;
-
         }
 
     /**
@@ -164,37 +154,25 @@ extends ControllerBase
         }
 	
     /**
-     * GET or POST request to select by name.
+     * HTML GET or POST request to select by name.
      *
      */
 	@RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
-	public ModelAndView select(
+	public ModelAndView htmlSelect(
         @RequestParam(SELECT_NAME) final String name,
         final WebRequest request,
 	    final ModelAndView model
 	    ){
-        log.debug("select(String name)");
-
-        final Iterable<DataService> services = womble().services().select(
-            name
-            );
-
-		model.addObject(
-		    SELECT_NAME,
-            name
-		    );
-
 		model.addObject(
 		    SELECT_RESULT,
-            services
+            womble().services().select(
+                name
+                )
 		    );
-
 		model.setViewName(
 		    "adql/services/select"
 		    );
-
         return model ;
-
         }
 
     /**
@@ -216,54 +194,39 @@ extends ControllerBase
         }
 	
     /**
-     * GET request to display the HTML search form.
+     * HTML GET request to display the search form.
      *
      */
 	@RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
-	public ModelAndView search(
+	public ModelAndView htmlSearch(
         final WebRequest request,
 	    final ModelAndView model
 	    ){
-        log.debug("search()");
-
 		model.setViewName(
 		    "adql/services/search"
 		    );
-
         return model ;
-
         }
 
     /**
-     * GET or POST request to search by text.
+     * HTML GET or POST request to search by text.
      *
      */
 	@RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
-	public ModelAndView search(
+	public ModelAndView htmlSearch(
         @RequestParam(SEARCH_TEXT) final String text,
         final WebRequest request,
 	    final ModelAndView model
 	    ){
-        log.debug("search(String text)");
-
-        final Iterable<DataService> services = womble().services().search(
-            text
-            );
-
-		model.addObject(
-		    SEARCH_TEXT,
-            text
-		    );
-
 		model.addObject(
 		    SEARCH_RESULT,
-            services
+            womble().services().search(
+                text
+                )
 		    );
-
 		model.setViewName(
 		    "adql/services/search"
 		    );
-
         return model ;
         }
 
@@ -286,46 +249,40 @@ extends ControllerBase
         }
 
     /**
-     * GET request to display the HTML create form.
+     * HTML GET request to display the create form.
      *
      */
 	@RequestMapping(value=CREATE_PATH, method=RequestMethod.GET)
-	public ModelAndView create(
+	public ModelAndView htmlCreate(
         final WebRequest request,
 	    final ModelAndView model
 	    ){
-        log.debug("create()");
-
 		model.setViewName(
 		    "adql/services/create"
 		    );
-
         return model ;
         }
 
     /**
-     * POST request to create a new DataService.
+     * HTML POST request to create a new DataService.
      *
      */
 	@RequestMapping(value=CREATE_PATH, method=RequestMethod.POST)
-	public ResponseEntity<String> create(
+	public ResponseEntity<String> htmlCreate(
         @RequestParam(CREATE_NAME) final String name,
         final WebRequest request,
 	    final ModelAndView model
 	    ){
-        log.debug("create(String name)");
+        log.debug("htmlCreate(String name)");
         log.debug("  Name [{}]", name);
-
         //
         // Create the service.
         final DataService service = womble().services().create(
             name
             );
-
         final PathBuilder builder = new SpringPathBuilder(
             request
             );
-
         return new ResponseEntity<String>(
             new LocationHeaders(
                 builder.location(
@@ -341,26 +298,27 @@ extends ControllerBase
     /**
      * JSON POST request to create a new DataService.
      *
+     */
 	@RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces="application/json")
-	public ResponseEntity<String> create(
+	public ResponseEntity<DataServiceBean> jsonCreate(
         @RequestParam(CREATE_NAME) final String name,
         final WebRequest request,
 	    final ModelAndView model
 	    ){
-        log.debug("create(String name)");
+        log.debug("jsonCreate(String name)");
         log.debug("  Name [{}]", name);
-
         //
         // Create the service.
         final DataService service = womble().services().create(
             name
             );
-
         final PathBuilder builder = new SpringPathBuilder(
             request
             );
-
-        return new ResponseEntity<String>(
+        return new ResponseEntity<DataServiceBean>(
+            new DataServiceBean(
+                service
+                ),
             new LocationHeaders(
                 builder.location(
                     //DataServiceController.CONTROLLER_PATH,
@@ -371,7 +329,5 @@ extends ControllerBase
             HttpStatus.SEE_OTHER
             );
         }
-     */
-
     }
 
