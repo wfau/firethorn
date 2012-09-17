@@ -21,6 +21,8 @@ import java.util.Iterator;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 
 import org.springframework.web.servlet.ModelAndView;
@@ -30,6 +32,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -105,12 +109,29 @@ extends ControllerBase
     public static final String CREATE_NAME = "adql.services.create.name" ;
 
     /**
+     * MVC property for the request URL.
+     *
+     */
+    public static final String REQUEST_URL = "firethorn.servlet.request.url" ;
+
+    /**
+     * Extract the request URL.
+     *
+     */
+    @ModelAttribute(REQUEST_URL)
+    public String requestUrl(
+        final HttpServletRequest request
+        ){
+        return request.getRequestURL().toString();
+        }
+
+    /**
      * HTML GET request to display the index page.
      *
      */
 	@RequestMapping(value="", method=RequestMethod.GET)
 	public ModelAndView htmlIndex(
-        final WebRequest request,
+	    @ModelAttribute(REQUEST_URL) final String url,
 	    final ModelAndView model
 	    ){
 		model.setViewName(
@@ -125,7 +146,7 @@ extends ControllerBase
      */
 	@RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
 	public ModelAndView htmlSelect(
-        final WebRequest request,
+	    @ModelAttribute(REQUEST_URL) final String url,
 	    final ModelAndView model
 	    ){
 		model.addObject(
@@ -145,7 +166,7 @@ extends ControllerBase
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces="application/json")
     public Iterable<DataServiceBean> jsonSelect(
-        final WebRequest request,
+	    @ModelAttribute(REQUEST_URL) final String url,
         final ModelAndView model
         ){
         return new DataServiceBeanIterable(
@@ -159,8 +180,8 @@ extends ControllerBase
      */
 	@RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
 	public ModelAndView htmlSelect(
-        @RequestParam(SELECT_NAME) final String name,
-        final WebRequest request,
+	    @ModelAttribute(REQUEST_URL) final String url,
+        @RequestParam(SELECT_NAME)   final String name,
 	    final ModelAndView model
 	    ){
 		model.addObject(
@@ -182,8 +203,8 @@ extends ControllerBase
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces="application/json")
     public Iterable<DataServiceBean> jsonSelect(
-        @RequestParam(SELECT_NAME) final String name,
-        final WebRequest request,
+	    @ModelAttribute(REQUEST_URL) final String url,
+        @RequestParam(SELECT_NAME)   final String name,
         final ModelAndView model
         ){
         return new DataServiceBeanIterable(
@@ -199,7 +220,7 @@ extends ControllerBase
      */
 	@RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
 	public ModelAndView htmlSearch(
-        final WebRequest request,
+	    @ModelAttribute(REQUEST_URL) final String url,
 	    final ModelAndView model
 	    ){
 		model.setViewName(
@@ -214,8 +235,8 @@ extends ControllerBase
      */
 	@RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
 	public ModelAndView htmlSearch(
-        @RequestParam(SEARCH_TEXT) final String text,
-        final WebRequest request,
+	    @ModelAttribute(REQUEST_URL) final String url,
+        @RequestParam(SEARCH_TEXT)   final String text,
 	    final ModelAndView model
 	    ){
 		model.addObject(
@@ -237,8 +258,8 @@ extends ControllerBase
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces="application/json")
     public Iterable<DataServiceBean> jsonSearch(
-        @RequestParam(SEARCH_TEXT) final String text,
-        final WebRequest request,
+	    @ModelAttribute(REQUEST_URL) final String url,
+        @RequestParam(SEARCH_TEXT)   final String text,
         final ModelAndView model
         ){
         return new DataServiceBeanIterable(
@@ -254,7 +275,7 @@ extends ControllerBase
      */
 	@RequestMapping(value=CREATE_PATH, method=RequestMethod.GET)
 	public ModelAndView htmlCreate(
-        final WebRequest request,
+	    @ModelAttribute(REQUEST_URL) final String url,
 	    final ModelAndView model
 	    ){
 		model.setViewName(
@@ -269,7 +290,8 @@ extends ControllerBase
      */
 	@RequestMapping(value=CREATE_PATH, method=RequestMethod.POST)
 	public ResponseEntity<String> htmlCreate(
-        @RequestParam(CREATE_NAME) final String name,
+	    @ModelAttribute(REQUEST_URL) final String url,
+        @RequestParam(CREATE_NAME)   final String name,
         final WebRequest request,
 	    final ModelAndView model
 	    ){
@@ -301,7 +323,8 @@ extends ControllerBase
      */
 	@RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces="application/json")
 	public ResponseEntity<DataServiceBean> jsonCreate(
-        @RequestParam(CREATE_NAME) final String name,
+	    @ModelAttribute(REQUEST_URL) final String url,
+        @RequestParam(CREATE_NAME)   final String name,
         final WebRequest request,
 	    final ModelAndView model
 	    ){

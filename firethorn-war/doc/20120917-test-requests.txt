@@ -1,0 +1,55 @@
+
+    hostname=localhost
+
+    curl \
+        -H 'Accept: application/json' \
+        --data 'adql.services.create.name=srv-001' \
+        http://${hostname}:8080/firethorn/adql/services/create 
+
+    curl \
+        -H 'Accept: application/json' \
+        --data 'adql.services.create.name=srv-002' \
+        http://${hostname}:8080/firethorn/adql/services/create 
+
+    curl \
+        -H 'Accept: application/json' \
+        --data 'adql.services.create.name=srv-003' \
+        http://${hostname}:8080/firethorn/adql/services/create 
+
+    curl \
+        -H 'Accept: application/json' \
+        --data 'adql.services.create.name=srv-004' \
+        http://${hostname}:8080/firethorn/adql/services/create 
+
+    curl \
+        -H 'Accept: application/json' \
+        http://${hostname}:8080/firethorn/adql/services/select
+
+    curl \
+        -H 'Accept: application/json' \
+        http://${hostname}:8080/firethorn/adql/service/1
+
+    curl \
+        -H 'Accept: application/json' \
+        http://${hostname}:8080/firethorn/adql/service/2
+
+    curl \
+        -H 'Accept: application/json' \
+        http://${hostname}:8080/firethorn/adql/service/3
+
+    curl \
+        -H 'Accept: application/json' \
+        http://${hostname}:8080/firethorn/adql/service/4
+
+    curl \
+        -H 'Accept: application/json' \
+        http://${hostname}:8080/firethorn/adql/services/search?adql.services.search.text=srv
+
+    curl \
+        -H 'Accept: application/json' \
+        --data 'adql.services.search.text=srv' \
+        http://${hostname}:8080/firethorn/adql/services/search
+
+
+
+
