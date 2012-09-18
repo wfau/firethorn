@@ -34,18 +34,17 @@ class index:
             else:
                 for entry in data:
                     converted_dict = dict([(str(k), v) for k, v in entry.items()])
-                    sub_item = render.select_service_response(converted_dict["url"], converted_dict["name"], converted_dict["ident"], converted_dict["created"], converted_dict["modified"])
+                    sub_item = render.select_service_response(converted_dict["name"], converted_dict["created"], converted_dict["modified"])
                     return_html += str(sub_item)
        
         elif action == 'service_create':
             data = json.loads(json_data)
-                                
             if data == [] or data== None:
                 return_html = "<div id='sub_item'>There was an error creating your service</div>"
             else :
                 converted_dict = dict([(str(k), v) for k, v in data.items()])
                 return_html += "<div style='text-align:left;font-style:italic'>The following Service has been created: </div><br/>"
-                return_html += str(render.select_service_response(converted_dict["url"], converted_dict["name"], '<a href=' + converted_dict["url"] + '>' + converted_dict["ident"] + '</a>', converted_dict["created"], converted_dict["modified"]))
+                return_html += str(render.select_service_response('<a href=' + config.local_hostname['services'] + '?'+ config.service_get_param + '='  + converted_dict["ident"] + '>' + converted_dict["name"] + '</a>', converted_dict["created"], converted_dict["modified"]))
         
         elif action == 'service_get':
             data = json.loads(json_data)
@@ -54,7 +53,7 @@ class index:
                 return_html = "<div id='sub_item'>There was an error creating your service</div>"
             else :
                 converted_dict = dict([(str(k), v) for k, v in data.items()])
-                return_html = str(render.individual_service_response( '<a href=' + converted_dict["url"] + '>' + converted_dict["ident"] + '</a>', converted_dict["name"], "Anonymous-identity" ))
+                return_html = str(render.individual_service_response( '<a href='  + config.local_hostname['services'] + '?'+ config.service_get_param + '=' + converted_dict["ident"] + '>' + converted_dict["name"] + '</a>', "Anonymous-identity" ))
             
             
         return return_html
@@ -139,7 +138,7 @@ class index:
                         return config.error_dict['INVALID_REQUEST']
                     else:     
                         action = 'service_get'
-                        action_value = data.service_get
+                        action_value = data.service_get[data.service_get.index('id=')+3:]
                         action_stored = True
                     
             
@@ -155,8 +154,9 @@ class index:
                     request = urllib2.Request(getattr(config, action+ '_url') + encoded_args, headers={"Accept" : "application/json"})
                 elif action == 'service_get':
                     request = urllib2.Request(config.local_hostname['services'], encoded_args)
-
+                
                 f = urllib2.urlopen(request)
+                
                 if action != 'service_get':
                     json_result = f.read()
                     return_string = self.__generate_html_content(json_result, action)

@@ -7,6 +7,9 @@ import web
 import json
 from config import render
 import config
+import urllib2
+import urllib
+import traceback
 
 class services:
     """
@@ -16,13 +19,12 @@ class services:
   
     """
 
-    def __generate_html_content(self, id, json_data):
+    def __generate_html_content(self, json_data):
         """
         Generate HTML response based on json data
         """
         
         return_html = ''
-     
      
         data = json.loads(json_data)
                             
@@ -30,7 +32,7 @@ class services:
             return_html = "<div id='sub_item'>There was an error creating your service</div>"
         else :
             converted_dict = dict([(str(k), v) for k, v in data.items()])
-            return_html = str(render.individual_service_response( '<a href=' + converted_dict["url"] + '>' + converted_dict["ident"] + '</a>', converted_dict["name"], "Anonymous-identity" ))
+            return_html = str(render.individual_service_response( '<a href=' + config.local_hostname['services'] + '?'+ config.service_get_param + '=' +  converted_dict["ident"] + '>' + converted_dict["name"] + '</a>', "Anonymous-identity" ))
         
         return return_html
     
@@ -44,11 +46,25 @@ class services:
         data = web.input(id='')
         return_value = ''
         id = data.id
-        print id
-        if id=='':
-            return_value = config.error_dict["INVALID_PARAM"]
-        else :
-            return_value = render.index(str(render.individual_service_response(id,id, id))) 
+        f= ""
+        
+        try:
+            if id!="":
+                request = urllib2.Request(id, headers={"Accept" : "application/json"})
+                f = urllib2.urlopen(request)
+                json_data = f.read()
+                return_value = render.index(str(self.__generate_html_content(json_data))) 
+        
+            else :
+                return_value = config.error_dict['INVALID_PARAM']
+                
+        except Exception as e:
+            print e
+            print traceback.print_exc()
+
+        finally:
+            if f!="":
+                f.close()
         
         return  return_value
     
@@ -62,12 +78,25 @@ class services:
         data = web.input(id='')
         return_value = ''
         id = data.id
-        print id
+        f = ""
+       
+        try:
+            if id!="":
+                request = urllib2.Request(id, headers={"Accept" : "application/json"})
+                f = urllib2.urlopen(request)
+                json_data = f.read()
+                f.close()
+                return_value = str(self.__generate_html_content(json_data))
         
-        if id=='':
-            return_value = config.error_dict["INVALID_PARAM"]
-        else :
-            return_value = str(render.individual_service_response(id,id, id)) 
-        
+            else :
+                return_value = config.error_dict['INVALID_PARAM']
+                
+        except Exception as e:
+            print e
+            print traceback.print_exc()
+
+        finally:
+            if f!="":
+                f.close()
         return  return_value
     
