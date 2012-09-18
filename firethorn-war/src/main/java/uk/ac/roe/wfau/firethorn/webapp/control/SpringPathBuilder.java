@@ -27,7 +27,8 @@ import org.springframework.web.context.request.WebRequest;
  */
 @Slf4j
 public class SpringPathBuilder
-extends PathBuilder
+extends PathBuilderBase
+implements PathBuilder
     {
 
     /**

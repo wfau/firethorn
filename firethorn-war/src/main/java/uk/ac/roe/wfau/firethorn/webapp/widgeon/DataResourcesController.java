@@ -29,7 +29,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
-import uk.ac.roe.wfau.firethorn.webapp.control.LocationHeaders;
+import uk.ac.roe.wfau.firethorn.webapp.control.LocationHeader;
 import uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder;
 import uk.ac.roe.wfau.firethorn.webapp.control.SpringPathBuilder;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
@@ -49,6 +49,12 @@ extends ControllerBase
      *
      */
     public static final String CONTROLLER_PATH = "adql/resources" ;
+
+    @Override
+    public String path()
+        {
+        return CONTROLLER_PATH;
+        }
 
     /**
      * MVC property for the Resource name.
@@ -255,7 +261,7 @@ extends ControllerBase
             );
 
         return new ResponseEntity<String>(
-            new LocationHeaders(
+            new LocationHeader(
                 builder.location(
                     "adql/resource",
                     resource

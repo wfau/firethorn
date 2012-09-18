@@ -3,7 +3,7 @@
 <%@ taglib prefix="spring-form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="test"        uri="/WEB-INF/tlds/service-tags.xml"%>
 <%@ page
-    import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
+    import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilderBase"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.DataResourceController"
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.DataResourcesController"

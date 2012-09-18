@@ -40,6 +40,12 @@ public class TestController
 extends ControllerBase
     {
 
+    @Override
+    public String path()
+        {
+        return null;
+        }
+
     /**
      * Request counter.
      *

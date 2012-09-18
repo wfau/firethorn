@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
+import uk.ac.roe.wfau.firethorn.webapp.control.UrlBuilder;
 import uk.ac.roe.wfau.firethorn.mallard.DataService ;
 
 /**
@@ -51,6 +52,12 @@ extends ControllerBase
      */
     public static final String CONTROLLER_PATH = "adql/service/{ident}" ;
 
+    @Override
+    public String path()
+        {
+        return CONTROLLER_PATH;
+        }
+
     /**
      * MVC property for a Service entity.
      *
@@ -63,7 +70,7 @@ extends ControllerBase
      */
 	@RequestMapping(method=RequestMethod.GET)
 	public ModelAndView htmlSelect(
-	    @ModelAttribute(REQUEST_URL) final String url,
+	    @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
 	    @PathVariable("ident") final String ident,
 	    final ModelAndView model
 	    ){
@@ -95,20 +102,23 @@ extends ControllerBase
 	@ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces="application/json")
     public DataServiceBean jsonGet(
-	    @ModelAttribute(REQUEST_URL) final String url,
+        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
         @PathVariable("ident") final String ident,
         final ModelAndView model
         ){
         log.debug("select(String ident)");
         log.debug("  Ident [{}]", ident);
         try {
-            return new DataServiceBean(
-                url,
-                womble().services().select(
-                    womble().services().ident(
-                        ident
-                        )
+            DataService service = womble().services().select(
+                womble().services().ident(
+                    ident
                     )
+                );
+            return new DataServiceBean(
+                builder.url(
+                    service
+                    ),
+                service
                 );
             }
         catch (final Exception ouch)

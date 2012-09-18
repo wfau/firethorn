@@ -3,6 +3,9 @@ syntax: glob
 # Text editor backups
 *.*~
 
+# Python code.
+*.pyc
+
 # Maven build directories.
 target
 */target

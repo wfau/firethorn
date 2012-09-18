@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.webapp.mallard;
 import java.util.Iterator;
 
 import uk.ac.roe.wfau.firethorn.mallard.DataService;
+import uk.ac.roe.wfau.firethorn.webapp.control.UrlBuilder;
 
 /**
  * Bean wrapper to enable the JSON converter to process list of a DataServices.  
@@ -28,20 +29,30 @@ import uk.ac.roe.wfau.firethorn.mallard.DataService;
 public class DataServiceBeanIterable
 implements Iterable<DataServiceBean>
     {
+    
     /**
-     * Our Iterable list of DataServices.
+     * The Iterable list of DataServices.
      * 
      */
     private Iterable<DataService> iterable ;
 
     /**
+     * UrlBuilder for generating the service URL.
+     * 
+     */
+    private UrlBuilder builder ;
+    
+    /**
      * Public constructor.
+     * @param builder
+     *      A UrlBuilder for generating the target URLs.
      * @param iterable
-     *      The Iterable list of DataServices to wrap.
+     *      The Iterable list to wrap.
      *
      */
-    public DataServiceBeanIterable(Iterable<DataService> iterable)
+    public DataServiceBeanIterable(UrlBuilder builder, Iterable<DataService> iterable)
         {
+        this.builder  = builder  ;
         this.iterable = iterable ;
         }
     
@@ -59,8 +70,12 @@ implements Iterable<DataServiceBean>
             @Override
             public DataServiceBean next()
                 {
+                DataService service = iterator.next(); 
                 return new DataServiceBean(
-                    iterator.next()
+                    builder.url(
+                        service
+                        ),
+                    service
                     );
                 }
             @Override

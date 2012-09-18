@@ -19,7 +19,7 @@ import uk.ac.roe.wfau.firethorn.common.womble.Womble;
  *
  */
 @Controller
-public class ControllerBase
+public abstract class ControllerBase
     {
 
     /**
@@ -39,33 +39,44 @@ public class ControllerBase
         }
 
     /**
-     * MVC property for the request URL.
-     *
+     * The base URL path for this controller.
+     * 
      */
-    public static final String REQUEST_URL = "firethorn.servlet.request.url" ;
-
+    public abstract String path();
+    
     /**
-     * Extract the request URL.
+     * MVC property for our URL builder.
      *
      */
-    @ModelAttribute(REQUEST_URL)
-    public String requestUrl(
+    public static final String URL_BUILDER = "firethorn.servlet.path.builder" ;
+    
+    /**
+     * MVC property for the our UrlBuilder.
+     *
+     */
+    @ModelAttribute(URL_BUILDER)
+    public UrlBuilder urlBuilder(
         final HttpServletRequest request
         ){
-        return request.getRequestURL().toString();
+        return new UrlBuilderImpl(
+            request,
+            new ServletPathBuilder(
+                request
+                ) 
+            );
         }
 
     /**
-     * MVC property for the Spring WebRequest PathBuilder.
+     * MVC property for the Spring WebRequest PathBuilderBase.
      *
     public static final String SPRING_PATH_BUILDER = "spring.path.builder" ;
      */
 
     /**
-     * Create the PathBuilder for a request.
+     * Create the PathBuilderBase for a request.
      *
     @ModelAttribute(SPRING_PATH_BUILDER)
-    public PathBuilder paths(
+    public PathBuilderBase paths(
         WebRequest request
         ){
         return new SpringPathBuilder(

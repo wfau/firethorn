@@ -38,7 +38,8 @@ import org.springframework.http.ResponseEntity;
 import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
 import uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder;
 import uk.ac.roe.wfau.firethorn.webapp.control.SpringPathBuilder;
-import uk.ac.roe.wfau.firethorn.webapp.control.LocationHeaders;
+import uk.ac.roe.wfau.firethorn.webapp.control.LocationHeader;
+import uk.ac.roe.wfau.firethorn.webapp.control.UrlBuilder;
 
 import uk.ac.roe.wfau.firethorn.mallard.DataService ;
 
@@ -57,6 +58,12 @@ extends ControllerBase
      *
      */
     public static final String CONTROLLER_PATH = "adql/services" ;
+
+    @Override
+    public String path()
+        {
+        return CONTROLLER_PATH;
+        }
 
     /**
      * URL path for the select method.
@@ -112,7 +119,7 @@ extends ControllerBase
      */
 	@RequestMapping(value="", method=RequestMethod.GET)
 	public ModelAndView htmlIndex(
-	    @ModelAttribute(REQUEST_URL) final String url,
+        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
 	    final ModelAndView model
 	    ){
 		model.setViewName(
@@ -127,7 +134,7 @@ extends ControllerBase
      */
 	@RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
 	public ModelAndView htmlSelect(
-	    @ModelAttribute(REQUEST_URL) final String url,
+        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
 	    final ModelAndView model
 	    ){
 		model.addObject(
@@ -147,10 +154,11 @@ extends ControllerBase
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces="application/json")
     public Iterable<DataServiceBean> jsonSelect(
-	    @ModelAttribute(REQUEST_URL) final String url,
+        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
         final ModelAndView model
         ){
         return new DataServiceBeanIterable(
+            builder,
             womble().services().select()
             );
         }
@@ -161,7 +169,7 @@ extends ControllerBase
      */
 	@RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
 	public ModelAndView htmlSelect(
-	    @ModelAttribute(REQUEST_URL) final String url,
+        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
         @RequestParam(SELECT_NAME)   final String name,
 	    final ModelAndView model
 	    ){
@@ -184,11 +192,12 @@ extends ControllerBase
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces="application/json")
     public Iterable<DataServiceBean> jsonSelect(
-	    @ModelAttribute(REQUEST_URL) final String url,
+        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
         @RequestParam(SELECT_NAME)   final String name,
         final ModelAndView model
         ){
         return new DataServiceBeanIterable(
+            builder,
             womble().services().select(
                 name
                 )
@@ -201,7 +210,7 @@ extends ControllerBase
      */
 	@RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
 	public ModelAndView htmlSearch(
-	    @ModelAttribute(REQUEST_URL) final String url,
+        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
 	    final ModelAndView model
 	    ){
 		model.setViewName(
@@ -216,7 +225,7 @@ extends ControllerBase
      */
 	@RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
 	public ModelAndView htmlSearch(
-	    @ModelAttribute(REQUEST_URL) final String url,
+        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
         @RequestParam(SEARCH_TEXT)   final String text,
 	    final ModelAndView model
 	    ){
@@ -239,11 +248,12 @@ extends ControllerBase
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces="application/json")
     public Iterable<DataServiceBean> jsonSearch(
-	    @ModelAttribute(REQUEST_URL) final String url,
+        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
         @RequestParam(SEARCH_TEXT)   final String text,
         final ModelAndView model
         ){
         return new DataServiceBeanIterable(
+            builder,
             womble().services().search(
                 text
                 )
@@ -256,7 +266,7 @@ extends ControllerBase
      */
 	@RequestMapping(value=CREATE_PATH, method=RequestMethod.GET)
 	public ModelAndView htmlCreate(
-	    @ModelAttribute(REQUEST_URL) final String url,
+        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
 	    final ModelAndView model
 	    ){
 		model.setViewName(
@@ -271,7 +281,7 @@ extends ControllerBase
      */
 	@RequestMapping(value=CREATE_PATH, method=RequestMethod.POST)
 	public ResponseEntity<String> htmlCreate(
-	    @ModelAttribute(REQUEST_URL) final String url,
+        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
         @RequestParam(CREATE_NAME)   final String name,
         final WebRequest request,
 	    final ModelAndView model
@@ -283,14 +293,9 @@ extends ControllerBase
         final DataService service = womble().services().create(
             name
             );
-        final PathBuilder builder = new SpringPathBuilder(
-            request
-            );
         return new ResponseEntity<String>(
-            new LocationHeaders(
-                builder.location(
-                    //DataServiceController.CONTROLLER_PATH,
-                    "adql/service",
+            new LocationHeader(
+                builder.url(
                     service
                     )
                 ),
@@ -304,7 +309,7 @@ extends ControllerBase
      */
 	@RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces="application/json")
 	public ResponseEntity<DataServiceBean> jsonCreate(
-	    @ModelAttribute(REQUEST_URL) final String url,
+        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
         @RequestParam(CREATE_NAME)   final String name,
         final WebRequest request,
 	    final ModelAndView model
@@ -316,17 +321,15 @@ extends ControllerBase
         final DataService service = womble().services().create(
             name
             );
-        final PathBuilder builder = new SpringPathBuilder(
-            request
-            );
         return new ResponseEntity<DataServiceBean>(
             new DataServiceBean(
+                builder.url(
+                    service
+                    ),
                 service
                 ),
-            new LocationHeaders(
-                builder.location(
-                    //DataServiceController.CONTROLLER_PATH,
-                    "adql/service",
+            new LocationHeader(
+                builder.url(
                     service
                     )
                 ),

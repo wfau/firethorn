@@ -44,6 +44,12 @@ public class DataResourceController
      */
     public static final String CONTROLLER_PATH = "adql/resource/{ident}" ;
 
+    @Override
+    public String path()
+        {
+        return CONTROLLER_PATH;
+        }
+
     /**
      * MVC property for a DataResource entity.
      *

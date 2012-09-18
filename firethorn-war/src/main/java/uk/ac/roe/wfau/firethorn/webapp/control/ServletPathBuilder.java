@@ -17,9 +17,14 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control ;
 
+import java.net.URL;
+
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
+
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
  * A Servlet path builder.
@@ -27,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Slf4j
 public class ServletPathBuilder
-extends PathBuilder
+extends PathBuilderBase
     {
 
     /**
@@ -58,10 +63,6 @@ extends PathBuilder
         return this.request ;
         }
 
-    /**
-     * Get the request context path.
-     *
-     */
     @Override
     public String getContextPath()
         {

@@ -17,11 +17,14 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.mallard;
 
+import java.net.URL;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 import uk.ac.roe.wfau.firethorn.mallard.DataService;
+import uk.ac.roe.wfau.firethorn.webapp.control.UrlBuilder;
 
 /**
  * Bean wrapper to enable the JSON converter to process a DataService.  
@@ -31,48 +34,37 @@ public class DataServiceBean
     {
 
     private DateTimeFormatter formatter = ISODateTimeFormat.dateHourMinuteSecondFraction().withZoneUTC()  ; 
-    private String url ;
-    
-    private DataService service ;
     
     /**
+     * The wrapped DataService.
      * 
-     * Public constructor.
-     * @param service
-     *      The DataService to wrap.
-     *
      */
-    public DataServiceBean(DataService service)
-        {
-        this(
-            null,
-            service
-            );
-        }
+    private DataService service ;
 
     /**
+     * The DataService access URL.
+     * 
+     */
+    private URL url ;
+    
+    /**
      * 
      * Public constructor.
-     * @param url
-     *      The full URL for this DataService.
+     * @param builder
+     *      A UrlBuilder for generating the service URL.
      * @param service
      *      The DataService to wrap.
      *
      */
-    public DataServiceBean(String url , DataService service)
+    public DataServiceBean(URL url, DataService service)
         {
         this.url = url ;
         this.service = service ;
         }
     
-    public String getUrl()
+    public URL getIdent()
         {
-        return this.url;
-        }
-    
-    public String getIdent()
-        {
-        return service.ident().toString();
+        return url;
         }
     
     public String getName()
