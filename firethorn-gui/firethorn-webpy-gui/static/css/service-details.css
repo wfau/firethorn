@@ -1,0 +1,22 @@
+.gray {
+	background: #dedede;
+	color: #666;
+}
+
+.rounded {
+	-moz-border-radius: 15px;
+ 	border-radius: 15px;
+ 	border:1px solid black;
+}
+
+#sub_item {
+	text-align:left;
+	padding:14px;
+	margin-bottom:30px;
+}
+	
+#sub_item span {
+	font-weight:bold;
+	color:black;
+	font-size:13px;
+}

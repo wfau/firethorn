@@ -20,6 +20,7 @@ jQuery(document).ready(function() {
 
         	xhr = jQuery.ajax({
                 type: "POST",
+                url:"/",
                 data: data,
                 timeout: 1000000,
                 error: function(e) {
@@ -43,7 +44,8 @@ jQuery(document).ready(function() {
  	 	e.preventDefault();
 	    	jQuery.ajax({
 	         	type: "POST",
-	          	timeout: 1000000,
+	         	url:"/",
+                timeout: 1000000,
 	          	data: {service_get : this.href},
 	          	error: function(e) {
 	          		console.log(e);

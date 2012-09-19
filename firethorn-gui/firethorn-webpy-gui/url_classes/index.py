@@ -10,6 +10,7 @@ import traceback
 import config
 import urllib2
 import urllib
+from datetime import datetime
 
 
 class index:
@@ -33,8 +34,9 @@ class index:
                 return_html = "<div id='sub_item'>No services found</div>"
             else:
                 for entry in data:
+                    
                     converted_dict = dict([(str(k), v) for k, v in entry.items()])
-                    sub_item = render.select_service_response(converted_dict["name"], converted_dict["created"], converted_dict["modified"])
+                    sub_item = render.select_service_response('<a href=' + config.local_hostname['services'] + '?'+ config.service_get_param + '='  + converted_dict["ident"] + '>' + converted_dict["name"] + '</a>', datetime.strptime(converted_dict["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(converted_dict["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"))
                     return_html += str(sub_item)
        
         elif action == 'service_create':
@@ -44,7 +46,7 @@ class index:
             else :
                 converted_dict = dict([(str(k), v) for k, v in data.items()])
                 return_html += "<div style='text-align:left;font-style:italic'>The following Service has been created: </div><br/>"
-                return_html += str(render.select_service_response('<a href=' + config.local_hostname['services'] + '?'+ config.service_get_param + '='  + converted_dict["ident"] + '>' + converted_dict["name"] + '</a>', converted_dict["created"], converted_dict["modified"]))
+                return_html += str(render.select_service_response('<a href=' + config.local_hostname['services'] + '?'+ config.service_get_param + '='  + converted_dict["ident"] + '>' + converted_dict["name"] + '</a>',datetime.strptime(converted_dict["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(converted_dict["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S")))
         
         elif action == 'service_get':
             data = json.loads(json_data)
@@ -108,7 +110,7 @@ class index:
             if key == 'service_select_with_text':
                 if data.service_select_with_text!='':
                     if action_stored:
-                        return config.error_dict['INVALID_REQUEST']
+                        return config.errors['INVALID_REQUEST']
                     else:
                         action = 'service_select_with_text'
                         action_value = data.service_select_with_text 
@@ -117,7 +119,7 @@ class index:
             elif key == 'service_select_by_name':
                 if data.service_select_by_name!='':
                     if action_stored:
-                        return config.error_dict['INVALID_REQUEST']
+                        return config.errors['INVALID_REQUEST']
                     else:
                         action = 'service_select_by_name'
                         action_value = data.service_select_by_name
@@ -126,7 +128,7 @@ class index:
             elif key == 'service_create':
                 if data.service_create!='':
                     if action_stored:
-                        return config.error_dict['INVALID_REQUEST']
+                        return config.errors['INVALID_REQUEST']
                     else:     
                         action = 'service_create'
                         action_value = data.service_create
@@ -135,7 +137,7 @@ class index:
             elif key == 'service_get':
                 if data.service_get!='':
                     if action_stored:
-                        return config.error_dict['INVALID_REQUEST']
+                        return config.errors['INVALID_REQUEST']
                     else:     
                         action = 'service_get'
                         action_value = data.service_get[data.service_get.index('id=')+3:]
@@ -160,19 +162,19 @@ class index:
                 if action != 'service_get':
                     json_result = f.read()
                     return_string = self.__generate_html_content(json_result, action)
-                elif action == 'service_get':
+                else:
                     return_string = f.read()
-
+                    
                 f.close()
             else :
-                return_string = config.error_dict['INVALID_PARAM']
+                return_string = config.errors['INVALID_PARAM']
             
         except Exception as e:
             print e
             print traceback.print_exc()
             if f!="":
                 f.close()
-            return_string = config.error_dict['INVALID_NETWORK_REQUEST']
+            return_string = config.errors['INVALID_NETWORK_REQUEST']
  
         return return_string
     

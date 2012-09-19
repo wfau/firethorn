@@ -25,4 +25,9 @@ service_get_param = 'id'
 ### Render templates
 render = web.template.render('templates/')
 
-error_dict = {'INVALID_PARAM' : 'Parameter provided was invalid', 'INVALID_NETWORK_REQUEST' : 'Error processing a network request','INVALID_REQUEST' : 'Invalid request to the server'}
+
+
+types = {'service' : 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json'}
+
+errors = {'INVALID_PARAM' : 'Parameter provided was invalid', 'INVALID_NETWORK_REQUEST' : 'Error processing a network request','INVALID_REQUEST' : 'Invalid request to the server',
+              'INVALID_TYPE' : 'Invalid type for the requested URL'}
