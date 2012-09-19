@@ -17,7 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.mallard;
 
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
@@ -25,15 +29,30 @@ import org.joda.time.format.ISODateTimeFormat;
 
 import uk.ac.roe.wfau.firethorn.mallard.DataService;
 import uk.ac.roe.wfau.firethorn.webapp.control.UrlBuilder;
+import uk.ac.roe.wfau.firethorn.webapp.widgeon.DataResourcesController;
 
 /**
  * Bean wrapper to enable the JSON converter to process a DataService.  
  *
  */
+@Slf4j
 public class DataServiceBean
     {
 
+    /**
+     * Our date time formatter.
+     * @todo Move this much further back.
+     * 
+     */
     private DateTimeFormatter formatter = ISODateTimeFormat.dateHourMinuteSecondFraction().withZoneUTC()  ; 
+    
+    /**
+     * The data type identifier.
+     * 
+     */
+    public static final URI TYPE_URI = URI.create(
+        "http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json"
+        );
     
     /**
      * The wrapped DataService.
@@ -61,12 +80,22 @@ public class DataServiceBean
         this.url = url ;
         this.service = service ;
         }
-    
+
+    public String getId()
+        {
+        return service.ident().toString();
+        }
+
     public URL getIdent()
         {
         return url;
         }
-    
+
+    public URI getType()
+        {
+        return TYPE_URI ;
+        }
+
     public String getName()
         {
         return service.name();
