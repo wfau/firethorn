@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.ogsadai.metadata;
 
 import uk.org.ogsadai.dqp.lqp.Attribute;
-import uk.org.ogsadai.dqp.lqp.cardinality.AttributeStatistics;
 
 /**
  * Interface for accessing Attribute(s).
