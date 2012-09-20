@@ -17,18 +17,35 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.metadata;
 
-import uk.org.ogsadai.dqp.common.DataNode;
-import uk.org.ogsadai.dqp.common.DataNodeTable;
-
-import uk.org.ogsadai.resource.ResourceID;
-
 /**
- * Interface for a metadata service.
+ * An interface for a mapping between table alias (source) and the fully qualified table name and target resource.
+ *
  *
  */
-public interface MetadataService
+public interface TableMapping
     {
+    /**
+     * Get the table alias.
+     * <br/> 
+     * This is the table alias used in SQL queries passed into OGSA-DAI,
+     * before the mapping from table alias to fully qualified resource table name.
+     * @return The table alias.
+     *
+     */
+    public String tableAlias();
 
-
-
+    /**
+     * Get the fully qualified table name (catalog.schema.table) in the target resource.  
+     * @return The fully qualified table name.
+     *
+     */
+    public String tableName();
+    
+    /**
+     * Get the target resource identifier.  
+     * @return The target resource identifier.
+     *
+     */
+    public String resourceIdent();
+    
     }

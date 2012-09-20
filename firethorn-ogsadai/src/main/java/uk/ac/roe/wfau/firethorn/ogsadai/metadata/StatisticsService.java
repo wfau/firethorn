@@ -21,27 +21,22 @@ import uk.org.ogsadai.dqp.lqp.Attribute;
 import uk.org.ogsadai.dqp.lqp.cardinality.AttributeStatistics;
 
 /**
- * Interface for accessing Attribute(s).
+ * Interface for accessing AttributeStatistics.
  *
  */
-public interface AttributeService
+public interface StatisticsService
     {
-
     /**
-     * Get an Iterable set of Attributes, based on source (table) name.
-     * @param source
-     *      The source (table) alias.
-     *      <br/>
-     *      This should be the table alias used in SQL queries passed into OGSA-DAI,
-     *      before the mapping from table alias to fully qualified resource table name.
-     * 
-     * @return An Iterable set of Attribute(s) for the source (table).
-     * 
+     * Get the AttributeStatistics for a given Attribute.
+     * @param attribute
+     *      The Attribute to get the corresponding AttributeStatistics for.
+     * @return The AttributeStatistics for the Attribute, or null if there is no corresponding AttributeStatistics.
+     *
      */
-    public Iterable<Attribute> getAttributes(String source);
+    public AttributeStatistics getStatistics(Attribute attribute);
 
     /**
-     * Get a specific Attribute, based on source (table) name and Attribute (column) name.
+     * Get the AttributeStatistics given the source (table) and attribute name.
      * @param source
      *      The source (table) alias.
      *      <br/>
@@ -50,10 +45,9 @@ public interface AttributeService
      * @param name
      *      The Attribute(column) name.
      * 
-     * @return The specified Attribute, or null if there is no match.
-     * 
+     * @return The AttributeStatistics for the corresponding Attribute, or null if there is no corresponding Attribute or AttributeStatistics.
+     *
      */
-    public Attribute getAttribute(String source, String name);
-    
-    }
+    public AttributeStatistics getStatistics(String source, String name);
 
+    }
