@@ -48,8 +48,8 @@ implements UrlBuilder
         try {
             return new URL(
                 "http",
-                "localhost",
-                8080,
+                request.getServerName(),
+                request.getServerPort(),
                 paths.path(
                     DataServiceController.CONTROLLER_PATH,
                     target

@@ -17,7 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.mallard;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
@@ -28,8 +27,6 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 import uk.ac.roe.wfau.firethorn.mallard.DataService;
-import uk.ac.roe.wfau.firethorn.webapp.control.UrlBuilder;
-import uk.ac.roe.wfau.firethorn.webapp.widgeon.DataResourcesController;
 
 /**
  * Bean wrapper to enable the JSON converter to process a DataService.  
