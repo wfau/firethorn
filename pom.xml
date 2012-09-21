@@ -340,6 +340,21 @@
                 <artifactId>joda-time</artifactId>
                 <version>2.1</version>
             </dependency>
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time-hibernate</artifactId>
+                <version>1.3</version>
+            </dependency>
+
+            <!--+
+                | Jadira Type Libraries.
+                | http://blog.jadira.co.uk/
+                +-->	
+            <dependency>
+                <groupId>org.jadira.usertype</groupId>
+                <artifactId>usertype.core</artifactId>
+                <version>3.0.0.CR3</version>
+            </dependency>
 
 		    <!--+
 		        | Java Simplified Encryption
@@ -408,6 +423,25 @@
                 <version>4.10</version>
                 <scope>test</scope>
         	</dependency>
+
+            <!--+
+                | Starlink Tables library.
+                +-->
+            <dependency>
+                <groupId>uk.ac.starlink</groupId>
+                <artifactId>stil-util</artifactId>
+                <version>3.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>uk.ac.starlink</groupId>
+                <artifactId>stil-table</artifactId>
+                <version>3.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>uk.ac.starlink</groupId>
+                <artifactId>stil-votable</artifactId>
+                <version>3.0.2</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>

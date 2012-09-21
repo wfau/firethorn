@@ -28,6 +28,11 @@ import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
  */
 public interface UrlBuilder
     {
+    /**
+     * Get the web service base '/' URL.
+     *
+     */
+    public abstract URL url();
 
     /**
      * Create a URL for a DataService.

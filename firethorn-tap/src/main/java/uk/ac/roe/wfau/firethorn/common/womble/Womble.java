@@ -28,6 +28,7 @@ import org.springframework.context.ApplicationContext;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 
 import uk.ac.roe.wfau.firethorn.mallard.DataService;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
@@ -184,6 +185,12 @@ public interface Womble
      *
      */
     public Identity.Context context();
+
+    /**
+     * Access to our ConfigProperty factory.
+     *
+     */
+    public ConfigProperty.Factory config();
 
     }
 

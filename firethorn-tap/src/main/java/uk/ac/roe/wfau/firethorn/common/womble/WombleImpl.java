@@ -17,33 +17,28 @@
  */
 package uk.ac.roe.wfau.firethorn.common.womble ;
 
-import lombok.extern.slf4j.Slf4j;
-
 import javax.annotation.PostConstruct;
 
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.HibernateException;
+import lombok.extern.slf4j.Slf4j;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
-
-import org.springframework.context.ApplicationContext;
-
-import org.springframework.dao.DataAccessException;
-
-//import org.springframework.orm.hibernate4.HibernateExceptionTranslator;
-
-import org.springframework.stereotype.Component;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.mallard.DataService;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.mallard.DataService;
-import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  * Spring and Hibernate toolkit.
@@ -560,6 +555,19 @@ implements Womble
     public Identity.Context context()
         {
         return this.contexts.context();
+        }
+
+    /**
+     * Our Autowired ConfigProperty factory.
+     *
+     */
+    @Autowired
+    protected ConfigProperty.Factory config ;
+
+    @Override
+    public ConfigProperty.Factory config()
+        {
+        return this.config ;
         }
     }
 

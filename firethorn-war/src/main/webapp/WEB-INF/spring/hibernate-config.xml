@@ -89,16 +89,17 @@
             +-->
         <property name="hibernateProperties">
             <props>
-                <!--+
-                    | "In most cases Hibernate will be able to choose the correct org.hibernate.dialect.Dialect
-                    | implementation based on the JDBC metadata returned by the JDBC driver."
-                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
-                    +-->
+
                 <!--+
                     | Automatically update the database tables (test only).
                     +-->
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
                 <prop key="hibernate.show_sql">false</prop>
+
+                <!--+
+                    | Jadira usertype registration.
+                    +-->
+                <prop key="jadira.usertype.autoRegisterUserTypes">true</prop>
 
             </props>
         </property>

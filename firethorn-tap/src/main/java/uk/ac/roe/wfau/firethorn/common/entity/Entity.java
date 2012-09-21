@@ -17,10 +17,13 @@
  */
 package uk.ac.roe.wfau.firethorn.common.entity ;
 
-import java.util.Date;
+import org.joda.time.DateTime;
 
+import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
+
+
 
 /**
  * Common interface for a persistent Entity.
@@ -79,13 +82,13 @@ public interface Entity
      * The date/time when the Entity was created.
      *
      */
-    public Date created();
+    public DateTime created();
 
     /**
      * The date/time when the Entity was last modified.
      *
      */
-    public Date modified();
+    public DateTime modified();
 
     /**
      * Update (store) this Entity in the database.

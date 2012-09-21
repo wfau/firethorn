@@ -41,7 +41,13 @@ implements UrlBuilder
         this.paths = paths ;
         this.request = request ;
         }
-    
+
+    @Override
+    public URL url()
+        {
+        return null ;
+        }
+
     @Override
     public URL url(DataService target)
         {

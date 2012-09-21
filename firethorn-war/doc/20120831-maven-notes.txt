@@ -3,6 +3,7 @@
     #
     # Create the Eclipse project files.
     mvn eclipse:eclipse -D downloadSources=true -D downloadJavadocs=true
+    mvn eclipse:eclipse
 
     #
     # Add the Maven repository to the Eclipse workspace.
