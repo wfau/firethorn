@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.common.entity ;
 
+import java.net.URI;
+
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierFormatException ;
 
 /**
@@ -27,6 +29,12 @@ public class LongIdentifier
 extends AbstractIdentifier<Long>
     {
 
+    /**
+     * Public constructor.
+     * @param string
+     *      The Identifier value.
+     *
+     */
     public LongIdentifier(final String string)
         {
         this(
@@ -36,6 +44,12 @@ extends AbstractIdentifier<Long>
             );
         }
 
+    /**
+     * Public constructor.
+     * @param value
+     *      The Identifier value.
+     *
+     */
     public LongIdentifier(final int value)
         {
         super(
@@ -45,6 +59,12 @@ extends AbstractIdentifier<Long>
             ) ;
         }
 
+    /**
+     * Public constructor.
+     * @param value
+     *      The Identifier value.
+     *
+     */
     public LongIdentifier(final long value)
         {
         super(
@@ -54,13 +74,21 @@ extends AbstractIdentifier<Long>
             ) ;
         }
 
+    /**
+     * Public constructor.
+     * @param value
+     *      The Identifier value.
+     *
+     */
     public LongIdentifier(final Long value)
         {
         super(value) ;
         }
 
     /**
-     * Parse a string.
+     * Parse a String and return a Long value.
+     * @param string
+     *      The String to parse.
      *
      */
     public static Long parse(final String string)
@@ -80,7 +108,9 @@ extends AbstractIdentifier<Long>
         }
 
     /**
-     * Create an Identifier from a string.
+     * Parse a String and return an Identifier.
+     * @param string
+     *      The String to parse.
      *
      */
     public static Identifier create(final String string)

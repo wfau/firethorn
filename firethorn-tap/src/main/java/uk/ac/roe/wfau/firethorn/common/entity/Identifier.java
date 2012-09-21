@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.common.entity ;
 
 import java.io.Serializable;
+import java.net.URI;
 
 /**
  * Public interface for all identifiers.
@@ -26,7 +27,29 @@ import java.io.Serializable;
 public interface Identifier
     {
 
+    /**
+     * Access to the Serializable value.
+     * @return
+     *      The Serializable value.
+     *
+     */
     public Serializable value();
 
+    /**
+     * Generate a String representation of the identifier.
+     * @return
+     *      A String representation.
+     *
+     */
+    public String toString();
+    
+    /**
+     * Generate a URI representation of the identifier.
+     * @return
+     *      A URI representation.
+     *
+     */
+    public URI toUri();
+    
     }
 
