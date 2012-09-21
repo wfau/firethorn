@@ -22,7 +22,6 @@ import java.net.URL;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -101,18 +100,14 @@ public class DataServiceBean
     public String getCreated()
         {
         return formatter.print(
-            new DateTime(
-                service.created()
-                )
+            service.created()
             );
         }
     
     public String getModified()
         {
         return formatter.print(
-            new DateTime(
-                service.modified()
-                )
+            service.modified()
             );
         }
     }
