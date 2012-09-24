@@ -35,14 +35,14 @@ public class MallardTestCase
 extends TestBase
     {
 
-    private DataService alpha ;
-    public  DataService alpha()
+    private AdqlService alpha ;
+    public  AdqlService alpha()
         {
         return this.alpha ;
         }
 
-    private DataService beta ;
-    public  DataService beta()
+    private AdqlService beta ;
+    public  AdqlService beta()
         {
         return this.beta ;
         }

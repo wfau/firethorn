@@ -21,8 +21,8 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 
-import uk.ac.roe.wfau.firethorn.mallard.DataService;
-import uk.ac.roe.wfau.firethorn.webapp.mallard.DataServiceController;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
+import uk.ac.roe.wfau.firethorn.webapp.mallard.AdqlServiceController;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 
 /**
@@ -49,7 +49,7 @@ implements UrlBuilder
         }
 
     @Override
-    public URL url(DataService target)
+    public URL url(AdqlService target)
         {
         try {
             return new URL(
@@ -57,7 +57,7 @@ implements UrlBuilder
                 request.getServerName(),
                 request.getServerPort(),
                 paths.path(
-                    DataServiceController.CONTROLLER_PATH,
+                    AdqlServiceController.CONTROLLER_PATH,
                     target
                     ).toString()
                 );

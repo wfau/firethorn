@@ -45,7 +45,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResourceEntity;
 
 /**
- * DataService implementation.
+ * AdqlService implementation.
  *
  */
 @Slf4j
@@ -54,27 +54,27 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResourceEntity;
     AccessType.FIELD
     )
 @Table(
-    name = DataServiceEntity.DB_TABLE_NAME
+    name = AdqlServiceEntity.DB_TABLE_NAME
     )
 @NamedQueries(
         {
         @NamedQuery(
             name  = "mallard-select-all",
-            query = "FROM DataServiceEntity ORDER BY ident desc"
+            query = "FROM AdqlServiceEntity ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "mallard-select-name",
-            query = "FROM DataServiceEntity WHERE name = :name ORDER BY ident desc"
+            query = "FROM AdqlServiceEntity WHERE name = :name ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "mallard-search-text",
-            query = "FROM DataServiceEntity WHERE name LIKE :text ORDER BY ident desc"
+            query = "FROM AdqlServiceEntity WHERE name LIKE :text ORDER BY ident desc"
             )
         }
     )
-public class DataServiceEntity
+public class AdqlServiceEntity
 extends AbstractEntity
-implements DataService
+implements AdqlService
     {
 
     /**
@@ -89,19 +89,19 @@ implements DataService
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<DataService>
-    implements DataService.Factory
+    extends AbstractFactory<AdqlService>
+    implements AdqlService.Factory
         {
 
         @Override
-        public Class<DataServiceEntity> etype()
+        public Class<AdqlServiceEntity> etype()
             {
-            return DataServiceEntity.class ;
+            return AdqlServiceEntity.class ;
             }
 
         @Override
         @SelectEntityMethod
-        public Iterable<DataService> select()
+        public Iterable<AdqlService> select()
             {
             return super.iterable(
                 super.query(
@@ -112,7 +112,7 @@ implements DataService
 
         @Override
         @SelectEntityMethod
-        public Iterable<DataService> select(final String name)
+        public Iterable<AdqlService> select(final String name)
             {
             return super.iterable(
                 super.query(
@@ -126,7 +126,7 @@ implements DataService
 
         @Override
         @SelectEntityMethod
-        public Iterable<DataService> search(final String text)
+        public Iterable<AdqlService> search(final String text)
             {
             //
             // Using wildcards in a HQL query with named parameters.
@@ -146,10 +146,10 @@ implements DataService
 
         @Override
         @CreateEntityMethod
-        public DataService create(final String name)
+        public AdqlService create(final String name)
             {
             return super.insert(
-                new DataServiceEntity(
+                new AdqlServiceEntity(
                     name
                     )
                 );
@@ -174,16 +174,16 @@ implements DataService
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected DataServiceEntity()
+    protected AdqlServiceEntity()
         {
         super();
         }
 
     /**
-     * Create a new DataServiceEntity.
+     * Create a new AdqlServiceEntity.
      *
      */
-    protected DataServiceEntity(final String name)
+    protected AdqlServiceEntity(final String name)
         {
         super(name);
         }
@@ -197,7 +197,7 @@ implements DataService
             public Job create(final String name, final String adql)
                 {
                 return womble().services().jobs().create(
-                    DataServiceEntity.this,
+                    AdqlServiceEntity.this,
                     name,
                     adql
                     ) ;
@@ -207,7 +207,7 @@ implements DataService
             public Iterable<Job> select()
                 {
                 return womble().services().jobs().select(
-                    DataServiceEntity.this
+                    AdqlServiceEntity.this
                     ) ;
                 }
             };

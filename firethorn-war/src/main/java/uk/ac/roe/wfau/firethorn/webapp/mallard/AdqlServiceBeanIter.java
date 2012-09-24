@@ -19,60 +19,61 @@ package uk.ac.roe.wfau.firethorn.webapp.mallard;
 
 import java.util.Iterator;
 
-import uk.ac.roe.wfau.firethorn.mallard.DataService;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
+import uk.ac.roe.wfau.firethorn.webapp.control.UriBuilder;
 import uk.ac.roe.wfau.firethorn.webapp.control.UrlBuilder;
 
 /**
  * Bean wrapper to enable the JSON converter to process list of a DataServices.  
  *
  */
-public class DataServiceBeanIterable
-implements Iterable<DataServiceBean>
+public class AdqlServiceBeanIter
+implements Iterable<AdqlServiceBean>
     {
     
     /**
-     * The Iterable list of DataServices.
+     * The Iterable list of AdqlServices.
      * 
      */
-    private Iterable<DataService> iterable ;
+    private Iterable<AdqlService> iterable ;
 
     /**
      * UrlBuilder for generating the service URL.
      * 
      */
-    private UrlBuilder builder ;
+    private UriBuilder.AdqlUriBuilder builder ;
     
     /**
      * Public constructor.
      * @param builder
-     *      A UrlBuilder for generating the target URLs.
+     *      An ADQL UrlBuilder for generating the target URLs.
      * @param iterable
      *      The Iterable list to wrap.
      *
      */
-    public DataServiceBeanIterable(UrlBuilder builder, Iterable<DataService> iterable)
+    public AdqlServiceBeanIter(UriBuilder.AdqlUriBuilder builder, Iterable<AdqlService> iterable)
         {
         this.builder  = builder  ;
         this.iterable = iterable ;
         }
     
     @Override
-    public Iterator<DataServiceBean> iterator()
+    public Iterator<AdqlServiceBean> iterator()
         {
-        return new Iterator<DataServiceBean>()
+        return new Iterator<AdqlServiceBean>()
             {
-            private Iterator<DataService> iterator = iterable.iterator();
+            private Iterator<AdqlService> iterator = iterable.iterator();
             @Override
             public boolean hasNext()
                 {
                 return iterator.hasNext();
                 }
             @Override
-            public DataServiceBean next()
+            public AdqlServiceBean next()
                 {
-                DataService service = iterator.next(); 
-                return new DataServiceBean(
-                    builder.url(
+                AdqlService service = iterator.next(); 
+                return new AdqlServiceBean(
+                    builder.uri(
                         service
                         ),
                     service

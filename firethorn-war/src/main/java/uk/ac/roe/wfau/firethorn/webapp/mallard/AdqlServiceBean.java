@@ -25,14 +25,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import uk.ac.roe.wfau.firethorn.mallard.DataService;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 
 /**
- * Bean wrapper to enable the JSON converter to process a DataService.  
+ * Bean wrapper to enable the JSON converter to process a AdqlService.  
  *
  */
 @Slf4j
-public class DataServiceBean
+public class AdqlServiceBean
     {
 
     /**
@@ -51,16 +51,16 @@ public class DataServiceBean
         );
     
     /**
-     * The wrapped DataService.
+     * The wrapped AdqlService.
      * 
      */
-    private DataService service ;
+    private AdqlService service ;
 
     /**
-     * The DataService access URL.
+     * The AdqlService access URL.
      * 
      */
-    private URL url ;
+    private URI uri ;
     
     /**
      * 
@@ -68,12 +68,12 @@ public class DataServiceBean
      * @param builder
      *      A UrlBuilder for generating the service URL.
      * @param service
-     *      The DataService to wrap.
+     *      The AdqlService to wrap.
      *
      */
-    public DataServiceBean(URL url, DataService service)
+    public AdqlServiceBean(URI uri, AdqlService service)
         {
-        this.url = url ;
+        this.uri = uri ;
         this.service = service ;
         }
 
@@ -82,9 +82,9 @@ public class DataServiceBean
         return service.ident().toString();
         }
 
-    public URL getIdent()
+    public URI getIdent()
         {
-        return url;
+        return uri;
         }
 
     public URI getType()

@@ -30,7 +30,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 
-import uk.ac.roe.wfau.firethorn.mallard.DataService;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
@@ -169,10 +169,10 @@ public interface Womble
     public ResourceFactories resources();
 
     /**
-     * Access to our DataService factory.
+     * Access to our AdqlService factory.
      *
      */
-    public DataService.Factory services();
+    public AdqlService.Factory services();
 
     /**
      * Access to our Identity factory.

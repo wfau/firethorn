@@ -24,7 +24,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
  * A service instance.
  *
  */
-public interface DataService
+public interface AdqlService
 extends Entity
     {
 
@@ -33,31 +33,31 @@ extends Entity
      *
      */
     public static interface Factory
-    extends Entity.Factory<DataService>
+    extends Entity.Factory<AdqlService>
         {
         /**
-         * Create a new DataService.
+         * Create a new AdqlService.
          *
          */
-        public DataService create(final String name);
+        public AdqlService create(final String name);
 
         /**
-         * Select all the Mallards.
+         * Select all the AdqlServices.
          *
          */
-        public Iterable<DataService> select();
+        public Iterable<AdqlService> select();
 
         /**
-         * Select Service(s) by name.
+         * Select AdqlServices(s) by name.
          *
          */
-        public Iterable<DataService> select(final String name);
+        public Iterable<AdqlService> select(final String name);
 
         /**
-         * Search for Service(s) by name.
+         * Search for AdqlServices(s) by name.
          *
          */
-        public Iterable<DataService> search(final String text);
+        public Iterable<AdqlService> search(final String text);
 
         /**
          * Access to our Job factory.
@@ -75,13 +75,13 @@ extends Entity
         {
 
         /**
-         * Add a DataResource to this service.
+         * Add an AdqlResource to this service.
          *
          */
         public void insert(final AdqlResource resource);
 
         /**
-         * Select all the DataResources used by this service.
+         * Select all the AdqlResourcesused by this service.
          *
          */
         public Iterable<AdqlResource> select();
@@ -104,13 +104,13 @@ extends Entity
              * Create a new Job.
              *
              */
-            public Job create(final DataService service, final String name, final String adql);
+            public Job create(final AdqlService service, final String name, final String adql);
 
             /**
-             * Select all the Jobs for a DataService.
+             * Select all the Jobs for a AdqlService.
              *
              */
-            public Iterable<Job> select(final DataService service);
+            public Iterable<Job> select(final AdqlService service);
 
             }
 
@@ -134,10 +134,10 @@ extends Entity
             };
 
         /**
-         * The parent DataService.
+         * The parent AdqlService.
          *
          */
-        public DataService service();
+        public AdqlService service();
 
         /**
          * The ADQL query.

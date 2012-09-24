@@ -33,8 +33,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
+import uk.ac.roe.wfau.firethorn.webapp.control.UriBuilder;
 import uk.ac.roe.wfau.firethorn.webapp.control.UrlBuilder;
-import uk.ac.roe.wfau.firethorn.mallard.DataService ;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService ;
 
 /**
  * Spring MVC controller for AdqlServices.
@@ -42,8 +43,8 @@ import uk.ac.roe.wfau.firethorn.mallard.DataService ;
  */
 @Slf4j
 @Controller
-@RequestMapping(DataServiceController.CONTROLLER_PATH)
-public class DataServiceController
+@RequestMapping(AdqlServiceController.CONTROLLER_PATH)
+public class AdqlServiceController
 extends ControllerBase
     {
     /**
@@ -65,12 +66,17 @@ extends ControllerBase
     public static final String SERVICE_ENTITY = "adql.service.entity" ;
 
     /**
+     * Our URI builder.
+     * 
+     */
+    protected UriBuilder.AdqlUriBuilder builder ;
+
+    /**
      * HTML GET request for a service.
      *
      */
 	@RequestMapping(method=RequestMethod.GET)
 	public ModelAndView htmlSelect(
-	    @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
 	    @PathVariable("ident") final String ident,
 	    final ModelAndView model
 	    ){
@@ -101,21 +107,20 @@ extends ControllerBase
      */
 	@ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces="application/json")
-    public DataServiceBean jsonGet(
-        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
+    public AdqlServiceBean jsonGet(
         @PathVariable("ident") final String ident,
         final ModelAndView model
         ){
         log.debug("select(String ident)");
         log.debug("  Ident [{}]", ident);
         try {
-            DataService service = womble().services().select(
+            AdqlService service = womble().services().select(
                 womble().services().ident(
                     ident
                     )
                 );
-            return new DataServiceBean(
-                builder.url(
+            return new AdqlServiceBean(
+                builder.uri(
                     service
                     ),
                 service

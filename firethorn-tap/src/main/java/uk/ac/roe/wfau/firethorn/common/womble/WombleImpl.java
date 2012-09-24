@@ -36,7 +36,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.mallard.DataService;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
@@ -519,14 +519,14 @@ implements Womble
         }
 
     /**
-     * Our Autowired DataService factory.
+     * Our Autowired AdqlService factory.
      *
      */
     @Autowired
-    protected DataService.Factory services ;
+    protected AdqlService.Factory services ;
 
     @Override
-    public DataService.Factory services()
+    public AdqlService.Factory services()
         {
         return this.services ;
         }

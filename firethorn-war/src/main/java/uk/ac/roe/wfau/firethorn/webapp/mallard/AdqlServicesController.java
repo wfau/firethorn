@@ -39,9 +39,10 @@ import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
 import uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder;
 import uk.ac.roe.wfau.firethorn.webapp.control.SpringPathBuilder;
 import uk.ac.roe.wfau.firethorn.webapp.control.LocationHeader;
+import uk.ac.roe.wfau.firethorn.webapp.control.UriBuilder;
 import uk.ac.roe.wfau.firethorn.webapp.control.UrlBuilder;
 
-import uk.ac.roe.wfau.firethorn.mallard.DataService ;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService ;
 
 /**
  * Spring MVC controller for AdqlServices.
@@ -49,8 +50,8 @@ import uk.ac.roe.wfau.firethorn.mallard.DataService ;
  */
 @Slf4j
 @Controller
-@RequestMapping(DataServicesController.CONTROLLER_PATH)
-public class DataServicesController
+@RequestMapping(AdqlServicesController.CONTROLLER_PATH)
+public class AdqlServicesController
 extends ControllerBase
     {
     /**
@@ -114,6 +115,13 @@ extends ControllerBase
     public static final String CREATE_NAME = "adql.services.create.name" ;
 
     /**
+     * Our URI builder.
+        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
+     * 
+     */
+    protected UriBuilder.AdqlUriBuilder builder ;
+
+    /**
      * HTML GET request to display the index page.
      *
      */
@@ -134,7 +142,6 @@ extends ControllerBase
      */
 	@RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
 	public ModelAndView htmlSelect(
-        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
 	    final ModelAndView model
 	    ){
 		model.addObject(
@@ -153,11 +160,10 @@ extends ControllerBase
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces="application/json")
-    public Iterable<DataServiceBean> jsonSelect(
-        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
+    public Iterable<AdqlServiceBean> jsonSelect(
         final ModelAndView model
         ){
-        return new DataServiceBeanIterable(
+        return new AdqlServiceBeanIter(
             builder,
             womble().services().select()
             );
@@ -169,7 +175,6 @@ extends ControllerBase
      */
 	@RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
 	public ModelAndView htmlSelect(
-        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
         @RequestParam(SELECT_NAME)   final String name,
 	    final ModelAndView model
 	    ){
@@ -191,12 +196,11 @@ extends ControllerBase
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces="application/json")
-    public Iterable<DataServiceBean> jsonSelect(
-        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
+    public Iterable<AdqlServiceBean> jsonSelect(
         @RequestParam(SELECT_NAME)   final String name,
         final ModelAndView model
         ){
-        return new DataServiceBeanIterable(
+        return new AdqlServiceBeanIter(
             builder,
             womble().services().select(
                 name
@@ -210,7 +214,6 @@ extends ControllerBase
      */
 	@RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
 	public ModelAndView htmlSearch(
-        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
 	    final ModelAndView model
 	    ){
 		model.setViewName(
@@ -225,7 +228,6 @@ extends ControllerBase
      */
 	@RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
 	public ModelAndView htmlSearch(
-        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
         @RequestParam(SEARCH_TEXT)   final String text,
 	    final ModelAndView model
 	    ){
@@ -247,12 +249,11 @@ extends ControllerBase
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces="application/json")
-    public Iterable<DataServiceBean> jsonSearch(
-        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
+    public Iterable<AdqlServiceBean> jsonSearch(
         @RequestParam(SEARCH_TEXT)   final String text,
         final ModelAndView model
         ){
-        return new DataServiceBeanIterable(
+        return new AdqlServiceBeanIter(
             builder,
             womble().services().search(
                 text
@@ -266,7 +267,6 @@ extends ControllerBase
      */
 	@RequestMapping(value=CREATE_PATH, method=RequestMethod.GET)
 	public ModelAndView htmlCreate(
-        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
 	    final ModelAndView model
 	    ){
 		model.setViewName(
@@ -276,12 +276,11 @@ extends ControllerBase
         }
 
     /**
-     * HTML POST request to create a new DataService.
+     * HTML POST request to create a new AdqlService.
      *
      */
 	@RequestMapping(value=CREATE_PATH, method=RequestMethod.POST)
 	public ResponseEntity<String> htmlCreate(
-        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
         @RequestParam(CREATE_NAME)   final String name,
         final WebRequest request,
 	    final ModelAndView model
@@ -290,12 +289,12 @@ extends ControllerBase
         log.debug("  Name [{}]", name);
         //
         // Create the service.
-        final DataService service = womble().services().create(
+        final AdqlService service = womble().services().create(
             name
             );
         return new ResponseEntity<String>(
             new LocationHeader(
-                builder.url(
+                builder.uri(
                     service
                     )
                 ),
@@ -304,12 +303,11 @@ extends ControllerBase
         }
 
     /**
-     * JSON POST request to create a new DataService.
+     * JSON POST request to create a new AdqlService.
      *
      */
 	@RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces="application/json")
-	public ResponseEntity<DataServiceBean> jsonCreate(
-        @ModelAttribute(URL_BUILDER) final UrlBuilder builder,
+	public ResponseEntity<AdqlServiceBean> jsonCreate(
         @RequestParam(CREATE_NAME)   final String name,
         final WebRequest request,
 	    final ModelAndView model
@@ -318,18 +316,18 @@ extends ControllerBase
         log.debug("  Name [{}]", name);
         //
         // Create the service.
-        final DataService service = womble().services().create(
+        final AdqlService service = womble().services().create(
             name
             );
-        return new ResponseEntity<DataServiceBean>(
-            new DataServiceBean(
-                builder.url(
+        return new ResponseEntity<AdqlServiceBean>(
+            new AdqlServiceBean(
+                builder.uri(
                     service
                     ),
                 service
                 ),
             new LocationHeader(
-                builder.url(
+                builder.uri(
                     service
                     )
                 ),

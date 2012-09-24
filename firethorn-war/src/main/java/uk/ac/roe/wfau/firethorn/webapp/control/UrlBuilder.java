@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.webapp.control;
 
 import java.net.URL;
 
-import uk.ac.roe.wfau.firethorn.mallard.DataService;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 
 /**
@@ -35,10 +35,10 @@ public interface UrlBuilder
     public abstract URL url();
 
     /**
-     * Create a URL for a DataService.
+     * Create a URL for a AdqlService.
      *
      */
-    public abstract URL url(final DataService target);
+    public abstract URL url(final AdqlService target);
 
     /**
      * Create a URL for a DataResource.

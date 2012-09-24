@@ -40,7 +40,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
 /**
- * DataService.Job implementation.
+ * AdqlService.Job implementation.
  *
  */
 @Slf4j
@@ -73,7 +73,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
     )
 public class JobEntity
 extends AbstractEntity
-implements DataService.Job
+implements AdqlService.Job
     {
 
     /**
@@ -96,8 +96,8 @@ implements DataService.Job
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<DataService.Job>
-    implements DataService.Job.Factory
+    extends AbstractFactory<AdqlService.Job>
+    implements AdqlService.Job.Factory
         {
         @Override
         public Class<?> etype()
@@ -107,7 +107,7 @@ implements DataService.Job
 
         @Override
         @SelectEntityMethod
-        public Iterable<DataService.Job> select(final DataService service)
+        public Iterable<AdqlService.Job> select(final AdqlService service)
             {
             return super.iterable(
                 super.query(
@@ -121,7 +121,7 @@ implements DataService.Job
 
         @Override
         @CreateEntityMethod
-        public DataService.Job create(final DataService service, final String name, final String adql)
+        public AdqlService.Job create(final AdqlService service, final String name, final String adql)
             {
             return super.insert(
                 new JobEntity(
@@ -147,7 +147,7 @@ implements DataService.Job
      * Create a new JobEntity.
      *
      */
-    protected JobEntity(final DataService service, final String name, final String adql)
+    protected JobEntity(final AdqlService service, final String name, final String adql)
         {
         super(name);
         this.adql = adql ;
@@ -155,12 +155,12 @@ implements DataService.Job
         }
 
     /**
-     * Our parent DataService.
+     * Our parent AdqlService.
      *
      */
     @ManyToOne(
         fetch = FetchType.LAZY,
-        targetEntity = DataServiceEntity.class
+        targetEntity = AdqlServiceEntity.class
         )
     @JoinColumn(
         name = DB_MALLARD_COL,
@@ -168,9 +168,9 @@ implements DataService.Job
         nullable = false,
         updatable = false
         )
-    private DataService service ;
+    private AdqlService service ;
     @Override
-    public DataService service()
+    public AdqlService service()
         {
         return this.service ;
         }
@@ -188,9 +188,9 @@ implements DataService.Job
     @Enumerated(
         EnumType.STRING
         )
-    private final DataService.Job.Status status = DataService.Job.Status.EDITING ;
+    private final AdqlService.Job.Status status = AdqlService.Job.Status.EDITING ;
     @Override
-    public  DataService.Job.Status status()
+    public  AdqlService.Job.Status status()
         {
         return this.status;
         }

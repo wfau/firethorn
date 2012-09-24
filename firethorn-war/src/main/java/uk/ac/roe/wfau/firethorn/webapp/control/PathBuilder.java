@@ -21,7 +21,7 @@ import java.net.URI;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.mallard.DataService;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 
 public interface PathBuilder
@@ -158,10 +158,10 @@ public interface PathBuilder
     public abstract URI location(final String base, final Entity entity);
 
     /**
-     * Create a link for a DataService.
+     * Create a link for a AdqlService.
      *
      */
-    public abstract Path link(final DataService target);
+    public abstract Path link(final AdqlService target);
 
     /**
      * Create a link for a DataResource.

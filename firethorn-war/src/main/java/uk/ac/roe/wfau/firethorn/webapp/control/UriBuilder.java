@@ -15,10 +15,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.config;
+package uk.ac.roe.wfau.firethorn.webapp.control;
 
 import java.net.URI;
 
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.ivoa.IvoaResource;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
@@ -109,6 +110,16 @@ public interface UriBuilder
      */
     public static interface AdqlUriBuilder
         {
+        /**
+         * Generate a URI for an Adql service.
+         * @param resource
+         *      The target service.
+         * @return
+         *      The URI for the service.
+         *
+         */
+        public URI uri(AdqlService service);
+
         /**
          * Generate a URI for an Adql resource.
          * @param resource
