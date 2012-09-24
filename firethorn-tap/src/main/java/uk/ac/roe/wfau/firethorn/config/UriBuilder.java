@@ -39,63 +39,156 @@ public interface UriBuilder
     public URI uri();
 
     /**
-     * Generate a URI for a JdbcResource.
-     * @return
-     *      The URI for the resource.
+     * A UriBuilder for JDBC resources.
      *
      */
-    public URI uri(JdbcResource target);
-    public URI uri(JdbcResource.JdbcCatalog target);
-    public URI uri(JdbcResource.JdbcSchema  target);
-    public URI uri(JdbcResource.JdbcTable   target);
-    public URI uri(JdbcResource.JdbcColumn  target);
+    public static interface JdbcUriBuilder
+        {
+        /**
+         * Generate a URI for a Jdbc resource.
+         * @param resource
+         *      The target resource.
+         * @return
+         *      The URI for the resource.
+         *
+         */
+        public URI uri(JdbcResource resource);
+
+        /**
+         * Generate a URI for a Jdbc catalog.
+         * @param catalog
+         *      The target catalog.
+         * @return
+         *      The URI for the catalog.
+         *
+         */
+        public URI uri(JdbcResource.JdbcCatalog catalog);
+
+        /**
+         * Generate a URI for a Jdbc schema.
+         * @param schema
+         *      The target schema.
+         * @return
+         *      The URI for the schema.
+         *
+         */
+        public URI uri(JdbcResource.JdbcSchema  schema);
+
+        /**
+         * Generate a URI for a Jdbc table.
+         * @param table
+         *      The target table.
+         * @return
+         *      The URI for the table.
+         *
+         */
+        public URI uri(JdbcResource.JdbcTable   table);
+
+        /**
+         * Generate a URI for a Jdbc column.
+         * @param column
+         *      The target column.
+         * @return
+         *      The URI for the column.
+         *
+         */
+        public URI uri(JdbcResource.JdbcColumn  column);
+
+        }
+
+    /**
+     * A UriBuilder for JDBC resources.
+     *
+     */
+    public JdbcUriBuilder jdbc();
+
+
+    /**
+     * A UriBuilder for ADQL resources.
+     *
+     */
+    public static interface AdqlUriBuilder
+        {
+        /**
+         * Generate a URI for an Adql resource.
+         * @param resource
+         *      The target resource.
+         * @return
+         *      The URI for the resource.
+         *
+         */
+        public URI uri(AdqlResource resource);
+
+        /**
+         * Generate a URI for an Adql catalog.
+         * @param catalog
+         *      The target catalog.
+         * @return
+         *      The URI for the catalog.
+         *
+         */
+        public URI uri(AdqlResource.AdqlCatalog catalog);
+
+        /**
+         * Generate a URI for an Adql schema.
+         * @param schema
+         *      The target schema.
+         * @return
+         *      The URI for the schema.
+         *
+         */
+        public URI uri(AdqlResource.AdqlSchema  schema);
+
+        /**
+         * Generate a URI for an Adql table.
+         * @param table
+         *      The target table.
+         * @return
+         *      The URI for the table.
+         *
+         */
+        public URI uri(AdqlResource.AdqlTable   table);
+
+        /**
+         * Generate a URI for an Adql column.
+         * @param column
+         *      The target column.
+         * @return
+         *      The URI for the column.
+         *
+         */
+        public URI uri(JdbcResource.JdbcColumn  column);
+
+        }
+
+    /**
+     * A UriBuilder for ADQL resources.
+     *
+     */
+    public AdqlUriBuilder adql();
+
+    /**
+     * A UriBuilder for IVOA resources.
+     *
+     */
+    public static interface IvoaUriBuilder
+        {
+        /**
+         * Generate a URI for an Ivoa resource.
+         * @param resource
+         *      The target resource.
+         * @return
+         *      The URI for the resource.
+         *
+         */
+        public URI uri(IvoaResource resource);
     
-    /**
-     * Generate a URI for an AdqlResource.
-     * @return
-     *      The URI for the resource.
-     *
-     */
-    public URI uri(AdqlResource target);
+        }
 
     /**
-     * Generate a URI for an AdqlCatalog.
-     * @return
-     *      The URI for the resource.
+     * A UriBuilder for IVOA resources.
      *
      */
-    public URI uri(AdqlResource.AdqlCatalog target);
-
-    /**
-     * Generate a URI for an AdqlSchema.
-     * @return
-     *      The URI for the resource.
-     *
-     */
-    public URI uri(AdqlResource.AdqlSchema target);
-
-    /**
-     * Generate a URI for an AdqlTable.
-     * @return
-     *      The URI for the resource.
-     *
-     */
-    public URI uri(AdqlResource.AdqlTable target);
-
-    /**
-     * Generate a URI for an AdqlCatalog.
-     * @return
-     *      The URI for the resource.
-     *
-     */
-    public URI uri(AdqlResource.AdqlColumn target);
-
-    /**
-     * Generate a URI for an IvoaResource.
-     * @return
-     *      The URI for the resource.
-     *
-     */
-    public URI uri(IvoaResource target);
-
+    public IvoaUriBuilder ivoa();
+    
     }

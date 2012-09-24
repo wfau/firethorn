@@ -48,8 +48,8 @@ public interface Identifier
      * @return
      *      A URI representation.
      *
-     */
     public URI toUri();
+     */
     
     }
 
