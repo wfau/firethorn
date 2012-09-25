@@ -5,10 +5,6 @@
  */
 jQuery(document).ready(function() {
 	
-	//Check whether the container element contains any input through the templating system. If yes display	
-	if (jQuery('#container').html().length>0){
-		jQuery('#container').show();
-	}
 	
 	/*
 	 * On input form submission, send ajax request and load result content into '#container'
@@ -38,18 +34,16 @@ jQuery(document).ready(function() {
 	/*
 	 * A link was clicked, Fetch the according service information via a POST request
 	 * 
-	 */
+	 */ 
 	
  	 jQuery('a').live('click', function(e){
- 		
- 		var id_prevented = 'ignore';
+ 	 	var id_prevented = 'ignore';
 		if  (this.id == id_prevented){
 			e.preventDefault();
 		}
- 		 /*
-		var create_new = base_url + '/create_new';
-		
-		if  (!(this.href.substring(0, create_new.length) === create_new)){
+		/*
+ 		var create_new = base_url + '/create_new';
+		if (!this.href.substring(0, create_new.length) === create_new){
 		
 	 	 	e.preventDefault();
 		    	jQuery.ajax({
@@ -67,6 +61,6 @@ jQuery(document).ready(function() {
 		}
 		*/
  	 });
- 	 
  	
+ 	 
 });

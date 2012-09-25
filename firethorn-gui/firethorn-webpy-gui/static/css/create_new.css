@@ -3,13 +3,15 @@
  * Admin Page CSS
  *
  */	
- 
+
+	
 #input_form_container {
-		width:650px;
+		width:700px;
 		height:172px;
 		display:block;
-		margin-left:120px;
+		margin-left:60px;
 	}
+	
 #input_div {
 		font-size:11px;
 		color:white;
@@ -28,7 +30,7 @@
 		padding:4px 2px;
 		font-size:11px;
 		border:solid 1px #aacfe4;
-		width:320px;
+		width:340px;
 		height:15px;
 		display:inline;
 		margin-top:5px;
@@ -74,19 +76,20 @@
 		text-decoration:none;
 	}	
 	
+	
 .input_form span{
 		font-size:10px;
 		font-style:italic;
 		color:gray;
 		margin-left:100px;
 	}	
-	
 		
 #input_div	label { 
 		display: block;  /* block float the labels to left column, set a width */
 		float: left; 
-		width: 170px; 
+		width: 200px; 
 		padding: 0; 
 		margin-top: 10px;
 		text-align: right; 
 	}
+	

@@ -6,7 +6,10 @@ Created on Sep 17, 2012
 
 import web
 
+
 web_services_hostname = 'localhost:8080'
+base_location = '/home/stelios/Desktop/workspace/firethorn-webpy-gui'
+
 local_hostname = {'index' : 'localhost:8090','services' : 'http://localhost:8090/services'}
 
 
@@ -22,10 +25,9 @@ service_create_param = 'adql.services.create.name'
 service_get_url = 'http://'+ web_services_hostname + '/firethorn/adql/service/'
 service_get_param = 'id'
 
-### Render templates
-render = web.template.render('templates/')
 
 
+create_menu_items = {'admin' : ['Service','JDBC connection'] , 'user' : ['Service']}
 
 types = {'service' : 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json'}
 

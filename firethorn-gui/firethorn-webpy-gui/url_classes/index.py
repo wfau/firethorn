@@ -5,13 +5,14 @@ Created on Sep 18, 2012
 '''
 import web
 import json
-from config import render
+from app import render
 import traceback
 import config
 import urllib2
 import urllib
 from datetime import datetime
-
+from app import session
+from helper_functions import login_helpers
 
 class index:
     """
@@ -88,9 +89,8 @@ class index:
         Handle an HTTP GET request, by rendering the index template and returning the HTML content
         """
       
-        return render.index("")
-    
-    
+        return render.index( str(render.header(login_helpers(session).get_log_notification())), str(render.side_menu(login_helpers(session).get_menu_items_by_permissions())), str(render.index_input_area()), str(render.footer()), "")
+         
     def POST(self):
         """
         POST function 
