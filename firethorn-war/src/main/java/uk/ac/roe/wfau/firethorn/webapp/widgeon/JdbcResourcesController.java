@@ -141,7 +141,7 @@ extends ControllerBase
         final ModelAndView model
         ){
         model.setViewName(
-            "jdbc/resources/index"
+            "jdbc/resource/index"
             );
         return model ;
         }
@@ -160,7 +160,7 @@ extends ControllerBase
             womble().resources().jdbc().select()
             );
         model.setViewName(
-            "jdbc/resources/select"
+            "jdbc/resource/select"
             );
         return model ;
         }
@@ -201,7 +201,7 @@ extends ControllerBase
                 )
             );
         model.setViewName(
-            "jdbc/resources/select"
+            "jdbc/resource/select"
             );
         return model ;
         }
@@ -237,7 +237,7 @@ extends ControllerBase
         final ModelAndView model
         ){
         model.setViewName(
-            "jdbc/resources/search"
+            "jdbc/resource/search"
             );
         return model ;
         }
@@ -260,7 +260,7 @@ extends ControllerBase
                 )
             );
         model.setViewName(
-            "jdbc/resources/search"
+            "jdbc/resource/search"
             );
         return model ;
         }
@@ -296,7 +296,7 @@ extends ControllerBase
         final ModelAndView model
         ){
         model.setViewName(
-            "jdbc/resources/create"
+            "jdbc/resource/create"
             );
         return model ;
         }

@@ -94,7 +94,7 @@ public class JdbcResourceController
                     )
                 );
             model.setViewName(
-                "jdbc/resources/display"
+                "jdbc/resource/display"
                 );
 
             return model ;
