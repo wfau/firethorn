@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.mallard;
+package uk.ac.roe.wfau.firethorn.webapp.widgeon;
 
 import java.net.URI;
 
@@ -24,15 +24,16 @@ import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
- * Bean wrapper to enable the JSON converter to process an AdqlService.  
+ * Bean wrapper to enable the JSON converter to process a JdbcResource.  
  *
  */
 @Slf4j
-public class AdqlServiceBean
-extends AbstractEntityBean<AdqlService>
-implements EntityBean<AdqlService>
+public class JdbcResourceBean
+extends AbstractEntityBean<JdbcResource>
+implements EntityBean<JdbcResource>
     {
     
     /**
@@ -40,11 +41,11 @@ implements EntityBean<AdqlService>
      * 
      */
     public static final URI TYPE_URI = URI.create(
-        "http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json"
+        "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json"
         );
     
     /**
-     * The target AdqlService.
+     * The target JdbcResource.
      * 
      */
 
@@ -54,10 +55,10 @@ implements EntityBean<AdqlService>
      * @param builder
      *      A UriBuilder for generating the service URI.
      * @param entity
-     *      The target AdqlService.
+     *      The target JdbcResource.
      *
      */
-    public AdqlServiceBean(UriBuilder builder, AdqlService entity)
+    public JdbcResourceBean(UriBuilder builder, JdbcResource entity)
         {
         super(
             TYPE_URI,

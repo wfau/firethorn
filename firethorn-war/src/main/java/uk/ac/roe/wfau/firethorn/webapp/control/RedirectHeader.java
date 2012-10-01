@@ -23,8 +23,6 @@ import java.net.URL;
 
 import lombok.extern.slf4j.Slf4j;
 
-//import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.HttpHeaders;
 
 /**
@@ -32,7 +30,7 @@ import org.springframework.http.HttpHeaders;
  *
  */
 @Slf4j
-public class LocationHeader
+public class RedirectHeader
 extends HttpHeaders
     {
 
@@ -40,30 +38,23 @@ extends HttpHeaders
      * Public constructor.
      * 
      */
-    public LocationHeader(final URL location)
+    public RedirectHeader(EntityBean<?> bean)
         {
-        super();
-        try
-            {
-            this.setLocation(
-                location.toURI()
-                );
-            }
-        catch (URISyntaxException ouch)
-            {
-            log.error("Error converting a URL into a URI [{}][{}]", location, ouch);
-            }
+        this(
+            bean.uri()
+            );
         }
 
     /**
      * Public constructor.
      * 
      */
-    public LocationHeader(final URI location)
+    public RedirectHeader(final URI uri)
         {
         super();
+        log.debug("RedirectHeader [{}]", uri);
         this.setLocation(
-            location
+            uri
             );
         }
     }

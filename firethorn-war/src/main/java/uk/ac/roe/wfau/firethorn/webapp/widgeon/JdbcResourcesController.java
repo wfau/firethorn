@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.mallard;
+package uk.ac.roe.wfau.firethorn.webapp.widgeon;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,13 +34,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
-import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectEntityResponse;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectResponse;
+import uk.ac.roe.wfau.firethorn.webapp.mallard.AdqlServiceBean;
+import uk.ac.roe.wfau.firethorn.webapp.mallard.AdqlServiceController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
  * Spring MVC controller for AdqlServices.
@@ -48,15 +50,15 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
  */
 @Slf4j
 @Controller
-@RequestMapping(AdqlServicesController.CONTROLLER_PATH)
-public class AdqlServicesController
+@RequestMapping(JdbcResourcesController.CONTROLLER_PATH)
+public class JdbcResourcesController
 extends ControllerBase
     {
     /**
-     * URi path for this Controller.
+     * URL path for this Controller.
      *
      */
-    public static final String CONTROLLER_PATH = "adql/services" ;
+    public static final String CONTROLLER_PATH = "jdbc/resources" ;
 
     @Override
     public Path path()
@@ -67,17 +69,17 @@ extends ControllerBase
         }
 
     /**
-     * Autowired reference to our AdqlServiceController.
+     * Autowired reference to our JdbcResourceController.
      * 
      */
     @Autowired
-    private AdqlServiceController serviceController ;
-    
+    private JdbcResourceController resourceController ;
+
     /**
      * Public constructor.
      *
      */
-    public AdqlServicesController()
+    public JdbcResourcesController()
         {
         super();
         }
@@ -101,46 +103,46 @@ extends ControllerBase
     public static final String CREATE_PATH = "create" ;
 
     /**
-     * MVC property for the Service name.
+     * MVC property for the Resource name.
      *
      */
-    public static final String SELECT_NAME = "adql.services.select.name" ;
+    public static final String SELECT_NAME = "jdbc.resources.select.name" ;
 
     /**
-     * MVC property for the selected Service(s).
+     * MVC property for the selected Resource(s).
      *
      */
-    public static final String SELECT_RESULT = "adql.services.select.result" ;
+    public static final String SELECT_RESULT = "jdbc.resources.select.result" ;
 
     /**
      * MVC property for the search text.
      *
      */
-    public static final String SEARCH_TEXT = "adql.services.search.text" ;
+    public static final String SEARCH_TEXT = "jdbc.resources.search.text" ;
 
     /**
-     * MVC property for the selected Service(s).
+     * MVC property for the selected Resource(s).
      *
      */
-    public static final String SEARCH_RESULT = "adql.services.search.result" ;
+    public static final String SEARCH_RESULT = "jdbc.resources.search.result" ;
 
     /**
-     * MVC property for the Service name.
+     * MVC property for the Resource name.
      *
      */
-    public static final String CREATE_NAME = "adql.services.create.name" ;
+    public static final String CREATE_NAME = "jdbc.resources.create.name" ;
 
     /**
      * HTML GET request to display the index page.
      *
      */
-	@RequestMapping(value="", method=RequestMethod.GET)
-	public ModelAndView htmlIndex(
-	    final ModelAndView model
-	    ){
-		model.setViewName(
-		    "adql/services/index"
-		    );
+    @RequestMapping(value="", method=RequestMethod.GET)
+    public ModelAndView htmlIndex(
+        final ModelAndView model
+        ){
+        model.setViewName(
+            "jdbc/resources/index"
+            );
         return model ;
         }
 
@@ -149,17 +151,17 @@ extends ControllerBase
      * @todo Wrap the entities as beans (with URI) 
      *
      */
-	@RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
-	public ModelAndView htmlSelect(
-	    final ModelAndView model
-	    ){
-		model.addObject(
-		    SELECT_RESULT,
-            womble().services().select()
-		    );
-		model.setViewName(
-		    "adql/services/select"
-		    );
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
+    public ModelAndView htmlSelect(
+        final ModelAndView model
+        ){
+        model.addObject(
+            SELECT_RESULT,
+            womble().resources().jdbc().select()
+            );
+        model.setViewName(
+            "jdbc/resources/select"
+            );
         return model ;
         }
 
@@ -169,38 +171,38 @@ extends ControllerBase
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public AdqlServiceBeanIter jsonSelect(
+    public JdbcResourceBeanIter jsonSelect(
         final ModelAndView model,
         final HttpServletRequest request
         ){
-        return new AdqlServiceBeanIter(
-            serviceController.builder(
+        return new JdbcResourceBeanIter(
+            resourceController.builder(
                 request
                 ),
-            womble().services().select()
+            womble().resources().jdbc().select()
             );
         }
-	
+    
     /**
      * HTML GET or POST request to select by name.
-     * @todo Wrap the entities and beans (with URI) 
+     * @todo Wrap the entities as beans (with URI) 
      *
      */
-	@RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
-	public ModelAndView htmlSelect(
+    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
+    public ModelAndView htmlSelect(
         @RequestParam(SELECT_NAME)
         final String name,
-	    final ModelAndView model
-	    ){
-		model.addObject(
-		    SELECT_RESULT,
-            womble().services().select(
+        final ModelAndView model
+        ){
+        model.addObject(
+            SELECT_RESULT,
+            womble().resources().jdbc().select(
                 name
                 )
-		    );
-		model.setViewName(
-		    "adql/services/select"
-		    );
+            );
+        model.setViewName(
+            "jdbc/resources/select"
+            );
         return model ;
         }
 
@@ -210,56 +212,56 @@ extends ControllerBase
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public AdqlServiceBeanIter jsonSelect(
+    public JdbcResourceBeanIter jsonSelect(
         @RequestParam(SELECT_NAME)
         final String name,
         final ModelAndView model,
         final HttpServletRequest request
         ){
-        return new AdqlServiceBeanIter(
-            serviceController.builder(
+        return new JdbcResourceBeanIter(
+            resourceController.builder(
                 request
                 ),
-            womble().services().select(
+            womble().resources().jdbc().select(
                 name
                 )
             );
         }
-	
+    
     /**
      * HTML GET request to display the search form.
      *
      */
-	@RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
-	public ModelAndView htmlSearch(
-	    final ModelAndView model
-	    ){
-		model.setViewName(
-		    "adql/services/search"
-		    );
+    @RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
+    public ModelAndView htmlSearch(
+        final ModelAndView model
+        ){
+        model.setViewName(
+            "jdbc/resources/search"
+            );
         return model ;
         }
 
     /**
      * HTML GET or POST request to search by text.
-     * @todo Wrap the entities and beans (with URI) 
-     * 
+     * @todo Wrap the entities as beans (with URI) 
+     *
      */
-	@RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
-	public ModelAndView htmlSearch(
+    @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
+    public ModelAndView htmlSearch(
         @RequestParam(SEARCH_TEXT)
         final String text,
-	    final ModelAndView model
-	    ){
-		model.addObject(
-		    SEARCH_RESULT,
-            womble().services().search(
+        final ModelAndView model
+        ){
+        model.addObject(
+            SEARCH_RESULT,
+            womble().resources().jdbc().search(
                 text
                 )
-		    );
-		model.setViewName(
-		    "adql/services/search"
-		    );
+            );
+        model.setViewName(
+            "jdbc/resources/search"
+            );
         return model ;
         }
 
@@ -269,17 +271,17 @@ extends ControllerBase
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public AdqlServiceBeanIter jsonSearch(
+    public JdbcResourceBeanIter jsonSearch(
         @RequestParam(SEARCH_TEXT)
         final String text,
         final ModelAndView model,
         final HttpServletRequest request
         ){
-        return new AdqlServiceBeanIter(
-            serviceController.builder(
+        return new JdbcResourceBeanIter(
+            resourceController.builder(
                 request
                 ),
-            womble().services().search(
+            womble().resources().jdbc().search(
                 text
                 )
             );
@@ -289,13 +291,13 @@ extends ControllerBase
      * HTML GET request to display the create form.
      *
      */
-	@RequestMapping(value=CREATE_PATH, method=RequestMethod.GET)
-	public ModelAndView htmlCreate(
+    @RequestMapping(value=CREATE_PATH, method=RequestMethod.GET)
+    public ModelAndView htmlCreate(
         final ModelAndView model
-	    ){
-		model.setViewName(
-		    "adql/services/create"
-		    );
+        ){
+        model.setViewName(
+            "jdbc/resources/create"
+            );
         return model ;
         }
 
@@ -303,20 +305,19 @@ extends ControllerBase
      * HTML POST request to create a new AdqlService.
      *
      */
-	@RequestMapping(value=CREATE_PATH, method=RequestMethod.POST)
-	public ResponseEntity<String>  htmlCreate(
+    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST)
+    public ResponseEntity<String>  htmlCreate(
         @RequestParam(CREATE_NAME)
         final String name,
         final ModelAndView model,
         final HttpServletRequest request
-	    ){
-	    log.debug("htmlCreate() [{}]", name);
+        ){
         try {
-            AdqlServiceBean bean = new AdqlServiceBean(
-                serviceController.builder(
+            JdbcResourceBean bean = new JdbcResourceBean(
+                resourceController.builder(
                     request
                     ),
-                womble().services().create(
+                womble().resources().jdbc().create(
                     name
                     )
                 );
@@ -337,24 +338,23 @@ extends ControllerBase
      * JSON POST request to create a new AdqlService.
      *
      */
-	@RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-	public ResponseEntity<AdqlServiceBean> jsonCreate(
+    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
+    public ResponseEntity<JdbcResourceBean> jsonCreate(
         @RequestParam(CREATE_NAME)
         final String name,
         final ModelAndView model,
         final HttpServletRequest request
-	    ){
-        log.debug("jsonCreate() [{}]", name);
+        ){
         try {
-            AdqlServiceBean bean = new AdqlServiceBean(
-                serviceController.builder(
+            JdbcResourceBean bean = new JdbcResourceBean(
+                resourceController.builder(
                     request
                     ),
-                womble().services().create(
+                womble().resources().jdbc().create(
                     name
                     )
                 );
-            return new ResponseEntity<AdqlServiceBean>(
+            return new ResponseEntity<JdbcResourceBean>(
                 bean,
                 new RedirectHeader(
                     bean

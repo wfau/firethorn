@@ -56,9 +56,11 @@
         <property name="annotatedClasses">
             <list>
 
+                <value>uk.ac.roe.wfau.firethorn.config.ConfigPropertyEntity</value>
+
                 <value>uk.ac.roe.wfau.firethorn.identity.IdentityEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.mallard.DataServiceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.mallard.AdqlServiceEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.mallard.JobEntity</value>
 
                 <value>uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceEntity</value>
@@ -74,7 +76,6 @@
                 <value>uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlSchemaEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumnEntity</value>
-
 
                 <!--+
                     |

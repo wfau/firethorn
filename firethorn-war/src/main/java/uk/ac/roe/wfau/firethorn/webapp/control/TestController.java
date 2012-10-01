@@ -29,6 +29,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
+
 /**
  * Test MVC controller.
  *
@@ -40,10 +43,27 @@ public class TestController
 extends ControllerBase
     {
 
+    /**
+     * URL path for this Controller.
+     *
+     */
+    public static final String CONTROLLER_PATH = "test" ;
+
     @Override
-    public String path()
+    public Path path()
         {
-        return null;
+        return new PathImpl(
+            CONTROLLER_PATH
+            ) ;
+        }
+    
+    /**
+     * Public constructor.
+     *
+     */
+    public TestController()
+        {
+        super();
         }
 
     /**

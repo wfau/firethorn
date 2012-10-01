@@ -17,7 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import javax.servlet.http.HttpServletRequest;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Controller;
 
@@ -26,24 +31,61 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.common.womble.Womble;
+import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
+import uk.ac.roe.wfau.firethorn.webapp.paths.HttpUriBuilder;
+import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
 
 /**
  * Base class for our MVC controllers.
  *
  */
+@Slf4j
 @Controller
 public abstract class ControllerBase
     {
 
     /**
-     * Autowired service access point.
+     * HTTP content type for JSON. 
+     */
+    public static final String JSON_MAPPING = "application/json" ;
+    
+    /**
+     * The base URI config property key.
+     * 
+     */
+    public static final URI BASE_URI_CONFIG_KEY = URI.create(
+        "urn:firethorn.system.base.uri"
+        );
+
+   /**
+     * Protected constructor.
+     * @param base
+     *
+    protected ControllerBase(URI base)
+        {
+        this.base = base ;
+        }
+     */
+
+    /**
+     * Protected constructor.
+     * @param path
+     *
+     */
+    protected ControllerBase()
+        {
+        }
+
+    /**
+     * Autowired system services.
      *
      */
     @Autowired
     private Womble womble ;
 
     /**
-     * Our service access point.
+     * Our system services.
      *
      */
     public Womble womble()
@@ -52,39 +94,50 @@ public abstract class ControllerBase
         }
 
     /**
-     * The request path for this controller.
-     * 
+     * The base URI (URL) for our webapp.
+     *
      */
-    public abstract String path();
+    private URI base;
 
     /**
-     * Our URL builder.
-     * 
+     * The base URI (URL) for our webapp.
+     *
      */
-    public UrlBuilder urls()
+    public URI base()
         {
-        return null; 
+        if (this.base == null)
+            {
+            //
+            // TODO wrap this into a config service API.
+            ConfigProperty prop = womble.config().select(
+                BASE_URI_CONFIG_KEY
+                );
+            if (prop != null)
+                {
+                this.base = prop.toUri();
+                }
+            }
+        log.debug("base() [{}]", this.base);
+        return this.base ;
         }
-    
+
     /**
-     * MVC property for our URL builder.
+     * URI path for this Controller.
      *
      */
-    public static final String URL_BUILDER = "firethorn.servlet.path.builder" ;
-    
+    public abstract Path path();
+
     /**
-     * MVC property for the our UrlBuilder.
+     * URI builder for this Controller.
      *
      */
-    @ModelAttribute(URL_BUILDER)
-    public UrlBuilder urlBuilder(
-        final HttpServletRequest request
-        ){
-        return new UrlBuilderImpl(
+    public UriBuilder builder(final HttpServletRequest request)
+        {
+        log.debug("builder() [{}][{}]", request.getRequestURL(), this.base());
+        return new HttpUriBuilder(
             request,
-            new ServletPathBuilder(
-                request
-                ) 
+            this.base(),
+            this.path()
             );
         }
     }

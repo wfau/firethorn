@@ -306,29 +306,6 @@
 			    <scope>provided</scope>
 		    </dependency>
 
-            <!--+
-                | Starlink Tables library.
-                | http://www.star.bris.ac.uk/~mbt/stil/
-                +-->
-            <dependency>
-                <!--url>http://www.star.bris.ac.uk/~mbt/stil/</url-->
-                <groupId>uk.ac.starlink</groupId>
-                <artifactId>stil-util</artifactId>
-                <version>3.0.2</version>
-            </dependency>
-            <dependency>
-                <!--url>http://www.star.bris.ac.uk/~mbt/stil/</url-->
-                <groupId>uk.ac.starlink</groupId>
-                <artifactId>stil-table</artifactId>
-                <version>3.0.2</version>
-            </dependency>
-            <dependency>
-                <!--url>http://www.star.bris.ac.uk/~mbt/stil/</url-->
-                <groupId>uk.ac.starlink</groupId>
-                <artifactId>stil-votable</artifactId>
-                <version>3.0.2</version>
-            </dependency>
-
 		    <!--+
 		        | Joda Time Libraries.
 		        | http://joda-time.sourceforge.net/

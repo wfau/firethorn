@@ -17,73 +17,43 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.mallard;
 
-import java.util.Iterator;
-
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
-import uk.ac.roe.wfau.firethorn.webapp.control.UriBuilder;
-import uk.ac.roe.wfau.firethorn.webapp.control.UrlBuilder;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
 
 /**
  * Bean wrapper to enable the JSON converter to process list of a DataServices.  
  *
  */
 public class AdqlServiceBeanIter
-implements Iterable<AdqlServiceBean>
+extends AbstractEntityBeanIter<AdqlService>
     {
-    
-    /**
-     * The Iterable list of AdqlServices.
-     * 
-     */
-    private Iterable<AdqlService> iterable ;
 
     /**
-     * UrlBuilder for generating the service URL.
+     * The URI builder to generate entity URIs.
      * 
      */
-    private UriBuilder.AdqlUriBuilder builder ;
+    protected UriBuilder builder ;
     
     /**
      * Public constructor.
-     * @param builder
-     *      An ADQL UrlBuilder for generating the target URLs.
-     * @param iterable
-     *      The Iterable list to wrap.
      *
      */
-    public AdqlServiceBeanIter(UriBuilder.AdqlUriBuilder builder, Iterable<AdqlService> iterable)
+    public AdqlServiceBeanIter(UriBuilder builder, Iterable<AdqlService> iterable)
         {
-        this.builder  = builder  ;
-        this.iterable = iterable ;
+        super(
+            iterable
+            );
+        this.builder = builder ;
         }
-    
+
     @Override
-    public Iterator<AdqlServiceBean> iterator()
+    public EntityBean<AdqlService> bean(AdqlService entity)
         {
-        return new Iterator<AdqlServiceBean>()
-            {
-            private Iterator<AdqlService> iterator = iterable.iterator();
-            @Override
-            public boolean hasNext()
-                {
-                return iterator.hasNext();
-                }
-            @Override
-            public AdqlServiceBean next()
-                {
-                AdqlService service = iterator.next(); 
-                return new AdqlServiceBean(
-                    builder.uri(
-                        service
-                        ),
-                    service
-                    );
-                }
-            @Override
-            public void remove()
-                {
-                iterator.remove();
-                }
-            };
+        return new AdqlServiceBean(
+            builder,
+            entity
+            );
         }
     }

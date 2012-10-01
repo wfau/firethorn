@@ -15,26 +15,26 @@ PathBuilder paths = new ServletPathBuilder(
     );
 
 String name = (String) request.getAttribute(
-    DataServicesController.CREATE_NAME
+    AdqlServicesController.CREATE_NAME
     );
 
 %>
 <html>
     <head>
 	    <title></title>
-        <link href='/css/page.css' rel='stylesheet' type='text/css'/>
+        <link href='<%= paths.file("/css/page.css") %>' rel='stylesheet' type='text/css'/>
     </head>
     <body>
         <div>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.SEARCH_PATH) %>'>search</a>]</span>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.SELECT_PATH) %>'>select</a>]</span>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.CREATE_PATH) %>'>create</a>]</span>
+            <span>[<a href='<%= paths.path(AdqlServicesController.CONTROLLER_PATH, AdqlServicesController.SEARCH_PATH) %>'>search</a>]</span>
+            <span>[<a href='<%= paths.path(AdqlServicesController.CONTROLLER_PATH, AdqlServicesController.SELECT_PATH) %>'>select</a>]</span>
+            <span>[<a href='<%= paths.path(AdqlServicesController.CONTROLLER_PATH, AdqlServicesController.CREATE_PATH) %>'>create</a>]</span>
         </div>
         <div>
             Create an ADQL TAP Service
             <div>
-                <form method='POST' action='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.CREATE_PATH) %>'>
-                    Name <input type='text' name='<%= DataServicesController.CREATE_NAME %>' value='<%= ((name != null) ? name : "") %>'/>
+                <form method='POST' action='<%= paths.path(AdqlServicesController.CONTROLLER_PATH, AdqlServicesController.CREATE_PATH) %>'>
+                    Name <input type='text' name='<%= AdqlServicesController.CREATE_NAME %>' value='<%= ((name != null) ? name : "") %>'/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>

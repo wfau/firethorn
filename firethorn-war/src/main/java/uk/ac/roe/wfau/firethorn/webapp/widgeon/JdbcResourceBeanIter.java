@@ -15,52 +15,43 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.mallard;
+package uk.ac.roe.wfau.firethorn.webapp.widgeon;
 
-import java.net.URI;
-
-import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
- * Bean wrapper to enable the JSON converter to process an AdqlService.  
+ * Bean wrapper to enable the JSON converter to process list of a DataServices.  
  *
  */
-@Slf4j
-public class AdqlServiceBean
-extends AbstractEntityBean<AdqlService>
-implements EntityBean<AdqlService>
+public class JdbcResourceBeanIter
+extends AbstractEntityBeanIter<JdbcResource>
     {
-    
-    /**
-     * The data type identifier.
-     * 
-     */
-    public static final URI TYPE_URI = URI.create(
-        "http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json"
-        );
-    
-    /**
-     * The target AdqlService.
-     * 
-     */
 
     /**
+     * The URI builder to generate entity URIs.
      * 
+     */
+    protected UriBuilder builder ;
+    
+    /**
      * Public constructor.
-     * @param builder
-     *      A UriBuilder for generating the service URI.
-     * @param entity
-     *      The target AdqlService.
      *
      */
-    public AdqlServiceBean(UriBuilder builder, AdqlService entity)
+    public JdbcResourceBeanIter(UriBuilder builder, Iterable<JdbcResource> iterable)
         {
         super(
-            TYPE_URI,
+            iterable
+            );
+        this.builder = builder ;
+        }
+
+    @Override
+    public EntityBean<JdbcResource> bean(JdbcResource entity)
+        {
+        return new JdbcResourceBean(
             builder,
             entity
             );

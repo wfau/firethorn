@@ -17,33 +17,14 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
-import java.net.URL;
-
-import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 
 /**
  *
  *
  */
-public interface UrlBuilder
+public interface EntityBeanIter<EntityType extends Entity>
+extends Iterable<EntityBean<EntityType>>
     {
-    /**
-     * Get the web service base '/' URL.
-     *
-     */
-    public abstract URL url();
-
-    /**
-     * Create a URL for a AdqlService.
-     *
-     */
-    public abstract URL url(final AdqlService target);
-
-    /**
-     * Create a URL for a DataResource.
-     *
-     */
-    public abstract URL url(final DataResource target);
 
     }

@@ -27,9 +27,9 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity ;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier ;
 
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService ;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource ;
 import uk.ac.roe.wfau.firethorn.webapp.mallard.AdqlServiceController;
-import uk.ac.roe.wfau.firethorn.webapp.widgeon.DataResourceController;
+import uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceController;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource ;
 
 /**
  * A webapp path builder.
@@ -350,7 +350,7 @@ public abstract class PathBuilderBase implements PathBuilder
     public Path link(final DataResource target)
         {
         return path(
-            DataResourceController.CONTROLLER_PATH,
+            JdbcResourceController.CONTROLLER_PATH,
             target
             );
         }

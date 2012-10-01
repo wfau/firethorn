@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
+
 /**
  *
  *
@@ -131,7 +132,7 @@ extends TestBase
             "test property value",
             womble().config().select(
                 key
-                ).value()
+                ).toString()
             );
         }
     }

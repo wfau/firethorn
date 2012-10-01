@@ -217,7 +217,7 @@
                     <!--+
                         | The webapp context file.
                         +-->
-                    <contextFile>src/test/cfg/test-context.xml</contextFile>
+                    <contextFile>src/test/conf/test-context.xml</contextFile>
                 </configuration>
             </plugin>
 
@@ -245,7 +245,7 @@
                     <!--+
                         | The webapp context file.
                         +-->
-                    <contextFile>src/test/cfg/test-context.xml</contextFile>
+                    <contextFile>src/test/conf/test-context.xml</contextFile>
                 </configuration>
             </plugin>
         </plugins>
@@ -254,6 +254,18 @@
         </resources>
 
         <testResources>
+
+            <!--+
+                | Test configuration files.
+                +-->
+    		<testResource>
+    			<directory>${basedir}/src/test/conf</directory>
+                <includes>
+                    <include>*.properties</include>
+                    <include>*.xml</include>
+                </includes>
+    		</testResource>
+
         </testResources>
 
     </build>
@@ -482,8 +494,6 @@
             </build>
         </profile>
     </profiles>
-
-
 </project>
 
 

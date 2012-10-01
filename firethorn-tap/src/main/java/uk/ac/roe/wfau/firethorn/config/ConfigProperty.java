@@ -39,7 +39,7 @@ extends Entity
         {
 
         /**
-         * Create a new ConfigProperty.
+         * Create or update a ConfigProperty.
          * @param key
          *      The property key.
          * @param name
@@ -47,7 +47,7 @@ extends Entity
          * @param value
          *      The property value.
          * @return
-         *      A new ConfigProperty.    
+         *      The corresponding ConfigProperty.    
          *
          */
         public ConfigProperty create(final URI key, final String name, final String value);
@@ -57,40 +57,10 @@ extends Entity
          * @param key
          *      The property key.
          * @return
-         *      The corresponding ConfigProperty    
-         * @throws EntityNotFoundException 
-         *      If no matching property was found.  
-         *
-         */
-        public ConfigProperty select(final URI key)
-        throws EntityNotFoundException;
-
-        /**
-         * Search for a ConfigProperty by key.
-         * @param key
-         *      The property key.
-         * @return
          *      The corresponding ConfigProperty, or null if none found.    
          *
          */
-        public ConfigProperty search(final URI key);
-
-        /**
-         * Select/create a ConfigProperty.
-         * If the corresponding ConfigProperty does not exist yet,
-         * then a new one is created using the key, name and value.
-         * 
-         * @param key
-         *      The property key.
-         * @param name
-         *      A descriptive name.
-         * @param value
-         *      The default value.
-         * @return
-         *      The corresponding ConfigProperty.    
-         *
-         */
-        public ConfigProperty select(final URI key, final String name, final String value);
+        public ConfigProperty select(final URI key);
 
         }
 
@@ -101,9 +71,15 @@ extends Entity
     public URI key();
     
     /**
-     * The property value.
+     * The property value as a String.
      * 
      */
-    public String value();
-    
+    public String toString();
+
+    /**
+     * The property value as a URI.
+     * 
+     */
+    public URI toUri();
+
     }

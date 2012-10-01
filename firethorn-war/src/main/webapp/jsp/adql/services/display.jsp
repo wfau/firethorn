@@ -15,21 +15,21 @@ PathBuilder paths = new ServletPathBuilder(
     request
     );
 
-DataService service = (DataService) request.getAttribute(
-    DataServiceController.SERVICE_ENTITY
+AdqlService service = (AdqlService) request.getAttribute(
+    AdqlServiceController.TARGET_ENTITY
     ) ;
 
 %>
 <html>
     <head>
 	    <title></title>
-        <link href='/css/page.css' rel='stylesheet' type='text/css'/>
+        <link href='<%= paths.file("/css/page.css") %>' rel='stylesheet' type='text/css'/>
     </head>
     <body>
         <div>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.SEARCH_PATH) %>'>search</a>]</span>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.SELECT_PATH) %>'>select</a>]</span>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.CREATE_PATH) %>'>create</a>]</span>
+            <span>[<a href='<%= paths.path(AdqlServicesController.CONTROLLER_PATH, AdqlServicesController.SEARCH_PATH) %>'>search</a>]</span>
+            <span>[<a href='<%= paths.path(AdqlServicesController.CONTROLLER_PATH, AdqlServicesController.SELECT_PATH) %>'>select</a>]</span>
+            <span>[<a href='<%= paths.path(AdqlServicesController.CONTROLLER_PATH, AdqlServicesController.CREATE_PATH) %>'>create</a>]</span>
         </div>
         <div>
             ADQL TAP Service

@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.config;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -99,21 +100,6 @@ implements ConfigProperty
         @Override
         @SelectEntityMethod
         public ConfigProperty select(URI key)
-        throws EntityNotFoundException
-            {
-            return super.single(
-                super.query(
-                    "config-select-key"
-                    ).setParameter(
-                        "key",
-                        key
-                        )
-                );
-            }
-
-        @Override
-        @SelectEntityMethod
-        public ConfigProperty search(URI key)
             {
             return super.first(
                 super.query(
@@ -129,31 +115,22 @@ implements ConfigProperty
         @CreateEntityMethod
         public ConfigProperty create(URI key, String name, String value)
             {
-            return super.insert(
-                new ConfigPropertyEntity(
-                    key,
-                    name,
-                    value
-                    )
-                );
-            }
-
-        @Override
-        @CreateEntityMethod
-        public ConfigProperty select(URI key, String name, String value)
-            {
-            ConfigProperty property = this.search(
+            ConfigProperty property = this.select(
                 key
                 );
-            if (property == null)
+            if (property != null)
                 {
-                property = this.create(
-                    key,
-                    name,
-                    value
+                return property ;
+                }
+            else {
+                return super.insert(
+                    new ConfigPropertyEntity(
+                        key,
+                        name,
+                        value
+                        )
                     );
                 }
-            return property ;
             }
         }
     
@@ -207,10 +184,26 @@ implements ConfigProperty
         updatable = true
         )
     private String value;
+
     @Override
-    public  String value()
+    public String toString()
         {
         return this.value;
+        }
+
+    @Override
+    public URI toUri()
+        {
+        try {
+            return new URI(
+                this.value
+                );
+            }
+        catch (URISyntaxException ouch)
+            {
+            log.error("Failed to convert config property to URI [{}][{}]", this.value, ouch);
+            return null ;
+            }
         }
     }
 
