@@ -40,15 +40,7 @@ class index:
                     sub_item = render.select_service_response('<a href=' + config.local_hostname['services'] + '?'+ config.service_get_param + '='  + converted_dict["ident"] + '>' + converted_dict["name"] + '</a>', datetime.strptime(converted_dict["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(converted_dict["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"))
                     return_html += str(sub_item)
        
-        elif action == 'service_create':
-            data = json.loads(json_data)
-            if data == [] or data== None:
-                return_html = "<div id='sub_item'>There was an error creating your service</div>"
-            else :
-                converted_dict = dict([(str(k), v) for k, v in data.items()])
-                return_html += "<div style='text-align:left;font-style:italic'>The following Service has been created: </div><br/>"
-                return_html += str(render.select_service_response('<a href=' + config.local_hostname['services'] + '?'+ config.service_get_param + '='  + converted_dict["ident"] + '>' + converted_dict["name"] + '</a>',datetime.strptime(converted_dict["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(converted_dict["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S")))
-        
+          
         elif action == 'service_get':
             data = json.loads(json_data)
                                 
@@ -91,6 +83,7 @@ class index:
       
         return render.index( str(render.header(login_helpers(session).get_log_notification())), str(render.side_menu(login_helpers(session).get_menu_items_by_permissions())), str(render.index_input_area()), str(render.footer()), "")
          
+         
     def POST(self):
         """
         POST function 
@@ -98,7 +91,7 @@ class index:
         Handle an HTTP POST request
         """
         
-        data = web.input(service_select_with_text= '', service_select_by_name='',service_create='',service_get='')
+        data = web.input(service_select_with_text= '', service_select_by_name='',service_get='')
         return_string = ''
         action_stored = False
         action = ''
@@ -124,15 +117,6 @@ class index:
                         action = 'service_select_by_name'
                         action_value = data.service_select_by_name
                         action_stored = True
-
-            elif key == 'service_create':
-                if data.service_create!='':
-                    if action_stored:
-                        return config.errors['INVALID_REQUEST']
-                    else:     
-                        action = 'service_create'
-                        action_value = data.service_create
-                        action_stored = True
                         
             elif key == 'service_get':
                 if data.service_get!='':
@@ -150,9 +134,7 @@ class index:
             
             if param_is_valid:
                 encoded_args = urllib.urlencode({getattr(config, action + '_param') :  action_value})
-                if action == 'service_create':
-                    request = urllib2.Request(getattr(config, action+ '_url'), encoded_args, headers={"Accept" : "application/json"})
-                elif action == 'service_select_by_name' or action == 'service_select_with_text':
+                if action == 'service_select_by_name' or action == 'service_select_with_text':
                     request = urllib2.Request(getattr(config, action+ '_url') + encoded_args, headers={"Accept" : "application/json"})
                 elif action == 'service_get':
                     request = urllib2.Request(config.local_hostname['services'], encoded_args)

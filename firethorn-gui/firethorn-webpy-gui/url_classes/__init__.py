@@ -9,3 +9,4 @@ __author__ = [
 from services import services
 from index import index
 from create_new import create_new
+from create_view import create_view

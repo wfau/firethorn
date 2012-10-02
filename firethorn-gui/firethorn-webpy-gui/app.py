@@ -25,7 +25,7 @@ import os
 web.config.debug = False 
 
 ### Render URLs
-urls = ('/', 'index','/index', 'index', '/services', 'services', '/create_new', 'create_new')
+urls = ('/', 'index','/index', 'index', '/services', 'services', '/create_new', 'create_new', '/create_view', 'create_view')
 
 
 ### For apache production env

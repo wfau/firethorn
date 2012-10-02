@@ -4,8 +4,9 @@ $def with (obj_type)
 		<div id="input_form_container">
 			<br />
 			<form method="post" class="input_form">
-				<label for="service_create">Create new $obj_type :</label> 
-				<input name="service_create" type="text" id="service_create"/>
+				<label for="object_create">Create new $obj_type :</label> 
+				<input name="obj_name" type="text" id="obj_name"/>
+				<input name="obj_type" type="hidden" id="obj_type" value="$obj_type" />
 				<input type="submit" value="Submit" class="submit" />
 				<span>Enter the name of a new $obj_type to add</span>
 			</form>
