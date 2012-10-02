@@ -56,7 +56,9 @@ jQuery(document).ready(function() {
 		          		jQuery('#add_adql_view').hide();
 	                	jQuery('#container').append('<div id="adql_tree" style="clear:both;text-align:left;width:600px;"><span style="font-style:italic">Add ADQL View:</span><br/><br /><ul id="tt" checkbox="true" class="easyui-tree" ></ul></div><a id="create_view" style="float:left" class="button">Create View</a>');
 	                	jQuery('#tt').tree({  
-	                        url:'create_view'  
+	                        url:'create_view' ,
+	                        animate:true,
+	            			onClick:function(node){jQuery(this).tree('beginEdit',node.target)}
 	                    });  
 	                	
 	          		}
