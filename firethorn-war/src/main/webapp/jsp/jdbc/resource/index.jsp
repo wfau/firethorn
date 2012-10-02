@@ -10,6 +10,7 @@
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourcesController"
 
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceBean"
+
     session="true"
 %><%
 PathBuilder paths = new ServletPathBuilder(
@@ -23,7 +24,7 @@ PathBuilder paths = new ServletPathBuilder(
     </head>
     <body>
         <div>
-            JDBC Resources
+            JDBC resources
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>

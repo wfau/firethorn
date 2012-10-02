@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,10 +30,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.JdbcCatalog;
 
 /**
  * Spring MVC controller for JdbcResources.
@@ -68,70 +72,109 @@ public class JdbcCatalogController
         }
 
     /**
+     * Autowired reference to our JdbcResourceController.
+     * 
+     */
+    @Autowired
+    private JdbcResourceController resourceController ;
+
+    /**
      * MVC property for the target JdbcCatalog entity.
      *
      */
-    public static final String TARGET_ENTITY = "urn:jdbc.catalog.entity" ;
+    public static final String CATALOG_ENTITY = "urn:jdbc.catalog.entity" ;
 
     /**
-     * GET request for a c.
-     * @todo Wrap the entity as a bean (with a URI) 
+     * MVC property for the target JdbcCatalogBean bean.
      *
      */
-    @RequestMapping(method=RequestMethod.GET)
-    public ModelAndView htmlSelect(
+    public static final String CATALOG_BEAN = "urn:jdbc.catalog.bean" ;
+
+    /**
+     * Get the JdbcCatalog based on the ident in the path.
+     *
+     */
+    @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+    public JdbcCatalog catalog(
         @PathVariable("ident")
-        final String ident,
-        final ModelAndView model
+        final String ident
         ){
         try {
-            model.addObject(
-                TARGET_ENTITY,
-                womble().resources().jdbc().catalogs().select(
-                    womble().resources().jdbc().catalogs().ident(
-                        ident
-                        )
+            return womble().resources().jdbc().catalogs().select(
+                womble().resources().jdbc().catalogs().ident(
+                    ident
                     )
                 );
-            model.setViewName(
-                "jdbc/catalog/display"
-                );
-
-            return model ;
             }
-        catch (final Exception ouch)
+        catch (IdentifierNotFoundException e)
             {
             return null ;
             }
         }
 
     /**
-     * JSON GET request for a resource.
+     * Wrap the JdbcCatalog as a JdbcCatalogBean.
+     * 
+     */
+    @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
+    public JdbcCatalogBean bean(
+        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+        final JdbcCatalog catalog,
+        final HttpServletRequest request
+        ){
+        return new JdbcCatalogBean(
+            this.builder(
+                request
+                ),
+            catalog
+            );
+        }
+
+    /**
+     * Wrap the parent resource as a bean.
+     * 
+    @ModelAttribute(JdbcResourceController.RESOURCE_BEAN)
+    public JdbcResourceBean resource(
+        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+        final JdbcResource.JdbcCatalog catalog,
+        final HttpServletRequest request
+        ){
+        return new JdbcResourceBean(
+            resourceController.builder(
+                request
+                ),
+            catalog.parent()
+            );
+        }
+     */
+    
+    /**
+     * GET request for a catalog.
+     * @todo Wrap the entity as a bean (with a URI) 
+     *
+     */
+    @RequestMapping(method=RequestMethod.GET)
+    public ModelAndView htmlSelect(
+        @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
+        final JdbcCatalogBean bean,
+        final ModelAndView model
+        ){
+        model.setViewName(
+            "jdbc/catalog/display"
+            );
+        return model ;
+        }
+
+    /**
+     * JSON GET request for a catalog.
      *
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcCatalogBean jsonSelect(
-        @PathVariable("ident")
-        final String ident,
-        final ModelAndView model,
-        final HttpServletRequest request
+        @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
+        final JdbcCatalogBean bean
         ){
-        try {
-            return new JdbcCatalogBean(
-                this.builder(
-                    request
-                    ),
-                womble().resources().jdbc().catalogs().select(
-                    womble().resources().jdbc().catalogs().ident(
-                        ident
-                        )
-                    )
-                );
-            }
-        catch (final Exception ouch)
-            {
-            return null ;
-            }
+        return bean ;
         }
     }

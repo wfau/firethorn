@@ -6,14 +6,13 @@
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
 
+    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceBean"
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceController"
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourcesController"
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceCatalogsController"
 
+    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcCatalogBean"
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcCatalogController"
-
-    import="uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource"
-    import="uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.JdbcCatalog"
 
     session="true"
 %><%
@@ -21,9 +20,14 @@ PathBuilder paths = new ServletPathBuilder(
     request
     );
 
+JdbcResourceBean resource = (JdbcResourceBean) request.getAttribute(
+    JdbcResourceController.RESOURCE_BEAN
+    ) ;
+
 String name = (String) request.getAttribute(
-    JdbcResourcesController.CREATE_NAME
+    JdbcResourceCatalogsController.CREATE_NAME
     );
+
 %>
 <html>
     <head>
@@ -32,15 +36,50 @@ String name = (String) request.getAttribute(
     </head>
     <body>
         <div>
+            JDBC resources
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>
         </div>
         <div>
-            Create a (base)  Resource
+            <hr/>
+        </div>
+        <div>
+            JDBC resource
             <div>
-                <form method='POST' action='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "create") %>'>
-                    Name <input type='text' name='<%= JdbcResourcesController.CREATE_NAME %>' value='<%= ((name != null) ? name : "") %>'/>
+                <table border='1'>
+                    <tr>
+                        <td>Name</td>
+                        <td><a href='<%= resource.getIdent() %>'><%= resource.getName() %></a></td>
+                    </tr>
+                    <tr>
+                        <td>Created</td>
+                        <td><%= resource.getCreated() %></td>
+                    </tr>
+                    <tr>
+                        <td>Modified</td>
+                        <td><%= resource.getModified() %></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div>
+            <hr/>
+        </div>
+        <div>
+            Resource catalogs
+            <span>[<a href='<%= resource.getIdent().getPath() %>/catalogs/search'>search</a>]</span>
+            <span>[<a href='<%= resource.getIdent().getPath() %>/catalogs/select'>select</a>]</span>
+            <span>[<a href='<%= resource.getIdent().getPath() %>/catalogs/create'>create</a>]</span>
+        </div>
+        <div>
+            <hr/>
+        </div>
+        <div>
+            Create a Resource catalog
+            <div>
+                <form method='POST' action='<%= resource.getIdent().getPath() %>/catalogs/create'>
+                    Name <input type='text' name='<%= JdbcResourceCatalogsController.CREATE_NAME %>' value='<%= ((name != null) ? name : "") %>'/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>

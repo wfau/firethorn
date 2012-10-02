@@ -328,7 +328,7 @@ extends ControllerBase
         }
 
     /**
-     * HTML POST request to create a new AdqlService.
+     * HTML POST request to create a new resource.
      *
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST)

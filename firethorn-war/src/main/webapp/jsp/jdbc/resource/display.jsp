@@ -6,10 +6,10 @@
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
     
+    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceBean"
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceController"
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourcesController"
 
-    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceBean"
     session="true"
 %><%
 PathBuilder paths = new ServletPathBuilder(
@@ -17,7 +17,7 @@ PathBuilder paths = new ServletPathBuilder(
     );
 
 JdbcResourceBean resource = (JdbcResourceBean) request.getAttribute(
-    JdbcResourceController.TARGET_ENTITY
+    JdbcResourceController.RESOURCE_BEAN
     ) ;
 
 %>
@@ -28,7 +28,7 @@ JdbcResourceBean resource = (JdbcResourceBean) request.getAttribute(
     </head>
     <body>
         <div>
-            JDBC Resources
+            JDBC resources
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>
@@ -59,6 +59,10 @@ JdbcResourceBean resource = (JdbcResourceBean) request.getAttribute(
                     <tr>
                         <td>Class</td>
                         <td><%= resource.getClass().getName() %></td>
+                    </tr>
+                    <tr>
+                        <td>Catalogs</td>
+                        <td><a href='<%= resource.getIdent() %>/catalogs'>catalogs</a></td>
                     </tr>
                 </table>
             </div>

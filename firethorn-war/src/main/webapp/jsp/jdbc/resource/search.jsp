@@ -33,7 +33,7 @@ Iterable<JdbcResourceBean> resources = (Iterable<JdbcResourceBean>) request.getA
     </head>
     <body>
         <div>
-            JDBC Resources
+            JDBC resources
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>

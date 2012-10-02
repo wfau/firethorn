@@ -29,10 +29,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
  * Spring MVC controller for JdbcResources.
@@ -71,44 +73,68 @@ public class JdbcResourceController
      * MVC property for the target JdbcResource entity.
      *
      */
-    public static final String TARGET_ENTITY = "urn:jdbc.resource.entity" ;
+    public static final String RESOURCE_ENTITY = "urn:jdbc.resource.entity" ;
 
     /**
+     * MVC property for the target JdbcResourceBean bean.
+     *
+     */
+    public static final String RESOURCE_BEAN = "urn:jdbc.resource.bean" ;
+
+    /**
+     * Get the JdbcResource based on the ident in the path.
+     *
+     */
+    @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
+    public JdbcResource resource(
+        @PathVariable("ident")
+        final String ident
+        ){
+        try {
+            return womble().resources().jdbc().select(
+                womble().resources().jdbc().ident(
+                    ident
+                    )
+                );
+            }
+        catch (IdentifierNotFoundException e)
+            {
+            return null ;
+            }
+        }
+
+    /**
+     * Wrap the JdbcResource as a JdbcResourceBean.
+     * 
+     */
+    @ModelAttribute(JdbcResourceController.RESOURCE_BEAN)
+    public JdbcResourceBean bean(
+        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
+        final JdbcResource resource,
+        final HttpServletRequest request
+        ){
+        return new JdbcResourceBean(
+            this.builder(
+                request
+                ),
+            resource
+            );
+        }
+    
+    /**
      * GET request for a resource.
-     * @todo Wrap the entity as a bean (with a URI) 
      *
      */
     @RequestMapping(method=RequestMethod.GET)
     public ModelAndView htmlSelect(
-        @PathVariable("ident")
-        final String ident,
-        final ModelAndView model,
-        final HttpServletRequest request
+        @ModelAttribute(JdbcResourceController.RESOURCE_BEAN)
+        final JdbcResourceBean bean,
+        final ModelAndView model
         ){
-        try {
-            model.addObject(
-                TARGET_ENTITY,
-                new JdbcResourceBean(
-                    this.builder(
-                        request
-                        ),
-                    womble().resources().jdbc().select(
-                        womble().resources().jdbc().ident(
-                            ident
-                            )
-                        )
-                    )
-                );
-            model.setViewName(
-                "jdbc/resource/display"
-                );
-
-            return model ;
-            }
-        catch (final Exception ouch)
-            {
-            return null ;
-            }
+        model.setViewName(
+            "jdbc/resource/display"
+            );
+        return model ;
         }
 
     /**
@@ -118,26 +144,9 @@ public class JdbcResourceController
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcResourceBean jsonSelect(
-        @PathVariable("ident")
-        final String ident,
-        final ModelAndView model,
-        final HttpServletRequest request
+        @ModelAttribute(JdbcResourceController.RESOURCE_BEAN)
+        final JdbcResourceBean bean
         ){
-        try {
-            return new JdbcResourceBean(
-                this.builder(
-                    request
-                    ),
-                womble().resources().jdbc().select(
-                    womble().resources().jdbc().ident(
-                        ident
-                        )
-                    )
-                );
-            }
-        catch (final Exception ouch)
-            {
-            return null ;
-            }
+        return bean ;
         }
     }
