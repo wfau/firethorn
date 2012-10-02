@@ -151,11 +151,17 @@ extends ControllerBase
      */
 	@RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
 	public ModelAndView htmlSelect(
-	    final ModelAndView model
+        final ModelAndView model,
+        final HttpServletRequest request
 	    ){
-		model.addObject(
+	    model.addObject(
 		    SELECT_RESULT,
-            womble().services().select()
+	        new AdqlServiceBeanIter(
+	            serviceController.builder(
+	                request
+	                ),
+	            womble().services().select()
+	            )
 		    );
 		model.setViewName(
 		    "adql/services/select"
@@ -190,13 +196,23 @@ extends ControllerBase
 	public ModelAndView htmlSelect(
         @RequestParam(SELECT_NAME)
         final String name,
-	    final ModelAndView model
+        final ModelAndView model,
+        final HttpServletRequest request
 	    ){
+        model.addObject(
+            SELECT_NAME,
+            name
+            );
 		model.addObject(
 		    SELECT_RESULT,
-            womble().services().select(
-                name
-                )
+	        new AdqlServiceBeanIter(
+	            serviceController.builder(
+	                request
+	                ),
+	            womble().services().select(
+	                name
+	                )
+	            )
 		    );
 		model.setViewName(
 		    "adql/services/select"
@@ -249,13 +265,23 @@ extends ControllerBase
 	public ModelAndView htmlSearch(
         @RequestParam(SEARCH_TEXT)
         final String text,
-	    final ModelAndView model
+        final ModelAndView model,
+        final HttpServletRequest request
 	    ){
+        model.addObject(
+            SEARCH_TEXT,
+            text
+            );
 		model.addObject(
 		    SEARCH_RESULT,
-            womble().services().search(
-                text
-                )
+	        new AdqlServiceBeanIter(
+	            serviceController.builder(
+	                request
+	                ),
+	            womble().services().search(
+	                text
+	                )
+	            )
 		    );
 		model.setViewName(
 		    "adql/services/search"

@@ -82,14 +82,20 @@ public class JdbcResourceController
     public ModelAndView htmlSelect(
         @PathVariable("ident")
         final String ident,
-        final ModelAndView model
+        final ModelAndView model,
+        final HttpServletRequest request
         ){
         try {
             model.addObject(
                 TARGET_ENTITY,
-                womble().resources().jdbc().select(
-                    womble().resources().jdbc().ident(
-                        ident
+                new JdbcResourceBean(
+                    this.builder(
+                        request
+                        ),
+                    womble().resources().jdbc().select(
+                        womble().resources().jdbc().ident(
+                            ident
+                            )
                         )
                     )
                 );

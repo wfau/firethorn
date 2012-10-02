@@ -5,26 +5,19 @@
 <%@ page
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
-    
+
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceController"
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourcesController"
+o
+    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcCatalogController"
+    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceCatalogsController"
 
-    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceBean"
-
+    import="uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource"
     session="true"
 %><%
 PathBuilder paths = new ServletPathBuilder(
     request
     );
-
-String text = (String) request.getAttribute(
-    JdbcResourcesController.SEARCH_TEXT
-    );
-
-Iterable<JdbcResourceBean> resources = (Iterable<JdbcResourceBean>) request.getAttribute(
-    JdbcResourcesController.SEARCH_RESULT
-    ) ;
-
 %>
 <html>
     <head>
@@ -33,41 +26,33 @@ Iterable<JdbcResourceBean> resources = (Iterable<JdbcResourceBean>) request.getA
     </head>
     <body>
         <div>
-            JDBC Resources
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>
         </div>
         <div>
-            <hr/>
-        </div>
-        <div>
-            Search for JDBC Resources by name
+            Resources
             <div>
-                <form method='GET' action='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "search") %>'>
-                    Text <input type='text' name='<%= JdbcResourcesController.SEARCH_TEXT %>' value='<%= ((text != null) ? text : "" ) %>'/>
+                Select a catalog by name
+                <form method='GET' action='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "select") %>'>
+                    Name <input type='text' name='<%= JdbcResourcesController.SELECT_NAME %>' value=''/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>
-        </div>
-        <div>
-            <table border='1'>
-                <%
-                if (resources != null)
-                    {
-                    for (JdbcResourceBean resource : resources)
-                        {
-                        %>
-                        <tr>
-                            <td><a href='<%= resource.getIdent() %>'><%= resource.getName() %></a></td>
-                            <td><%= resource.getCreated() %></td>
-                            <td><%= resource.getModified() %></td>
-                        </tr>
-                        <%
-                        }
-                    }
-                %>
-            </table>
+            <div>
+                Search for catalog by name
+                <form method='GET' action='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "search") %>'>
+                    Text <input type='text' name='<%= JdbcResourcesController.SEARCH_TEXT %>' value=''/>
+                    <input type='submit' value='Go'/>
+                </form>
+            </div>
+            <div>
+                Create new catalog
+                <form method='POST' action='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "create") %>'>
+                    Name <input type='text' name='<%= JdbcResourcesController.CREATE_NAME %>' value=''/>
+                    <input type='submit' value='Go'/>
+                </form>
+            </div>
         </div>
     </body>
 </html>

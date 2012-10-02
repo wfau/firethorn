@@ -5,9 +5,11 @@
 <%@ page
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
+    
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceController"
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourcesController"
-    import="uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource"
+
+    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceBean"
     session="true"
 %><%
 PathBuilder paths = new ServletPathBuilder(
@@ -21,28 +23,31 @@ PathBuilder paths = new ServletPathBuilder(
     </head>
     <body>
         <div>
+            JDBC Resources
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>
         </div>
         <div>
-            Resources
+            <hr/>
+        </div>
+        <div>
             <div>
-                Select a service by name
+                Select a JDBC resource by name
                 <form method='GET' action='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "select") %>'>
                     Name <input type='text' name='<%= JdbcResourcesController.SELECT_NAME %>' value=''/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>
             <div>
-                Search for services with text
+                Search for JDBC resources by name
                 <form method='GET' action='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "search") %>'>
                     Text <input type='text' name='<%= JdbcResourcesController.SEARCH_TEXT %>' value=''/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>
             <div>
-                Create new service
+                Create a new JDBC resource
                 <form method='POST' action='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "create") %>'>
                     Name <input type='text' name='<%= JdbcResourcesController.CREATE_NAME %>' value=''/>
                     <input type='submit' value='Go'/>

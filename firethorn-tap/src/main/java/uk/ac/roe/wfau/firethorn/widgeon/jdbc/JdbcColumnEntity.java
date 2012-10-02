@@ -49,6 +49,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlCatalog;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.Diference;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.JdbcColumn;
 
 /**
  * BaseResource.BaseColumn implementation.
@@ -76,8 +77,12 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.Diference;
             query = "FROM JdbcColumnEntity WHERE parent = :parent ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "jdbc.column-select-parent-name",
-            query = "FROM JdbcColumnEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
+            name  = "jdbc.column-select-parent.name",
+            query = "FROM JdbcColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "jdbc.column-search-parent.text",
+            query = "FROM JdbcColumnEntity WHERE ((parent = :parent) AND (name = :text)) ORDER BY ident desc"
             )
         }
     )
@@ -163,30 +168,10 @@ implements JdbcResource.JdbcColumn
         @Override
         @SelectEntityMethod
         public JdbcResource.JdbcColumn select(final JdbcResource.JdbcTable parent, final String name)
-        throws NameNotFoundException
-            {
-            final JdbcResource.JdbcColumn result = this.search(
-                parent,
-                name
-                );
-            if (result != null)
-                {
-                return result ;
-                }
-            else {
-                throw new NameNotFoundException(
-                    name
-                    );
-                }
-            }
-
-        @Override
-        @SelectEntityMethod
-        public JdbcResource.JdbcColumn search(final JdbcResource.JdbcTable parent, final String name)
             {
             return super.first(
                 super.query(
-                    "jdbc.column-select-parent-name"
+                    "jdbc.column-select-parent.name"
                     ).setEntity(
                         "parent",
                         parent
@@ -194,6 +179,25 @@ implements JdbcResource.JdbcColumn
                         "name",
                         name
                     )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<JdbcResource.JdbcColumn> search(final JdbcResource.JdbcTable parent, final String text)
+            {
+            return super.iterable(
+                super.query(
+                    "jdbc.column-search-parent.text"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "text",
+                        searchParam(
+                            text
+                            )
+                        )
                 );
             }
 
@@ -227,7 +231,7 @@ implements JdbcResource.JdbcColumn
             @Override
             public AdqlColumn search(final AdqlResource parent)
                 {
-                return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().search(
+                return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().select(
                     parent,
                     JdbcColumnEntity.this
                     );
@@ -236,7 +240,7 @@ implements JdbcResource.JdbcColumn
             @Override
             public AdqlColumn search(final AdqlCatalog parent)
                 {
-                return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().search(
+                return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().select(
                     parent,
                     JdbcColumnEntity.this
                     );
@@ -245,7 +249,7 @@ implements JdbcResource.JdbcColumn
             @Override
             public AdqlColumn search(final AdqlSchema parent)
                 {
-                return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().search(
+                return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().select(
                     parent,
                     JdbcColumnEntity.this
                     );
@@ -254,7 +258,7 @@ implements JdbcResource.JdbcColumn
             @Override
             public AdqlResource.AdqlColumn search(final AdqlResource.AdqlTable parent)
                 {
-                return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().search(
+                return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().select(
                     parent,
                     JdbcColumnEntity.this
                     );

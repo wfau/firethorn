@@ -5,9 +5,11 @@
 <%@ page
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
+    
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceController"
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourcesController"
-    import="uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource"
+
+    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceBean"
     session="true"
 %><%
 PathBuilder paths = new ServletPathBuilder(
@@ -25,12 +27,16 @@ String name = (String) request.getAttribute(
     </head>
     <body>
         <div>
+            JDBC Resources
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>
         </div>
         <div>
-            Create a (base)  Resource
+            <hr/>
+        </div>
+        <div>
+            Create a JDBC Resource
             <div>
                 <form method='POST' action='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "create") %>'>
                     Name <input type='text' name='<%= JdbcResourcesController.CREATE_NAME %>' value='<%= ((name != null) ? name : "") %>'/>

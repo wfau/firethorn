@@ -259,6 +259,15 @@ implements Entity.Factory<EntityType>
                 }
             };
         }
+    /**
+     * Create a text search string.
+     * TODO .. lots !!
+     * 
+     */
+    public String searchParam(String text)
+        {
+        return new StringBuilder(text).append("%").toString();
+        }
     }
 
 

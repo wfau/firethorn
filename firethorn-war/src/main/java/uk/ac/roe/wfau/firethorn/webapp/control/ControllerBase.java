@@ -18,17 +18,13 @@
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.stereotype.Controller;
-
-import org.springframework.web.bind.annotation.ModelAttribute;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
@@ -57,16 +53,6 @@ public abstract class ControllerBase
     public static final URI BASE_URI_CONFIG_KEY = URI.create(
         "urn:firethorn.system.base.uri"
         );
-
-   /**
-     * Protected constructor.
-     * @param base
-     *
-    protected ControllerBase(URI base)
-        {
-        this.base = base ;
-        }
-     */
 
     /**
      * Protected constructor.

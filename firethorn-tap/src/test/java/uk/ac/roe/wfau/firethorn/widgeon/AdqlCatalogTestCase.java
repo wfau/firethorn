@@ -47,21 +47,13 @@ extends JdbcResourceTestBase
             );
         //
         // Select missing catalog view fails.
-        try {
+        assertIsNull(
             base().views().select(
                 "view-A"
                 ).catalogs().select(
                     "catalog-A"
-                    );
-            fail("NameNotFoundException expected");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "catalog-A",
-                ouch.name()
-                );
-            }
+                    )
+            );
         }
 
     @Test
@@ -167,37 +159,21 @@ extends JdbcResourceTestBase
                 );
         //
         // Select base with old name fails.
-        try {
+        assertIsNull(
             base().catalogs().select(
                 "catalog-A"
-                );
-            fail("NameNotFoundException");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "catalog-A",
-                ouch.name()
-                );
-            }
+                )
+            );
 
         //
         // Select view with old name fails.
-        try {
+        assertIsNull(
             base().views().select(
                 "view-A"
                 ).catalogs().select(
                     "catalog-A"
-                    );
-            fail("NameNotFoundException");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "catalog-A",
-                ouch.name()
-                );
-            }
+                    )
+            );
 
         //
         // Select base with new name works.
@@ -272,21 +248,13 @@ extends JdbcResourceTestBase
             );
         //
         // Select catalog view with old name fails.
-        try {
+        assertIsNull(
             base().views().select(
                 "view-A"
                 ).catalogs().select(
                     "catalog-A"
-                    );
-            fail("NameNotFoundException");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "catalog-A",
-                ouch.name()
-                );
-            }
+                    )
+            );
         //
         // Select catalog view with new name works.
         assertNotNull(
@@ -352,21 +320,13 @@ extends JdbcResourceTestBase
             );
         //
         // Select catalog view with old name fails.
-        try {
+        assertIsNull(
             base().views().select(
                 "view-A"
                 ).catalogs().select(
                     "catalog-A"
-                    );
-            fail("NameNotFoundException");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "catalog-A",
-                ouch.name()
-                );
-            }
+                    )
+            );
         //
         // Select catalog view with new name works.
         assertNotNull(
@@ -394,21 +354,13 @@ extends JdbcResourceTestBase
             );
         //
         // Select catalog view with new name fails.
-        try {
+        assertIsNull(
             base().views().select(
                 "view-A"
                 ).catalogs().select(
                     "view-changed"
-                    );
-            fail("NameNotFoundException");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "view-changed",
-                ouch.name()
-                );
-            }
+                    )
+            );
         //
         // Select catalog view with old name works.
         assertNotNull(
@@ -467,21 +419,13 @@ extends JdbcResourceTestBase
                     );
         //
         // Select catalog view with old name fails.
-        try {
+        assertIsNull(
             base().views().select(
                 "view-A"
                 ).catalogs().select(
                     "catalog-A"
-                    );
-            fail("NameNotFoundException");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "catalog-A",
-                ouch.name()
-                );
-            }
+                    )
+            );
         //
         // Select catalog view with new name works.
         assertNotNull(
@@ -500,19 +444,11 @@ extends JdbcResourceTestBase
                 );
         //
         // Select base catalog with old name fails.
-        try {
+        assertIsNull(
             base().catalogs().select(
                 "catalog-A"
-                );
-            fail("NameNotFoundException");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "catalog-A",
-                ouch.name()
-                );
-            }
+                )
+            );
         //
         // Select base catalog with new name works.
         assertNotNull(
@@ -531,19 +467,11 @@ extends JdbcResourceTestBase
                     );
         //
         // Select base catalog with old name fails.
-        try {
+        assertIsNull(
             base().catalogs().select(
                 "catalog-A"
-                );
-            fail("NameNotFoundException");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "catalog-A",
-                ouch.name()
-                );
-            }
+                )
+            );
         //
         // Select base catalog with new name works.
         assertNotNull(
@@ -553,38 +481,22 @@ extends JdbcResourceTestBase
             );
         //
         // Select catalog view with old name fails.
-        try {
+        assertIsNull(
             base().views().select(
                 "view-A"
                 ).catalogs().select(
                     "catalog-A"
-                    );
-            fail("NameNotFoundException");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "catalog-A",
-                ouch.name()
-                );
-            }
+                    )
+            );
         //
         // Select catalog view with new name fails.
-        try {
+        assertIsNull(
             base().views().select(
                 "view-A"
                 ).catalogs().select(
                     "view-changed"
-                    );
-            fail("NameNotFoundException");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "view-changed",
-                ouch.name()
-                );
-            }
+                    )
+            );
         //
         // Select catalog view with new base name works.
         assertNotNull(
@@ -641,19 +553,11 @@ extends JdbcResourceTestBase
                 );
         //
         // Select base catalog with old name fails.
-        try {
+        assertIsNull(
             base().catalogs().select(
                 "catalog-A"
-                );
-            fail("NameNotFoundException");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "catalog-A",
-                ouch.name()
-                );
-            }
+                )
+            );
         //
         // Select base catalog with new name works.
         assertNotNull(
@@ -672,21 +576,13 @@ extends JdbcResourceTestBase
                     );
         //
         // Select catalog view with old name fails.
-        try {
+        assertIsNull(
             base().views().select(
                 "view-A"
                 ).catalogs().select(
                     "catalog-A"
-                    );
-            fail("NameNotFoundException");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "catalog-A",
-                ouch.name()
-                );
-            }
+                    )
+            );
         //
         // Select catalog view with new name works.
         assertNotNull(
@@ -707,19 +603,11 @@ extends JdbcResourceTestBase
                     );
         //
         // Select base catalog with old name fails.
-        try {
+        assertIsNull(
             base().catalogs().select(
                 "catalog-A"
-                );
-            fail("NameNotFoundException");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "catalog-A",
-                ouch.name()
-                );
-            }
+                )
+            );
         //
         // Select base catalog with new name works.
         assertNotNull(
@@ -729,38 +617,22 @@ extends JdbcResourceTestBase
             );
         //
         // Select catalog view with old name fails.
-        try {
+        assertIsNull(
             base().views().select(
                 "view-A"
                 ).catalogs().select(
                     "catalog-A"
-                    );
-            fail("NameNotFoundException");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "catalog-A",
-                ouch.name()
-                );
-            }
+                    )
+            );
         //
         // Select catalog view with new name fails.
-        try {
+        assertIsNull(
             base().views().select(
                 "view-A"
                 ).catalogs().select(
                     "view-changed"
-                    );
-            fail("NameNotFoundException");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "view-changed",
-                ouch.name()
-                );
-            }
+                    )
+            );
         //
         // Select catalog view with new base name works.
         assertNotNull(

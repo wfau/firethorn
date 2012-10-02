@@ -47,19 +47,11 @@ extends JdbcResourceTestBase
     public void test001()
     throws Exception
         {
-        try {
+        assertIsNull(
             base().catalogs().select(
                 "catalog-A"
-                );
-            fail("NameNotFoundException expected");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "catalog-A",
-                ouch.name()
-                );
-            }
+                )
+            );
         }
 
     @Test
@@ -98,21 +90,13 @@ extends JdbcResourceTestBase
                 "catalog-A"
                 )
             );
-        try {
+        assertIsNull(
             base().catalogs().select(
                 "catalog-A"
                 ).schemas().select(
                     "schema-A"
-                    );
-            fail("NameNotFoundException expected");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "schema-A",
-                ouch.name()
-                );
-            }
+                    )
+            );
         }
 
     @Test
@@ -147,23 +131,15 @@ extends JdbcResourceTestBase
                     "schema-A"
                     )
             );
-        try {
+        assertIsNull(
             base().catalogs().select(
                 "catalog-A"
                 ).schemas().select(
                     "schema-A"
                     ).tables().select(
                         "table-A"
-                        );
-            fail("NameNotFoundException expected");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "table-A",
-                ouch.name()
-                );
-            }
+                        )
+            );
         }
 
     @Test
@@ -204,7 +180,7 @@ extends JdbcResourceTestBase
                         "table-A"
                         )
             );
-        try {
+        assertIsNull(
             base().catalogs().select(
                 "catalog-A"
                 ).schemas().select(
@@ -213,16 +189,8 @@ extends JdbcResourceTestBase
                         "table-A"
                         ).columns().select(
                             "column-A"
-                            );
-            fail("NameNotFoundException expected");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "column-A",
-                ouch.name()
-                );
-            }
+                            )
+            );
         }
 
     @Test
@@ -270,7 +238,7 @@ extends JdbcResourceTestBase
                             )
             );
 
-        try {
+        assertIsNull(
             base().catalogs().select(
                 "catalog-A"
                 ).schemas().select(
@@ -279,16 +247,8 @@ extends JdbcResourceTestBase
                         "table-A"
                         ).columns().select(
                             "column-a"
-                            );
-            fail("NameNotFoundException expected");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "column-a",
-                ouch.name()
-                );
-            }
+                            )
+            );
         }
 
     @Test
@@ -307,7 +267,7 @@ extends JdbcResourceTestBase
                             )
             );
 
-        try {
+        assertIsNull(
             base().catalogs().select(
                 "catalog-A"
                 ).schemas().select(
@@ -316,16 +276,8 @@ extends JdbcResourceTestBase
                         "table-A"
                         ).columns().select(
                             "column-a"
-                            );
-            fail("NameNotFoundException expected");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "column-a",
-                ouch.name()
-                );
-            }
+                            )
+            );
 
         base().catalogs().select(
             "catalog-A"
@@ -351,7 +303,7 @@ extends JdbcResourceTestBase
                             )
             );
 
-        try {
+        assertIsNull(
             base().catalogs().select(
                 "catalog-A"
                 ).schemas().select(
@@ -360,16 +312,8 @@ extends JdbcResourceTestBase
                         "table-A"
                         ).columns().select(
                             "column-A"
-                            );
-            fail("NameNotFoundException expected");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "column-A",
-                ouch.name()
-                );
-            }
+                            )
+            );
         }
     }
 

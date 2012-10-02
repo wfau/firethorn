@@ -63,23 +63,15 @@ extends JdbcResourceTestBase
             );
         //
         // Select missing schema view fails.
-        try {
+        assertIsNull(
             base().views().select(
                 "view-A"
                 ).catalogs().select(
                     "catalog-A"
                     ).schemas().select(
                         "schema-A"
-                        );
-            fail("NameNotFoundException expected");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "schema-A",
-                ouch.name()
-                );
-            }
+                        )
+            );
         }
 
     @Test

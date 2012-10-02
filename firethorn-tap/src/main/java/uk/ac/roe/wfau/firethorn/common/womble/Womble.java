@@ -150,7 +150,7 @@ public interface Womble
         }
 
     /**
-     * Factory interface for accessing our resource factories..
+     * Factory interface for accessing our resource factories.
      *
      */
     public interface ResourceFactories

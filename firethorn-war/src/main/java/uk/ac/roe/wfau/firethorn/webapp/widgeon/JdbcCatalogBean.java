@@ -31,9 +31,9 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
  *
  */
 @Slf4j
-public class JdbcResourceBean
-extends AbstractEntityBean<JdbcResource>
-implements EntityBean<JdbcResource>
+public class JdbcCatalogBean
+extends AbstractEntityBean<JdbcResource.JdbcCatalog>
+implements EntityBean<JdbcResource.JdbcCatalog>
     {
     
     /**
@@ -41,7 +41,7 @@ implements EntityBean<JdbcResource>
      * 
      */
     public static final URI TYPE_URI = URI.create(
-        "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json"
+        "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-catalog-1.0.json"
         );
     
     /**
@@ -50,10 +50,10 @@ implements EntityBean<JdbcResource>
      * @param builder
      *      A UriBuilder for generating the service URI.
      * @param entity
-     *      The target JdbcResource.
+     *      The target JdbcCatalog.
      *
      */
-    public JdbcResourceBean(UriBuilder builder, JdbcResource entity)
+    public JdbcCatalogBean(UriBuilder builder, JdbcResource.JdbcCatalog entity)
         {
         super(
             TYPE_URI,

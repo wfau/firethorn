@@ -36,6 +36,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.ac.roe.wfau.firethorn.common.womble.Womble;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Base class for tests.
@@ -97,6 +98,21 @@ public abstract class TestBase
         {
         log.debug("flush()");
         womble().hibernate().flush();
+        }
+
+    /**
+     * Inverse of AssertNotNull.
+     * @param object
+     * @throws AssertionError
+     *
+     */
+    public void assertIsNull(Object object)
+    throws AssertionError
+        {
+        assertEquals(
+            null,
+            object
+            );
         }
 
     /**

@@ -40,19 +40,11 @@ extends DataResourceTestBase
         {
         //
         // Select missing view fails.
-        try {
+        assertIsNull(
             base().views().select(
                 "view-A"
-                );
-            fail("NameNotFoundException expected");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "view-A",
-                ouch.name()
-                );
-            }
+                )
+            );
         }
 
     @Test

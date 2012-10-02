@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.widgeon.base ;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 
@@ -58,7 +57,7 @@ extends DataResource
         public Iterable<ResourceType> select(final String name);
 
         /**
-         * Search for resources by name.
+         * Text search for resources (name starts with).
          *
          */
         public Iterable<ResourceType> search(final String text);
@@ -93,8 +92,7 @@ extends DataResource
          * Select a named view of the resource.
          *
          */
-        public AdqlResource select(final String name)
-        throws NameNotFoundException;
+        public AdqlResource select(final String name);
 
         }
 

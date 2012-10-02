@@ -54,14 +54,13 @@ extends DataResource
          * Select a view of a resource by name.
          *
          */
-        public AdqlResource select(final BaseResource base, final String name)
-        throws NameNotFoundException;
+        public AdqlResource select(final BaseResource base, final String name);
 
         /**
-         * Search for a view of a resource by name.
+         * Search for a view of a resource.
          *
          */
-        public AdqlResource search(final BaseResource base, final String name);
+        public Iterable<AdqlResource> search(final BaseResource base, final String text);
 
         /**
          * Access to our catalog factory.
@@ -128,10 +127,10 @@ extends DataResource
             public Iterable<AdqlResource.AdqlCatalog> select(final BaseResource.BaseCatalog<?> base);
 
             /**
-             * Search for a catalog view based on parent resource.
+             * Select a catalog view based on parent resource.
              *
              */
-            public AdqlResource.AdqlCatalog search(final AdqlResource parent, final BaseResource.BaseCatalog<?> base);
+            public AdqlResource.AdqlCatalog select(final AdqlResource parent, final BaseResource.BaseCatalog<?> base);
 
             /**
              * Access to our schema factory.
@@ -206,16 +205,16 @@ extends DataResource
             public Iterable<AdqlResource.AdqlSchema> select(final BaseResource.BaseSchema<?> base);
 
             /**
-             * Search for a schema view based on parent resource.
+             * Select a schema view based on parent resource.
              *
              */
-            public AdqlResource.AdqlSchema search(final AdqlResource parent, final BaseResource.BaseSchema<?> base);
+            public AdqlResource.AdqlSchema select(final AdqlResource parent, final BaseResource.BaseSchema<?> base);
 
             /**
-             * Search for a schema view based on parent catalog.
+             * Select a schema view based on parent catalog.
              *
              */
-            public AdqlResource.AdqlSchema search(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseSchema<?> base);
+            public AdqlResource.AdqlSchema select(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseSchema<?> base);
 
             /**
              * Access to our table factory.
@@ -296,22 +295,22 @@ extends DataResource
             public Iterable<AdqlResource.AdqlTable> select(final BaseResource.BaseTable<?> base);
 
             /**
-             * Search for a table view based on parent resource.
+             * Select a table view based on parent resource.
              *
              */
-            public AdqlResource.AdqlTable search(final AdqlResource parent, final BaseResource.BaseTable<?> base);
+            public AdqlResource.AdqlTable select(final AdqlResource parent, final BaseResource.BaseTable<?> base);
 
             /**
-             * Search for a table view based on parent catalog.
+             * Select a table view based on parent catalog.
              *
              */
-            public AdqlResource.AdqlTable search(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseTable<?> base);
+            public AdqlResource.AdqlTable select(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseTable<?> base);
 
             /**
-             * Search for a table view based on parent schema.
+             * Select a table view based on parent schema.
              *
              */
-            public AdqlResource.AdqlTable search(final AdqlResource.AdqlSchema parent, final BaseResource.BaseTable<?> base);
+            public AdqlResource.AdqlTable select(final AdqlResource.AdqlSchema parent, final BaseResource.BaseTable<?> base);
 
             /**
              * Access to our column factory.
@@ -339,7 +338,7 @@ extends DataResource
              * Search for a view of a specific column.
              *
              */
-            public AdqlResource.AdqlColumn search(final BaseResource.BaseColumn<?> base);
+            public AdqlResource.AdqlColumn select(final BaseResource.BaseColumn<?> base);
 
             }
 
@@ -405,28 +404,28 @@ extends DataResource
             public Iterable<AdqlResource.AdqlColumn> select(final BaseResource.BaseColumn<?> base);
 
             /**
-             * Search for a column view based on parent resource.
+             * Select a column view based on parent resource.
              *
              */
-            public AdqlResource.AdqlColumn search(final AdqlResource parent, final BaseResource.BaseColumn<?> base);
+            public AdqlResource.AdqlColumn select(final AdqlResource parent, final BaseResource.BaseColumn<?> base);
 
             /**
-             * Search for a column view based on parent catalog.
+             * Select a column view based on parent catalog.
              *
              */
-            public AdqlResource.AdqlColumn search(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseColumn<?> base);
+            public AdqlResource.AdqlColumn select(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseColumn<?> base);
 
             /**
-             * Search for a column view based on parent schema.
+             * Select a column view based on parent schema.
              *
              */
-            public AdqlResource.AdqlColumn search(final AdqlResource.AdqlSchema parent, final BaseResource.BaseColumn<?> base);
+            public AdqlResource.AdqlColumn select(final AdqlResource.AdqlSchema parent, final BaseResource.BaseColumn<?> base);
 
             /**
-             * Search for a column view based on parent table.
+             * Select a column view based on parent table.
              *
              */
-            public AdqlResource.AdqlColumn search(final AdqlResource.AdqlTable parent, final BaseResource.BaseColumn<?> base);
+            public AdqlResource.AdqlColumn select(final AdqlResource.AdqlTable parent, final BaseResource.BaseColumn<?> base);
 
             }
 

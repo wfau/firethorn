@@ -71,7 +71,7 @@ extends JdbcResourceTestBase
             );
         //
         // Select missing column view fails.
-        try {
+        assertIsNull(
             base().views().select(
                 "view-A"
                 ).catalogs().select(
@@ -82,16 +82,8 @@ extends JdbcResourceTestBase
                             "table-A"
                             ).columns().select(
                                 "column-A"
-                                );
-            fail("NameNotFoundException expected");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "column-A",
-                ouch.name()
-                );
-            }
+                                )
+            );
         }
 
     @Test

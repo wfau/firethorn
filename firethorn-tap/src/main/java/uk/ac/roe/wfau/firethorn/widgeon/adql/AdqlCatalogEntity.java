@@ -41,6 +41,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlCatalog;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalogEntity;
 
@@ -87,6 +89,10 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalogEntity;
         @NamedQuery(
             name  = "adql.catalog-select-parent.base",
             query = "FROM AdqlCatalogEntity WHERE ((parent = :parent) AND (base = :base)) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "adql.catalog-search-parent.text",
+            query = "FROM AdqlCatalogEntity WHERE ((parent = :parent) AND (((name IS NOT null) AND (name LIKE :text)) OR ((name IS null) AND (base.name LIKE :text)))) ORDER BY ident desc"
             )
         }
     )
@@ -166,7 +172,7 @@ implements AdqlResource.AdqlCatalog
 
         @Override
         @SelectEntityMethod
-        public AdqlResource.AdqlCatalog search(final AdqlResource parent, final BaseResource.BaseCatalog<?> base)
+        public AdqlResource.AdqlCatalog select(final AdqlResource parent, final BaseResource.BaseCatalog<?> base)
             {
             return super.first(
                 super.query(
@@ -185,7 +191,7 @@ implements AdqlResource.AdqlCatalog
         @CascadeEntityMethod
         public AdqlResource.AdqlCatalog cascade(final AdqlResource parent, final BaseResource.BaseCatalog<?> base)
             {
-            AdqlResource.AdqlCatalog result = this.search(
+            AdqlResource.AdqlCatalog result = this.select(
                 parent,
                 base
                 );
@@ -229,26 +235,6 @@ implements AdqlResource.AdqlCatalog
         @Override
         @SelectEntityMethod
         public AdqlResource.AdqlCatalog select(final AdqlResource parent, final String name)
-        throws NameNotFoundException
-            {
-            final AdqlResource.AdqlCatalog result = this.search(
-                parent,
-                name
-                );
-            if (result != null)
-                {
-                return result ;
-                }
-            else {
-                throw new NameNotFoundException(
-                    name
-                    );
-                }
-            }
-
-        @Override
-        @SelectEntityMethod
-        public AdqlResource.AdqlCatalog search(final AdqlResource parent, final String name)
             {
             return super.first(
                 super.query(
@@ -259,6 +245,25 @@ implements AdqlResource.AdqlCatalog
                     ).setString(
                         "name",
                         name
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<AdqlResource.AdqlCatalog> search(final AdqlResource parent, final String text)
+            {
+            return super.iterable(
+                super.query(
+                    "adql.catalog-search-parent.text"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "text",
+                        searchParam(
+                            text
+                            )
                     )
                 );
             }
@@ -307,7 +312,6 @@ implements AdqlResource.AdqlCatalog
 
             @Override
             public AdqlResource.AdqlSchema select(final String name)
-            throws NameNotFoundException
                 {
                 return womble().resources().base().views().catalogs().schemas().select(
                     AdqlCatalogEntity.this,
@@ -316,11 +320,11 @@ implements AdqlResource.AdqlCatalog
                 }
 
             @Override
-            public AdqlResource.AdqlSchema search(final String name)
+            public Iterable<AdqlResource.AdqlSchema> search(final String text)
                 {
                 return womble().resources().base().views().catalogs().schemas().search(
                     AdqlCatalogEntity.this,
-                    name
+                    text
                     ) ;
                 }
             };

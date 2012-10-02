@@ -25,24 +25,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
-import uk.ac.roe.wfau.firethorn.webapp.control.RedirectEntityResponse;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
-import uk.ac.roe.wfau.firethorn.webapp.control.RedirectResponse;
-import uk.ac.roe.wfau.firethorn.webapp.mallard.AdqlServiceBean;
-import uk.ac.roe.wfau.firethorn.webapp.mallard.AdqlServiceController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
-import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
  * Spring MVC controller for AdqlServices.
@@ -73,7 +66,7 @@ extends ControllerBase
      * 
      */
     @Autowired
-    private JdbcResourceCatalogController catalogController ;
+    private JdbcCatalogController catalogController ;
 
     /**
      * Public constructor.
@@ -138,10 +131,12 @@ extends ControllerBase
      */
     @RequestMapping(value="", method=RequestMethod.GET)
     public ModelAndView htmlIndex(
+        @PathVariable("ident")
+        final String ident,
         final ModelAndView model
         ){
         model.setViewName(
-            "jdbc/resource/catalog/index"
+            "jdbc/catalog/index"
             );
         return model ;
         }
@@ -153,16 +148,28 @@ extends ControllerBase
      */
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
     public ModelAndView htmlSelect(
+        @PathVariable("ident")
+        final String ident,
         final ModelAndView model
         ){
-        model.addObject(
-            SELECT_RESULT,
-            womble().resources().jdbc().select()
-            );
-        model.setViewName(
-            "jdbc/resource/catalog/select"
-            );
-        return model ;
+        try {
+            model.addObject(
+                SELECT_RESULT,
+                womble().resources().jdbc().select(
+                    womble().resources().jdbc().ident(
+                        ident
+                        )
+                    ).catalogs().select()
+                );
+            model.setViewName(
+                "jdbc/catalog/select"
+                );
+            return model ;
+            }
+        catch (Exception ouch)
+            {
+            return null ;
+            }
         }
 
     /**
@@ -171,16 +178,28 @@ extends ControllerBase
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcResourceBeanIter jsonSelect(
+    public JdbcCatalogBeanIter jsonSelect(
+        @PathVariable("ident")
+        final String ident,
         final ModelAndView model,
         final HttpServletRequest request
         ){
-        return new JdbcResourceBeanIter(
-            resourceController.builder(
-                request
-                ),
-            womble().resources().jdbc().select()
-            );
+        try {
+            return new JdbcCatalogBeanIter(
+                catalogController.builder(
+                    request
+                    ),
+                womble().resources().jdbc().select(
+                    womble().resources().jdbc().ident(
+                        ident
+                        )
+                    ).catalogs().select()
+                );
+            }
+        catch (Exception ouch)
+            {
+            return null ;
+            }
         }
     
     /**
@@ -190,20 +209,32 @@ extends ControllerBase
      */
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
     public ModelAndView htmlSelect(
+        @PathVariable("ident")
+        final String ident,
         @RequestParam(SELECT_NAME)
         final String name,
         final ModelAndView model
         ){
-        model.addObject(
-            SELECT_RESULT,
-            womble().resources().jdbc().select(
-                name
-                )
-            );
-        model.setViewName(
-            "jdbc/resource/catalog/select"
-            );
-        return model ;
+        try {
+            model.addObject(
+                SELECT_RESULT,
+                womble().resources().jdbc().select(
+                    womble().resources().jdbc().ident(
+                        ident
+                        )
+                    ).catalogs().select(
+                        name
+                        )
+                );
+            model.setViewName(
+                "jdbc/catalog/select"
+                );
+            return model ;
+            }
+        catch (Exception ouch)
+            {
+            return null ;
+            }
         }
 
     /**
@@ -212,20 +243,32 @@ extends ControllerBase
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public JdbcResourceBeanIter jsonSelect(
+    public JdbcCatalogBean jsonSelect(
+        @PathVariable("ident")
+        final String ident,
         @RequestParam(SELECT_NAME)
         final String name,
         final ModelAndView model,
         final HttpServletRequest request
         ){
-        return new JdbcResourceBeanIter(
-            resourceController.builder(
-                request
-                ),
-            womble().resources().jdbc().select(
-                name
-                )
-            );
+        try {
+            return new JdbcCatalogBean(
+                catalogController.builder(
+                    request
+                    ),
+                womble().resources().jdbc().select(
+                    womble().resources().jdbc().ident(
+                        ident
+                        )
+                    ).catalogs().select(
+                        name
+                        )
+                );
+            }
+        catch (Exception ouch)
+            {
+            return null ;
+            }
         }
     
     /**
@@ -234,10 +277,12 @@ extends ControllerBase
      */
     @RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
     public ModelAndView htmlSearch(
+        @PathVariable("ident")
+        final String ident,
         final ModelAndView model
         ){
         model.setViewName(
-            "jdbc/resource/catalog/search"
+            "jdbc/catalog/search"
             );
         return model ;
         }
@@ -249,42 +294,67 @@ extends ControllerBase
      */
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
     public ModelAndView htmlSearch(
+        @PathVariable("ident")
+        final String ident,
         @RequestParam(SEARCH_TEXT)
         final String text,
         final ModelAndView model
         ){
-        model.addObject(
-            SEARCH_RESULT,
-            womble().resources().jdbc().search(
-                text
-                )
-            );
-        model.setViewName(
-            "jdbc/resource/catalog/search"
-            );
-        return model ;
+        try {
+            model.addObject(
+                SEARCH_RESULT,
+                womble().resources().jdbc().select(
+                    womble().resources().jdbc().ident(
+                        ident
+                        )
+                    ).catalogs().search(
+                        text
+                        )
+                );
+            model.setViewName(
+                "jdbc/catalog/search"
+                );
+            return model ;
+            }
+        catch (Exception ouch)
+            {
+            return null ;
+            }
         }
 
     /**
      * JSON GET or POST request to search by text.
-     *
+     * @todo change the server side search return a list
+     *  
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public JdbcResourceBeanIter jsonSearch(
+    public JdbcCatalogBeanIter jsonSearch(
+        @PathVariable("ident")
+        final String ident,
         @RequestParam(SEARCH_TEXT)
         final String text,
         final ModelAndView model,
         final HttpServletRequest request
         ){
-        return new JdbcResourceBeanIter(
-            resourceController.builder(
-                request
-                ),
-            womble().resources().jdbc().search(
-                text
-                )
-            );
+        try {
+            return new JdbcCatalogBeanIter(
+                catalogController.builder(
+                    request
+                    ),
+                womble().resources().jdbc().select(
+                    womble().resources().jdbc().ident(
+                        ident
+                        )
+                    ).catalogs().search(
+                        text
+                        )
+                );
+            }
+        catch (Exception ouch)
+            {
+            return null ;
+            }
         }
 
     /**
@@ -293,10 +363,12 @@ extends ControllerBase
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.GET)
     public ModelAndView htmlCreate(
+        @PathVariable("ident")
+        final String ident,
         final ModelAndView model
         ){
         model.setViewName(
-            "jdbc/resource/catalog/create"
+            "jdbc/catalog/create"
             );
         return model ;
         }
@@ -307,19 +379,25 @@ extends ControllerBase
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST)
     public ResponseEntity<String>  htmlCreate(
+        @PathVariable("ident")
+        final String ident,
         @RequestParam(CREATE_NAME)
         final String name,
         final ModelAndView model,
         final HttpServletRequest request
         ){
         try {
-            JdbcResourceBean bean = new JdbcResourceBean(
-                resourceController.builder(
+            JdbcCatalogBean bean = new JdbcCatalogBean(
+                catalogController.builder(
                     request
                     ),
-                womble().resources().jdbc().create(
-                    name
-                    )
+                womble().resources().jdbc().select(
+                    womble().resources().jdbc().ident(
+                        ident
+                        )
+                    ).catalogs().create(
+                        name
+                        )
                 );
             return new ResponseEntity<String>(
                 new RedirectHeader(
@@ -339,22 +417,28 @@ extends ControllerBase
      *
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<JdbcResourceBean> jsonCreate(
+    public ResponseEntity<JdbcCatalogBean> jsonCreate(
+        @PathVariable("ident")
+        final String ident,
         @RequestParam(CREATE_NAME)
         final String name,
         final ModelAndView model,
         final HttpServletRequest request
         ){
         try {
-            JdbcResourceBean bean = new JdbcResourceBean(
-                resourceController.builder(
+            JdbcCatalogBean bean = new JdbcCatalogBean(
+                catalogController.builder(
                     request
                     ),
-                womble().resources().jdbc().create(
-                    name
-                    )
+                    womble().resources().jdbc().select(
+                        womble().resources().jdbc().ident(
+                            ident
+                            )
+                        ).catalogs().create(
+                            name
+                            )
                 );
-            return new ResponseEntity<JdbcResourceBean>(
+            return new ResponseEntity<JdbcCatalogBean>(
                 bean,
                 new RedirectHeader(
                     bean

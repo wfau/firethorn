@@ -5,9 +5,12 @@
 <%@ page
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
+
     import="uk.ac.roe.wfau.firethorn.webapp.mallard.AdqlServiceController"
     import="uk.ac.roe.wfau.firethorn.webapp.mallard.AdqlServicesController"
-    import="uk.ac.roe.wfau.firethorn.mallard.AdqlService"
+
+    import="uk.ac.roe.wfau.firethorn.webapp.mallard.AdqlServiceBean"
+
     session="true"
 %><%
 PathBuilder paths = new ServletPathBuilder(
@@ -18,7 +21,7 @@ String name = (String) request.getAttribute(
     AdqlServicesController.SELECT_NAME
     );
 
-Iterable<AdqlService> services = (Iterable<AdqlService>) request.getAttribute(
+Iterable<AdqlServiceBean> services = (Iterable<AdqlServiceBean>) request.getAttribute(
     AdqlServicesController.SELECT_RESULT
     ) ;
 
@@ -35,7 +38,7 @@ Iterable<AdqlService> services = (Iterable<AdqlService>) request.getAttribute(
             <span>[<a href='<%= paths.path(AdqlServicesController.CONTROLLER_PATH, AdqlServicesController.CREATE_PATH) %>'>create</a>]</span>
         </div>
         <div>
-            Select ADQL TAP Services by name
+            Select ADQL (TAP) Services by name
             <div>
                 <form method='GET' action='<%= paths.path(AdqlServicesController.CONTROLLER_PATH, AdqlServicesController.SELECT_PATH) %>'>
                     Name <input type='text' name='<%= AdqlServicesController.SELECT_NAME %>' value='<%= ((name != null) ? name : "" ) %>'/>
@@ -48,14 +51,13 @@ Iterable<AdqlService> services = (Iterable<AdqlService>) request.getAttribute(
                 <%
                 if (services != null)
                     {
-                    for (AdqlService service : services)
+                    for (AdqlServiceBean service : services)
                         {
                         %>
                         <tr>
-                            <td><a href='<%= paths.link(service) %>'><%= service.name() %></a></td>
-                            <td><%= service.owner().name() %></td>
-                            <td><%= service.created() %></td>
-                            <td><%= service.modified() %></td>
+                            <td><a href='<%= service.getIdent() %>'><%= service.getName() %></a></td>
+                            <td><%= service.getCreated() %></td>
+                            <td><%= service.getModified() %></td>
                         </tr>
                         <%
                         }

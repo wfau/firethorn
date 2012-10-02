@@ -90,6 +90,10 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcColumnEntity;
         @NamedQuery(
             name  = "adql.column-select-parent.parent.parent.parent.base",
             query = "FROM AdqlColumnEntity WHERE ((parent.parent.parent.parent = :parent) AND (base = :base)) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "adql.column-search-parent.text",
+            query = "FROM AdqlColumnEntity WHERE ((parent = :parent) AND (((name IS NOT null) AND (name LIKE :text)) OR ((name IS null) AND (base.name LIKE :text)))) ORDER BY ident desc"
             )
         }
     )
@@ -172,7 +176,7 @@ implements AdqlResource.AdqlColumn
 
         @Override
         @SelectEntityMethod
-        public AdqlResource.AdqlColumn search(final AdqlResource parent, final BaseResource.BaseColumn<?> base)
+        public AdqlResource.AdqlColumn select(final AdqlResource parent, final BaseResource.BaseColumn<?> base)
             {
             return super.first(
                 super.query(
@@ -189,7 +193,7 @@ implements AdqlResource.AdqlColumn
 
         @Override
         @SelectEntityMethod
-        public AdqlResource.AdqlColumn search(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseColumn<?> base)
+        public AdqlResource.AdqlColumn select(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseColumn<?> base)
             {
             return super.first(
                 super.query(
@@ -206,7 +210,7 @@ implements AdqlResource.AdqlColumn
 
         @Override
         @SelectEntityMethod
-        public AdqlResource.AdqlColumn search(final AdqlResource.AdqlSchema parent, final BaseResource.BaseColumn<?> base)
+        public AdqlResource.AdqlColumn select(final AdqlResource.AdqlSchema parent, final BaseResource.BaseColumn<?> base)
             {
             return super.first(
                 super.query(
@@ -223,7 +227,7 @@ implements AdqlResource.AdqlColumn
 
         @Override
         @SelectEntityMethod
-        public AdqlResource.AdqlColumn search(final AdqlResource.AdqlTable parent, final BaseResource.BaseColumn<?> base)
+        public AdqlResource.AdqlColumn select(final AdqlResource.AdqlTable parent, final BaseResource.BaseColumn<?> base)
             {
             return super.first(
                 super.query(
@@ -242,7 +246,7 @@ implements AdqlResource.AdqlColumn
         @CascadeEntityMethod
         public AdqlResource.AdqlColumn cascade(final AdqlResource.AdqlTable parent, final BaseResource.BaseColumn<?> base)
             {
-            AdqlResource.AdqlColumn result = this.search(
+            AdqlResource.AdqlColumn result = this.select(
                 parent,
                 base
                 );
@@ -286,26 +290,6 @@ implements AdqlResource.AdqlColumn
         @Override
         @SelectEntityMethod
         public AdqlResource.AdqlColumn select(final AdqlResource.AdqlTable parent, final String name)
-        throws NameNotFoundException
-            {
-            final AdqlResource.AdqlColumn result = this.search(
-                parent,
-                name
-                );
-            if (result != null)
-                {
-                return result ;
-                }
-            else {
-                throw new NameNotFoundException(
-                    name
-                    );
-                }
-            }
-
-        @Override
-        @SelectEntityMethod
-        public AdqlResource.AdqlColumn search(final AdqlResource.AdqlTable parent, final String name)
             {
             return super.first(
                 super.query(
@@ -316,6 +300,25 @@ implements AdqlResource.AdqlColumn
                     ).setString(
                         "name",
                         name
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<AdqlResource.AdqlColumn> search(final AdqlResource.AdqlTable parent, final String text)
+            {
+            return super.iterable(
+                super.query(
+                    "adql.column-search-parent.text"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "text",
+                        searchParam(
+                            text
+                            )
                     )
                 );
             }

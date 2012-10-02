@@ -66,7 +66,7 @@ extends BaseResource
      *
      */
     public interface Catalogs
-    extends BaseResource.Catalogs<JdbcCatalog>
+    extends BaseResource.Catalogs<JdbcResource.JdbcCatalog>
         {
         /**
          * Create a new catalog.

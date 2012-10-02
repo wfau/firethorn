@@ -68,7 +68,7 @@ extends JdbcResourceTestBase
             );
         //
         // Select missing table view fails.
-        try {
+        assertIsNull(
             base().views().select(
                 "view-A"
                 ).catalogs().select(
@@ -77,16 +77,8 @@ extends JdbcResourceTestBase
                         "schema-A"
                         ).tables().select(
                             "table-A"
-                            );
-            fail("NameNotFoundException expected");
-            }
-        catch (final NameNotFoundException ouch)
-            {
-            assertEquals(
-                "table-A",
-                ouch.name()
-                );
-            }
+                            )
+            );
         }
 
     @Test

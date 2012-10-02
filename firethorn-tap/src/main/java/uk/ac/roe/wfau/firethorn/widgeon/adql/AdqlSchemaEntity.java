@@ -84,7 +84,11 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchemaEntity;
         @NamedQuery(
             name  = "adql.schema-select-parent.parent.base",
             query = "FROM AdqlSchemaEntity WHERE ((parent.parent = :parent) AND (base = :base)) ORDER BY ident desc"
-            )
+            ),
+        @NamedQuery(
+            name  = "adql.schema-search-parent.text",
+            query = "FROM AdqlSchemaEntity WHERE ((parent = :parent) AND (((name IS NOT null) AND (name LIKE :text)) OR ((name IS null) AND (base.name LIKE :text)))) ORDER BY ident desc"
+            ),
         }
     )
 public class AdqlSchemaEntity
@@ -163,7 +167,7 @@ implements AdqlResource.AdqlSchema
 
         @Override
         @SelectEntityMethod
-        public AdqlSchema search(final AdqlResource parent, final BaseResource.BaseSchema<?> base)
+        public AdqlSchema select(final AdqlResource parent, final BaseResource.BaseSchema<?> base)
             {
             return super.first(
                 super.query(
@@ -180,7 +184,7 @@ implements AdqlResource.AdqlSchema
 
         @Override
         @SelectEntityMethod
-        public AdqlResource.AdqlSchema search(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseSchema<?> base)
+        public AdqlResource.AdqlSchema select(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseSchema<?> base)
             {
             return super.first(
                 super.query(
@@ -199,7 +203,7 @@ implements AdqlResource.AdqlSchema
         @CreateEntityMethod
         public AdqlResource.AdqlSchema cascade(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseSchema<?> base)
             {
-            AdqlResource.AdqlSchema result = this.search(
+            AdqlResource.AdqlSchema result = this.select(
                 parent,
                 base
                 );
@@ -243,26 +247,6 @@ implements AdqlResource.AdqlSchema
         @Override
         @SelectEntityMethod
         public AdqlResource.AdqlSchema select(final AdqlResource.AdqlCatalog parent, final String name)
-        throws NameNotFoundException
-            {
-            final AdqlResource.AdqlSchema result = this.search(
-                parent,
-                name
-                );
-            if (result != null)
-                {
-                return result ;
-                }
-            else {
-                throw new NameNotFoundException(
-                    name
-                    );
-                }
-            }
-
-        @Override
-        @SelectEntityMethod
-        public AdqlResource.AdqlSchema search(final AdqlResource.AdqlCatalog parent, final String name)
             {
             return super.first(
                 super.query(
@@ -273,6 +257,25 @@ implements AdqlResource.AdqlSchema
                     ).setString(
                         "name",
                         name
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<AdqlResource.AdqlSchema> search(final AdqlResource.AdqlCatalog parent, final String text)
+            {
+            return super.iterable(
+                super.query(
+                    "adql.schema-search-parent.text"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "text",
+                        searchParam(
+                            text
+                            )
                     )
                 );
             }
@@ -321,7 +324,6 @@ implements AdqlResource.AdqlSchema
 
             @Override
             public AdqlResource.AdqlTable select(final String name)
-            throws NameNotFoundException
                 {
                 return womble().resources().base().views().catalogs().schemas().tables().select(
                     AdqlSchemaEntity.this,
@@ -330,11 +332,11 @@ implements AdqlResource.AdqlSchema
                 }
 
             @Override
-            public AdqlResource.AdqlTable search(final String name)
+            public Iterable<AdqlResource.AdqlTable> search(final String text)
                 {
                 return womble().resources().base().views().catalogs().schemas().tables().search(
                     AdqlSchemaEntity.this,
-                    name
+                    text
                     ) ;
                 }
             };

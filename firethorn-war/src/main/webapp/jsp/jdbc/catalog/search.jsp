@@ -5,12 +5,9 @@
 <%@ page
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
-    
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceController"
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourcesController"
-
-    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceBean"
-
+    import="uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource"
     session="true"
 %><%
 PathBuilder paths = new ServletPathBuilder(
@@ -21,7 +18,7 @@ String text = (String) request.getAttribute(
     JdbcResourcesController.SEARCH_TEXT
     );
 
-Iterable<JdbcResourceBean> resources = (Iterable<JdbcResourceBean>) request.getAttribute(
+Iterable<JdbcResource> resources = (Iterable<JdbcResource>) request.getAttribute(
     JdbcResourcesController.SEARCH_RESULT
     ) ;
 
@@ -33,16 +30,12 @@ Iterable<JdbcResourceBean> resources = (Iterable<JdbcResourceBean>) request.getA
     </head>
     <body>
         <div>
-            JDBC Resources
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
             <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>
         </div>
         <div>
-            <hr/>
-        </div>
-        <div>
-            Search for JDBC Resources by name
+            Search for Resources
             <div>
                 <form method='GET' action='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "search") %>'>
                     Text <input type='text' name='<%= JdbcResourcesController.SEARCH_TEXT %>' value='<%= ((text != null) ? text : "" ) %>'/>
@@ -55,13 +48,14 @@ Iterable<JdbcResourceBean> resources = (Iterable<JdbcResourceBean>) request.getA
                 <%
                 if (resources != null)
                     {
-                    for (JdbcResourceBean resource : resources)
+                    for (JdbcResource resource : resources)
                         {
                         %>
                         <tr>
-                            <td><a href='<%= resource.getIdent() %>'><%= resource.getName() %></a></td>
-                            <td><%= resource.getCreated() %></td>
-                            <td><%= resource.getModified() %></td>
+                            <td><a href='<%= paths.link(resource) %>'><%= resource.name() %></a></td>
+                            <td><%= resource.owner().name() %></td>
+                            <td><%= resource.created() %></td>
+                            <td><%= resource.modified() %></td>
                         </tr>
                         <%
                         }

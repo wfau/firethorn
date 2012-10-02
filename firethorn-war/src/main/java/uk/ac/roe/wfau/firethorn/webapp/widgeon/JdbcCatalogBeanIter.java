@@ -17,46 +17,41 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.widgeon;
 
-import java.net.URI;
-
-import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
- * Bean wrapper to enable the JSON converter to process a JdbcResource.  
+ * Bean wrapper to enable the JSON converter to process list of a DataServices.  
  *
  */
-@Slf4j
-public class JdbcResourceBean
-extends AbstractEntityBean<JdbcResource>
-implements EntityBean<JdbcResource>
+public class JdbcCatalogBeanIter
+extends AbstractEntityBeanIter<JdbcResource.JdbcCatalog>
     {
-    
+
     /**
-     * The data type identifier.
+     * The URI builder to generate entity URIs.
      * 
      */
-    public static final URI TYPE_URI = URI.create(
-        "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json"
-        );
+    protected UriBuilder builder ;
     
     /**
-     * 
      * Public constructor.
-     * @param builder
-     *      A UriBuilder for generating the service URI.
-     * @param entity
-     *      The target JdbcResource.
      *
      */
-    public JdbcResourceBean(UriBuilder builder, JdbcResource entity)
+    public JdbcCatalogBeanIter(UriBuilder builder, Iterable<JdbcResource.JdbcCatalog> iterable)
         {
         super(
-            TYPE_URI,
+            iterable
+            );
+        this.builder = builder ;
+        }
+
+    @Override
+    public EntityBean<JdbcResource.JdbcCatalog> bean(JdbcResource.JdbcCatalog entity)
+        {
+        return new JdbcCatalogBean(
             builder,
             entity
             );

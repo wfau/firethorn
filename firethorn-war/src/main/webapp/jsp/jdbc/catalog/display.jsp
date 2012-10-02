@@ -8,18 +8,22 @@
     
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceController"
     import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourcesController"
+    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceCatalogsController"
 
-    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceBean"
+    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcCatalogController"
+
+    import="uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource"
+    import="uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.JdbcCatalog"
+
     session="true"
 %><%
 PathBuilder paths = new ServletPathBuilder(
     request
     );
 
-JdbcResourceBean resource = (JdbcResourceBean) request.getAttribute(
-    JdbcResourceController.TARGET_ENTITY
+JdbcResource.JdbcCatalog catalog = (JdbcResource.JdbcCatalog) request.getAttribute(
+    JdbcCatalogController.TARGET_ENTITY
     ) ;
-
 %>
 <html>
     <head>
@@ -28,37 +32,26 @@ JdbcResourceBean resource = (JdbcResourceBean) request.getAttribute(
     </head>
     <body>
         <div>
-            JDBC Resources
-            <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
-            <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
-            <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>
         </div>
         <div>
-            <hr/>
-        </div>
-        <div>
-            JDBC Resource
+            Resource
             <div>
                 <table border='1'>
                     <tr>
                         <td>Ident</td>
-                        <td><%= resource.getIdent() %></td>
+                        <td><%= catalog.ident() %></td>
                     </tr>
                     <tr>
                         <td>Name</td>
-                        <td><a href='<%= resource.getIdent() %>'><%= resource.getName() %></a></td>
+                        <td><a href='<%= paths.link(catalog) %>'><%= catalog.name() %></a></td>
                     </tr>
                     <tr>
-                        <td>Created</td>
-                        <td><%= resource.getCreated() %></td>
+                        <td>Owner</td>
+                        <td><%= catalog.owner().name() %></td>
                     </tr>
                     <tr>
-                        <td>Modified</td>
-                        <td><%= resource.getModified() %></td>
-                    </tr>
-                    <tr>
-                        <td>Class</td>
-                        <td><%= resource.getClass().getName() %></td>
+                        <td>Type</td>
+                        <td><%= catalog.getClass().getName() %></td>
                     </tr>
                 </table>
             </div>

@@ -78,8 +78,12 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
             query = "FROM JdbcCatalogEntity WHERE (parent = :parent) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "jdbc.catalog-select-parent-name",
+            name  = "jdbc.catalog-select-parent.name",
             query = "FROM JdbcCatalogEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "jdbc.catalog-search-parent.text",
+            query = "FROM JdbcCatalogEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident desc"
             )
         }
     )
@@ -165,30 +169,10 @@ implements JdbcResource.JdbcCatalog
         @Override
         @SelectEntityMethod
         public JdbcResource.JdbcCatalog select(final JdbcResource parent, final String name)
-        throws NameNotFoundException
-            {
-            final JdbcResource.JdbcCatalog result = this.search(
-                parent,
-                name
-                );
-            if (result != null)
-                {
-                return result ;
-                }
-            else {
-                throw new NameNotFoundException(
-                    name
-                    );
-                }
-            }
-
-        @Override
-        @SelectEntityMethod
-        public JdbcResource.JdbcCatalog search(final JdbcResource parent, final String name)
             {
             return super.first(
                 super.query(
-                    "jdbc.catalog-select-parent-name"
+                    "jdbc.catalog-select-parent.name"
                     ).setEntity(
                         "parent",
                         parent
@@ -196,6 +180,25 @@ implements JdbcResource.JdbcCatalog
                         "name",
                         name
                     )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<JdbcResource.JdbcCatalog> search(final JdbcResource parent, final String text)
+            {
+            return super.iterable(
+                super.query(
+                    "jdbc.catalog-search-parent.text"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "text",
+                        searchParam(
+                            text
+                            )
+                        )
                 );
             }
 
@@ -242,7 +245,7 @@ implements JdbcResource.JdbcCatalog
             @Override
             public AdqlResource.AdqlCatalog search(final AdqlResource parent)
                 {
-                return womble().resources().jdbc().views().catalogs().search(
+                return womble().resources().jdbc().views().catalogs().select(
                     parent,
                     JdbcCatalogEntity.this
                     );
@@ -274,7 +277,6 @@ implements JdbcResource.JdbcCatalog
 
             @Override
             public JdbcResource.JdbcSchema select(final String name)
-            throws NameNotFoundException
                 {
                 return womble().resources().jdbc().catalogs().schemas().select(
                     JdbcCatalogEntity.this,
@@ -283,11 +285,11 @@ implements JdbcResource.JdbcCatalog
                 }
 
             @Override
-            public JdbcResource.JdbcSchema search(final String name)
+            public Iterable<JdbcResource.JdbcSchema> search(final String text)
                 {
                 return womble().resources().jdbc().catalogs().schemas().search(
                     JdbcCatalogEntity.this,
-                    name
+                    text
                     );
                 }
 
@@ -322,7 +324,7 @@ implements JdbcResource.JdbcCatalog
                             );
                         log.debug("Checking database schema [{}]", name);
 
-                        JdbcResource.JdbcSchema schema = this.search(
+                        JdbcResource.JdbcSchema schema = this.select(
                             name
                             );
                         if (schema == null)

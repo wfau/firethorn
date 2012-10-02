@@ -73,6 +73,10 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceEntity;
         @NamedQuery(
             name  = "adql.resource-select-base.name",
             query = "FROM AdqlResourceEntity WHERE ((base = :base) AND (name = :name)) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "adql.resource-search-base.text",
+            query = "FROM AdqlResourceEntity WHERE ((base = :base) AND (name LIKE :text)) ORDER BY ident desc"
             )
         }
     )
@@ -158,26 +162,6 @@ implements AdqlResource
         @Override
         @SelectEntityMethod
         public AdqlResource select(final BaseResource base, final String name)
-        throws NameNotFoundException
-            {
-            final AdqlResource result = this.search(
-                base,
-                name
-                );
-            if (result != null)
-                {
-                return result ;
-                }
-            else {
-                throw new NameNotFoundException(
-                    name
-                    );
-                }
-            }
-
-        @Override
-        @SelectEntityMethod
-        public AdqlResource search(final BaseResource base, final String name)
             {
             return super.first(
                 super.query(
@@ -188,6 +172,25 @@ implements AdqlResource
                     ).setString(
                         "name",
                         name
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<AdqlResource> search(final BaseResource base, final String text)
+            {
+            return super.iterable(
+                super.query(
+                    "adql.resource-search-base.text"
+                    ).setEntity(
+                        "base",
+                        base
+                    ).setString(
+                        "text",
+                        searchParam(
+                            text
+                            )
                     )
                 );
             }
@@ -221,7 +224,6 @@ implements AdqlResource
 
             @Override
             public AdqlResource.AdqlCatalog select(final String name)
-            throws NameNotFoundException
                 {
                 return womble().resources().base().views().catalogs().select(
                     AdqlResourceEntity.this,
@@ -230,11 +232,11 @@ implements AdqlResource
                 }
 
             @Override
-            public AdqlResource.AdqlCatalog search(final String name)
+            public Iterable<AdqlResource.AdqlCatalog> search(final String text)
                 {
                 return womble().resources().base().views().catalogs().search(
                     AdqlResourceEntity.this,
-                    name
+                    text
                     ) ;
                 }
             };
@@ -249,18 +251,6 @@ implements AdqlResource
         {
         super();
         }
-
-    /**
-     * Create a new view of a resource.
-     *
-    private AdqlResourceEntity(final BaseResource base)
-        {
-        this(
-            base,
-            null
-            );
-        }
-     */
 
     /**
      * Create a new view of a resource.

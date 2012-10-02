@@ -258,15 +258,15 @@ implements AdqlDBTable
         // If 'name' is an ADQL name, then search the AdqlResource.
         if (adql)
             {
-            adqlColumn = adqlTable.columns().search(
+            adqlColumn = adqlTable.columns().select(
                 name
                 );
             }
         //
         // If 'name' is not an ADQL name, then search the BaseResource.
         else {
-            adqlColumn = adqlTable.columns().search(
-                adqlTable.base().columns().search(
+            adqlColumn = adqlTable.columns().select(
+                adqlTable.base().columns().select(
                     name
                     )
                 );

@@ -153,11 +153,17 @@ extends ControllerBase
      */
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
     public ModelAndView htmlSelect(
-        final ModelAndView model
+        final ModelAndView model,
+        final HttpServletRequest request
         ){
         model.addObject(
             SELECT_RESULT,
-            womble().resources().jdbc().select()
+            new JdbcResourceBeanIter(
+                resourceController.builder(
+                    request
+                    ),
+                womble().resources().jdbc().select()
+                )
             );
         model.setViewName(
             "jdbc/resource/select"
@@ -192,12 +198,22 @@ extends ControllerBase
     public ModelAndView htmlSelect(
         @RequestParam(SELECT_NAME)
         final String name,
-        final ModelAndView model
+        final ModelAndView model,
+        final HttpServletRequest request
         ){
         model.addObject(
+            SELECT_NAME,
+            name
+            );
+        model.addObject(
             SELECT_RESULT,
-            womble().resources().jdbc().select(
-                name
+            new JdbcResourceBeanIter(
+                resourceController.builder(
+                    request
+                    ),
+                womble().resources().jdbc().select(
+                    name
+                    )
                 )
             );
         model.setViewName(
@@ -251,12 +267,22 @@ extends ControllerBase
     public ModelAndView htmlSearch(
         @RequestParam(SEARCH_TEXT)
         final String text,
-        final ModelAndView model
+        final ModelAndView model,
+        final HttpServletRequest request
         ){
         model.addObject(
+            SEARCH_TEXT,
+            text
+            );
+        model.addObject(
             SEARCH_RESULT,
-            womble().resources().jdbc().search(
-                text
+            new JdbcResourceBeanIter(
+                resourceController.builder(
+                    request
+                    ),
+                womble().resources().jdbc().search(
+                    text
+                    )
                 )
             );
         model.setViewName(

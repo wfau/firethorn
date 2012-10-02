@@ -218,7 +218,6 @@ implements BaseResource
 
             @Override
             public AdqlResource select(final String name)
-            throws NameNotFoundException
                 {
                 return womble().resources().base().views().select(
                     BaseResourceEntity.this,

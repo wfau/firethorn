@@ -77,9 +77,13 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
             name  = "jdbc.schema-select-parent",
             query = "FROM JdbcSchemaEntity WHERE parent = :parent ORDER BY ident desc"
             ),
+            @NamedQuery(
+                name  = "jdbc.schema-select-parent.name",
+                query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
+                ),
         @NamedQuery(
-            name  = "jdbc.schema-select-parent-name",
-            query = "FROM JdbcSchemaEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
+            name  = "jdbc.schema-search-parent.text",
+            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident desc"
             )
         }
     )
@@ -165,30 +169,10 @@ implements JdbcResource.JdbcSchema
         @Override
         @SelectEntityMethod
         public JdbcResource.JdbcSchema select(final JdbcResource.JdbcCatalog parent, final String name)
-        throws NameNotFoundException
-            {
-            final JdbcResource.JdbcSchema result = this.search(
-                parent,
-                name
-                );
-            if (result != null)
-                {
-                return result;
-                }
-            else {
-                throw new NameNotFoundException(
-                    name
-                    );
-                }
-            }
-
-        @Override
-        @SelectEntityMethod
-        public JdbcResource.JdbcSchema search(final JdbcResource.JdbcCatalog parent, final String name)
             {
             return super.first(
                 super.query(
-                    "jdbc.schema-select-parent-name"
+                    "jdbc.schema-select-parent.name"
                     ).setEntity(
                         "parent",
                         parent
@@ -196,6 +180,25 @@ implements JdbcResource.JdbcSchema
                         "name",
                         name
                     )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<JdbcResource.JdbcSchema> search(final JdbcResource.JdbcCatalog parent, final String text)
+            {
+            return super.iterable(
+                super.query(
+                    "jdbc.schema-search-parent.text"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "text",
+                        searchParam(
+                            text
+                            )
+                        )
                 );
             }
 
@@ -242,7 +245,7 @@ implements JdbcResource.JdbcSchema
             @Override
             public AdqlResource.AdqlSchema search(final AdqlResource.AdqlCatalog parent)
                 {
-                return womble().resources().jdbc().views().catalogs().schemas().search(
+                return womble().resources().jdbc().views().catalogs().schemas().select(
                     parent,
                     JdbcSchemaEntity.this
                     );
@@ -251,7 +254,7 @@ implements JdbcResource.JdbcSchema
             @Override
             public AdqlResource.AdqlSchema search(final AdqlResource parent)
                 {
-                return womble().resources().jdbc().views().catalogs().schemas().search(
+                return womble().resources().jdbc().views().catalogs().schemas().select(
                     parent,
                     JdbcSchemaEntity.this
                     );
@@ -283,7 +286,6 @@ implements JdbcResource.JdbcSchema
 
             @Override
             public JdbcResource.JdbcTable select(final String name)
-            throws NameNotFoundException
                 {
                 return womble().resources().jdbc().catalogs().schemas().tables().select(
                     JdbcSchemaEntity.this,
@@ -292,11 +294,11 @@ implements JdbcResource.JdbcSchema
                 }
 
             @Override
-            public JdbcResource.JdbcTable search(final String name)
+            public Iterable<JdbcResource.JdbcTable> search(final String text)
                 {
                 return womble().resources().jdbc().catalogs().schemas().tables().search(
                     JdbcSchemaEntity.this,
-                    name
+                    text
                     ) ;
                 }
 
@@ -336,7 +338,7 @@ implements JdbcResource.JdbcSchema
                         final String type = tables.getString(JdbcResource.JDBC_META_TABLE_TYPE);
                         log.debug("Checking database table [{}][{}]", name, type);
 
-                        JdbcResource.JdbcTable table = this.search(
+                        JdbcResource.JdbcTable table = this.select(
                             name
                             );
                         if (table == null)

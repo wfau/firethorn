@@ -131,13 +131,14 @@ implements JdbcResource
         @SelectEntityMethod
         public Iterable<JdbcResource> search(final String text)
             {
-            final String match = new StringBuilder(text).append("%").toString();
             return super.iterable(
                 super.query(
                     "jdbc.resource-search-text"
                     ).setString(
                         "text",
-                        match
+                        searchParam(
+                            text
+                            )
                         )
                 );
             }
@@ -218,7 +219,6 @@ implements JdbcResource
 
             @Override
             public JdbcResource.JdbcCatalog select(final String name)
-            throws NameNotFoundException
                 {
                 return womble().resources().jdbc().catalogs().select(
                     JdbcResourceEntity.this,
@@ -227,11 +227,11 @@ implements JdbcResource
                 }
 
             @Override
-            public JdbcResource.JdbcCatalog search(final String name)
+            public Iterable<JdbcResource.JdbcCatalog> search(final String text)
                 {
                 return womble().resources().jdbc().catalogs().search(
                     JdbcResourceEntity.this,
-                    name
+                    text
                     );
                 }
 
@@ -262,7 +262,7 @@ implements JdbcResource
                             );
                         log.debug("Checking database catalog [{}]", name);
 
-                        JdbcCatalog catalog = this.search(
+                        JdbcCatalog catalog = this.select(
                             name
                             );
                         if (catalog == null)
