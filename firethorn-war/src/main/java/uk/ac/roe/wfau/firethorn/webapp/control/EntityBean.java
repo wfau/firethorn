@@ -27,6 +27,11 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
  */
 public interface EntityBean<EntityType extends Entity>
     {
+    /**
+     * The wrapped Entity.
+     * 
+     */
+    public EntityType entity();
 
     /**
      * The Entity ID.

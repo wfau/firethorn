@@ -63,6 +63,12 @@ implements EntityBean<EntityType>
         }
 
     @Override
+    public EntityType entity()
+        {
+        return this.entity;
+        }
+
+    @Override
     public String id()
         {
         return entity.ident().toString();

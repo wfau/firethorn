@@ -27,13 +27,26 @@
         | In memory HSQLDB test database.
         | http://dwark.blogspot.co.uk/2006/10/maven-2-hibernate-hsqldb.html
         | https://numberformat.wordpress.com/2010/06/03/creating-and-using-hsqldb-database-using-maven-in-10-minutes/
-        +-->
     <Resource
         name="firethorn/database" 
         auth="Container"
         type="javax.sql.DataSource" 
         driverClassName="org.hsqldb.jdbcDriver"
         url="jdbc:hsqldb:mem:firethorn"
+        username="sa"
+        password=""
+        />
+        +-->
+
+    <!--+
+        | File based HSQLDB test database.
+        +-->
+    <Resource
+        name="firethorn/database" 
+        auth="Container"
+        type="javax.sql.DataSource" 
+        driverClassName="org.hsqldb.jdbcDriver"
+        url="jdbc:hsqldb:file:target/database/testdata"
         username="sa"
         password=""
         />

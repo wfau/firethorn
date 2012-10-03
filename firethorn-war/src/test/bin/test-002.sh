@@ -5,6 +5,16 @@
 hostname=localhost
 hostport=8080
 
+name()
+    {
+    echo "$(pwgen 4 1)-$(date '+%Y%m%d %H%%M%S%N')"
+    }
+
+name()
+    {
+    date '+%Y%m%d %H%M%S%N'
+    }
+
 #
 # JDBC resources
 
@@ -21,10 +31,10 @@ curl -v \
     http://${hostname}:${hostport}/firethorn/jdbc/resources/select
 
 echo ""
-echo "POST create for 001"
+echo "POST create"
 curl -v \
     -H 'Accept: application/json' \
-    --data 'jdbc.resources.create.name=jdbc-resource-001' \
+    --data "jdbc.resources.create.name=jdbc-resource-$(name)" \
     http://${hostname}:${hostport}/firethorn/jdbc/resources/create 
 
 echo ""
@@ -49,14 +59,14 @@ echo ""
 echo "Create a catalog for resource 001"
 curl -v \
     -H 'Accept: application/json' \
-    --data 'jdbc.resource.catalogs.create.name=jdbc-catalog-001' \
+    --data "jdbc.resource.catalogs.create.name=jdbc-catalog-$(name)" \
     http://${hostname}:${hostport}/firethorn/jdbc/resource/1/catalogs/create
 
 echo ""
 echo "Create a catalog for resource 001"
 curl -v \
     -H 'Accept: application/json' \
-    --data 'jdbc.resource.catalogs.create.name=jdbc-catalog-002' \
+    --data "jdbc.resource.catalogs.create.name=jdbc-catalog-$(name)" \
     http://${hostname}:${hostport}/firethorn/jdbc/resource/1/catalogs/create
 
 echo ""
@@ -64,19 +74,6 @@ echo "GET list of catalogs for resource 001"
 curl -v \
     -H 'Accept: application/json' \
     http://${hostname}:${hostport}/firethorn/jdbc/resource/1/catalogs/select
-
-echo ""
-echo "Select a specific catalog by name"
-curl -v \
-    -H 'Accept: application/json' \
-    --data 'jdbc.resource.catalogs.select.name=jdbc-catalog-002' \
-    http://${hostname}:${hostport}/firethorn/jdbc/resource/1/catalogs/select
-
-echo ""
-echo "Select a specific catalog by name"
-curl -v \
-    -H 'Accept: application/json' \
-    http://${hostname}:${hostport}/firethorn/jdbc/resource/1/catalogs/select?jdbc.resource.catalogs.select.name=jdbc-catalog-002
 
 # todo check we get 404 for missing
 
@@ -98,5 +95,8 @@ echo "GET details for catalog 001"
 curl -v \
     -H 'Accept: application/json' \
     http://${hostname}:${hostport}/firethorn/jdbc/catalog/1
+
+
+
 
 

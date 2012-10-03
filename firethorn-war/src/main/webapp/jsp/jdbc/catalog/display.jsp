@@ -36,46 +36,6 @@ JdbcCatalogBean catalog = (JdbcCatalogBean) request.getAttribute(
     </head>
     <body>
         <div>
-            JDBC resources
-            <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "search") %>'>search</a>]</span>
-            <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "select") %>'>select</a>]</span>
-            <span>[<a href='<%= paths.path(JdbcResourcesController.CONTROLLER_PATH, "create") %>'>create</a>]</span>
-        </div>
-        <div>
-            <hr/>
-        </div>
-        <div>
-            JDBC resource
-            <div>
-                <table border='1'>
-                    <tr>
-                        <td>Name</td>
-                        <td><a href='<%= resource.getIdent() %>'><%= resource.getName() %></a></td>
-                    </tr>
-                    <tr>
-                        <td>Created</td>
-                        <td><%= resource.getCreated() %></td>
-                    </tr>
-                    <tr>
-                        <td>Modified</td>
-                        <td><%= resource.getModified() %></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <div>
-            <hr/>
-        </div>
-        <div>
-            Resource catalogs
-            <span>[<a href='<%= resource.getIdent().getPath() %>/catalogs/search'>search</a>]</span>
-            <span>[<a href='<%= resource.getIdent().getPath() %>/catalogs/select'>select</a>]</span>
-            <span>[<a href='<%= resource.getIdent().getPath() %>/catalogs/create'>create</a>]</span>
-        </div>
-        <div>
-            <hr/>
-        </div>
-        <div>
             Resource catalog
             <div>
                 <table border='1'>
@@ -94,6 +54,10 @@ JdbcCatalogBean catalog = (JdbcCatalogBean) request.getAttribute(
                     <tr>
                         <td>Type</td>
                         <td><%= catalog.getClass().getName() %></td>
+                    </tr>
+                    <tr>
+                        <td>Parent</td>
+                        <td><a href='<%= resource.getIdent() %>'><%= resource.getName() %></a></td>
                     </tr>
                 </table>
             </div>

@@ -176,20 +176,6 @@ extends ControllerBase
         }
 
     /**
-     * HTML GET request to display the index page.
-     *
-     */
-    @RequestMapping(value="", method=RequestMethod.GET)
-    public ModelAndView htmlIndex(
-        final ModelAndView model
-        ){
-        model.setViewName(
-            "jdbc/catalog/index"
-            );
-        return model ;
-        }
-
-    /**
      * Select all.
      * 
      */
@@ -206,8 +192,31 @@ extends ControllerBase
         }
 
     /**
+     * Default HTML GET request (select all).
+     *
+     */
+    @RequestMapping(value="", method=RequestMethod.GET)
+    public ModelAndView htmlIndex(
+        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
+        final JdbcResource resource,
+        final HttpServletRequest request,
+        final ModelAndView model
+        ){
+        model.addObject(
+            JdbcResourceCatalogsController.SELECT_RESULT,
+            select(
+                request,
+                resource
+                )
+            );
+        model.setViewName(
+            "jdbc/catalog/select"
+            );
+        return model ;
+        }
+
+    /**
      * HTML GET request to select all.
-     * @todo Wrap the entities as beans (with URI) 
      *
      */
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)

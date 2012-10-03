@@ -99,6 +99,7 @@ public class JdbcCatalogController
         @PathVariable("ident")
         final String ident
         ){
+        log.debug("JdbcCatalog catalog() [{}]", ident);
         try {
             return womble().resources().jdbc().catalogs().select(
                 womble().resources().jdbc().catalogs().ident(
@@ -106,11 +107,32 @@ public class JdbcCatalogController
                     )
                 );
             }
-        catch (IdentifierNotFoundException e)
+        catch (IdentifierNotFoundException ouch)
             {
+            log.debug("JdbcCatalog not found [{}]", ouch);
             return null ;
             }
         }
+
+    /**
+     * Wrap the JdbcCatalog as a JdbcCatalogBean.
+     * ** this fails because Spring can't handle the nested interface ?
+     * 
+    @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
+    public JdbcCatalogBean bean(
+        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+        final JdbcCatalog catalog,
+        final HttpServletRequest request
+        ){
+        log.debug("JdbcCatalogBean bean() [{}]", catalog.ident());
+        return new JdbcCatalogBean(
+            this.builder(
+                request
+                ),
+            catalog
+            );
+        }
+     */
 
     /**
      * Wrap the JdbcCatalog as a JdbcCatalogBean.
@@ -118,15 +140,18 @@ public class JdbcCatalogController
      */
     @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
     public JdbcCatalogBean bean(
-        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
-        final JdbcCatalog catalog,
+        @PathVariable("ident")
+        final String ident,
         final HttpServletRequest request
         ){
+        log.debug("JdbcCatalogBean bean()");
         return new JdbcCatalogBean(
             this.builder(
                 request
                 ),
-            catalog
+            catalog(
+                ident
+                )
             );
         }
 
@@ -157,11 +182,24 @@ public class JdbcCatalogController
     public ModelAndView htmlSelect(
         @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
         final JdbcCatalogBean bean,
-        final ModelAndView model
+        final ModelAndView model,
+        final HttpServletRequest request
         ){
+        log.debug("ModelAndView htmlSelect()");
         model.setViewName(
             "jdbc/catalog/display"
             );
+
+        model.addObject(
+            JdbcResourceController.RESOURCE_BEAN,
+            new JdbcResourceBean(
+                resourceController.builder(
+                    request
+                    ),
+                bean.entity().parent()
+                )
+            );
+        
         return model ;
         }
 
@@ -175,6 +213,7 @@ public class JdbcCatalogController
         @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
         final JdbcCatalogBean bean
         ){
+        log.debug("ModelAndView jsonSelect()");
         return bean ;
         }
     }
