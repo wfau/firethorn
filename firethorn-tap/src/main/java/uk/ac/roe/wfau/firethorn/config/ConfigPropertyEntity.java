@@ -30,13 +30,16 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  * ConfigProperty implementation.
@@ -132,6 +135,32 @@ implements ConfigProperty
                     );
                 }
             }
+
+        @Autowired
+        protected ConfigProperty.IdentFactory identFactory ;
+
+        @Override
+        public String link(ConfigProperty entity)
+            {
+            return identFactory.link(
+                entity.ident()
+                );
+            }
+
+        @Override
+        public String link(Identifier ident)
+            {
+            return identFactory.link(
+                ident
+                );
+            }
+        @Override
+        public Identifier ident(final String string)
+            {
+            return identFactory.ident(
+                string
+                );
+            }
         }
     
     /**
@@ -204,6 +233,12 @@ implements ConfigProperty
             log.error("Failed to convert config property to URI [{}][{}]", this.value, ouch);
             return null ;
             }
+        }
+
+    @Override
+    public String link()
+        {
+        return null ;
         }
     }
 

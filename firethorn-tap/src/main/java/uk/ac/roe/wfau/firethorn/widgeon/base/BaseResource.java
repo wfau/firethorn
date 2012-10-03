@@ -19,7 +19,12 @@ package uk.ac.roe.wfau.firethorn.widgeon.base ;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlCatalog;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
  * Public interface for a physical resource, describing a real data resource (JDBC database OR TAP service).
@@ -28,6 +33,16 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 public interface BaseResource
 extends DataResource
     {
+
+    /**
+     * Factory interface for identifiers.
+     *
+     */
+    public static interface IdentFactory
+    extends Entity.IdentFactory<BaseResource>
+        {
+        }
+
     /**
      * Factory interface for creating and selecting resources.
      *
@@ -136,7 +151,7 @@ extends DataResource
              * Access to our View factory.
              *
              */
-            public AdqlResource.AdqlCatalog.Factory views();
+            public AdqlCatalog.Factory views();
 
             }
 
@@ -151,13 +166,13 @@ extends DataResource
              * Select all the views of the catalog.
              *
              */
-            public Iterable<AdqlResource.AdqlCatalog> select();
+            public Iterable<AdqlCatalog> select();
 
             /**
              * Search for catalog view based on parent resource.
              *
              */
-            public AdqlResource.AdqlCatalog search(final AdqlResource parent);
+            public AdqlCatalog search(final AdqlResource parent);
 
             }
 
@@ -209,7 +224,7 @@ extends DataResource
              * Access to our View factory.
              *
              */
-            public AdqlResource.AdqlSchema.Factory views();
+            public AdqlSchema.Factory views();
 
             }
 
@@ -223,19 +238,19 @@ extends DataResource
              * Select all the views of the schema.
              *
              */
-            public Iterable<AdqlResource.AdqlSchema> select();
+            public Iterable<AdqlSchema> select();
 
             /**
              * Search for schema view based on parent resource.
              *
              */
-            public AdqlResource.AdqlSchema search(final AdqlResource parent);
+            public AdqlSchema search(final AdqlResource parent);
 
             /**
              * Search for schema view based on parent catalog.
              *
              */
-            public AdqlResource.AdqlSchema search(final AdqlResource.AdqlCatalog parent);
+            public AdqlSchema search(final AdqlCatalog parent);
 
             }
 
@@ -293,7 +308,7 @@ extends DataResource
              * Access to our view factory.
              *
              */
-            public AdqlResource.AdqlTable.Factory views();
+            public AdqlTable.Factory views();
 
             }
 
@@ -307,25 +322,25 @@ extends DataResource
              * Select all the views of the table.
              *
              */
-            public Iterable<AdqlResource.AdqlTable> select();
+            public Iterable<AdqlTable> select();
 
             /**
              * Search for table view based on parent resource.
              *
              */
-            public AdqlResource.AdqlTable search(final AdqlResource parent);
+            public AdqlTable search(final AdqlResource parent);
 
             /**
              * Search for table view based on parent catalog.
              *
              */
-            public AdqlResource.AdqlTable search(final AdqlResource.AdqlCatalog parent);
+            public AdqlTable search(final AdqlCatalog parent);
 
             /**
              * Search for table view based on parent schema.
              *
              */
-            public AdqlResource.AdqlTable search(final AdqlResource.AdqlSchema parent);
+            public AdqlTable search(final AdqlSchema parent);
 
             }
 
@@ -389,7 +404,7 @@ extends DataResource
              * Access to our view factory.
              *
              */
-            public AdqlResource.AdqlColumn.Factory views();
+            public AdqlColumn.Factory views();
 
             }
 
@@ -403,31 +418,31 @@ extends DataResource
              * Select all the views of the column.
              *
              */
-            public Iterable<AdqlResource.AdqlColumn> select();
+            public Iterable<AdqlColumn> select();
 
             /**
              * Search for column view based on parent resource.
              *
              */
-            public AdqlResource.AdqlColumn search(final AdqlResource parent);
+            public AdqlColumn search(final AdqlResource parent);
 
             /**
              * Search for column view based on parent catalog.
              *
              */
-            public AdqlResource.AdqlColumn search(final AdqlResource.AdqlCatalog parent);
+            public AdqlColumn search(final AdqlCatalog parent);
 
             /**
              * Search for column view based on parent schema.
              *
              */
-            public AdqlResource.AdqlColumn search(final AdqlResource.AdqlSchema parent);
+            public AdqlColumn search(final AdqlSchema parent);
 
             /**
              * Search for column view based on parent table.
              *
              */
-            public AdqlResource.AdqlColumn search(final AdqlResource.AdqlTable parent);
+            public AdqlColumn search(final AdqlTable parent);
 
             }
 

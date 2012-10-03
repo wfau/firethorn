@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon ;
+package uk.ac.roe.wfau.firethorn.widgeon.adql ;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -25,12 +25,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceTestBase;
 
 /**
  *
  */
 @Slf4j
-public class AdqlColumnTestCase
+public class AdqlSchemaTestCase
 extends JdbcResourceTestBase
     {
 
@@ -46,31 +47,23 @@ extends JdbcResourceTestBase
                 )
             );
         //
-        // Create base catalog, schema and table.
+        // Create base catalog.
         assertNotNull(
             base().catalogs().create(
                 "catalog-A"
-                ).schemas().create(
-                    "schema-A"
-                    ).tables().create(
-                        "table-A"
-                        )
+                )
             );
         //
-        // Select table view works.
+        // Select catalog view works.
         assertNotNull(
             base().views().select(
                 "view-A"
                 ).catalogs().select(
                     "catalog-A"
-                    ).schemas().select(
-                        "schema-A"
-                        ).tables().select(
-                            "table-A"
-                            )
+                    )
             );
         //
-        // Select missing column view fails.
+        // Select missing schema view fails.
         assertIsNull(
             base().views().select(
                 "view-A"
@@ -78,11 +71,7 @@ extends JdbcResourceTestBase
                     "catalog-A"
                     ).schemas().select(
                         "schema-A"
-                        ).tables().select(
-                            "table-A"
-                            ).columns().select(
-                                "column-A"
-                                )
+                        )
             );
         }
 
@@ -98,44 +87,32 @@ extends JdbcResourceTestBase
                 )
             );
         //
-        // Create base catalog, schema and table.
+        // Create base catalog.
         assertNotNull(
             base().catalogs().create(
                 "catalog-A"
-                ).schemas().create(
-                    "schema-A"
-                    ).tables().create(
-                        "table-A"
-                        )
+                )
             );
         //
-        // Select table view works.
+        // Select catalog view works.
         assertNotNull(
             base().views().select(
                 "view-A"
                 ).catalogs().select(
                     "catalog-A"
-                    ).schemas().select(
-                        "schema-A"
-                        ).tables().select(
-                            "table-A"
-                            )
+                    )
             );
         //
-        // Create base column.
+        // Create base schema.
         assertNotNull(
             base().catalogs().select(
                 "catalog-A"
-                ).schemas().select(
+                ).schemas().create(
                     "schema-A"
-                    ).tables().select(
-                        "table-A"
-                        ).columns().create(
-                            "column-A"
-                            )
+                    )
             );
         //
-        // Select column view works.
+        // Select schema view works.
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -143,11 +120,7 @@ extends JdbcResourceTestBase
                     "catalog-A"
                     ).schemas().select(
                         "schema-A"
-                        ).tables().select(
-                            "table-A"
-                            ).columns().select(
-                                "column-A"
-                                )
+                        )
             );
         }
 
@@ -163,20 +136,16 @@ extends JdbcResourceTestBase
                 )
             );
         //
-        // Create base catalog, schema, table and column.
+        // Create base catalog and schema.
         assertNotNull(
             base().catalogs().create(
                 "catalog-A"
                 ).schemas().create(
                     "schema-A"
-                    ).tables().create(
-                        "table-A"
-                        ).columns().create(
-                            "column-A"
-                            )
+                    )
             );
         //
-        // Select catalog, schema, table and column view works.
+        // Select catalog and schema view works.
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -184,12 +153,9 @@ extends JdbcResourceTestBase
                     "catalog-A"
                     ).schemas().select(
                         "schema-A"
-                        ).tables().select(
-                            "table-A"
-                            ).columns().select(
-                                "column-A"
-                                )
+                        )
             );
         }
+
     }
 

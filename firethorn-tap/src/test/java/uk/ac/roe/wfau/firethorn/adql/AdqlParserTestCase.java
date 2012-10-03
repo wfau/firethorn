@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable;
-import uk.ac.roe.wfau.firethorn.widgeon.JdbcResourceTestBase;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceTestBase;
 import adql.db.DBChecker;
 import adql.db.DBTable;
 import adql.db.DefaultDBColumn;

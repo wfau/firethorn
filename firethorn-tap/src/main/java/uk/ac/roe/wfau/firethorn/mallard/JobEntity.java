@@ -32,15 +32,17 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
 /**
- * AdqlService.Job implementation.
+ * AdqlService.AdqlJob implementation.
  *
  */
 @Slf4j
@@ -73,7 +75,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
     )
 public class JobEntity
 extends AbstractEntity
-implements AdqlService.Job
+implements AdqlJob
     {
 
     /**
@@ -96,8 +98,8 @@ implements AdqlService.Job
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<AdqlService.Job>
-    implements AdqlService.Job.Factory
+    extends AbstractFactory<AdqlJob>
+    implements AdqlJob.Factory
         {
         @Override
         public Class<?> etype()
@@ -107,7 +109,7 @@ implements AdqlService.Job
 
         @Override
         @SelectEntityMethod
-        public Iterable<AdqlService.Job> select(final AdqlService service)
+        public Iterable<AdqlJob> select(final AdqlService service)
             {
             return super.iterable(
                 super.query(
@@ -121,7 +123,7 @@ implements AdqlService.Job
 
         @Override
         @CreateEntityMethod
-        public AdqlService.Job create(final AdqlService service, final String name, final String adql)
+        public AdqlJob create(final AdqlService service, final String name, final String adql)
             {
             return super.insert(
                 new JobEntity(
@@ -129,6 +131,31 @@ implements AdqlService.Job
                     name,
                     adql
                     )
+                );
+            }
+
+        @Autowired
+        protected AdqlJob.IdentFactory identFactory ;
+
+        @Override
+        public String link(AdqlJob entity)
+            {
+            return identFactory.link(
+                entity.ident()
+                );
+            }
+        @Override
+        public String link(Identifier ident)
+            {
+            return identFactory.link(
+                ident
+                );
+            }
+        @Override
+        public Identifier ident(final String string)
+            {
+            return identFactory.ident(
+                string
                 );
             }
         }
@@ -176,7 +203,7 @@ implements AdqlService.Job
         }
 
     /**
-     * The Job status.
+     * The AdqlJob status.
      *
      */
     @Column(
@@ -188,9 +215,9 @@ implements AdqlService.Job
     @Enumerated(
         EnumType.STRING
         )
-    private final AdqlService.Job.Status status = AdqlService.Job.Status.EDITING ;
+    private final AdqlJob.Status status = AdqlJob.Status.EDITING ;
     @Override
-    public  AdqlService.Job.Status status()
+    public  AdqlJob.Status status()
         {
         return this.status;
         }
@@ -210,6 +237,12 @@ implements AdqlService.Job
     public  String adql()
         {
         return this.adql;
+        }
+
+    @Override
+    public String link()
+        {
+        return null;
         }
     }
 

@@ -21,6 +21,7 @@ import java.net.URI;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  * Public interface for a configuration property.
@@ -29,7 +30,15 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.EntityNotFoundException;
 public interface ConfigProperty
 extends Entity
     {
-
+    /**
+     * Factory interface for identifiers.
+     *
+     */
+    public static interface IdentFactory
+    extends Entity.IdentFactory<ConfigProperty>
+        {
+        }
+    
     /**
      * A ConfigProperty factory.
      *

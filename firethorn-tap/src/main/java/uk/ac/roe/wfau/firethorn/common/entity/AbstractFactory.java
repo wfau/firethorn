@@ -54,18 +54,6 @@ implements Entity.Factory<EntityType>
     public abstract Class<?> etype();
 
     /**
-     * Create an Identifier from a String.
-     *
-     */
-    @Override
-    public Identifier ident(final String string)
-        {
-        return new LongIdentifier(
-            string
-            );
-        }
-
-    /**
      * Our autowired reference to the global Womble.
      *
      */
@@ -267,6 +255,14 @@ implements Entity.Factory<EntityType>
     public String searchParam(String text)
         {
         return new StringBuilder(text).append("%").toString();
+        }
+
+    @Override
+    public String link(EntityType entity)
+        {
+        return link(
+            entity.ident()
+            );
         }
     }
 

@@ -27,6 +27,14 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 public interface AdqlService
 extends Entity
     {
+    /**
+     * Factory interface for identifiers.
+     *
+     */
+    public static interface IdentFactory
+    extends Entity.IdentFactory<AdqlService>
+        {
+        }
 
     /**
      * A service factory (TAP factory).
@@ -60,10 +68,10 @@ extends Entity
         public Iterable<AdqlService> search(final String text);
 
         /**
-         * Access to our Job factory.
+         * Access to our AdqlJob factory.
          *
          */
-        public Job.Factory jobs();
+        public AdqlJob.Factory adqlJobs();
         }
 
     /**
@@ -89,75 +97,14 @@ extends Entity
         }
 
     /**
-     * An ADQL query job.
-     *
-     */
-    public interface Job
-    extends Entity
-        {
-
-        public interface Factory
-        extends Entity.Factory<Job>
-            {
-
-            /**
-             * Create a new Job.
-             *
-             */
-            public Job create(final AdqlService service, final String name, final String adql);
-
-            /**
-             * Select all the Jobs for a AdqlService.
-             *
-             */
-            public Iterable<Job> select(final AdqlService service);
-
-            }
-
-        /**
-         * Access to the Job status.
-         *
-         */
-        public Status status();
-
-        /**
-         * Job status values.
-         *
-         */
-        public enum Status
-            {
-            EDITING(),
-            PENDING(),
-            RUNNING(),
-            COMPLETED(),
-            FAILED();
-            };
-
-        /**
-         * The parent AdqlService.
-         *
-         */
-        public AdqlService service();
-
-        /**
-         * The ADQL query.
-         *
-         */
-        public String adql();
-
-        // Results
-
-        }
-
-    /**
-     * Job list for this TAP service.
+     * AdqlJob list for this TAP service.
      *
      */
     public Jobs jobs();
     public interface Jobs
         {
-        public Job create(final String name, final String adql);
-        public Iterable<Job> select();
+        public AdqlJob create(final String name, final String adql);
+        public Iterable<AdqlJob> select();
         }
 
     }

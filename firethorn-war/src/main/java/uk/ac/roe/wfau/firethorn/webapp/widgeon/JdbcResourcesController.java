@@ -162,7 +162,7 @@ extends ControllerBase
                 resourceController.builder(
                     request
                     ),
-                womble().resources().jdbc().select()
+                womble().resources().jdbc().resources().select()
                 )
             );
         model.setViewName(
@@ -185,7 +185,7 @@ extends ControllerBase
             resourceController.builder(
                 request
                 ),
-            womble().resources().jdbc().select()
+            womble().resources().jdbc().resources().select()
             );
         }
     
@@ -211,7 +211,7 @@ extends ControllerBase
                 resourceController.builder(
                     request
                     ),
-                womble().resources().jdbc().select(
+                womble().resources().jdbc().resources().select(
                     name
                     )
                 )
@@ -238,7 +238,7 @@ extends ControllerBase
             resourceController.builder(
                 request
                 ),
-            womble().resources().jdbc().select(
+            womble().resources().jdbc().resources().select(
                 name
                 )
             );
@@ -280,7 +280,7 @@ extends ControllerBase
                 resourceController.builder(
                     request
                     ),
-                womble().resources().jdbc().search(
+                womble().resources().jdbc().resources().search(
                     text
                     )
                 )
@@ -307,7 +307,7 @@ extends ControllerBase
             resourceController.builder(
                 request
                 ),
-            womble().resources().jdbc().search(
+            womble().resources().jdbc().resources().search(
                 text
                 )
             );
@@ -343,7 +343,7 @@ extends ControllerBase
                 resourceController.builder(
                     request
                     ),
-                womble().resources().jdbc().create(
+                womble().resources().jdbc().resources().create(
                     name
                     )
                 );
@@ -376,7 +376,7 @@ extends ControllerBase
                 resourceController.builder(
                     request
                     ),
-                womble().resources().jdbc().create(
+                womble().resources().jdbc().resources().create(
                     name
                     )
                 );

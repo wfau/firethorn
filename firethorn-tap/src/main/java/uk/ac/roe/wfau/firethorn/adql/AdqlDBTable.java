@@ -22,7 +22,8 @@ import adql.db.DBColumn;
 
 import java.util.Iterator;
 
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTable;
 
 
 /**
@@ -44,7 +45,7 @@ extends DBTable
          * Create a new AdqlDBTable.
          *
          */
-        public AdqlDBTable create(final AdqlResource.AdqlTable meta);
+        public AdqlDBTable create(final AdqlTable meta);
 
         }
 
@@ -52,7 +53,7 @@ extends DBTable
      * Access to our AdqlResource.AdqlTable metadata.
      *
      */
-    public AdqlResource.AdqlTable meta();
+    public AdqlTable meta();
 
     /**
      * Access to our columns as AdqlColumns.
@@ -83,7 +84,7 @@ extends DBTable
          * Access to our AdqlResource.AdqlColumn metadata.
          *
          */
-        public AdqlResource.AdqlColumn meta();
+        public AdqlColumn meta();
 
         }
     }

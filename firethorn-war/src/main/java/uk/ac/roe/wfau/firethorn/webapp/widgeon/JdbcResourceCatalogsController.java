@@ -145,8 +145,8 @@ extends ControllerBase
         final String ident
         ){
         try {
-            return womble().resources().jdbc().select(
-                womble().resources().jdbc().ident(
+            return womble().resources().jdbc().resources().select(
+                womble().resources().jdbc().resources().ident(
                     ident
                     )
                 );

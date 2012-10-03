@@ -33,10 +33,10 @@ public interface Entity
     {
 
     /**
-     * Common interface for an Entity factory.
+     * Common interface for an Identifier factory.
      *
      */
-    public interface Factory<EntityType extends Entity>
+    public interface IdentFactory<EntityType extends Entity>
         {
         /**
          * Create an Identifier from a String.
@@ -44,6 +44,27 @@ public interface Entity
          */
         public Identifier ident(final String string);
 
+        /**
+         * Create an Entity URI (as a string).
+         * 
+         */
+        public String link(final Identifier ident);
+
+        /**
+         * Create an Entity URI (as a string).
+         * 
+         */
+        public String link(final EntityType entity);
+
+        }
+
+    /**
+     * Common interface for an Entity factory.
+     *
+     */
+    public interface Factory<EntityType extends Entity>
+    extends IdentFactory<EntityType>
+        {
         /**
          * Select a specific Entity by Identifier.
          *
@@ -54,10 +75,16 @@ public interface Entity
         }
 
     /**
-     * The unique Entity Identifier.
+     * The Entity Identifier.
      *
      */
     public Identifier ident();
+
+    /**
+     * The Entity URI (as a string).
+     * 
+     */
+    public String link();
 
     /**
      * Get the Entity name.

@@ -17,6 +17,7 @@
 package uk.ac.roe.wfau.firethorn.identity;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 
 /**
  * Public interface fo an Identity.
@@ -58,6 +59,15 @@ extends Entity
          */
         public Identity identity();
 
+        }
+
+    /**
+     * Factory interface for identifiers.
+     *
+     */
+    public static interface IdentFactory
+    extends Entity.IdentFactory<Identity>
+        {
         }
 
     /**

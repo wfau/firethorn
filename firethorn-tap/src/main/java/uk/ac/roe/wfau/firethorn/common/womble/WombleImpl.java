@@ -37,8 +37,18 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlCatalog;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalog;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.Factory;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTable;
 
 /**
  * Spring and Hibernate toolkit.
@@ -498,6 +508,68 @@ implements Womble
     @Autowired
     protected JdbcResource.Factory jdbcResources ;
 
+    /**
+     * Our Autowired JdbcCatalog factory.
+     *
+     */
+    @Autowired
+    protected JdbcCatalog.Factory jdbcCatalogs ;
+
+    /**
+     * Our Autowired JdbcSchema factory.
+     *
+     */
+    @Autowired
+    protected JdbcSchema.Factory jdbcSchemas ;
+
+    /**
+     * Our Autowired JdbcTable factory.
+     *
+     */
+    @Autowired
+    protected JdbcTable.Factory jdbcTables ;
+
+    /**
+     * Our Autowired JdbcColumn factory.
+     *
+     */
+    @Autowired
+    protected JdbcColumn.Factory jdbcColumns ;
+
+    /**
+     * Our Autowired AdqlResource factory.
+     *
+     */
+    @Autowired
+    protected AdqlResource.Factory adqlResources ;
+
+    /**
+     * Our Autowired AdqlCatalog factory.
+     *
+     */
+    @Autowired
+    protected AdqlCatalog.Factory adqlCatalogs ;
+
+    /**
+     * Our Autowired AdqlSchema factory.
+     *
+     */
+    @Autowired
+    protected AdqlSchema.Factory adqlSchemas ;
+
+    /**
+     * Our Autowired AdqlTable factory.
+     *
+     */
+    @Autowired
+    protected AdqlTable.Factory adqlTables ;
+
+    /**
+     * Our Autowired AdqlColumn factory.
+     *
+     */
+    @Autowired
+    protected AdqlColumn.Factory adqlColumns ;
 
     @Override
     public ResourceFactories resources()
@@ -509,11 +581,68 @@ implements Womble
                 {
                 return baseResources;
                 }
-
             @Override
-            public JdbcResource.Factory jdbc()
+            public JdbcFactories jdbc()
                 {
-                return jdbcResources ;
+                return new JdbcFactories(){
+                    @Override
+                    public JdbcResource.Factory resources()
+                        {
+                        return jdbcResources ;
+                        }
+                    @Override
+                    public JdbcCatalog.Factory catalogs()
+                        {
+                        return jdbcCatalogs;
+                        }
+                    @Override
+                    public JdbcSchema.Factory schemas()
+                        {
+                        return jdbcSchemas;
+                        }
+                    @Override
+                    public JdbcTable.Factory tables()
+                        {
+                        return jdbcTables;
+                        }
+                    @Override
+                    public JdbcColumn.Factory columns()
+                        {
+                        return jdbcColumns;
+                        }
+                    };
+                }
+            @Override
+            public AdqlFactories adql()
+                {
+                return new AdqlFactories ()
+                    {
+                    @Override
+                    public AdqlResource.Factory resources()
+                        {
+                        return adqlResources;
+                        }
+                    @Override
+                    public AdqlCatalog.Factory catalogs()
+                        {
+                        return adqlCatalogs;
+                        }
+                    @Override
+                    public AdqlSchema.Factory schemas()
+                        {
+                        return adqlSchemas;
+                        }
+                    @Override
+                    public AdqlTable.Factory tables()
+                        {
+                        return adqlTables;
+                        }
+                    @Override
+                    public AdqlColumn.Factory columns()
+                        {
+                        return adqlColumns;
+                        }
+                    };
                 }
             };
         }

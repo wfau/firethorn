@@ -43,12 +43,14 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlCatalog;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 
 /**
@@ -89,7 +91,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
     )
 public class JdbcCatalogEntity
 extends ResourceStatusEntity
-implements JdbcResource.JdbcCatalog
+implements JdbcCatalog
     {
 
     /**
@@ -110,8 +112,8 @@ implements JdbcResource.JdbcCatalog
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<JdbcResource.JdbcCatalog>
-    implements JdbcResource.JdbcCatalog.Factory
+    extends AbstractFactory<JdbcCatalog>
+    implements JdbcCatalog.Factory
         {
 
         @Override
@@ -125,7 +127,7 @@ implements JdbcResource.JdbcCatalog
          *
          */
         @CascadeEntityMethod
-        protected JdbcResource.JdbcCatalog insert(final JdbcCatalogEntity entity)
+        protected JdbcCatalog insert(final JdbcCatalogEntity entity)
             {
             super.insert(
                 entity
@@ -142,7 +144,7 @@ implements JdbcResource.JdbcCatalog
 
         @Override
         @CreateEntityMethod
-        public JdbcResource.JdbcCatalog create(final JdbcResource parent, final String name)
+        public JdbcCatalog create(final JdbcResource parent, final String name)
             {
             return this.insert(
                 new JdbcCatalogEntity(
@@ -154,7 +156,7 @@ implements JdbcResource.JdbcCatalog
 
         @Override
         @SelectEntityMethod
-        public Iterable<JdbcResource.JdbcCatalog> select(final JdbcResource parent)
+        public Iterable<JdbcCatalog> select(final JdbcResource parent)
             {
             return super.iterable(
                 super.query(
@@ -168,7 +170,7 @@ implements JdbcResource.JdbcCatalog
 
         @Override
         @SelectEntityMethod
-        public JdbcResource.JdbcCatalog select(final JdbcResource parent, final String name)
+        public JdbcCatalog select(final JdbcResource parent, final String name)
             {
             return super.first(
                 super.query(
@@ -185,7 +187,7 @@ implements JdbcResource.JdbcCatalog
 
         @Override
         @SelectEntityMethod
-        public Iterable<JdbcResource.JdbcCatalog> search(final JdbcResource parent, final String text)
+        public Iterable<JdbcCatalog> search(final JdbcResource parent, final String text)
             {
             return super.iterable(
                 super.query(
@@ -202,50 +204,67 @@ implements JdbcResource.JdbcCatalog
                 );
             }
 
-        /**
-         * Our Autowired view factory.
-         *
-         */
         @Autowired
-        protected AdqlResource.AdqlCatalog.Factory views ;
+        protected AdqlCatalog.Factory views ;
 
         @Override
-        public AdqlResource.AdqlCatalog.Factory views()
+        public AdqlCatalog.Factory views()
             {
             return this.views ;
             }
 
-        /**
-         * Our Autowired schema factory.
-         *
-         */
         @Autowired
-        protected JdbcResource.JdbcSchema.Factory schemas ;
+        protected JdbcSchema.Factory schemas ;
 
         @Override
-        public JdbcResource.JdbcSchema.Factory schemas()
+        public JdbcSchema.Factory schemas()
             {
             return this.schemas ;
+            }
+
+        @Autowired
+        protected JdbcCatalog.IdentFactory identFactory ;
+
+        @Override
+        public String link(JdbcCatalog entity)
+            {
+            return identFactory.link(
+                entity.ident()
+                );
+            }
+        @Override
+        public String link(Identifier ident)
+            {
+            return identFactory.link(
+                ident
+                );
+            }
+        @Override
+        public Identifier ident(final String string)
+            {
+            return identFactory.ident(
+                string
+                );
             }
         }
 
     @Override
-    public JdbcResource.JdbcCatalog.Views views()
+    public JdbcCatalog.Views views()
         {
-        return new JdbcResource.JdbcCatalog.Views()
+        return new JdbcCatalog.Views()
             {
             @Override
-            public Iterable<AdqlResource.AdqlCatalog> select()
+            public Iterable<AdqlCatalog> select()
                 {
-                return womble().resources().jdbc().views().catalogs().select(
+                return womble().resources().adql().catalogs().select(
                     JdbcCatalogEntity.this
                     );
                 }
 
             @Override
-            public AdqlResource.AdqlCatalog search(final AdqlResource parent)
+            public AdqlCatalog search(final AdqlResource parent)
                 {
-                return womble().resources().jdbc().views().catalogs().select(
+                return womble().resources().adql().catalogs().select(
                     parent,
                     JdbcCatalogEntity.this
                     );
@@ -254,12 +273,12 @@ implements JdbcResource.JdbcCatalog
         }
 
     @Override
-    public JdbcResource.JdbcCatalog.Schemas schemas()
+    public JdbcCatalog.Schemas schemas()
         {
-        return new JdbcResource.JdbcCatalog.Schemas()
+        return new JdbcCatalog.Schemas()
             {
             @Override
-            public JdbcResource.JdbcSchema create(final String name)
+            public JdbcSchema create(final String name)
                 {
                 return womble().resources().jdbc().catalogs().schemas().create(
                     JdbcCatalogEntity.this,
@@ -268,7 +287,7 @@ implements JdbcResource.JdbcCatalog
                 }
 
             @Override
-            public Iterable<JdbcResource.JdbcSchema> select()
+            public Iterable<JdbcSchema> select()
                 {
                 return womble().resources().jdbc().catalogs().schemas().select(
                     JdbcCatalogEntity.this
@@ -276,7 +295,7 @@ implements JdbcResource.JdbcCatalog
                 }
 
             @Override
-            public JdbcResource.JdbcSchema select(final String name)
+            public JdbcSchema select(final String name)
                 {
                 return womble().resources().jdbc().catalogs().schemas().select(
                     JdbcCatalogEntity.this,
@@ -285,7 +304,7 @@ implements JdbcResource.JdbcCatalog
                 }
 
             @Override
-            public Iterable<JdbcResource.JdbcSchema> search(final String text)
+            public Iterable<JdbcSchema> search(final String text)
                 {
                 return womble().resources().jdbc().catalogs().schemas().search(
                     JdbcCatalogEntity.this,
@@ -294,18 +313,18 @@ implements JdbcResource.JdbcCatalog
                 }
 
             @Override
-            public List<JdbcResource.Diference> diff(final boolean push, final boolean pull)
+            public List<JdbcDiference> diff(final boolean push, final boolean pull)
                 {
                 return diff(
                     resource().metadata(),
-                    new ArrayList<JdbcResource.Diference>(),
+                    new ArrayList<JdbcDiference>(),
                     push,
                     pull
                     );
                 }
 
             @Override
-            public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull)
+            public List<JdbcDiference> diff(final DatabaseMetaData metadata, final List<JdbcDiference> results, final boolean push, final boolean pull)
                 {
                 log.debug("Comparing schema for catalog [{}]", name());
                 try {
@@ -316,7 +335,7 @@ implements JdbcResource.JdbcCatalog
                         null
                         );
 
-                    final Map<String, JdbcResource.JdbcSchema> found = new HashMap<String, JdbcResource.JdbcSchema>();
+                    final Map<String, JdbcSchema> found = new HashMap<String, JdbcSchema>();
                     while (schemas.next())
                         {
                         final String name = schemas.getString(
@@ -324,7 +343,7 @@ implements JdbcResource.JdbcCatalog
                             );
                         log.debug("Checking database schema [{}]", name);
 
-                        JdbcResource.JdbcSchema schema = this.select(
+                        JdbcSchema schema = this.select(
                             name
                             );
                         if (schema == null)
@@ -344,8 +363,8 @@ implements JdbcResource.JdbcCatalog
                                 }
                             else {
                                 results.add(
-                                    new JdbcResource.Diference(
-                                        JdbcResource.Diference.Type.SCHEMA,
+                                    new JdbcDiference(
+                                        JdbcDiference.Type.SCHEMA,
                                         null,
                                         name
                                         )
@@ -359,10 +378,10 @@ implements JdbcResource.JdbcCatalog
                         }
                     //
                     // Scan our own list of schema.
-                    for (final JdbcResource.JdbcSchema schema : select())
+                    for (final JdbcSchema schema : select())
                         {
                         log.debug("Checking registered schema [{}]", schema.name());
-                        JdbcResource.JdbcSchema match = found.get(
+                        JdbcSchema match = found.get(
                             schema.name()
                             );
                         //
@@ -385,8 +404,8 @@ implements JdbcResource.JdbcCatalog
                                 }
                             else {
                                 results.add(
-                                    new JdbcResource.Diference(
-                                        JdbcResource.Diference.Type.SCHEMA,
+                                    new JdbcDiference(
+                                        JdbcDiference.Type.SCHEMA,
                                         schema.name(),
                                         null
                                         )
@@ -477,18 +496,18 @@ implements JdbcResource.JdbcCatalog
         }
 
     @Override
-    public List<JdbcResource.Diference> diff(final boolean push, final boolean pull)
+    public List<JdbcDiference> diff(final boolean push, final boolean pull)
         {
         return diff(
             resource().metadata(),
-            new ArrayList<JdbcResource.Diference>(),
+            new ArrayList<JdbcDiference>(),
             push,
             pull
             );
         }
 
     @Override
-    public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull)
+    public List<JdbcDiference> diff(final DatabaseMetaData metadata, final List<JdbcDiference> results, final boolean push, final boolean pull)
         {
         //
         // Check this catalog.
@@ -500,6 +519,14 @@ implements JdbcResource.JdbcCatalog
             results,
             push,
             pull
+            );
+        }
+
+    @Override
+    public String link()
+        {
+        return womble().resources().jdbc().catalogs().link(
+            this.ident()
             );
         }
     }

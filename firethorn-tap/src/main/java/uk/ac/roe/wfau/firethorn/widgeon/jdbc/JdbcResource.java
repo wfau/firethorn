@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 
 
@@ -34,6 +35,15 @@ public interface JdbcResource
 extends BaseResource
     {
 
+    /**
+     * Factory interface for identifiers.
+     *
+     */
+    public static interface IdentFactory
+    extends Entity.IdentFactory<JdbcResource>
+        {
+        }
+    
     /**
      * Factory interface for accessing resources.
      *
@@ -57,7 +67,7 @@ extends BaseResource
          * Access to our catalog factory.
          *
          */
-        public JdbcResource.JdbcCatalog.Factory catalogs();
+        public JdbcCatalog.Factory catalogs();
 
         }
 
@@ -66,13 +76,13 @@ extends BaseResource
      *
      */
     public interface Catalogs
-    extends BaseResource.Catalogs<JdbcResource.JdbcCatalog>
+    extends BaseResource.Catalogs<JdbcCatalog>
         {
         /**
          * Create a new catalog.
          *
          */
-        public JdbcResource.JdbcCatalog create(final String name);
+        public JdbcCatalog create(final String name);
 
         /**
          * Compare our data with DatabaseMetaData from our DataSource.
@@ -80,7 +90,7 @@ extends BaseResource
          * @param push Update our database to match our metadata.
          *
          */
-        public List<JdbcResource.Diference> diff(final boolean push, final boolean pull);
+        public List<JdbcDiference> diff(final boolean push, final boolean pull);
 
         /**
          * Compare our data with DatabaseMetaData from our DataSource.
@@ -89,338 +99,12 @@ extends BaseResource
          * @param push Update our database to match our metadata.
          *
          */
-        public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull);
+        public List<JdbcDiference> diff(final DatabaseMetaData metadata, final List<JdbcDiference> results, final boolean push, final boolean pull);
 
         }
 
     @Override
     public Catalogs catalogs();
-
-    /**
-     * Public interface for a catalog.
-     *
-     */
-    public interface JdbcCatalog
-    extends BaseResource.BaseCatalog<JdbcResource>
-        {
-        /**
-         * Factory interface for accessing catalogs.
-         *
-         */
-        public static interface Factory
-        extends BaseResource.BaseCatalog.Factory<JdbcResource, JdbcResource.JdbcCatalog>
-            {
-
-            /**
-             * Create a new catalog.
-             *
-             */
-            public JdbcResource.JdbcCatalog create(final JdbcResource parent, final String name);
-
-            /**
-             * Access to our schema factory.
-             *
-             */
-            public JdbcResource.JdbcSchema.Factory schemas();
-
-            }
-
-        /**
-         * Public interface for accessing a catalog's schemas.
-         *
-         */
-        public interface Schemas
-        extends BaseResource.BaseCatalog.Schemas<JdbcResource.JdbcSchema>
-            {
-            /**
-             * Create a new schema.
-             *
-             */
-            public JdbcResource.JdbcSchema create(final String name);
-
-            /**
-             * Compare our data with DatabaseMetaData from our DataSource.
-             * @param pull Update our metadata to match the DatabaseMetaData.
-             * @param push Update our database to match our metadata.
-             *
-             */
-            public List<JdbcResource.Diference> diff(final boolean push, final boolean pull);
-
-            /**
-             * Compare our data with DatabaseMetaData from our DataSource.
-             * @param metadata The DatabaseMetaData to compare against.
-             * @param pull Update our metadata to match the DatabaseMetaData.
-             * @param push Update our database to match our metadata.
-             *
-             */
-            public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull);
-
-            }
-
-        @Override
-        public Schemas schemas();
-
-        @Override
-        public JdbcResource resource();
-
-        /**
-         * Compare our data with DatabaseMetaData from our DataSource.
-         * @param pull Update our metadata to match the DatabaseMetaData.
-         * @param push Update our database to match our metadata.
-         *
-         */
-        public List<JdbcResource.Diference> diff(final boolean push, final boolean pull);
-
-        /**
-         * Compare our data with DatabaseMetaData from our DataSource.
-         * @param metadata The DatabaseMetaData to compare against.
-         * @param pull Update our metadata to match the DatabaseMetaData.
-         * @param push Update our database to match our metadata.
-         *
-         */
-        public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull);
-
-        }
-
-    /**
-     * Public interface for a schema.
-     *
-     */
-    public interface JdbcSchema
-    extends BaseResource.BaseSchema<JdbcResource.JdbcCatalog>
-        {
-
-        /**
-         * Factory interface for accessing schema.
-         *
-         */
-        public static interface Factory
-        extends BaseResource.BaseSchema.Factory<JdbcResource.JdbcCatalog, JdbcResource.JdbcSchema>
-            {
-
-            /**
-             * Create a new schema.
-             *
-             */
-            public JdbcResource.JdbcSchema create(final JdbcResource.JdbcCatalog parent, final String name);
-
-            /**
-             * Access to our table factory.
-             *
-             */
-            public JdbcResource.JdbcTable.Factory tables();
-
-            }
-
-        /**
-         * Public interface for accessing a schema's tables.
-         *
-         */
-        public interface Tables
-        extends BaseResource.BaseSchema.Tables<JdbcResource.JdbcTable>
-            {
-
-            /**
-             * Create a new table.
-             *
-             */
-            public JdbcResource.JdbcTable create(final String name);
-
-            /**
-             * Compare our data with DatabaseMetaData from our DataSource.
-             * @param pull Update our metadata to match the DatabaseMetaData.
-             * @param push Update our database to match our metadata.
-             *
-             */
-            public List<JdbcResource.Diference> diff(final boolean push, final boolean pull);
-
-            /**
-             * Compare our data with DatabaseMetaData from our DataSource.
-             * @param metadata The DatabaseMetaData to compare against.
-             * @param pull Update our metadata to match the DatabaseMetaData.
-             * @param push Update our database to match our metadata.
-             *
-             */
-            public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull);
-
-            }
-
-        @Override
-        public Tables tables();
-
-        @Override
-        public JdbcResource resource();
-
-        @Override
-        public JdbcResource.JdbcCatalog catalog();
-
-        /**
-         * Compare our data with DatabaseMetaData from our DataSource.
-         * @param pull Update our metadata to match the DatabaseMetaData.
-         * @param push Update our database to match our metadata.
-         *
-         */
-        public List<JdbcResource.Diference> diff(final boolean push, final boolean pull);
-
-        /**
-         * Compare our data with DatabaseMetaData from our DataSource.
-         * @param metadata The DatabaseMetaData to compare against.
-         * @param pull Update our metadata to match the DatabaseMetaData.
-         * @param push Update our database to match our metadata.
-         *
-         */
-        public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull);
-
-        }
-
-    /**
-     * Public interface for a table.
-     *
-     */
-    public interface JdbcTable
-    extends BaseResource.BaseTable<JdbcResource.JdbcSchema>
-        {
-
-        /**
-         * Factory interface for accessing tables.
-         *
-         */
-        public static interface Factory
-        extends BaseResource.BaseTable.Factory<JdbcResource.JdbcSchema, JdbcResource.JdbcTable>
-            {
-
-            /**
-             * Create a new table.
-             *
-             */
-            public JdbcResource.JdbcTable create(final JdbcResource.JdbcSchema parent, final String name);
-
-            /**
-             * Access to our column factory.
-             *
-             */
-            public JdbcResource.JdbcColumn.Factory columns();
-
-            }
-
-        /**
-         * Public interface for accessing a table's columns.
-         *
-         */
-        public interface Columns
-        extends BaseResource.BaseTable.Columns<JdbcResource.JdbcColumn>
-            {
-
-            /**
-             * Create a new column.
-             *
-             */
-            public JdbcResource.JdbcColumn create(final String name);
-
-            /**
-             * Compare our data with DatabaseMetaData from our DataSource.
-             * @param pull Update our metadata to match the DatabaseMetaData.
-             * @param push Update our database to match our metadata.
-             *
-             */
-            public List<JdbcResource.Diference> diff(final boolean push, final boolean pull);
-
-            /**
-             * Compare our data with DatabaseMetaData from our DataSource.
-             * @param metadata The DatabaseMetaData to compare against.
-             * @param pull Update our metadata to match the DatabaseMetaData.
-             * @param push Update our database to match our metadata.
-             *
-             */
-            public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull);
-
-            }
-
-        @Override
-        public Columns columns();
-
-        @Override
-        public JdbcResource resource();
-
-        @Override
-        public JdbcResource.JdbcCatalog catalog();
-
-        @Override
-        public JdbcResource.JdbcSchema schema();
-
-        /**
-         * Compare our data with DatabaseMetaData from our DataSource.
-         * @param pull Update our metadata to match the DatabaseMetaData.
-         * @param push Update our database to match our metadata.
-         *
-         */
-        public List<JdbcResource.Diference> diff(final boolean push, final boolean pull);
-
-        /**
-         * Compare our data with DatabaseMetaData from our DataSource.
-         * @param metadata The DatabaseMetaData to compare against.
-         * @param pull Update our metadata to match the DatabaseMetaData.
-         * @param push Update our database to match our metadata.
-         *
-         */
-        public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull);
-
-        }
-
-    /**
-     * Public interface for a column.
-     *
-     */
-    public interface JdbcColumn
-    extends BaseResource.BaseColumn<JdbcResource.JdbcTable>
-        {
-
-        /**
-         * Factory interface for accessing columns.
-         *
-         */
-        public static interface Factory
-        extends BaseResource.BaseColumn.Factory<JdbcResource.JdbcTable, JdbcResource.JdbcColumn>
-            {
-
-            /**
-             * Create a new column.
-             *
-             */
-            public JdbcResource.JdbcColumn create(final JdbcResource.JdbcTable parent, final String name);
-
-            }
-
-        @Override
-        public JdbcResource resource();
-
-        @Override
-        public JdbcResource.JdbcCatalog catalog();
-
-        @Override
-        public JdbcResource.JdbcSchema schema();
-
-        @Override
-        public JdbcResource.JdbcTable table();
-
-        /**
-         * Compare our data with DatabaseMetaData from our DataSource.
-         * @param pull Update our metadata to match the DatabaseMetaData.
-         * @param push Update our database to match our metadata.
-         *
-         */
-        public List<JdbcResource.Diference> diff(final boolean push, final boolean pull);
-
-        /**
-         * Compare our data with DatabaseMetaData from our DataSource.
-         * @param metadata The DatabaseMetaData to compare against.
-         * @param pull Update our metadata to match the DatabaseMetaData.
-         * @param push Update our database to match our metadata.
-         *
-         */
-        public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull);
-
-        }
 
     /**
      * JDBC DatabaseMetaData column names.
@@ -468,7 +152,7 @@ extends BaseResource
      * @param push Update our database to match our metadata.
      *
      */
-    public List<Diference> diff(final boolean push, final boolean pull);
+    public List<JdbcDiference> diff(final boolean push, final boolean pull);
 
     /**
      * Compare our data with DatabaseMetaData from our DataSource.
@@ -477,123 +161,5 @@ extends BaseResource
      * @param push Update our database to match our metadata.
      *
      */
-    public List<Diference> diff(final DatabaseMetaData metadata, final List<Diference> results, final boolean push, final boolean pull);
-
-    /**
-     * Class to represent differences between the our metadata and the database.
-     *
-     */
-    public static class Diference
-        {
-
-        public enum Type
-            {
-            CATALOG(),
-            SCHEMA(),
-            TABLE(),
-            COLUMN()
-            };
-
-        public Diference(final Type type, final String meta, final String real)
-            {
-            this.type = type;
-            this.meta = meta;
-            this.real = real;
-            }
-
-        private final Type type;
-        public Type type()
-            {
-            return this.type;
-            }
-
-        private final String meta ;
-        public String meta()
-            {
-            return this.meta;
-            }
-
-        private final String real ;
-        public String real()
-            {
-            return this.real;
-            }
-
-        @Override
-        public boolean equals(final Object that)
-            {
-            if (that !=null)
-                {
-                if (that instanceof Diference)
-                    {
-                    return this.equals(
-                        (Diference) that
-                        );
-                    }
-                }
-            return false ;
-            }
-
-        public boolean equals(final Diference that)
-            {
-            if (that == null)
-                {
-                    return false ;
-                    }
-
-            if ((this.type() != null) && (that.type() == null))
-                {
-                    return false ;
-                    }
-            if ((this.type() == null) && (that.type() != null))
-                {
-                    return false ;
-                    }
-
-            if ((this.meta() != null) && (that.meta() == null))
-                {
-                    return false ;
-                    }
-            if ((this.meta() == null) && (that.meta() != null))
-                {
-                    return false ;
-                    }
-
-            if ((this.real() != null) && (that.real() == null))
-                {
-                    return false ;
-                    }
-            if ((this.real() == null) && (that.real() != null))
-                {
-                    return false ;
-                    }
-
-            if (this.type() != null)
-                {
-                if (this.type().equals(that.type()) == false)
-                    {
-                        return false ;
-                        }
-                }
-
-            if (this.meta() != null)
-                {
-                if (this.meta().equals(that.meta()) == false)
-                    {
-                        return false ;
-                        }
-                }
-
-            if (this.real() != null)
-                {
-                if (this.real().equals(that.real()) == false)
-                    {
-                        return false ;
-                        }
-                }
-
-            return true ;
-
-            }
-        }
+    public List<JdbcDiference> diff(final DatabaseMetaData metadata, final List<JdbcDiference> results, final boolean push, final boolean pull);
     }

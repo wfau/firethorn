@@ -39,6 +39,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
@@ -155,17 +156,38 @@ implements AdqlService
                 );
             }
 
-        /**
-         * Our Autowired Job factory.
-         *
-         */
         @Autowired
-        protected Job.Factory jobs ;
+        protected AdqlJob.Factory adqlJobs ;
 
         @Override
-        public Job.Factory jobs()
+        public AdqlJob.Factory adqlJobs()
             {
-            return this.jobs ;
+            return this.adqlJobs ;
+            }
+
+        @Autowired
+        protected AdqlService.IdentFactory identFactory ;
+
+        @Override
+        public String link(AdqlService entity)
+            {
+            return identFactory.link(
+                entity.ident()
+                );
+            }
+        @Override
+        public String link(Identifier ident)
+            {
+            return identFactory.link(
+                ident
+                );
+            }
+        @Override
+        public Identifier ident(final String string)
+            {
+            return identFactory.ident(
+                string
+                );
             }
         }
 
@@ -194,9 +216,9 @@ implements AdqlService
         return new Jobs()
             {
             @Override
-            public Job create(final String name, final String adql)
+            public AdqlJob create(final String name, final String adql)
                 {
-                return womble().services().jobs().create(
+                return womble().services().adqlJobs().create(
                     AdqlServiceEntity.this,
                     name,
                     adql
@@ -204,9 +226,9 @@ implements AdqlService
                 }
 
             @Override
-            public Iterable<Job> select()
+            public Iterable<AdqlJob> select()
                 {
-                return womble().services().jobs().select(
+                return womble().services().adqlJobs().select(
                     AdqlServiceEntity.this
                     ) ;
                 }
@@ -263,6 +285,12 @@ implements AdqlService
                 return resources ;
                 }
             };
+        }
+
+    @Override
+    public String link()
+        {
+        return null;
         }
     }
 

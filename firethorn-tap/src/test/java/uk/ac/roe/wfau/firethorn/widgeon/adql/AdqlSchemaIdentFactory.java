@@ -15,41 +15,33 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon ;
+package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
-import org.junit.Before;
-
-import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
  *
+ *
  */
-@Slf4j
-public class JdbcResourceTestBase
-extends TestBase
+@Component
+public class AdqlSchemaIdentFactory
+implements AdqlSchema.IdentFactory
     {
-
-    private JdbcResource base ;
-
-    public JdbcResource base()
-        {
-        return this.base;
-        }
-
     @Override
-    @Before
-    public void before()
-    throws Exception
+    public String link(Identifier ident)
         {
-        base = womble().resources().jdbc().create(
-            this.unique(
-                "base"
-                )
-            );
+        return null;
         }
-
+    @Override
+    public Identifier ident(String string)
+        {
+        return null;
+        }
+    @Override
+    public String link(AdqlSchema entity)
+        {
+        return null;
+        }
     }
-

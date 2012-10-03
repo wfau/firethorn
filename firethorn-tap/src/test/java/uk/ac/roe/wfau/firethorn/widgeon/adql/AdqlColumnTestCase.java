@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon ;
+package uk.ac.roe.wfau.firethorn.widgeon.adql ;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -25,121 +25,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceTestBase;
 
 /**
  *
  */
 @Slf4j
-public class AdqlTableTestCase
+public class AdqlColumnTestCase
 extends JdbcResourceTestBase
     {
 
     @Test
     public void test000()
-    throws Exception
-        {
-        //
-        // Create view.
-        assertNotNull(
-            base().views().create(
-                "view-A"
-                )
-            );
-        //
-        // Create base catalog and schema.
-        assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                ).schemas().create(
-                    "schema-A"
-                    )
-            );
-        //
-        // Select schema view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).schemas().select(
-                        "schema-A"
-                        )
-
-            );
-        //
-        // Select missing table view fails.
-        assertIsNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).schemas().select(
-                        "schema-A"
-                        ).tables().select(
-                            "table-A"
-                            )
-            );
-        }
-
-    @Test
-    public void test001()
-    throws Exception
-        {
-        //
-        // Create view.
-        assertNotNull(
-            base().views().create(
-                "view-A"
-                )
-            );
-        //
-        // Create base catalog and schema.
-        assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                ).schemas().create(
-                    "schema-A"
-                    )
-            );
-        //
-        // Select schema view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).schemas().select(
-                        "schema-A"
-                        )
-            );
-        //
-        // Create base table.
-        assertNotNull(
-            base().catalogs().select(
-                "catalog-A"
-                ).schemas().select(
-                    "schema-A"
-                    ).tables().create(
-                        "table-A"
-                        )
-            );
-        //
-        // Select table view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).schemas().select(
-                        "schema-A"
-                        ).tables().select(
-                            "table-A"
-                            )
-            );
-        }
-
-    @Test
-    public void test002()
     throws Exception
         {
         //
@@ -161,7 +58,7 @@ extends JdbcResourceTestBase
                         )
             );
         //
-        // Select catalog, schema and table view works.
+        // Select table view works.
         assertNotNull(
             base().views().select(
                 "view-A"
@@ -172,6 +69,127 @@ extends JdbcResourceTestBase
                         ).tables().select(
                             "table-A"
                             )
+            );
+        //
+        // Select missing column view fails.
+        assertIsNull(
+            base().views().select(
+                "view-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).schemas().select(
+                        "schema-A"
+                        ).tables().select(
+                            "table-A"
+                            ).columns().select(
+                                "column-A"
+                                )
+            );
+        }
+
+    @Test
+    public void test001()
+    throws Exception
+        {
+        //
+        // Create view.
+        assertNotNull(
+            base().views().create(
+                "view-A"
+                )
+            );
+        //
+        // Create base catalog, schema and table.
+        assertNotNull(
+            base().catalogs().create(
+                "catalog-A"
+                ).schemas().create(
+                    "schema-A"
+                    ).tables().create(
+                        "table-A"
+                        )
+            );
+        //
+        // Select table view works.
+        assertNotNull(
+            base().views().select(
+                "view-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).schemas().select(
+                        "schema-A"
+                        ).tables().select(
+                            "table-A"
+                            )
+            );
+        //
+        // Create base column.
+        assertNotNull(
+            base().catalogs().select(
+                "catalog-A"
+                ).schemas().select(
+                    "schema-A"
+                    ).tables().select(
+                        "table-A"
+                        ).columns().create(
+                            "column-A"
+                            )
+            );
+        //
+        // Select column view works.
+        assertNotNull(
+            base().views().select(
+                "view-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).schemas().select(
+                        "schema-A"
+                        ).tables().select(
+                            "table-A"
+                            ).columns().select(
+                                "column-A"
+                                )
+            );
+        }
+
+    @Test
+    public void test002()
+    throws Exception
+        {
+        //
+        // Create view.
+        assertNotNull(
+            base().views().create(
+                "view-A"
+                )
+            );
+        //
+        // Create base catalog, schema, table and column.
+        assertNotNull(
+            base().catalogs().create(
+                "catalog-A"
+                ).schemas().create(
+                    "schema-A"
+                    ).tables().create(
+                        "table-A"
+                        ).columns().create(
+                            "column-A"
+                            )
+            );
+        //
+        // Select catalog, schema, table and column view works.
+        assertNotNull(
+            base().views().select(
+                "view-A"
+                ).catalogs().select(
+                    "catalog-A"
+                    ).schemas().select(
+                        "schema-A"
+                        ).tables().select(
+                            "table-A"
+                            ).columns().select(
+                                "column-A"
+                                )
             );
         }
     }

@@ -15,24 +15,33 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon ;
+package uk.ac.roe.wfau.firethorn.mallard;
+
+import org.springframework.stereotype.Component;
+
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
- * Public interface for a component in a tree of DataResource(s).
- * @deprecated - just add it to the individual interfaces
+ *
  *
  */
-@Deprecated
-public interface DataResourceChild<ParentType extends ResourceStatus>
-extends ResourceStatus
+@Component
+public class AdqlJobIdentFactory
+implements AdqlJob.IdentFactory
     {
-
-    /**
-     * Access to our parent.
-     * @return Our parent component.
-     *
-    public ParentType parent();
-     */
-
-
+    @Override
+    public String link(Identifier ident)
+        {
+        return null;
+        }
+    @Override
+    public Identifier ident(String string)
+        {
+        return null;
+        }
+    @Override
+    public String link(AdqlJob entity)
+        {
+        return null;
+        }
     }

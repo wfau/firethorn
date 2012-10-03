@@ -35,11 +35,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
  * BaseResource implementation.
@@ -180,10 +182,6 @@ implements BaseResource
             }
         */
 
-        /**
-         * Our Autowired view factory.
-         *
-         */
         @Autowired
         protected AdqlResource.Factory views ;
 
@@ -191,6 +189,31 @@ implements BaseResource
         public AdqlResource.Factory views()
             {
             return this.views ;
+            }
+
+        @Autowired
+        protected BaseResource.IdentFactory identFactory ;
+
+        @Override
+        public String link(BaseResource entity)
+            {
+            return identFactory.link(
+                entity.ident()
+                );
+            }
+        @Override
+        public String link(Identifier ident)
+            {
+            return identFactory.link(
+                ident
+                );
+            }
+        @Override
+        public Identifier ident(final String string)
+            {
+            return identFactory.ident(
+                string
+                );
             }
         }
 
@@ -260,6 +283,12 @@ implements BaseResource
                 name
                 );
             }
+        }
+
+    @Override
+    public String link()
+        {
+        return null;
         }
     }
 

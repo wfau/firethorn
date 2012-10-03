@@ -35,12 +35,12 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlTable;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTableEntity;
 
@@ -98,7 +98,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTableEntity;
     )
 public class AdqlTableEntity
 extends ResourceStatusEntity
-implements AdqlResource.AdqlTable
+implements AdqlTable
     {
 
     /**
@@ -125,8 +125,8 @@ implements AdqlResource.AdqlTable
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<AdqlResource.AdqlTable>
-    implements AdqlResource.AdqlTable.Factory
+    extends AbstractFactory<AdqlTable>
+    implements AdqlTable.Factory
         {
 
         @Override
@@ -140,7 +140,7 @@ implements AdqlResource.AdqlTable
          *
          */
         @CascadeEntityMethod
-        protected AdqlResource.AdqlTable insert(final AdqlTableEntity entity)
+        protected AdqlTable insert(final AdqlTableEntity entity)
             {
             super.insert(
                 entity
@@ -160,7 +160,7 @@ implements AdqlResource.AdqlTable
          *
          */
         @CascadeEntityMethod
-        protected AdqlResource.AdqlTable create(final AdqlResource.AdqlSchema parent, final BaseResource.BaseTable<?> base)
+        protected AdqlTable create(final AdqlSchema parent, final BaseResource.BaseTable<?> base)
             {
             return this.insert(
                 new AdqlTableEntity(
@@ -189,7 +189,7 @@ implements AdqlResource.AdqlTable
 
         @Override
         @SelectEntityMethod
-        public AdqlTable select(final AdqlResource.AdqlCatalog parent, final BaseResource.BaseTable<?> base)
+        public AdqlTable select(final AdqlCatalog parent, final BaseResource.BaseTable<?> base)
             {
             return super.first(
                 super.query(
@@ -206,7 +206,7 @@ implements AdqlResource.AdqlTable
 
         @Override
         @SelectEntityMethod
-        public AdqlResource.AdqlTable select(final AdqlResource.AdqlSchema parent, final BaseResource.BaseTable<?> base)
+        public AdqlTable select(final AdqlSchema parent, final BaseResource.BaseTable<?> base)
             {
             return super.first(
                 super.query(
@@ -223,9 +223,9 @@ implements AdqlResource.AdqlTable
 
         @Override
         @CascadeEntityMethod
-        public AdqlResource.AdqlTable cascade(final AdqlResource.AdqlSchema parent, final BaseResource.BaseTable<?> base)
+        public AdqlTable cascade(final AdqlSchema parent, final BaseResource.BaseTable<?> base)
             {
-            AdqlResource.AdqlTable result = this.select(
+            AdqlTable result = this.select(
                 parent,
                 base
                 );
@@ -241,7 +241,7 @@ implements AdqlResource.AdqlTable
 
         @Override
         @CreateEntityMethod
-        public AdqlResource.AdqlTable create(final AdqlResource.AdqlSchema parent, final BaseResource.BaseTable<?> base, final String name)
+        public AdqlTable create(final AdqlSchema parent, final BaseResource.BaseTable<?> base, final String name)
             {
             return super.insert(
                 new AdqlTableEntity(
@@ -254,7 +254,7 @@ implements AdqlResource.AdqlTable
 
         @Override
         @SelectEntityMethod
-        public Iterable<AdqlResource.AdqlTable> select(final AdqlResource.AdqlSchema parent)
+        public Iterable<AdqlTable> select(final AdqlSchema parent)
             {
             return super.iterable(
                 super.query(
@@ -268,7 +268,7 @@ implements AdqlResource.AdqlTable
 
         @Override
         @SelectEntityMethod
-        public AdqlResource.AdqlTable select(final AdqlResource.AdqlSchema parent, final String name)
+        public AdqlTable select(final AdqlSchema parent, final String name)
             {
             return super.first(
                 super.query(
@@ -285,7 +285,7 @@ implements AdqlResource.AdqlTable
 
         @Override
         @SelectEntityMethod
-        public Iterable<AdqlResource.AdqlTable> search(final AdqlResource.AdqlSchema parent, final String text)
+        public Iterable<AdqlTable> search(final AdqlSchema parent, final String text)
             {
             return super.iterable(
                 super.query(
@@ -304,7 +304,7 @@ implements AdqlResource.AdqlTable
 
         @Override
         @SelectEntityMethod
-        public Iterable<AdqlResource.AdqlTable> select(final BaseResource.BaseTable<?> base)
+        public Iterable<AdqlTable> select(final BaseResource.BaseTable<?> base)
             {
             return super.iterable(
                 super.query(
@@ -316,27 +316,48 @@ implements AdqlResource.AdqlTable
                 );
             }
 
-        /**
-         * Our Autowired column factory.
-         *
-         */
         @Autowired
-        protected AdqlResource.AdqlColumn.Factory adqlColumns ;
+        protected AdqlColumn.Factory adqlColumns ;
 
         @Override
-        public AdqlResource.AdqlColumn.Factory adqlColumns()
+        public AdqlColumn.Factory adqlColumns()
             {
             return this.adqlColumns ;
+            }
+
+        @Autowired
+        protected AdqlTable.IdentFactory identFactory ;
+
+        @Override
+        public String link(AdqlTable entity)
+            {
+            return identFactory.link(
+                entity.ident()
+                );
+            }
+        @Override
+        public String link(Identifier ident)
+            {
+            return identFactory.link(
+                ident
+                );
+            }
+        @Override
+        public Identifier ident(final String string)
+            {
+            return identFactory.ident(
+                string
+                );
             }
         }
 
     @Override
-    public AdqlResource.AdqlTable.Columns columns()
+    public AdqlTable.Columns columns()
         {
-        return new AdqlResource.AdqlTable.Columns()
+        return new AdqlTable.Columns()
             {
             @Override
-            public Iterable<AdqlResource.AdqlColumn> select()
+            public Iterable<AdqlColumn> select()
                 {
                 return womble().resources().base().views().catalogs().schemas().tables().adqlColumns().select(
                     AdqlTableEntity.this
@@ -344,7 +365,7 @@ implements AdqlResource.AdqlTable
                 }
 
             @Override
-            public AdqlResource.AdqlColumn select(final String name)
+            public AdqlColumn select(final String name)
                 {
                 return womble().resources().base().views().catalogs().schemas().tables().adqlColumns().select(
                     AdqlTableEntity.this,
@@ -353,7 +374,7 @@ implements AdqlResource.AdqlTable
                 }
 
             @Override
-            public Iterable<AdqlResource.AdqlColumn> search(final String text)
+            public Iterable<AdqlColumn> search(final String text)
                 {
                 return womble().resources().base().views().catalogs().schemas().tables().adqlColumns().search(
                     AdqlTableEntity.this,
@@ -362,7 +383,7 @@ implements AdqlResource.AdqlTable
                 }
 
             @Override
-            public AdqlResource.AdqlColumn select(final BaseResource.BaseColumn<?> base)
+            public AdqlColumn select(final BaseResource.BaseColumn<?> base)
                 {
                 return womble().resources().base().views().catalogs().schemas().tables().adqlColumns().select(
                     AdqlTableEntity.this,
@@ -386,7 +407,7 @@ implements AdqlResource.AdqlTable
      * Create a new view.
      *
      */
-    protected AdqlTableEntity(final AdqlResource.AdqlSchema parent, final BaseResource.BaseTable<?> base)
+    protected AdqlTableEntity(final AdqlSchema parent, final BaseResource.BaseTable<?> base)
         {
         this(
             parent,
@@ -399,7 +420,7 @@ implements AdqlResource.AdqlTable
      * Create a new view.
      *
      */
-    protected AdqlTableEntity(final AdqlResource.AdqlSchema parent, final BaseResource.BaseTable<?> base, final String name)
+    protected AdqlTableEntity(final AdqlSchema parent, final BaseResource.BaseTable<?> base, final String name)
         {
         super(
             name
@@ -423,10 +444,10 @@ implements AdqlResource.AdqlTable
         nullable = false,
         updatable = false
         )
-    private AdqlResource.AdqlSchema parent ;
+    private AdqlSchema parent ;
 
     @Override
-    public AdqlResource.AdqlSchema parent()
+    public AdqlSchema parent()
         {
         return this.parent ;
         }
@@ -491,15 +512,21 @@ implements AdqlResource.AdqlTable
         }
 
     @Override
-    public AdqlResource.AdqlCatalog catalog()
+    public AdqlCatalog catalog()
         {
         return this.parent.catalog();
         }
 
     @Override
-    public AdqlResource.AdqlSchema schema()
+    public AdqlSchema schema()
         {
         return this.parent;
+        }
+
+    @Override
+    public String link()
+        {
+        return null;
         }
     }
 

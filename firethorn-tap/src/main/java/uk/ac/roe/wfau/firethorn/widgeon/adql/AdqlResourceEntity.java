@@ -35,6 +35,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
@@ -195,17 +196,38 @@ implements AdqlResource
                 );
             }
 
-        /**
-         * Our Autowired catalog factory.
-         *
-         */
         @Autowired
-        protected AdqlResource.AdqlCatalog.Factory catalogs ;
+        protected AdqlCatalog.Factory catalogs ;
 
         @Override
-        public AdqlResource.AdqlCatalog.Factory catalogs()
+        public AdqlCatalog.Factory catalogs()
             {
             return catalogs ;
+            }
+
+        @Autowired
+        protected AdqlResource.IdentFactory identFactory ;
+
+        @Override
+        public String link(AdqlResource entity)
+            {
+            return identFactory.link(
+                entity.ident()
+                );
+            }
+        @Override
+        public String link(Identifier ident)
+            {
+            return identFactory.link(
+                ident
+                );
+            }
+        @Override
+        public Identifier ident(final String string)
+            {
+            return identFactory.ident(
+                string
+                );
             }
         }
 
@@ -215,7 +237,7 @@ implements AdqlResource
         return new AdqlResource.Catalogs()
             {
             @Override
-            public Iterable<AdqlResource.AdqlCatalog> select()
+            public Iterable<AdqlCatalog> select()
                 {
                 return womble().resources().base().views().catalogs().select(
                     AdqlResourceEntity.this
@@ -223,7 +245,7 @@ implements AdqlResource
                 }
 
             @Override
-            public AdqlResource.AdqlCatalog select(final String name)
+            public AdqlCatalog select(final String name)
                 {
                 return womble().resources().base().views().catalogs().select(
                     AdqlResourceEntity.this,
@@ -232,7 +254,7 @@ implements AdqlResource
                 }
 
             @Override
-            public Iterable<AdqlResource.AdqlCatalog> search(final String text)
+            public Iterable<AdqlCatalog> search(final String text)
                 {
                 return womble().resources().base().views().catalogs().search(
                     AdqlResourceEntity.this,
@@ -309,6 +331,12 @@ implements AdqlResource
         else {
             return this.base().status();
             }
+        }
+
+    @Override
+    public String link()
+        {
+        return null;
         }
     }
 

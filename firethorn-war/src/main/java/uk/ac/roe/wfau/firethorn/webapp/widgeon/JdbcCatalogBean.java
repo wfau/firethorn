@@ -24,7 +24,7 @@ import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalog;
 
 /**
  * Bean wrapper to enable the JSON converter to process a JdbcResource.  
@@ -32,8 +32,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
  */
 @Slf4j
 public class JdbcCatalogBean
-extends AbstractEntityBean<JdbcResource.JdbcCatalog>
-implements EntityBean<JdbcResource.JdbcCatalog>
+extends AbstractEntityBean<JdbcCatalog>
+implements EntityBean<JdbcCatalog>
     {
     
     /**
@@ -53,7 +53,7 @@ implements EntityBean<JdbcResource.JdbcCatalog>
      *      The target JdbcCatalog.
      *
      */
-    public JdbcCatalogBean(UriBuilder builder, JdbcResource.JdbcCatalog entity)
+    public JdbcCatalogBean(UriBuilder builder, JdbcCatalog entity)
         {
         super(
             TYPE_URI,

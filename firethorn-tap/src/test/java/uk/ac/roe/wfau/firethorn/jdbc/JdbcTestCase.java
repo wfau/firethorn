@@ -34,16 +34,17 @@ import org.springframework.context.ApplicationContext;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 import uk.ac.roe.wfau.firethorn.votable.VOTableStarTableParser;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlCatalog;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlCatalog;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlSchema;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlTable;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalog;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcColumn;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcDiference;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.JdbcCatalog;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.JdbcColumn;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.JdbcSchema;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.JdbcTable;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTable;
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.jdbc.JDBCFormatter;
@@ -131,7 +132,7 @@ extends TestBase
                 );
             //
             // Create an empty resource tree.
-            final JdbcResource resource = womble().resources().jdbc().create(
+            final JdbcResource resource = womble().resources().jdbc().resources().create(
                 this.unique(
                     "base"
                     ),
@@ -163,7 +164,7 @@ extends TestBase
         final Connection connection = source.getConnection();
         //
         // Create our JdbcResource.
-        final JdbcResource jdbcResource = womble().resources().jdbc().create(
+        final JdbcResource jdbcResource = womble().resources().jdbc().resources().create(
             unique(
                 "jdbc-resource"
                 ),
@@ -204,7 +205,7 @@ extends TestBase
             {
             //
             // Expected errors.
-            final List<JdbcResource.Diference> expected = new ArrayList<JdbcResource.Diference>();
+            final List<JdbcDiference> expected = new ArrayList<JdbcDiference>();
             //
             // Create JdbcTable.
             final JdbcTable jdbcTable = jdbcSchema.tables().create(
@@ -217,8 +218,8 @@ extends TestBase
             //
             // Add the table to our expected errors.
             expected.add(
-                new JdbcResource.Diference(
-                    JdbcResource.Diference.Type.TABLE,
+                new JdbcDiference(
+                    JdbcDiference.Type.TABLE,
                     jdbcTable.name(),
                     null
                     )
@@ -279,8 +280,8 @@ extends TestBase
  * then a call to diff() won't pick up the columns.
  *
                 expected.add(
-                    new JdbcResource.Diference(
-                        JdbcResource.Diference.Type.COLUMN,
+                    new JdbcResource.JdbcDiference(
+                        JdbcResource.JdbcDiference.Type.COLUMN,
                         jdbcColumn.name(),
                         null
                         )
@@ -306,7 +307,7 @@ extends TestBase
                 }
             //
             // Check the differences.
-            final List<JdbcResource.Diference> before = jdbcResource.diff(
+            final List<JdbcDiference> before = jdbcResource.diff(
                 false,
                 false
                 );
@@ -314,7 +315,7 @@ extends TestBase
                 expected.size(),
                 before.size()
                 );
-            for (final JdbcResource.Diference diff : expected)
+            for (final JdbcDiference diff : expected)
                 {
                 assertContains(
                     before,
@@ -329,11 +330,11 @@ extends TestBase
                 );
             //
             // Check the differences.
-            final List<JdbcResource.Diference> after = jdbcResource.diff(
+            final List<JdbcDiference> after = jdbcResource.diff(
                 false,
                 false
                 );
-for (final JdbcResource.Diference diff : after)
+for (final JdbcDiference diff : after)
     {
     log.debug("----- Diff [{}][{}]", diff.type(), diff.meta());
     }
