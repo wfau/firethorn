@@ -15,47 +15,34 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.control ;
+package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.http.HttpHeaders;
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
- * Extension of the Spring HttpHeaders to set the location.
+ *
  *
  */
-@Slf4j
-public class RedirectHeader
-extends HttpHeaders
+@Component
+public class JdbcTableIdentFactory
+implements JdbcTable.IdentFactory
     {
-
-    /**
-     * Public constructor.
-     * 
-     */
-    public RedirectHeader(EntityBean<?> bean)
+    @Override
+    public String link(Identifier ident)
         {
-        this(
-            bean.getIdent()
-            );
+        return null;
         }
-
-    /**
-     * Public constructor.
-     * 
-     */
-    public RedirectHeader(final URI uri)
+    @Override
+    public Identifier ident(String string)
         {
-        super();
-        log.debug("RedirectHeader [{}]", uri);
-        this.setLocation(
-            uri
-            );
+        return null;
+        }
+    @Override
+    public String link(JdbcTable entity)
+        {
+        return null;
         }
     }
-

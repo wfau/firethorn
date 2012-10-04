@@ -68,12 +68,14 @@ implements EntityBean<EntityType>
         return this.entity;
         }
 
+    /*
     @Override
     public String id()
         {
         return entity.ident().toString();
         }
-
+*/
+/*    
     @Override
     public URI uri()
         {
@@ -81,7 +83,7 @@ implements EntityBean<EntityType>
             entity
             );
         }
-
+*/
     @Override
     public URI getIdent()
         {

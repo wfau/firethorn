@@ -36,26 +36,20 @@ public interface EntityBean<EntityType extends Entity>
     /**
      * The Entity ID.
      * 
-     */
     public String id();
+     */
 
     /**
      * The Entity URI.
      * 
-     */
     public URI uri();
+     */
 
     /**
      * The Entity URI.
      * 
      */
     public URI getIdent();
-
-    /**
-     * The Entity path.
-     * 
-    public String getPath();
-     */
 
     /**
      * The Entity type.
