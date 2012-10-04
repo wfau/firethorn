@@ -7,11 +7,6 @@ hostport=8080
 
 name()
     {
-    echo "$(pwgen 4 1)-$(date '+%Y%m%d %H%%M%S%N')"
-    }
-
-name()
-    {
     date '+%Y%m%d %H%M%S%N'
     }
 
