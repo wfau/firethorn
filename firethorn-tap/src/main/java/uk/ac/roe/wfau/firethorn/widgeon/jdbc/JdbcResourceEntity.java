@@ -48,6 +48,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.IdentFactory;
 
 /**
  * BaseResource implementations.
@@ -188,30 +189,12 @@ implements JdbcResource
             }
 
         @Autowired
-        protected JdbcResource.IdentFactory identFactory ;
+        protected JdbcResource.IdentFactory identifiers ;
 
         @Override
-        public String link(JdbcResource entity)
+        public JdbcResource.IdentFactory identifiers()
             {
-            return identFactory.link(
-                entity.ident()
-                );
-            }
-
-        @Override
-        public String link(Identifier ident)
-            {
-            return identFactory.link(
-                ident
-                );
-            }
-
-        @Override
-        public Identifier ident(final String string)
-            {
-            return identFactory.ident(
-                string
-                );
+            return identifiers ;
             }
         }
 

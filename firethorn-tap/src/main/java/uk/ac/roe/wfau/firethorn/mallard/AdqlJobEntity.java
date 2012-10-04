@@ -51,29 +51,29 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
     AccessType.FIELD
     )
 @Table(
-    name = JobEntity.DB_TABLE_NAME
+    name = AdqlJobEntity.DB_TABLE_NAME
     )
 @NamedQueries(
         {
         @NamedQuery(
             name  = "service.job-select-all",
-            query = "FROM JobEntity ORDER BY ident desc"
+            query = "FROM AdqlJobEntity ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "service.job-select-service",
-            query = "FROM JobEntity WHERE service = :service ORDER BY ident desc"
+            query = "FROM AdqlJobEntity WHERE service = :service ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "service.job-select-status",
-            query = "FROM JobEntity WHERE status = :status ORDER BY ident desc"
+            query = "FROM AdqlJobEntity WHERE status = :status ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "service.job-select-service.status",
-            query = "FROM JobEntity WHERE service = :service AND status = :status ORDER BY ident desc"
+            query = "FROM AdqlJobEntity WHERE service = :service AND status = :status ORDER BY ident desc"
             )
         }
     )
-public class JobEntity
+public class AdqlJobEntity
 extends AbstractEntity
 implements AdqlJob
     {
@@ -104,7 +104,7 @@ implements AdqlJob
         @Override
         public Class<?> etype()
             {
-            return JobEntity.class ;
+            return AdqlJobEntity.class ;
             }
 
         @Override
@@ -126,7 +126,7 @@ implements AdqlJob
         public AdqlJob create(final AdqlService service, final String name, final String adql)
             {
             return super.insert(
-                new JobEntity(
+                new AdqlJobEntity(
                     service,
                     name,
                     adql
@@ -135,28 +135,12 @@ implements AdqlJob
             }
 
         @Autowired
-        protected AdqlJob.IdentFactory identFactory ;
+        protected AdqlJob.IdentFactory identifiers ;
 
         @Override
-        public String link(AdqlJob entity)
+        public AdqlJob.IdentFactory identifiers()
             {
-            return identFactory.link(
-                entity.ident()
-                );
-            }
-        @Override
-        public String link(Identifier ident)
-            {
-            return identFactory.link(
-                ident
-                );
-            }
-        @Override
-        public Identifier ident(final String string)
-            {
-            return identFactory.ident(
-                string
-                );
+            return this.identifiers;
             }
         }
 
@@ -165,16 +149,16 @@ implements AdqlJob
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected JobEntity()
+    protected AdqlJobEntity()
         {
         super();
         }
 
     /**
-     * Create a new JobEntity.
+     * Create a new AdqlJobEntity.
      *
      */
-    protected JobEntity(final AdqlService service, final String name, final String adql)
+    protected AdqlJobEntity(final AdqlService service, final String name, final String adql)
         {
         super(name);
         this.adql = adql ;

@@ -317,37 +317,21 @@ implements AdqlTable
             }
 
         @Autowired
-        protected AdqlColumn.Factory adqlColumns ;
+        protected AdqlColumn.Factory columns ;
 
         @Override
         public AdqlColumn.Factory adqlColumns()
             {
-            return this.adqlColumns ;
+            return this.columns ;
             }
 
         @Autowired
-        protected AdqlTable.IdentFactory identFactory ;
+        protected AdqlTable.IdentFactory identifiers ;
 
         @Override
-        public String link(AdqlTable entity)
+        public AdqlTable.IdentFactory identifiers()
             {
-            return identFactory.link(
-                entity.ident()
-                );
-            }
-        @Override
-        public String link(Identifier ident)
-            {
-            return identFactory.link(
-                ident
-                );
-            }
-        @Override
-        public Identifier ident(final String string)
-            {
-            return identFactory.ident(
-                string
-                );
+            return this.identifiers;
             }
         }
 

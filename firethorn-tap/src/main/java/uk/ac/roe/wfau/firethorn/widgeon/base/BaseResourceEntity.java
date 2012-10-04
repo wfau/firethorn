@@ -192,28 +192,12 @@ implements BaseResource
             }
 
         @Autowired
-        protected BaseResource.IdentFactory identFactory ;
+        protected BaseResource.IdentFactory identifiers ;
 
         @Override
-        public String link(BaseResource entity)
+        public BaseResource.IdentFactory identifiers()
             {
-            return identFactory.link(
-                entity.ident()
-                );
-            }
-        @Override
-        public String link(Identifier ident)
-            {
-            return identFactory.link(
-                ident
-                );
-            }
-        @Override
-        public Identifier ident(final String string)
-            {
-            return identFactory.ident(
-                string
-                );
+            return this.identifiers;
             }
         }
 

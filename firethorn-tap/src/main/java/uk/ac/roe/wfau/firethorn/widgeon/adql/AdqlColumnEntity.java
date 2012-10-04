@@ -340,28 +340,12 @@ implements AdqlColumn
             }
 
         @Autowired
-        protected AdqlColumn.IdentFactory identFactory ;
+        protected AdqlColumn.IdentFactory identifiers ;
 
         @Override
-        public String link(AdqlColumn entity)
+        public AdqlColumn.IdentFactory identifiers()
             {
-            return identFactory.link(
-                entity.ident()
-                );
-            }
-        @Override
-        public String link(Identifier ident)
-            {
-            return identFactory.link(
-                ident
-                );
-            }
-        @Override
-        public Identifier ident(final String string)
-            {
-            return identFactory.ident(
-                string
-                );
+            return this.identifiers;
             }
         }
 

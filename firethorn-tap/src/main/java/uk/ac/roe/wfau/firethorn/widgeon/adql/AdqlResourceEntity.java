@@ -206,28 +206,12 @@ implements AdqlResource
             }
 
         @Autowired
-        protected AdqlResource.IdentFactory identFactory ;
+        protected AdqlResource.IdentFactory identifiers ;
 
         @Override
-        public String link(AdqlResource entity)
+        public AdqlResource.IdentFactory identifiers()
             {
-            return identFactory.link(
-                entity.ident()
-                );
-            }
-        @Override
-        public String link(Identifier ident)
-            {
-            return identFactory.link(
-                ident
-                );
-            }
-        @Override
-        public Identifier ident(final String string)
-            {
-            return identFactory.ident(
-                string
-                );
+            return this.identifiers;
             }
         }
 

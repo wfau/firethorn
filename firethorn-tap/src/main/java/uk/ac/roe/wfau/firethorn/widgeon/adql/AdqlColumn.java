@@ -38,7 +38,7 @@ extends DataResource.DataColumn<AdqlTable>
         }
 
     /**
-     * Factory interface for creating and selecting adqlColumns.
+     * Factory interface for creating and selecting columns.
      *
      */
     public static interface Factory

@@ -291,28 +291,12 @@ implements AdqlCatalog
             }
 
         @Autowired
-        protected AdqlCatalog.IdentFactory identFactory ;
+        protected AdqlCatalog.IdentFactory identifiers ;
 
         @Override
-        public String link(AdqlCatalog entity)
+        public AdqlCatalog.IdentFactory identifiers()
             {
-            return identFactory.link(
-                entity.ident()
-                );
-            }
-        @Override
-        public String link(Identifier ident)
-            {
-            return identFactory.link(
-                ident
-                );
-            }
-        @Override
-        public Identifier ident(final String string)
-            {
-            return identFactory.ident(
-                string
-                );
+            return this.identifiers;
             }
         }
 

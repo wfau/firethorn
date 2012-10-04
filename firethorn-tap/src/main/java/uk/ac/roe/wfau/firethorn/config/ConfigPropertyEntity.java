@@ -137,29 +137,12 @@ implements ConfigProperty
             }
 
         @Autowired
-        protected ConfigProperty.IdentFactory identFactory ;
+        protected ConfigProperty.IdentFactory identifiers ;
 
         @Override
-        public String link(ConfigProperty entity)
+        public ConfigProperty.IdentFactory identifiers()
             {
-            return identFactory.link(
-                entity.ident()
-                );
-            }
-
-        @Override
-        public String link(Identifier ident)
-            {
-            return identFactory.link(
-                ident
-                );
-            }
-        @Override
-        public Identifier ident(final String string)
-            {
-            return identFactory.ident(
-                string
-                );
+            return this.identifiers;
             }
         }
     

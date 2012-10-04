@@ -211,28 +211,12 @@ implements JdbcColumn
             }
 
         @Autowired
-        protected JdbcColumn.IdentFactory identFactory ;
+        protected JdbcColumn.IdentFactory identifiers ;
 
         @Override
-        public String link(JdbcColumn entity)
+        public JdbcColumn.IdentFactory identifiers()
             {
-            return identFactory.link(
-                entity.ident()
-                );
-            }
-        @Override
-        public String link(Identifier ident)
-            {
-            return identFactory.link(
-                ident
-                );
-            }
-        @Override
-        public Identifier ident(final String string)
-            {
-            return identFactory.ident(
-                string
-                );
+            return identifiers ;
             }
         }
 

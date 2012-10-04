@@ -224,28 +224,12 @@ implements JdbcSchema
             }
 
         @Autowired
-        protected JdbcSchema.IdentFactory identFactory ;
+        protected JdbcSchema.IdentFactory identifiers ;
 
         @Override
-        public String link(JdbcSchema entity)
+        public JdbcSchema.IdentFactory identifiers()
             {
-            return identFactory.link(
-                entity.ident()
-                );
-            }
-        @Override
-        public String link(Identifier ident)
-            {
-            return identFactory.link(
-                ident
-                );
-            }
-        @Override
-        public Identifier ident(final String string)
-            {
-            return identFactory.ident(
-                string
-                );
+            return identifiers ;
             }
         }
 

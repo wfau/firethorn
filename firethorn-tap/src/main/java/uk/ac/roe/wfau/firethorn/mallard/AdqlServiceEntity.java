@@ -157,37 +157,21 @@ implements AdqlService
             }
 
         @Autowired
-        protected AdqlJob.Factory adqlJobs ;
+        protected AdqlJob.Factory jobs ;
 
         @Override
-        public AdqlJob.Factory adqlJobs()
+        public AdqlJob.Factory jobs()
             {
-            return this.adqlJobs ;
+            return this.jobs ;
             }
 
         @Autowired
-        protected AdqlService.IdentFactory identFactory ;
+        protected AdqlService.IdentFactory identifiers ;
 
         @Override
-        public String link(AdqlService entity)
+        public AdqlService.IdentFactory identifiers()
             {
-            return identFactory.link(
-                entity.ident()
-                );
-            }
-        @Override
-        public String link(Identifier ident)
-            {
-            return identFactory.link(
-                ident
-                );
-            }
-        @Override
-        public Identifier ident(final String string)
-            {
-            return identFactory.ident(
-                string
-                );
+            return this.identifiers;
             }
         }
 
@@ -218,7 +202,7 @@ implements AdqlService
             @Override
             public AdqlJob create(final String name, final String adql)
                 {
-                return womble().services().adqlJobs().create(
+                return womble().services().jobs().create(
                     AdqlServiceEntity.this,
                     name,
                     adql
@@ -228,7 +212,7 @@ implements AdqlService
             @Override
             public Iterable<AdqlJob> select()
                 {
-                return womble().services().adqlJobs().select(
+                return womble().services().jobs().select(
                     AdqlServiceEntity.this
                     ) ;
                 }

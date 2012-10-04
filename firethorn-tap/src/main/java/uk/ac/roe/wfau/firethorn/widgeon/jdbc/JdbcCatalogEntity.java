@@ -223,28 +223,12 @@ implements JdbcCatalog
             }
 
         @Autowired
-        protected JdbcCatalog.IdentFactory identFactory ;
+        protected JdbcCatalog.IdentFactory identifiers ;
 
         @Override
-        public String link(JdbcCatalog entity)
+        public JdbcCatalog.IdentFactory identifiers()
             {
-            return identFactory.link(
-                entity.ident()
-                );
-            }
-        @Override
-        public String link(Identifier ident)
-            {
-            return identFactory.link(
-                ident
-                );
-            }
-        @Override
-        public Identifier ident(final String string)
-            {
-            return identFactory.ident(
-                string
-                );
+            return identifiers ;
             }
         }
 

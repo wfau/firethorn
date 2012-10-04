@@ -108,28 +108,12 @@ implements Identity
             }
 
         @Autowired
-        protected Identity.IdentFactory identFactory ;
+        protected Identity.IdentFactory identifiers ;
 
         @Override
-        public String link(Identity entity)
+        public Identity.IdentFactory identifiers()
             {
-            return identFactory.link(
-                entity.ident()
-                );
-            }
-        @Override
-        public String link(Identifier ident)
-            {
-            return identFactory.link(
-                ident
-                );
-            }
-        @Override
-        public Identifier ident(final String string)
-            {
-            return identFactory.ident(
-                string
-                );
+            return this.identifiers;
             }
         }
 

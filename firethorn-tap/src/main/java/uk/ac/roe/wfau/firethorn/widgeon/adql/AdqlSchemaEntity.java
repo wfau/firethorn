@@ -304,28 +304,12 @@ implements AdqlSchema
             }
 
         @Autowired
-        protected AdqlSchema.IdentFactory identFactory ;
+        protected AdqlSchema.IdentFactory identifiers ;
 
         @Override
-        public String link(AdqlSchema entity)
+        public AdqlSchema.IdentFactory identifiers()
             {
-            return identFactory.link(
-                entity.ident()
-                );
-            }
-        @Override
-        public String link(Identifier ident)
-            {
-            return identFactory.link(
-                ident
-                );
-            }
-        @Override
-        public Identifier ident(final String string)
-            {
-            return identFactory.ident(
-                string
-                );
+            return this.identifiers;
             }
         }
 

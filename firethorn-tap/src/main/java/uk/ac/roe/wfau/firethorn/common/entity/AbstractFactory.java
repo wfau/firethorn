@@ -33,6 +33,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.EntityNotFoundException;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.common.womble.Womble;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTable;
 
 /**
  * Generic base class for a persistent Entity Factory.
@@ -257,11 +258,31 @@ implements Entity.Factory<EntityType>
         return new StringBuilder(text).append("%").toString();
         }
 
+    /**
+     * Our corresponding Identifier factory.
+     * 
+     */
+    public abstract Entity.IdentFactory<EntityType> identifiers();
+    
     @Override
     public String link(EntityType entity)
         {
-        return link(
+        return identifiers().link(
             entity.ident()
+            );
+        }
+    @Override
+    public String link(Identifier ident)
+        {
+        return identifiers().link(
+            ident
+            );
+        }
+    @Override
+    public Identifier ident(final String string)
+        {
+        return identifiers().ident(
+            string
             );
         }
     }

@@ -306,7 +306,7 @@ extends ResourceStatus
             {
 
             /**
-             * Select all the adqlColumns from a table.
+             * Select all the columns from a table.
              *
              */
             public Iterable<ColumnType> select(final TableType parent);

@@ -71,7 +71,7 @@ extends Entity
          * Access to our AdqlJob factory.
          *
          */
-        public AdqlJob.Factory adqlJobs();
+        public AdqlJob.Factory jobs();
         }
 
     /**

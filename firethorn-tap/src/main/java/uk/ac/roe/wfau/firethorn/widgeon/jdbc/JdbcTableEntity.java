@@ -226,28 +226,12 @@ implements JdbcTable
             }
 
         @Autowired
-        protected JdbcTable.IdentFactory identFactory ;
+        protected JdbcTable.IdentFactory identifiers ;
 
         @Override
-        public String link(JdbcTable entity)
+        public JdbcTable.IdentFactory identifiers()
             {
-            return identFactory.link(
-                entity.ident()
-                );
-            }
-        @Override
-        public String link(Identifier ident)
-            {
-            return identFactory.link(
-                ident
-                );
-            }
-        @Override
-        public Identifier ident(final String string)
-            {
-            return identFactory.ident(
-                string
-                );
+            return identifiers ;
             }
         }
 

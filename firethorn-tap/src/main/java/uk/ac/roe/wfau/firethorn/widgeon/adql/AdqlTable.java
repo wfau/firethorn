@@ -96,7 +96,7 @@ extends DataResource.DataTable<AdqlSchema>
     public BaseResource.BaseTable<?> base();
 
     /**
-     * Public interface for accessing a table's adqlColumns.
+     * Public interface for accessing a table's columns.
      *
      */
     public interface Columns
@@ -112,7 +112,7 @@ extends DataResource.DataTable<AdqlSchema>
         }
 
     /**
-     * Access to this table's adqlColumns.
+     * Access to this table's columns.
      *
      */
     @Override
