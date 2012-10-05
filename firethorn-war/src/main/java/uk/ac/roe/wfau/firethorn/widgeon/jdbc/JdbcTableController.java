@@ -31,16 +31,15 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundExcept
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
- * Spring MVC controller for JdbcResources.
+ * Spring MVC controller for JdbcTables.
  *
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcResourceIdentFactory.RESOURCE_PATH)
-public class JdbcResourceController
+@RequestMapping(JdbcTableIdentFactory.TABLE_PATH)
+public class JdbcTableController
     extends AbstractController
     {
 
@@ -48,7 +47,7 @@ public class JdbcResourceController
     public Path path()
         {
         return new PathImpl(
-            JdbcResourceIdentFactory.RESOURCE_PATH
+            JdbcTableIdentFactory.TABLE_PATH
             );
         }
 
@@ -56,7 +55,7 @@ public class JdbcResourceController
      * Public constructor.
      *
      */
-    public JdbcResourceController()
+    public JdbcTableController()
         {
         super();
         }
@@ -65,32 +64,34 @@ public class JdbcResourceController
      * MVC property for the target entity.
      *
      */
-    public static final String RESOURCE_ENTITY = "urn:jdbc.resource.entity" ;
+    public static final String TABLE_ENTITY = "urn:jdbc.table.entity" ;
 
     /**
      * MVC property for the target bean.
      *
      */
-    public static final String RESOURCE_BEAN = "urn:jdbc.resource.bean" ;
+    public static final String TABLE_BEAN = "urn:jdbc.table.bean" ;
 
     /**
      * Get the target entity based on the ident in the path.
      *
+    @ModelAttribute(JdbcTableController.SCHEMA_ENTITY)
      */
-    @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-    public JdbcResource resource(
+    public JdbcTable table(
         @PathVariable("ident")
         final String ident
         ){
+        log.debug("table() [{}]", ident);
         try {
-            return womble().resources().jdbc().resources().select(
-                womble().resources().jdbc().resources().ident(
+            return womble().resources().jdbc().tables().select(
+                womble().resources().jdbc().tables().ident(
                     ident
                     )
                 );
             }
-        catch (IdentifierNotFoundException e)
+        catch (IdentifierNotFoundException ouch)
             {
+            log.debug("JdbcTable not found [{}]", ouch);
             return null ;
             }
         }
@@ -99,14 +100,15 @@ public class JdbcResourceController
      * Wrap the entity as a bean.
      * 
      */
-    @ModelAttribute(JdbcResourceController.RESOURCE_BEAN)
-    public JdbcResourceBean bean(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource
+    @ModelAttribute(JdbcTableController.TABLE_BEAN)
+    public JdbcTableBean bean(
+        @PathVariable("ident")
+        final String ident
         ){
-        log.debug("bean() [{}]", resource.ident());
-        return new JdbcResourceBean(
-            resource
+        return new JdbcTableBean(
+            table(
+                ident
+                )
             );
         }
     
@@ -116,13 +118,21 @@ public class JdbcResourceController
      */
     @RequestMapping(method=RequestMethod.GET)
     public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcResourceController.RESOURCE_BEAN)
-        final JdbcResourceBean bean,
+        @ModelAttribute(JdbcTableController.TABLE_BEAN)
+        final JdbcTableBean bean,
         final ModelAndView model
         ){
+        log.debug("htmlSelect()");
         model.setViewName(
-            "jdbc/resource/display"
+            "jdbc/catalog/display"
             );
+        model.addObject(
+            JdbcSchemaController.SCHEMA_BEAN,
+            new JdbcSchemaBean(
+                bean.entity().parent()
+                )
+            );
+
         return model ;
         }
 
@@ -132,10 +142,11 @@ public class JdbcResourceController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcResourceBean jsonSelect(
-        @ModelAttribute(JdbcResourceController.RESOURCE_BEAN)
-        final JdbcResourceBean bean
+    public JdbcTableBean jsonSelect(
+        @ModelAttribute(JdbcTableController.TABLE_BEAN)
+        final JdbcTableBean bean
         ){
+        log.debug("jsonSelect()");
         return bean ;
         }
     }

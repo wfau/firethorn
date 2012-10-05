@@ -33,7 +33,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
- * Spring MVC controller for JdbcResources.
+ * Spring MVC controller for JdbcCatalogs.
  *
  */
 @Slf4j
@@ -60,19 +60,19 @@ public class JdbcCatalogController
         }
 
     /**
-     * MVC property for the target JdbcCatalog entity.
+     * MVC property for the target entity.
      *
      */
     public static final String CATALOG_ENTITY = "urn:jdbc.catalog.entity" ;
 
     /**
-     * MVC property for the target JdbcCatalogBean bean.
+     * MVC property for the target bean.
      *
      */
     public static final String CATALOG_BEAN = "urn:jdbc.catalog.bean" ;
 
     /**
-     * Get the target JdbcCatalog based on the ident in the path.
+     * Get the target entity based on the ident in the path.
      *
     @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
      */
@@ -97,28 +97,22 @@ public class JdbcCatalogController
 
     /**
      * Wrap the JdbcCatalog as a JdbcCatalogBean.
-     * ** this fails because Spring can't handle the nested interface ?
      * 
+     */
     @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
     public JdbcCatalogBean bean(
         @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
-        final JdbcCatalog catalog,
-        final HttpServletRequest request
+        final JdbcCatalog catalog
         ){
-        log.debug("JdbcCatalogBean bean() [{}]", catalog.ident());
+        log.debug("bean() [{}]", catalog.ident());
         return new JdbcCatalogBean(
-            this.builder(
-                request
-                ),
             catalog
             );
         }
-     */
 
     /**
-     * Wrap the JdbcCatalog as a bean.
+     * Wrap the entity as a bean.
      * 
-     */
     @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
     public JdbcCatalogBean bean(
         @PathVariable("ident")
@@ -131,9 +125,10 @@ public class JdbcCatalogController
                 )
             );
         }
+     */
 
     /**
-     * HTML GET request for a catalog.
+     * HTML GET request.
      *
      */
     @RequestMapping(method=RequestMethod.GET)
@@ -156,7 +151,7 @@ public class JdbcCatalogController
         }
 
     /**
-     * JSON GET request for a catalog.
+     * JSON GET request.
      *
      */
     @ResponseBody

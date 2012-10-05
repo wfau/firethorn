@@ -21,7 +21,6 @@ import java.net.URI;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
@@ -46,6 +45,12 @@ implements JdbcSchema.IdentFactory
      * 
      */
     public static final String SCHEMA_PATH = "/jdbc/schema/" + IDENT_TOKEN ;
+
+    /**
+     * The URI path for schema tables.
+     * 
+     */
+    public static final String TABLES_PATH = SCHEMA_PATH + "/tables" ;
 
     @Override
     public String link(JdbcSchema entity)

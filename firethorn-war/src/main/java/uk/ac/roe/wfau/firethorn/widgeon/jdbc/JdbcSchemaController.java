@@ -33,7 +33,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
- * Spring MVC controller for JdbcResources.
+ * Spring MVC controller for JdbcSchema.
  *
  */
 @Slf4j
@@ -61,7 +61,7 @@ public class JdbcSchemaController
         }
 
     /**
-     * MVC property for the target JdbcSchema entity.
+     * MVC property for the target entity.
      *
      */
     public static final String SCHEMA_ENTITY = "urn:jdbc.schema.entity" ;
@@ -73,7 +73,7 @@ public class JdbcSchemaController
     public static final String SCHEMA_BEAN = "urn:jdbc.schema.bean" ;
 
     /**
-     * Get the target JdbcSchema based on the ident in the path.
+     * Get the target entity based on the ident in the path.
      *
     @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
      */
@@ -97,7 +97,7 @@ public class JdbcSchemaController
         }
 
     /**
-     * Wrap the JdbcSchema as a bean.
+     * Wrap the entity as a bean.
      * 
      */
     @ModelAttribute(JdbcSchemaController.SCHEMA_BEAN)
@@ -113,7 +113,7 @@ public class JdbcSchemaController
         }
     
     /**
-     * HTML GET request for a schema.
+     * HTML GET request.
      *
      */
     @RequestMapping(method=RequestMethod.GET)
@@ -137,7 +137,7 @@ public class JdbcSchemaController
         }
 
     /**
-     * JSON GET request for a schema.
+     * JSON GET request.
      *
      */
     @ResponseBody

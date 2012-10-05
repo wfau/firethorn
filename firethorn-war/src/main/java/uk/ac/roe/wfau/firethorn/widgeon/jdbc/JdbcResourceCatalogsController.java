@@ -37,7 +37,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
- * Spring MVC controller for AdqlServices.
+ * Spring MVC controller for resource catalogs.
  *
  */
 @Slf4j
@@ -121,6 +121,7 @@ extends AbstractController
         @PathVariable("ident")
         final String ident
         ){
+        log.debug("resource() [{}]", ident);
         try {
             return womble().resources().jdbc().resources().select(
                 womble().resources().jdbc().resources().ident(
@@ -154,8 +155,10 @@ extends AbstractController
      * 
      */
     public JdbcCatalogBeanIter select(
+        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
         final JdbcResource resource
         ){
+        log.debug("select()");
         return new JdbcCatalogBeanIter(
             resource.catalogs().select()
             );
@@ -171,6 +174,7 @@ extends AbstractController
         final JdbcResource resource,
         final ModelAndView model
         ){
+        log.debug("htmlIndex()");
         model.addObject(
             JdbcResourceCatalogsController.SELECT_RESULT,
             select(
@@ -193,6 +197,7 @@ extends AbstractController
         final JdbcResource resource,
         final ModelAndView model
         ){
+        log.debug("htmlSelect()");
         model.addObject(
             JdbcResourceCatalogsController.SELECT_RESULT,
             select(
@@ -216,6 +221,7 @@ extends AbstractController
         final JdbcResource resource,
         final ModelAndView model
         ){
+        log.debug("jsonSelect()");
         return select(
             resource
             );
@@ -226,9 +232,11 @@ extends AbstractController
      * 
      */
     public JdbcCatalogBean select(
+        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
         JdbcResource resource,
         String name
         ){
+        log.debug("select(String) [{}]", name);
         return new JdbcCatalogBean(
             resource.catalogs().select(
                 name
@@ -248,6 +256,7 @@ extends AbstractController
         final String name,
         final ModelAndView model
         ){
+        log.debug("htmlSelect(String) [{}]", name);
         model.addObject(
             SELECT_NAME,
             name
@@ -278,6 +287,7 @@ extends AbstractController
         final String name,
         final ModelAndView model
         ){
+        log.debug("jsonSelect(String) [{}]", name);
         return select(
             resource,
             name
@@ -289,9 +299,11 @@ extends AbstractController
      * 
      */
     public JdbcCatalogBeanIter search(
+        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
         JdbcResource resource,
         String text
         ){
+        log.debug("search(String) [{}]", text);
         return new JdbcCatalogBeanIter(
             resource.catalogs().search(
                 text
@@ -309,6 +321,7 @@ extends AbstractController
         final JdbcResource resource,
         final ModelAndView model
         ){
+        log.debug("htmlSearch");
         model.setViewName(
             "jdbc/catalog/search"
             );
@@ -328,6 +341,7 @@ extends AbstractController
         final String text,
         final ModelAndView model
         ){
+        log.debug("htmlSearch(String) [{}]", text);
         model.addObject(
             SEARCH_TEXT,
             text
@@ -359,6 +373,7 @@ extends AbstractController
         final String text,
         final ModelAndView model
         ){
+        log.debug("jsonSearch(String) [{}]", text);
         return search(
             resource,
             text
@@ -375,6 +390,7 @@ extends AbstractController
         final JdbcResource resource,
         final ModelAndView model
         ){
+        log.debug("htmlCreate()");
         model.setViewName(
             "jdbc/catalog/create"
             );
@@ -386,9 +402,11 @@ extends AbstractController
      *
      */
     public JdbcCatalogBean create(
+        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
         final JdbcResource resource,
         final String name
         ){
+        log.debug("create(String) [{}]", name);
         return new JdbcCatalogBean(
             resource.catalogs().create(
                 name
@@ -408,6 +426,7 @@ extends AbstractController
         final String name,
         final ModelAndView model
         ){
+        log.debug("htmlCreate(String) [{}]", name);
         return new ResponseEntity<String>(
             new RedirectHeader(
                 create(
@@ -431,6 +450,7 @@ extends AbstractController
         final String name,
         final ModelAndView model
         ){
+        log.debug("jsonCreate(String) [{}]", name);
         JdbcCatalogBean catalog = create(
             resource,
             name
