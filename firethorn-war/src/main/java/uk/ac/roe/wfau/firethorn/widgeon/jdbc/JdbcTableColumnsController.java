@@ -42,15 +42,15 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcSchemaIdentFactory.TABLES_PATH)
-public class JdbcSchemaTablesController
+@RequestMapping(JdbcTableIdentFactory.COLUMNS_PATH)
+public class JdbcTableColumnsController
 extends AbstractController
     {
     @Override
     public Path path()
         {
         return new PathImpl(
-            JdbcSchemaIdentFactory.TABLES_PATH
+            JdbcTableIdentFactory.COLUMNS_PATH
             );
         }
 
@@ -58,7 +58,7 @@ extends AbstractController
      * Public constructor.
      *
      */
-    public JdbcSchemaTablesController()
+    public JdbcTableColumnsController()
         {
         super();
         }
@@ -85,52 +85,52 @@ extends AbstractController
      * MVC property for the Resource name.
      *
      */
-    public static final String SELECT_NAME = "jdbc.schema.tables.select.name" ;
+    public static final String SELECT_NAME = "jdbc.table.columns.select.name" ;
 
     /**
      * MVC property for the select results.
      *
      */
-    public static final String SELECT_RESULT = "jdbc.schema.tables.select.result" ;
+    public static final String SELECT_RESULT = "jdbc.table.columns.select.result" ;
 
     /**
      * MVC property for the search text.
      *
      */
-    public static final String SEARCH_TEXT = "jdbc.schema.tables.search.text" ;
+    public static final String SEARCH_TEXT = "jdbc.table.columns.search.text" ;
 
     /**
      * MVC property for the search results.
      *
      */
-    public static final String SEARCH_RESULT = "jdbc.schema.tables.search.result" ;
+    public static final String SEARCH_RESULT = "jdbc.table.columns.search.result" ;
 
     /**
      * MVC property for the create name.
      *
      */
-    public static final String CREATE_NAME = "jdbc.schema.tables.create.name" ;
+    public static final String CREATE_NAME = "jdbc.table.columns.create.name" ;
 
     /**
      * Get the parent entity based on the request ident.
      *
      */
-    @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-    public JdbcSchema schema(
+    @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+    public JdbcTable table(
         @PathVariable("ident")
         final String ident
         ){
         log.debug("schema() [{}]", ident);
         try {
-            return womble().resources().jdbc().schemas().select(
-                womble().resources().jdbc().schemas().ident(
+            return womble().resources().jdbc().tables().select(
+                womble().resources().jdbc().tables().ident(
                     ident
                     )
                 );
             }
         catch (IdentifierNotFoundException e)
             {
-            log.error("Unable to locate schema [{}]", ident);
+            log.error("Unable to locate table[{}]", ident);
             return null ;
             }
         }
@@ -139,13 +139,13 @@ extends AbstractController
      * Select all.
      * 
      */
-    public JdbcTableBeanIter select(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema
+    public JdbcColumnBeanIter select(
+        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        final JdbcTable table
         ){
         log.debug("select()");
-        return new JdbcTableBeanIter(
-            schema.tables().select()
+        return new JdbcColumnBeanIter(
+            table.columns().select()
             );
         }
 
@@ -155,15 +155,15 @@ extends AbstractController
      */
     @RequestMapping(value="", method=RequestMethod.GET)
     public ModelAndView htmlIndex(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema,
+        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        final JdbcTable table,
         final ModelAndView model
         ){
         log.debug("htmlIndex()");
         model.addObject(
-            JdbcSchemaTablesController.SELECT_RESULT,
+            JdbcTableColumnsController.SELECT_RESULT,
             select(
-                schema
+                table
                 )
             );
         model.setViewName(
@@ -178,15 +178,15 @@ extends AbstractController
      */
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
     public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema,
+        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        final JdbcTable table,
         final ModelAndView model
         ){
         log.debug("htmlSelect()");
         model.addObject(
-            JdbcSchemaTablesController.SELECT_RESULT,
+            JdbcTableColumnsController.SELECT_RESULT,
             select(
-                schema
+                table
                 )
             );
         model.setViewName(
@@ -201,14 +201,14 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcTableBeanIter jsonSelect(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema,
+    public JdbcColumnBeanIter jsonSelect(
+        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        final JdbcTable table,
         final ModelAndView model
         ){
         log.debug("jsonSelect()");
         return select(
-            schema
+            table
             );
         }
 
@@ -216,14 +216,14 @@ extends AbstractController
      * Select by name.
      * 
      */
-    public JdbcTableBean select(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema,
+    public JdbcColumnBean select(
+        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        final JdbcTable table,
         String name
         ){
         log.debug("select(String) [{}]", name);
-        return new JdbcTableBean(
-            schema.tables().select(
+        return new JdbcColumnBean(
+            table.columns().select(
                 name
                 )
             );
@@ -235,8 +235,8 @@ extends AbstractController
      */
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
     public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema,
+        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        final JdbcTable table,
         @RequestParam(SELECT_NAME)
         final String name,
         final ModelAndView model
@@ -249,7 +249,7 @@ extends AbstractController
         model.addObject(
             SELECT_RESULT,
             select(
-                schema,
+                table,
                 name
                 )
             );
@@ -265,16 +265,16 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public JdbcTableBean jsonSelect(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema,
+    public JdbcColumnBean jsonSelect(
+        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        final JdbcTable table,
         @RequestParam(SELECT_NAME)
         final String name,
         final ModelAndView model
         ){
         log.debug("jsonSelect(String) [{}]", name);
         return select(
-            schema,
+            table,
             name
             );
         }
@@ -283,14 +283,14 @@ extends AbstractController
      * Search by text.
      * 
      */
-    public JdbcTableBeanIter search(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema,
+    public JdbcColumnBeanIter search(
+        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        final JdbcTable table,
         String text
         ){
         log.debug("search(String) [{}]", text);
-        return new JdbcTableBeanIter(
-            schema.tables().search(
+        return new JdbcColumnBeanIter(
+            table.columns().search(
                 text
                 )
             );
@@ -302,8 +302,8 @@ extends AbstractController
      */
     @RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
     public ModelAndView htmlSearch(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema,
+        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        final JdbcTable table,
         final ModelAndView model
         ){
         log.debug("htmlSearch");
@@ -319,8 +319,8 @@ extends AbstractController
      */
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
     public ModelAndView htmlSearch(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema,
+        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        final JdbcTable table,
         @RequestParam(SEARCH_TEXT)
         final String text,
         final ModelAndView model
@@ -333,7 +333,7 @@ extends AbstractController
         model.addObject(
             SEARCH_RESULT,
             search(
-                schema,
+                table,
                 text
                 )
             );
@@ -349,16 +349,16 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public JdbcTableBeanIter jsonSearch(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema,
+    public JdbcColumnBeanIter jsonSearch(
+        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        final JdbcTable table,
         @RequestParam(SEARCH_TEXT)
         final String text,
         final ModelAndView model
         ){
         log.debug("jsonSearch(String) [{}]", text);
         return search(
-            schema,
+            table,
             text
             );
         }
@@ -369,8 +369,8 @@ extends AbstractController
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.GET)
     public ModelAndView htmlCreate(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema,
+        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        final JdbcTable table,
         final ModelAndView model
         ){
         log.debug("htmlCreate()");
@@ -384,14 +384,14 @@ extends AbstractController
      * Create a new entity.
      *
      */
-    public JdbcTableBean create(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema,
+    public JdbcColumnBean create(
+        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        final JdbcTable table,
         final String name
         ){
         log.debug("create(String) [{}]", name);
-        return new JdbcTableBean(
-            schema.tables().create(
+        return new JdbcColumnBean(
+            table.columns().create(
                 name
                 )
             );
@@ -403,8 +403,8 @@ extends AbstractController
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST)
     public ResponseEntity<String>  htmlCreate(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema,
+        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        final JdbcTable table,
         @RequestParam(CREATE_NAME)
         final String name,
         final ModelAndView model
@@ -413,7 +413,7 @@ extends AbstractController
         return new ResponseEntity<String>(
             new RedirectHeader(
                 create(
-                    schema,
+                    table,
                     name
                     )
                 ),
@@ -426,22 +426,22 @@ extends AbstractController
      *
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<JdbcTableBean> jsonCreate(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema,
+    public ResponseEntity<JdbcColumnBean> jsonCreate(
+        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        final JdbcTable table,
         @RequestParam(CREATE_NAME)
         final String name,
         final ModelAndView model
         ){
         log.debug("jsonCreate(String) [{}]", name);
-        JdbcTableBean table = create(
-            schema,
+        JdbcColumnBean column = create(
+            table,
             name
             );
-        return new ResponseEntity<JdbcTableBean>(
-            table,
+        return new ResponseEntity<JdbcColumnBean>(
+            column,
             new RedirectHeader(
-                table
+                column
                 ),
             HttpStatus.CREATED
             ); 

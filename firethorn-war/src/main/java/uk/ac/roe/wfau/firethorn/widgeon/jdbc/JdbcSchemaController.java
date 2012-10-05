@@ -75,8 +75,8 @@ public class JdbcSchemaController
     /**
      * Get the target entity based on the ident in the path.
      *
-    @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
      */
+    @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
     public JdbcSchema schema(
         @PathVariable("ident")
         final String ident
@@ -102,13 +102,11 @@ public class JdbcSchemaController
      */
     @ModelAttribute(JdbcSchemaController.SCHEMA_BEAN)
     public JdbcSchemaBean bean(
-        @PathVariable("ident")
-        final String ident
+        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
+        final JdbcSchema entity
         ){
         return new JdbcSchemaBean(
-            schema(
-                ident
-                )
+            entity
             );
         }
     

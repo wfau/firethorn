@@ -5,7 +5,7 @@
 hostname=localhost
 hostport=8080
 
-limit=5
+limit=8
 
 name()
     {
@@ -38,7 +38,7 @@ do
                 sed 's/.*\"ident\":\"\([^\"]*\)\".*/\1/'
                 )"
 
-        echo "Catalog [${catalog}]"
+        echo "-- Catalog [${catalog}]"
 
         for (( k=1; k <= $limit; k++ ))
         do
@@ -51,7 +51,7 @@ do
                     sed 's/.*\"ident\":\"\([^\"]*\)\".*/\1/'
                     )"
 
-            echo "Schema [${schema}]"
+            echo "-- -- Schema [${schema}]"
 
 
             for (( l=1; l <= $limit; l++ ))
@@ -65,13 +65,82 @@ do
                         sed 's/.*\"ident\":\"\([^\"]*\)\".*/\1/'
                         )"
 
-                echo "Table [${table}]"
+                echo "-- -- -- Table [${table}]"
+
+                for (( m=1; m <= $limit; m++ ))
+                do
+
+                    column="$( \
+                        curl -s \
+                            -H 'Accept: application/json' \
+                            --data "jdbc.table.columns.create.name=jdbc-column-$(name)" \
+                            ${table}/columns/create |
+                            sed 's/.*\"ident\":\"\([^\"]*\)\".*/\1/'
+                            )"
+
+                    echo "-- -- -- -- Column [${column}]"
+            
+                done
         
             done
         done
     done
 done
 
+for resource in $( \
+    curl -s \
+        -H 'Accept: application/json' \
+        ${service}/resources/select |
+        sed 's/\(\"ident\":\)/\n\1/g'  |
+        sed -n 's/.*\"ident\":\"\([^\"]*\)\".*/\1/p'
+        )
+    do
+        echo "Resource [${resource}]"
 
+        for catalog in $( \
+            curl -s \
+                -H 'Accept: application/json' \
+                ${resource}/catalogs/select |
+                sed 's/\(\"ident\":\)/\n\1/g'  |
+                sed -n 's/.*\"ident\":\"\([^\"]*\)\".*/\1/p'
+                )
+        do
+            echo "++ Catalog [${catalog}]"
+
+            for schema in $( \
+                curl -s \
+                    -H 'Accept: application/json' \
+                    ${catalog}/schemas/select |
+                    sed 's/\(\"ident\":\)/\n\1/g'  |
+                    sed -n 's/.*\"ident\":\"\([^\"]*\)\".*/\1/p'
+                    )
+            do
+                echo "++ ++ Schema [${schema}]"
+
+                for table in $( \
+                    curl -s \
+                        -H 'Accept: application/json' \
+                        ${schema}/tables/select |
+                        sed 's/\(\"ident\":\)/\n\1/g'  |
+                        sed -n 's/.*\"ident\":\"\([^\"]*\)\".*/\1/p'
+                        )
+                do
+                    echo "++ ++ ++ Table [${table}]"
+
+                    for column in $( \
+                        curl -s \
+                            -H 'Accept: application/json' \
+                            ${table}/columns/select |
+                            sed 's/\(\"ident\":\)/\n\1/g'  |
+                            sed -n 's/.*\"ident\":\"\([^\"]*\)\".*/\1/p'
+                            )
+                    do
+                        echo "++ ++ ++ ++ Column [${column}]"
+
+                    done
+                done
+            done
+        done
+    done
 
 

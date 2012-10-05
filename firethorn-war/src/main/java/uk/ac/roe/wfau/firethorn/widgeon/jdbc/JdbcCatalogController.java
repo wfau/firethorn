@@ -74,8 +74,8 @@ public class JdbcCatalogController
     /**
      * Get the target entity based on the ident in the path.
      *
-    @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
      */
+    @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
     public JdbcCatalog catalog(
         @PathVariable("ident")
         final String ident
@@ -96,17 +96,17 @@ public class JdbcCatalogController
         }
 
     /**
-     * Wrap the JdbcCatalog as a JdbcCatalogBean.
+     * Wrap the JdbcCatalog as a bean.
      * 
      */
     @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
     public JdbcCatalogBean bean(
         @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
-        final JdbcCatalog catalog
+        final JdbcCatalog entity
         ){
-        log.debug("bean() [{}]", catalog.ident());
+        log.debug("bean() [{}]", entity.ident());
         return new JdbcCatalogBean(
-            catalog
+            entity
             );
         }
 

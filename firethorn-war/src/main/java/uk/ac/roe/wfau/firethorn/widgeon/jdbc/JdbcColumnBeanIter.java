@@ -17,46 +17,31 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import java.net.URI;
-
-import org.springframework.stereotype.Component;
-
-import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 
 /**
- *
+ * Bean wrapper to enable the JSON converter to process list of a DataServices.  
  *
  */
-@Component
-public class JdbcColumnIdentFactory
-extends WebappIdentFactory<JdbcColumn>
-implements JdbcColumn.IdentFactory
+public class JdbcColumnBeanIter
+extends AbstractEntityBeanIter<JdbcColumn>
     {
     /**
-     * The type URI for this type.
-     * 
+     * Public constructor.
+     *
      */
-    public static final URI TYPE_URI = URI.create(
-        "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-column-1.0.json"
-        );
-
-    /**
-     * The URI path for individual columns.
-     * 
-     */
-    public static final String COLUMN_PATH = "/jdbc/column/" + IDENT_TOKEN ;
-
-    /**
-     * The URI path for table columns.
-     * 
-    public static final String COLUMNS_PATH = TABLE_PATH + "/columns" ;
-     */
+    public JdbcColumnBeanIter(Iterable<JdbcColumn> iterable)
+        {
+        super(
+            iterable
+            );
+        }
 
     @Override
-    public String link(JdbcColumn entity)
+    public EntityBean<JdbcColumn> bean(JdbcColumn entity)
         {
-        return link(
-            COLUMN_PATH,
+        return new JdbcColumnBean(
             entity
             );
         }

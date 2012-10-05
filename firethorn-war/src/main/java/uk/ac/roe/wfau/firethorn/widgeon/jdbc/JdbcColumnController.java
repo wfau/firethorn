@@ -38,8 +38,8 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcTableIdentFactory.TABLE_PATH)
-public class JdbcTableController
+@RequestMapping(JdbcColumnIdentFactory.COLUMN_PATH)
+public class JdbcColumnController
     extends AbstractController
     {
 
@@ -47,7 +47,7 @@ public class JdbcTableController
     public Path path()
         {
         return new PathImpl(
-            JdbcTableIdentFactory.TABLE_PATH
+            JdbcColumnIdentFactory.COLUMN_PATH
             );
         }
 
@@ -55,7 +55,7 @@ public class JdbcTableController
      * Public constructor.
      *
      */
-    public JdbcTableController()
+    public JdbcColumnController()
         {
         super();
         }
@@ -64,19 +64,19 @@ public class JdbcTableController
      * MVC property for the target entity.
      *
      */
-    public static final String TABLE_ENTITY = "urn:jdbc.table.entity" ;
+    public static final String COLUMN_ENTITY = "urn:jdbc.column.entity" ;
 
     /**
      * MVC property for the target bean.
      *
      */
-    public static final String TABLE_BEAN = "urn:jdbc.table.bean" ;
+    public static final String COLUMN_BEAN = "urn:jdbc.column.bean" ;
 
     /**
      * Get the target entity based on the ident in the path.
      *
      */
-    @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+    @ModelAttribute(JdbcColumnController.COLUMN_ENTITY)
     public JdbcTable table(
         @PathVariable("ident")
         final String ident
@@ -100,12 +100,12 @@ public class JdbcTableController
      * Wrap the entity as a bean.
      * 
      */
-    @ModelAttribute(JdbcTableController.TABLE_BEAN)
-    public JdbcTableBean bean(
-        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable entity
+    @ModelAttribute(JdbcColumnController.COLUMN_BEAN)
+    public JdbcColumnBean bean(
+        @ModelAttribute(JdbcColumnController.COLUMN_ENTITY)
+        final JdbcColumn entity
         ){
-        return new JdbcTableBean(
+        return new JdbcColumnBean(
             entity
             );
         }
@@ -116,8 +116,8 @@ public class JdbcTableController
      */
     @RequestMapping(method=RequestMethod.GET)
     public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcTableController.TABLE_BEAN)
-        final JdbcTableBean bean,
+        @ModelAttribute(JdbcColumnController.COLUMN_BEAN)
+        final JdbcColumnBean bean,
         final ModelAndView model
         ){
         log.debug("htmlSelect()");
@@ -125,8 +125,8 @@ public class JdbcTableController
             "jdbc/catalog/display"
             );
         model.addObject(
-            JdbcSchemaController.SCHEMA_BEAN,
-            new JdbcSchemaBean(
+            JdbcTableController.TABLE_BEAN,
+            new JdbcTableBean(
                 bean.entity().parent()
                 )
             );
@@ -140,9 +140,9 @@ public class JdbcTableController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcTableBean jsonSelect(
-        @ModelAttribute(JdbcTableController.TABLE_BEAN)
-        final JdbcTableBean bean
+    public JdbcColumnBean jsonSelect(
+        @ModelAttribute(JdbcColumnController.COLUMN_BEAN)
+        final JdbcColumnBean bean
         ){
         log.debug("jsonSelect()");
         return bean ;

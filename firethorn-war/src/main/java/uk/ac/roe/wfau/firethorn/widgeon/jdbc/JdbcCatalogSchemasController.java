@@ -112,7 +112,7 @@ extends AbstractController
     public static final String CREATE_NAME = "jdbc.catalog.schemas.create.name" ;
 
     /**
-     * Get the parent JdbcCatalog based on the request ident.
+     * Get the parent entity based on the request ident.
      *
      */
     @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
@@ -136,7 +136,7 @@ extends AbstractController
         }
 
     /**
-     * Wrap the JdbcCatalog as a bean.
+     * Wrap the parent entity as a bean.
      * 
     @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
     public JdbcCatalogBean bean(
@@ -244,8 +244,7 @@ extends AbstractController
         }
     
     /**
-     * HTML GET or POST request to select by name.
-     * @todo Wrap the entities as beans (with URI) 
+     * HTML request to select by name.
      *
      */
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
@@ -275,7 +274,7 @@ extends AbstractController
         }
 
     /**
-     * JSON GET or POST request to select by name.
+     * JSON request to select by name.
      *
      */
     @ResponseBody
@@ -312,7 +311,7 @@ extends AbstractController
         }
     
     /**
-     * HTML GET request to display the search form.
+     * HTML GET request for the search form.
      *
      */
     @RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
@@ -329,8 +328,7 @@ extends AbstractController
         }
 
     /**
-     * HTML GET or POST request to search by text.
-     * @todo Wrap the entities as beans (with URI) 
+     * HTML request to search by text.
      *
      */
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
@@ -360,8 +358,7 @@ extends AbstractController
         }
 
     /**
-     * JSON GET or POST request to search by text.
-     * @todo change the server side search return a list
+     * JSON request to search by text.
      *  
      */
     @ResponseBody
@@ -381,7 +378,7 @@ extends AbstractController
         }
 
     /**
-     * HTML GET request to display the create form.
+     * HTML GET request for the create form.
      *
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.GET)
@@ -398,7 +395,7 @@ extends AbstractController
         }
 
     /**
-     * Create a new catalog.
+     * Create a new entity.
      *
      */
     public JdbcSchemaBean create(
@@ -415,7 +412,7 @@ extends AbstractController
         }
 
     /**
-     * HTML POST request to create a new AdqlService.
+     * HTML POST request to create a new entity.
      *
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST)
@@ -439,7 +436,7 @@ extends AbstractController
         }
 
     /**
-     * JSON POST request to create a new AdqlService.
+     * JSON POST request to create a new entity.
      *
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)

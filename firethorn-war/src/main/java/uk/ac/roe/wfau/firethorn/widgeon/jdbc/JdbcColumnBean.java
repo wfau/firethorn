@@ -17,46 +17,27 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import java.net.URI;
-
-import org.springframework.stereotype.Component;
-
-import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 
 /**
- *
+ * Bean wrapper for an Entity.  
  *
  */
-@Component
-public class JdbcColumnIdentFactory
-extends WebappIdentFactory<JdbcColumn>
-implements JdbcColumn.IdentFactory
+@Slf4j
+public class JdbcColumnBean
+extends AbstractEntityBean<JdbcColumn>
+implements EntityBean<JdbcColumn>
     {
     /**
-     * The type URI for this type.
-     * 
+     * Public constructor.
+     *
      */
-    public static final URI TYPE_URI = URI.create(
-        "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-column-1.0.json"
-        );
-
-    /**
-     * The URI path for individual columns.
-     * 
-     */
-    public static final String COLUMN_PATH = "/jdbc/column/" + IDENT_TOKEN ;
-
-    /**
-     * The URI path for table columns.
-     * 
-    public static final String COLUMNS_PATH = TABLE_PATH + "/columns" ;
-     */
-
-    @Override
-    public String link(JdbcColumn entity)
+    public JdbcColumnBean(JdbcColumn entity)
         {
-        return link(
-            COLUMN_PATH,
+        super(
+            JdbcColumnIdentFactory.TYPE_URI,
             entity
             );
         }
