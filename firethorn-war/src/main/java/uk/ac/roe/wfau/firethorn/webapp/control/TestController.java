@@ -40,7 +40,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 @Controller
 @RequestMapping("test")
 public class TestController
-extends ControllerBase
+extends AbstractController
     {
 
     /**

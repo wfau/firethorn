@@ -452,7 +452,7 @@ implements JdbcResource
     public String link()
         {
         return womble().resources().jdbc().resources().link(
-            this.ident()
+            this
             );
         }
     }

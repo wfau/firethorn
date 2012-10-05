@@ -15,49 +15,35 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.widgeon;
+package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import java.net.URI;
-
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
- * Bean wrapper to enable the JSON converter to process a JdbcResource.  
+ * Bean wrapper to enable the JSON converter to process list of a DataServices.  
  *
  */
-@Slf4j
-public class JdbcResourceBean
-extends AbstractEntityBean<JdbcResource>
-implements EntityBean<JdbcResource>
+public class AdqlServiceBeanIter
+extends AbstractEntityBeanIter<AdqlService>
     {
-    
     /**
-     * The data type identifier.
-     * 
-     */
-    public static final URI TYPE_URI = URI.create(
-        "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json"
-        );
-    
-    /**
-     * 
      * Public constructor.
-     * @param builder
-     *      A UriBuilder for generating the service URI.
-     * @param entity
-     *      The target JdbcResource.
      *
      */
-    public JdbcResourceBean(UriBuilder builder, JdbcResource entity)
+    public AdqlServiceBeanIter(Iterable<AdqlService> iterable)
         {
         super(
-            TYPE_URI,
-            builder,
+            iterable
+            );
+        }
+
+    @Override
+    public EntityBean<AdqlService> bean(AdqlService entity)
+        {
+        return new AdqlServiceBean(
             entity
             );
         }

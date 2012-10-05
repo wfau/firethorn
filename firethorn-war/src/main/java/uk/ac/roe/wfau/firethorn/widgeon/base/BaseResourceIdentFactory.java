@@ -19,8 +19,9 @@ package uk.ac.roe.wfau.firethorn.widgeon.base;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlSchema;
 
 /**
  *
@@ -28,11 +29,11 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
  */
 @Component
 public class BaseResourceIdentFactory
-extends AbstractIdentFactory<BaseResource>
+extends WebappIdentFactory<BaseResource>
 implements BaseResource.IdentFactory
     {
     @Override
-    public String link(Identifier ident)
+    public String link(BaseResource entity)
         {
         return null;
         }

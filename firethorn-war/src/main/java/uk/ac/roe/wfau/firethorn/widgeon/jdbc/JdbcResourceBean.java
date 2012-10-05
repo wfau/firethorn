@@ -15,25 +15,35 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.mallard;
+package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import org.springframework.stereotype.Component;
+import java.net.URI;
 
-import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
- *
+ * Bean wrapper for an Entity.  
  *
  */
-@Component
-public class AdqlJobIdentFactory
-extends AbstractIdentFactory<AdqlJob>
-implements AdqlJob.IdentFactory
+@Slf4j
+public class JdbcResourceBean
+extends AbstractEntityBean<JdbcResource>
+implements EntityBean<JdbcResource>
     {
-    @Override
-    public String link(Identifier ident)
+    /**
+     * Public constructor.
+     *
+     */
+    public JdbcResourceBean(JdbcResource entity)
         {
-        return null;
+        super(
+            JdbcResourceIdentFactory.TYPE_URI,
+            entity
+            );
         }
     }

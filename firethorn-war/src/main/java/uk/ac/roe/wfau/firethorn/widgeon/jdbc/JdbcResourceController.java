@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.widgeon;
+package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
@@ -44,13 +44,13 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 @Controller
 @RequestMapping(JdbcResourceController.CONTROLLER_PATH)
 public class JdbcResourceController
-    extends ControllerBase
+    extends AbstractController
     {
     /**
      * URI path for this Controller.
      *
      */
-    public static final String CONTROLLER_PATH = "jdbc/resource/{ident}" ;
+    public static final String CONTROLLER_PATH = JdbcResourceIdentFactory.IDENT_PATH ;
 
     @Override
     public Path path()
@@ -114,9 +114,6 @@ public class JdbcResourceController
         final HttpServletRequest request
         ){
         return new JdbcResourceBean(
-            this.builder(
-                request
-                ),
             resource
             );
         }

@@ -566,7 +566,7 @@ implements JdbcSchema
     public String link()
         {
         return womble().resources().jdbc().catalogs().schemas().link(
-            this.ident()
+            this
             );
         }
     }

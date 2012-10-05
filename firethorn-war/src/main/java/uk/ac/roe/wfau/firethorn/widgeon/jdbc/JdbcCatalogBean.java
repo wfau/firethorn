@@ -15,44 +15,34 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.mallard;
+package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import java.net.URI;
+
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalog;
 
 /**
- * Bean wrapper to enable the JSON converter to process list of a DataServices.  
+ * Bean wrapper for an Entity.  
  *
  */
-public class AdqlServiceBeanIter
-extends AbstractEntityBeanIter<AdqlService>
+@Slf4j
+public class JdbcCatalogBean
+extends AbstractEntityBean<JdbcCatalog>
+implements EntityBean<JdbcCatalog>
     {
-
-    /**
-     * The URI builder to generate entity URIs.
-     * 
-     */
-    protected UriBuilder builder ;
-    
     /**
      * Public constructor.
      *
      */
-    public AdqlServiceBeanIter(UriBuilder builder, Iterable<AdqlService> iterable)
+    public JdbcCatalogBean(JdbcCatalog entity)
         {
         super(
-            iterable
-            );
-        this.builder = builder ;
-        }
-
-    @Override
-    public EntityBean<AdqlService> bean(AdqlService entity)
-        {
-        return new AdqlServiceBean(
-            builder,
+            JdbcCatalogIdentFactory.TYPE_URI,
             entity
             );
         }

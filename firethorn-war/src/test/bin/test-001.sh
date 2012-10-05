@@ -10,7 +10,7 @@ hostport=8080
 
 echo ""
 echo "POST create for 001"
-curl \
+curl -v \
     -H 'Accept: application/json' \
     --data 'adql.services.create.name=adql-service-001' \
     http://${hostname}:${hostport}/firethorn/adql/services/create 

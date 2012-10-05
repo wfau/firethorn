@@ -33,6 +33,8 @@ implements IdentFactory<EntityType>
             string
             );
         }
+    /*
+     *
     @Override
     public String link(final EntityType entity)
         {
@@ -40,4 +42,6 @@ implements IdentFactory<EntityType>
             entity.ident()
             );
         }
+*/
+
     }

@@ -510,7 +510,7 @@ implements JdbcCatalog
     public String link()
         {
         return womble().resources().jdbc().catalogs().link(
-            this.ident()
+            this
             );
         }
     }

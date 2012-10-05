@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,12 +26,9 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
-import uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourcesController;
 
 /**
- * EntityBean implementation.
+ * Bean wrapper for an Entity.  
  *
  */
 @Slf4j
@@ -44,7 +42,6 @@ implements EntityBean<EntityType>
      */
     private DateTimeFormatter formatter = ISODateTimeFormat.dateHourMinuteSecondFraction().withZoneUTC()  ; 
 
-    private UriBuilder builder ;
     private EntityType entity ;
     private URI type ;
 
@@ -54,12 +51,11 @@ implements EntityBean<EntityType>
      * @param entity
      *
      */
-    public AbstractEntityBean(URI type , UriBuilder builder, EntityType entity)
+    public AbstractEntityBean(URI type, EntityType entity)
         {
         log.debug("AbstractEntityBean [{}][{}]", type, entity.ident().value());
         this.type = type ;
         this.entity = entity ;
-        this.builder = builder ; 
         }
 
     @Override
@@ -68,28 +64,20 @@ implements EntityBean<EntityType>
         return this.entity;
         }
 
-    /*
-    @Override
-    public String id()
-        {
-        return entity.ident().toString();
-        }
-*/
-/*    
-    @Override
-    public URI uri()
-        {
-        return builder.uri(
-            entity
-            );
-        }
-*/
     @Override
     public URI getIdent()
         {
-        return builder.uri(
-            entity
-            );
+        try {
+            return new URI(
+                entity.link()
+                );
+            }
+        catch (URISyntaxException ouch)
+            {
+            throw new RuntimeException(
+                ouch
+                );
+            }        
         }
 
     public URI getType()

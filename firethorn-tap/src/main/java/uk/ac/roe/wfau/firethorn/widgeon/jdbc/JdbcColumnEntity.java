@@ -374,7 +374,7 @@ implements JdbcColumn
     public String link()
         {
         return womble().resources().jdbc().catalogs().schemas().tables().columns().link(
-            this.ident()
+            this
             );
         }
     }

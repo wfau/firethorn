@@ -15,44 +15,35 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.widgeon;
+package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalog;
 
 /**
  * Bean wrapper to enable the JSON converter to process list of a DataServices.  
  *
  */
-public class JdbcResourceBeanIter
-extends AbstractEntityBeanIter<JdbcResource>
+public class JdbcCatalogBeanIter
+extends AbstractEntityBeanIter<JdbcCatalog>
     {
-
-    /**
-     * The URI builder to generate entity URIs.
-     * 
-     */
-    protected UriBuilder builder ;
-    
     /**
      * Public constructor.
      *
      */
-    public JdbcResourceBeanIter(UriBuilder builder, Iterable<JdbcResource> iterable)
+    public JdbcCatalogBeanIter(Iterable<JdbcCatalog> iterable)
         {
         super(
             iterable
             );
-        this.builder = builder ;
         }
 
     @Override
-    public EntityBean<JdbcResource> bean(JdbcResource entity)
+    public EntityBean<JdbcCatalog> bean(JdbcCatalog entity)
         {
-        return new JdbcResourceBean(
-            builder,
+        return new JdbcCatalogBean(
             entity
             );
         }

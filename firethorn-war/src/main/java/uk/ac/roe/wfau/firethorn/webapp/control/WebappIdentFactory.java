@@ -15,42 +15,35 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.paths;
+package uk.ac.roe.wfau.firethorn.webapp.control;
 
-import java.net.URI;
-
+import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
  *
- * @deprecated
+ *
  */
-public interface UriBuilder
+public abstract class WebappIdentFactory<EntityType extends Entity>
+extends AbstractIdentFactory<EntityType>
     {
 
-    /**
-     * Generate a path for an entity.
-     *
-     */
-    public String str(Entity entity);         
+    public static final String IDENT_FIELD = "ident" ;
+    public static final String IDENT_TOKEN = "{ident}" ;
+    public static final String IDENT_REGEX = "\\{ident\\}" ;
 
-    /**
-     * Generate a path for an entity.
-     *
-     */
-    public String str(Identifier ident);         
+    public static final String SERVICE_BASE = "http://localhost:8080/" ;
+    public static final String CONTEXT_PATH = "firethorn" ;
+    public static final String SERVLET_PATH = "" ;
 
-    /**
-     * Generate a URI for an entity.
-     *
-     */
-    public URI uri(Entity entity);         
+    public static final String SERVICE_PATH = SERVICE_BASE + CONTEXT_PATH ;
 
-    /**
-     * Generate a URI for an entity.
-     *
-     */
-    public URI uri(Identifier ident);         
-    
+    protected String link(String path, Entity entity)
+        {
+        return SERVICE_PATH + path.replaceFirst(
+            IDENT_REGEX,
+            entity.ident().value().toString()
+            );
+        }
     }

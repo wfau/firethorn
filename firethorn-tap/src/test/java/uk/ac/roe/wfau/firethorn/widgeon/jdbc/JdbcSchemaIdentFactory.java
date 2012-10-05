@@ -32,7 +32,7 @@ extends AbstractIdentFactory<JdbcSchema>
 implements JdbcSchema.IdentFactory
     {
     @Override
-    public String link(Identifier ident)
+    public String link(JdbcSchema entity)
         {
         return null;
         }

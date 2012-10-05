@@ -6,10 +6,10 @@
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
 
-    import="uk.ac.roe.wfau.firethorn.webapp.mallard.AdqlServiceController"
-    import="uk.ac.roe.wfau.firethorn.webapp.mallard.AdqlServicesController"
+    import="uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServiceController"
+    import="uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServicesController"
 
-    import="uk.ac.roe.wfau.firethorn.webapp.mallard.AdqlServiceBean"
+    import="uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServiceBean"
 
     session="true"
 %><%

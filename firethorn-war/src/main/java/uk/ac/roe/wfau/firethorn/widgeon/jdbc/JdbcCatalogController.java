@@ -15,13 +15,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.widgeon;
+package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,12 +30,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
-import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalog;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
  * Spring MVC controller for JdbcResources.
@@ -46,13 +42,13 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 @Controller
 @RequestMapping(JdbcCatalogController.CONTROLLER_PATH)
 public class JdbcCatalogController
-    extends ControllerBase
+    extends AbstractController
     {
     /**
      * URI path for this Controller.
      *
      */
-    public static final String CONTROLLER_PATH = "jdbc/catalog/{ident}" ;
+    public static final String CONTROLLER_PATH = JdbcCatalogIdentFactory.IDENT_PATH ;
 
     @Override
     public Path path()
@@ -70,13 +66,6 @@ public class JdbcCatalogController
         {
         super();
         }
-
-    /**
-     * Autowired reference to our JdbcResourceController.
-     * 
-     */
-    @Autowired
-    private JdbcResourceController resourceController ;
 
     /**
      * MVC property for the target JdbcCatalog entity.
@@ -146,9 +135,6 @@ public class JdbcCatalogController
         ){
         log.debug("JdbcCatalogBean bean()");
         return new JdbcCatalogBean(
-            this.builder(
-                request
-                ),
             catalog(
                 ident
                 )
@@ -175,7 +161,7 @@ public class JdbcCatalogController
     
     /**
      * GET request for a catalog.
-     * @todo Wrap the entity as a bean (with a URI) 
+     * @todo make this part of the Catalog bean .. 
      *
      */
     @RequestMapping(method=RequestMethod.GET)
@@ -193,9 +179,6 @@ public class JdbcCatalogController
         model.addObject(
             JdbcResourceController.RESOURCE_BEAN,
             new JdbcResourceBean(
-                resourceController.builder(
-                    request
-                    ),
                 bean.entity().parent()
                 )
             );

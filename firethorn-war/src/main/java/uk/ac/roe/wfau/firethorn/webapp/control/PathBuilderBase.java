@@ -27,9 +27,9 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity ;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier ;
 
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService ;
-import uk.ac.roe.wfau.firethorn.webapp.mallard.AdqlServiceController;
-import uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceController;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource ;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServiceController;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceController;
 
 /**
  * A webapp path builder.

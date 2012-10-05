@@ -17,10 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import java.net.URI;
+
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
  *
@@ -28,12 +30,30 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
  */
 @Component
 public class JdbcCatalogIdentFactory
-extends AbstractIdentFactory<JdbcCatalog>
+extends WebappIdentFactory<JdbcCatalog>
 implements JdbcCatalog.IdentFactory
     {
+    /**
+     * The type URI for this type.
+     * 
+     */
+    public static final URI TYPE_URI = URI.create(
+        "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-catalog-1.0.json"
+        );
+
+    /**
+     * The URI path for identifiers.
+     * 
+     */
+    public static final String IDENT_PATH = "/jdbc/catalog/" + IDENT_TOKEN ;
+
+    
     @Override
-    public String link(Identifier ident)
+    public String link(JdbcCatalog entity)
         {
-        return null;
+        return link(
+            IDENT_PATH,
+            entity
+            );
         }
     }

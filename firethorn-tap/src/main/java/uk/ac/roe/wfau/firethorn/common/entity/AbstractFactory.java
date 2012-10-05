@@ -268,9 +268,11 @@ implements Entity.Factory<EntityType>
     public String link(EntityType entity)
         {
         return identifiers().link(
-            entity.ident()
+            entity
             );
         }
+    /*
+     *
     @Override
     public String link(Identifier ident)
         {
@@ -278,6 +280,8 @@ implements Entity.Factory<EntityType>
             ident
             );
         }
+*/
+
     @Override
     public Identifier ident(final String string)
         {

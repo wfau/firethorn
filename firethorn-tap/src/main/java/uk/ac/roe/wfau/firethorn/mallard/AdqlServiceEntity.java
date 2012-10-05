@@ -274,7 +274,9 @@ implements AdqlService
     @Override
     public String link()
         {
-        return null;
+        return womble().services().link(
+            this
+            );
         }
     }
 

@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.widgeon;
+package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import java.net.URI;
 
@@ -24,16 +24,15 @@ import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalog;
 
 /**
- * Bean wrapper to enable the JSON converter to process a JdbcResource.  
+ * Bean wrapper to enable the JSON converter to process an AdqlService.  
  *
  */
 @Slf4j
-public class JdbcCatalogBean
-extends AbstractEntityBean<JdbcCatalog>
-implements EntityBean<JdbcCatalog>
+public class AdqlServiceBean
+extends AbstractEntityBean<AdqlService>
+implements EntityBean<AdqlService>
     {
     
     /**
@@ -41,23 +40,27 @@ implements EntityBean<JdbcCatalog>
      * 
      */
     public static final URI TYPE_URI = URI.create(
-        "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-catalog-1.0.json"
+        "http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json"
         );
     
+    /**
+     * The target AdqlService.
+     * 
+     */
+
     /**
      * 
      * Public constructor.
      * @param builder
      *      A UriBuilder for generating the service URI.
      * @param entity
-     *      The target JdbcCatalog.
+     *      The target AdqlService.
      *
      */
-    public JdbcCatalogBean(UriBuilder builder, JdbcCatalog entity)
+    public AdqlServiceBean(AdqlService entity)
         {
         super(
             TYPE_URI,
-            builder,
             entity
             );
         }

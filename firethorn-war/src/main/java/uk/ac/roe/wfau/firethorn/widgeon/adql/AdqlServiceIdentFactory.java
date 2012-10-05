@@ -15,53 +15,45 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.mallard;
+package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import java.net.URI;
 
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBean;
-import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
-import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTable;
 
 /**
- * Bean wrapper to enable the JSON converter to process an AdqlService.  
+ *
  *
  */
-@Slf4j
-public class AdqlServiceBean
-extends AbstractEntityBean<AdqlService>
-implements EntityBean<AdqlService>
+@Component
+public class AdqlServiceIdentFactory
+extends WebappIdentFactory<AdqlService>
+implements AdqlService.IdentFactory
     {
-    
     /**
-     * The data type identifier.
+     * The type URI for this type.
      * 
      */
     public static final URI TYPE_URI = URI.create(
         "http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json"
         );
-    
-    /**
-     * The target AdqlService.
-     * 
-     */
 
     /**
+     * The URI path for identifiers.
      * 
-     * Public constructor.
-     * @param builder
-     *      A UriBuilder for generating the service URI.
-     * @param entity
-     *      The target AdqlService.
-     *
      */
-    public AdqlServiceBean(UriBuilder builder, AdqlService entity)
+    public static final String IDENT_PATH = "/adql/service/" + IDENT_TOKEN ;
+
+    @Override
+    public String link(AdqlService entity)
         {
-        super(
-            TYPE_URI,
-            builder,
+        return link(
+            IDENT_PATH,
             entity
             );
         }

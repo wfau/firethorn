@@ -15,32 +15,25 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.mallard;
+package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
-import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
-import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
-import uk.ac.roe.wfau.firethorn.webapp.control.RedirectEntityResponse;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
-import uk.ac.roe.wfau.firethorn.webapp.control.RedirectResponse;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
-import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
 
 /**
  * Spring MVC controller for AdqlServices.
@@ -50,7 +43,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
 @Controller
 @RequestMapping(AdqlServicesController.CONTROLLER_PATH)
 public class AdqlServicesController
-extends ControllerBase
+extends AbstractController
     {
     /**
      * URi path for this Controller.
@@ -66,13 +59,6 @@ extends ControllerBase
             );
         }
 
-    /**
-     * Autowired reference to our AdqlServiceController.
-     * 
-     */
-    @Autowired
-    private AdqlServiceController serviceController ;
-    
     /**
      * Public constructor.
      *
@@ -146,7 +132,6 @@ extends ControllerBase
 
     /**
      * HTML GET request to select all.
-     * @todo Wrap the entities as beans (with URI) 
      *
      */
 	@RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
@@ -157,9 +142,6 @@ extends ControllerBase
 	    model.addObject(
 		    SELECT_RESULT,
 	        new AdqlServiceBeanIter(
-	            serviceController.builder(
-	                request
-	                ),
 	            womble().services().select()
 	            )
 		    );
@@ -180,16 +162,12 @@ extends ControllerBase
         final HttpServletRequest request
         ){
         return new AdqlServiceBeanIter(
-            serviceController.builder(
-                request
-                ),
             womble().services().select()
             );
         }
 	
     /**
      * HTML GET or POST request to select by name.
-     * @todo Wrap the entities and beans (with URI) 
      *
      */
 	@RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
@@ -206,9 +184,6 @@ extends ControllerBase
 		model.addObject(
 		    SELECT_RESULT,
 	        new AdqlServiceBeanIter(
-	            serviceController.builder(
-	                request
-	                ),
 	            womble().services().select(
 	                name
 	                )
@@ -233,9 +208,6 @@ extends ControllerBase
         final HttpServletRequest request
         ){
         return new AdqlServiceBeanIter(
-            serviceController.builder(
-                request
-                ),
             womble().services().select(
                 name
                 )
@@ -258,7 +230,6 @@ extends ControllerBase
 
     /**
      * HTML GET or POST request to search by text.
-     * @todo Wrap the entities and beans (with URI) 
      * 
      */
 	@RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
@@ -275,9 +246,6 @@ extends ControllerBase
 		model.addObject(
 		    SEARCH_RESULT,
 	        new AdqlServiceBeanIter(
-	            serviceController.builder(
-	                request
-	                ),
 	            womble().services().search(
 	                text
 	                )
@@ -302,9 +270,6 @@ extends ControllerBase
         final HttpServletRequest request
         ){
         return new AdqlServiceBeanIter(
-            serviceController.builder(
-                request
-                ),
             womble().services().search(
                 text
                 )
@@ -339,9 +304,6 @@ extends ControllerBase
 	    log.debug("htmlCreate() [{}]", name);
         try {
             AdqlServiceBean bean = new AdqlServiceBean(
-                serviceController.builder(
-                    request
-                    ),
                 womble().services().create(
                     name
                     )
@@ -373,9 +335,6 @@ extends ControllerBase
         log.debug("jsonCreate() [{}]", name);
         try {
             AdqlServiceBean bean = new AdqlServiceBean(
-                serviceController.builder(
-                    request
-                    ),
                 womble().services().create(
                     name
                     )
@@ -390,6 +349,7 @@ extends ControllerBase
             }
         catch (final Exception ouch)
             {
+            log.error("failed to create AdqlService [{}]", ouch);
             return null ;
             }
         }

@@ -6,10 +6,10 @@
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
     
-    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceController"
-    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourcesController"
+    import="uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceController"
+    import="uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourcesController"
 
-    import="uk.ac.roe.wfau.firethorn.webapp.widgeon.JdbcResourceBean"
+    import="uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceBean"
 
     session="true"
 %><%

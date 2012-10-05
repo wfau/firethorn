@@ -26,7 +26,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
  *
- *
+ * @deprecated
  */
 @Slf4j
 public class AbstractUriBuilder

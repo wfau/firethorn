@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.widgeon;
+package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,15 +33,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
-import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectEntityResponse;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectResponse;
-import uk.ac.roe.wfau.firethorn.webapp.mallard.AdqlServiceBean;
-import uk.ac.roe.wfau.firethorn.webapp.mallard.AdqlServiceController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServiceBean;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServiceController;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
@@ -52,7 +52,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 @Controller
 @RequestMapping(JdbcResourcesController.CONTROLLER_PATH)
 public class JdbcResourcesController
-extends ControllerBase
+extends AbstractController
     {
     /**
      * URL path for this Controller.
@@ -159,9 +159,6 @@ extends ControllerBase
         model.addObject(
             SELECT_RESULT,
             new JdbcResourceBeanIter(
-                resourceController.builder(
-                    request
-                    ),
                 womble().resources().jdbc().resources().select()
                 )
             );
@@ -182,9 +179,6 @@ extends ControllerBase
         final HttpServletRequest request
         ){
         return new JdbcResourceBeanIter(
-            resourceController.builder(
-                request
-                ),
             womble().resources().jdbc().resources().select()
             );
         }
@@ -208,9 +202,6 @@ extends ControllerBase
         model.addObject(
             SELECT_RESULT,
             new JdbcResourceBeanIter(
-                resourceController.builder(
-                    request
-                    ),
                 womble().resources().jdbc().resources().select(
                     name
                     )
@@ -235,9 +226,6 @@ extends ControllerBase
         final HttpServletRequest request
         ){
         return new JdbcResourceBeanIter(
-            resourceController.builder(
-                request
-                ),
             womble().resources().jdbc().resources().select(
                 name
                 )
@@ -277,9 +265,6 @@ extends ControllerBase
         model.addObject(
             SEARCH_RESULT,
             new JdbcResourceBeanIter(
-                resourceController.builder(
-                    request
-                    ),
                 womble().resources().jdbc().resources().search(
                     text
                     )
@@ -304,9 +289,6 @@ extends ControllerBase
         final HttpServletRequest request
         ){
         return new JdbcResourceBeanIter(
-            resourceController.builder(
-                request
-                ),
             womble().resources().jdbc().resources().search(
                 text
                 )
@@ -340,9 +322,6 @@ extends ControllerBase
         ){
         try {
             JdbcResourceBean bean = new JdbcResourceBean(
-                resourceController.builder(
-                    request
-                    ),
                 womble().resources().jdbc().resources().create(
                     name
                     )
@@ -373,9 +352,6 @@ extends ControllerBase
         ){
         try {
             JdbcResourceBean bean = new JdbcResourceBean(
-                resourceController.builder(
-                    request
-                    ),
                 womble().resources().jdbc().resources().create(
                     name
                     )

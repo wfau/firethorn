@@ -15,24 +15,27 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.mallard;
+package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlJob;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlJob.IdentFactory;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTable;
 
 /**
  *
  *
  */
 @Component
-public class AdqlServiceIdentFactory
-extends AbstractIdentFactory<AdqlService>
-implements AdqlService.IdentFactory
+public class AdqlJobIdentFactory
+extends WebappIdentFactory<AdqlJob>
+implements AdqlJob.IdentFactory
     {
     @Override
-    public String link(Identifier ident)
+    public String link(AdqlJob entity)
         {
         return null;
         }

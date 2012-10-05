@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.mallard;
+package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
@@ -38,15 +38,15 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  */
 @Slf4j
 @Controller
-@RequestMapping(AdqlServiceController.CONTROLLER_PATH)
+@RequestMapping(AdqlServiceController.CONTROLLER_PATH )
 public class AdqlServiceController
-extends ControllerBase
+extends AbstractController
     {
     /**
      * URL path for this Controller.
      *
      */
-    public static final String CONTROLLER_PATH = "adql/service/{ident}" ;
+    public static final String CONTROLLER_PATH = AdqlServiceIdentFactory.IDENT_PATH ;
 
     @Override
     public Path path()
@@ -87,9 +87,6 @@ extends ControllerBase
 		    model.addObject(
 		        TARGET_ENTITY,
 	            new AdqlServiceBean(
-	                this.builder(
-	                    request
-	                    ),
 	                womble().services().select(
 	                    womble().services().ident(
 	                        ident
@@ -123,9 +120,6 @@ extends ControllerBase
         ){
         try {
             return new AdqlServiceBean(
-                this.builder(
-                    request
-                    ),
                 womble().services().select(
                     womble().services().ident(
                         ident

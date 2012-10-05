@@ -38,7 +38,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
  */
 @Slf4j
 @Controller
-public abstract class ControllerBase
+public abstract class AbstractController
     {
 
     /**
@@ -59,7 +59,7 @@ public abstract class ControllerBase
      * @param path
      *
      */
-    protected ControllerBase()
+    protected AbstractController()
         {
         }
 
@@ -116,7 +116,6 @@ public abstract class ControllerBase
     /**
      * URI builder for this Controller.
      *
-     */
     public UriBuilder builder(final HttpServletRequest request)
         {
         log.debug("builder() [{}][{}]", request.getRequestURL(), this.base());
@@ -126,5 +125,6 @@ public abstract class ControllerBase
             this.path()
             );
         }
+     */
     }
 

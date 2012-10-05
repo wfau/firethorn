@@ -588,7 +588,7 @@ implements JdbcTable
     public String link()
         {
         return womble().resources().jdbc().catalogs().schemas().tables().link(
-            this.ident()
+            this
             );
         }
     }

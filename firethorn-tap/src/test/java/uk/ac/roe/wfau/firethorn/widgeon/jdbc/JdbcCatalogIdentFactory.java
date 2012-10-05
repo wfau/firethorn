@@ -32,7 +32,7 @@ extends AbstractIdentFactory<JdbcCatalog>
 implements JdbcCatalog.IdentFactory
     {
     @Override
-    public String link(Identifier ident)
+    public String link(JdbcCatalog entity)
         {
         return null;
         }

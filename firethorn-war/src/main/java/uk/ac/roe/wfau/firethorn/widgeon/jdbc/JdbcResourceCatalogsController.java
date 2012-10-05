@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.widgeon;
+package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.webapp.control.ControllerBase;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -48,7 +48,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 @Controller
 @RequestMapping(JdbcResourceCatalogsController.CONTROLLER_PATH)
 public class JdbcResourceCatalogsController
-extends ControllerBase
+extends AbstractController
     {
     /**
      * URL path for this Controller.
@@ -168,9 +168,6 @@ extends ControllerBase
         final HttpServletRequest request
         ){
         return new JdbcResourceBean(
-            resourceController.builder(
-                request
-                ),
             resource
             );
         }
@@ -184,9 +181,6 @@ extends ControllerBase
         final JdbcResource resource
         ){
         return new JdbcCatalogBeanIter(
-            catalogController.builder(
-                request
-                ),
             resource.catalogs().select()
             );
         }
@@ -267,9 +261,6 @@ extends ControllerBase
         String name
         ){
         return new JdbcCatalogBean(
-            catalogController.builder(
-                request
-                ),
             resource.catalogs().select(
                 name
                 )
@@ -339,9 +330,6 @@ extends ControllerBase
         String text
         ){
         return new JdbcCatalogBeanIter(
-            catalogController.builder(
-                request
-                ),
             resource.catalogs().search(
                 text
                 )
@@ -445,9 +433,6 @@ extends ControllerBase
         final String name
         ){
         return new JdbcCatalogBean(
-            catalogController.builder(
-                request
-                ),
             resource.catalogs().create(
                 name
                 )
