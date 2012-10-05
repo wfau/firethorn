@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import javax.servlet.http.HttpServletRequest;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Controller;
@@ -40,21 +38,15 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcCatalogController.CONTROLLER_PATH)
+@RequestMapping(JdbcCatalogIdentFactory.CATALOG_PATH)
 public class JdbcCatalogController
     extends AbstractController
     {
-    /**
-     * URI path for this Controller.
-     *
-     */
-    public static final String CONTROLLER_PATH = JdbcCatalogIdentFactory.IDENT_PATH ;
-
     @Override
     public Path path()
         {
         return new PathImpl(
-            CONTROLLER_PATH
+            JdbcCatalogIdentFactory.CATALOG_PATH
             );
         }
 
@@ -80,10 +72,10 @@ public class JdbcCatalogController
     public static final String CATALOG_BEAN = "urn:jdbc.catalog.bean" ;
 
     /**
-     * Get the JdbcCatalog based on the ident in the path.
+     * Get the target JdbcCatalog based on the ident in the path.
      *
-     */
     @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+     */
     public JdbcCatalog catalog(
         @PathVariable("ident")
         final String ident
@@ -124,14 +116,13 @@ public class JdbcCatalogController
      */
 
     /**
-     * Wrap the JdbcCatalog as a JdbcCatalogBean.
+     * Wrap the JdbcCatalog as a bean.
      * 
      */
     @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
     public JdbcCatalogBean bean(
         @PathVariable("ident")
-        final String ident,
-        final HttpServletRequest request
+        final String ident
         ){
         log.debug("JdbcCatalogBean bean()");
         return new JdbcCatalogBean(
@@ -142,47 +133,25 @@ public class JdbcCatalogController
         }
 
     /**
-     * Wrap the parent resource as a bean.
-     * 
-    @ModelAttribute(JdbcResourceController.RESOURCE_BEAN)
-    public JdbcResourceBean resource(
-        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
-        final JdbcResource.JdbcCatalog catalog,
-        final HttpServletRequest request
-        ){
-        return new JdbcResourceBean(
-            resourceController.builder(
-                request
-                ),
-            catalog.parent()
-            );
-        }
-     */
-    
-    /**
-     * GET request for a catalog.
-     * @todo make this part of the Catalog bean .. 
+     * HTML GET request for a catalog.
      *
      */
     @RequestMapping(method=RequestMethod.GET)
     public ModelAndView htmlSelect(
         @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
         final JdbcCatalogBean bean,
-        final ModelAndView model,
-        final HttpServletRequest request
+        final ModelAndView model
         ){
-        log.debug("ModelAndView htmlSelect()");
+        log.debug("htmlSelect()");
         model.setViewName(
             "jdbc/catalog/display"
             );
-
         model.addObject(
             JdbcResourceController.RESOURCE_BEAN,
             new JdbcResourceBean(
                 bean.entity().parent()
                 )
             );
-        
         return model ;
         }
 
@@ -196,7 +165,7 @@ public class JdbcCatalogController
         @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
         final JdbcCatalogBean bean
         ){
-        log.debug("ModelAndView jsonSelect()");
+        log.debug("jsonSelect()");
         return bean ;
         }
     }

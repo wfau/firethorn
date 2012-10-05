@@ -30,6 +30,7 @@ import uk.ac.roe.wfau.firethorn.mallard.AdqlService ;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource ;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServiceController;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceController;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceIdentFactory;
 
 /**
  * A webapp path builder.
@@ -350,7 +351,7 @@ public abstract class PathBuilderBase implements PathBuilder
     public Path link(final DataResource target)
         {
         return path(
-            JdbcResourceController.CONTROLLER_PATH,
+            JdbcResourceIdentFactory.RESOURCE_PATH,
             target
             );
         }

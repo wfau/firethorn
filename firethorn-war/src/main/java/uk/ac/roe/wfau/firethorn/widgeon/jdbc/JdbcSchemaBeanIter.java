@@ -24,14 +24,14 @@ import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
  * Bean wrapper to enable the JSON converter to process list of a DataServices.  
  *
  */
-public class JdbcCatalogBeanIter
-extends AbstractEntityBeanIter<JdbcCatalog>
+public class JdbcSchemaBeanIter
+extends AbstractEntityBeanIter<JdbcSchema>
     {
     /**
      * Public constructor.
      *
      */
-    public JdbcCatalogBeanIter(Iterable<JdbcCatalog> iterable)
+    public JdbcSchemaBeanIter(Iterable<JdbcSchema> iterable)
         {
         super(
             iterable
@@ -39,9 +39,9 @@ extends AbstractEntityBeanIter<JdbcCatalog>
         }
 
     @Override
-    public EntityBean<JdbcCatalog> bean(JdbcCatalog entity)
+    public EntityBean<JdbcSchema> bean(JdbcSchema entity)
         {
-        return new JdbcCatalogBean(
+        return new JdbcSchemaBean(
             entity
             );
         }

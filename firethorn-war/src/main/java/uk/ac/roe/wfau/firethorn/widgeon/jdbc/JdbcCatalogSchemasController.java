@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import javax.servlet.http.HttpServletRequest;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,16 +44,15 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcResourceIdentFactory.CATALOGS_PATH)
-public class JdbcResourceCatalogsController
+@RequestMapping(JdbcCatalogIdentFactory.SCHEMAS_PATH)
+public class JdbcCatalogSchemasController
 extends AbstractController
     {
-
     @Override
     public Path path()
         {
         return new PathImpl(
-            JdbcResourceIdentFactory.CATALOGS_PATH
+            JdbcCatalogIdentFactory.SCHEMAS_PATH
             );
         }
 
@@ -63,7 +60,7 @@ extends AbstractController
      * Public constructor.
      *
      */
-    public JdbcResourceCatalogsController()
+    public JdbcCatalogSchemasController()
         {
         super();
         }
@@ -87,47 +84,47 @@ extends AbstractController
     public static final String CREATE_PATH = "create" ;
 
     /**
-     * MVC property for the select name.
+     * MVC property for the Resource name.
      *
      */
-    public static final String SELECT_NAME = "jdbc.resource.catalogs.select.name" ;
+    public static final String SELECT_NAME = "jdbc.catalog.schemas.select.name" ;
 
     /**
      * MVC property for the select results.
      *
      */
-    public static final String SELECT_RESULT = "jdbc.resource.catalogs.select.result" ;
+    public static final String SELECT_RESULT = "jdbc.catalog.schemas.select.result" ;
 
     /**
      * MVC property for the search text.
      *
      */
-    public static final String SEARCH_TEXT = "jdbc.resource.catalogs.search.text" ;
+    public static final String SEARCH_TEXT = "jdbc.catalog.schemas.search.text" ;
 
     /**
      * MVC property for the search results.
      *
      */
-    public static final String SEARCH_RESULT = "jdbc.resource.catalogs.search.result" ;
+    public static final String SEARCH_RESULT = "jdbc.catalog.schemas.search.result" ;
 
     /**
      * MVC property for the create name.
      *
      */
-    public static final String CREATE_NAME = "jdbc.resource.catalogs.create.name" ;
+    public static final String CREATE_NAME = "jdbc.catalog.schemas.create.name" ;
 
     /**
-     * Get the parent JdbcResource based on the request ident.
+     * Get the parent JdbcCatalog based on the request ident.
      *
      */
-    @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-    public JdbcResource resource(
+    @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+    public JdbcCatalog catalog(
         @PathVariable("ident")
         final String ident
         ){
         try {
-            return womble().resources().jdbc().resources().select(
-                womble().resources().jdbc().resources().ident(
+            return womble().resources().jdbc().catalogs().select(
+                womble().resources().jdbc().catalogs().ident(
                     ident
                     )
                 );
@@ -139,16 +136,16 @@ extends AbstractController
         }
 
     /**
-     * Wrap the JdbcResource as a bean.
+     * Wrap the JdbcCatalog as a bean.
      * 
      */
-    @ModelAttribute(JdbcResourceController.RESOURCE_BEAN)
-    public JdbcResourceBean bean(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource
+    @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
+    public JdbcCatalogBean bean(
+        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+        final JdbcCatalog catalog
         ){
-        return new JdbcResourceBean(
-            resource
+        return new JdbcCatalogBean(
+            catalog
             );
         }
 
@@ -156,11 +153,11 @@ extends AbstractController
      * Select all.
      * 
      */
-    public JdbcCatalogBeanIter select(
-        final JdbcResource resource
+    public JdbcSchemaBeanIter select(
+        final JdbcCatalog catalog
         ){
-        return new JdbcCatalogBeanIter(
-            resource.catalogs().select()
+        return new JdbcSchemaBeanIter(
+            catalog.schemas().select()
             );
         }
 
@@ -170,18 +167,18 @@ extends AbstractController
      */
     @RequestMapping(value="", method=RequestMethod.GET)
     public ModelAndView htmlIndex(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
+        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+        final JdbcCatalog catalog,
         final ModelAndView model
         ){
         model.addObject(
-            JdbcResourceCatalogsController.SELECT_RESULT,
+            JdbcCatalogSchemasController.SELECT_RESULT,
             select(
-                resource
+                catalog
                 )
             );
         model.setViewName(
-            "jdbc/catalog/select"
+            "jdbc/schema/select"
             );
         return model ;
         }
@@ -192,14 +189,14 @@ extends AbstractController
      */
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
     public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
+        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+        final JdbcCatalog catalog,
         final ModelAndView model
         ){
         model.addObject(
-            JdbcResourceCatalogsController.SELECT_RESULT,
+            JdbcCatalogSchemasController.SELECT_RESULT,
             select(
-                resource
+                catalog
                 )
             );
         model.setViewName(
@@ -214,13 +211,13 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcCatalogBeanIter jsonSelect(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
+    public JdbcSchemaBeanIter jsonSelect(
+        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+        final JdbcCatalog catalog,
         final ModelAndView model
         ){
         return select(
-            resource
+            catalog
             );
         }
 
@@ -228,12 +225,12 @@ extends AbstractController
      * Select by name.
      * 
      */
-    public JdbcCatalogBean select(
-        JdbcResource resource,
+    public JdbcSchemaBean select(
+        JdbcCatalog catalog,
         String name
         ){
-        return new JdbcCatalogBean(
-            resource.catalogs().select(
+        return new JdbcSchemaBean(
+            catalog.schemas().select(
                 name
                 )
             );
@@ -241,12 +238,13 @@ extends AbstractController
     
     /**
      * HTML GET or POST request to select by name.
+     * @todo Wrap the entities as beans (with URI) 
      *
      */
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
     public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
+        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+        final JdbcCatalog catalog,
         @RequestParam(SELECT_NAME)
         final String name,
         final ModelAndView model
@@ -258,7 +256,7 @@ extends AbstractController
         model.addObject(
             SELECT_RESULT,
             select(
-                resource,
+                catalog,
                 name
                 )
             );
@@ -274,15 +272,15 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public JdbcCatalogBean jsonSelect(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
+    public JdbcSchemaBean jsonSelect(
+        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+        final JdbcCatalog catalog,
         @RequestParam(SELECT_NAME)
         final String name,
         final ModelAndView model
         ){
         return select(
-            resource,
+            catalog,
             name
             );
         }
@@ -291,12 +289,12 @@ extends AbstractController
      * Search by text.
      * 
      */
-    public JdbcCatalogBeanIter search(
-        JdbcResource resource,
+    public JdbcSchemaBeanIter search(
+        JdbcCatalog catalog,
         String text
         ){
-        return new JdbcCatalogBeanIter(
-            resource.catalogs().search(
+        return new JdbcSchemaBeanIter(
+            catalog.schemas().search(
                 text
                 )
             );
@@ -308,8 +306,8 @@ extends AbstractController
      */
     @RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
     public ModelAndView htmlSearch(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
+        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+        final JdbcCatalog catalog,
         final ModelAndView model
         ){
         model.setViewName(
@@ -325,8 +323,8 @@ extends AbstractController
      */
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
     public ModelAndView htmlSearch(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
+        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+        final JdbcCatalog catalog,
         @RequestParam(SEARCH_TEXT)
         final String text,
         final ModelAndView model
@@ -338,7 +336,7 @@ extends AbstractController
         model.addObject(
             SEARCH_RESULT,
             search(
-                resource,
+                catalog,
                 text
                 )
             );
@@ -355,15 +353,15 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public JdbcCatalogBeanIter jsonSearch(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
+    public JdbcSchemaBeanIter jsonSearch(
+        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+        final JdbcCatalog catalog,
         @RequestParam(SEARCH_TEXT)
         final String text,
         final ModelAndView model
         ){
         return search(
-            resource,
+            catalog,
             text
             );
         }
@@ -374,8 +372,8 @@ extends AbstractController
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.GET)
     public ModelAndView htmlCreate(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
+        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+        final JdbcCatalog catalog,
         final ModelAndView model
         ){
         model.setViewName(
@@ -388,12 +386,12 @@ extends AbstractController
      * Create a new catalog.
      *
      */
-    public JdbcCatalogBean create(
-        final JdbcResource resource,
+    public JdbcSchemaBean create(
+        final JdbcCatalog catalog,
         final String name
         ){
-        return new JdbcCatalogBean(
-            resource.catalogs().create(
+        return new JdbcSchemaBean(
+            catalog.schemas().create(
                 name
                 )
             );
@@ -405,8 +403,8 @@ extends AbstractController
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST)
     public ResponseEntity<String>  htmlCreate(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
+        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+        final JdbcCatalog catalog,
         @RequestParam(CREATE_NAME)
         final String name,
         final ModelAndView model
@@ -414,7 +412,7 @@ extends AbstractController
         return new ResponseEntity<String>(
             new RedirectHeader(
                 create(
-                    resource,
+                    catalog,
                     name
                     )
                 ),
@@ -427,21 +425,21 @@ extends AbstractController
      *
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<JdbcCatalogBean> jsonCreate(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
+    public ResponseEntity<JdbcSchemaBean> jsonCreate(
+        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+        final JdbcCatalog catalog,
         @RequestParam(CREATE_NAME)
         final String name,
         final ModelAndView model
         ){
-        JdbcCatalogBean catalog = create(
-            resource,
+        JdbcSchemaBean schema = create(
+            catalog,
             name
             );
-        return new ResponseEntity<JdbcCatalogBean>(
-            catalog,
+        return new ResponseEntity<JdbcSchemaBean>(
+            schema,
             new RedirectHeader(
-                catalog 
+                schema
                 ),
             HttpStatus.CREATED
             ); 

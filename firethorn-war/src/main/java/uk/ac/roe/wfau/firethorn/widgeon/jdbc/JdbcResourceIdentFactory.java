@@ -42,17 +42,29 @@ implements JdbcResource.IdentFactory
         );
 
     /**
-     * The URI path for identifiers.
+     * The URI path for the resource service.
      * 
      */
-    public static final String IDENT_PATH = "/jdbc/resource/" + IDENT_TOKEN ;
+    public static final String RESOURCES_PATH = "/jdbc/resources";
 
+    /**
+     * The URI path for individual resources.
+     * 
+     */
+    public static final String RESOURCE_PATH = "/jdbc/resource/" + IDENT_TOKEN ;
+
+    /**
+     * The URI path for resource catalogs.
+     * 
+     */
+    public static final String CATALOGS_PATH = RESOURCE_PATH + "/catalogs" ;
+    
     
     @Override
     public String link(JdbcResource entity)
         {
         return link(
-            IDENT_PATH,
+            RESOURCE_PATH,
             entity
             );
         }

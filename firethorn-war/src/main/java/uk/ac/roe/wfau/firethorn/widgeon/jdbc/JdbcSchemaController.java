@@ -31,7 +31,6 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundExcept
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
  * Spring MVC controller for JdbcResources.
@@ -39,8 +38,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcResourceIdentFactory.RESOURCE_PATH)
-public class JdbcResourceController
+@RequestMapping(JdbcSchemaIdentFactory.SCHEMA_PATH)
+public class JdbcSchemaController
     extends AbstractController
     {
 
@@ -48,7 +47,7 @@ public class JdbcResourceController
     public Path path()
         {
         return new PathImpl(
-            JdbcResourceIdentFactory.RESOURCE_PATH
+            JdbcSchemaIdentFactory.SCHEMA_PATH
             );
         }
 
@@ -56,85 +55,98 @@ public class JdbcResourceController
      * Public constructor.
      *
      */
-    public JdbcResourceController()
+    public JdbcSchemaController()
         {
         super();
         }
 
     /**
-     * MVC property for the target JdbcResource entity.
+     * MVC property for the target JdbcSchema entity.
      *
      */
-    public static final String RESOURCE_ENTITY = "urn:jdbc.resource.entity" ;
+    public static final String SCHEMA_ENTITY = "urn:jdbc.schema.entity" ;
 
     /**
-     * MVC property for the target JdbcResourceBean bean.
+     * MVC property for the target bean.
      *
      */
-    public static final String RESOURCE_BEAN = "urn:jdbc.resource.bean" ;
+    public static final String SCHEMA_BEAN = "urn:jdbc.schema.bean" ;
 
     /**
-     * Get the target JdbcResource  based on the ident in the path.
+     * Get the target JdbcSchema based on the ident in the path.
      *
+    @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
      */
-    @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-    public JdbcResource resource(
+    public JdbcSchema schema(
         @PathVariable("ident")
         final String ident
         ){
+        log.debug("JdbcSchema schema() [{}]", ident);
         try {
-            return womble().resources().jdbc().resources().select(
-                womble().resources().jdbc().resources().ident(
+            return womble().resources().jdbc().schemas().select(
+                womble().resources().jdbc().schemas().ident(
                     ident
                     )
                 );
             }
-        catch (IdentifierNotFoundException e)
+        catch (IdentifierNotFoundException ouch)
             {
+            log.debug("JdbcSchema not found [{}]", ouch);
             return null ;
             }
         }
 
     /**
-     * Wrap the JdbcResource as a bean.
+     * Wrap the JdbcSchema as a bean.
      * 
      */
-    @ModelAttribute(JdbcResourceController.RESOURCE_BEAN)
-    public JdbcResourceBean bean(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource
+    @ModelAttribute(JdbcSchemaController.SCHEMA_BEAN)
+    public JdbcSchemaBean bean(
+        @PathVariable("ident")
+        final String ident
         ){
-        return new JdbcResourceBean(
-            resource
+        return new JdbcSchemaBean(
+            schema(
+                ident
+                )
             );
         }
     
     /**
-     * HTML GET request for a resource.
+     * HTML GET request for a schema.
      *
      */
     @RequestMapping(method=RequestMethod.GET)
     public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcResourceController.RESOURCE_BEAN)
-        final JdbcResourceBean bean,
+        @ModelAttribute(JdbcSchemaController.SCHEMA_BEAN)
+        final JdbcSchemaBean bean,
         final ModelAndView model
         ){
+        log.debug("htmlSelect()");
         model.setViewName(
-            "jdbc/resource/display"
+            "jdbc/catalog/display"
             );
+        model.addObject(
+            JdbcCatalogController.CATALOG_BEAN,
+            new JdbcCatalogBean(
+                bean.entity().parent()
+                )
+            );
+
         return model ;
         }
 
     /**
-     * JSON GET request for a resource.
+     * JSON GET request for a schema.
      *
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcResourceBean jsonSelect(
-        @ModelAttribute(JdbcResourceController.RESOURCE_BEAN)
-        final JdbcResourceBean bean
+    public JdbcSchemaBean jsonSelect(
+        @ModelAttribute(JdbcSchemaController.SCHEMA_BEAN)
+        final JdbcSchemaBean bean
         ){
+        log.debug("jsonSelect()");
         return bean ;
         }
     }

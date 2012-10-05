@@ -21,7 +21,6 @@ import java.net.URI;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
@@ -42,17 +41,22 @@ implements JdbcCatalog.IdentFactory
         );
 
     /**
-     * The URI path for identifiers.
+     * The URI path for individual catalogs.
      * 
      */
-    public static final String IDENT_PATH = "/jdbc/catalog/" + IDENT_TOKEN ;
+    public static final String CATALOG_PATH = "/jdbc/catalog/" + IDENT_TOKEN ;
 
+    /**
+     * The URI path for catalog schemas.
+     * 
+     */
+    public static final String SCHEMAS_PATH = CATALOG_PATH + "/schemas" ;
     
     @Override
     public String link(JdbcCatalog entity)
         {
         return link(
-            IDENT_PATH,
+            CATALOG_PATH,
             entity
             );
         }

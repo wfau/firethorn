@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import java.net.URI;
+
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
@@ -31,6 +33,20 @@ public class JdbcSchemaIdentFactory
 extends WebappIdentFactory<JdbcSchema>
 implements JdbcSchema.IdentFactory
     {
+    /**
+     * The type URI for this type.
+     * 
+     */
+    public static final URI TYPE_URI = URI.create(
+        "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json"
+        );
+
+    /**
+     * The URI path for individual schema.
+     * 
+     */
+    public static final String SCHEMA_PATH = "/jdbc/schema/" + IDENT_TOKEN ;
+
     @Override
     public String link(JdbcSchema entity)
         {

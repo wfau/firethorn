@@ -17,31 +17,27 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 
 /**
- * Bean wrapper to enable the JSON converter to process list of a DataServices.  
+ * Bean wrapper for an Entity.  
  *
  */
-public class JdbcCatalogBeanIter
-extends AbstractEntityBeanIter<JdbcCatalog>
+@Slf4j
+public class JdbcSchemaBean
+extends AbstractEntityBean<JdbcSchema>
+implements EntityBean<JdbcSchema>
     {
     /**
      * Public constructor.
      *
      */
-    public JdbcCatalogBeanIter(Iterable<JdbcCatalog> iterable)
+    public JdbcSchemaBean(JdbcSchema entity)
         {
         super(
-            iterable
-            );
-        }
-
-    @Override
-    public EntityBean<JdbcCatalog> bean(JdbcCatalog entity)
-        {
-        return new JdbcCatalogBean(
+            JdbcSchemaIdentFactory.TYPE_URI,
             entity
             );
         }

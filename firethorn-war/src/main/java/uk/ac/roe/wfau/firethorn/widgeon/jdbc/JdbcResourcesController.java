@@ -103,13 +103,13 @@ extends AbstractController
     public static final String CREATE_PATH = "create" ;
 
     /**
-     * MVC property for the Resource name.
+     * MVC property for the select name.
      *
      */
     public static final String SELECT_NAME = "jdbc.resources.select.name" ;
 
     /**
-     * MVC property for the selected Resource(s).
+     * MVC property for the select results.
      *
      */
     public static final String SELECT_RESULT = "jdbc.resources.select.result" ;
@@ -121,13 +121,13 @@ extends AbstractController
     public static final String SEARCH_TEXT = "jdbc.resources.search.text" ;
 
     /**
-     * MVC property for the selected Resource(s).
+     * MVC property for the search results.
      *
      */
     public static final String SEARCH_RESULT = "jdbc.resources.search.result" ;
 
     /**
-     * MVC property for the Resource name.
+     * MVC property for the create name.
      *
      */
     public static final String CREATE_NAME = "jdbc.resources.create.name" ;

@@ -15,7 +15,7 @@ do
     curl -v \
         -H 'Accept: application/json' \
         --data "jdbc.resource.catalogs.create.name=jdbc-catalog-$(name)" \
-        http://${hostname}:${hostport}/firethorn/jdbc/resource/1/catalogs/create
+        http://${hostname}:${hostport}/firethorn/jdbc/resource/2/catalogs/create
 done
 
 
