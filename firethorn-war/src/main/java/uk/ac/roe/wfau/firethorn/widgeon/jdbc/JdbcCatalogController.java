@@ -80,7 +80,7 @@ public class JdbcCatalogController
         @PathVariable("ident")
         final String ident
         ){
-        log.debug("JdbcCatalog catalog() [{}]", ident);
+        log.debug("catalog() [{}]", ident);
         try {
             return womble().resources().jdbc().catalogs().select(
                 womble().resources().jdbc().catalogs().ident(
@@ -90,7 +90,7 @@ public class JdbcCatalogController
             }
         catch (IdentifierNotFoundException ouch)
             {
-            log.debug("JdbcCatalog not found [{}]", ouch);
+            log.debug("Unable to find Catalog [{}]", ident);
             return null ;
             }
         }
@@ -124,7 +124,7 @@ public class JdbcCatalogController
         @PathVariable("ident")
         final String ident
         ){
-        log.debug("JdbcCatalogBean bean()");
+        log.debug("bean()");
         return new JdbcCatalogBean(
             catalog(
                 ident

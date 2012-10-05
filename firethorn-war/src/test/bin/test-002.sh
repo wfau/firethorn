@@ -33,10 +33,13 @@ curl -v \
     http://${hostname}:${hostport}/firethorn/jdbc/resources/create 
 
 echo ""
-echo "GET details for resource 001"
+echo "GET details for resource 1"
 curl -v \
     -H 'Accept: application/json' \
     http://${hostname}:${hostport}/firethorn/jdbc/resource/1
+
+#
+# JDBC catalogs
 
 echo ""
 echo "GET resource catalog service metadata (TBD)"
@@ -45,27 +48,27 @@ curl -v \
     http://${hostname}:${hostport}/firethorn/jdbc/resource/1/catalogs
 
 echo ""
-echo "GET list of catalogs for resource 001 (empty)"
+echo "GET list of catalogs for resource 1 (empty)"
 curl -v \
     -H 'Accept: application/json' \
     http://${hostname}:${hostport}/firethorn/jdbc/resource/1/catalogs/select
 
 echo ""
-echo "Create a catalog for resource 001"
+echo "Create a catalog for resource 1"
 curl -v \
     -H 'Accept: application/json' \
     --data "jdbc.resource.catalogs.create.name=jdbc-catalog-$(name)" \
     http://${hostname}:${hostport}/firethorn/jdbc/resource/1/catalogs/create
 
 echo ""
-echo "Create a catalog for resource 001"
+echo "Create a catalog for resource 1"
 curl -v \
     -H 'Accept: application/json' \
     --data "jdbc.resource.catalogs.create.name=jdbc-catalog-$(name)" \
     http://${hostname}:${hostport}/firethorn/jdbc/resource/1/catalogs/create
 
 echo ""
-echo "GET list of catalogs for resource 001"
+echo "GET list of catalogs for resource 1"
 curl -v \
     -H 'Accept: application/json' \
     http://${hostname}:${hostport}/firethorn/jdbc/resource/1/catalogs/select
@@ -86,12 +89,37 @@ curl -v \
     http://${hostname}:${hostport}/firethorn/jdbc/resource/1/catalogs/select?jdbc.resource.catalogs.search.text=jdbc
 
 echo ""
-echo "GET details for catalog 001"
+echo "GET details for catalog 1"
 curl -v \
     -H 'Accept: application/json' \
     http://${hostname}:${hostport}/firethorn/jdbc/catalog/1
 
+#
+# JDBC schema
 
+echo ""
+echo "GET list of schema for catalogs 1 (empty)"
+curl -v \
+    -H 'Accept: application/json' \
+    http://${hostname}:${hostport}/firethorn/jdbc/catalog/1/schemas/select
 
+echo ""
+echo "Create a schema for catalog 1"
+curl -v \
+    -H 'Accept: application/json' \
+    --data "jdbc.catalog.schemas.create.name=jdbc-schema-$(name)" \
+    http://${hostname}:${hostport}/firethorn/jdbc/catalog/1/schemas/create
 
+echo ""
+echo "Create a schema for catalog 1"
+curl -v \
+    -H 'Accept: application/json' \
+    --data "jdbc.catalog.schemas.create.name=jdbc-schema-$(name)" \
+    http://${hostname}:${hostport}/firethorn/jdbc/catalog/1/schemas/create
+
+echo ""
+echo "GET list of schema for catalog 1"
+curl -v \
+    -H 'Accept: application/json' \
+    http://${hostname}:${hostport}/firethorn/jdbc/catalog/1/schemas/select
 

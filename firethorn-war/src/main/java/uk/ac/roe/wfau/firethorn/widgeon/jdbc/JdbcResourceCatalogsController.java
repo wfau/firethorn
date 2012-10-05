@@ -17,11 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import javax.servlet.http.HttpServletRequest;
-
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -38,7 +35,6 @@ import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
  * Spring MVC controller for AdqlServices.
@@ -134,6 +130,7 @@ extends AbstractController
             }
         catch (IdentifierNotFoundException e)
             {
+            log.error("Unable to locate resource [{}]", ident);
             return null ;
             }
         }
@@ -141,7 +138,6 @@ extends AbstractController
     /**
      * Wrap the JdbcResource as a bean.
      * 
-     */
     @ModelAttribute(JdbcResourceController.RESOURCE_BEAN)
     public JdbcResourceBean bean(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
@@ -151,6 +147,7 @@ extends AbstractController
             resource
             );
         }
+     */
 
     /**
      * Select all.

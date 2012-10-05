@@ -50,6 +50,9 @@ implements JdbcSchema.IdentFactory
     @Override
     public String link(JdbcSchema entity)
         {
-        return null;
+        return link(
+            SCHEMA_PATH,
+            entity
+            );
         }
     }

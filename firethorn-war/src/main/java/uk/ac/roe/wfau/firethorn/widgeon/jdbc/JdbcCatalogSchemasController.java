@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -36,7 +35,6 @@ import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
  * Spring MVC controller for AdqlServices.
@@ -122,6 +120,7 @@ extends AbstractController
         @PathVariable("ident")
         final String ident
         ){
+        log.debug("catalog() [{}]", ident);
         try {
             return womble().resources().jdbc().catalogs().select(
                 womble().resources().jdbc().catalogs().ident(
@@ -131,6 +130,7 @@ extends AbstractController
             }
         catch (IdentifierNotFoundException e)
             {
+            log.error("Unable to locate catalog [{}]", ident);
             return null ;
             }
         }
@@ -138,7 +138,6 @@ extends AbstractController
     /**
      * Wrap the JdbcCatalog as a bean.
      * 
-     */
     @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
     public JdbcCatalogBean bean(
         @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
@@ -148,6 +147,7 @@ extends AbstractController
             catalog
             );
         }
+     */
 
     /**
      * Select all.
@@ -156,6 +156,7 @@ extends AbstractController
     public JdbcSchemaBeanIter select(
         final JdbcCatalog catalog
         ){
+        log.debug("select()");
         return new JdbcSchemaBeanIter(
             catalog.schemas().select()
             );
@@ -171,6 +172,7 @@ extends AbstractController
         final JdbcCatalog catalog,
         final ModelAndView model
         ){
+        log.debug("htmlIndex()");
         model.addObject(
             JdbcCatalogSchemasController.SELECT_RESULT,
             select(
@@ -193,6 +195,7 @@ extends AbstractController
         final JdbcCatalog catalog,
         final ModelAndView model
         ){
+        log.debug("htmlSelect()");
         model.addObject(
             JdbcCatalogSchemasController.SELECT_RESULT,
             select(
@@ -216,6 +219,7 @@ extends AbstractController
         final JdbcCatalog catalog,
         final ModelAndView model
         ){
+        log.debug("jsonSelect()");
         return select(
             catalog
             );
@@ -229,6 +233,7 @@ extends AbstractController
         JdbcCatalog catalog,
         String name
         ){
+        log.debug("select(String) [{}]", name);
         return new JdbcSchemaBean(
             catalog.schemas().select(
                 name
@@ -249,6 +254,7 @@ extends AbstractController
         final String name,
         final ModelAndView model
         ){
+        log.debug("htmlSelect(String) [{}]", name);
         model.addObject(
             SELECT_NAME,
             name
@@ -279,6 +285,7 @@ extends AbstractController
         final String name,
         final ModelAndView model
         ){
+        log.debug("jsonSelect(String) [{}]", name);
         return select(
             catalog,
             name
@@ -293,6 +300,7 @@ extends AbstractController
         JdbcCatalog catalog,
         String text
         ){
+        log.debug("search()");
         return new JdbcSchemaBeanIter(
             catalog.schemas().search(
                 text
@@ -310,6 +318,7 @@ extends AbstractController
         final JdbcCatalog catalog,
         final ModelAndView model
         ){
+        log.debug("htmlSearch");
         model.setViewName(
             "jdbc/catalog/search"
             );
@@ -329,6 +338,7 @@ extends AbstractController
         final String text,
         final ModelAndView model
         ){
+        log.debug("htmlSearch(String) [{}]", text);
         model.addObject(
             SEARCH_TEXT,
             text
@@ -360,6 +370,7 @@ extends AbstractController
         final String text,
         final ModelAndView model
         ){
+        log.debug("jsonSearch(String) [{}]", text);
         return search(
             catalog,
             text
@@ -376,6 +387,7 @@ extends AbstractController
         final JdbcCatalog catalog,
         final ModelAndView model
         ){
+        log.debug("create()");
         model.setViewName(
             "jdbc/catalog/create"
             );
@@ -390,6 +402,7 @@ extends AbstractController
         final JdbcCatalog catalog,
         final String name
         ){
+        log.debug("create(String) [{}]", name);
         return new JdbcSchemaBean(
             catalog.schemas().create(
                 name
@@ -409,6 +422,7 @@ extends AbstractController
         final String name,
         final ModelAndView model
         ){
+        log.debug("htmlCreate(String) [{}]", name);
         return new ResponseEntity<String>(
             new RedirectHeader(
                 create(
@@ -432,6 +446,7 @@ extends AbstractController
         final String name,
         final ModelAndView model
         ){
+        log.debug("jsonCreate(String) [{}]", name);
         JdbcSchemaBean schema = create(
             catalog,
             name
