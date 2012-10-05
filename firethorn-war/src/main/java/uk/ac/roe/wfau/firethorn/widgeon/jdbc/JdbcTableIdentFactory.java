@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- *
+ * Ident factory for <code>JdbcTable</code>.
  *
  */
 @Component
@@ -34,7 +34,7 @@ implements JdbcTable.IdentFactory
     {
     /**
      * The type URI for this type.
-     * 
+     *
      */
     public static final URI TYPE_URI = URI.create(
         "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json"
@@ -42,18 +42,18 @@ implements JdbcTable.IdentFactory
 
     /**
      * The URI path for individual tables.
-     * 
+     *
      */
     public static final String TABLE_PATH = "/jdbc/table/" + IDENT_TOKEN ;
 
     /**
      * The URI path for table columns.
-     * 
+     *
      */
     public static final String COLUMNS_PATH = TABLE_PATH + "/columns" ;
 
     @Override
-    public String link(JdbcTable entity)
+    public String link(final JdbcTable entity)
         {
         return link(
             TABLE_PATH,

@@ -17,20 +17,16 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control ;
 
-import java.net.URL;
-
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
-
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
  * A Servlet path builder.
  *
  */
 @Slf4j
+@Deprecated
 public class ServletPathBuilder
 extends PathBuilderBase
     {

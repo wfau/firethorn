@@ -106,7 +106,7 @@ public abstract class TestBase
      * @throws AssertionError
      *
      */
-    public void assertIsNull(Object object)
+    public void assertIsNull(final Object object)
     throws AssertionError
         {
         assertEquals(

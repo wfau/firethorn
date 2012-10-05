@@ -19,37 +19,30 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import java.net.URI;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
-import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
 
 /**
- * Bean wrapper to enable the JSON converter to process an AdqlService.  
+ * Bean wrapper for <code>AdqlService</code>.
  *
  */
-@Slf4j
 public class AdqlServiceBean
 extends AbstractEntityBean<AdqlService>
 implements EntityBean<AdqlService>
     {
-    
+
     /**
      * The data type identifier.
+     * TODO Move to IdentFactory.
      * 
      */
     public static final URI TYPE_URI = URI.create(
         "http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json"
         );
-    
-    /**
-     * The target AdqlService.
-     * 
-     */
 
     /**
-     * 
+     *
      * Public constructor.
      * @param builder
      *      A UriBuilder for generating the service URI.
@@ -57,7 +50,7 @@ implements EntityBean<AdqlService>
      *      The target AdqlService.
      *
      */
-    public AdqlServiceBean(AdqlService entity)
+    public AdqlServiceBean(final AdqlService entity)
         {
         super(
             TYPE_URI,

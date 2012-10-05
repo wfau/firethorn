@@ -37,7 +37,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
- * Spring MVC controller for catalog schemas.
+ * Spring MVC controller for <code>JdbcCatalog</code> schemas.
  *
  */
 @Slf4j
@@ -65,19 +65,19 @@ extends AbstractController
 
     /**
      * URL path for the select method.
-     * 
+     *
      */
     public static final String SELECT_PATH = "select" ;
 
     /**
      * URL path for the search method.
-     * 
+     *
      */
     public static final String SEARCH_PATH = "search" ;
 
     /**
      * URL path for the create method.
-     * 
+     *
      */
     public static final String CREATE_PATH = "create" ;
 
@@ -128,7 +128,7 @@ extends AbstractController
                     )
                 );
             }
-        catch (IdentifierNotFoundException e)
+        catch (final IdentifierNotFoundException e)
             {
             log.error("Unable to locate catalog [{}]", ident);
             return null ;
@@ -137,7 +137,7 @@ extends AbstractController
 
     /**
      * Wrap the parent entity as a bean.
-     * 
+     *
     @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
     public JdbcCatalogBean bean(
         @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
@@ -151,7 +151,7 @@ extends AbstractController
 
     /**
      * Select all.
-     * 
+     *
      */
     public JdbcSchemaBeanIter select(
         @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
@@ -228,12 +228,12 @@ extends AbstractController
 
     /**
      * Select by name.
-     * 
+     *
      */
     public JdbcSchemaBean select(
-        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY) final
         JdbcCatalog catalog,
-        String name
+        final String name
         ){
         log.debug("select(String) [{}]", name);
         return new JdbcSchemaBean(
@@ -242,7 +242,7 @@ extends AbstractController
                 )
             );
         }
-    
+
     /**
      * HTML request to select by name.
      *
@@ -295,12 +295,12 @@ extends AbstractController
 
     /**
      * Search by text.
-     * 
+     *
      */
     public JdbcSchemaBeanIter search(
-        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY) final
         JdbcCatalog catalog,
-        String text
+        final String text
         ){
         log.debug("search(String) [{}]", text);
         return new JdbcSchemaBeanIter(
@@ -309,7 +309,7 @@ extends AbstractController
                 )
             );
         }
-    
+
     /**
      * HTML GET request for the search form.
      *
@@ -359,7 +359,7 @@ extends AbstractController
 
     /**
      * JSON request to search by text.
-     *  
+     *
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
@@ -432,7 +432,7 @@ extends AbstractController
                     )
                 ),
             HttpStatus.SEE_OTHER
-            ); 
+            );
         }
 
     /**
@@ -448,7 +448,7 @@ extends AbstractController
         final ModelAndView model
         ){
         log.debug("jsonCreate(String) [{}]", name);
-        JdbcSchemaBean schema = create(
+        final JdbcSchemaBean schema = create(
             catalog,
             name
             );
@@ -458,6 +458,6 @@ extends AbstractController
                 schema
                 ),
             HttpStatus.CREATED
-            ); 
+            );
         }
     }

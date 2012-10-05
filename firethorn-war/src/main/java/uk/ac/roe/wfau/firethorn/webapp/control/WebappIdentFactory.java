@@ -19,10 +19,9 @@ package uk.ac.roe.wfau.firethorn.webapp.control;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
- *
+ * Base class for IdentFactory implementations within the webapp.
  *
  */
 public abstract class WebappIdentFactory<EntityType extends Entity>
@@ -39,7 +38,7 @@ extends AbstractIdentFactory<EntityType>
 
     public static final String SERVICE_PATH = SERVICE_BASE + CONTEXT_PATH ;
 
-    protected String link(String path, Entity entity)
+    protected String link(final String path, final Entity entity)
         {
         return SERVICE_PATH + path.replaceFirst(
             IDENT_REGEX,

@@ -27,12 +27,12 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 public interface Path
     {
 
-    public Path append(String string);
+    public Path append(final String string);
 
-    public Path append(String ... strings);
+    public Path append(final String ... strings);
 
-    public String resolve(Entity entity);
-    
-    public String resolve(Identifier ident);
+    public String resolve(final Entity entity);
+
+    public String resolve(final Identifier ident);
 
     }

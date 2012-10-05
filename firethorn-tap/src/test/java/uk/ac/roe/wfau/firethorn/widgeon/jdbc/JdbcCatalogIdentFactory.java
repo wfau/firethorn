@@ -20,7 +20,6 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
  *
@@ -32,7 +31,7 @@ extends AbstractIdentFactory<JdbcCatalog>
 implements JdbcCatalog.IdentFactory
     {
     @Override
-    public String link(JdbcCatalog entity)
+    public String link(final JdbcCatalog entity)
         {
         return null;
         }

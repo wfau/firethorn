@@ -20,10 +20,9 @@ package uk.ac.roe.wfau.firethorn.webapp.control;
 import java.util.Iterator;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
 
 /**
- *
+ * Abstract base class for <code>EntityBeanIter</code> implementations.
  *
  */
 public abstract class AbstractEntityBeanIter<EntityType extends Entity>
@@ -35,27 +34,27 @@ implements EntityBeanIter<EntityType>
      * @param iterable
      *
      */
-    public AbstractEntityBeanIter(Iterable<EntityType> iterable)
+    public AbstractEntityBeanIter(final Iterable<EntityType> iterable)
         {
         this.iterable = iterable ;
         }
 
     /**
-     * 
+     *
      */
     protected Iterable<EntityType> iterable ;
 
     /**
-     * 
+     *
      */
-    public abstract EntityBean<EntityType> bean(EntityType entity);
+    public abstract EntityBean<EntityType> bean(final EntityType entity);
 
     @Override
     public Iterator<EntityBean<EntityType>> iterator()
         {
         return new Iterator<EntityBean<EntityType>>()
             {
-            private Iterator<EntityType> iterator = iterable.iterator();
+            private final Iterator<EntityType> iterator = iterable.iterator();
 
             @Override
             public boolean hasNext()

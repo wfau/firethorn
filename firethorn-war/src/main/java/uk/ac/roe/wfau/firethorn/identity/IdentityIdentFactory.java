@@ -19,12 +19,11 @@ package uk.ac.roe.wfau.firethorn.identity;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTable;
 
 /**
- *
+ * Ident factory for <code>Identity</code>.
+ * TODO
  *
  */
 @Component
@@ -33,7 +32,7 @@ extends WebappIdentFactory<Identity>
 implements Identity.IdentFactory
     {
     @Override
-    public String link(Identity entity)
+    public String link(final Identity entity)
         {
         return null;
         }

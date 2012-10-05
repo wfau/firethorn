@@ -21,7 +21,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 
 /**
- * Bean wrapper to enable the JSON converter to process list of a DataServices.  
+ * Bean iterator for <code>JdbcCatalog</code>.
  *
  */
 public class JdbcCatalogBeanIter
@@ -31,7 +31,7 @@ extends AbstractEntityBeanIter<JdbcCatalog>
      * Public constructor.
      *
      */
-    public JdbcCatalogBeanIter(Iterable<JdbcCatalog> iterable)
+    public JdbcCatalogBeanIter(final Iterable<JdbcCatalog> iterable)
         {
         super(
             iterable
@@ -39,7 +39,7 @@ extends AbstractEntityBeanIter<JdbcCatalog>
         }
 
     @Override
-    public EntityBean<JdbcCatalog> bean(JdbcCatalog entity)
+    public EntityBean<JdbcCatalog> bean(final JdbcCatalog entity)
         {
         return new JdbcCatalogBean(
             entity

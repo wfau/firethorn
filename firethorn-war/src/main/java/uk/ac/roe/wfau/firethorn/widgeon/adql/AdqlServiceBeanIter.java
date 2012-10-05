@@ -20,10 +20,9 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
-import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
 
 /**
- * Bean wrapper to enable the JSON converter to process list of a DataServices.  
+ * Bean iterator for <code>AdqlService</code>.
  *
  */
 public class AdqlServiceBeanIter
@@ -33,7 +32,7 @@ extends AbstractEntityBeanIter<AdqlService>
      * Public constructor.
      *
      */
-    public AdqlServiceBeanIter(Iterable<AdqlService> iterable)
+    public AdqlServiceBeanIter(final Iterable<AdqlService> iterable)
         {
         super(
             iterable
@@ -41,7 +40,7 @@ extends AbstractEntityBeanIter<AdqlService>
         }
 
     @Override
-    public EntityBean<AdqlService> bean(AdqlService entity)
+    public EntityBean<AdqlService> bean(final AdqlService entity)
         {
         return new AdqlServiceBean(
             entity

@@ -33,7 +33,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
- * Spring MVC controller for JdbcSchema.
+ * Spring MVC controller for <code>JdbcSchema</code>.
  *
  */
 @Slf4j
@@ -89,7 +89,7 @@ public class JdbcSchemaController
                     )
                 );
             }
-        catch (IdentifierNotFoundException ouch)
+        catch (final IdentifierNotFoundException ouch)
             {
             log.debug("JdbcSchema not found [{}]", ouch);
             return null ;
@@ -98,7 +98,7 @@ public class JdbcSchemaController
 
     /**
      * Wrap the entity as a bean.
-     * 
+     *
      */
     @ModelAttribute(JdbcSchemaController.SCHEMA_BEAN)
     public JdbcSchemaBean bean(
@@ -109,7 +109,7 @@ public class JdbcSchemaController
             entity
             );
         }
-    
+
     /**
      * HTML GET request.
      *

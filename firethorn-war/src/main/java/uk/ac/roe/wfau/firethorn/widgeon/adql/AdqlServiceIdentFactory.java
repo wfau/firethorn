@@ -21,13 +21,11 @@ import java.net.URI;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTable;
 
 /**
- *
+ * Ident factory for <code>AdqlService</code>.
  *
  */
 @Component
@@ -37,7 +35,7 @@ implements AdqlService.IdentFactory
     {
     /**
      * The type URI for this type.
-     * 
+     *
      */
     public static final URI TYPE_URI = URI.create(
         "http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json"
@@ -45,12 +43,12 @@ implements AdqlService.IdentFactory
 
     /**
      * The URI path for identifiers.
-     * 
+     *
      */
     public static final String IDENT_PATH = "/adql/service/" + IDENT_TOKEN ;
 
     @Override
-    public String link(AdqlService entity)
+    public String link(final AdqlService entity)
         {
         return link(
             IDENT_PATH,

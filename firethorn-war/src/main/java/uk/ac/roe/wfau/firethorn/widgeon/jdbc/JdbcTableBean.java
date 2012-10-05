@@ -17,15 +17,13 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 
 /**
- * Bean wrapper for an Entity.  
+ * Bean wrapper for <code>JdbcTable</code>.
  *
  */
-@Slf4j
 public class JdbcTableBean
 extends AbstractEntityBean<JdbcTable>
 implements EntityBean<JdbcTable>
@@ -34,7 +32,7 @@ implements EntityBean<JdbcTable>
      * Public constructor.
      *
      */
-    public JdbcTableBean(JdbcTable entity)
+    public JdbcTableBean(final JdbcTable entity)
         {
         super(
             JdbcTableIdentFactory.TYPE_URI,

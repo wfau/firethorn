@@ -27,7 +27,7 @@ public abstract class AbstractIdentFactory<EntityType extends Entity>
 implements IdentFactory<EntityType>
     {
     @Override
-    public Identifier ident(String string)
+    public Identifier ident(final String string)
         {
         return new LongIdentifier(
             string

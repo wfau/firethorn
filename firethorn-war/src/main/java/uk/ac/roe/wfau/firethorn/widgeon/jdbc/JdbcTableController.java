@@ -33,7 +33,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
- * Spring MVC controller for JdbcTables.
+ * Spring MVC controller for <code>JdbcTables</code>.
  *
  */
 @Slf4j
@@ -89,7 +89,7 @@ public class JdbcTableController
                     )
                 );
             }
-        catch (IdentifierNotFoundException ouch)
+        catch (final IdentifierNotFoundException ouch)
             {
             log.debug("JdbcTable not found [{}]", ouch);
             return null ;
@@ -98,7 +98,7 @@ public class JdbcTableController
 
     /**
      * Wrap the entity as a bean.
-     * 
+     *
      */
     @ModelAttribute(JdbcTableController.TABLE_BEAN)
     public JdbcTableBean bean(
@@ -109,7 +109,7 @@ public class JdbcTableController
             entity
             );
         }
-    
+
     /**
      * HTML GET request.
      *

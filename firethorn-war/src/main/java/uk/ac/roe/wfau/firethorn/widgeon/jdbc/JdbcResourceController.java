@@ -34,7 +34,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
- * Spring MVC controller for JdbcResources.
+ * Spring MVC controller for <code>JdbcResource</code>.
  *
  */
 @Slf4j
@@ -89,7 +89,7 @@ public class JdbcResourceController
                     )
                 );
             }
-        catch (IdentifierNotFoundException e)
+        catch (final IdentifierNotFoundException e)
             {
             return null ;
             }
@@ -97,7 +97,7 @@ public class JdbcResourceController
 
     /**
      * Wrap the entity as a bean.
-     * 
+     *
      */
     @ModelAttribute(JdbcResourceController.RESOURCE_BEAN)
     public JdbcResourceBean bean(
@@ -109,7 +109,7 @@ public class JdbcResourceController
             resource
             );
         }
-    
+
     /**
      * HTML GET request.
      *

@@ -22,56 +22,56 @@ import java.net.URI;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 
 /**
- * EntityBean interface.
+ * Java Bean interface for an <code>Entity</code>.
  *
  */
 public interface EntityBean<EntityType extends Entity>
     {
     /**
      * The wrapped Entity.
-     * 
+     *
      */
     public EntityType entity();
 
     /**
      * The Entity ID.
-     * 
+     *
     public String id();
      */
 
     /**
      * The Entity URI.
-     * 
+     *
     public URI uri();
      */
 
     /**
      * The Entity URI.
-     * 
+     *
      */
     public URI getIdent();
 
     /**
      * The Entity type.
-     * 
+     *
      */
     public URI getType();
 
     /**
      * The Entity name.
-     * 
+     *
      */
     public String getName();
 
     /**
      * The Entity create date.
-     * 
+     *
      */
     public String getCreated();
 
     /**
      * The Entity modified date.
-     * 
+     *
      */
     public String getModified();
 

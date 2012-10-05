@@ -17,14 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql ;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceTestBase;
 
 /**

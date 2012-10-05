@@ -25,14 +25,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;

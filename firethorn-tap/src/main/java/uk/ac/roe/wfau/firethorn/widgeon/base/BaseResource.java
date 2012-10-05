@@ -24,7 +24,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
  * Public interface for a physical resource, describing a real data resource (JDBC database OR TAP service).

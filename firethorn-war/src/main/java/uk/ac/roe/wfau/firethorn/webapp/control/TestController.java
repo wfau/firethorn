@@ -37,6 +37,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  *
  */
 @Slf4j
+@Deprecated
 @Controller
 @RequestMapping("test")
 public class TestController
@@ -56,7 +57,7 @@ extends AbstractController
             CONTROLLER_PATH
             ) ;
         }
-    
+
     /**
      * Public constructor.
      *

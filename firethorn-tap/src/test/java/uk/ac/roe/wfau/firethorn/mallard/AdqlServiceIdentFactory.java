@@ -20,8 +20,6 @@ package uk.ac.roe.wfau.firethorn.mallard;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTable;
 
 /**
  *
@@ -33,7 +31,7 @@ extends AbstractIdentFactory<AdqlService>
 implements AdqlService.IdentFactory
     {
     @Override
-    public String link(AdqlService entity)
+    public String link(final AdqlService entity)
         {
         return null;
         }

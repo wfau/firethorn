@@ -20,8 +20,6 @@ package uk.ac.roe.wfau.firethorn.config;
 import java.net.URI;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.EntityNotFoundException;
-import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  * Public interface for a configuration property.
@@ -38,7 +36,7 @@ extends Entity
     extends Entity.IdentFactory<ConfigProperty>
         {
         }
-    
+
     /**
      * A ConfigProperty factory.
      *
@@ -56,7 +54,7 @@ extends Entity
          * @param value
          *      The property value.
          * @return
-         *      The corresponding ConfigProperty.    
+         *      The corresponding ConfigProperty.
          *
          */
         public ConfigProperty create(final URI key, final String name, final String value);
@@ -66,7 +64,7 @@ extends Entity
          * @param key
          *      The property key.
          * @return
-         *      The corresponding ConfigProperty, or null if none found.    
+         *      The corresponding ConfigProperty, or null if none found.
          *
          */
         public ConfigProperty select(final URI key);
@@ -75,19 +73,20 @@ extends Entity
 
     /**
      * The property key.
-     * 
+     *
      */
     public URI key();
-    
+
     /**
      * The property value as a String.
-     * 
+     *
      */
+    @Override
     public String toString();
 
     /**
      * The property value as a URI.
-     * 
+     *
      */
     public URI toUri();
 

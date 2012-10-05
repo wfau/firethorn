@@ -19,12 +19,11 @@ package uk.ac.roe.wfau.firethorn.config;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTable;
 
 /**
- *
+ * Ident factory for <code>ConfigProperty</code>.
+ * TODO
  *
  */
 @Component
@@ -33,7 +32,7 @@ extends WebappIdentFactory<ConfigProperty>
 implements ConfigProperty.IdentFactory
     {
     @Override
-    public String link(ConfigProperty entity)
+    public String link(final ConfigProperty entity)
         {
         return null;
         }

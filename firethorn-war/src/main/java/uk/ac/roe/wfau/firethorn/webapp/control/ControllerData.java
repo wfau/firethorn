@@ -23,6 +23,7 @@ import org.springframework.web.context.request.WebRequest;
  * Test MVC controller data.
  *
  */
+@Deprecated
 public class ControllerData
     {
 

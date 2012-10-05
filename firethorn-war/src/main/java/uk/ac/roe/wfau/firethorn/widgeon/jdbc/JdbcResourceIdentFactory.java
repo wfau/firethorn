@@ -21,11 +21,10 @@ import java.net.URI;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- *
+ * Ident factory for <code>JdbcResource</code>.
  *
  */
 @Component
@@ -35,7 +34,7 @@ implements JdbcResource.IdentFactory
     {
     /**
      * The type URI for this type.
-     * 
+     *
      */
     public static final URI TYPE_URI = URI.create(
         "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json"
@@ -43,25 +42,25 @@ implements JdbcResource.IdentFactory
 
     /**
      * The URI path for the resource service.
-     * 
+     *
      */
     public static final String RESOURCES_PATH = "/jdbc/resources";
 
     /**
      * The URI path for individual resources.
-     * 
+     *
      */
     public static final String RESOURCE_PATH = "/jdbc/resource/" + IDENT_TOKEN ;
 
     /**
      * The URI path for resource catalogs.
-     * 
+     *
      */
     public static final String CATALOGS_PATH = RESOURCE_PATH + "/catalogs" ;
-    
-    
+
+
     @Override
-    public String link(JdbcResource entity)
+    public String link(final JdbcResource entity)
         {
         return link(
             RESOURCE_PATH,

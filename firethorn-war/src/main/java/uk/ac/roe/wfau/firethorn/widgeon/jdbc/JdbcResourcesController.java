@@ -17,36 +17,25 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import javax.servlet.http.HttpServletRequest;
-
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
-import uk.ac.roe.wfau.firethorn.webapp.control.RedirectEntityResponse;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
-import uk.ac.roe.wfau.firethorn.webapp.control.RedirectResponse;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
-import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServiceBean;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServiceController;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
- * Spring MVC controller for AdqlServices.
- *
+ * Spring MVC controller for <code>JdbcResource</code>.
+ * TODO better exception handling.
  */
 @Slf4j
 @Controller
@@ -69,13 +58,6 @@ extends AbstractController
         }
 
     /**
-     * Autowired reference to our JdbcResourceController.
-     * 
-     */
-    @Autowired
-    private JdbcResourceController resourceController ;
-
-    /**
      * Public constructor.
      *
      */
@@ -86,19 +68,19 @@ extends AbstractController
 
     /**
      * URL path for the select method.
-     * 
+     *
      */
     public static final String SELECT_PATH = "select" ;
 
     /**
      * URL path for the search method.
-     * 
+     *
      */
     public static final String SEARCH_PATH = "search" ;
 
     /**
      * URL path for the create method.
-     * 
+     *
      */
     public static final String CREATE_PATH = "create" ;
 
@@ -148,13 +130,12 @@ extends AbstractController
 
     /**
      * HTML GET request to select all.
-     * @todo Wrap the entities as beans (with URI) 
+     * @todo Wrap the entities as beans (with URI)
      *
      */
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
     public ModelAndView htmlSelect(
-        final ModelAndView model,
-        final HttpServletRequest request
+        final ModelAndView model
         ){
         model.addObject(
             SELECT_RESULT,
@@ -175,25 +156,23 @@ extends AbstractController
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcResourceBeanIter jsonSelect(
-        final ModelAndView model,
-        final HttpServletRequest request
+        final ModelAndView model
         ){
         return new JdbcResourceBeanIter(
             womble().resources().jdbc().resources().select()
             );
         }
-    
+
     /**
      * HTML GET or POST request to select by name.
-     * @todo Wrap the entities as beans (with URI) 
+     * @todo Wrap the entities as beans (with URI)
      *
      */
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
     public ModelAndView htmlSelect(
         @RequestParam(SELECT_NAME)
         final String name,
-        final ModelAndView model,
-        final HttpServletRequest request
+        final ModelAndView model
         ){
         model.addObject(
             SELECT_NAME,
@@ -222,8 +201,7 @@ extends AbstractController
     public JdbcResourceBeanIter jsonSelect(
         @RequestParam(SELECT_NAME)
         final String name,
-        final ModelAndView model,
-        final HttpServletRequest request
+        final ModelAndView model
         ){
         return new JdbcResourceBeanIter(
             womble().resources().jdbc().resources().select(
@@ -231,7 +209,7 @@ extends AbstractController
                 )
             );
         }
-    
+
     /**
      * HTML GET request to display the search form.
      *
@@ -248,15 +226,14 @@ extends AbstractController
 
     /**
      * HTML GET or POST request to search by text.
-     * @todo Wrap the entities as beans (with URI) 
+     * @todo Wrap the entities as beans (with URI)
      *
      */
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
     public ModelAndView htmlSearch(
         @RequestParam(SEARCH_TEXT)
         final String text,
-        final ModelAndView model,
-        final HttpServletRequest request
+        final ModelAndView model
         ){
         model.addObject(
             SEARCH_TEXT,
@@ -285,8 +262,7 @@ extends AbstractController
     public JdbcResourceBeanIter jsonSearch(
         @RequestParam(SEARCH_TEXT)
         final String text,
-        final ModelAndView model,
-        final HttpServletRequest request
+        final ModelAndView model
         ){
         return new JdbcResourceBeanIter(
             womble().resources().jdbc().resources().search(
@@ -317,11 +293,10 @@ extends AbstractController
     public ResponseEntity<String>  htmlCreate(
         @RequestParam(CREATE_NAME)
         final String name,
-        final ModelAndView model,
-        final HttpServletRequest request
+        final ModelAndView model
         ){
         try {
-            JdbcResourceBean bean = new JdbcResourceBean(
+            final JdbcResourceBean bean = new JdbcResourceBean(
                 womble().resources().jdbc().resources().create(
                     name
                     )
@@ -331,7 +306,7 @@ extends AbstractController
                     bean
                     ),
                 HttpStatus.SEE_OTHER
-                ); 
+                );
             }
         catch (final Exception ouch)
             {
@@ -347,11 +322,10 @@ extends AbstractController
     public ResponseEntity<JdbcResourceBean> jsonCreate(
         @RequestParam(CREATE_NAME)
         final String name,
-        final ModelAndView model,
-        final HttpServletRequest request
+        final ModelAndView model
         ){
         try {
-            JdbcResourceBean bean = new JdbcResourceBean(
+            final JdbcResourceBean bean = new JdbcResourceBean(
                 womble().resources().jdbc().resources().create(
                     name
                     )
@@ -362,7 +336,7 @@ extends AbstractController
                     bean
                     ),
                 HttpStatus.CREATED
-                ); 
+                );
             }
         catch (final Exception ouch)
             {

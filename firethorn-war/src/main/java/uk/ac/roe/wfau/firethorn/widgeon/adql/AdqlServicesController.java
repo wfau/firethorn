@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import javax.servlet.http.HttpServletRequest;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
@@ -36,7 +34,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
- * Spring MVC controller for AdqlServices.
+ * Spring MVC controller for <code>AdqlService</code>.
  *
  */
 @Slf4j
@@ -70,19 +68,19 @@ extends AbstractController
 
     /**
      * URL path for the select method.
-     * 
+     *
      */
     public static final String SELECT_PATH = "select" ;
 
     /**
      * URL path for the search method.
-     * 
+     *
      */
     public static final String SEARCH_PATH = "search" ;
 
     /**
      * URL path for the create method.
-     * 
+     *
      */
     public static final String CREATE_PATH = "create" ;
 
@@ -136,8 +134,7 @@ extends AbstractController
      */
 	@RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
 	public ModelAndView htmlSelect(
-        final ModelAndView model,
-        final HttpServletRequest request
+        final ModelAndView model
 	    ){
 	    model.addObject(
 		    SELECT_RESULT,
@@ -158,14 +155,13 @@ extends AbstractController
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
     public AdqlServiceBeanIter jsonSelect(
-        final ModelAndView model,
-        final HttpServletRequest request
+        final ModelAndView model
         ){
         return new AdqlServiceBeanIter(
             womble().services().select()
             );
         }
-	
+
     /**
      * HTML GET or POST request to select by name.
      *
@@ -174,8 +170,7 @@ extends AbstractController
 	public ModelAndView htmlSelect(
         @RequestParam(SELECT_NAME)
         final String name,
-        final ModelAndView model,
-        final HttpServletRequest request
+        final ModelAndView model
 	    ){
         model.addObject(
             SELECT_NAME,
@@ -204,8 +199,7 @@ extends AbstractController
     public AdqlServiceBeanIter jsonSelect(
         @RequestParam(SELECT_NAME)
         final String name,
-        final ModelAndView model,
-        final HttpServletRequest request
+        final ModelAndView model
         ){
         return new AdqlServiceBeanIter(
             womble().services().select(
@@ -213,7 +207,7 @@ extends AbstractController
                 )
             );
         }
-	
+
     /**
      * HTML GET request to display the search form.
      *
@@ -230,14 +224,13 @@ extends AbstractController
 
     /**
      * HTML GET or POST request to search by text.
-     * 
+     *
      */
 	@RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
 	public ModelAndView htmlSearch(
         @RequestParam(SEARCH_TEXT)
         final String text,
-        final ModelAndView model,
-        final HttpServletRequest request
+        final ModelAndView model
 	    ){
         model.addObject(
             SEARCH_TEXT,
@@ -266,8 +259,7 @@ extends AbstractController
     public AdqlServiceBeanIter jsonSearch(
         @RequestParam(SEARCH_TEXT)
         final String text,
-        final ModelAndView model,
-        final HttpServletRequest request
+        final ModelAndView model
         ){
         return new AdqlServiceBeanIter(
             womble().services().search(
@@ -298,12 +290,11 @@ extends AbstractController
 	public ResponseEntity<String>  htmlCreate(
         @RequestParam(CREATE_NAME)
         final String name,
-        final ModelAndView model,
-        final HttpServletRequest request
+        final ModelAndView model
 	    ){
 	    log.debug("htmlCreate() [{}]", name);
         try {
-            AdqlServiceBean bean = new AdqlServiceBean(
+            final AdqlServiceBean bean = new AdqlServiceBean(
                 womble().services().create(
                     name
                     )
@@ -313,7 +304,7 @@ extends AbstractController
                     bean
                     ),
                 HttpStatus.SEE_OTHER
-                ); 
+                );
             }
         catch (final Exception ouch)
             {
@@ -329,12 +320,11 @@ extends AbstractController
 	public ResponseEntity<AdqlServiceBean> jsonCreate(
         @RequestParam(CREATE_NAME)
         final String name,
-        final ModelAndView model,
-        final HttpServletRequest request
+        final ModelAndView model
 	    ){
         log.debug("jsonCreate() [{}]", name);
         try {
-            AdqlServiceBean bean = new AdqlServiceBean(
+            final AdqlServiceBean bean = new AdqlServiceBean(
                 womble().services().create(
                     name
                     )
@@ -345,7 +335,7 @@ extends AbstractController
                     bean
                     ),
                 HttpStatus.CREATED
-                ); 
+                );
             }
         catch (final Exception ouch)
             {

@@ -21,7 +21,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 
 /**
- * A service instance.
+ * Public interface for an ADQL service.
  *
  */
 public interface AdqlService

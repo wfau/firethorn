@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.common.entity ;
 
 import java.io.Serializable;
-import java.net.URI;
 
 /**
  * Generic implementation of the Identifier interface.

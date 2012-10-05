@@ -24,7 +24,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 
 /**
- * Public interface for a table.
+ * Public interface for a JDBC table.
  *
  */
 public interface JdbcTable

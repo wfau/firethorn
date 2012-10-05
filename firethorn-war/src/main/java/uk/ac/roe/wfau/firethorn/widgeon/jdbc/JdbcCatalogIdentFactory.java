@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- *
+ * Ident factory for <code>JdbcCatalog</code>.
  *
  */
 @Component
@@ -34,7 +34,7 @@ implements JdbcCatalog.IdentFactory
     {
     /**
      * The type URI for this type.
-     * 
+     *
      */
     public static final URI TYPE_URI = URI.create(
         "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-catalog-1.0.json"
@@ -42,18 +42,18 @@ implements JdbcCatalog.IdentFactory
 
     /**
      * The URI path for individual catalogs.
-     * 
+     *
      */
     public static final String CATALOG_PATH = "/jdbc/catalog/" + IDENT_TOKEN ;
 
     /**
      * The URI path for catalog schemas.
-     * 
+     *
      */
     public static final String SCHEMAS_PATH = CATALOG_PATH + "/schemas" ;
-    
+
     @Override
-    public String link(JdbcCatalog entity)
+    public String link(final JdbcCatalog entity)
         {
         return link(
             CATALOG_PATH,

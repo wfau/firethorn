@@ -24,8 +24,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
  *
- * @deprecated
  */
+@Deprecated
 public interface UriBuilder
     {
 
@@ -33,24 +33,24 @@ public interface UriBuilder
      * Generate a path for an entity.
      *
      */
-    public String str(Entity entity);         
+    public String str(final Entity entity);
 
     /**
      * Generate a path for an entity.
      *
      */
-    public String str(Identifier ident);         
+    public String str(final Identifier ident);
 
     /**
      * Generate a URI for an entity.
      *
      */
-    public URI uri(Entity entity);         
+    public URI uri(final Entity entity);
 
     /**
      * Generate a URI for an entity.
      *
      */
-    public URI uri(Identifier ident);         
-    
+    public URI uri(final Identifier ident);
+
     }

@@ -46,7 +46,6 @@ import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalog;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.Factory;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTable;
 

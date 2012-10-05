@@ -24,36 +24,38 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 
+@Deprecated
 public interface PathBuilder
     {
 
     public interface Path
         {
-    
+
         /**
          * Append a set of paths.
          *
          */
         public abstract void append(final String... paths);
-    
+
         /**
          * Append a path.
          *
          */
         public abstract void append(final String path);
-    
+
         /**
          * Convert to a String.
          *
          */
+        @Override
         public abstract String toString();
-    
+
         /**
          * Convert to a URI.
          *
          */
         public abstract URI toUri();
-    
+
         }
 
     /**
@@ -101,7 +103,7 @@ public interface PathBuilder
      * Create a Spring redirect URI (string).
      *
      */
-    public abstract String redirect(String base, Identifier ident);
+    public abstract String redirect(final String base, final Identifier ident);
 
     /**
      * Create an internal webapp path.

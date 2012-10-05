@@ -21,11 +21,11 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
-@Slf4j
 /**
  * Path implementation.
  *
  */
+@Slf4j
 public class PathImpl
 implements Path
     {
@@ -34,32 +34,32 @@ implements Path
     public static final String IDENT_TOKEN = "{ident}" ;
     public static final String IDENT_REGEX = "\\{ident\\}" ;
 
-    private String base ;
+    private final String base ;
 
-    public PathImpl(StringBuilder builder)
+    public PathImpl(final StringBuilder builder)
         {
         this(
             builder.toString()
             );
         }
 
-    public PathImpl(String string)
+    public PathImpl(final String string)
         {
         log.debug("PathImpl()");
         log.debug(" base [{}]", string);
         this.base = string;
         }
-    
+
     @Override
-    public Path append(String string)
+    public Path append(final String string)
         {
         log.debug("append() [{}][{}]", base, string);
         if (string != null)
             {
-            String trimmed = string.trim();
+            final String trimmed = string.trim();
             if (trimmed.length() > 0)
                 {
-                StringBuilder builder = new StringBuilder(
+                final StringBuilder builder = new StringBuilder(
                     base
                     );
                 if (!trimmed.startsWith(DELIMITER))
@@ -83,10 +83,10 @@ implements Path
         }
 
     @Override
-    public Path append(String... strings)
+    public Path append(final String... strings)
         {
         Path path = this ;
-        for (String string : strings)
+        for (final String string : strings)
             {
             path = path.append(
                 string
@@ -96,7 +96,7 @@ implements Path
         }
 
     @Override
-    public String resolve(Entity entity)
+    public String resolve(final Entity entity)
         {
         return resolve(
             entity.ident()
@@ -104,7 +104,7 @@ implements Path
         }
 
     @Override
-    public String resolve(Identifier ident)
+    public String resolve(final Identifier ident)
         {
         log.debug("resolve() [{}][{}]", base, ident.value());
         return base.replaceFirst(
@@ -115,7 +115,7 @@ implements Path
     @Override
     public String toString()
         {
-        return this.base ; 
+        return this.base ;
         }
 
     }

@@ -28,7 +28,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 
 /**
- * Bean wrapper for an Entity.  
+ * Abstract base class for <code>EntityBean</code> implementations.
  *
  */
 @Slf4j
@@ -38,12 +38,12 @@ implements EntityBean<EntityType>
     /**
      * Our date time formatter.
      * @todo Move this much further back.
-     * 
+     *
      */
-    private DateTimeFormatter formatter = ISODateTimeFormat.dateHourMinuteSecondFraction().withZoneUTC()  ; 
+    private final DateTimeFormatter formatter = ISODateTimeFormat.dateHourMinuteSecondFraction().withZoneUTC()  ;
 
-    private EntityType entity ;
-    private URI type ;
+    private final EntityType entity ;
+    private final URI type ;
 
     /**
      * Public constructor.
@@ -51,7 +51,7 @@ implements EntityBean<EntityType>
      * @param entity
      *
      */
-    public AbstractEntityBean(URI type, EntityType entity)
+    public AbstractEntityBean(final URI type, final EntityType entity)
         {
         log.debug("AbstractEntityBean [{}][{}]", type, entity.ident().value());
         this.type = type ;
@@ -72,31 +72,35 @@ implements EntityBean<EntityType>
                 entity.link()
                 );
             }
-        catch (URISyntaxException ouch)
+        catch (final URISyntaxException ouch)
             {
             throw new RuntimeException(
                 ouch
                 );
-            }        
+            }
         }
 
+    @Override
     public URI getType()
         {
         return this.type;
         }
 
+    @Override
     public String getName()
         {
         return entity.name();
         }
 
+    @Override
     public String getCreated()
         {
         return formatter.print(
             entity.created()
             );
         }
-    
+
+    @Override
     public String getModified()
         {
         return formatter.print(

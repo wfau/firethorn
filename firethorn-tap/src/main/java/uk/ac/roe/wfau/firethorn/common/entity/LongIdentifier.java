@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.common.entity ;
 
-import java.net.URI;
-
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierFormatException ;
 
 /**

@@ -58,7 +58,7 @@
 
                 <value>uk.ac.roe.wfau.firethorn.identity.IdentityEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.mallard.JobEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.mallard.AdqlJob</value>
                 <value>uk.ac.roe.wfau.firethorn.mallard.AdqlServiceEntity</value>
 
                 <value>uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceEntity</value>

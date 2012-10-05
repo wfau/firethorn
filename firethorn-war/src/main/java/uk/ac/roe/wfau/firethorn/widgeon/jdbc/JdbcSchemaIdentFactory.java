@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- *
+ * Ident factory for <code>JdbcSchema</code>.
  *
  */
 @Component
@@ -34,7 +34,7 @@ implements JdbcSchema.IdentFactory
     {
     /**
      * The type URI for this type.
-     * 
+     *
      */
     public static final URI TYPE_URI = URI.create(
         "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json"
@@ -42,18 +42,18 @@ implements JdbcSchema.IdentFactory
 
     /**
      * The URI path for individual schema.
-     * 
+     *
      */
     public static final String SCHEMA_PATH = "/jdbc/schema/" + IDENT_TOKEN ;
 
     /**
      * The URI path for schema tables.
-     * 
+     *
      */
     public static final String TABLES_PATH = SCHEMA_PATH + "/tables" ;
 
     @Override
-    public String link(JdbcSchema entity)
+    public String link(final JdbcSchema entity)
         {
         return link(
             SCHEMA_PATH,

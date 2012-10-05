@@ -33,7 +33,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
- * Spring MVC controller for JdbcCatalogs.
+ * Spring MVC controller for <code>JdbcCatalog</code>.
  *
  */
 @Slf4j
@@ -88,7 +88,7 @@ public class JdbcCatalogController
                     )
                 );
             }
-        catch (IdentifierNotFoundException ouch)
+        catch (final IdentifierNotFoundException ouch)
             {
             log.debug("Unable to find Catalog [{}]", ident);
             return null ;
@@ -97,7 +97,7 @@ public class JdbcCatalogController
 
     /**
      * Wrap the JdbcCatalog as a bean.
-     * 
+     *
      */
     @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
     public JdbcCatalogBean bean(
@@ -112,7 +112,7 @@ public class JdbcCatalogController
 
     /**
      * Wrap the entity as a bean.
-     * 
+     *
     @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
     public JdbcCatalogBean bean(
         @PathVariable("ident")

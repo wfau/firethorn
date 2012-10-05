@@ -37,7 +37,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
- * Spring MVC controller for schema tables.
+ * Spring MVC controller for <code>JdbcSchema</code> tables.
  *
  */
 @Slf4j
@@ -65,19 +65,19 @@ extends AbstractController
 
     /**
      * URL path for the select method.
-     * 
+     *
      */
     public static final String SELECT_PATH = "select" ;
 
     /**
      * URL path for the search method.
-     * 
+     *
      */
     public static final String SEARCH_PATH = "search" ;
 
     /**
      * URL path for the create method.
-     * 
+     *
      */
     public static final String CREATE_PATH = "create" ;
 
@@ -128,7 +128,7 @@ extends AbstractController
                     )
                 );
             }
-        catch (IdentifierNotFoundException e)
+        catch (final IdentifierNotFoundException e)
             {
             log.error("Unable to locate schema [{}]", ident);
             return null ;
@@ -137,7 +137,7 @@ extends AbstractController
 
     /**
      * Select all.
-     * 
+     *
      */
     public JdbcTableBeanIter select(
         @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
@@ -214,12 +214,12 @@ extends AbstractController
 
     /**
      * Select by name.
-     * 
+     *
      */
     public JdbcTableBean select(
         @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
         final JdbcSchema schema,
-        String name
+        final String name
         ){
         log.debug("select(String) [{}]", name);
         return new JdbcTableBean(
@@ -228,7 +228,7 @@ extends AbstractController
                 )
             );
         }
-    
+
     /**
      * HTML request to select by name.
      *
@@ -281,12 +281,12 @@ extends AbstractController
 
     /**
      * Search by text.
-     * 
+     *
      */
     public JdbcTableBeanIter search(
         @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
         final JdbcSchema schema,
-        String text
+        final String text
         ){
         log.debug("search(String) [{}]", text);
         return new JdbcTableBeanIter(
@@ -295,7 +295,7 @@ extends AbstractController
                 )
             );
         }
-    
+
     /**
      * HTML GET request for the search form.
      *
@@ -345,7 +345,7 @@ extends AbstractController
 
     /**
      * JSON request to search by text.
-     *  
+     *
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
@@ -418,7 +418,7 @@ extends AbstractController
                     )
                 ),
             HttpStatus.SEE_OTHER
-            ); 
+            );
         }
 
     /**
@@ -434,7 +434,7 @@ extends AbstractController
         final ModelAndView model
         ){
         log.debug("jsonCreate(String) [{}]", name);
-        JdbcTableBean table = create(
+        final JdbcTableBean table = create(
             schema,
             name
             );
@@ -444,6 +444,6 @@ extends AbstractController
                 table
                 ),
             HttpStatus.CREATED
-            ); 
+            );
         }
     }

@@ -28,8 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  *
- * @deprecated
  */
+@Deprecated
 @Slf4j
 public class HttpUriBuilder
     extends AbstractUriBuilder
@@ -37,17 +37,17 @@ public class HttpUriBuilder
 
     /**
      * Choose a URI based on a base URI and a HttpRequest.
-     * If the baseURI is null, then a new URI is generated form the HttpRequest properties.   
+     * If the baseURI is null, then a new URI is generated form the HttpRequest properties.
 
      * @param request
      *      The HttpRequest.
      * @param base
      *      The base URI.
      * @return
-     *      Either the base URI or a new URI generated from the HttpRequest.  
+     *      Either the base URI or a new URI generated from the HttpRequest.
      *
      */
-    public static URI choose(HttpServletRequest request, URI base)
+    public static URI choose(final HttpServletRequest request, final URI base)
         {
         log.debug("choose() [{}][{}]", request.getRequestURL(), base);
         if (base != null)
@@ -62,10 +62,10 @@ public class HttpUriBuilder
  * Base URI is "scheme:host:port/"
  * Path is "/context/servlet/" plus "path"
  * *then* glue them back together ...
- *         
+ *
  */
-        
-        
+
+
             /*
             Path path = new PathImpl(
                 request.getContextPath()
@@ -73,12 +73,12 @@ public class HttpUriBuilder
                     request.getServletPath()
                     );
              */
-            Path path = new PathImpl(
+            final Path path = new PathImpl(
                 request.getContextPath()
                 ).append(
                     "/"
                     );
-            
+
             try {
                 URI uri ;
                 if (request.getLocalPort() == 80)
@@ -100,12 +100,12 @@ public class HttpUriBuilder
                 log.debug("choose() [{}][{}]", request.getRequestURL(), uri);
                 return uri ;
                 }
-            catch (MalformedURLException ouch)
+            catch (final MalformedURLException ouch)
                 {
                 log.error("Failed to process request URI [{}]", ouch);
                 return null ;
                 }
-            catch (URISyntaxException ouch)
+            catch (final URISyntaxException ouch)
                 {
                 log.error("Failed to process request URI [{}]", ouch);
                 return null ;
@@ -119,7 +119,7 @@ public class HttpUriBuilder
      * @param path
      *
      */
-    public HttpUriBuilder(HttpServletRequest request, URI base, Path path)
+    public HttpUriBuilder(final HttpServletRequest request, final URI base, final Path path)
         {
         super(
             choose(

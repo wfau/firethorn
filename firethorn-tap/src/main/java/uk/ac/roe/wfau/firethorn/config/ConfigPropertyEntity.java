@@ -35,11 +35,8 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.EntityNotFoundException;
-import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  * ConfigProperty implementation.
@@ -75,7 +72,7 @@ implements ConfigProperty
      *
      */
     public static final String DB_TABLE_NAME = "config_property" ;
-    
+
     /*
      * Our database mapping values.
      *
@@ -83,7 +80,7 @@ implements ConfigProperty
     public static final String DB_KEY_COL   = "key"   ;
     public static final String DB_TYPE_COL  = "type"  ;
     public static final String DB_VALUE_COL = "value" ;
-    
+
     /**
      * Our Entity Factory implementation.
      *
@@ -102,7 +99,7 @@ implements ConfigProperty
 
         @Override
         @SelectEntityMethod
-        public ConfigProperty select(URI key)
+        public ConfigProperty select(final URI key)
             {
             return super.first(
                 super.query(
@@ -113,12 +110,12 @@ implements ConfigProperty
                         )
                 );
             }
-        
+
         @Override
         @CreateEntityMethod
-        public ConfigProperty create(URI key, String name, String value)
+        public ConfigProperty create(final URI key, final String name, final String value)
             {
-            ConfigProperty property = this.select(
+            final ConfigProperty property = this.select(
                 key
                 );
             if (property != null)
@@ -145,7 +142,7 @@ implements ConfigProperty
             return this.identifiers;
             }
         }
-    
+
     /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
@@ -166,7 +163,7 @@ implements ConfigProperty
         this.key   = key   ;
         this.value = value ;
         }
-    
+
     /**
      * The property key.
      *
@@ -211,7 +208,7 @@ implements ConfigProperty
                 this.value
                 );
             }
-        catch (URISyntaxException ouch)
+        catch (final URISyntaxException ouch)
             {
             log.error("Failed to convert config property to URI [{}][{}]", this.value, ouch);
             return null ;

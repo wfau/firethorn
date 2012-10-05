@@ -24,7 +24,6 @@ import org.hibernate.HibernateException;
 
 import org.springframework.dao.DataAccessException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
@@ -176,7 +175,7 @@ public interface Womble
             public JdbcSchema.Factory  schemas();
             public JdbcTable.Factory   tables();
             public JdbcColumn.Factory  columns();
-        
+
             }
 
         public JdbcFactories jdbc();
@@ -191,7 +190,7 @@ public interface Womble
             }
 
         public AdqlFactories adql();
-        
+
         }
 
     /**

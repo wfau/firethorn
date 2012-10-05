@@ -22,7 +22,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 
 /**
- * Public interface for column metadata.
+ * Public interface for an ADQL column.
  *
  */
 public interface AdqlColumn

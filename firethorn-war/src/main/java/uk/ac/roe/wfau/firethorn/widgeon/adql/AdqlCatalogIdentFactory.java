@@ -19,13 +19,12 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTable;
 
 /**
- *
- *
+ * Ident factory for <code>AdqlCatalog</code>.
+ * TODO
+ * 
  */
 @Component
 public class AdqlCatalogIdentFactory
@@ -33,7 +32,7 @@ extends WebappIdentFactory<AdqlCatalog>
 implements AdqlCatalog.IdentFactory
     {
     @Override
-    public String link(AdqlCatalog entity)
+    public String link(final AdqlCatalog entity)
         {
         return null;
         }

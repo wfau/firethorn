@@ -52,18 +52,18 @@ extends TestBase
                 "test property value"
                 )
             );
-        
+
         }
 
     @Test
     public void testSelect()
     throws Exception
         {
-        URI key = this.unique(
+        final URI key = this.unique(
             URI.create(
                 "urn:test-property"
                 )
-            ); 
+            );
         assertNotNull(
             womble().config().create(
                 key,
@@ -82,11 +82,11 @@ extends TestBase
     public void testSelectName()
     throws Exception
         {
-        URI key = this.unique(
+        final URI key = this.unique(
             URI.create(
                 "urn:test-property"
                 )
-            ); 
+            );
         assertNotNull(
             womble().config().create(
                 key,
@@ -111,11 +111,11 @@ extends TestBase
     public void testSelectValue()
     throws Exception
         {
-        URI key = this.unique(
+        final URI key = this.unique(
             URI.create(
                 "urn:test-property"
                 )
-            ); 
+            );
         assertNotNull(
             womble().config().create(
                 key,

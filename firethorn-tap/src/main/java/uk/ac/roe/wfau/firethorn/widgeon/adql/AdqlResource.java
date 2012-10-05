@@ -22,7 +22,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 
 /**
- * Public interface for a ADQL view of a DataResource.
+ * Public interface for an ADQL resource.
  *
  */
 public interface AdqlResource

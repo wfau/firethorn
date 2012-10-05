@@ -26,9 +26,8 @@ import javax.sql.DataSource;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 
-
 /**
- *
+  * Public interface for a JDBC resource.
  *
  */
 public interface JdbcResource
@@ -43,7 +42,7 @@ extends BaseResource
     extends Entity.IdentFactory<JdbcResource>
         {
         }
-    
+
     /**
      * Factory interface for accessing resources.
      *

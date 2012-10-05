@@ -33,7 +33,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
- * Spring MVC controller for AdqlServices.
+ * Spring MVC controller for <code>AdqlService</code>.
  *
  */
 @Slf4j
@@ -73,7 +73,7 @@ extends AbstractController
 
     /**
      * HTML GET request for a service.
-     * @todo Wrap the entity as a bean (with a URI) 
+     * @todo Wrap the entity as a bean (with a URI)
      *
      */
 	@RequestMapping(method=RequestMethod.GET)

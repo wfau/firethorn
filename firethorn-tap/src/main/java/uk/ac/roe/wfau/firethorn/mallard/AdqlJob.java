@@ -20,7 +20,7 @@ package uk.ac.roe.wfau.firethorn.mallard;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 
 /**
- * An ADQL query job.
+ * Public interface for an ADQL job.
  *
  */
 public interface AdqlJob

@@ -19,8 +19,6 @@ package uk.ac.roe.wfau.firethorn.webapp.control;
 
 import java.net.URI;
 
-import javax.servlet.http.HttpServletRequest;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +26,10 @@ import org.springframework.stereotype.Controller;
 
 import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
-import uk.ac.roe.wfau.firethorn.webapp.paths.HttpUriBuilder;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
 
 /**
- * Base class for our MVC controllers.
+ * Abstract base class for Spring MVC controllers.
  *
  */
 @Slf4j
@@ -42,13 +38,13 @@ public abstract class AbstractController
     {
 
     /**
-     * HTTP content type for JSON. 
+     * HTTP content type for JSON.
      */
     public static final String JSON_MAPPING = "application/json" ;
-    
+
     /**
      * The base URI config property key.
-     * 
+     *
      */
     public static final URI BASE_URI_CONFIG_KEY = URI.create(
         "urn:firethorn.system.base.uri"
@@ -95,7 +91,7 @@ public abstract class AbstractController
             {
             //
             // TODO wrap this into a config service API.
-            ConfigProperty prop = womble.config().select(
+            final ConfigProperty prop = womble.config().select(
                 BASE_URI_CONFIG_KEY
                 );
             if (prop != null)

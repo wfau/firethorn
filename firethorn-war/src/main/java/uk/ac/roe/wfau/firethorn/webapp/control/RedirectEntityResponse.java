@@ -23,14 +23,15 @@ import org.springframework.http.ResponseEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 
 /**
- * This doesn't work - the Spring dispatcher doesn't recognise the response as a ResponseEntity.
- *   
+ * This doesn't work - the Spring dispatcher doesn't recognise the method result as a ResponseEntity.
+ *
  *
  */
+@Deprecated
 public class RedirectEntityResponse<EntityType extends Entity>
 extends ResponseEntity<EntityBean<EntityType>>
     {
-    public RedirectEntityResponse(EntityBean<EntityType> bean)
+    public RedirectEntityResponse(final EntityBean<EntityType> bean)
         {
         this(
             HttpStatus.SEE_OTHER,
@@ -38,7 +39,7 @@ extends ResponseEntity<EntityBean<EntityType>>
             );
         }
 
-    public RedirectEntityResponse(HttpStatus status, EntityBean<EntityType> bean)
+    public RedirectEntityResponse(final HttpStatus status, final EntityBean<EntityType> bean)
         {
         super(
             bean,

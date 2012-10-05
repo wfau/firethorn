@@ -30,7 +30,7 @@ extends RuntimeException
     {
 
     /**
-     * 
+     *
      *
      */
     private static final long serialVersionUID = -5574299798502620244L;

@@ -24,7 +24,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 
 /**
- * Public interface for a catalog.
+ * Public interface for a JDBC catalog.
  *
  */
 public interface JdbcCatalog

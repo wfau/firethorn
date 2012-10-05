@@ -18,9 +18,6 @@
 package uk.ac.roe.wfau.firethorn.webapp.control ;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpHeaders;
@@ -36,9 +33,9 @@ extends HttpHeaders
 
     /**
      * Public constructor.
-     * 
+     *
      */
-    public RedirectHeader(EntityBean<?> bean)
+    public RedirectHeader(final EntityBean<?> bean)
         {
         this(
             bean.getIdent()
@@ -47,7 +44,7 @@ extends HttpHeaders
 
     /**
      * Public constructor.
-     * 
+     *
      */
     public RedirectHeader(final URI uri)
         {

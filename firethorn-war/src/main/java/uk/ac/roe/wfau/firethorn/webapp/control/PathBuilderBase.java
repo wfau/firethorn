@@ -29,7 +29,6 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier ;
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService ;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource ;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServiceController;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceController;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceIdentFactory;
 
 /**
@@ -38,6 +37,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceIdentFactory;
  *
  */
 @Slf4j
+@Deprecated
 public abstract class PathBuilderBase implements PathBuilder
     {
 

@@ -17,20 +17,13 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import java.net.URI;
-
-import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
-import uk.ac.roe.wfau.firethorn.webapp.paths.UriBuilder;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
- * Bean wrapper for an Entity.  
+ * Bean wrapper for <code>JdbcResource</code>.
  *
  */
-@Slf4j
 public class JdbcResourceBean
 extends AbstractEntityBean<JdbcResource>
 implements EntityBean<JdbcResource>
@@ -39,7 +32,7 @@ implements EntityBean<JdbcResource>
      * Public constructor.
      *
      */
-    public JdbcResourceBean(JdbcResource entity)
+    public JdbcResourceBean(final JdbcResource entity)
         {
         super(
             JdbcResourceIdentFactory.TYPE_URI,

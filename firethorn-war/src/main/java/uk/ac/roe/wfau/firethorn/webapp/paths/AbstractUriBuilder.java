@@ -26,8 +26,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
  *
- * @deprecated
  */
+@Deprecated
 @Slf4j
 public class AbstractUriBuilder
 implements UriBuilder
@@ -38,7 +38,7 @@ implements UriBuilder
      *
      */
     protected URI  base ;
-    
+
     /**
      * The base URI for this builder.
      * @return
@@ -55,7 +55,7 @@ implements UriBuilder
      *
      */
     protected Path path ;
-    
+
     /**
      * The webapp Path for this builder.
      * @return
@@ -75,15 +75,15 @@ implements UriBuilder
      *      The webapp Path for this builder.
      *
      */
-    public AbstractUriBuilder(URI base, Path path)
+    public AbstractUriBuilder(final URI base, final Path path)
         {
         log.debug("AbstractUriBuilder() [{}][{}]", base, path);
         this.base = base ;
         this.path = path ;
         }
-   
+
     @Override
-    public URI uri(Entity entity)
+    public URI uri(final Entity entity)
         {
         return this.uri(
             entity.ident()
@@ -91,7 +91,7 @@ implements UriBuilder
         }
 
     @Override
-    public URI uri(Identifier ident)
+    public URI uri(final Identifier ident)
         {
         return base.resolve(
             path.resolve(
@@ -101,7 +101,7 @@ implements UriBuilder
         }
 
     @Override
-    public String str(Entity entity)
+    public String str(final Entity entity)
         {
         return str(
             entity.ident()
@@ -109,7 +109,7 @@ implements UriBuilder
         }
 
     @Override
-    public String str(Identifier ident)
+    public String str(final Identifier ident)
         {
         return path.resolve(
             ident
