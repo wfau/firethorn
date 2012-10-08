@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.common.entity ;
 
-import java.util.Date;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -27,13 +25,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.common.womble.Womble;
@@ -132,7 +129,7 @@ implements Entity
         {
         super();
         this.owner = owner;
-        this.created = new Date();
+        this.created = new DateTime();
         this.name(
             name
             );
@@ -256,13 +253,10 @@ implements Entity
         nullable = false,
         updatable = false
         )
-    @Temporal(
-        TemporalType.TIMESTAMP
-        )
-    private Date created ;
+    private DateTime created ;
 
     @Override
-    public Date created()
+    public DateTime created()
         {
         return this.created ;
         }
@@ -278,13 +272,10 @@ implements Entity
         nullable = false,
         updatable = false
         )
-    @Temporal(
-        TemporalType.TIMESTAMP
-        )
-    private Date modified ;
+    private DateTime modified ;
 
     @Override
-    public Date modified()
+    public DateTime modified()
         {
         return this.modified ;
         }

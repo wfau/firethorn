@@ -58,7 +58,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        final DataService service = womble().services().select(
+        final AdqlService service = womble().services().select(
             ident[0]
             );
         assertFalse(
@@ -89,7 +89,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        final DataService service = womble().services().select(
+        final AdqlService service = womble().services().select(
             ident[0]
             );
         assertFalse(
@@ -122,7 +122,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        DataService mallard = womble().mallards().select(
+        AdqlService mallard = womble().mallards().select(
             ident[0]
             );
         assertFalse(
@@ -143,7 +143,7 @@ extends TestBase
         assertNotNull(
             ident[1]
             );
-        DataService mallard = womble().mallards().select(
+        AdqlService mallard = womble().mallards().select(
             ident[1]
             );
         assertFalse(
@@ -177,7 +177,7 @@ extends TestBase
         assertNotNull(
             ident[1]
             );
-        DataService mallard = womble().mallards().select(
+        AdqlService mallard = womble().mallards().select(
             ident[1]
             );
         assertFalse(

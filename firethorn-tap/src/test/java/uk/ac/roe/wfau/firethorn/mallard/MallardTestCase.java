@@ -35,14 +35,14 @@ public class MallardTestCase
 extends TestBase
     {
 
-    private DataService alpha ;
-    public  DataService alpha()
+    private AdqlService alpha ;
+    public  AdqlService alpha()
         {
         return this.alpha ;
         }
 
-    private DataService beta ;
-    public  DataService beta()
+    private AdqlService beta ;
+    public  AdqlService beta()
         {
         return this.beta ;
         }
@@ -119,7 +119,7 @@ extends TestBase
             );
 
         alpha().resources().insert(
-            womble().resources().jdbc().create(
+            womble().resources().jdbc().resources().create(
                 this.unique(
                     "widgeon-A"
                     )
@@ -147,7 +147,7 @@ extends TestBase
             );
 
         alpha().resources().insert(
-            womble().resources().jdbc().create(
+            womble().resources().jdbc().resources().create(
                 this.unique(
                     "widgeon-A"
                     )
@@ -177,7 +177,7 @@ extends TestBase
     throws Exception
         {
         alpha().resources().insert(
-            womble().resources().jdbc().create(
+            womble().resources().jdbc().resources().create(
                 this.unique(
                     "widgeon-A"
                     )
@@ -201,7 +201,7 @@ extends TestBase
     throws Exception
         {
         alpha().resources().insert(
-            womble().resources().jdbc().create(
+            womble().resources().jdbc().resources().create(
                 this.unique(
                     "widgeon-A"
                     )
@@ -210,7 +210,7 @@ extends TestBase
                     )
             );
         alpha().resources().insert(
-            womble().resources().jdbc().create(
+            womble().resources().jdbc().resources().create(
                 this.unique(
                     "widgeon-B"
                     )
@@ -232,7 +232,7 @@ extends TestBase
     public void test005()
     throws Exception
         {
-        final BaseResource base = womble().resources().jdbc().create(
+        final BaseResource base = womble().resources().jdbc().resources().create(
             this.unique(
                 "widgeon-A"
                 )

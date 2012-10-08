@@ -44,7 +44,7 @@ extends TestBase
     public void before()
     throws Exception
         {
-        base = womble().resources().jdbc().create(
+        base = womble().resources().jdbc().resources().create(
             this.unique(
                 "base"
                 )

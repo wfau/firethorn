@@ -32,7 +32,7 @@ extends EntityNotFoundException
     {
 
     /**
-     * 
+     *
      *
      */
     private static final long serialVersionUID = 2020955869837050984L;

@@ -17,10 +17,13 @@
  */
 package uk.ac.roe.wfau.firethorn.common.entity ;
 
-import java.util.Date;
+import org.joda.time.DateTime;
 
+import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.*;
+
+
 
 /**
  * Common interface for a persistent Entity.
@@ -30,10 +33,10 @@ public interface Entity
     {
 
     /**
-     * Common interface for an Entity factory.
+     * Common interface for an Identifier factory.
      *
      */
-    public interface Factory<EntityType extends Entity>
+    public interface IdentFactory<EntityType extends Entity>
         {
         /**
          * Create an Identifier from a String.
@@ -41,6 +44,27 @@ public interface Entity
          */
         public Identifier ident(final String string);
 
+        /**
+         * Create an Entity URI (as a string).
+         *
+        public String link(final Identifier ident);
+         */
+
+        /**
+         * Create an Entity URI (as a string).
+         *
+         */
+        public String link(final EntityType entity);
+
+        }
+
+    /**
+     * Common interface for an Entity factory.
+     *
+     */
+    public interface Factory<EntityType extends Entity>
+    extends IdentFactory<EntityType>
+        {
         /**
          * Select a specific Entity by Identifier.
          *
@@ -51,10 +75,16 @@ public interface Entity
         }
 
     /**
-     * The unique Entity Identifier.
+     * The Entity Identifier.
      *
      */
     public Identifier ident();
+
+    /**
+     * The Entity URI (as a string).
+     *
+     */
+    public String link();
 
     /**
      * Get the Entity name.
@@ -79,13 +109,13 @@ public interface Entity
      * The date/time when the Entity was created.
      *
      */
-    public Date created();
+    public DateTime created();
 
     /**
      * The date/time when the Entity was last modified.
      *
      */
-    public Date modified();
+    public DateTime modified();
 
     /**
      * Update (store) this Entity in the database.

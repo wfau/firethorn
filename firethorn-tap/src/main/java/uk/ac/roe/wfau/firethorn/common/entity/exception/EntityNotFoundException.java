@@ -30,7 +30,7 @@ extends Exception
     {
 
     /**
-     * 
+     *
      *
      */
     private static final long serialVersionUID = 2424668742190703687L;

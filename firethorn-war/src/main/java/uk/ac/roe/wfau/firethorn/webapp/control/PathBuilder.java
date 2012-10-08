@@ -21,39 +21,41 @@ import java.net.URI;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.mallard.DataService;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 
+@Deprecated
 public interface PathBuilder
     {
 
     public interface Path
         {
-    
+
         /**
          * Append a set of paths.
          *
          */
         public abstract void append(final String... paths);
-    
+
         /**
          * Append a path.
          *
          */
         public abstract void append(final String path);
-    
+
         /**
          * Convert to a String.
          *
          */
+        @Override
         public abstract String toString();
-    
+
         /**
          * Convert to a URI.
          *
          */
         public abstract URI toUri();
-    
+
         }
 
     /**
@@ -101,7 +103,7 @@ public interface PathBuilder
      * Create a Spring redirect URI (string).
      *
      */
-    public abstract String redirect(String base, Identifier ident);
+    public abstract String redirect(final String base, final Identifier ident);
 
     /**
      * Create an internal webapp path.
@@ -158,10 +160,10 @@ public interface PathBuilder
     public abstract URI location(final String base, final Entity entity);
 
     /**
-     * Create a link for a DataService.
+     * Create a link for a AdqlService.
      *
      */
-    public abstract Path link(final DataService target);
+    public abstract Path link(final AdqlService target);
 
     /**
      * Create a link for a DataResource.

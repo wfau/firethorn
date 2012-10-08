@@ -24,7 +24,10 @@ import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalog;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTable;
 
 /**
  *
@@ -37,7 +40,7 @@ extends TestBase
     @Test
     public void simple()
         {
-        final BaseResource one = womble().resources().jdbc().create(
+        final BaseResource one = womble().resources().jdbc().resources().create(
             "albert"
             );
         assertNotNull(
@@ -48,7 +51,7 @@ extends TestBase
             );
         log.debug("One [{}][{}]", one.ident(), one.name());
 
-        final BaseResource two = womble().resources().jdbc().create(
+        final BaseResource two = womble().resources().jdbc().resources().create(
             "albert"
             );
         assertNotNull(
@@ -59,7 +62,7 @@ extends TestBase
             );
         log.debug("Two [{}][{}]", two.ident(), two.name());
 
-        for (final BaseResource widgeon : womble().resources().jdbc().select())
+        for (final BaseResource widgeon : womble().resources().jdbc().resources().select())
             {
             log.debug("DataResource [{}]", widgeon);
             }
@@ -70,17 +73,17 @@ extends TestBase
     public void nested()
         {
         nested(
-            womble().resources().jdbc().create(
+            womble().resources().jdbc().resources().create(
                 "widgeon-0001"
                 )
             );
         nested(
-            womble().resources().jdbc().create(
+            womble().resources().jdbc().resources().create(
                 "widgeon-0002"
                 )
             );
 
-        for (final JdbcResource widgeon : womble().resources().jdbc().select())
+        for (final JdbcResource widgeon : womble().resources().jdbc().resources().select())
             {
             display(
                 widgeon
@@ -102,7 +105,7 @@ extends TestBase
             );
         }
 
-    public void nested(final JdbcResource.JdbcCatalog catalog)
+    public void nested(final JdbcCatalog catalog)
         {
         nested(
             catalog.schemas().create(
@@ -116,7 +119,7 @@ extends TestBase
             );
         }
 
-    public void nested(final JdbcResource.JdbcSchema schema)
+    public void nested(final JdbcSchema schema)
         {
         nested(
             schema.tables().create(
@@ -130,7 +133,7 @@ extends TestBase
             );
         }
 
-    public void nested(final JdbcResource.JdbcTable table)
+    public void nested(final JdbcTable table)
         {
         table.columns().create(
             "column-0001"

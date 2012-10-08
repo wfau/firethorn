@@ -5,9 +5,12 @@
 <%@ page
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
-    import="uk.ac.roe.wfau.firethorn.webapp.mallard.DataServiceController"
-    import="uk.ac.roe.wfau.firethorn.webapp.mallard.DataServicesController"
-    import="uk.ac.roe.wfau.firethorn.mallard.DataService"
+
+    import="uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServiceController"
+    import="uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServicesController"
+
+    import="uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServiceBean"
+
     session="true"
 %><%
 
@@ -15,37 +18,46 @@ PathBuilder paths = new ServletPathBuilder(
     request
     );
 
-DataService service = (DataService) request.getAttribute(
-    DataServiceController.SERVICE_ENTITY
+AdqlServiceBean service = (AdqlServiceBean) request.getAttribute(
+    AdqlServiceController.TARGET_ENTITY
     ) ;
 
 %>
 <html>
     <head>
 	    <title></title>
-        <link href='/css/page.css' rel='stylesheet' type='text/css'/>
+        <link href='<%= paths.file("/css/page.css") %>' rel='stylesheet' type='text/css'/>
     </head>
     <body>
         <div>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.SEARCH_PATH) %>'>search</a>]</span>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.SELECT_PATH) %>'>select</a>]</span>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.CREATE_PATH) %>'>create</a>]</span>
+            <span>[<a href='<%= paths.path(AdqlServicesController.CONTROLLER_PATH, AdqlServicesController.SEARCH_PATH) %>'>search</a>]</span>
+            <span>[<a href='<%= paths.path(AdqlServicesController.CONTROLLER_PATH, AdqlServicesController.SELECT_PATH) %>'>select</a>]</span>
+            <span>[<a href='<%= paths.path(AdqlServicesController.CONTROLLER_PATH, AdqlServicesController.CREATE_PATH) %>'>create</a>]</span>
         </div>
         <div>
-            ADQL TAP Service
+            ADQL (TAP) Service
             <div>
+                <table border='1'>
                 <table border='1'>
                     <tr>
                         <td>Ident</td>
-                        <td><%= service.ident() %></td>
+                        <td><%= service.getIdent() %></td>
                     </tr>
                     <tr>
                         <td>Name</td>
-                        <td><a href='<%= paths.link(service) %>'><%= service.name() %></a></td>
+                        <td><a href='<%= service.getIdent() %>'><%= service.getName() %></a></td>
                     </tr>
                     <tr>
-                        <td>Owner</td>
-                        <td><%= service.owner().name() %></td>
+                        <td>Created</td>
+                        <td><%= service.getCreated() %></td>
+                    </tr>
+                    <tr>
+                        <td>Modified</td>
+                        <td><%= service.getModified() %></td>
+                    </tr>
+                    <tr>
+                        <td>Class</td>
+                        <td><%= service.getClass().getName() %></td>
                     </tr>
                 </table>
             </div>

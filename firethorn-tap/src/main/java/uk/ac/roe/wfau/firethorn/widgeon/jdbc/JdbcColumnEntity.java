@@ -42,16 +42,15 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlCatalog;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlCatalog;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource.AdqlSchema;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.Diference;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTable;
 
 /**
- * BaseResource.BaseColumn implementation.
+ * Hibernate based <code>JdbcColumn</code> implementation.
  *
  */
 @Slf4j
@@ -76,14 +75,18 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.Diference;
             query = "FROM JdbcColumnEntity WHERE parent = :parent ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "jdbc.column-select-parent-name",
-            query = "FROM JdbcColumnEntity WHERE parent = :parent AND name = :name ORDER BY ident desc"
+            name  = "jdbc.column-select-parent.name",
+            query = "FROM JdbcColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "jdbc.column-search-parent.text",
+            query = "FROM JdbcColumnEntity WHERE ((parent = :parent) AND (name = :text)) ORDER BY ident desc"
             )
         }
     )
 public class JdbcColumnEntity
 extends ResourceStatusEntity
-implements JdbcResource.JdbcColumn
+implements JdbcColumn
     {
 
     /**
@@ -104,8 +107,8 @@ implements JdbcResource.JdbcColumn
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<JdbcResource.JdbcColumn>
-    implements JdbcResource.JdbcColumn.Factory
+    extends AbstractFactory<JdbcColumn>
+    implements JdbcColumn.Factory
         {
 
         @Override
@@ -119,12 +122,12 @@ implements JdbcResource.JdbcColumn
          *
          */
         @CascadeEntityMethod
-        protected JdbcResource.JdbcColumn insert(final JdbcColumnEntity entity)
+        protected JdbcColumn insert(final JdbcColumnEntity entity)
             {
             super.insert(
                 entity
                 );
-            for (final AdqlResource.AdqlTable view : entity.parent().views().select())
+            for (final AdqlTable view : entity.parent().views().select())
                 {
                 this.views().cascade(
                     view,
@@ -136,7 +139,7 @@ implements JdbcResource.JdbcColumn
 
         @Override
         @CreateEntityMethod
-        public JdbcResource.JdbcColumn create(final JdbcResource.JdbcTable parent, final String name)
+        public JdbcColumn create(final JdbcTable parent, final String name)
             {
             return this.insert(
                 new JdbcColumnEntity(
@@ -148,7 +151,7 @@ implements JdbcResource.JdbcColumn
 
         @Override
         @SelectEntityMethod
-        public Iterable<JdbcResource.JdbcColumn> select(final JdbcResource.JdbcTable parent)
+        public Iterable<JdbcColumn> select(final JdbcTable parent)
             {
             return super.iterable(
                 super.query(
@@ -162,31 +165,11 @@ implements JdbcResource.JdbcColumn
 
         @Override
         @SelectEntityMethod
-        public JdbcResource.JdbcColumn select(final JdbcResource.JdbcTable parent, final String name)
-        throws NameNotFoundException
-            {
-            final JdbcResource.JdbcColumn result = this.search(
-                parent,
-                name
-                );
-            if (result != null)
-                {
-                return result ;
-                }
-            else {
-                throw new NameNotFoundException(
-                    name
-                    );
-                }
-            }
-
-        @Override
-        @SelectEntityMethod
-        public JdbcResource.JdbcColumn search(final JdbcResource.JdbcTable parent, final String name)
+        public JdbcColumn select(final JdbcTable parent, final String name)
             {
             return super.first(
                 super.query(
-                    "jdbc.column-select-parent-name"
+                    "jdbc.column-select-parent.name"
                     ).setEntity(
                         "parent",
                         parent
@@ -197,29 +180,53 @@ implements JdbcResource.JdbcColumn
                 );
             }
 
-        /**
-         * Our Autowired view factory.
-         *
-         */
+        @Override
+        @SelectEntityMethod
+        public Iterable<JdbcColumn> search(final JdbcTable parent, final String text)
+            {
+            return super.iterable(
+                super.query(
+                    "jdbc.column-search-parent.text"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "text",
+                        searchParam(
+                            text
+                            )
+                        )
+                );
+            }
+
         @Autowired
-        protected AdqlResource.AdqlColumn.Factory views ;
+        protected AdqlColumn.Factory views ;
 
         @Override
-        public AdqlResource.AdqlColumn.Factory views()
+        public AdqlColumn.Factory views()
             {
             return this.views ;
+            }
+
+        @Autowired
+        protected JdbcColumn.IdentFactory identifiers ;
+
+        @Override
+        public JdbcColumn.IdentFactory identifiers()
+            {
+            return identifiers ;
             }
         }
 
     @Override
-    public JdbcResource.JdbcColumn.Views views()
+    public JdbcColumn.Views views()
         {
-        return new JdbcResource.JdbcColumn.Views()
+        return new JdbcColumn.Views()
             {
             @Override
-            public Iterable<AdqlResource.AdqlColumn> select()
+            public Iterable<AdqlColumn> select()
                 {
-                return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().select(
+                return womble().resources().adql().tables().adqlColumns().select(
                     JdbcColumnEntity.this
                     );
                 }
@@ -227,7 +234,7 @@ implements JdbcResource.JdbcColumn
             @Override
             public AdqlColumn search(final AdqlResource parent)
                 {
-                return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().search(
+                return womble().resources().adql().tables().adqlColumns().select(
                     parent,
                     JdbcColumnEntity.this
                     );
@@ -236,7 +243,7 @@ implements JdbcResource.JdbcColumn
             @Override
             public AdqlColumn search(final AdqlCatalog parent)
                 {
-                return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().search(
+                return womble().resources().adql().tables().adqlColumns().select(
                     parent,
                     JdbcColumnEntity.this
                     );
@@ -245,16 +252,16 @@ implements JdbcResource.JdbcColumn
             @Override
             public AdqlColumn search(final AdqlSchema parent)
                 {
-                return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().search(
+                return womble().resources().adql().tables().adqlColumns().select(
                     parent,
                     JdbcColumnEntity.this
                     );
                 }
 
             @Override
-            public AdqlResource.AdqlColumn search(final AdqlResource.AdqlTable parent)
+            public AdqlColumn search(final AdqlTable parent)
                 {
-                return womble().resources().jdbc().views().catalogs().schemas().tables().adqlColumns().search(
+                return womble().resources().adql().tables().adqlColumns().select(
                     parent,
                     JdbcColumnEntity.this
                     );
@@ -276,7 +283,7 @@ implements JdbcResource.JdbcColumn
      * Create a new catalog.
      *
      */
-    protected JdbcColumnEntity(final JdbcResource.JdbcTable parent, final String name)
+    protected JdbcColumnEntity(final JdbcTable parent, final String name)
         {
         super(name);
         log.debug("new([{}]", name);
@@ -297,10 +304,10 @@ implements JdbcResource.JdbcColumn
         nullable = false,
         updatable = false
         )
-    private JdbcResource.JdbcTable parent ;
+    private JdbcTable parent ;
 
     @Override
-    public JdbcResource.JdbcTable parent()
+    public JdbcTable parent()
         {
         return this.parent ;
         }
@@ -324,41 +331,49 @@ implements JdbcResource.JdbcColumn
         }
 
     @Override
-    public JdbcResource.JdbcCatalog catalog()
+    public JdbcCatalog catalog()
         {
         return this.parent.schema().catalog();
         }
 
     @Override
-    public JdbcResource.JdbcSchema schema()
+    public JdbcSchema schema()
         {
         return this.parent.schema();
         }
 
     @Override
-    public JdbcResource.JdbcTable table()
+    public JdbcTable table()
         {
         return this.parent;
         }
 
     @Override
-    public List<JdbcResource.Diference> diff(final boolean push, final boolean pull)
+    public List<JdbcDiference> diff(final boolean push, final boolean pull)
         {
         return diff(
             resource().metadata(),
-            new ArrayList<JdbcResource.Diference>(),
+            new ArrayList<JdbcDiference>(),
             push,
             pull
             );
         }
 
     @Override
-    public List<Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull)
+    public List<JdbcDiference> diff(final DatabaseMetaData metadata, final List<JdbcDiference> results, final boolean push, final boolean pull)
         {
         //
         // Check this column.
         // ....
         return results ;
+        }
+
+    @Override
+    public String link()
+        {
+        return womble().resources().jdbc().catalogs().schemas().tables().columns().link(
+            this
+            );
         }
     }
 

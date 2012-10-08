@@ -142,17 +142,32 @@
         <dependency>
             <groupId>uk.ac.starlink</groupId>
             <artifactId>stil-util</artifactId>
-            <version>3.0.2</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.starlink</groupId>
             <artifactId>stil-table</artifactId>
-            <version>3.0.2</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.starlink</groupId>
             <artifactId>stil-votable</artifactId>
-            <version>3.0.2</version>
+        </dependency>
+
+        <!--+
+            | Joda Time Libraries.
+            | http://joda-time.sourceforge.net/
+            +-->	
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
+
+        <!--+
+            | Jadira Type Libraries.
+            | http://blog.jadira.co.uk/
+            +-->	
+        <dependency>
+            <groupId>org.jadira.usertype</groupId>
+            <artifactId>usertype.core</artifactId>
         </dependency>
 
     </dependencies>

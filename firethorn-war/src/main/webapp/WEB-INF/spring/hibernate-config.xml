@@ -56,10 +56,12 @@
         <property name="annotatedClasses">
             <list>
 
+                <value>uk.ac.roe.wfau.firethorn.config.ConfigPropertyEntity</value>
+
                 <value>uk.ac.roe.wfau.firethorn.identity.IdentityEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.mallard.DataServiceEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.mallard.JobEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.mallard.AdqlServiceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.mallard.AdqlJobEntity</value>
 
                 <value>uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceEntity</value>
 
@@ -75,7 +77,6 @@
                 <value>uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumnEntity</value>
 
-
                 <!--+
                     |
                     +-->
@@ -89,16 +90,17 @@
             +-->
         <property name="hibernateProperties">
             <props>
-                <!--+
-                    | "In most cases Hibernate will be able to choose the correct org.hibernate.dialect.Dialect
-                    | implementation based on the JDBC metadata returned by the JDBC driver."
-                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
-                    +-->
+
                 <!--+
                     | Automatically update the database tables (test only).
                     +-->
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
                 <prop key="hibernate.show_sql">false</prop>
+
+                <!--+
+                    | Jadira usertype registration.
+                    +-->
+                <prop key="jadira.usertype.autoRegisterUserTypes">true</prop>
 
             </props>
         </property>

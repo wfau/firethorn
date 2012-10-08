@@ -38,14 +38,13 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalogEntity;
 
 /**
- * AdqlCatalog implementation.
+ * Hibernate based <code>AdqlCatalog</code> implementation.
  *
  */
 @Slf4j
@@ -87,12 +86,16 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalogEntity;
         @NamedQuery(
             name  = "adql.catalog-select-parent.base",
             query = "FROM AdqlCatalogEntity WHERE ((parent = :parent) AND (base = :base)) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "adql.catalog-search-parent.text",
+            query = "FROM AdqlCatalogEntity WHERE ((parent = :parent) AND (((name IS NOT null) AND (name LIKE :text)) OR ((name IS null) AND (base.name LIKE :text)))) ORDER BY ident desc"
             )
         }
     )
 public class AdqlCatalogEntity
 extends ResourceStatusEntity
-implements AdqlResource.AdqlCatalog
+implements AdqlCatalog
     {
 
     /**
@@ -119,8 +122,8 @@ implements AdqlResource.AdqlCatalog
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<AdqlResource.AdqlCatalog>
-    implements AdqlResource.AdqlCatalog.Factory
+    extends AbstractFactory<AdqlCatalog>
+    implements AdqlCatalog.Factory
         {
 
         @Override
@@ -134,7 +137,7 @@ implements AdqlResource.AdqlCatalog
          *
          */
         @CascadeEntityMethod
-        protected AdqlResource.AdqlCatalog insert(final AdqlCatalogEntity entity)
+        protected AdqlCatalog insert(final AdqlCatalogEntity entity)
             {
             super.insert(
                 entity
@@ -154,7 +157,7 @@ implements AdqlResource.AdqlCatalog
          *
          */
         @CascadeEntityMethod
-        protected AdqlResource.AdqlCatalog create(final AdqlResource parent, final BaseResource.BaseCatalog<?> base)
+        protected AdqlCatalog create(final AdqlResource parent, final BaseResource.BaseCatalog<?> base)
             {
             return this.insert(
                 new AdqlCatalogEntity(
@@ -166,7 +169,7 @@ implements AdqlResource.AdqlCatalog
 
         @Override
         @SelectEntityMethod
-        public AdqlResource.AdqlCatalog search(final AdqlResource parent, final BaseResource.BaseCatalog<?> base)
+        public AdqlCatalog select(final AdqlResource parent, final BaseResource.BaseCatalog<?> base)
             {
             return super.first(
                 super.query(
@@ -183,9 +186,9 @@ implements AdqlResource.AdqlCatalog
 
         @Override
         @CascadeEntityMethod
-        public AdqlResource.AdqlCatalog cascade(final AdqlResource parent, final BaseResource.BaseCatalog<?> base)
+        public AdqlCatalog cascade(final AdqlResource parent, final BaseResource.BaseCatalog<?> base)
             {
-            AdqlResource.AdqlCatalog result = this.search(
+            AdqlCatalog result = this.select(
                 parent,
                 base
                 );
@@ -201,7 +204,7 @@ implements AdqlResource.AdqlCatalog
 
         @Override
         @CreateEntityMethod
-        public AdqlResource.AdqlCatalog create(final AdqlResource parent, final BaseResource.BaseCatalog<?> base, final String name)
+        public AdqlCatalog create(final AdqlResource parent, final BaseResource.BaseCatalog<?> base, final String name)
             {
             return this.insert(
                 new AdqlCatalogEntity(
@@ -214,7 +217,7 @@ implements AdqlResource.AdqlCatalog
 
         @Override
         @SelectEntityMethod
-        public Iterable<AdqlResource.AdqlCatalog> select(final AdqlResource parent)
+        public Iterable<AdqlCatalog> select(final AdqlResource parent)
             {
             return super.iterable(
                 super.query(
@@ -228,27 +231,7 @@ implements AdqlResource.AdqlCatalog
 
         @Override
         @SelectEntityMethod
-        public AdqlResource.AdqlCatalog select(final AdqlResource parent, final String name)
-        throws NameNotFoundException
-            {
-            final AdqlResource.AdqlCatalog result = this.search(
-                parent,
-                name
-                );
-            if (result != null)
-                {
-                return result ;
-                }
-            else {
-                throw new NameNotFoundException(
-                    name
-                    );
-                }
-            }
-
-        @Override
-        @SelectEntityMethod
-        public AdqlResource.AdqlCatalog search(final AdqlResource parent, final String name)
+        public AdqlCatalog select(final AdqlResource parent, final String name)
             {
             return super.first(
                 super.query(
@@ -265,7 +248,26 @@ implements AdqlResource.AdqlCatalog
 
         @Override
         @SelectEntityMethod
-        public Iterable<AdqlResource.AdqlCatalog> select(final BaseResource.BaseCatalog<?> base)
+        public Iterable<AdqlCatalog> search(final AdqlResource parent, final String text)
+            {
+            return super.iterable(
+                super.query(
+                    "adql.catalog-search-parent.text"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "text",
+                        searchParam(
+                            text
+                            )
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<AdqlCatalog> select(final BaseResource.BaseCatalog<?> base)
             {
             return super.iterable(
                 super.query(
@@ -277,28 +279,33 @@ implements AdqlResource.AdqlCatalog
                 );
             }
 
-        /**
-         * Our Autowired DataSchema factory.
-         *
-         */
         @Autowired
-        protected AdqlResource.AdqlSchema.Factory adqlSchemas ;
+        protected AdqlSchema.Factory adqlSchemas ;
 
         @Override
-        public AdqlResource.AdqlSchema.Factory schemas()
+        public AdqlSchema.Factory schemas()
             {
             return this.adqlSchemas ;
+            }
+
+        @Autowired
+        protected AdqlCatalog.IdentFactory identifiers ;
+
+        @Override
+        public AdqlCatalog.IdentFactory identifiers()
+            {
+            return this.identifiers;
             }
         }
 
     @Override
-    public AdqlResource.AdqlCatalog.Schemas schemas()
+    public AdqlCatalog.Schemas schemas()
         {
-        return new AdqlResource.AdqlCatalog.Schemas()
+        return new AdqlCatalog.Schemas()
             {
 
             @Override
-            public Iterable<AdqlResource.AdqlSchema> select()
+            public Iterable<AdqlSchema> select()
                 {
                 return womble().resources().base().views().catalogs().schemas().select(
                     AdqlCatalogEntity.this
@@ -306,8 +313,7 @@ implements AdqlResource.AdqlCatalog
                 }
 
             @Override
-            public AdqlResource.AdqlSchema select(final String name)
-            throws NameNotFoundException
+            public AdqlSchema select(final String name)
                 {
                 return womble().resources().base().views().catalogs().schemas().select(
                     AdqlCatalogEntity.this,
@@ -316,11 +322,11 @@ implements AdqlResource.AdqlCatalog
                 }
 
             @Override
-            public AdqlResource.AdqlSchema search(final String name)
+            public Iterable<AdqlSchema> search(final String text)
                 {
                 return womble().resources().base().views().catalogs().schemas().search(
                     AdqlCatalogEntity.this,
-                    name
+                    text
                     ) ;
                 }
             };
@@ -442,6 +448,12 @@ implements AdqlResource.AdqlCatalog
     public AdqlResource resource()
         {
         return this.parent;
+        }
+
+    @Override
+    public String link()
+        {
+        return null;
         }
     }
 

@@ -26,7 +26,30 @@ import java.io.Serializable;
 public interface Identifier
     {
 
+    /**
+     * Access to the Serializable value.
+     * @return
+     *      The Serializable value.
+     *
+     */
     public Serializable value();
+
+    /**
+     * Generate a String representation.
+     * @return
+     *      A String representation.
+     *
+     */
+    @Override
+    public String toString();
+
+    /**
+     * Generate a URI representation.
+     * @return
+     *      A URI representation.
+     *
+    public URI toUri();
+     */
 
     }
 

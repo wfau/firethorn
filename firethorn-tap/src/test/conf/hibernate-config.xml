@@ -39,9 +39,7 @@
     >
 
     <!--+
-        | Spring factory for Hibernate SessionFactory.
-    <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-    <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        | Hibernate SessionFactory.
         +-->
     <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 
@@ -56,10 +54,12 @@
         <property name="annotatedClasses">
             <list>
 
+                <value>uk.ac.roe.wfau.firethorn.config.ConfigPropertyEntity</value>
+
                 <value>uk.ac.roe.wfau.firethorn.identity.IdentityEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.mallard.DataServiceEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.mallard.JobEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.mallard.AdqlJobEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.mallard.AdqlServiceEntity</value>
 
                 <value>uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceEntity</value>
 
@@ -88,16 +88,17 @@
             +-->
         <property name="hibernateProperties">
             <props>
-                <!--+
-                    | "In most cases Hibernate will be able to choose the correct org.hibernate.dialect.Dialect
-                    | implementation based on the JDBC metadata returned by the JDBC driver."
-                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
-                    +-->
+
                 <!--+
                     | Automatically update the database tables (test only).
                     +-->
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
                 <prop key="hibernate.show_sql">false</prop>
+
+                <!--+
+                    | Jadira usertype registration.
+                    +-->
+                <prop key="jadira.usertype.autoRegisterUserTypes">true</prop>
 
             </props>
         </property>
@@ -112,8 +113,6 @@
 
     <!--+
         | Create our HibernateTransactionManager instance.
-    <bean id="FireThornTransactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-    <bean id="FireThornTransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         +-->
     <bean id="FireThornTransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory" ref="FireThornHibernateSessionFactory"/>
@@ -129,12 +128,5 @@
         transaction-manager="FireThornTransactionManager"
          proxy-target-class="true"
          />
-
-    <!--+
-        | Create a HibernateTemplate to wrap our HibernateSessionFactory.
-    <bean id="FireThornHibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
-        <property name="sessionFactory" ref="FireThornHibernateSessionFactory"/>
-    </bean>
-        +-->
 
 </beans>

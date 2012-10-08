@@ -43,12 +43,11 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceEntity;
 
 /**
- * BaseResource implementations.
+ * Hibernate based <code>JdbcResource</code> implementation.
  *
  */
 @Slf4j
@@ -131,13 +130,14 @@ implements JdbcResource
         @SelectEntityMethod
         public Iterable<JdbcResource> search(final String text)
             {
-            final String match = new StringBuilder(text).append("%").toString();
             return super.iterable(
                 super.query(
                     "jdbc.resource-search-text"
                     ).setString(
                         "text",
-                        match
+                        searchParam(
+                            text
+                            )
                         )
                 );
             }
@@ -166,10 +166,6 @@ implements JdbcResource
                 );
             }
 
-        /**
-         * Our Autowired view factory.
-         *
-         */
         @Autowired
         protected AdqlResource.Factory views ;
 
@@ -179,17 +175,22 @@ implements JdbcResource
             return this.views ;
             }
 
-        /**
-         * Our Autowired catalog factory.
-         *
-         */
         @Autowired
-        protected JdbcResource.JdbcCatalog.Factory catalogs ;
+        protected JdbcCatalog.Factory catalogs ;
 
         @Override
-        public JdbcResource.JdbcCatalog.Factory catalogs()
+        public JdbcCatalog.Factory catalogs()
             {
             return this.catalogs ;
+            }
+
+        @Autowired
+        protected JdbcResource.IdentFactory identifiers ;
+
+        @Override
+        public JdbcResource.IdentFactory identifiers()
+            {
+            return identifiers ;
             }
         }
 
@@ -209,7 +210,7 @@ implements JdbcResource
                 }
 
             @Override
-            public Iterable<JdbcResource.JdbcCatalog> select()
+            public Iterable<JdbcCatalog> select()
                 {
                 return womble().resources().jdbc().catalogs().select(
                     JdbcResourceEntity.this
@@ -217,8 +218,7 @@ implements JdbcResource
                 }
 
             @Override
-            public JdbcResource.JdbcCatalog select(final String name)
-            throws NameNotFoundException
+            public JdbcCatalog select(final String name)
                 {
                 return womble().resources().jdbc().catalogs().select(
                     JdbcResourceEntity.this,
@@ -227,34 +227,34 @@ implements JdbcResource
                 }
 
             @Override
-            public JdbcResource.JdbcCatalog search(final String name)
+            public Iterable<JdbcCatalog> search(final String text)
                 {
                 return womble().resources().jdbc().catalogs().search(
                     JdbcResourceEntity.this,
-                    name
+                    text
                     );
                 }
 
             @Override
-            public List<JdbcResource.Diference> diff(final boolean push, final boolean pull)
+            public List<JdbcDiference> diff(final boolean push, final boolean pull)
                 {
                 return diff(
                     metadata(),
-                    new ArrayList<JdbcResource.Diference>(),
+                    new ArrayList<JdbcDiference>(),
                     push,
                     pull
                     );
                 }
 
             @Override
-            public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference>  results, final boolean push, final boolean pull)
+            public List<JdbcDiference> diff(final DatabaseMetaData metadata, final List<JdbcDiference>  results, final boolean push, final boolean pull)
                 {
                 log.debug("Comparing catalogs for resource [{}]", name());
                 try {
                     //
                     // Scan the DatabaseMetaData for catalogs.
                     final ResultSet catalogs = metadata.getCatalogs();
-                    final Map<String, JdbcResource.JdbcCatalog> found = new HashMap<String, JdbcResource.JdbcCatalog>();
+                    final Map<String, JdbcCatalog> found = new HashMap<String, JdbcCatalog>();
                     while (catalogs.next())
                         {
                         final String name = catalogs.getString(
@@ -262,7 +262,7 @@ implements JdbcResource
                             );
                         log.debug("Checking database catalog [{}]", name);
 
-                        JdbcCatalog catalog = this.search(
+                        JdbcCatalog catalog = this.select(
                             name
                             );
                         if (catalog == null)
@@ -282,8 +282,8 @@ implements JdbcResource
                                 }
                             else {
                                 results.add(
-                                    new JdbcResource.Diference(
-                                        JdbcResource.Diference.Type.CATALOG,
+                                    new JdbcDiference(
+                                        JdbcDiference.Type.CATALOG,
                                         null,
                                         name
                                         )
@@ -300,10 +300,10 @@ implements JdbcResource
                         }
                     //
                     // Scan our own list of catalogs.
-                    for (final JdbcResource.JdbcCatalog catalog : select())
+                    for (final JdbcCatalog catalog : select())
                         {
                         log.debug("Checking registered catalog [{}]", catalog.name());
-                        JdbcResource.JdbcCatalog match = found.get(
+                        JdbcCatalog match = found.get(
                             catalog.name()
                             );
                         //
@@ -326,8 +326,8 @@ implements JdbcResource
                                 }
                             else {
                                 results.add(
-                                    new JdbcResource.Diference(
-                                        JdbcResource.Diference.Type.CATALOG,
+                                    new JdbcDiference(
+                                        JdbcDiference.Type.CATALOG,
                                         catalog.name(),
                                         null
                                         )
@@ -417,18 +417,18 @@ implements JdbcResource
         }
 
     @Override
-    public List<JdbcResource.Diference> diff(final boolean push, final boolean pull)
+    public List<JdbcDiference> diff(final boolean push, final boolean pull)
         {
         return diff(
             metadata(),
-            new ArrayList<JdbcResource.Diference>(),
+            new ArrayList<JdbcDiference>(),
             push,
             pull
             );
         }
 
     @Override
-    public List<JdbcResource.Diference> diff(final DatabaseMetaData metadata, final List<JdbcResource.Diference> results, final boolean push, final boolean pull)
+    public List<JdbcDiference> diff(final DatabaseMetaData metadata, final List<JdbcDiference> results, final boolean push, final boolean pull)
         {
         log.debug("Comparing resource [{}]", name());
         //
@@ -441,6 +441,14 @@ implements JdbcResource
             results,
             push,
             pull
+            );
+        }
+
+    @Override
+    public String link()
+        {
+        return womble().resources().jdbc().resources().link(
+            this
             );
         }
     }

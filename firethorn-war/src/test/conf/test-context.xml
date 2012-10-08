@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!--+
+    |
+    | Copyright (c) 2012, ROE (http://www.roe.ac.uk/)
+    | All rights reserved.
+    |
+    | This program is free software: you can redistribute it and/or modify
+    | it under the terms of the GNU General Public License as published by
+    | the Free Software Foundation, either version 3 of the License, or
+    | (at your option) any later version.
+    |
+    | This program is distributed in the hope that it will be useful,
+    | but WITHOUT ANY WARRANTY; without even the implied warranty of
+    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    | GNU General Public License for more details.
+    |
+    | You should have received a copy of the GNU General Public License
+    | along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    |
+    +-->
+<Context
+    path="/firethorn"
+    displayName="ROE WFAU FireThorn service"
+    >
+
+    <!--+
+        | In memory HSQLDB test database.
+        | http://dwark.blogspot.co.uk/2006/10/maven-2-hibernate-hsqldb.html
+        | https://numberformat.wordpress.com/2010/06/03/creating-and-using-hsqldb-database-using-maven-in-10-minutes/
+    <Resource
+        name="firethorn/database" 
+        auth="Container"
+        type="javax.sql.DataSource" 
+        driverClassName="org.hsqldb.jdbcDriver"
+        url="jdbc:hsqldb:mem:firethorn"
+        username="sa"
+        password=""
+        />
+        +-->
+
+    <!--+
+        | File based HSQLDB test database.
+        +-->
+    <Resource
+        name="firethorn/database" 
+        auth="Container"
+        type="javax.sql.DataSource" 
+        driverClassName="org.hsqldb.jdbcDriver"
+        url="jdbc:hsqldb:file:target/database/testdata"
+        username="sa"
+        password=""
+        />
+
+    <!--+
+        | PostgreSQL test database.
+        | http://pro-programmers.blogspot.com/2008/07/spring-datasource-jndi-lookup-from.html
+    <Resource
+        name="firethorn/database" 
+        auth="Container"
+        type="javax.sql.DataSource" 
+        driverClassName="org.postgresql.Driver"
+        url="jdbc:postgresql://localhost/firethorn"
+        username="xxxx"
+        password="xxxx-xxxx-xxxx-xxxx"
+        maxActive="8" 
+        maxIdle="4"
+        />
+        +-->
+
+    <!--+
+        | Endpoint URL for our OGSA-DAI service.
+    <Environment
+        name="firethorn/ogsadai/endpoint"
+        value="http://beta.virtual.metagrid.co.uk:8080/dai/services/"
+        type="java.lang.String"
+        override="false"
+        />
+        +-->
+
+    <!--+
+        | OGSA-DAI results destination.
+    <Environment
+        name="firethorn/ogsadai/results/resource"
+        value="firethorn"
+        type="java.lang.String"
+        override="false"
+        />
+    <Environment
+        name="firethorn/ogsadai/results/table"
+        value="results"
+        type="java.lang.String"
+        override="false"
+        />
+        +-->
+
+</Context>
+
+

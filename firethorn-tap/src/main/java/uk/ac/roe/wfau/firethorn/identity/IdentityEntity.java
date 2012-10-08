@@ -1,21 +1,20 @@
 /*
- *  Copyright (C) 2012 Royal Observatory, University of Edinburgh, UK
+ * Copyright (C) 2012 Royal Observatory, University of Edinburgh, UK
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package uk.ac.roe.wfau.firethorn.identity ;
+package uk.ac.roe.wfau.firethorn.identity;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -26,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
@@ -34,7 +34,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
 /**
- * Identity implementation.
+ * Hibernate based <code>AdqlCatalog</code> implementation.
  *
  */
 @Slf4j
@@ -48,11 +48,11 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "identity-select",
+            name = "identity-select",
             query = "FROM IdentityEntity ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "identity-select-name",
+            name = "identity-select-name",
             query = "FROM IdentityEntity WHERE name = :name ORDER BY ident desc"
             )
         }
@@ -66,7 +66,7 @@ implements Identity
      * Our database table name.
      *
      */
-    public static final String DB_TABLE_NAME = "identity_entity" ;
+    public static final String DB_TABLE_NAME = "identity_entity";
 
     /**
      * Our Entity Factory implementation.
@@ -80,7 +80,7 @@ implements Identity
         @Override
         public Class<?> etype()
             {
-            return IdentityEntity.class ;
+            return IdentityEntity.class;
             }
 
         @Override
@@ -101,8 +101,17 @@ implements Identity
             return super.insert(
                 new IdentityEntity(
                     name
-                    )
+                )
                 );
+            }
+
+        @Autowired
+        protected Identity.IdentFactory identifiers ;
+
+        @Override
+        public Identity.IdentFactory identifiers()
+            {
+            return this.identifiers;
             }
         }
 
@@ -124,8 +133,7 @@ implements Identity
         {
         super(
             null,
-            name
-            );
+            name);
         }
 
     /**
@@ -137,11 +145,18 @@ implements Identity
         {
         if (super.owner() == null)
             {
-            return this ;
+            return this;
             }
-        else {
+        else
+            {
             return super.owner();
             }
+        }
+
+    @Override
+    public String link()
+        {
+        return null ;
         }
     }
 

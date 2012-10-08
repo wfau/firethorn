@@ -5,9 +5,12 @@
 <%@ page
     import="uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder"
     import="uk.ac.roe.wfau.firethorn.webapp.control.ServletPathBuilder"
-    import="uk.ac.roe.wfau.firethorn.webapp.mallard.DataServiceController"
-    import="uk.ac.roe.wfau.firethorn.webapp.mallard.DataServicesController"
-    import="uk.ac.roe.wfau.firethorn.mallard.DataService"
+
+    import="uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServiceController"
+    import="uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServicesController"
+
+    import="uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServiceBean"
+
     session="true"
 %><%
 PathBuilder paths = new ServletPathBuilder(
@@ -15,30 +18,30 @@ PathBuilder paths = new ServletPathBuilder(
     );
 
 String name = (String) request.getAttribute(
-    DataServicesController.SELECT_NAME
+    AdqlServicesController.SELECT_NAME
     );
 
-Iterable<DataService> services = (Iterable<DataService>) request.getAttribute(
-    DataServicesController.SELECT_RESULT
+Iterable<AdqlServiceBean> services = (Iterable<AdqlServiceBean>) request.getAttribute(
+    AdqlServicesController.SELECT_RESULT
     ) ;
 
 %>
 <html>
     <head>
 	    <title></title>
-        <link href='/css/page.css' rel='stylesheet' type='text/css'/>
+        <link href='<%= paths.file("/css/page.css") %>' rel='stylesheet' type='text/css'/>
     </head>
     <body>
         <div>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.SEARCH_PATH) %>'>search</a>]</span>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.SELECT_PATH) %>'>select</a>]</span>
-            <span>[<a href='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.CREATE_PATH) %>'>create</a>]</span>
+            <span>[<a href='<%= paths.path(AdqlServicesController.CONTROLLER_PATH, AdqlServicesController.SEARCH_PATH) %>'>search</a>]</span>
+            <span>[<a href='<%= paths.path(AdqlServicesController.CONTROLLER_PATH, AdqlServicesController.SELECT_PATH) %>'>select</a>]</span>
+            <span>[<a href='<%= paths.path(AdqlServicesController.CONTROLLER_PATH, AdqlServicesController.CREATE_PATH) %>'>create</a>]</span>
         </div>
         <div>
-            Select ADQL TAP Services by name
+            Select ADQL (TAP) Services by name
             <div>
-                <form method='GET' action='<%= paths.path(DataServicesController.CONTROLLER_PATH, DataServicesController.SELECT_PATH) %>'>
-                    Name <input type='text' name='<%= DataServicesController.SELECT_NAME %>' value='<%= ((name != null) ? name : "" ) %>'/>
+                <form method='GET' action='<%= paths.path(AdqlServicesController.CONTROLLER_PATH, AdqlServicesController.SELECT_PATH) %>'>
+                    Name <input type='text' name='<%= AdqlServicesController.SELECT_NAME %>' value='<%= ((name != null) ? name : "" ) %>'/>
                     <input type='submit' value='Go'/>
                 </form>
             </div>
@@ -48,14 +51,13 @@ Iterable<DataService> services = (Iterable<DataService>) request.getAttribute(
                 <%
                 if (services != null)
                     {
-                    for (DataService service : services)
+                    for (AdqlServiceBean service : services)
                         {
                         %>
                         <tr>
-                            <td><a href='<%= paths.link(service) %>'><%= service.name() %></a></td>
-                            <td><%= service.owner().name() %></td>
-                            <td><%= service.created() %></td>
-                            <td><%= service.modified() %></td>
+                            <td><a href='<%= service.getIdent() %>'><%= service.getName() %></a></td>
+                            <td><%= service.getCreated() %></td>
+                            <td><%= service.getModified() %></td>
                         </tr>
                         <%
                         }

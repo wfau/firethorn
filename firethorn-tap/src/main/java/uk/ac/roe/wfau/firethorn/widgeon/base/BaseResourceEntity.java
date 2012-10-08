@@ -37,12 +37,11 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 
 /**
- * BaseResource implementation.
+ * Hibernate implementation of <code>BaseResource</code>.
  *
  */
 @Slf4j
@@ -180,10 +179,6 @@ implements BaseResource
             }
         */
 
-        /**
-         * Our Autowired view factory.
-         *
-         */
         @Autowired
         protected AdqlResource.Factory views ;
 
@@ -191,6 +186,15 @@ implements BaseResource
         public AdqlResource.Factory views()
             {
             return this.views ;
+            }
+
+        @Autowired
+        protected BaseResource.IdentFactory identifiers ;
+
+        @Override
+        public BaseResource.IdentFactory identifiers()
+            {
+            return this.identifiers;
             }
         }
 
@@ -218,7 +222,6 @@ implements BaseResource
 
             @Override
             public AdqlResource select(final String name)
-            throws NameNotFoundException
                 {
                 return womble().resources().base().views().select(
                     BaseResourceEntity.this,
@@ -261,6 +264,12 @@ implements BaseResource
                 name
                 );
             }
+        }
+
+    @Override
+    public String link()
+        {
+        return null;
         }
     }
 

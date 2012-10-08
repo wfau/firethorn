@@ -28,10 +28,20 @@ import org.springframework.context.ApplicationContext;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 
-import uk.ac.roe.wfau.firethorn.mallard.DataService;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlCatalog;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalog;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
@@ -149,7 +159,7 @@ public interface Womble
         }
 
     /**
-     * Factory interface for accessing our resource factories..
+     * Factory interface for accessing our resource factories.
      *
      */
     public interface ResourceFactories
@@ -157,7 +167,29 @@ public interface Womble
 
         public BaseResource.Factory base();
 
-        public JdbcResource.Factory jdbc();
+        public interface JdbcFactories
+            {
+
+            public JdbcResource.Factory resources();
+            public JdbcCatalog.Factory catalogs();
+            public JdbcSchema.Factory  schemas();
+            public JdbcTable.Factory   tables();
+            public JdbcColumn.Factory  columns();
+
+            }
+
+        public JdbcFactories jdbc();
+
+        public interface AdqlFactories
+            {
+            public AdqlResource.Factory resources();
+            public AdqlCatalog.Factory catalogs();
+            public AdqlSchema.Factory  schemas();
+            public AdqlTable.Factory   tables();
+            public AdqlColumn.Factory  columns();
+            }
+
+        public AdqlFactories adql();
 
         }
 
@@ -168,10 +200,10 @@ public interface Womble
     public ResourceFactories resources();
 
     /**
-     * Access to our DataService factory.
+     * Access to our AdqlService factory.
      *
      */
-    public DataService.Factory services();
+    public AdqlService.Factory services();
 
     /**
      * Access to our Identity factory.
@@ -184,6 +216,12 @@ public interface Womble
      *
      */
     public Identity.Context context();
+
+    /**
+     * Access to our ConfigProperty factory.
+     *
+     */
+    public ConfigProperty.Factory config();
 
     }
 

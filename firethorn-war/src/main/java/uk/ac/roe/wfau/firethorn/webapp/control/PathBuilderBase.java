@@ -26,10 +26,10 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity ;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier ;
 
-import uk.ac.roe.wfau.firethorn.mallard.DataService ;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService ;
 import uk.ac.roe.wfau.firethorn.widgeon.DataResource ;
-import uk.ac.roe.wfau.firethorn.webapp.mallard.DataServiceController;
-import uk.ac.roe.wfau.firethorn.webapp.widgeon.DataResourceController;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServiceController;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceIdentFactory;
 
 /**
  * A webapp path builder.
@@ -37,6 +37,7 @@ import uk.ac.roe.wfau.firethorn.webapp.widgeon.DataResourceController;
  *
  */
 @Slf4j
+@Deprecated
 public abstract class PathBuilderBase implements PathBuilder
     {
 
@@ -338,10 +339,10 @@ public abstract class PathBuilderBase implements PathBuilder
         }
 
     @Override
-    public Path link(final DataService target)
+    public Path link(final AdqlService target)
         {
         return path(
-            DataServiceController.CONTROLLER_PATH,
+            AdqlServiceController.CONTROLLER_PATH,
             target
             );
         }
@@ -350,7 +351,7 @@ public abstract class PathBuilderBase implements PathBuilder
     public Path link(final DataResource target)
         {
         return path(
-            DataResourceController.CONTROLLER_PATH,
+            JdbcResourceIdentFactory.RESOURCE_PATH,
             target
             );
         }

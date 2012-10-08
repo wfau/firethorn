@@ -26,6 +26,7 @@ import org.springframework.web.context.request.WebRequest;
  *
  */
 @Slf4j
+@Deprecated
 public class SpringPathBuilder
 extends PathBuilderBase
 implements PathBuilder

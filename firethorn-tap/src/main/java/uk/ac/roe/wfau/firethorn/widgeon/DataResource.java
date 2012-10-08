@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.widgeon ;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.NameNotFoundException;
 
 /**
  * Public interface for describing a data resource (JDBC database OR TAP service).
@@ -52,14 +51,13 @@ extends ResourceStatus
          * Select a named catalog from the resource.
          *
          */
-        public CatalogType select(final String name)
-        throws NameNotFoundException;
+        public CatalogType select(final String name);
 
         /**
-         * Search for a named catalog from the resource.
+         * Text search for catalogs (name starts with).
          *
          */
-        public CatalogType search(final String name);
+        public Iterable<CatalogType> search(final String text);
 
         }
 
@@ -89,14 +87,13 @@ extends ResourceStatus
              * Select a named catalog for a resource.
              *
              */
-            public CatalogType select(final ResourceType parent, final String name)
-            throws NameNotFoundException;
+            public CatalogType select(final ResourceType parent, final String name);
 
             /**
-             * Search for a named catalog from a resource.
+             * Text search for catalogs (name starts with).
              *
              */
-            public CatalogType search(final ResourceType parent, final String name);
+            public Iterable<CatalogType> search(final ResourceType parent, final String text);
 
             }
 
@@ -129,14 +126,13 @@ extends ResourceStatus
              * Select a named schema from the catalog.
              *
              */
-            public SchemaType select(final String name)
-            throws NameNotFoundException;
+            public SchemaType select(final String name);
 
             /**
-             * Search for a named schema from the catalog.
+             * Text search for schema (name starts with).
              *
              */
-            public SchemaType search(final String name);
+            public Iterable<SchemaType> search(final String text);
 
             }
         }
@@ -167,14 +163,13 @@ extends ResourceStatus
              * Select a named schema from a catalog.
              *
              */
-            public SchemaType select(final CatalogType parent, final String name)
-            throws NameNotFoundException;
+            public SchemaType select(final CatalogType parent, final String name);
 
             /**
-             * Search for a named schema from a catalog.
+             * Text search for schema (name starts with).
              *
              */
-            public SchemaType search(final CatalogType parent, final String name);
+            public Iterable<SchemaType> search(final CatalogType parent, final String text);
 
             }
 
@@ -207,14 +202,13 @@ extends ResourceStatus
              * Select a named table from the schema.
              *
              */
-            public TableType select(final String name)
-            throws NameNotFoundException;
+            public TableType select(final String name);
 
             /**
-             * Search for a named table from the schema.
+             * Text search for tables (name starts with).
              *
              */
-            public TableType search(final String name);
+            public Iterable<TableType> search(final String text);
 
             }
         }
@@ -245,14 +239,13 @@ extends ResourceStatus
              * Select a named table from a schema.
              *
              */
-            public TableType select(final SchemaType parent, final String name)
-            throws NameNotFoundException;
+            public TableType select(final SchemaType parent, final String name);
 
             /**
-             * Search for a named table from a schema.
+             * Text search for tables (name starts with).
              *
              */
-            public TableType search(final SchemaType parent, final String name);
+            public Iterable<TableType> search(final SchemaType parent, final String text);
 
             }
 
@@ -285,14 +278,13 @@ extends ResourceStatus
              * Select a named column from the table.
              *
              */
-            public ColumnType select(final String name)
-            throws NameNotFoundException;
+            public ColumnType select(final String name);
 
             /**
-             * Search for a named column from the table.
+             * Text search for columns (name starts with).
              *
              */
-            public ColumnType search(final String name);
+            public Iterable<ColumnType> search(final String text);
 
             }
         }
@@ -314,7 +306,7 @@ extends ResourceStatus
             {
 
             /**
-             * Select all the adqlColumns from a table.
+             * Select all the columns from a table.
              *
              */
             public Iterable<ColumnType> select(final TableType parent);
@@ -323,14 +315,13 @@ extends ResourceStatus
              * Select a named column from a table.
              *
              */
-            public ColumnType select(final TableType parent, final String name)
-            throws NameNotFoundException;
+            public ColumnType select(final TableType parent, final String name);
 
             /**
-             * Search for a named column from a table.
+             * Text search for columns (name starts with).
              *
              */
-            public ColumnType search(final TableType parent, final String name);
+            public Iterable<ColumnType> search(final TableType parent, final String text);
 
             }
 

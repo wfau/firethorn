@@ -21,7 +21,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 
 
 /**
- *
+ * Public interface for an IVOA resource.
  *
  */
 public interface IvoaResource
