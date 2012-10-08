@@ -5,68 +5,142 @@
 hostname=localhost
 hostport=8080
 
+limit=4
+
 name()
     {
     date '+%Y%m%d %H%M%S%N'
     }
 
-#
-# JDBC resource
+service="http://${hostname}:${hostport}/firethorn/jdbc"
 
-echo ""
-echo "Create a resource"
-curl -v \
-    -H 'Accept: application/json' \
-    --data "jdbc.resources.create.name=jdbc-resource-$(name)" \
-    http://${hostname}:${hostport}/firethorn/jdbc/resources/create 
+for (( i=1; i <= $limit; i++ ))
+do
 
-echo ""
-echo "Get details for resource 1"
-curl -v \
-    -H 'Accept: application/json' \
-    http://${hostname}:${hostport}/firethorn/jdbc/resource/1
+    resource="$( \
+        curl -s \
+            -H 'Accept: application/json' \
+            --data "jdbc.resources.create.name=jdbc-resource-$(name)" \
+            ${service}/resources/create |
+            sed 's/.*\"ident\":\"\([^\"]*\)\".*/\1/'
+            )"
 
-#
-# JDBC catalog
+    echo "Resource [${resource}]"
 
-echo ""
-echo "Create a catalog for resource 1"
-curl -v \
-    -H 'Accept: application/json' \
-    --data "jdbc.resource.catalogs.create.name=jdbc-catalog-$(name)" \
-    http://${hostname}:${hostport}/firethorn/jdbc/resource/1/catalogs/create
+    for (( j=1; j <= $limit; j++ ))
+    do
 
-echo ""
-echo "Get details for catalog 1"
-curl -v \
-    -H 'Accept: application/json' \
-    http://${hostname}:${hostport}/firethorn/jdbc/catalog/1
+        catalog="$( \
+            curl -s \
+                -H 'Accept: application/json' \
+                --data "jdbc.resource.catalogs.create.name=jdbc-catalog-$(name)" \
+                ${resource}/catalogs/create |
+                sed 's/.*\"ident\":\"\([^\"]*\)\".*/\1/'
+                )"
 
-#
-# JDBC schema
+        echo "-- Catalog [${catalog}]"
 
-echo ""
-echo "Get schemas for catalog 1"
-curl -v \
-    -H 'Accept: application/json' \
-    http://${hostname}:${hostport}/firethorn/jdbc/catalog/1/schemas/select
+        for (( k=1; k <= $limit; k++ ))
+        do
 
-echo ""
-echo "Create a schema for catalog 1"
-curl -v \
-    -H 'Accept: application/json' \
-    --data "jdbc.catalog.schemas.create.name=jdbc-schema-$(name)" \
-    http://${hostname}:${hostport}/firethorn/jdbc/catalog/1/schemas/create
+            schema="$( \
+                curl -s \
+                    -H 'Accept: application/json' \
+                    --data "jdbc.catalog.schemas.create.name=jdbc-schema-$(name)" \
+                    ${catalog}/schemas/create |
+                    sed 's/.*\"ident\":\"\([^\"]*\)\".*/\1/'
+                    )"
 
-echo ""
-echo "Get schemas for catalog 1"
-curl -v \
-    -H 'Accept: application/json' \
-    http://${hostname}:${hostport}/firethorn/jdbc/catalog/1/schemas/select
+            echo "-- -- Schema [${schema}]"
 
-echo ""
-echo "Get details for schema 1"
-curl -v \
-    -H 'Accept: application/json' \
-    http://${hostname}:${hostport}/firethorn/jdbc/schema/1
+
+            for (( l=1; l <= $limit; l++ ))
+            do
+
+                table="$( \
+                    curl -s \
+                        -H 'Accept: application/json' \
+                        --data "jdbc.schema.tables.create.name=jdbc-table-$(name)" \
+                        ${schema}/tables/create |
+                        sed 's/.*\"ident\":\"\([^\"]*\)\".*/\1/'
+                        )"
+
+                echo "-- -- -- Table [${table}]"
+
+                for (( m=1; m <= $limit; m++ ))
+                do
+
+                    column="$( \
+                        curl -s \
+                            -H 'Accept: application/json' \
+                            --data "jdbc.table.columns.create.name=jdbc-column-$(name)" \
+                            ${table}/columns/create |
+                            sed 's/.*\"ident\":\"\([^\"]*\)\".*/\1/'
+                            )"
+
+                    echo "-- -- -- -- Column [${column}]"
+            
+                done
+        
+            done
+        done
+    done
+done
+
+for resource in $( \
+    curl -s \
+        -H 'Accept: application/json' \
+        ${service}/resources/select |
+        sed 's/\(\"ident\":\)/\n\1/g'  |
+        sed -n 's/.*\"ident\":\"\([^\"]*\)\".*/\1/p'
+        )
+    do
+        echo "Resource [${resource}]"
+
+        for catalog in $( \
+            curl -s \
+                -H 'Accept: application/json' \
+                ${resource}/catalogs/select |
+                sed 's/\(\"ident\":\)/\n\1/g'  |
+                sed -n 's/.*\"ident\":\"\([^\"]*\)\".*/\1/p'
+                )
+        do
+            echo "++ Catalog [${catalog}]"
+
+            for schema in $( \
+                curl -s \
+                    -H 'Accept: application/json' \
+                    ${catalog}/schemas/select |
+                    sed 's/\(\"ident\":\)/\n\1/g'  |
+                    sed -n 's/.*\"ident\":\"\([^\"]*\)\".*/\1/p'
+                    )
+            do
+                echo "++ ++ Schema [${schema}]"
+
+                for table in $( \
+                    curl -s \
+                        -H 'Accept: application/json' \
+                        ${schema}/tables/select |
+                        sed 's/\(\"ident\":\)/\n\1/g'  |
+                        sed -n 's/.*\"ident\":\"\([^\"]*\)\".*/\1/p'
+                        )
+                do
+                    echo "++ ++ ++ Table [${table}]"
+
+                    for column in $( \
+                        curl -s \
+                            -H 'Accept: application/json' \
+                            ${table}/columns/select |
+                            sed 's/\(\"ident\":\)/\n\1/g'  |
+                            sed -n 's/.*\"ident\":\"\([^\"]*\)\".*/\1/p'
+                            )
+                    do
+                        echo "++ ++ ++ ++ Column [${column}]"
+
+                    done
+                done
+            done
+        done
+    done
+
 

@@ -10,7 +10,7 @@ name()
     date '+%Y%m%d %H%M%S%N'
     }
 
-for i in {1..1000}
+for i in {1..100}
 do
     curl -v \
         -H 'Accept: application/json' \
