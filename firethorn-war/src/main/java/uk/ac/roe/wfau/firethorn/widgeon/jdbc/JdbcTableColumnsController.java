@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -113,26 +114,20 @@ extends AbstractController
 
     /**
      * Get the parent entity based on the request ident.
+     * @throws NotFoundException 
      *
      */
     @ModelAttribute(JdbcTableController.TABLE_ENTITY)
     public JdbcTable table(
         @PathVariable("ident")
         final String ident
-        ){
+        ) throws NotFoundException{
         log.debug("schema() [{}]", ident);
-        try {
-            return womble().resources().jdbc().tables().select(
-                womble().resources().jdbc().tables().ident(
-                    ident
-                    )
-                );
-            }
-        catch (final IdentifierNotFoundException e)
-            {
-            log.error("Unable to locate table[{}]", ident);
-            return null ;
-            }
+        return womble().resources().jdbc().tables().select(
+            womble().resources().jdbc().tables().ident(
+                ident
+                )
+            );
         }
 
     /**

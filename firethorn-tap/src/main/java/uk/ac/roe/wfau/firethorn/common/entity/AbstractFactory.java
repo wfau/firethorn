@@ -30,7 +30,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.DeleteEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateEntityMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.EntityNotFoundException;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 
@@ -97,7 +97,7 @@ implements Entity.Factory<EntityType>
     @Override
     @SelectEntityMethod
     public EntityType select(final Identifier ident)
-    throws IdentifierNotFoundException
+    throws NotFoundException
         {
         log.debug("select(Class, Identifier)");
         log.debug("  ident [{}]", (ident != null) ? ident.value() : null);
@@ -193,7 +193,7 @@ implements Entity.Factory<EntityType>
      */
     @SelectEntityMethod
     public EntityType single(final Query query)
-    throws EntityNotFoundException
+    throws NotFoundException
         {
         @SuppressWarnings("unchecked")
         final EntityType result = (EntityType) womble.hibernate().single(
@@ -204,7 +204,7 @@ implements Entity.Factory<EntityType>
             return result ;
             }
         else {
-            throw new EntityNotFoundException();
+            throw new NotFoundException();
             }
         }
 

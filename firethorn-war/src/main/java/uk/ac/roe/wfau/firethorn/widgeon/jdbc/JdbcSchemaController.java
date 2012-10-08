@@ -24,10 +24,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -67,46 +70,38 @@ public class JdbcSchemaController
     public static final String SCHEMA_ENTITY = "urn:jdbc.schema.entity" ;
 
     /**
-     * MVC property for the target bean.
+     * MVC property for updating the name.
      *
      */
-    public static final String SCHEMA_BEAN = "urn:jdbc.schema.bean" ;
+    public static final String UPDATE_NAME = "jdbc.schema.update.name" ;
 
     /**
-     * Get the target entity based on the ident in the path.
+     * Wrap an entity as a bean.
      *
      */
-    @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-    public JdbcSchema schema(
-        @PathVariable("ident")
-        final String ident
-        ){
-        log.debug("JdbcSchema schema() [{}]", ident);
-        try {
-            return womble().resources().jdbc().schemas().select(
-                womble().resources().jdbc().schemas().ident(
-                    ident
-                    )
-                );
-            }
-        catch (final IdentifierNotFoundException ouch)
-            {
-            log.debug("JdbcSchema not found [{}]", ouch);
-            return null ;
-            }
-        }
-
-    /**
-     * Wrap the entity as a bean.
-     *
-     */
-    @ModelAttribute(JdbcSchemaController.SCHEMA_BEAN)
     public JdbcSchemaBean bean(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
         final JdbcSchema entity
         ){
         return new JdbcSchemaBean(
             entity
+            );
+        }
+
+    /**
+     * Get the target entity based on the ident in the path.
+     * @throws NotFoundException  
+     *
+     */
+    @ModelAttribute(SCHEMA_ENTITY)
+    public JdbcSchema entity(
+        @PathVariable("ident")
+        final String ident
+        ) throws NotFoundException {
+        log.debug("schema() [{}]", ident);
+        return womble().resources().jdbc().schemas().select(
+            womble().resources().jdbc().schemas().ident(
+                ident
+                )
             );
         }
 
@@ -116,21 +111,12 @@ public class JdbcSchemaController
      */
     @RequestMapping(method=RequestMethod.GET)
     public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_BEAN)
-        final JdbcSchemaBean bean,
         final ModelAndView model
         ){
         log.debug("htmlSelect()");
         model.setViewName(
             "jdbc/catalog/display"
             );
-        model.addObject(
-            JdbcCatalogController.CATALOG_BEAN,
-            new JdbcCatalogBean(
-                bean.entity().parent()
-                )
-            );
-
         return model ;
         }
 
@@ -141,10 +127,41 @@ public class JdbcSchemaController
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcSchemaBean jsonSelect(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_BEAN)
-        final JdbcSchemaBean bean
+        @ModelAttribute(SCHEMA_ENTITY)
+        final JdbcSchema entity
         ){
         log.debug("jsonSelect()");
-        return bean ;
+        return bean(
+            entity
+            );
+        }
+
+    /**
+     * JSON POST update.
+     *
+     */
+    @ResponseBody
+    @UpdateAtomicMethod
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
+    public JdbcSchemaBean jsonUpdate(
+        @RequestParam(value=UPDATE_NAME, required=false)
+        final String name,
+        @ModelAttribute(SCHEMA_ENTITY)
+        final JdbcSchema entity
+        ){
+
+        if (name != null)
+            {
+            if (name.length() > 0)
+                {
+                entity.name(
+                    name
+                    );
+                }
+            }
+
+        return bean(
+            entity
+            );
         }
     }

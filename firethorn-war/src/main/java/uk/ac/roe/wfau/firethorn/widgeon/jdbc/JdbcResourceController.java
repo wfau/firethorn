@@ -24,10 +24,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -68,56 +71,49 @@ public class JdbcResourceController
     public static final String RESOURCE_ENTITY = "urn:jdbc.resource.entity" ;
 
     /**
-     * MVC property for the target bean.
+     * MVC property for updating the name.
      *
      */
-    public static final String RESOURCE_BEAN = "urn:jdbc.resource.bean" ;
+    public static final String UPDATE_NAME = "jdbc.resource.update.name" ;
+
+    /**
+     * Wrap an entity as a bean.
+     *
+     */
+    public JdbcResourceBean bean(
+        final JdbcResource entity
+        ){
+        log.debug("bean() [{}]", entity);
+        return new JdbcResourceBean(
+            entity
+            );
+        }
 
     /**
      * Get the target entity based on the ident in the path.
      *
      */
-    @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-    public JdbcResource resource(
+    @ModelAttribute(RESOURCE_ENTITY)
+    public JdbcResource entity(
         @PathVariable("ident")
         final String ident
-        ){
-        try {
-            return womble().resources().jdbc().resources().select(
-                womble().resources().jdbc().resources().ident(
-                    ident
-                    )
-                );
-            }
-        catch (final IdentifierNotFoundException e)
-            {
-            return null ;
-            }
-        }
-
-    /**
-     * Wrap the entity as a bean.
-     *
-     */
-    @ModelAttribute(JdbcResourceController.RESOURCE_BEAN)
-    public JdbcResourceBean bean(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource
-        ){
-        log.debug("bean() [{}]", resource.ident());
-        return new JdbcResourceBean(
-            resource
+        ) throws NotFoundException  {
+        log.debug("entity(}");
+        log.debug("ident [{}]", ident);
+        JdbcResource entity = womble().resources().jdbc().resources().select(
+            womble().resources().jdbc().resources().ident(
+                ident
+                )
             );
+        return entity ;
         }
-
+    
     /**
      * HTML GET request.
      *
      */
     @RequestMapping(method=RequestMethod.GET)
     public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcResourceController.RESOURCE_BEAN)
-        final JdbcResourceBean bean,
         final ModelAndView model
         ){
         model.setViewName(
@@ -133,9 +129,40 @@ public class JdbcResourceController
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcResourceBean jsonSelect(
-        @ModelAttribute(JdbcResourceController.RESOURCE_BEAN)
-        final JdbcResourceBean bean
+        @ModelAttribute(RESOURCE_ENTITY)
+        final JdbcResource entity
         ){
-        return bean ;
+        return bean(
+            entity
+            );
+        }
+
+    /**
+     * JSON POST update.
+     *
+     */
+    @ResponseBody
+    @UpdateAtomicMethod
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
+    public JdbcResourceBean jsonUpdate(
+        @RequestParam(value=UPDATE_NAME, required=false)
+        String name,
+        @ModelAttribute(RESOURCE_ENTITY)
+        final JdbcResource entity
+        ){
+
+        if (name != null)
+            {
+            if (name.length() > 0)
+                {
+                entity.name(
+                    name
+                    );
+                }
+            }
+
+        return bean(
+            entity
+            );
         }
     }

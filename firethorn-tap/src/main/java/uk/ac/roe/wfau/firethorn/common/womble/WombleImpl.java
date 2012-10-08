@@ -321,8 +321,8 @@ implements Womble
         @Override
         public Entity update(final Entity entity)
             {
-            //log.debug("update(Entity)");
-            //log.debug("  {}", entity);
+            log.debug("update(Entity)");
+            log.debug("  {}", entity);
             try {
                 if (entity == null)
                     {

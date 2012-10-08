@@ -32,6 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.GenericGenerator;
 import org.joda.time.DateTime;
 
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.DeleteEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 import uk.ac.roe.wfau.firethorn.common.womble.WombleImpl;
@@ -355,26 +357,27 @@ logger.debug("hashCode()");
     /**
      * Update (store) this Entity in the database.
      *
+     */
     @Override
+    @UpdateEntityMethod
     public void update()
         {
         womble().hibernate().update(
             this
             );
         }
-     */
 
     /**
      * Delete this Entity from the database.
      *
      */
     @Override
+    @DeleteEntityMethod
     public void delete()
         {
         womble().hibernate().delete(
             this
             );
         }
-
     }
 

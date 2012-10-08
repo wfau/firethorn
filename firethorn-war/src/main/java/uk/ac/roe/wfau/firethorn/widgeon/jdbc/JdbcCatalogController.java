@@ -24,10 +24,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -66,66 +69,40 @@ public class JdbcCatalogController
     public static final String CATALOG_ENTITY = "urn:jdbc.catalog.entity" ;
 
     /**
-     * MVC property for the target bean.
+     * MVC property for updating the name.
      *
      */
-    public static final String CATALOG_BEAN = "urn:jdbc.catalog.bean" ;
+    public static final String UPDATE_NAME = "jdbc.catalog.update.name" ;
 
     /**
-     * Get the target entity based on the ident in the path.
+     * Wrap an entity as a bean.
      *
      */
-    @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
-    public JdbcCatalog catalog(
-        @PathVariable("ident")
-        final String ident
-        ){
-        log.debug("catalog() [{}]", ident);
-        try {
-            return womble().resources().jdbc().catalogs().select(
-                womble().resources().jdbc().catalogs().ident(
-                    ident
-                    )
-                );
-            }
-        catch (final IdentifierNotFoundException ouch)
-            {
-            log.debug("Unable to find Catalog [{}]", ident);
-            return null ;
-            }
-        }
-
-    /**
-     * Wrap the JdbcCatalog as a bean.
-     *
-     */
-    @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
     public JdbcCatalogBean bean(
-        @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
         final JdbcCatalog entity
         ){
-        log.debug("bean() [{}]", entity.ident());
+        log.debug("bean() [{}]", entity);
         return new JdbcCatalogBean(
             entity
             );
         }
 
     /**
-     * Wrap the entity as a bean.
+     * Get the target entity based on the ident in the path.
      *
-    @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
-    public JdbcCatalogBean bean(
+     */
+    @ModelAttribute(JdbcCatalogController.CATALOG_ENTITY)
+    public JdbcCatalog entity(
         @PathVariable("ident")
         final String ident
-        ){
-        log.debug("bean()");
-        return new JdbcCatalogBean(
-            catalog(
+        ) throws NotFoundException {
+        log.debug("catalog() [{}]", ident);
+        return womble().resources().jdbc().catalogs().select(
+            womble().resources().jdbc().catalogs().ident(
                 ident
                 )
             );
         }
-     */
 
     /**
      * HTML GET request.
@@ -133,19 +110,11 @@ public class JdbcCatalogController
      */
     @RequestMapping(method=RequestMethod.GET)
     public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
-        final JdbcCatalogBean bean,
         final ModelAndView model
         ){
         log.debug("htmlSelect()");
         model.setViewName(
             "jdbc/catalog/display"
-            );
-        model.addObject(
-            JdbcResourceController.RESOURCE_BEAN,
-            new JdbcResourceBean(
-                bean.entity().parent()
-                )
             );
         return model ;
         }
@@ -157,10 +126,41 @@ public class JdbcCatalogController
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcCatalogBean jsonSelect(
-        @ModelAttribute(JdbcCatalogController.CATALOG_BEAN)
-        final JdbcCatalogBean bean
+        @ModelAttribute(CATALOG_ENTITY)
+        final JdbcCatalog entity
         ){
         log.debug("jsonSelect()");
-        return bean ;
+        return bean(
+            entity
+            ) ;
+        }
+
+    /**
+     * JSON POST update.
+     *
+     */
+    @ResponseBody
+    @UpdateAtomicMethod
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
+    public JdbcCatalogBean jsonUpdate(
+        @RequestParam(value=UPDATE_NAME, required=false)
+        String name,
+        @ModelAttribute(CATALOG_ENTITY)
+        final JdbcCatalog entity
+        ){
+
+        if (name != null)
+            {
+            if (name.length() > 0)
+                {
+                entity.name(
+                    name
+                    );
+                }
+            }
+
+        return bean(
+            entity
+            );
         }
     }

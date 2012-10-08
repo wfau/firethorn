@@ -5,7 +5,7 @@
 hostname=localhost
 hostport=8080
 
-name()
+unique()
     {
     date '+%Y%m%d %H%M%S%N'
     }
@@ -29,7 +29,7 @@ echo ""
 echo "POST create"
 curl -v \
     -H 'Accept: application/json' \
-    --data "jdbc.resources.create.name=jdbc-resource-$(name)" \
+    --data "jdbc.resources.create.name=jdbc-resource-$(unique)" \
     http://${hostname}:${hostport}/firethorn/jdbc/resources/create 
 
 echo ""
@@ -57,14 +57,14 @@ echo ""
 echo "Create a catalog for resource 1"
 curl -v \
     -H 'Accept: application/json' \
-    --data "jdbc.resource.catalogs.create.name=jdbc-catalog-$(name)" \
+    --data "jdbc.resource.catalogs.create.name=jdbc-catalog-$(unique)" \
     http://${hostname}:${hostport}/firethorn/jdbc/resource/1/catalogs/create
 
 echo ""
 echo "Create a catalog for resource 1"
 curl -v \
     -H 'Accept: application/json' \
-    --data "jdbc.resource.catalogs.create.name=jdbc-catalog-$(name)" \
+    --data "jdbc.resource.catalogs.create.name=jdbc-catalog-$(unique)" \
     http://${hostname}:${hostport}/firethorn/jdbc/resource/1/catalogs/create
 
 echo ""
@@ -107,14 +107,14 @@ echo ""
 echo "Create a schema for catalog 1"
 curl -v \
     -H 'Accept: application/json' \
-    --data "jdbc.catalog.schemas.create.name=jdbc-schema-$(name)" \
+    --data "jdbc.catalog.schemas.create.name=jdbc-schema-$(unique)" \
     http://${hostname}:${hostport}/firethorn/jdbc/catalog/1/schemas/create
 
 echo ""
 echo "Create a schema for catalog 1"
 curl -v \
     -H 'Accept: application/json' \
-    --data "jdbc.catalog.schemas.create.name=jdbc-schema-$(name)" \
+    --data "jdbc.catalog.schemas.create.name=jdbc-schema-$(unique)" \
     http://${hostname}:${hostport}/firethorn/jdbc/catalog/1/schemas/create
 
 echo ""

@@ -24,10 +24,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -67,46 +70,38 @@ public class JdbcColumnController
     public static final String COLUMN_ENTITY = "urn:jdbc.column.entity" ;
 
     /**
-     * MVC property for the target bean.
+     * MVC property for updating the name.
      *
      */
-    public static final String COLUMN_BEAN = "urn:jdbc.column.bean" ;
+    public static final String UPDATE_NAME = "jdbc.column.update.name" ;
 
     /**
-     * Get the target entity based on the ident in the path.
+     * Wrap an entity as a bean.
      *
      */
-    @ModelAttribute(JdbcColumnController.COLUMN_ENTITY)
-    public JdbcTable table(
-        @PathVariable("ident")
-        final String ident
-        ){
-        log.debug("table() [{}]", ident);
-        try {
-            return womble().resources().jdbc().tables().select(
-                womble().resources().jdbc().tables().ident(
-                    ident
-                    )
-                );
-            }
-        catch (final IdentifierNotFoundException ouch)
-            {
-            log.debug("JdbcTable not found [{}]", ouch);
-            return null ;
-            }
-        }
-
-    /**
-     * Wrap the entity as a bean.
-     *
-     */
-    @ModelAttribute(JdbcColumnController.COLUMN_BEAN)
     public JdbcColumnBean bean(
-        @ModelAttribute(JdbcColumnController.COLUMN_ENTITY)
         final JdbcColumn entity
         ){
         return new JdbcColumnBean(
             entity
+            );
+        }
+
+    /**
+     * Get the target entity based on the ident in the path.
+     * @throws NotFoundException 
+     *
+     */
+    @ModelAttribute(COLUMN_ENTITY)
+    public JdbcColumn entity(
+        @PathVariable("ident")
+        final String ident
+        ) throws NotFoundException {
+        log.debug("table() [{}]", ident);
+        return womble().resources().jdbc().columns().select(
+            womble().resources().jdbc().columns().ident(
+                ident
+                )
             );
         }
 
@@ -116,21 +111,12 @@ public class JdbcColumnController
      */
     @RequestMapping(method=RequestMethod.GET)
     public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcColumnController.COLUMN_BEAN)
-        final JdbcColumnBean bean,
         final ModelAndView model
         ){
         log.debug("htmlSelect()");
         model.setViewName(
             "jdbc/catalog/display"
             );
-        model.addObject(
-            JdbcTableController.TABLE_BEAN,
-            new JdbcTableBean(
-                bean.entity().parent()
-                )
-            );
-
         return model ;
         }
 
@@ -141,10 +127,41 @@ public class JdbcColumnController
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcColumnBean jsonSelect(
-        @ModelAttribute(JdbcColumnController.COLUMN_BEAN)
-        final JdbcColumnBean bean
+        @ModelAttribute(COLUMN_ENTITY)
+        final JdbcColumn entity
         ){
         log.debug("jsonSelect()");
-        return bean ;
+        return bean(
+            entity
+            ) ;
+        }
+
+    /**
+     * JSON POST update.
+     *
+     */
+    @ResponseBody
+    @UpdateAtomicMethod
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
+    public JdbcColumnBean jsonUpdate(
+        @RequestParam(value=UPDATE_NAME, required=false)
+        final String name,
+        @ModelAttribute(COLUMN_ENTITY)
+        final JdbcColumn entity
+        ){
+
+        if (name != null)
+            {
+            if (name.length() > 0)
+                {
+                entity.name(
+                    name
+                    );
+                }
+            }
+
+        return bean(
+            entity
+            );
         }
     }

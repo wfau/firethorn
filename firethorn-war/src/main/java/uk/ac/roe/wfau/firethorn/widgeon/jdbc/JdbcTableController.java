@@ -24,10 +24,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -67,46 +70,38 @@ public class JdbcTableController
     public static final String TABLE_ENTITY = "urn:jdbc.table.entity" ;
 
     /**
-     * MVC property for the target bean.
+     * MVC property for updating the name.
      *
      */
-    public static final String TABLE_BEAN = "urn:jdbc.table.bean" ;
+    public static final String UPDATE_NAME = "jdbc.table.update.name" ;
 
     /**
-     * Get the target entity based on the ident in the path.
+     * Wrap an entity as a bean.
      *
      */
-    @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-    public JdbcTable table(
-        @PathVariable("ident")
-        final String ident
-        ){
-        log.debug("table() [{}]", ident);
-        try {
-            return womble().resources().jdbc().tables().select(
-                womble().resources().jdbc().tables().ident(
-                    ident
-                    )
-                );
-            }
-        catch (final IdentifierNotFoundException ouch)
-            {
-            log.debug("JdbcTable not found [{}]", ouch);
-            return null ;
-            }
-        }
-
-    /**
-     * Wrap the entity as a bean.
-     *
-     */
-    @ModelAttribute(JdbcTableController.TABLE_BEAN)
     public JdbcTableBean bean(
-        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
         final JdbcTable entity
         ){
         return new JdbcTableBean(
             entity
+            );
+        }
+
+    /**
+     * Get the target entity based on the ident in the path.
+     * @throws NotFoundException 
+     *
+     */
+    @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+    public JdbcTable entity(
+        @PathVariable("ident")
+        final String ident
+        ) throws NotFoundException {
+        log.debug("table() [{}]", ident);
+        return womble().resources().jdbc().tables().select(
+            womble().resources().jdbc().tables().ident(
+                ident
+                )
             );
         }
 
@@ -116,21 +111,12 @@ public class JdbcTableController
      */
     @RequestMapping(method=RequestMethod.GET)
     public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcTableController.TABLE_BEAN)
-        final JdbcTableBean bean,
         final ModelAndView model
         ){
         log.debug("htmlSelect()");
         model.setViewName(
             "jdbc/catalog/display"
             );
-        model.addObject(
-            JdbcSchemaController.SCHEMA_BEAN,
-            new JdbcSchemaBean(
-                bean.entity().parent()
-                )
-            );
-
         return model ;
         }
 
@@ -141,10 +127,41 @@ public class JdbcTableController
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcTableBean jsonSelect(
-        @ModelAttribute(JdbcTableController.TABLE_BEAN)
-        final JdbcTableBean bean
+        @ModelAttribute(TABLE_ENTITY)
+        final JdbcTable entity
         ){
         log.debug("jsonSelect()");
-        return bean ;
+        return bean(
+            entity
+            );
+        }
+
+    /**
+     * JSON POST update.
+     *
+     */
+    @ResponseBody
+    @UpdateAtomicMethod
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
+    public JdbcTableBean jsonUpdate(
+        @RequestParam(value=UPDATE_NAME, required=false)
+        final String name,
+        @ModelAttribute(TABLE_ENTITY)
+        final JdbcTable entity
+        ){
+
+        if (name != null)
+            {
+            if (name.length() > 0)
+                {
+                entity.name(
+                    name
+                    );
+                }
+            }
+
+        return bean(
+            entity
+            );
         }
     }

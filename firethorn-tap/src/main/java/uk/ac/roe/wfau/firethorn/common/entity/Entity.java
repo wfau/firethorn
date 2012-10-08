@@ -21,6 +21,7 @@ import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 
@@ -70,7 +71,7 @@ public interface Entity
          *
          */
         public EntityType select(final Identifier ident)
-        throws IdentifierNotFoundException;
+        throws NotFoundException;
 
         }
 
@@ -120,8 +121,8 @@ public interface Entity
     /**
      * Update (store) this Entity in the database.
      *
-    public void update();
      */
+    public void update();
 
     /**
      * Delete this Entity from the database.

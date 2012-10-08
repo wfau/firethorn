@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
-public class EntityNotFoundException
+public class NotFoundException
 extends Exception
     {
 
@@ -44,7 +44,7 @@ extends Exception
      * Public constructor, using default message.
      *
      */
-    public EntityNotFoundException()
+    public NotFoundException()
         {
         this(
             DEFAULT_MESSAGE,
@@ -56,7 +56,7 @@ extends Exception
      * Public constructor, with specific message.
      *
      */
-    public EntityNotFoundException(final String message)
+    public NotFoundException(final String message)
         {
         this(
             message,
@@ -68,7 +68,7 @@ extends Exception
      * Public constructor, using default message.
      *
      */
-    public EntityNotFoundException(final Throwable cause)
+    public NotFoundException(final Throwable cause)
         {
         this(
             DEFAULT_MESSAGE,
@@ -80,7 +80,7 @@ extends Exception
      * Public constructor, with specific message.
      *
      */
-    public EntityNotFoundException(final String message, final Throwable cause)
+    public NotFoundException(final String message, final Throwable cause)
         {
         super(
             message,

@@ -38,6 +38,17 @@ extends AbstractIdentFactory<EntityType>
 
     public static final String SERVICE_PATH = SERVICE_BASE + CONTEXT_PATH ;
 
+    /*
+     * 
+     * http://static.springsource.org/spring/docs/current/spring-framework-reference/html/mvc.html#mvc-buildinguris
+     * Re-use host, port, context path
+     * Append the literal part of the servlet mapping to the path
+     * Append "/accounts" to the path
+     *
+     * ServletUriComponentsBuilder ucb = 
+     *   ServletUriComponentsBuilder.fromServletMapping(request).path("/accounts").build()
+     * 
+     */
     protected String link(final String path, final Entity entity)
         {
         return SERVICE_PATH + path.replaceFirst(
