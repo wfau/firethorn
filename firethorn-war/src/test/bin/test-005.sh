@@ -5,7 +5,7 @@
 hostname=localhost
 hostport=8080
 
-limit=4
+limit=2
 
 unique()
     {
@@ -15,6 +15,11 @@ unique()
 name()
     {
     sed 's/.*\"name\":\"\([^\"]*\)\".*/\1/'
+    }
+
+status()
+    {
+    sed 's/.*\"status\":\"\([^\"]*\)\".*/\1/'
     }
 
 service="http://${hostname}:${hostport}/firethorn/jdbc"
@@ -108,6 +113,7 @@ do
         curl -s \
             -H 'Accept: application/json' \
             --data "jdbc.resource.update.name=jdbc-resource-updated-$(unique)" \
+            --data "jdbc.resource.update.status=DISABLED" \
             "${resource}" | name \
         )"
 
@@ -187,11 +193,15 @@ for resource in ${created}
 do
 
     echo "Resource [${resource}]"
-    echo "update name $( \
+    echo "check name $( \
         curl -s \
             -H 'Accept: application/json' \
-            --data "jdbc.resource.update.name=jdbc-resource-updated-$(unique)" \
             "${resource}" | name \
+        )"
+    echo "check status $( \
+        curl -s \
+            -H 'Accept: application/json' \
+            "${resource}" | status \
         )"
 
     for catalog in $( \

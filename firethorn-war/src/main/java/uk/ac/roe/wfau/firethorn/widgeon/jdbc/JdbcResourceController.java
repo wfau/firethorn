@@ -34,6 +34,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
+import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatus.Status;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
@@ -75,6 +76,12 @@ public class JdbcResourceController
      *
      */
     public static final String UPDATE_NAME = "jdbc.resource.update.name" ;
+
+    /**
+     * MVC property for updating the status.
+     *
+     */
+    public static final String UPDATE_STATUS = "jdbc.resource.update.status" ;
 
     /**
      * Wrap an entity as a bean.
@@ -147,6 +154,8 @@ public class JdbcResourceController
     public JdbcResourceBean jsonUpdate(
         @RequestParam(value=UPDATE_NAME, required=false)
         String name,
+        @RequestParam(value=UPDATE_STATUS, required=false)
+        String status,
         @ModelAttribute(RESOURCE_ENTITY)
         final JdbcResource entity
         ){
@@ -161,6 +170,18 @@ public class JdbcResourceController
                 }
             }
 
+        if (status != null)
+            {
+            if (status.length() > 0)
+                {
+                entity.status(
+                    Status.valueOf(
+                        status
+                        )
+                    );
+                }
+            }
+        
         return bean(
             entity
             );

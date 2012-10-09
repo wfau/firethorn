@@ -48,7 +48,9 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatus.Status;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlCatalog;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlSchema;
@@ -512,12 +514,26 @@ implements JdbcSchema
     @Override
     public Status status()
         {
-        if (this.parent().status() == Status.ENABLED)
+        if (parent().status().enabled())
             {
             return super.status();
             }
         else {
-            return this.parent().status();
+            return parent().status();
+            }
+        }
+
+    @Override
+    public void status(final Status status)
+        {
+        super.status(
+            status
+            );
+        if (status.enabled())
+            {
+            parent().status(
+                status
+                );
             }
         }
 
