@@ -691,6 +691,7 @@ a:hover.l-btn-disabled span.l-btn-left{
 a.l-btn .l-btn-focus{
 	outline:#0000FF dotted thin;
 }
+/* 
 .menu{
 	position:absolute;
 	background:#f0f0f0 url('images/menu.gif') repeat-y;
@@ -699,6 +700,8 @@ a.l-btn .l-btn-focus{
 	border:1px solid #ccc;
 	overflow:hidden;
 }
+
+*/
 .menu-item{
 	position:relative;
 	margin:0;

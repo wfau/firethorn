@@ -13,6 +13,7 @@ import traceback
 from app import session
 from helper_functions import login_helpers
 
+
 class services:
     """
     Services class, handles requests for specific services.
@@ -73,20 +74,21 @@ class services:
                         
                 else: 
                     return_value = config.errors['INVALID_TYPE'] + ': ' + json_data["type"]
+                                
 
             else :
                 return_value = config.errors['INVALID_PARAM']
+                              
                 
         except Exception as e:
-            print e
             print traceback.print_exc()
             return_value = config.errors['INVALID_REQUEST']
-                
+                            
         finally:
             if f!="":
                 f.close()
         
-        return  return_value
+        return return_value
     
 
     def GET(self):

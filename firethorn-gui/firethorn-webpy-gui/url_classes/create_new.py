@@ -43,11 +43,18 @@ class create_new:
                 converted_dict = dict([(str(k), v) for k, v in data.items()])
                 return_html += "<div style='text-align:left;font-style:italic'>The following JDBC Connection has been created: </div><br/>"
                 return_html += str(render.select_service_response('<a href=' + config.local_hostname['services'] + '?'+ config.service_get_param + '='  + converted_dict["ident"] + '>' + converted_dict["name"] + '</a>',datetime.strptime(converted_dict["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(converted_dict["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S")))
-     
+                return_html += "<a class='button' style='float:right' id='add_adql_view'>Add ADQL View</a>"
+
         else:
-            return_html = config.errors['INVALID_PARAM']
-       
-        return return_html
+            return json.dumps({
+                         'Code' : -1,
+                         'Content' : config.errors['INVALID_PARAM']
+                     })
+
+        return  json.dumps({
+                         'Code' : 1,
+                         'Content' : return_html
+                     })
     
     def __is_length_ok(self, strng):
         """
@@ -67,6 +74,7 @@ class create_new:
             return self.__is_length_ok(obj_name)
         else :
             return False   
+        
         
     def GET(self):
         """ 
@@ -95,14 +103,18 @@ class create_new:
                 f = urllib2.urlopen(request)
                 return_string = self.__generate_html_content(f.read(), data.obj_name, data.obj_type)
             else:
-                return_string = config.errors['INVALID_PARAM']
+                return_string = json.dumps({
+                                    'Code' : -1,
+                                    'Content' : config.errors['INVALID_PARAM']
+                                })
                 
-        except Exception as e:
-            print e
+        except Exception:
             print traceback.print_exc()
-
             if f!="":
                 f.close()
-            return_string = config.errors['INVALID_NETWORK_REQUEST']
+            return_string = json.dumps({
+                                'Code' : -1,
+                                'Content' : config.errors['INVALID_NETWORK_REQUEST']
+                                })
      
         return return_string

@@ -103,7 +103,10 @@ class index:
             if key == 'service_select_with_text':
                 if data.service_select_with_text!='':
                     if action_stored:
-                        return config.errors['INVALID_REQUEST']
+                        return json.dumps({
+                                    'Code' : -1,
+                                    'Content' : config.errors['INVALID_REQUEST']
+                                })
                     else:
                         action = 'service_select_with_text'
                         action_value = data.service_select_with_text 
@@ -112,7 +115,10 @@ class index:
             elif key == 'service_select_by_name':
                 if data.service_select_by_name!='':
                     if action_stored:
-                        return config.errors['INVALID_REQUEST']
+                        return json.dumps({
+                                    'Code' : -1,
+                                    'Content' : config.errors['INVALID_REQUEST']
+                                })
                     else:
                         action = 'service_select_by_name'
                         action_value = data.service_select_by_name
@@ -121,7 +127,10 @@ class index:
             elif key == 'service_get':
                 if data.service_get!='':
                     if action_stored:
-                        return config.errors['INVALID_REQUEST']
+                        return json.dumps({
+                                    'Code' : -1,
+                                    'Content' : config.errors['INVALID_REQUEST']
+                                })
                     else:     
                         action = 'service_get'
                         action_value = data.service_get[data.service_get.index('id=')+3:]
@@ -149,15 +158,23 @@ class index:
                     
                 f.close()
             else :
-                return_string = config.errors['INVALID_PARAM']
+                return_string = json.dumps({
+                                    'Code' : -1,
+                                    'Content' : config.errors['INVALID_PARAM']
+                                })
             
         except Exception as e:
-            print e
             print traceback.print_exc()
             if f!="":
                 f.close()
-            return_string = config.errors['INVALID_NETWORK_REQUEST']
+            return_string = json.dumps({
+                                    'Code' : -1,
+                                    'Content' : config.errors['INVALID_REQUEST']
+                                })
  
-        return return_string
+        return json.dumps({
+                        'Code' : 1,
+                        'Content' : return_string
+                    })
     
     

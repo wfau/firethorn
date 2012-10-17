@@ -16,20 +16,29 @@ jQuery(document).ready(function() {
 
         	xhr = jQuery.ajax({
                 type: "POST",
-                url:"/create_new",
+                url: properties.getPath() +  "create_new",
                 data: data,
                 timeout: 1000000,
                 error: function(e) {
-                	console.log(e);
+					 helper_functions.displayError("#error", e);
+
                 },
                 success: function(data) {
-                	jQuery('#container').hide().html(data).fadeIn('slow');
+					  data = jQuery.parseJSON(data);
+					  if (data.Code!=null){
+						  if (data.Code==-1){
+							 helper_functions.displayError("#error", data.Content);
+						  } else {
+		                	 jQuery('#container').hide().html(data.Content).fadeIn('slow');
+
+						  }
+					  }
                 }
         	});
         	return false;
       
 	});
-	
+
 	
 	/*
 	 * A link was clicked, Fetch the according service information via a POST request
@@ -41,72 +50,100 @@ jQuery(document).ready(function() {
 		if  (this.id == id_prevented){
 			e.preventDefault();
 		} else if (this.id =='add_adql_view'){
-
-			e.preventDefault();
-	    	jQuery.ajax({
-	         	type: "POST",
-	         	url:"create_view",
-                timeout: 1000000,
-	          	error: function(e) {
-	          		console.log(e);
-	          	},
-	          	success: function(data) {
-	          		var sample_data = jQuery.parseJSON(data);
-	          		if (jQuery('#adql_tree')!= []){
-		          		jQuery('#add_adql_view').hide();
-	                	jQuery('#container').append('<div id="adql_tree" style="clear:both;text-align:left;width:600px;"><span style="font-style:italic">Add ADQL View:</span><br/><br /><ul id="tt" checkbox="true" class="easyui-tree" ></ul></div><a id="create_view" style="float:left" class="button">Create View</a>');
-	                	jQuery('#tt').tree({  
-	                        url:'create_view' ,
-	                        animate:true,
-	            			onClick:function(node){jQuery(this).tree('beginEdit',node.target)}
-	                    });  
-	                	
-	          		}
-	          	}
-	    	});
-		    
-			   
-		} else if (this.id =='create_view'){
-
-			e.preventDefault();
-			if (jQuery('#view_creation_info')!= []){
-				
-				jQuery('#create_view').hide();
-				jQuery('#adql_tree').hide();
-
-				var nodes = jQuery('#tt').tree('getChecked');	// get checked nodes
-				var notify_html = "<div id ='view_creation_info' style='text-align:left'> <span style='font-style:italic'> A view has been created with the following items:</span> <br /><br />";
-				for (var i=0;i<nodes.length;i++){
-					notify_html += "<a>" + nodes[i].text + "</a><br />";
-					
-				}
-				notify_html += "</div>";
-
-            	jQuery('#container').append(notify_html);
-            
-      		}
 			
+			// Add ADQL View button was clicked, Fetch according data from the according POST URL handler
+			
+			e.preventDefault();
+	  
+      		if (jQuery('#adql_tree')!= []){
+          		jQuery('#add_adql_view').hide();
+          		var end_div = '</div>';
+     
+          		var jtree_div = '<div id="adql_tree" style="clear:both;text-align:left;"><ul id="tt" checkbox="true" class="easyui-tree" ></ul></div>';
+          		var layout_div = '' +
+          	    '<div id="cc" class="easyui-layout" style="width:100%;height:500px;">'  +
+                '<div region="west" split="true" title="ADQL Navigator" style="width:250px;">  '  +
+                   ' <p style="padding:5px;margin:0;font-style:italic">Add ADQL View:</p>  '  + jtree_div +
+                '</div>  '  +
+                '<div id="view_layout_content" region="center" title="Object content" style="padding:5px;">  '  +
+               ' </div>  ';
+                
+          		jQuery('#container').append(layout_div);
+          		jQuery('#container').append(end_div);
+          		jQuery('#cc').layout();  
+          		jQuery('#view_layout_content').html('Welcome to the default page. Please navigate and select objects via the tree on the left panel');
+        		
+      		
+          		
+        		//Create Dynamic tree view
+          		
+          		jQuery('#tt').tree({  
+                    url: properties.getPath() +'create_view' ,
+                    onBeforeLoad:function(node, param){
+                    	if (node!=null){
+                            param.type = node['type'];
+                        }
+
+                    },
+                    animate:true,
+                    lines:true,
+                    onLoadError:function(arguments){
+	            		 helper_functions.displayError("#error", "Error while loading the data");
+                    },
+                    onClick:function(node){
+                    	jQuery('#view_layout_content').html(node.text);
+        				},
+                    onDblClick:function(node){
+        				jQuery(this).tree('beginEdit',node.target);
+        				},
+        			onCheck:function(node, checked){
+        				var id = node.id;
+        				jQuery.ajax({
+        					  type: 'POST',
+        					  url:  properties.getPath() + 'create_view_edit_handler',
+        					  data: {'id' : id,'checked' : checked, action : 'checkbox_edit' },
+        					  timeout: 1000000,
+        		              error: function(e) {
+        		              },
+        		              success: function(data) {
+        		            	  data = jQuery.parseJSON(data);
+        		            	  if (data.Code!=null){
+            		            	  if (data.Code==-1){
+            		            		 helper_functions.displayError("#error", data.Content);
+            		            	  }
+        		            	  }
+        		              }
+        					});
+        				
+        				},
+        			onAfterEdit:function(node){
+        				var text = node.text;
+        				var id = node.id;
+        				jQuery.ajax({
+        					  type: 'POST',
+        					  url:  properties.getPath() +'create_view_edit_handler',
+        					  data: {'id' : id, 'text' : text, action : 'name_edit'},
+        					  timeout: 1000000,
+        		              error: function(e) {
+        		              },
+        		              success: function(data) {
+        		            	  data = jQuery.parseJSON(data);
+        		            	  if (data.Code!=null){
+            		            	  if (data.Code==-1){
+            		            		 helper_functions.displayError("#error", data.Content);
+            		            	  }
+        		            	  }
+        		              }
+        					});
+        				}
+                });  
+          		
+            	
+      		}
 		}
-		/*
- 		var create_new = base_url + '/create_new';
-		if (!this.href.substring(0, create_new.length) === create_new){
 		
-	 	 	e.preventDefault();
-		    	jQuery.ajax({
-		         	type: "POST",
-		         	url:"/",
-	                timeout: 1000000,
-		          	data: {service_get : this.href},
-		          	error: function(e) {
-		          		console.log(e);
-		          	},
-		          	success: function(data) {
-		          		jQuery('#container').hide().html(data).fadeIn('slow');
-		          	}
-			    });
-		}
-		*/
- 	 });
+       	return false;	        	
  	
+ 	 });
  	 
 });

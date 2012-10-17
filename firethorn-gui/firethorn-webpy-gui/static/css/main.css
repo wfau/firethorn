@@ -157,10 +157,16 @@ a:active {
 	}	
 
 #content{
-	margin:0 auto;
-	text-align:center;
-	min-width:1200px;
-	width:1200px	;
-	overflow:hidden;
-}
+		margin:0 auto;
+		text-align:center;
+		min-width:1200px;
+		width:1200px	;
+		overflow:hidden;
+	}
 	
+#error {
+		color:red;
+		text-align:center;
+		width:400px;
+		margin:0 auto;
+	}

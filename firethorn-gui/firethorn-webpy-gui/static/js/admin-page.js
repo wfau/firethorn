@@ -20,15 +20,23 @@ jQuery(document).ready(function() {
 
         	xhr = jQuery.ajax({
                 type: "POST",
-                url:"/",
+                url: properties.getPath() +  "/",
                 data: data,
                 timeout: 1000000,
                 error: function(e) {
-                	console.log(e);
+					 helper_functions.displayError("#error", e);
                 },
-                success: function(data) {
-                	jQuery('#container').hide().html(data).fadeIn('slow');
-                }
+                success: function(data) {  
+                	data = jQuery.parseJSON(data);
+					if (data.Code!=null){
+						if (data.Code==-1){
+							helper_functions.displayError("#error", data.Content);
+					    } else {
+				    	    jQuery('#container').hide().html(data.Content).fadeIn('slow');
+						}
+				    }
+					
+				}
         	});
         	return false;
       
