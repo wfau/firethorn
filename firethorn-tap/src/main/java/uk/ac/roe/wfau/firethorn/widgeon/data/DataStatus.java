@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon ;
+package uk.ac.roe.wfau.firethorn.widgeon.data ;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 
@@ -26,12 +26,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Public interface for an Entity with a status.
  *
  */
-public interface ResourceStatus
+public interface DataStatus
 extends Entity
     {
 
     /**
-     * Enum representing the status of a DataResource component.
+     * Enum representing the status.
      *
      */
     public enum Status
@@ -91,7 +91,7 @@ extends Entity
         {
 
         /**
-         *
+         * Eclipse generated serial version ID.
          *
          */
         private static final long serialVersionUID = 6595169286734884311L;
@@ -115,7 +115,7 @@ extends Entity
          * Create a default message.
          *
          */
-        public static String message(final ResourceStatus.Status status)
+        public static String message(final DataStatus.Status status)
             {
             return message(
                 status.toString()
@@ -126,7 +126,7 @@ extends Entity
          * Public constructor, using default message.
          *
          */
-        public InvalidStatusException(final ResourceStatus.Status status)
+        public InvalidStatusException(final DataStatus.Status status)
             {
             this(
                 status,
@@ -140,7 +140,7 @@ extends Entity
          * Public constructor, with specific message.
          *
          */
-        public InvalidStatusException(final ResourceStatus.Status status, final String message)
+        public InvalidStatusException(final DataStatus.Status status, final String message)
             {
             super(
                 message
@@ -148,9 +148,9 @@ extends Entity
             this.status = status ;
             }
 
-        private final ResourceStatus.Status status;
+        private final DataStatus.Status status;
 
-        public ResourceStatus.Status status()
+        public DataStatus.Status status()
             {
             return this.status;
             }

@@ -18,8 +18,8 @@
 package uk.ac.roe.wfau.firethorn.widgeon.adql ;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataResource;
 
 /**
  * Public interface for an ADQL resource.

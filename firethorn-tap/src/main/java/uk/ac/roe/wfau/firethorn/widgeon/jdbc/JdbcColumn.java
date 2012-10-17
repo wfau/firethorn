@@ -21,14 +21,14 @@ import java.sql.DatabaseMetaData;
 import java.util.List;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseColumn;
 
 /**
  * Public interface for a JDBC column.
  *
  */
 public interface JdbcColumn
-extends BaseResource.BaseColumn<JdbcTable>
+extends BaseColumn<JdbcTable>
     {
     /**
      * Factory interface for identifiers.
@@ -44,7 +44,7 @@ extends BaseResource.BaseColumn<JdbcTable>
      *
      */
     public static interface Factory
-    extends BaseResource.BaseColumn.Factory<JdbcTable, JdbcColumn>
+    extends BaseColumn.Factory<JdbcTable, JdbcColumn>
         {
 
         /**

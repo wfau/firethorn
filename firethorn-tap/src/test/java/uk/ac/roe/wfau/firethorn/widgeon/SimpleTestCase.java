@@ -23,7 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseCatalog;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalog;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchema;
@@ -147,16 +151,16 @@ extends TestBase
         {
         log.debug("-------");
         log.debug("DataResource [{}]", widgeon);
-        for (final BaseResource.BaseCatalog<?> catalog : widgeon.catalogs().select())
+        for (final BaseCatalog<?> catalog : widgeon.catalogs().select())
             {
             log.debug("  DataCatalog [{}]", catalog);
-            for (final BaseResource.BaseSchema<?> schema : catalog.schemas().select())
+            for (final BaseSchema<?> schema : catalog.schemas().select())
                 {
                 log.debug("  DataSchema [{}]", schema);
-                for (final BaseResource.BaseTable<?> table : schema.tables().select())
+                for (final BaseTable<?> table : schema.tables().select())
                     {
                     log.debug("  DataTable [{}]", table);
-                    for (final BaseResource.BaseColumn<?> column : table.columns().select())
+                    for (final BaseColumn<?> column : table.columns().select())
                         {
                         log.debug("  DataColumn [{}]", column);
                         }

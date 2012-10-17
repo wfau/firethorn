@@ -38,9 +38,10 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseCatalog;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataResource;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataStatusEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalogEntity;
 
 /**
@@ -94,7 +95,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalogEntity;
         }
     )
 public class AdqlCatalogEntity
-extends ResourceStatusEntity
+extends DataStatusEntity
 implements AdqlCatalog
     {
 
@@ -142,7 +143,7 @@ implements AdqlCatalog
             super.insert(
                 entity
                 );
-            for (final BaseResource.BaseSchema<?> schema : entity.base().schemas().select())
+            for (final BaseSchema<?> schema : entity.base().schemas().select())
                 {
                 this.schemas().cascade(
                     entity,
@@ -157,7 +158,7 @@ implements AdqlCatalog
          *
          */
         @CascadeEntityMethod
-        protected AdqlCatalog create(final AdqlResource parent, final BaseResource.BaseCatalog<?> base)
+        protected AdqlCatalog create(final AdqlResource parent, final BaseCatalog<?> base)
             {
             return this.insert(
                 new AdqlCatalogEntity(
@@ -169,7 +170,7 @@ implements AdqlCatalog
 
         @Override
         @SelectEntityMethod
-        public AdqlCatalog select(final AdqlResource parent, final BaseResource.BaseCatalog<?> base)
+        public AdqlCatalog select(final AdqlResource parent, final BaseCatalog<?> base)
             {
             return super.first(
                 super.query(
@@ -186,7 +187,7 @@ implements AdqlCatalog
 
         @Override
         @CascadeEntityMethod
-        public AdqlCatalog cascade(final AdqlResource parent, final BaseResource.BaseCatalog<?> base)
+        public AdqlCatalog cascade(final AdqlResource parent, final BaseCatalog<?> base)
             {
             AdqlCatalog result = this.select(
                 parent,
@@ -204,7 +205,7 @@ implements AdqlCatalog
 
         @Override
         @CreateEntityMethod
-        public AdqlCatalog create(final AdqlResource parent, final BaseResource.BaseCatalog<?> base, final String name)
+        public AdqlCatalog create(final AdqlResource parent, final BaseCatalog<?> base, final String name)
             {
             return this.insert(
                 new AdqlCatalogEntity(
@@ -267,7 +268,7 @@ implements AdqlCatalog
 
         @Override
         @SelectEntityMethod
-        public Iterable<AdqlCatalog> select(final BaseResource.BaseCatalog<?> base)
+        public Iterable<AdqlCatalog> select(final BaseCatalog<?> base)
             {
             return super.iterable(
                 super.query(
@@ -346,7 +347,7 @@ implements AdqlCatalog
      * Create a new view.
      *
      */
-    protected AdqlCatalogEntity(final AdqlResource parent, final BaseResource.BaseCatalog<?> base)
+    protected AdqlCatalogEntity(final AdqlResource parent, final BaseCatalog<?> base)
         {
         this(
             parent,
@@ -359,7 +360,7 @@ implements AdqlCatalog
      * Create a new view.
      *
      */
-    protected AdqlCatalogEntity(final AdqlResource parent, final BaseResource.BaseCatalog<?> base, final String name)
+    protected AdqlCatalogEntity(final AdqlResource parent, final BaseCatalog<?> base, final String name)
         {
         super(
             name
@@ -406,10 +407,10 @@ implements AdqlCatalog
         nullable = false,
         updatable = false
         )
-    private BaseResource.BaseCatalog<?> base ;
+    private BaseCatalog<?> base ;
 
     @Override
-    public BaseResource.BaseCatalog<?> base()
+    public BaseCatalog<?> base()
         {
         return this.base ;
         }

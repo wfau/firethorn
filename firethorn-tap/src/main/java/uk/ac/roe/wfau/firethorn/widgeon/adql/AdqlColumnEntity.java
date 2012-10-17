@@ -38,8 +38,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseColumn;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataStatusEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcColumnEntity;
 
 /**
@@ -98,7 +98,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcColumnEntity;
         }
     )
 public class AdqlColumnEntity
-extends ResourceStatusEntity
+extends DataStatusEntity
 implements AdqlColumn
     {
 
@@ -164,7 +164,7 @@ implements AdqlColumn
          *
          */
         @CascadeEntityMethod
-        protected AdqlColumn create(final AdqlTable parent, final BaseResource.BaseColumn<?> base)
+        protected AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base)
             {
             return this.insert(
                 new AdqlColumnEntity(
@@ -176,7 +176,7 @@ implements AdqlColumn
 
         @Override
         @SelectEntityMethod
-        public AdqlColumn select(final AdqlResource parent, final BaseResource.BaseColumn<?> base)
+        public AdqlColumn select(final AdqlResource parent, final BaseColumn<?> base)
             {
             return super.first(
                 super.query(
@@ -193,7 +193,7 @@ implements AdqlColumn
 
         @Override
         @SelectEntityMethod
-        public AdqlColumn select(final AdqlCatalog parent, final BaseResource.BaseColumn<?> base)
+        public AdqlColumn select(final AdqlCatalog parent, final BaseColumn<?> base)
             {
             return super.first(
                 super.query(
@@ -210,7 +210,7 @@ implements AdqlColumn
 
         @Override
         @SelectEntityMethod
-        public AdqlColumn select(final AdqlSchema parent, final BaseResource.BaseColumn<?> base)
+        public AdqlColumn select(final AdqlSchema parent, final BaseColumn<?> base)
             {
             return super.first(
                 super.query(
@@ -227,7 +227,7 @@ implements AdqlColumn
 
         @Override
         @SelectEntityMethod
-        public AdqlColumn select(final AdqlTable parent, final BaseResource.BaseColumn<?> base)
+        public AdqlColumn select(final AdqlTable parent, final BaseColumn<?> base)
             {
             return super.first(
                 super.query(
@@ -244,7 +244,7 @@ implements AdqlColumn
 
         @Override
         @CascadeEntityMethod
-        public AdqlColumn cascade(final AdqlTable parent, final BaseResource.BaseColumn<?> base)
+        public AdqlColumn cascade(final AdqlTable parent, final BaseColumn<?> base)
             {
             AdqlColumn result = this.select(
                 parent,
@@ -262,7 +262,7 @@ implements AdqlColumn
 
         @Override
         @CreateEntityMethod
-        public AdqlColumn create(final AdqlTable parent, final BaseResource.BaseColumn<?> base, final String name)
+        public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base, final String name)
             {
             return this.insert(
                 new AdqlColumnEntity(
@@ -325,7 +325,7 @@ implements AdqlColumn
 
         @Override
         @SelectEntityMethod
-        public Iterable<AdqlColumn> select(final BaseResource.BaseColumn<?> base)
+        public Iterable<AdqlColumn> select(final BaseColumn<?> base)
             {
             return super.iterable(
                 super.query(
@@ -361,7 +361,7 @@ implements AdqlColumn
      * Create a new view.
      *
      */
-    protected AdqlColumnEntity(final AdqlTable parent, final BaseResource.BaseColumn<?> base)
+    protected AdqlColumnEntity(final AdqlTable parent, final BaseColumn<?> base)
         {
         this(
             parent,
@@ -374,7 +374,7 @@ implements AdqlColumn
      * Create a new view.
      *
      */
-    protected AdqlColumnEntity(final AdqlTable parent, final BaseResource.BaseColumn<?> base, final String name)
+    protected AdqlColumnEntity(final AdqlTable parent, final BaseColumn<?> base, final String name)
         {
         super(
             name
@@ -421,10 +421,10 @@ implements AdqlColumn
         nullable = false,
         updatable = false
         )
-    private BaseResource.BaseColumn<?> base ;
+    private BaseColumn<?> base ;
 
     @Override
-    public BaseResource.BaseColumn<?> base()
+    public BaseColumn<?> base()
         {
         return this.base ;
         }

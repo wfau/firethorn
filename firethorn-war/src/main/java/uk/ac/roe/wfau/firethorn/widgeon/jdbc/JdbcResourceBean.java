@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
-import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatus.Status;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataStatus.Status;
 
 /**
  * Bean wrapper for <code>JdbcResource</code>.

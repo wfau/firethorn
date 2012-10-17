@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon ;
+package uk.ac.roe.wfau.firethorn.widgeon.data ;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -43,13 +43,13 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 @Access(
     AccessType.FIELD
     )
-public abstract class ResourceStatusEntity
+public abstract class DataStatusEntity
 extends AbstractEntity
-implements ResourceStatus
+implements DataStatus
     {
 
     /*
-     * The persistence column name for our status enum.
+     * The persistence column name for our status.
      *
      */
     public static final String DB_STATUS_COL = "status" ;
@@ -59,7 +59,7 @@ implements ResourceStatus
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
      *
      */
-    protected ResourceStatusEntity()
+    protected DataStatusEntity()
         {
         super();
         }
@@ -68,7 +68,7 @@ implements ResourceStatus
      * Protected constructor, owner defaults to the current actor.
      *
      */
-    protected ResourceStatusEntity(final String name)
+    protected DataStatusEntity(final String name)
         {
         super(
             name
