@@ -18,15 +18,15 @@
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataSchema;
 
 /**
  * Public interface for an ADQL schema.
  *
  */
 public interface AdqlSchema
-extends DataResource.DataSchema<AdqlCatalog>
+extends DataSchema<AdqlCatalog>
     {
     /**
      * Factory interface for identifiers.
@@ -42,38 +42,38 @@ extends DataResource.DataSchema<AdqlCatalog>
      *
      */
     public static interface Factory
-    extends DataResource.DataSchema.Factory<AdqlCatalog, AdqlSchema>
+    extends DataSchema.Factory<AdqlCatalog, AdqlSchema>
         {
 
         /**
          * Find an existing schema view, or create a new one.
          *
          */
-        public AdqlSchema cascade(final AdqlCatalog parent, final BaseResource.BaseSchema<?> base);
+        public AdqlSchema cascade(final AdqlCatalog parent, final BaseSchema<?> base);
 
         /**
          * Create a new view of a schema.
          *
          */
-        public AdqlSchema create(final AdqlCatalog parent, final BaseResource.BaseSchema<?> base, final String name);
+        public AdqlSchema create(final AdqlCatalog parent, final BaseSchema<?> base, final String name);
 
         /**
          * Select all the views of a schema.
          *
          */
-        public Iterable<AdqlSchema> select(final BaseResource.BaseSchema<?> base);
+        public Iterable<AdqlSchema> select(final BaseSchema<?> base);
 
         /**
          * Select a schema view based on parent resource.
          *
          */
-        public AdqlSchema select(final AdqlResource parent, final BaseResource.BaseSchema<?> base);
+        public AdqlSchema select(final AdqlResource parent, final BaseSchema<?> base);
 
         /**
          * Select a schema view based on parent catalog.
          *
          */
-        public AdqlSchema select(final AdqlCatalog parent, final BaseResource.BaseSchema<?> base);
+        public AdqlSchema select(final AdqlCatalog parent, final BaseSchema<?> base);
 
         /**
          * Access to our table factory.
@@ -87,14 +87,14 @@ extends DataResource.DataSchema<AdqlCatalog>
      * Access to our base schema.
      *
      */
-    public BaseResource.BaseSchema<?> base();
+    public BaseSchema<?> base();
 
     /**
      * Public interface for accessing a schema's tables.
      *
      */
     public interface Tables
-    extends DataResource.DataSchema.Tables<AdqlTable>
+    extends DataSchema.Tables<AdqlTable>
         {
         }
 

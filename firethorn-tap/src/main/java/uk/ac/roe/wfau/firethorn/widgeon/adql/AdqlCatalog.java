@@ -18,15 +18,15 @@
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseCatalog;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataCatalog;
 
 /**
  * Public interface for an ADQL catalog.
  *
  */
 public interface AdqlCatalog
-extends DataResource.DataCatalog<AdqlResource>
+extends DataCatalog<AdqlResource>
     {
     /**
      * Factory interface for identifiers.
@@ -42,32 +42,32 @@ extends DataResource.DataCatalog<AdqlResource>
      *
      */
     public static interface Factory
-    extends DataResource.DataCatalog.Factory<AdqlResource, AdqlCatalog>
+    extends DataCatalog.Factory<AdqlResource, AdqlCatalog>
         {
 
         /**
          * Find an existing catalog view, or create a new one.
          *
          */
-        public AdqlCatalog cascade(final AdqlResource parent, final BaseResource.BaseCatalog<?> base);
+        public AdqlCatalog cascade(final AdqlResource parent, final BaseCatalog<?> base);
 
         /**
          * Create a view of a catalog.
          *
          */
-        public AdqlCatalog create(final AdqlResource parent, final BaseResource.BaseCatalog<?> base, final String name);
+        public AdqlCatalog create(final AdqlResource parent, final BaseCatalog<?> base, final String name);
 
         /**
          * Select all the views of a catalog.
          *
          */
-        public Iterable<AdqlCatalog> select(final BaseResource.BaseCatalog<?> base);
+        public Iterable<AdqlCatalog> select(final BaseCatalog<?> base);
 
         /**
          * Select a catalog view based on parent resource.
          *
          */
-        public AdqlCatalog select(final AdqlResource parent, final BaseResource.BaseCatalog<?> base);
+        public AdqlCatalog select(final AdqlResource parent, final BaseCatalog<?> base);
 
         /**
          * Access to our schema factory.
@@ -81,14 +81,14 @@ extends DataResource.DataCatalog<AdqlResource>
      * Access to our base catalog.
      *
      */
-    public BaseResource.BaseCatalog<?> base();
+    public BaseCatalog<?> base();
 
     /**
      * Public interface for accessing a catalog's schemas.
      *
      */
     public interface Schemas
-    extends DataResource.DataCatalog.Schemas<AdqlSchema>
+    extends DataCatalog.Schemas<AdqlSchema>
         {
         }
 

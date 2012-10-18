@@ -38,8 +38,9 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataStatusEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchemaEntity;
 
 /**
@@ -90,7 +91,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchemaEntity;
         }
     )
 public class AdqlSchemaEntity
-extends ResourceStatusEntity
+extends DataStatusEntity
 implements AdqlSchema
     {
 
@@ -138,7 +139,7 @@ implements AdqlSchema
             super.insert(
                 entity
                 );
-            for (final BaseResource.BaseTable<?> baseTable : entity.base().tables().select())
+            for (final BaseTable<?> baseTable : entity.base().tables().select())
                 {
                 this.tables().cascade(
                     entity,
@@ -153,7 +154,7 @@ implements AdqlSchema
          *
          */
         @CreateEntityMethod
-        protected AdqlSchema create(final AdqlCatalog parent, final BaseResource.BaseSchema<?> base)
+        protected AdqlSchema create(final AdqlCatalog parent, final BaseSchema<?> base)
             {
             return this.insert(
                 new AdqlSchemaEntity(
@@ -165,7 +166,7 @@ implements AdqlSchema
 
         @Override
         @SelectEntityMethod
-        public AdqlSchema select(final AdqlResource parent, final BaseResource.BaseSchema<?> base)
+        public AdqlSchema select(final AdqlResource parent, final BaseSchema<?> base)
             {
             return super.first(
                 super.query(
@@ -182,7 +183,7 @@ implements AdqlSchema
 
         @Override
         @SelectEntityMethod
-        public AdqlSchema select(final AdqlCatalog parent, final BaseResource.BaseSchema<?> base)
+        public AdqlSchema select(final AdqlCatalog parent, final BaseSchema<?> base)
             {
             return super.first(
                 super.query(
@@ -199,7 +200,7 @@ implements AdqlSchema
 
         @Override
         @CreateEntityMethod
-        public AdqlSchema cascade(final AdqlCatalog parent, final BaseResource.BaseSchema<?> base)
+        public AdqlSchema cascade(final AdqlCatalog parent, final BaseSchema<?> base)
             {
             AdqlSchema result = this.select(
                 parent,
@@ -217,7 +218,7 @@ implements AdqlSchema
 
         @Override
         @CreateEntityMethod
-        public AdqlSchema create(final AdqlCatalog parent, final BaseResource.BaseSchema<?> base, final String name)
+        public AdqlSchema create(final AdqlCatalog parent, final BaseSchema<?> base, final String name)
             {
             return this.insert(
                 new AdqlSchemaEntity(
@@ -280,7 +281,7 @@ implements AdqlSchema
 
         @Override
         @SelectEntityMethod
-        public Iterable<AdqlSchema> select(final BaseResource.BaseSchema<?> base)
+        public Iterable<AdqlSchema> select(final BaseSchema<?> base)
             {
             return super.iterable(
                 super.query(
@@ -359,7 +360,7 @@ implements AdqlSchema
      * Create a new view.
      *
      */
-    protected AdqlSchemaEntity(final AdqlCatalog parent, final BaseResource.BaseSchema<?> base)
+    protected AdqlSchemaEntity(final AdqlCatalog parent, final BaseSchema<?> base)
         {
         this(
             parent,
@@ -372,7 +373,7 @@ implements AdqlSchema
      * Create a new view.
      *
      */
-    protected AdqlSchemaEntity(final AdqlCatalog parent, final BaseResource.BaseSchema<?> base, final String name)
+    protected AdqlSchemaEntity(final AdqlCatalog parent, final BaseSchema<?> base, final String name)
         {
         super(
             name
@@ -419,10 +420,10 @@ implements AdqlSchema
         nullable = false,
         updatable = false
         )
-    private BaseResource.BaseSchema<?> base ;
+    private BaseSchema<?> base ;
 
     @Override
-    public BaseResource.BaseSchema<?> base()
+    public BaseSchema<?> base()
         {
         return this.base ;
         }

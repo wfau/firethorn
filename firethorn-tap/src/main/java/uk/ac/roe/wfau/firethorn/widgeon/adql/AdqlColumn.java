@@ -18,15 +18,15 @@
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseColumn;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataColumn;
 
 /**
  * Public interface for an ADQL column.
  *
  */
 public interface AdqlColumn
-extends DataResource.DataColumn<AdqlTable>
+extends DataColumn<AdqlTable>
     {
     /**
      * Factory interface for identifiers.
@@ -42,50 +42,50 @@ extends DataResource.DataColumn<AdqlTable>
      *
      */
     public static interface Factory
-    extends DataResource.DataColumn.Factory<AdqlTable, AdqlColumn>
+    extends DataColumn.Factory<AdqlTable, AdqlColumn>
         {
 
         /**
          * Find an existing column view, or create a new one.
          *
          */
-        public AdqlColumn cascade(final AdqlTable parent, final BaseResource.BaseColumn<?> base);
+        public AdqlColumn cascade(final AdqlTable parent, final BaseColumn<?> base);
 
         /**
          * Create a new View of a column.
          *
          */
-        public AdqlColumn create(final AdqlTable parent, final BaseResource.BaseColumn<?> base, final String name);
+        public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base, final String name);
 
         /**
          * Select all the views of a column.
          *
          */
-        public Iterable<AdqlColumn> select(final BaseResource.BaseColumn<?> base);
+        public Iterable<AdqlColumn> select(final BaseColumn<?> base);
 
         /**
          * Select a column view based on parent resource.
          *
          */
-        public AdqlColumn select(final AdqlResource parent, final BaseResource.BaseColumn<?> base);
+        public AdqlColumn select(final AdqlResource parent, final BaseColumn<?> base);
 
         /**
          * Select a column view based on parent catalog.
          *
          */
-        public AdqlColumn select(final AdqlCatalog parent, final BaseResource.BaseColumn<?> base);
+        public AdqlColumn select(final AdqlCatalog parent, final BaseColumn<?> base);
 
         /**
          * Select a column view based on parent schema.
          *
          */
-        public AdqlColumn select(final AdqlSchema parent, final BaseResource.BaseColumn<?> base);
+        public AdqlColumn select(final AdqlSchema parent, final BaseColumn<?> base);
 
         /**
          * Select a column view based on parent table.
          *
          */
-        public AdqlColumn select(final AdqlTable parent, final BaseResource.BaseColumn<?> base);
+        public AdqlColumn select(final AdqlTable parent, final BaseColumn<?> base);
 
         }
 
@@ -93,7 +93,7 @@ extends DataResource.DataColumn<AdqlTable>
      * Access to our base column.
      *
      */
-    public BaseResource.BaseColumn<?> base();
+    public BaseColumn<?> base();
 
     /**
      * Access to our parent resource.

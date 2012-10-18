@@ -38,9 +38,10 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseCatalog;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataResource;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataStatusEntity;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceEntity;
 
 /**
@@ -80,7 +81,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceEntity;
         }
     )
 public class AdqlResourceEntity
-extends ResourceStatusEntity
+extends DataStatusEntity
 implements AdqlResource
     {
 
@@ -122,7 +123,7 @@ implements AdqlResource
             super.insert(
                 entity
                 );
-            for (final BaseResource.BaseCatalog<?> catalog : entity.base().catalogs().select())
+            for (final BaseCatalog<?> catalog : entity.base().catalogs().select())
                 {
                 this.catalogs().cascade(
                     entity,

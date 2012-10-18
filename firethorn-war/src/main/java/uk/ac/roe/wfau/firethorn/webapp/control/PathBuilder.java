@@ -22,7 +22,7 @@ import java.net.URI;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
-import uk.ac.roe.wfau.firethorn.widgeon.DataResource;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataResource;
 
 @Deprecated
 public interface PathBuilder

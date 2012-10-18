@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataResource;
 
 /**
  *

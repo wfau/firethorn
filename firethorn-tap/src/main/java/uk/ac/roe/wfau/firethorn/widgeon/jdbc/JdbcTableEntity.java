@@ -48,13 +48,13 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatusEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.ResourceStatus.Status;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlCatalog;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataStatus.Status;
 
 /**
  * Hibernate based <code>JdbcTable</code> implementation.
@@ -92,7 +92,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
         }
     )
 public class JdbcTableEntity
-extends ResourceStatusEntity
+extends DataStatusEntity
 implements JdbcTable
     {
 
@@ -235,9 +235,9 @@ implements JdbcTable
         }
 
     @Override
-    public BaseResource.BaseTable.Views views()
+    public BaseTable.Views views()
         {
-        return new BaseResource.BaseTable.Views()
+        return new BaseTable.Views()
             {
             @Override
             public Iterable<AdqlTable> select()
