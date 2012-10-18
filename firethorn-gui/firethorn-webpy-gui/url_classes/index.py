@@ -158,7 +158,7 @@ class index:
                     
                 f.close()
             else :
-                return_string = json.dumps({
+                return json.dumps({
                                     'Code' : -1,
                                     'Content' : config.errors['INVALID_PARAM']
                                 })

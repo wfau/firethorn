@@ -12,7 +12,7 @@ jQuery(document).ready(function() {
 	 */
 	jQuery('.input_form').submit(function(){
 		
-        	data = jQuery(this).serialize();
+        	json_data = jQuery(this).serialize();
          	
         	var success = function(data) {
 				  data = jQuery.parseJSON(data);
@@ -26,7 +26,7 @@ jQuery(document).ready(function() {
 				  }
          	}
        	
-	       	xhr = helper_functions.ajaxCall(data, "POST",properties.getPath() +  "create_new", 1000000, function(e) { helper_functions.displayError("#error", e);} , success);
+	       	xhr = helper_functions.ajaxCall(json_data , "POST",properties.getPath() +  "create_new", 1000000, function(e) { helper_functions.displayError("#error", e);} , success);
 	        return false;
       
 	});
