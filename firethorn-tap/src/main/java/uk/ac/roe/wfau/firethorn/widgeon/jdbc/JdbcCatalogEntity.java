@@ -49,8 +49,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlCatalog;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.data.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.data.DataStatusEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.data.DataStatus.Status;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponentImpl;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponent.Status;
 
 /**
  * Hibernate based <code>JdbcCatalog</code> implementation.
@@ -89,7 +89,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.data.DataStatus.Status;
         }
     )
 public class JdbcCatalogEntity
-extends DataStatusEntity
+extends DataComponentImpl
 implements JdbcCatalog
     {
 

@@ -24,7 +24,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
  *
  */
 public interface DataSchema<CatalogType extends DataCatalog<?>>
-extends DataStatus
+extends DataComponent
     {
 
     /**

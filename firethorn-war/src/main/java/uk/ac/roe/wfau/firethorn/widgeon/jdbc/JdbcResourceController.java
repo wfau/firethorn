@@ -34,7 +34,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
-import uk.ac.roe.wfau.firethorn.widgeon.data.DataStatus.Status;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponent.Status;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**

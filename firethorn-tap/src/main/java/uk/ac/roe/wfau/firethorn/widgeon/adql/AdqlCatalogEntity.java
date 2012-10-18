@@ -41,7 +41,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseCatalog;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.widgeon.data.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.data.DataStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponentImpl;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalogEntity;
 
 /**
@@ -95,7 +95,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalogEntity;
         }
     )
 public class AdqlCatalogEntity
-extends DataStatusEntity
+extends DataComponentImpl
 implements AdqlCatalog
     {
 

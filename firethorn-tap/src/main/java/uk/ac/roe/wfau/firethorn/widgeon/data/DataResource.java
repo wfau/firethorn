@@ -24,7 +24,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.data ;
  *
  */
 public interface DataResource
-extends DataStatus
+extends DataComponent
     {
 
     /**

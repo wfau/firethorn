@@ -9,7 +9,7 @@ import web
 
 web_services_hostname = 'localhost:8080'
 
-base_location = '/home/stelios/Desktop/workspace/firethorn-webpy-gui'
+base_location = '/var/local/projects/wfau/firethorn/devel/firethorn-gui/firethorn-webpy-gui'
 get_jdbc_resources_url = "/firethorn/jdbc/resources/select"
 
 local_hostname = {'index' : 'localhost:8090','services' : 'http://localhost:8090/services'}

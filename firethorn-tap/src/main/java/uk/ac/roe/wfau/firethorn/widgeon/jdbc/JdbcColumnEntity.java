@@ -47,8 +47,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.widgeon.data.DataStatusEntity;
-import uk.ac.roe.wfau.firethorn.widgeon.data.DataStatus.Status;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponentImpl;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponent.Status;
 
 /**
  * Hibernate based <code>JdbcColumn</code> implementation.
@@ -86,7 +86,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.data.DataStatus.Status;
         }
     )
 public class JdbcColumnEntity
-extends DataStatusEntity
+extends DataComponentImpl
 implements JdbcColumn
     {
 

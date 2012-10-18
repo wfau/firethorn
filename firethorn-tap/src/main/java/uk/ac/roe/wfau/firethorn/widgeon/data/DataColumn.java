@@ -24,7 +24,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
  *
  */
 public interface DataColumn<TableType extends DataTable<?>>
-extends DataStatus
+extends DataComponent
     {
 
     /**

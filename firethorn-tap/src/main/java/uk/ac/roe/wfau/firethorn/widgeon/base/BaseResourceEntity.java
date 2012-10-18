@@ -38,7 +38,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.widgeon.data.DataStatusEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponentImpl;
 
 /**
  * Hibernate implementation of <code>BaseResource</code>.
@@ -88,7 +88,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.data.DataStatusEntity;
         }
     )
 public abstract class BaseResourceEntity
-extends DataStatusEntity
+extends DataComponentImpl
 implements BaseResource
     {
 
