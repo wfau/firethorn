@@ -13,29 +13,21 @@ jQuery(document).ready(function() {
 	jQuery('.input_form').submit(function(){
 		
         	data = jQuery(this).serialize();
+         	
+        	var success = function(data) {
+				  data = jQuery.parseJSON(data);
+				  if (data.Code!=null){
+					  if (data.Code==-1){
+						 helper_functions.displayError("#error", data.Content);
+					  } else {
+	                	 jQuery('#container').hide().html(data.Content).fadeIn('slow');
 
-        	xhr = jQuery.ajax({
-                type: "POST",
-                url: properties.getPath() +  "create_new",
-                data: data,
-                timeout: 1000000,
-                error: function(e) {
-					 helper_functions.displayError("#error", e);
-
-                },
-                success: function(data) {
-					  data = jQuery.parseJSON(data);
-					  if (data.Code!=null){
-						  if (data.Code==-1){
-							 helper_functions.displayError("#error", data.Content);
-						  } else {
-		                	 jQuery('#container').hide().html(data.Content).fadeIn('slow');
-
-						  }
 					  }
-                }
-        	});
-        	return false;
+				  }
+         	}
+       	
+	       	xhr = helper_functions.ajaxCall(data, "POST",properties.getPath() +  "create_new", 1000000, function(e) { helper_functions.displayError("#error", e);} , success);
+	        return false;
       
 	});
 
@@ -98,51 +90,42 @@ jQuery(document).ready(function() {
         				},
         			onCheck:function(node, checked){
         				var id = node.id;
-        				jQuery.ajax({
-        					  type: 'POST',
-        					  url:  properties.getPath() + 'create_view_edit_handler',
-        					  data: {'id' : id,'checked' : checked, action : 'checkbox_edit' },
-        					  timeout: 1000000,
-        		              error: function(e) {
-        		              },
-        		              success: function(data) {
-        		            	  data = jQuery.parseJSON(data);
-        		            	  if (data.Code!=null){
-            		            	  if (data.Code==-1){
-            		            		 helper_functions.displayError("#error", data.Content);
-            		            	  }
-        		            	  }
-        		              }
-        					});
+        				var success = function(data) {
+						   data = jQuery.parseJSON(data);
+						   if (data.Code!=null){
+					    	   if (data.Code==-1){
+					    	     	 helper_functions.displayError("#error", data.Content);
+					    	   }
+						   }
+					    }
+        				
+        		       	helper_functions.ajaxCall({'id' : id,'checked' : checked, action : 'checkbox_edit' }, "POST",properties.getPath() + 'create_view_edit_handler', 1000000, function(e) {} , success);
         				
         				},
         			onAfterEdit:function(node){
         				var text = node.text;
         				var id = node.id;
-        				jQuery.ajax({
-        					  type: 'POST',
-        					  url:  properties.getPath() +'create_view_edit_handler',
-        					  data: {'id' : id, 'text' : text, action : 'name_edit'},
-        					  timeout: 1000000,
-        		              error: function(e) {
-        		              },
-        		              success: function(data) {
-        		            	  data = jQuery.parseJSON(data);
-        		            	  if (data.Code!=null){
-            		            	  if (data.Code==-1){
-            		            		 helper_functions.displayError("#error", data.Content);
-            		            	  }
-        		            	  }
-        		              }
-        					});
+        				var success = function(data) {
+	   		            	  data = jQuery.parseJSON(data);
+	   		            	  if (data.Code!=null){
+	       		            	  if (data.Code==-1){
+	       		            		 helper_functions.displayError("#error", data.Content);
+	       		            	  }
+	   		            	  }
         				}
+
+        		       	helper_functions.ajaxCall({'id' : id, 'text' : text, action : 'name_edit'}, "POST",properties.getPath() +'create_view_edit_handler', 1000000, function(e) {} , success);
+        		               				
+        			}
                 });  
           		
             	
       		}
+      		
+           	return false;	        	
+
 		}
 		
-       	return false;	        	
  	
  	 });
  	 
