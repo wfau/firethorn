@@ -42,12 +42,6 @@ public interface EntityBean<EntityType extends Entity>
     /**
      * The Entity URI.
      *
-    public URI uri();
-     */
-
-    /**
-     * The Entity URI.
-     *
      */
     public URI getIdent();
 

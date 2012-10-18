@@ -32,7 +32,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
  *
  */
 @Slf4j
-public class AbstractEntityBean<EntityType extends Entity>
+public class AbstractEntityBeanImpl<EntityType extends Entity>
 implements EntityBean<EntityType>
     {
     /**
@@ -51,9 +51,9 @@ implements EntityBean<EntityType>
      * @param entity
      *
      */
-    public AbstractEntityBean(final URI type, final EntityType entity)
+    public AbstractEntityBeanImpl(final URI type, final EntityType entity)
         {
-        log.debug("AbstractEntityBean [{}][{}]", type, entity.ident().value());
+        log.debug("AbstractEntityBeanImpl [{}][{}]", type, entity.ident().value());
         this.type = type ;
         this.entity = entity ;
         }

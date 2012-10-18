@@ -17,16 +17,16 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBean;
-import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponentBean;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponentBeanImpl;
 
 /**
  * Bean wrapper for <code>JdbcCatalog</code>.
  *
  */
 public class JdbcCatalogBean
-extends AbstractEntityBean<JdbcCatalog>
-implements EntityBean<JdbcCatalog>
+extends DataComponentBeanImpl<JdbcCatalog>
+implements DataComponentBean<JdbcCatalog>
     {
     /**
      * Public constructor.

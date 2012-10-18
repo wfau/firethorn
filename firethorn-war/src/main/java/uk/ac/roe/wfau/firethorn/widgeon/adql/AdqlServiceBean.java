@@ -20,7 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 import java.net.URI;
 
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 
 /**
@@ -28,7 +28,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
  *
  */
 public class AdqlServiceBean
-extends AbstractEntityBean<AdqlService>
+extends AbstractEntityBeanImpl<AdqlService>
 implements EntityBean<AdqlService>
     {
 

@@ -17,17 +17,16 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBean;
-import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
-import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponent.Status;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponentBean;
+import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponentBeanImpl;
 
 /**
  * Bean wrapper for <code>JdbcResource</code>.
  *
  */
 public class JdbcResourceBean
-extends AbstractEntityBean<JdbcResource>
-implements EntityBean<JdbcResource>
+extends DataComponentBeanImpl<JdbcResource>
+implements DataComponentBean<JdbcResource>
     {
     /**
      * Public constructor.
@@ -39,11 +38,6 @@ implements EntityBean<JdbcResource>
             JdbcResourceIdentFactory.TYPE_URI,
             entity
             );
-        }
-
-    public Status getStatus()
-        {
-        return entity().status();
         }
 
     }
