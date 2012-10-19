@@ -5,6 +5,7 @@ Created on Sep 24, 2012
 '''
 
 from config import create_menu_items
+import urllib2
 
 class login_helpers:
     """
@@ -21,8 +22,8 @@ class login_helpers:
         role = self.session.get('role')
         
         for i in create_menu_items[role]:
-            html_content+='<li><a href="create_new?obj_type=' + i + '" id="' + i + '"><span>' + i +'</span></a></li>'
-
+            html_content+='<li><a href="create_new?obj_type=' +  urllib2.quote(i.encode("utf8")) + '" id="' + i + '"><span>' + i +'</span></a></li>'
+        
         return html_content
     
     def get_log_notification(self):

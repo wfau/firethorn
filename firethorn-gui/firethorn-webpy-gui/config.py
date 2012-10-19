@@ -9,10 +9,10 @@ import web
 
 web_services_hostname = 'localhost:8080'
 
-base_location = '/var/local/projects/wfau/firethorn/devel/firethorn-gui/firethorn-webpy-gui'
+base_location = '/home/stelios/Desktop/workspace/firethorn-webpy-gui'
 get_jdbc_resources_url = "/firethorn/jdbc/resources/select"
 
-local_hostname = {'index' : 'localhost:8090','services' : 'http://localhost:8090/services'}
+local_hostname = {'index' : 'localhost:8090','services' : 'http://localhost:8090/services', 'jdbc_resources' : 'http://localhost:8090/jdbc_resources'}
 
 service_select_by_name_url = 'http://' + web_services_hostname + '/firethorn/adql/services/select?'
 service_select_by_name_param = 'adql.services.select.name'
@@ -27,6 +27,10 @@ service_get_url = 'http://'+ web_services_hostname + '/firethorn/adql/service/'
 service_get_param = 'id'
 
 create_menu_items = {'admin' : ['Service','JDBC connection'] , 'user' : ['Service']}
+
+create_params = {'JDBC connection' : 'jdbc.resources.create.name', 'Service' : 'adql.services.create.name'}
+
+create_urls = {'JDBC connection' : 'http://'+ web_services_hostname + '/firethorn/jdbc/resources/create', 'Service' : 'http://'+ web_services_hostname + '/firethorn/adql/services/create'}
 
 resource_uris = {'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json': '/catalogs/select',
                  'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-catalog-1.0.json': '/schemas/select',

@@ -35,9 +35,9 @@ class index:
                 return_html = "<div id='sub_item'>No services found</div>"
             else:
                 for entry in data:
-                    
                     converted_dict = dict([(str(k), v) for k, v in entry.items()])
-                    sub_item = render.select_service_response('<a href=' + config.local_hostname['services'] + '?'+ config.service_get_param + '='  + converted_dict["ident"] + '>' + converted_dict["name"] + '</a>', datetime.strptime(converted_dict["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(converted_dict["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"))
+
+                    sub_item = render.select_service_response('<a href=' + config.local_hostname['services'] + '?'+ config.service_get_param + '='  + urllib2.quote(converted_dict["ident"].encode("utf8")) + '>' + converted_dict["name"] + '</a>', datetime.strptime(converted_dict["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(converted_dict["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"))
                     return_html += str(sub_item)
        
           
@@ -158,7 +158,7 @@ class index:
                     
                 f.close()
             else :
-                return_string = json.dumps({
+                return json.dumps({
                                     'Code' : -1,
                                     'Content' : config.errors['INVALID_PARAM']
                                 })
@@ -167,7 +167,7 @@ class index:
             print traceback.print_exc()
             if f!="":
                 f.close()
-            return_string = json.dumps({
+            return json.dumps({
                                     'Code' : -1,
                                     'Content' : config.errors['INVALID_REQUEST']
                                 })

@@ -1,9 +1,8 @@
 /*
  *
- * Admin Page CSS
+ * JDBC Connections CSS
  *
  */	
- 
 * {
 		margin: 0;
 	}
@@ -91,9 +90,9 @@ ul li{
 		min-height:620px;
 		margin: 0 auto;
 		text-align:center;
-		margin-top:50px;
+		margin-top:20px;
 		margin-bottom:5px;
-		display:none;
+		margin-left:200px;
 	}	 
 
 a:link {
@@ -160,8 +159,9 @@ a:active {
 		margin:0 auto;
 		text-align:center;
 		min-width:1200px;
-		width:1200px	;
+		width:1200px;
 		overflow:hidden;
+		
 	}
 	
 #error {
