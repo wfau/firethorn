@@ -28,7 +28,9 @@ import uk.ac.roe.wfau.firethorn.common.entity.Identifier ;
 
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService ;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServiceController;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServiceIdentFactory;
 import uk.ac.roe.wfau.firethorn.widgeon.data.DataResource;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceIdentFactory;
 
 /**
@@ -342,13 +344,13 @@ public abstract class PathBuilderBase implements PathBuilder
     public Path link(final AdqlService target)
         {
         return path(
-            AdqlServiceController.CONTROLLER_PATH,
+            AdqlServiceIdentFactory.SERVICE_PATH,
             target
             );
         }
 
     @Override
-    public Path link(final DataResource target)
+    public Path link(final JdbcResource target)
         {
         return path(
             JdbcResourceIdentFactory.RESOURCE_PATH,

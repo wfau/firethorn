@@ -38,6 +38,10 @@ import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponent.Status;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalogBean;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalogBeanIter;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceController;
 
 /**
  * Spring MVC controller for <code>AdqlService</code>.
@@ -45,8 +49,8 @@ import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponent.Status;
  */
 @Slf4j
 @Controller
-@RequestMapping(AdqlServiceIdentFactory.SERVICE_PATH)
-public class AdqlServiceController
+@RequestMapping(AdqlServiceIdentFactory.RESOURCES_PATH)
+public class AdqlServiceResourcesController
 extends AbstractController
     {
 
@@ -54,7 +58,7 @@ extends AbstractController
     public Path path()
         {
         return new PathImpl(
-            AdqlServiceIdentFactory.SERVICE_PATH 
+            AdqlServiceIdentFactory.RESOURCES_PATH
             );
         }
 
@@ -62,34 +66,58 @@ extends AbstractController
      * Public constructor.
      *
      */
-    public AdqlServiceController()
+    public AdqlServiceResourcesController()
         {
         super();
         }
 
     /**
-     * MVC property for the target AdqlService entity.
+     * URL path for the select method.
      *
      */
-    public static final String SERVICE_ENTITY = "urn:adql.service.entity" ;
+    public static final String SELECT_PATH = "select" ;
 
     /**
-     * MVC property for the target AdqlResource entity.
+     * URL path for the search method.
      *
      */
-    public static final String RESOURCE_ENTITY = "urn:adql.resource.entity" ;
+    public static final String SEARCH_PATH = "search" ;
 
     /**
-     * MVC property for updating the name.
+     * URL path for the insert method.
      *
      */
-    public static final String UPDATE_NAME = "adql.service.update.name" ;
+    public static final String INSERT_PATH = "insert" ;
 
     /**
-     * MVC property for updating the status.
+     * MVC property for the select name.
      *
      */
-    public static final String UPDATE_STATUS = "adql.service.update.status" ;
+    public static final String SELECT_NAME = "adql.service.resources.select.name" ;
+
+    /**
+     * MVC property for the select results.
+     *
+     */
+    public static final String SELECT_RESULT = "adql.service.resources.select.result" ;
+
+    /**
+     * MVC property for the search text.
+     *
+     */
+    public static final String SEARCH_TEXT = "adql.service.resources.search.text" ;
+
+    /**
+     * MVC property for the search results.
+     *
+     */
+    public static final String SEARCH_RESULT = "adql.service.resources.search.result" ;
+
+    /**
+     * MVC property for the insert name.
+     *
+     */
+    public static final String INSERT_NAME = "adql.service.resources.insert.name" ;
     
     /**
      * Wrap an entity as a bean.
@@ -105,10 +133,11 @@ extends AbstractController
         }
 
     /**
-     * Get the target entity based on the ident in the path.
+     * Get the target AdqlService  based on the ident in the path.
+     * @todo inherit from AdqlServiceController ?
      *
      */
-    @ModelAttribute(SERVICE_ENTITY)
+    @ModelAttribute(AdqlServiceController.SERVICE_ENTITY)
     public AdqlService entity(
         @PathVariable("ident")
         final String ident
@@ -124,77 +153,51 @@ extends AbstractController
         }
 
     /**
-     * HTML GET request for a service.
+     * Select all.
      *
      */
-	@RequestMapping(method=RequestMethod.GET)
-	public ModelAndView htmlSelect(
-        final ModelAndView model
-	    ){
-	    model.setViewName(
-	        "adql/services/display"
-	        );
-        return model ;
-        }
-
-	/**
-     * JSON GET request for a service.
-     *
-     */
-	@ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public AdqlServiceBean jsonSelect(
-        @ModelAttribute(SERVICE_ENTITY)
-        final AdqlServiceEntity entity
+    public AdqlResourceBeanIter select(
+        @ModelAttribute(AdqlServiceController.SERVICE_ENTITY)
+        final AdqlService service
         ){
-        return bean(
-            entity
+        log.debug("select()");
+        return new AdqlResourceBeanIter(
+            service.resources().select()
             );
         }
-    
+
     /**
-     * JSON POST update.
+     * JSON GET request to select all.
      *
      */
     @ResponseBody
-    @UpdateAtomicMethod
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public AdqlServiceBean jsonUpdate(
-        @RequestParam(value=UPDATE_NAME, required=false)
-        String name,
-        @RequestParam(value=UPDATE_STATUS, required=false)
-        String status,
-        @ModelAttribute(RESOURCE_ENTITY)
-        final AdqlService entity
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
+    public AdqlResourceBeanIter jsonSelect(
+        @ModelAttribute(AdqlServiceController.SERVICE_ENTITY)
+        final AdqlService service
         ){
-
-        if (name != null)
-            {
-            if (name.length() > 0)
-                {
-                entity.name(
-                    name
-                    );
-                }
-            }
-
-        /*
-        if (status != null)
-            {
-            if (status.length() > 0)
-                {
-                entity.status(
-                    Status.valueOf(
-                        status
-                        )
-                    );
-                }
-            }
-        */
-
-        return bean(
-            entity
+        log.debug("jsonSelect()");
+        return select(
+            service
             );
         }
+
+    /**
+     * Select by name.
+     *
+     */
+    public AdqlResourceBean select(
+        @ModelAttribute(AdqlServiceController.SERVICE_ENTITY)
+        final AdqlService service,
+        final String name
+        ){
+        log.debug("select(String) [{}]", name);
+        return new AdqlResourceBean(
+            service.resources().select(
+                name
+                )
+            );
+        }
+    
     }
 

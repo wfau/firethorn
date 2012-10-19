@@ -22,7 +22,9 @@ import java.net.URI;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
+import uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder.Path;
 import uk.ac.roe.wfau.firethorn.widgeon.data.DataResource;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 @Deprecated
 public interface PathBuilder
@@ -166,9 +168,9 @@ public interface PathBuilder
     public abstract Path link(final AdqlService target);
 
     /**
-     * Create a link for a DataResource.
+     * Create a link for a JdbcResource.
      *
      */
-    public abstract Path link(final DataResource target);
+    public abstract Path link(final JdbcResource target);
 
     }

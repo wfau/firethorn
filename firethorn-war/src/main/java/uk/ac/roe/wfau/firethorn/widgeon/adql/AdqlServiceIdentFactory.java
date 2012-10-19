@@ -44,14 +44,32 @@ implements AdqlService.IdentFactory
     /**
      * The URI path for identifiers.
      *
-     */
     public static final String IDENT_PATH = "/adql/service/" + IDENT_TOKEN ;
+     */
+
+    /**
+     * The URI path for the service service.
+     *
+     */
+    public static final String SERVICES_PATH = "/adql/services";
+
+    /**
+     * The URI path for individual services.
+     *
+     */
+    public static final String SERVICE_PATH = "/adql/service/" + IDENT_TOKEN ;
+
+    /**
+     * The URI path for service resources.
+     *
+     */
+    public static final String RESOURCES_PATH = SERVICE_PATH + "/resources" ;
 
     @Override
     public String link(final AdqlService entity)
         {
         return link(
-            IDENT_PATH,
+            SERVICES_PATH,
             entity
             );
         }

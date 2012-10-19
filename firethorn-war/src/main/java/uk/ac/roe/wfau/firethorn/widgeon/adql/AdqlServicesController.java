@@ -39,21 +39,16 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  */
 @Slf4j
 @Controller
-@RequestMapping(AdqlServicesController.CONTROLLER_PATH)
+@RequestMapping(AdqlServiceIdentFactory.SERVICES_PATH)
 public class AdqlServicesController
 extends AbstractController
     {
-    /**
-     * URi path for this Controller.
-     *
-     */
-    public static final String CONTROLLER_PATH = "adql/services" ;
 
     @Override
     public Path path()
         {
         return new PathImpl(
-            CONTROLLER_PATH
+            AdqlServiceIdentFactory.SERVICES_PATH
             );
         }
 

@@ -128,18 +128,14 @@ implements AdqlService
         @SelectEntityMethod
         public Iterable<AdqlService> search(final String text)
             {
-            //
-            // Using wildcards in a HQL query with named parameters.
-            // http://www.stpe.se/2008/07/hibernate-hql-like-query-named-parameters/
-            final String match = new StringBuilder(text).append("%").toString();
-            log.debug("search(String)");
-            log.debug("  Match [{}]", match);
             return super.iterable(
                 super.query(
                     "mallard-search-text"
                     ).setString(
                         "text",
-                        match
+                        searchParam(
+                            text
+                            )
                         )
                 );
             }
@@ -266,6 +262,30 @@ implements AdqlService
             public Iterable<AdqlResource> select()
                 {
                 return resources ;
+                }
+            @Override
+            public Iterable<AdqlResource> select(String name)
+                {
+                // TODO Auto-generated method stub
+                return null ;
+                /*
+                return womble().hibernate().session().createFilter(
+                    resources,
+                    ""
+                    );
+                */
+                }
+            @Override
+            public Iterable<AdqlResource> search(String name)
+                {
+                // TODO Auto-generated method stub
+                return null ;
+                /*
+                return womble().hibernate().session().createFilter(
+                    resources,
+                    ""
+                    );
+                */
                 }
             };
         }

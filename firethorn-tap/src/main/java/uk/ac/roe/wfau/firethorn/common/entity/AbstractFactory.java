@@ -254,6 +254,9 @@ implements Entity.Factory<EntityType>
      */
     public String searchParam(final String text)
         {
+        //
+        // Using wildcards in a HQL query with named parameters.
+        // http://www.stpe.se/2008/07/hibernate-hql-like-query-named-parameters/
         return new StringBuilder(text).append("%").toString();
         }
 

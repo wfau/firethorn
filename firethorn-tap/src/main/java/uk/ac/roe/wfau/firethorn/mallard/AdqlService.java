@@ -37,7 +37,7 @@ extends Entity
         }
 
     /**
-     * A service factory (TAP factory).
+     * A service factory.
      *
      */
     public static interface Factory
@@ -89,10 +89,22 @@ extends Entity
         public void insert(final AdqlResource resource);
 
         /**
-         * Select all the AdqlResourcesused by this service.
+         * Select all the AdqlResources in this service.
          *
          */
         public Iterable<AdqlResource> select();
+
+        /**
+         * Select an AdqlResources by name.
+         *
+         */
+        public Iterable<AdqlResource> select(String name);
+
+        /**
+         * Text search for AdqlResources.
+         *
+         */
+        public Iterable<AdqlResource> search(String name);
 
         }
 
