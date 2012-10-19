@@ -98,8 +98,8 @@ public class JdbcTableController
         final String ident
         ) throws NotFoundException {
         log.debug("table() [{}]", ident);
-        return womble().resources().jdbc().tables().select(
-            womble().resources().jdbc().tables().ident(
+        return womble().jdbc().tables().select(
+            womble().jdbc().tables().ident(
                 ident
                 )
             );

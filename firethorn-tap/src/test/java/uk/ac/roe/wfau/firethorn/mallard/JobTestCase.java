@@ -43,10 +43,10 @@ extends TestBase
     public void test000()
     throws Exception
         {
-        ident[0] = womble().services().create(
+        ident[0] = womble().adql().services().create(
             "test-mallard"
             ).ident();
-        ident[1] = womble().services().create(
+        ident[1] = womble().adql().services().create(
             "test-mallard"
             ).ident();
         }
@@ -58,7 +58,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        final AdqlService service = womble().services().select(
+        final AdqlService service = womble().adql().services().select(
             ident[0]
             );
         assertFalse(
@@ -89,7 +89,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        final AdqlService service = womble().services().select(
+        final AdqlService service = womble().adql().services().select(
             ident[0]
             );
         assertFalse(

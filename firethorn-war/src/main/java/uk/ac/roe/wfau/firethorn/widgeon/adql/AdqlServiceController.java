@@ -87,8 +87,8 @@ extends AbstractController
 		    model.addObject(
 		        TARGET_ENTITY,
 	            new AdqlServiceBean(
-	                womble().services().select(
-	                    womble().services().ident(
+	                womble().adql().services().select(
+	                    womble().adql().services().ident(
 	                        ident
 	                        )
 	                    )
@@ -120,8 +120,8 @@ extends AbstractController
         ){
         try {
             return new AdqlServiceBean(
-                womble().services().select(
-                    womble().services().ident(
+                womble().adql().services().select(
+                    womble().adql().services().ident(
                         ident
                         )
                     )

@@ -98,8 +98,8 @@ public class JdbcColumnController
         final String ident
         ) throws NotFoundException {
         log.debug("table() [{}]", ident);
-        return womble().resources().jdbc().columns().select(
-            womble().resources().jdbc().columns().ident(
+        return womble().jdbc().columns().select(
+            womble().jdbc().columns().ident(
                 ident
                 )
             );

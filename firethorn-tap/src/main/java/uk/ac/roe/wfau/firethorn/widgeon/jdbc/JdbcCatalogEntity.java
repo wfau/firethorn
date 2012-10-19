@@ -239,7 +239,7 @@ implements JdbcCatalog
             @Override
             public Iterable<AdqlCatalog> select()
                 {
-                return womble().resources().adql().catalogs().select(
+                return womble().adql().catalogs().select(
                     JdbcCatalogEntity.this
                     );
                 }
@@ -247,7 +247,7 @@ implements JdbcCatalog
             @Override
             public AdqlCatalog search(final AdqlResource parent)
                 {
-                return womble().resources().adql().catalogs().select(
+                return womble().adql().catalogs().select(
                     parent,
                     JdbcCatalogEntity.this
                     );
@@ -263,7 +263,7 @@ implements JdbcCatalog
             @Override
             public JdbcSchema create(final String name)
                 {
-                return womble().resources().jdbc().catalogs().schemas().create(
+                return womble().jdbc().catalogs().schemas().create(
                     JdbcCatalogEntity.this,
                     name
                     );
@@ -272,7 +272,7 @@ implements JdbcCatalog
             @Override
             public Iterable<JdbcSchema> select()
                 {
-                return womble().resources().jdbc().catalogs().schemas().select(
+                return womble().jdbc().catalogs().schemas().select(
                     JdbcCatalogEntity.this
                     );
                 }
@@ -280,7 +280,7 @@ implements JdbcCatalog
             @Override
             public JdbcSchema select(final String name)
                 {
-                return womble().resources().jdbc().catalogs().schemas().select(
+                return womble().jdbc().catalogs().schemas().select(
                     JdbcCatalogEntity.this,
                     name
                     );
@@ -289,7 +289,7 @@ implements JdbcCatalog
             @Override
             public Iterable<JdbcSchema> search(final String text)
                 {
-                return womble().resources().jdbc().catalogs().schemas().search(
+                return womble().jdbc().catalogs().schemas().search(
                     JdbcCatalogEntity.this,
                     text
                     );
@@ -522,7 +522,7 @@ implements JdbcCatalog
     @Override
     public String link()
         {
-        return womble().resources().jdbc().catalogs().link(
+        return womble().jdbc().catalogs().link(
             this
             );
         }

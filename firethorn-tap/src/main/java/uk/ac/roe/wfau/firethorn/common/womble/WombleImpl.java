@@ -535,6 +535,45 @@ implements Womble
     @Autowired
     protected JdbcColumn.Factory jdbcColumns ;
 
+    @Override
+    public JdbcFactories jdbc()
+        {
+        return new JdbcFactories(){
+            @Override
+            public JdbcResource.Factory resources()
+                {
+                return jdbcResources ;
+                }
+            @Override
+            public JdbcCatalog.Factory catalogs()
+                {
+                return jdbcCatalogs;
+                }
+            @Override
+            public JdbcSchema.Factory schemas()
+                {
+                return jdbcSchemas;
+                }
+            @Override
+            public JdbcTable.Factory tables()
+                {
+                return jdbcTables;
+                }
+            @Override
+            public JdbcColumn.Factory columns()
+                {
+                return jdbcColumns;
+                }
+            };
+        }
+
+    /**
+     * Our Autowired AdqlService factory.
+     *
+     */
+    @Autowired
+    protected AdqlService.Factory adqlServices ;
+
     /**
      * Our Autowired AdqlResource factory.
      *
@@ -570,95 +609,43 @@ implements Womble
     @Autowired
     protected AdqlColumn.Factory adqlColumns ;
 
+    
     @Override
-    public ResourceFactories resources()
+    public AdqlFactories adql()
         {
-        return new ResourceFactories()
+        return new AdqlFactories ()
             {
-/*
             @Override
-            public BaseResource.Factory base()
+            public AdqlResource.Factory resources()
                 {
-                return baseResources;
-                }
- */                
-            @Override
-            public JdbcFactories jdbc()
-                {
-                return new JdbcFactories(){
-                    @Override
-                    public JdbcResource.Factory resources()
-                        {
-                        return jdbcResources ;
-                        }
-                    @Override
-                    public JdbcCatalog.Factory catalogs()
-                        {
-                        return jdbcCatalogs;
-                        }
-                    @Override
-                    public JdbcSchema.Factory schemas()
-                        {
-                        return jdbcSchemas;
-                        }
-                    @Override
-                    public JdbcTable.Factory tables()
-                        {
-                        return jdbcTables;
-                        }
-                    @Override
-                    public JdbcColumn.Factory columns()
-                        {
-                        return jdbcColumns;
-                        }
-                    };
+                return adqlResources;
                 }
             @Override
-            public AdqlFactories adql()
+            public AdqlCatalog.Factory catalogs()
                 {
-                return new AdqlFactories ()
-                    {
-                    @Override
-                    public AdqlResource.Factory resources()
-                        {
-                        return adqlResources;
-                        }
-                    @Override
-                    public AdqlCatalog.Factory catalogs()
-                        {
-                        return adqlCatalogs;
-                        }
-                    @Override
-                    public AdqlSchema.Factory schemas()
-                        {
-                        return adqlSchemas;
-                        }
-                    @Override
-                    public AdqlTable.Factory tables()
-                        {
-                        return adqlTables;
-                        }
-                    @Override
-                    public AdqlColumn.Factory columns()
-                        {
-                        return adqlColumns;
-                        }
-                    };
+                return adqlCatalogs;
+                }
+            @Override
+            public AdqlSchema.Factory schemas()
+                {
+                return adqlSchemas;
+                }
+            @Override
+            public AdqlTable.Factory tables()
+                {
+                return adqlTables;
+                }
+            @Override
+            public AdqlColumn.Factory columns()
+                {
+                return adqlColumns;
+                }
+            @Override
+            public AdqlService.Factory services()
+                {
+                return adqlServices ;
                 }
             };
-        }
-
-    /**
-     * Our Autowired AdqlService factory.
-     *
-     */
-    @Autowired
-    protected AdqlService.Factory services ;
-
-    @Override
-    public AdqlService.Factory services()
-        {
-        return this.services ;
         }
 
     /**

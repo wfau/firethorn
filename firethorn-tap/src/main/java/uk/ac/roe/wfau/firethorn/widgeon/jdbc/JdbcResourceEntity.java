@@ -203,7 +203,7 @@ implements JdbcResource
             @Override
             public JdbcCatalog create(final String name)
                 {
-                return womble().resources().jdbc().catalogs().create(
+                return womble().jdbc().catalogs().create(
                     JdbcResourceEntity.this,
                     name
                     );
@@ -212,7 +212,7 @@ implements JdbcResource
             @Override
             public Iterable<JdbcCatalog> select()
                 {
-                return womble().resources().jdbc().catalogs().select(
+                return womble().jdbc().catalogs().select(
                     JdbcResourceEntity.this
                     );
                 }
@@ -220,7 +220,7 @@ implements JdbcResource
             @Override
             public JdbcCatalog select(final String name)
                 {
-                return womble().resources().jdbc().catalogs().select(
+                return womble().jdbc().catalogs().select(
                     JdbcResourceEntity.this,
                     name
                     );
@@ -229,7 +229,7 @@ implements JdbcResource
             @Override
             public Iterable<JdbcCatalog> search(final String text)
                 {
-                return womble().resources().jdbc().catalogs().search(
+                return womble().jdbc().catalogs().search(
                     JdbcResourceEntity.this,
                     text
                     );
@@ -447,7 +447,7 @@ implements JdbcResource
     @Override
     public String link()
         {
-        return womble().resources().jdbc().resources().link(
+        return womble().jdbc().resources().link(
             this
             );
         }

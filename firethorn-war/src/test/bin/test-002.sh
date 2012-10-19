@@ -13,11 +13,11 @@ unique()
 #
 # JDBC resources
 
-echo ""
-echo "GET resource service metadata (TBD)"
-curl -v \
-    -H 'Accept: application/json' \
-    http://${hostname}:${hostport}/firethorn/jdbc/resources
+#echo ""
+#echo "GET resource service metadata (TBD)"
+#curl -v \
+#    -H 'Accept: application/json' \
+#    http://${hostname}:${hostport}/firethorn/jdbc/resources
 
 echo ""
 echo "GET list of JDBC resources"
@@ -41,11 +41,11 @@ curl -v \
 #
 # JDBC catalogs
 
-echo ""
-echo "GET resource catalog service metadata (TBD)"
-curl -v \
-    -H 'Accept: application/json' \
-    http://${hostname}:${hostport}/firethorn/jdbc/resource/1/catalogs
+#echo ""
+#echo "GET resource catalog service metadata (TBD)"
+#curl -v \
+#    -H 'Accept: application/json' \
+#    http://${hostname}:${hostport}/firethorn/jdbc/resource/1/catalogs
 
 echo ""
 echo "GET list of catalogs for resource 1 (empty)"

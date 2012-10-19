@@ -50,12 +50,13 @@ extends TestBase
             );
 
         assertNotNull(
-            womble().resources()
+            womble().jdbc()
             );
 
         assertNotNull(
-            womble().services()
+            womble().adql()
             );
+
         }
     }
 

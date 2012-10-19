@@ -124,8 +124,8 @@ extends AbstractController
         final String ident
         ) throws NotFoundException {
         log.debug("resource() [{}]", ident);
-        return womble().resources().jdbc().resources().select(
-            womble().resources().jdbc().resources().ident(
+        return womble().jdbc().resources().select(
+            womble().jdbc().resources().ident(
                 ident
                 )
             );

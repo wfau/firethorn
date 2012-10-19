@@ -139,7 +139,7 @@ extends AbstractController
 	    model.addObject(
 		    SELECT_RESULT,
 	        new AdqlServiceBeanIter(
-	            womble().services().select()
+	            womble().adql().services().select()
 	            )
 		    );
 		model.setViewName(
@@ -158,7 +158,7 @@ extends AbstractController
         final ModelAndView model
         ){
         return new AdqlServiceBeanIter(
-            womble().services().select()
+            womble().adql().services().select()
             );
         }
 
@@ -179,7 +179,7 @@ extends AbstractController
 		model.addObject(
 		    SELECT_RESULT,
 	        new AdqlServiceBeanIter(
-	            womble().services().select(
+	            womble().adql().services().select(
 	                name
 	                )
 	            )
@@ -202,7 +202,7 @@ extends AbstractController
         final ModelAndView model
         ){
         return new AdqlServiceBeanIter(
-            womble().services().select(
+            womble().adql().services().select(
                 name
                 )
             );
@@ -239,7 +239,7 @@ extends AbstractController
 		model.addObject(
 		    SEARCH_RESULT,
 	        new AdqlServiceBeanIter(
-	            womble().services().search(
+	            womble().adql().services().search(
 	                text
 	                )
 	            )
@@ -262,7 +262,7 @@ extends AbstractController
         final ModelAndView model
         ){
         return new AdqlServiceBeanIter(
-            womble().services().search(
+            womble().adql().services().search(
                 text
                 )
             );
@@ -295,7 +295,7 @@ extends AbstractController
 	    log.debug("htmlCreate() [{}]", name);
         try {
             final AdqlServiceBean bean = new AdqlServiceBean(
-                womble().services().create(
+                womble().adql().services().create(
                     name
                     )
                 );
@@ -325,7 +325,7 @@ extends AbstractController
         log.debug("jsonCreate() [{}]", name);
         try {
             final AdqlServiceBean bean = new AdqlServiceBean(
-                womble().services().create(
+                womble().adql().services().create(
                     name
                     )
                 );

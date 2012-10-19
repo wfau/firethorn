@@ -132,7 +132,7 @@ extends TestBase
                 );
             //
             // Create an empty resource tree.
-            final JdbcResource resource = womble().resources().jdbc().resources().create(
+            final JdbcResource resource = womble().jdbc().resources().create(
                 this.unique(
                     "base"
                     ),
@@ -164,7 +164,7 @@ extends TestBase
         final Connection connection = source.getConnection();
         //
         // Create our JdbcResource.
-        final JdbcResource jdbcResource = womble().resources().jdbc().resources().create(
+        final JdbcResource jdbcResource = womble().jdbc().resources().create(
             unique(
                 "jdbc-resource"
                 ),

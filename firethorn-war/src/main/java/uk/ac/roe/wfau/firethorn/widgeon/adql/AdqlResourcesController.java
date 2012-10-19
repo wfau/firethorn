@@ -126,7 +126,7 @@ extends AbstractController
         model.addObject(
             SELECT_RESULT,
             new AdqlResourceBeanIter(
-                womble().resources().adql().resources().select()
+                womble().adql().resources().select()
                 )
             );
         model.setViewName(
@@ -145,7 +145,7 @@ extends AbstractController
         final ModelAndView model
         ){
         return new AdqlResourceBeanIter(
-            womble().resources().adql().resources().select()
+            womble().adql().resources().select()
             );
         }
 
@@ -167,7 +167,7 @@ extends AbstractController
         model.addObject(
             SELECT_RESULT,
             new AdqlResourceBeanIter(
-                womble().resources().adql().resources().select(
+                womble().adql().resources().select(
                     name
                     )
                 )
@@ -190,7 +190,7 @@ extends AbstractController
         final ModelAndView model
         ){
         return new AdqlResourceBeanIter(
-            womble().resources().adql().resources().select(
+            womble().adql().resources().select(
                 name
                 )
             );
@@ -228,7 +228,7 @@ extends AbstractController
         model.addObject(
             SEARCH_RESULT,
             new AdqlResourceBeanIter(
-                womble().resources().adql().resources().search(
+                womble().adql().resources().search(
                     text
                     )
                 )
@@ -251,7 +251,7 @@ extends AbstractController
         final ModelAndView model
         ){
         return new AdqlResourceBeanIter(
-            womble().resources().adql().resources().search(
+            womble().adql().resources().search(
                 text
                 )
             );

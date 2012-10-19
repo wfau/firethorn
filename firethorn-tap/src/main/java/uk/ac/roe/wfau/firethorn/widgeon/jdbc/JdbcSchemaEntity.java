@@ -241,7 +241,7 @@ implements JdbcSchema
             @Override
             public Iterable<AdqlSchema> select()
                 {
-                return womble().resources().adql().schemas().select(
+                return womble().adql().schemas().select(
                     JdbcSchemaEntity.this
                     );
                 }
@@ -249,7 +249,7 @@ implements JdbcSchema
             @Override
             public AdqlSchema search(final AdqlCatalog parent)
                 {
-                return womble().resources().adql().schemas().select(
+                return womble().adql().schemas().select(
                     parent,
                     JdbcSchemaEntity.this
                     );
@@ -258,7 +258,7 @@ implements JdbcSchema
             @Override
             public AdqlSchema search(final AdqlResource parent)
                 {
-                return womble().resources().adql().schemas().select(
+                return womble().adql().schemas().select(
                     parent,
                     JdbcSchemaEntity.this
                     );
@@ -274,7 +274,7 @@ implements JdbcSchema
             @Override
             public JdbcTable create(final String name)
                 {
-                return womble().resources().jdbc().catalogs().schemas().tables().create(
+                return womble().jdbc().catalogs().schemas().tables().create(
                     JdbcSchemaEntity.this,
                     name
                     );
@@ -283,7 +283,7 @@ implements JdbcSchema
             @Override
             public Iterable<JdbcTable> select()
                 {
-                return womble().resources().jdbc().catalogs().schemas().tables().select(
+                return womble().jdbc().catalogs().schemas().tables().select(
                     JdbcSchemaEntity.this
                     ) ;
                 }
@@ -291,7 +291,7 @@ implements JdbcSchema
             @Override
             public JdbcTable select(final String name)
                 {
-                return womble().resources().jdbc().catalogs().schemas().tables().select(
+                return womble().jdbc().catalogs().schemas().tables().select(
                     JdbcSchemaEntity.this,
                     name
                     ) ;
@@ -300,7 +300,7 @@ implements JdbcSchema
             @Override
             public Iterable<JdbcTable> search(final String text)
                 {
-                return womble().resources().jdbc().catalogs().schemas().tables().search(
+                return womble().jdbc().catalogs().schemas().tables().search(
                     JdbcSchemaEntity.this,
                     text
                     ) ;
@@ -579,7 +579,7 @@ implements JdbcSchema
     @Override
     public String link()
         {
-        return womble().resources().jdbc().catalogs().schemas().link(
+        return womble().jdbc().catalogs().schemas().link(
             this
             );
         }

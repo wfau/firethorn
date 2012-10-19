@@ -52,12 +52,12 @@ extends TestBase
     public void before()
     throws Exception
         {
-        alpha = womble().services().create(
+        alpha = womble().adql().services().create(
             this.unique(
                 "mallard-A"
                 )
             );
-        beta = womble().services().create(
+        beta = womble().adql().services().create(
             this.unique(
                 "mallard-B"
                 )
@@ -119,7 +119,7 @@ extends TestBase
             );
 
         alpha().resources().insert(
-            womble().resources().jdbc().resources().create(
+            womble().jdbc().resources().create(
                 this.unique(
                     "widgeon-A"
                     )
@@ -147,7 +147,7 @@ extends TestBase
             );
 
         alpha().resources().insert(
-            womble().resources().jdbc().resources().create(
+            womble().jdbc().resources().create(
                 this.unique(
                     "widgeon-A"
                     )
@@ -177,7 +177,7 @@ extends TestBase
     throws Exception
         {
         alpha().resources().insert(
-            womble().resources().jdbc().resources().create(
+            womble().jdbc().resources().create(
                 this.unique(
                     "widgeon-A"
                     )
@@ -189,7 +189,7 @@ extends TestBase
         assertEquals(
             1,
             count(
-                womble().services().select(
+                womble().adql().services().select(
                     alpha().ident()
                     ).resources().select()
                 )
@@ -201,7 +201,7 @@ extends TestBase
     throws Exception
         {
         alpha().resources().insert(
-            womble().resources().jdbc().resources().create(
+            womble().jdbc().resources().create(
                 this.unique(
                     "widgeon-A"
                     )
@@ -210,7 +210,7 @@ extends TestBase
                     )
             );
         alpha().resources().insert(
-            womble().resources().jdbc().resources().create(
+            womble().jdbc().resources().create(
                 this.unique(
                     "widgeon-B"
                     )
@@ -232,7 +232,7 @@ extends TestBase
     public void test005()
     throws Exception
         {
-        final BaseResource base = womble().resources().jdbc().resources().create(
+        final BaseResource base = womble().jdbc().resources().create(
             this.unique(
                 "widgeon-A"
                 )

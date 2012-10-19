@@ -107,8 +107,8 @@ public class JdbcResourceController
         ) throws NotFoundException  {
         log.debug("entity(}");
         log.debug("ident [{}]", ident);
-        JdbcResource entity = womble().resources().jdbc().resources().select(
-            womble().resources().jdbc().resources().ident(
+        JdbcResource entity = womble().jdbc().resources().select(
+            womble().jdbc().resources().ident(
                 ident
                 )
             );

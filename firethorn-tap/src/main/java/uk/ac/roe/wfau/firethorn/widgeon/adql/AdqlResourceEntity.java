@@ -277,7 +277,7 @@ implements AdqlResource
             public Iterable<AdqlCatalog> select()
                 {
                 //return womble().resources().base().views().catalogs().select(
-                return womble().resources().adql().catalogs().select(
+                return womble().adql().catalogs().select(
                     AdqlResourceEntity.this
                     ) ;
                 }
@@ -286,7 +286,7 @@ implements AdqlResource
             public AdqlCatalog select(final String name)
                 {
                 //return womble().resources().base().views().catalogs().select(
-                return womble().resources().adql().catalogs().select(
+                return womble().adql().catalogs().select(
                     AdqlResourceEntity.this,
                     name
                     ) ;
@@ -296,7 +296,7 @@ implements AdqlResource
             public Iterable<AdqlCatalog> search(final String text)
                 {
                 //return womble().resources().base().views().catalogs().search(
-                return womble().resources().adql().catalogs().search(
+                return womble().adql().catalogs().search(
                     AdqlResourceEntity.this,
                     text
                     ) ;

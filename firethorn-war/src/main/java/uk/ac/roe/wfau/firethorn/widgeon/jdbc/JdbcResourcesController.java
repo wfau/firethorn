@@ -135,7 +135,7 @@ extends AbstractController
         model.addObject(
             SELECT_RESULT,
             new JdbcResourceBeanIter(
-                womble().resources().jdbc().resources().select()
+                womble().jdbc().resources().select()
                 )
             );
         model.setViewName(
@@ -154,7 +154,7 @@ extends AbstractController
         final ModelAndView model
         ){
         return new JdbcResourceBeanIter(
-            womble().resources().jdbc().resources().select()
+            womble().jdbc().resources().select()
             );
         }
 
@@ -176,7 +176,7 @@ extends AbstractController
         model.addObject(
             SELECT_RESULT,
             new JdbcResourceBeanIter(
-                womble().resources().jdbc().resources().select(
+                womble().jdbc().resources().select(
                     name
                     )
                 )
@@ -199,7 +199,7 @@ extends AbstractController
         final ModelAndView model
         ){
         return new JdbcResourceBeanIter(
-            womble().resources().jdbc().resources().select(
+            womble().jdbc().resources().select(
                 name
                 )
             );
@@ -237,7 +237,7 @@ extends AbstractController
         model.addObject(
             SEARCH_RESULT,
             new JdbcResourceBeanIter(
-                womble().resources().jdbc().resources().search(
+                womble().jdbc().resources().search(
                     text
                     )
                 )
@@ -260,7 +260,7 @@ extends AbstractController
         final ModelAndView model
         ){
         return new JdbcResourceBeanIter(
-            womble().resources().jdbc().resources().search(
+            womble().jdbc().resources().search(
                 text
                 )
             );
@@ -292,7 +292,7 @@ extends AbstractController
         ){
         try {
             final JdbcResourceBean bean = new JdbcResourceBean(
-                womble().resources().jdbc().resources().create(
+                womble().jdbc().resources().create(
                     name
                     )
                 );
@@ -321,7 +321,7 @@ extends AbstractController
         ){
         try {
             final JdbcResourceBean bean = new JdbcResourceBean(
-                womble().resources().jdbc().resources().create(
+                womble().jdbc().resources().create(
                     name
                     )
                 );

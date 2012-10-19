@@ -309,7 +309,7 @@ implements AdqlCatalog
             public Iterable<AdqlSchema> select()
                 {
                 //return womble().resources().base().views().catalogs().schemas().select(
-                return womble().resources().adql().catalogs().schemas().select(
+                return womble().adql().catalogs().schemas().select(
                     AdqlCatalogEntity.this
                     ) ;
                 }
@@ -318,7 +318,7 @@ implements AdqlCatalog
             public AdqlSchema select(final String name)
                 {
                 //return womble().resources().base().views().catalogs().schemas().select(
-                return womble().resources().adql().catalogs().schemas().select(
+                return womble().adql().catalogs().schemas().select(
                     AdqlCatalogEntity.this,
                     name
                     ) ;
@@ -328,7 +328,7 @@ implements AdqlCatalog
             public Iterable<AdqlSchema> search(final String text)
                 {
                 //return womble().resources().base().views().catalogs().schemas().search(
-                return womble().resources().adql().catalogs().schemas().search(
+                return womble().adql().catalogs().schemas().search(
                     AdqlCatalogEntity.this,
                     text
                     ) ;

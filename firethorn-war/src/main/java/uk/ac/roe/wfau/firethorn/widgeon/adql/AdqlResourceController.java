@@ -105,8 +105,8 @@ public class AdqlResourceController
         ) throws NotFoundException  {
         log.debug("entity(}");
         log.debug("ident [{}]", ident);
-        AdqlResource entity = womble().resources().adql().resources().select(
-            womble().resources().adql().resources().ident(
+        AdqlResource entity = womble().adql().resources().select(
+            womble().adql().resources().ident(
                 ident
                 )
             );

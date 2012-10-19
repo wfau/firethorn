@@ -126,7 +126,7 @@ extends DataResource
      *
      */
     @Override
-    public Catalogs<?> catalogs();
+    public BaseResource.Catalogs<?> catalogs();
     
     }
 

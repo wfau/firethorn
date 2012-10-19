@@ -162,47 +162,104 @@ public interface Womble
      * Factory interface for accessing our resource factories.
      * @todo Move the adql, ivoa and jdbc factoriesout to the main interface.
      * 
-     */
     public interface ResourceFactories
         {
-/*
         public BaseResource.Factory base();
- */
-        public interface JdbcFactories
-            {
-            public JdbcResource.Factory resources();
-            public JdbcCatalog.Factory catalogs();
-            public JdbcSchema.Factory  schemas();
-            public JdbcTable.Factory   tables();
-            public JdbcColumn.Factory  columns();
-            }
 
-        public JdbcFactories jdbc();
+        }
+     */
 
-        public interface AdqlFactories
-            {
-            public AdqlResource.Factory resources();
-            public AdqlCatalog.Factory catalogs();
-            public AdqlSchema.Factory  schemas();
-            public AdqlTable.Factory   tables();
-            public AdqlColumn.Factory  columns();
-            }
+    /**
+     * Our Jdbc component factories.
+     *
+     */
+    public interface JdbcFactories
+        {
+        /**
+         * Our JdbcResource factory.
+         *
+         */
+        public JdbcResource.Factory resources();
 
-        public AdqlFactories adql();
+        /**
+         * Our JdbcCatalog factory.
+         *
+         */
+        public JdbcCatalog.Factory catalogs();
 
+        /**
+         * Our JdbcSchema factory.
+         *
+         */
+        public JdbcSchema.Factory  schemas();
+
+        /**
+         * Our Jdbctable factory.
+         *
+         */
+        public JdbcTable.Factory   tables();
+
+        /**
+         * Our JdbcColumn factory.
+         *
+         */
+        public JdbcColumn.Factory  columns();
         }
 
     /**
-     * Access to our DataResource factory.
+     * Our Jdbc component factories.
      *
      */
-    public ResourceFactories resources();
+    public JdbcFactories jdbc();
 
     /**
-     * Access to our AdqlService factory.
+     * Our Adql component factories.
      *
      */
-    public AdqlService.Factory services();
+    public interface AdqlFactories
+        {
+        /**
+         * Our AdqlService factory.
+         *
+         */
+        public AdqlService.Factory services();
+
+        /**
+         * Our AdqlResource factory.
+         *
+         */
+        public AdqlResource.Factory resources();
+
+        /**
+         * Our AdqlCatalog factory.
+         *
+         */
+        public AdqlCatalog.Factory catalogs();
+
+        /**
+         * Our AdqlSchema factory.
+         *
+         */
+        public AdqlSchema.Factory  schemas();
+
+        /**
+         * Our AdqlTable factory.
+         *
+         */
+        public AdqlTable.Factory   tables();
+
+        /**
+         * Our AdqlColumn factory.
+         *
+         */
+        public AdqlColumn.Factory  columns();
+        }
+
+    /**
+     * Our Adql component factories.
+     *
+     */
+    public AdqlFactories adql();
 
     /**
      * Access to our Identity factory.

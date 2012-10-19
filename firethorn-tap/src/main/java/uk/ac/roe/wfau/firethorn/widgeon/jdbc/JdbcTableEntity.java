@@ -242,7 +242,7 @@ implements JdbcTable
             @Override
             public Iterable<AdqlTable> select()
                 {
-                return womble().resources().adql().tables().select(
+                return womble().adql().tables().select(
                     JdbcTableEntity.this
                     );
                 }
@@ -250,7 +250,7 @@ implements JdbcTable
             @Override
             public AdqlTable search(final AdqlResource parent)
                 {
-                return womble().resources().adql().tables().select(
+                return womble().adql().tables().select(
                     parent,
                     JdbcTableEntity.this
                     );
@@ -259,7 +259,7 @@ implements JdbcTable
             @Override
             public AdqlTable search(final AdqlCatalog parent)
                 {
-                return womble().resources().adql().tables().select(
+                return womble().adql().tables().select(
                     parent,
                     JdbcTableEntity.this
                     );
@@ -268,7 +268,7 @@ implements JdbcTable
             @Override
             public AdqlTable search(final AdqlSchema parent)
                 {
-                return womble().resources().adql().tables().select(
+                return womble().adql().tables().select(
                     parent,
                     JdbcTableEntity.this
                     );
@@ -284,7 +284,7 @@ implements JdbcTable
             @Override
             public JdbcColumn create(final String name)
                 {
-                return womble().resources().jdbc().catalogs().schemas().tables().columns().create(
+                return womble().jdbc().catalogs().schemas().tables().columns().create(
                     JdbcTableEntity.this,
                     name
                     );
@@ -293,7 +293,7 @@ implements JdbcTable
             @Override
             public Iterable<JdbcColumn> select()
                 {
-                return womble().resources().jdbc().catalogs().schemas().tables().columns().select(
+                return womble().jdbc().catalogs().schemas().tables().columns().select(
                     JdbcTableEntity.this
                     ) ;
                 }
@@ -301,7 +301,7 @@ implements JdbcTable
             @Override
             public JdbcColumn select(final String name)
                 {
-                return womble().resources().jdbc().catalogs().schemas().tables().columns().select(
+                return womble().jdbc().catalogs().schemas().tables().columns().select(
                     JdbcTableEntity.this,
                     name
                     ) ;
@@ -310,7 +310,7 @@ implements JdbcTable
             @Override
             public Iterable<JdbcColumn> search(final String name)
                 {
-                return womble().resources().jdbc().catalogs().schemas().tables().columns().search(
+                return womble().jdbc().catalogs().schemas().tables().columns().search(
                     JdbcTableEntity.this,
                     name
                     ) ;
@@ -600,7 +600,7 @@ implements JdbcTable
     @Override
     public String link()
         {
-        return womble().resources().jdbc().catalogs().schemas().tables().link(
+        return womble().jdbc().catalogs().schemas().tables().link(
             this
             );
         }

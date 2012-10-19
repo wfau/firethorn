@@ -227,7 +227,7 @@ implements JdbcColumn
             @Override
             public Iterable<AdqlColumn> select()
                 {
-                return womble().resources().adql().tables().adqlColumns().select(
+                return womble().adql().tables().adqlColumns().select(
                     JdbcColumnEntity.this
                     );
                 }
@@ -235,7 +235,7 @@ implements JdbcColumn
             @Override
             public AdqlColumn search(final AdqlResource parent)
                 {
-                return womble().resources().adql().tables().adqlColumns().select(
+                return womble().adql().tables().adqlColumns().select(
                     parent,
                     JdbcColumnEntity.this
                     );
@@ -244,7 +244,7 @@ implements JdbcColumn
             @Override
             public AdqlColumn search(final AdqlCatalog parent)
                 {
-                return womble().resources().adql().tables().adqlColumns().select(
+                return womble().adql().tables().adqlColumns().select(
                     parent,
                     JdbcColumnEntity.this
                     );
@@ -253,7 +253,7 @@ implements JdbcColumn
             @Override
             public AdqlColumn search(final AdqlSchema parent)
                 {
-                return womble().resources().adql().tables().adqlColumns().select(
+                return womble().adql().tables().adqlColumns().select(
                     parent,
                     JdbcColumnEntity.this
                     );
@@ -262,7 +262,7 @@ implements JdbcColumn
             @Override
             public AdqlColumn search(final AdqlTable parent)
                 {
-                return womble().resources().adql().tables().adqlColumns().select(
+                return womble().adql().tables().adqlColumns().select(
                     parent,
                     JdbcColumnEntity.this
                     );
@@ -386,7 +386,7 @@ implements JdbcColumn
     @Override
     public String link()
         {
-        return womble().resources().jdbc().catalogs().schemas().tables().columns().link(
+        return womble().jdbc().catalogs().schemas().tables().columns().link(
             this
             );
         }

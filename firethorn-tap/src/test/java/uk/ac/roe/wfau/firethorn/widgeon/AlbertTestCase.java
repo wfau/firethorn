@@ -43,7 +43,7 @@ extends TestBase
     public void test000()
     throws Exception
         {
-        final DataResource object = womble().resources().jdbc().resources().create(
+        final DataResource object = womble().jdbc().resources().create(
             "albert"
             );
 /*
@@ -88,7 +88,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        final DataResource object = womble().resources().jdbc().resources().select(
+        final DataResource object = womble().jdbc().resources().select(
             ident[0]
             );
         assertFalse(
@@ -118,7 +118,7 @@ extends TestBase
         assertNotNull(
             ident[0]
             );
-        final DataResource object = womble().resources().jdbc().resources().select(
+        final DataResource object = womble().jdbc().resources().select(
             ident[0]
             );
 

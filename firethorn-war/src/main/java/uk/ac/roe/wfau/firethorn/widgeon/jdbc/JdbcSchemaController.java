@@ -98,8 +98,8 @@ public class JdbcSchemaController
         final String ident
         ) throws NotFoundException {
         log.debug("schema() [{}]", ident);
-        return womble().resources().jdbc().schemas().select(
-            womble().resources().jdbc().schemas().ident(
+        return womble().jdbc().schemas().select(
+            womble().jdbc().schemas().ident(
                 ident
                 )
             );

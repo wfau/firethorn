@@ -201,7 +201,7 @@ implements AdqlService
             @Override
             public AdqlJob create(final String name, final String adql)
                 {
-                return womble().services().jobs().create(
+                return womble().adql().services().jobs().create(
                     AdqlServiceEntity.this,
                     name,
                     adql
@@ -211,7 +211,7 @@ implements AdqlService
             @Override
             public Iterable<AdqlJob> select()
                 {
-                return womble().services().jobs().select(
+                return womble().adql().services().jobs().select(
                     AdqlServiceEntity.this
                     ) ;
                 }
@@ -273,7 +273,7 @@ implements AdqlService
     @Override
     public String link()
         {
-        return womble().services().link(
+        return womble().adql().services().link(
             this
             );
         }

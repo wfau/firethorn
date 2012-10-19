@@ -44,7 +44,7 @@ extends TestBase
     @Test
     public void simple()
         {
-        final BaseResource one = womble().resources().jdbc().resources().create(
+        final BaseResource one = womble().jdbc().resources().create(
             "albert"
             );
         assertNotNull(
@@ -55,7 +55,7 @@ extends TestBase
             );
         log.debug("One [{}][{}]", one.ident(), one.name());
 
-        final BaseResource two = womble().resources().jdbc().resources().create(
+        final BaseResource two = womble().jdbc().resources().create(
             "albert"
             );
         assertNotNull(
@@ -66,7 +66,7 @@ extends TestBase
             );
         log.debug("Two [{}][{}]", two.ident(), two.name());
 
-        for (final BaseResource widgeon : womble().resources().jdbc().resources().select())
+        for (final BaseResource widgeon : womble().jdbc().resources().select())
             {
             log.debug("DataResource [{}]", widgeon);
             }
@@ -77,17 +77,17 @@ extends TestBase
     public void nested()
         {
         nested(
-            womble().resources().jdbc().resources().create(
+            womble().jdbc().resources().create(
                 "widgeon-0001"
                 )
             );
         nested(
-            womble().resources().jdbc().resources().create(
+            womble().jdbc().resources().create(
                 "widgeon-0002"
                 )
             );
 
-        for (final JdbcResource widgeon : womble().resources().jdbc().resources().select())
+        for (final JdbcResource widgeon : womble().jdbc().resources().select())
             {
             display(
                 widgeon

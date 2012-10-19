@@ -123,8 +123,8 @@ extends AbstractController
         final String ident
         ) throws NotFoundException{
         log.debug("schema() [{}]", ident);
-        return womble().resources().jdbc().tables().select(
-            womble().resources().jdbc().tables().ident(
+        return womble().jdbc().tables().select(
+            womble().jdbc().tables().ident(
                 ident
                 )
             );

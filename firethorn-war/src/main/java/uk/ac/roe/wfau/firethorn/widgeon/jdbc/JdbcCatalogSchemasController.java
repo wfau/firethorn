@@ -123,8 +123,8 @@ extends AbstractController
         final String ident
         ) throws NotFoundException {
         log.debug("catalog() [{}]", ident);
-        return womble().resources().jdbc().catalogs().select(
-            womble().resources().jdbc().catalogs().ident(
+        return womble().jdbc().catalogs().select(
+            womble().jdbc().catalogs().ident(
                 ident
                 )
             );
