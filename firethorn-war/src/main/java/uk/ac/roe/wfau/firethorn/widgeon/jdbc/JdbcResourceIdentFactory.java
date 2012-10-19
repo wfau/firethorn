@@ -58,6 +58,11 @@ implements JdbcResource.IdentFactory
      */
     public static final String CATALOGS_PATH = RESOURCE_PATH + "/catalogs" ;
 
+    /**
+     * The URI path for the corresponding ADQL resources.
+     *
+     */
+    public static final String ADQL_PATH = RESOURCE_PATH + "/adql" ;
 
     @Override
     public String link(final JdbcResource entity)

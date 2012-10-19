@@ -231,6 +231,14 @@ implements BaseResource
                     name
                     );
                 }
+
+            public Iterable<AdqlResource> search(String text)
+                {
+                return womble().adql().resources().search(
+                    BaseResourceEntity.this,
+                    text
+                    );
+                }
             };
         }
 

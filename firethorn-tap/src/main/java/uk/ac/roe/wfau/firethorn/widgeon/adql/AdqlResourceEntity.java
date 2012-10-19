@@ -323,7 +323,7 @@ implements AdqlResource
         super(
             name
             );
-        log.debug("new([{}]", name);
+        log.debug("new [{}]", name);
         this.base = base ;
         }
 
@@ -376,7 +376,9 @@ implements AdqlResource
     @Override
     public String link()
         {
-        return null;
+        return womble().adql().resources().link(
+            this
+            );
         }
     }
 

@@ -22,7 +22,7 @@ status()
     sed 's/.*\"status\":\"\([^\"]*\)\".*/\1/'
     }
 
-service="http://${hostname}:${hostport}/firethorn/jdbc"
+service="http://${hostname}:${hostport}/firethorn"
 created=""
 
 for (( i=1; i <= $limit; i++ ))
@@ -32,7 +32,7 @@ do
         curl -s \
             -H 'Accept: application/json' \
             --data "jdbc.resources.create.name=jdbc-resource-$(unique)" \
-            ${service}/resources/create |
+            ${service}/jdbc/resources/create |
             sed 's/.*\"ident\":\"\([^\"]*\)\".*/\1/'
             )"
 

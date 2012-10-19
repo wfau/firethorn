@@ -54,23 +54,6 @@ extends DataResource
     public static interface Factory<ResourceType extends BaseResource>
     extends DataResource.Factory<ResourceType>
         {
-        /**
-         * Select all of the resources.
-         *
-        public Iterable<ResourceType> select();
-         */
-
-        /**
-         * Select resources by name.
-         *
-        public Iterable<ResourceType> select(final String name);
-         */
-
-        /**
-         * Text search for resources (name starts with).
-         *
-        public Iterable<ResourceType> search(final String text);
-         */
 
         /**
          * Access to our AdqlResource factory.
@@ -104,10 +87,16 @@ extends DataResource
          */
         public AdqlResource select(final String name);
 
+        /**
+         * Text search for resources (name starts with).
+         *
+         */
+        public Iterable<AdqlResource> search(String text);
+
         }
 
     /**
-     * Access to this resource's Views.
+     * Access to this resource's ADQL views.
      *
      */
     public BaseResource.Views views();

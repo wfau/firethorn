@@ -63,6 +63,9 @@ implements AdqlResource.IdentFactory
     @Override
     public String link(final AdqlResource entity)
         {
-        return null;
+        return link(
+            RESOURCE_PATH,
+            entity
+            );
         }
     }

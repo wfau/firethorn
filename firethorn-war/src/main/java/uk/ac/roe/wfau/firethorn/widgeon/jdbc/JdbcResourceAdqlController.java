@@ -36,6 +36,8 @@ import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResourceBean;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResourceBeanIter;
 
 /**
  * Spring MVC controller for <code>JdbcResource</code> catalogs.
@@ -43,8 +45,8 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcResourceIdentFactory.CATALOGS_PATH)
-public class JdbcResourceCatalogsController
+@RequestMapping(JdbcResourceIdentFactory.ADQL_PATH )
+public class JdbcResourceAdqlController
 extends AbstractController
     {
 
@@ -52,7 +54,7 @@ extends AbstractController
     public Path path()
         {
         return new PathImpl(
-            JdbcResourceIdentFactory.CATALOGS_PATH
+            JdbcResourceIdentFactory.ADQL_PATH 
             );
         }
 
@@ -60,7 +62,7 @@ extends AbstractController
      * Public constructor.
      *
      */
-    public JdbcResourceCatalogsController()
+    public JdbcResourceAdqlController()
         {
         super();
         }
@@ -87,34 +89,34 @@ extends AbstractController
      * MVC property for the select name.
      *
      */
-    public static final String SELECT_NAME = "jdbc.resource.catalogs.select.name" ;
+    public static final String SELECT_NAME = "jdbc.resource.adql.select.name" ;
 
     /**
      * MVC property for the select results.
      *
      */
-    public static final String SELECT_RESULT = "jdbc.resource.catalogs.select.result" ;
+    public static final String SELECT_RESULT = "jdbc.resource.adql.select.result" ;
 
     /**
      * MVC property for the search text.
      *
      */
-    public static final String SEARCH_TEXT = "jdbc.resource.catalogs.search.text" ;
+    public static final String SEARCH_TEXT = "jdbc.resource.adql.search.text" ;
 
     /**
      * MVC property for the search results.
      *
      */
-    public static final String SEARCH_RESULT = "jdbc.resource.catalogs.search.result" ;
+    public static final String SEARCH_RESULT = "jdbc.resource.adql.search.result" ;
 
     /**
      * MVC property for the create name.
      *
      */
-    public static final String CREATE_NAME = "jdbc.resource.catalogs.create.name" ;
+    public static final String CREATE_NAME = "jdbc.resource.adql.create.name" ;
 
     /**
-     * Get the parent entity based on the request ident.
+     * Get the base entity based on the request ident.
      * @throws NotFoundException  
      *
      */
@@ -135,60 +137,14 @@ extends AbstractController
      * Select all.
      *
      */
-    public JdbcCatalogBeanIter select(
+    public AdqlResourceBeanIter select(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
         final JdbcResource resource
         ){
         log.debug("select()");
-        return new JdbcCatalogBeanIter(
-            resource.catalogs().select()
+        return new AdqlResourceBeanIter(
+            resource.views().select()
             );
-        }
-
-    /**
-     * Default HTML GET request (select all).
-     *
-     */
-    @RequestMapping(value="", method=RequestMethod.GET)
-    public ModelAndView htmlIndex(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
-        final ModelAndView model
-        ){
-        log.debug("htmlIndex()");
-        model.addObject(
-            JdbcResourceCatalogsController.SELECT_RESULT,
-            select(
-                resource
-                )
-            );
-        model.setViewName(
-            "jdbc/catalog/select"
-            );
-        return model ;
-        }
-
-    /**
-     * HTML GET request to select all.
-     *
-     */
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
-    public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
-        final ModelAndView model
-        ){
-        log.debug("htmlSelect()");
-        model.addObject(
-            JdbcResourceCatalogsController.SELECT_RESULT,
-            select(
-                resource
-                )
-            );
-        model.setViewName(
-            "jdbc/catalog/select"
-            );
-        return model ;
         }
 
     /**
@@ -197,7 +153,7 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcCatalogBeanIter jsonSelect(
+    public AdqlResourceBeanIter jsonSelect(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
         final JdbcResource resource,
         final ModelAndView model
@@ -212,47 +168,17 @@ extends AbstractController
      * Select by name.
      *
      */
-    public JdbcCatalogBean select(
+    public AdqlResourceBean select(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY) final
         JdbcResource resource,
         final String name
         ){
         log.debug("select(String) [{}]", name);
-        return new JdbcCatalogBean(
-            resource.catalogs().select(
+        return new AdqlResourceBean(
+            resource.views().select(
                 name
                 )
             );
-        }
-
-    /**
-     * HTML request to select by name.
-     *
-     */
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
-    public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
-        @RequestParam(SELECT_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        log.debug("htmlSelect(String) [{}]", name);
-        model.addObject(
-            SELECT_NAME,
-            name
-            );
-        model.addObject(
-            SELECT_RESULT,
-            select(
-                resource,
-                name
-                )
-            );
-        model.setViewName(
-            "jdbc/catalog/select"
-            );
-        return model ;
         }
 
     /**
@@ -261,7 +187,7 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public JdbcCatalogBean jsonSelect(
+    public AdqlResourceBean jsonSelect(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
         final JdbcResource resource,
         @RequestParam(SELECT_NAME)
@@ -279,64 +205,17 @@ extends AbstractController
      * Search by text.
      *
      */
-    public JdbcCatalogBeanIter search(
+    public AdqlResourceBeanIter search(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY) final
         JdbcResource resource,
         final String text
         ){
         log.debug("search(String) [{}]", text);
-        return new JdbcCatalogBeanIter(
-            resource.catalogs().search(
+        return new AdqlResourceBeanIter(
+            resource.views().search(
                 text
                 )
             );
-        }
-
-    /**
-     * HTML GET request for the search form.
-     *
-     */
-    @RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
-    public ModelAndView htmlSearch(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
-        final ModelAndView model
-        ){
-        log.debug("htmlSearch");
-        model.setViewName(
-            "jdbc/catalog/search"
-            );
-        return model ;
-        }
-
-    /**
-     * HTML request to search by text.
-     *
-     */
-    @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
-    public ModelAndView htmlSearch(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
-        @RequestParam(SEARCH_TEXT)
-        final String text,
-        final ModelAndView model
-        ){
-        log.debug("htmlSearch(String) [{}]", text);
-        model.addObject(
-            SEARCH_TEXT,
-            text
-            );
-        model.addObject(
-            SEARCH_RESULT,
-            search(
-                resource,
-                text
-                )
-            );
-        model.setViewName(
-            "jdbc/catalog/search"
-            );
-        return model ;
         }
 
     /**
@@ -345,7 +224,7 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public JdbcCatalogBeanIter jsonSearch(
+    public AdqlResourceBeanIter jsonSearch(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
         final JdbcResource resource,
         @RequestParam(SEARCH_TEXT)
@@ -360,60 +239,19 @@ extends AbstractController
         }
 
     /**
-     * HTML GET request for the create form.
-     *
-     */
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.GET)
-    public ModelAndView htmlCreate(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
-        final ModelAndView model
-        ){
-        log.debug("htmlCreate()");
-        model.setViewName(
-            "jdbc/catalog/create"
-            );
-        return model ;
-        }
-
-    /**
      * Create a new entity.
      *
      */
-    public JdbcCatalogBean create(
+    public AdqlResourceBean create(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
         final JdbcResource resource,
         final String name
         ){
         log.debug("create(String) [{}]", name);
-        return new JdbcCatalogBean(
-            resource.catalogs().create(
+        return new AdqlResourceBean(
+            resource.views().create(
                 name
                 )
-            );
-        }
-
-    /**
-     * HTML POST request to create a new entity.
-     *
-     */
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST)
-    public ResponseEntity<String>  htmlCreate(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
-        @RequestParam(CREATE_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        log.debug("htmlCreate(String) [{}]", name);
-        return new ResponseEntity<String>(
-            new RedirectHeader(
-                create(
-                    resource,
-                    name
-                    )
-                ),
-            HttpStatus.SEE_OTHER
             );
         }
 
@@ -422,7 +260,7 @@ extends AbstractController
      *
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<JdbcCatalogBean> jsonCreate(
+    public ResponseEntity<AdqlResourceBean> jsonCreate(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
         final JdbcResource resource,
         @RequestParam(CREATE_NAME)
@@ -430,14 +268,14 @@ extends AbstractController
         final ModelAndView model
         ){
         log.debug("jsonCreate(String) [{}]", name);
-        final JdbcCatalogBean catalog = create(
+        final AdqlResourceBean created = create(
             resource,
             name
             );
-        return new ResponseEntity<JdbcCatalogBean>(
-            catalog,
+        return new ResponseEntity<AdqlResourceBean>(
+            created,
             new RedirectHeader(
-                catalog
+                created
                 ),
             HttpStatus.CREATED
             );
