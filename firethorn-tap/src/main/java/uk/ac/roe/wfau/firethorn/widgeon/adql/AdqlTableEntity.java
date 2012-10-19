@@ -341,7 +341,8 @@ implements AdqlTable
             @Override
             public Iterable<AdqlColumn> select()
                 {
-                return womble().resources().base().views().catalogs().schemas().tables().adqlColumns().select(
+                //return womble().resources().base().views().catalogs().schemas().tables().adqlColumns().select(
+                return womble().resources().adql().catalogs().schemas().tables().adqlColumns().select(
                     AdqlTableEntity.this
                     ) ;
                 }
@@ -349,7 +350,8 @@ implements AdqlTable
             @Override
             public AdqlColumn select(final String name)
                 {
-                return womble().resources().base().views().catalogs().schemas().tables().adqlColumns().select(
+                //return womble().resources().base().views().catalogs().schemas().tables().adqlColumns().select(
+                return womble().resources().adql().catalogs().schemas().tables().adqlColumns().select(
                     AdqlTableEntity.this,
                     name
                     ) ;
@@ -358,7 +360,8 @@ implements AdqlTable
             @Override
             public Iterable<AdqlColumn> search(final String text)
                 {
-                return womble().resources().base().views().catalogs().schemas().tables().adqlColumns().search(
+                //return womble().resources().base().views().catalogs().schemas().tables().adqlColumns().search(
+                return womble().resources().adql().catalogs().schemas().tables().adqlColumns().search(
                     AdqlTableEntity.this,
                     text
                     ) ;
@@ -367,7 +370,8 @@ implements AdqlTable
             @Override
             public AdqlColumn select(final BaseColumn<?> base)
                 {
-                return womble().resources().base().views().catalogs().schemas().tables().adqlColumns().select(
+                //return womble().resources().base().views().catalogs().schemas().tables().adqlColumns().select(
+                return womble().resources().adql().catalogs().schemas().tables().adqlColumns().select(
                     AdqlTableEntity.this,
                     base
                     );

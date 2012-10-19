@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.data ;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+
 
 
 /**
@@ -26,6 +28,32 @@ package uk.ac.roe.wfau.firethorn.widgeon.data ;
 public interface DataResource
 extends DataComponent
     {
+    /**
+     * Factory interface for creating and selecting resources.
+     *
+     */
+    public static interface Factory<ResourceType extends DataResource>
+    extends Entity.Factory<ResourceType>
+        {
+        /**
+         * Select all of the resources.
+         *
+         */
+        public Iterable<ResourceType> select();
+
+        /**
+         * Select resources by name.
+         *
+         */
+        public Iterable<ResourceType> select(final String name);
+
+        /**
+         * Text search for resources (name starts with).
+         *
+         */
+        public Iterable<ResourceType> search(final String text);
+
+        }
 
     /**
      * Access to this resource's catalogs.

@@ -15,32 +15,34 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
+package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
-
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 
 /**
- * Public interface for an IVOA resource.
+ * Bean iterator for <code>JdbcResource</code>.
  *
  */
-public interface IvoaResource
-    extends BaseResource
+public class AdqlResourceBeanIter
+extends AbstractEntityBeanIter<AdqlResource>
     {
-
     /**
-     * Factory interface for creating and selecting resources.
+     * Public constructor.
      *
      */
-    public static interface Factory
-    extends BaseResource.Factory<IvoaResource>
+    public AdqlResourceBeanIter(final Iterable<AdqlResource> iterable)
         {
-        /**
-         * Create a new resource.
-         *
-         */
-        public IvoaResource create(final String name);
-
+        super(
+            iterable
+            );
         }
 
+    @Override
+    public EntityBean<AdqlResource> bean(final AdqlResource entity)
+        {
+        return new AdqlResourceBean(
+            entity
+            );
+        }
     }

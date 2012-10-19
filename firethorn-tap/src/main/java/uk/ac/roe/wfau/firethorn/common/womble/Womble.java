@@ -160,22 +160,21 @@ public interface Womble
 
     /**
      * Factory interface for accessing our resource factories.
-     *
+     * @todo Move the adql, ivoa and jdbc factoriesout to the main interface.
+     * 
      */
     public interface ResourceFactories
         {
-
+/*
         public BaseResource.Factory base();
-
+ */
         public interface JdbcFactories
             {
-
             public JdbcResource.Factory resources();
             public JdbcCatalog.Factory catalogs();
             public JdbcSchema.Factory  schemas();
             public JdbcTable.Factory   tables();
             public JdbcColumn.Factory  columns();
-
             }
 
         public JdbcFactories jdbc();

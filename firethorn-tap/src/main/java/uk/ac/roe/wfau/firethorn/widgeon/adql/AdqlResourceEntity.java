@@ -42,6 +42,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.base.BaseCatalog;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.data.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponentImpl;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceEntity;
 
 /**
@@ -66,6 +67,18 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceEntity;
     )
 @NamedQueries(
         {
+        @NamedQuery(
+            name  = "adql.resource-select-all",
+            query = "FROM AdqlResourceEntity ORDER BY ident desc"
+            ),
+            @NamedQuery(
+                name  = "adql.resource-select-name",
+                query = "FROM AdqlResourceEntity WHERE (name = :name) ORDER BY ident desc"
+                ),
+        @NamedQuery(
+            name  = "adql.resource-search-text",
+            query = "FROM AdqlResourceEntity WHERE (name LIKE :text) ORDER BY ident desc"
+            ),
         @NamedQuery(
             name  = "adql.resource-select-base",
             query = "FROM AdqlResourceEntity WHERE (base = :base) ORDER BY ident desc"
@@ -195,6 +208,47 @@ implements AdqlResource
                 );
             }
 
+        @Override
+        @SelectEntityMethod
+        public Iterable<AdqlResource> select()
+            {
+            return super.iterable(
+                super.query(
+                    "adql.resource-select-all"
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<AdqlResource> select(final String name)
+            {
+            return super.iterable(
+                super.query(
+                    "adql.resource-select-name"
+                    ).setString(
+                        "name",
+                        name
+                        )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<AdqlResource> search(final String text)
+            {
+            return super.iterable(
+                super.query(
+                    "adql.resource-search-text"
+                    ).setString(
+                        "text",
+                        searchParam(
+                            text
+                            )
+                        )
+                );
+            }
+
         @Autowired
         protected AdqlCatalog.Factory catalogs ;
 
@@ -222,7 +276,8 @@ implements AdqlResource
             @Override
             public Iterable<AdqlCatalog> select()
                 {
-                return womble().resources().base().views().catalogs().select(
+                //return womble().resources().base().views().catalogs().select(
+                return womble().resources().adql().catalogs().select(
                     AdqlResourceEntity.this
                     ) ;
                 }
@@ -230,7 +285,8 @@ implements AdqlResource
             @Override
             public AdqlCatalog select(final String name)
                 {
-                return womble().resources().base().views().catalogs().select(
+                //return womble().resources().base().views().catalogs().select(
+                return womble().resources().adql().catalogs().select(
                     AdqlResourceEntity.this,
                     name
                     ) ;
@@ -239,7 +295,8 @@ implements AdqlResource
             @Override
             public Iterable<AdqlCatalog> search(final String text)
                 {
-                return womble().resources().base().views().catalogs().search(
+                //return womble().resources().base().views().catalogs().search(
+                return womble().resources().adql().catalogs().search(
                     AdqlResourceEntity.this,
                     text
                     ) ;

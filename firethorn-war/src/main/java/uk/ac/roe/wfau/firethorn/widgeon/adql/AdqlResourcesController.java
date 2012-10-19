@@ -15,12 +15,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
+package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,7 +27,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
-import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
@@ -39,8 +36,8 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcResourceIdentFactory.RESOURCES_PATH)
-public class JdbcResourcesController
+@RequestMapping(AdqlResourceIdentFactory.RESOURCES_PATH)
+public class AdqlResourcesController
 extends AbstractController
     {
 
@@ -48,7 +45,7 @@ extends AbstractController
     public Path path()
         {
         return new PathImpl(
-            JdbcResourceIdentFactory.RESOURCES_PATH
+            AdqlResourceIdentFactory.RESOURCES_PATH
             );
         }
 
@@ -56,7 +53,7 @@ extends AbstractController
      * Public constructor.
      *
      */
-    public JdbcResourcesController()
+    public AdqlResourcesController()
         {
         super();
         }
@@ -83,31 +80,25 @@ extends AbstractController
      * MVC property for the select name.
      *
      */
-    public static final String SELECT_NAME = "jdbc.resources.select.name" ;
+    public static final String SELECT_NAME = "adql.resources.select.name" ;
 
     /**
      * MVC property for the select results.
      *
      */
-    public static final String SELECT_RESULT = "jdbc.resources.select.result" ;
+    public static final String SELECT_RESULT = "adql.resources.select.result" ;
 
     /**
      * MVC property for the search text.
      *
      */
-    public static final String SEARCH_TEXT = "jdbc.resources.search.text" ;
+    public static final String SEARCH_TEXT = "adql.resources.search.text" ;
 
     /**
      * MVC property for the search results.
      *
      */
-    public static final String SEARCH_RESULT = "jdbc.resources.search.result" ;
-
-    /**
-     * MVC property for the create name.
-     *
-     */
-    public static final String CREATE_NAME = "jdbc.resources.create.name" ;
+    public static final String SEARCH_RESULT = "adql.resources.search.result" ;
 
     /**
      * HTML GET request to display the index page.
@@ -118,7 +109,7 @@ extends AbstractController
         final ModelAndView model
         ){
         model.setViewName(
-            "jdbc/resource/index"
+            "adql/resource/index"
             );
         return model ;
         }
@@ -134,12 +125,12 @@ extends AbstractController
         ){
         model.addObject(
             SELECT_RESULT,
-            new JdbcResourceBeanIter(
-                womble().resources().jdbc().resources().select()
+            new AdqlResourceBeanIter(
+                womble().resources().adql().resources().select()
                 )
             );
         model.setViewName(
-            "jdbc/resource/select"
+            "adql/resource/select"
             );
         return model ;
         }
@@ -150,11 +141,11 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcResourceBeanIter jsonSelect(
+    public AdqlResourceBeanIter jsonSelect(
         final ModelAndView model
         ){
-        return new JdbcResourceBeanIter(
-            womble().resources().jdbc().resources().select()
+        return new AdqlResourceBeanIter(
+            womble().resources().adql().resources().select()
             );
         }
 
@@ -175,14 +166,14 @@ extends AbstractController
             );
         model.addObject(
             SELECT_RESULT,
-            new JdbcResourceBeanIter(
-                womble().resources().jdbc().resources().select(
+            new AdqlResourceBeanIter(
+                womble().resources().adql().resources().select(
                     name
                     )
                 )
             );
         model.setViewName(
-            "jdbc/resource/select"
+            "adql/resource/select"
             );
         return model ;
         }
@@ -193,13 +184,13 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public JdbcResourceBeanIter jsonSelect(
+    public AdqlResourceBeanIter jsonSelect(
         @RequestParam(SELECT_NAME)
         final String name,
         final ModelAndView model
         ){
-        return new JdbcResourceBeanIter(
-            womble().resources().jdbc().resources().select(
+        return new AdqlResourceBeanIter(
+            womble().resources().adql().resources().select(
                 name
                 )
             );
@@ -214,7 +205,7 @@ extends AbstractController
         final ModelAndView model
         ){
         model.setViewName(
-            "jdbc/resource/search"
+            "adql/resource/search"
             );
         return model ;
         }
@@ -236,14 +227,14 @@ extends AbstractController
             );
         model.addObject(
             SEARCH_RESULT,
-            new JdbcResourceBeanIter(
-                womble().resources().jdbc().resources().search(
+            new AdqlResourceBeanIter(
+                womble().resources().adql().resources().search(
                     text
                     )
                 )
             );
         model.setViewName(
-            "jdbc/resource/search"
+            "adql/resource/search"
             );
         return model ;
         }
@@ -254,89 +245,17 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public JdbcResourceBeanIter jsonSearch(
+    public AdqlResourceBeanIter jsonSearch(
         @RequestParam(SEARCH_TEXT)
         final String text,
         final ModelAndView model
         ){
-        return new JdbcResourceBeanIter(
-            womble().resources().jdbc().resources().search(
+        return new AdqlResourceBeanIter(
+            womble().resources().adql().resources().search(
                 text
                 )
             );
         }
 
-    /**
-     * HTML GET request to display the create form.
-     *
-     */
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.GET)
-    public ModelAndView htmlCreate(
-        final ModelAndView model
-        ){
-        model.setViewName(
-            "jdbc/resource/create"
-            );
-        return model ;
-        }
-
-    /**
-     * HTML POST request to create a new resource.
-     *
-     */
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST)
-    public ResponseEntity<String>  htmlCreate(
-        @RequestParam(CREATE_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        try {
-            final JdbcResourceBean bean = new JdbcResourceBean(
-                womble().resources().jdbc().resources().create(
-                    name
-                    )
-                );
-            return new ResponseEntity<String>(
-                new RedirectHeader(
-                    bean
-                    ),
-                HttpStatus.SEE_OTHER
-                );
-            }
-        catch (final Exception ouch)
-            {
-            return null ;
-            }
-        }
-
-    /**
-     * JSON POST request to create a new AdqlService.
-     *
-     */
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<JdbcResourceBean> jsonCreate(
-        @RequestParam(CREATE_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        try {
-            final JdbcResourceBean bean = new JdbcResourceBean(
-                womble().resources().jdbc().resources().create(
-                    name
-                    )
-                );
-            return new ResponseEntity<JdbcResourceBean>(
-                bean,
-                new RedirectHeader(
-                    bean
-                    ),
-                HttpStatus.CREATED
-                );
-            }
-        catch (final Exception ouch)
-            {
-            return null ;
-            }
-        }
     }
 

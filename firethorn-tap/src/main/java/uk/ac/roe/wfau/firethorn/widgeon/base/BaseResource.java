@@ -41,39 +41,39 @@ extends DataResource
     /**
      * Factory interface for creating and selecting resources.
      *
-     */
     public static interface Factory
     extends FactoryTemplate<BaseResource>
         {
         }
+     */
 
     /**
      * Factory interface for creating and selecting resources.
      *
      */
-    public static interface FactoryTemplate<ResourceType extends BaseResource>
-    extends Entity.Factory<ResourceType>
+    public static interface Factory<ResourceType extends BaseResource>
+    extends DataResource.Factory<ResourceType>
         {
         /**
          * Select all of the resources.
          *
-         */
         public Iterable<ResourceType> select();
+         */
 
         /**
          * Select resources by name.
          *
-         */
         public Iterable<ResourceType> select(final String name);
+         */
 
         /**
          * Text search for resources (name starts with).
          *
-         */
         public Iterable<ResourceType> search(final String text);
+         */
 
         /**
-         * Access to our view factory.
+         * Access to our AdqlResource factory.
          *
          */
         public AdqlResource.Factory views();

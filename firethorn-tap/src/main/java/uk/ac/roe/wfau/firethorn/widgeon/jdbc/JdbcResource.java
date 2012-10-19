@@ -48,7 +48,7 @@ extends BaseResource
      *
      */
     public static interface Factory
-    extends BaseResource.FactoryTemplate<JdbcResource>
+    extends BaseResource.Factory<JdbcResource>
         {
         /**
          * Create a new resource.

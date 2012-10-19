@@ -132,20 +132,6 @@ extends AbstractController
         }
 
     /**
-     * Wrap the parent entity as a bean.
-     *
-    @ModelAttribute(JdbcResourceController.RESOURCE_BEAN)
-    public JdbcResourceBean bean(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource
-        ){
-        return new JdbcResourceBean(
-            resource
-            );
-        }
-     */
-
-    /**
      * Select all.
      *
      */

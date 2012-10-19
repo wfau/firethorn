@@ -117,7 +117,7 @@ implements BaseResource
     @Repository
     public static class Factory
     extends AbstractFactory<BaseResource>
-    implements BaseResource.Factory
+    implements BaseResource.Factory<BaseResource>
         {
 
         @Override
@@ -206,7 +206,8 @@ implements BaseResource
             @Override
             public AdqlResource create(final String name)
                 {
-                return womble().resources().base().views().create(
+                //return womble().resources().base().views().create(
+                return womble().resources().adql().resources().create(
                     BaseResourceEntity.this,
                     name
                     );
@@ -215,7 +216,8 @@ implements BaseResource
             @Override
             public Iterable<AdqlResource> select()
                 {
-                return womble().resources().base().views().select(
+                //return womble().resources().base().views().select(
+                return womble().resources().adql().resources().select(
                     BaseResourceEntity.this
                     );
                 }
@@ -223,7 +225,8 @@ implements BaseResource
             @Override
             public AdqlResource select(final String name)
                 {
-                return womble().resources().base().views().select(
+                //return womble().resources().base().views().select(
+                return womble().resources().adql().resources().select(
                     BaseResourceEntity.this,
                     name
                     );

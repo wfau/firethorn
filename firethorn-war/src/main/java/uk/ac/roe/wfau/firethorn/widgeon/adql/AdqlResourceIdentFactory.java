@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
+import java.net.URI;
+
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
@@ -31,6 +33,33 @@ public class AdqlResourceIdentFactory
 extends WebappIdentFactory<AdqlResource>
 implements AdqlResource.IdentFactory
     {
+    /**
+     * The type URI for this type.
+     *
+     */
+    public static final URI TYPE_URI = URI.create(
+        "http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json"
+        );
+
+    /**
+     * The URI path for the resource service.
+     *
+     */
+    public static final String RESOURCES_PATH = "/adql/resources";
+
+    /**
+     * The URI path for individual resources.
+     *
+     */
+    public static final String RESOURCE_PATH = "/adql/resource/" + IDENT_TOKEN ;
+
+    /**
+     * The URI path for resource catalogs.
+     *
+     */
+    public static final String CATALOGS_PATH = RESOURCE_PATH + "/catalogs" ;
+
+
     @Override
     public String link(final AdqlResource entity)
         {

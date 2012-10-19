@@ -496,9 +496,9 @@ implements Womble
     /**
      * Our Autowired BaseResource factory.
      *
-     */
     @Autowired
     protected BaseResource.Factory baseResources ;
+     */
 
     /**
      * Our Autowired JdbcResource factory.
@@ -575,11 +575,13 @@ implements Womble
         {
         return new ResourceFactories()
             {
+/*
             @Override
             public BaseResource.Factory base()
                 {
                 return baseResources;
                 }
+ */                
             @Override
             public JdbcFactories jdbc()
                 {

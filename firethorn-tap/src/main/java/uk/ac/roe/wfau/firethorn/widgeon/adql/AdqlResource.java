@@ -43,7 +43,7 @@ extends DataResource
      *
      */
     public static interface Factory
-    extends Entity.Factory<AdqlResource>
+    extends DataResource.Factory<AdqlResource>
         {
 
         /**
