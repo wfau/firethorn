@@ -5,7 +5,7 @@
 hostname=localhost
 hostport=8080
 
-limit=10
+limit=5
 
 unique()
     {

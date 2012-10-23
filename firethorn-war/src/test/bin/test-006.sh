@@ -57,7 +57,7 @@ done
 
 
 #
-# Check all of the names.
+# ....
 for jdbc_resource in ${jdbc_created}
 do
 
