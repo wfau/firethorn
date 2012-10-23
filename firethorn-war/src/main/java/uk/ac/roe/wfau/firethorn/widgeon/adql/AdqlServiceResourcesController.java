@@ -186,13 +186,13 @@ extends AbstractController
      * Select by name.
      *
      */
-    public AdqlResourceBean select(
+    public AdqlResourceBeanIter select(
         @ModelAttribute(AdqlServiceController.SERVICE_ENTITY)
         final AdqlService service,
         final String name
         ){
         log.debug("select(String) [{}]", name);
-        return new AdqlResourceBean(
+        return new AdqlResourceBeanIter(
             service.resources().select(
                 name
                 )
