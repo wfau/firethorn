@@ -214,6 +214,13 @@ implements AdqlService
             };
         }
 
+    /*
+     * Alternative collection query tools
+     * http://www.querydsl.com/
+     * http://blog.mysema.com/2010/07/querying-hibernate-with-querydsl.html
+     * 
+     */
+    
     /**
      * The collection of resources published by this service.
      *
