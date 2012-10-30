@@ -9,10 +9,11 @@ import web
 
 web_services_hostname = 'localhost:8080'
 
-base_location = '/var/local/projects/wfau/firethorn/devel/firethorn-gui/firethorn-webpy-gui'
+base_location = '/home/stelios/Desktop/workspace/firethorn-webpy-gui'
 get_jdbc_resources_url = "/firethorn/jdbc/resources/select"
+vospace_dir = '/home/stelios/Desktop/workspace/firethorn-webpy-gui/static/static_vospace'
 
-local_hostname = {'index' : 'localhost:8090','services' : 'http://localhost:8090/services'}
+local_hostname = {'index' : 'localhost:8090','services' : 'http://localhost:8090/services', 'jdbc_resources' : 'http://localhost:8090/jdbc_resources'}
 
 service_select_by_name_url = 'http://' + web_services_hostname + '/firethorn/adql/services/select?'
 service_select_by_name_param = 'adql.services.select.name'
@@ -28,10 +29,21 @@ service_get_param = 'id'
 
 create_menu_items = {'admin' : ['Service','JDBC connection'] , 'user' : ['Service']}
 
+create_params = {'JDBC connection' : 'jdbc.resources.create.name', 'Service' : 'adql.services.create.name'}
+
+create_urls = {'JDBC connection' : 'http://'+ web_services_hostname + '/firethorn/jdbc/resources/create', 'Service' : 'http://'+ web_services_hostname + '/firethorn/adql/services/create'}
+
 resource_uris = {'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json': '/catalogs/select',
                  'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-catalog-1.0.json': '/schemas/select',
                  'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json': '/tables/select',
                  'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json': '/columns/select'}
+
+type_update_params = {'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json': 'jdbc.resource.update.name',
+                 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-catalog-1.0.json': 'jdbc.catalog.update.name',
+                 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json': 'jdbc.schema.update.name',
+                 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json': 'jdbc.table.update.name',
+                 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-column-1.0.json': 'jdbc.column.update.name'
+                 }
 
 types = {'service' : 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json', 'catalog' : 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-catalog-1.0.json', 'resource' : 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json'}
 

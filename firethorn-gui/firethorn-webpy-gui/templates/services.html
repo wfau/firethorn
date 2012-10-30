@@ -1,0 +1,48 @@
+$def with (header, side_menu, footer,  content)
+<!DOCTYPE html PUBLIC"-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+
+<html>
+
+    <head>
+   		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <title>Admin Interface</title>
+   	
+   		<link rel="stylesheet" type="text/css" href="static/css/services.css" />	
+		<link rel="stylesheet" type="text/css" href="static/css/service-details.css" /> 
+		<link rel="stylesheet" type="text/css" href="static/js/jquery-treeview/themes/default/easyui.css" />
+		<link rel="stylesheet" type="text/css" href="static/js/jquery-treeview/themes/icon.css" />       
+		<link rel="stylesheet" type="text/css" href="static/css/menu.css" />    
+		
+		<script type="text/javascript" src="static/js/jquery.js"></script>
+        <script type="text/javascript" src="static/js/properties.js"></script>
+   		<script type="text/javascript" src="static/js/helper_functions.js"></script>
+        <script type="text/javascript" src="static/js/menu.js"></script>
+        <script type="text/javascript" src="static/js/services.js"></script>
+        <script type="text/javascript" src="static/js/jquery-treeview/jquery.easyui.min.js"></script>
+        
+        
+    </head>
+    
+    <body>
+	
+	$:header
+	
+	
+	
+	<div id="content">
+	
+		$:side_menu
+		<div id="container">$:content</div>
+	</div>
+
+
+	<div id="vospace_area"></div>
+	
+	$:footer
+
+	
+    </body>
+
+</html>

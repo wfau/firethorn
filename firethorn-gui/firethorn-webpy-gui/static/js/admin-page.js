@@ -16,28 +16,24 @@ jQuery(document).ready(function() {
 	 */
 	jQuery('.input_form').submit(function(){
 		
-        	data = jQuery(this).serialize();
+        	json_data = jQuery(this).serialize();
+        	
+        	var success = function(data) {  
 
-        	xhr = jQuery.ajax({
-                type: "POST",
-                url: properties.getPath() +  "/",
-                data: data,
-                timeout: 1000000,
-                error: function(e) {
-					 helper_functions.displayError("#error", e);
-                },
-                success: function(data) {  
-                	data = jQuery.parseJSON(data);
-					if (data.Code!=null){
-						if (data.Code==-1){
-							helper_functions.displayError("#error", data.Content);
-					    } else {
-				    	    jQuery('#container').hide().html(data.Content).fadeIn('slow');
-						}
-				    }
-					
-				}
-        	});
+        		data = jQuery.parseJSON(data);
+				if (data.Code!=null){
+					if (data.Code==-1){
+						helper_functions.displayError("#error", data.Content);
+				    } else {
+			    	    jQuery('#container').hide().html(data.Content).fadeIn('slow');
+					}
+			    }
+				
+			}
+        	
+	       	xhr = helper_functions.ajaxCall(json_data, "POST",properties.getPath() +  "/", 1000000, function(e) { helper_functions.displayError("#error", e);} , success);
+
+        	
         	return false;
       
 	});
@@ -49,7 +45,6 @@ jQuery(document).ready(function() {
 	 */
 	
  	 jQuery('a').live('click', function(e){
- 		
  		var id_prevented = 'ignore';
 		if  (this.id == id_prevented){
 			e.preventDefault();

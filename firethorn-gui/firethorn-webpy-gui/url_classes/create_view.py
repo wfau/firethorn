@@ -186,7 +186,6 @@ class create_view:
         
         data = web.input(id = '0', type='')
         json_objects = []
-        
         if data.id == '0':
             #json_objects = [service58]
             json_objects = self.__get_jdbc_resources()

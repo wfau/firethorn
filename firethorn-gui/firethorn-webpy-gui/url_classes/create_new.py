@@ -21,29 +21,31 @@ class create_new:
   
     """
     
-    def __generate_html_content(self, json_data, obj_name, obj_type):
+    def __generate_resource_url(self, json_data, obj_name, obj_type):
        
         return_html = ""
         
         if obj_type == 'Service':
             data = json.loads(json_data)
             if data == [] or data== None:
-                return_html = "<div id='sub_item'>There was an error creating your service</div>"
+                return json.dumps({
+                         'Code' : -1,
+                         'Content' : "<div id='sub_item'>There was an error creating your service</div>"
+                     })
             else :
                 converted_dict = dict([(str(k), v) for k, v in data.items()])
-                return_html += "<div style='text-align:left;font-style:italic'>The following Service has been created: </div><br/>"
-                return_html += str(render.select_service_response('<a href=' + config.local_hostname['services'] + '?'+ config.service_get_param + '='  + converted_dict["ident"] + '>' + converted_dict["name"] + '</a>',datetime.strptime(converted_dict["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(converted_dict["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S")))
-                return_html += "<a class='button' style='float:right' id='add_adql_view'>Add ADQL View</a>"
+                return_html = config.local_hostname['services'] + '?'+ config.service_get_param + '='  +  urllib2.quote(converted_dict["ident"].encode("utf8"))
                 
         elif obj_type == 'JDBC connection':
             data = json.loads(json_data)
             if data == [] or data== None:
-                return_html = "<div id='sub_item'>There was an error creating your jdbc connection</div>"
+                return json.dumps({
+                         'Code' : -1,
+                         'Content' : "<div id='sub_item'>There was an error creating your JDBC connection</div>"
+                     })
             else :
                 converted_dict = dict([(str(k), v) for k, v in data.items()])
-                return_html += "<div style='text-align:left;font-style:italic'>The following JDBC Connection has been created: </div><br/>"
-                return_html += str(render.select_service_response('<a href=' + config.local_hostname['services'] + '?'+ config.service_get_param + '='  + converted_dict["ident"] + '>' + converted_dict["name"] + '</a>',datetime.strptime(converted_dict["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(converted_dict["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S")))
-                return_html += "<a class='button' style='float:right' id='add_adql_view'>Add ADQL View</a>"
+                return_html = config.local_hostname['jdbc_resources'] + '?'+ config.service_get_param + '='  +  urllib2.quote(converted_dict["ident"].encode("utf8"))
 
         else:
             return json.dumps({
@@ -83,8 +85,12 @@ class create_new:
         """
         
         data = web.input(obj_type='')
-        return render.create_new( str(render.header(login_helpers(session).get_log_notification())), str(render.side_menu(login_helpers(session).get_menu_items_by_permissions())), str(render.create_input_area(data.obj_type)), str(render.footer()))
-
+        try:
+            obj_type = urllib2.unquote(urllib2.quote(data.obj_type.encode("utf8"))).decode("utf8")
+            return render.create_new( str(render.header(login_helpers(session).get_log_notification())), str(render.side_menu(login_helpers(session).get_menu_items_by_permissions())), str(render.create_input_area(obj_type)), str(render.footer()))
+        except Exception as e:
+            return config.errors["INVALID_NETWORK_REQUEST"]
+    
     
     def POST(self):
         """ 
@@ -95,13 +101,17 @@ class create_new:
         data = web.input(obj_type='', obj_name='')
         return_string = ''
         f=''
-
+        
+        
+        obj_type = urllib2.unquote(urllib2.quote(data.obj_type.encode("utf8"))).decode("utf8")
+      
         try:
-            if  self.__input_validator(data.obj_name, data.obj_type):
-                encoded_args = urllib.urlencode({config.service_create_param : data.obj_name})
-                request = urllib2.Request(config.service_create_url, encoded_args, headers={"Accept" : "application/json"})
+            if  self.__input_validator(data.obj_name, obj_type):
+                encoded_args = urllib.urlencode({config.create_params[obj_type] : data.obj_name})
+                request = urllib2.Request(config.create_urls[obj_type], encoded_args, headers={"Accept" : "application/json"})
                 f = urllib2.urlopen(request)
-                return_string = self.__generate_html_content(f.read(), data.obj_name, data.obj_type)
+                result = f.read()
+                return_string = self.__generate_resource_url(result, data.obj_name, obj_type)
             else:
                 return_string = json.dumps({
                                     'Code' : -1,
@@ -116,5 +126,6 @@ class create_new:
                                 'Code' : -1,
                                 'Content' : config.errors['INVALID_NETWORK_REQUEST']
                                 })
-     
+            
         return return_string
+       
