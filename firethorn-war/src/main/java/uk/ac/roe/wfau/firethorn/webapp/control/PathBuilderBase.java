@@ -20,16 +20,10 @@ package uk.ac.roe.wfau.firethorn.webapp.control ;
 import java.net.URI;
 
 import lombok.extern.slf4j.Slf4j;
-
-//import lombok.extern.slf4j.Slf4j;
-
-import uk.ac.roe.wfau.firethorn.common.entity.Entity ;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier ;
-
-import uk.ac.roe.wfau.firethorn.mallard.AdqlService ;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServiceController;
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServiceIdentFactory;
-import uk.ac.roe.wfau.firethorn.widgeon.data.DataResource;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceIdentFactory;
 

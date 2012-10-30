@@ -15,23 +15,25 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.config;
+package uk.ac.roe.wfau.firethorn.test.tap;
 
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumn.IdentFactory;
 
 /**
  *
  *
  */
 @Component
-public class ConfigPropertyIdentFactory
-extends AbstractIdentFactory<ConfigProperty>
-implements ConfigProperty.IdentFactory
+public class AdqlColumnIdentFactory
+extends AbstractIdentFactory<AdqlColumn>
+implements AdqlColumn.IdentFactory
     {
     @Override
-    public String link(final ConfigProperty entity)
+    public String link(final AdqlColumn entity)
         {
         return null;
         }
