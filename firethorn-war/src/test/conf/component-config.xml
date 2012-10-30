@@ -45,6 +45,7 @@
     <cxt:component-scan base-package="uk.ac.roe.wfau.firethorn">
         <!--+
             | Exclude test implementations from tap project.
+            | http://static.springsource.org/spring/docs/3.0.0.M3/reference/html/ch04s12.html#beans-scanning-filters
             +-->
         <cxt:exclude-filter type="regex" expression="uk\.ac\.roe\.wfau\.firethorn\.test\.tap\..*"/>
     </cxt:component-scan>
