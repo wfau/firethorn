@@ -15,23 +15,25 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.adql;
+package uk.ac.roe.wfau.firethorn.test.tap;
 
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.Identity.IdentFactory;
 
 /**
  *
  *
  */
 @Component
-public class AdqlColumnIdentFactory
-extends AbstractIdentFactory<AdqlColumn>
-implements AdqlColumn.IdentFactory
+public class IdentityIdentFactory
+extends AbstractIdentFactory<Identity>
+implements Identity.IdentFactory
     {
     @Override
-    public String link(final AdqlColumn entity)
+    public String link(final Identity entity)
         {
         return null;
         }

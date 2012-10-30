@@ -42,6 +42,10 @@
     <!--+
         | Scan for Spring annotated classes.
         +-->
-    <cxt:component-scan base-package="uk.ac.roe.wfau.firethorn"/>
+    <cxt:component-scan base-package="uk.ac.roe.wfau.firethorn">
+        <cxt:exclude-filter type="regex" expression="uk\.ac\.roe\.wfau\.firethorn\.mallard\.AdqlServiceIdentFactory"/>
+        <cxt:exclude-filter type="regex" expression="uk\.ac\.roe\.wfau\.firethorn\.test\.tap\..*"/>
+        <!--cxt:exclude-filter type="regex" expression=".*\.AdqlServiceIdentFactory"/-->
+    </cxt:component-scan>
 
 </beans>
