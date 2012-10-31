@@ -10,7 +10,5 @@ from services import services
 from index import index
 from create_new import create_new
 from create_view import create_view,create_view_edit_handler
-<<<<<<< local
 from jdbc_resources import jdbc_resources
-from vospace import vospace=======
-from jdbc_resources import jdbc_resources>>>>>>> other
+from vospace import vospace

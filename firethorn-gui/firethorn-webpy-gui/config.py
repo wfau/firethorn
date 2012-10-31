@@ -13,33 +13,20 @@ base_location = '/home/stelios/Desktop/workspace/firethorn-webpy-gui'
 get_jdbc_resources_url = "/firethorn/jdbc/resources/select"
 vospace_dir = '/home/stelios/Desktop/workspace/firethorn-webpy-gui/static/static_vospace'
 
-<<<<<<< local
 local_hostname = {'index' : 'localhost:8090','services' : 'http://localhost:8090/services', 'jdbc_resources' : 'http://localhost:8090/jdbc_resources',
                   'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' : 'http://localhost:8090/services', 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : 'http://localhost:8090/jdbc_resources'}
-=======
-local_hostname = {'index' : 'localhost:8090','services' : 'http://localhost:8090/services', 'jdbc_resources' : 'http://localhost:8090/jdbc_resources'}
->>>>>>> other
 
 get_param = 'id'
 
 create_menu_items = {'admin' : ['Service','JDBC connection'] , 'user' : ['Service']}
 
-<<<<<<< local
 create_params = {'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : 'jdbc.resources.create.name', 
                  'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' : 'adql.services.create.name'}
-=======
-create_params = {'JDBC connection' : 'jdbc.resources.create.name', 'Service' : 'adql.services.create.name'}
->>>>>>> other
 
-<<<<<<< local
 create_urls = {'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : 'http://'+ web_services_hostname + '/firethorn/jdbc/resources/create', 
                'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' : 'http://'+ web_services_hostname + '/firethorn/adql/services/create'
                }
-=======
-create_urls = {'JDBC connection' : 'http://'+ web_services_hostname + '/firethorn/jdbc/resources/create', 'Service' : 'http://'+ web_services_hostname + '/firethorn/adql/services/create'}
->>>>>>> other
 
-<<<<<<< local
 get_urls = {'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' : 'http://' + web_services_hostname + '/firethorn/adql/service/',
             'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : 'http://' + web_services_hostname + '/firethorn/jdbc/resource/'
             }
@@ -52,8 +39,6 @@ db_select_with_text_urls = {'http://data.metagrid.co.uk/wfau/firethorn/types/adq
                        'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : 'http://' + web_services_hostname + ' /firethorn/jdbc/resources/search?'
                        }
                        
-=======
->>>>>>> other
 resource_uris = {'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json': '/catalogs/select',
                  'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-catalog-1.0.json': '/schemas/select',
                  'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json': '/tables/select',

@@ -17,33 +17,20 @@ from datetime import datetime
 
 class jdbc_resources:
     """
-<<<<<<< local
     JDBC resources class, handles requests for specific jdbc resources.
-=======
-    Services class, handles requests for specific services.
->>>>>>> other
     
     Accepts GET and POST requests. 
   
     """
-<<<<<<< local
     
-=======
-    def __init__(self):
-        self.type = config.types["resource"]
->>>>>>> other
 
     
     def __validate_type(self, type_param):
         """
         Check if the type parameter is the same as the type of this class
         """
-<<<<<<< local
         
         if type_param in config.type_update_params:
-=======
-        if type_param == self.type:
->>>>>>> other
             return True
         else:
             return False
@@ -60,11 +47,7 @@ class jdbc_resources:
         if data == [] or data== None:
             return_html = "<div id='sub_item'>There was an error creating your JDBC connection</div>"
         else :
-<<<<<<< local
             return_html = str(render.select_service_response('<a href=' + config.local_hostname['jdbc_resources'] + '?'+ config.get_param + '='  +  urllib2.quote(data["ident"].encode("utf8")) + '>' + data["name"] + '</a>',datetime.strptime(data["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(data["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S")))
-=======
-            return_html = str(render.select_service_response('<a href=' + config.local_hostname['jdbc_resources'] + '?'+ config.service_get_param + '='  +  urllib2.quote(data["ident"].encode("utf8")) + '>' + data["name"] + '</a>',datetime.strptime(data["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(data["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S")))
->>>>>>> other
             return_html += "<a class='button' style='float:right' id='add_adql_view'>Add ADQL View</a>"
         return return_html
     
@@ -74,29 +57,13 @@ class jdbc_resources:
         Handle requests for a service
         """
         return_value = ''
-<<<<<<< local
         _id = data.id
-=======
-        id = data.id
->>>>>>> other
         f= ""
-<<<<<<< local
         print data
-=======
-        
->>>>>>> other
         try:
-<<<<<<< local
             if _id!="":
-=======
-            if id!="":
->>>>>>> other
             
-<<<<<<< local
                 request = urllib2.Request( urllib2.unquote(urllib2.quote(_id.encode("utf8"))).decode("utf8"), headers={"Accept" : "application/json"})
-=======
-                request = urllib2.Request( urllib2.unquote(urllib2.quote(id.encode("utf8"))).decode("utf8"), headers={"Accept" : "application/json"})
->>>>>>> other
                 f = urllib2.urlopen(request)
                 json_data = json.loads(f.read())
                 json_data = dict([(str(k), v) for k, v in json_data.items()])

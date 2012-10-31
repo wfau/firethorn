@@ -17,11 +17,7 @@ jQuery(document).ready(function() {
 	jQuery('.input_form').submit(function(){
 		
         	json_data = jQuery(this).serialize();
-<<<<<<< local
         	json_data += '&db_type=' + jQuery('#db_type').val();
-=======
-        	
->>>>>>> other
         	var success = function(data) {  
 
         		data = jQuery.parseJSON(data);
@@ -35,11 +31,7 @@ jQuery(document).ready(function() {
 				
 			}
         	
-<<<<<<< local
 	      	xhr = helper_functions.ajaxCall(json_data, "POST",properties.getPath() +  "/", 1000000, function(e) { helper_functions.displayError("#error", e);} , success);
-=======
-	       	xhr = helper_functions.ajaxCall(json_data, "POST",properties.getPath() +  "/", 1000000, function(e) { helper_functions.displayError("#error", e);} , success);
->>>>>>> other
 
         	
         	return false;
