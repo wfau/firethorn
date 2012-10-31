@@ -93,6 +93,12 @@ extends DataResource
     public interface Catalogs
     extends DataResource.Catalogs<AdqlCatalog>
         {
+        /**
+         * Create a new catalog.
+         * 
+         */
+        public AdqlCatalog create(String name);
+        
         }
 
     @Override

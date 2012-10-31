@@ -39,8 +39,8 @@ extends TestBase
         return this.base;
         }
 
-    @Override
     @Before
+    @Override
     public void before()
     throws Exception
         {

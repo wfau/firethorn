@@ -71,6 +71,12 @@ extends DataCatalog<AdqlResource>
     public interface Schemas
     extends DataCatalog.Schemas<AdqlSchema>
         {
+        /**
+         * Create a new schema.
+         * 
+         */
+        public AdqlSchema create(String name);
+
         }
 
     @Override

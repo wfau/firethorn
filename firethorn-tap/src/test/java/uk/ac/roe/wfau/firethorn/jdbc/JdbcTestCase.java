@@ -186,14 +186,26 @@ extends TestBase
             );
         //
         // Create our AdqlResource.
-        /*
-        final AdqlResource adqlResource = jdbcResource.views().create(
+        final AdqlResource adqlResource = womble().adql().resources().create(
             unique(
                 "adql-resource"
                 )
             );
-        */
-
+        //
+        // Create our AdqlCatalog.
+        final AdqlCatalog adqlCatalog = adqlResource.catalogs().create(
+            unique(
+                "adql-catalog"
+                )
+            );
+        //
+        // Create our AdqlSchema.
+        final AdqlSchema adqlSchema = adqlCatalog.schemas().create(
+            unique(
+                "adql-schema"
+                )
+            );
+        
         //
         // Load our test data from file.
         final Iterable<StarTable> iter = VOTableStarTableParser.iterable(
@@ -209,7 +221,7 @@ extends TestBase
             // Expected errors.
             final List<JdbcDiference> expected = new ArrayList<JdbcDiference>();
             //
-            // Create JdbcTable.
+            // Create our JdbcTable.
             final JdbcTable jdbcTable = jdbcSchema.tables().create(
                 clean(
                     unique(
@@ -227,8 +239,10 @@ extends TestBase
                     )
                 );
             //
-            // Find our AdqlTable.
-            final AdqlTable adqlTable = jdbcTable.views().search(
+            // Create our AdqlTable.
+            final AdqlTable adqlTable = adqlSchema.tables()
+
+                final AdqlTable adqlTable = jdbcTable.views().search(
                 adqlResource
                 );
             //

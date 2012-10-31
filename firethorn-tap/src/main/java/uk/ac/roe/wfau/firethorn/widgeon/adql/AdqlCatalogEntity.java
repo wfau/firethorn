@@ -215,7 +215,14 @@ implements AdqlCatalog
         {
         return new AdqlCatalog.Schemas()
             {
-
+            @Override
+            public AdqlSchema create(String name)
+                {
+                return womble().adql().catalogs().schemas().create(
+                    AdqlCatalogEntity.this,
+                    name
+                    ) ;
+                }
             @Override
             public Iterable<AdqlSchema> select()
                 {
@@ -223,7 +230,6 @@ implements AdqlCatalog
                     AdqlCatalogEntity.this
                     ) ;
                 }
-
             @Override
             public AdqlSchema select(final String name)
                 {
@@ -232,7 +238,6 @@ implements AdqlCatalog
                     name
                     ) ;
                 }
-
             @Override
             public Iterable<AdqlSchema> search(final String text)
                 {

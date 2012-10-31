@@ -230,7 +230,15 @@ implements AdqlSchema
         {
         return new AdqlSchema.Tables()
             {
-
+            @Override
+            public AdqlTable create(BaseTable<?> base, String name)
+                {
+                return womble().adql().catalogs().schemas().tables().create(
+                    AdqlSchemaEntity.this,
+                    base,
+                    name
+                    ) ;
+                }
             @Override
             public Iterable<AdqlTable> select()
                 {
@@ -238,7 +246,6 @@ implements AdqlSchema
                     AdqlSchemaEntity.this
                     ) ;
                 }
-
             @Override
             public AdqlTable select(final String name)
                 {
@@ -247,7 +254,6 @@ implements AdqlSchema
                     name
                     ) ;
                 }
-
             @Override
             public Iterable<AdqlTable> search(final String text)
                 {

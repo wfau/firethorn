@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.widgeon.data.DataSchema;
 
 /**
@@ -78,6 +79,12 @@ extends DataSchema<AdqlCatalog>
     public interface Tables
     extends DataSchema.Tables<AdqlTable>
         {
+        /**
+         * Create a new ADQL table.
+         * 
+         */
+        public AdqlTable create(final BaseTable<?> base, final String name);
+
         }
 
     /**

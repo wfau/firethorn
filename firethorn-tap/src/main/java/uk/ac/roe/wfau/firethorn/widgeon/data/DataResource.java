@@ -56,13 +56,13 @@ extends DataComponent
         }
 
     /**
-     * Access to this resource's catalogs.
+     * Access to this resources catalogs.
      *
      */
     public Catalogs<?> catalogs();
 
     /**
-     * Public interface for accessing a resource's catalogs.
+     * Public interface for accessing a resources catalogs.
      *
      */
     public interface Catalogs<CatalogType extends DataCatalog<?>>

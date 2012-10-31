@@ -248,25 +248,6 @@ implements JdbcTable
                     JdbcTableEntity.this
                     );
                 }
-
-            @Override
-            public AdqlTable search(final AdqlResource parent)
-                {
-                return womble().adql().tables().select(
-                    parent,
-                    JdbcTableEntity.this
-                    );
-                }
-
-            @Override
-            public AdqlTable search(final AdqlCatalog parent)
-                {
-                return womble().adql().tables().select(
-                    parent,
-                    JdbcTableEntity.this
-                    );
-                }
-
             @Override
             public AdqlTable search(final AdqlSchema parent)
                 {

@@ -47,39 +47,43 @@ extends DataTable<AdqlSchema>
         {
 
         /**
-         * Find an existing table view, or create a new one.
+         * Find an existing ADQL table, or create a new one.
          *
          */
+        @Deprecated
         public AdqlTable cascade(final AdqlSchema parent, final BaseTable<?> base);
 
         /**
-         * Create a new view of a table.
+         * Create a new ADQL table.
          *
          */
         public AdqlTable create(final AdqlSchema parent, final BaseTable<?> base, final String name);
 
         /**
-         * Select all the views of a table.
+         * Select all the ADQL tables linked to a base table.
          *
          */
         public Iterable<AdqlTable> select(final BaseTable<?> base);
 
         /**
-         * Select a table view based on parent resource.
+         * Select an ADQL table based on parent resource.
          *
          */
+        @Deprecated
         public AdqlTable select(final AdqlResource parent, final BaseTable<?> base);
 
         /**
-         * Select a table view based on parent catalog.
+         * Select an ADQL table based on parent catalog.
          *
          */
+        @Deprecated
         public AdqlTable select(final AdqlCatalog parent, final BaseTable<?> base);
 
         /**
-         * Select a table view based on parent schema.
+         * Select an ADQL table based on parent schema.
          *
          */
+        @Deprecated
         public AdqlTable select(final AdqlSchema parent, final BaseTable<?> base);
 
         /**

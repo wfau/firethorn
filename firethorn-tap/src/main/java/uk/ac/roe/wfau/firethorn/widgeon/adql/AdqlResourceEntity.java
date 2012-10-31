@@ -212,6 +212,15 @@ implements AdqlResource
                     text
                     ) ;
                 }
+
+            @Override
+            public AdqlCatalog create(String name)
+                {
+                return womble().adql().catalogs().create(
+                    AdqlResourceEntity.this,
+                    name
+                    ) ;
+                }
             };
         }
 

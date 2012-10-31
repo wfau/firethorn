@@ -22,14 +22,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceTestBase;
+import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
  *
  */
 @Slf4j
 public class AdqlResourceTestCase
-extends DataResourceTestBase
+extends TestBase
     {
 
     @Test
@@ -37,10 +37,12 @@ extends DataResourceTestBase
     throws Exception
         {
         //
-        // Select missing view fails.
+        // Select missing fails.
         assertIsNull(
-            base().views().select(
-                "view-A"
+            womble().adql().resources().select(
+                this.unique(
+                    "resource"
+                    )
                 )
             );
         }
@@ -50,10 +52,12 @@ extends DataResourceTestBase
     throws Exception
         {
         //
-        // Create view.
+        // Create with name works.
         assertNotNull(
-            base().views().create(
-                "view-A"
+            womble().adql().resources().create(
+                this.unique(
+                    "resource"
+                    )
                 )
             );
         }
@@ -62,18 +66,21 @@ extends DataResourceTestBase
     public void test002()
     throws Exception
         {
+        String name = this.unique(
+            "resource"
+            );
         //
-        // Create view.
+        // Create with name works.
         assertNotNull(
-            base().views().create(
-                "view-A"
+            womble().adql().resources().create(
+                name
                 )
             );
         //
-        // Select view works.
+        // Select by name works.
         assertNotNull(
-            base().views().select(
-                "view-A"
+            womble().adql().resources().select(
+                name
                 )
             );
         }
