@@ -38,6 +38,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseCatalog;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponentImpl;
@@ -379,5 +380,28 @@ implements AdqlResource
             this
             );
         }
+
+	@Override
+	public Services services()
+		{
+		return new Services()
+			{
+			@Override
+			public AdqlService create(String name)
+				{
+				return womble().adql().services().create(
+					AdqlResourceEntity.this,
+					name
+					);
+				}
+			@Override
+			public Iterable<AdqlService> select()
+				{
+				return womble().adql().services().select(
+					AdqlResourceEntity.this
+					);
+				}
+			};
+		}
     }
 

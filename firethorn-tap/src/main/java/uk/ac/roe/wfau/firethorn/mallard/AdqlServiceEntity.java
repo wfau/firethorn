@@ -28,6 +28,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResourceEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseColumn;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcColumnEntity;
 
 /**
  * Hibernate based <code>AdqlService</code> implementation.
@@ -59,15 +62,19 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResourceEntity;
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "mallard-select-all",
+            name  = "adql.service-select-all",
             query = "FROM AdqlServiceEntity ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "mallard-select-name",
+            name  = "adql.service-select-resource",
+            query = "FROM AdqlServiceEntity WHERE resource = :resource ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "adql.service-select-name",
             query = "FROM AdqlServiceEntity WHERE name = :name ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "mallard-search-text",
+            name  = "adql.service-search-text",
             query = "FROM AdqlServiceEntity WHERE name LIKE :text ORDER BY ident desc"
             )
         }
@@ -82,6 +89,12 @@ implements AdqlService
      *
      */
     public static final String DB_TABLE_NAME = "service_entity" ;
+
+    /**
+     * The persistence column name for our target resource.
+     *
+     */
+    public static final String DB_RESOURCE_COL = "resource" ;
 
     /**
      * Our Entity Factory implementation.
@@ -105,10 +118,23 @@ implements AdqlService
             {
             return super.iterable(
                 super.query(
-                    "mallard-select-all"
+                    "adql.service-select-all"
                     )
                 );
             }
+		@Override
+        @SelectEntityMethod
+		public Iterable<AdqlService> select(final AdqlResource resource)
+			{
+            return super.iterable(
+                super.query(
+                    "adql.service-select-resource"
+                    ).setEntity(
+                        "resource",
+                        resource
+                        )
+                );
+			}
 
         @Override
         @SelectEntityMethod
@@ -116,7 +142,7 @@ implements AdqlService
             {
             return super.iterable(
                 super.query(
-                    "mallard-select-name"
+                    "adql.service-select-name"
                     ).setString(
                         "name",
                         name
@@ -130,7 +156,7 @@ implements AdqlService
             {
             return super.iterable(
                 super.query(
-                    "mallard-search-text"
+                    "adql.service-search-text"
                     ).setString(
                         "text",
                         searchParam(
@@ -142,11 +168,12 @@ implements AdqlService
 
         @Override
         @CreateEntityMethod
-        public AdqlService create(final String name)
+        public AdqlService create(final AdqlResource resource, final String name)
             {
             return super.insert(
                 new AdqlServiceEntity(
-                    name
+                		resource,
+                		name
                     )
                 );
             }
@@ -168,6 +195,7 @@ implements AdqlService
             {
             return this.identifiers;
             }
+
         }
 
     /**
@@ -181,14 +209,51 @@ implements AdqlService
         }
 
     /**
+     * Create a new AdqlServiceEntity, using the target AdqlResource name.
+     *
+     */
+    protected AdqlServiceEntity(final AdqlResource resource)
+        {
+        this(
+			resource,
+			resource.name()
+        	);
+        }
+
+    /**
      * Create a new AdqlServiceEntity.
      *
      */
-    protected AdqlServiceEntity(final String name)
+    protected AdqlServiceEntity(final AdqlResource resource, final String name)
         {
         super(name);
+        this.resource = resource ;
         }
 
+
+    /**
+     * The target resource published by this service.
+     *
+     */
+    @ManyToOne(
+        fetch = FetchType.EAGER,
+        targetEntity = AdqlResourceEntity.class
+        )
+    @JoinColumn(
+        name = DB_RESOURCE_COL,
+        unique = false,
+        nullable = false,
+        updatable = false
+        )
+    private AdqlResource resource ;
+    
+    @Override
+    public AdqlResource resource()
+        {
+        return this.resource ;
+        }
+
+    
     @Override
     public Jobs jobs()
         {
@@ -213,90 +278,7 @@ implements AdqlService
                 }
             };
         }
-
-    /*
-     * Alternative collection query tools
-     * http://www.querydsl.com/
-     * http://blog.mysema.com/2010/07/querying-hibernate-with-querydsl.html
-     * 
-     */
     
-    /**
-     * The collection of resources published by this service.
-     *
-     */
-    @ManyToMany(
-        fetch = FetchType.LAZY,
-        cascade = CascadeType.ALL,
-        targetEntity = AdqlResourceEntity.class
-        )
-    @JoinTable(
-        name="service_resources",
-        joinColumns = @JoinColumn(
-            name="service",
-            nullable = false,
-            updatable = false
-            ),
-        inverseJoinColumns = @JoinColumn(
-            name="resource",
-            nullable = false,
-            updatable = false
-            )
-        )
-    private Set<AdqlResource> resources = new HashSet<AdqlResource>(0);
-    protected Set<AdqlResource> getResources()
-        {
-        return this.resources ;
-        }
-    protected void setResources(final Set<AdqlResource> resources)
-        {
-        this.resources = resources ;
-        }
-
-    @Override
-    public Resources resources()
-        {
-        return new Resources()
-            {
-            @Override
-            public void insert(final AdqlResource resource)
-                {
-                resources.add(
-                    resource
-                    );
-                }
-            @Override
-            public Iterable<AdqlResource> select()
-                {
-                return resources ;
-                }
-            @Override
-            public Iterable<AdqlResource> select(String name)
-                {
-                // TODO Auto-generated method stub
-                return null ;
-                /*
-                return womble().hibernate().session().createFilter(
-                    resources,
-                    ""
-                    );
-                */
-                }
-            @Override
-            public Iterable<AdqlResource> search(String name)
-                {
-                // TODO Auto-generated method stub
-                return null ;
-                /*
-                return womble().hibernate().session().createFilter(
-                    resources,
-                    ""
-                    );
-                */
-                }
-            };
-        }
-
     @Override
     public String link()
         {

@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.widgeon.adql ;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.data.DataResource;
 
@@ -84,6 +85,32 @@ extends DataResource
      */
     public BaseResource base();
 
+    /**
+     * Public interface for accessing the services associated with this resource.
+     *
+     */
+    public interface Services
+        {
+    	/**
+    	 * Create a new service associated with this resource.
+    	 * 
+    	 */
+    	public AdqlService create(String name);
+
+    	/**
+         * Select all of the services associated with this resource.
+         *
+         */
+        public Iterable<AdqlService> select();
+
+        }
+
+    /**
+     * Access to the services associated with this resource.
+     * 
+     */
+    public Services services();
+    
     /**
      * Public interface for accessing a resource's catalogs.
      *

@@ -33,6 +33,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.common.womble.Womble;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 
 /**
  * Generic base class for a persistent Entity Factory.
@@ -291,6 +293,7 @@ implements Entity.Factory<EntityType>
             string
             );
         }
+
     }
 
 
