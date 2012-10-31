@@ -25,7 +25,11 @@ import os
 web.config.debug = False 
 
 ### Render URLs
+<<<<<<< local
 urls = ('/', 'index','/index', 'index', '/services', 'services', '/create_new', 'create_new', '/create_view','create_view', '/create_view_edit_handler', 'create_view_edit_handler', '/jdbc_resources','jdbc_resources', '/vospace', 'vospace' )
+=======
+urls = ('/', 'index','/index', 'index', '/services', 'services', '/create_new', 'create_new', '/create_view','create_view', '/create_view_edit_handler', 'create_view_edit_handler', '/jdbc_resources','jdbc_resources' )
+>>>>>>> other
 
 
 ### For apache production env

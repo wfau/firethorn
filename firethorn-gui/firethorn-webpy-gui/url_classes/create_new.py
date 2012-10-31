@@ -34,7 +34,11 @@ class create_new:
                      })
             else :
                 converted_dict = dict([(str(k), v) for k, v in data.items()])
+<<<<<<< local
                 return_html = config.local_hostname[obj_type] + '?'+ config.get_param + '='  +  urllib2.quote(converted_dict["ident"].encode("utf8"))
+=======
+                return_html = config.local_hostname['services'] + '?'+ config.service_get_param + '='  +  urllib2.quote(converted_dict["ident"].encode("utf8"))
+>>>>>>> other
                 
         elif obj_type == config.types['JDBC connection']:
             data = json.loads(json_data)
@@ -45,7 +49,11 @@ class create_new:
                      })
             else :
                 converted_dict = dict([(str(k), v) for k, v in data.items()])
+<<<<<<< local
                 return_html = config.local_hostname[obj_type] + '?'+ config.get_param + '='  +  urllib2.quote(converted_dict["ident"].encode("utf8"))
+=======
+                return_html = config.local_hostname['jdbc_resources'] + '?'+ config.service_get_param + '='  +  urllib2.quote(converted_dict["ident"].encode("utf8"))
+>>>>>>> other
 
         else:
             return json.dumps({
@@ -102,18 +110,38 @@ class create_new:
         data = web.input(obj_type='', obj_name='')
         return_string = ''
         f=''
+<<<<<<< local
     
+=======
+>>>>>>> other
         
+<<<<<<< local
         obj_type = config.types[urllib2.unquote(urllib2.quote(data.obj_type.encode("utf8"))).decode("utf8")]
         obj_name = urllib2.unquote(urllib2.quote(data.obj_name.encode("utf8"))).decode("utf8")
+=======
+>>>>>>> other
         
+<<<<<<< local
+=======
+        obj_type = urllib2.unquote(urllib2.quote(data.obj_type.encode("utf8"))).decode("utf8")
+      
+>>>>>>> other
         try:
+<<<<<<< local
             if  self.__input_validator(obj_name, obj_type):
                 encoded_args = urllib.urlencode({config.create_params[obj_type] : obj_name})
+=======
+            if  self.__input_validator(data.obj_name, obj_type):
+                encoded_args = urllib.urlencode({config.create_params[obj_type] : data.obj_name})
+>>>>>>> other
                 request = urllib2.Request(config.create_urls[obj_type], encoded_args, headers={"Accept" : "application/json"})
                 f = urllib2.urlopen(request)
+<<<<<<< local
                 result = f.read()
                 return_string = self.__generate_resource_url(result, obj_name, obj_type)
+=======
+                return_string = self.__generate_resource_url(f.read(), data.obj_name, obj_type)
+>>>>>>> other
             else:
                 return_string = json.dumps({
                                     'Code' : -1,

@@ -34,15 +34,23 @@ input {
 	
 ul {
 		list-style:none;
+<<<<<<< local
 	
 	}
 #second_menu ul {
+=======
+>>>>>>> other
 		display: inline-block;
 	    margin: 0px;
 		padding: 0;
 	}
+<<<<<<< local
 	
 #second_menu li{
+=======
+
+ul li{
+>>>>>>> other
    		margin-bottom: 8px;
 	}
 
@@ -90,7 +98,11 @@ ul {
 	
 #container {
 		width:900px;
+<<<<<<< local
 		min-height:120px;
+=======
+		min-height:620px;
+>>>>>>> other
 		margin: 0 auto;
 		text-align:center;
 		margin-top:20px;
@@ -161,8 +173,14 @@ a:active {
 #content{
 		margin:0 auto;
 		text-align:center;
+<<<<<<< local
 		min-width:90%;
 		width:90%;
+=======
+		min-width:1200px;
+		width:1200px;
+		overflow:hidden;
+>>>>>>> other
 		
 	}
 	
@@ -173,6 +191,7 @@ a:active {
 		margin:0 auto;
 		margin-top:15px;
 			
+<<<<<<< local
 	}
 
 #vospace_area {
@@ -181,4 +200,5 @@ a:active {
 	width:85%;
 	margin-top:40px;
 	
-}
+}=======
+	}>>>>>>> other

@@ -39,7 +39,11 @@ class index:
                 for entry in data:
                     converted_dict = dict([(str(k), v) for k, v in entry.items()])
 
+<<<<<<< local
                     sub_item = render.select_service_response('<a href=' + config.local_hostname[db_type] + '?' + config.get_param + '='  + urllib2.quote(converted_dict["ident"].encode("utf8")) + '>' + converted_dict["name"] + '</a>', datetime.strptime(converted_dict["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(converted_dict["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"))
+=======
+                    sub_item = render.select_service_response('<a href=' + config.local_hostname['services'] + '?'+ config.service_get_param + '='  + urllib2.quote(converted_dict["ident"].encode("utf8")) + '>' + converted_dict["name"] + '</a>', datetime.strptime(converted_dict["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(converted_dict["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"))
+>>>>>>> other
                     return_html += str(sub_item)
        
           

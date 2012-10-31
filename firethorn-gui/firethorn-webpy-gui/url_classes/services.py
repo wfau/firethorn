@@ -13,7 +13,10 @@ import traceback
 from app import session
 from helper_functions import login_helpers
 from datetime import datetime
+<<<<<<< local
 
+=======
+>>>>>>> other
 
 class services:
     """
