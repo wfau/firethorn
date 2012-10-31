@@ -186,11 +186,13 @@ extends TestBase
             );
         //
         // Create our AdqlResource.
+        /*
         final AdqlResource adqlResource = jdbcResource.views().create(
             unique(
                 "adql-resource"
                 )
             );
+        */
 
         //
         // Load our test data from file.

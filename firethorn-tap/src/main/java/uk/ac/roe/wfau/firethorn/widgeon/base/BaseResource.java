@@ -64,45 +64,7 @@ extends DataResource
         }
 
     /**
-     * Public interface for accessing a resource's Views.
-     *
-     */
-    public interface Views
-        {
-        /**
-         * Create a new view of the resource.
-         *
-         */
-        public AdqlResource create(final String name);
-
-        /**
-         * Select all the views of the resource.
-         *
-         */
-        public Iterable<AdqlResource> select();
-
-        /**
-         * Select a named view of the resource.
-         *
-         */
-        public AdqlResource select(final String name);
-
-        /**
-         * Text search for resources (name starts with).
-         *
-         */
-        public Iterable<AdqlResource> search(String text);
-
-        }
-
-    /**
-     * Access to this resource's ADQL views.
-     *
-     */
-    public BaseResource.Views views();
-
-    /**
-     * Public interface for accessing a resource's catalogs.
+     * Public interface for accessing a resources catalogs.
      *
      */
     public interface Catalogs<CatalogType extends BaseCatalog<?>>
@@ -111,7 +73,7 @@ extends DataResource
         }
 
     /**
-     * Access to this resource's catalogs.
+     * Access to this resources catalogs.
      *
      */
     @Override

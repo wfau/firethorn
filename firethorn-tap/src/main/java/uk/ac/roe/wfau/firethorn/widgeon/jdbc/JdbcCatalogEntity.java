@@ -124,7 +124,6 @@ implements JdbcCatalog
         /**
          * Insert a catalog into the database and update all the views of the parent resource.
          *
-         */
         @CascadeEntityMethod
         protected JdbcCatalog insert(final JdbcCatalogEntity entity)
             {
@@ -140,6 +139,7 @@ implements JdbcCatalog
                 }
             return entity ;
             }
+         */
 
         @Override
         @CreateEntityMethod
@@ -203,6 +203,7 @@ implements JdbcCatalog
                 );
             }
 
+        /*
         @Autowired
         protected AdqlCatalog.Factory views ;
 
@@ -211,7 +212,8 @@ implements JdbcCatalog
             {
             return this.views ;
             }
-
+         */
+        
         @Autowired
         protected JdbcSchema.Factory schemas ;
 
@@ -229,30 +231,6 @@ implements JdbcCatalog
             {
             return identifiers ;
             }
-        }
-
-    @Override
-    public JdbcCatalog.Views views()
-        {
-        return new JdbcCatalog.Views()
-            {
-            @Override
-            public Iterable<AdqlCatalog> select()
-                {
-                return womble().adql().catalogs().select(
-                    JdbcCatalogEntity.this
-                    );
-                }
-
-            @Override
-            public AdqlCatalog search(final AdqlResource parent)
-                {
-                return womble().adql().catalogs().select(
-                    parent,
-                    JdbcCatalogEntity.this
-                    );
-                }
-            };
         }
 
     @Override

@@ -45,39 +45,7 @@ extends DataSchema<CatalogType>
         }
 
     /**
-     * Public interface for accessing a schema's Views.
-     *
-     */
-    public interface Views
-        {
-        /**
-         * Select all the views of the schema.
-         *
-         */
-        public Iterable<AdqlSchema> select();
-
-        /**
-         * Search for schema view based on parent resource.
-         *
-         */
-        public AdqlSchema search(final AdqlResource parent);
-
-        /**
-         * Search for schema view based on parent catalog.
-         *
-         */
-        public AdqlSchema search(final AdqlCatalog parent);
-
-        }
-
-    /**
-     * Access to this schema's views.
-     *
-     */
-    public BaseSchema.Views views();
-
-    /**
-     * Public interface for accessing a schema's tables.
+     * Public interface for accessing a schemas tables.
      *
      */
     public interface Tables<TableType extends BaseTable<?>>
@@ -85,10 +53,6 @@ extends DataSchema<CatalogType>
         {
         }
 
-    /**
-     * Access to this schema's tables.
-     *
-     */
     @Override
     public BaseSchema.Tables<?> tables();
 

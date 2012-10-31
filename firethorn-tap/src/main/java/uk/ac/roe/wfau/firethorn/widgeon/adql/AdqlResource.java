@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql ;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.data.DataResource;
 
 /**
@@ -48,28 +47,10 @@ extends DataResource
         {
 
         /**
-         * Create a view of a resource.
+         * Create an ADQL resource.
          *
          */
-        public AdqlResource create(final BaseResource base, final String name);
-
-        /**
-         * Select all the views of a resource.
-         *
-         */
-        public Iterable<AdqlResource> select(final BaseResource base);
-
-        /**
-         * Select a view of a resource by name.
-         *
-         */
-        public AdqlResource select(final BaseResource base, final String name);
-
-        /**
-         * Search for a view of a resource.
-         *
-         */
-        public Iterable<AdqlResource> search(final BaseResource base, final String text);
+        public AdqlResource create(final String name);
 
         /**
          * Access to our catalog factory.
@@ -78,12 +59,6 @@ extends DataResource
         public AdqlCatalog.Factory catalogs();
 
         }
-
-    /**
-     * Access to our base resource.
-     *
-     */
-    public BaseResource base();
 
     /**
      * Public interface for accessing the services associated with this resource.
@@ -112,7 +87,7 @@ extends DataResource
     public Services services();
     
     /**
-     * Public interface for accessing a resource's catalogs.
+     * Public interface for accessing a resources catalogs.
      *
      */
     public interface Catalogs
@@ -120,10 +95,6 @@ extends DataResource
         {
         }
 
-    /**
-     * Access to this resource's catalogs.
-     *
-     */
     @Override
     public Catalogs catalogs();
     }

@@ -134,6 +134,7 @@ implements JdbcTable
             super.insert(
                 entity
                 );
+/*
             for (final AdqlSchema view : entity.parent().views().select())
                 {
                 this.views().cascade(
@@ -141,6 +142,7 @@ implements JdbcTable
                     entity
                     );
                 }
+ */                
             return entity ;
             }
 

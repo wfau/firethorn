@@ -126,7 +126,6 @@ implements JdbcSchema
         /**
          * Insert a schema into the database and update all the parent catalog views.
          *
-         */
         @CascadeEntityMethod
         protected JdbcSchema insert(final JdbcSchemaEntity entity)
             {
@@ -142,6 +141,7 @@ implements JdbcSchema
                 }
             return entity ;
             }
+         */
 
         @Override
         @CreateEntityMethod
@@ -231,39 +231,6 @@ implements JdbcSchema
             {
             return identifiers ;
             }
-        }
-
-    @Override
-    public JdbcSchema.Views views()
-        {
-        return new JdbcSchema.Views()
-            {
-            @Override
-            public Iterable<AdqlSchema> select()
-                {
-                return womble().adql().schemas().select(
-                    JdbcSchemaEntity.this
-                    );
-                }
-
-            @Override
-            public AdqlSchema search(final AdqlCatalog parent)
-                {
-                return womble().adql().schemas().select(
-                    parent,
-                    JdbcSchemaEntity.this
-                    );
-                }
-
-            @Override
-            public AdqlSchema search(final AdqlResource parent)
-                {
-                return womble().adql().schemas().select(
-                    parent,
-                    JdbcSchemaEntity.this
-                    );
-                }
-            };
         }
 
     @Override

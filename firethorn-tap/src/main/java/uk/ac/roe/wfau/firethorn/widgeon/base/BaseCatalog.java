@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.base;
 
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlCatalog;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.data.DataCatalog;
 
 /**
@@ -36,42 +34,15 @@ extends DataCatalog<ResourceType>
     extends DataCatalog.Factory<ResourceType, CatalogType>
         {
         /**
-         * Access to our View factory.
+         * Access to our ADQL factory.
          *
-         */
         public AdqlCatalog.Factory views();
+         */
 
         }
 
     /**
-     * Public interface for accessing a catalog's views.
-     *
-     */
-    public interface Views
-        {
-
-        /**
-         * Select all the views of the catalog.
-         *
-         */
-        public Iterable<AdqlCatalog> select();
-
-        /**
-         * Search for catalog view based on parent resource.
-         *
-         */
-        public AdqlCatalog search(final AdqlResource parent);
-
-        }
-
-    /**
-     * Access to this catalog's Views.
-     *
-     */
-    public BaseCatalog.Views views();
-
-    /**
-     * Public interface for accessing a catalog's schemas.
+     * Public interface for accessing a catalogs schemas.
      *
      */
     public interface Schemas<SchemaType extends BaseSchema<?>>
@@ -79,10 +50,6 @@ extends DataCatalog<ResourceType>
         {
         }
 
-    /**
-     * Access to this catalog's schemas.
-     *
-     */
     @Override
     public BaseCatalog.Schemas<?> schemas();
 

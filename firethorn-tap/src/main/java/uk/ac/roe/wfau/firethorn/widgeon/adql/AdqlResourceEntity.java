@@ -20,11 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql ;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,17 +29,12 @@ import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseCatalog;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponentImpl;
 import uk.ac.roe.wfau.firethorn.widgeon.data.DataResource;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceEntity;
 
 /**
  * Hibernate based <code>AdqlResource</code> implementation.
@@ -55,15 +46,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceEntity;
     AccessType.FIELD
     )
 @Table(
-    name = AdqlResourceEntity.DB_TABLE_NAME,
-    uniqueConstraints={
-        @UniqueConstraint(
-            columnNames = {
-                AbstractEntity.DB_NAME_COL,
-                AdqlResourceEntity.DB_BASE_COL
-                }
-            )
-        }
+    name = AdqlResourceEntity.DB_TABLE_NAME
     )
 @NamedQueries(
         {
@@ -71,25 +54,13 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceEntity;
             name  = "adql.resource-select-all",
             query = "FROM AdqlResourceEntity ORDER BY ident desc"
             ),
-            @NamedQuery(
-                name  = "adql.resource-select-name",
-                query = "FROM AdqlResourceEntity WHERE (name = :name) ORDER BY ident desc"
-                ),
+        @NamedQuery(
+            name  = "adql.resource-select-name",
+            query = "FROM AdqlResourceEntity WHERE (name = :name) ORDER BY ident desc"
+            ),
         @NamedQuery(
             name  = "adql.resource-search-text",
             query = "FROM AdqlResourceEntity WHERE (name LIKE :text) ORDER BY ident desc"
-            ),
-        @NamedQuery(
-            name  = "adql.resource-select-base",
-            query = "FROM AdqlResourceEntity WHERE (base = :base) ORDER BY ident desc"
-            ),
-        @NamedQuery(
-            name  = "adql.resource-select-base.name",
-            query = "FROM AdqlResourceEntity WHERE ((base = :base) AND (name = :name)) ORDER BY ident desc"
-            ),
-        @NamedQuery(
-            name  = "adql.resource-search-base.text",
-            query = "FROM AdqlResourceEntity WHERE ((base = :base) AND (name LIKE :text)) ORDER BY ident desc"
             )
         }
     )
@@ -103,12 +74,6 @@ implements AdqlResource
      *
      */
     public static final String DB_TABLE_NAME = "adql_resource" ;
-
-    /**
-     * The persistence column name for our base DataResource.
-     *
-     */
-    public static final String DB_BASE_COL = "base" ;
 
     /**
      * Our Entity Factory implementation.
@@ -129,7 +94,6 @@ implements AdqlResource
         /**
          * Insert a View into the database and create views for each child.
          *
-         */
         @CascadeEntityMethod
         protected AdqlResource insert(final AdqlResourceEntity entity)
             {
@@ -145,65 +109,15 @@ implements AdqlResource
                 }
             return entity ;
             }
+         */
 
         @Override
         @CreateEntityMethod
-        public AdqlResource create(final BaseResource base, final String name)
+        public AdqlResource create(final String name)
             {
             return this.insert(
                 new AdqlResourceEntity(
-                    base,
                     name
-                    )
-                );
-            }
-
-        @Override
-        @SelectEntityMethod
-        public Iterable<AdqlResource> select(final BaseResource base)
-            {
-            return super.iterable(
-                super.query(
-                    "adql.resource-select-base"
-                    ).setEntity(
-                        "base",
-                        base
-                    )
-                );
-            }
-
-        @Override
-        @SelectEntityMethod
-        public AdqlResource select(final BaseResource base, final String name)
-            {
-            return super.first(
-                super.query(
-                    "adql.resource-select-base.name"
-                    ).setEntity(
-                        "base",
-                        base
-                    ).setString(
-                        "name",
-                        name
-                    )
-                );
-            }
-
-        @Override
-        @SelectEntityMethod
-        public Iterable<AdqlResource> search(final BaseResource base, final String text)
-            {
-            return super.iterable(
-                super.query(
-                    "adql.resource-search-base.text"
-                    ).setEntity(
-                        "base",
-                        base
-                    ).setString(
-                        "text",
-                        searchParam(
-                            text
-                            )
                     )
                 );
             }
@@ -276,7 +190,6 @@ implements AdqlResource
             @Override
             public Iterable<AdqlCatalog> select()
                 {
-                //return womble().resources().base().views().catalogs().select(
                 return womble().adql().catalogs().select(
                     AdqlResourceEntity.this
                     ) ;
@@ -285,7 +198,6 @@ implements AdqlResource
             @Override
             public AdqlCatalog select(final String name)
                 {
-                //return womble().resources().base().views().catalogs().select(
                 return womble().adql().catalogs().select(
                     AdqlResourceEntity.this,
                     name
@@ -295,7 +207,6 @@ implements AdqlResource
             @Override
             public Iterable<AdqlCatalog> search(final String text)
                 {
-                //return womble().resources().base().views().catalogs().search(
                 return womble().adql().catalogs().search(
                     AdqlResourceEntity.this,
                     text
@@ -315,62 +226,12 @@ implements AdqlResource
         }
 
     /**
-     * Create a new view of a resource.
+     * Create a new ADQL resource.
      *
      */
-    private AdqlResourceEntity(final BaseResource base, final String name)
+    private AdqlResourceEntity(final String name)
         {
-        super(
-            name
-            );
-        log.debug("new [{}]", name);
-        this.base = base ;
-        }
-
-    /**
-     * Our underlying base resource.
-     *
-     */
-    @ManyToOne(
-        fetch = FetchType.EAGER,
-        targetEntity = JdbcResourceEntity.class
-        )
-    @JoinColumn(
-        name = DB_BASE_COL,
-        unique = false,
-        nullable = false,
-        updatable = false
-        )
-    private BaseResource base ;
-
-    @Override
-    public BaseResource base()
-        {
-        return this.base ;
-        }
-
-    @Override
-    public String name()
-        {
-        if (this.name != null)
-            {
-            return this.name ;
-            }
-        else {
-            return base.name() ;
-            }
-        }
-
-    @Override
-    public DataResource.Status status()
-        {
-        if (this.base().status() == DataResource.Status.ENABLED)
-            {
-            return super.status();
-            }
-        else {
-            return this.base().status();
-            }
+        super(name);
         }
 
     @Override

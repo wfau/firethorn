@@ -46,35 +46,23 @@ extends DataSchema<AdqlCatalog>
         {
 
         /**
-         * Find an existing schema view, or create a new one.
+         * Find an existing ADQL schema, or create a new one.
          *
-         */
         public AdqlSchema cascade(final AdqlCatalog parent, final BaseSchema<?> base);
+         */
 
         /**
-         * Create a new view of a schema.
+         * Create a new ADQL schema.
+         *
+         */
+        public AdqlSchema create(final AdqlCatalog parent, final String name);
+
+        /**
+         * Create a new ADQL schema.
          *
          */
         public AdqlSchema create(final AdqlCatalog parent, final BaseSchema<?> base, final String name);
-
-        /**
-         * Select all the views of a schema.
-         *
-         */
-        public Iterable<AdqlSchema> select(final BaseSchema<?> base);
-
-        /**
-         * Select a schema view based on parent resource.
-         *
-         */
-        public AdqlSchema select(final AdqlResource parent, final BaseSchema<?> base);
-
-        /**
-         * Select a schema view based on parent catalog.
-         *
-         */
-        public AdqlSchema select(final AdqlCatalog parent, final BaseSchema<?> base);
-
+        
         /**
          * Access to our table factory.
          *
@@ -84,13 +72,7 @@ extends DataSchema<AdqlCatalog>
         }
 
     /**
-     * Access to our base schema.
-     *
-     */
-    public BaseSchema<?> base();
-
-    /**
-     * Public interface for accessing a schema's tables.
+     * Public interface for accessing a schemas tables.
      *
      */
     public interface Tables
@@ -99,7 +81,7 @@ extends DataSchema<AdqlCatalog>
         }
 
     /**
-     * Access to this schema's tables.
+     * Access to this schemas tables.
      *
      */
     @Override
