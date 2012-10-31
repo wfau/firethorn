@@ -57,6 +57,12 @@ extends DataTable<AdqlSchema>
          * Create a new ADQL table.
          *
          */
+        public AdqlTable create(final AdqlSchema parent, final BaseTable<?> base);
+
+        /**
+         * Create a new ADQL table.
+         *
+         */
         public AdqlTable create(final AdqlSchema parent, final BaseTable<?> base, final String name);
 
         /**

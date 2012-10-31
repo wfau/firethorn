@@ -83,6 +83,12 @@ extends DataSchema<AdqlCatalog>
          * Create a new ADQL table.
          * 
          */
+        public AdqlTable create(final BaseTable<?> base);
+
+        /**
+         * Create a new ADQL table.
+         * 
+         */
         public AdqlTable create(final BaseTable<?> base, final String name);
 
         }

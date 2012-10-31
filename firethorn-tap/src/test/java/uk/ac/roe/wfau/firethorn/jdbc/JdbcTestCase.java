@@ -132,7 +132,7 @@ extends TestBase
                 );
             //
             // Create an empty resource tree.
-            final JdbcResource resource = womble().jdbc().resources().create(
+            final JdbcResource jdbcResource = womble().jdbc().resources().create(
                 this.unique(
                     "base"
                     ),
@@ -140,13 +140,15 @@ extends TestBase
                 );
             //
             // Pull the metadata from the database
-            resource.diff(
+            jdbcResource.diff(
                 false,
                 true
                 );
             //
             // Verify we got what we expected.
-            display(resource);
+            display(
+                jdbcResource
+                );
             }
         }
 
@@ -240,11 +242,10 @@ extends TestBase
                 );
             //
             // Create our AdqlTable.
-            final AdqlTable adqlTable = adqlSchema.tables()
-
-                final AdqlTable adqlTable = jdbcTable.views().search(
-                adqlResource
+            final AdqlTable adqlTable = adqlSchema.tables().create(
+                jdbcTable
                 );
+
             //
             // Rename our AdqlTable to use the StarTable name.
             adqlTable.name(
@@ -367,14 +368,17 @@ for (final JdbcDiference diff : after)
         display(
             jdbcResource
             );
+        display(
+            adqlResource
+            );
         }
 
-    public void display(final JdbcResource resource)
+    public void display(final JdbcResource jdbcResource)
         {
         log.debug("---");
-        log.debug("- Resource [{}]", resource.name());
+        log.debug("- JDBC resource [{}]", jdbcResource.name());
 
-        for (final JdbcCatalog catalog : resource.catalogs().select())
+        for (final JdbcCatalog catalog : jdbcResource.catalogs().select())
             {
             log.debug("-- Catalog [{}]", catalog.name());
             for (final JdbcSchema schema : catalog.schemas().select())
@@ -390,24 +394,25 @@ for (final JdbcDiference diff : after)
                     }
                 }
             }
+        }
 
+    public void display(final AdqlResource adqlResource)
+        {
         log.debug("---");
-        for (final AdqlResource view : resource.views().select())
+        log.debug("- ADQL resource [{}]", adqlResource.name());
+
+        for (final AdqlCatalog catalog : adqlResource.catalogs().select())
             {
-            log.debug("- View [{}]", resource.name());
-            for (final AdqlCatalog catalog : view.catalogs().select())
+            log.debug("-- Catalog [{}]", catalog.name());
+            for (final AdqlSchema schema : catalog.schemas().select())
                 {
-                log.debug("-- Catalog [{}]", catalog.name());
-                for (final AdqlSchema schema : catalog.schemas().select())
+                log.debug("--- Schema [{}]", schema.name());
+                for (final AdqlTable table : schema.tables().select())
                     {
-                    log.debug("--- Schema [{}]", schema.name());
-                    for (final AdqlTable table : schema.tables().select())
+                    log.debug("---- Table [{}]", table.name());
+                    for (final AdqlColumn column : table.columns().select())
                         {
-                        log.debug("---- Table [{}]", table.name());
-                        for (final AdqlColumn column : table.columns().select())
-                            {
-                            log.debug("----- Column [{}]", column.name());
-                            }
+                        log.debug("----- Column [{}]", column.name());
                         }
                     }
                 }

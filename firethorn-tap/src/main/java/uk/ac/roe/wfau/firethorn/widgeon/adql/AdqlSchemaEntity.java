@@ -231,6 +231,14 @@ implements AdqlSchema
         return new AdqlSchema.Tables()
             {
             @Override
+            public AdqlTable create(BaseTable<?> base)
+                {
+                return womble().adql().catalogs().schemas().tables().create(
+                    AdqlSchemaEntity.this,
+                    base
+                    ) ;
+                }
+            @Override
             public AdqlTable create(BaseTable<?> base, String name)
                 {
                 return womble().adql().catalogs().schemas().tables().create(
