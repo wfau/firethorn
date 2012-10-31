@@ -47,7 +47,7 @@ class jdbc_resources:
         if data == [] or data== None:
             return_html = "<div id='sub_item'>There was an error creating your JDBC connection</div>"
         else :
-            return_html = str(render.select_service_response('<a href=' + config.local_hostname['jdbc_resources'] + '?'+ config.service_get_param + '='  +  urllib2.quote(data["ident"].encode("utf8")) + '>' + data["name"] + '</a>',datetime.strptime(data["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(data["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S")))
+            return_html = str(render.select_service_response('<a href=' + config.local_hostname['jdbc_resources'] + '?'+ config.get_param + '='  +  urllib2.quote(data["ident"].encode("utf8")) + '>' + data["name"] + '</a>',datetime.strptime(data["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(data["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S")))
             return_html += "<a class='button' style='float:right' id='add_adql_view'>Add ADQL View</a>"
         return return_html
     

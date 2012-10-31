@@ -25,7 +25,7 @@ class create_new:
        
         return_html = ""
         
-        if obj_type == 'Service':
+        if obj_type == config.types['Service']:
             data = json.loads(json_data)
             if data == [] or data== None:
                 return json.dumps({
@@ -34,9 +34,9 @@ class create_new:
                      })
             else :
                 converted_dict = dict([(str(k), v) for k, v in data.items()])
-                return_html = config.local_hostname['services'] + '?'+ config.service_get_param + '='  +  urllib2.quote(converted_dict["ident"].encode("utf8"))
+                return_html = config.local_hostname[obj_type] + '?'+ config.get_param + '='  +  urllib2.quote(converted_dict["ident"].encode("utf8"))
                 
-        elif obj_type == 'JDBC connection':
+        elif obj_type == config.types['JDBC connection']:
             data = json.loads(json_data)
             if data == [] or data== None:
                 return json.dumps({
@@ -45,7 +45,7 @@ class create_new:
                      })
             else :
                 converted_dict = dict([(str(k), v) for k, v in data.items()])
-                return_html = config.local_hostname['jdbc_resources'] + '?'+ config.service_get_param + '='  +  urllib2.quote(converted_dict["ident"].encode("utf8"))
+                return_html = config.local_hostname[obj_type] + '?'+ config.get_param + '='  +  urllib2.quote(converted_dict["ident"].encode("utf8"))
 
         else:
             return json.dumps({
@@ -57,6 +57,7 @@ class create_new:
                          'Code' : 1,
                          'Content' : return_html
                      })
+    
     
     def __is_length_ok(self, strng):
         """
@@ -101,17 +102,18 @@ class create_new:
         data = web.input(obj_type='', obj_name='')
         return_string = ''
         f=''
+    
         
+        obj_type = config.types[urllib2.unquote(urllib2.quote(data.obj_type.encode("utf8"))).decode("utf8")]
+        obj_name = urllib2.unquote(urllib2.quote(data.obj_name.encode("utf8"))).decode("utf8")
         
-        obj_type = urllib2.unquote(urllib2.quote(data.obj_type.encode("utf8"))).decode("utf8")
-      
         try:
-            if  self.__input_validator(data.obj_name, obj_type):
-                encoded_args = urllib.urlencode({config.create_params[obj_type] : data.obj_name})
+            if  self.__input_validator(obj_name, obj_type):
+                encoded_args = urllib.urlencode({config.create_params[obj_type] : obj_name})
                 request = urllib2.Request(config.create_urls[obj_type], encoded_args, headers={"Accept" : "application/json"})
                 f = urllib2.urlopen(request)
                 result = f.read()
-                return_string = self.__generate_resource_url(result, data.obj_name, obj_type)
+                return_string = self.__generate_resource_url(result, obj_name, obj_type)
             else:
                 return_string = json.dumps({
                                     'Code' : -1,

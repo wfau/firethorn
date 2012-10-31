@@ -90,3 +90,13 @@
 		margin-top: 10px;
 		text-align: right; 
 	}
+	
+.left-aligned {	
+		text-align:left;
+	}
+	
+		
+.right-aligned {	
+		text-align:right;
+	}
+	

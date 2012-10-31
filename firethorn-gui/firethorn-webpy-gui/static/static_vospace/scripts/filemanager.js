@@ -905,9 +905,11 @@ var getFolderInfo = function(path, type){
 		} else {
 			
 			$('#fileinfo tbody tr').click(function(){
-				var path = encodeURIcomponent($('td:first-child', this).attr('title'));
-				var type = encodeURIcomponent($(this).find('.type').text());
-				var parent = encodeURIcomponent($('#uploader h1').text());
+				var path = encodeURIComponent($('td:first-child', this).attr('title'));
+				var type = encodeURIComponent($('#fileinfo').find('.type').text());
+				var parent = encodeURIComponent($('#uploader h1').text());
+		
+
 				window.location.href = properties.base_url + '/jdbc_resources?id=' + path + '&type=' + type + '&parent=' + parent;
 				//getDetailView(path, type);		
 				

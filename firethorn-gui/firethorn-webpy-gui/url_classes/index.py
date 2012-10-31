@@ -22,22 +22,24 @@ class index:
   
     """
     
-    def __generate_html_content(self, json_data, action):
+    def __generate_html_content(self, json_data, action, db_type):
         """
         Generate HTML response based on json data
         """
-        
+        print json_data
+        print db_type
+        print action
+        print config.local_hostname[db_type] 
         return_html = ''
-     
-        if action == 'service_select_by_name' or action == 'service_select_with_text':
+        if action == 'db_select_by_name' or action == 'db_select_with_text':
             data = json.loads(json_data)
             if data == [] or data== None:
-                return_html = "<div id='sub_item'>No services found</div>"
+                return_html = "<div id='sub_item'>No databases found</div>"
             else:
                 for entry in data:
                     converted_dict = dict([(str(k), v) for k, v in entry.items()])
 
-                    sub_item = render.select_service_response('<a href=' + config.local_hostname['services'] + '?'+ config.service_get_param + '='  + urllib2.quote(converted_dict["ident"].encode("utf8")) + '>' + converted_dict["name"] + '</a>', datetime.strptime(converted_dict["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(converted_dict["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"))
+                    sub_item = render.select_service_response('<a href=' + config.local_hostname[db_type] + '?' + config.get_param + '='  + urllib2.quote(converted_dict["ident"].encode("utf8")) + '>' + converted_dict["name"] + '</a>', datetime.strptime(converted_dict["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(converted_dict["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"))
                     return_html += str(sub_item)
        
           
@@ -45,11 +47,10 @@ class index:
             data = json.loads(json_data)
                                 
             if data == [] or data== None:
-                return_html = "<div id='sub_item'>There was an error creating your service</div>"
+                return_html = "<div id='sub_item'>There was an error creating your database</div>"
             else :
                 converted_dict = dict([(str(k), v) for k, v in data.items()])
-                return_html = str(render.individual_service_response( '<a href='  + config.local_hostname['services'] + '?'+ config.service_get_param + '=' + converted_dict["ident"] + '>' + converted_dict["name"] + '</a>', "Anonymous-identity" ))
-            
+                return_html = str(render.individual_service_response( '<a href='  + config.local_hostname[db_type] + '?' + config.get_param + '=' + converted_dict["ident"] + '>' + converted_dict["name"] + '</a>', "Anonymous-identity" ))
             
         return return_html
     
@@ -91,37 +92,38 @@ class index:
         Handle an HTTP POST request
         """
         
-        data = web.input(service_select_with_text= '', service_select_by_name='',service_get='')
+        data = web.input(db_select_with_text= '', db_select_by_name='',service_get='',db_type='all')
         return_string = ''
         action_stored = False
         action = ''
         action_value = ''
         f = ''
-
+        
+        
         for key in data:
                 
-            if key == 'service_select_with_text':
-                if data.service_select_with_text!='':
+            if key == 'db_select_with_text':
+                if data.db_select_with_text!='':
                     if action_stored:
                         return json.dumps({
                                     'Code' : -1,
                                     'Content' : config.errors['INVALID_REQUEST']
                                 })
                     else:
-                        action = 'service_select_with_text'
-                        action_value = data.service_select_with_text 
+                        action = 'db_select_with_text'
+                        action_value = data.db_select_with_text 
                         action_stored = True
                     
-            elif key == 'service_select_by_name':
-                if data.service_select_by_name!='':
+            elif key == 'db_select_by_name':
+                if data.db_select_by_name!='':
                     if action_stored:
                         return json.dumps({
                                     'Code' : -1,
                                     'Content' : config.errors['INVALID_REQUEST']
                                 })
                     else:
-                        action = 'service_select_by_name'
-                        action_value = data.service_select_by_name
+                        action = 'db_select_by_name'
+                        action_value = data.db_select_by_name
                         action_stored = True
                         
             elif key == 'service_get':
@@ -142,17 +144,17 @@ class index:
         try:
             
             if param_is_valid:
-                encoded_args = urllib.urlencode({getattr(config, action + '_param') :  action_value})
-                if action == 'service_select_by_name' or action == 'service_select_with_text':
-                    request = urllib2.Request(getattr(config, action+ '_url') + encoded_args, headers={"Accept" : "application/json"})
+                encoded_args = urllib.urlencode({getattr(config, action + '_params')[data.db_type] :  action_value})
+                if action == 'db_select_by_name' or action == 'db_select_with_text':
+                    request = urllib2.Request(getattr(config, action + '_urls')[data.db_type] + encoded_args, headers={"Accept" : "application/json"})
                 elif action == 'service_get':
                     request = urllib2.Request(config.local_hostname['services'], encoded_args)
-                
+            
                 f = urllib2.urlopen(request)
                 
                 if action != 'service_get':
                     json_result = f.read()
-                    return_string = self.__generate_html_content(json_result, action)
+                    return_string = self.__generate_html_content(json_result, action,data.db_type)
                 else:
                     return_string = f.read()
                     
