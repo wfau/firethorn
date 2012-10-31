@@ -27,12 +27,8 @@ jQuery(document).ready(function() {
          	}
        	
 	       	xhr = helper_functions.ajaxCall(json_data , "POST",properties.getPath() +  "create_new", 1000000, function(e) { helper_functions.displayError("#error", e);} , success);
-<<<<<<< local
 	       	
 	       	return false;
-=======
-	        return false;
->>>>>>> other
       
 	});
 
