@@ -17,7 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql ;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
@@ -38,12 +41,12 @@ extends TestBase
         {
         //
         // Select missing fails.
-        assertIsNull(
+        assertFalse(
             womble().adql().resources().select(
                 this.unique(
                     "resource"
                     )
-                )
+                ).iterator().hasNext()
             );
         }
 
@@ -66,23 +69,22 @@ extends TestBase
     public void test002()
     throws Exception
         {
-        String name = this.unique(
-            "resource"
-            );
         //
         // Create with name works.
-        assertNotNull(
-            womble().adql().resources().create(
-                name
+        AdqlResource created = womble().adql().resources().create(
+            this.unique(
+                "resource"
                 )
             );
         //
         // Select by name works.
-        assertNotNull(
+        assertTrue(
             womble().adql().resources().select(
-                name
-                )
+                created.name()
+                ).iterator().hasNext()
             );
         }
+
+
     }
 

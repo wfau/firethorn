@@ -31,20 +31,29 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 public class JdbcResourceTestBase
 extends TestBase
     {
-
-    private JdbcResource base ;
-
-    public JdbcResource base()
+    private JdbcResource jdbcResource ;
+    public interface JdbcTargets
         {
-        return this.base;
+        public JdbcResource resource(); 
+        }
+    public JdbcTargets jdbc()
+        {
+        return new JdbcTargets()
+            {
+            @Override
+            public JdbcResource resource()
+                {
+                return jdbcResource;
+                }
+            };
         }
 
-    @Override
     @Before
+    @Override
     public void before()
     throws Exception
         {
-        base = womble().jdbc().resources().create(
+        jdbcResource = womble().jdbc().resources().create(
             this.unique(
                 "base"
                 )

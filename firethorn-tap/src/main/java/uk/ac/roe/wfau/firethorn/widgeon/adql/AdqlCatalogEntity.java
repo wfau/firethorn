@@ -68,11 +68,11 @@ import uk.ac.roe.wfau.firethorn.widgeon.data.DataResource;
             ),
         @NamedQuery(
             name  = "adql.catalog-select-parent.name",
-            query = "FROM AdqlCatalogEntity WHERE ((parent = :parent) AND (((name IS NOT null) AND (name = :name)) OR ((name IS null) AND (base.name = :name)))) ORDER BY ident desc"
+            query = "FROM AdqlCatalogEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "adql.catalog-search-parent.text",
-            query = "FROM AdqlCatalogEntity WHERE ((parent = :parent) AND (((name IS NOT null) AND (name LIKE :text)) OR ((name IS null) AND (base.name LIKE :text)))) ORDER BY ident desc"
+            query = "FROM AdqlCatalogEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident desc"
             )
         }
     )

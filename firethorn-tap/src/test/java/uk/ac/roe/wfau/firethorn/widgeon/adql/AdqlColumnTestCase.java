@@ -17,7 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql ;
 
-import static org.junit.Assert.assertNotNull;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Before;
@@ -32,38 +31,51 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceTestBase;
 public class AdqlColumnTestCase
 extends JdbcResourceTestBase
     {
-    private AdqlResource resource ;
-    public AdqlResource resource()
+    public interface AdqlTargets
         {
-        return this.resource ;
+        public AdqlResource resource();
+        public AdqlCatalog  catalog();
+        public AdqlSchema   schema();
         }
-
-    private AdqlCatalog catalog;
-    public AdqlCatalog catalog()
+    public AdqlTargets adql()
         {
-        return this.catalog ;
+        return new AdqlTargets()
+            {
+            @Override
+            public AdqlResource resource()
+                {
+                return adqlResource ;
+                }
+            @Override
+            public AdqlCatalog catalog()
+                {
+                return adqlCatalog ;
+                }
+            @Override
+            public AdqlSchema schema()
+                {
+                return adqlSchema ;
+                }
+            };
         }
-
-    private AdqlSchema schema;
-    public AdqlSchema schema()
-        {
-        return this.schema ;
-        }
+    private AdqlResource adqlResource ;
+    private AdqlCatalog  adqlCatalog;
+    private AdqlSchema   adqlSchema;
     
     @Before
     @Override
     public void before()
     throws Exception
         {
-        this.resource  = womble().adql().resources().create(
+        this.adqlResource  = womble().adql().resources().create(
             this.unique(
                 "resource-A"
                 )
             );
-        this.catalog = this.resource.catalogs().create(
+        this.adqlCatalog = this.adqlResource.catalogs().create(
             "catalog-A"
             );
-        this.schema = this.catalog.schemas().create(
+        this.adqlSchema = this.adqlCatalog.schemas().create(
             "schema-A"
             );
         }

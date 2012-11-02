@@ -73,6 +73,7 @@ extends JdbcResourceTestBase
     public void test000()
     throws Exception
         {
+        
         }
 
     @Test

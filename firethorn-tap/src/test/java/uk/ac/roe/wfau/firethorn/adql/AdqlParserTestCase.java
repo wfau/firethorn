@@ -308,7 +308,7 @@ extends JdbcResourceTestBase
         {
         //
         // Create base catalog, schema and table.
-        base().catalogs().create(
+        jdbc().resource().catalogs().create(
             "jdbc_catalog"
             ).schemas().create(
                 "jdbc_schema"
@@ -317,7 +317,7 @@ extends JdbcResourceTestBase
                     );
         //
         // Create the columns.
-        base().catalogs().select(
+        jdbc().resource().catalogs().select(
             "jdbc_catalog"
             ).schemas().select(
                 "jdbc_schema"
@@ -327,7 +327,7 @@ extends JdbcResourceTestBase
                         "jdbc_ra"
                         );
 
-        base().catalogs().select(
+        jdbc().resource().catalogs().select(
             "jdbc_catalog"
             ).schemas().select(
                 "jdbc_schema"
@@ -337,7 +337,7 @@ extends JdbcResourceTestBase
                         "jdbc_dec"
                         );
 
-        base().catalogs().select(
+        jdbc().resource().catalogs().select(
             "jdbc_catalog"
             ).schemas().select(
                 "jdbc_schema"
@@ -346,6 +346,14 @@ extends JdbcResourceTestBase
                     ).columns().create(
                         "jdbc_pts"
                         );
+
+        //
+        // Create ADQL resource, catalog and schema.
+
+        //
+        // Add the JDBC catalog to the ADQL resource. 
+/*
+ * 
         //
         // Create our ADQL view.
         base().views().create(
@@ -439,6 +447,8 @@ extends JdbcResourceTestBase
                             "adql_table"
                             )
             );
+ */
+        return null ;
         }
 
     /**
@@ -730,7 +740,5 @@ extends JdbcResourceTestBase
             QUERY_003
             );
         }
-
-
     }
 

@@ -70,11 +70,11 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchemaEntity;
             ),
         @NamedQuery(
             name  = "adql.schema-select-parent.name",
-            query = "FROM AdqlSchemaEntity WHERE ((parent = :parent) AND (((name IS NOT null) AND (name = :name)) OR ((name IS null) AND (base.name = :name)))) ORDER BY ident desc"
+            query = "FROM AdqlSchemaEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
             ),
         @NamedQuery(
             name  = "adql.schema-search-parent.text",
-            query = "FROM AdqlSchemaEntity WHERE ((parent = :parent) AND (((name IS NOT null) AND (name LIKE :text)) OR ((name IS null) AND (base.name LIKE :text)))) ORDER BY ident desc"
+            query = "FROM AdqlSchemaEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident desc"
             )
         }
     )
