@@ -17,19 +17,22 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql ;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceTestBase;
+import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
  *
  */
 @Slf4j
 public class AdqlResourceTestCase
-extends DataResourceTestBase
+extends TestBase
     {
 
     @Test
@@ -37,11 +40,13 @@ extends DataResourceTestBase
     throws Exception
         {
         //
-        // Select missing view fails.
-        assertIsNull(
-            base().views().select(
-                "view-A"
-                )
+        // Select missing fails.
+        assertFalse(
+            womble().adql().resources().select(
+                this.unique(
+                    "resource"
+                    )
+                ).iterator().hasNext()
             );
         }
 
@@ -50,10 +55,12 @@ extends DataResourceTestBase
     throws Exception
         {
         //
-        // Create view.
+        // Create with name works.
         assertNotNull(
-            base().views().create(
-                "view-A"
+            womble().adql().resources().create(
+                this.unique(
+                    "resource"
+                    )
                 )
             );
         }
@@ -63,19 +70,21 @@ extends DataResourceTestBase
     throws Exception
         {
         //
-        // Create view.
-        assertNotNull(
-            base().views().create(
-                "view-A"
+        // Create with name works.
+        AdqlResource created = womble().adql().resources().create(
+            this.unique(
+                "resource"
                 )
             );
         //
-        // Select view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                )
+        // Select by name works.
+        assertTrue(
+            womble().adql().resources().select(
+                created.name()
+                ).iterator().hasNext()
             );
         }
+
+
     }
 

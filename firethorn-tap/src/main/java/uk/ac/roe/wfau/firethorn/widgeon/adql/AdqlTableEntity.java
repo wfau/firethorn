@@ -153,12 +153,9 @@ implements AdqlTable
             return entity ;
             }
 
-        /**
-         * Create a default view of a table.
-         *
-         */
-        @CascadeEntityMethod
-        protected AdqlTable create(final AdqlSchema parent, final BaseTable<?> base)
+        @Override
+        @CreateEntityMethod
+        public AdqlTable create(final AdqlSchema parent, final BaseTable<?> base)
             {
             return this.insert(
                 new AdqlTableEntity(
@@ -168,6 +165,19 @@ implements AdqlTable
                 );
             }
 
+        @Override
+        @CreateEntityMethod
+        public AdqlTable create(final AdqlSchema parent, final BaseTable<?> base, String name)
+            {
+            return this.insert(
+                new AdqlTableEntity(
+                    parent,
+                    base,
+                    name
+                    )
+                );
+            }
+        
         @Override
         @SelectEntityMethod
         public AdqlTable select(final AdqlResource parent, final BaseTable<?> base)
@@ -235,19 +245,6 @@ implements AdqlTable
                     );
                 }
             return result ;
-            }
-
-        @Override
-        @CreateEntityMethod
-        public AdqlTable create(final AdqlSchema parent, final BaseTable<?> base, final String name)
-            {
-            return super.insert(
-                new AdqlTableEntity(
-                    parent,
-                    base,
-                    name
-                    )
-                );
             }
 
         @Override

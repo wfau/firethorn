@@ -198,50 +198,6 @@ implements BaseResource
             }
         }
 
-    @Override
-    public BaseResource.Views views()
-        {
-        return new BaseResource.Views()
-            {
-            @Override
-            public AdqlResource create(final String name)
-                {
-                //return womble().resources().base().views().create(
-                return womble().adql().resources().create(
-                    BaseResourceEntity.this,
-                    name
-                    );
-                }
-
-            @Override
-            public Iterable<AdqlResource> select()
-                {
-                //return womble().resources().base().views().select(
-                return womble().adql().resources().select(
-                    BaseResourceEntity.this
-                    );
-                }
-
-            @Override
-            public AdqlResource select(final String name)
-                {
-                //return womble().resources().base().views().select(
-                return womble().adql().resources().select(
-                    BaseResourceEntity.this,
-                    name
-                    );
-                }
-
-            public Iterable<AdqlResource> search(String text)
-                {
-                return womble().adql().resources().search(
-                    BaseResourceEntity.this,
-                    text
-                    );
-                }
-            };
-        }
-
     /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html

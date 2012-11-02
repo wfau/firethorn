@@ -18,7 +18,7 @@
 package uk.ac.roe.wfau.firethorn.widgeon.adql ;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
 import uk.ac.roe.wfau.firethorn.widgeon.data.DataResource;
 
 /**
@@ -47,28 +47,10 @@ extends DataResource
         {
 
         /**
-         * Create a view of a resource.
+         * Create an ADQL resource.
          *
          */
-        public AdqlResource create(final BaseResource base, final String name);
-
-        /**
-         * Select all the views of a resource.
-         *
-         */
-        public Iterable<AdqlResource> select(final BaseResource base);
-
-        /**
-         * Select a view of a resource by name.
-         *
-         */
-        public AdqlResource select(final BaseResource base, final String name);
-
-        /**
-         * Search for a view of a resource.
-         *
-         */
-        public Iterable<AdqlResource> search(final BaseResource base, final String text);
+        public AdqlResource create(final String name);
 
         /**
          * Access to our catalog factory.
@@ -79,24 +61,46 @@ extends DataResource
         }
 
     /**
-     * Access to our base resource.
+     * Public interface for accessing the services associated with this resource.
      *
      */
-    public BaseResource base();
+    public interface Services
+        {
+    	/**
+    	 * Create a new service associated with this resource.
+    	 * 
+    	 */
+    	public AdqlService create(String name);
+
+    	/**
+         * Select all of the services associated with this resource.
+         *
+         */
+        public Iterable<AdqlService> select();
+
+        }
 
     /**
-     * Public interface for accessing a resource's catalogs.
+     * Access to the services associated with this resource.
+     * 
+     */
+    public Services services();
+    
+    /**
+     * Public interface for accessing a resources catalogs.
      *
      */
     public interface Catalogs
     extends DataResource.Catalogs<AdqlCatalog>
         {
+        /**
+         * Create a new catalog.
+         * 
+         */
+        public AdqlCatalog create(String name);
+        
         }
 
-    /**
-     * Access to this resource's catalogs.
-     *
-     */
     @Override
     public Catalogs catalogs();
     }

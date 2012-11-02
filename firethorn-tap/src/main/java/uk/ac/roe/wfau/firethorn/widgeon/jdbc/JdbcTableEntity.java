@@ -134,6 +134,7 @@ implements JdbcTable
             super.insert(
                 entity
                 );
+/*
             for (final AdqlSchema view : entity.parent().views().select())
                 {
                 this.views().cascade(
@@ -141,6 +142,7 @@ implements JdbcTable
                     entity
                     );
                 }
+ */                
             return entity ;
             }
 
@@ -246,25 +248,6 @@ implements JdbcTable
                     JdbcTableEntity.this
                     );
                 }
-
-            @Override
-            public AdqlTable search(final AdqlResource parent)
-                {
-                return womble().adql().tables().select(
-                    parent,
-                    JdbcTableEntity.this
-                    );
-                }
-
-            @Override
-            public AdqlTable search(final AdqlCatalog parent)
-                {
-                return womble().adql().tables().select(
-                    parent,
-                    JdbcTableEntity.this
-                    );
-                }
-
             @Override
             public AdqlTable search(final AdqlSchema parent)
                 {

@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseCatalog;
 import uk.ac.roe.wfau.firethorn.widgeon.data.DataCatalog;
 
 /**
@@ -48,26 +47,14 @@ extends DataCatalog<AdqlResource>
         /**
          * Find an existing catalog view, or create a new one.
          *
-         */
         public AdqlCatalog cascade(final AdqlResource parent, final BaseCatalog<?> base);
+         */
 
         /**
-         * Create a view of a catalog.
+         * Create an ADQL catalog.
          *
          */
-        public AdqlCatalog create(final AdqlResource parent, final BaseCatalog<?> base, final String name);
-
-        /**
-         * Select all the views of a catalog.
-         *
-         */
-        public Iterable<AdqlCatalog> select(final BaseCatalog<?> base);
-
-        /**
-         * Select a catalog view based on parent resource.
-         *
-         */
-        public AdqlCatalog select(final AdqlResource parent, final BaseCatalog<?> base);
+        public AdqlCatalog create(final AdqlResource parent, final String name);
 
         /**
          * Access to our schema factory.
@@ -78,24 +65,20 @@ extends DataCatalog<AdqlResource>
         }
 
     /**
-     * Access to our base catalog.
-     *
-     */
-    public BaseCatalog<?> base();
-
-    /**
-     * Public interface for accessing a catalog's schemas.
+     * Public interface for accessing a catalogs schemas.
      *
      */
     public interface Schemas
     extends DataCatalog.Schemas<AdqlSchema>
         {
+        /**
+         * Create a new schema.
+         * 
+         */
+        public AdqlSchema create(String name);
+
         }
 
-    /**
-     * Access to this catalog's schemas.
-     *
-     */
     @Override
     public AdqlCatalog.Schemas schemas();
 

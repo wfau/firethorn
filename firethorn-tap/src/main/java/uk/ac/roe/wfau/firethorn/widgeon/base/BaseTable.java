@@ -52,25 +52,13 @@ extends DataTable<SchemaType>
     public interface Views
         {
         /**
-         * Select all the views of the table.
+         * Select all the ADQL tables linked to this table.
          *
          */
         public Iterable<AdqlTable> select();
 
         /**
-         * Search for table view based on parent resource.
-         *
-         */
-        public AdqlTable search(final AdqlResource parent);
-
-        /**
-         * Search for table view based on parent catalog.
-         *
-         */
-        public AdqlTable search(final AdqlCatalog parent);
-
-        /**
-         * Search for table view based on parent schema.
+         * Search for an ADQL table based on parent schema.
          *
          */
         public AdqlTable search(final AdqlSchema parent);

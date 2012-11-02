@@ -20,8 +20,10 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql ;
 import static org.junit.Assert.assertNotNull;
 import lombok.extern.slf4j.Slf4j;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import uk.ac.roe.wfau.firethorn.test.TestBase;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceTestBase;
 
 /**
@@ -29,28 +31,37 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceTestBase;
  */
 @Slf4j
 public class AdqlCatalogTestCase
-extends JdbcResourceTestBase
+extends TestBase
     {
 
+    private AdqlResource resource ;
+    public AdqlResource resource()
+        {
+        return this.resource ;
+        }
+
+    @Before
+    @Override
+    public void before()
+    throws Exception
+        {
+        this.resource  = womble().adql().resources().create(
+            this.unique(
+                "resource-A"
+                )
+            );
+        }
+    
     @Test
     public void test003()
     throws Exception
         {
         //
-        // Create view.
-        assertNotNull(
-            base().views().create(
-                "view-A"
-                )
-            );
-        //
-        // Select missing catalog view fails.
+        // Select missing catalog fails.
         assertIsNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
+            resource().catalogs().select(
+                "catalog-A"
+                )
             );
         }
 
@@ -59,586 +70,18 @@ extends JdbcResourceTestBase
     throws Exception
         {
         //
-        // Create base catalog.
+        // Create catalog.
         assertNotNull(
-            base().catalogs().create(
+            resource().catalogs().create(
                 "catalog-A"
                 )
             );
         //
-        // Create view.
+        // Select catalog by name.
         assertNotNull(
-            base().views().create(
-                "view-A"
-                )
-            );
-        //
-        // Select catalog view.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
-            );
-        }
-
-    @Test
-    public void test005()
-    throws Exception
-        {
-        //
-        // Create view.
-        assertNotNull(
-            base().views().create(
-                "view-A"
-                )
-            );
-        //
-        // Create base catalog.
-        assertNotNull(
-            base().catalogs().create(
+            resource().catalogs().select(
                 "catalog-A"
                 )
-            );
-        //
-        // Select catalog view.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
-            );
-        }
-
-    //
-    // Check that view name follows base name.
-    @Test
-    public void test006()
-    throws Exception
-        {
-        //
-        // Create view.
-        assertNotNull(
-            base().views().create(
-                "view-A"
-                )
-            );
-        //
-        // Create base catalog.
-        assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                )
-            );
-        //
-        // Select base catalog works.
-        assertNotNull(
-            base().catalogs().select(
-                "catalog-A"
-                )
-            );
-        //
-        // Select catalog view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
-            );
-        //
-        // Change base catalog name.
-        base().catalogs().select(
-            "catalog-A"
-            ).name(
-                "changed"
-                );
-        //
-        // Select base with old name fails.
-        assertIsNull(
-            base().catalogs().select(
-                "catalog-A"
-                )
-            );
-
-        //
-        // Select view with old name fails.
-        assertIsNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
-            );
-
-        //
-        // Select base with new name works.
-        assertNotNull(
-            base().catalogs().select(
-                "changed"
-                )
-            );
-        //
-        // Select view with new name works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "changed"
-                    )
-            );
-        }
-
-    //
-    // Check that view name replaces base name.
-    @Test
-    public void test007()
-    throws Exception
-        {
-        //
-        // Create view.
-        assertNotNull(
-            base().views().create(
-                "view-A"
-                )
-            );
-        //
-        // Create base catalog.
-        assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                )
-            );
-
-        //
-        // Select base catalog works.
-        assertNotNull(
-            base().catalogs().select(
-                "catalog-A"
-                )
-            );
-        //
-        // Select catalog view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
-            );
-        //
-        // Change catalog view name.
-        base().views().select(
-            "view-A"
-            ).catalogs().select(
-                "catalog-A"
-                ).name(
-                    "changed"
-                    );
-        //
-        // Select base catalog works.
-        assertNotNull(
-            base().catalogs().select(
-                "catalog-A"
-                )
-            );
-        //
-        // Select catalog view with old name fails.
-        assertIsNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
-            );
-        //
-        // Select catalog view with new name works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "changed"
-                    )
-            );
-        }
-
-    //
-    // Check that view name reverts to the  base name.
-    @Test
-    public void test008()
-    throws Exception
-        {
-        //
-        // Create the view.
-        assertNotNull(
-            base().views().create(
-                "view-A"
-                )
-            );
-        //
-        // Create base catalog.
-        assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                )
-            );
-        //
-        // Select base catalog works.
-        assertNotNull(
-            base().catalogs().select(
-                "catalog-A"
-                )
-            );
-        //
-        // Select catalog view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
-            );
-        //
-        // Change catalog view name
-        base().views().select(
-            "view-A"
-            ).catalogs().select(
-                "catalog-A"
-                ).name(
-                    "view-changed"
-                    );
-        //
-        // Select base catalog works.
-        assertNotNull(
-            base().catalogs().select(
-                "catalog-A"
-                )
-            );
-        //
-        // Select catalog view with old name fails.
-        assertIsNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
-            );
-        //
-        // Select catalog view with new name works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "view-changed"
-                    )
-            );
-        //
-        // Set catalog view name to null.
-        base().views().select(
-            "view-A"
-            ).catalogs().select(
-                "view-changed"
-                ).name(
-                    null
-                    );
-        //
-        // Select base catalog works.
-        assertNotNull(
-            base().catalogs().select(
-                "catalog-A"
-                )
-            );
-        //
-        // Select catalog view with new name fails.
-        assertIsNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "view-changed"
-                    )
-            );
-        //
-        // Select catalog view with old name works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
-            );
-        }
-
-    //
-    // Check that view name reverts to new base name.
-    @Test
-    public void test009()
-    throws Exception
-        {
-        //
-        // Create the view.
-        assertNotNull(
-            base().views().create(
-                "view-A"
-                )
-            );
-        //
-        // Create base catalog.
-        assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                )
-            );
-        //
-        // Select base catalog works.
-        assertNotNull(
-            base().catalogs().select(
-                "catalog-A"
-                )
-            );
-        //
-        // Select catalog view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
-            );
-        //
-        // Change catalog view name
-        base().views().select(
-            "view-A"
-            ).catalogs().select(
-                "catalog-A"
-                ).name(
-                    "view-changed"
-                    );
-        //
-        // Select catalog view with old name fails.
-        assertIsNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
-            );
-        //
-        // Select catalog view with new name works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "view-changed"
-                    )
-            );
-        //
-        // Change base catalog name
-        base().catalogs().select(
-            "catalog-A"
-            ).name(
-                "base-changed"
-                );
-        //
-        // Select base catalog with old name fails.
-        assertIsNull(
-            base().catalogs().select(
-                "catalog-A"
-                )
-            );
-        //
-        // Select base catalog with new name works.
-        assertNotNull(
-            base().catalogs().select(
-                "base-changed"
-                )
-            );
-        //
-        // Set catalog view name to null.
-        base().views().select(
-            "view-A"
-            ).catalogs().select(
-                "view-changed"
-                ).name(
-                    null
-                    );
-        //
-        // Select base catalog with old name fails.
-        assertIsNull(
-            base().catalogs().select(
-                "catalog-A"
-                )
-            );
-        //
-        // Select base catalog with new name works.
-        assertNotNull(
-            base().catalogs().select(
-                "base-changed"
-                )
-            );
-        //
-        // Select catalog view with old name fails.
-        assertIsNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
-            );
-        //
-        // Select catalog view with new name fails.
-        assertIsNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "view-changed"
-                    )
-            );
-        //
-        // Select catalog view with new base name works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "base-changed"
-                    )
-            );
-        }
-
-    //
-    // Check that view name reverts to new base name.
-    @Test
-    public void test010()
-    throws Exception
-        {
-        //
-        // Create the view.
-        assertNotNull(
-            base().views().create(
-                "view-A"
-                )
-            );
-        //
-        // Create base catalog.
-        assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                )
-            );
-        //
-        // Select base catalog works.
-        assertNotNull(
-            base().catalogs().select(
-                "catalog-A"
-                )
-            );
-        //
-        // Select catalog view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
-            );
-        //
-        // Change base catalog name
-        base().catalogs().select(
-            "catalog-A"
-            ).name(
-                "base-changed"
-                );
-        //
-        // Select base catalog with old name fails.
-        assertIsNull(
-            base().catalogs().select(
-                "catalog-A"
-                )
-            );
-        //
-        // Select base catalog with new name works.
-        assertNotNull(
-            base().catalogs().select(
-                "base-changed"
-                )
-            );
-        //
-        // Change catalog view name
-        base().views().select(
-            "view-A"
-            ).catalogs().select(
-                "base-changed"
-                ).name(
-                    "view-changed"
-                    );
-        //
-        // Select catalog view with old name fails.
-        assertIsNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
-            );
-        //
-        // Select catalog view with new name works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "view-changed"
-                    )
-            );
-        //
-        // Set catalog view name to null.
-        base().views().select(
-            "view-A"
-            ).catalogs().select(
-                "view-changed"
-                ).name(
-                    null
-                    );
-        //
-        // Select base catalog with old name fails.
-        assertIsNull(
-            base().catalogs().select(
-                "catalog-A"
-                )
-            );
-        //
-        // Select base catalog with new name works.
-        assertNotNull(
-            base().catalogs().select(
-                "base-changed"
-                )
-            );
-        //
-        // Select catalog view with old name fails.
-        assertIsNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
-            );
-        //
-        // Select catalog view with new name fails.
-        assertIsNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "view-changed"
-                    )
-            );
-        //
-        // Select catalog view with new base name works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "base-changed"
-                    )
             );
         }
     }

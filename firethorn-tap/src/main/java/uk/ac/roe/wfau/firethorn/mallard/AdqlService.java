@@ -47,7 +47,7 @@ extends Entity
          * Create a new AdqlService.
          *
          */
-        public AdqlService create(final String name);
+        public AdqlService create(final AdqlResource resource, final String name);
 
         /**
          * Select all the AdqlServices.
@@ -55,6 +55,12 @@ extends Entity
          */
         public Iterable<AdqlService> select();
 
+        /**
+         * Select all the AdqlServices for a particular AdqlResource.
+         *
+         */
+        public Iterable<AdqlService> select(final AdqlResource resource);
+        
         /**
          * Select AdqlServices(s) by name.
          *
@@ -75,41 +81,13 @@ extends Entity
         }
 
     /**
-     * The collection of resources used by this service.
+     * The resource published by this service.
      *
      */
-    public Resources resources();
-    public interface Resources
-        {
-
-        /**
-         * Add an AdqlResource to this service.
-         *
-         */
-        public void insert(final AdqlResource resource);
-
-        /**
-         * Select all the AdqlResources in this service.
-         *
-         */
-        public Iterable<AdqlResource> select();
-
-        /**
-         * Select an AdqlResources by name.
-         *
-         */
-        public Iterable<AdqlResource> select(String name);
-
-        /**
-         * Text search for AdqlResources.
-         *
-         */
-        public Iterable<AdqlResource> search(String name);
-
-        }
+    public AdqlResource resource();
 
     /**
-     * AdqlJob list for this TAP service.
+     * The AdqlJob list for this TAP service.
      *
      */
     public Jobs jobs();

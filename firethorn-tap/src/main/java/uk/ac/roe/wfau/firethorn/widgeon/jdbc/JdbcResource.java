@@ -132,7 +132,7 @@ extends BaseResource
     public DataSource source();
 
     /**
-     * Open a connection to ourDataSource.
+     * Open a connection to our DataSource.
      * @todo Move this to a local sub-interface.
      *
      */
@@ -161,4 +161,5 @@ extends BaseResource
      *
      */
     public List<JdbcDiference> diff(final DatabaseMetaData metadata, final List<JdbcDiference> results, final boolean push, final boolean pull);
+    
     }

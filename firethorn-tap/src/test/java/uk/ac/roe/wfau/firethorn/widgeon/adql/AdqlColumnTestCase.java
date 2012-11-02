@@ -17,9 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql ;
 
-import static org.junit.Assert.assertNotNull;
 import lombok.extern.slf4j.Slf4j;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceTestBase;
@@ -31,163 +31,59 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceTestBase;
 public class AdqlColumnTestCase
 extends JdbcResourceTestBase
     {
+    public interface AdqlTargets
+        {
+        public AdqlResource resource();
+        public AdqlCatalog  catalog();
+        public AdqlSchema   schema();
+        }
+    public AdqlTargets adql()
+        {
+        return new AdqlTargets()
+            {
+            @Override
+            public AdqlResource resource()
+                {
+                return adqlResource ;
+                }
+            @Override
+            public AdqlCatalog catalog()
+                {
+                return adqlCatalog ;
+                }
+            @Override
+            public AdqlSchema schema()
+                {
+                return adqlSchema ;
+                }
+            };
+        }
+    private AdqlResource adqlResource ;
+    private AdqlCatalog  adqlCatalog;
+    private AdqlSchema   adqlSchema;
+    
+    @Before
+    @Override
+    public void before()
+    throws Exception
+        {
+        this.adqlResource  = womble().adql().resources().create(
+            this.unique(
+                "resource-A"
+                )
+            );
+        this.adqlCatalog = this.adqlResource.catalogs().create(
+            "catalog-A"
+            );
+        this.adqlSchema = this.adqlCatalog.schemas().create(
+            "schema-A"
+            );
+        }
 
     @Test
     public void test000()
     throws Exception
         {
-        //
-        // Create view.
-        assertNotNull(
-            base().views().create(
-                "view-A"
-                )
-            );
-        //
-        // Create base catalog, schema and table.
-        assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                ).schemas().create(
-                    "schema-A"
-                    ).tables().create(
-                        "table-A"
-                        )
-            );
-        //
-        // Select table view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).schemas().select(
-                        "schema-A"
-                        ).tables().select(
-                            "table-A"
-                            )
-            );
-        //
-        // Select missing column view fails.
-        assertIsNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).schemas().select(
-                        "schema-A"
-                        ).tables().select(
-                            "table-A"
-                            ).columns().select(
-                                "column-A"
-                                )
-            );
-        }
-
-    @Test
-    public void test001()
-    throws Exception
-        {
-        //
-        // Create view.
-        assertNotNull(
-            base().views().create(
-                "view-A"
-                )
-            );
-        //
-        // Create base catalog, schema and table.
-        assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                ).schemas().create(
-                    "schema-A"
-                    ).tables().create(
-                        "table-A"
-                        )
-            );
-        //
-        // Select table view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).schemas().select(
-                        "schema-A"
-                        ).tables().select(
-                            "table-A"
-                            )
-            );
-        //
-        // Create base column.
-        assertNotNull(
-            base().catalogs().select(
-                "catalog-A"
-                ).schemas().select(
-                    "schema-A"
-                    ).tables().select(
-                        "table-A"
-                        ).columns().create(
-                            "column-A"
-                            )
-            );
-        //
-        // Select column view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).schemas().select(
-                        "schema-A"
-                        ).tables().select(
-                            "table-A"
-                            ).columns().select(
-                                "column-A"
-                                )
-            );
-        }
-
-    @Test
-    public void test002()
-    throws Exception
-        {
-        //
-        // Create view.
-        assertNotNull(
-            base().views().create(
-                "view-A"
-                )
-            );
-        //
-        // Create base catalog, schema, table and column.
-        assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                ).schemas().create(
-                    "schema-A"
-                    ).tables().create(
-                        "table-A"
-                        ).columns().create(
-                            "column-A"
-                            )
-            );
-        //
-        // Select catalog, schema, table and column view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).schemas().select(
-                        "schema-A"
-                        ).tables().select(
-                            "table-A"
-                            ).columns().select(
-                                "column-A"
-                                )
-            );
         }
     }
 

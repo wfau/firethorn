@@ -35,7 +35,7 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base()
+            jdbc().resource()
             );
         }
 
@@ -44,7 +44,7 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertIsNull(
-            base().catalogs().select(
+            jdbc().resource().catalogs().select(
                 "catalog-A"
                 )
             );
@@ -55,7 +55,7 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base().catalogs().create(
+            jdbc().resource().catalogs().create(
                 "catalog-A"
                 )
             );
@@ -66,12 +66,12 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base().catalogs().create(
+            jdbc().resource().catalogs().create(
                 "catalog-A"
                 )
             );
         assertNotNull(
-            base().catalogs().select(
+            jdbc().resource().catalogs().select(
                 "catalog-A"
                 )
             );
@@ -82,12 +82,12 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base().catalogs().create(
+            jdbc().resource().catalogs().create(
                 "catalog-A"
                 )
             );
         assertIsNull(
-            base().catalogs().select(
+            jdbc().resource().catalogs().select(
                 "catalog-A"
                 ).schemas().select(
                     "schema-A"
@@ -100,7 +100,7 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base().catalogs().create(
+            jdbc().resource().catalogs().create(
                 "catalog-A"
                 ).schemas().create(
                     "schema-A"
@@ -108,7 +108,7 @@ extends JdbcResourceTestBase
             );
 
         assertNotNull(
-            base().catalogs().select(
+            jdbc().resource().catalogs().select(
                 "catalog-A"
                 ).schemas().select(
                     "schema-A"
@@ -121,14 +121,14 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base().catalogs().create(
+            jdbc().resource().catalogs().create(
                 "catalog-A"
                 ).schemas().create(
                     "schema-A"
                     )
             );
         assertIsNull(
-            base().catalogs().select(
+            jdbc().resource().catalogs().select(
                 "catalog-A"
                 ).schemas().select(
                     "schema-A"
@@ -143,7 +143,7 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base().catalogs().create(
+            jdbc().resource().catalogs().create(
                 "catalog-A"
                 ).schemas().create(
                     "schema-A"
@@ -153,7 +153,7 @@ extends JdbcResourceTestBase
             );
 
         assertNotNull(
-            base().catalogs().select(
+            jdbc().resource().catalogs().select(
                 "catalog-A"
                 ).schemas().select(
                     "schema-A"
@@ -168,7 +168,7 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base().catalogs().create(
+            jdbc().resource().catalogs().create(
                 "catalog-A"
                 ).schemas().create(
                     "schema-A"
@@ -177,7 +177,7 @@ extends JdbcResourceTestBase
                         )
             );
         assertIsNull(
-            base().catalogs().select(
+            jdbc().resource().catalogs().select(
                 "catalog-A"
                 ).schemas().select(
                     "schema-A"
@@ -194,7 +194,7 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base().catalogs().create(
+            jdbc().resource().catalogs().create(
                 "catalog-A"
                 ).schemas().create(
                     "schema-A"
@@ -206,7 +206,7 @@ extends JdbcResourceTestBase
             );
 
         assertNotNull(
-            base().catalogs().select(
+            jdbc().resource().catalogs().select(
                 "catalog-A"
                 ).schemas().select(
                     "schema-A"
@@ -223,7 +223,7 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base().catalogs().create(
+            jdbc().resource().catalogs().create(
                 "catalog-A"
                 ).schemas().create(
                     "schema-A"
@@ -235,7 +235,7 @@ extends JdbcResourceTestBase
             );
 
         assertIsNull(
-            base().catalogs().select(
+            jdbc().resource().catalogs().select(
                 "catalog-A"
                 ).schemas().select(
                     "schema-A"
@@ -252,7 +252,7 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base().catalogs().create(
+            jdbc().resource().catalogs().create(
                 "catalog-A"
                 ).schemas().create(
                     "schema-A"
@@ -264,7 +264,7 @@ extends JdbcResourceTestBase
             );
 
         assertIsNull(
-            base().catalogs().select(
+            jdbc().resource().catalogs().select(
                 "catalog-A"
                 ).schemas().select(
                     "schema-A"
@@ -275,7 +275,7 @@ extends JdbcResourceTestBase
                             )
             );
 
-        base().catalogs().select(
+        jdbc().resource().catalogs().select(
             "catalog-A"
             ).schemas().select(
                 "schema-A"
@@ -288,7 +288,7 @@ extends JdbcResourceTestBase
                             );
 
         assertNotNull(
-            base().catalogs().select(
+            jdbc().resource().catalogs().select(
                 "catalog-A"
                 ).schemas().select(
                     "schema-A"
@@ -300,7 +300,7 @@ extends JdbcResourceTestBase
             );
 
         assertIsNull(
-            base().catalogs().select(
+            jdbc().resource().catalogs().select(
                 "catalog-A"
                 ).schemas().select(
                     "schema-A"
