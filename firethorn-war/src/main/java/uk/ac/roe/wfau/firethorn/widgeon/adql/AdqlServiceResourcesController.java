@@ -161,9 +161,12 @@ extends AbstractController
         final AdqlService service
         ){
         log.debug("select()");
+        return null ;
+        /*
         return new AdqlResourceBeanIter(
             service.resources().select()
             );
+        */
         }
 
     /**
@@ -192,11 +195,14 @@ extends AbstractController
         final String name
         ){
         log.debug("select(String) [{}]", name);
+        return null ;
+        /*
         return new AdqlResourceBeanIter(
             service.resources().select(
                 name
                 )
             );
+        */
         }
     
     }

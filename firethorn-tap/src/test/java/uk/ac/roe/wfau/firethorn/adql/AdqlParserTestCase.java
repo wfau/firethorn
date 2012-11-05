@@ -574,8 +574,8 @@ extends JdbcResourceTestBase
     /**
      * Simple test with no table checker.
      *
-     */
     @Test
+     */
     public void test000()
     throws Exception
         {
@@ -602,8 +602,8 @@ extends JdbcResourceTestBase
     /**
      * Use DefaultDBTable based metadata for the QueryChecker.
      *
-     */
     @Test
+     */
     public void testDBTableSimpleQuery()
     throws Exception
         {
@@ -616,8 +616,8 @@ extends JdbcResourceTestBase
     /**
      * Use AdqlDBTable based metadata for the QueryChecker.
      *
-     */
     @Test
+     */
     public void testAdqlTableSimpleQuery()
     throws Exception
         {
@@ -629,9 +629,9 @@ extends JdbcResourceTestBase
 
     /**
      * Use DefaultDBTable based metadata for the QueryChecker.
+    @Test
      *
      */
-    @Test
     public void testDBTableQuery000()
     throws Exception
         {
@@ -644,8 +644,8 @@ extends JdbcResourceTestBase
     /**
      * Use AdqlDBTable based metadata for the QueryChecker.
      *
-     */
     @Test
+     */
     public void testAdqlTableQuery000()
     throws Exception
         {
@@ -688,8 +688,8 @@ extends JdbcResourceTestBase
     /**
      * Use DefaultDBTable based metadata for the QueryChecker.
      *
-     */
     @Test
+     */
     public void testDBTableQuery002()
     throws Exception
         {
@@ -702,8 +702,8 @@ extends JdbcResourceTestBase
     /**
      * Use AdqlDBTable based metadata for the QueryChecker.
      *
-     */
     @Test
+     */
     public void testAdqlTableQuery002()
     throws Exception
         {
@@ -716,8 +716,8 @@ extends JdbcResourceTestBase
     /**
      * Use DefaultDBTable based metadata for the QueryChecker.
      *
-     */
     @Test
+     */
     public void testDBTableQuery003()
     throws Exception
         {
@@ -730,8 +730,8 @@ extends JdbcResourceTestBase
     /**
      * Use AdqlDBTable based metadata for the QueryChecker.
      *
-     */
     @Test
+     */
     public void testAdqlTableQuery003()
     throws Exception
         {

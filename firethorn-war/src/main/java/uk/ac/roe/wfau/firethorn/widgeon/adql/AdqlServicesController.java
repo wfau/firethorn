@@ -289,11 +289,14 @@ extends AbstractController
 	    ){
 	    log.debug("htmlCreate() [{}]", name);
         try {
+            final AdqlServiceBean bean = null ;
+            /*
             final AdqlServiceBean bean = new AdqlServiceBean(
                 womble().adql().services().create(
                     name
                     )
                 );
+            */
             return new ResponseEntity<String>(
                 new RedirectHeader(
                     bean
@@ -319,11 +322,14 @@ extends AbstractController
 	    ){
         log.debug("jsonCreate() [{}]", name);
         try {
+            final AdqlServiceBean bean = null ;
+            /*
             final AdqlServiceBean bean = new AdqlServiceBean(
                 womble().adql().services().create(
                     name
                     )
                 );
+            */
             return new ResponseEntity<AdqlServiceBean>(
                 bean,
                 new RedirectHeader(

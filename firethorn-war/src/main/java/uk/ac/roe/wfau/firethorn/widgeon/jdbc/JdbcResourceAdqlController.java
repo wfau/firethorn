@@ -141,9 +141,12 @@ extends AbstractController
         final JdbcResource resource
         ){
         log.debug("select()");
+        return null ;
+        /*
         return new AdqlResourceBeanIter(
             resource.views().select()
             );
+        */
         }
 
     /**
@@ -173,11 +176,14 @@ extends AbstractController
         final String name
         ){
         log.debug("select(String) [{}]", name);
+        return null ;
+        /*
         return new AdqlResourceBean(
             resource.views().select(
                 name
                 )
             );
+        */
         }
 
     /**
@@ -210,11 +216,14 @@ extends AbstractController
         final String text
         ){
         log.debug("search(String) [{}]", text);
+        return null ;
+        /*
         return new AdqlResourceBeanIter(
             resource.views().search(
                 text
                 )
             );
+        */
         }
 
     /**
@@ -247,11 +256,14 @@ extends AbstractController
         final String name
         ){
         log.debug("create(String) [{}]", name);
+        return null ;
+        /*
         return new AdqlResourceBean(
             resource.views().create(
                 name
                 )
             );
+        */
         }
 
     /**
