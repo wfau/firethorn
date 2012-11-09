@@ -291,35 +291,82 @@ implements JdbcCatalog
                 try {
                     //
                     // Scan the DatabaseMetaData for schema.
+                    /*
+                     * JDBC 4 driver method
+                     * 
+                     * java.lang.AbstractMethodError
+                     * http://sourceforge.net/p/jtds/discussion/104389/thread/fba2b1f6
+                     * "The method you are trying to call is part of the newest JDBC 4 specs (since Java 1.6),
+                     * but jTDS is a JDBC 3 driver and doesn't implement that method.
+                     * For the time being you will have to call getSchemas() without arguments and do the filtering yourself."
+                     * 
+                     * 
                     final ResultSet schemas = metadata.getSchemas(
                         name(),
                         null
                         );
-
+                     *   
+                     * JDBC 3 method has no filter.
+                     *  
+                     */
                     final Map<String, JdbcSchema> found = new HashMap<String, JdbcSchema>();
+
+                    final ResultSet schemas = metadata.getSchemas();
                     while (schemas.next())
                         {
-                        final String name = schemas.getString(
+                        final String cname = schemas.getString(
+                            JdbcResource.JDBC_META_TABLE_CATALOG
+                            );
+                        final String sname = schemas.getString(
                             JdbcResource.JDBC_META_TABLE_SCHEM
                             );
-                        log.debug("Checking database schema [{}]", name);
+                        log.debug("Checking database schema [{}.{}]", cname, sname);
+
+                        if (cname == null)
+                            {
+                            // On ROE SQLServer, the schema is *always* null.
+                            log.debug("Catalog is null, processing");
+                            //continue ;
+
+                            if (sname.equals("sys"))
+                                {
+                                log.debug("Schema is 'sys', skipping");
+                                continue ;
+                                }
+
+                            if (sname.equals("INFORMATION_SCHEMA"))
+                                {
+                                log.debug("Schema is 'INFORMATION_SCHEMA', skipping");
+                                continue ;
+                                }
+                            }
+                        else {
+                            if (cname.equals(name()))
+                                {
+                                log.debug("Catalog is [{}], processing", cname);                                
+                                }
+                            else {
+                                log.debug("Catalog is [{}], skipping", cname);                                
+                                continue ;
+                                }
+                            }
 
                         JdbcSchema schema = this.select(
-                            name
+                            sname
                             );
                         if (schema == null)
                             {
-                            log.debug("Database schema [{}] is not registered", name);
+                            log.debug("Database schema [{}] is not registered", sname);
                             if (pull)
                                 {
-                                log.debug("Registering missing schema [{}]", name);
+                                log.debug("Registering missing schema [{}]", sname);
                                 schema = this.create(
-                                    name
+                                    sname
                                     );
                                 }
                             else if (push)
                                 {
-                                log.debug("Deleting database schema [{}]", name);
+                                log.debug("Deleting database schema [{}]", sname);
                                 log.error("-- delete schema  -- ");
                                 }
                             else {
@@ -327,13 +374,13 @@ implements JdbcCatalog
                                     new JdbcDiference(
                                         JdbcDiference.Type.SCHEMA,
                                         null,
-                                        name
+                                        sname
                                         )
                                     );
                                 }
                             }
                         found.put(
-                            name,
+                            sname,
                             schema
                             );
                         }
@@ -341,7 +388,7 @@ implements JdbcCatalog
                     // Scan our own list of schema.
                     for (final JdbcSchema schema : select())
                         {
-                        log.debug("Checking registered schema [{}]", schema.name());
+                        log.debug("Checking registered schema [{}.{}]", new Object[]{schema.catalog().name(), schema.name()});
                         JdbcSchema match = found.get(
                             schema.name()
                             );
@@ -389,6 +436,11 @@ implements JdbcCatalog
                 catch (final SQLException ouch)
                     {
                     log.error("Error processing JDBC catalogs", ouch);
+                    }
+                catch (final Error ouch)
+                    {
+                    log.error("Error processing JDBC catalogs", ouch);
+                    throw ouch ;
                     }
                 return results ;
                 }

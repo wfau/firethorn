@@ -330,7 +330,7 @@ implements JdbcTable
                         final String table = columns.getString(JdbcResource.JDBC_META_TABLE_NAME);
                         final String name  = columns.getString(JdbcResource.JDBC_META_COLUMN_NAME);
                         final String type  = columns.getString(JdbcResource.JDBC_META_COLUMN_TYPE_NAME);
-                        log.debug("Checking database column [{}][{}]", name, type);
+                        log.debug("Checking database column [{}.{}.{}.{}]", new Object[]{catalog().name(), schema().name(), name(), name});
 
                         JdbcColumn column = this.select(
                             name
@@ -392,7 +392,7 @@ implements JdbcTable
                     // Scan our own list of schema.
                     for (final JdbcColumn column : select())
                         {
-                        log.debug("Checking registered column[{}]", column.name());
+                        log.debug("Checking registered column [{}.{}.{}.{}]", new Object[]{column.catalog().name(), column.schema().name(), column.table().name(), column.name()});
                         JdbcColumn match = found.get(
                             column.name()
                             );

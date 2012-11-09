@@ -73,7 +73,6 @@ implements DataComponent
         super(
             name
             );
-        log.debug("new [{}]", name);
         }
 
     /**

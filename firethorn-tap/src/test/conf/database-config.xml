@@ -39,6 +39,7 @@
         <property name="username" value="sa"/>
         <property name="password" value=""/>
     </bean>
+
     <!--+
         | Memory based HSQLDB test database.
         +-->
@@ -47,6 +48,15 @@
         <property name="url" value="jdbc:hsqldb:mem:memdata"/>
         <property name="username" value="sa"/>
         <property name="password" value=""/>
+    </bean>
+
+    <!--+
+        | Local SSH tunnel to ROE database server.
+        | ** name and pass redacted **
+        +-->
+    <bean id="RoeTwoMass" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
+        <property name="url" value="jdbc:jtds:sqlserver://localhost:1433/twomass"/>
     </bean>
 
 </beans>

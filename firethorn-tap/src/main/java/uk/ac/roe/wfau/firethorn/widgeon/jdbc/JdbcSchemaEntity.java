@@ -291,6 +291,8 @@ implements JdbcSchema
                 try {
                     //
                     // Scan the DatabaseMetaData for tables and views.
+                    final Map<String, JdbcTable> found = new HashMap<String, JdbcTable>();
+
                     final ResultSet tables = metadata.getTables(
                         catalog().name(),
                         name(),
@@ -302,33 +304,34 @@ implements JdbcSchema
                             }
                         );
 
-                    final Map<String, JdbcTable> found = new HashMap<String, JdbcTable>();
                     while (tables.next())
                         {
-                        final String name = tables.getString(JdbcResource.JDBC_META_TABLE_NAME);
-                        final String type = tables.getString(JdbcResource.JDBC_META_TABLE_TYPE);
-                        log.debug("Checking database table [{}][{}]", name, type);
+                        final String cname = tables.getString(JdbcResource.JDBC_META_TABLE_CAT);
+                        final String sname = tables.getString(JdbcResource.JDBC_META_TABLE_SCHEM);
+                        final String tname = tables.getString(JdbcResource.JDBC_META_TABLE_NAME);
+                        final String ttype = tables.getString(JdbcResource.JDBC_META_TABLE_TYPE);
+                        log.debug("Checking database table [{}.{}.{}][{}]", new Object[]{cname, sname, tname, ttype});
 
                         JdbcTable table = this.select(
-                            name
+                            tname
                             );
                         if (table == null)
                             {
-                            log.debug("Database table [{}] is not registered", name);
+                            log.debug("Database table [{}] is not registered", tname);
                             if (pull)
                                 {
-                                log.debug("Registering missing table [{}]", name);
+                                log.debug("Registering missing table [{}]", tname);
                                 table = this.create(
-                                    name
+                                    tname
                                     );
                                 }
                             else if (push)
                                 {
-                                log.debug("Deleting database table [{}]", name);
+                                log.debug("Deleting database table [{}]", tname);
                                 try {
                                     final String sql = "DROP TABLE {table} ;".replace(
                                         "{table}",
-                                        name
+                                        tname
                                         );
                                     log.debug("SQL [{}]", sql);
                                     final Connection connection = metadata.getConnection();
@@ -337,7 +340,7 @@ implements JdbcSchema
                                     }
                                 catch (final SQLException ouch)
                                     {
-                                    log.error("Exception dropping table [{}]", name);
+                                    log.error("Exception dropping table [{}]", tname);
                                     throw new RuntimeException(
                                         ouch
                                         );
@@ -348,7 +351,7 @@ implements JdbcSchema
                                     new JdbcDiference(
                                         JdbcDiference.Type.TABLE,
                                         null,
-                                        name
+                                        tname
                                         )
                                     );
                                 }
@@ -356,7 +359,7 @@ implements JdbcSchema
                         if (table != null)
                             {
                             found.put(
-                                name,
+                                tname,
                                 table
                                 );
                             }
@@ -365,7 +368,7 @@ implements JdbcSchema
                     // Scan our own list of schema.
                     for (final JdbcTable table : select())
                         {
-                        log.debug("Checking registered table [{}]", table.name());
+                        log.debug("Checking registered table [{}.{}.{}]", new Object[]{table.catalog().name(), table.schema().name(), table.name()});
                         JdbcTable match = found.get(
                             table.name()
                             );

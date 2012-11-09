@@ -137,6 +137,16 @@
         </dependency>
 
         <!--+
+            | jTDS SQLServer JDBC driver.
+            | http://jtds.sourceforge.net/
+            +-->
+        <dependency>
+            <groupId>net.sourceforge.jtds</groupId>
+            <artifactId>jtds</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!--+
             | Starlink Tables library.
             +-->
         <dependency>

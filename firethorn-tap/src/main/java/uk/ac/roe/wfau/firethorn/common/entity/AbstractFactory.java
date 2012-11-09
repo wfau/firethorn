@@ -85,8 +85,7 @@ implements Entity.Factory<EntityType>
     @SuppressWarnings("unchecked")
     public EntityType insert(final EntityType entity)
         {
-        log.debug("insert(EntityType)");
-        log.debug("  entity [{}]", entity);
+        log.debug("insert [{}]", entity);
         return (EntityType) womble.hibernate().insert(
             entity
             );
@@ -101,8 +100,7 @@ implements Entity.Factory<EntityType>
     public EntityType select(final Identifier ident)
     throws NotFoundException
         {
-        log.debug("select(Class, Identifier)");
-        log.debug("  ident [{}]", (ident != null) ? ident.value() : null);
+        log.debug("select [{}]", (ident != null) ? ident.value() : null);
         @SuppressWarnings("unchecked")
         final
         EntityType result = (EntityType) womble.hibernate().select(
@@ -128,8 +126,7 @@ implements Entity.Factory<EntityType>
     @SuppressWarnings("unchecked")
     public EntityType update(final EntityType entity)
         {
-        log.debug("update(EntityType)");
-        log.debug("  entity [{}]", entity);
+        log.debug("update [{}]", entity);
         if (etype().isInstance(entity))
             {
             return (EntityType) womble.hibernate().update(
@@ -153,8 +150,7 @@ implements Entity.Factory<EntityType>
     @DeleteEntityMethod
     public void delete(final EntityType entity)
         {
-        log.debug("delete(EntityType)");
-        log.debug("  entity [{}]", entity);
+        log.debug("delete [{}]", entity);
         if (etype().isInstance(entity))
             {
             womble.hibernate().delete(

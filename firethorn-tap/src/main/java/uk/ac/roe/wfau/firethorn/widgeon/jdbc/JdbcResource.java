@@ -111,10 +111,11 @@ extends BaseResource
      * @todo Move this to a local sub-interface.
      *
      */
-    public static final String JDBC_META_TABLE_CAT   = "TABLE_CAT" ;
-    public static final String JDBC_META_TABLE_TYPE  = "TABLE_TYPE" ;
-    public static final String JDBC_META_TABLE_NAME  = "TABLE_NAME" ;
-    public static final String JDBC_META_TABLE_SCHEM = "TABLE_SCHEM" ;
+    public static final String JDBC_META_TABLE_CAT     = "TABLE_CAT" ;
+    public static final String JDBC_META_TABLE_CATALOG = "TABLE_CATALOG" ;
+    public static final String JDBC_META_TABLE_TYPE    = "TABLE_TYPE" ;
+    public static final String JDBC_META_TABLE_NAME    = "TABLE_NAME" ;
+    public static final String JDBC_META_TABLE_SCHEM   = "TABLE_SCHEM" ;
 
     public static final String JDBC_META_TABLE_TYPE_VIEW  = "VIEW" ;
     public static final String JDBC_META_TABLE_TYPE_TABLE = "TABLE" ;
@@ -132,11 +133,27 @@ extends BaseResource
     public DataSource source();
 
     /**
-     * Open a connection to our DataSource.
+     * Connect to the database, using user name and password from the DataSource .
      * @todo Move this to a local sub-interface.
      *
      */
-    public Connection connect();
+    void connect();
+
+    /**
+     * Connect to the database.
+     * @param username
+     * @param password
+     * @todo Move this to a local sub-interface.
+     *
+     */
+    void connect(String username, String password);
+
+    /**
+     * A connection to the DataSource.
+     * @todo Move this to a local sub-interface.
+     *
+     */
+    public Connection connection();
 
     /**
      * Get the DatabaseMetaData from our DataSource.
@@ -147,8 +164,8 @@ extends BaseResource
 
     /**
      * Compare our data with DatabaseMetaData from our DataSource.
-     * @param pull Update our metadata to match the DatabaseMetaData.
      * @param push Update our database to match our metadata.
+     * @param pull Update our metadata to match the DatabaseMetaData.
      *
      */
     public List<JdbcDiference> diff(final boolean push, final boolean pull);
@@ -156,10 +173,11 @@ extends BaseResource
     /**
      * Compare our data with DatabaseMetaData from our DataSource.
      * @param metadata The DatabaseMetaData to compare against.
-     * @param pull Update our metadata to match the DatabaseMetaData.
      * @param push Update our database to match our metadata.
+     * @param pull Update our metadata to match the DatabaseMetaData.
      *
      */
     public List<JdbcDiference> diff(final DatabaseMetaData metadata, final List<JdbcDiference> results, final boolean push, final boolean pull);
-    
+
+
     }

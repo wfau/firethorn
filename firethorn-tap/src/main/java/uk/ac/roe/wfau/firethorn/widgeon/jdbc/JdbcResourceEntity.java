@@ -386,11 +386,38 @@ implements JdbcResource
         return this.source ;
         }
 
+    @Transient
+    private Connection connection;
+
     @Override
-    public Connection connect()
+    public Connection connection()
+        {
+        return connection ;
+        }
+
+    @Override
+    public void connect(String username, String password)
         {
         try {
-            return source.getConnection() ;
+            connection = source.getConnection(
+                username,
+                password
+                );
+            }
+        catch (final SQLException ouch)
+            {
+            log.error("Error connecting to database", ouch);
+            throw new RuntimeException(
+                ouch
+                );
+            }
+        }
+
+    @Override
+    public void connect()
+        {
+        try {
+            connection = source.getConnection();
             }
         catch (final SQLException ouch)
             {
@@ -405,7 +432,7 @@ implements JdbcResource
     public DatabaseMetaData metadata()
         {
         try {
-            return connect().getMetaData();
+            return connection().getMetaData();
             }
         catch (final SQLException ouch)
             {
