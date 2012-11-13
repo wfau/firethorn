@@ -1,0 +1,23 @@
+
+
+
+    Scanning the whole of the ROE database system is too slow.
+
+    Better to scan each catalog,schema,table as they are selected.
+
+    Created with status 'created'
+
+        Status change from 'created' to 'enabled' triggers a scan - one level only.
+        If scan fails status is changed to 'error'
+
+
+        interface JdbcComponent
+            {
+
+            public void scan();
+
+            }
+
+
+
+
