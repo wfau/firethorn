@@ -456,6 +456,8 @@ implements Womble
                     );
                 }
             try {
+                return (Entity) query.uniqueResult();
+                /*
                 final ScrollableResults results = query.scroll(
                     ScrollMode.FORWARD_ONLY
                     );
@@ -466,6 +468,7 @@ implements Womble
                 else {
                     return null ;
                     }
+                */
                 }
             catch (final HibernateException ouch)
                 {

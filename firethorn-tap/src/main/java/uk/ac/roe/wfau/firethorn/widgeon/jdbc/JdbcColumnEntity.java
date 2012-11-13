@@ -293,7 +293,8 @@ implements JdbcColumn
 
     /**
      * Our parent column.
-     *
+     * @todo index this.
+     * 
      */
     @ManyToOne(
         fetch = FetchType.EAGER,
