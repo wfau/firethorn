@@ -30,6 +30,7 @@ import javax.persistence.Version;
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Index;
 import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.DeleteEntityMethod;
@@ -39,6 +40,7 @@ import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 import uk.ac.roe.wfau.firethorn.common.womble.WombleImpl;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcColumnEntity;
 
 /**
  * Generic base class for a persistent Entity.
@@ -195,14 +197,18 @@ implements Entity
 
     /**
      * The Entity name.
+    @Index()
+        name = DB_NAME_IDX
+        )
      *
      */
     @Column(
         name = DB_NAME_COL,
         unique = false,
         nullable = true,
-        updatable = false
+        updatable = true
         )
+    /*
     protected String getName()
         {
         return this.name ;
@@ -211,6 +217,7 @@ implements Entity
         {
         this.name = name ;
         }
+    */
     protected String name ;
 
     @Override

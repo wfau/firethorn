@@ -30,8 +30,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+//import org.hibernate.annotations.Table;
+//import org.hibernate.annotations.Index;
+
 import lombok.extern.slf4j.Slf4j;
 
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +67,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponent.Status;
     name = JdbcColumnEntity.DB_TABLE_NAME,
     uniqueConstraints=
         @UniqueConstraint(
+            name = JdbcColumnEntity.DB_NAME_PARENT_IDX,
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
                 JdbcColumnEntity.DB_PARENT_COL,
@@ -85,6 +90,19 @@ import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponent.Status;
             )
         }
     )
+@org.hibernate.annotations.Table(
+    appliesTo = JdbcColumnEntity.DB_TABLE_NAME, 
+    indexes =
+        {
+        @Index(
+            name= JdbcColumnEntity.DB_NAME_IDX,
+            columnNames =
+                {
+                AbstractEntity.DB_NAME_COL
+                }
+            )
+        }
+    )
 public class JdbcColumnEntity
 extends DataComponentImpl
 implements JdbcColumn
@@ -97,10 +115,28 @@ implements JdbcColumn
     public static final String DB_TABLE_NAME = "jdbc_column" ;
 
     /**
-     * The persistence column name for our parent table.
+     * The column name for our parent.
      *
      */
     public static final String DB_PARENT_COL = "parent" ;
+
+    /**
+     * The index for our name.
+     *
+     */
+    public static final String DB_NAME_IDX = "jdbc_column_name_idx" ;
+
+    /**
+     * The index for our parent.
+     *
+     */
+    public static final String DB_PARENT_IDX = "jdbc_column_parent_idx" ;
+
+    /**
+     * The index for our name and parent.
+     *
+     */
+    public static final String DB_NAME_PARENT_IDX = "jdbc_column_name_parent_idx" ;
 
     /**
      * Our Entity Factory implementation.
@@ -296,8 +332,11 @@ implements JdbcColumn
      * @todo index this.
      * 
      */
+    @Index(
+        name = DB_PARENT_IDX
+        )
     @ManyToOne(
-        fetch = FetchType.EAGER,
+        fetch = FetchType.LAZY,
         targetEntity = JdbcTableEntity.class
         )
     @JoinColumn(
@@ -368,7 +407,7 @@ implements JdbcColumn
     public List<JdbcDiference> diff(final boolean push, final boolean pull)
         {
         return diff(
-            resource().metadata(),
+            resource().jdbc().metadata(),
             new ArrayList<JdbcDiference>(),
             push,
             pull

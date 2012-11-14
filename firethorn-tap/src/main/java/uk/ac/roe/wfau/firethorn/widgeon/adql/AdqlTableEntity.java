@@ -28,6 +28,7 @@ import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,16 +107,28 @@ implements AdqlTable
     public static final String DB_TABLE_NAME = "adql_table" ;
 
     /**
-     * The persistence column name for our parent schema.
+     * The column name for our parent.
      *
      */
     public static final String DB_PARENT_COL = "parent" ;
 
     /**
-     * The persistence column name for our base table.
+     * The column name for our base.
      *
      */
     public static final String DB_BASE_COL = "base" ;
+
+    /**
+     * The index for our parent.
+     *
+     */
+    public static final String DB_PARENT_IDX = "adql_table_parent_idx" ;
+
+    /**
+     * The index for our base.
+     *
+     */
+    public static final String DB_BASE_IDX = "adql_table_base_idx" ;
 
     /**
      * Our Entity Factory implementation.
@@ -413,6 +426,9 @@ implements AdqlTable
      * Our parent schema.
      *
      */
+    @Index(
+        name = DB_PARENT_IDX
+        )
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = AdqlSchemaEntity.class
@@ -436,6 +452,9 @@ implements AdqlTable
      * @todo BaseTableEntity.class
      *
      */
+    @Index(
+        name = DB_BASE_IDX
+        )
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = JdbcTableEntity.class

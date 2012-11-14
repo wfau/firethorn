@@ -38,6 +38,7 @@ import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponent.Status;
     name = JdbcSchemaEntity.DB_TABLE_NAME,
     uniqueConstraints=
         @UniqueConstraint(
+            name = JdbcSchemaEntity.DB_NAME_PARENT_IDX, 
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
                 JdbcSchemaEntity.DB_PARENT_COL,
@@ -78,15 +80,28 @@ import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponent.Status;
         {
         @NamedQuery(
             name  = "jdbc.schema-select-parent",
-            query = "FROM JdbcSchemaEntity WHERE parent = :parent ORDER BY ident desc"
+            query = "FROM JdbcSchemaEntity WHERE parent = :parent ORDER BY name asc, ident desc"
             ),
             @NamedQuery(
                 name  = "jdbc.schema-select-parent.name",
-                query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
+                query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY name asc, ident desc"
                 ),
         @NamedQuery(
             name  = "jdbc.schema-search-parent.text",
-            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident desc"
+            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY name asc, ident desc"
+            )
+        }
+    )
+@org.hibernate.annotations.Table(
+    appliesTo = JdbcSchemaEntity.DB_TABLE_NAME, 
+    indexes =
+        {
+        @Index(
+            name= JdbcSchemaEntity.DB_NAME_IDX,
+            columnNames =
+                {
+                AbstractEntity.DB_NAME_COL
+                }
             )
         }
     )
@@ -102,11 +117,29 @@ implements JdbcSchema
     public static final String DB_TABLE_NAME = "jdbc_schema" ;
 
     /**
-     * The persistence column name for our parent catalog.
+     * The column name for our parent.
      *
      */
     public static final String DB_PARENT_COL = "parent" ;
 
+    /**
+     * The index for our name.
+     *
+     */
+    public static final String DB_NAME_IDX = "jdbc_schema_name_idx" ;
+
+    /**
+     * The index for our parent.
+     *
+     */
+    public static final String DB_PARENT_IDX = "jdbc_schema_parent_idx" ;
+
+    /**
+     * The index for our name and parent.
+     *
+     */
+    public static final String DB_NAME_PARENT_IDX = "jdbc_schema_name_parent_idx" ;
+    
     /**
      * Our Entity Factory implementation.
      *
@@ -277,7 +310,7 @@ implements JdbcSchema
             public List<JdbcDiference> diff(final boolean push, final boolean pull)
                 {
                 return diff(
-                    resource().metadata(),
+                    resource().jdbc().metadata(),
                     new ArrayList<JdbcDiference>(),
                     push,
                     pull
@@ -435,6 +468,100 @@ implements JdbcSchema
                     }
                 return results ;
                 }
+
+            @Override
+            public void scan()
+                {
+                scan(
+                    resource().jdbc().metadata()
+                    );
+                }
+
+            @Override
+            public void scan(DatabaseMetaData metadata)
+                {
+                log.debug("Comparing tables for schema [{}]", name());
+                try {
+                    //
+                    // Scan the DatabaseMetaData for tables and views.
+                    final Map<String, JdbcTable> found = new HashMap<String, JdbcTable>();
+
+                    final ResultSet tables = metadata.getTables(
+                        catalog().name(),
+                        name(),
+                        null,
+                        new String[]
+                            {
+                            JdbcResource.JDBC_META_TABLE_TYPE_TABLE,
+                            JdbcResource.JDBC_META_TABLE_TYPE_VIEW
+                            }
+                        );
+
+                    while (tables.next())
+                        {
+                        final String cname = tables.getString(JdbcResource.JDBC_META_TABLE_CAT);
+                        final String sname = tables.getString(JdbcResource.JDBC_META_TABLE_SCHEM);
+                        final String tname = tables.getString(JdbcResource.JDBC_META_TABLE_NAME);
+                        final String ttype = tables.getString(JdbcResource.JDBC_META_TABLE_TYPE);
+                        log.debug("Checking database table [{}.{}.{}][{}]", new Object[]{cname, sname, tname, ttype});
+
+                        JdbcTable table = this.select(
+                            tname
+                            );
+                        if (table == null)
+                            {
+                            log.debug("Database table [{}] is not registered", tname);
+                            log.debug("Registering missing table [{}]", tname);
+                            table = this.create(
+                                tname
+                                );
+                            }
+                        if (table != null)
+                            {
+                            found.put(
+                                tname,
+                                table
+                                );
+                            }
+                        }
+                    //
+                    // Scan our own list of schema.
+                    for (final JdbcTable table : select())
+                        {
+                        log.debug("Checking registered table [{}.{}.{}]", new Object[]{table.catalog().name(), table.schema().name(), table.name()});
+                        JdbcTable match = found.get(
+                            table.name()
+                            );
+                        //
+                        // If we didn't find a match, disable our entry.
+                        if (match == null)
+                            {
+                            log.debug("Registered table [{}] is not in database", table.name());
+                            log.debug("Disabling registered table [{}]", table.name());
+                            table.status(
+                                Status.MISSING
+                                );
+                            }
+                        }
+                    }
+                catch (final SQLException ouch)
+                    {
+                    log.error("Error processing JDBC table metadata", ouch);
+                    status(
+                        Status.DISABLED,
+                        "SQLException while processing JDBC table metadata"
+                        );
+                    }
+                catch (final Error ouch)
+                    {
+                    log.error("Error processing JDBC table metadata", ouch);
+                    status(
+                        Status.DISABLED,
+                        "Error while processing JDBC table metadata"
+                        );
+                    throw ouch ;
+                    }
+                }
             };
         }
 
@@ -463,8 +590,11 @@ implements JdbcSchema
      * Our parent catalog.
      *
      */
+    @Index(
+        name = JdbcSchemaEntity.DB_PARENT_IDX
+        )
     @ManyToOne(
-        fetch = FetchType.EAGER,
+        fetch = FetchType.LAZY,
         targetEntity = JdbcCatalogEntity.class
         )
     @JoinColumn(
@@ -523,7 +653,7 @@ implements JdbcSchema
     public List<JdbcDiference> diff(final boolean push, final boolean pull)
         {
         return diff(
-            resource().metadata(),
+            resource().jdbc().metadata(),
             new ArrayList<JdbcDiference>(),
             push,
             pull
@@ -551,6 +681,21 @@ implements JdbcSchema
         {
         return womble().jdbc().catalogs().schemas().link(
             this
+            );
+        }
+
+    @Override
+    public void scan()
+        {
+        scan(
+            resource().jdbc().metadata()
+            );
+        }
+    @Override
+    public void scan(final DatabaseMetaData metadata)
+        {
+        tables().scan(
+            metadata
             );
         }
     }

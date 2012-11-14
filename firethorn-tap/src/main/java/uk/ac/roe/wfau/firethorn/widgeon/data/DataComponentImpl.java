@@ -48,11 +48,17 @@ extends AbstractEntity
 implements DataComponent
     {
 
-    /*
-     * The persistence column name for our status.
+    /**
+     * The column name for our status value.
      *
      */
-    public static final String DB_STATUS_COL = "status" ;
+    public static final String DB_STATUS_CODE_COL = "status_code" ;
+
+    /**
+     * The column name for our status message.
+     *
+     */
+    public static final String DB_STATUS_TEXT_COL = "status_text" ;
 
     /**
      * Default constructor needs to be protected not private.
@@ -80,7 +86,7 @@ implements DataComponent
      *
      */
     @Column(
-        name = DB_STATUS_COL,
+        name = DB_STATUS_CODE_COL,
         unique = false,
         nullable = false,
         updatable = true
@@ -89,7 +95,7 @@ implements DataComponent
         EnumType.STRING
         )
     private Status status = Status.CREATED ;
-
+    
     @Override
     public Status status()
         {
@@ -99,7 +105,29 @@ implements DataComponent
     @Override
     public void status(final Status status)
         {
-        this.status = status ;
+        this.status(
+            status,
+            null
+            );
+        }
+
+    /**
+     * The status message.
+     *
+     */
+    @Column(
+        name = DB_STATUS_TEXT_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String message ;
+
+    @Override
+    public void status(final Status status, String message)
+        {
+        this.status  = status ;
+        this.message = message ;
         }
 
     }

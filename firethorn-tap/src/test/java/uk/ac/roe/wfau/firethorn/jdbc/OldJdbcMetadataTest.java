@@ -55,7 +55,7 @@ import uk.ac.starlink.table.jdbc.WriteMode;
  *
  */
 @Slf4j
-public class JdbcTestCase
+public class OldJdbcMetadataTest
 extends TestBase
     {
     @Autowired
@@ -84,6 +84,14 @@ extends TestBase
         final String tabname = clean(unique("table"));
 
         //
+        // Load our test data from file.
+        final Iterable<StarTable> iter = VOTableStarTableParser.iterable(
+            new FileInputStream(
+                "src/test/data/votable/testdata-001.xml"
+                )
+            );
+
+        //
         // Connect to the test database.
         final DataSource source = (DataSource) spring.getBean("MemData");
         final Connection connection = source.getConnection();
@@ -97,13 +105,6 @@ extends TestBase
             "SET SCHEMA " + schname + " ;"
             );
 
-        //
-        // Load our test data from file.
-        final Iterable<StarTable> iter = VOTableStarTableParser.iterable(
-            new FileInputStream(
-                "src/test/data/votable/testdata-001.xml"
-                )
-            );
         //
         // Extract each of the StarTables.
         for (final StarTable stars : iter)
@@ -135,8 +136,7 @@ extends TestBase
             final JdbcResource jdbcResource = womble().jdbc().resources().create(
                 this.unique(
                     "base"
-                    ),
-                source
+                    )
                 );
             //
             // Pull the metadata from the database
@@ -169,8 +169,7 @@ extends TestBase
         final JdbcResource jdbcResource = womble().jdbc().resources().create(
             unique(
                 "jdbc-resource"
-                ),
-            source
+                )
             );
         //
         // Pull the current metadata.

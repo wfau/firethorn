@@ -28,7 +28,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.base.BaseCatalog;
  *
  */
 public interface JdbcCatalog
-extends BaseCatalog<JdbcResource>
+extends BaseCatalog<JdbcResource>, JdbcComponent
     {
     /**
      * Factory interface for identifiers.
@@ -66,7 +66,7 @@ extends BaseCatalog<JdbcResource>
      *
      */
     public interface Schemas
-    extends BaseCatalog.Schemas<JdbcSchema>
+    extends BaseCatalog.Schemas<JdbcSchema>, JdbcComponent
         {
         /**
          * Create a new schema.
@@ -80,6 +80,7 @@ extends BaseCatalog<JdbcResource>
          * @param push Update our database to match our metadata.
          *
          */
+        @Deprecated
         public List<JdbcDiference> diff(final boolean push, final boolean pull);
 
         /**
@@ -89,6 +90,7 @@ extends BaseCatalog<JdbcResource>
          * @param push Update our database to match our metadata.
          *
          */
+        @Deprecated
         public List<JdbcDiference> diff(final DatabaseMetaData metadata, final List<JdbcDiference> results, final boolean push, final boolean pull);
 
         }
@@ -105,6 +107,7 @@ extends BaseCatalog<JdbcResource>
      * @param push Update our database to match our metadata.
      *
      */
+    @Deprecated
     public List<JdbcDiference> diff(final boolean push, final boolean pull);
 
     /**
@@ -114,6 +117,7 @@ extends BaseCatalog<JdbcResource>
      * @param push Update our database to match our metadata.
      *
      */
+    @Deprecated
     public List<JdbcDiference> diff(final DatabaseMetaData metadata, final List<JdbcDiference> results, final boolean push, final boolean pull);
 
     }

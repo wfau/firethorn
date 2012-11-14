@@ -28,6 +28,7 @@ import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +98,27 @@ import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcColumnEntity;
             )
         }
     )
+@org.hibernate.annotations.Table(
+    appliesTo = AdqlColumnEntity.DB_TABLE_NAME, 
+    indexes =
+        {
+        @Index(
+            name= AdqlColumnEntity.DB_NAME_IDX,
+            columnNames =
+                {
+                AbstractEntity.DB_NAME_COL
+                }
+            ),
+        @Index(
+            name= AdqlColumnEntity.DB_PARENT_BASE_IDX,
+            columnNames =
+                {
+                AdqlColumnEntity.DB_BASE_COL,
+                AdqlColumnEntity.DB_PARENT_COL
+                }
+            )
+        }
+    )
 public class AdqlColumnEntity
 extends DataComponentImpl
 implements AdqlColumn
@@ -109,16 +131,40 @@ implements AdqlColumn
     public static final String DB_TABLE_NAME = "adql_column" ;
 
     /**
-     * The persistence column name for our parent table.
+     * The column name for our parent.
      *
      */
     public static final String DB_PARENT_COL = "parent" ;
 
     /**
-     * The persistence column name for our base column.
+     * The column name for our base.
      *
      */
     public static final String DB_BASE_COL = "base" ;
+
+    /**
+     * The index for our parent.
+     *
+     */
+    public static final String DB_PARENT_IDX = "adql_column_parent_idx" ;
+
+    /**
+     * The index for our name.
+     *
+     */
+    public static final String DB_NAME_IDX = "adql_column_name_idx" ;
+
+    /**
+     * The index for our base.
+     *
+     */
+    public static final String DB_BASE_IDX = "adql_column_base_idx" ;
+
+    /**
+     * The index for our base and parent.
+     *
+     */
+    public static final String DB_PARENT_BASE_IDX = "adql_column_parent_base_idx" ;
 
     /**
      * Our Entity Factory implementation.
@@ -388,6 +434,9 @@ implements AdqlColumn
      * Our parent table.
      *
      */
+    @Index(
+        name = DB_PARENT_IDX
+        )
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = AdqlTableEntity.class
@@ -411,6 +460,9 @@ implements AdqlColumn
      * @todo BaseColumnEntity.class
      *
      */
+    @Index(
+        name = DB_BASE_IDX
+        )
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = JdbcColumnEntity.class

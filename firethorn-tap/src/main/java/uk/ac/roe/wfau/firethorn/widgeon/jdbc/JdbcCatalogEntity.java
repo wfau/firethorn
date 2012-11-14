@@ -21,6 +21,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +67,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponent.Status;
     name = JdbcCatalogEntity.DB_TABLE_NAME,
     uniqueConstraints={
         @UniqueConstraint(
+            name = JdbcCatalogEntity.DB_NAME_PARENT_IDX,
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
                 JdbcCatalogEntity.DB_PARENT_COL,
@@ -88,6 +91,19 @@ import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponent.Status;
             )
         }
     )
+@org.hibernate.annotations.Table(
+    appliesTo = JdbcCatalogEntity.DB_TABLE_NAME, 
+    indexes =
+        {
+        @Index(
+            name= JdbcCatalogEntity.DB_NAME_IDX,
+            columnNames =
+                {
+                AbstractEntity.DB_NAME_COL
+                }
+            )
+        }
+    )
 public class JdbcCatalogEntity
 extends DataComponentImpl
 implements JdbcCatalog
@@ -100,10 +116,37 @@ implements JdbcCatalog
     public static final String DB_TABLE_NAME = "jdbc_catalog" ;
 
     /**
-     * The persistence column name for our parent resource.
+     * The column name for our parent.
      *
      */
     public static final String DB_PARENT_COL = "parent" ;
+
+    /**
+     * The index for our name.
+     *
+     */
+    public static final String DB_NAME_IDX = "jdbc_catalog_name_idx" ;
+
+    /**
+     * The index for our parent.
+     *
+     */
+    public static final String DB_PARENT_IDX = "jdbc_catalog_parent_idx" ;
+
+    /**
+     * The index for our name and parent.
+     *
+     */
+    public static final String DB_NAME_PARENT_IDX = "jdbc_catalog_name_parent_idx" ;
+
+    /**
+     * A list of schema names to ignore (this will be platform and installation specific).
+     *
+     */
+    public static final List<String> ignores = Arrays.asList(
+        "sys",
+        "INFORMATION_SCHEMA"
+        );  
 
     /**
      * Our Entity Factory implementation.
@@ -277,7 +320,7 @@ implements JdbcCatalog
             public List<JdbcDiference> diff(final boolean push, final boolean pull)
                 {
                 return diff(
-                    resource().metadata(),
+                    resource().jdbc().metadata(),
                     new ArrayList<JdbcDiference>(),
                     push,
                     pull
@@ -444,6 +487,177 @@ implements JdbcCatalog
                     }
                 return results ;
                 }
+
+            @Override
+            public void scan()
+                {
+                scan(
+                    resource().jdbc().metadata()
+                    );
+                }
+
+            @Override
+            public void scan(DatabaseMetaData metadata)
+                {
+                log.debug("Comparing schema for catalog [{}]", name());
+                try {
+                    final Map<String, JdbcSchema> found = new HashMap<String, JdbcSchema>();
+                    //
+                    // Scan the DatabaseMetaData for schema.
+                    /*
+                     * JDBC 4 driver method
+                     * 
+                     * java.lang.AbstractMethodError
+                     * http://sourceforge.net/p/jtds/discussion/104389/thread/fba2b1f6
+                     * "The method you are trying to call is part of the newest JDBC 4 specs (since Java 1.6),
+                     * but jTDS is a JDBC 3 driver and doesn't implement that method.
+                     * For the time being you will have to call getSchemas() without arguments and do the filtering yourself."
+                     * 
+                     * 
+                    final ResultSet schemas = metadata.getSchemas(
+                        name(),
+                        null
+                        );
+                     *   
+                     * JDBC 3 method has no filter.
+                     *  
+                     */
+       
+                    /*
+                     * Using the JDBC 3 driver getSchemas method doesn't work eithetr.
+                     * On our test system, the schema name is always null, so we can't check which catalog it belongs to.
+                     * 
+                    final ResultSet schemas = metadata.getSchemas();
+                    while (schemas.next())
+                        {
+                        final String cname = schemas.getString(
+                            JdbcResource.JDBC_META_TABLE_CATALOG
+                            );
+                        final String sname = schemas.getString(
+                            JdbcResource.JDBC_META_TABLE_SCHEM
+                            );
+                        log.debug("Checking database schema [{}.{}]", cname, sname);
+
+                        if (cname == null)
+                            {
+                            // On ROE SQLServer, the schema is *always* null.
+                            log.debug("Catalog name is null, processing");
+                            //continue ;
+
+                            }
+                        else {
+                            if (cname.equals(name()))
+                                {
+                                log.debug("Catalog name is [{}], processing", cname);                                
+                                }
+                            else {
+                                log.debug("Catalog name is [{}], skipping", cname);                                
+                                continue ;
+                                }
+                            }
+                        */
+
+                    //
+                    // Request all the table in this catalog, and only process the schema part.
+                    // This string keeps track of the most recent schema we have done.
+                    // This works IF the results are sorted by schema name.
+                    String sdone = "" ;  
+
+                    final ResultSet schemas = metadata.getTables(
+                        name(),
+                        null,
+                        null,
+                        new String[]
+                            {
+                            JdbcResource.JDBC_META_TABLE_TYPE_TABLE,
+                            JdbcResource.JDBC_META_TABLE_TYPE_VIEW
+                            }
+                        );
+
+                    while (schemas.next())
+                        {
+                        final String cname = schemas.getString(JdbcResource.JDBC_META_TABLE_CAT);
+                        final String sname = schemas.getString(JdbcResource.JDBC_META_TABLE_SCHEM);
+                        final String tname = schemas.getString(JdbcResource.JDBC_META_TABLE_NAME);
+                        final String ttype = schemas.getString(JdbcResource.JDBC_META_TABLE_TYPE);
+                        log.debug("Checking database schema [{}.{}.{}][{}]", new Object[]{cname, sname, tname, ttype});
+
+                        //
+                        // Check if we have already done this schema.
+                        // This works IF the results are sorted by schema name.
+                        if (sname.equals(sdone))
+                            {
+                            log.debug("Already done schema [{}], skipping", sname);
+                            continue ;
+                            }
+                        else {
+                            sdone = sname ;
+                            }
+
+                        //
+                        // Check if the schema name is in the ignore list.
+                        if (ignores.contains(sname))
+                            {
+                            log.debug("Schema [{}] is in the ignore list, skipping", sname);
+                            continue ;
+                            }
+                        
+                        JdbcSchema schema = this.select(
+                            sname
+                            );
+                        if (schema == null)
+                            {
+                            log.debug("Database schema [{}] is not registered", sname);
+                            log.debug("Registering missing schema [{}]", sname);
+                            schema = this.create(
+                                sname
+                                );
+                            }
+                        found.put(
+                            sname,
+                            schema
+                            );
+                        }
+                    //
+                    // Scan our own list of schema.
+                    for (final JdbcSchema schema : select())
+                        {
+                        log.debug("Checking registered schema [{}.{}]", new Object[]{schema.catalog().name(), schema.name()});
+                        //
+                        // Check for a corresponding entry in the list of components we have already found.
+                        JdbcSchema match = found.get(
+                            schema.name()
+                            );
+                        //
+                        // If we didn't find a match, update the status.
+                        if (match == null)
+                            {
+                            log.debug("Registered schema [{}] is not in database", schema.name());
+                            log.debug("Disabling registered schema [{}]", schema.name());
+                            schema.status(
+                                Status.MISSING
+                                );
+                            }
+                        }
+                    }
+                catch (final SQLException ouch)
+                    {
+                    log.error("Error processing JDBC schema metadata", ouch);
+                    status(
+                        Status.DISABLED,
+                        "SQLException while processing JDBC schema metadata"
+                        );
+                    }
+                catch (final Error ouch)
+                    {
+                    log.error("Error processing JDBC schema metadata", ouch);
+                    status(
+                        Status.DISABLED,
+                        "Error while processing JDBC schema metadata"
+                        );
+                    throw ouch ;
+                    }
+                }
             };
         }
 
@@ -472,8 +686,11 @@ implements JdbcCatalog
      * Our parent resource.
      *
      */
+    @Index(
+        name = DB_PARENT_IDX
+        )
     @ManyToOne(
-        fetch = FetchType.EAGER,
+        fetch = FetchType.LAZY,
         targetEntity = JdbcResourceEntity.class
         )
     @JoinColumn(
@@ -526,7 +743,7 @@ implements JdbcCatalog
     public List<JdbcDiference> diff(final boolean push, final boolean pull)
         {
         return diff(
-            resource().metadata(),
+            resource().jdbc().metadata(),
             new ArrayList<JdbcDiference>(),
             push,
             pull
@@ -554,6 +771,21 @@ implements JdbcCatalog
         {
         return womble().jdbc().catalogs().link(
             this
+            );
+        }
+
+    @Override
+    public void scan()
+        {
+        scan(
+            resource().jdbc().metadata()
+            );
+        }
+    @Override
+    public void scan(final DatabaseMetaData metadata)
+        {
+        schemas().scan(
+            metadata
             );
         }
     }

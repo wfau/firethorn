@@ -82,6 +82,13 @@ extends Entity
     throws InvalidStatusException ;
 
     /**
+     * Set the component status.
+     *
+     */
+    public void status(final Status status, String message)
+    throws InvalidStatusException ;
+    
+    /**
      * Exception to describe an invalid status.
      *
      */

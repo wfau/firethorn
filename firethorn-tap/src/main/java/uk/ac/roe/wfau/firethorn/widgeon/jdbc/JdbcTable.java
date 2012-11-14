@@ -28,7 +28,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.base.BaseTable;
  *
  */
 public interface JdbcTable
-extends BaseTable<JdbcSchema>
+extends BaseTable<JdbcSchema>, JdbcComponent
     {
     /**
      * Factory interface for identifiers.
@@ -66,7 +66,7 @@ extends BaseTable<JdbcSchema>
      *
      */
     public interface Columns
-    extends BaseTable.Columns<JdbcColumn>
+    extends BaseTable.Columns<JdbcColumn>, JdbcComponent
         {
 
         /**

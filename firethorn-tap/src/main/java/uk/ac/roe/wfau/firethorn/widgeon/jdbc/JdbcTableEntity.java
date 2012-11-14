@@ -38,6 +38,7 @@ import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,8 +68,9 @@ import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponent.Status;
     )
 @Table(
     name = JdbcTableEntity.DB_TABLE_NAME,
-    uniqueConstraints=
+    uniqueConstraints =
         @UniqueConstraint(
+            name = JdbcTableEntity.DB_NAME_PARENT_IDX, 
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
                 JdbcTableEntity.DB_PARENT_COL,
@@ -91,6 +93,19 @@ import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponent.Status;
             )
         }
     )
+@org.hibernate.annotations.Table(
+    appliesTo = JdbcTableEntity.DB_TABLE_NAME, 
+    indexes =
+        {
+        @Index(
+            name= JdbcTableEntity.DB_NAME_IDX,
+            columnNames =
+                {
+                AbstractEntity.DB_NAME_COL
+                }
+            )
+        }
+    )
 public class JdbcTableEntity
 extends DataComponentImpl
 implements JdbcTable
@@ -103,10 +118,28 @@ implements JdbcTable
     public static final String DB_TABLE_NAME = "jdbc_table" ;
 
     /**
-     * The persistence column name for our parent schema.
+     * The column name for our parent.
      *
      */
     public static final String DB_PARENT_COL = "parent" ;
+
+    /**
+     * The index for our name.
+     *
+     */
+    public static final String DB_NAME_IDX = "jdbc_table_name_idx" ;
+
+    /**
+     * The index for our parent.
+     *
+     */
+    public static final String DB_PARENT_IDX = "jdbc_table_parent_idx" ;
+
+    /**
+     * The index for our name and parent.
+     *
+     */
+    public static final String DB_NAME_PARENT_IDX = "jdbc_table_name_parent_idx" ;
 
     /**
      * Our Entity Factory implementation.
@@ -303,7 +336,7 @@ implements JdbcTable
             public List<JdbcDiference> diff(final boolean push, final boolean pull)
                 {
                 return diff(
-                    resource().metadata(),
+                    resource().jdbc().metadata(),
                     new ArrayList<JdbcDiference>(),
                     push,
                     pull
@@ -462,6 +495,81 @@ implements JdbcTable
                     }
                 return results ;
                 }
+
+            @Override
+            public void scan()
+                {
+                scan(
+                    resource().jdbc().metadata()
+                    );
+                }
+
+            @Override
+            public void scan(DatabaseMetaData metadata)
+                {
+                log.debug("Comparing columns for table [{}]", name());
+                try {
+                    //
+                    // Scan the DatabaseMetaData for columns.
+                    final ResultSet columns = metadata.getColumns(
+                        catalog().name(),
+                        schema().name(),
+                        name(),
+                        null
+                        );
+
+                    final Map<String, JdbcColumn> found = new HashMap<String, JdbcColumn>();
+                    while (columns.next())
+                        {
+                        final String table = columns.getString(JdbcResource.JDBC_META_TABLE_NAME);
+                        final String name  = columns.getString(JdbcResource.JDBC_META_COLUMN_NAME);
+                        final String type  = columns.getString(JdbcResource.JDBC_META_COLUMN_TYPE_NAME);
+                        log.debug("Checking database column [{}.{}.{}.{}]", new Object[]{catalog().name(), schema().name(), name(), name});
+
+                        JdbcColumn column = this.select(
+                            name
+                            );
+                        if (column == null)
+                            {
+                            log.debug("Database column[{}] is not registered", name);
+                            log.debug("Registering missing column [{}]", name);
+                            column= this.create(
+                                name
+                                );
+                            }
+                        if (column != null)
+                            {
+                            found.put(
+                                name,
+                                column
+                                );
+                            }
+                        }
+                    //
+                    // Scan our own list of schema.
+                    for (final JdbcColumn column : select())
+                        {
+                        log.debug("Checking registered column [{}.{}.{}.{}]", new Object[]{column.catalog().name(), column.schema().name(), column.table().name(), column.name()});
+                        JdbcColumn match = found.get(
+                            column.name()
+                            );
+                        //
+                        // If we didn't find a match, disable our entry.
+                        if (match == null)
+                            {
+                            log.debug("Registered column [{}] is not in database", column.name());
+                            log.debug("Disabling registered column [{}]", column.name());
+                            column.status(
+                                Status.MISSING
+                                );
+                            }
+                        }
+                    }
+                catch (final SQLException ouch)
+                    {
+                    log.error("Error processing JDBC column metadata", ouch);
+                    }
+                }
             };
         }
 
@@ -490,8 +598,11 @@ implements JdbcTable
      * Our parent column.
      *
      */
+    @Index(
+        name = DB_PARENT_IDX
+        )
     @ManyToOne(
-        fetch = FetchType.EAGER,
+        fetch = FetchType.LAZY,
         targetEntity = JdbcSchemaEntity.class
         )
     @JoinColumn(
@@ -556,7 +667,7 @@ implements JdbcTable
     public List<JdbcDiference> diff(final boolean push, final boolean pull)
         {
         return diff(
-            resource().metadata(),
+            resource().jdbc().metadata(),
             new ArrayList<JdbcDiference>(),
             push,
             pull
@@ -585,6 +696,22 @@ implements JdbcTable
         {
         return womble().jdbc().catalogs().schemas().tables().link(
             this
+            );
+        }
+
+    @Override
+    public void scan()
+        {
+        scan(
+            resource().jdbc().metadata()
+            );
+        }
+
+    @Override
+    public void scan(DatabaseMetaData metadata)
+        {
+        columns().scan(
+            metadata
             );
         }
     }

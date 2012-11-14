@@ -31,7 +31,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResource;
  *
  */
 public interface JdbcResource
-extends BaseResource
+extends BaseResource, JdbcComponent
     {
 
     /**
@@ -57,12 +57,6 @@ extends BaseResource
         public JdbcResource create(final String name);
 
         /**
-         * Create a new resource.
-         *
-         */
-        public JdbcResource create(final String name, final DataSource source);
-
-        /**
          * Access to our catalog factory.
          *
          */
@@ -75,7 +69,7 @@ extends BaseResource
      *
      */
     public interface Catalogs
-    extends BaseResource.Catalogs<JdbcCatalog>
+    extends BaseResource.Catalogs<JdbcCatalog>, JdbcComponent
         {
         /**
          * Create a new catalog.
@@ -89,6 +83,7 @@ extends BaseResource
          * @param push Update our database to match our metadata.
          *
          */
+        @Deprecated
         public List<JdbcDiference> diff(final boolean push, final boolean pull);
 
         /**
@@ -98,6 +93,7 @@ extends BaseResource
          * @param push Update our database to match our metadata.
          *
          */
+        @Deprecated
         public List<JdbcDiference> diff(final DatabaseMetaData metadata, final List<JdbcDiference> results, final boolean push, final boolean pull);
 
         }
@@ -127,40 +123,95 @@ extends BaseResource
 
     /**
      * Access to our underlying DataSource.
-     * @todo Move this to a local sub-interface.
      *
-     */
+    @Deprecated
     public DataSource source();
 
-    /**
-     * Connect to the database, using user name and password from the DataSource .
-     * @todo Move this to a local sub-interface.
-     *
+    @Deprecated
+    public void source(DataSource source);
      */
-    void connect();
-
-    /**
-     * Connect to the database.
-     * @param username
-     * @param password
-     * @todo Move this to a local sub-interface.
-     *
-     */
-    void connect(String username, String password);
 
     /**
      * A connection to the DataSource.
      * @todo Move this to a local sub-interface.
      *
-     */
+    @Deprecated
     public Connection connection();
+     */
 
     /**
-     * Get the DatabaseMetaData from our DataSource.
-     * @todo Move this to a local sub-interface.
-     *
+     * Our JDBC database connection.
+     * 
      */
-    public DatabaseMetaData metadata();
+    public interface JdbcConnection {
+    
+        /**
+         * The connection URL (as a String).
+         *  
+         */
+        public String url();
+    
+        /**
+         * The connection URL (as a String).
+         *  
+         */
+        public void url(String url);
+
+        /**
+         * The JDBC driver class name.
+         *  
+         */
+        public String driver();
+
+        /**
+         * The JDBC driver class name.
+         *  
+         */
+        public void driver(String driver);
+        
+        /**
+         * The JDBC user name.
+         *  
+         */
+        public String user();
+    
+        /**
+         * The JDBC user name.
+         *  
+         */
+        public void user(String user);
+    
+        /**
+         * The JDBC password.
+         *  
+         */
+        public String pass();
+    
+        /**
+         * The JDBC password.
+         *  
+         */
+        public void pass(String pass);
+    
+        /**
+         * Connect to the database.
+         *
+         */
+        public Connection connection();
+    
+        /**
+         * The JDBC DatabaseMetaData.
+         *
+         */
+        public DatabaseMetaData metadata();
+    
+        }
+
+    /**
+     * Our JDBC database connection.
+     * 
+     */
+    public JdbcConnection jdbc();
 
     /**
      * Compare our data with DatabaseMetaData from our DataSource.
@@ -168,6 +219,7 @@ extends BaseResource
      * @param pull Update our metadata to match the DatabaseMetaData.
      *
      */
+    @Deprecated
     public List<JdbcDiference> diff(final boolean push, final boolean pull);
 
     /**
@@ -177,7 +229,7 @@ extends BaseResource
      * @param pull Update our metadata to match the DatabaseMetaData.
      *
      */
+    @Deprecated
     public List<JdbcDiference> diff(final DatabaseMetaData metadata, final List<JdbcDiference> results, final boolean push, final boolean pull);
-
 
     }

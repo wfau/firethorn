@@ -28,6 +28,7 @@ import java.util.Map;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
@@ -35,16 +36,24 @@ import javax.sql.DataSource;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.lookup.BeanFactoryDataSourceLookup;
+import org.springframework.jdbc.datasource.lookup.DataSourceLookup;
+import org.springframework.jdbc.datasource.lookup.DataSourceLookupFailureException;
+import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceEntity;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource.JdbcConnection;
 
 /**
  * Hibernate based <code>JdbcResource</code> implementation.
@@ -62,7 +71,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceEntity;
         {
         @NamedQuery(
             name  = "jdbc.resource-select-all",
-            query = "FROM JdbcResourceEntity ORDER BY ident desc"
+            query = "FROM JdbcResourceEntity ORDER BY name asc, ident desc"
             ),
             @NamedQuery(
                 name  = "jdbc.resource-select-name",
@@ -71,6 +80,19 @@ import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceEntity;
         @NamedQuery(
             name  = "jdbc.resource-search-text",
             query = "FROM JdbcResourceEntity WHERE (name LIKE :text) ORDER BY ident desc"
+            )
+        }
+    )
+@org.hibernate.annotations.Table(
+    appliesTo = JdbcResourceEntity.DB_TABLE_NAME, 
+    indexes =
+        {
+        @Index(
+            name= JdbcResourceEntity.DB_NAME_IDX,
+            columnNames =
+                {
+                AbstractEntity.DB_NAME_COL
+                }
             )
         }
     )
@@ -85,6 +107,36 @@ implements JdbcResource
      */
     public static final String DB_CLASS_TYPE = "JDBC" ;
 
+    /**
+     * The index for our name.
+     *
+     */
+    public static final String DB_NAME_IDX = "jdbc_resource_name_idx" ;
+
+    /**
+     * The connection url column name .
+     *
+     */
+    public static final String DB_CONNECT_URL_COL = "connect_url" ;
+
+    /**
+     * The connection driver class column name .
+     *
+     */
+    public static final String DB_CONNECT_DRIVER_COL = "connect_driver" ;
+
+    /**
+     * The connection username column name .
+     *
+     */
+    public static final String DB_CONNECT_USER_COL = "connect_user" ;
+
+    /**
+     * The connection password column name .
+     *
+     */
+    public static final String DB_CONNECT_PASS_COL = "connect_pass" ;
+    
     /**
      * Our Entity Factory implementation.
      *
@@ -148,20 +200,7 @@ implements JdbcResource
             {
             return super.insert(
                 new JdbcResourceEntity(
-                    name,
-                    null
-                    )
-                );
-            }
-
-        @Override
-        @CreateEntityMethod
-        public JdbcResource create(final String name, final DataSource source)
-            {
-            return super.insert(
-                new JdbcResourceEntity(
-                    name,
-                    source
+                    name
                     )
                 );
             }
@@ -239,7 +278,7 @@ implements JdbcResource
             public List<JdbcDiference> diff(final boolean push, final boolean pull)
                 {
                 return diff(
-                    metadata(),
+                    jdbc().metadata(),
                     new ArrayList<JdbcDiference>(),
                     push,
                     pull
@@ -353,6 +392,81 @@ implements JdbcResource
                     }
                 return results ;
                 }
+
+            @Override
+            public void scan()
+                {
+                this.scan(
+                    jdbc().metadata()
+                    );
+                }
+
+            @Override
+            public void scan(final DatabaseMetaData metadata)
+                {
+                log.debug("Comparing catalogs for resource [{}]", name());
+                try {
+                    //
+                    // Scan the DatabaseMetaData for catalogs.
+                    final ResultSet catalogs = metadata.getCatalogs();
+                    final Map<String, JdbcCatalog> found = new HashMap<String, JdbcCatalog>();
+                    while (catalogs.next())
+                        {
+                        final String name = catalogs.getString(
+                            JdbcResource.JDBC_META_TABLE_CAT
+                            );
+                        log.debug("Checking database catalog [{}]", name);
+
+                        JdbcCatalog catalog = this.select(
+                            name
+                            );
+                        if (catalog == null)
+                            {
+                            log.debug("Database catalog [{}] is not registered", name);
+                            log.debug("Registering missing catalog [{}]", name);
+                            catalog = this.create(
+                                name
+                                );
+                            }
+                        if (catalog != null)
+                            {
+                            found.put(
+                                name,
+                                catalog
+                                );
+                            }
+                        }
+                    //
+                    // Scan our own list of catalogs.
+                    for (final JdbcCatalog catalog : select())
+                        {
+                        log.debug("Checking registered catalog [{}]", catalog.name());
+                        //
+                        // Check for a corresponding entry in the list of components we have already found.
+                        JdbcCatalog match = found.get(
+                            catalog.name()
+                            );
+                        //
+                        // If we didn't find a match, disable our entry.
+                        if (match == null)
+                            {
+                            log.debug("Registered catalog [{}] is not in database", catalog.name());
+                            log.debug("Disabling registered catalog [{}]", catalog.name());
+                            catalog.status(
+                                Status.MISSING
+                                );
+                            }
+                        }
+                    }
+                catch (final SQLException ouch)
+                    {
+                    log.error("Error processing JDBC catalog metadata", ouch);
+                    status(
+                        Status.DISABLED,
+                        "SQLException while processing JDBC catalog metadata"
+                        );
+                    }
+                }
             };
         }
 
@@ -370,84 +484,301 @@ implements JdbcResource
      * Create a new resource.
      *
      */
-    private JdbcResourceEntity(final String name, final DataSource source)
+    private JdbcResourceEntity(final String name)
         {
         super(name);
-        log.debug("new([{}]", name);
-        this.source = source ;
         }
 
+    /**
+     * Our JDBC connection URL.
+     *
+     */
+    @Column(
+        name = DB_CONNECT_URL_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String connectUrl;
+
+    /**
+     * Our JDBC driver class name.
+     *
+     */
+    @Column(
+        name = DB_CONNECT_DRIVER_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String connectDriver;
+        
+    /**
+     * Our JDBC connection user name.
+     *
+     */
+    @Column(
+        name = DB_CONNECT_USER_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String connectUser ;
+    
+    /**
+     * Our JDBC connection password.
+     *
+     */
+    @Column(
+        name = DB_CONNECT_PASS_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String connectPass ;
+
+    /**
+     * JDBC connection URL prefix for a DriverManager connection.
+     * 
+     */
+    public static final String JDBC_JDBC_URL_PREFIX = "jdbc:" ;
+
+    /**
+     * JDBC connection URL prefix for a JNDI registered DataSource.
+     * 
+     */
+    public static final String JDBC_JNDI_URL_PREFIX = "jndi:" ;
+
+    /**
+     * JDBC connection URL prefix for a Spring registered DataSource.
+     * 
+     */
+    public static final String JDBC_SPRING_URL_PREFIX = "spring:" ;
+
+    /**
+     * Our JDBC DataSource.
+     * 
+     */
     @Transient
     private DataSource source ;
 
-    @Override
-    public DataSource source()
+    /**
+     * Initialize our JDBC DataSource.
+     * 
+     */
+    protected synchronized DataSource source()
         {
-        return this.source ;
+        if (source == null)
+            {
+            try {
+                if (connectUrl == null)
+                    {
+                    throw new IllegalArgumentException(
+                        "JDBC connection URL required"
+                        );
+                    }
+                else if (connectUrl.startsWith(JDBC_JDBC_URL_PREFIX))
+                    {
+                    if (connectDriver != null)
+                        {
+                        try {
+                            Class.forName(
+                                connectDriver
+                                );
+                            }
+                        catch (final Exception ouch)
+                            {
+                            log.error("Unable to load JDBC driver [{}]", connectDriver);
+                            throw new RuntimeException(
+                                ouch
+                                );
+                            }
+                        }
+                    source = new DriverManagerDataSource(
+                        connectUrl
+                        );
+                    }
+                else if (connectUrl.startsWith(JDBC_JNDI_URL_PREFIX))
+                    {
+                    DataSourceLookup resolver = new JndiDataSourceLookup();
+                    source = resolver.getDataSource(
+                        connectUrl.substring(
+                            JDBC_JNDI_URL_PREFIX.length()
+                            )
+                        );
+                    }
+                else if (connectUrl.startsWith(JDBC_SPRING_URL_PREFIX))
+                    {
+                    DataSourceLookup resolver = new BeanFactoryDataSourceLookup(
+                        womble().spring().context()
+                        );
+                    source = resolver.getDataSource(
+                        connectUrl.substring(
+                            JDBC_SPRING_URL_PREFIX.length()
+                            )
+                        );
+                    }
+                else {
+                    log.error("Unexpected prefix for JDBC connection URL [{}]", connectUrl);
+                    throw new IllegalArgumentException(
+                        "Unexpected prefix for JDBC connection URL [" + connectUrl + "]" 
+                        );
+                    }
+                }
+            catch (final DataSourceLookupFailureException ouch)
+                {
+                log.error("Unable to locate DataSource [{}]", connectUrl);
+                throw new RuntimeException(
+                    "Unable to locate DataSource [" + connectUrl +"]"
+                    );
+                }
+            }
+        return source ;
         }
 
     @Transient
-    private Connection connection;
-
-    @Override
-    public Connection connection()
+    private ThreadLocal<Connection> connector = new ThreadLocal<Connection>()
         {
-        return connection ;
-        }
-
-    @Override
-    public void connect(String username, String password)
-        {
-        try {
-            connection = source.getConnection(
-                username,
-                password
-                );
-            }
-        catch (final SQLException ouch)
+        @Override
+        public Connection get()
             {
-            log.error("Error connecting to database", ouch);
-            throw new RuntimeException(
-                ouch
-                );
+            log.debug("ThreadLocal<Connection>.get()");
+            return super.get();
             }
-        }
 
-    @Override
-    public void connect()
-        {
-        try {
-            connection = source.getConnection();
-            }
-        catch (final SQLException ouch)
+        @Override
+        public void set(Connection connection)
             {
-            log.error("Error connecting to database", ouch);
-            throw new RuntimeException(
-                ouch
+            log.debug("ThreadLocal<Connection>.set()");
+            super.set(
+                connection
                 );
             }
-        }
+        
+        @Override
+        protected Connection initialValue()
+            {
+            log.debug("ThreadLocal<Connection>.initialValue()");
+            try {
+                if (connectUser != null)
+                    {
+                    return source().getConnection(
+                        connectUser,
+                        connectPass
+                        );
+                    }
+                else {
+                    return source().getConnection() ;
+                    }
+                }
+            catch (final SQLException ouch)
+                {
+                log.error("Unable to connect to database [{}]", ouch);
+                throw new RuntimeException(
+                    ouch
+                    );
+                }
+            }
+        }; 
 
-    @Override
-    public DatabaseMetaData metadata()
+    /**
+     * Reset our JDBC DataSource.
+     * 
+     */
+    protected synchronized void reset()
         {
-        try {
-            return connection().getMetaData();
-            }
-        catch (final SQLException ouch)
-            {
-            log.error("Error fetching database metadata", ouch);
-            throw new RuntimeException(
-                ouch
-                );
-            }
+        log.debug("reset()");
+        source = null ;
+        connector.remove();
         }
+        
+    @Override
+    public JdbcConnection jdbc()
+        {
+        return new JdbcConnection()
+            {
+            
+            @Override
+            public String url()
+                {
+                return connectUrl ;
+                }
+
+            @Override
+            public void url(String url)
+                {
+                connectUrl = url ;
+                reset();
+                }
+
+            @Override
+            public String user()
+                {
+                return connectUser ;
+                }
+
+            @Override
+            public void user(String user)
+                {
+                connectUser = user ;
+                reset();
+                }
+
+            @Override
+            public String pass()
+                {
+                return connectPass;
+                }
+
+            @Override
+            public void pass(String pass)
+                {
+                connectPass = pass ;
+                reset();
+                }
+
+            @Override
+            public String driver()
+                {
+                return connectDriver;
+                }
+
+            @Override
+            public void driver(String driver)
+                {
+                connectDriver = driver ;
+                reset();
+                }
+
+            @Override
+            public Connection connection()
+                {
+                return connector.get();
+                }
+
+            @Override
+            public DatabaseMetaData metadata()
+                {
+                try {
+                    return connection().getMetaData();
+                    }
+                catch (final SQLException ouch)
+                    {
+                    log.error("Error fetching database metadata", ouch);
+                    throw new RuntimeException(
+                        ouch
+                        );
+                    }
+                }
+            };
+        }
+   
 
     @Override
     public List<JdbcDiference> diff(final boolean push, final boolean pull)
         {
         return diff(
-            metadata(),
+            jdbc().metadata(),
             new ArrayList<JdbcDiference>(),
             push,
             pull
@@ -476,6 +807,22 @@ implements JdbcResource
         {
         return womble().jdbc().resources().link(
             this
+            );
+        }
+
+    @Override
+    public void scan()
+        {
+        this.scan(
+            jdbc().metadata()
+            );
+        }
+
+    @Override
+    public void scan(final DatabaseMetaData metadata)
+        {
+        catalogs().scan(
+            metadata
             );
         }
     }

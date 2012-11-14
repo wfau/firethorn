@@ -79,30 +79,63 @@ extends TestBase
 
         //
         // Connect to the test database.
-        final DataSource source = (DataSource) spring.getBean("RoeTwoMass");
+        // final DataSource source = (DataSource) spring.getBean("RoeTunnel");
 
         //
         // Create an empty resource tree.
         final JdbcResource jdbcResource = womble().jdbc().resources().create(
             this.unique(
                 "base"
-                ),
-            source
+                )
             );
-
+        /*
+        final JdbcResource jdbcResource = womble().jdbc().resources().select(
+            "base.1352823476509.0"
+            ).iterator().next();
+         */
+        
         //
-        // Connect to the database.
-        jdbcResource.connect(
-            config.getProperty("uk.ac.roe.wfau.firethorn.jdbc.test.user"),
+        // Set the database connection properties.
+        jdbcResource.jdbc().url(
+            "spring:RoeTunnel"
+            );
+        jdbcResource.jdbc().user(
+            config.getProperty("uk.ac.roe.wfau.firethorn.jdbc.test.user")
+            );
+        jdbcResource.jdbc().pass(
             config.getProperty("uk.ac.roe.wfau.firethorn.jdbc.test.pass")
             );
 
         //
-        // Pull the metadata from the database
-        jdbcResource.diff(
-            false,
-            true
-            );
+        // Scan the resource for catalogs.
+        jdbcResource.scan();
+
+        //
+        // Scan all the catalogs for schemas.
+        for (final JdbcCatalog jdbcCatalog : jdbcResource.catalogs().select())
+            {
+            jdbcCatalog.scan();
+            /*
+            */
+            //
+            // Scan all the schema for tables.
+            for (final JdbcSchema jdbcSchema : jdbcCatalog.schemas().select())
+                {
+                jdbcSchema.scan();
+                //
+                // Scan all the tables for columns.
+                for (final JdbcTable jdbcTable : jdbcSchema.tables().select())
+                    {
+                    jdbcTable.scan();
+                    womble().hibernate().flush();
+                    }
+                }
+            }
+
+        //
+        // Close our connection.
+        jdbcResource.jdbc().connection().close();
+
         //
         // Verify we got what we expected.
         display(
