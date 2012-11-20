@@ -2,20 +2,34 @@
 <beans
     xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:cxt="http://www.springframework.org/schema/context"
     xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
         "
     >
 
     <!--+
         | Local Postgresql test database.
         +-->
-    <bean id="PostgresqlData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <bean id="PgsqlLocalData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.postgresql.Driver"/>
-        <property name="url" value="jdbc:postgresql://localhost/firethorndata"/>
-        <property name="username" value="firethornuser"/>
-        <property name="password" value="waetrsa-q7jj25wa.7"/>
+        <property name="url"      value="${firethorn.pgsql.url}"/>
+        <property name="username" value="${firethorn.pgsql.user}"/>
+        <property name="password" value="${firethorn.pgsql.pass}"/>
+    </bean>
+
+    <!--+
+        | SSH tunnel to ROE database server.
+        +-->
+    <bean id="RoeLiveData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
+        <property name="url"      value="${firethorn.wfau.url}"/>
+        <property name="username" value="${firethorn.wfau.user}"/>
+        <property name="password" value="${firethorn.wfau.pass}"/>
     </bean>
 
     <!--+
@@ -23,27 +37,7 @@
         | http://dwark.blogspot.co.uk/2006/10/maven-2-hibernate-hsqldb.html
         | https://numberformat.wordpress.com/2010/06/03/creating-and-using-hsqldb-database-using-maven-in-10-minutes/
         +-->
-    <bean id="MemoryDatabase" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
-        <property name="url" value="jdbc:hsqldb:mem:firethorn"/>
-        <property name="username" value="sa"/>
-        <property name="password" value=""/>
-    </bean>
-
-    <!--+
-        | File based HSQLDB database.
-        +-->
-    <bean id="FileTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
-        <property name="url" value="jdbc:hsqldb:file:target/database/testdata"/>
-        <property name="username" value="sa"/>
-        <property name="password" value=""/>
-    </bean>
-
-    <!--+
-        | Memory based HSQLDB database.
-        +-->
-    <bean id="MemTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <bean id="HsqldbMemData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
         <property name="url" value="jdbc:hsqldb:mem:memdata"/>
         <property name="username" value="sa"/>
@@ -51,13 +45,36 @@
     </bean>
 
     <!--+
-        | Local SSH tunnel to ROE database server.
-        | ** name and pass redacted **
+        | File based HSQLDB database.
         +-->
-    <bean id="RoeTunnel" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
-        <property name="url" value="jdbc:jtds:sqlserver://localhost:1433/twomass"/>
+    <bean id="HsqldbFileData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+        <property name="url" value="jdbc:hsqldb:file:target/database/filedata"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
     </bean>
+
+
+    <!--+
+        | Memory based HSQLDB test data.
+        +-->
+    <bean id="HsqldbMemTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+        <property name="url" value="jdbc:hsqldb:mem:memtest"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+
+    <!--+
+        | File based HSQLDB test data.
+        +-->
+    <bean id="HsqldbFileTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+        <property name="url" value="jdbc:hsqldb:file:target/database/filetest"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+
 
 </beans>
 

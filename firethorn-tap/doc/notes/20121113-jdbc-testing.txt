@@ -166,4 +166,40 @@ Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
 
     Total re-build time is slower not faster :-(
 
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 3:17:08.680s
+
+    Total re-build time is a bit faster ...
+    
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 3:01:49.563s
+
+    Using HSQLDB in-memory database is a bit faster ...
+    
+    
+[INFO] ------------------------------------------------------------------------
+
+    Postgresql database
+    RemoteJdbcTestCase - just scanning for catalogs, then display whole tree
+
+    Standard code    
+    [INFO] Total time: 6:15.534s
+
+    Change JdbcColumn.select(JdbcTable) to use list()
+    [INFO] Total time: 3:03.469s
+
+    Change JdbcSchema.select(JdbcCatalog) to use list()
+    [INFO] Total time: 6:08.510s
+
+    Change JdbcCatalog.select(JdbcResource) to use list()
+    Change JdbcSchema.select(JdbcCatalog)   to use list()
+    Change JdbcTable.select(JdbcSchema)     to use list()
+    Change JdbcColumn.select(JdbcTable)     to use list()
+    [INFO] Total time: 2:37.901s
+
+    Run the full test, scanning the full tree and creating new everything. 
+    [INFO] Total time: 3:31:22.355s
+    No improvement :-(
+
+
 

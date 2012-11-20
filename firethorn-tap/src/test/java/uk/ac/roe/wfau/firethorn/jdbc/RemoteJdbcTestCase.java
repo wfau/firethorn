@@ -90,51 +90,45 @@ extends TestBase
             );
         /*
         final JdbcResource jdbcResource = womble().jdbc().resources().select(
-            "base.1352823476509.0"
+            "base.1352861674755.0"
             ).iterator().next();
          */
         
         //
         // Set the database connection properties.
         jdbcResource.jdbc().url(
-            "spring:RoeTunnel"
+            "spring:RoeLiveData"
             );
-        jdbcResource.jdbc().user(
-            config.getProperty("uk.ac.roe.wfau.firethorn.jdbc.test.user")
-            );
-        jdbcResource.jdbc().pass(
-            config.getProperty("uk.ac.roe.wfau.firethorn.jdbc.test.pass")
-            );
-
         //
         // Scan the resource for catalogs.
         jdbcResource.scan();
 
         //
         // Scan all the catalogs for schemas.
-        for (final JdbcCatalog jdbcCatalog : jdbcResource.catalogs().select())
+        if (true)
             {
-            jdbcCatalog.scan();
-            /*
-            */
-            //
-            // Scan all the schema for tables.
-            for (final JdbcSchema jdbcSchema : jdbcCatalog.schemas().select())
+            for (final JdbcCatalog jdbcCatalog : jdbcResource.catalogs().select())
                 {
-                jdbcSchema.scan();
+                jdbcCatalog.scan();
                 //
-                // Scan all the tables for columns.
-                for (final JdbcTable jdbcTable : jdbcSchema.tables().select())
+                // Scan all the schema for tables.
+                for (final JdbcSchema jdbcSchema : jdbcCatalog.schemas().select())
                     {
-                    jdbcTable.scan();
-                    womble().hibernate().flush();
+                    jdbcSchema.scan();
+                    //
+                    // Scan all the tables for columns.
+                    for (final JdbcTable jdbcTable : jdbcSchema.tables().select())
+                        {
+                        jdbcTable.scan();
+                        womble().hibernate().flush();
+                        }
                     }
                 }
             }
 
         //
-        // Close our connection.
-        jdbcResource.jdbc().connection().close();
+        // Close our JDBC connection.
+        jdbcResource.jdbc().close();
 
         //
         // Verify we got what we expected.

@@ -192,7 +192,7 @@ implements JdbcSchema
         @SelectEntityMethod
         public Iterable<JdbcSchema> select(final JdbcCatalog parent)
             {
-            return super.iterable(
+            return super.list(
                 super.query(
                     "jdbc.schema-select-parent"
                     ).setEntity(

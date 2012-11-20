@@ -190,7 +190,7 @@ implements JdbcColumn
         @SelectEntityMethod
         public Iterable<JdbcColumn> select(final JdbcTable parent)
             {
-            return super.iterable(
+            return super.list(
                 super.query(
                     "jdbc.column-select-parent"
                     ).setEntity(

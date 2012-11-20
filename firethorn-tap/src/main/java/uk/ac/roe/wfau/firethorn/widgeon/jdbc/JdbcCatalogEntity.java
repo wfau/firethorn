@@ -200,7 +200,7 @@ implements JdbcCatalog
         @SelectEntityMethod
         public Iterable<JdbcCatalog> select(final JdbcResource parent)
             {
-            return super.iterable(
+            return super.list(
                 super.query(
                     "jdbc.catalog-select-parent"
                     ).setEntity(

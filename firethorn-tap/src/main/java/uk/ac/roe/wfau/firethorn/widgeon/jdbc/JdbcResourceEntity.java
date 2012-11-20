@@ -770,6 +770,27 @@ implements JdbcResource
                         );
                     }
                 }
+
+            @Override
+            public void close()
+                {
+                synchronized (connector)
+                    {
+                    try {
+                        connector.get().close();
+                        }
+                    catch (final SQLException ouch)
+                        {
+                        log.error("Error closing database connection", ouch);
+                        throw new RuntimeException(
+                            ouch
+                            );
+                        }
+                    finally {
+                        connector.remove();
+                        }
+                    }
+                }
             };
         }
    

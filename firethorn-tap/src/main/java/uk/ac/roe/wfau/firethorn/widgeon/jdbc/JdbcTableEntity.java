@@ -195,7 +195,7 @@ implements JdbcTable
         @SelectEntityMethod
         public Iterable<JdbcTable> select(final JdbcSchema parent)
             {
-            return super.iterable(
+            return super.list(
                 super.query(
                     "jdbc.table-select-parent"
                     ).setEntity(
@@ -525,10 +525,13 @@ implements JdbcTable
                         final String name  = columns.getString(JdbcResource.JDBC_META_COLUMN_NAME);
                         final String type  = columns.getString(JdbcResource.JDBC_META_COLUMN_TYPE_NAME);
                         log.debug("Checking database column [{}.{}.{}.{}]", new Object[]{catalog().name(), schema().name(), name(), name});
-
+                        //
+                        // This is a performance hot spot.
+                        // It might be faster to load all of the columns for this table, and then process them in Java. 
                         JdbcColumn column = this.select(
                             name
                             );
+
                         if (column == null)
                             {
                             log.debug("Database column[{}] is not registered", name);

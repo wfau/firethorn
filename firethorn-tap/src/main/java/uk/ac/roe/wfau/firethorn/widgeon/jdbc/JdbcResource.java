@@ -194,17 +194,23 @@ extends BaseResource, JdbcComponent
         public void pass(String pass);
     
         /**
-         * Connect to the database.
+         * Get the current database Connection.
          *
          */
         public Connection connection();
     
         /**
-         * The JDBC DatabaseMetaData.
+         * Get the JDBC DatabaseMetaData.
          *
          */
         public DatabaseMetaData metadata();
-    
+
+        /**
+         * Close the current database Connection.
+         *
+         */
+        public void close();
+
         }
 
     /**

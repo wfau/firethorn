@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.common.entity ;
 
 import java.util.Iterator;
+import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -245,6 +246,26 @@ implements Entity.Factory<EntityType>
                 }
             };
         }
+
+    /**
+     * Select a List of objects.
+     *
+     */
+    @SelectEntityMethod
+    @SuppressWarnings("unchecked")
+    public List<EntityType> list(final Query query)
+        {
+        try {
+            return query.list();
+            }
+        catch (final HibernateException ouch)
+            {
+            throw womble.hibernate().convert(
+                ouch
+                );
+            }
+        }
+    
     /**
      * Create a text search string.
      * TODO .. lots !!

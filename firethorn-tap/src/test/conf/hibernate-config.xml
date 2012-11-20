@@ -46,7 +46,7 @@
         <!--+
             | Database connection.
             +-->
-        <property name="dataSource" ref="PostgresqlData"/>
+        <property name="dataSource" ref="PgsqlLocalData"/>
 
         <!--+
             | List our annotated entity beans.
@@ -75,11 +75,22 @@
                 <value>uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumnEntity</value>
 
+                <value>uk.ac.roe.wfau.firethorn.friday.impl.FridayJdbcResourceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.friday.impl.FridayJdbcCatalogEntity</value>
+
                 <!--+
                     |
                     +-->
 
             </list>
+        </property>
+
+        <!--+
+            | Set the component naming strategy.
+            | https://forum.hibernate.org/viewtopic.php?p=2404537
+            +-->
+        <property name="namingStrategy">
+            <bean class="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
         </property>
 
         <!--+
