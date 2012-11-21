@@ -22,7 +22,22 @@ package uk.ac.roe.wfau.firethorn.tuesday;
  *
  */
 public interface TuesdayBaseColumn
-extends TuesdayBaseInfo
+extends TuesdayBaseName
     {
+    public TuesdayAdqlColumn adql();
+    public TuesdayOgsaColumn ogsa();
 
+    public TuesdayBaseTable    table();
+    public TuesdayBaseSchema   schema();
+    public TuesdayBaseResource resource();
+
+    public String type();
+    public void type(String type);
+    
+    public Integer size();
+    public void size(Integer size);
+    
+    public String ucd();
+    public void ucd(String ucd);
+    
     }

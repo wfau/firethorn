@@ -17,25 +17,77 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.NamedQueries;
+
 /**
  *
  *
  */
+@Entity()
+@Access(
+    AccessType.FIELD
+    )
+@Table(
+    name = TuesdayJdbcTableEntity.DB_TABLE_NAME,
+    uniqueConstraints={
+        @UniqueConstraint(
+            name = TuesdayJdbcTableEntity.DB_TABLE_NAME + TuesdayBaseNameEntity.DB_PARENT_NAME_IDX,
+            columnNames = {
+                TuesdayBaseNameEntity.DB_NAME_COL,
+                TuesdayBaseNameEntity.DB_PARENT_COL,
+                }
+            )
+        }
+    )
+@NamedQueries(
+        {
+        }
+    )
 public class TuesdayJdbcTableEntity
 extends TuesdayOgsaTableEntity<TuesdayJdbcColumn>
     implements TuesdayJdbcTable
     {
+    protected static final String DB_TABLE_NAME = "TuesdayJdbcTableEntity";
 
+    @ManyToOne(
+        fetch = FetchType.EAGER,
+        targetEntity = TuesdayJdbcSchemaEntity.class
+        )
+    @JoinColumn(
+        name = DB_PARENT_COL,
+        unique = false,
+        nullable = false,
+        updatable = false
+        )
     private TuesdayJdbcSchema schema;
     @Override
     public TuesdayJdbcSchema schema()
         {
-        return schema;
+        return this.schema;
+        }
+    @Override
+    public void schema(TuesdayJdbcSchema schema)
+        {
+        this.schema = schema;
+        }
+    @Override
+    public TuesdayJdbcCatalog catalog()
+        {
+        return this.schema().catalog();
         }
     @Override
     public TuesdayJdbcResource resource()
         {
-        return schema.resource();
+        return this.schema().resource();
         }
 
     @Override
@@ -54,5 +106,19 @@ extends TuesdayOgsaTableEntity<TuesdayJdbcColumn>
                 return null;
                 }
             };
+        }
+
+    @Override
+    public String fullname()
+        {
+        StringBuilder builder = new StringBuilder();
+        builder.append(this.resource().name());
+        builder.append(".");
+        builder.append(this.catalog().name());
+        builder.append(".");
+        builder.append(this.schema().name());
+        builder.append(".");
+        builder.append(this.name());
+        return builder.toString();
         }
     }

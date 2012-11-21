@@ -24,14 +24,19 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 public interface TuesdayIvoaTable
 extends TuesdayOgsaTable<TuesdayIvoaColumn>
     {
-    public TuesdayIvoaSchema   schema();
+    @Override
     public TuesdayIvoaResource resource();
+    @Override
+    public TuesdayIvoaSchema   schema();
 
     public interface Columns extends TuesdayOgsaTable.Columns<TuesdayIvoaColumn>
         {
+        @Override
         public Iterable<TuesdayIvoaColumn> select();
+        @Override
         public TuesdayIvoaColumn select(String name);
         } 
+    @Override
     public Columns columns();
 
     }

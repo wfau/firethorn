@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+
 /**
  *
  *
@@ -24,5 +25,14 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 public interface TuesdayAdqlSchema
 extends TuesdayBaseSchema
     {
+    @Override
     public TuesdayAdqlResource resource();
+
+    interface Tables
+        {
+        public Iterable<TuesdayAdqlTable> select();
+        public TuesdayAdqlTable select(String name);
+        } 
+    public Tables tables();
+
     }

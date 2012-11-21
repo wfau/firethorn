@@ -24,5 +24,17 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 public interface TuesdayIvoaResource
 extends TuesdayOgsaResource
     {
+    public String uri();
+    public void uri(String uri);
+
+    public String url();
+    public void url(String url);
+
+    public interface Schemas
+        {
+        public Iterable<TuesdayIvoaSchema> select();
+        public TuesdayIvoaSchema select(String name);
+        } 
+    public Schemas schemas();
 
     }

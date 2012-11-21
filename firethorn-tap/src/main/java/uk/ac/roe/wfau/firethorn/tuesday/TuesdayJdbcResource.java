@@ -24,5 +24,18 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 public interface TuesdayJdbcResource
 extends TuesdayOgsaResource
     {
+    public String uri();
+    public void uri(String uri);
+    public String user();
+    public void user(String user);
+    public String pass();
+    public void pass(String pass);
+
+    public interface Catalogs
+        {
+        public Iterable<TuesdayJdbcCatalog> select();
+        public TuesdayJdbcCatalog select(String name);
+        } 
+    public Catalogs catalogs();
 
     }

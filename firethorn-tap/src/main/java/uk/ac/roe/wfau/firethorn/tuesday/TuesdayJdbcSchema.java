@@ -24,5 +24,15 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 public interface TuesdayJdbcSchema
 extends TuesdayBaseSchema
     {
+    @Override
     public TuesdayJdbcResource resource();
+    public TuesdayJdbcCatalog catalog();
+
+    public interface Tables
+        {
+        public Iterable<TuesdayJdbcTable> select();
+        public TuesdayJdbcTable select(String name);
+        } 
+    public Tables tables();
+
     }

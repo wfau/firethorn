@@ -262,7 +262,7 @@ implements JdbcSchema
         @Override
         public JdbcSchema.IdentFactory identifiers()
             {
-            return identifiers ;
+            return this.identifiers ;
             }
         }
 

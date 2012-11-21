@@ -17,14 +17,61 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.NamedQueries;
+
 /**
  *
  *
  */
+@Entity()
+@Access(
+    AccessType.FIELD
+    )
+@Table(
+    name = TuesdayAdqlTableEntity.DB_TABLE_NAME,
+    uniqueConstraints={
+        @UniqueConstraint(
+            name= TuesdayAdqlTableEntity.DB_TABLE_NAME + TuesdayBaseNameEntity.DB_PARENT_NAME_IDX,
+            columnNames = {
+                TuesdayBaseNameEntity.DB_NAME_COL,
+                TuesdayBaseNameEntity.DB_PARENT_COL,
+                }
+            )
+        }
+    )
+@NamedQueries(
+        {
+        }
+    )
+@org.hibernate.annotations.Table(
+    appliesTo = TuesdayAdqlTableEntity.DB_TABLE_NAME, 
+    indexes =
+        {
+        @Index(
+            name= TuesdayAdqlTableEntity.DB_TABLE_NAME + TuesdayBaseNameEntity.DB_PARENT_IDX,
+            columnNames =
+                {
+                TuesdayBaseNameEntity.DB_PARENT_COL
+                }
+            )
+        }
+    )
 public class TuesdayAdqlTableEntity
-extends TuesdayBaseTableEntity
+    extends TuesdayBaseTableEntity
     implements TuesdayAdqlTable
     {
+    protected static final String DB_TABLE_NAME = "TuesdayAdqlTableEntity";
+
     @Override
     public String name()
         {
@@ -80,17 +127,32 @@ extends TuesdayBaseTableEntity
             return super.ucd();
             }
         }
-    
+
+    @ManyToOne(
+        fetch = FetchType.EAGER,
+        targetEntity = TuesdayAdqlSchemaEntity.class
+        )
+    @JoinColumn(
+        name = DB_PARENT_COL,
+        unique = false,
+        nullable = false,
+        updatable = true
+        )
     private TuesdayAdqlSchema schema;
     @Override
     public TuesdayAdqlSchema schema()
         {
-        return schema;
+        return this.schema;
+        }
+    @Override
+    public void schema(TuesdayAdqlSchema schema)
+        {
+        this.schema = schema;
         }
     @Override
     public TuesdayAdqlResource resource()
         {
-        return schema.resource();
+        return this.schema.resource();
         }
 
     @Override
@@ -111,11 +173,21 @@ extends TuesdayBaseTableEntity
             };
         }
 
-    // Reference (TuesdayBaseTableEntity)
+    @ManyToOne(
+        fetch = FetchType.EAGER,
+        targetEntity = TuesdayBaseTableEntity.class
+        )
+    @JoinColumn(
+        name = DB_BASE_COL,
+        unique = false,
+        nullable = false,
+        updatable = false
+        )
     private TuesdayBaseTableEntity base ;
+    @Override
     public TuesdayBaseTable base()
         {
-        return base ;
+        return this.base ;
         }
     @Override
     public TuesdayAdqlTable adql()
@@ -125,12 +197,13 @@ extends TuesdayBaseTableEntity
     @Override
     public TuesdayOgsaTable<?> ogsa()
         {
-        return base.ogsa();
+        return base().ogsa();
         }
 
-    public Children children()
+    @Override
+    public Linked linked()
         {
-        return new Children()
+        return new Linked()
             {
             @Override
             public Iterable<TuesdayAdqlTable> select()

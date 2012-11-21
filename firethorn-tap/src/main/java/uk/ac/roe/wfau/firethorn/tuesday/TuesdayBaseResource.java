@@ -22,8 +22,6 @@ package uk.ac.roe.wfau.firethorn.tuesday;
  *
  */
 public interface TuesdayBaseResource
-extends TuesdayBaseInfo
+extends TuesdayBaseName
     {
-    public TuesdayAdqlResource adql();
-    public TuesdayOgsaResource ogsa();
     }

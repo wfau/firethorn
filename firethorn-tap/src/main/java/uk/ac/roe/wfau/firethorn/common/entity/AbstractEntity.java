@@ -80,9 +80,10 @@ implements Entity
     /**
      * Access to our Womble instance - naff, but works for now.
      * @todo Replace this with something, anything, else.
+     * @todo re-enable compiler warnings for indirect access to static members
      *
      */
-    protected static Womble womble()
+    public static Womble womble()
         {
         return WombleImpl.womble();
         }
@@ -211,16 +212,6 @@ implements Entity
         nullable = true,
         updatable = true
         )
-    /*
-    protected String getName()
-        {
-        return this.name ;
-        }
-    protected void setName(final String name)
-        {
-        this.name = name ;
-        }
-    */
     protected String name ;
 
     @Override

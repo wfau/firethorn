@@ -17,25 +17,67 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.NamedQueries;
+
 /**
  *
  *
  */
+@Entity()
+@Access(
+    AccessType.FIELD
+    )
+@Table(
+    name = TuesdayIvoaTableEntity.DB_TABLE_NAME,
+    uniqueConstraints={
+        @UniqueConstraint(
+            name = TuesdayIvoaTableEntity.DB_TABLE_NAME + TuesdayBaseNameEntity.DB_PARENT_NAME_IDX,
+            columnNames = {
+                TuesdayBaseNameEntity.DB_NAME_COL,
+                TuesdayBaseNameEntity.DB_PARENT_COL,
+                }
+            )
+        }
+    )
+@NamedQueries(
+        {
+        }
+    )
 public class TuesdayIvoaTableEntity
 extends TuesdayOgsaTableEntity<TuesdayIvoaColumn>
     implements TuesdayIvoaTable
     {
+    protected static final String DB_TABLE_NAME = "TuesdayJdbcTableEntity";
 
+    @ManyToOne(
+        fetch = FetchType.EAGER,
+        targetEntity = TuesdayIvoaSchemaEntity.class
+        )
+    @JoinColumn(
+        name = DB_PARENT_COL,
+        unique = false,
+        nullable = false,
+        updatable = false
+        )
     private TuesdayIvoaSchema schema;
     @Override
     public TuesdayIvoaSchema schema()
         {
-        return schema;
+        return this.schema;
         }
     @Override
     public TuesdayIvoaResource resource()
         {
-        return schema.resource();
+        return this.schema().resource();
         }
 
     @Override
@@ -55,5 +97,17 @@ extends TuesdayOgsaTableEntity<TuesdayIvoaColumn>
                 return null;
                 }
             };
+        }
+
+    @Override
+    public String fullname()
+        {
+        StringBuilder builder = new StringBuilder();
+        builder.append(resource().name());
+        builder.append(".");
+        builder.append(schema().name());
+        builder.append(".");
+        builder.append(this.name());
+        return builder.toString();
         }
     }

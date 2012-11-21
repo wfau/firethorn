@@ -24,5 +24,11 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 public interface TuesdayJdbcColumn
 extends TuesdayOgsaColumn
     {
+    @Override
     public TuesdayJdbcTable table();
+    @Override
+    public TuesdayJdbcSchema schema();
+    public TuesdayJdbcCatalog catalog();
+    @Override
+    public TuesdayJdbcResource resource();
     }

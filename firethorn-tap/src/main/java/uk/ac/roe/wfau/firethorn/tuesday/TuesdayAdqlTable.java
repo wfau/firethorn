@@ -24,7 +24,12 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 public interface TuesdayAdqlTable
 extends TuesdayBaseTable
     {
-    public TuesdayAdqlSchema   schema();
+    public TuesdayBaseTable base();
+
+    @Override
+    public TuesdayAdqlSchema schema();
+    public void schema(TuesdayAdqlSchema schema);
+    @Override
     public TuesdayAdqlResource resource();
 
     interface Columns
@@ -34,9 +39,9 @@ extends TuesdayBaseTable
         } 
     public Columns columns();
 
-    interface Children
+    interface Linked
         {
         public Iterable<TuesdayAdqlTable> select();
         }
-    public Children children();
+    public Linked linked();
     }

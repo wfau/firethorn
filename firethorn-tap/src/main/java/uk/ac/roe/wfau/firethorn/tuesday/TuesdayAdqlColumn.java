@@ -24,5 +24,10 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 public interface TuesdayAdqlColumn
 extends TuesdayBaseColumn
     {
+    @Override
     public TuesdayAdqlTable table();
+    @Override
+    public TuesdayAdqlSchema schema();
+    @Override
+    public TuesdayAdqlResource resource();
     }

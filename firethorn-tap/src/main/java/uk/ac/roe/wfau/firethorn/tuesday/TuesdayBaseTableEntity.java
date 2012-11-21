@@ -17,65 +17,96 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.MappedSuperclass;
+
 /**
  *
  *
  */
+@MappedSuperclass
+@Access(
+    AccessType.FIELD
+    )
 public abstract class TuesdayBaseTableEntity
+extends TuesdayBaseNameEntity
     implements TuesdayBaseTable
     {
-    @Override
-    public String name()
-        {
-        return "name";
-        }
-    @Override
-    public void name(String name)
-        {
-        }
-    @Override
-    public String text()
-        {
-        return "text";
-        }
-    @Override
-    public void text(String text)
-        {
-        }
+    protected static final String DB_TYPE_COL = "type";
+    protected static final String DB_SIZE_COL = "size";
+    protected static final String DB_UCD_COL  = "ucd";
+
+    @Basic(fetch = FetchType.EAGER)
+    @Column(
+        name = DB_TYPE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String type ;
     @Override
     public String type()
         {
-        return "type";
+        return this.type;
         }
     @Override
     public void type(String type)
         {
+        this.type = type;
         }
+
+    @Basic(fetch = FetchType.EAGER)
+    @Column(
+        name = DB_SIZE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private Integer size ;
     @Override
     public Integer size()
         {
-        return new Integer(21);
+        return this.size;
         }
     @Override
     public void size(Integer size)
         {
+        this.size = size;
         }
+
+    @Basic(fetch = FetchType.EAGER)
+    @Column(
+        name = DB_UCD_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String ucd;
     @Override
     public String ucd()
         {
-        return "ucd";
+        return this.ucd;
         }
     @Override
     public void ucd(String ucd)
         {
+        this.ucd = ucd;
         }
-
+    
     @Override
     public abstract TuesdayAdqlTable adql();
+
     @Override
     public abstract TuesdayOgsaTable<?> ogsa();
+
     @Override
     public abstract TuesdayBaseSchema schema();
+
     @Override
     public abstract TuesdayBaseResource resource();
+
     }

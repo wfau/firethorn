@@ -24,5 +24,11 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 public interface TuesdayIvoaColumn
 extends TuesdayOgsaColumn
     {
+    @Override
+    public TuesdayAdqlColumn adql();
+    @Override
+    public TuesdayIvoaColumn ogsa();
+
+    @Override
     public TuesdayIvoaTable table();
     }

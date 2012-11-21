@@ -22,7 +22,7 @@ package uk.ac.roe.wfau.firethorn.tuesday;
  *
  */
 public interface TuesdayBaseTable
-extends TuesdayBaseInfo
+extends TuesdayBaseName
     {
     public TuesdayAdqlTable    adql();
     public TuesdayOgsaTable<?> ogsa();

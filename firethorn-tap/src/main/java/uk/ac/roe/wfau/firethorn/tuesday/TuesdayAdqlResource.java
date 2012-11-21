@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+
 /**
  *
  *
@@ -24,5 +25,12 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 public interface TuesdayAdqlResource
 extends TuesdayBaseResource
     {
+
+    interface Schemas
+        {
+        public Iterable<TuesdayAdqlSchema> select();
+        public TuesdayAdqlSchema select(String name);
+        } 
+    public Schemas schemas();
 
     }
