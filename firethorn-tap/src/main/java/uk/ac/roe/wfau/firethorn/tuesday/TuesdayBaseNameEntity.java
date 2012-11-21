@@ -24,6 +24,8 @@ import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 
+import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
+
 /**
  *
  *
@@ -33,12 +35,13 @@ import javax.persistence.MappedSuperclass;
     AccessType.FIELD
     )
 public class TuesdayBaseNameEntity
+extends AbstractEntity
     implements TuesdayBaseName
     {
-    protected static final String DB_NAME_COL = "name";
-    protected static final String DB_TEXT_COL = "text";
-    protected static final String DB_BASE_COL = "base";
-    protected static final String DB_PARENT_COL = "parent";
+    protected static final String DB_NAME_COL = "tuename";
+    protected static final String DB_TEXT_COL = "tuetext";
+    protected static final String DB_BASE_COL = "tuebase";
+    protected static final String DB_PARENT_COL = "tueparent";
 
     protected static final String DB_NAME_IDX        = "IndexByName";
     protected static final String DB_PARENT_IDX      = "IndexByParent";
@@ -60,16 +63,16 @@ public class TuesdayBaseNameEntity
         nullable = true,
         updatable = true
         )
-    private String name ;
+    private String tuename ;
     @Override
     public String name()
         {
-        return this.name;
+        return this.tuename;
         }
     @Override
     public void name(String name)
         {
-        this.name = name;
+        this.tuename = name;
         }
 
     @Basic(fetch = FetchType.LAZY)
@@ -89,5 +92,12 @@ public class TuesdayBaseNameEntity
     public void text(String text)
         {
         this.text = text;
+        }
+
+    @Override
+    public String link()
+        {
+        // TODO Auto-generated method stub
+        return null;
         }
     }

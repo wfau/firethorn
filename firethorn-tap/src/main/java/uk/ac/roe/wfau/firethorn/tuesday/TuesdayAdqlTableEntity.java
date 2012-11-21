@@ -31,6 +31,13 @@ import org.hibernate.annotations.NamedQueries;
 
 /**
  *
+        @UniqueConstraint(
+            name= TuesdayAdqlTableEntity.DB_TABLE_NAME + TuesdayBaseNameEntity.DB_PARENT_NAME_IDX,
+            columnNames = {
+                TuesdayBaseNameEntity.DB_NAME_COL,
+                TuesdayBaseNameEntity.DB_PARENT_COL,
+                }
+            )
  *
  */
 @Entity()
@@ -40,30 +47,10 @@ import org.hibernate.annotations.NamedQueries;
 @Table(
     name = TuesdayAdqlTableEntity.DB_TABLE_NAME,
     uniqueConstraints={
-        @UniqueConstraint(
-            name= TuesdayAdqlTableEntity.DB_TABLE_NAME + TuesdayBaseNameEntity.DB_PARENT_NAME_IDX,
-            columnNames = {
-                TuesdayBaseNameEntity.DB_NAME_COL,
-                TuesdayBaseNameEntity.DB_PARENT_COL,
-                }
-            )
         }
     )
 @NamedQueries(
         {
-        }
-    )
-@org.hibernate.annotations.Table(
-    appliesTo = TuesdayAdqlTableEntity.DB_TABLE_NAME, 
-    indexes =
-        {
-        @Index(
-            name= TuesdayAdqlTableEntity.DB_TABLE_NAME + TuesdayBaseNameEntity.DB_PARENT_IDX,
-            columnNames =
-                {
-                TuesdayBaseNameEntity.DB_PARENT_COL
-                }
-            )
         }
     )
 public class TuesdayAdqlTableEntity
@@ -77,9 +64,10 @@ public class TuesdayAdqlTableEntity
         super();
         }
 
-    protected TuesdayAdqlTableEntity(TuesdayAdqlSchema schema, String name)
+    protected TuesdayAdqlTableEntity(TuesdayBaseTable base, TuesdayAdqlSchema schema, String name)
         {
         super(name);
+        this.base = base;
         this.schema = schema;
         }
     
@@ -194,7 +182,7 @@ public class TuesdayAdqlTableEntity
         nullable = false,
         updatable = false
         )
-    private TuesdayBaseTableEntity base ;
+    private TuesdayBaseTable base ;
     @Override
     public TuesdayBaseTable base()
         {

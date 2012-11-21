@@ -41,7 +41,7 @@ import org.hibernate.annotations.NamedQueries;
     name = TuesdayBaseTableEntity.DB_TABLE_NAME
     )
 @Inheritance(
-    strategy = InheritanceType.TABLE_PER_CLASS
+    strategy = InheritanceType.JOINED
     )
 @NamedQueries(
         {
@@ -51,7 +51,7 @@ public abstract class TuesdayBaseTableEntity
 extends TuesdayBaseNameEntity
     implements TuesdayBaseTable
     {
-    protected static final String DB_TABLE_NAME = "TuesdayAdqlTableEntity";
+    protected static final String DB_TABLE_NAME = "TuesdayBaseTableEntity";
 
     protected static final String DB_TYPE_COL = "type";
     protected static final String DB_SIZE_COL = "size";
@@ -135,7 +135,11 @@ extends TuesdayBaseNameEntity
 
     // This implies a class hierarchy based on TuesdayBaseTableEntity
     // With TuesdayAdqlTableEntity, TuesdayIvoaTableEntity and TuesdayJdbcTableEntity
-    // Parent column in each references a different class, so we need a separate table for each class.
+    // Parent column references different classes, so probably separate tables for each class.
+    // Means we will need to fudge the name/parent constraint.
+    // Alternative is to duplicate the data, with references to both base and derived classes.
+    // Or, move the name down to the derived classes.
+    // TuesdayOgsaTableEntity can be folded into TuesdayBaseTableEntity (move alias up). 
     // @Override
     public Linked linked()
         {

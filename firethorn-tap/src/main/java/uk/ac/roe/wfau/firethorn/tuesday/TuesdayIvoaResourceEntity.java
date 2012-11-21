@@ -46,7 +46,7 @@ public class TuesdayIvoaResourceEntity
     extends TuesdayBaseNameEntity
     implements TuesdayIvoaResource
     {
-    protected static final String DB_TABLE_NAME = "TuesdayIvoaSchemaEntity";
+    protected static final String DB_TABLE_NAME = "TuesdayIvoaResourceEntity";
 
     protected static final String DB_URI_COL  = "uri"; 
     protected static final String DB_URL_COL  = "url"; 

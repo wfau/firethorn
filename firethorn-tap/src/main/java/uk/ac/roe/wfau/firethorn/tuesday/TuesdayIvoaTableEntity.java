@@ -30,6 +30,13 @@ import org.hibernate.annotations.NamedQueries;
 
 /**
  *
+        @UniqueConstraint(
+            name = TuesdayIvoaTableEntity.DB_TABLE_NAME + TuesdayBaseNameEntity.DB_PARENT_NAME_IDX,
+            columnNames = {
+                TuesdayBaseNameEntity.DB_NAME_COL,
+                TuesdayBaseNameEntity.DB_PARENT_COL,
+                }
+            )
  *
  */
 @Entity()
@@ -39,13 +46,6 @@ import org.hibernate.annotations.NamedQueries;
 @Table(
     name = TuesdayIvoaTableEntity.DB_TABLE_NAME,
     uniqueConstraints={
-        @UniqueConstraint(
-            name = TuesdayIvoaTableEntity.DB_TABLE_NAME + TuesdayBaseNameEntity.DB_PARENT_NAME_IDX,
-            columnNames = {
-                TuesdayBaseNameEntity.DB_NAME_COL,
-                TuesdayBaseNameEntity.DB_PARENT_COL,
-                }
-            )
         }
     )
 @NamedQueries(
@@ -53,10 +53,10 @@ import org.hibernate.annotations.NamedQueries;
         }
     )
 public class TuesdayIvoaTableEntity
-extends TuesdayOgsaTableEntity<TuesdayIvoaColumn>
+extends TuesdayBaseTableEntity
     implements TuesdayIvoaTable
     {
-    protected static final String DB_TABLE_NAME = "TuesdayJdbcTableEntity";
+    protected static final String DB_TABLE_NAME = "TuesdayIvoaTableEntity";
 
     protected TuesdayIvoaTableEntity()
         {
@@ -120,5 +120,22 @@ extends TuesdayOgsaTableEntity<TuesdayIvoaColumn>
         builder.append(".");
         builder.append(this.name());
         return builder.toString();
+        }
+
+    @Override
+    public String alias()
+        {
+        return null;
+        }
+
+    @Override
+    public void alias(String alias)
+        {
+        }
+
+    @Override
+    public TuesdayOgsaTable<TuesdayIvoaColumn> ogsa()
+        {
+        return this;
         }
     }

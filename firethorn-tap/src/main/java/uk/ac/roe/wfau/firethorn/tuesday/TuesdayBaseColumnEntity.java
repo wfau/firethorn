@@ -21,21 +21,39 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.NamedQueries;
 
 /**
  *
  *
  */
-@MappedSuperclass
+@Entity()
 @Access(
     AccessType.FIELD
+    )
+@Table(
+    name = TuesdayBaseColumnEntity.DB_TABLE_NAME
+    )
+@Inheritance(
+    strategy = InheritanceType.TABLE_PER_CLASS
+    )
+@NamedQueries(
+        {
+        }
     )
 public abstract class TuesdayBaseColumnEntity
 extends TuesdayBaseNameEntity
     implements TuesdayBaseColumn
     {
+    protected static final String DB_TABLE_NAME = "TuesdayBaseColumnEntity";
+
     protected static final String DB_TYPE_COL = "type";
     protected static final String DB_SIZE_COL = "size";
     protected static final String DB_UCD_COL  = "ucd";

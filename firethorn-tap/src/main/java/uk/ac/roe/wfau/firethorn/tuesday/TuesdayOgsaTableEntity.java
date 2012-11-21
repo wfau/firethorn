@@ -65,7 +65,7 @@ implements TuesdayOgsaTable<ColumnType>
             "xxxx"
             );
         }
-
+/*
     @Basic(fetch = FetchType.EAGER)
     @Column(
         name = DB_ALIAS_COL,
@@ -95,5 +95,15 @@ implements TuesdayOgsaTable<ColumnType>
     public void alias(String alias)
         {
         this.alias= alias;
+        }
+    */
+    @Override
+    public String alias()
+        {
+        return null ;
+        }
+    @Override
+    public void alias(String alias)
+        {
         }
     }

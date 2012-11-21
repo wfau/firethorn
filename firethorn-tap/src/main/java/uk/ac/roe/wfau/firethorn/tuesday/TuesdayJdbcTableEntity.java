@@ -30,6 +30,13 @@ import org.hibernate.annotations.NamedQueries;
 
 /**
  *
+        @UniqueConstraint(
+            name = TuesdayJdbcTableEntity.DB_TABLE_NAME + TuesdayBaseNameEntity.DB_PARENT_NAME_IDX,
+            columnNames = {
+                TuesdayBaseNameEntity.DB_NAME_COL,
+                TuesdayBaseNameEntity.DB_PARENT_COL,
+                }
+            )
  *
  */
 @Entity()
@@ -39,13 +46,6 @@ import org.hibernate.annotations.NamedQueries;
 @Table(
     name = TuesdayJdbcTableEntity.DB_TABLE_NAME,
     uniqueConstraints={
-        @UniqueConstraint(
-            name = TuesdayJdbcTableEntity.DB_TABLE_NAME + TuesdayBaseNameEntity.DB_PARENT_NAME_IDX,
-            columnNames = {
-                TuesdayBaseNameEntity.DB_NAME_COL,
-                TuesdayBaseNameEntity.DB_PARENT_COL,
-                }
-            )
         }
     )
 @NamedQueries(
@@ -53,7 +53,7 @@ import org.hibernate.annotations.NamedQueries;
         }
     )
 public class TuesdayJdbcTableEntity
-extends TuesdayOgsaTableEntity<TuesdayJdbcColumn>
+extends TuesdayBaseTableEntity
     implements TuesdayJdbcTable
     {
     protected static final String DB_TABLE_NAME = "TuesdayJdbcTableEntity";
@@ -131,5 +131,22 @@ extends TuesdayOgsaTableEntity<TuesdayJdbcColumn>
         builder.append(".");
         builder.append(this.name());
         return builder.toString();
+        }
+
+    @Override
+    public String alias()
+        {
+        return null;
+        }
+
+    @Override
+    public void alias(String alias)
+        {
+        }
+
+    @Override
+    public TuesdayOgsaTable<TuesdayJdbcColumn> ogsa()
+        {
+        return this;
         }
     }
