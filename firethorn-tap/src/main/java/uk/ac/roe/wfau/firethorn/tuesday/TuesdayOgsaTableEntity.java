@@ -23,6 +23,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 /**
  *
@@ -36,8 +37,10 @@ public abstract class TuesdayOgsaTableEntity<ColumnType extends TuesdayOgsaColum
 extends TuesdayBaseTableEntity
 implements TuesdayOgsaTable<ColumnType>
     {
-    protected static final String DB_ADQL_COL  = "adql";
     protected static final String DB_ALIAS_COL = "alias";
+
+    protected static final String ALIAS_IDENT = "{ident}";
+    protected static final String ALIAS_TEMPLATE = "ogsa_table_" + ALIAS_IDENT;
 
     protected TuesdayOgsaTableEntity()
         {
@@ -55,9 +58,12 @@ implements TuesdayOgsaTable<ColumnType>
         return this ;
         }
 
-    public TuesdayBaseTable base()
+    protected String init()
         {
-        return this ;
+        return ALIAS_TEMPLATE.replace(
+            ALIAS_IDENT,
+            "xxxx"
+            );
         }
 
     @Basic(fetch = FetchType.EAGER)
@@ -68,10 +74,22 @@ implements TuesdayOgsaTable<ColumnType>
         updatable = true
         )
     private String alias;
-    @Override
+    @Transient
+    private String temp;
+    //@Override
     public String alias()
         {
-        return this.alias;
+        if (this.temp == null)
+            {
+            if (this.alias == null)
+                {
+                this.temp = this.init();
+                }
+            else {
+                this.temp = this.alias;
+                }
+            }
+        return this.temp;
         }
     @Override
     public void alias(String alias)

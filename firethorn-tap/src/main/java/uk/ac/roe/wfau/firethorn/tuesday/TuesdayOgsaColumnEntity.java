@@ -53,17 +53,18 @@ implements TuesdayOgsaColumn
         super(name);
         }
 
+    @Override
+    public TuesdayOgsaColumn ogsa()
+        {
+        return this ;
+        }
+
     protected String init()
         {
         return ALIAS_TEMPLATE.replace(
             ALIAS_IDENT,
             "xxxx"
             );
-        }
-    @Override
-    public TuesdayOgsaColumn ogsa()
-        {
-        return this ;
         }
 
     @Basic(fetch = FetchType.EAGER)

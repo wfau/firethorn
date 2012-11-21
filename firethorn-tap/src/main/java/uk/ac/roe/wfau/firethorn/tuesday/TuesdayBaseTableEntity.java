@@ -21,21 +21,38 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.NamedQueries;
 
 /**
  *
  *
  */
-@MappedSuperclass
+@Entity()
 @Access(
     AccessType.FIELD
+    )
+@Table(
+    name = TuesdayBaseTableEntity.DB_TABLE_NAME
+    )
+@Inheritance(
+    strategy = InheritanceType.TABLE_PER_CLASS
+    )
+@NamedQueries(
+        {
+        }
     )
 public abstract class TuesdayBaseTableEntity
 extends TuesdayBaseNameEntity
     implements TuesdayBaseTable
     {
+    protected static final String DB_TABLE_NAME = "TuesdayAdqlTableEntity";
+
     protected static final String DB_TYPE_COL = "type";
     protected static final String DB_SIZE_COL = "size";
     protected static final String DB_UCD_COL  = "ucd";
@@ -116,7 +133,10 @@ extends TuesdayBaseNameEntity
     @Override
     public abstract TuesdayBaseResource resource();
 
-    @Override
+    // This implies a class hierarchy based on TuesdayBaseTableEntity
+    // With TuesdayAdqlTableEntity, TuesdayIvoaTableEntity and TuesdayJdbcTableEntity
+    // Parent column in each references a different class, so we need a separate table for each class.
+    // @Override
     public Linked linked()
         {
         return new Linked()

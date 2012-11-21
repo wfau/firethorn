@@ -24,5 +24,6 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 public interface TuesdayIvoaSchema
 extends TuesdayBaseSchema
     {
+    @Override
     public TuesdayIvoaResource resource();
     }
