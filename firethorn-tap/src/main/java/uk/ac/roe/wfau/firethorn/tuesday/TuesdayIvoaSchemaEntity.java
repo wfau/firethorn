@@ -58,6 +58,17 @@ public class TuesdayIvoaSchemaEntity
     {
     protected static final String DB_TABLE_NAME = "TuesdayIvoaSchemaEntity";
 
+    protected TuesdayIvoaSchemaEntity()
+        {
+        super();
+        }
+
+    protected TuesdayIvoaSchemaEntity(TuesdayIvoaResource resource, String name)
+        {
+        super(name);
+        this.resource = resource;
+        }
+
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = TuesdayIvoaResourceEntity.class

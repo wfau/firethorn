@@ -58,6 +58,16 @@ public class TuesdayIvoaColumnEntity
     {
     protected static final String DB_TABLE_NAME = "TuesdayIvoaColumnEntity";
 
+    protected TuesdayIvoaColumnEntity()
+        {
+        }
+
+    protected TuesdayIvoaColumnEntity(TuesdayIvoaTable table, String name)
+        {
+        super(name);
+        this.table = table;
+        }
+
     @Override
     public TuesdayIvoaColumn ogsa()
         {

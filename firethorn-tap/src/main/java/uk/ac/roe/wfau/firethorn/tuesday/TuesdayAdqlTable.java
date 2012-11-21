@@ -39,9 +39,4 @@ extends TuesdayBaseTable
         } 
     public Columns columns();
 
-    interface Linked
-        {
-        public Iterable<TuesdayAdqlTable> select();
-        }
-    public Linked linked();
     }

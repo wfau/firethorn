@@ -58,6 +58,17 @@ extends TuesdayOgsaTableEntity<TuesdayJdbcColumn>
     {
     protected static final String DB_TABLE_NAME = "TuesdayJdbcTableEntity";
 
+    protected TuesdayJdbcTableEntity()
+        {
+        super();
+        }
+
+    protected TuesdayJdbcTableEntity(TuesdayJdbcSchema schema, String name)
+        {
+        super(name);
+        this.schema = schema;
+        }
+
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = TuesdayJdbcSchemaEntity.class

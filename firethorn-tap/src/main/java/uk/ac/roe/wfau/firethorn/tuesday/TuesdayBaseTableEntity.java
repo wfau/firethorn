@@ -40,6 +40,16 @@ extends TuesdayBaseNameEntity
     protected static final String DB_SIZE_COL = "size";
     protected static final String DB_UCD_COL  = "ucd";
 
+    protected TuesdayBaseTableEntity()
+        {
+        super();
+        }
+
+    protected TuesdayBaseTableEntity(String name)
+        {
+        super(name);
+        }
+
     @Basic(fetch = FetchType.EAGER)
     @Column(
         name = DB_TYPE_COL,
@@ -98,9 +108,6 @@ extends TuesdayBaseNameEntity
         }
     
     @Override
-    public abstract TuesdayAdqlTable adql();
-
-    @Override
     public abstract TuesdayOgsaTable<?> ogsa();
 
     @Override
@@ -109,4 +116,17 @@ extends TuesdayBaseNameEntity
     @Override
     public abstract TuesdayBaseResource resource();
 
+    @Override
+    public Linked linked()
+        {
+        return new Linked()
+            {
+            @Override
+            public Iterable<TuesdayAdqlTable> select()
+                {
+                //"SELECT FROM TuesdayAdqlTable WHERE base = :base"
+                return null;
+                }
+            };
+        }
     }

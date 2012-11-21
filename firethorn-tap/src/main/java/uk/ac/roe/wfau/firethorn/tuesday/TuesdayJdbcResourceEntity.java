@@ -47,10 +47,20 @@ public class TuesdayJdbcResourceEntity
     implements TuesdayJdbcResource
     {
     protected static final String DB_TABLE_NAME = "TuesdayJdbcResourceEntity";
-
+    
     protected static final String DB_URI_COL  = "dburi"; 
     protected static final String DB_USER_COL = "dbuser"; 
     protected static final String DB_PASS_COL = "dbpass"; 
+
+    protected TuesdayJdbcResourceEntity()
+        {
+        super();
+        }
+
+    protected TuesdayJdbcResourceEntity(String name)
+        {
+        super(name);
+        }
 
     @Basic(fetch = FetchType.EAGER)
     @Column(

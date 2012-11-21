@@ -24,7 +24,6 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 public interface TuesdayBaseColumn
 extends TuesdayBaseName
     {
-    public TuesdayAdqlColumn adql();
     public TuesdayOgsaColumn ogsa();
 
     public TuesdayBaseTable    table();
@@ -40,4 +39,10 @@ extends TuesdayBaseName
     public String ucd();
     public void ucd(String ucd);
     
+    interface Linked
+        {
+        public Iterable<TuesdayAdqlColumn> select();
+        }
+    public Linked linked();
+
     }

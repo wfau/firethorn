@@ -51,6 +51,16 @@ public class TuesdayIvoaResourceEntity
     protected static final String DB_URI_COL  = "uri"; 
     protected static final String DB_URL_COL  = "url"; 
 
+    protected TuesdayIvoaResourceEntity()
+        {
+        super();
+        }
+
+    protected TuesdayIvoaResourceEntity(String name)
+        {
+        super(name);
+        }
+
     @Basic(fetch = FetchType.EAGER)
     @Column(
         name = DB_URI_COL,

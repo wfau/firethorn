@@ -58,6 +58,18 @@ public class TuesdayAdqlColumnEntity
     {
     protected static final String DB_TABLE_NAME = "TuesdayAdqlColumnEntity";
 
+    protected TuesdayAdqlColumnEntity()
+        {
+        super();
+        }
+
+    protected TuesdayAdqlColumnEntity(TuesdayBaseColumn base, TuesdayAdqlTable table, String name)
+        {
+        super(name);
+        this.base = base ;
+        this.table = table;
+        }
+
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = TuesdayAdqlTableEntity.class
@@ -85,15 +97,25 @@ public class TuesdayAdqlColumnEntity
         return this.table().resource();
         }
 
+    @ManyToOne(
+        fetch = FetchType.EAGER,
+        targetEntity = TuesdayBaseColumnEntity.class
+        )
+    @JoinColumn(
+        name = DB_BASE_COL,
+        unique = false,
+        nullable = false,
+        updatable = false
+        )
+    private TuesdayBaseColumn base ;
     @Override
-    public TuesdayAdqlColumn adql()
+    public TuesdayBaseColumn base()
         {
-        return this;
+        return this.base ;
         }
-
+    @Override
     public TuesdayOgsaColumn ogsa()
         {
-        //return this.table().base().ogsa().columns().select(this.name());
-        return null ;
+        return base().ogsa();
         }
     }

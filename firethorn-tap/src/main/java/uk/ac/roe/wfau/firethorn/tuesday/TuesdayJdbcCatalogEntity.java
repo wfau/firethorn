@@ -58,6 +58,17 @@ public class TuesdayJdbcCatalogEntity
     {
     protected static final String DB_TABLE_NAME = "TuesdayJdbcCatalogEntity";
 
+    protected TuesdayJdbcCatalogEntity()
+        {
+        super();
+        }
+
+    protected TuesdayJdbcCatalogEntity(TuesdayJdbcResource resource, String name)
+        {
+        super(name);
+        this.resource = resource;
+        }
+
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = TuesdayJdbcResourceEntity.class

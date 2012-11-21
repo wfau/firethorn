@@ -41,6 +41,16 @@ extends TuesdayBaseNameEntity
     {
     protected static final String DB_TABLE_NAME = "TuesdayAdqlResourceEntity";
 
+    protected TuesdayAdqlResourceEntity()
+        {
+        super();
+        }
+
+    protected TuesdayAdqlResourceEntity(String name)
+        {
+        super(name);
+        }
+
     @Override
     public Schemas schemas()
         {

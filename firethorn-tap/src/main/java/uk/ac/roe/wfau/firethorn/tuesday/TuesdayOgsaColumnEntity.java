@@ -23,6 +23,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 /**
  *
@@ -39,6 +40,26 @@ implements TuesdayOgsaColumn
     protected static final String DB_ADQL_COL  = "adql";
     protected static final String DB_ALIAS_COL = "alias";
 
+    protected static final String ALIAS_IDENT = "{ident}";
+    protected static final String ALIAS_TEMPLATE = "ogsa_column_" + ALIAS_IDENT;
+
+    protected TuesdayOgsaColumnEntity()
+        {
+        super();
+        }
+
+    protected TuesdayOgsaColumnEntity(String name)
+        {
+        super(name);
+        }
+
+    protected String init()
+        {
+        return ALIAS_TEMPLATE.replace(
+            ALIAS_IDENT,
+            "xxxx"
+            );
+        }
     @Override
     public TuesdayOgsaColumn ogsa()
         {
@@ -53,22 +74,26 @@ implements TuesdayOgsaColumn
         updatable = true
         )
     private String alias;
-    @Override
+    @Transient
+    private String temp;
+    //@Override
     public String alias()
         {
-        return this.alias;
+        if (this.temp == null)
+            {
+            if (this.alias == null)
+                {
+                this.temp = this.init();
+                }
+            else {
+                this.temp = this.alias;
+                }
+            }
+        return this.temp;
         }
     @Override
     public void alias(String alias)
         {
         this.alias = alias;
-        }
-    
-
-    // Assert adql.base = this
-    private TuesdayAdqlColumnEntity adql;
-    public TuesdayAdqlColumn adql()
-        {
-        return this.adql;
         }
     }

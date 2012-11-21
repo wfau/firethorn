@@ -43,7 +43,16 @@ public class TuesdayBaseNameEntity
     protected static final String DB_NAME_IDX        = "IndexByName";
     protected static final String DB_PARENT_IDX      = "IndexByParent";
     protected static final String DB_PARENT_NAME_IDX = "IndexByParentAndName";
-    
+
+    protected TuesdayBaseNameEntity()
+        {
+        }
+
+    protected TuesdayBaseNameEntity(String name)
+        {
+        this.name = name ;
+        }
+
     @Basic(fetch = FetchType.EAGER)
     @Column(
         name = DB_NAME_COL,

@@ -58,6 +58,17 @@ implements TuesdayAdqlSchema
     {
     protected static final String DB_TABLE_NAME = "TuesdayAdqlSchemaEntity";
 
+    protected TuesdayAdqlSchemaEntity()
+        {
+        super();
+        }
+
+    protected TuesdayAdqlSchemaEntity(TuesdayAdqlResource resource, String name)
+        {
+        super(name);
+        this.resource = resource;
+        }
+    
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = TuesdayAdqlResourceEntity.class

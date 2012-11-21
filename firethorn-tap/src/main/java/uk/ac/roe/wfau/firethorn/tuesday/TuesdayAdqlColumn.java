@@ -30,4 +30,7 @@ extends TuesdayBaseColumn
     public TuesdayAdqlSchema schema();
     @Override
     public TuesdayAdqlResource resource();
+
+    public TuesdayBaseColumn base();
+
     }

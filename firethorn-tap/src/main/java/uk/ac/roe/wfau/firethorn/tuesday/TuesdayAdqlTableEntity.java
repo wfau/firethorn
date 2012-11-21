@@ -72,6 +72,17 @@ public class TuesdayAdqlTableEntity
     {
     protected static final String DB_TABLE_NAME = "TuesdayAdqlTableEntity";
 
+    protected TuesdayAdqlTableEntity()
+        {
+        super();
+        }
+
+    protected TuesdayAdqlTableEntity(TuesdayAdqlSchema schema, String name)
+        {
+        super(name);
+        this.schema = schema;
+        }
+    
     @Override
     public String name()
         {
@@ -190,26 +201,8 @@ public class TuesdayAdqlTableEntity
         return this.base ;
         }
     @Override
-    public TuesdayAdqlTable adql()
-        {
-        return this ;
-        }
-    @Override
     public TuesdayOgsaTable<?> ogsa()
         {
         return base().ogsa();
-        }
-
-    @Override
-    public Linked linked()
-        {
-        return new Linked()
-            {
-            @Override
-            public Iterable<TuesdayAdqlTable> select()
-                {
-                return null;
-                }
-            };
         }
     }

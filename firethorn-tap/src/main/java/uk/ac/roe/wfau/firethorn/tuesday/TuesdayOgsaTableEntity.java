@@ -39,6 +39,16 @@ implements TuesdayOgsaTable<ColumnType>
     protected static final String DB_ADQL_COL  = "adql";
     protected static final String DB_ALIAS_COL = "alias";
 
+    protected TuesdayOgsaTableEntity()
+        {
+        super();
+        }
+
+    protected TuesdayOgsaTableEntity(String name)
+        {
+        super(name);
+        }
+
     @Override
     public TuesdayOgsaTable<ColumnType> ogsa()
         {
@@ -67,12 +77,5 @@ implements TuesdayOgsaTable<ColumnType>
     public void alias(String alias)
         {
         this.alias= alias;
-        }
-
-    // Assert adql.base = this
-    private TuesdayAdqlTableEntity adql;
-    public TuesdayAdqlTable adql()
-        {
-        return this.adql ;
         }
     }

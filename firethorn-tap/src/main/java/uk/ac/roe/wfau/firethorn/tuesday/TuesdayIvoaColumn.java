@@ -25,8 +25,6 @@ public interface TuesdayIvoaColumn
 extends TuesdayOgsaColumn
     {
     @Override
-    public TuesdayAdqlColumn adql();
-    @Override
     public TuesdayIvoaColumn ogsa();
 
     @Override

@@ -58,6 +58,17 @@ public class TuesdayJdbcSchemaEntity
     {
     protected static final String DB_TABLE_NAME = "TuesdayJdbcSchemaEntity";
 
+    protected TuesdayJdbcSchemaEntity()
+        {
+        super();
+        }
+
+    protected TuesdayJdbcSchemaEntity(TuesdayJdbcCatalog catalog, String name)
+        {
+        super(name);
+        this.catalog = catalog;
+        }
+
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = TuesdayJdbcCatalogEntity.class

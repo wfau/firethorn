@@ -58,6 +58,17 @@ public class TuesdayJdbcColumnEntity
     {
     protected static final String DB_TABLE_NAME = "TuesdayJdbcColumnEntity";
 
+    protected TuesdayJdbcColumnEntity() 
+        {
+        super();
+        }
+
+    protected TuesdayJdbcColumnEntity(TuesdayJdbcTable table, String name) 
+        {
+        super(name);
+        this.table = table;
+        }
+
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = TuesdayJdbcTableEntity.class
