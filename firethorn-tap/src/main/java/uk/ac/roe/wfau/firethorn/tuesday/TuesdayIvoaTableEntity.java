@@ -24,7 +24,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.NamedQueries;
 
@@ -65,7 +64,7 @@ extends TuesdayBaseTableEntity
 
     protected TuesdayIvoaTableEntity(TuesdayIvoaSchema schema, String name)
         {
-        super(name);
+        super(schema, name);
         this.schema = schema;
         }
 

@@ -38,7 +38,10 @@ extends TuesdayBaseName
     
     public String ucd();
     public void ucd(String ucd);
-    
+
+    public String alias();    //"column_ident"
+    public String fullname(); //"catalog.schema.table.column"
+
     interface Linked
         {
         public Iterable<TuesdayAdqlColumn> select();

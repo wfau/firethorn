@@ -25,8 +25,10 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.NamedQueries;
 
@@ -39,24 +41,32 @@ import org.hibernate.annotations.NamedQueries;
     AccessType.FIELD
     )
 @Table(
-    name = TuesdayBaseColumnEntity.DB_TABLE_NAME
+    name = TuesdayBaseColumnEntity.DB_TABLE_NAME,
+    uniqueConstraints={
+        @UniqueConstraint(
+            columnNames = {
+                TuesdayBaseNameEntity.DB_NAME_COL,
+                TuesdayBaseNameEntity.DB_PARENT_COL,
+                }
+            )
+        }
     )
 @Inheritance(
-    strategy = InheritanceType.TABLE_PER_CLASS
+    strategy = InheritanceType.JOINED
     )
 @NamedQueries(
         {
         }
     )
-public abstract class TuesdayBaseColumnEntity
+public class TuesdayBaseColumnEntity
 extends TuesdayBaseNameEntity
     implements TuesdayBaseColumn
     {
     protected static final String DB_TABLE_NAME = "TuesdayBaseColumnEntity";
-
-    protected static final String DB_TYPE_COL = "type";
-    protected static final String DB_SIZE_COL = "size";
-    protected static final String DB_UCD_COL  = "ucd";
+    protected static final String DB_ALIAS_COL  = "alias";
+    protected static final String DB_TYPE_COL   = "type";
+    protected static final String DB_SIZE_COL   = "size";
+    protected static final String DB_UCD_COL    = "ucd";
 
     protected TuesdayBaseColumnEntity()
         {
@@ -126,18 +136,48 @@ extends TuesdayBaseNameEntity
         {
         this.ucd = ucd;
         }
+
+    @Override
+    public String alias()
+        {
+        return "ogsa_column_ident";
+        }
+    @Override
+    public String fullname()
+        {
+        StringBuilder builder = new StringBuilder();
+        builder.append(this.table().fullname());
+        builder.append(".");
+        builder.append(this.name());
+        return builder.toString();
+        }
     
+    @ManyToOne(
+        fetch = FetchType.EAGER,
+        targetEntity = TuesdayBaseTableEntity.class
+        )
+    @JoinColumn(
+        name = DB_PARENT_COL,
+        unique = false,
+        nullable = false,
+        updatable = true
+        )
+    private TuesdayBaseTable table;
     @Override
-    public abstract TuesdayOgsaColumn ogsa();
-
+    public TuesdayBaseTable table()
+        {
+        return this.table;
+        }
     @Override
-    public abstract TuesdayBaseTable table();
-
+    public TuesdayBaseSchema schema()
+        {
+        return this.table().schema();
+        }
     @Override
-    public abstract TuesdayBaseSchema schema();
-
-    @Override
-    public abstract TuesdayBaseResource resource();
+    public TuesdayBaseResource resource()
+        {
+        return this.table().resource();
+        }
 
     @Override
     public Linked linked()
@@ -152,4 +192,7 @@ extends TuesdayBaseNameEntity
                 }
             };
         }
+
+    @Override
+    public TuesdayOgsaColumn ogsa(){return null;}
     }

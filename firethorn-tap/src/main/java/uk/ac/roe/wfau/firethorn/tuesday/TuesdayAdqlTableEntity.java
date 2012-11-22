@@ -24,20 +24,11 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 
 /**
  *
-        @UniqueConstraint(
-            name= TuesdayAdqlTableEntity.DB_TABLE_NAME + TuesdayBaseNameEntity.DB_PARENT_NAME_IDX,
-            columnNames = {
-                TuesdayBaseNameEntity.DB_NAME_COL,
-                TuesdayBaseNameEntity.DB_PARENT_COL,
-                }
-            )
  *
  */
 @Entity()
@@ -66,7 +57,7 @@ public class TuesdayAdqlTableEntity
 
     protected TuesdayAdqlTableEntity(TuesdayBaseTable base, TuesdayAdqlSchema schema, String name)
         {
-        super(name);
+        super(schema, name);
         this.base = base;
         this.schema = schema;
         }
@@ -146,6 +137,7 @@ public class TuesdayAdqlTableEntity
     @Override
     public void schema(TuesdayAdqlSchema schema)
         {
+        super.schema(schema);
         this.schema = schema;
         }
     @Override

@@ -24,5 +24,6 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 public interface TuesdayBaseSchema
 extends TuesdayBaseName
     {
+    public String fullname();
     public TuesdayBaseResource resource();
     }

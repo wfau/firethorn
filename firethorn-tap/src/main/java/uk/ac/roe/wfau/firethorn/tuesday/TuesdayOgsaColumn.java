@@ -24,9 +24,6 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 public interface TuesdayOgsaColumn
     extends TuesdayBaseColumn
     {
-    public String alias(); //"ogsa_column_ident"
-    public void alias(String alias);
-
-    public String fullname(); //"catalog.schema.table.column"
-
+    //public String alias(); //"ogsa_column_ident"
+    //public String fullname(); //"catalog.schema.table.column"
     }

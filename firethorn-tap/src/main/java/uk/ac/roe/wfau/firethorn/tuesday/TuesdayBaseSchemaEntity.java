@@ -20,10 +20,10 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.NamedQueries;
 
@@ -36,60 +36,37 @@ import org.hibernate.annotations.NamedQueries;
     AccessType.FIELD
     )
 @Table(
-    name = TuesdayIvoaColumnEntity.DB_TABLE_NAME,
+    name = TuesdayBaseSchemaEntity.DB_TABLE_NAME,
     uniqueConstraints={
         }
+    )
+@Inheritance(
+    strategy = InheritanceType.JOINED
     )
 @NamedQueries(
         {
         }
     )
-public class TuesdayIvoaColumnEntity
-    extends TuesdayBaseColumnEntity
-    implements TuesdayIvoaColumn
+public abstract class TuesdayBaseSchemaEntity
+    extends TuesdayBaseNameEntity
+    implements TuesdayBaseSchema
     {
-    protected static final String DB_TABLE_NAME = "TuesdayIvoaColumnEntity";
+    protected static final String DB_TABLE_NAME = "TuesdayBaseSchemaEntity";
 
-    protected TuesdayIvoaColumnEntity()
+    protected TuesdayBaseSchemaEntity()
         {
+        super();
         }
 
-    protected TuesdayIvoaColumnEntity(TuesdayIvoaTable table, String name)
+    protected TuesdayBaseSchemaEntity(String name)
         {
         super(name);
-        this.table = table;
         }
 
     @Override
-    public TuesdayIvoaColumn ogsa()
-        {
-        return this ;
-        }
+    public abstract String fullname();
 
-    @ManyToOne(
-        fetch = FetchType.EAGER,
-        targetEntity = TuesdayIvoaTableEntity.class
-        )
-    @JoinColumn(
-        name = DB_PARENT_COL,
-        unique = false,
-        nullable = false,
-        updatable = true
-        )
-    private TuesdayIvoaTable table;
     @Override
-    public TuesdayIvoaTable table()
-        {
-        return this.table;
-        }
-    @Override
-    public TuesdayIvoaSchema schema()
-        {
-        return this.table().schema();
-        }
-    @Override
-    public TuesdayIvoaResource resource()
-        {
-        return this.table().resource();
-        }
+    public abstract TuesdayBaseResource resource();
+
     }

@@ -34,6 +34,9 @@ extends TuesdayBaseName
     public String ucd();
     public void ucd(String ucd);
 
+    public String alias();    //"table_ident"
+    public String fullname(); //"catalog.schema.table"
+    
     public TuesdayOgsaTable<?> ogsa();
 
     public TuesdayBaseSchema   schema();

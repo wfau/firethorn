@@ -53,7 +53,7 @@ import org.hibernate.annotations.NamedQueries;
         }
     )
 public class TuesdayJdbcSchemaEntity
-    extends TuesdayBaseNameEntity
+    extends TuesdayBaseSchemaEntity
     implements TuesdayJdbcSchema
     {
     protected static final String DB_TABLE_NAME = "TuesdayJdbcSchemaEntity";
@@ -107,5 +107,12 @@ public class TuesdayJdbcSchemaEntity
                 return null;
                 }
             };
+        }
+
+    @Override
+    public String fullname()
+        {
+        // TODO Auto-generated method stub
+        return null;
         }
     }

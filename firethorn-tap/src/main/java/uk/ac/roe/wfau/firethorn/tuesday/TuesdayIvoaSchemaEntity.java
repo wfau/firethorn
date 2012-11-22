@@ -53,7 +53,7 @@ import org.hibernate.annotations.NamedQueries;
         }
     )
 public class TuesdayIvoaSchemaEntity
-    extends TuesdayBaseNameEntity
+    extends TuesdayBaseSchemaEntity
     implements TuesdayIvoaSchema
     {
     protected static final String DB_TABLE_NAME = "TuesdayIvoaSchemaEntity";
@@ -84,5 +84,12 @@ public class TuesdayIvoaSchemaEntity
     public TuesdayIvoaResource resource()
         {
         return this.resource;
+        }
+
+    @Override
+    public String fullname()
+        {
+        // TODO Auto-generated method stub
+        return null;
         }
     }

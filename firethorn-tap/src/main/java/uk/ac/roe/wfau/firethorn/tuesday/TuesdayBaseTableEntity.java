@@ -25,6 +25,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.NamedQueries;
@@ -53,7 +55,10 @@ extends TuesdayBaseNameEntity
     {
     protected static final String DB_TABLE_NAME = "TuesdayBaseTableEntity";
 
-    protected static final String DB_TYPE_COL = "type";
+    protected static final String DB_TYPE_COL = "" +
+    		"" +
+    		"" +
+    		"type";
     protected static final String DB_SIZE_COL = "size";
     protected static final String DB_UCD_COL  = "ucd";
 
@@ -62,9 +67,10 @@ extends TuesdayBaseNameEntity
         super();
         }
 
-    protected TuesdayBaseTableEntity(String name)
+    protected TuesdayBaseTableEntity(TuesdayBaseSchema schema, String name)
         {
         super(name);
+        this.schema = schema;
         }
 
     @Basic(fetch = FetchType.EAGER)
@@ -123,24 +129,50 @@ extends TuesdayBaseNameEntity
         {
         this.ucd = ucd;
         }
-    
+
+    @Override
+    public String alias()
+        {
+        return null ;
+        }
+    @Override
+    public String fullname()
+        {
+        StringBuilder builder = new StringBuilder();
+        builder.append(this.schema().fullname());
+        builder.append(".");
+        builder.append(this.name());
+        return builder.toString();
+        }
+
     @Override
     public abstract TuesdayOgsaTable<?> ogsa();
 
+    @ManyToOne(
+        fetch = FetchType.EAGER,
+        targetEntity = TuesdayBaseSchemaEntity.class
+        )
+    @JoinColumn(
+        name = DB_PARENT_COL,
+        unique = false,
+        nullable = false,
+        updatable = false
+        )
+    private TuesdayBaseSchema schema;
     @Override
-    public abstract TuesdayBaseSchema schema();
+    public TuesdayBaseSchema schema()
+        {
+        return this.schema;
+        }
+    protected void schema(TuesdayBaseSchema schema)
+        {
+        this.schema = schema;
+        }
 
     @Override
     public abstract TuesdayBaseResource resource();
 
-    // This implies a class hierarchy based on TuesdayBaseTableEntity
-    // With TuesdayAdqlTableEntity, TuesdayIvoaTableEntity and TuesdayJdbcTableEntity
-    // Parent column references different classes, so probably separate tables for each class.
-    // Means we will need to fudge the name/parent constraint.
-    // Alternative is to duplicate the data, with references to both base and derived classes.
-    // Or, move the name down to the derived classes.
-    // TuesdayOgsaTableEntity can be folded into TuesdayBaseTableEntity (move alias up). 
-    // @Override
+    @Override
     public Linked linked()
         {
         return new Linked()

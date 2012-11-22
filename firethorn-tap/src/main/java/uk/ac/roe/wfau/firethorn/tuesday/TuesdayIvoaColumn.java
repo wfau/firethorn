@@ -25,8 +25,11 @@ public interface TuesdayIvoaColumn
 extends TuesdayOgsaColumn
     {
     @Override
-    public TuesdayIvoaColumn ogsa();
-
+    public TuesdayOgsaColumn ogsa();
     @Override
     public TuesdayIvoaTable table();
+    @Override
+    public TuesdayIvoaSchema schema();
+    @Override
+    public TuesdayIvoaResource resource();
     }
