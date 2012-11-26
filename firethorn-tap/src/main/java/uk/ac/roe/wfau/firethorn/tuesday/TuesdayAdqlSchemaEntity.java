@@ -48,16 +48,16 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "TuesdayAdqSchema-select-parent",
-            query = "FROM TuesdayAdqSchemaEntity WHERE parent = :parent ORDER BY name asc, ident desc"
+            name  = "TuesdayAdqlSchema-select-parent",
+            query = "FROM TuesdayAdqlSchemaEntity WHERE parent = :parent ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
-            name  = "TuesdayAdqSchema-select-parent.name",
-            query = "FROM TuesdayAdqSchemaEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY name asc, ident desc"
+            name  = "TuesdayAdqlSchema-select-parent.name",
+            query = "FROM TuesdayAdqlSchemaEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
-            name  = "TuesdayAdqSchema-search-parent.text",
-            query = "FROM TuesdayAdqSchemaEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY name asc, ident desc"
+            name  = "TuesdayAdqlSchema-search-parent.text",
+            query = "FROM TuesdayAdqlSchemaEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY name asc, ident desc"
             )
         }
     )

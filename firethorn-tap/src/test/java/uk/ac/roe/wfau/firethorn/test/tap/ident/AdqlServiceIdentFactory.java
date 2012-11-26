@@ -15,25 +15,25 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.test.tap;
+package uk.ac.roe.wfau.firethorn.test.tap.ident;
 
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
-import uk.ac.roe.wfau.firethorn.mallard.AdqlJob;
-import uk.ac.roe.wfau.firethorn.mallard.AdqlJob.IdentFactory;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
+import uk.ac.roe.wfau.firethorn.mallard.AdqlService.IdentFactory;
 
 /**
  *
  *
  */
 @Component
-public class AdqlJobIdentFactory
-extends AbstractIdentFactory<AdqlJob>
-implements AdqlJob.IdentFactory
+public class AdqlServiceIdentFactory
+extends AbstractIdentFactory<AdqlService>
+implements AdqlService.IdentFactory
     {
     @Override
-    public String link(final AdqlJob entity)
+    public String link(final AdqlService entity)
         {
         return null;
         }
