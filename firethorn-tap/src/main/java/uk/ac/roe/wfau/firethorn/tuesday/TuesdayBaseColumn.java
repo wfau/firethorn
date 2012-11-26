@@ -22,7 +22,7 @@ package uk.ac.roe.wfau.firethorn.tuesday;
  *
  */
 public interface TuesdayBaseColumn
-extends TuesdayBaseName
+extends TuesdayBase
     {
     public TuesdayOgsaColumn ogsa();
 

@@ -50,7 +50,7 @@ import org.hibernate.annotations.NamedQueries;
         }
     )
 public abstract class TuesdayBaseTableEntity
-extends TuesdayBaseNameEntity
+extends TuesdayBaseEntity
     implements TuesdayBaseTable
     {
     protected static final String DB_TABLE_NAME = "TuesdayBaseTableEntity";

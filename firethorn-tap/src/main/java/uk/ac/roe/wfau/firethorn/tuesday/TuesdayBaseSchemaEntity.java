@@ -42,10 +42,10 @@ import org.hibernate.annotations.NamedQueries;
     name = TuesdayBaseSchemaEntity.DB_TABLE_NAME,
     uniqueConstraints={
         @UniqueConstraint(
-            name = TuesdayBaseSchemaEntity.DB_TABLE_NAME + TuesdayBaseNameEntity.DB_PARENT_NAME_IDX,
+            name = TuesdayBaseSchemaEntity.DB_TABLE_NAME + TuesdayBaseEntity.DB_PARENT_NAME_IDX,
             columnNames = {
-                TuesdayBaseNameEntity.DB_NAME_COL,
-                TuesdayBaseNameEntity.DB_PARENT_COL,
+                TuesdayBaseEntity.DB_NAME_COL,
+                TuesdayBaseEntity.DB_PARENT_COL,
                 }
             )
         }
@@ -58,7 +58,7 @@ import org.hibernate.annotations.NamedQueries;
         }
     )
 public abstract class TuesdayBaseSchemaEntity
-    extends TuesdayBaseNameEntity
+    extends TuesdayBaseEntity
     implements TuesdayBaseSchema
     {
     protected static final String DB_TABLE_NAME = "TuesdayBaseSchemaEntity";

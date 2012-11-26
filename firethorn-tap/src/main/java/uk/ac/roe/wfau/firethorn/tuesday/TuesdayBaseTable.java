@@ -22,7 +22,7 @@ package uk.ac.roe.wfau.firethorn.tuesday;
  *
  */
 public interface TuesdayBaseTable
-extends TuesdayBaseName
+extends TuesdayBase
     {
     
     public String type();
