@@ -23,7 +23,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
  *
  *
  */
-public interface AdqlWorkspace
+public interface FridayAdqlWorkspace
 extends Entity
     {
 

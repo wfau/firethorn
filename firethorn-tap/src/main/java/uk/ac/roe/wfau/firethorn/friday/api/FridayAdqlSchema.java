@@ -31,7 +31,7 @@ extends Entity
     public String text() ;
     public String link() ;
 
-    public AdqlWorkspace workspace() ;
+    public FridayAdqlWorkspace workspace() ;
 
     public interface Tables
         {

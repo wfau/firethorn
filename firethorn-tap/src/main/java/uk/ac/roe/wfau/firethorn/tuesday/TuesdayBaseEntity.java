@@ -34,28 +34,29 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 @Access(
     AccessType.FIELD
     )
-public class TuesdayBaseNameEntity
+public class TuesdayBaseEntity
 extends AbstractEntity
-    implements TuesdayBaseName
+    implements TuesdayBase
     {
-    protected static final String DB_NAME_COL = "tuename";
-    protected static final String DB_TEXT_COL = "tuetext";
-    protected static final String DB_BASE_COL = "tuebase";
-    protected static final String DB_PARENT_COL = "tueparent";
+    //protected static final String DB_NAME_COL = "tuename";
+    protected static final String DB_TEXT_COL = "text";
+    protected static final String DB_BASE_COL = "base";
+    protected static final String DB_PARENT_COL = "parent";
 
     protected static final String DB_NAME_IDX        = "IndexByName";
     protected static final String DB_PARENT_IDX      = "IndexByParent";
     protected static final String DB_PARENT_NAME_IDX = "IndexByParentAndName";
 
-    protected TuesdayBaseNameEntity()
+    protected TuesdayBaseEntity()
         {
         }
 
-    protected TuesdayBaseNameEntity(String name)
+    protected TuesdayBaseEntity(String name)
         {
-        this.name = name ;
+        super(name);
         }
 
+    /*
     @Basic(fetch = FetchType.EAGER)
     @Column(
         name = DB_NAME_COL,
@@ -74,7 +75,8 @@ extends AbstractEntity
         {
         this.tuename = name;
         }
-
+     */
+    
     @Basic(fetch = FetchType.LAZY)
     @Column(
         name = DB_TEXT_COL,

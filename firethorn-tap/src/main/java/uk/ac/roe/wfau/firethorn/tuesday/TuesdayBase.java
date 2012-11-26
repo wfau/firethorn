@@ -21,7 +21,7 @@ package uk.ac.roe.wfau.firethorn.tuesday;
  *
  *
  */
-public interface TuesdayBaseName
+public interface TuesdayBase
     {
     public String name();
     public void name(String name);

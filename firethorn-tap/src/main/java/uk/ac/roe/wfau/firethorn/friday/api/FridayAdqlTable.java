@@ -35,7 +35,7 @@ extends Entity
     public String ucd() ;
 
     public FridayAdqlSchema schema() ;
-    public AdqlWorkspace workspace() ;
+    public FridayAdqlWorkspace workspace() ;
 
     public interface Columns
         {

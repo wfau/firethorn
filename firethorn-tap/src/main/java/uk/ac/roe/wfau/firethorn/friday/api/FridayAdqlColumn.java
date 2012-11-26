@@ -35,7 +35,7 @@ extends Entity
     public String ucd() ;
 
     public FridayAdqlTable table() ;
-    public AdqlWorkspace workspace() ;
+    public FridayAdqlWorkspace workspace() ;
 
     public FridayOgsaColumn ogsa();
 
