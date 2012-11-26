@@ -17,13 +17,39 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+
 /**
  *
  *
  */
 public interface TuesdayAdqlColumn
-extends TuesdayBaseColumn
+extends TuesdayBaseColumn<TuesdayAdqlColumn>
     {
+    /**
+     * Identifier factory interface.
+     *
+     */
+    public static interface IdentFactory
+    extends Entity.IdentFactory<TuesdayAdqlColumn>
+        {
+        }
+
+    /**
+     * Column factory interface.
+     *
+     */
+    public static interface Factory
+    extends TuesdayBaseColumn.Factory<TuesdayAdqlTable, TuesdayAdqlColumn>
+        {
+        /**
+         * Create a new column.
+         *
+         */
+        public TuesdayAdqlColumn create(final TuesdayAdqlTable parent, final TuesdayBaseColumn<?> base, final String name);
+       
+        }
+
     @Override
     public TuesdayAdqlTable table();
     @Override
@@ -31,6 +57,6 @@ extends TuesdayBaseColumn
     @Override
     public TuesdayAdqlResource resource();
 
-    public TuesdayBaseColumn base();
+    public TuesdayBaseColumn<?> base();
 
     }

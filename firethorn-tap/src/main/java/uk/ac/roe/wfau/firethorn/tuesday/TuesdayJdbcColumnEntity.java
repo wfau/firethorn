@@ -26,6 +26,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
 /**
  *
@@ -42,13 +49,113 @@ import org.hibernate.annotations.NamedQueries;
     )
 @NamedQueries(
         {
+        @NamedQuery(
+            name  = "TuesdayJdbcColumn-select-parent",
+            query = "FROM TuesdayJdbcColumnEntity WHERE parent = :parent ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "TuesdayJdbcColumn-parent.name",
+            query = "FROM TuesdayJdbcColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "TuesdayJdbcColumn-search-parent.text",
+            query = "FROM TuesdayJdbcColumnEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident desc"
+            )
         }
     )
 public class TuesdayJdbcColumnEntity
-    extends TuesdayBaseColumnEntity
+    extends TuesdayBaseColumnEntity<TuesdayJdbcColumn>
     implements TuesdayJdbcColumn
     {
     protected static final String DB_TABLE_NAME = "TuesdayJdbcColumnEntity";
+
+    /**
+     * Column factory implementation.
+     *
+     */
+    @Repository
+    public static class Factory
+    extends AbstractFactory<TuesdayJdbcColumn>
+    implements TuesdayJdbcColumn.Factory
+        {
+
+        @Override
+        public Class<?> etype()
+            {
+            return TuesdayJdbcColumnEntity.class ;
+            }
+
+        @Override
+        @CreateEntityMethod
+        public TuesdayJdbcColumn create(final TuesdayJdbcTable parent, final String name)
+            {
+            return this.insert(
+                new TuesdayJdbcColumnEntity(
+                    parent,
+                    name
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<TuesdayJdbcColumn> select(final TuesdayJdbcTable parent)
+            {
+            return super.list(
+                super.query(
+                    "TuesdayJdbcColumn-select-parent"
+                    ).setEntity(
+                        "parent",
+                        parent
+                        )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public TuesdayJdbcColumn select(final TuesdayJdbcTable parent, final String name)
+            {
+            return super.first(
+                super.query(
+                    "TuesdayJdbcColumn-select-parent.name"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "name",
+                        name
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<TuesdayJdbcColumn> search(final TuesdayJdbcTable parent, final String text)
+            {
+            return super.iterable(
+                super.query(
+                    "TuesdayJdbcColumn-search-parent.text"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "text",
+                        searchParam(
+                            text
+                            )
+                        )
+                );
+            }
+
+        @Autowired
+        protected TuesdayJdbcColumn.IdentFactory idents ;
+
+        @Override
+        public TuesdayJdbcColumn.IdentFactory identifiers()
+            {
+            return this.idents ;
+            }
+        }
 
     protected TuesdayJdbcColumnEntity() 
         {
@@ -62,7 +169,7 @@ public class TuesdayJdbcColumnEntity
         }
 
     @Override
-    public TuesdayOgsaColumn ogsa()
+    public TuesdayOgsaColumn<?> ogsa()
         {
         return this ;
         }

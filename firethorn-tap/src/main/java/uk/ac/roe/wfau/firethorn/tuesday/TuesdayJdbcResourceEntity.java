@@ -26,6 +26,13 @@ import javax.persistence.FetchType;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
 /**
  *
@@ -40,10 +47,18 @@ import org.hibernate.annotations.NamedQueries;
     )
 @NamedQueries(
         {
+        @NamedQuery(
+            name  = "TuesdayJdbcResource-select-all",
+            query = "FROM TuesdayJdbcResourceEntity ORDER BY name asc, ident desc"
+            ),
+        @NamedQuery(
+            name  = "TuesdayJdbcResource-search-text",
+            query = "FROM TuesdayJdbcResourceEntity WHERE (name LIKE :text) ORDER BY ident desc"
+            )
         }
     )
 public class TuesdayJdbcResourceEntity
-    extends TuesdayBaseResourceEntity
+    extends TuesdayBaseResourceEntity<TuesdayJdbcSchema>
     implements TuesdayJdbcResource
     {
     protected static final String DB_TABLE_NAME = "TuesdayJdbcResourceEntity";
@@ -51,7 +66,80 @@ public class TuesdayJdbcResourceEntity
     protected static final String DB_URI_COL  = "dburi"; 
     protected static final String DB_USER_COL = "dbuser"; 
     protected static final String DB_PASS_COL = "dbpass"; 
+    
+    /**
+     * Resource factory implementation.
+     *
+     */
+    @Repository
+    public static class Factory
+    extends AbstractFactory<TuesdayJdbcResource>
+    implements TuesdayJdbcResource.Factory
+        {
 
+        @Override
+        public Class<?> etype()
+            {
+            return TuesdayJdbcResourceEntity.class ;
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<TuesdayJdbcResource> select()
+            {
+            return super.iterable(
+                super.query(
+                    "TuesdayJdbcResource-select-all"
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<TuesdayJdbcResource> search(final String text)
+            {
+            return super.iterable(
+                super.query(
+                    "TuesdayJdbcResource-search-text"
+                    ).setString(
+                        "text",
+                        searchParam(
+                            text
+                            )
+                        )
+                );
+            }
+
+        @Override
+        @CreateEntityMethod
+        public TuesdayJdbcResource  create(final String name)
+            {
+            return super.insert(
+                new TuesdayJdbcResourceEntity(
+                    name
+                    )
+                );
+            }
+
+        @Autowired
+        protected TuesdayJdbcSchema.Factory schemas;
+
+        @Override
+        public TuesdayJdbcSchema.Factory schemas()
+            {
+            return this.schemas;
+            }
+
+        @Autowired
+        protected TuesdayJdbcResource.IdentFactory idents ;
+
+        @Override
+        public TuesdayJdbcResource.IdentFactory identifiers()
+            {
+            return this.idents ;
+            }
+        }
+    
     protected TuesdayJdbcResourceEntity()
         {
         super();
@@ -120,9 +208,9 @@ public class TuesdayJdbcResourceEntity
         }
 
     @Override
-    public Schemas schemas()
+    public TuesdayJdbcResource.Schemas schemas()
         {
-        return new Schemas(){
+        return new TuesdayJdbcResource.Schemas(){
             @Override
             public Iterable<TuesdayJdbcSchema> select()
                 {

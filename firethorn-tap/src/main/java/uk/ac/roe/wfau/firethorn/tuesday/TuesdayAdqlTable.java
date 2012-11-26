@@ -17,26 +17,66 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaTable.Columns;
+
 /**
  *
  *
  */
 public interface TuesdayAdqlTable
-extends TuesdayBaseTable
+extends TuesdayBaseTable<TuesdayAdqlTable, TuesdayAdqlColumn>
     {
-    public TuesdayBaseTable base();
+    /**
+     * Identifier factory interface.
+     *
+     */
+    public static interface IdentFactory
+    extends Entity.IdentFactory<TuesdayAdqlTable>
+        {
+        }
 
+    /**
+     * Table factory interface.
+     *
+     */
+    public static interface Factory
+    extends TuesdayBaseTable.Factory<TuesdayAdqlSchema, TuesdayAdqlTable>
+        {
+        /**
+         * Create a new table.
+         *
+         */
+        public TuesdayAdqlTable create(final TuesdayAdqlSchema parent, final TuesdayBaseTable<?, ?> base, final String name);
+        
+        /**
+         * The table column factory.
+         *
+         */
+        public TuesdayAdqlColumn.Factory columns();
+        }
+
+    @Override
+    public TuesdayAdqlResource resource();
     @Override
     public TuesdayAdqlSchema schema();
     public void schema(TuesdayAdqlSchema schema);
-    @Override
-    public TuesdayAdqlResource resource();
 
-    interface Columns
+    /**
+     * The table columns.
+     * 
+     */
+    public interface Columns extends TuesdayBaseTable.Columns<TuesdayAdqlColumn>
         {
-        public Iterable<TuesdayAdqlColumn> select();
-        public TuesdayAdqlColumn select(String name);
         } 
+    @Override
     public Columns columns();
+    
+    /**
+     * The table this table is based on.
+     *
+     */
+    public TuesdayBaseTable<?,?> base();
+
 
     }

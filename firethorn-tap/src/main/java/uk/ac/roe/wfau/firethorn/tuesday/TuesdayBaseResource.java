@@ -17,12 +17,67 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+
 /**
  *
  *
  */
-public interface TuesdayBaseResource
+public interface TuesdayBaseResource<SchemaType extends TuesdayBaseSchema<SchemaType,?>>
 extends TuesdayBase
     {
+
+    /**
+     * Identifier factory interface.
+     *
+     */
+    public static interface IdentFactory
+    extends Entity.IdentFactory<TuesdayBaseResource<?>>
+        {
+        }
+
+    /**
+     * Resource factory interface.
+     *
+     */
+    public static interface Factory<ResourceType extends TuesdayBaseResource<?>>
+    extends Entity.Factory<ResourceType>
+        {
+        /**
+         * Create a new resource.
+         *
+         */
+        public ResourceType create(final String name);
+
+        /**
+         * Select all the available resources.
+         *
+         */
+        public Iterable<ResourceType> select();
+
+        /**
+         * Text search for resources (name starts with).
+         *
+         */
+        public Iterable<ResourceType> search(final String text);
+        
+        }
+
+    /**
+     * Access to the schemas for this resource.
+     * 
+     */
+    public interface Schemas<SchemaType>
+        {
+        public Iterable<SchemaType> select();
+        public SchemaType select(String name);
+        } 
+
+    /**
+     * Access to the schemas for this resource.
+     * 
+     */
+    public Schemas<SchemaType> schemas();
+
     public StringBuilder fullname();
     }

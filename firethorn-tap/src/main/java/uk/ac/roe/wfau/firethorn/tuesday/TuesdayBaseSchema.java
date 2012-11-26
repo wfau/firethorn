@@ -17,15 +17,79 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+
 /**
  *
  *
  */
-public interface TuesdayBaseSchema
+public interface TuesdayBaseSchema<SchemaType extends TuesdayBaseSchema<SchemaType, TableType>, TableType extends TuesdayBaseTable<TableType, ?>>
 extends TuesdayBase
     {
-    public StringBuilder fullname();
+    /**
+     * Identifier factory interface.
+     *
+     */
+    public static interface IdentFactory
+    extends Entity.IdentFactory<TuesdayBaseSchema<?,?>>
+        {
+        }
 
-    public TuesdayBaseResource resource();
+    /**
+     * Schema factory interface.
+     *
+     */
+    public static interface Factory<ResourceType extends TuesdayBaseResource<SchemaType>, SchemaType extends TuesdayBaseSchema<SchemaType,?>>
+    extends Entity.Factory<SchemaType>
+        {
+        /**
+         * Create a new schema.
+         *
+         */
+        public SchemaType create(final ResourceType parent, final String name);
+        
+        /**
+         * Select all the schemas from a resource.
+         *
+         */
+        public Iterable<SchemaType> select(final ResourceType parent);
+
+        /**
+         * Select a named schema from a resource.
+         *
+         */
+        public SchemaType select(final ResourceType parent, final String name);
+
+        /**
+         * Text search for schemas (name starts with).
+         *
+         */
+        public Iterable<SchemaType> search(final ResourceType parent, final String text);
+
+        }
+    
+    /**
+     * Access to our parent resource.
+     *
+     */
+    public TuesdayBaseResource<?> resource();
+
+    /**
+     * Access to the schema tables.
+     * 
+     */
+    public interface Tables<TableType>
+        {
+        public Iterable<TableType> select();
+        public TableType select(String name);
+        } 
+
+    /**
+     * Access to the schema tables.
+     * 
+     */
+    public Tables<TableType> tables();
+    
+    public StringBuilder fullname();
 
     }

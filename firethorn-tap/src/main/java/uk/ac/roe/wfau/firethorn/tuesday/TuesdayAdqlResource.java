@@ -17,20 +17,48 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+
 
 /**
  *
  *
  */
 public interface TuesdayAdqlResource
-extends TuesdayBaseResource
+extends TuesdayBaseResource<TuesdayAdqlSchema>
     {
-
-    interface Schemas
+    /**
+     * Identifier factory interface.
+     *
+     */
+    public static interface IdentFactory
+    extends Entity.IdentFactory<TuesdayAdqlResource>
         {
-        public Iterable<TuesdayAdqlSchema> select();
-        public TuesdayAdqlSchema select(String name);
+        }
+
+    /**
+     * Resource factory interface.
+     *
+     */
+    public static interface Factory
+    extends TuesdayBaseResource.Factory<TuesdayAdqlResource>
+        {
+        /**
+         * The resource schema factory.
+         *
+         */
+        public TuesdayAdqlSchema.Factory schemas();
+
+        }
+
+    /**
+     * Access to the resource schemas.
+     * 
+     */
+    public interface Schemas extends TuesdayBaseResource.Schemas<TuesdayAdqlSchema>
+        {
         } 
+    @Override
     public Schemas schemas();
 
     }

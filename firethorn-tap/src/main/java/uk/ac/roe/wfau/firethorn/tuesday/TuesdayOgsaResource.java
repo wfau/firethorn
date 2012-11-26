@@ -21,8 +21,8 @@ package uk.ac.roe.wfau.firethorn.tuesday;
  *
  *
  */
-public interface TuesdayOgsaResource
-extends TuesdayBaseResource
+public interface TuesdayOgsaResource<SchemaType extends TuesdayBaseSchema<SchemaType,?>>
+extends TuesdayBaseResource<SchemaType>
     {
 
     }

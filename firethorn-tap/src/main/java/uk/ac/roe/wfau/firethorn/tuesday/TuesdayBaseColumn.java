@@ -17,18 +17,56 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+
 /**
  *
  *
  */
-public interface TuesdayBaseColumn
+public interface TuesdayBaseColumn<ColumnType extends TuesdayBaseColumn<ColumnType>>
 extends TuesdayBase
     {
-    public TuesdayOgsaColumn ogsa();
+    /**
+     * Identifier factory interface.
+     *
+     */
+    public static interface IdentFactory
+    extends Entity.IdentFactory<TuesdayBaseColumn<?>>
+        {
+        }
 
-    public TuesdayBaseTable    table();
-    public TuesdayBaseSchema   schema();
-    public TuesdayBaseResource resource();
+    /**
+     * Column factory interface.
+     *
+     */
+    public static interface Factory<TableType extends TuesdayBaseTable<TableType, ColumnType>, ColumnType extends TuesdayBaseColumn<ColumnType>>
+    extends Entity.Factory<ColumnType>
+        {
+        /**
+         * Select all the tables from a table.
+         *
+         */
+        public Iterable<ColumnType> select(final TableType parent);
+
+        /**
+         * Select a named table from a schema.
+         *
+         */
+        public ColumnType select(final TableType parent, final String name);
+
+        /**
+         * Text search for tables (name starts with).
+         *
+         */
+        public Iterable<ColumnType> search(final TableType parent, final String text);
+
+        }
+
+    public TuesdayOgsaColumn<?> ogsa();
+
+    public TuesdayBaseTable<?,?> table();
+    public TuesdayBaseSchema<?,?> schema();
+    public TuesdayBaseResource<?> resource();
 
     public String type();
     public void type(String type);

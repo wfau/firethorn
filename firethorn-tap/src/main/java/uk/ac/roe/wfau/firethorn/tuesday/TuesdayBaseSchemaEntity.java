@@ -57,9 +57,9 @@ import org.hibernate.annotations.NamedQueries;
         {
         }
     )
-public abstract class TuesdayBaseSchemaEntity
+public abstract class TuesdayBaseSchemaEntity<SchemaType extends TuesdayBaseSchema<SchemaType, TableType>, TableType extends TuesdayBaseTable<TableType, ?>>
     extends TuesdayBaseEntity
-    implements TuesdayBaseSchema
+    implements TuesdayBaseSchema<SchemaType, TableType>
     {
     protected static final String DB_TABLE_NAME = "TuesdayBaseSchemaEntity";
 
@@ -68,7 +68,7 @@ public abstract class TuesdayBaseSchemaEntity
         super();
         }
 
-    protected TuesdayBaseSchemaEntity(TuesdayBaseResource resource, String name)
+    protected TuesdayBaseSchemaEntity(TuesdayBaseResource<SchemaType> resource, String name)
         {
         super(name);
         this.resource = resource;
@@ -84,9 +84,9 @@ public abstract class TuesdayBaseSchemaEntity
         nullable = false,
         updatable = false
         )
-    private TuesdayBaseResource resource;
+    private TuesdayBaseResource<SchemaType> resource;
     @Override
-    public TuesdayBaseResource resource()
+    public TuesdayBaseResource<SchemaType> resource()
         {
         return this.resource;
         }

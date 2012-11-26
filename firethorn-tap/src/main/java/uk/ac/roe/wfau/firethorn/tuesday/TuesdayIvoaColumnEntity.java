@@ -25,7 +25,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NamedQueries;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
 /**
  *
@@ -42,14 +49,114 @@ import org.hibernate.annotations.NamedQueries;
     )
 @NamedQueries(
         {
+        @NamedQuery(
+            name  = "TuesdayIvoaColumn-select-parent",
+            query = "FROM TuesdayIvoaColumnEntity WHERE parent = :parent ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "TuesdayIvoaColumn-parent.name",
+            query = "FROM TuesdayIvoaColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "TuesdayIvoaColumn-search-parent.text",
+            query = "FROM TuesdayIvoaColumnEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident desc"
+            )
         }
     )
 public class TuesdayIvoaColumnEntity
-    extends TuesdayBaseColumnEntity
+    extends TuesdayBaseColumnEntity<TuesdayIvoaColumn>
     implements TuesdayIvoaColumn
     {
     protected static final String DB_TABLE_NAME = "TuesdayIvoaColumnEntity";
 
+    /**
+     * Column factory implementation.
+     *
+     */
+    @Repository
+    public static class Factory
+    extends AbstractFactory<TuesdayIvoaColumn>
+    implements TuesdayIvoaColumn.Factory
+        {
+
+        @Override
+        public Class<?> etype()
+            {
+            return TuesdayIvoaColumnEntity.class ;
+            }
+
+        @Override
+        @CreateEntityMethod
+        public TuesdayIvoaColumn create(final TuesdayIvoaTable parent, final String name)
+            {
+            return this.insert(
+                new TuesdayIvoaColumnEntity(
+                    parent,
+                    name
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<TuesdayIvoaColumn> select(final TuesdayIvoaTable parent)
+            {
+            return super.list(
+                super.query(
+                    "TuesdayIvoaColumn-select-parent"
+                    ).setEntity(
+                        "parent",
+                        parent
+                        )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public TuesdayIvoaColumn select(final TuesdayIvoaTable parent, final String name)
+            {
+            return super.first(
+                super.query(
+                    "TuesdayIvoaColumn-select-parent.name"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "name",
+                        name
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<TuesdayIvoaColumn> search(final TuesdayIvoaTable parent, final String text)
+            {
+            return super.iterable(
+                super.query(
+                    "TuesdayIvoaColumn-search-parent.text"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "text",
+                        searchParam(
+                            text
+                            )
+                        )
+                );
+            }
+
+        @Autowired
+        protected TuesdayIvoaColumn.IdentFactory idents ;
+
+        @Override
+        public TuesdayIvoaColumn.IdentFactory identifiers()
+            {
+            return this.idents ;
+            }
+        }
+    
     protected TuesdayIvoaColumnEntity()
         {
         }

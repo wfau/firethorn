@@ -17,13 +17,18 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+
 /**
  *
  *
  */
 public interface TuesdayBase
+extends Entity
     {
+    @Override
     public String name();
+    @Override
     public void name(String name);
 
     public String text();

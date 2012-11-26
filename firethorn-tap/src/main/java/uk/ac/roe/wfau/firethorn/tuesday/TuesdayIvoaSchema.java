@@ -17,21 +17,49 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+
 /**
  *
  *
  */
 public interface TuesdayIvoaSchema
-extends TuesdayBaseSchema
+extends TuesdayBaseSchema<TuesdayIvoaSchema, TuesdayIvoaTable>
     {
+    /**
+     * Identifier factory interface.
+     *
+     */
+    public static interface IdentFactory
+    extends Entity.IdentFactory<TuesdayIvoaSchema>
+        {
+        }
+
+    /**
+     * Schema factory interface.
+     *
+     */
+    public static interface Factory
+    extends TuesdayBaseSchema.Factory<TuesdayIvoaResource, TuesdayIvoaSchema>
+        {
+        /**
+         * The schema table factory.
+         *
+         */
+        public TuesdayIvoaTable.Factory tables();
+        }
+    
     @Override
     public TuesdayIvoaResource resource();
 
-    public interface Tables
+    /**
+     * Access to the schema tables.
+     * 
+     */
+    public interface Tables extends TuesdayBaseSchema.Tables<TuesdayIvoaTable>
         {
-        public Iterable<TuesdayIvoaTable> select();
-        public TuesdayIvoaTable select(String name);
         } 
+    @Override
     public Tables tables();
 
     }

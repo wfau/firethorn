@@ -43,6 +43,11 @@ extends AbstractEntity
     protected static final String DB_BASE_COL = "base";
     protected static final String DB_PARENT_COL = "parent";
 
+    protected static final String DB_ALIAS_COL  = "alias";
+    protected static final String DB_TYPE_COL = "datatype" ;
+    protected static final String DB_SIZE_COL = "datasize" ;
+    protected static final String DB_UCD_COL  = "ucd"  ;
+
     protected static final String DB_NAME_IDX        = "IndexByName";
     protected static final String DB_PARENT_IDX      = "IndexByParent";
     protected static final String DB_PARENT_NAME_IDX = "IndexByParentAndName";

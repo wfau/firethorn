@@ -58,15 +58,11 @@ import org.hibernate.annotations.NamedQueries;
         {
         }
     )
-public class TuesdayBaseColumnEntity
+public abstract class TuesdayBaseColumnEntity<ColumnType extends TuesdayBaseColumn<ColumnType>>
 extends TuesdayBaseEntity
-    implements TuesdayBaseColumn
+    implements TuesdayBaseColumn<ColumnType>
     {
     protected static final String DB_TABLE_NAME = "TuesdayBaseColumnEntity";
-    protected static final String DB_ALIAS_COL  = "alias";
-    protected static final String DB_TYPE_COL   = "type";
-    protected static final String DB_SIZE_COL   = "size";
-    protected static final String DB_UCD_COL    = "ucd";
 
     protected TuesdayBaseColumnEntity()
         {
@@ -159,19 +155,19 @@ extends TuesdayBaseEntity
         nullable = false,
         updatable = true
         )
-    private TuesdayBaseTable table;
+    private TuesdayBaseTable<?,ColumnType> table;
     @Override
-    public TuesdayBaseTable table()
+    public TuesdayBaseTable<?,ColumnType> table()
         {
         return this.table;
         }
     @Override
-    public TuesdayBaseSchema schema()
+    public TuesdayBaseSchema<?,?> schema()
         {
         return this.table().schema();
         }
     @Override
-    public TuesdayBaseResource resource()
+    public TuesdayBaseResource<?> resource()
         {
         return this.table().resource();
         }
@@ -191,5 +187,6 @@ extends TuesdayBaseEntity
         }
 
     @Override
-    public TuesdayOgsaColumn ogsa(){return null;}
+    public abstract TuesdayOgsaColumn<?> ogsa();
+    
     }

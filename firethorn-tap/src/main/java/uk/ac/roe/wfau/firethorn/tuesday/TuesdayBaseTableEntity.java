@@ -28,6 +28,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.NamedQueries;
 
@@ -40,7 +41,15 @@ import org.hibernate.annotations.NamedQueries;
     AccessType.FIELD
     )
 @Table(
-    name = TuesdayBaseTableEntity.DB_TABLE_NAME
+    name = TuesdayBaseTableEntity.DB_TABLE_NAME,
+    uniqueConstraints={
+        @UniqueConstraint(
+            columnNames = {
+                TuesdayBaseEntity.DB_NAME_COL,
+                TuesdayBaseEntity.DB_PARENT_COL,
+                }
+            )
+        }
     )
 @Inheritance(
     strategy = InheritanceType.JOINED
@@ -49,25 +58,18 @@ import org.hibernate.annotations.NamedQueries;
         {
         }
     )
-public abstract class TuesdayBaseTableEntity
+public abstract class TuesdayBaseTableEntity<TableType extends TuesdayBaseTable<TableType, ColumnType>, ColumnType extends TuesdayBaseColumn<ColumnType>>
 extends TuesdayBaseEntity
-    implements TuesdayBaseTable
+    implements TuesdayBaseTable<TableType, ColumnType>
     {
     protected static final String DB_TABLE_NAME = "TuesdayBaseTableEntity";
-
-    protected static final String DB_TYPE_COL = "" +
-    		"" +
-    		"" +
-    		"type";
-    protected static final String DB_SIZE_COL = "size";
-    protected static final String DB_UCD_COL  = "ucd";
 
     protected TuesdayBaseTableEntity()
         {
         super();
         }
 
-    protected TuesdayBaseTableEntity(TuesdayBaseSchema schema, String name)
+    protected TuesdayBaseTableEntity(TuesdayBaseSchema<?,TableType> schema, String name)
         {
         super(name);
         this.schema = schema;
@@ -143,7 +145,7 @@ extends TuesdayBaseEntity
         }
 
     @Override
-    public abstract TuesdayOgsaTable<?> ogsa();
+    public abstract TuesdayOgsaTable<?, ?> ogsa();
 
     @ManyToOne(
         fetch = FetchType.EAGER,
@@ -155,19 +157,19 @@ extends TuesdayBaseEntity
         nullable = false,
         updatable = false
         )
-    private TuesdayBaseSchema schema;
+    private TuesdayBaseSchema<?, TableType> schema;
     @Override
-    public TuesdayBaseSchema schema()
+    public TuesdayBaseSchema<?, TableType> schema()
         {
         return this.schema;
         }
-    protected void schema(TuesdayBaseSchema schema)
+    protected void schema(TuesdayBaseSchema<?, TableType> schema)
         {
         this.schema = schema;
         }
 
     @Override
-    public abstract TuesdayBaseResource resource();
+    public abstract TuesdayBaseResource<?> resource();
 
     @Override
     public Linked linked()

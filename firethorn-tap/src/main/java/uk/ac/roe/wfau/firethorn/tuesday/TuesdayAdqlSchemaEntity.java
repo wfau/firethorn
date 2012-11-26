@@ -25,7 +25,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NamedQueries;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
 /**
  *
@@ -36,19 +43,126 @@ import org.hibernate.annotations.NamedQueries;
     AccessType.FIELD
     )
 @Table(
-    name = TuesdayAdqlSchemaEntity.DB_TABLE_NAME,
-    uniqueConstraints={
-        }
+    name = TuesdayAdqlSchemaEntity.DB_TABLE_NAME
     )
 @NamedQueries(
         {
+        @NamedQuery(
+            name  = "TuesdayAdqSchema-select-parent",
+            query = "FROM TuesdayAdqSchemaEntity WHERE parent = :parent ORDER BY name asc, ident desc"
+            ),
+        @NamedQuery(
+            name  = "TuesdayAdqSchema-select-parent.name",
+            query = "FROM TuesdayAdqSchemaEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY name asc, ident desc"
+            ),
+        @NamedQuery(
+            name  = "TuesdayAdqSchema-search-parent.text",
+            query = "FROM TuesdayAdqSchemaEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY name asc, ident desc"
+            )
         }
     )
 public class TuesdayAdqlSchemaEntity
-extends TuesdayBaseSchemaEntity
-implements TuesdayAdqlSchema
+    extends TuesdayBaseSchemaEntity<TuesdayAdqlSchema, TuesdayAdqlTable>
+    implements TuesdayAdqlSchema
     {
     protected static final String DB_TABLE_NAME = "TuesdayAdqlSchemaEntity";
+
+    /**
+     * Schema factory implementation.
+     *
+     */
+    @Repository
+    public static class Factory
+    extends AbstractFactory<TuesdayAdqlSchema>
+    implements TuesdayAdqlSchema.Factory
+        {
+
+        @Override
+        public Class<?> etype()
+            {
+            return TuesdayAdqlSchemaEntity.class ;
+            }
+
+        @Override
+        @CreateEntityMethod
+        public TuesdayAdqlSchema create(TuesdayAdqlResource parent, String name)
+            {
+            return this.insert(
+                new TuesdayAdqlSchemaEntity(
+                    parent,
+                    name
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<TuesdayAdqlSchema> select(TuesdayAdqlResource parent)
+            {
+            return super.list(
+                super.query(
+                    "TuesdayAdqlSchema-select-parent"
+                    ).setEntity(
+                        "parent",
+                        parent
+                        )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public TuesdayAdqlSchema select(TuesdayAdqlResource parent, String name)
+            {
+            return super.first(
+                super.query(
+                    "TuesdayAdqlSchema-select-parent.name"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "name",
+                        name
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<TuesdayAdqlSchema> search(TuesdayAdqlResource parent, String text)
+            {
+            return super.iterable(
+                super.query(
+                    "TuesdayAdqlSchema-search-parent.text"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "text",
+                        searchParam(
+                            text
+                            )
+                        )
+                );
+            }
+        
+        @Autowired
+        protected TuesdayAdqlTable.Factory tables;
+
+        @Override
+        public TuesdayAdqlTable.Factory tables()
+            {
+            return this.tables;
+            }
+
+        @Autowired
+        protected TuesdayAdqlSchema.IdentFactory identifiers ;
+
+        @Override
+        public TuesdayAdqlSchema.IdentFactory identifiers()
+            {
+            return this.identifiers ;
+            }
+        }
 
     protected TuesdayAdqlSchemaEntity()
         {
@@ -79,9 +193,9 @@ implements TuesdayAdqlSchema
         }
 
     @Override
-    public Tables tables()
+    public TuesdayAdqlSchema.Tables tables()
         {
-        return new Tables()
+        return new TuesdayAdqlSchema.Tables()
             {
             @Override
             public Iterable<TuesdayAdqlTable> select()

@@ -26,16 +26,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
 /**
  *
-        @UniqueConstraint(
-            name = TuesdayIvoaTableEntity.DB_TABLE_NAME + TuesdayBaseNameEntity.DB_PARENT_NAME_IDX,
-            columnNames = {
-                TuesdayBaseNameEntity.DB_NAME_COL,
-                TuesdayBaseNameEntity.DB_PARENT_COL,
-                }
-            )
  *
  */
 @Entity()
@@ -49,14 +49,123 @@ import org.hibernate.annotations.NamedQueries;
     )
 @NamedQueries(
         {
+        @NamedQuery(
+            name  = "TuesdayIvoaTable-select-parent",
+            query = "FROM TuesdayIvoaTableEntity WHERE parent = :parent ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "TuesdayIvoaTable-select-parent.name",
+            query = "FROM TuesdayIvoaTableEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "TuesdayIvoaTable-search-parent.text",
+            query = "FROM TuesdayIvoaTableEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident desc"
+            )
         }
     )
 public class TuesdayIvoaTableEntity
-extends TuesdayBaseTableEntity
+    extends TuesdayBaseTableEntity<TuesdayIvoaTable, TuesdayIvoaColumn>
     implements TuesdayIvoaTable
     {
     protected static final String DB_TABLE_NAME = "TuesdayIvoaTableEntity";
 
+    /**
+     * Table factory implementation.
+     *
+     */
+    @Repository
+    public static class Factory
+    extends AbstractFactory<TuesdayIvoaTable>
+    implements TuesdayIvoaTable.Factory
+        {
+
+        @Override
+        public Class<?> etype()
+            {
+            return TuesdayIvoaTableEntity.class ;
+            }
+
+        @Override
+        @CreateEntityMethod
+        public TuesdayIvoaTable create(final TuesdayIvoaSchema parent, final String name)
+            {
+            return this.insert(
+                new TuesdayIvoaTableEntity(
+                    parent,
+                    name
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<TuesdayIvoaTable> select(final TuesdayIvoaSchema parent)
+            {
+            return super.list(
+                super.query(
+                    "TuesdayIvoaTable-select-parent"
+                    ).setEntity(
+                        "parent",
+                        parent
+                        )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public TuesdayIvoaTable select(final TuesdayIvoaSchema parent, final String name)
+            {
+            return super.first(
+                super.query(
+                    "TuesdayIvoaTable-select-parent.name"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "name",
+                        name
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<TuesdayIvoaTable> search(final TuesdayIvoaSchema parent, final String text)
+            {
+            return super.iterable(
+                super.query(
+                    "TuesdayIvoaTable-search-parent.text"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "text",
+                        searchParam(
+                            text
+                            )
+                        )
+                );
+            }
+
+        @Autowired
+        protected TuesdayIvoaColumn.Factory columns;
+
+        @Override
+        public TuesdayIvoaColumn.Factory columns()
+            {
+            return this.columns;
+            }
+
+        @Autowired
+        protected TuesdayIvoaTable.IdentFactory identifiers ;
+
+        @Override
+        public TuesdayIvoaTable.IdentFactory identifiers()
+            {
+            return this.identifiers ;
+            }
+        }
+    
     protected TuesdayIvoaTableEntity()
         {
         super();
@@ -91,6 +200,12 @@ extends TuesdayBaseTableEntity
         }
 
     @Override
+    public TuesdayOgsaTable<TuesdayIvoaTable, TuesdayIvoaColumn> ogsa()
+        {
+        return this;
+        }
+
+    @Override
     public TuesdayIvoaTable.Columns columns()
         {
         return new TuesdayIvoaTable.Columns()
@@ -98,31 +213,23 @@ extends TuesdayBaseTableEntity
             @Override
             public Iterable<TuesdayIvoaColumn> select()
                 {
+                // TODO Auto-generated method stub
                 return null;
                 }
 
             @Override
             public TuesdayIvoaColumn select(String name)
                 {
+                // TODO Auto-generated method stub
                 return null;
                 }
             };
         }
-
+    
     @Override
     public String alias()
         {
+        // TODO Auto-generated method stub
         return null;
-        }
-
-    @Override
-    public void alias(String alias)
-        {
-        }
-
-    @Override
-    public TuesdayOgsaTable<TuesdayIvoaColumn> ogsa()
-        {
-        return this;
         }
     }
