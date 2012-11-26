@@ -17,11 +17,16 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
@@ -36,6 +41,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
  *
  *
  */
+@Slf4j
 @Entity()
 @Access(
     AccessType.FIELD
@@ -191,5 +197,20 @@ public class TuesdayJdbcResourceEntity
         {
         // TODO Auto-generated method stub
         return null;
+        }
+
+    public void inport(DatabaseMetaData metadata)
+        {
+        try {
+            log.debug("inport(DatabaseMetaData)");
+            log.debug("Database [{}]", metadata.getDatabaseProductName());
+            }
+        catch (final SQLException ouch)
+            {
+            log.error("Error reading database metadata", ouch);
+            throw new RuntimeException(
+                ouch
+                );
+            }
         }
     }

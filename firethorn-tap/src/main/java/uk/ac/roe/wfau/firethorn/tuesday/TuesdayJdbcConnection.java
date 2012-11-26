@@ -92,4 +92,10 @@ public interface TuesdayJdbcConnection
      */
     public void close();
 
+    /**
+     * Update our resource from our connection metadata.
+     * 
+     */
+    public void inport();
+
     }

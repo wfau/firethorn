@@ -132,6 +132,7 @@ public class TuesdayJdbcResourceTestCase
             resource.connection().metadata().getDatabaseProductName()
             );
         }
+
     @Test
     public void test002()
     throws Exception
@@ -161,6 +162,7 @@ public class TuesdayJdbcResourceTestCase
             resource.connection().metadata().getDatabaseProductName()
             );
         }
+
     @Test
     public void test003()
     throws Exception
@@ -189,5 +191,34 @@ public class TuesdayJdbcResourceTestCase
             "Microsoft SQL Server",
             resource.connection().metadata().getDatabaseProductName()
             );
+        }
+
+    @Test
+    public void test004()
+    throws Exception
+        {
+        assertNotNull(
+            factories()
+            );
+        TuesdayJdbcResource resource = factories().jdbc().resources().create(
+            unique("resource")
+            );
+        assertNotNull(
+            resource
+            );
+        //
+        // Use the local PostgreSQL database.
+        resource.connection().url(
+            "spring:PgSqlLocalTest"
+            );
+        assertNotNull(
+            resource.connection().open()
+            );
+        assertNotNull(
+            resource.connection().metadata()
+            );
+        
+        resource.connection().inport();
+
         }
     }

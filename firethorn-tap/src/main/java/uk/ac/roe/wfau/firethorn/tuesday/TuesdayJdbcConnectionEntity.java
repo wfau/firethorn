@@ -60,18 +60,18 @@ public class TuesdayJdbcConnectionEntity
         {
         }
 
-    protected TuesdayJdbcConnectionEntity(TuesdayBaseEntity parent)
+    protected TuesdayJdbcConnectionEntity(TuesdayJdbcResourceEntity parent)
         {
         this.parent = parent;
         }
 
     @Parent
-    protected TuesdayBaseEntity parent;
-    protected TuesdayBaseEntity getParent()
+    protected TuesdayJdbcResourceEntity parent;
+    protected TuesdayJdbcResourceEntity getParent()
         {
         return this.parent;
         }
-    protected void setParent(TuesdayBaseEntity parent)
+    protected void setParent(TuesdayJdbcResourceEntity parent)
         {
         this.parent = parent;
         }
@@ -359,5 +359,13 @@ public class TuesdayJdbcConnectionEntity
                 this.local.remove();
                 }
             }
+        }
+
+    @Override
+    public void inport()
+        {
+        this.parent.inport(
+            this.metadata()
+            );
         }
     }
