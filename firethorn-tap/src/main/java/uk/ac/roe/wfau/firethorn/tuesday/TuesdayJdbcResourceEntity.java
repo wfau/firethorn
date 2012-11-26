@@ -214,15 +214,25 @@ public class TuesdayJdbcResourceEntity
             @Override
             public Iterable<TuesdayJdbcSchema> select()
                 {
-                // TODO Auto-generated method stub
-                return null;
+                return factories().jdbc().schemas().select(
+                    TuesdayJdbcResourceEntity.this
+                    );
                 }
             @Override
             public TuesdayJdbcSchema select(String name)
                 {
-                // TODO Auto-generated method stub
-                return null;
+                return factories().jdbc().schemas().select(
+                    TuesdayJdbcResourceEntity.this,
+                    name
+                    );
                 }
             };
+        }
+
+    @Override
+    public String link()
+        {
+        // TODO Auto-generated method stub
+        return null;
         }
     }

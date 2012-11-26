@@ -17,27 +17,34 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-
 /**
- * SpringThings implementation.
- *
+ * Our ADQL component factories
  *
  */
-public class TusdaySpringThingsImpl
-    implements TusdaySpringThings
+public interface TuesdayAdqlFactories
     {
     /**
-     * Our Spring ApplicationContext.
+     * Our resource factory.
      *
      */
-    @Autowired
-    private ApplicationContext context ;
+    public TuesdayAdqlResource.Factory resources();
 
-    @Override
-    public ApplicationContext context()
-        {
-        return this.context ;
-        }
+    /**
+     * Our schema factory.
+     *
+     */
+    public TuesdayAdqlSchema.Factory schemas();
+
+    /**
+     * Our table factory.
+     *
+     */
+    public TuesdayAdqlTable.Factory tables();
+
+    /**
+     * Our column factory.
+     *
+     */
+    public TuesdayAdqlColumn.Factory  columns();
+
     }

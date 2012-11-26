@@ -34,7 +34,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 @Access(
     AccessType.FIELD
     )
-public class TuesdayBaseEntity
+public abstract class TuesdayBaseEntity
 extends AbstractEntity
     implements TuesdayBase
     {
@@ -61,6 +61,15 @@ extends AbstractEntity
         super(name);
         }
 
+    /**
+     * Access to our TuesdayFactories singleton instance.
+     *
+     */
+    public TuesdayFactories factories()
+        {
+        return TuesdayFactoriesImpl.factories();
+        }
+    
     /*
     @Basic(fetch = FetchType.EAGER)
     @Column(
@@ -102,9 +111,5 @@ extends AbstractEntity
         }
 
     @Override
-    public String link()
-        {
-        // TODO Auto-generated method stub
-        return null;
-        }
+    public abstract String link();
     }

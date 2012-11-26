@@ -17,34 +17,18 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import org.springframework.context.ApplicationContext;
+
 /**
- * Our IVOA component factories
+ * A global instance to handle Spring related things.
  *
  */
-public interface TuesdayIvoaFactory
+public interface TuesdaySpringThings
     {
     /**
-     * Our resource factory.
+     * The current ApplicationContext.
      *
      */
-    public TuesdayIvoaResource.Factory resources();
-
-    /**
-     * Our schema factory.
-     *
-     */
-    public TuesdayIvoaSchema.Factory schemas();
-
-    /**
-     * Our table factory.
-     *
-     */
-    public TuesdayIvoaTable.Factory tables();
-
-    /**
-     * Our column factory.
-     *
-     */
-    public TuesdayIvoaColumn.Factory  columns();
+    public ApplicationContext context();
 
     }

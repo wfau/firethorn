@@ -21,24 +21,36 @@ package uk.ac.roe.wfau.firethorn.tuesday;
  * Our component factories.
  *
  */
-public interface TuesdayFactory
+public interface TuesdayFactories
     {
+    /**
+     * Our Spring related things.
+     *
+     */
+    public TuesdaySpringThings spring();
+
+    /**
+     * Our Hibernate related things.
+     *
+     */
+    public TuesdayHibernateThings hibernate();
+
     /**
      * Our ADQL component factories.
      *
      */
-    public TuesdayAdqlFactory adql();
+    public TuesdayAdqlFactories adql();
 
     /**
      * Our IVOA component factories.
      *
      */
-    public TuesdayIvoaFactory ivoa();
+    public TuesdayIvoaFactories ivoa();
 
     /**
      * Our JDBC component factories.
      *
      */
-    public TuesdayJdbcFactory jdbc();
+    public TuesdayJdbcFactories jdbc();
 
     }

@@ -17,37 +17,34 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 /**
- *
+ * Our IVOA component factories
  *
  */
-public class TuesdayFactoryImpl
-    implements TuesdayFactory
+public interface TuesdayIvoaFactories
     {
+    /**
+     * Our resource factory.
+     *
+     */
+    public TuesdayIvoaResource.Factory resources();
 
-    @Autowired
-    private TuesdayAdqlFactory adql;
-    @Override
-    public TuesdayAdqlFactory adql()
-        {
-        return this.adql;
-        }
+    /**
+     * Our schema factory.
+     *
+     */
+    public TuesdayIvoaSchema.Factory schemas();
 
-    @Autowired
-    private TuesdayIvoaFactory ivoa;
-    @Override
-    public TuesdayIvoaFactory ivoa()
-        {
-        return this.ivoa;
-        }
+    /**
+     * Our table factory.
+     *
+     */
+    public TuesdayIvoaTable.Factory tables();
 
-    @Autowired
-    private TuesdayJdbcFactory jdbc;
-    @Override
-    public TuesdayJdbcFactory jdbc()
-        {
-        return this.jdbc;
-        }
+    /**
+     * Our column factory.
+     *
+     */
+    public TuesdayIvoaColumn.Factory  columns();
+
     }

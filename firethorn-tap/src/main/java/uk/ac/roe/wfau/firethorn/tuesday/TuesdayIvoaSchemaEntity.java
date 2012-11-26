@@ -200,15 +200,25 @@ public class TuesdayIvoaSchemaEntity
             @Override
             public Iterable<TuesdayIvoaTable> select()
                 {
-                // TODO Auto-generated method stub
-                return null;
+                return factories().ivoa().tables().select(
+                    TuesdayIvoaSchemaEntity.this
+                    );
                 }
             @Override
             public TuesdayIvoaTable select(String name)
                 {
-                // TODO Auto-generated method stub
-                return null;
+                return factories().ivoa().tables().select(
+                    TuesdayIvoaSchemaEntity.this,
+                    name
+                    );
                 }
             };
+        }
+
+    @Override
+    public String link()
+        {
+        // TODO Auto-generated method stub
+        return null;
         }
     }

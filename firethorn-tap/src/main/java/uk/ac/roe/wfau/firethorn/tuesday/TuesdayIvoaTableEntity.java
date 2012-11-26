@@ -213,21 +213,31 @@ public class TuesdayIvoaTableEntity
             @Override
             public Iterable<TuesdayIvoaColumn> select()
                 {
-                // TODO Auto-generated method stub
-                return null;
+                return factories().ivoa().columns().select(
+                    TuesdayIvoaTableEntity.this
+                    );
                 }
 
             @Override
             public TuesdayIvoaColumn select(String name)
                 {
-                // TODO Auto-generated method stub
-                return null;
+                return factories().ivoa().columns().select(
+                    TuesdayIvoaTableEntity.this,
+                    name
+                    );
                 }
             };
         }
     
     @Override
     public String alias()
+        {
+        // TODO Auto-generated method stub
+        return null;
+        }
+
+    @Override
+    public String link()
         {
         // TODO Auto-generated method stub
         return null;

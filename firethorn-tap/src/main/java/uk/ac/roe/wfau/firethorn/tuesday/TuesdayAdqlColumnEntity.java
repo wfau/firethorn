@@ -217,4 +217,11 @@ public class TuesdayAdqlColumnEntity
         {
         return base().ogsa();
         }
+
+    @Override
+    public String link()
+        {
+        // TODO Auto-generated method stub
+        return null;
+        }
     }

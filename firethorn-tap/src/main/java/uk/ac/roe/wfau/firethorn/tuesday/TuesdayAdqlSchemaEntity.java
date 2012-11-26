@@ -200,15 +200,25 @@ public class TuesdayAdqlSchemaEntity
             @Override
             public Iterable<TuesdayAdqlTable> select()
                 {
-                // TODO Auto-generated method stub
-                return null;
+                return factories().adql().tables().select(
+                    TuesdayAdqlSchemaEntity.this
+                    );
                 }
             @Override
             public TuesdayAdqlTable select(String name)
                 {
-                // TODO Auto-generated method stub
-                return null;
+                return factories().adql().tables().select(
+                    TuesdayAdqlSchemaEntity.this,
+                    name
+                    );
                 }
             };
+        }
+
+    @Override
+    public String link()
+        {
+        // TODO Auto-generated method stub
+        return null;
         }
     }

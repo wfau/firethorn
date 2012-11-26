@@ -200,4 +200,11 @@ public class TuesdayJdbcColumnEntity
         {
         return this.table().resource();
         }
+
+    @Override
+    public String link()
+        {
+        // TODO Auto-generated method stub
+        return null;
+        }
     }

@@ -213,20 +213,30 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
             @Override
             public Iterable<TuesdayJdbcColumn> select()
                 {
-                // TODO Auto-generated method stub
-                return null;
+                return factories().jdbc().columns().select(
+                    TuesdayJdbcTableEntity.this
+                    );
                 }
             @Override
             public TuesdayJdbcColumn select(String name)
                 {
-                // TODO Auto-generated method stub
-                return null;
+                return factories().jdbc().columns().select(
+                    TuesdayJdbcTableEntity.this,
+                    name
+                    );
                 }
             };
         }
 
     @Override
     public String alias()
+        {
+        // TODO Auto-generated method stub
+        return null;
+        }
+
+    @Override
+    public String link()
         {
         // TODO Auto-generated method stub
         return null;

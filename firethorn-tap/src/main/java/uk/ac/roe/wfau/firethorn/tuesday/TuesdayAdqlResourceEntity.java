@@ -147,15 +147,25 @@ extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
             @Override
             public Iterable<TuesdayAdqlSchema> select()
                 {
-                // TODO Auto-generated method stub
-                return null;
+                return factories().adql().schemas().select(
+                    TuesdayAdqlResourceEntity.this
+                    );
                 }
             @Override
             public TuesdayAdqlSchema select(String name)
                 {
-                // TODO Auto-generated method stub
-                return null;
+                return factories().adql().schemas().select(
+                    TuesdayAdqlResourceEntity.this,
+                    name
+                    );
                 }
             };
+        }
+
+    @Override
+    public String link()
+        {
+        // TODO Auto-generated method stub
+        return null;
         }
     }

@@ -21,7 +21,7 @@ package uk.ac.roe.wfau.firethorn.tuesday;
  * Our JDBC component factories
  *
  */
-public interface TuesdayJdbcFactory
+public interface TuesdayJdbcFactories
     {
     /**
      * Our resource factory.
