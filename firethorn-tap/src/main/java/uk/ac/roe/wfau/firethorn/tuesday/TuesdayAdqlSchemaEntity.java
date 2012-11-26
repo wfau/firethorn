@@ -55,15 +55,15 @@ implements TuesdayAdqlSchema
         super();
         }
 
-    protected TuesdayAdqlSchemaEntity(TuesdayAdqlCatalog catalog, String name)
+    protected TuesdayAdqlSchemaEntity(TuesdayAdqlResource resource, String name)
         {
-        super(catalog, name);
-        this.catalog = catalog;
+        super(resource, name);
+        this.resource = resource;
         }
     
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = TuesdayAdqlCatalogEntity.class
+        targetEntity = TuesdayAdqlResourceEntity.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,
@@ -71,16 +71,11 @@ implements TuesdayAdqlSchema
         nullable = false,
         updatable = true
         )
-    private TuesdayAdqlCatalog catalog;
-    @Override
-    public TuesdayAdqlCatalog catalog()
-        {
-        return this.catalog;
-        }
+    private TuesdayAdqlResource resource;
     @Override
     public TuesdayAdqlResource resource()
         {
-        return this.catalog.resource();
+        return this.resource;
         }
 
     @Override

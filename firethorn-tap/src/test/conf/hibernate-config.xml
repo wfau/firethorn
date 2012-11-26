@@ -79,25 +79,21 @@
                 <value>uk.ac.roe.wfau.firethorn.friday.impl.FridayJdbcCatalogEntity</value>
 
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResourceEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlCatalogEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchemaEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTableEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumnEntity</value>
 
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaResourceEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaCatalogEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaSchemaEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaTableEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaColumnEntity</value>
 
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseResourceEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseCatalogEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseSchemaEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTableEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseColumnEntity</value>
 
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResourceEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcCatalogEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchemaEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTableEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumnEntity</value>

@@ -141,11 +141,6 @@ public class TuesdayAdqlTableEntity
         this.schema = schema;
         }
     @Override
-    public TuesdayAdqlCatalog catalog()
-        {
-        return this.schema.catalog();
-        }
-    @Override
     public TuesdayAdqlResource resource()
         {
         return this.schema.resource();

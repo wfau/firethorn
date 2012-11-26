@@ -31,11 +31,11 @@ extends TuesdayOgsaResource
     public String pass();
     public void pass(String pass);
 
-    public interface Catalogs
+    public interface Schemas
         {
-        public Iterable<TuesdayJdbcCatalog> select();
-        public TuesdayJdbcCatalog select(String name);
+        public Iterable<TuesdayJdbcSchema> select();
+        public TuesdayJdbcSchema select(String name);
         } 
-    public Catalogs catalogs();
+    public Schemas schemas();
 
     }

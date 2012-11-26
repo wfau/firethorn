@@ -40,7 +40,6 @@ extends TuesdayBaseName
     public TuesdayOgsaTable<?> ogsa();
 
     public TuesdayBaseSchema   schema();
-    public TuesdayBaseCatalog  catalog();
     public TuesdayBaseResource resource();
 
     interface Linked

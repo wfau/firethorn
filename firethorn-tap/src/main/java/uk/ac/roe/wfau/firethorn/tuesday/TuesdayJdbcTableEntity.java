@@ -78,11 +78,6 @@ extends TuesdayBaseTableEntity
         return this.schema;
         }
     @Override
-    public TuesdayJdbcCatalog catalog()
-        {
-        return this.schema().catalog();
-        }
-    @Override
     public TuesdayJdbcResource resource()
         {
         return this.schema().resource();

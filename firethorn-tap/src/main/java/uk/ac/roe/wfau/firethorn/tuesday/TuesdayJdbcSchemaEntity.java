@@ -55,15 +55,15 @@ public class TuesdayJdbcSchemaEntity
         super();
         }
 
-    protected TuesdayJdbcSchemaEntity(TuesdayJdbcCatalog catalog, String name)
+    protected TuesdayJdbcSchemaEntity(TuesdayJdbcResource resource, String name)
         {
-        super(catalog, name);
-        this.catalog = catalog;
+        super(resource, name);
+        this.resource = resource;
         }
 
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = TuesdayJdbcCatalogEntity.class
+        targetEntity = TuesdayJdbcResourceEntity.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,
@@ -71,16 +71,11 @@ public class TuesdayJdbcSchemaEntity
         nullable = false,
         updatable = false
         )
-    private TuesdayJdbcCatalog catalog;
-    @Override
-    public TuesdayJdbcCatalog catalog()
-        {
-        return this.catalog;
-        }
+    private TuesdayJdbcResource resource;
     @Override
     public TuesdayJdbcResource resource()
         {
-        return this.catalog().resource();
+        return this.resource;
         }
 
     @Override

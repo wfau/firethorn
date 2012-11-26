@@ -89,11 +89,6 @@ public class TuesdayJdbcColumnEntity
         return this.table().schema();
         }
     @Override
-    public TuesdayJdbcCatalog catalog()
-        {
-        return this.table().catalog();
-        }
-    @Override
     public TuesdayJdbcResource resource()
         {
         return this.table().resource();

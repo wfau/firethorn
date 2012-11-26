@@ -68,15 +68,15 @@ public abstract class TuesdayBaseSchemaEntity
         super();
         }
 
-    protected TuesdayBaseSchemaEntity(TuesdayBaseCatalog catalog, String name)
+    protected TuesdayBaseSchemaEntity(TuesdayBaseResource resource, String name)
         {
         super(name);
-        this.catalog = catalog;
+        this.resource = resource;
         }
 
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = TuesdayBaseCatalogEntity.class
+        targetEntity = TuesdayBaseResourceEntity.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,
@@ -84,23 +84,16 @@ public abstract class TuesdayBaseSchemaEntity
         nullable = false,
         updatable = false
         )
-    private TuesdayBaseCatalog catalog;
+    private TuesdayBaseResource resource;
     @Override
-    public TuesdayBaseCatalog catalog()
+    public TuesdayBaseResource resource()
         {
-        return this.catalog;
+        return this.resource;
         }
-    protected void schema(TuesdayBaseCatalog catalog)
-        {
-        this.catalog = catalog;
-        }
-
-    @Override
-    public abstract TuesdayBaseResource resource();
 
     @Override
     public StringBuilder fullname()
         {
-        return this.catalog().fullname().append(".").append(this.name());
+        return new StringBuilder(this.name());
         }
     }

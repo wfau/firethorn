@@ -85,11 +85,6 @@ extends TuesdayBaseTableEntity
         return this.schema;
         }
     @Override
-    public TuesdayIvoaCatalog catalog()
-        {
-        return this.schema().catalog();
-        }
-    @Override
     public TuesdayIvoaResource resource()
         {
         return this.schema().resource();

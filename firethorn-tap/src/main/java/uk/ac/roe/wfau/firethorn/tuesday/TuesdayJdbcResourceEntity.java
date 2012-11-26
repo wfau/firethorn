@@ -120,17 +120,17 @@ public class TuesdayJdbcResourceEntity
         }
 
     @Override
-    public Catalogs catalogs()
+    public Schemas schemas()
         {
-        return new Catalogs(){
+        return new Schemas(){
             @Override
-            public Iterable<TuesdayJdbcCatalog> select()
+            public Iterable<TuesdayJdbcSchema> select()
                 {
                 // TODO Auto-generated method stub
                 return null;
                 }
             @Override
-            public TuesdayJdbcCatalog select(String name)
+            public TuesdayJdbcSchema select(String name)
                 {
                 // TODO Auto-generated method stub
                 return null;

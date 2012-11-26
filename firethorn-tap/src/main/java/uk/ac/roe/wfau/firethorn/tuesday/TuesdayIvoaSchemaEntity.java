@@ -55,15 +55,15 @@ public class TuesdayIvoaSchemaEntity
         super();
         }
 
-    protected TuesdayIvoaSchemaEntity(TuesdayIvoaCatalog catalog, String name)
+    protected TuesdayIvoaSchemaEntity(TuesdayIvoaResource resource, String name)
         {
-        super(catalog, name);
-        this.catalog = catalog;
+        super(resource, name);
+        this.resource = resource;
         }
 
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = TuesdayIvoaCatalogEntity.class
+        targetEntity = TuesdayIvoaResourceEntity.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,
@@ -71,16 +71,11 @@ public class TuesdayIvoaSchemaEntity
         nullable = false,
         updatable = false
         )
-    private TuesdayIvoaCatalog catalog;
-    @Override
-    public TuesdayIvoaCatalog catalog()
-        {
-        return this.catalog;
-        }
+    private TuesdayIvoaResource resource;
     @Override
     public TuesdayIvoaResource resource()
         {
-        return this.catalog.resource();
+        return this.resource;
         }
 
     @Override

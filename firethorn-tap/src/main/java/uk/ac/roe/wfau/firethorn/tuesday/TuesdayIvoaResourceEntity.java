@@ -100,18 +100,18 @@ public class TuesdayIvoaResourceEntity
         }
 
     @Override
-    public Catalogs catalogs()
+    public Schemas catalogs()
         {
-        return new Catalogs()
+        return new Schemas()
             {
             @Override
-            public Iterable<TuesdayIvoaCatalog> select()
+            public Iterable<TuesdayIvoaSchema> select()
                 {
                 // TODO Auto-generated method stub
                 return null;
                 }
             @Override
-            public TuesdayIvoaCatalog select(String name)
+            public TuesdayIvoaSchema select(String name)
                 {
                 // TODO Auto-generated method stub
                 return null;

@@ -26,7 +26,6 @@ extends TuesdayBaseName
     {
     public StringBuilder fullname();
 
-    public TuesdayBaseCatalog  catalog();
     public TuesdayBaseResource resource();
 
     }
