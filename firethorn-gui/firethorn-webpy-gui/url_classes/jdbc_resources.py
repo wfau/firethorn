@@ -11,8 +11,11 @@ import urllib2
 import urllib
 import traceback
 from app import session
-from helper_functions import login_helpers
+from helper_functions import session_helpers
 from datetime import datetime
+from helper_functions import string_functions
+from helper_functions import type_helpers
+string_functions = string_functions()
 
 
 class jdbc_resources:
@@ -43,12 +46,17 @@ class jdbc_resources:
         """
         
         return_html = ''
-                            
+        available_action = ""       
         if data == [] or data== None:
             return_html = "<div id='sub_item'>There was an error creating your JDBC connection</div>"
         else :
-            return_html = str(render.select_service_response('<a href=' + config.local_hostname['jdbc_resources'] + '?'+ config.get_param + '='  +  urllib2.quote(data["ident"].encode("utf8")) + '>' + data["name"] + '</a>',datetime.strptime(data["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(data["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S")))
-            return_html += "<a class='button' style='float:right' id='add_adql_view'>Add ADQL View</a>"
+            if type_helpers.isSchema(data["type"]) or type_helpers.isTable(data["type"]):
+                available_action = "<div id='toggle_expand'> Expand:" + config.available_object_actions["expand"] + "</div>" + "Add to:" + session_helpers(session).generate_workspace_selection() + config.available_object_actions["add"] 
+            elif type_helpers.isColumn(data["type"]):
+                available_action = config.available_object_actions["none"]
+            else :           
+                available_action = "<div id='toggle_expand'> Expand:" + config.available_object_actions["expand"] + "</div>" 
+            return_html = str(render.select_service_response('<a id="id_url" href=' + config.local_hostname['jdbc_resources'] + '?'+ config.get_param + '='  +  string_functions.encode(data["ident"])  + '>' + data["name"] + '</a>',datetime.strptime(data["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(data["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), config.types["JDBC connection"], available_action,type_helpers.get_img_from_type(data["type"])))
         return return_html
     
     
@@ -59,18 +67,17 @@ class jdbc_resources:
         return_value = ''
         _id = data.id
         f= ""
-        print data
+
         try:
             if _id!="":
             
-                request = urllib2.Request( urllib2.unquote(urllib2.quote(_id.encode("utf8"))).decode("utf8"), headers={"Accept" : "application/json"})
+                request = urllib2.Request(string_functions.decode(_id), headers={"Accept" : "application/json"})
                 f = urllib2.urlopen(request)
                 json_data = json.loads(f.read())
                 json_data = dict([(str(k), v) for k, v in json_data.items()])
                 if self.__validate_type(json_data["type"]):
                     if request_type == "GET":
-                        return_value = render.jdbc_connections( str(render.header(login_helpers(session).get_log_notification())), str(render.side_menu(login_helpers(session).get_menu_items_by_permissions())), str(render.footer()), str(self.__generate_html_content(json_data)))
-
+                        return_value = render.jdbc_connections( str(render.header(session_helpers(session).get_log_notification())), str(render.side_menu(session_helpers(session).get_menu_items_by_permissions())), str(render.footer()), str(self.__generate_html_content(json_data)))
                     else :
                         return_value = self.__generate_html_content(json_data) 
                         
@@ -83,7 +90,7 @@ class jdbc_resources:
                               
                 
         except Exception as e:
-            print traceback.print_exc()
+            traceback.print_exc()
             return_value = config.errors['INVALID_REQUEST']
                             
         finally:

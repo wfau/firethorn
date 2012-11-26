@@ -95,7 +95,7 @@ ul {
 		text-align:center;
 		margin-top:20px;
 		margin-bottom:5px;
-		margin-left:200px;
+		margin-left:250px;
 	}	 
 
 a:link {
@@ -128,17 +128,16 @@ a:active {
 	
 	
 #menu {
-		margin-left:30px;
+		margin-left:10px;
 		float:left;
 	}
 	
 #second_menu {
-		
+		text-align:left;
 		float:left;
 		margin-top:60px;
-		margin-left:20px;	
+		margin-left:10px;	
 	}
-
 	
 #log_notification {
 		float:right;
@@ -176,9 +175,13 @@ a:active {
 	}
 
 #vospace_area {
-	margin:0 auto;
-	text-align:center;
-	width:85%;
-	margin-top:40px;
+		margin:0 auto;
+		text-align:center;
+		width:85%;
+		margin-top:40px;
 	
-}
+	}
+
+#add_to:hover {
+    	cursor: pointer;
+    }

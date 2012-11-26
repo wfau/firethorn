@@ -4,7 +4,7 @@ Created on Sep 18, 2012
 @author: stelios
 '''
 from app import render, session
-from helper_functions import login_helpers
+from helper_functions import session_helpers
 import config
 import json
 import traceback
@@ -12,6 +12,8 @@ import urllib
 import urllib2
 import web
 from datetime import datetime
+from helper_functions.string_functions import string_functions
+string_functions = string_functions()
 
 """
 Sample Variables
@@ -132,11 +134,11 @@ class create_view:
         return formatted_json
     
         
-    def __get_jdbc_resources(self):
+    def __get_workspace_children(self):
         """
         Get all JDBC resources 
         """
-        resource_url = "http://" + config.web_services_hostname + config.get_jdbc_resources_url
+        resource_url = config.web_services_url + config.get_jdbc_resources_url
         f = ''
         json_data = []
         try :
@@ -147,7 +149,6 @@ class create_view:
         except Exception as e:
             if f!='':
                 f.close()
-            print e
             traceback.print_exc()
         return json_data
         
@@ -169,7 +170,7 @@ class create_view:
                 return_val =  json_data
                 
         except Exception:
-            print traceback.print_exc()
+            traceback.print_exc()
                 
         finally:
             if f!="":
@@ -188,7 +189,7 @@ class create_view:
         json_objects = []
         if data.id == '0':
             #json_objects = [service58]
-            json_objects = self.__get_jdbc_resources()
+            json_objects = self.__get_workspace_children()
             
         else :
             _id = data.id

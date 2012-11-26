@@ -1,3 +1,4 @@
+$def with (cur_path)
 
 <head>
 <link rel="stylesheet" type="text/css" href="static/static_vospace/styles/reset.css" />
@@ -8,17 +9,21 @@
 <link rel="stylesheet" type="text/css" href="styles/ie.css" />
 <![endif]-->
 </head>
-
 <div id = "vospace_content">
 <form id="uploader" method="post">
 <button id="home" name="home" type="button" value="Home">&nbsp;</button>
+
 <h1></h1>
 <div id="uploadresponse"></div>
 <input id="mode" name="mode" type="hidden" value="add" /> 
 <input id="currentpath" name="currentpath" type="hidden" /> 
+<input id="cur_workspace" name="cur_workspace" type="hidden" value="" /> 
+<input id="cur_parent_folder" name="cur_parent_folder" type="hidden" value=""/> 
+<input id="cur_parent_name" name="cur_name" type="hidden" value=""/> 
 <input	id="newfile" name="newfile" type="file" />
 <input	id="upload_name" name="upload_name" type="hidden" />
 <button id="upload" name="upload" type="submit" value="Upload"></button>
+<button id="import" name="import" type="button" value="Import"></button>
 <button id="newfolder" name="newfolder" type="button" value="New Folder"></button>
 <button id="grid" class="ON" type="button">&nbsp;</button>
 <button id="list" type="button">&nbsp;</button>
@@ -34,14 +39,19 @@
 	<li class="select"><a href="#select"></a></li>
 	<li class="download"><a href="#download"></a></li>
 	<li class="rename"><a href="#rename"></a></li>
+	<li class="move_up"><a href="#move_up"></a></li>
 	<li class="delete separator"><a href="#delete"></a></li>
 </ul>
 
+ 
 <script type="text/javascript" src="static/static_vospace/scripts/jquery.form-2.63.js"></script>
 <script type="text/javascript" src="static/static_vospace/scripts/jquery.splitter/jquery.splitter-1.5.1.js"></script>
 <script type="text/javascript" src="static/static_vospace/scripts/jquery.filetree/jqueryFileTree.js"></script>
 <script type="text/javascript" src="static/static_vospace/scripts/jquery.contextmenu/jquery.contextMenu-1.01.js"></script>
 <script type="text/javascript" src="static/static_vospace/scripts/jquery.impromptu-3.1.min.js"></script>
 <script type="text/javascript" src="static/static_vospace/scripts/jquery.tablesorter-2.0.5b.min.js"></script>
+<script src="static/js/jquery-ui-1.9.1.custom.js"></script>
+
 <script type="text/javascript" src="static/static_vospace/scripts/filemanager.config.js"></script>
-<script type="text/javascript" src="static/static_vospace/scripts/filemanager.js"></script></div>
+<script type="text/javascript" src="static/static_vospace/scripts/filemanager.js"></script>
+</div>

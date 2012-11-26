@@ -280,10 +280,13 @@
 #vospace_content #download span, #vospace_content .contextMenu li.download a { background-image: url(../images/disk.png); }
 #vospace_content #rename span, #vospace_content .contextMenu li.rename a { background-image: url(../images/pencil.png); }
 #vospace_content #delete span, #vospace_content .contextMenu li.delete a { background-image: url(../images/bin_closed.png); }
+#vospace_content #move_up span, #vospace_content .contextMenu li.move_up  a { background-image: url(../images/16arrow-up.png); }
+
 #vospace_content #upload span { background-image: url(../images/add.png); }
 #vospace_content #upload span.loading { background-image: url(../images/ajax-loader.gif);color:#555555;font-size:0.9em; }
 #vospace_content #parentfolder span { background-image: url(../images/parentfolder.png); }
 #vospace_content #newfolder span { background-image: url(../images/folder_add.png); }
+#vospace_content #import span { background-image: url(../images/folder_add.png); }
 #vospace_content #home span { background-image: url(../images/house.png); }
 
 /* div.jqi button { background-image: url(../images/circular/yes.png); } */

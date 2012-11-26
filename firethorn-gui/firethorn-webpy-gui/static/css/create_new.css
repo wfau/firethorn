@@ -6,25 +6,33 @@
 
 	
 #input_form_container {
-		width:700px;
-		height:172px;
+		width:500px;
+		height:400px;
 		display:block;
-		margin-left:60px;
+		margin-left:100px;
+		text-align:right;
 	}
 	
 #input_div {
 		font-size:11px;
-		color:white;
-		border: 4px solid #AFC7C7;
+		color:black;
 		width:890px;
 		min-width: 540px !important; 
-		height:220px;
-		margin:0 auto;
-		background: url("../images/page_top_img.png");
+		height:400px;
+		margin:10px auto 5px 170px;
+		
 		padding-top:20px;
-		padding-bottom: 35px;
+		padding-bottom: 15px;
 
 	}
+#input_div h2{
+	text-align:left;
+	font-style:italic;
+	margin-left:50px;
+}
+#input_div h4{
+	margin-left:50px;
+}
 
 #input_div input{
 		padding:4px 2px;
@@ -32,9 +40,8 @@
 		border:solid 1px #aacfe4;
 		width:340px;
 		height:15px;
-		display:inline;
 		margin-top:5px;
-		margin-left:10px;
+		margin-left:0px;
 	}
 
 #input_div input:hover {
@@ -81,17 +88,8 @@
 		font-size:10px;
 		font-style:italic;
 		color:gray;
-		margin-left:100px;
 	}	
 		
-#input_div	label { 
-		display: block;  /* block float the labels to left column, set a width */
-		float: left; 
-		width: 200px; 
-		padding: 0; 
-		margin-top: 10px;
-		text-align: right; 
-	}
 
 .button {
 		background: #8cbfc2; /* Old browsers */
@@ -112,7 +110,7 @@
 		text-shadow: 0 1px 1px #003547;	
 		outline:none;
 		margin-right:5px;
-		width:120px;
+		width:135px;
 		height:23px;
 	}
 

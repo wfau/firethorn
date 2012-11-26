@@ -87,14 +87,14 @@ ul li{
 	
 #container {
 		width:900px;
-		min-height:620px;
+		min-height:120px;
 		margin: 0 auto;
 		text-align:center;
 		margin-top:20px;
 		margin-bottom:5px;
-		margin-left:200px;
+		margin-left:250px;
 	}	 
-
+	
 a:link {
 	  color: #0174DF; 
 	  text-decoration: none; 
@@ -124,18 +124,18 @@ a:active {
 	}
 	
 	
+	
 #menu {
-		margin-left:30px;
+		margin-left:10px;
 		float:left;
 	}
 	
 #second_menu {
-		
+		text-align:left;
 		float:left;
 		margin-top:60px;
-		margin-left:20px;	
+		margin-left:10px;	
 	}
-
 	
 #log_notification {
 		float:right;
@@ -158,8 +158,8 @@ a:active {
 #content{
 		margin:0 auto;
 		text-align:center;
-		min-width:1200px;
-		width:1200px;
+		min-width:90%;
+		width:90%;
 		overflow:hidden;
 		
 	}
@@ -172,3 +172,7 @@ a:active {
 		margin-top:15px;
 			
 	}
+	
+#add_to:hover {
+   	cursor: pointer;
+   }

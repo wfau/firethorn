@@ -1,0 +1,182 @@
+/*
+ *
+ * Workspace CSS
+ *
+ */	
+ 
+#input_form_container {
+		width:650px;
+		height:172px;
+		display:block;
+		margin-left:120px;
+	}
+	
+#input_div {
+		font-size:11px;
+		color:white;
+		border: 4px solid #AFC7C7;
+		width:890px;
+		min-width: 540px !important; 
+		height:220px;
+		margin:0 auto;
+		background: url("../images/page_top_img.png");
+		padding-top:20px;
+		padding-bottom: 35px;
+
+	}
+
+#input_div input{
+		padding:4px 2px;
+		font-size:11px;
+		border:solid 1px #aacfe4;
+		width:320px;
+		height:15px;
+		display:inline;
+		margin-top:5px;
+		margin-left:10px;
+	}
+
+#input_div input:hover {
+		background-color:#A0C7EB;
+	}
+	
+	
+#input_div input.submit {
+		background: #8cbfc2; /* Old browsers */
+		background: -moz-linear-gradient(top, #8cbfc2 0%, #519093 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#8cbfc2), color-stop(100%,#519093)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top, #8cbfc2 0%,#519093 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top, #8cbfc2 0%,#519093 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top, #8cbfc2 0%,#519093 100%); /* IE10+ */
+		background: linear-gradient(top, #8cbfc2 0%,#519093 100%); /* W3C */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8cbfc2', endColorstr='#519093',GradientType=0 ); /* IE6-9 */
+		border: medium none;
+		border-radius: 5px 5px 5px 5px;
+		color: #FFFFFF;
+		cursor: pointer;
+		font-size:13px;
+		font-family: arial;
+		padding: 4px 10px;
+		text-shadow: 0 1px 1px #003547;	
+		outline:none;
+		float:right;
+		margin-right:5px;
+		width:100px;
+		height:24px;
+	}
+
+#input_div input.submit:hover {
+		background: none repeat scroll 0 0 #8CBFC2;
+		text-decoration: none;
+	}	
+
+
+#input_div input.submit.active {
+		text-decoration:none;
+	}	
+	
+.input_form span{
+		font-size:10px;
+		font-style:italic;
+		color:gray;
+		margin-left:100px;
+	}	
+	
+		
+#input_div	label { 
+		display: block;  /* block float the labels to left column, set a width */
+		float: left; 
+		width: 170px; 
+		padding: 0; 
+		margin-top: 10px;
+		text-align: right; 
+	}
+	
+.left-aligned {	
+		text-align:left;
+	}
+	
+		
+.right-aligned {	
+		text-align:right;
+	}
+	
+	
+	
+	
+#container {
+		width:900px;
+		min-height:120px;
+		margin: 0 auto;
+		text-align:center;
+		margin-top:20px;
+		margin-bottom:5px;
+		margin-left:250px;
+	}	 
+
+a:link {
+	  color: #0174DF; 
+	  text-decoration: none; 
+  }
+  
+a:visited {
+	  color: #0174DF; 
+	  text-decoration: none; 
+	 
+  }
+  
+a:hover { 
+	  color: #FF8000; 
+	  text-decoration: none; 
+
+  }
+  
+a:active {
+	  color: #0174DF; 
+	  text-decoration: none; 
+	
+  }
+
+
+#log_notification {
+		float:right;
+		text-align:center;
+		min-width:170px;
+		max-width: 230px;
+		margin-right:15px;
+		padding-bottom:7px;
+		height:20px;
+		color:white;
+		background:#403A3B;
+		opacity:0.4;
+		filter:alpha(opacity=40); 
+		z-index:50;
+		margin-top:11px;
+		padding-top:7px;
+				
+	}	
+
+#content{
+		margin:0 auto;
+		text-align:center;
+		min-width:90%;
+		width:90%;
+		
+	}
+	
+#error {
+		color:red;
+		text-align:center;
+		width:400px;
+		margin:0 auto;
+		margin-top:15px;
+			
+	}
+
+#vospace_area {
+	margin:0 auto;
+	text-align:center;
+	width:85%;
+	margin-top:40px;
+	
+}

@@ -4,7 +4,7 @@ Created on Sep 18, 2012
 @author: stelios
 '''
 from app import render, session
-from helper_functions import login_helpers
+from helper_functions import session_helpers
 import config
 import json
 import traceback
@@ -12,6 +12,9 @@ import urllib
 import urllib2
 import web
 from datetime import datetime
+from helper_functions.string_functions import string_functions
+string_functions = string_functions()
+
 
 class create_new:
     """
@@ -34,7 +37,7 @@ class create_new:
                      })
             else :
                 converted_dict = dict([(str(k), v) for k, v in data.items()])
-                return_html = config.local_hostname[obj_type] + '?'+ config.get_param + '='  +  urllib2.quote(converted_dict["ident"].encode("utf8"))
+                return_html = config.local_hostname[obj_type] + '?'+ config.get_param + '='  +  string_functions.encode(converted_dict["ident"])
                 
         elif obj_type == config.types['JDBC connection']:
             data = json.loads(json_data)
@@ -44,8 +47,10 @@ class create_new:
                          'Content' : "<div id='sub_item'>There was an error creating your JDBC connection</div>"
                      })
             else :
+            
+
                 converted_dict = dict([(str(k), v) for k, v in data.items()])
-                return_html = config.local_hostname[obj_type] + '?'+ config.get_param + '='  +  urllib2.quote(converted_dict["ident"].encode("utf8"))
+                return_html = config.local_hostname[obj_type] + '?'+ config.get_param + '='  +  string_functions.encode(converted_dict["ident"])
 
         else:
             return json.dumps({
@@ -69,12 +74,12 @@ class create_new:
             return True
     
     
-    def __input_validator(self, obj_name, obj_type):
+    def __input_validator(self, obj_name, obj_type, obj_url, username, password):
         """
         Validate input for create page parameters
         """
-        if obj_name!='' and obj_type!='':
-            return self.__is_length_ok(obj_name)
+        if obj_name!='' and obj_type!='' and username!='' and password!='' and obj_url!='':
+            return self.__is_length_ok(obj_name) and self.__is_length_ok(obj_url)  and self.__is_length_ok(username)  and self.__is_length_ok(password) 
         else :
             return False   
         
@@ -87,8 +92,8 @@ class create_new:
         
         data = web.input(obj_type='')
         try:
-            obj_type = urllib2.unquote(urllib2.quote(data.obj_type.encode("utf8"))).decode("utf8")
-            return render.create_new( str(render.header(login_helpers(session).get_log_notification())), str(render.side_menu(login_helpers(session).get_menu_items_by_permissions())), str(render.create_input_area(obj_type)), str(render.footer()))
+            obj_type = string_functions.decode(data.obj_type)
+            return render.create_new( str(render.header(session_helpers(session).get_log_notification())), str(render.side_menu(session_helpers(session).get_menu_items_by_permissions())), str(render.create_input_area(obj_type)), str(render.footer()))
         except Exception as e:
             return config.errors["INVALID_NETWORK_REQUEST"]
     
@@ -99,16 +104,21 @@ class create_new:
         
         """
         
-        data = web.input(obj_type='', obj_name='')
+        data = web.input(obj_type='', obj_name='', username='', password='')
         return_string = ''
         f=''
-    
+        f2 =''
         
-        obj_type = config.types[urllib2.unquote(urllib2.quote(data.obj_type.encode("utf8"))).decode("utf8")]
-        obj_name = urllib2.unquote(urllib2.quote(data.obj_name.encode("utf8"))).decode("utf8")
+        obj_type = config.types[string_functions.decode(data.obj_type)]
+        obj_name = string_functions.decode(data.obj_name)
+        obj_url = string_functions.decode(data.obj_url)
+        username = data.username
+        password = data.password
+      
         
         try:
-            if  self.__input_validator(obj_name, obj_type):
+           
+            if  self.__input_validator(obj_name, obj_type,obj_url, username, password):
                 encoded_args = urllib.urlencode({config.create_params[obj_type] : obj_name})
                 request = urllib2.Request(config.create_urls[obj_type], encoded_args, headers={"Accept" : "application/json"})
                 f = urllib2.urlopen(request)
@@ -119,15 +129,19 @@ class create_new:
                                     'Code' : -1,
                                     'Content' : config.errors['INVALID_PARAM']
                                 })
-                
+            
         except Exception:
-            print traceback.print_exc()
+            traceback.print_exc()
             if f!="":
                 f.close()
+          
+            
             return_string = json.dumps({
                                 'Code' : -1,
                                 'Content' : config.errors['INVALID_NETWORK_REQUEST']
                                 })
-            
+        if f!="":
+            f.close()
+      
         return return_string
        

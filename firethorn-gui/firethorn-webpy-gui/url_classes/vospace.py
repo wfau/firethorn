@@ -13,23 +13,30 @@ class vospace:
     Server-side URL class used to handle and serve requests for the VOSPace file management system of the OSA interface
     """
     
+    def handle_vospace_template_request(self, data):
+       
+        return json.dumps({
+          'Code' : 1,
+          'Content' : str(render.vospace(data._id))
+          })
+       
+        
+        
     def GET(self):
         """ 
         GET function 
         
         Handle an HTTP GET request
         """
-        
-        data = web.input(method="GET",mode="", showThumbs="", time="")
-        from helper_functions import filemanager
+        data = web.input(method="GET",mode="", showThumbs="", time="", _id="", workspace="", parent_folder="")
+        from helper_functions.filemanager import handler
+
         if data.mode=="":
-            return json.dumps({
-                              'Code' : 1,
-                              'Content' : str(render.vospace())
-                              })
+            web.header('Content-Type', 'application/json')
+            return self.handle_vospace_template_request(data)
         elif data.mode == "download":
             web.header('Content-Type', 'application/x-download')
-            response = filemanager.handler(data)
+            response = handler(data)
             filename = response ["filename"]
             if filename==None:
                 filename = "download"
@@ -37,7 +44,7 @@ class vospace:
             return response['file']
         else:
             web.header('Content-Type', 'application/json')
-            response = filemanager.handler(data)
+            response = handler(data)
             return json.dumps(response)
             
     def POST(self):
@@ -47,11 +54,11 @@ class vospace:
         Handle an HTTP POST request
         """
         
-        data = web.input(method="POST",mode="", showThumbs="", time="")
-        from helper_functions import filemanager
-
+        data = web.input(method="POST",mode="", showThumbs="", time="", _id="", workspace="", parent_folder="")
+        from helper_functions.filemanager import handler
+     
         if data.mode == "add":
             web.header('Content-Type', 'text/html')
-            response = filemanager.handler(data)
+            response = handler(data)
             return response
         
