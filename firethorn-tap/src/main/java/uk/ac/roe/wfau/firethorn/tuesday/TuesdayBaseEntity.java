@@ -67,7 +67,7 @@ extends AbstractEntity
      */
     public TuesdayFactories factories()
         {
-        return TuesdayFactoriesImpl.factories();
+        return TuesdayFactoriesImpl.instance();
         }
     
     /*

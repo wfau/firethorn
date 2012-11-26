@@ -60,11 +60,10 @@ extends TuesdayOgsaResource<TuesdayJdbcSchema>, TuesdayBaseResource<TuesdayJdbcS
     @Override
     public Schemas schemas();
 
-    public String uri();
-    public void uri(String uri);
-    public String user();
-    public void user(String user);
-    public String pass();
-    public void pass(String pass);
+    /**
+     * Access to our JDBC resource connection.
+     * 
+     */
+    public TuesdayJdbcConnection connection();
 
     }

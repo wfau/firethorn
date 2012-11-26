@@ -51,7 +51,7 @@ extends TestBase
 
     //
     // Local properties file.
-    Properties config = new Properties();
+    private Properties config = new Properties();
 
     public static final String CONFIG_PATH = "user.home" ;
     public static final String CONFIG_FILE = "firethorn.properties" ;

@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
  *
  */
 @Slf4j
-@Component("factories")
+@Component("monday")
 public class TuesdayFactoriesImpl
     implements TuesdayFactories
     {
@@ -35,28 +35,30 @@ public class TuesdayFactoriesImpl
      * Our global singleton instance.
      *
      */
-    static TuesdayFactories singleton = null ;
+    static TuesdayFactories instance = null ;
 
     /**
      * Access to our singleton instance.
      *
      */
-    public static TuesdayFactories factories()
+    public static TuesdayFactories instance()
         {
-        return singleton ;
+        log.debug("monday()");
+        return TuesdayFactoriesImpl.instance ;
         }
 
     /**
      * Initialise our singleton instance.
      *
      */
-    public static void factories(final TuesdayFactories factories)
+    public static void instance(final TuesdayFactories factories)
         {
-        if (singleton == null)
+        log.debug("monday(final Monday)");
+        if (TuesdayFactoriesImpl.instance == null)
             {
-            if (factories != null)
+            if (factories!= null)
                 {
-                singleton = factories;
+                TuesdayFactoriesImpl.instance = factories;
                 }
             else {
                 log.warn("Null value for TuesdayFactories initialiser");
@@ -66,7 +68,7 @@ public class TuesdayFactoriesImpl
                 }
             }
         else {
-            log.warn("TuesdayFactories instance is already set [{}]", singleton);
+            log.warn("TuesdayFactories instance is already set [{}]", TuesdayFactoriesImpl.instance);
             throw new IllegalStateException(
                 "Setting TuesdayFactories instance more than once"
                 );
@@ -79,6 +81,10 @@ public class TuesdayFactoriesImpl
      */
     private TuesdayFactoriesImpl()
         {
+        log.debug("MondayImpl()");
+        TuesdayFactoriesImpl.instance(
+            this
+            );
         }
     
     @Autowired

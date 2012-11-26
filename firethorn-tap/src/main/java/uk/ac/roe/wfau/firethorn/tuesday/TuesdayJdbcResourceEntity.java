@@ -19,10 +19,8 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.Basic;
-import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.NamedQueries;
@@ -62,10 +60,6 @@ public class TuesdayJdbcResourceEntity
     implements TuesdayJdbcResource
     {
     protected static final String DB_TABLE_NAME = "TuesdayJdbcResourceEntity";
-    
-    protected static final String DB_URI_COL  = "dburi"; 
-    protected static final String DB_USER_COL = "dbuser"; 
-    protected static final String DB_PASS_COL = "dbpass"; 
     
     /**
      * Resource factory implementation.
@@ -150,63 +144,6 @@ public class TuesdayJdbcResourceEntity
         super(name);
         }
 
-    @Basic(fetch = FetchType.EAGER)
-    @Column(
-        name = DB_URI_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String uri;
-    @Override
-    public String uri()
-        {
-        return this.uri;
-        }
-    @Override
-    public void uri(String uri)
-        {
-        this.uri = uri;
-        }
-
-    @Basic(fetch = FetchType.EAGER)
-    @Column(
-        name = DB_USER_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String user;
-    @Override
-    public String user()
-        {
-        return this.user;
-        }
-    @Override
-    public void user(String user)
-        {
-        this.user = user;
-        }
-
-    @Basic(fetch = FetchType.EAGER)
-    @Column(
-        name = DB_PASS_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String pass;
-    @Override
-    public String pass()
-        {
-        return this.pass;
-        }
-    @Override
-    public void pass(String pass)
-        {
-        this.pass = pass;
-        }
-
     @Override
     public TuesdayJdbcResource.Schemas schemas()
         {
@@ -227,6 +164,26 @@ public class TuesdayJdbcResourceEntity
                     );
                 }
             };
+        }
+
+    @Embedded
+    private TuesdayJdbcConnectionEntity connection = new TuesdayJdbcConnectionEntity(
+        this
+        );
+/*
+    protected TuesdayJdbcConnectionEntity getConnection()
+        {
+        return this.connection;
+        }
+    protected void setConnection(TuesdayJdbcConnectionEntity connection)
+        {
+        this.connection = connection;
+        }
+ */
+    @Override
+    public TuesdayJdbcConnection connection()
+        {
+        return this.connection;
         }
 
     @Override

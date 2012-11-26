@@ -97,6 +97,7 @@
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchemaEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTableEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumnEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnectionEntity</value>
 
                 <!--+
                     |
