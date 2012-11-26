@@ -36,7 +36,7 @@ import org.hibernate.annotations.NamedQueries;
     AccessType.FIELD
     )
 @Table(
-    name = TuesdayAdqlSchemaEntity.DB_TABLE_NAME,
+    name = TuesdayIvoaCatalogEntity.DB_TABLE_NAME,
     uniqueConstraints={
         }
     )
@@ -44,58 +44,42 @@ import org.hibernate.annotations.NamedQueries;
         {
         }
     )
-public class TuesdayAdqlSchemaEntity
-extends TuesdayBaseSchemaEntity
-implements TuesdayAdqlSchema
+public class TuesdayIvoaCatalogEntity
+    extends TuesdayBaseCatalogEntity
+    implements TuesdayIvoaCatalog
     {
-    protected static final String DB_TABLE_NAME = "TuesdayAdqlSchemaEntity";
+    protected static final String DB_TABLE_NAME = "TuesdayIvoaCatalogEntity";
 
-    protected TuesdayAdqlSchemaEntity()
-        {
-        super();
-        }
-
-    protected TuesdayAdqlSchemaEntity(TuesdayAdqlCatalog catalog, String name)
-        {
-        super(catalog, name);
-        this.catalog = catalog;
-        }
-    
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = TuesdayAdqlCatalogEntity.class
+        targetEntity = TuesdayIvoaResourceEntity.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,
         unique = false,
         nullable = false,
-        updatable = true
+        updatable = false
         )
-    private TuesdayAdqlCatalog catalog;
+    private TuesdayIvoaResource resource;
     @Override
-    public TuesdayAdqlCatalog catalog()
+    public TuesdayIvoaResource resource()
         {
-        return this.catalog;
-        }
-    @Override
-    public TuesdayAdqlResource resource()
-        {
-        return this.catalog.resource();
+        return this.resource;
         }
 
     @Override
-    public Tables tables()
+    public Schemas schemas()
         {
-        return new Tables()
+        return new Schemas()
             {
             @Override
-            public Iterable<TuesdayAdqlTable> select()
+            public Iterable<TuesdayIvoaSchema> select()
                 {
                 // TODO Auto-generated method stub
                 return null;
                 }
             @Override
-            public TuesdayAdqlTable select(String name)
+            public TuesdayIvoaSchema select(String name)
                 {
                 // TODO Auto-generated method stub
                 return null;

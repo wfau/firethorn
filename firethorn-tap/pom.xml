@@ -137,6 +137,17 @@
         </dependency>
 
         <!--+
+            | Mysql JDBC driver.
+            | https://dev.mysql.com/usingmysql/java/
+            +-->
+        <dependency>
+	        <groupId>mysql</groupId>
+	        <artifactId>mysql-connector-java</artifactId>
+	        <version>5.1.21</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--+
             | jTDS SQLServer JDBC driver.
             | http://jtds.sourceforge.net/
             +-->

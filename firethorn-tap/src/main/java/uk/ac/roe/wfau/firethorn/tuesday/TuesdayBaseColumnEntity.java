@@ -142,14 +142,11 @@ extends TuesdayBaseNameEntity
         {
         return "ogsa_column_ident";
         }
+
     @Override
-    public String fullname()
+    public StringBuilder fullname()
         {
-        StringBuilder builder = new StringBuilder();
-        builder.append(this.table().fullname());
-        builder.append(".");
-        builder.append(this.name());
-        return builder.toString();
+        return this.table().fullname().append(".").append(this.name());
         }
     
     @ManyToOne(

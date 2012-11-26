@@ -98,6 +98,8 @@ extends TestBase
         // Set the database connection properties.
         jdbcResource.jdbc().url(
             "spring:RoeLiveData"
+            //"spring:PgSqlLocalTest"
+            //"spring:MySqlLocalTest"
             );
         //
         // Scan the resource for catalogs.
@@ -105,7 +107,7 @@ extends TestBase
 
         //
         // Scan all the catalogs for schemas.
-        if (true)
+        if (false)
             {
             for (final JdbcCatalog jdbcCatalog : jdbcResource.catalogs().select())
                 {

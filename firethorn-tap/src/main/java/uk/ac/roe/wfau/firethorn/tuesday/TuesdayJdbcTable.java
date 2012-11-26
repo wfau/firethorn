@@ -26,6 +26,7 @@ extends TuesdayOgsaTable<TuesdayJdbcColumn>
     {
     @Override
     public TuesdayJdbcResource resource();
+    @Override
     public TuesdayJdbcCatalog catalog();
     @Override
     public TuesdayJdbcSchema schema();

@@ -43,7 +43,7 @@ import org.hibernate.annotations.NamedQueries;
         }
     )
 public class TuesdayIvoaResourceEntity
-    extends TuesdayBaseNameEntity
+    extends TuesdayBaseResourceEntity
     implements TuesdayIvoaResource
     {
     protected static final String DB_TABLE_NAME = "TuesdayIvoaResourceEntity";
@@ -100,18 +100,20 @@ public class TuesdayIvoaResourceEntity
         }
 
     @Override
-    public Schemas schemas()
+    public Catalogs catalogs()
         {
-        return new Schemas()
+        return new Catalogs()
             {
             @Override
-            public Iterable<TuesdayIvoaSchema> select()
+            public Iterable<TuesdayIvoaCatalog> select()
                 {
+                // TODO Auto-generated method stub
                 return null;
                 }
             @Override
-            public TuesdayIvoaSchema select(String name)
+            public TuesdayIvoaCatalog select(String name)
                 {
+                // TODO Auto-generated method stub
                 return null;
                 }
             };

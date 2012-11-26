@@ -26,4 +26,14 @@ extends TuesdayBaseSchema
     {
     @Override
     public TuesdayIvoaResource resource();
+    @Override
+    public TuesdayIvoaCatalog catalog();
+
+    public interface Tables
+        {
+        public Iterable<TuesdayIvoaTable> select();
+        public TuesdayIvoaTable select(String name);
+        } 
+    public Tables tables();
+
     }

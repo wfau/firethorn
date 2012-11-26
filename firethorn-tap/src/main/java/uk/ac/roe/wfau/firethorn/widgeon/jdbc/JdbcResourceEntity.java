@@ -760,6 +760,8 @@ implements JdbcResource
             public DatabaseMetaData metadata()
                 {
                 try {
+                    log.debug("Getting database metadata");
+                    log.debug("-- Database [{}]", connection().getCatalog());
                     return connection().getMetaData();
                     }
                 catch (final SQLException ouch)
@@ -842,6 +844,20 @@ implements JdbcResource
     @Override
     public void scan(final DatabaseMetaData metadata)
         {
+        try {
+            log.debug("-- Database [{}]", metadata.getDatabaseProductName());
+            log.debug("-- Database [{}]", metadata.getDatabaseProductVersion());
+            log.debug("-- Driver [{}]", metadata.getDriverName());
+            log.debug("-- Driver [{}]", metadata.getDriverVersion());
+            log.debug("-- Driver [{}]", metadata.getURL());
+            }
+        catch (final SQLException ouch)
+            {
+            log.error("Error checking database metadata", ouch);
+            throw new RuntimeException(
+                ouch
+                );
+            }
         catalogs().scan(
             metadata
             );

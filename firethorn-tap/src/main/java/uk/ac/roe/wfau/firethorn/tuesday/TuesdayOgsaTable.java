@@ -29,7 +29,7 @@ extends TuesdayBaseTable
     public void alias(String alias);
 
     @Override
-    public String fullname(); //"catalog.schema.table"
+    public StringBuilder fullname(); //"catalog.schema.table"
 
     @Override
     public TuesdayOgsaResource resource();

@@ -30,11 +30,11 @@ extends TuesdayOgsaResource
     public String url();
     public void url(String url);
 
-    public interface Schemas
+    public interface Catalogs
         {
-        public Iterable<TuesdayIvoaSchema> select();
-        public TuesdayIvoaSchema select(String name);
+        public Iterable<TuesdayIvoaCatalog> select();
+        public TuesdayIvoaCatalog select(String name);
         } 
-    public Schemas schemas();
+    public Catalogs catalogs();
 
     }

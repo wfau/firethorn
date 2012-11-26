@@ -22,8 +22,9 @@ package uk.ac.roe.wfau.firethorn.tuesday;
  *
  */
 public interface TuesdayJdbcCatalog
-extends TuesdayBaseName
+extends TuesdayBaseCatalog
     {
+    @Override
     public TuesdayJdbcResource resource();
 
     public interface Schemas

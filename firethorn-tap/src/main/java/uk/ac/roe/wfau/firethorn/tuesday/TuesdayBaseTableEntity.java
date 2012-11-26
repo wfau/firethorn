@@ -135,14 +135,11 @@ extends TuesdayBaseNameEntity
         {
         return null ;
         }
+
     @Override
-    public String fullname()
+    public StringBuilder fullname()
         {
-        StringBuilder builder = new StringBuilder();
-        builder.append(this.schema().fullname());
-        builder.append(".");
-        builder.append(this.name());
-        return builder.toString();
+        return this.schema().fullname().append(".").append(this.name());
         }
 
     @Override

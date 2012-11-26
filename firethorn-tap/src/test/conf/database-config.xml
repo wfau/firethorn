@@ -12,25 +12,7 @@
         "
     >
 
-    <!--+
-        | Local Postgresql test database.
-        +-->
-    <bean id="PgsqlLocalData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="org.postgresql.Driver"/>
-        <property name="url"      value="${firethorn.pgsql.url}"/>
-        <property name="username" value="${firethorn.pgsql.user}"/>
-        <property name="password" value="${firethorn.pgsql.pass}"/>
-    </bean>
-
-    <!--+
-        | SSH tunnel to ROE database server.
-        +-->
-    <bean id="RoeLiveData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
-        <property name="url"      value="${firethorn.wfau.url}"/>
-        <property name="username" value="${firethorn.wfau.user}"/>
-        <property name="password" value="${firethorn.wfau.pass}"/>
-    </bean>
+    <!-- ======== FireThorn metadata database ======== -->
 
     <!--+
         | Memory based HSQLDB database.
@@ -54,6 +36,17 @@
         <property name="password" value=""/>
     </bean>
 
+    <!--+
+        | Local Postgresql database.
+        +-->
+    <bean id="PgSqlLocalData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url"      value="${firethorn.pgsql.data.url}"/>
+        <property name="username" value="${firethorn.pgsql.data.user}"/>
+        <property name="password" value="${firethorn.pgsql.data.pass}"/>
+    </bean>
+
+    <!-- ======== Target test database ======== -->
 
     <!--+
         | Memory based HSQLDB test data.
@@ -75,6 +68,36 @@
         <property name="password" value=""/>
     </bean>
 
+    <!--+
+        | Local Postgresql test data.
+        +-->
+    <bean id="PgSqlLocalTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url"      value="${firethorn.pgsql.test.url}"/>
+        <property name="username" value="${firethorn.pgsql.test.user}"/>
+        <property name="password" value="${firethorn.pgsql.test.pass}"/>
+    </bean>
+
+    <!--+
+        | Local MySQL test data.
+        +-->
+    <bean id="MySqlLocalTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url"      value="${firethorn.mysql.test.url}"/>
+        <property name="username" value="${firethorn.mysql.test.user}"/>
+        <property name="password" value="${firethorn.mysql.test.pass}"/>
+    </bean>
+
+    <!--+
+        | SSH tunnel to ROE database server.
+        | 'ssh -L 1433:hostname:1433 fenrir.roe.ac.uk'
+        +-->
+    <bean id="RoeLiveData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
+        <property name="url"      value="${firethorn.wfau.url}"/>
+        <property name="username" value="${firethorn.wfau.user}"/>
+        <property name="password" value="${firethorn.wfau.pass}"/>
+    </bean>
 
 </beans>
 

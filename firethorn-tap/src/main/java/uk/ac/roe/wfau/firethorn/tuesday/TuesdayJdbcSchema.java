@@ -26,6 +26,7 @@ extends TuesdayBaseSchema
     {
     @Override
     public TuesdayJdbcResource resource();
+    @Override
     public TuesdayJdbcCatalog catalog();
 
     public interface Tables

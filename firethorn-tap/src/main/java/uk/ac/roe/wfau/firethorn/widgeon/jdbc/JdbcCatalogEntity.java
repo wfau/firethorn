@@ -540,7 +540,7 @@ implements JdbcCatalog
 
                         if (cname == null)
                             {
-                            // On ROE SQLServer, the schema is *always* null.
+                            // On ROE SQLServer, the catalog is *always* null.
                             log.debug("Catalog name is null, processing");
                             //continue ;
 
@@ -577,10 +577,17 @@ implements JdbcCatalog
                     while (schemas.next())
                         {
                         final String cname = schemas.getString(JdbcResource.JDBC_META_TABLE_CAT);
-                        final String sname = schemas.getString(JdbcResource.JDBC_META_TABLE_SCHEM);
+                        String sname = schemas.getString(JdbcResource.JDBC_META_TABLE_SCHEM);
                         final String tname = schemas.getString(JdbcResource.JDBC_META_TABLE_NAME);
                         final String ttype = schemas.getString(JdbcResource.JDBC_META_TABLE_TYPE);
                         log.debug("Checking database schema [{}.{}.{}][{}]", new Object[]{cname, sname, tname, ttype});
+
+                        //
+                        // The schema name is always null in a MySql database. 
+                        if (sname == null)
+                            {
+                            sname = "null" ;
+                            }
 
                         //
                         // Check if we have already done this schema.

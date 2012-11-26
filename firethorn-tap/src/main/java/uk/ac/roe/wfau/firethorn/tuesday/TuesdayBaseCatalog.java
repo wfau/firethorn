@@ -21,31 +21,11 @@ package uk.ac.roe.wfau.firethorn.tuesday;
  *
  *
  */
-public interface TuesdayBaseColumn
-extends TuesdayBaseName
+public interface TuesdayBaseCatalog
+    extends TuesdayBaseName
     {
-    public TuesdayOgsaColumn ogsa();
+    public StringBuilder fullname();
 
-    public TuesdayBaseTable    table();
-    public TuesdayBaseSchema   schema();
     public TuesdayBaseResource resource();
-
-    public String type();
-    public void type(String type);
-    
-    public Integer size();
-    public void size(Integer size);
-    
-    public String ucd();
-    public void ucd(String ucd);
-
-    public String alias();    //"column_ident"
-    public StringBuilder fullname(); //"catalog.schema.table.column"
-
-    interface Linked
-        {
-        public Iterable<TuesdayAdqlColumn> select();
-        }
-    public Linked linked();
 
     }

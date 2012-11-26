@@ -26,6 +26,8 @@ public interface TuesdayAdqlSchema
 extends TuesdayBaseSchema
     {
     @Override
+    public TuesdayAdqlCatalog catalog();
+    @Override
     public TuesdayAdqlResource resource();
 
     interface Tables

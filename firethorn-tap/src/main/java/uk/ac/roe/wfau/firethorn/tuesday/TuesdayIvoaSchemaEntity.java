@@ -24,7 +24,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.NamedQueries;
 
@@ -39,13 +38,6 @@ import org.hibernate.annotations.NamedQueries;
 @Table(
     name = TuesdayIvoaSchemaEntity.DB_TABLE_NAME,
     uniqueConstraints={
-        @UniqueConstraint(
-            name = TuesdayIvoaSchemaEntity.DB_TABLE_NAME + TuesdayBaseNameEntity.DB_PARENT_NAME_IDX,
-            columnNames = {
-                TuesdayBaseNameEntity.DB_NAME_COL,
-                TuesdayBaseNameEntity.DB_PARENT_COL,
-                }
-            )
         }
     )
 @NamedQueries(
@@ -63,15 +55,15 @@ public class TuesdayIvoaSchemaEntity
         super();
         }
 
-    protected TuesdayIvoaSchemaEntity(TuesdayIvoaResource resource, String name)
+    protected TuesdayIvoaSchemaEntity(TuesdayIvoaCatalog catalog, String name)
         {
-        super(name);
-        this.resource = resource;
+        super(catalog, name);
+        this.catalog = catalog;
         }
 
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = TuesdayIvoaResourceEntity.class
+        targetEntity = TuesdayIvoaCatalogEntity.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,
@@ -79,17 +71,35 @@ public class TuesdayIvoaSchemaEntity
         nullable = false,
         updatable = false
         )
-    private TuesdayIvoaResource resource;
+    private TuesdayIvoaCatalog catalog;
+    @Override
+    public TuesdayIvoaCatalog catalog()
+        {
+        return this.catalog;
+        }
     @Override
     public TuesdayIvoaResource resource()
         {
-        return this.resource;
+        return this.catalog.resource();
         }
 
     @Override
-    public String fullname()
+    public Tables tables()
         {
-        // TODO Auto-generated method stub
-        return null;
+        return new Tables()
+            {
+            @Override
+            public Iterable<TuesdayIvoaTable> select()
+                {
+                // TODO Auto-generated method stub
+                return null;
+                }
+            @Override
+            public TuesdayIvoaTable select(String name)
+                {
+                // TODO Auto-generated method stub
+                return null;
+                }
+            };
         }
     }

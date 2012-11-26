@@ -36,7 +36,7 @@ import org.hibernate.annotations.NamedQueries;
     AccessType.FIELD
     )
 @Table(
-    name = TuesdayAdqlSchemaEntity.DB_TABLE_NAME,
+    name = TuesdayAdqlCatalogEntity.DB_TABLE_NAME,
     uniqueConstraints={
         }
     )
@@ -44,26 +44,26 @@ import org.hibernate.annotations.NamedQueries;
         {
         }
     )
-public class TuesdayAdqlSchemaEntity
-extends TuesdayBaseSchemaEntity
-implements TuesdayAdqlSchema
+public class TuesdayAdqlCatalogEntity
+extends TuesdayBaseCatalogEntity
+    implements TuesdayAdqlCatalog
     {
-    protected static final String DB_TABLE_NAME = "TuesdayAdqlSchemaEntity";
+    protected static final String DB_TABLE_NAME = "TuesdayAdqlCatalogEntity";
 
-    protected TuesdayAdqlSchemaEntity()
+    protected TuesdayAdqlCatalogEntity()
         {
         super();
         }
 
-    protected TuesdayAdqlSchemaEntity(TuesdayAdqlCatalog catalog, String name)
+    protected TuesdayAdqlCatalogEntity(TuesdayAdqlResource resource, String name)
         {
-        super(catalog, name);
-        this.catalog = catalog;
+        super(resource, name);
+        this.resource = resource;
         }
     
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = TuesdayAdqlCatalogEntity.class
+        targetEntity = TuesdayAdqlResourceEntity.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,
@@ -71,33 +71,26 @@ implements TuesdayAdqlSchema
         nullable = false,
         updatable = true
         )
-    private TuesdayAdqlCatalog catalog;
-    @Override
-    public TuesdayAdqlCatalog catalog()
-        {
-        return this.catalog;
-        }
+    private TuesdayAdqlResource resource;
     @Override
     public TuesdayAdqlResource resource()
         {
-        return this.catalog.resource();
+        return this.resource;
         }
 
     @Override
-    public Tables tables()
+    public Schemas schemas()
         {
-        return new Tables()
+        return new Schemas()
             {
             @Override
-            public Iterable<TuesdayAdqlTable> select()
+            public Iterable<TuesdayAdqlSchema> select()
                 {
-                // TODO Auto-generated method stub
                 return null;
                 }
             @Override
-            public TuesdayAdqlTable select(String name)
+            public TuesdayAdqlSchema select(String name)
                 {
-                // TODO Auto-generated method stub
                 return null;
                 }
             };

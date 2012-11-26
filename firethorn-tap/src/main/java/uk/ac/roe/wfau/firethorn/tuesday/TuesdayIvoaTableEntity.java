@@ -85,6 +85,11 @@ extends TuesdayBaseTableEntity
         return this.schema;
         }
     @Override
+    public TuesdayIvoaCatalog catalog()
+        {
+        return this.schema().catalog();
+        }
+    @Override
     public TuesdayIvoaResource resource()
         {
         return this.schema().resource();
@@ -107,18 +112,6 @@ extends TuesdayBaseTableEntity
                 return null;
                 }
             };
-        }
-
-    @Override
-    public String fullname()
-        {
-        StringBuilder builder = new StringBuilder();
-        builder.append(resource().name());
-        builder.append(".");
-        builder.append(schema().name());
-        builder.append(".");
-        builder.append(this.name());
-        return builder.toString();
         }
 
     @Override

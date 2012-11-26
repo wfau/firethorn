@@ -21,9 +21,12 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.NamedQueries;
 
@@ -36,70 +39,61 @@ import org.hibernate.annotations.NamedQueries;
     AccessType.FIELD
     )
 @Table(
-    name = TuesdayAdqlSchemaEntity.DB_TABLE_NAME,
+    name = TuesdayBaseCatalogEntity.DB_TABLE_NAME,
     uniqueConstraints={
+        @UniqueConstraint(
+            name = TuesdayBaseCatalogEntity.DB_TABLE_NAME + TuesdayBaseNameEntity.DB_PARENT_NAME_IDX,
+            columnNames = {
+                TuesdayBaseNameEntity.DB_NAME_COL,
+                TuesdayBaseNameEntity.DB_PARENT_COL,
+                }
+            )
         }
+    )
+@Inheritance(
+    strategy = InheritanceType.JOINED
     )
 @NamedQueries(
         {
         }
     )
-public class TuesdayAdqlSchemaEntity
-extends TuesdayBaseSchemaEntity
-implements TuesdayAdqlSchema
+public abstract class TuesdayBaseCatalogEntity
+    extends TuesdayBaseNameEntity
+    implements TuesdayBaseCatalog
     {
-    protected static final String DB_TABLE_NAME = "TuesdayAdqlSchemaEntity";
+    protected static final String DB_TABLE_NAME = "TuesdayBaseCatalogEntity";
 
-    protected TuesdayAdqlSchemaEntity()
+    protected TuesdayBaseCatalogEntity()
         {
         super();
         }
 
-    protected TuesdayAdqlSchemaEntity(TuesdayAdqlCatalog catalog, String name)
+    protected TuesdayBaseCatalogEntity(TuesdayBaseResource resource, String name)
         {
-        super(catalog, name);
-        this.catalog = catalog;
+        super(name);
+        this.resource = resource;
         }
-    
+
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = TuesdayAdqlCatalogEntity.class
+        targetEntity = TuesdayBaseResourceEntity.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,
         unique = false,
         nullable = false,
-        updatable = true
+        updatable = false
         )
-    private TuesdayAdqlCatalog catalog;
+    private TuesdayBaseResource resource;
     @Override
-    public TuesdayAdqlCatalog catalog()
+    public TuesdayBaseResource resource()
         {
-        return this.catalog;
-        }
-    @Override
-    public TuesdayAdqlResource resource()
-        {
-        return this.catalog.resource();
+        return this.resource;
         }
 
     @Override
-    public Tables tables()
+    public StringBuilder fullname()
         {
-        return new Tables()
-            {
-            @Override
-            public Iterable<TuesdayAdqlTable> select()
-                {
-                // TODO Auto-generated method stub
-                return null;
-                }
-            @Override
-            public TuesdayAdqlTable select(String name)
-                {
-                // TODO Auto-generated method stub
-                return null;
-                }
-            };
+        return this.resource().fullname().append(".").append(this.name());
         }
     }

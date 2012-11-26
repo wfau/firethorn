@@ -24,7 +24,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.NamedQueries;
 
@@ -39,13 +38,6 @@ import org.hibernate.annotations.NamedQueries;
 @Table(
     name = TuesdayJdbcSchemaEntity.DB_TABLE_NAME,
     uniqueConstraints={
-        @UniqueConstraint(
-            name = TuesdayJdbcSchemaEntity.DB_TABLE_NAME + TuesdayBaseNameEntity.DB_PARENT_NAME_IDX,
-            columnNames = {
-                TuesdayBaseNameEntity.DB_NAME_COL,
-                TuesdayBaseNameEntity.DB_PARENT_COL,
-                }
-            )
         }
     )
 @NamedQueries(
@@ -65,7 +57,7 @@ public class TuesdayJdbcSchemaEntity
 
     protected TuesdayJdbcSchemaEntity(TuesdayJdbcCatalog catalog, String name)
         {
-        super(name);
+        super(catalog, name);
         this.catalog = catalog;
         }
 
@@ -99,20 +91,15 @@ public class TuesdayJdbcSchemaEntity
             @Override
             public Iterable<TuesdayJdbcTable> select()
                 {
+                // TODO Auto-generated method stub
                 return null;
                 }
             @Override
             public TuesdayJdbcTable select(String name)
                 {
+                // TODO Auto-generated method stub
                 return null;
                 }
             };
-        }
-
-    @Override
-    public String fullname()
-        {
-        // TODO Auto-generated method stub
-        return null;
         }
     }

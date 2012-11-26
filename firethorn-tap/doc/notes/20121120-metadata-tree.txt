@@ -1,0 +1,191 @@
+
+
+    interface TuesdayBaseResource
+        {
+        TuesdayAdqlResource adql();
+        TuesdayOgsaResource ogsa();
+        }
+
+    interface TuesdayBaseTable
+        {
+        TuesdayAdqlTable adql();
+        TuesdayOgsaTable ogsa();
+        }
+
+    interface TuesdayOgsaTable
+    extends TuesdayBaseTable
+        {
+        String       name();        "table"
+        String       alias();       "ogsa_table_ident"
+        String       fullname();    "catalog.schema.table"
+        TuesdayOgsaResource resource();    "RESOURCE"
+
+        TuesdayAdqlTable adql();
+        TuesdayOgsaTable ogsa();
+
+        }
+
+    interface TuesdayAdqlTable
+    extends TuesdayBaseTable
+        {
+        String  name();
+        Integer size();
+        String  type();
+        String  ucd();
+
+        TuesdayAdqlSchema   schema();
+        TuesdayAdqlResource resource();
+
+        interface Columns
+            {
+            Iterable<TuesdayAdqlColumn> select();
+            TuesdayAdqlColumn select(String name);
+            } 
+        Columns columns();
+
+        TuesdayAdqlTable adql();
+        TuesdayOgsaTable ogsa();
+        
+        }
+
+    interface TuesdayIvoaTable
+    extends TuesdayBaseTable
+        {
+        String  name();
+        Integer size();
+        String  type();
+        String  ucd();
+
+        TuesdayIvoaSchema   schema();
+        TuesdayIvoaResource resource();
+
+        interface Columns
+            {
+            Iterable<TuesdayIvoaColumn> select();
+            TuesdayIvoaColumn select(String name);
+            } 
+        Columns columns();
+
+        TuesdayAdqlTable adql();
+        TuesdayOgsaTable ogsa();
+        
+        }
+
+
+    interface TuesdayJdbcTable
+    extends TuesdayBaseTable
+        {
+        String  name();
+        String  type();
+        Integer size();
+
+        TuesdayJdbcSchema   schema();
+        TuesdayJdbcResource resource();
+
+        interface Columns
+            {
+            Iterable<TuesdayJdbcColumn> select();
+            TuesdayJdbcColumn select(String name);
+            } 
+        Columns columns();
+
+        TuesdayAdqlTable adql();
+        TuesdayOgsaTable ogsa();
+
+        }
+
+    abstract class TuesdayOgsaTableBase
+    implements TuesdayBaseTable, TuesdayOgsaTable
+        {
+        abstract String name();
+        abstract TuesdayBaseResource resource();
+        abstract TuesdayBaseTable base();
+
+        TuesdayBaseTable base()
+            {
+            return this ;
+            }
+
+        // join adql.base -> this
+        TuesdayAdqlTableBase adql
+        TuesdayAdqlTable adql()
+            {
+            return adql ;
+            }
+
+        TuesdayOgsaTable ogsa()
+            {
+            return new TuesdayOgsaTable()
+                {
+                String name()     { return base().name() }
+                String alias()    { ... }
+                String fullname() { "catalog.schema.table" }
+                TuesdayOgsaResource resource()
+                    {
+                    return base().resource().ogsa();
+                    }
+
+                TuesdayAdqlTable adql() { return base().adql() }
+                TuesdayOgsaTable ogsa() { return this }
+                }
+            }
+        }
+
+    class TuesdayJdbcTableEntity
+    implements TuesdayBaseTable, TuesdayJdbcTable
+    extends TuesdayOgsaTableBase
+        {
+        String  name() { ... }
+        String  text() { ... }
+        String  type() { ... }
+        Integer size() { ... }
+
+        TuesdayJdbcSchema   schema()   { ... }
+        TuesdayJdbcResource resource() { ... }
+
+        }
+
+    class TuesdayIvoaTableEntity
+    implements TuesdayIvoaTable
+    extends TuesdayOgsaTableBase
+        {
+        String  name() { ... }
+        String  text() { ... }
+        String  type() { ... }
+        Integer size() { ... }
+
+        TuesdayIvoaSchema   schema();
+        TuesdayIvoaResource resource();
+
+        }
+
+    class TuesdayAdqlTableEntity
+    implements TuesdayBaseTable, TuesdayAdqlTable
+        {
+        String  name() { .... }
+        String  text() { .... }
+        Integer size() { .... }
+        String  type() { .... }
+        String  ucd()  { .... }
+
+        TuesdayAdqlSchema   schema()   { .... }
+        TuesdayAdqlResource resource() { .... }
+
+        // Reference
+        TuesdayBaseTable base ;
+        TuesdayBaseTable base()
+            {
+            return base ;
+            }
+
+        TuesdayOgsaTable ogsa()
+            {
+            return base().ogsa();
+            }
+
+        TuesdayAdqlTable adql()
+            {
+            return this ;
+            }
+        }
+

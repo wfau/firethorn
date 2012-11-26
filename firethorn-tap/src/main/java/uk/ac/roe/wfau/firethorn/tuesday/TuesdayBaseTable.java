@@ -35,11 +35,12 @@ extends TuesdayBaseName
     public void ucd(String ucd);
 
     public String alias();    //"table_ident"
-    public String fullname(); //"catalog.schema.table"
+    public StringBuilder fullname(); //"catalog.schema.table"
     
     public TuesdayOgsaTable<?> ogsa();
 
     public TuesdayBaseSchema   schema();
+    public TuesdayBaseCatalog  catalog();
     public TuesdayBaseResource resource();
 
     interface Linked

@@ -20,54 +20,52 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.NamedQueries;
 
+/**
+ *
+ *
+ */
 @Entity()
 @Access(
     AccessType.FIELD
     )
 @Table(
-    name = TuesdayAdqlResourceEntity.DB_TABLE_NAME
+    name = TuesdayBaseResourceEntity.DB_TABLE_NAME,
+    uniqueConstraints={
+        }
+    )
+@Inheritance(
+    strategy = InheritanceType.JOINED
     )
 @NamedQueries(
         {
         }
     )
-public class TuesdayAdqlResourceEntity
-extends TuesdayBaseResourceEntity
-    implements TuesdayAdqlResource
+public class TuesdayBaseResourceEntity
+    extends TuesdayBaseNameEntity
+    implements TuesdayBaseResource
     {
-    protected static final String DB_TABLE_NAME = "TuesdayAdqlResourceEntity";
+    protected static final String DB_TABLE_NAME = "TuesdayBaseResourceEntity";
 
-    protected TuesdayAdqlResourceEntity()
+    protected TuesdayBaseResourceEntity()
         {
         super();
         }
 
-    protected TuesdayAdqlResourceEntity(String name)
+    protected TuesdayBaseResourceEntity(String name)
         {
         super(name);
         }
 
     @Override
-    public Schemas schemas()
+    public StringBuilder fullname()
         {
-        return new Schemas()
-            {
-            @Override
-            public Iterable<TuesdayAdqlSchema> select()
-                {
-                // TODO Auto-generated method stub
-                return null;
-                }
-            @Override
-            public TuesdayAdqlSchema select(String name)
-                {
-                // TODO Auto-generated method stub
-                return null;
-                }
-            };
+        return new StringBuilder(this.name());
         }
     }

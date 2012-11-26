@@ -43,7 +43,7 @@ import org.hibernate.annotations.NamedQueries;
         }
     )
 public class TuesdayJdbcResourceEntity
-    extends TuesdayBaseNameEntity
+    extends TuesdayBaseResourceEntity
     implements TuesdayJdbcResource
     {
     protected static final String DB_TABLE_NAME = "TuesdayJdbcResourceEntity";
@@ -126,11 +126,13 @@ public class TuesdayJdbcResourceEntity
             @Override
             public Iterable<TuesdayJdbcCatalog> select()
                 {
+                // TODO Auto-generated method stub
                 return null;
                 }
             @Override
             public TuesdayJdbcCatalog select(String name)
                 {
+                // TODO Auto-generated method stub
                 return null;
                 }
             };

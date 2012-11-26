@@ -29,13 +29,6 @@ import org.hibernate.annotations.NamedQueries;
 
 /**
  *
-        @UniqueConstraint(
-            name = TuesdayJdbcTableEntity.DB_TABLE_NAME + TuesdayBaseNameEntity.DB_PARENT_NAME_IDX,
-            columnNames = {
-                TuesdayBaseNameEntity.DB_NAME_COL,
-                TuesdayBaseNameEntity.DB_PARENT_COL,
-                }
-            )
  *
  */
 @Entity()
@@ -103,39 +96,29 @@ extends TuesdayBaseTableEntity
             @Override
             public Iterable<TuesdayJdbcColumn> select()
                 {
+                // TODO Auto-generated method stub
                 return null;
                 }
             @Override
             public TuesdayJdbcColumn select(String name)
                 {
+                // TODO Auto-generated method stub
                 return null;
                 }
             };
         }
 
     @Override
-    public String fullname()
-        {
-        StringBuilder builder = new StringBuilder();
-        builder.append(this.resource().name());
-        builder.append(".");
-        builder.append(this.catalog().name());
-        builder.append(".");
-        builder.append(this.schema().name());
-        builder.append(".");
-        builder.append(this.name());
-        return builder.toString();
-        }
-
-    @Override
     public String alias()
         {
+        // TODO Auto-generated method stub
         return null;
         }
 
     @Override
     public void alias(String alias)
         {
+        // TODO Auto-generated method stub
         }
 
     @Override
