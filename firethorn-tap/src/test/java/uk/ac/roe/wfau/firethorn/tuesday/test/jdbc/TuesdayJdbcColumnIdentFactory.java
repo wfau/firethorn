@@ -15,25 +15,25 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.test.tap.tuesday.ident.jdbc;
+package uk.ac.roe.wfau.firethorn.tuesday.test.jdbc;
 
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource.IdentFactory;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn.IdentFactory;
 
 /**
  *
  *
  */
 @Component
-public class TuesdayJdbcResourceIdentFactory
-extends AbstractIdentFactory<TuesdayJdbcResource>
-implements TuesdayJdbcResource.IdentFactory
+public class TuesdayJdbcColumnIdentFactory
+extends AbstractIdentFactory<TuesdayJdbcColumn>
+implements TuesdayJdbcColumn.IdentFactory
     {
     @Override
-    public String link(final TuesdayJdbcResource entity)
+    public String link(final TuesdayJdbcColumn entity)
         {
         return null;
         }
