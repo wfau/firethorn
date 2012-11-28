@@ -126,6 +126,8 @@ a:active {
 		float:left;
 		margin-top:60px;
 		margin-left:10px;	
+		width:110px;
+		height:300px;
 	}
 
 	
@@ -152,7 +154,7 @@ a:active {
 		text-align:center;
 		min-width:90%;
 		width:90%;
-		overflow:hidden;
+		
 	}
 	
 #error {

@@ -48,34 +48,47 @@ jQuery(document).ready(function() {
 
     
 	    
-		    
+	    
 		} else if  (this.id == expand){
-			e.preventDefault();
-			var id_url = encodeURIComponent(jQuery(_this).parent().parent().parent().find("#id_url")[0].href.trim());
-			var db_type = encodeURIComponent(jQuery(_this).parent().parent().parent().find("#db_type")[0].innerHTML.trim());
-			var action = 'expand';
-			
-			var success =  function(data) {
-				if (data.Code!=null){
-					if (data.Code==-1){
-						 helper_functions.displayErrorFromParent(jQuery(_this).parent(), "#expand_error", data.Content);
-						
-					} else {
-						jQuery(_this).parent().parent().parent().append("<div id='children'>" + data.Content + "</div>" );
-						var expand_button = jQuery(_this).parent().parent().parent().find("#toggle_expand")[0];
-						jQuery(expand_button).html('Minimize:<a id="minimize"><img src="static/images/16arrow-up.png" style="vertical-align:middle"/></a>');
+			if (jQuery(_this).parent().parent().parent().find("#children").length>0){
 	
-						
+				jQuery(_this).parent().parent().parent().children("#children").slideDown('slow');
+				var expand_button = jQuery(_this).parent().parent().parent().find("#toggle_expand")[0];
+				jQuery(expand_button).html('Minimize:<a id="minimize"><img src="static/images/16arrow-up.png" style="vertical-align:middle"/></a>');
+	
+			} else { 
+				e.preventDefault();
+				var id_url = encodeURIComponent(jQuery(_this).parent().parent().parent().find("#id_url")[0].href.trim());
+				var db_type = encodeURIComponent(jQuery(_this).parent().parent().parent().find("#db_type")[0].innerHTML.trim());
+				var action = 'expand';
+				
+				var success =  function(data) {
+					if (data.Code!=null){
+						if (data.Code==-1){
+							 helper_functions.displayErrorFromParent(jQuery(_this).parent(), "#expand_error", data.Content);
+						} else {
+							
+							if (jQuery(_this).parent().parent().parent().find("#children").length<=0){
+								jQuery(_this).parent().parent().parent().append("<div id='children'>" + data.Content + "</div>" );
+							} else {
+								jQuery(_this).parent().parent().parent().children("#children").slideDown('slow');
+							}
+							
+							var expand_button = jQuery(_this).parent().parent().parent().find("#toggle_expand")[0];
+							jQuery(expand_button).html('Minimize:<a id="minimize"><img src="static/images/16arrow-up.png" style="vertical-align:middle"/></a>');
+	
+							
+						}
 					}
-				}
-	         }
-			
-			e.preventDefault();
-			helper_functions.ajaxCall( {ident : id_url, _type : db_type, action : action}, "POST", properties.getPath() + "resource_actions", 1000000, function(e) {helper_functions.displayError("#error", data.Content);} , success);
+		         }
+				
+				e.preventDefault();
+				helper_functions.ajaxCall( {ident : id_url, _type : db_type, action : action}, "POST", properties.getPath() + "resource_actions", 1000000, function(e) {helper_functions.displayError("#error", data.Content);} , success);
 	
+			}
 		} else if  (this.id == minimize){
 			e.preventDefault();
-			jQuery(jQuery(_this).parent().parent().parent().find("#children")[0]).hide();
+			jQuery(jQuery(_this).parent().parent().parent().find("#children")).slideUp('slow');
 			var minimize_button = jQuery(_this).parent().parent().parent().find("#toggle_expand")[0];
 			jQuery(minimize_button).html('Expand:<a id="expand"><img src="static/images/16arrow-down.png" style="vertical-align:middle"/></a>');
 		}

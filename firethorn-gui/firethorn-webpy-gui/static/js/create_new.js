@@ -10,7 +10,7 @@ jQuery(document).ready(function() {
 			
 			if (jQuery('#adql_tree')!= []){
 		  		var jtree_div = '<div id="adql_tree" style="clear:both;text-align:left;"><ul id="tt" checkbox="true" class="easyui-tree" ></ul></div>';
-		  		var icon_helper = '<div id="icon_helper" style="text-align:center;margin-bottom:20px;">' +
+		  		var icon_helper = '<div id="icon_helper" style="text-align:center;margin-left:250px;width:700px;margin-bottom:20px;">' +
 									'<span style="margin-right:35px;"><img style="vertical-align:bottom;" src="static/js/jquery-treeview/themes/default/images/res1-small.png"/> - Resource </span>' +
 									'<span style="margin-right:35px;"><img style="vertical-align:bottom;" src="static/js/jquery-treeview/themes/default/images/catalogue-small.png"/> - Catalogue </span>' +
 									'<span style="margin-right:35px;"><img style="vertical-align:bottom;" src="static/js/jquery-treeview/themes/default/images/schema-small.png"/> - Schema </span>' +

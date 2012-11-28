@@ -10,6 +10,7 @@
 		display:block;
 		margin-left:120px;
 	}
+	
 #input_div {
 		font-size:11px;
 		color:white;
@@ -17,11 +18,13 @@
 		width:890px;
 		min-width: 540px !important; 
 		height:220px;
-		margin:10px auto 5px 170px;
+		/*margin:10px auto 5px 170px;*/
 		background: url("../images/page_top_img.png");
 		padding-top:20px;
 		padding-bottom: 35px;
-
+		margin:0 auto;
+		text-align:center;
+		overflow:auto;
 	}
 
 #input_div input{
@@ -101,11 +104,13 @@
 	}
 	
 #container {
-	width:900px;
+	width:85%;
+	min-width:540px !important;
 	min-height:620px;
 	margin: 0 auto;
 	text-align:center;
 	margin-top:50px;
+	margin-left:100px;
 	margin-bottom:5px;
 	display:none;
 }	 
