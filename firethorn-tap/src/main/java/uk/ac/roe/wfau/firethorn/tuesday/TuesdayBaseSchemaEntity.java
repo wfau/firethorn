@@ -61,6 +61,10 @@ public abstract class TuesdayBaseSchemaEntity<SchemaType extends TuesdayBaseSche
     extends TuesdayBaseEntity
     implements TuesdayBaseSchema<SchemaType, TableType>
     {
+    /**
+     * Metadata database table name.
+     * 
+     */
     protected static final String DB_TABLE_NAME = "TuesdayBaseSchemaEntity";
 
     protected TuesdayBaseSchemaEntity()
@@ -71,7 +75,7 @@ public abstract class TuesdayBaseSchemaEntity<SchemaType extends TuesdayBaseSche
     protected TuesdayBaseSchemaEntity(TuesdayBaseResource<SchemaType> resource, String name)
         {
         super(name);
-        this.resource = resource;
+        this.parent = resource;
         }
 
     @ManyToOne(
@@ -84,11 +88,11 @@ public abstract class TuesdayBaseSchemaEntity<SchemaType extends TuesdayBaseSche
         nullable = false,
         updatable = false
         )
-    private TuesdayBaseResource<SchemaType> resource;
+    private TuesdayBaseResource<SchemaType> parent;
     @Override
     public TuesdayBaseResource<SchemaType> resource()
         {
-        return this.resource;
+        return this.parent;
         }
 
     @Override

@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -33,6 +35,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable.JdbcTableType;
 
 /**
  *
@@ -67,6 +70,10 @@ public class TuesdayJdbcTableEntity
 extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
     implements TuesdayJdbcTable
     {
+    /**
+     * Metadata database table name.
+     * 
+     */
     protected static final String DB_TABLE_NAME = "TuesdayJdbcTableEntity";
 
     /**
@@ -93,6 +100,19 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
                 new TuesdayJdbcTableEntity(
                     parent,
                     name
+                    )
+                );
+            }
+
+        @Override
+        @CreateEntityMethod
+        public TuesdayJdbcTable create(final TuesdayJdbcSchema parent, final String name, final JdbcTableType type)
+            {
+            return this.insert(
+                new TuesdayJdbcTableEntity(
+                    parent,
+                    name,
+                    type
                     )
                 );
             }
@@ -171,10 +191,17 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
         super();
         }
 
-    protected TuesdayJdbcTableEntity(TuesdayJdbcSchema schema, String name)
+    protected TuesdayJdbcTableEntity(final TuesdayJdbcSchema schema, final String name)
         {
         super(schema, name);
         this.schema = schema;
+        }
+
+    public TuesdayJdbcTableEntity(final TuesdayJdbcSchema schema, final String name, final JdbcTableType type)
+        {
+        super(schema, name);
+        this.schema = schema;
+        this.jdbctype = type;
         }
 
     @ManyToOne(
@@ -240,5 +267,30 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
         {
         // TODO Auto-generated method stub
         return null;
+        }
+
+    /**
+     * Metadata database column name.
+     * 
+     */
+    protected static final String JDBC_TYPE_COL = "jdbctype" ;
+
+    @Basic(fetch = FetchType.EAGER)
+    @Column(
+        name = JDBC_TYPE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private JdbcTableType jdbctype ;
+    @Override
+    public JdbcTableType jdbctype()
+        {
+        return this.jdbctype;
+        }
+    @Override
+    public void jdbctype(JdbcTableType type)
+        {
+        this.jdbctype = type;
         }
     }

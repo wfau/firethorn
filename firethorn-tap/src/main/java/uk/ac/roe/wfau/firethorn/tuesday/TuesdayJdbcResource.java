@@ -17,6 +17,14 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 
 /**
@@ -56,6 +64,11 @@ extends TuesdayOgsaResource<TuesdayJdbcSchema>, TuesdayBaseResource<TuesdayJdbcS
      */
     public interface Schemas extends TuesdayBaseResource.Schemas<TuesdayJdbcSchema>
         {
+        /**
+         * Create a new schema.
+         * 
+         */
+        public TuesdayJdbcSchema create(String name);
         } 
     @Override
     public Schemas schemas();
@@ -65,5 +78,122 @@ extends TuesdayOgsaResource<TuesdayJdbcSchema>, TuesdayBaseResource<TuesdayJdbcS
      * 
      */
     public TuesdayJdbcConnection connection();
+    
+    /**
+     * Import the metadata from our database.
+     * 
+     */
+    public void inport();
 
+    /**
+     * JDBC DatabaseMetaData column names.
+     * @see DatabaseMetaData
+     *
+     */
+    public static final String JDBC_META_TABLE_CAT     = "TABLE_CAT" ;
+    public static final String JDBC_META_TABLE_CATALOG = "TABLE_CATALOG" ;
+    public static final String JDBC_META_TABLE_TYPE    = "TABLE_TYPE" ;
+    public static final String JDBC_META_TABLE_NAME    = "TABLE_NAME" ;
+    public static final String JDBC_META_TABLE_SCHEM   = "TABLE_SCHEM" ;
+
+    public static final String JDBC_META_TABLE_TYPE_VIEW  = "VIEW" ;
+    public static final String JDBC_META_TABLE_TYPE_TABLE = "TABLE" ;
+
+    public static final String JDBC_META_COLUMN_NAME      = "COLUMN_NAME" ;
+    public static final String JDBC_META_COLUMN_TYPE_TYPE = "DATA_TYPE";
+    public static final String JDBC_META_COLUMN_TYPE_NAME = "TYPE_NAME";
+    public static final String JDBC_META_COLUMN_SIZE      = "COLUMN_SIZE";
+
+    /**
+     * Known database types, indexed by the product name in DatabaseMetaData.getDatabaseProductName()
+     * 
+     */
+    @Slf4j
+    public static enum JdbcProductType
+        {
+        UNKNOWN(
+            "unknown"
+            ),
+        PGSQL(
+            "PostgreSQL",
+            new String[]{}
+            ),
+        MYSQL(
+            "MySQL",
+            new String[]{}
+            ),
+        MSSQL(
+            "Microsoft SQL Server",
+            new String[]{
+                "sys",
+                "INFORMATION_SCHEMA"
+                }
+            ),
+        HSQLDB(
+            "unknown",
+            new String[]{}
+            );
+
+        private JdbcProductType(String jdbc)
+            {
+            this(jdbc, null);
+            }
+        private JdbcProductType(String jdbc, String[] ignore)
+            {
+            this.jdbc = jdbc;
+            if (ignore != null)
+                {
+                for (String name : ignore)
+                    {
+                    this.ignore.add(
+                        name
+                        );
+                    }
+                }
+            }
+        private String jdbc ;
+
+        private Collection<String> ignore = new ArrayList<String>();
+        public Collection<String>  ignore()
+            {
+            return this.ignore;
+            }
+
+        static protected Map<String, JdbcProductType> mapping = new HashMap<String, JdbcProductType>();
+        static {
+            for (JdbcProductType type : JdbcProductType.values())
+                {
+                mapping.put(
+                    type.jdbc,
+                    type
+                    );
+                }
+            }
+
+        static public JdbcProductType match(String string)
+            {
+            if (mapping.containsKey(string))
+                {
+                return mapping.get(
+                    string
+                    );
+                }
+            else {
+                return UNKNOWN;
+                }
+            }
+        static public JdbcProductType match(DatabaseMetaData metadata)
+            {
+            try {
+                return match(
+                    metadata.getDatabaseProductName()
+                    );
+                }
+            catch (SQLException ouch)
+                {
+                log.error("SQLException reading database metadata [{}]", ouch);
+                return UNKNOWN;
+                }
+            }
+        }
     }

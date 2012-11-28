@@ -17,7 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable.JdbcTableType;
 
 /**
  *
@@ -49,10 +53,17 @@ extends TuesdayOgsaTable<TuesdayJdbcTable, TuesdayJdbcColumn>, TuesdayBaseTable<
         public TuesdayJdbcTable create(final TuesdayJdbcSchema parent, final String name);
 
         /**
+         * Create a new table.
+         *
+         */
+        public TuesdayJdbcTable create(final TuesdayJdbcSchema parent, final String name, final JdbcTableType type);
+
+        /**
          * The table column factory.
          *
          */
         public TuesdayJdbcColumn.Factory columns();
+
         }
 
     @Override
@@ -69,5 +80,61 @@ extends TuesdayOgsaTable<TuesdayJdbcTable, TuesdayJdbcColumn>, TuesdayBaseTable<
         } 
     @Override
     public Columns columns();
+
+    /**
+     * JDBC table types.
+     * 
+     */
+    public static enum JdbcTableType
+        {
+        TABLE("TABLE"),
+        VIEW("VIEW"),
+        ALIAS("ALIAS"),
+        SYNONYM("SYNONYM"),
+        SYSTEM("SYSTEM TABLE"),
+        GLOBAL_TEMP("GLOBAL TEMPORARY"),
+        LOCAL_TEMP("LOCAL TEMPORARY");
+
+        protected String jdbc ;
+        public String jdbc()
+            {
+            return this.jdbc;
+            }
+
+        private JdbcTableType(String jdbc)
+            {
+            this.jdbc = jdbc;
+            }
+
+        static protected Map<String, JdbcTableType> mapping = new HashMap<String, JdbcTableType>();
+        static {
+            for (JdbcTableType type : JdbcTableType.values())
+                {
+                mapping.put(
+                    type.jdbc,
+                    type
+                    );
+                }
+            }
+
+        static public JdbcTableType match(String string)
+            {
+            return mapping.get(
+                string
+                );
+            }
+        }
+
+    /**
+     * Get the database table type.
+     * 
+     */
+    public JdbcTableType jdbctype();
+
+    /**
+     * Set the database table type.
+     * 
+     */
+    public void jdbctype(JdbcTableType type);
 
     }

@@ -155,11 +155,11 @@ extends TuesdayBaseEntity
         nullable = false,
         updatable = true
         )
-    private TuesdayBaseTable<?,ColumnType> table;
+    private TuesdayBaseTable<?,ColumnType> parent;
     @Override
     public TuesdayBaseTable<?,ColumnType> table()
         {
-        return this.table;
+        return this.parent;
         }
     @Override
     public TuesdayBaseSchema<?,?> schema()

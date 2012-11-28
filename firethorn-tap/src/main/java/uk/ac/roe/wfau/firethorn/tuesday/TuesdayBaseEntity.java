@@ -52,6 +52,12 @@ extends AbstractEntity
     protected static final String DB_PARENT_IDX      = "IndexByParent";
     protected static final String DB_PARENT_NAME_IDX = "IndexByParentAndName";
 
+    protected static final String DB_RESOURCE_COL = "resource";
+    protected static final String DB_SCHEMA_COL   = "schema";
+    protected static final String DB_TABLE_COL    = "table";
+    protected static final String DB_COLUMN_COL   = "column";
+    
+    
     protected TuesdayBaseEntity()
         {
         }

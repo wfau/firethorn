@@ -22,6 +22,9 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +35,21 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayFactories;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnection;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnectionEntity;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcMetadata;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalog;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcColumn;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTable;
 
 /**
  *
@@ -103,6 +119,10 @@ public class TuesdayJdbcResourceTestCase
             resource
             );
         }
+    /**
+     * Check the local PostgreSQL database.
+     *
+     */
     @Test
     public void test001()
     throws Exception
@@ -116,8 +136,6 @@ public class TuesdayJdbcResourceTestCase
         assertNotNull(
             resource
             );
-        //
-        // Check the local PostgreSQL database.
         resource.connection().url(
             "spring:PgSqlLocalTest"
             );
@@ -131,8 +149,22 @@ public class TuesdayJdbcResourceTestCase
             "PostgreSQL",
             resource.connection().metadata().getDatabaseProductName()
             );
+        assertEquals(
+            TuesdayJdbcResource.JdbcProductType.PGSQL.name(),
+            resource.connection().metadata().getDatabaseProductName()
+            );
+        assertEquals(
+            TuesdayJdbcResource.JdbcProductType.PGSQL,
+            TuesdayJdbcResource.JdbcProductType.match(
+                resource.connection().metadata().getDatabaseProductName()
+                )
+            );
         }
 
+    /**
+     * Check the local MySQL database.
+     *
+     */
     @Test
     public void test002()
     throws Exception
@@ -146,8 +178,6 @@ public class TuesdayJdbcResourceTestCase
         assertNotNull(
             resource
             );
-        //
-        // Check the local MySQL database.
         resource.connection().url(
             "spring:MySqlLocalTest"
             );
@@ -161,8 +191,22 @@ public class TuesdayJdbcResourceTestCase
             "MySQL",
             resource.connection().metadata().getDatabaseProductName()
             );
+        assertEquals(
+            TuesdayJdbcResource.JdbcProductType.MYSQL.name(),
+            resource.connection().metadata().getDatabaseProductName()
+            );
+        assertEquals(
+            TuesdayJdbcResource.JdbcProductType.MYSQL,
+            TuesdayJdbcResource.JdbcProductType.match(
+                resource.connection().metadata().getDatabaseProductName()
+                )
+            );
         }
 
+    /**
+     * Check the live ROE database.
+     *
+     */
     @Test
     public void test003()
     throws Exception
@@ -176,8 +220,6 @@ public class TuesdayJdbcResourceTestCase
         assertNotNull(
             resource
             );
-        //
-        // Check the live ROE database.
         resource.connection().url(
             "spring:RoeLiveData"
             );
@@ -190,6 +232,16 @@ public class TuesdayJdbcResourceTestCase
         assertEquals(
             "Microsoft SQL Server",
             resource.connection().metadata().getDatabaseProductName()
+            );
+        assertEquals(
+            TuesdayJdbcResource.JdbcProductType.MSSQL.name(),
+            resource.connection().metadata().getDatabaseProductName()
+            );
+        assertEquals(
+            TuesdayJdbcResource.JdbcProductType.MSSQL,
+            TuesdayJdbcResource.JdbcProductType.match(
+                resource.connection().metadata().getDatabaseProductName()
+                )
             );
         }
 
@@ -206,19 +258,88 @@ public class TuesdayJdbcResourceTestCase
         assertNotNull(
             resource
             );
-        //
-        // Use the local PostgreSQL database.
         resource.connection().url(
-            "spring:PgSqlLocalTest"
+            "spring:RoeLiveData"
+            //"spring:PgSqlLocalTest"
+            //"spring:MySqlLocalTest"
             );
-        assertNotNull(
-            resource.connection().open()
-            );
-        assertNotNull(
-            resource.connection().metadata()
-            );
-        
-        resource.connection().inport();
+        resource.inport();
 
+        display(resource);
+        
+        }
+
+    public void display(final TuesdayJdbcResource resource)
+        {
+        log.debug("---");
+        log.debug("- JDBC resource [{}]", resource.connection().catalog());
+
+        for (final TuesdayJdbcSchema schema : resource.schemas().select())
+            {
+            log.debug("--- Schema [{}][{}]", new Object[] {resource.connection().catalog(), schema.name()});
+            for (final TuesdayJdbcTable table : schema.tables().select())
+                {
+                log.debug("---- Table [{}][{}.{}]", new Object[] {resource.connection().catalog(), schema.name(), table.name()});
+                for (final TuesdayJdbcColumn column : table.columns().select())
+                    {
+                    log.debug("----- Column [{}][{}.{}.{}]", new Object[] {resource.connection().catalog(), schema.name(), table.name(), column.name()});
+                    }
+                }
+            }
+        }
+
+    @Test
+    public void test005()
+    throws Exception
+        {
+        assertNotNull(
+            factories()
+            );
+        TuesdayJdbcConnection connection = new TuesdayJdbcConnectionEntity(
+            "spring:RoeLiveData"
+            );
+        List<TuesdayJdbcResource> resources = new ArrayList<TuesdayJdbcResource>();
+
+        for (String catalog : connection.catalogs())
+            {
+            log.debug("Catalog [{}]",catalog);
+            String url = "jdbc:jtds:sqlserver://localhost:1433/" + catalog ;             
+
+            TuesdayJdbcResource resource = factories().jdbc().resources().create(
+                unique(catalog)
+                );
+            resources.add(
+                resource
+                );
+            resource.connection().url(
+                url
+                );
+            resource.connection().user(
+                this.config.getProperty(
+                    "firethorn.wfau.user"
+                    )
+                );
+            resource.connection().pass(
+                this.config.getProperty(
+                    "firethorn.wfau.pass"
+                    )
+                );
+            try {
+                resource.inport();
+                }
+            catch(Exception ouch)
+                {
+                log.debug("SQLException importing metadata", ouch);
+                }
+            finally {
+                resource.connection().close();
+                }
+            }
+        for (TuesdayJdbcResource resource : resources)
+            {
+            display(
+                resource
+                );            
+            }
         }
     }

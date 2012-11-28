@@ -72,7 +72,7 @@ extends TuesdayBaseEntity
     protected TuesdayBaseTableEntity(TuesdayBaseSchema<?,TableType> schema, String name)
         {
         super(name);
-        this.schema = schema;
+        this.parent = schema;
         }
 
     @Basic(fetch = FetchType.EAGER)
@@ -157,15 +157,15 @@ extends TuesdayBaseEntity
         nullable = false,
         updatable = false
         )
-    private TuesdayBaseSchema<?, TableType> schema;
+    private TuesdayBaseSchema<?, TableType> parent;
     @Override
     public TuesdayBaseSchema<?, TableType> schema()
         {
-        return this.schema;
+        return this.parent;
         }
     protected void schema(TuesdayBaseSchema<?, TableType> schema)
         {
-        this.schema = schema;
+        this.parent = schema;
         }
 
     @Override

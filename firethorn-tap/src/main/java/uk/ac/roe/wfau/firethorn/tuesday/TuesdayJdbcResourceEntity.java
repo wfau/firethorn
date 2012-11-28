@@ -18,7 +18,10 @@
 package uk.ac.roe.wfau.firethorn.tuesday;
 
 import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -36,6 +39,8 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.friday.api.FridayIvoaResource.Catalogs;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable.JdbcTableType;
 
 /**
  *
@@ -65,6 +70,10 @@ public class TuesdayJdbcResourceEntity
     extends TuesdayBaseResourceEntity<TuesdayJdbcSchema>
     implements TuesdayJdbcResource
     {
+    /**
+     * Metadata database table name.
+     * 
+     */
     protected static final String DB_TABLE_NAME = "TuesdayJdbcResourceEntity";
     
     /**
@@ -112,7 +121,7 @@ public class TuesdayJdbcResourceEntity
 
         @Override
         @CreateEntityMethod
-        public TuesdayJdbcResource  create(final String name)
+        public TuesdayJdbcResource create(final String name)
             {
             return super.insert(
                 new TuesdayJdbcResourceEntity(
@@ -169,6 +178,14 @@ public class TuesdayJdbcResourceEntity
                     name
                     );
                 }
+            @Override
+            public TuesdayJdbcSchema create(String name)
+                {
+                return factories().jdbc().schemas().create(
+                    TuesdayJdbcResourceEntity.this,
+                    name
+                    );
+                }
             };
         }
 
@@ -176,16 +193,7 @@ public class TuesdayJdbcResourceEntity
     private TuesdayJdbcConnectionEntity connection = new TuesdayJdbcConnectionEntity(
         this
         );
-/*
-    protected TuesdayJdbcConnectionEntity getConnection()
-        {
-        return this.connection;
-        }
-    protected void setConnection(TuesdayJdbcConnectionEntity connection)
-        {
-        this.connection = connection;
-        }
- */
+
     @Override
     public TuesdayJdbcConnection connection()
         {
@@ -199,18 +207,99 @@ public class TuesdayJdbcResourceEntity
         return null;
         }
 
-    public void inport(DatabaseMetaData metadata)
+
+    @Override
+    public void inport()
         {
+        log.debug("inport()");
         try {
-            log.debug("inport(DatabaseMetaData)");
-            log.debug("Database [{}]", metadata.getDatabaseProductName());
-            }
-        catch (final SQLException ouch)
-            {
-            log.error("Error reading database metadata", ouch);
-            throw new RuntimeException(
-                ouch
+            DatabaseMetaData metadata = this.connection.metadata(); 
+            JdbcProductType  product  = JdbcProductType.match(
+                metadata
                 );
+
+            final ResultSet results = metadata.getTables(
+                null,
+                null,
+                null,
+                new String[]
+                    {
+                    JDBC_META_TABLE_TYPE_TABLE,
+                    JDBC_META_TABLE_TYPE_VIEW
+                    }
+                );
+            while (results.next())
+                {
+                String cname = results.getString(JDBC_META_TABLE_CAT);
+                String sname = results.getString(JDBC_META_TABLE_SCHEM);
+                String tname = results.getString(JDBC_META_TABLE_NAME);
+                String ttype = results.getString(JDBC_META_TABLE_TYPE);
+                log.debug("Found table [{}.{}.{}]", new Object[]{cname, sname, tname});
+
+                //
+                // In MySQL the schema name is always null, use the catalog name instead.
+                if (product == JdbcProductType.MYSQL)
+                    {
+                    sname = cname ;
+                    cname = null ;
+                    }
+                //
+                // If the catalog name is null.
+                if (cname == null)
+                    {
+                    log.debug("Catalog is null, whatever ..");
+                    }
+                //
+                // If the schema name is null.
+                if (sname == null)
+                    {
+                    log.debug("Schema is null, whatever ..");
+                    }
+                //
+                // Skip if the schema is on our ignore list. 
+                if (product.ignore().contains(sname))
+                    {
+                    log.debug("Schema is on the ignore list, skipping ...");
+                    continue;
+                    }
+
+                TuesdayJdbcSchema schema = this.schemas().select(
+                    sname
+                    );
+                if (schema == null)
+                    {
+                    schema = this.schemas().create(
+                        sname
+                        );
+                    }
+                //
+                // If the table name is null.
+                if (tname == null)
+                    {
+                    log.debug("Table is null, whatever ..");
+                    }
+                //
+                // If the table name is not null.
+                else {
+                    log.debug("Table is [{}], processing", tname);
+                    TuesdayJdbcTable table = schema.tables().select(
+                        tname
+                        );
+                    if (table == null)
+                        {
+                        table = schema.tables().create(
+                            tname,
+                            TuesdayJdbcTable.JdbcTableType.match(
+                                ttype
+                                )
+                            ); 
+                        }
+                    }
+                }
+            }
+        catch (SQLException ouch)
+            {
+            log.error("SQLException reading database metadata [{}]", ouch);
             }
         }
     }

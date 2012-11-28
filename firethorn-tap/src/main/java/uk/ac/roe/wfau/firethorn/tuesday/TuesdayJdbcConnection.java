@@ -81,7 +81,7 @@ public interface TuesdayJdbcConnection
     public Connection open();
 
     /**
-     * Get the JDBC DatabaseMetaData.
+     * Get the database metadata.
      *
      */
     public DatabaseMetaData metadata();
@@ -93,9 +93,15 @@ public interface TuesdayJdbcConnection
     public void close();
 
     /**
-     * Update our resource from our connection metadata.
+     * Get a list of catalog names.
      * 
      */
-    public void inport();
+    public Iterable<String> catalogs();
+
+    /**
+     * Get the catalog name of the current database Connection.
+     * 
+     */
+    public String catalog();
 
     }

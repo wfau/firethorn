@@ -67,6 +67,10 @@ public class TuesdayIvoaTableEntity
     extends TuesdayBaseTableEntity<TuesdayIvoaTable, TuesdayIvoaColumn>
     implements TuesdayIvoaTable
     {
+    /**
+     * Metadata database table name.
+     * 
+     */
     protected static final String DB_TABLE_NAME = "TuesdayIvoaTableEntity";
 
     /**

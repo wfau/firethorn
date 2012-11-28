@@ -19,7 +19,10 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -36,6 +39,8 @@ import org.springframework.jdbc.datasource.lookup.DataSourceLookup;
 import org.springframework.jdbc.datasource.lookup.BeanFactoryDataSourceLookup;
 import org.springframework.jdbc.datasource.lookup.DataSourceLookupFailureException;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
+import org.springframework.jdbc.support.SQLExceptionSubclassTranslator;
+import org.springframework.jdbc.support.SQLExceptionTranslator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,6 +54,7 @@ import lombok.extern.slf4j.Slf4j;
     AccessType.FIELD
     )
 public class TuesdayJdbcConnectionEntity
+    extends TuesdayBaseObject
     implements TuesdayJdbcConnection
     {
     protected static final String DB_URL_COL    = "dburl"; 
@@ -56,15 +62,34 @@ public class TuesdayJdbcConnectionEntity
     protected static final String DB_PASS_COL   = "dbpass"; 
     protected static final String DB_DRIVER_COL = "driver"; 
 
-    protected TuesdayJdbcConnectionEntity()
+    protected static final SQLExceptionTranslator translator = new SQLExceptionSubclassTranslator();
+    
+    public TuesdayJdbcConnectionEntity()
         {
         }
 
-    protected TuesdayJdbcConnectionEntity(TuesdayJdbcResourceEntity parent)
+    public TuesdayJdbcConnectionEntity(String url)
         {
+        this(
+            null,
+            url
+            );
+        }
+
+    public TuesdayJdbcConnectionEntity(TuesdayJdbcResourceEntity parent)
+        {
+        this(
+            parent,
+            null
+            );
+        }
+
+    public TuesdayJdbcConnectionEntity(TuesdayJdbcResourceEntity parent, String url)
+        {
+        this.url    = url ;
         this.parent = parent;
         }
-
+    
     @Parent
     protected TuesdayJdbcResourceEntity parent;
     protected TuesdayJdbcResourceEntity getParent()
@@ -235,7 +260,7 @@ public class TuesdayJdbcConnectionEntity
                 else if (this.url.startsWith(SPRING_URL_PREFIX))
                     {
                     DataSourceLookup resolver = new BeanFactoryDataSourceLookup(
-                        this.parent.factories().spring().context()
+                        this.factories().spring().context()
                         );
                     this.source = resolver.getDataSource(
                         this.url.substring(
@@ -253,9 +278,7 @@ public class TuesdayJdbcConnectionEntity
             catch (final DataSourceLookupFailureException ouch)
                 {
                 log.error("Unable to locate DataSource [{}]", this.url);
-                throw new RuntimeException(
-                    "Unable to locate DataSource [" + this.url +"]"
-                    );
+                throw ouch;
                 }
             }
         return this.source ;
@@ -267,14 +290,14 @@ public class TuesdayJdbcConnectionEntity
         @Override
         public Connection get()
             {
-            log.debug("ThreadLocal<Connection>.get()");
+            //log.debug("ThreadLocal<Connection>.get()");
             return super.get();
             }
 
         @Override
         public void set(Connection connection)
             {
-            log.debug("ThreadLocal<Connection>.set()");
+            //log.debug("ThreadLocal<Connection>.set()");
             super.set(
                 connection
                 );
@@ -283,7 +306,7 @@ public class TuesdayJdbcConnectionEntity
         @Override
         protected Connection initialValue()
             {
-            log.debug("ThreadLocal<Connection>.initialValue()");
+            //log.debug("ThreadLocal<Connection>.initialValue()");
             try {
                 if (user() != null)
                     {
@@ -298,8 +321,7 @@ public class TuesdayJdbcConnectionEntity
                 }
             catch (final SQLException ouch)
                 {
-                log.error("Unable to connect to database [{}]", ouch);
-                throw new RuntimeException(
+                throw new TuesdayJdbcConnectionFailedException(
                     ouch
                     );
                 }
@@ -312,7 +334,7 @@ public class TuesdayJdbcConnectionEntity
      */
     protected synchronized void reset()
         {
-        log.debug("reset()");
+        //log.debug("reset()");
         this.source = null ;
         this.local.remove();
         }
@@ -327,8 +349,8 @@ public class TuesdayJdbcConnectionEntity
     public DatabaseMetaData metadata()
         {
         try {
-            log.debug("Getting database metadata");
-            log.debug("-- Database [{}]", this.local.get().getCatalog());
+            //log.debug("Getting database metadata");
+            //log.debug("-- Database [{}]", this.local.get().getCatalog());
             return this.local.get().getMetaData();
             }
         catch (final SQLException ouch)
@@ -346,14 +368,13 @@ public class TuesdayJdbcConnectionEntity
         synchronized (this.local)
             {
             try {
+                // TODO Need to be able to 'peek' at the connection.
+                // Otherwise, if the connection has failed, this tries again.
                 this.local.get().close();
                 }
-            catch (final SQLException ouch)
+            catch (final Exception ouch)
                 {
                 log.error("Error closing database connection", ouch);
-                throw new RuntimeException(
-                    ouch
-                    );
                 }
             finally {
                 this.local.remove();
@@ -362,10 +383,38 @@ public class TuesdayJdbcConnectionEntity
         }
 
     @Override
-    public void inport()
+    public String catalog()
         {
-        this.parent.inport(
-            this.metadata()
-            );
+        try {
+            return this.local.get().getCatalog();
+            }
+        catch(Exception ouch)
+            {
+            //log.error("Exception reading database metadata", ouch);
+            return null ;
+            }
+        }
+
+    @Override
+    public Iterable<String> catalogs()
+        {
+        List<String> catalogs = new ArrayList<String>();
+        try {
+            DatabaseMetaData metadata = this.metadata();
+            ResultSet results = metadata.getCatalogs();
+            while (results.next())
+                {
+                catalogs.add(
+                    results.getString(
+                        TuesdayJdbcResource.JDBC_META_TABLE_CAT
+                        )
+                    );
+                }
+            }
+        catch(SQLException ouch)
+            {
+            log.error("SQLException reading database metadata", ouch);
+            }
+        return catalogs;
         }
     }

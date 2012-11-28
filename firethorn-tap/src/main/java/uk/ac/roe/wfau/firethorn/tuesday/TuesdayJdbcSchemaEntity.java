@@ -212,6 +212,23 @@ public class TuesdayJdbcSchemaEntity
                     name
                     );
                 }
+            @Override
+            public TuesdayJdbcTable create(String name)
+                {
+                return factories().jdbc().tables().create(
+                    TuesdayJdbcSchemaEntity.this,
+                    name
+                    );
+                }
+            @Override
+            public TuesdayJdbcTable create(String name, TuesdayJdbcTable.JdbcTableType type)
+                {
+                return factories().jdbc().tables().create(
+                    TuesdayJdbcSchemaEntity.this,
+                    name,
+                    type
+                    );
+                }
             };
         }
 

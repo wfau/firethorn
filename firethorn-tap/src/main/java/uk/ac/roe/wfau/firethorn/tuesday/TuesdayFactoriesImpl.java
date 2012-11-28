@@ -43,8 +43,13 @@ public class TuesdayFactoriesImpl
      */
     public static TuesdayFactories instance()
         {
-        log.debug("monday()");
-        return TuesdayFactoriesImpl.instance ;
+        if (TuesdayFactoriesImpl.instance == null)
+            {
+            throw new IllegalStateException(
+                "TuesdayFactories instance is null"
+                );
+            }
+        return TuesdayFactoriesImpl.instance;
         }
 
     /**
@@ -53,7 +58,6 @@ public class TuesdayFactoriesImpl
      */
     public static void instance(final TuesdayFactories factories)
         {
-        log.debug("monday(final Monday)");
         if (TuesdayFactoriesImpl.instance == null)
             {
             if (factories!= null)
@@ -81,7 +85,6 @@ public class TuesdayFactoriesImpl
      */
     private TuesdayFactoriesImpl()
         {
-        log.debug("MondayImpl()");
         TuesdayFactoriesImpl.instance(
             this
             );
