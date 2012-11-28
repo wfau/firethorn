@@ -329,7 +329,7 @@ public class TuesdayJdbcResourceTestCase
                 }
             catch(Exception ouch)
                 {
-                log.debug("SQLException importing metadata", ouch);
+                log.debug("Failed to import metadata [{}]", ouch.getMessage());
                 }
             finally {
                 resource.connection().close();

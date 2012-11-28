@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import java.sql.SQLException;
+
 /**
  *
  *
@@ -33,30 +35,10 @@ public class TuesdayJdbcConnectionFailedException
 
     /**
      * Public constructor.
-     *
-     */
-    public TuesdayJdbcConnectionFailedException()
-        {
-        }
-
-    /**
-     * Public constructor.
-     * @param message
-     *
-     */
-    public TuesdayJdbcConnectionFailedException(String message)
-        {
-        super(
-            message
-            );
-        }
-
-    /**
-     * Public constructor.
      * @param cause
      *
      */
-    public TuesdayJdbcConnectionFailedException(Throwable cause)
+    public TuesdayJdbcConnectionFailedException(SQLException cause)
         {
         super(
             cause
@@ -69,7 +51,7 @@ public class TuesdayJdbcConnectionFailedException
      * @param cause
      *
      */
-    public TuesdayJdbcConnectionFailedException(String message, Throwable cause)
+    public TuesdayJdbcConnectionFailedException(String message, SQLException cause)
         {
         super(
             message,

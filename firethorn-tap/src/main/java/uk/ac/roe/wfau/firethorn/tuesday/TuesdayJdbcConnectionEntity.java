@@ -349,14 +349,11 @@ public class TuesdayJdbcConnectionEntity
     public DatabaseMetaData metadata()
         {
         try {
-            //log.debug("Getting database metadata");
-            //log.debug("-- Database [{}]", this.local.get().getCatalog());
             return this.local.get().getMetaData();
             }
         catch (final SQLException ouch)
             {
-            log.error("Error fetching database metadata", ouch);
-            throw new RuntimeException(
+            throw new TuesdayJdbcMetadatAccessException(
                 ouch
                 );
             }
@@ -372,7 +369,7 @@ public class TuesdayJdbcConnectionEntity
                 // Otherwise, if the connection has failed, this tries again.
                 this.local.get().close();
                 }
-            catch (final Exception ouch)
+            catch (final Throwable ouch)
                 {
                 log.error("Error closing database connection", ouch);
                 }
