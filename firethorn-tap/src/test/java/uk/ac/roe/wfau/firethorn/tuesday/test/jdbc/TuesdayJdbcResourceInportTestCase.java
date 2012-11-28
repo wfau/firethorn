@@ -160,12 +160,12 @@ public class TuesdayJdbcResourceInportTestCase
         {
         display(
             inport(
-                "WORLD2"
+                "WORLDR2"
                 )
             );            
         }
 
-    @Test
+    //@Test
     public void inportAll()
     throws Exception
         {
