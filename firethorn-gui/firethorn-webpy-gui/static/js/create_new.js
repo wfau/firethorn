@@ -10,7 +10,15 @@ jQuery(document).ready(function() {
 			
 			if (jQuery('#adql_tree')!= []){
 		  		var jtree_div = '<div id="adql_tree" style="clear:both;text-align:left;"><ul id="tt" checkbox="true" class="easyui-tree" ></ul></div>';
-		  		var layout_div = '' +
+		  		var icon_helper = '<div id="icon_helper" style="text-align:center;margin-bottom:20px;">' +
+									'<span style="margin-right:35px;"><img style="vertical-align:bottom;" src="static/js/jquery-treeview/themes/default/images/res1-small.png"/> - Resource </span>' +
+									'<span style="margin-right:35px;"><img style="vertical-align:bottom;" src="static/js/jquery-treeview/themes/default/images/catalogue-small.png"/> - Catalogue </span>' +
+									'<span style="margin-right:35px;"><img style="vertical-align:bottom;" src="static/js/jquery-treeview/themes/default/images/schema-small.png"/> - Schema </span>' +
+									'<span style="margin-right:35px;"><img style="vertical-align:bottom;" src="static/js/jquery-treeview/themes/default/images/table-small.png"/> - Table </span>' +
+									'<span style="margin-right:35px;"><img style="vertical-align:bottom;" src="static/js/jquery-treeview/themes/default/images/column-small.png"/> - Column </span>' +
+								'</div>'
+								
+		  		var layout_div = icon_helper +
 		  	    '<div id="cc" class="easyui-layout" style="width:98%;height:500px;">'  +
 		        '<div region="west" split="true" title="ADQL Navigator" style="width:650px;">  '  +
 		           ' <br/><p style="padding:5px;margin:0;font-style:italic;text-align:left;margin-left:15px">Add ADQL View:</p><br/>  '  + jtree_div +
