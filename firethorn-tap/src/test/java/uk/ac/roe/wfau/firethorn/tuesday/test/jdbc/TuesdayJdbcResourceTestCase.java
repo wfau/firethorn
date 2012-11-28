@@ -272,17 +272,17 @@ public class TuesdayJdbcResourceTestCase
     public void display(final TuesdayJdbcResource resource)
         {
         log.debug("---");
-        log.debug("- JDBC resource [{}]", resource.connection().catalog());
+        log.debug("- JDBC resource [{}]", resource.name());
 
         for (final TuesdayJdbcSchema schema : resource.schemas().select())
             {
-            log.debug("--- Schema [{}][{}]", new Object[] {resource.connection().catalog(), schema.name()});
+            log.debug("--- Schema [{}][{}]", new Object[] {resource.name(), schema.name()});
             for (final TuesdayJdbcTable table : schema.tables().select())
                 {
-                log.debug("---- Table [{}][{}.{}]", new Object[] {resource.connection().catalog(), schema.name(), table.name()});
+                log.debug("---- Table [{}][{}.{}]", new Object[] {resource.name(), schema.name(), table.name()});
                 for (final TuesdayJdbcColumn column : table.columns().select())
                     {
-                    log.debug("----- Column [{}][{}.{}.{}]", new Object[] {resource.connection().catalog(), schema.name(), table.name(), column.name()});
+                    log.debug("----- Column [{}][{}.{}.{}]", new Object[] {resource.name(), schema.name(), table.name(), column.name()});
                     }
                 }
             }
