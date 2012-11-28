@@ -127,7 +127,6 @@ jQuery(document).ready(function() {
 		 
 	 });
 	 
-	 generate_view_interface();
 	 
 	jQuery('.input_form').live('submit',function(e){
 			var value = jQuery('.input_form :submit').val();
