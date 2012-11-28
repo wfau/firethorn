@@ -306,7 +306,7 @@ public class TuesdayJdbcResourceTestCase
             String url = "jdbc:jtds:sqlserver://localhost:1433/" + catalog ;             
 
             TuesdayJdbcResource resource = factories().jdbc().resources().create(
-                unique(catalog)
+                catalog
                 );
             resources.add(
                 resource
