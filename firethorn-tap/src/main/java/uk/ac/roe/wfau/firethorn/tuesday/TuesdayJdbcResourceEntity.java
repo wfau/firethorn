@@ -34,6 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.support.SQLExceptionSubclassTranslator;
+import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
@@ -75,7 +77,13 @@ public class TuesdayJdbcResourceEntity
      * 
      */
     protected static final String DB_TABLE_NAME = "TuesdayJdbcResourceEntity";
-    
+
+    /**
+     * Our SQLException translator.
+     * 
+     */
+    protected static final SQLExceptionTranslator translator = new SQLExceptionSubclassTranslator();
+
     /**
      * Resource factory implementation.
      *
@@ -218,7 +226,7 @@ public class TuesdayJdbcResourceEntity
                 metadata
                 );
 
-            final ResultSet results = metadata.getTables(
+            final ResultSet tables = metadata.getTables(
                 null,
                 null,
                 null,
@@ -228,78 +236,137 @@ public class TuesdayJdbcResourceEntity
                     JDBC_META_TABLE_TYPE_VIEW
                     }
                 );
-            while (results.next())
+            while (tables.next())
                 {
-                String cname = results.getString(JDBC_META_TABLE_CAT);
-                String sname = results.getString(JDBC_META_TABLE_SCHEM);
-                String tname = results.getString(JDBC_META_TABLE_NAME);
-                String ttype = results.getString(JDBC_META_TABLE_TYPE);
-                log.debug("Found table [{}.{}.{}]", new Object[]{cname, sname, tname});
-
-                //
-                // In MySQL the schema name is always null, use the catalog name instead.
-                if (product == JdbcProductType.MYSQL)
-                    {
-                    sname = cname ;
-                    cname = null ;
-                    }
+                final String tcname = tables.getString(JDBC_META_TABLE_CAT);
+                final String tsname = tables.getString(JDBC_META_TABLE_SCHEM);
+                final String ttname = tables.getString(JDBC_META_TABLE_NAME);
+                final String tttype = tables.getString(JDBC_META_TABLE_TYPE);
+                log.debug("Found table [{}.{}.{}]", new Object[]{tcname, tsname, ttname});
                 //
                 // If the catalog name is null.
-                if (cname == null)
+                if (tcname == null)
                     {
                     log.debug("Catalog is null, whatever ..");
                     }
                 //
                 // If the schema name is null.
-                if (sname == null)
+                if (tsname == null)
                     {
                     log.debug("Schema is null, whatever ..");
                     }
                 //
+                // In MySQL the schema name is always null, use the catalog name instead.
+                String schemaname = tsname ;
+                if (product == JdbcProductType.MYSQL)
+                    {
+                    schemaname = tcname ;
+                    }
+                //
                 // Skip if the schema is on our ignore list. 
-                if (product.ignore().contains(sname))
+                if (product.ignore().contains(schemaname))
                     {
                     log.debug("Schema is on the ignore list, skipping ...");
                     continue;
                     }
-
+                //
+                // Check for existing schema.
                 TuesdayJdbcSchema schema = this.schemas().select(
-                    sname
+                    schemaname
                     );
+                //
+                // Create a new schema.
                 if (schema == null)
                     {
                     schema = this.schemas().create(
-                        sname
+                        schemaname
                         );
                     }
                 //
                 // If the table name is null.
-                if (tname == null)
+                if (ttname == null)
                     {
                     log.debug("Table is null, whatever ..");
                     }
                 //
                 // If the table name is not null.
                 else {
-                    log.debug("Table is [{}], processing", tname);
+                    log.debug("Table is [{}], processing", ttname);
+                    //
+                    // Check for an existing table.
                     TuesdayJdbcTable table = schema.tables().select(
-                        tname
+                        ttname
                         );
+                    //
+                    // Create a new table.
                     if (table == null)
                         {
                         table = schema.tables().create(
-                            tname,
+                            ttname,
                             TuesdayJdbcTable.JdbcTableType.match(
-                                ttype
+                                tttype
                                 )
                             ); 
+                        }
+                    //
+                    // Import the table columns.
+                    try {
+                        final ResultSet columns = metadata.getColumns(
+                            tcname,
+                            tsname,
+                            ttname,
+                            null
+                            );
+                        while (columns.next())
+                            {
+                            String ccname = columns.getString(JDBC_META_TABLE_CAT);
+                            String csname = columns.getString(JDBC_META_TABLE_SCHEM);
+                            String ctname = columns.getString(JDBC_META_TABLE_NAME);
+                            String colname = columns.getString(JDBC_META_COLUMN_NAME);
+                            int    coltype = columns.getInt(JDBC_META_COLUMN_TYPE_TYPE);
+                            int    colsize = columns.getInt(JDBC_META_COLUMN_SIZE);
+                            log.debug("Column result [{}.{}.{}.{}]", new Object[]{
+                                ccname,
+                                csname,
+                                ctname,
+                                colname
+                                });
+                            TuesdayJdbcColumn column = table.columns().select(
+                                colname
+                                );
+                            if (column == null)
+                                {
+                                column = table.columns().create(
+                                    colname,
+                                    coltype,
+                                    colsize
+                                    );
+                                }
+                            }
+                        }
+                    catch (SQLException ouch)
+                        {
+                        log.error("Exception reading database metadata [{}]", ouch.getMessage());
+/*
+ * Do we want to continue ?
+                        throw translator.translate(
+                            "Reading database metadata",
+                            null,
+                            ouch
+                            );
+ */
                         }
                     }
                 }
             }
         catch (SQLException ouch)
             {
-            log.error("SQLException reading database metadata [{}]", ouch);
+            log.error("Exception reading database metadata [{}]", ouch.getMessage());
+            throw translator.translate(
+                "Reading database metadata",
+                null,
+                ouch
+                );
             }
         }
     }

@@ -40,7 +40,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Base class for tests.
- * The test is run using SpringJUnit4ClassRunner in order to support the @Autowired annotation.
+ * Using SpringJUnit4ClassRunner to support @Autowired annotations.
  *
  */
 @Slf4j

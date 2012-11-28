@@ -164,7 +164,7 @@ public class TuesdayAdqlColumnEntity
 
     protected TuesdayAdqlColumnEntity(final TuesdayAdqlTable table, final TuesdayBaseColumn<?> base, final String name)
         {
-        super(name);
+        super(table, name);
         this.base = base ;
         this.table = table;
         }

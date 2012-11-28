@@ -252,6 +252,24 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
                     name
                     );
                 }
+            @Override
+            public TuesdayJdbcColumn create(String name)
+                {
+                return factories().jdbc().columns().create(
+                    TuesdayJdbcTableEntity.this,
+                    name
+                    );
+                }
+            @Override
+            public TuesdayJdbcColumn create(String name, int type, int size)
+                {
+                return factories().jdbc().columns().create(
+                    TuesdayJdbcTableEntity.this,
+                    name,
+                    type,
+                    size
+                    );
+                }
             };
         }
 

@@ -77,6 +77,18 @@ extends TuesdayOgsaTable<TuesdayJdbcTable, TuesdayJdbcColumn>, TuesdayBaseTable<
      */
     public interface Columns extends TuesdayBaseTable.Columns<TuesdayJdbcColumn> 
         {
+        /**
+         * Create a new column.
+         *
+         */
+        public TuesdayJdbcColumn create(final String name);
+
+        /**
+         * Create a new column.
+         *
+         */
+        public TuesdayJdbcColumn create(final String name, final int type, final int size);
+        
         } 
     @Override
     public Columns columns();

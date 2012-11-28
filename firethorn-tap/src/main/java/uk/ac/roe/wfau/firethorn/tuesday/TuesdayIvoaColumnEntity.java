@@ -163,7 +163,7 @@ public class TuesdayIvoaColumnEntity
 
     protected TuesdayIvoaColumnEntity(TuesdayIvoaTable table, String name)
         {
-        super(name);
+        super(table, name);
         this.table = table;
         }
 

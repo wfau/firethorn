@@ -47,6 +47,12 @@ extends TuesdayBaseColumn<TuesdayJdbcColumn>, TuesdayOgsaColumn<TuesdayJdbcColum
          *
          */
         public TuesdayJdbcColumn create(final TuesdayJdbcTable parent, final String name);
+
+        /**
+         * Create a new column.
+         *
+         */
+        public TuesdayJdbcColumn create(final TuesdayJdbcTable parent, final String name, final int type, final int size);
        
         }
 
@@ -56,4 +62,30 @@ extends TuesdayBaseColumn<TuesdayJdbcColumn>, TuesdayOgsaColumn<TuesdayJdbcColum
     public TuesdayJdbcSchema schema();
     @Override
     public TuesdayJdbcResource resource();
+    
+    /**
+     * The SQL type code.
+     * @see java.sql.Types
+     *
+     */
+    public int sqltype();
+    /**
+     * The SQL type code.
+     * @see java.sql.Types
+     *
+     */
+    public void sqltype(int type);
+
+    /**
+     * The SQL data size.
+     *
+     */
+    public int sqlsize();
+
+    /**
+     * The SQL data size.
+     *
+     */
+    public void sqlsize(int size);
+
     }

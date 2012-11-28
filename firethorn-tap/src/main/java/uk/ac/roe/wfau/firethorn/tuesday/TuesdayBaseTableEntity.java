@@ -69,10 +69,10 @@ extends TuesdayBaseEntity
         super();
         }
 
-    protected TuesdayBaseTableEntity(TuesdayBaseSchema<?,TableType> schema, String name)
+    protected TuesdayBaseTableEntity(TuesdayBaseSchema<?,TableType> parent, String name)
         {
         super(name);
-        this.parent = schema;
+        this.parent = parent;
         }
 
     @Basic(fetch = FetchType.EAGER)

@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -54,7 +56,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
             query = "FROM TuesdayJdbcColumnEntity WHERE parent = :parent ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "TuesdayJdbcColumn-parent.name",
+            name  = "TuesdayJdbcColumn-select-parent.name",
             query = "FROM TuesdayJdbcColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
             ),
         @NamedQuery(
@@ -93,6 +95,20 @@ public class TuesdayJdbcColumnEntity
                 new TuesdayJdbcColumnEntity(
                     parent,
                     name
+                    )
+                );
+            }
+
+        @Override
+        @CreateEntityMethod
+        public TuesdayJdbcColumn create(final TuesdayJdbcTable parent, final String name, final int type, final int size)
+            {
+            return this.insert(
+                new TuesdayJdbcColumnEntity(
+                    parent,
+                    name,
+                    type,
+                    size
                     )
                 );
             }
@@ -162,10 +178,18 @@ public class TuesdayJdbcColumnEntity
         super();
         }
 
-    protected TuesdayJdbcColumnEntity(TuesdayJdbcTable table, String name) 
+    protected TuesdayJdbcColumnEntity(final TuesdayJdbcTable table, final String name) 
         {
-        super(name);
+        super(table, name);
         this.table = table;
+        }
+
+    protected TuesdayJdbcColumnEntity(final TuesdayJdbcTable table, final String name, final int type, final int size)
+        {
+        super(table, name);
+        this.table = table;
+        this.sqltype = type;
+        this.sqlsize = size;
         }
 
     @Override
@@ -207,4 +231,55 @@ public class TuesdayJdbcColumnEntity
         // TODO Auto-generated method stub
         return null;
         }
+
+    /**
+     * Metadata database column name.
+     * 
+     */
+    protected static final String SQL_TYPE_COL = "sqltype" ;
+
+    @Basic(fetch = FetchType.EAGER)
+    @Column(
+        name = SQL_TYPE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private int sqltype ;
+    @Override
+    public int sqltype()
+        {
+        return this.sqltype;
+        }
+    @Override
+    public void sqltype(int type)
+        {
+        this.sqltype = type;
+        }
+
+    /**
+     * Metadata database column name.
+     * 
+     */
+    protected static final String SQL_SIZE_COL = "sqlsize" ;
+
+    @Basic(fetch = FetchType.EAGER)
+    @Column(
+        name = SQL_SIZE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private int sqlsize;
+    @Override
+    public int sqlsize()
+        {
+        return this.sqlsize;
+        }
+    @Override
+    public void sqlsize(int size)
+        {
+        this.sqlsize = size;
+        }
+
     }

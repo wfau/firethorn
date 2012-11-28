@@ -17,12 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday.test.jdbc;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -35,24 +34,17 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayFactories;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnection;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnectionEntity;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcMetadata;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalog;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcColumn;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchema;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTable;
 
 /**
- *
+ * TODO experiment with this
+ * http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/jdbc/datasource/embedded/EmbeddedDatabaseBuilder.html
  *
  */
 @Slf4j

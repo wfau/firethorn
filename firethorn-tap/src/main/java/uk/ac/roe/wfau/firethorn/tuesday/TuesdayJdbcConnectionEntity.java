@@ -34,6 +34,8 @@ import javax.persistence.Transient;
 import javax.sql.DataSource;
 
 import org.hibernate.annotations.Parent;
+import org.hibernate.exception.internal.StandardSQLExceptionConverter;
+import org.hibernate.exception.spi.SQLExceptionConverter;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.lookup.DataSourceLookup;
 import org.springframework.jdbc.datasource.lookup.BeanFactoryDataSourceLookup;
@@ -62,7 +64,17 @@ public class TuesdayJdbcConnectionEntity
     protected static final String DB_PASS_COL   = "dbpass"; 
     protected static final String DB_DRIVER_COL = "driver"; 
 
+    /**
+     * Our Spring SQLException translator.
+     * 
+     */
     protected static final SQLExceptionTranslator translator = new SQLExceptionSubclassTranslator();
+
+    /**
+     * Our Hibernate SQLException converter.
+     * 
+     */
+    protected static final SQLExceptionConverter converter = new    StandardSQLExceptionConverter(); 
     
     public TuesdayJdbcConnectionEntity()
         {
@@ -366,12 +378,12 @@ public class TuesdayJdbcConnectionEntity
             {
             try {
                 // TODO Need to be able to 'peek' at the connection.
-                // Otherwise, if the connection has failed, this tries again.
+                // Otherwise, if the connection has failed, this just tries to open it again.
                 this.local.get().close();
                 }
             catch (final Throwable ouch)
                 {
-                log.error("Error closing database connection", ouch);
+                log.error("Error closing database connection [{}]", ouch.getMessage());
                 }
             finally {
                 this.local.remove();
@@ -410,7 +422,7 @@ public class TuesdayJdbcConnectionEntity
             }
         catch(SQLException ouch)
             {
-            log.error("SQLException reading database metadata", ouch);
+            log.error("Exception reading database metadata [{}]", ouch.getMessage());
             }
         return catalogs;
         }
