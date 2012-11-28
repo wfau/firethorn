@@ -30,6 +30,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 
 /**
@@ -145,7 +146,8 @@ extends TuesdayBaseEntity
         {
         return this.table().fullname().append(".").append(this.name());
         }
-    
+
+    @Index(name=DB_TABLE_NAME + "IndexByParent")
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = TuesdayBaseTableEntity.class

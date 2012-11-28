@@ -236,6 +236,11 @@ public class TuesdayJdbcResourceEntity
                     JDBC_META_TABLE_TYPE_VIEW
                     }
                 );
+
+            TuesdayJdbcSchema schema = null ;
+            TuesdayJdbcTable  table  = null ;
+            TuesdayJdbcColumn column = null ;
+
             while (tables.next())
                 {
                 final String tcname = tables.getString(JDBC_META_TABLE_CAT);
@@ -264,23 +269,46 @@ public class TuesdayJdbcResourceEntity
                     }
                 //
                 // Skip if the schema is on our ignore list. 
-                if (product.ignore().contains(schemaname))
+                if (product.ignores().contains(schemaname))
                     {
                     log.debug("Schema is on the ignore list, skipping ...");
                     continue;
                     }
-                //
-                // Check for existing schema.
-                TuesdayJdbcSchema schema = this.schemas().select(
-                    schemaname
-                    );
-                //
-                // Create a new schema.
+
+                boolean create = false ;
+
                 if (schema == null)
                     {
+                    table  = null ;
+                    column = null ;
+                    create = true ;
                     schema = this.schemas().create(
                         schemaname
                         );
+                    }
+                else {
+                    if (schema.name().equals(schemaname))
+                        {
+                        create = false ;
+                        }
+                    else {
+                        table  = null ;
+                        column = null ;
+                        schema = this.schemas().select(
+                            schemaname
+                            );
+                        if (schema != null)
+                            {
+                            create = false ;
+                            }
+                        else {
+                            create = true ;
+                            schema = this.schemas().create(
+                                schemaname
+                                );
+                        
+                            }
+                        }
                     }
                 //
                 // If the table name is null.
@@ -292,21 +320,55 @@ public class TuesdayJdbcResourceEntity
                 // If the table name is not null.
                 else {
                     log.debug("Table is [{}], processing", ttname);
-                    //
-                    // Check for an existing table.
-                    TuesdayJdbcTable table = schema.tables().select(
-                        ttname
-                        );
-                    //
-                    // Create a new table.
+
                     if (table == null)
                         {
-                        table = schema.tables().create(
+                        column = null ;
+                        create = true ;
+                        table  = schema.tables().create(
                             ttname,
                             TuesdayJdbcTable.JdbcTableType.match(
                                 tttype
                                 )
                             ); 
+                        }
+                    else {
+                        if (create)
+                            {
+                            column = null ;
+                            create = true ;
+                            table  = schema.tables().create(
+                                ttname,
+                                TuesdayJdbcTable.JdbcTableType.match(
+                                    tttype
+                                    )
+                                ); 
+                            }
+                        else {
+                            if (table.name().equals(ttname))
+                                {
+                                create = false ;
+                                }
+                            else {
+                                column = null ;
+                                table = schema.tables().select(
+                                    ttname
+                                    );
+                                if (table != null)
+                                    {
+                                    create = false ;
+                                    }
+                                else {
+                                    create = true ;
+                                    table  = schema.tables().create(
+                                        ttname,
+                                        TuesdayJdbcTable.JdbcTableType.match(
+                                            tttype
+                                            )
+                                        ); 
+                                    }
+                                }
+                            }
                         }
                     //
                     // Import the table columns.
@@ -331,16 +393,61 @@ public class TuesdayJdbcResourceEntity
                                 ctname,
                                 colname
                                 });
-                            TuesdayJdbcColumn column = table.columns().select(
-                                colname
-                                );
+
                             if (column == null)
                                 {
+                                create = true ;
                                 column = table.columns().create(
                                     colname,
                                     coltype,
                                     colsize
                                     );
+                                }
+                            else {
+                                if (create)
+                                    {
+                                    create = true ;
+                                    column = table.columns().create(
+                                        colname,
+                                        coltype,
+                                        colsize
+                                        );
+                                    }
+                                else {
+                                    if (column.name().equals(colname))
+                                        {
+                                        create = false ;
+                                        column.sqlsize(
+                                            colsize
+                                            );
+                                        column.sqltype(
+                                            coltype
+                                            );
+                                        }
+                                    else {
+                                        column = table.columns().select(
+                                                colname
+                                                );
+                                        if (column != null)
+                                            {
+                                            create = false ;
+                                            column.sqlsize(
+                                                colsize
+                                                );
+                                            column.sqltype(
+                                                coltype
+                                                );
+                                            }
+                                        else {
+                                            create = true ;
+                                            column = table.columns().create(
+                                                colname,
+                                                coltype,
+                                                colsize
+                                                );
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }

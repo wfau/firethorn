@@ -135,29 +135,37 @@ extends TuesdayOgsaResource<TuesdayJdbcSchema>, TuesdayBaseResource<TuesdayJdbcS
             new String[]{}
             );
 
-        private JdbcProductType(String jdbc)
+        private JdbcProductType(String alias)
             {
-            this(jdbc, null);
+            this(
+                alias,
+                null
+                );
             }
-        private JdbcProductType(String jdbc, String[] ignore)
+        private JdbcProductType(String alias, String[] ignores)
             {
-            this.jdbc = jdbc;
-            if (ignore != null)
+            this.alias = alias;
+            if (ignores != null)
                 {
-                for (String name : ignore)
+                for (String ignore : ignores)
                     {
-                    this.ignore.add(
-                        name
+                    this.ignores.add(
+                        ignore
                         );
                     }
                 }
             }
-        private String jdbc ;
 
-        private Collection<String> ignore = new ArrayList<String>();
-        public Collection<String>  ignore()
+        private String alias ;
+        public String alias()
             {
-            return this.ignore;
+            return this.alias;
+            }
+
+        private Collection<String> ignores = new ArrayList<String>();
+        public Collection<String>  ignores()
+            {
+            return this.ignores;
             }
 
         static protected Map<String, JdbcProductType> mapping = new HashMap<String, JdbcProductType>();
@@ -165,18 +173,18 @@ extends TuesdayOgsaResource<TuesdayJdbcSchema>, TuesdayBaseResource<TuesdayJdbcS
             for (JdbcProductType type : JdbcProductType.values())
                 {
                 mapping.put(
-                    type.jdbc,
+                    type.alias(),
                     type
                     );
                 }
             }
 
-        static public JdbcProductType match(String string)
+        static public JdbcProductType match(String alias)
             {
-            if (mapping.containsKey(string))
+            if (mapping.containsKey(alias))
                 {
                 return mapping.get(
-                    string
+                    alias
                     );
                 }
             else {
@@ -192,7 +200,7 @@ extends TuesdayOgsaResource<TuesdayJdbcSchema>, TuesdayBaseResource<TuesdayJdbcS
                 }
             catch (SQLException ouch)
                 {
-                log.error("SQLException reading database metadata [{}]", ouch);
+                log.error("SQLException reading database metadata [{}]", ouch.getMessage());
                 return UNKNOWN;
                 }
             }

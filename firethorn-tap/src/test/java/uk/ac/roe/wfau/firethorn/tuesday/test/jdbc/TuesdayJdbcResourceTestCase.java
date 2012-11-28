@@ -142,7 +142,7 @@ public class TuesdayJdbcResourceTestCase
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
-            TuesdayJdbcResource.JdbcProductType.PGSQL.name(),
+            TuesdayJdbcResource.JdbcProductType.PGSQL.alias(),
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
@@ -184,7 +184,7 @@ public class TuesdayJdbcResourceTestCase
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
-            TuesdayJdbcResource.JdbcProductType.MYSQL.name(),
+            TuesdayJdbcResource.JdbcProductType.MYSQL.alias(),
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
@@ -226,7 +226,7 @@ public class TuesdayJdbcResourceTestCase
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
-            TuesdayJdbcResource.JdbcProductType.MSSQL.name(),
+            TuesdayJdbcResource.JdbcProductType.MSSQL.alias(),
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(

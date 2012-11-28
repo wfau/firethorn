@@ -27,6 +27,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,10 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
     )
 @NamedQueries(
         {
+        @NamedQuery(
+            name  = "TuesdayJdbcColumn-select-table",
+            query = "FROM TuesdayJdbcColumnEntity WHERE table = :parent ORDER BY ident desc"
+            ),
         @NamedQuery(
             name  = "TuesdayJdbcColumn-select-parent",
             query = "FROM TuesdayJdbcColumnEntity WHERE parent = :parent ORDER BY ident desc"
@@ -198,6 +203,7 @@ public class TuesdayJdbcColumnEntity
         return this ;
         }
 
+    @Index(name=DB_TABLE_NAME + "IndexByParent")
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = TuesdayJdbcTableEntity.class
