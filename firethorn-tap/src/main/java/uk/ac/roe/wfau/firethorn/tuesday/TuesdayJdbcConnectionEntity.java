@@ -117,7 +117,7 @@ public class TuesdayJdbcConnectionEntity
     @Column(
         name = DB_URL_COL,
         unique = false,
-        nullable = false,
+        nullable = true,
         updatable = true
         )
     private String url = "";
