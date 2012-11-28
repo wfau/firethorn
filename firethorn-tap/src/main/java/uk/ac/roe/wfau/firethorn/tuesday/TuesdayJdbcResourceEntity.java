@@ -138,6 +138,18 @@ public class TuesdayJdbcResourceEntity
                 );
             }
 
+        @Override
+        @CreateEntityMethod
+        public TuesdayJdbcResource create(final String name, final String url)
+            {
+            return super.insert(
+                new TuesdayJdbcResourceEntity(
+                    name,
+                    url
+                    )
+                );
+            }
+
         @Autowired
         protected TuesdayJdbcSchema.Factory schemas;
 
@@ -162,9 +174,21 @@ public class TuesdayJdbcResourceEntity
         super();
         }
 
-    protected TuesdayJdbcResourceEntity(String name)
+    protected TuesdayJdbcResourceEntity(final String name)
         {
         super(name);
+        this.connection = new TuesdayJdbcConnectionEntity(
+            this
+            );
+        }
+
+    protected TuesdayJdbcResourceEntity(final String name, final  String url)
+        {
+        super(name);
+        this.connection = new TuesdayJdbcConnectionEntity(
+            this,
+            url
+            );
         }
 
     @Override
@@ -198,9 +222,7 @@ public class TuesdayJdbcResourceEntity
         }
 
     @Embedded
-    private TuesdayJdbcConnectionEntity connection = new TuesdayJdbcConnectionEntity(
-        this
-        );
+    private TuesdayJdbcConnectionEntity connection;
 
     @Override
     public TuesdayJdbcConnection connection()

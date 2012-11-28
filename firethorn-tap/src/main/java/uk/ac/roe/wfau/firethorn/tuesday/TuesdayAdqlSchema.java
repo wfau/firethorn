@@ -58,6 +58,11 @@ extends TuesdayBaseSchema<TuesdayAdqlSchema, TuesdayAdqlTable>
      */
     public interface Tables extends TuesdayBaseSchema.Tables<TuesdayAdqlTable>
         {
+        /**
+         * The create a new table.
+         *
+         */
+        public TuesdayAdqlTable create(final TuesdayJdbcTable base);
         } 
     @Override
     public Tables tables();

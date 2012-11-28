@@ -25,6 +25,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NamedQueries;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -174,7 +175,10 @@ public class TuesdayAdqlSchemaEntity
         super(resource, name);
         this.resource = resource;
         }
-    
+
+    @Index(
+        name=DB_TABLE_NAME + "IndexByParent"
+        )
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = TuesdayAdqlResourceEntity.class
@@ -210,6 +214,14 @@ public class TuesdayAdqlSchemaEntity
                 return factories().adql().tables().select(
                     TuesdayAdqlSchemaEntity.this,
                     name
+                    );
+                }
+            @Override
+            public TuesdayAdqlTable create(TuesdayJdbcTable base)
+                {
+                return factories().adql().tables().create(
+                    TuesdayAdqlSchemaEntity.this,
+                    base
                     );
                 }
             };

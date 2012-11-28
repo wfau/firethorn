@@ -46,8 +46,14 @@ extends TuesdayBaseColumn<TuesdayAdqlColumn>
          * Create a new column.
          *
          */
+        public TuesdayAdqlColumn create(final TuesdayAdqlTable parent, final TuesdayBaseColumn<?> base);
+
+        /**
+         * Create a new column.
+         *
+         */
         public TuesdayAdqlColumn create(final TuesdayAdqlTable parent, final TuesdayBaseColumn<?> base, final String name);
-       
+
         }
 
     @Override

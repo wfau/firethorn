@@ -159,6 +159,14 @@ extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
                     name
                     );
                 }
+            @Override
+            public TuesdayAdqlSchema create(String name)
+                {
+                return factories().adql().schemas().create(
+                    TuesdayAdqlResourceEntity.this,
+                    name
+                    );
+                }
             };
         }
 

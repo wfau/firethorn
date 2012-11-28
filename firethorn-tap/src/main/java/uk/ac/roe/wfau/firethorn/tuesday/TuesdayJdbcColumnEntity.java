@@ -203,7 +203,9 @@ public class TuesdayJdbcColumnEntity
         return this ;
         }
 
-    @Index(name=DB_TABLE_NAME + "IndexByParent")
+    @Index(
+        name=DB_TABLE_NAME + "IndexByParent"
+        )
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = TuesdayJdbcTableEntity.class

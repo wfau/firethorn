@@ -28,6 +28,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 
 /**
@@ -78,6 +79,9 @@ public abstract class TuesdayBaseSchemaEntity<SchemaType extends TuesdayBaseSche
         this.parent = resource;
         }
 
+    @Index(
+        name=DB_TABLE_NAME + "IndexByParent"
+        )
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = TuesdayBaseResourceEntity.class

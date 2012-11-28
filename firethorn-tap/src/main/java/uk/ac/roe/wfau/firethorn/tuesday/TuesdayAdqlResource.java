@@ -57,6 +57,12 @@ extends TuesdayBaseResource<TuesdayAdqlSchema>
      */
     public interface Schemas extends TuesdayBaseResource.Schemas<TuesdayAdqlSchema>
         {
+        /**
+         * Create a new schema.
+         * 
+         */
+        public TuesdayAdqlSchema create(final String name);
+
         } 
     @Override
     public Schemas schemas();

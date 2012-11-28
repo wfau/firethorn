@@ -25,6 +25,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NamedQueries;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,18 @@ public class TuesdayAdqlColumnEntity
         public Class<?> etype()
             {
             return TuesdayAdqlColumnEntity.class ;
+            }
+
+        @Override
+        @CreateEntityMethod
+        public TuesdayAdqlColumn create(final TuesdayAdqlTable parent, final TuesdayBaseColumn<?> base)
+            {
+            return this.insert(
+                new TuesdayAdqlColumnEntity(
+                    parent,
+                    base
+                    )
+                );
             }
 
         @Override
@@ -155,20 +168,74 @@ public class TuesdayAdqlColumnEntity
             return this.idents ;
             }
         }
-
     
     protected TuesdayAdqlColumnEntity()
         {
         super();
         }
 
-    protected TuesdayAdqlColumnEntity(final TuesdayAdqlTable table, final TuesdayBaseColumn<?> base, final String name)
+    protected TuesdayAdqlColumnEntity(final TuesdayAdqlTable table, final TuesdayBaseColumn<?> base)
         {
-        super(table, name);
-        this.base = base ;
+        super(table, base.name());
+        this.base  = base ;
         this.table = table;
         }
 
+    protected TuesdayAdqlColumnEntity(final TuesdayAdqlTable table, final TuesdayBaseColumn<?> base, final String name)
+        {
+        super(table, name);
+        this.base  = base ;
+        this.table = table;
+        }
+
+    @Override
+    public String text()
+        {
+        if (super.text() == null)
+            {
+            return base().text();
+            }
+        else {
+            return super.text();
+            }
+        }
+    @Override
+    public String type()
+        {
+        if (super.type() == null)
+            {
+            return base().type();
+            }
+        else {
+            return super.type();
+            }
+        }
+    @Override
+    public Integer size()
+        {
+        if (super.size() == null)
+            {
+            return base().size();
+            }
+        else {
+            return super.size();
+            }
+        }
+    @Override
+    public String ucd()
+        {
+        if (super.ucd() == null)
+            {
+            return base().ucd();
+            }
+        else {
+            return super.ucd();
+            }
+        }
+    
+    @Index(
+        name=DB_TABLE_NAME + "IndexByParent"
+        )
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = TuesdayAdqlTableEntity.class
@@ -196,6 +263,9 @@ public class TuesdayAdqlColumnEntity
         return this.table().resource();
         }
 
+    @Index(
+        name=DB_TABLE_NAME + "IndexByBase"
+        )
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = TuesdayBaseColumnEntity.class

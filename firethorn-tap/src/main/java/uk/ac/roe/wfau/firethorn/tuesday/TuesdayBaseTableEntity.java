@@ -30,6 +30,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 
 /**
@@ -135,7 +136,7 @@ extends TuesdayBaseEntity
     @Override
     public String alias()
         {
-        return null ;
+        return "ogsa_table_" + ident();
         }
 
     @Override
@@ -147,6 +148,9 @@ extends TuesdayBaseEntity
     @Override
     public abstract TuesdayOgsaTable<?, ?> ogsa();
 
+    @Index(
+        name=DB_TABLE_NAME + "IndexByParent"
+        )
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = TuesdayBaseSchemaEntity.class

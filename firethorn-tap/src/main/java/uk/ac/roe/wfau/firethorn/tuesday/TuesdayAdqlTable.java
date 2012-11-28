@@ -46,6 +46,12 @@ extends TuesdayBaseTable<TuesdayAdqlTable, TuesdayAdqlColumn>
          * Create a new table.
          *
          */
+        public TuesdayAdqlTable create(final TuesdayAdqlSchema parent, final TuesdayBaseTable<?, ?> base);
+
+        /**
+         * Create a new table.
+         *
+         */
         public TuesdayAdqlTable create(final TuesdayAdqlSchema parent, final TuesdayBaseTable<?, ?> base, final String name);
         
         /**
@@ -53,6 +59,7 @@ extends TuesdayBaseTable<TuesdayAdqlTable, TuesdayAdqlColumn>
          *
          */
         public TuesdayAdqlColumn.Factory columns();
+
         }
 
     @Override
@@ -67,6 +74,12 @@ extends TuesdayBaseTable<TuesdayAdqlTable, TuesdayAdqlColumn>
      */
     public interface Columns extends TuesdayBaseTable.Columns<TuesdayAdqlColumn>
         {
+        /**
+         * Create a new column.
+         * 
+         */
+        public TuesdayAdqlColumn create(final TuesdayBaseColumn<?> base);
+
         } 
     @Override
     public Columns columns();

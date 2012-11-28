@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.tuesday.test.jdbc;
+package uk.ac.roe.wfau.firethorn.tuesday.test.adql;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -34,6 +34,10 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayFactories;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnection;
@@ -41,6 +45,7 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnectionEntity;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
+import uk.ac.roe.wfau.firethorn.tuesday.test.jdbc.TuesdayJdbcResourceTestCase;
 
 /**
  * TODO experiment with this
@@ -48,82 +53,56 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
  *
  */
 @Slf4j
-public class TuesdayJdbcResourceTestCase
-    extends TestBase
+public class TuesdayAdqlCreateTestCase
+    extends TuesdayJdbcResourceTestCase
     {
 
-    /**
-     * Our TuesdayFactories instance.
-     *
-     */
-    @Autowired
-    private TuesdayFactories factories;
-
-    /**
-     * Access to our TuesdayFactories singleton instance.
-     *
-     */
-    public TuesdayFactories factories()
-        {
-        return this.factories;
-        }
-
-    /**
-     * Local properties file.
-     * 
-     */
-    private Properties config = new Properties();
-    /**
-     * Local properties file.
-     * 
-     */
-    public Properties config()
-        {
-        return this.config;
-        }
-
-    public static final String CONFIG_PATH = "user.home" ;
-    public static final String CONFIG_FILE = "firethorn.properties" ;
-
-    @Before
-    @Override
-    public void before()
+    @Test
+    public void test001()
     throws Exception
         {
-        log.debug("Before ----");
-        this.config.load(
-            new FileInputStream(
-                new File(
-                    System.getProperty(
-                        CONFIG_PATH
-                        ),
-                    CONFIG_FILE
-                    )
-                )
+        TuesdayJdbcResource jdbcResource = factories().jdbc().resources().create(
+            "test-resource",
+            "spring:RoeLiveData"
             );
-        }    
+        jdbcResource.inport();
 
-    @After
-    @Override
-    public void after()
-        {
-        log.debug("After ----");
+        display(jdbcResource);
+
+        TuesdayAdqlResource adqlWorkspace = factories().adql().resources().create(
+            "test-workspace"
+            );
+        
+        TuesdayAdqlSchema adqlSchema = adqlWorkspace.schemas().create(
+            "wednesday"
+            ); 
+
+        TuesdayJdbcSchema jdbcSchema = jdbcResource.schemas().select("dbo");
+        TuesdayJdbcTable jdbcTable   = jdbcSchema .tables().select("twomass_psc");
+        
+        TuesdayAdqlTable adqlTable = adqlSchema.tables().create(
+            jdbcTable
+            ); 
+        
+        display(adqlWorkspace);
+
         }
 
-    public void display(final TuesdayJdbcResource resource)
+    public void display(final TuesdayAdqlResource resource)
         {
         log.debug("---");
-        log.debug("- JDBC resource [{}]", resource.name());
+        log.debug("- ADQL resource [{}]", resource.name());
 
-        for (final TuesdayJdbcSchema schema : resource.schemas().select())
+        for (final TuesdayAdqlSchema schema : resource.schemas().select())
             {
             log.debug("--- Schema [{}][{}]", new Object[] {resource.name(), schema.name()});
-            for (final TuesdayJdbcTable table : schema.tables().select())
+            for (final TuesdayAdqlTable table : schema.tables().select())
                 {
                 log.debug("---- Table [{}][{}.{}]", new Object[] {resource.name(), schema.name(), table.name()});
-                for (final TuesdayJdbcColumn column : table.columns().select())
+                for (final TuesdayAdqlColumn column : table.columns().select())
                     {
-                    log.debug("----- Column [{}][{}.{}.{}]", new Object[] {resource.name(), schema.name(), table.name(), column.name()});
+                    log.debug("----- Column [{}][{}][{}]", new Object[] {column.resource().name(),        column.alias(),        column.fullname()});
+                    log.debug("----- Base   [{}][{}][{}]", new Object[] {column.base().resource().name(), column.base().alias(), column.base().fullname()});
                     }
                 }
             }

@@ -49,75 +49,8 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
  */
 @Slf4j
 public class TuesdayJdbcResourceInportTestCase
-    extends TestBase
+    extends TuesdayJdbcResourceTestCase
     {
-
-    /**
-     * Our TuesdayFactories instance.
-     *
-     */
-    @Autowired
-    private TuesdayFactories factories;
-
-    /**
-     * Access to our TuesdayFactories singleton instance.
-     *
-     */
-    public TuesdayFactories factories()
-        {
-        return this.factories;
-        }
-
-    //
-    // Local properties file.
-    private Properties config = new Properties();
-
-    public static final String CONFIG_PATH = "user.home" ;
-    public static final String CONFIG_FILE = "firethorn.properties" ;
-
-    @Before
-    @Override
-    public void before()
-    throws Exception
-        {
-        log.debug("Before ----");
-        this.config.load(
-            new FileInputStream(
-                new File(
-                    System.getProperty(
-                        CONFIG_PATH
-                        ),
-                    CONFIG_FILE
-                    )
-                )
-            );
-        }    
-
-    @After
-    @Override
-    public void after()
-        {
-        log.debug("After ----");
-        }
-
-    public void display(final TuesdayJdbcResource resource)
-        {
-        log.debug("---");
-        log.debug("- JDBC resource [{}]", resource.name());
-
-        for (final TuesdayJdbcSchema schema : resource.schemas().select())
-            {
-            log.debug("--- Schema [{}][{}]", new Object[] {resource.name(), schema.name()});
-            for (final TuesdayJdbcTable table : schema.tables().select())
-                {
-                log.debug("---- Table [{}][{}.{}]", new Object[] {resource.name(), schema.name(), table.name()});
-                for (final TuesdayJdbcColumn column : table.columns().select())
-                    {
-                    log.debug("----- Column [{}][{}.{}.{}]", new Object[] {resource.name(), schema.name(), table.name(), column.name()});
-                    }
-                }
-            }
-        }
 
     public TuesdayJdbcResource inport(String catalog)
     throws Exception
@@ -132,12 +65,12 @@ public class TuesdayJdbcResourceInportTestCase
             url
             );
         resource.connection().user(
-            this.config.getProperty(
+            config().getProperty(
                 "firethorn.wfau.user"
                 )
             );
         resource.connection().pass(
-            this.config.getProperty(
+            this.config().getProperty(
                 "firethorn.wfau.pass"
                 )
             );
@@ -146,7 +79,7 @@ public class TuesdayJdbcResourceInportTestCase
             }
         catch(Exception ouch)
             {
-            log.debug("Failed to import metadata [{}]", ouch.getMessage());
+            log.debug("Failed to import resource [{}]", ouch.getMessage());
             }
         finally {
             resource.connection().close();
@@ -155,7 +88,7 @@ public class TuesdayJdbcResourceInportTestCase
         }
 
     @Test
-    public void inportOne()
+    public void test001()
     throws Exception
         {
         display(
@@ -166,7 +99,7 @@ public class TuesdayJdbcResourceInportTestCase
         }
 
     //@Test
-    public void inportAll()
+    public void test002()
     throws Exception
         {
         TuesdayJdbcConnection connection = new TuesdayJdbcConnectionEntity(

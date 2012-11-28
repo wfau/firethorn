@@ -56,6 +56,12 @@ extends TuesdayOgsaResource<TuesdayJdbcSchema>, TuesdayBaseResource<TuesdayJdbcS
          */
         public TuesdayJdbcSchema.Factory schemas();
 
+        /**
+         * Create a new resource.
+         *
+         */
+        public TuesdayJdbcResource create(final String name, final String url);
+
         }
 
     /**

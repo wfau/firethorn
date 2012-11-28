@@ -25,12 +25,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NamedQueries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
@@ -83,6 +85,34 @@ public class TuesdayAdqlTableEntity
         public Class<?> etype()
             {
             return TuesdayAdqlTableEntity.class ;
+            }
+
+        @Override
+        @CascadeEntityMethod
+        public TuesdayAdqlTable insert(final TuesdayAdqlTable entity)
+            {
+            super.insert(
+                entity
+                );
+            for (TuesdayBaseColumn<?> base : entity.base().columns().select())
+                {
+                entity.columns().create(
+                    base 
+                    );
+                }
+            return entity ;
+            }
+
+        @Override
+        @CreateEntityMethod
+        public TuesdayAdqlTable create(final TuesdayAdqlSchema parent, final TuesdayBaseTable<?, ?> base)
+            {
+            return this.insert(
+                new TuesdayAdqlTableEntity(
+                    parent,
+                    base
+                    )
+                );
             }
 
         @Override
@@ -172,13 +202,21 @@ public class TuesdayAdqlTableEntity
         super();
         }
 
+    protected TuesdayAdqlTableEntity(final TuesdayAdqlSchema schema, final TuesdayBaseTable<?, ?> base)
+        {
+        super(schema, base.name());
+        this.base   = base;
+        this.schema = schema;
+        }
+
     protected TuesdayAdqlTableEntity(final TuesdayAdqlSchema schema, final TuesdayBaseTable<?, ?> base, final String name)
         {
         super(schema, name);
-        this.base = base;
+        this.base   = base;
         this.schema = schema;
         }
-    
+
+    /*
     @Override
     public String name()
         {
@@ -190,6 +228,8 @@ public class TuesdayAdqlTableEntity
             return super.name();
             }
         }
+    */
+
     @Override
     public String text()
         {
@@ -235,6 +275,9 @@ public class TuesdayAdqlTableEntity
             }
         }
 
+    @Index(
+        name=DB_TABLE_NAME + "IndexByParent"
+        )
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = TuesdayAdqlSchemaEntity.class
@@ -263,6 +306,9 @@ public class TuesdayAdqlTableEntity
         return this.schema.resource();
         }
 
+    @Index(
+        name=DB_TABLE_NAME + "IndexByBase"
+        )
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = TuesdayBaseTableEntity.class
@@ -304,6 +350,14 @@ public class TuesdayAdqlTableEntity
                 return factories().adql().columns().select(
                     TuesdayAdqlTableEntity.this,
                     name
+                    );
+                }
+            @Override
+            public TuesdayAdqlColumn create(TuesdayBaseColumn<?> base)
+                {
+                return factories().adql().columns().create(
+                    TuesdayAdqlTableEntity.this,
+                    base
                     );
                 }
             };

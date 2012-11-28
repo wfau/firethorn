@@ -138,7 +138,7 @@ extends TuesdayBaseEntity
     @Override
     public String alias()
         {
-        return "ogsa_column_ident";
+        return "ogsa_column_" + ident();
         }
 
     @Override
@@ -147,7 +147,9 @@ extends TuesdayBaseEntity
         return this.table().fullname().append(".").append(this.name());
         }
 
-    @Index(name=DB_TABLE_NAME + "IndexByParent")
+    @Index(
+        name=DB_TABLE_NAME + "IndexByParent"
+        )
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = TuesdayBaseTableEntity.class
