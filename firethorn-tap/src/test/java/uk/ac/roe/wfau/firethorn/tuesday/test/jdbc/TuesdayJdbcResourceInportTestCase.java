@@ -119,13 +119,56 @@ public class TuesdayJdbcResourceInportTestCase
             }
         }
 
-    @Test
-    public void inport()
+    public TuesdayJdbcResource inport(String catalog)
     throws Exception
         {
-        assertNotNull(
-            factories()
+        log.debug("Catalog [{}]",catalog);
+        String url = "jdbc:jtds:sqlserver://localhost:1433/" + catalog ;             
+
+        TuesdayJdbcResource resource = factories().jdbc().resources().create(
+            catalog
             );
+        resource.connection().url(
+            url
+            );
+        resource.connection().user(
+            this.config.getProperty(
+                "firethorn.wfau.user"
+                )
+            );
+        resource.connection().pass(
+            this.config.getProperty(
+                "firethorn.wfau.pass"
+                )
+            );
+        try {
+            resource.inport();
+            }
+        catch(Exception ouch)
+            {
+            log.debug("Failed to import metadata [{}]", ouch.getMessage());
+            }
+        finally {
+            resource.connection().close();
+            }
+        return resource;
+        }
+
+    @Test
+    public void inportOne()
+    throws Exception
+        {
+        display(
+            inport(
+                "WORLD2"
+                )
+            );            
+        }
+
+    @Test
+    public void inportAll()
+    throws Exception
+        {
         TuesdayJdbcConnection connection = new TuesdayJdbcConnectionEntity(
             "spring:RoeLiveData"
             );
@@ -133,38 +176,11 @@ public class TuesdayJdbcResourceInportTestCase
 
         for (String catalog : connection.catalogs())
             {
-            log.debug("Catalog [{}]",catalog);
-            String url = "jdbc:jtds:sqlserver://localhost:1433/" + catalog ;             
-
-            TuesdayJdbcResource resource = factories().jdbc().resources().create(
-                catalog
-                );
             resources.add(
-                resource
-                );
-            resource.connection().url(
-                url
-                );
-            resource.connection().user(
-                this.config.getProperty(
-                    "firethorn.wfau.user"
+                inport(
+                    catalog
                     )
                 );
-            resource.connection().pass(
-                this.config.getProperty(
-                    "firethorn.wfau.pass"
-                    )
-                );
-            try {
-                resource.inport();
-                }
-            catch(Exception ouch)
-                {
-                log.debug("Failed to import metadata [{}]", ouch.getMessage());
-                }
-            finally {
-                resource.connection().close();
-                }
             }
         for (TuesdayJdbcResource resource : resources)
             {
