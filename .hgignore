@@ -6,6 +6,9 @@ syntax: glob
 # Python code.
 *.pyc
 
+# Webpy sessions
+/firethorn-gui/firethorn-webpy-gui/sessions
+
 # Maven build directories.
 target
 */target
