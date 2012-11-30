@@ -90,5 +90,11 @@
 	<cxt:load-time-weaver aspectj-weaving="on"/>
         +-->
 
+    <!--+
+        | Use a local properties file.
+        | http://blog.callistaenterprise.se/2011/11/17/configure-your-spring-web-application/
+        +-->
+    <cxt:property-placeholder location="file:${user.home}/firethorn.properties"/>
+
 </beans>
 

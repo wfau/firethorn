@@ -48,7 +48,7 @@
         <!--+
             | Database connection.
             +-->
-        <property name="dataSource" ref="FireThornDatabase"/>
+        <property name="dataSource" ref="PgsqlLocalData"/>
 
         <!--+
             | List our annotated entity beans.

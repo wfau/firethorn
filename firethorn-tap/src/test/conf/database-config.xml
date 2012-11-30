@@ -46,7 +46,7 @@
         <property name="password" value=""/>
     </bean>
 
-    <!-- ======== Target test database ======== -->
+    <!-- ======== Target JDBC database ======== -->
 
     <!--+
         | Memory based HSQLDB test data.
