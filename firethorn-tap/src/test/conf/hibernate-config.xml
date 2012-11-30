@@ -46,7 +46,7 @@
         <!--+
             | Database connection.
             +-->
-        <property name="dataSource" ref="PgSqlLocalData"/>
+        <property name="dataSource" ref="PgsqlLocalData"/>
 
         <!--+
             | List our annotated entity beans.

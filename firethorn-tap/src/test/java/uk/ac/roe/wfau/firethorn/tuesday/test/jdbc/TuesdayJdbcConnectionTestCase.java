@@ -70,7 +70,7 @@ public class TuesdayJdbcConnectionTestCase
             resource
             );
         resource.connection().url(
-            "spring:PgSqlLocalTest"
+            "spring:PgsqlLocalTest"
             );
         assertNotNull(
             resource.connection().open()
@@ -112,7 +112,7 @@ public class TuesdayJdbcConnectionTestCase
             resource
             );
         resource.connection().url(
-            "spring:MySqlLocalTest"
+            "spring:MysqlLocalTest"
             );
         assertNotNull(
             resource.connection().open()
