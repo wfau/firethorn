@@ -24,7 +24,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
  *
  */
 public interface TuesdayBaseColumn<ColumnType extends TuesdayBaseColumn<ColumnType>>
-extends TuesdayBase
+extends TuesdayBaseComponent
     {
     /**
      * Identifier factory interface.

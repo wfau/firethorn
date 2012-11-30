@@ -15,49 +15,26 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
-
-import java.net.URI;
+package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- * Ident factory for <code>JdbcCatalog</code>.
- *
+ * Ident factory for <code>IvoaColumn</code>.
+ * TODO
+ * 
  */
 @Component
-public class JdbcCatalogIdentFactory
-extends WebappIdentFactory<JdbcCatalog>
-implements JdbcCatalog.IdentFactory
+public class IvoaColumnIdentFactory
+extends WebappIdentFactory<TuesdayIvoaColumn>
+implements TuesdayIvoaColumn.IdentFactory
     {
-    /**
-     * The type URI for this type.
-     *
-     */
-    public static final URI TYPE_URI = URI.create(
-        "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-catalog-1.0.json"
-        );
-
-    /**
-     * The URI path for individual catalogs.
-     *
-     */
-    public static final String CATALOG_PATH = "/jdbc/catalog/" + IDENT_TOKEN ;
-
-    /**
-     * The URI path for catalog schemas.
-     *
-     */
-    public static final String SCHEMAS_PATH = CATALOG_PATH + "/schemas" ;
-
     @Override
-    public String link(final JdbcCatalog entity)
+    public String link(final TuesdayIvoaColumn entity)
         {
-        return link(
-            CATALOG_PATH,
-            entity
-            );
+        return null;
         }
     }

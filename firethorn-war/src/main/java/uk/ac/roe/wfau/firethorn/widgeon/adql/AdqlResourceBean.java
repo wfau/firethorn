@@ -17,22 +17,23 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponentBean;
-import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponentBeanImpl;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 
 /**
  * Bean wrapper for <code>JdbcResource</code>.
  *
  */
 public class AdqlResourceBean
-extends DataComponentBeanImpl<AdqlResource>
-implements DataComponentBean<AdqlResource>
+extends AbstractEntityBeanImpl<TuesdayAdqlResource>
+implements EntityBean<TuesdayAdqlResource>
     {
     /**
      * Public constructor.
      *
      */
-    public AdqlResourceBean(final AdqlResource entity)
+    public AdqlResourceBean(final TuesdayAdqlResource entity)
         {
         super(
             AdqlResourceIdentFactory.TYPE_URI,

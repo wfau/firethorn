@@ -233,6 +233,14 @@ public class TuesdayJdbcSchemaEntity
                     type
                     );
                 }
+            @Override
+            public Iterable<TuesdayJdbcTable> search(String text)
+                {
+                return factories().jdbc().tables().search(
+                    TuesdayJdbcSchemaEntity.this,
+                    text
+                    );
+                }
             };
         }
 

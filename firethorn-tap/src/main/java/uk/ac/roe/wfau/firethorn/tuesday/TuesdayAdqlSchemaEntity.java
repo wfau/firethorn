@@ -233,6 +233,14 @@ public class TuesdayAdqlSchemaEntity
                     name
                     );
                 }
+            @Override
+            public Iterable<TuesdayAdqlTable> search(String text)
+                {
+                return factories().adql().tables().search(
+                    TuesdayAdqlSchemaEntity.this,
+                    text
+                    );
+                }
             };
         }
 

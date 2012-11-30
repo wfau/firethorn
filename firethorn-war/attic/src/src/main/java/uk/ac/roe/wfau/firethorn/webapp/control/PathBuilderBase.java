@@ -22,10 +22,6 @@ import java.net.URI;
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlServiceIdentFactory;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceIdentFactory;
 
 /**
  * A webapp path builder.
@@ -332,24 +328,6 @@ public abstract class PathBuilderBase implements PathBuilder
                 this.toString()
                 );
             }
-        }
-
-    @Override
-    public Path link(final AdqlService target)
-        {
-        return path(
-            AdqlServiceIdentFactory.SERVICE_PATH,
-            target
-            );
-        }
-
-    @Override
-    public Path link(final JdbcResource target)
-        {
-        return path(
-            JdbcResourceIdentFactory.RESOURCE_PATH,
-            target
-            );
         }
     }
 

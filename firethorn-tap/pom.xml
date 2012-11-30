@@ -118,7 +118,7 @@
 
         <!--+
             | Postgresql database driver (for testing only).
-            | When deployed the container should provide the correct version of the driver.
+            | http://jdbc.postgresql.org/
             +-->
     	<dependency>
     		<groupId>postgresql</groupId>
@@ -143,7 +143,6 @@
         <dependency>
 	        <groupId>mysql</groupId>
 	        <artifactId>mysql-connector-java</artifactId>
-	        <version>5.1.21</version>
             <scope>test</scope>
         </dependency>
 

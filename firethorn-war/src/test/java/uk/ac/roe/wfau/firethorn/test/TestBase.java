@@ -35,7 +35,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.ac.roe.wfau.firethorn.common.womble.Womble;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayFactories;
 
 /**
  * Base class for tests.
@@ -64,19 +64,19 @@ public abstract class TestBase
     {
 
     /**
-     * Our test Womble.
+     * Our component Factories.
      *
      */
     @Autowired
-    private Womble womble ;
+    private TuesdayFactories factories;
 
     /**
-     * Access to our test Womble.
+     * Our component Factories.
      *
      */
-    public Womble womble()
+    public TuesdayFactories factories()
         {
-        return this.womble;
+        return this.factories;
         }
 
     @Before
@@ -96,7 +96,7 @@ public abstract class TestBase
     public void flush()
         {
         log.debug("flush()");
-        womble().hibernate().flush();
+        factories().hibernate().flush();
         }
 
     /**

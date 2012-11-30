@@ -15,6 +15,16 @@
     <!-- ======== FireThorn metadata database ======== -->
 
     <!--+
+        | Local Postgresql database.
+        +-->
+    <bean id="PgsqlLocalData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url"      value="${firethorn.pgsql.data.url}"/>
+        <property name="username" value="${firethorn.pgsql.data.user}"/>
+        <property name="password" value="${firethorn.pgsql.data.pass}"/>
+    </bean>
+
+    <!--+
         | Memory based HSQLDB database.
         | http://dwark.blogspot.co.uk/2006/10/maven-2-hibernate-hsqldb.html
         | https://numberformat.wordpress.com/2010/06/03/creating-and-using-hsqldb-database-using-maven-in-10-minutes/
@@ -34,16 +44,6 @@
         <property name="url" value="jdbc:hsqldb:file:target/database/filedata"/>
         <property name="username" value="sa"/>
         <property name="password" value=""/>
-    </bean>
-
-    <!--+
-        | Local Postgresql database.
-        +-->
-    <bean id="PgsqlLocalData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="org.postgresql.Driver"/>
-        <property name="url"      value="${firethorn.pgsql.data.url}"/>
-        <property name="username" value="${firethorn.pgsql.data.user}"/>
-        <property name="password" value="${firethorn.pgsql.data.pass}"/>
     </bean>
 
     <!-- ======== Target test database ======== -->

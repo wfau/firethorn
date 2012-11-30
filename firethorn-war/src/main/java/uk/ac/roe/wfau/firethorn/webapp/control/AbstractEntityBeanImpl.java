@@ -69,7 +69,7 @@ implements EntityBean<EntityType>
         {
         try {
             return new URI(
-                entity.link()
+                this.entity.link()
                 );
             }
         catch (final URISyntaxException ouch)
@@ -89,22 +89,22 @@ implements EntityBean<EntityType>
     @Override
     public String getName()
         {
-        return entity.name();
+        return this.entity.name();
         }
 
     @Override
     public String getCreated()
         {
-        return formatter.print(
-            entity.created()
+        return this.formatter.print(
+            this.entity.created()
             );
         }
 
     @Override
     public String getModified()
         {
-        return formatter.print(
-            entity.modified()
+        return this.formatter.print(
+            this.entity.modified()
             );
         }
     }

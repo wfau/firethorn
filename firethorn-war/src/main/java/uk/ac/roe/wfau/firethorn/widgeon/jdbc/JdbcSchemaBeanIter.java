@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 
@@ -25,13 +26,13 @@ import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
  *
  */
 public class JdbcSchemaBeanIter
-extends AbstractEntityBeanIter<JdbcSchema>
+extends AbstractEntityBeanIter<TuesdayJdbcSchema>
     {
     /**
      * Public constructor.
      *
      */
-    public JdbcSchemaBeanIter(final Iterable<JdbcSchema> iterable)
+    public JdbcSchemaBeanIter(final Iterable<TuesdayJdbcSchema> iterable)
         {
         super(
             iterable
@@ -39,7 +40,7 @@ extends AbstractEntityBeanIter<JdbcSchema>
         }
 
     @Override
-    public EntityBean<JdbcSchema> bean(final JdbcSchema entity)
+    public EntityBean<TuesdayJdbcSchema> bean(final TuesdayJdbcSchema entity)
         {
         return new JdbcSchemaBean(
             entity

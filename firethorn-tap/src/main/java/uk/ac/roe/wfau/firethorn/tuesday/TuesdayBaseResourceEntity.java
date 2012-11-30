@@ -47,7 +47,7 @@ import org.hibernate.annotations.NamedQueries;
         }
     )
 public abstract class TuesdayBaseResourceEntity<SchemaType extends TuesdayBaseSchema<SchemaType,?>>
-    extends TuesdayBaseEntity
+    extends TuesdayBaseComponentEntity
     implements TuesdayBaseResource<SchemaType>
     {
     protected static final String DB_TABLE_NAME = "TuesdayBaseResourceEntity";

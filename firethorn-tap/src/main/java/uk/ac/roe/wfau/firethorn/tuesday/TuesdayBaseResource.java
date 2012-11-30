@@ -24,7 +24,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
  *
  */
 public interface TuesdayBaseResource<SchemaType extends TuesdayBaseSchema<SchemaType,?>>
-extends TuesdayBase
+extends TuesdayBaseComponent
     {
 
     /**

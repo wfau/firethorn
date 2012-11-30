@@ -32,6 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -118,13 +119,13 @@ extends AbstractController
      *
      */
     @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-    public JdbcTable table(
+    public TuesdayJdbcTable table(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException{
         log.debug("schema() [{}]", ident);
-        return womble().jdbc().tables().select(
-            womble().jdbc().tables().ident(
+        return factories().jdbc().tables().select(
+            factories().jdbc().tables().ident(
                 ident
                 )
             );
@@ -136,7 +137,7 @@ extends AbstractController
      */
     public JdbcColumnBeanIter select(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table
+        final TuesdayJdbcTable table
         ){
         log.debug("select()");
         return new JdbcColumnBeanIter(
@@ -151,7 +152,7 @@ extends AbstractController
     @RequestMapping(value="", method=RequestMethod.GET)
     public ModelAndView htmlIndex(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table,
+        final TuesdayJdbcTable table,
         final ModelAndView model
         ){
         log.debug("htmlIndex()");
@@ -174,7 +175,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
     public ModelAndView htmlSelect(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table,
+        final TuesdayJdbcTable table,
         final ModelAndView model
         ){
         log.debug("htmlSelect()");
@@ -198,7 +199,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcColumnBeanIter jsonSelect(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table,
+        final TuesdayJdbcTable table,
         final ModelAndView model
         ){
         log.debug("jsonSelect()");
@@ -213,7 +214,7 @@ extends AbstractController
      */
     public JdbcColumnBean select(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table,
+        final TuesdayJdbcTable table,
         final String name
         ){
         log.debug("select(String) [{}]", name);
@@ -231,7 +232,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
     public ModelAndView htmlSelect(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table,
+        final TuesdayJdbcTable table,
         @RequestParam(SELECT_NAME)
         final String name,
         final ModelAndView model
@@ -262,7 +263,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
     public JdbcColumnBean jsonSelect(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table,
+        final TuesdayJdbcTable table,
         @RequestParam(SELECT_NAME)
         final String name,
         final ModelAndView model
@@ -280,7 +281,7 @@ extends AbstractController
      */
     public JdbcColumnBeanIter search(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table,
+        final TuesdayJdbcTable table,
         final String text
         ){
         log.debug("search(String) [{}]", text);
@@ -298,7 +299,7 @@ extends AbstractController
     @RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
     public ModelAndView htmlSearch(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table,
+        final TuesdayJdbcTable table,
         final ModelAndView model
         ){
         log.debug("htmlSearch");
@@ -315,7 +316,7 @@ extends AbstractController
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
     public ModelAndView htmlSearch(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table,
+        final TuesdayJdbcTable table,
         @RequestParam(SEARCH_TEXT)
         final String text,
         final ModelAndView model
@@ -346,7 +347,7 @@ extends AbstractController
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
     public JdbcColumnBeanIter jsonSearch(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table,
+        final TuesdayJdbcTable table,
         @RequestParam(SEARCH_TEXT)
         final String text,
         final ModelAndView model
@@ -365,7 +366,7 @@ extends AbstractController
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.GET)
     public ModelAndView htmlCreate(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table,
+        final TuesdayJdbcTable table,
         final ModelAndView model
         ){
         log.debug("htmlCreate()");
@@ -381,7 +382,7 @@ extends AbstractController
      */
     public JdbcColumnBean create(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table,
+        final TuesdayJdbcTable table,
         final String name
         ){
         log.debug("create(String) [{}]", name);
@@ -399,7 +400,7 @@ extends AbstractController
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST)
     public ResponseEntity<String>  htmlCreate(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table,
+        final TuesdayJdbcTable table,
         @RequestParam(CREATE_NAME)
         final String name,
         final ModelAndView model
@@ -423,7 +424,7 @@ extends AbstractController
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<JdbcColumnBean> jsonCreate(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table,
+        final TuesdayJdbcTable table,
         @RequestParam(CREATE_NAME)
         final String name,
         final ModelAndView model

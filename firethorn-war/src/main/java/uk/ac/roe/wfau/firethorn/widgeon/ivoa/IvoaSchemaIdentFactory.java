@@ -15,24 +15,24 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.adql;
+package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- * Ident factory for <code>AdqlCatalog</code>.
+ * Ident factory for <code>IvoaSchema</code>.
  * TODO
- * 
  */
 @Component
-public class AdqlCatalogIdentFactory
-extends WebappIdentFactory<AdqlCatalog>
-implements AdqlCatalog.IdentFactory
+public class IvoaSchemaIdentFactory
+extends WebappIdentFactory<TuesdayIvoaSchema>
+implements TuesdayIvoaSchema.IdentFactory
     {
     @Override
-    public String link(final AdqlCatalog entity)
+    public String link(final TuesdayIvoaSchema entity)
         {
         return null;
         }

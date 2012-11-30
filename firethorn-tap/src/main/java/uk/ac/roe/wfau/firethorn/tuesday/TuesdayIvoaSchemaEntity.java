@@ -212,6 +212,14 @@ public class TuesdayIvoaSchemaEntity
                     name
                     );
                 }
+            @Override
+            public Iterable<TuesdayIvoaTable> search(String text)
+                {
+                return factories().ivoa().tables().search(
+                    TuesdayIvoaSchemaEntity.this,
+                    text
+                    );
+                }
             };
         }
 

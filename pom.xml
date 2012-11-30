@@ -370,7 +370,6 @@
 
             <!--+
                 | Postgresql JDBC driver.
-                | **When deployed the container should provide the correct version of the driver.
                 | http://jdbc.postgresql.org/
                 | http://mvnrepository.com/artifact/postgresql/postgresql
                 +-->
@@ -379,6 +378,27 @@
         		<artifactId>postgresql</artifactId>
                 <version>9.1-901-1.jdbc4</version>
         	</dependency>
+
+            <!--+
+                | Mysql JDBC driver.
+                | https://dev.mysql.com/usingmysql/java/
+                | http://mvnrepository.com/artifact/mysql/mysql-connector-java/
+                +-->
+            <dependency>
+	            <groupId>mysql</groupId>
+	            <artifactId>mysql-connector-java</artifactId>
+	            <version>5.1.21</version>
+            </dependency>
+
+            <!--+
+                | jTDS SQLServer JDBC driver.
+                | http://jtds.sourceforge.net/
+                +-->
+            <dependency>
+                <groupId>net.sourceforge.jtds</groupId>
+                <artifactId>jtds</artifactId>
+                <version>1.2.7</version>
+            </dependency>
 
             <!--+
                 | Project Lombok annotations.
@@ -418,16 +438,6 @@
                 <groupId>uk.ac.starlink</groupId>
                 <artifactId>stil-votable</artifactId>
                 <version>3.0.2</version>
-            </dependency>
-
-            <!--+
-                | jTDS SQLServer JDBC driver.
-                | http://jtds.sourceforge.net/
-                +-->
-            <dependency>
-                <groupId>net.sourceforge.jtds</groupId>
-                <artifactId>jtds</artifactId>
-                <version>1.2.7</version>
             </dependency>
 
         </dependencies>

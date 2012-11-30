@@ -15,49 +15,57 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
+package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
 import java.net.URI;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- * Ident factory for <code>JdbcSchema</code>.
- *
+ * Ident factory for <code>IvoaResource</code>.
+ * TODO
+ * 
  */
 @Component
-public class JdbcSchemaIdentFactory
-extends WebappIdentFactory<TuesdayJdbcSchema>
-implements TuesdayJdbcSchema.IdentFactory
+public class IvoaResourceIdentFactory
+extends WebappIdentFactory<TuesdayIvoaResource>
+implements TuesdayIvoaResource.IdentFactory
     {
     /**
      * The type URI for this type.
      *
      */
     public static final URI TYPE_URI = URI.create(
-        "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json"
+        "http://data.metagrid.co.uk/wfau/firethorn/types/ivoa-resource-1.0.json"
         );
 
     /**
-     * The URI path for individual schema.
+     * The URI path for the resource service.
      *
      */
-    public static final String SCHEMA_PATH = "/jdbc/schema/" + IDENT_TOKEN ;
+    public static final String RESOURCES_PATH = "/ivoa/resources";
 
     /**
-     * The URI path for schema tables.
+     * The URI path for individual resources.
      *
      */
-    public static final String TABLES_PATH = SCHEMA_PATH + "/tables" ;
+    public static final String RESOURCE_PATH = "/ivoa/resource/" + IDENT_TOKEN ;
+
+    /**
+     * The URI path for resource catalogs.
+     *
+     */
+    public static final String CATALOGS_PATH = RESOURCE_PATH + "/catalogs" ;
+
 
     @Override
-    public String link(final TuesdayJdbcSchema entity)
+    public String link(final TuesdayIvoaResource entity)
         {
         return link(
-            SCHEMA_PATH,
+            RESOURCE_PATH,
             entity
             );
         }

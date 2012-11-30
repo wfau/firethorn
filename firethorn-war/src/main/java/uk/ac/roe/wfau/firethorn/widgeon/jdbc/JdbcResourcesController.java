@@ -135,7 +135,7 @@ extends AbstractController
         model.addObject(
             SELECT_RESULT,
             new JdbcResourceBeanIter(
-                womble().jdbc().resources().select()
+                factories().jdbc().resources().select()
                 )
             );
         model.setViewName(
@@ -154,54 +154,7 @@ extends AbstractController
         final ModelAndView model
         ){
         return new JdbcResourceBeanIter(
-            womble().jdbc().resources().select()
-            );
-        }
-
-    /**
-     * HTML GET or POST request to select by name.
-     * @todo Wrap the entities as beans (with URI)
-     *
-     */
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
-    public ModelAndView htmlSelect(
-        @RequestParam(SELECT_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        model.addObject(
-            SELECT_NAME,
-            name
-            );
-        model.addObject(
-            SELECT_RESULT,
-            new JdbcResourceBeanIter(
-                womble().jdbc().resources().select(
-                    name
-                    )
-                )
-            );
-        model.setViewName(
-            "jdbc/resource/select"
-            );
-        return model ;
-        }
-
-    /**
-     * JSON GET or POST request to select by name.
-     *
-     */
-    @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public JdbcResourceBeanIter jsonSelect(
-        @RequestParam(SELECT_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        return new JdbcResourceBeanIter(
-            womble().jdbc().resources().select(
-                name
-                )
+            factories().jdbc().resources().select()
             );
         }
 
@@ -237,7 +190,7 @@ extends AbstractController
         model.addObject(
             SEARCH_RESULT,
             new JdbcResourceBeanIter(
-                womble().jdbc().resources().search(
+                factories().jdbc().resources().search(
                     text
                     )
                 )
@@ -260,7 +213,7 @@ extends AbstractController
         final ModelAndView model
         ){
         return new JdbcResourceBeanIter(
-            womble().jdbc().resources().search(
+            factories().jdbc().resources().search(
                 text
                 )
             );
@@ -292,7 +245,7 @@ extends AbstractController
         ){
         try {
             final JdbcResourceBean bean = new JdbcResourceBean(
-                womble().jdbc().resources().create(
+                factories().jdbc().resources().create(
                     name
                     )
                 );
@@ -321,7 +274,7 @@ extends AbstractController
         ){
         try {
             final JdbcResourceBean bean = new JdbcResourceBean(
-                womble().jdbc().resources().create(
+                factories().jdbc().resources().create(
                     name
                     )
                 );

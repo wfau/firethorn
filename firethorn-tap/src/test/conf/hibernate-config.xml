@@ -79,10 +79,6 @@
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumnEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnectionEntity</value>
 
-                <!--+
-                    |
-                    +-->
-
             </list>
         </property>
 
@@ -109,6 +105,7 @@
 
                 <!--+
                     | Jadira usertype registration.
+                    | http://usertype.sourceforge.net/
                     +-->
                 <prop key="jadira.usertype.autoRegisterUserTypes">true</prop>
 

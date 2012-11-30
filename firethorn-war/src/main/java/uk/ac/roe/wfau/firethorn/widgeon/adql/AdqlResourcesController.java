@@ -34,7 +34,6 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  * Spring MVC controller for <code>JdbcResource</code>.
  * TODO better exception handling.
  */
-@Slf4j
 @Controller
 @RequestMapping(AdqlResourceIdentFactory.RESOURCES_PATH)
 public class AdqlResourcesController
@@ -126,7 +125,7 @@ extends AbstractController
         model.addObject(
             SELECT_RESULT,
             new AdqlResourceBeanIter(
-                womble().adql().resources().select()
+                factories().adql().resources().select()
                 )
             );
         model.setViewName(
@@ -145,54 +144,7 @@ extends AbstractController
         final ModelAndView model
         ){
         return new AdqlResourceBeanIter(
-            womble().adql().resources().select()
-            );
-        }
-
-    /**
-     * HTML GET or POST request to select by name.
-     * @todo Wrap the entities as beans (with URI)
-     *
-     */
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
-    public ModelAndView htmlSelect(
-        @RequestParam(SELECT_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        model.addObject(
-            SELECT_NAME,
-            name
-            );
-        model.addObject(
-            SELECT_RESULT,
-            new AdqlResourceBeanIter(
-                womble().adql().resources().select(
-                    name
-                    )
-                )
-            );
-        model.setViewName(
-            "adql/resource/select"
-            );
-        return model ;
-        }
-
-    /**
-     * JSON GET or POST request to select by name.
-     *
-     */
-    @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public AdqlResourceBeanIter jsonSelect(
-        @RequestParam(SELECT_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        return new AdqlResourceBeanIter(
-            womble().adql().resources().select(
-                name
-                )
+            factories().adql().resources().select()
             );
         }
 
@@ -228,7 +180,7 @@ extends AbstractController
         model.addObject(
             SEARCH_RESULT,
             new AdqlResourceBeanIter(
-                womble().adql().resources().search(
+                factories().adql().resources().search(
                     text
                     )
                 )
@@ -251,7 +203,7 @@ extends AbstractController
         final ModelAndView model
         ){
         return new AdqlResourceBeanIter(
-            womble().adql().resources().search(
+            factories().adql().resources().search(
                 text
                 )
             );

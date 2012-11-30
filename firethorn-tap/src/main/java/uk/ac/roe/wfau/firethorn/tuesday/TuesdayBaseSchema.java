@@ -24,7 +24,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
  *
  */
 public interface TuesdayBaseSchema<SchemaType extends TuesdayBaseSchema<SchemaType, TableType>, TableType extends TuesdayBaseTable<TableType, ?>>
-extends TuesdayBase
+extends TuesdayBaseComponent
     {
     /**
      * Identifier factory interface.
@@ -80,7 +80,20 @@ extends TuesdayBase
      */
     public interface Tables<TableType>
         {
+        /**
+         * Select all of the tables in this schema.
+         *
+         */
         public Iterable<TableType> select();
+        /**
+         * Search for tables (name starts with).
+         *
+         */
+        public Iterable<TableType> search(String text);
+        /**
+         * Select a specific column by name.
+         *
+         */
         public TableType select(String name);
         } 
 

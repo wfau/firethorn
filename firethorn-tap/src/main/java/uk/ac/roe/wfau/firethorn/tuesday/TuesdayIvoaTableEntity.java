@@ -230,6 +230,15 @@ public class TuesdayIvoaTableEntity
                     name
                     );
                 }
+
+            @Override
+            public Iterable<TuesdayIvoaColumn> search(String text)
+                {
+                return factories().ivoa().columns().search(
+                    TuesdayIvoaTableEntity.this,
+                    text
+                    );
+                }
             };
         }
     

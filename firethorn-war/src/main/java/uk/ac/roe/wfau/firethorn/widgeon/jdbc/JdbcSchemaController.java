@@ -31,6 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -80,7 +81,7 @@ public class JdbcSchemaController
      *
      */
     public JdbcSchemaBean bean(
-        final JdbcSchema entity
+        final TuesdayJdbcSchema entity
         ){
         return new JdbcSchemaBean(
             entity
@@ -93,13 +94,13 @@ public class JdbcSchemaController
      *
      */
     @ModelAttribute(SCHEMA_ENTITY)
-    public JdbcSchema entity(
+    public TuesdayJdbcSchema entity(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException {
         log.debug("schema() [{}]", ident);
-        return womble().jdbc().schemas().select(
-            womble().jdbc().schemas().ident(
+        return factories().jdbc().schemas().select(
+            factories().jdbc().schemas().ident(
                 ident
                 )
             );
@@ -128,7 +129,7 @@ public class JdbcSchemaController
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcSchemaBean jsonSelect(
         @ModelAttribute(SCHEMA_ENTITY)
-        final JdbcSchema entity
+        final TuesdayJdbcSchema entity
         ){
         log.debug("jsonSelect()");
         return bean(
@@ -147,7 +148,7 @@ public class JdbcSchemaController
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @ModelAttribute(SCHEMA_ENTITY)
-        final JdbcSchema entity
+        final TuesdayJdbcSchema entity
         ){
 
         if (name != null)

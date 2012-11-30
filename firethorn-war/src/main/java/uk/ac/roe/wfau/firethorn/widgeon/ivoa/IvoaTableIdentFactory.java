@@ -15,16 +15,25 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.tuesday;
+package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import org.springframework.stereotype.Component;
+
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaTable;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- *
- *
+ * Ident factory for <code>IvoaTable</code>.
+ * TODO
  */
-public interface TuesdayBase
-extends Entity
+@Component
+public class IvoaTableIdentFactory
+extends WebappIdentFactory<TuesdayIvoaTable>
+implements TuesdayIvoaTable.IdentFactory
     {
-
+    @Override
+    public String link(final TuesdayIvoaTable entity)
+        {
+        return null;
+        }
     }

@@ -19,9 +19,9 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.FetchType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
@@ -34,17 +34,18 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 @Access(
     AccessType.FIELD
     )
-public abstract class TuesdayBaseEntity
+public abstract class TuesdayBaseComponentEntity
 extends AbstractEntity
-    implements TuesdayBase
+    implements TuesdayBaseComponent
     {
-    protected static final String DB_BASE_COL = "base";
+    protected static final String DB_BASE_COL   = "base";
     protected static final String DB_PARENT_COL = "parent";
+    protected static final String DB_STATUS_COL = "status";
 
     protected static final String DB_ALIAS_COL  = "alias";
-    protected static final String DB_TYPE_COL = "datatype" ;
-    protected static final String DB_SIZE_COL = "datasize" ;
-    protected static final String DB_UCD_COL  = "ucd"  ;
+    protected static final String DB_TYPE_COL   = "datatype" ;
+    protected static final String DB_SIZE_COL   = "datasize" ;
+    protected static final String DB_UCD_COL    = "ucd"  ;
 
     protected static final String DB_NAME_IDX        = "IndexByName";
     protected static final String DB_PARENT_IDX      = "IndexByParent";
@@ -54,15 +55,53 @@ extends AbstractEntity
     protected static final String DB_SCHEMA_COL   = "schema";
     protected static final String DB_TABLE_COL    = "table";
     protected static final String DB_COLUMN_COL   = "column";
-    
-    
-    protected TuesdayBaseEntity()
+
+
+    /**
+     * Default constructor needs to be protected not private.
+     * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
+     *
+     */
+    protected TuesdayBaseComponentEntity()
         {
+        super();
         }
 
-    protected TuesdayBaseEntity(String name)
+    /**
+     * Protected constructor, owner defaults to the current actor.
+     *
+     */
+    protected TuesdayBaseComponentEntity(final String name)
         {
-        super(name);
+        super(
+            name
+            );
         }
 
+    /**
+     * The component status.
+     *
+     */
+    @Column(
+        name = DB_STATUS_COL,
+        unique = false,
+        nullable = false,
+        updatable = true
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    private Status status = Status.CREATED ;
+    
+    @Override
+    public Status status()
+        {
+        return this.status;
+        }
+
+    @Override
+    public void status(final Status status)
+        {
+        this.status = status;
+        }
     }

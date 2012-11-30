@@ -36,7 +36,6 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable.JdbcTableType;
 
 /**
  *
@@ -249,7 +248,7 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
                     );
                 }
             @Override
-            public TuesdayJdbcColumn select(String name)
+            public TuesdayJdbcColumn select(final String name)
                 {
                 return factories().jdbc().columns().select(
                     TuesdayJdbcTableEntity.this,
@@ -257,7 +256,7 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
                     );
                 }
             @Override
-            public TuesdayJdbcColumn create(String name)
+            public TuesdayJdbcColumn create(final String name)
                 {
                 return factories().jdbc().columns().create(
                     TuesdayJdbcTableEntity.this,
@@ -265,13 +264,21 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
                     );
                 }
             @Override
-            public TuesdayJdbcColumn create(String name, int type, int size)
+            public TuesdayJdbcColumn create(final String name, final int type, final int size)
                 {
                 return factories().jdbc().columns().create(
                     TuesdayJdbcTableEntity.this,
                     name,
                     type,
                     size
+                    );
+                }
+            @Override
+            public Iterable<TuesdayJdbcColumn> search(final String text)
+                {
+                return factories().jdbc().columns().search(
+                    TuesdayJdbcTableEntity.this,
+                    text
                     );
                 }
             };
@@ -311,7 +318,7 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
         return this.jdbctype;
         }
     @Override
-    public void jdbctype(JdbcTableType type)
+    public void jdbctype(final JdbcTableType type)
         {
         this.jdbctype = type;
         }

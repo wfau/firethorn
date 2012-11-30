@@ -31,6 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -80,7 +81,7 @@ public class JdbcTableController
      *
      */
     public JdbcTableBean bean(
-        final JdbcTable entity
+        final TuesdayJdbcTable entity
         ){
         return new JdbcTableBean(
             entity
@@ -93,13 +94,13 @@ public class JdbcTableController
      *
      */
     @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-    public JdbcTable entity(
+    public TuesdayJdbcTable entity(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException {
         log.debug("table() [{}]", ident);
-        return womble().jdbc().tables().select(
-            womble().jdbc().tables().ident(
+        return factories().jdbc().tables().select(
+            factories().jdbc().tables().ident(
                 ident
                 )
             );
@@ -128,7 +129,7 @@ public class JdbcTableController
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcTableBean jsonSelect(
         @ModelAttribute(TABLE_ENTITY)
-        final JdbcTable entity
+        final TuesdayJdbcTable entity
         ){
         log.debug("jsonSelect()");
         return bean(
@@ -147,7 +148,7 @@ public class JdbcTableController
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @ModelAttribute(TABLE_ENTITY)
-        final JdbcTable entity
+        final TuesdayJdbcTable entity
         ){
 
         if (name != null)

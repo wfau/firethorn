@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable.JdbcTableType;
 
 /**
  *

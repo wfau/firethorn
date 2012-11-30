@@ -21,6 +21,7 @@ import java.net.URI;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
@@ -29,8 +30,8 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
  */
 @Component
 public class JdbcResourceIdentFactory
-extends WebappIdentFactory<JdbcResource>
-implements JdbcResource.IdentFactory
+extends WebappIdentFactory<TuesdayJdbcResource>
+implements TuesdayJdbcResource.IdentFactory
     {
     /**
      * The type URI for this type.
@@ -65,7 +66,7 @@ implements JdbcResource.IdentFactory
     public static final String ADQL_PATH = RESOURCE_PATH + "/adql" ;
 
     @Override
-    public String link(final JdbcResource entity)
+    public String link(final TuesdayJdbcResource entity)
         {
         return link(
             RESOURCE_PATH,

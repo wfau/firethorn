@@ -360,6 +360,14 @@ public class TuesdayAdqlTableEntity
                     base
                     );
                 }
+            @Override
+            public Iterable<TuesdayAdqlColumn> search(String text)
+                {
+                return factories().adql().columns().search(
+                    TuesdayAdqlTableEntity.this,
+                    text
+                    );
+                }
             };
         }
 

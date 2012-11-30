@@ -163,7 +163,7 @@
 
         <!--+
             | Postgresql JDBC driver.
-            | (when deployed the container should provide the correct version of the driver)
+            | http://jdbc.postgresql.org/
             +-->
     	<dependency>
     		<groupId>postgresql</groupId>
@@ -172,21 +172,42 @@
     	</dependency>
 
         <!--+
+            | Mysql JDBC driver.
+            | https://dev.mysql.com/usingmysql/java/
+            +-->
+        <dependency>
+	        <groupId>mysql</groupId>
+	        <artifactId>mysql-connector-java</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!--+
+            | jTDS SQLServer JDBC driver.
+            | http://jtds.sourceforge.net/
+            +-->
+        <dependency>
+            <groupId>net.sourceforge.jtds</groupId>
+            <artifactId>jtds</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!--+
             | Joda Time Libraries.
             | http://joda-time.sourceforge.net/
+            +-->	
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
         </dependency>
-            +-->	
+
         <!--+
             | Jadira Type Libraries.
             | http://blog.jadira.co.uk/
+            +-->	
         <dependency>
             <groupId>org.jadira.usertype</groupId>
             <artifactId>usertype.core</artifactId>
         </dependency>
-            +-->	
 
     </dependencies>
 

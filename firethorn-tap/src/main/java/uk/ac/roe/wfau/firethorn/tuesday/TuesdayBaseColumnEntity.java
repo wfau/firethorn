@@ -49,7 +49,7 @@ import org.hibernate.annotations.NamedQueries;
         @UniqueConstraint(
             columnNames = {
                 AbstractEntity.DB_NAME_COL,
-                TuesdayBaseEntity.DB_PARENT_COL,
+                TuesdayBaseComponentEntity.DB_PARENT_COL,
                 }
             )
         }
@@ -62,7 +62,7 @@ import org.hibernate.annotations.NamedQueries;
         }
     )
 public abstract class TuesdayBaseColumnEntity<ColumnType extends TuesdayBaseColumn<ColumnType>>
-extends TuesdayBaseEntity
+extends TuesdayBaseComponentEntity
     implements TuesdayBaseColumn<ColumnType>
     {
     protected static final String DB_TABLE_NAME = "TuesdayBaseColumnEntity";

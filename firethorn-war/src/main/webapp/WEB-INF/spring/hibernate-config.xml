@@ -60,22 +60,26 @@
 
                 <value>uk.ac.roe.wfau.firethorn.identity.IdentityEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.mallard.AdqlServiceEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.mallard.AdqlJobEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResourceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchemaEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTableEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumnEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaResourceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaSchemaEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaTableEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaColumnEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalogEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchemaEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTableEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcColumnEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseResourceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseSchemaEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTableEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseColumnEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResourceEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlCatalogEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlSchemaEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTableEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumnEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResourceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchemaEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTableEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumnEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnectionEntity</value>
 
                 <!--+
                     |
