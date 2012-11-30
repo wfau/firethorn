@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 
 /**
  *
@@ -33,30 +34,21 @@ public class AdqlSchemaTestCase
 extends TestBase
     {
 
-    private AdqlResource resource ;
-    public AdqlResource resource()
+    private TuesdayAdqlResource resource ;
+    public TuesdayAdqlResource resource()
         {
         return this.resource ;
         }
 
-    private AdqlCatalog catalog;
-    public AdqlCatalog catalog()
-        {
-        return this.catalog ;
-        }
-    
     @Before
     @Override
     public void before()
     throws Exception
         {
-        this.resource  = womble().adql().resources().create(
+        this.resource  = factories().adql().resources().create(
             this.unique(
                 "resource-A"
                 )
-            );
-        this.catalog = this.resource.catalogs().create(
-            "catalog-A"
             );
         }
     
@@ -67,7 +59,7 @@ extends TestBase
         //
         // Select missing schema fails.
         assertIsNull(
-            catalog().schemas().select(
+            resource().schemas().select(
                 "schema-A"
                 )
             );
@@ -80,14 +72,14 @@ extends TestBase
         //
         // Create catalog with name.
         assertNotNull(
-            catalog().schemas().create(
+            resource().schemas().create(
                 "schema-A"
                 )
             );
         //
         // Select catalog by name.
         assertNotNull(
-            catalog().schemas().select(
+            resource().schemas().select(
                 "schema-A"
                 )
             );

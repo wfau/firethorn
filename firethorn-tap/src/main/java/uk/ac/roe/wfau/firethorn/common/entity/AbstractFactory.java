@@ -31,11 +31,9 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.DeleteEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateEntityMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.common.womble.Womble;
-import uk.ac.roe.wfau.firethorn.mallard.AdqlService;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayFactories;
 
 /**
  * Generic base class for a persistent Entity Factory.
@@ -57,14 +55,14 @@ implements Entity.Factory<EntityType>
     public abstract Class<?> etype();
 
     /**
-     * Our autowired reference to the global Womble.
+     * Our autowired reference to the factories instance.
      *
      */
     @Autowired
-    private Womble womble ;
-    public Womble womble()
+    private TuesdayFactories factories;
+    public TuesdayFactories factories()
         {
-        return womble;
+        return factories;
         }
 
     /**
@@ -73,7 +71,7 @@ implements Entity.Factory<EntityType>
      */
     public Query query(final String name)
         {
-        return womble.hibernate().query(
+        return factories().hibernate().query(
             name
             );
         }
@@ -87,7 +85,7 @@ implements Entity.Factory<EntityType>
     public EntityType insert(final EntityType entity)
         {
         log.debug("insert [{}]", entity);
-        return (EntityType) womble.hibernate().insert(
+        return (EntityType) factories().hibernate().insert(
             entity
             );
         }
@@ -104,7 +102,7 @@ implements Entity.Factory<EntityType>
         log.debug("select [{}]", (ident != null) ? ident.value() : null);
         @SuppressWarnings("unchecked")
         final
-        EntityType result = (EntityType) womble.hibernate().select(
+        EntityType result = (EntityType) factories().hibernate().select(
             etype(),
             ident
             );
@@ -130,7 +128,7 @@ implements Entity.Factory<EntityType>
         log.debug("update [{}]", entity);
         if (etype().isInstance(entity))
             {
-            return (EntityType) womble.hibernate().update(
+            return (EntityType) factories().hibernate().update(
                 entity
                 );
             }
@@ -154,7 +152,7 @@ implements Entity.Factory<EntityType>
         log.debug("delete [{}]", entity);
         if (etype().isInstance(entity))
             {
-            womble.hibernate().delete(
+            factories().hibernate().delete(
                 entity
                 );
             }
@@ -174,7 +172,7 @@ implements Entity.Factory<EntityType>
      */
     protected void flush()
         {
-        womble.hibernate().flush();
+        factories().hibernate().flush();
         }
 
     /**
@@ -183,7 +181,7 @@ implements Entity.Factory<EntityType>
      */
     protected void clear()
         {
-        womble.hibernate().clear();
+        factories().hibernate().clear();
         }
 
     /**
@@ -195,7 +193,7 @@ implements Entity.Factory<EntityType>
     throws NotFoundException
         {
         @SuppressWarnings("unchecked")
-        final EntityType result = (EntityType) womble.hibernate().single(
+        final EntityType result = (EntityType) factories().hibernate().single(
             query
             );
         if (result != null)
@@ -215,7 +213,7 @@ implements Entity.Factory<EntityType>
     @SelectEntityMethod
     public EntityType first(final Query query)
         {
-        return (EntityType) womble.hibernate().first(
+        return (EntityType) factories().hibernate().first(
             query
             );
         }
@@ -239,7 +237,7 @@ implements Entity.Factory<EntityType>
                     }
                 catch (final HibernateException ouch)
                     {
-                    throw womble.hibernate().convert(
+                    throw factories().hibernate().convert(
                         ouch
                         );
                     }
@@ -260,7 +258,7 @@ implements Entity.Factory<EntityType>
             }
         catch (final HibernateException ouch)
             {
-            throw womble.hibernate().convert(
+            throw factories().hibernate().convert(
                 ouch
                 );
             }
@@ -292,16 +290,6 @@ implements Entity.Factory<EntityType>
             entity
             );
         }
-    /*
-     *
-    @Override
-    public String link(Identifier ident)
-        {
-        return identifiers().link(
-            ident
-            );
-        }
-*/
 
     @Override
     public Identifier ident(final String string)
@@ -310,7 +298,6 @@ implements Entity.Factory<EntityType>
             string
             );
         }
-
     }
 
 

@@ -3,7 +3,7 @@
 # Create a SSH tunnel to the ROE database server.
 [Zarquan@threonine ~]$ 
 
-    ssh -v -L 1433:ramses3:1433 dave@fenrir.roe.ac.uk
+    ssh -v -L 1433:ramses3:1433 fenrir.roe.ac.uk
 
 #
 # Login properties stored in user home.

@@ -17,6 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
+
+
 /**
  * Our component factories.
  *
@@ -52,5 +56,23 @@ public interface TuesdayFactories
      *
      */
     public TuesdayJdbcFactories jdbc();
+
+    /**
+     * Access to our Identity factory.
+     *
+     */
+    public Identity.Factory identities();
+
+    /**
+     * Access to the current Identity context.
+     *
+     */
+    public Identity.Context context();
+
+    /**
+     * Access to our ConfigProperty factory.
+     *
+     */
+    public ConfigProperty.Factory config();
 
     }

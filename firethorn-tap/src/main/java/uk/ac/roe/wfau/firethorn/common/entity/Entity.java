@@ -101,6 +101,18 @@ public interface Entity
     throws NameFormatException;
 
     /**
+     * Get the Entity description.
+     *
+     */
+    public String text();
+
+    /**
+     * Set the Entity description.
+     *
+     */
+    public void text(String text);
+
+    /**
      * Get the Entity owner.
      *
      */

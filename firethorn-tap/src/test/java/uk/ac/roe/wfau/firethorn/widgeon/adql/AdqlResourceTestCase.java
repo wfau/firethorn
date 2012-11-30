@@ -26,38 +26,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 
 /**
  *
  */
-@Slf4j
 public class AdqlResourceTestCase
 extends TestBase
     {
-
-    @Test
-    public void test000()
-    throws Exception
-        {
-        //
-        // Select missing fails.
-        assertFalse(
-            womble().adql().resources().select(
-                this.unique(
-                    "resource"
-                    )
-                ).iterator().hasNext()
-            );
-        }
 
     @Test
     public void test001()
     throws Exception
         {
         //
-        // Create with name works.
+        // Create with works.
         assertNotNull(
-            womble().adql().resources().create(
+            factories().adql().resources().create(
                 this.unique(
                     "resource"
                     )
@@ -71,20 +56,18 @@ extends TestBase
         {
         //
         // Create with name works.
-        AdqlResource created = womble().adql().resources().create(
+        TuesdayAdqlResource created = factories().adql().resources().create(
             this.unique(
                 "resource"
                 )
             );
         //
-        // Select by name works.
-        assertTrue(
-            womble().adql().resources().select(
-                created.name()
-                ).iterator().hasNext()
+        // Select by ident works.
+        assertNotNull(
+            factories().adql().resources().select(
+                created.ident()
+                )
             );
         }
-
-
     }
 

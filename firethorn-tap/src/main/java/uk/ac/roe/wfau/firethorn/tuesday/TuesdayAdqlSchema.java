@@ -63,6 +63,13 @@ extends TuesdayBaseSchema<TuesdayAdqlSchema, TuesdayAdqlTable>
          *
          */
         public TuesdayAdqlTable create(final TuesdayJdbcTable base);
+
+        /**
+         * The create a new table.
+         *
+         */
+        public TuesdayAdqlTable create(final TuesdayJdbcTable base, final String name);
+
         } 
     @Override
     public Tables tables();

@@ -209,7 +209,7 @@ public class TuesdayAdqlSchemaEntity
                     );
                 }
             @Override
-            public TuesdayAdqlTable select(String name)
+            public TuesdayAdqlTable select(final String name)
                 {
                 return factories().adql().tables().select(
                     TuesdayAdqlSchemaEntity.this,
@@ -217,11 +217,20 @@ public class TuesdayAdqlSchemaEntity
                     );
                 }
             @Override
-            public TuesdayAdqlTable create(TuesdayJdbcTable base)
+            public TuesdayAdqlTable create(final TuesdayJdbcTable base)
                 {
                 return factories().adql().tables().create(
                     TuesdayAdqlSchemaEntity.this,
                     base
+                    );
+                }
+            @Override
+            public TuesdayAdqlTable create(final TuesdayJdbcTable base, final String name)
+                {
+                return factories().adql().tables().create(
+                    TuesdayAdqlSchemaEntity.this,
+                    base,
+                    name
                     );
                 }
             };

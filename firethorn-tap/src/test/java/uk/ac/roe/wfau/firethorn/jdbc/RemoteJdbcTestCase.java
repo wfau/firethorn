@@ -19,10 +19,7 @@ package uk.ac.roe.wfau.firethorn.jdbc;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.sql.Connection;
 import java.util.Properties;
-
-import javax.sql.DataSource;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,11 +29,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcCatalog;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcColumn;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchema;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcTable;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
 
 /**
  *
@@ -56,11 +52,12 @@ extends TestBase
     public static final String CONFIG_PATH = "user.home" ;
     public static final String CONFIG_FILE = "firethorn.properties" ;
 
+    @Override
     @Before
     public void before()
     throws Exception
         {
-        config.load(
+        this.config.load(
             new FileInputStream(
                 new File(
                     System.getProperty(
@@ -83,7 +80,7 @@ extends TestBase
 
         //
         // Create an empty resource tree.
-        final JdbcResource jdbcResource = womble().jdbc().resources().create(
+        final TuesdayJdbcResource jdbcResource = factories().jdbc().resources().create(
             this.unique(
                 "base"
                 )
@@ -96,41 +93,16 @@ extends TestBase
         
         //
         // Set the database connection properties.
-        jdbcResource.jdbc().url(
+        jdbcResource.connection().url(
             "spring:RoeLiveData"
-            //"spring:PgSqlLocalTest"
-            //"spring:MySqlLocalTest"
             );
         //
         // Scan the resource for catalogs.
-        jdbcResource.scan();
-
-        //
-        // Scan all the catalogs for schemas.
-        if (false)
-            {
-            for (final JdbcCatalog jdbcCatalog : jdbcResource.catalogs().select())
-                {
-                jdbcCatalog.scan();
-                //
-                // Scan all the schema for tables.
-                for (final JdbcSchema jdbcSchema : jdbcCatalog.schemas().select())
-                    {
-                    jdbcSchema.scan();
-                    //
-                    // Scan all the tables for columns.
-                    for (final JdbcTable jdbcTable : jdbcSchema.tables().select())
-                        {
-                        jdbcTable.scan();
-                        womble().hibernate().flush();
-                        }
-                    }
-                }
-            }
+        jdbcResource.inport();
 
         //
         // Close our JDBC connection.
-        jdbcResource.jdbc().close();
+        jdbcResource.connection().close();
 
         //
         // Verify we got what we expected.
@@ -139,24 +111,20 @@ extends TestBase
             );
         }
     
-    public void display(final JdbcResource jdbcResource)
+    public void display(final TuesdayJdbcResource resource)
         {
         log.debug("---");
-        log.debug("- JDBC resource [{}]", jdbcResource.name());
+        log.debug("- JDBC resource [{}]", resource.name());
 
-        for (final JdbcCatalog catalog : jdbcResource.catalogs().select())
+        for (final TuesdayJdbcSchema schema : resource.schemas().select())
             {
-            log.debug("-- Catalog [{}]", new Object[] {catalog.name()});
-            for (final JdbcSchema schema : catalog.schemas().select())
+            log.debug("--- Schema [{}]", schema.fullname());
+            for (final TuesdayJdbcTable table : schema.tables().select())
                 {
-                log.debug("--- Schema [{}.{}]", new Object[] {catalog.name(), schema.name()});
-                for (final JdbcTable table : schema.tables().select())
+                log.debug("---- Table [{}]", table.fullname());
+                for (final TuesdayJdbcColumn column : table.columns().select())
                     {
-                    log.debug("---- Table [{}.{}.{}]", new Object[] {catalog.name(), schema.name(), table.name()});
-                    for (final JdbcColumn column : table.columns().select())
-                        {
-                        log.debug("----- Column [{}.{}.{}.{}]", new Object[] {catalog.name(), schema.name(), table.name(), column.name()});
-                        }
+                    log.debug("----- Column [{}]", column.fullname());
                     }
                 }
             }

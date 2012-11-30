@@ -308,44 +308,36 @@ extends JdbcResourceTestBase
         {
         //
         // Create base catalog, schema and table.
-        jdbc().resource().catalogs().create(
-            "jdbc_catalog"
-            ).schemas().create(
-                "jdbc_schema"
-                ).tables().create(
-                    "jdbc_table"
-                    );
+        jdbc().resource().schemas().create(
+            "jdbc_schema"
+            ).tables().create(
+                "jdbc_table"
+                );
         //
         // Create the columns.
-        jdbc().resource().catalogs().select(
-            "jdbc_catalog"
-            ).schemas().select(
-                "jdbc_schema"
-                ).tables().select(
-                    "jdbc_table"
-                    ).columns().create(
-                        "jdbc_ra"
-                        );
+        jdbc().resource().schemas().select(
+            "jdbc_schema"
+            ).tables().select(
+                "jdbc_table"
+                ).columns().create(
+                    "jdbc_ra"
+                    );
 
-        jdbc().resource().catalogs().select(
-            "jdbc_catalog"
-            ).schemas().select(
-                "jdbc_schema"
-                ).tables().select(
-                    "jdbc_table"
-                    ).columns().create(
-                        "jdbc_dec"
-                        );
+        jdbc().resource().schemas().select(
+            "jdbc_schema"
+            ).tables().select(
+                "jdbc_table"
+                ).columns().create(
+                    "jdbc_dec"
+                    );
 
-        jdbc().resource().catalogs().select(
-            "jdbc_catalog"
-            ).schemas().select(
-                "jdbc_schema"
-                ).tables().select(
-                    "jdbc_table"
-                    ).columns().create(
-                        "jdbc_pts"
-                        );
+        jdbc().resource().schemas().select(
+            "jdbc_schema"
+            ).tables().select(
+                "jdbc_table"
+                ).columns().create(
+                    "jdbc_pts"
+                    );
 
         //
         // Create ADQL resource, catalog and schema.

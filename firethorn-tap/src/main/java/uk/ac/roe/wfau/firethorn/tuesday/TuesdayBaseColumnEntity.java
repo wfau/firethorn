@@ -30,6 +30,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
+
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 
@@ -46,7 +48,7 @@ import org.hibernate.annotations.NamedQueries;
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
-                TuesdayBaseEntity.DB_NAME_COL,
+                AbstractEntity.DB_NAME_COL,
                 TuesdayBaseEntity.DB_PARENT_COL,
                 }
             )

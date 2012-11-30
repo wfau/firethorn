@@ -90,7 +90,7 @@
 
     <!--+
         | SSH tunnel to ROE database server.
-        | 'ssh -L 1433:hostname:1433 fenrir.roe.ac.uk'
+        | ssh -L 1433:hostname:1433 fenrir.roe.ac.uk
         +-->
     <bean id="RoeLiveData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>

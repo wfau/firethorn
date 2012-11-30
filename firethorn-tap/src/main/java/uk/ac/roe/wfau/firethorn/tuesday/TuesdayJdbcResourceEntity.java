@@ -20,8 +20,6 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -41,8 +39,6 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.friday.api.FridayIvoaResource.Catalogs;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable.JdbcTableType;
 
 /**
  *

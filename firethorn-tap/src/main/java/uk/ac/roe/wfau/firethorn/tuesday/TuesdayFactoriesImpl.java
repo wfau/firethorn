@@ -22,6 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.Identity.Context;
+import uk.ac.roe.wfau.firethorn.identity.Identity.Factory;
+
 /**
  * Our component factories.
  *
@@ -35,7 +40,7 @@ public class TuesdayFactoriesImpl
      * Our global singleton instance.
      *
      */
-    static TuesdayFactories instance = null ;
+    protected static TuesdayFactories instance = null ;
 
     /**
      * Access to our singleton instance.
@@ -56,13 +61,13 @@ public class TuesdayFactoriesImpl
      * Initialise our singleton instance.
      *
      */
-    public static void instance(final TuesdayFactories factories)
+    public static void instance(final TuesdayFactories monday)
         {
         if (TuesdayFactoriesImpl.instance == null)
             {
-            if (factories!= null)
+            if (monday != null)
                 {
-                TuesdayFactoriesImpl.instance = factories;
+                TuesdayFactoriesImpl.instance = monday;
                 }
             else {
                 log.warn("Null value for TuesdayFactories initialiser");
@@ -128,5 +133,44 @@ public class TuesdayFactoriesImpl
     public TuesdayJdbcFactories jdbc()
         {
         return this.jdbc;
+        }
+
+    /**
+     * Our Autowired Identity factory.
+     *
+     */
+    @Autowired
+    protected Identity.Factory identities ;
+
+    @Override
+    public Factory identities()
+        {
+        return this.identities;
+        }
+
+    /**
+     * Our Autowired Identity context factory.
+     *
+     */
+    @Autowired
+    protected Identity.Context.Factory contexts ;
+
+    @Override
+    public Context context()
+        {
+        return this.contexts.context();
+        }
+
+    /**
+     * Our Autowired ConfigProperty factory.
+     *
+     */
+    @Autowired
+    protected ConfigProperty.Factory config ;
+
+    @Override
+    public ConfigProperty.Factory config()
+        {
+        return this.config ;
         }
     }

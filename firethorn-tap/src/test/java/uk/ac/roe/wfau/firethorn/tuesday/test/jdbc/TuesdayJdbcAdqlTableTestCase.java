@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.tuesday.test.adql;
+package uk.ac.roe.wfau.firethorn.tuesday.test.jdbc;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -45,7 +45,6 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnectionEntity;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
-import uk.ac.roe.wfau.firethorn.tuesday.test.jdbc.TuesdayJdbcResourceTestCase;
 
 /**
  * TODO experiment with this
@@ -53,7 +52,7 @@ import uk.ac.roe.wfau.firethorn.tuesday.test.jdbc.TuesdayJdbcResourceTestCase;
  *
  */
 @Slf4j
-public class TuesdayAdqlCreateTestCase
+public class TuesdayJdbcAdqlTableTestCase
     extends TuesdayJdbcResourceTestCase
     {
 
@@ -79,9 +78,12 @@ public class TuesdayAdqlCreateTestCase
 
         TuesdayJdbcSchema jdbcSchema = jdbcResource.schemas().select("dbo");
         TuesdayJdbcTable jdbcTable   = jdbcSchema .tables().select("twomass_psc");
-        
+
+        //
+        // Import a JdbcTable into an AdqlSchema
         TuesdayAdqlTable adqlTable = adqlSchema.tables().create(
-            jdbcTable
+            jdbcTable,
+            "albert"
             ); 
         
         display(adqlWorkspace);

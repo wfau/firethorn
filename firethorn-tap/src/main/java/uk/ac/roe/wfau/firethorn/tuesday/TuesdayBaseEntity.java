@@ -38,8 +38,6 @@ public abstract class TuesdayBaseEntity
 extends AbstractEntity
     implements TuesdayBase
     {
-    //protected static final String DB_NAME_COL = "tuename";
-    protected static final String DB_TEXT_COL = "text";
     protected static final String DB_BASE_COL = "base";
     protected static final String DB_PARENT_COL = "parent";
 
@@ -67,55 +65,4 @@ extends AbstractEntity
         super(name);
         }
 
-    /**
-     * Access to our TuesdayFactories singleton instance.
-     *
-     */
-    public TuesdayFactories factories()
-        {
-        return TuesdayFactoriesImpl.instance();
-        }
-    
-    /*
-    @Basic(fetch = FetchType.EAGER)
-    @Column(
-        name = DB_NAME_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String tuename ;
-    @Override
-    public String name()
-        {
-        return this.tuename;
-        }
-    @Override
-    public void name(String name)
-        {
-        this.tuename = name;
-        }
-     */
-    
-    @Basic(fetch = FetchType.LAZY)
-    @Column(
-        name = DB_TEXT_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String text ;
-    @Override
-    public String text()
-        {
-        return this.text;
-        }
-    @Override
-    public void text(String text)
-        {
-        this.text = text;
-        }
-
-    @Override
-    public abstract String link();
     }
