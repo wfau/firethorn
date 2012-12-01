@@ -77,6 +77,7 @@ extends TuesdayOgsaResource<TuesdayJdbcSchema>, TuesdayBaseResource<TuesdayJdbcS
         public TuesdayJdbcSchema create(String name);
         
         } 
+
     @Override
     public Schemas schemas();
 

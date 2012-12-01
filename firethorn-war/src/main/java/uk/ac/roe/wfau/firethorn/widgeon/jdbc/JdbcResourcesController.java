@@ -110,6 +110,24 @@ extends AbstractController
     public static final String CREATE_NAME = "jdbc.resources.create.name" ;
 
     /**
+     * MVC property for setting the connection URL.
+     *
+     */
+    public static final String CREATE_URL = "jdbc.resources.create.url" ;
+
+    /**
+     * MVC property for setting the connection user name.
+     *
+     */
+    public static final String CREATE_USER = "jdbc.resources.create.user" ;
+
+    /**
+     * MVC property for setting the connection password.
+     *
+     */
+    public static final String CREATE_PASS = "jdbc.resources.create.pass" ;
+    
+    /**
      * HTML GET request to display the index page.
      *
      */
@@ -270,26 +288,32 @@ extends AbstractController
     public ResponseEntity<JdbcResourceBean> jsonCreate(
         @RequestParam(CREATE_NAME)
         final String name,
+
+        @RequestParam(value=CREATE_URL, required=false)
+        String url,
+        @RequestParam(value=CREATE_USER, required=false)
+        String user,
+        @RequestParam(value=CREATE_PASS, required=false)
+        String pass,
+
         final ModelAndView model
         ){
-        try {
-            final JdbcResourceBean bean = new JdbcResourceBean(
-                factories().jdbc().resources().create(
-                    name
-                    )
-                );
-            return new ResponseEntity<JdbcResourceBean>(
-                bean,
-                new RedirectHeader(
-                    bean
-                    ),
-                HttpStatus.CREATED
-                );
-            }
-        catch (final Exception ouch)
-            {
-            return null ;
-            }
+
+        
+        
+        
+        final JdbcResourceBean bean = new JdbcResourceBean(
+            factories().jdbc().resources().create(
+                name
+                )
+            );
+        return new ResponseEntity<JdbcResourceBean>(
+            bean,
+            new RedirectHeader(
+                bean
+                ),
+            HttpStatus.CREATED
+            );
         }
     }
 

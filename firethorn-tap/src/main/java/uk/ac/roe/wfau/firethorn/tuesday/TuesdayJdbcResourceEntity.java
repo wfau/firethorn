@@ -214,6 +214,14 @@ public class TuesdayJdbcResourceEntity
                     name
                     );
                 }
+            @Override
+            public Iterable<TuesdayJdbcSchema> search(String text)
+                {
+                return factories().jdbc().schemas().search(
+                    TuesdayJdbcResourceEntity.this,
+                    text
+                    );
+                }
             };
         }
 
@@ -229,8 +237,9 @@ public class TuesdayJdbcResourceEntity
     @Override
     public String link()
         {
-        // TODO Auto-generated method stub
-        return null;
+        return factories().jdbc().resources().link(
+            this
+            );
         }
 
 
@@ -295,37 +304,25 @@ public class TuesdayJdbcResourceEntity
 
                 boolean create = false ;
 
-                if (schema == null)
+                if ((schema != null) && (schema.name().equals(schemaname)))
                     {
-                    table  = null ;
-                    column = null ;
-                    create = true ;
-                    schema = this.schemas().create(
-                        schemaname
-                        );
+                    create = false ;
                     }
                 else {
-                    if (schema.name().equals(schemaname))
+                    table  = null ;
+                    column = null ;
+                    schema = this.schemas().select(
+                        schemaname
+                        );
+                    if (schema != null)
                         {
                         create = false ;
                         }
                     else {
-                        table  = null ;
-                        column = null ;
-                        schema = this.schemas().select(
+                        create = true ;
+                        schema = this.schemas().create(
                             schemaname
                             );
-                        if (schema != null)
-                            {
-                            create = false ;
-                            }
-                        else {
-                            create = true ;
-                            schema = this.schemas().create(
-                                schemaname
-                                );
-                        
-                            }
                         }
                     }
                 //

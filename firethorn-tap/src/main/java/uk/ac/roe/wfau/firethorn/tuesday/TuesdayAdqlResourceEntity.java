@@ -167,6 +167,14 @@ extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
                     name
                     );
                 }
+            @Override
+            public Iterable<TuesdayAdqlSchema> search(String text)
+                {
+                return factories().adql().schemas().search(
+                    TuesdayAdqlResourceEntity.this,
+                    text
+                    );
+                }
             };
         }
 

@@ -116,7 +116,7 @@ public class JdbcSchemaController
         ){
         log.debug("htmlSelect()");
         model.setViewName(
-            "jdbc/catalog/display"
+            "jdbc/schema/display"
             );
         return model ;
         }

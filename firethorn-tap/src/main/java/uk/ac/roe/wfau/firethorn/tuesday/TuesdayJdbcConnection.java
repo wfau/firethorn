@@ -104,4 +104,28 @@ public interface TuesdayJdbcConnection
      */
     public String catalog();
 
+    /**
+     * Connection status values.
+     * 
+     */
+    public enum Status
+        {
+        CREATED(),
+        ENABLED(),
+        DISABLED(),
+        FAILED();
+        }
+
+    /**
+     * Get the connection status.
+     * 
+     */
+    public Status status();
+
+    /**
+     * Set the connection status.
+     * 
+     */
+    public void status(Status status);
+    
     }

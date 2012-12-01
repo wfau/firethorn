@@ -69,8 +69,23 @@ extends TuesdayBaseComponent
      */
     public interface Schemas<SchemaType>
         {
+        /**
+         * Select all the schemas for this resource.
+         *
+         */
         public Iterable<SchemaType> select();
+
+        /**
+         * Select a specific schema by name.
+         *
+         */
         public SchemaType select(String name);
+
+        /**
+         * Search for schemas by name.
+         *
+         */
+        public Iterable<SchemaType> search(String text);
         } 
 
     /**

@@ -41,4 +41,25 @@ implements EntityBean<TuesdayJdbcResource>
             );
         }
 
+    public class ConnectionBean
+        {
+        public String getUrl()
+            {
+            return entity().connection().url();
+            }
+        public String getUser()
+            {
+            return entity().connection().user();
+            }
+        public String getStaus()
+            {
+            return entity().connection().status().name();
+            }
+        }
+
+    public ConnectionBean getConnection()
+        {
+        return new ConnectionBean();
+        }
+
     }

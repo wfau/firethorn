@@ -45,7 +45,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 @Slf4j
 @Controller
 @RequestMapping(JdbcTableIdentFactory.COLUMNS_PATH)
-public class JdbcTableColumnsController
+public class JdbcTableColumnController
 extends AbstractController
     {
     @Override
@@ -60,7 +60,7 @@ extends AbstractController
      * Public constructor.
      *
      */
-    public JdbcTableColumnsController()
+    public JdbcTableColumnController()
         {
         super();
         }
@@ -87,31 +87,31 @@ extends AbstractController
      * MVC property for the Resource name.
      *
      */
-    public static final String SELECT_NAME = "jdbc.table.columns.select.name" ;
+    public static final String SELECT_NAME = "jdbc.table.column.select.name" ;
 
     /**
      * MVC property for the select results.
      *
      */
-    public static final String SELECT_RESULT = "jdbc.table.columns.select.result" ;
+    public static final String SELECT_RESULT = "jdbc.table.column.select.result" ;
 
     /**
      * MVC property for the search text.
      *
      */
-    public static final String SEARCH_TEXT = "jdbc.table.columns.search.text" ;
+    public static final String SEARCH_TEXT = "jdbc.table.column.search.text" ;
 
     /**
      * MVC property for the search results.
      *
      */
-    public static final String SEARCH_RESULT = "jdbc.table.columns.search.result" ;
+    public static final String SEARCH_RESULT = "jdbc.table.column.search.result" ;
 
     /**
      * MVC property for the create name.
      *
      */
-    public static final String CREATE_NAME = "jdbc.table.columns.create.name" ;
+    public static final String CREATE_NAME = "jdbc.table.column.create.name" ;
 
     /**
      * Get the parent entity based on the request ident.
@@ -157,7 +157,7 @@ extends AbstractController
         ){
         log.debug("htmlIndex()");
         model.addObject(
-            JdbcTableColumnsController.SELECT_RESULT,
+            JdbcTableColumnController.SELECT_RESULT,
             select(
                 table
                 )
@@ -180,7 +180,7 @@ extends AbstractController
         ){
         log.debug("htmlSelect()");
         model.addObject(
-            JdbcTableColumnsController.SELECT_RESULT,
+            JdbcTableColumnController.SELECT_RESULT,
             select(
                 table
                 )

@@ -29,6 +29,8 @@ import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Transient;
 import javax.sql.DataSource;
@@ -43,6 +45,8 @@ import org.springframework.jdbc.datasource.lookup.DataSourceLookupFailureExcepti
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.jdbc.support.SQLExceptionSubclassTranslator;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
+
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseComponent.Status;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -59,10 +63,11 @@ public class TuesdayJdbcConnectionEntity
     extends TuesdayBaseObject
     implements TuesdayJdbcConnection
     {
-    protected static final String DB_URL_COL    = "dburl"; 
-    protected static final String DB_USER_COL   = "dbuser"; 
-    protected static final String DB_PASS_COL   = "dbpass"; 
-    protected static final String DB_DRIVER_COL = "driver"; 
+    protected static final String DB_JDBC_URL_COL    = "jdbcurl"; 
+    protected static final String DB_JDBC_USER_COL   = "jdbcuser"; 
+    protected static final String DB_JDBC_PASS_COL   = "jdbcpass"; 
+    protected static final String DB_JDBC_STATUS_COL = "jdbcstatus"; 
+    protected static final String DB_JDBC_DRIVER_COL = "jdbcdriver"; 
 
     /**
      * Our Spring SQLException translator.
@@ -115,7 +120,7 @@ public class TuesdayJdbcConnectionEntity
 
     @Basic(fetch = FetchType.EAGER)
     @Column(
-        name = DB_URL_COL,
+        name = DB_JDBC_URL_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -135,7 +140,7 @@ public class TuesdayJdbcConnectionEntity
 
     @Basic(fetch = FetchType.EAGER)
     @Column(
-        name = DB_USER_COL,
+        name = DB_JDBC_USER_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -155,7 +160,7 @@ public class TuesdayJdbcConnectionEntity
 
     @Basic(fetch = FetchType.EAGER)
     @Column(
-        name = DB_PASS_COL,
+        name = DB_JDBC_PASS_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -175,7 +180,7 @@ public class TuesdayJdbcConnectionEntity
 
     @Basic(fetch = FetchType.EAGER)
     @Column(
-        name = DB_DRIVER_COL,
+        name = DB_JDBC_DRIVER_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -425,5 +430,55 @@ public class TuesdayJdbcConnectionEntity
             log.error("Exception reading database metadata [{}]", ouch.getMessage());
             }
         return catalogs;
+        }
+
+    /**
+     * The component status.
+     *
+     */
+    @Column(
+        name = DB_JDBC_STATUS_COL,
+        unique = false,
+        nullable = false,
+        updatable = true
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    private Status status = Status.CREATED;
+    
+    @Override
+    public Status status()
+        {
+        return this.status;
+        }
+
+    @Override
+    public void status(Status update)
+        {
+        switch(update)
+            {
+            case ENABLED:
+                this.status = Status.ENABLED;
+                if (this.parent != null)
+                    {
+                    try {
+                        this.parent.inport();
+                        }
+                    catch (RuntimeException ouch)
+                        {
+                        this.status = Status.FAILED;
+                        throw ouch;
+                        }
+                    }
+                break;
+            case DISABLED:
+                this.status = Status.DISABLED;
+                break ;
+            default :
+                throw new IllegalArgumentException(
+                    "Invalid status update [" + update.name() + "]"
+                    );
+            }
         }
     }

@@ -247,7 +247,8 @@ public class TuesdayJdbcSchemaEntity
     @Override
     public String link()
         {
-        // TODO Auto-generated method stub
-        return null;
+        return factories().jdbc().schemas().link(
+            this
+            );
         }
     }

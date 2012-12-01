@@ -54,10 +54,10 @@ implements TuesdayJdbcResource.IdentFactory
     public static final String RESOURCE_PATH = "/jdbc/resource/" + IDENT_TOKEN ;
 
     /**
-     * The URI path for resource catalogs.
+     * The URI path for resource schemas.
      *
      */
-    public static final String CATALOGS_PATH = RESOURCE_PATH + "/catalogs" ;
+    public static final String SCHEMA_PATH = RESOURCE_PATH + "/schemas" ;
 
     /**
      * The URI path for the corresponding ADQL resources.
