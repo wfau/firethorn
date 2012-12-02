@@ -30,10 +30,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseComponent;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
-import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponent.Status;
 
 /**
  * Spring MVC controller for <code>JdbcResource</code>.
@@ -86,7 +87,7 @@ public class AdqlResourceController
      *
      */
     public AdqlResourceBean bean(
-        final AdqlResource entity
+        final TuesdayAdqlResource entity
         ){
         log.debug("bean() [{}]", entity);
         return new AdqlResourceBean(
@@ -99,14 +100,14 @@ public class AdqlResourceController
      *
      */
     @ModelAttribute(RESOURCE_ENTITY)
-    public AdqlResource entity(
+    public TuesdayAdqlResource entity(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException  {
         log.debug("entity(}");
         log.debug("ident [{}]", ident);
-        AdqlResource entity = womble().adql().resources().select(
-            womble().adql().resources().ident(
+        TuesdayAdqlResource entity = factories().adql().resources().select(
+            factories().adql().resources().ident(
                 ident
                 )
             );
@@ -135,7 +136,7 @@ public class AdqlResourceController
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public AdqlResourceBean jsonSelect(
         @ModelAttribute(RESOURCE_ENTITY)
-        final AdqlResource entity
+        final TuesdayAdqlResource entity
         ){
         return bean(
             entity
@@ -155,7 +156,7 @@ public class AdqlResourceController
         @RequestParam(value=UPDATE_STATUS, required=false)
         String status,
         @ModelAttribute(RESOURCE_ENTITY)
-        final AdqlResource entity
+        final TuesdayAdqlResource entity
         ){
 
         if (name != null)
@@ -173,7 +174,7 @@ public class AdqlResourceController
             if (status.length() > 0)
                 {
                 entity.status(
-                    Status.valueOf(
+                    TuesdayBaseComponent.Status.valueOf(
                         status
                         )
                     );

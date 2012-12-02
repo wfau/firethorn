@@ -19,7 +19,9 @@ package uk.ac.roe.wfau.firethorn.common.entity ;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -35,10 +37,10 @@ import org.joda.time.DateTime;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.DeleteEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
-import uk.ac.roe.wfau.firethorn.common.womble.Womble;
-import uk.ac.roe.wfau.firethorn.common.womble.WombleImpl;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayFactories;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayFactoriesImpl;
 
 /**
  * Generic base class for a persistent Entity.
@@ -63,24 +65,35 @@ implements Entity
      * Our database mapping values.
      *
      */
-    public static final String DB_GEN_NAME    = "entity-ident" ;
-    public static final String DB_GEN_METHOD  = "identity" ;
+    protected static final String DB_GEN_NAME    = "entity-ident" ;
+    protected static final String DB_GEN_METHOD  = "identity" ;
 
-    public static final String DB_NAME_COL    = "name"  ;
-    public static final String DB_IDENT_COL   = "ident" ;
-    public static final String DB_OWNER_COL   = "owner" ;
+    public    static final String DB_NAME_COL    = "name"  ;
+    protected static final String DB_TEXT_COL    = "text";
+    protected static final String DB_IDENT_COL   = "ident" ;
+    protected static final String DB_OWNER_COL   = "owner" ;
 
-    public static final String DB_CREATED_COL  = "created"  ;
-    public static final String DB_MODIFIED_COL = "modified" ;
+    protected static final String DB_CREATED_COL  = "created"  ;
+    protected static final String DB_MODIFIED_COL = "modified" ;
 
     /**
      * Access to our Womble instance - naff, but works for now.
      * @todo Replace this with something, anything, else.
+     * @todo re-enable compiler warnings for indirect access to static members
      *
-     */
-    protected static Womble womble()
+    public static Womble womble()
         {
         return WombleImpl.womble();
+        }
+     */
+
+    /**
+     * Access to our TuesdayFactories singleton instance.
+     *
+     */
+    public TuesdayFactories factories()
+        {
+        return TuesdayFactoriesImpl.instance();
         }
 
     /**
@@ -102,7 +115,8 @@ implements Entity
     throws NameFormatException
         {
         this(
-            womble().context().identity(),
+            //womble().context().identity(),
+            null,
             name
             );
         }
@@ -197,20 +211,13 @@ implements Entity
      * The Entity name.
      *
      */
+    @Basic(fetch = FetchType.EAGER)
     @Column(
         name = DB_NAME_COL,
         unique = false,
         nullable = true,
-        updatable = false
+        updatable = true
         )
-    protected String getName()
-        {
-        return this.name ;
-        }
-    protected void setName(final String name)
-        {
-        this.name = name ;
-        }
     protected String name ;
 
     @Override
@@ -283,6 +290,29 @@ implements Entity
         }
 
     /**
+     * The Entity description.
+     *
+     */
+    @Basic(fetch = FetchType.LAZY)
+    @Column(
+        name = DB_TEXT_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String text ;
+    @Override
+    public String text()
+        {
+        return this.text;
+        }
+    @Override
+    public void text(String text)
+        {
+        this.text = text;
+        }
+
+    /**
      * Object toString() method.
      *
      */
@@ -315,7 +345,7 @@ implements Entity
         }
 
     /**
-     * Object equals(Object) method, based on ident only.
+     * Object equals(Object) method (based on ident only).
      *
      */
     @Override
@@ -343,7 +373,6 @@ implements Entity
     @Override
     public int hashCode()
         {
-logger.debug("hashCode()");
         if (ident != null)
             {
             return ident.hashCode() ;
@@ -362,7 +391,7 @@ logger.debug("hashCode()");
     @UpdateEntityMethod
     public void update()
         {
-        womble().hibernate().update(
+        factories().hibernate().update(
             this
             );
         }
@@ -375,7 +404,7 @@ logger.debug("hashCode()");
     @DeleteEntityMethod
     public void delete()
         {
-        womble().hibernate().delete(
+        factories().hibernate().delete(
             this
             );
         }

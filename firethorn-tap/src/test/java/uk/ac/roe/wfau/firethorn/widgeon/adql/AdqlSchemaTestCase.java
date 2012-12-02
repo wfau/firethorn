@@ -20,139 +20,69 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql ;
 import static org.junit.Assert.assertNotNull;
 import lombok.extern.slf4j.Slf4j;
 
+import org.junit.Before;
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceTestBase;
+import uk.ac.roe.wfau.firethorn.test.TestBase;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 
 /**
  *
  */
 @Slf4j
 public class AdqlSchemaTestCase
-extends JdbcResourceTestBase
+extends TestBase
     {
 
+    private TuesdayAdqlResource resource ;
+    public TuesdayAdqlResource resource()
+        {
+        return this.resource ;
+        }
+
+    @Before
+    @Override
+    public void before()
+    throws Exception
+        {
+        this.resource  = factories().adql().resources().create(
+            this.unique(
+                "resource-A"
+                )
+            );
+        }
+    
     @Test
-    public void test000()
+    public void test003()
     throws Exception
         {
         //
-        // Create view.
-        assertNotNull(
-            base().views().create(
-                "view-A"
-                )
-            );
-        //
-        // Create base catalog.
-        assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                )
-            );
-        //
-        // Select catalog view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
-            );
-        //
-        // Select missing schema view fails.
+        // Select missing schema fails.
         assertIsNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).schemas().select(
-                        "schema-A"
-                        )
+            resource().schemas().select(
+                "schema-A"
+                )
             );
         }
 
     @Test
-    public void test001()
+    public void test004()
     throws Exception
         {
         //
-        // Create view.
+        // Create catalog with name.
         assertNotNull(
-            base().views().create(
-                "view-A"
+            resource().schemas().create(
+                "schema-A"
                 )
             );
         //
-        // Create base catalog.
+        // Select catalog by name.
         assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
+            resource().schemas().select(
+                "schema-A"
                 )
-            );
-        //
-        // Select catalog view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    )
-            );
-        //
-        // Create base schema.
-        assertNotNull(
-            base().catalogs().select(
-                "catalog-A"
-                ).schemas().create(
-                    "schema-A"
-                    )
-            );
-        //
-        // Select schema view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).schemas().select(
-                        "schema-A"
-                        )
             );
         }
-
-    @Test
-    public void test002()
-    throws Exception
-        {
-        //
-        // Create view.
-        assertNotNull(
-            base().views().create(
-                "view-A"
-                )
-            );
-        //
-        // Create base catalog and schema.
-        assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                ).schemas().create(
-                    "schema-A"
-                    )
-            );
-        //
-        // Select catalog and schema view works.
-        assertNotNull(
-            base().views().select(
-                "view-A"
-                ).catalogs().select(
-                    "catalog-A"
-                    ).schemas().select(
-                        "schema-A"
-                        )
-            );
-        }
-
     }
 

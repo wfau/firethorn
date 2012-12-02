@@ -1,0 +1,205 @@
+
+#
+# Create a SSH tunnel to the ROE database server.
+[Zarquan@threonine ~]$ 
+
+    ssh -v -L 1433:ramses3:1433 fenrir.roe.ac.uk
+
+#
+# Login properties stored in user home.
+[Zarquan@threonine ~]$ 
+
+    cat firethorn.properties
+
+        uk.ac.roe.wfau.firethorn.jdbc.test.user=xxxx-xxxx
+        uk.ac.roe.wfau.firethorn.jdbc.test.pass=xxxx-xxxx
+
+
+
+
+    Scanning the whole of the ROE database system is too slow.
+
+    Better to scan each catalog,schema,table as they are selected.
+
+    Created with status 'created'
+
+        Status change from 'created' to 'enabled' triggers a scan - one level only.
+        If scan fails status is changed to 'error'
+
+
+        interface JdbcComponent
+            {
+
+            public void scan();
+            public void scan(final DatabaseMetaData metadata);
+            
+            }
+
+
+#
+# Create a local postgresql database for testing.
+
+
+    #
+    # Install Postgres.
+    yum install postgresql-server
+
+    #
+    # Initialise the database.
+    service postgresql initdb
+
+    #
+    # Use MD5 passwords for local connections.
+    vi /var/lib/pgsql/data/pg_hba.conf
+    
+        # "local" is for Unix domain socket connections only
+        local   all         all                               ident
+        # IPv4 local connections:
+      - host    all         all         127.0.0.1/32          ident
+      + host    all         all         127.0.0.1/32          md5
+      + host    all         all         10.0.0.0/8            md5
+        # IPv6 local connections:
+      - host    all         all         ::1/128               ident
+      + host    all         all         ::1/128               md5
+
+    #
+    # Configure Postgres to listenon external interface.
+    vi /var/lib/pgsql/data/postgresql.conf
+
+        listen_addresses = '*'
+
+    #
+    # Configure Postgresql to start on boot.
+
+    chkconfig postgresql on
+    service postgresql start
+
+    #
+    # Create the test user.
+    su - postgres -c 'createuser --no-superuser --no-createdb --no-createrole --pwprompt firethornuser'
+
+    #
+    # Create the test database.
+    su - postgres -c 'createdb --owner firethornuser firethorndata'
+
+    #
+    # Create the test data config.
+
+
+
+
+
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 3:22:19.397s
+[INFO] Finished at: Tue Nov 13 19:40:06 GMT 2012
+[INFO] Final Memory: 24M/939M
+[INFO] ------------------------------------------------------------------------
+
+    select count(ident) from jdbc_schema ;
+
+         count 
+        -------
+            42
+
+    select count(ident) from jdbc_table ;
+
+         count 
+        -------
+          2249
+
+    select count(ident) from jdbc_column ;
+
+         count  
+        --------
+         108204
+
+
+
+
+    \pset pager off 
+
+    \d jdbc_column
+
+                  Table "public.jdbc_column"
+       Column    |            Type             | Modifiers 
+    -------------+-----------------------------+-----------
+     ident       | bigint                      | not null
+     created     | timestamp without time zone | not null
+     modified    | timestamp without time zone | not null
+     name        | character varying(255)      | 
+     status_text | character varying(255)      | 
+     status_code | character varying(255)      | not null
+     owner       | bigint                      | 
+     parent      | bigint                      | not null
+    Indexes:
+        "jdbc_column_pkey" PRIMARY KEY, btree (ident)
+        "jdbc_column_name_key" UNIQUE, btree (name, parent)
+    Foreign-key constraints:
+        "fk5257dd1a984b3c6" FOREIGN KEY (owner) REFERENCES identity_entity(ident)
+        "fk5257dd1a9e2272a" FOREIGN KEY (parent) REFERENCES jdbc_table(ident)
+    Referenced by:
+        TABLE "adql_column" CONSTRAINT "fk6d3aa9373679525b" FOREIGN KEY (base) REFERENCES jdbc_column(ident)
+
+
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 3:22:19.397s
+
+    108204 / ((3*60*60) + (22*60) + 19)
+    8 cols/sec ... not good
+
+[INFO] Total time: 6:32.553s
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 6:28.386s
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 6:35.528s
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 6:35.506s
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 6:56.019s
+
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 3:28:15.791s
+
+    Total re-build time is slower not faster :-(
+
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 3:17:08.680s
+
+    Total re-build time is a bit faster ...
+    
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 3:01:49.563s
+
+    Using HSQLDB in-memory database is a bit faster ...
+    
+    
+[INFO] ------------------------------------------------------------------------
+
+    Postgresql database
+    RemoteJdbcTestCase - just scanning for catalogs, then display whole tree
+
+    Standard code    
+    [INFO] Total time: 6:15.534s
+
+    Change JdbcColumn.select(JdbcTable) to use list()
+    [INFO] Total time: 3:03.469s
+
+    Change JdbcSchema.select(JdbcCatalog) to use list()
+    [INFO] Total time: 6:08.510s
+
+    Change JdbcCatalog.select(JdbcResource) to use list()
+    Change JdbcSchema.select(JdbcCatalog)   to use list()
+    Change JdbcTable.select(JdbcSchema)     to use list()
+    Change JdbcColumn.select(JdbcTable)     to use list()
+    [INFO] Total time: 2:37.901s
+
+    Run the full test, scanning the full tree and creating new everything. 
+    [INFO] Total time: 3:31:22.355s
+    No improvement :-(
+
+
+

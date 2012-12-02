@@ -70,7 +70,7 @@ implements Identity.Context
         @Override
         public SimpleContext context()
             {
-            log.debug("Identity.Context.Factory.context()");
+            //log.debug("Identity.Context.Factory.context()");
             return new SimpleContext(
                 tracker.get()
                 );
@@ -83,7 +83,7 @@ implements Identity.Context
      */
     protected SimpleContext(final Identity identity)
         {
-        log.debug("SimpleContext()");
+        //log.debug("SimpleContext()");
         this.identity = identity;
         }
 
@@ -96,7 +96,7 @@ implements Identity.Context
     @Override
     public Identity identity()
         {
-        log.debug("SimpleContext.identity()");
+        //log.debug("SimpleContext.identity()");
         return this.identity;
         }
     }

@@ -21,6 +21,7 @@ import java.net.URI;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
@@ -30,8 +31,8 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
  */
 @Component
 public class AdqlResourceIdentFactory
-extends WebappIdentFactory<AdqlResource>
-implements AdqlResource.IdentFactory
+extends WebappIdentFactory<TuesdayAdqlResource>
+implements TuesdayAdqlResource.IdentFactory
     {
     /**
      * The type URI for this type.
@@ -61,7 +62,7 @@ implements AdqlResource.IdentFactory
 
 
     @Override
-    public String link(final AdqlResource entity)
+    public String link(final TuesdayAdqlResource entity)
         {
         return link(
             RESOURCE_PATH,

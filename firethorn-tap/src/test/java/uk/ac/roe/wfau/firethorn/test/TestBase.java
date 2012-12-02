@@ -17,30 +17,28 @@
  */
 package uk.ac.roe.wfau.firethorn.test ;
 
-import lombok.extern.slf4j.Slf4j;
+import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
 
-import org.junit.Test;
+import lombok.extern.slf4j.Slf4j;
+
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
-
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.ac.roe.wfau.firethorn.common.womble.Womble;
-import static org.junit.Assert.assertEquals;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayFactories;
 
 /**
  * Base class for tests.
- * The test is run using SpringJUnit4ClassRunner in order to support the @Autowired annotation.
+ * Using SpringJUnit4ClassRunner to support @Autowired annotations.
  *
  */
 @Slf4j
@@ -65,19 +63,19 @@ public abstract class TestBase
     {
 
     /**
-     * Our test Womble.
+     * Our factories instance.
      *
      */
     @Autowired
-    private Womble womble ;
+    private TuesdayFactories factories;
 
     /**
-     * Access to our test Womble.
+     * Our factories instance.
      *
      */
-    public Womble womble()
+    public TuesdayFactories factories()
         {
-        return this.womble;
+        return this.factories;
         }
 
     @Before
@@ -97,7 +95,7 @@ public abstract class TestBase
     public void flush()
         {
         log.debug("flush()");
-        womble().hibernate().flush();
+        factories().hibernate().flush();
         }
 
     /**

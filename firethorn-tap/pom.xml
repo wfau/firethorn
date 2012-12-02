@@ -118,7 +118,7 @@
 
         <!--+
             | Postgresql database driver (for testing only).
-            | When deployed the container should provide the correct version of the driver.
+            | http://jdbc.postgresql.org/
             +-->
     	<dependency>
     		<groupId>postgresql</groupId>
@@ -133,6 +133,26 @@
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!--+
+            | Mysql JDBC driver.
+            | https://dev.mysql.com/usingmysql/java/
+            +-->
+        <dependency>
+	        <groupId>mysql</groupId>
+	        <artifactId>mysql-connector-java</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!--+
+            | jTDS SQLServer JDBC driver.
+            | http://jtds.sourceforge.net/
+            +-->
+        <dependency>
+            <groupId>net.sourceforge.jtds</groupId>
+            <artifactId>jtds</artifactId>
             <scope>test</scope>
         </dependency>
 

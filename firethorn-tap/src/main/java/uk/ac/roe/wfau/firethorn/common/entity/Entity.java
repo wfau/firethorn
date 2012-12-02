@@ -48,12 +48,6 @@ public interface Entity
         /**
          * Create an Entity URI (as a string).
          *
-        public String link(final Identifier ident);
-         */
-
-        /**
-         * Create an Entity URI (as a string).
-         *
          */
         public String link(final EntityType entity);
 
@@ -99,6 +93,18 @@ public interface Entity
      */
     public void name(final String name)
     throws NameFormatException;
+
+    /**
+     * Get the Entity description.
+     *
+     */
+    public String text();
+
+    /**
+     * Set the Entity description.
+     *
+     */
+    public void text(String text);
 
     /**
      * Get the Entity owner.

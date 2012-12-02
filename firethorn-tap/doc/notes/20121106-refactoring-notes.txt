@@ -1,0 +1,491 @@
+
+
+
+
+    //
+    // Create a JDBC resource and add connection details.
+    jdbc = womble().jdbc().resources().create("name"); 
+
+    //
+    // Pull the schema, table and column metadata.
+    jdbc.pull(true);
+
+    // OLD
+    // Create a corresponding ADQL resource from the JDBC resource.
+    jdbc.adql().create("name");
+
+----------------------------------
+
+    //
+    // Create an ADQL space (resource).
+    adql = womble().adql().spaces().create("name"); 
+
+    //
+    // Create a JDBC resource and add connection details.
+    jdbc = womble().jdbc().resources().create("name"); 
+
+    //
+    // Select the JDBC catalog (if any).
+
+    //
+    // Pull the schema, table and column metadata.
+    jdbc.pull(true);
+
+
+jdbc no longer needs a list of adql views ...
+although, no harm in keeping it there for now
+
+
+    //
+    // Select part of the JDBC resource ..
+    womble().jdbc().resources().select("ident"); 
+    womble().jdbc().catalogs().select("ident"); 
+    womble().jdbc().schemas().select("ident"); 
+    womble().jdbc().tables().select("ident"); 
+
+    //
+    // Import a JDBC schema into our space.
+    adql().inport(
+        womble().jdbc().schemas().select(
+            "ident"
+            )
+        );
+
+    //
+    // Import a JDBC table into our space.
+    adql().inport(
+        womble().jdbc().tables().select(
+            "ident"
+            )
+        );
+
+    //
+    // Import a table from another space.
+    adql().inport(
+        womble().adql().tables().select(
+            "ident"
+            )
+        );
+
+    //
+    // Import a table from another space.
+    adql().inport(
+        womble().adql().spaces().select("ident").tables().select(
+            "name"
+            )
+        );
+
+----------------------------------
+
+JDBC connections at ROE ...
+
+
+    mkdir jdbc-conf
+    pushd jdbc-conf
+
+        scp -r dave@fenrir:/var/astrogrid/main-dsa-config/* . 
+
+    popd
+
+
+----------------------------------
+
+#
+# Need to register to 'distribute' the MicroSoft JDBC driver in order to publish it in our Maven repo.
+# NOT GOING TO HAPPEN
+
+
+    http://stackoverflow.com/questions/11031525/maven-dependency-for-sqlserver2010
+    http://stackoverflow.com/questions/6942407/setting-up-maven-dependency-for-sql-server
+
+        "Looks like there are some disagreements between Maven and Microsoft folks regarding licensing and redistribution of the JDBC driver"
+
+    http://blogs.msdn.com/b/jdbcteam/archive/2010/03/02/microsoft-sql-server-jdbc-3-0-ctp-release-announcement.aspx
+
+        Lynx (3 May 2010) 
+        "Has there ever been any thought behind changing the licensing terms behind this JDBC driver?
+        My understanding of the following term makes me certain we cannot make the JDBC driver available in a Maven repository even for an open source project"
+
+
+        Amina Saify (11 May 2010)
+        "Microsoft does allow you to redistribute JDBC driver.
+        You have to register on our site http://msdn.microsoft.com/en-us/data/aa937724.aspx in order to redistribute.
+        Please read the terms and condition when you register."
+
+    http://msdn.microsoft.com/en-us/data/aa937724.aspx
+
+        "The Microsoft JDBC driver is freely redistributable under a separate Redistribution License that requires registration."
+
+    http://msdn.microsoft.com/en-us/data/aa937725
+
+        "Microsoft uses Windows Live ID for secure authentication and registration.
+        When you register for redistribution rights for SQL Server JDBC Driver Redistribution through Windows Live ID,
+        you will be prompted to provide information that will become part of your secure profile."
+
+#
+# Use the jTDS driver, as recomended by JBoss/Hibernate
+# https://community.jboss.org/wiki/SupportedDatabases2#Microsoft_SQL_Server
+# http://jtds.sourceforge.net/
+
+    <dependency>
+        <groupId>net.sourceforge.jtds</groupId>
+        <artifactId>jtds</artifactId>
+        <version>1.2.4</version>
+        <scope>runtime</scope>
+    </dependency>
+
+    java.sql.Driver	                    net.sourceforge.jtds.jdbc.Driver
+    javax.sql.DataSource	            net.sourceforge.jtds.jdbcx.JtdsDataSource
+    javax.sql.ConnectionPoolDataSource	net.sourceforge.jtds.jdbcx.JtdsDataSource
+    javax.sql.XADataSource	            net.sourceforge.jtds.jdbcx.JtdsDataSource
+    javax.naming.spi.ObjectFactory	    net.sourceforge.jtds.jdbcx.JtdsObjectFactory
+
+
+    jdbc:jtds:sqlserver://<server>[:<port>][/<database>][;<property>=<value>[;...]]
+
+    <port> is the port the database server is listening to (default is 1433 for SQL Server and 7100 for Sybase)
+    <database> is the database name -- JDBC term: catalog -- (if not specified, the user's default database is used).
+
+#
+# From 6df.properties.
+
+    datacenter.plugin.jdbc.drivers=com.microsoft.sqlserver.jdbc.SQLServerDriver
+    datacenter.plugin.jdbc.url=jdbc:sqlserver://ramses3:1433;DatabaseName=sixdf_dr2
+
+#
+# From first.properties.
+
+    datacenter.plugin.jdbc.drivers=com.microsoft.sqlserver.jdbc.SQLServerDriver
+    datacenter.plugin.jdbc.url=jdbc:sqlserver://ramses3:1433;DatabaseName=first
+
+#
+# From twomass.properties.
+
+    datacenter.plugin.jdbc.drivers=com.microsoft.sqlserver.jdbc.SQLServerDriver
+    datacenter.plugin.jdbc.url=jdbc:sqlserver://ramses3:1433;DatabaseName=twomass
+
+#
+# Host name lookup is based on static /etc/hosts file rather than DNS lookup
+dave@fenrir:~$ 
+
+    /etc$ cat /etc/hosts
+
+        127.0.0.1	localhost
+        129.215.175.108	fenrir.roe.ac.uk	fenrir
+        129.215.175.112 srif112.roe.ac.uk      srif112
+        129.215.175.113 thoth.roe.ac.uk        thoth
+        129.215.175.119 watten.roe.ac.uk       watten
+        192.168.137.1   thoth-p
+        192.168.137.5   srif112-p
+        192.168.137.9   thutmose
+        192.168.137.11  watten-p
+        192.168.137.20  ramses1
+        192.168.137.21  ramses2
+        192.168.137.22  ramses3
+        192.168.137.23  ramses4
+        192.168.137.24  ramses5
+        192.168.137.25  ramses6
+        192.168.137.26  ramses7
+        192.168.137.27  ramses8
+        192.168.137.32	fenrir-p
+        192.168.137.35  ramses9
+        192.168.137.38  ramses10
+        192.168.137.42  ramses11
+        192.168.137.47	ramses13
+
+dave@fenrir:~$ 
+
+    host ramses3
+    >   Host ramses3 not found: 3(NXDOMAIN)
+
+dave@fenrir:~$ 
+
+    host ramses3.roe.ac.uk
+    >   Host ramses3.roe.ac.uk not found: 3(NXDOMAIN)
+
+dave@fenrir:~$ 
+
+    ping ramses3
+
+    >   PING ramses3 (192.168.137.22) 56(84) bytes of data.
+    >   ping: sendmsg: Operation not permitted
+
+dave@fenrir:~$ 
+
+    ping ramses3.roe.ac.uk
+    >   ping: unknown host ramses3.roe.ac.uk
+
+#
+# Create a SSH tunnel to the ROE servers.
+[Zarquan@threonine ~]$ 
+
+    ssh -v -L 1433:ramses3:1433 dave@fenrir.roe.ac.uk
+
+        OpenSSH_5.3p1, OpenSSL 1.0.0-fips 29 Mar 2010
+        ....
+        debug1: Connecting to fenrir.roe.ac.uk [129.215.175.108] port 22.
+        debug1: Connection established.
+        ....
+        debug1: Host 'fenrir.roe.ac.uk' is known and matches the RSA host key.
+        debug1: Authentications that can continue: publickey,password,hostbased
+        debug1: Next authentication method: publickey
+        debug1: Offering public key: zarquan@metagrid.co.uk
+        debug1: Server accepts key: pkalg ssh-dss blen 433
+        debug1: Authentication succeeded (publickey).
+        ....
+        debug1: Local connections to LOCALHOST:1433 forwarded to remote address ramses3:1433
+        debug1: Local forwarding listening on ::1 port 1433.
+        debug1: channel 0: new [port listener]
+        debug1: Local forwarding listening on 127.0.0.1 port 1433.
+        debug1: channel 1: new [port listener]
+        debug1: Requesting no-more-sessions@openssh.com
+        debug1: Entering interactive session.
+        ....
+
+#
+# Add -f to place connection in background
+# Add -N to prevent remote command.
+# Add -M and -S to designate master and slave
+# -- experimental ---
+
+#
+#    tempfile=$(mktemp)
+#
+#    ssh -v -f -M -N -S "${tempfile}" dave@fenrir.roe.ac.uk
+#
+#    ssh -v -f -N -S "${tempfile}" -L 1433:ramses3:1433 dave@fenrir.roe.ac.uk
+#
+#    ssh -v -N -S "${tempfile}" -O exit dave@fenrir.roe.ac.uk
+#
+
+----------------------------------
+#
+# Add the database driver to our Maven dependencies.
+[Zarquan@threonine ~]$ 
+
+    vi firethorn/pom.xml
+
+        <project>
+            ....
+            <dependencyManagement>
+                ....
+                <dependencies>
+                    ....
+                    <!--+
+                        | jTDS SQLServer JDBC driver.
+                        | http://jtds.sourceforge.net/
+                        +-->
+                    <dependency>
+                        <groupId>net.sourceforge.jtds</groupId>
+                        <artifactId>jtds</artifactId>
+                        <version>1.3.0</version>
+                    </dependency>
+                    ....
+                </dependencies>
+            </dependencyManagement>
+            ....
+        </project>
+
+    vi firethorn/firethorn-tap/pom.xml
+
+        <project>
+            ....
+            <dependencies>
+                ....
+                <!--+
+                    | jTDS SQLServer JDBC driver.
+                    | http://jtds.sourceforge.net/
+                    +-->
+                <dependency>
+                    <groupId>net.sourceforge.jtds</groupId>
+                    <artifactId>jtds</artifactId>
+                    <scope>test</scope>
+                </dependency>
+                ....
+            </dependencies>
+            ....
+        </project>
+
+#
+# Update Eclipse classpath.
+[Zarquan@threonine ~]$ 
+
+    mvn eclipse:eclipse
+
+#
+# Create the test database config.
+[Zarquan@threonine ~]$ 
+
+    vi firethorn/firethorn-tap/src/test/conf/database-config.xml
+
+        <!--+
+            | Local SSH tunnel to ROE database server.
+            | ** name and pass redacted **
+            +-->
+        <bean id="RoeData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+            <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
+            <property name="url" value="jdbc:jtds:sqlserver://localhost:1433/twomass"/>
+        </bean>
+
+#
+# Create a SSH tunnel to the ROE database server.
+[Zarquan@threonine ~]$ 
+
+    ssh -v -L 1433:ramses3:1433 dave@fenrir.roe.ac.uk
+
+#
+# Create a JUnit test to test ....
+
+
+#
+# jTDS is a JDBC 3 driver
+# We use JDBC 4 in our metadata processing.
+
+    java.lang.AbstractMethodError
+        net.sourceforge.jtds.jdbc.JtdsDatabaseMetaData.getSchemas(Ljava/lang/String;Ljava/lang/String;)Ljava/sql/ResultSet;
+
+    http://sourceforge.net/p/jtds/discussion/104389/thread/fba2b1f6
+
+        "The method you are trying to call is part of the newest JDBC 4 specs (since Java 1.6), but jTDS is a JDBC 3 driver and doesn't implement that method.
+        For the time being you will have to call getSchemas() without arguments and do the filtering yourself."
+
+
+----------------------------------
+
+Scanning the whole ROE schema ..
+Interesting errors ...
+
+    java.sql.SQLException: The server principal "palro" is not able to access the database "VMCv20120126" under the current security context.
+	    at net.sourceforge.jtds.jdbc.SQLDiagnostic.addDiagnostic(SQLDiagnostic.java:372) ~[jtds-1.2.7.jar:1.2.7]
+	    at net.sourceforge.jtds.jdbc.TdsCore.tdsErrorToken(TdsCore.java:2886) ~[jtds-1.2.7.jar:1.2.7]
+	    at net.sourceforge.jtds.jdbc.TdsCore.nextToken(TdsCore.java:2328) ~[jtds-1.2.7.jar:1.2.7]
+	    at net.sourceforge.jtds.jdbc.TdsCore.getMoreResults(TdsCore.java:638) ~[jtds-1.2.7.jar:1.2.7]
+	    at net.sourceforge.jtds.jdbc.JtdsStatement.executeSQLQuery(JtdsStatement.java:506) ~[jtds-1.2.7.jar:1.2.7]
+	    at net.sourceforge.jtds.jdbc.JtdsPreparedStatement.executeQuery(JtdsPreparedStatement.java:982) ~[jtds-1.2.7.jar:1.2.7]
+	    at net.sourceforge.jtds.jdbc.JtdsDatabaseMetaData.getTables(JtdsDatabaseMetaData.java:1839) ~[jtds-1.2.7.jar:1.2.7]
+	    at uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchemaEntity$1.diff(JdbcSchemaEntity.java:294) ~[classes/:na]
+
+
+    java.sql.SQLException: Could not continue scan with NOLOCK due to data movement.
+	    at net.sourceforge.jtds.jdbc.SQLDiagnostic.addDiagnostic(SQLDiagnostic.java:372) ~[jtds-1.2.7.jar:1.2.7]
+	    at net.sourceforge.jtds.jdbc.TdsCore.tdsErrorToken(TdsCore.java:2886) ~[jtds-1.2.7.jar:1.2.7]
+	    at net.sourceforge.jtds.jdbc.TdsCore.nextToken(TdsCore.java:2328) ~[jtds-1.2.7.jar:1.2.7]
+	    at net.sourceforge.jtds.jdbc.TdsCore.getMoreResults(TdsCore.java:638) ~[jtds-1.2.7.jar:1.2.7]
+	    at net.sourceforge.jtds.jdbc.JtdsStatement.executeSQLQuery(JtdsStatement.java:506) ~[jtds-1.2.7.jar:1.2.7]
+	    at net.sourceforge.jtds.jdbc.JtdsPreparedStatement.executeQuery(JtdsPreparedStatement.java:982) ~[jtds-1.2.7.jar:1.2.7]
+	    at net.sourceforge.jtds.jdbc.JtdsDatabaseMetaData.getTables(JtdsDatabaseMetaData.java:1839) ~[jtds-1.2.7.jar:1.2.7]
+	    at uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchemaEntity$1.diff(JdbcSchemaEntity.java:294) ~[classes/:na]
+	    at uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcSchemaEntity.diff(JdbcSchemaEntity.java:541) [classes/:na]
+
+
+----------------------------------
+
+----------------------------------
+
+
+    Scanning the whole of the ROE database system is too slow.
+
+    Better to scan each catalog,schema,table as they are selected.
+
+    So we need a mechanism for triggering the scan.
+
+    Created with status 'created'
+
+        Status change from 'created' to 'enabled' triggers a scan - one level only.
+        If scan fails status is changed to 'error'
+
+or
+
+        New field of scan date and scan status.
+        Setting scan status to 'scan' triggers a new scan (status=scanning).
+        Scan works, then status=done, date updated.
+        Scan fails, then status=fail, error updated.
+
+            scan.status
+            scan.text
+            scan.date
+
+        interface JdbcComponent
+        
+            component.scan().status()
+            component.scan().date()
+            component.scan().text() <-- Error message ?
+            component.scan().code() <-- Error code ?
+    
+        scan results stored as a job, with loggable status
+
+KISS
+
+        Status change from 'created' to 'enabled' triggers a scan - one level only.
+        If scan fails component status is changed to 'error'.
+
+later
+
+        Operation that triggered the scan returns 500, with reference to details.
+        Details of the error stored in server log, as an event, with an ident. 
+
+later later
+
+        interface JdbcComponent
+            {
+            interface JdbcComponentScan
+                {
+                Date date();
+                Status status();
+                String text();
+                }
+ 
+            interface JdbcComponentScans
+                {
+                Status status();
+                JdbcComponentScan latest();
+                Iterable<JdbcComponentScan> select();
+                }
+
+            JdbcComponentScans scans();
+ 
+            }
+
+----------------------------------
+
+KISS
+
+        interface JdbcComponent
+            {
+            }
+
+        Status change from 'created' to 'enabled' triggers a scan - one level only.
+        If scan fails component status is changed to 'error'.
+
+        Plus a mechanism for initiating a new scan ...
+        Status change to 'scan' triggers a scan - one level only.
+
+
+        Do we need push ?
+        Add a 'level' counter to scan method.
+        Decrement each level down te tree.
+
+        separate methods
+
+        interface JdbcComponent
+            {
+            push()
+            push(int level)
+
+            pull()
+            pull(int level)
+            }
+
+        push() will be used to create tables and columns
+        If we have a table but the database doesn't, calling push() on the table will create the missing table and columns in the database.
+
+            table.push()
+            table.columns().push()
+
+
+
+
+
+----------------------------------
+
+

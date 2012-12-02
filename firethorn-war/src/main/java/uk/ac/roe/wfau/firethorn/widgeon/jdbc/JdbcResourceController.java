@@ -29,13 +29,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseComponent;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnection;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
-import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponent.Status;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
 
 /**
  * Spring MVC controller for <code>JdbcResource</code>.
@@ -84,16 +84,42 @@ public class JdbcResourceController
     public static final String UPDATE_STATUS = "jdbc.resource.update.status" ;
 
     /**
+     * MVC property for updating the connection URL.
+     *
+     */
+    public static final String UPDATE_CONN_URL = "jdbc.resource.connection.update.url" ;
+
+    /**
+     * MVC property for updating the connection user name.
+     *
+     */
+    public static final String UPDATE_CONN_USER = "jdbc.resource.connection.update.user" ;
+
+    /**
+     * MVC property for updating the connection password.
+     *
+     */
+    public static final String UPDATE_CONN_PASS = "jdbc.resource.connection.update.pass" ;
+
+    /**
+     * MVC property for updating the connection status.
+     *
+     */
+    public static final String UPDATE_CONN_STATUS = "jdbc.resource.connection.update.status" ;
+    
+    /**
      * Wrap an entity as a bean.
      *
      */
     public JdbcResourceBean bean(
-        final JdbcResource entity
+        final TuesdayJdbcResource entity
         ){
         log.debug("bean() [{}]", entity);
-        return new JdbcResourceBean(
+        JdbcResourceBean bean = new JdbcResourceBean(
             entity
             );
+        log.debug("bean() [{}]", bean);
+        return bean;
         }
 
     /**
@@ -101,14 +127,14 @@ public class JdbcResourceController
      *
      */
     @ModelAttribute(RESOURCE_ENTITY)
-    public JdbcResource entity(
+    public TuesdayJdbcResource entity(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException  {
         log.debug("entity(}");
         log.debug("ident [{}]", ident);
-        JdbcResource entity = womble().jdbc().resources().select(
-            womble().jdbc().resources().ident(
+        TuesdayJdbcResource entity = factories().jdbc().resources().select(
+            factories().jdbc().resources().ident(
                 ident
                 )
             );
@@ -137,11 +163,19 @@ public class JdbcResourceController
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcResourceBean jsonSelect(
         @ModelAttribute(RESOURCE_ENTITY)
-        final JdbcResource entity
+        final TuesdayJdbcResource entity
         ){
-        return bean(
-            entity
-            );
+        try
+            {
+            return bean(
+                entity
+                );
+            }
+        catch (Exception ouch)
+            {
+            log.error("Ouch ...", ouch);
+            return null ;
+            }
         }
 
     /**
@@ -156,8 +190,18 @@ public class JdbcResourceController
         String name,
         @RequestParam(value=UPDATE_STATUS, required=false)
         String status,
+
+        @RequestParam(value=UPDATE_CONN_URL, required=false)
+        String url,
+        @RequestParam(value=UPDATE_CONN_USER, required=false)
+        String user,
+        @RequestParam(value=UPDATE_CONN_PASS, required=false)
+        String pass,
+        @RequestParam(value=UPDATE_CONN_STATUS, required=false)
+        String action,
+
         @ModelAttribute(RESOURCE_ENTITY)
-        final JdbcResource entity
+        final TuesdayJdbcResource entity
         ){
 
         if (name != null)
@@ -170,18 +214,69 @@ public class JdbcResourceController
                 }
             }
 
-        if (status != null)
+        if (url != null)
             {
-            if (status.length() > 0)
+            if (url.length() > 0)
                 {
-                entity.status(
-                    Status.valueOf(
-                        status
-                        )
+                entity.connection().url(
+                    url
+                    );
+                }
+            else {
+                entity.connection().url(
+                    null
+                    );
+                }
+            }
+
+        if (user != null)
+            {
+            if (user.length() > 0)
+                {
+                entity.connection().user(
+                    user
+                    );
+                }
+            else {
+                entity.connection().user(
+                    null
+                    );
+                }
+            }
+
+        if (pass != null)
+            {
+            if (pass.length() > 0)
+                {
+                entity.connection().pass(
+                    pass
+                    );
+                }
+            else {
+                entity.connection().pass(
+                    null
                     );
                 }
             }
         
+        if (status != null)
+            {
+            entity.status(
+                TuesdayBaseComponent.Status.valueOf(
+                    status
+                    )
+                );
+            }
+
+        if (action != null)
+            {
+            entity.connection().status(
+                TuesdayJdbcConnection.Status.valueOf(
+                    action
+                    )
+                );
+            }
+
         return bean(
             entity
             );

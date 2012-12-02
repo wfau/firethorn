@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -120,13 +121,13 @@ extends AbstractController
      *
      */
     @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-    public JdbcResource resource(
+    public TuesdayJdbcResource resource(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException {
         log.debug("resource() [{}]", ident);
-        return womble().jdbc().resources().select(
-            womble().jdbc().resources().ident(
+        return factories().jdbc().resources().select(
+            factories().jdbc().resources().ident(
                 ident
                 )
             );
@@ -138,12 +139,15 @@ extends AbstractController
      */
     public AdqlResourceBeanIter select(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource
+        final TuesdayJdbcResource resource
         ){
         log.debug("select()");
+        return null ;
+        /*
         return new AdqlResourceBeanIter(
             resource.views().select()
             );
+        */
         }
 
     /**
@@ -154,7 +158,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
     public AdqlResourceBeanIter jsonSelect(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
+        final TuesdayJdbcResource resource,
         final ModelAndView model
         ){
         log.debug("jsonSelect()");
@@ -169,15 +173,18 @@ extends AbstractController
      */
     public AdqlResourceBean select(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY) final
-        JdbcResource resource,
+        TuesdayJdbcResource resource,
         final String name
         ){
         log.debug("select(String) [{}]", name);
+        return null ;
+        /*
         return new AdqlResourceBean(
             resource.views().select(
                 name
                 )
             );
+        */
         }
 
     /**
@@ -188,7 +195,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
     public AdqlResourceBean jsonSelect(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
+        final TuesdayJdbcResource resource,
         @RequestParam(SELECT_NAME)
         final String name,
         final ModelAndView model
@@ -206,15 +213,18 @@ extends AbstractController
      */
     public AdqlResourceBeanIter search(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY) final
-        JdbcResource resource,
+        TuesdayJdbcResource resource,
         final String text
         ){
         log.debug("search(String) [{}]", text);
+        return null ;
+        /*
         return new AdqlResourceBeanIter(
             resource.views().search(
                 text
                 )
             );
+        */
         }
 
     /**
@@ -225,7 +235,7 @@ extends AbstractController
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
     public AdqlResourceBeanIter jsonSearch(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
+        final TuesdayJdbcResource resource,
         @RequestParam(SEARCH_TEXT)
         final String text,
         final ModelAndView model
@@ -243,15 +253,18 @@ extends AbstractController
      */
     public AdqlResourceBean create(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
+        final TuesdayJdbcResource resource,
         final String name
         ){
         log.debug("create(String) [{}]", name);
+        return null ;
+        /*
         return new AdqlResourceBean(
             resource.views().create(
                 name
                 )
             );
+        */
         }
 
     /**
@@ -261,7 +274,7 @@ extends AbstractController
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<AdqlResourceBean> jsonCreate(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
+        final TuesdayJdbcResource resource,
         @RequestParam(CREATE_NAME)
         final String name,
         final ModelAndView model

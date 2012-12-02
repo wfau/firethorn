@@ -21,6 +21,7 @@ import java.net.URI;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
@@ -29,8 +30,8 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
  */
 @Component
 public class JdbcSchemaIdentFactory
-extends WebappIdentFactory<JdbcSchema>
-implements JdbcSchema.IdentFactory
+extends WebappIdentFactory<TuesdayJdbcSchema>
+implements TuesdayJdbcSchema.IdentFactory
     {
     /**
      * The type URI for this type.
@@ -53,7 +54,7 @@ implements JdbcSchema.IdentFactory
     public static final String TABLES_PATH = SCHEMA_PATH + "/tables" ;
 
     @Override
-    public String link(final JdbcSchema entity)
+    public String link(final TuesdayJdbcSchema entity)
         {
         return link(
             SCHEMA_PATH,

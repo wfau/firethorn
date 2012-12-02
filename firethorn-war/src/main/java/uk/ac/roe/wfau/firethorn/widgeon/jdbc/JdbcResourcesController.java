@@ -110,6 +110,24 @@ extends AbstractController
     public static final String CREATE_NAME = "jdbc.resources.create.name" ;
 
     /**
+     * MVC property for setting the connection URL.
+     *
+     */
+    public static final String CREATE_URL = "jdbc.resources.create.url" ;
+
+    /**
+     * MVC property for setting the connection user name.
+     *
+     */
+    public static final String CREATE_USER = "jdbc.resources.create.user" ;
+
+    /**
+     * MVC property for setting the connection password.
+     *
+     */
+    public static final String CREATE_PASS = "jdbc.resources.create.pass" ;
+    
+    /**
      * HTML GET request to display the index page.
      *
      */
@@ -135,7 +153,7 @@ extends AbstractController
         model.addObject(
             SELECT_RESULT,
             new JdbcResourceBeanIter(
-                womble().jdbc().resources().select()
+                factories().jdbc().resources().select()
                 )
             );
         model.setViewName(
@@ -154,54 +172,7 @@ extends AbstractController
         final ModelAndView model
         ){
         return new JdbcResourceBeanIter(
-            womble().jdbc().resources().select()
-            );
-        }
-
-    /**
-     * HTML GET or POST request to select by name.
-     * @todo Wrap the entities as beans (with URI)
-     *
-     */
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
-    public ModelAndView htmlSelect(
-        @RequestParam(SELECT_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        model.addObject(
-            SELECT_NAME,
-            name
-            );
-        model.addObject(
-            SELECT_RESULT,
-            new JdbcResourceBeanIter(
-                womble().jdbc().resources().select(
-                    name
-                    )
-                )
-            );
-        model.setViewName(
-            "jdbc/resource/select"
-            );
-        return model ;
-        }
-
-    /**
-     * JSON GET or POST request to select by name.
-     *
-     */
-    @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public JdbcResourceBeanIter jsonSelect(
-        @RequestParam(SELECT_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        return new JdbcResourceBeanIter(
-            womble().jdbc().resources().select(
-                name
-                )
+            factories().jdbc().resources().select()
             );
         }
 
@@ -237,7 +208,7 @@ extends AbstractController
         model.addObject(
             SEARCH_RESULT,
             new JdbcResourceBeanIter(
-                womble().jdbc().resources().search(
+                factories().jdbc().resources().search(
                     text
                     )
                 )
@@ -260,7 +231,7 @@ extends AbstractController
         final ModelAndView model
         ){
         return new JdbcResourceBeanIter(
-            womble().jdbc().resources().search(
+            factories().jdbc().resources().search(
                 text
                 )
             );
@@ -292,7 +263,7 @@ extends AbstractController
         ){
         try {
             final JdbcResourceBean bean = new JdbcResourceBean(
-                womble().jdbc().resources().create(
+                factories().jdbc().resources().create(
                     name
                     )
                 );
@@ -317,26 +288,32 @@ extends AbstractController
     public ResponseEntity<JdbcResourceBean> jsonCreate(
         @RequestParam(CREATE_NAME)
         final String name,
+
+        @RequestParam(value=CREATE_URL, required=false)
+        String url,
+        @RequestParam(value=CREATE_USER, required=false)
+        String user,
+        @RequestParam(value=CREATE_PASS, required=false)
+        String pass,
+
         final ModelAndView model
         ){
-        try {
-            final JdbcResourceBean bean = new JdbcResourceBean(
-                womble().jdbc().resources().create(
-                    name
-                    )
-                );
-            return new ResponseEntity<JdbcResourceBean>(
-                bean,
-                new RedirectHeader(
-                    bean
-                    ),
-                HttpStatus.CREATED
-                );
-            }
-        catch (final Exception ouch)
-            {
-            return null ;
-            }
+
+        
+        
+        
+        final JdbcResourceBean bean = new JdbcResourceBean(
+            factories().jdbc().resources().create(
+                name
+                )
+            );
+        return new ResponseEntity<JdbcResourceBean>(
+            bean,
+            new RedirectHeader(
+                bean
+                ),
+            HttpStatus.CREATED
+            );
         }
     }
 

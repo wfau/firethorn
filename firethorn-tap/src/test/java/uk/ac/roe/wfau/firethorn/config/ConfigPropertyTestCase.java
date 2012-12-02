@@ -21,8 +21,6 @@ import static org.junit.Assert.*;
 
 import java.net.URI;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
@@ -32,7 +30,6 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
  *
  *
  */
-@Slf4j
 public class ConfigPropertyTestCase
 extends TestBase
     {
@@ -42,7 +39,7 @@ extends TestBase
     throws Exception
         {
         assertNotNull(
-            womble().config().create(
+            factories().config().create(
                 this.unique(
                     URI.create(
                         "urn:test-property"
@@ -65,14 +62,14 @@ extends TestBase
                 )
             );
         assertNotNull(
-            womble().config().create(
+            factories().config().create(
                 key,
                 "test property name",
                 "test property value"
                 )
             );
         assertNotNull(
-            womble().config().select(
+            factories().config().select(
                 key
                 )
             );
@@ -88,20 +85,20 @@ extends TestBase
                 )
             );
         assertNotNull(
-            womble().config().create(
+            factories().config().create(
                 key,
                 "test property name",
                 "test property value"
                 )
             );
         assertNotNull(
-            womble().config().select(
+            factories().config().select(
                 key
                 )
             );
         assertEquals(
             "test property name",
-            womble().config().select(
+            factories().config().select(
                 key
                 ).name()
             );
@@ -117,20 +114,20 @@ extends TestBase
                 )
             );
         assertNotNull(
-            womble().config().create(
+            factories().config().create(
                 key,
                 "test property name",
                 "test property value"
                 )
             );
         assertNotNull(
-            womble().config().select(
+            factories().config().select(
                 key
                 )
             );
         assertEquals(
             "test property value",
-            womble().config().select(
+            factories().config().select(
                 key
                 ).toString()
             );

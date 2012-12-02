@@ -17,43 +17,35 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql ;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.widgeon.DataResourceTestBase;
+import uk.ac.roe.wfau.firethorn.test.TestBase;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 
 /**
  *
  */
-@Slf4j
 public class AdqlResourceTestCase
-extends DataResourceTestBase
+extends TestBase
     {
-
-    @Test
-    public void test000()
-    throws Exception
-        {
-        //
-        // Select missing view fails.
-        assertIsNull(
-            base().views().select(
-                "view-A"
-                )
-            );
-        }
 
     @Test
     public void test001()
     throws Exception
         {
         //
-        // Create view.
+        // Create with works.
         assertNotNull(
-            base().views().create(
-                "view-A"
+            factories().adql().resources().create(
+                this.unique(
+                    "resource"
+                    )
                 )
             );
         }
@@ -63,17 +55,17 @@ extends DataResourceTestBase
     throws Exception
         {
         //
-        // Create view.
-        assertNotNull(
-            base().views().create(
-                "view-A"
+        // Create with name works.
+        TuesdayAdqlResource created = factories().adql().resources().create(
+            this.unique(
+                "resource"
                 )
             );
         //
-        // Select view works.
+        // Select by ident works.
         assertNotNull(
-            base().views().select(
-                "view-A"
+            factories().adql().resources().select(
+                created.ident()
                 )
             );
         }

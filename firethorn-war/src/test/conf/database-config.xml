@@ -8,46 +8,91 @@
         "
     >
 
-    <!--+
-        | Database settings for Postgresql test database.
-    <bean id="FireThornDatabase" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="org.postgresql.Driver"/>
-        <property name="url" value="jdbc:postgresql://localhost/widgeon"/>
-        <property name="username" value="mallard"/>
-        <property name="password" value="waak-qw32-eblj-hk09m-asdk-984"/>
-    </bean>
-        +-->
+    <!-- ======== FireThorn metadata database ======== -->
 
     <!--+
-        | Memory based HSQLDB entity database.
+        | Local Postgresql database.
+        +-->
+    <bean id="PgsqlLocalData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url"      value="${firethorn.pgsql.data.url}"/>
+        <property name="username" value="${firethorn.pgsql.data.user}"/>
+        <property name="password" value="${firethorn.pgsql.data.pass}"/>
+    </bean>
+
+    <!--+
+        | Memory based HSQLDB database.
         | http://dwark.blogspot.co.uk/2006/10/maven-2-hibernate-hsqldb.html
         | https://numberformat.wordpress.com/2010/06/03/creating-and-using-hsqldb-database-using-maven-in-10-minutes/
         +-->
-    <bean id="FireThornDatabase" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
-        <property name="url" value="jdbc:hsqldb:mem:firethorn"/>
-        <property name="username" value="sa"/>
-        <property name="password" value=""/>
-    </bean>
-
-    <!--+
-        | File based HSQLDB test database.
-        +-->
-    <bean id="FileData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
-        <property name="url" value="jdbc:hsqldb:file:target/database/testdata"/>
-        <property name="username" value="sa"/>
-        <property name="password" value=""/>
-    </bean>
-
-    <!--+
-        | Memory based HSQLDB test database.
-        +-->
-    <bean id="MemData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <bean id="HsqldbMemData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
         <property name="url" value="jdbc:hsqldb:mem:memdata"/>
         <property name="username" value="sa"/>
         <property name="password" value=""/>
+    </bean>
+
+    <!--+
+        | File based HSQLDB database.
+        +-->
+    <bean id="HsqldbFileData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+        <property name="url" value="jdbc:hsqldb:file:target/database/filedata"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+
+    <!-- ======== Target test database ======== -->
+
+    <!--+
+        | Memory based HSQLDB test data.
+        +-->
+    <bean id="HsqlMemTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+        <property name="url" value="jdbc:hsqldb:mem:memtest"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+
+    <!--+
+        | File based HSQLDB test data.
+        +-->
+    <bean id="HsqlFileTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+        <property name="url" value="jdbc:hsqldb:file:target/database/filetest"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+
+    <!--+
+        | Local Postgresql test data.
+        +-->
+    <bean id="PgsqlLocalTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url"      value="${firethorn.pgsql.test.url}"/>
+        <property name="username" value="${firethorn.pgsql.test.user}"/>
+        <property name="password" value="${firethorn.pgsql.test.pass}"/>
+    </bean>
+
+    <!--+
+        | Local MySQL test data.
+        +-->
+    <bean id="MysqlLocalTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url"      value="${firethorn.mysql.test.url}"/>
+        <property name="username" value="${firethorn.mysql.test.user}"/>
+        <property name="password" value="${firethorn.mysql.test.pass}"/>
+    </bean>
+
+    <!--+
+        | SSH tunnel to ROE database server.
+        | ssh -L 1433:hostname:1433 fenrir.roe.ac.uk
+        +-->
+    <bean id="RoeLiveData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
+        <property name="url"      value="${firethorn.wfau.url}"/>
+        <property name="username" value="${firethorn.wfau.user}"/>
+        <property name="password" value="${firethorn.wfau.pass}"/>
     </bean>
 
 </beans>

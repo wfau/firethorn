@@ -17,15 +17,13 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc ;
 
-import static org.junit.Assert.assertNotNull;
-import lombok.extern.slf4j.Slf4j;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 /**
  *
  */
-@Slf4j
 public class JdbcResourceTestCase
 extends JdbcResourceTestBase
     {
@@ -35,7 +33,7 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base()
+            jdbc().resource()
             );
         }
 
@@ -44,8 +42,8 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertIsNull(
-            base().catalogs().select(
-                "catalog-A"
+            jdbc().resource().schemas().select(
+                "schema-A"
                 )
             );
         }
@@ -55,8 +53,8 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
+            jdbc().resource().schemas().create(
+                "schema-A"
                 )
             );
         }
@@ -66,53 +64,14 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
+            jdbc().resource().schemas().create(
+                "schema-A"
                 )
             );
         assertNotNull(
-            base().catalogs().select(
-                "catalog-A"
+            jdbc().resource().schemas().select(
+                "schema-A"
                 )
-            );
-        }
-
-    @Test
-    public void test004()
-    throws Exception
-        {
-        assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                )
-            );
-        assertIsNull(
-            base().catalogs().select(
-                "catalog-A"
-                ).schemas().select(
-                    "schema-A"
-                    )
-            );
-        }
-
-    @Test
-    public void test005()
-    throws Exception
-        {
-        assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                ).schemas().create(
-                    "schema-A"
-                    )
-            );
-
-        assertNotNull(
-            base().catalogs().select(
-                "catalog-A"
-                ).schemas().select(
-                    "schema-A"
-                    )
             );
         }
 
@@ -121,20 +80,16 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                ).schemas().create(
-                    "schema-A"
-                    )
+            jdbc().resource().schemas().create(
+                "schema-A"
+                )
             );
         assertIsNull(
-            base().catalogs().select(
-                "catalog-A"
-                ).schemas().select(
-                    "schema-A"
-                    ).tables().select(
-                        "table-A"
-                        )
+            jdbc().resource().schemas().select(
+                "schema-A"
+                ).tables().select(
+                    "table-A"
+                    )
             );
         }
 
@@ -143,23 +98,19 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                ).schemas().create(
-                    "schema-A"
-                    ).tables().create(
-                        "table-A"
-                        )
+            jdbc().resource().schemas().create(
+                "schema-A"
+                ).tables().create(
+                    "table-A"
+                    )
             );
 
         assertNotNull(
-            base().catalogs().select(
-                "catalog-A"
-                ).schemas().select(
-                    "schema-A"
-                    ).tables().select(
-                        "table-A"
-                        )
+            jdbc().resource().schemas().select(
+                "schema-A"
+                ).tables().select(
+                    "table-A"
+                    )
             );
         }
 
@@ -168,24 +119,20 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                ).schemas().create(
-                    "schema-A"
-                    ).tables().create(
-                        "table-A"
-                        )
+            jdbc().resource().schemas().create(
+                "schema-A"
+                ).tables().create(
+                    "table-A"
+                    )
             );
         assertIsNull(
-            base().catalogs().select(
-                "catalog-A"
-                ).schemas().select(
-                    "schema-A"
-                    ).tables().select(
-                        "table-A"
-                        ).columns().select(
-                            "column-A"
-                            )
+            jdbc().resource().schemas().select(
+                "schema-A"
+                ).tables().select(
+                    "table-A"
+                    ).columns().select(
+                        "column-A"
+                        )
             );
         }
 
@@ -194,27 +141,23 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                ).schemas().create(
-                    "schema-A"
-                    ).tables().create(
-                        "table-A"
-                        ).columns().create(
-                            "column-A"
-                            )
+            jdbc().resource().schemas().create(
+                "schema-A"
+                ).tables().create(
+                    "table-A"
+                    ).columns().create(
+                        "column-A"
+                        )
             );
 
         assertNotNull(
-            base().catalogs().select(
-                "catalog-A"
-                ).schemas().select(
-                    "schema-A"
-                    ).tables().select(
-                        "table-A"
-                        ).columns().select(
-                            "column-A"
-                            )
+            jdbc().resource().schemas().select(
+                "schema-A"
+                ).tables().select(
+                    "table-A"
+                    ).columns().select(
+                        "column-A"
+                        )
             );
         }
 
@@ -223,27 +166,23 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                ).schemas().create(
-                    "schema-A"
-                    ).tables().create(
-                        "table-A"
-                        ).columns().create(
-                            "column-A"
-                            )
+            jdbc().resource().schemas().create(
+                "schema-A"
+                ).tables().create(
+                    "table-A"
+                    ).columns().create(
+                        "column-A"
+                        )
             );
 
         assertIsNull(
-            base().catalogs().select(
-                "catalog-A"
-                ).schemas().select(
-                    "schema-A"
-                    ).tables().select(
-                        "table-A"
-                        ).columns().select(
-                            "column-a"
-                            )
+            jdbc().resource().schemas().select(
+                "schema-A"
+                ).tables().select(
+                    "table-A"
+                    ).columns().select(
+                        "column-a"
+                        )
             );
         }
 
@@ -252,63 +191,53 @@ extends JdbcResourceTestBase
     throws Exception
         {
         assertNotNull(
-            base().catalogs().create(
-                "catalog-A"
-                ).schemas().create(
-                    "schema-A"
-                    ).tables().create(
-                        "table-A"
-                        ).columns().create(
-                            "column-A"
-                            )
+            jdbc().resource().schemas().create(
+                "schema-A"
+                ).tables().create(
+                    "table-A"
+                    ).columns().create(
+                        "column-A"
+                        )
             );
 
         assertIsNull(
-            base().catalogs().select(
-                "catalog-A"
-                ).schemas().select(
-                    "schema-A"
-                    ).tables().select(
-                        "table-A"
-                        ).columns().select(
-                            "column-a"
-                            )
+            jdbc().resource().schemas().select(
+                "schema-A"
+                ).tables().select(
+                    "table-A"
+                    ).columns().select(
+                        "column-a"
+                        )
             );
 
-        base().catalogs().select(
-            "catalog-A"
-            ).schemas().select(
+        jdbc().resource().schemas().select(
+            "schema-A"
+            ).tables().select(
+                "table-A"
+                ).columns().select(
+                    "column-A"
+                    ).name(
+                        "column-a"
+                        );
+
+        assertNotNull(
+            jdbc().resource().schemas().select(
+                "schema-A"
+                ).tables().select(
+                    "table-A"
+                    ).columns().select(
+                        "column-a"
+                        )
+            );
+
+        assertIsNull(
+            jdbc().resource().schemas().select(
                 "schema-A"
                 ).tables().select(
                     "table-A"
                     ).columns().select(
                         "column-A"
-                        ).name(
-                            "column-a"
-                            );
-
-        assertNotNull(
-            base().catalogs().select(
-                "catalog-A"
-                ).schemas().select(
-                    "schema-A"
-                    ).tables().select(
-                        "table-A"
-                        ).columns().select(
-                            "column-a"
-                            )
-            );
-
-        assertIsNull(
-            base().catalogs().select(
-                "catalog-A"
-                ).schemas().select(
-                    "schema-A"
-                    ).tables().select(
-                        "table-A"
-                        ).columns().select(
-                            "column-A"
-                            )
+                        )
             );
         }
     }

@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 
@@ -25,13 +26,13 @@ import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
  *
  */
 public class AdqlResourceBeanIter
-extends AbstractEntityBeanIter<AdqlResource>
+extends AbstractEntityBeanIter<TuesdayAdqlResource>
     {
     /**
      * Public constructor.
      *
      */
-    public AdqlResourceBeanIter(final Iterable<AdqlResource> iterable)
+    public AdqlResourceBeanIter(final Iterable<TuesdayAdqlResource> iterable)
         {
         super(
             iterable
@@ -39,7 +40,7 @@ extends AbstractEntityBeanIter<AdqlResource>
         }
 
     @Override
-    public EntityBean<AdqlResource> bean(final AdqlResource entity)
+    public EntityBean<TuesdayAdqlResource> bean(final TuesdayAdqlResource entity)
         {
         return new AdqlResourceBean(
             entity

@@ -22,29 +22,40 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
 
 /**
  *
  */
-@Slf4j
 public class JdbcResourceTestBase
 extends TestBase
     {
+    
+    private TuesdayJdbcResource jdbcResource ;
 
-    private JdbcResource base ;
-
-    public JdbcResource base()
+    public interface JdbcTargets
         {
-        return this.base;
+        public TuesdayJdbcResource resource(); 
         }
 
-    @Override
+    public JdbcTargets jdbc()
+        {
+        return new JdbcTargets()
+            {
+            @Override
+            public TuesdayJdbcResource resource()
+                {
+                return jdbcResource;
+                }
+            };
+        }
+
     @Before
+    @Override
     public void before()
     throws Exception
         {
-        base = womble().jdbc().resources().create(
+        this.jdbcResource = factories().jdbc().resources().create(
             this.unique(
                 "base"
                 )

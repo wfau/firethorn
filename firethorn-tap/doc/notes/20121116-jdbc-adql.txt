@@ -1,0 +1,116 @@
+
+
+
+#
+# Create a workspace
+
+#
+# Import tables from JDBC resource
+# Import a schema as a set of tables.
+
+    #
+    # Create a JDBC connection
+    # url,[user,pass]
+
+        #
+        # Enable (and scan) the JDBC structure bit at a time.
+
+    #
+    # Select and import a table from JDBC resource
+    # Table becomes part of the ADQL workspace
+
+    # ADQL metadata added to ADQL table and columns
+    # Optional name change
+    # Add type, ucd, units ....
+
+    # ACL applied to ADQL table and columns
+
+#
+# ADQL workspace available as a TAP service.
+# ADQL workspace provides TAP schema and VOSI.
+
+---------------------------------------------
+
+#
+# ROE TAP registration example
+# http://nvo.stsci.edu/vor10/getRecord.aspx?id=ivo://wfau.roe.ac.uk/6dfdr3-dsa
+
+#
+# ROE TAP VOSI schema example.
+# http://wfaudata.roe.ac.uk/6dfdr3-dsa/VOSI/tables
+
+#
+# CDS TAP registration example
+# http://nvo.stsci.edu/vor10/getRecord.aspx?id=ivo://CDS.SIMBAD/TAP
+
+#
+# CDS TAP VOSI schema example.
+# http://simbad.u-strasbg.fr/simbad/sim-tap/tables
+
+    <tableset xsi:type="vod:TableSet">
+        <schema>
+            <name>TAP_SCHEMA</name>
+            <description>Schema dedicated to TAP. It contains all information about available schemas, tables and columns.</description>
+            <table type="base_table"></table>
+            <table type="base_table"></table>
+            <table type="base_table"></table>
+            <table type="base_table"></table>
+            <table type="base_table"></table>
+        </schema>
+        <schema>
+            <name>public</name>
+            <description>Default schema</description>
+            <table type="base_table"></table>
+            <table type="base_table"></table>
+            <table type="base_table"></table>
+            <table type="base_table"></table>
+            <table type="base_table"></table>
+            <table type="base_table"></table>
+            <table type="base_table"></table>
+        </schema>
+    </tableset>
+
+
+#
+# VO Paris TAP registration example
+# http://nvo.stsci.edu/vor10/getRecord.aspx?id=ivo://vopdc.obspm/lesia/epn_titan
+
+#
+# VO Paris TAP VOSI schema example.
+
+#
+# GAVO data center TAP service
+# 
+
+# GAVO data center table metadata
+# http://dc.zah.uni-heidelberg.de/__system__/tap/run/tableMetadata
+
+
+
+    public interface JdbcTable
+    extends BaseTable<JdbcSchema>, JdbcComponent
+
+    public interface BaseTable<SchemaType extends BaseSchema<?>>
+    extends DataTable<SchemaType>
+
+
+    public interface AdqlTable
+    extends DataTable<AdqlSchema>
+
+
+    public interface DataTable<SchemaType extends DataSchema<?>>
+    extends DataComponent
+
+
+
+
+
+music   - 70's and 80's ?
+books   - ??
+walking - got it all
+clothes - wellies, scarf
+laptop  - new laptop ?
+jewlery - got earrings
+
+
+

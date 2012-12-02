@@ -29,8 +29,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -80,7 +80,7 @@ public class JdbcColumnController
      *
      */
     public JdbcColumnBean bean(
-        final JdbcColumn entity
+        final TuesdayJdbcColumn entity
         ){
         return new JdbcColumnBean(
             entity
@@ -93,13 +93,13 @@ public class JdbcColumnController
      *
      */
     @ModelAttribute(COLUMN_ENTITY)
-    public JdbcColumn entity(
+    public TuesdayJdbcColumn entity(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException {
         log.debug("table() [{}]", ident);
-        return womble().jdbc().columns().select(
-            womble().jdbc().columns().ident(
+        return factories().jdbc().columns().select(
+            factories().jdbc().columns().ident(
                 ident
                 )
             );
@@ -128,7 +128,7 @@ public class JdbcColumnController
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcColumnBean jsonSelect(
         @ModelAttribute(COLUMN_ENTITY)
-        final JdbcColumn entity
+        final TuesdayJdbcColumn entity
         ){
         log.debug("jsonSelect()");
         return bean(
@@ -147,7 +147,7 @@ public class JdbcColumnController
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @ModelAttribute(COLUMN_ENTITY)
-        final JdbcColumn entity
+        final TuesdayJdbcColumn entity
         ){
 
         if (name != null)

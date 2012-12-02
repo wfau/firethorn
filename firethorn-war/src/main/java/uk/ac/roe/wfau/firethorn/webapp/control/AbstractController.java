@@ -24,8 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import uk.ac.roe.wfau.firethorn.common.womble.Womble;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayFactories;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
@@ -64,15 +64,15 @@ public abstract class AbstractController
      *
      */
     @Autowired
-    private Womble womble ;
+    private TuesdayFactories factories;
 
     /**
      * Our system services.
      *
      */
-    public Womble womble()
+    public TuesdayFactories factories()
         {
-        return this.womble ;
+        return this.factories;
         }
 
     /**
@@ -91,7 +91,7 @@ public abstract class AbstractController
             {
             //
             // TODO wrap this into a config service API.
-            final ConfigProperty prop = womble.config().select(
+            final ConfigProperty prop = factories().config().select(
                 BASE_URI_CONFIG_KEY
                 );
             if (prop != null)

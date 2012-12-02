@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.identity ;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +30,6 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 /**
  *
  */
-@Slf4j
 public class IdentityTestCase
 extends TestBase
     {
@@ -55,16 +53,16 @@ extends TestBase
     @Before
     public void before()
         {
-        context = factory.context();
+        this.context = this.factory.context();
         }
 
     @Test
     public void test000()
         {
-        ident[0] = womble().identities().create(
+        ident[0] = factories().identities().create(
             "albert"
             ).ident();
-        ident[1] = womble().identities().create(
+        ident[1] = factories().identities().create(
             "albert"
             ).ident();
         }
@@ -73,18 +71,18 @@ extends TestBase
     public void test001()
         {
         assertNotNull(
-            context.identity().ident()
+            this.context.identity().ident()
             );
-        ident[2] = context.identity().ident();
+        ident[2] = this.context.identity().ident();
         }
 
     @Test
     public void test002()
         {
         assertNotNull(
-            context.identity().ident()
+            this.context.identity().ident()
             );
-        ident[3] = context.identity().ident();
+        ident[3] = this.context.identity().ident();
         }
 
     @Test

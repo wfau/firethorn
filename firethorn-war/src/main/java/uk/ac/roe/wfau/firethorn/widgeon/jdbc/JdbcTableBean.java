@@ -17,22 +17,23 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponentBean;
-import uk.ac.roe.wfau.firethorn.widgeon.data.DataComponentBeanImpl;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 
 /**
  * Bean wrapper for <code>JdbcTable</code>.
  *
  */
 public class JdbcTableBean
-extends DataComponentBeanImpl<JdbcTable>
-implements DataComponentBean<JdbcTable>
+extends AbstractEntityBeanImpl<TuesdayJdbcTable>
+implements EntityBean<TuesdayJdbcTable>
     {
     /**
      * Public constructor.
      *
      */
-    public JdbcTableBean(final JdbcTable entity)
+    public JdbcTableBean(final TuesdayJdbcTable entity)
         {
         super(
             JdbcTableIdentFactory.TYPE_URI,
