@@ -39,9 +39,50 @@ curl -v \
     http://${hostname}:${hostport}/firethorn/jdbc/resource/1
 
 #
-# Set the resource URL.
+# Set the connection URL.
 curl -v \
     -H 'Accept: application/json' \
-    --data "jdbc.resource.update.url=spring:PgsqlLocalTest" \
+    --data "jdbc.resource.connection.update.url=spring:PgsqlLocalTest" \
     http://${hostname}:${hostport}/firethorn/jdbc/resource/1
+
+echo ""
+echo "GET details"
+curl -v \
+    -H 'Accept: application/json' \
+    http://${hostname}:${hostport}/firethorn/jdbc/resource/1
+
+echo ""
+echo "GET list of schema"
+curl -v \
+    -H 'Accept: application/json' \
+    http://${hostname}:${hostport}/firethorn/jdbc/resource/1/schemas/select
+
+#
+# Set the connection status.
+curl -v \
+    -H 'Accept: application/json' \
+    --data "jdbc.resource.connection.update.status=ENABLED" \
+    http://${hostname}:${hostport}/firethorn/jdbc/resource/1
+
+echo ""
+echo "GET list of schema"
+curl -v \
+    -H 'Accept: application/json' \
+    http://${hostname}:${hostport}/firethorn/jdbc/resource/1/schemas/select
+
+#
+# Set the connection URL.
+curl -v \
+    -H 'Accept: application/json' \
+    --data "jdbc.resource.connection.update.status=ENABLED" \
+    --data "jdbc.resource.connection.update.url=spring:RoeLiveData" \
+    http://${hostname}:${hostport}/firethorn/jdbc/resource/1
+
+echo ""
+echo "GET list of schema"
+curl -v \
+    -H 'Accept: application/json' \
+    http://${hostname}:${hostport}/firethorn/jdbc/resource/1/schemas/select
+
+
 
