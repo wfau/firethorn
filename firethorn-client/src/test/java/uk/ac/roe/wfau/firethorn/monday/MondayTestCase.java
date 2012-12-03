@@ -152,7 +152,7 @@ extends TestBase
             );
 
         ClientBeanImpl bean = rest.getForObject(
-            new URI("http://localhost:8080/firethorn/jdbc/resource/10537"),
+            new URI("http://localhost:8080/firethorn/jdbc/resource/1"),
             ClientBeanImpl.class
             );        
 
