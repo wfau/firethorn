@@ -391,7 +391,7 @@ implements AdqlDBTable
         }
 
     /**
-     * Inner class to represent a adqlTable adqlColumn.
+     * Inner class to represent an adqlColumn.
      *
      */
     public class AdqlColumnImpl

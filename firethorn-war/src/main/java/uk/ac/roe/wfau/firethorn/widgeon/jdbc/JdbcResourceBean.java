@@ -51,7 +51,7 @@ implements EntityBean<TuesdayJdbcResource>
             {
             return entity().connection().user();
             }
-        public String getStaus()
+        public String getStatus()
             {
             return entity().connection().status().name();
             }

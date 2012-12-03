@@ -131,7 +131,7 @@ public class JdbcResourceController
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException  {
-        log.debug("entity(}");
+        log.debug("entity()");
         log.debug("ident [{}]", ident);
         TuesdayJdbcResource entity = factories().jdbc().resources().select(
             factories().jdbc().resources().ident(
@@ -165,6 +165,7 @@ public class JdbcResourceController
         @ModelAttribute(RESOURCE_ENTITY)
         final TuesdayJdbcResource entity
         ){
+        log.debug("JSON GET request");
         try
             {
             return bean(

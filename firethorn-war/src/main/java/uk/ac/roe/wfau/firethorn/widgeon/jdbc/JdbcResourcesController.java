@@ -36,6 +36,8 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 /**
  * Spring MVC controller for <code>JdbcResource</code>.
  * TODO better exception handling.
+ * http://blog.newsplore.com/2010/08/04/restful-error-handling-with-tomcat-springmvc
+ * http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/util/AntPathMatcher.html
  */
 @Slf4j
 @Controller
@@ -281,7 +283,7 @@ extends AbstractController
         }
 
     /**
-     * JSON POST request to create a new AdqlService.
+     * JSON POST request to create a new resource.
      *
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
@@ -298,9 +300,6 @@ extends AbstractController
 
         final ModelAndView model
         ){
-
-        
-        
         
         final JdbcResourceBean bean = new JdbcResourceBean(
             factories().jdbc().resources().create(
