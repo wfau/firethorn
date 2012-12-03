@@ -56,7 +56,7 @@ public class TuesdayJdbcConnectionTestCase
      * Check the local PostgreSQL database.
      *
      */
-    @Test
+    //@Test
     public void test001()
     throws Exception
         {
@@ -98,7 +98,7 @@ public class TuesdayJdbcConnectionTestCase
      * Check the local MySQL database.
      *
      */
-    @Test
+    //@Test
     public void test002()
     throws Exception
         {
