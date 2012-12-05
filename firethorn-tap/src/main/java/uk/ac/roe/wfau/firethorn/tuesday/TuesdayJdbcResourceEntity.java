@@ -146,6 +146,18 @@ public class TuesdayJdbcResourceEntity
                 );
             }
 
+		@Override
+		public TuesdayJdbcResource create(final String name, final String url, final String user, final String pass) {
+            return super.insert(
+                new TuesdayJdbcResourceEntity(
+                    name,
+                    url,
+                    user,
+                    pass
+                    )
+                );
+			}
+
         @Autowired
         protected TuesdayJdbcSchema.Factory schemas;
 
@@ -186,6 +198,17 @@ public class TuesdayJdbcResourceEntity
             url
             );
         }
+
+    protected TuesdayJdbcResourceEntity(final String name, final String url, final String user, final String pass)
+	    {
+	    super(name);
+	    this.connection = new TuesdayJdbcConnectionEntity(
+	        this,
+	        url,
+	        user,
+	        pass
+	        );
+	    }
 
     @Override
     public TuesdayJdbcResource.Schemas schemas()

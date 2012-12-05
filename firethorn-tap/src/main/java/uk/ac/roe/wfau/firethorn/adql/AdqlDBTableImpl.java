@@ -60,7 +60,7 @@ implements AdqlDBTable
         }
 
     /**
-     * Our AdqlResource.AdqlTable metadata source.
+     * Our AdqlTable metadata source.
      *
      */
     private final TuesdayAdqlTable adqlTable ;
@@ -72,13 +72,13 @@ implements AdqlDBTable
         }
 
     /**
-     * Local ADQL name, if different to the original AdqlResource.AdqlTable.
+     * Local ADQL name, if different to the original AdqlTable.
      *
      */
     private String adqlName ;
 
     /**
-     * Local JDBC name, if different to the original BaseResource.BaseTable.
+     * Local JDBC name, if different to the original JdbcTable.
      *
      */
     private String jdbcName ;
@@ -104,7 +104,7 @@ implements AdqlDBTable
         {
         this.adqlTable = adqlTable ;
         //
-        // Only set the ADQL name if it is not the same as the AdqlResource.AdqlTable name.
+        // Only set the ADQL name if it is not the same as the original.
         if (adqlName != null)
             {
             if (adqlName.length() > 0)
@@ -116,7 +116,7 @@ implements AdqlDBTable
                 }
             }
         //
-        // Only set the JDBC name if it is not the same as the BaseResource.BaseTable name.
+        // Only set the JDBC name if it is not the same as the original.
         if (jdbcName != null)
             {
             if (jdbcName.length() > 0)
@@ -192,14 +192,7 @@ implements AdqlDBTable
     @Override
     public String getADQLCatalogName()
         {
-        if (this.adqlName != null)
-            {
-            return null ;
-            }
-        else {
-            //return adqlTable.schema().catalog().name();
-            return null;
-            }
+        return null ;
         }
 
     /**
@@ -248,7 +241,6 @@ implements AdqlDBTable
             return null ;
             }
         else {
-            //return this.adqlTable.base().schema().catalog().name();
             return null ;
             }
         }
@@ -269,7 +261,7 @@ implements AdqlDBTable
         // If 'name' is not an ADQL name, then search the BaseTable.
         else {
 /*
- * TODO .... NOT SURE WHAT THIS SHOULD BE LOOKING FOR ..
+ * Search base columns by name, and then step back up to this table
  * 
             adqlColumn = this.adqlTable.columns().select(
                 this.adqlTable.base().columns().select(
@@ -277,7 +269,8 @@ implements AdqlDBTable
                     )
                 );
  */
-            }
+        
+        }
 
         if (adqlColumn != null)
             {
@@ -411,19 +404,19 @@ implements AdqlDBTable
             }
 
         /**
-         * Local parent adqlTable, if different to the original AdqlDBTable.
+         * Local parent adqlTable, if different to the original.
          *
          */
         private final DBTable parent ;
 
         /**
-         * Local ADQL name, if different to the original AdqlResource.AdqlColumn.
+         * Local ADQL name, if different to the original.
          *
          */
         private final String adqlName ;
 
         /**
-         * Local JDBC name, if different to the original Widgeonbase.Column.
+         * Local JDBC name, if different to the original.
          *
          */
         private final String jdbcName ;
@@ -502,4 +495,3 @@ implements AdqlDBTable
             }
         }
     }
-

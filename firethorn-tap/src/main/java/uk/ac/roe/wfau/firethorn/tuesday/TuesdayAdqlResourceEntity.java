@@ -152,7 +152,7 @@ extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
                     );
                 }
             @Override
-            public TuesdayAdqlSchema select(String name)
+            public TuesdayAdqlSchema select(final String name)
                 {
                 return factories().adql().schemas().select(
                     TuesdayAdqlResourceEntity.this,
@@ -160,15 +160,23 @@ extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
                     );
                 }
             @Override
-            public TuesdayAdqlSchema create(String name)
+            public TuesdayAdqlSchema create(final String name)
                 {
                 return factories().adql().schemas().create(
                     TuesdayAdqlResourceEntity.this,
                     name
                     );
                 }
+			@Override
+			public TuesdayAdqlSchema create(final TuesdayBaseSchema base, final String name) {
+                return factories().adql().schemas().create(
+                        TuesdayAdqlResourceEntity.this,
+                        base,
+                        name
+                        );
+				}
             @Override
-            public Iterable<TuesdayAdqlSchema> search(String text)
+            public Iterable<TuesdayAdqlSchema> search(final String text)
                 {
                 return factories().adql().schemas().search(
                     TuesdayAdqlResourceEntity.this,

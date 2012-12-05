@@ -86,7 +86,7 @@ public class TuesdayAdqlSchemaEntity
 
         @Override
         @CreateEntityMethod
-        public TuesdayAdqlSchema create(TuesdayAdqlResource parent, String name)
+        public TuesdayAdqlSchema create(final TuesdayAdqlResource parent, final String name)
             {
             return this.insert(
                 new TuesdayAdqlSchemaEntity(
@@ -95,6 +95,22 @@ public class TuesdayAdqlSchemaEntity
                     )
                 );
             }
+
+		@Override
+		public TuesdayAdqlSchema create(final TuesdayAdqlResourceEntity parent, final TuesdayBaseSchema<?, ?> base, final String name)
+			{
+			TuesdayAdqlSchema schema = this.create(
+					parent,
+					name
+					);
+			for (TuesdayBaseTable<?,?> table : base.tables().select())
+				{
+				schema.tables().create(
+						table
+						);
+				}
+			return schema;
+			}
 
         @Override
         @SelectEntityMethod
@@ -163,6 +179,7 @@ public class TuesdayAdqlSchemaEntity
             {
             return this.identifiers ;
             }
+
         }
 
     protected TuesdayAdqlSchemaEntity()
@@ -217,7 +234,7 @@ public class TuesdayAdqlSchemaEntity
                     );
                 }
             @Override
-            public TuesdayAdqlTable create(final TuesdayJdbcTable base)
+            public TuesdayAdqlTable create(final TuesdayBaseTable<?,?> base)
                 {
                 return factories().adql().tables().create(
                     TuesdayAdqlSchemaEntity.this,
@@ -225,7 +242,7 @@ public class TuesdayAdqlSchemaEntity
                     );
                 }
             @Override
-            public TuesdayAdqlTable create(final TuesdayJdbcTable base, final String name)
+            public TuesdayAdqlTable create(final TuesdayBaseTable<?,?> base, final String name)
                 {
                 return factories().adql().tables().create(
                     TuesdayAdqlSchemaEntity.this,

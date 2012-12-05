@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnection;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -128,7 +129,7 @@ extends AbstractController
      *
      */
     public static final String CREATE_PASS = "jdbc.resources.create.pass" ;
-    
+
     /**
      * HTML GET request to display the index page.
      *
@@ -288,24 +289,31 @@ extends AbstractController
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<JdbcResourceBean> jsonCreate(
-        @RequestParam(CREATE_NAME)
+        @RequestParam(value=CREATE_NAME, required=true)
         final String name,
-
         @RequestParam(value=CREATE_URL, required=false)
-        String url,
+        final String url,
         @RequestParam(value=CREATE_USER, required=false)
-        String user,
+        final String user,
         @RequestParam(value=CREATE_PASS, required=false)
-        String pass,
+        final String pass,
 
         final ModelAndView model
         ){
         
         final JdbcResourceBean bean = new JdbcResourceBean(
             factories().jdbc().resources().create(
-                name
+                name,
+                url,
+                user,
+                pass
                 )
             );
+
+        bean.entity().connection().status(
+                TuesdayJdbcConnection.Status.ENABLED
+                );
+
         return new ResponseEntity<JdbcResourceBean>(
             bean,
             new RedirectHeader(

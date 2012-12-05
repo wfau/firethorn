@@ -79,13 +79,13 @@ public class TuesdayJdbcConnectionEntity
      * Our Hibernate SQLException converter.
      * 
      */
-    protected static final SQLExceptionConverter converter = new    StandardSQLExceptionConverter(); 
+    protected static final SQLExceptionConverter converter = new StandardSQLExceptionConverter(); 
     
     public TuesdayJdbcConnectionEntity()
         {
         }
 
-    public TuesdayJdbcConnectionEntity(String url)
+    public TuesdayJdbcConnectionEntity(final String url)
         {
         this(
             null,
@@ -93,7 +93,7 @@ public class TuesdayJdbcConnectionEntity
             );
         }
 
-    public TuesdayJdbcConnectionEntity(TuesdayJdbcResourceEntity parent)
+    public TuesdayJdbcConnectionEntity(final TuesdayJdbcResourceEntity parent)
         {
         this(
             parent,
@@ -101,12 +101,20 @@ public class TuesdayJdbcConnectionEntity
             );
         }
 
-    public TuesdayJdbcConnectionEntity(TuesdayJdbcResourceEntity parent, String url)
+    public TuesdayJdbcConnectionEntity(final TuesdayJdbcResourceEntity parent, final String url)
         {
         this.url    = url ;
         this.parent = parent;
         }
-    
+
+    public TuesdayJdbcConnectionEntity(final TuesdayJdbcResourceEntity parent, final String url, final String user, final String pass)
+	    {
+	    this.url    = url ;
+	    this.user   = user;
+	    this.pass   = pass;
+	    this.parent = parent;
+	    }
+
     @Parent
     protected TuesdayJdbcResourceEntity parent;
     protected TuesdayJdbcResourceEntity getParent()

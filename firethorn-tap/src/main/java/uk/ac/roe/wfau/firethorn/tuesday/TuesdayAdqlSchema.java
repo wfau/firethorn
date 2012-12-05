@@ -47,6 +47,12 @@ extends TuesdayBaseSchema<TuesdayAdqlSchema, TuesdayAdqlTable>
          *
          */
         public TuesdayAdqlTable.Factory tables();
+
+        /**
+         * Create a new schema.
+         *
+         */
+		public TuesdayAdqlSchema create(final TuesdayAdqlResourceEntity parent, final TuesdayBaseSchema<?,?> base, final String name);
         }
 
     @Override
@@ -62,13 +68,13 @@ extends TuesdayBaseSchema<TuesdayAdqlSchema, TuesdayAdqlTable>
          * The create a new table.
          *
          */
-        public TuesdayAdqlTable create(final TuesdayJdbcTable base);
+        public TuesdayAdqlTable create(final TuesdayBaseTable<?,?> base);
 
         /**
          * The create a new table.
          *
          */
-        public TuesdayAdqlTable create(final TuesdayJdbcTable base, final String name);
+        public TuesdayAdqlTable create(final TuesdayBaseTable<?,?> base, final String name);
 
         } 
     @Override

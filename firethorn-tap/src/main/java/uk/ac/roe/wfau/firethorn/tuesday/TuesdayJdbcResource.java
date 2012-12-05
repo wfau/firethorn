@@ -62,6 +62,12 @@ extends TuesdayOgsaResource<TuesdayJdbcSchema>, TuesdayBaseResource<TuesdayJdbcS
          */
         public TuesdayJdbcResource create(final String name, final String url);
 
+        /**
+         * Create a new resource.
+         *
+         */
+        public TuesdayJdbcResource create(final String name, final String url, final String user, final String pass);
+
         }
 
     /**

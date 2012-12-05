@@ -1,0 +1,23 @@
+
+
+
+    #
+    # Import the ogsadai war file into Maven.
+    mvn install:install-file -DgroupId=uk.org.ogsadai -DartifactId=ogsadai-webapp -Dversion=4.2 -Dpackaging=war -Dfile=ogsadai-4.2-jersey-webapp-1.10.war
+
+
+    #
+    # Create webapp project to run the war from maven.
+    pom.xml
+    
+        <!--+
+            | OGSA-DAI webapp.
+            +-->
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-webapp</artifactId>
+            <version>${ogsadai.version}</version>
+            <type>war</type>
+        </dependency>
+
+

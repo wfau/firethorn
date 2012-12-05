@@ -53,7 +53,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
             query = "FROM TuesdayAdqlColumnEntity WHERE parent = :parent ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "TuesdayAdqlColumn-parent.name",
+            name  = "TuesdayAdqlColumn-select-parent.name",
             query = "FROM TuesdayAdqlColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
             ),
         @NamedQuery(

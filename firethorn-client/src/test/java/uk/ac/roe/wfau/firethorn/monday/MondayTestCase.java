@@ -26,7 +26,7 @@ public class MondayTestCase
 extends TestBase
     {
 
-    public interface ClientBean
+    public interface ResourceBean
         {
         public URI getIdent();
 
@@ -50,7 +50,7 @@ extends TestBase
         }
 
     public static class ConnectionBeanImpl
-    implements ClientBean.Connection
+    implements ResourceBean.Connection
         {
 
         public ConnectionBeanImpl()
@@ -79,11 +79,11 @@ extends TestBase
             }
         }
 
-    public static class ClientBeanImpl
-    implements ClientBean
+    public static class ResourceBeanImpl
+    implements ResourceBean
         {
 
-        public ClientBeanImpl()
+        public ResourceBeanImpl()
             {
             }
 
@@ -151,9 +151,9 @@ extends TestBase
             converters
             );
 
-        ClientBeanImpl bean = rest.getForObject(
+        ResourceBeanImpl bean = rest.getForObject(
             new URI("http://localhost:8080/firethorn/jdbc/resource/1"),
-            ClientBeanImpl.class
+            ResourceBeanImpl.class
             );        
 
         log.debug("Resource [{}]", bean.getIdent());

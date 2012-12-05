@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceTestBase;
 import adql.db.DBChecker;
 import adql.db.DBTable;
@@ -48,7 +48,19 @@ extends JdbcResourceTestBase
      *
      */
     @Autowired
-    private AdqlDBTable.Factory factory ;
+    private AdqlDBTable.Factory adqlTables;
+    public AdqlDBTable.Factory adqlTables()
+    	{
+    	return this.adqlTables ;
+    	}
+
+    @Autowired
+    private TuesdayAdqlResource.Factory adqlResources;
+    public TuesdayAdqlResource.Factory adqlResources()
+    	{
+    	return this.adqlResources ;
+    	}
+
 
     /**
      * Simple ADQL query with no aliases.
@@ -75,11 +87,11 @@ extends JdbcResourceTestBase
 
         "adql_table",
         "adql_schema",
-        "adql_catalog",
+        null,//"adql_catalog",
 
         "jdbc_table",
         "jdbc_schema",
-        "jdbc_catalog",
+        null,//"jdbc_catalog",
 
         "adql_ra",
         "adql_dec",
@@ -116,11 +128,11 @@ extends JdbcResourceTestBase
 
         "adql_table",
         "adql_schema",
-        "adql_catalog",
+        null,//"adql_catalog",
 
         "jdbc_table",
         "jdbc_schema",
-        "jdbc_catalog",
+        null,//"jdbc_catalog",
 
         "adql_ra",      // We still get the original names rather than the aliases.
         "adql_dec",     // We still get the original names rather than the aliases.
@@ -157,11 +169,11 @@ extends JdbcResourceTestBase
 
         "adql_table",
         "adql_schema",
-        "adql_catalog",
+        null,//"adql_catalog",
 
         "jdbc_table",
         "jdbc_schema",
-        "jdbc_catalog",
+        null,//"jdbc_catalog",
 
         "adql_ra",      // We still get the original names rather than the aliases.
         "adql_dec",     // We still get the original names rather than the aliases.
@@ -202,7 +214,7 @@ extends JdbcResourceTestBase
 
         "jdbc_table",   // Aliased table still maps to the original JDBC table.
         "jdbc_schema",  // Aliased table still maps to the original JDBC table.
-        "jdbc_catalog", // Aliased table still maps to the original JDBC table.
+        null,//"jdbc_catalog", // Aliased table still maps to the original JDBC table.
 
         "adql_ra",      // We still get the original names rather than the aliases.
         "adql_dec",     // We still get the original names rather than the aliases.
@@ -243,7 +255,7 @@ extends JdbcResourceTestBase
 
         "jdbc_table",   // Aliased table still maps to the original JDBC table.
         "jdbc_schema",  // Aliased table still maps to the original JDBC table.
-        "jdbc_catalog", // Aliased table still maps to the original JDBC table.
+        null,//"jdbc_catalog", // Aliased table still maps to the original JDBC table.
 
         "adql_ra",      // We still get the original names rather than the aliases.
         "adql_dec",     // We still get the original names rather than the aliases.
@@ -265,8 +277,8 @@ extends JdbcResourceTestBase
         //
         // Create our table metadata.
         final DefaultDBTable dbtable = new DefaultDBTable(
-            "jdbc_catalog",
-            "adql_catalog",
+            null,//"jdbc_catalog",
+            null,//"adql_catalog",
             "jdbc_schema",
             "adql_schema",
             "jdbc_table",
@@ -340,107 +352,60 @@ extends JdbcResourceTestBase
                     );
 
         //
-        // Create ADQL resource, catalog and schema.
-
-        //
-        // Add the JDBC catalog to the ADQL resource. 
-/*
- * 
-        //
-        // Create our ADQL view.
-        base().views().create(
-            "adql_view"
-            );
-
-        //
-        // Change the view names.
-        base().views().select(
-            "adql_view"
-            ).catalogs().select(
-                "jdbc_catalog"
-                ).name(
-                    "adql_catalog"
-                    );
-
-        base().views().select(
-            "adql_view"
-            ).catalogs().select(
-                "adql_catalog"
-                ).schemas().select(
+        // Create our ADQL resource.
+        TuesdayAdqlResource adqlResource = adqlResources().create("test"); 
+        adqlResource.schemas().create(
+                jdbc().resource().schemas().select(
                     "jdbc_schema"
-                    ).name(
-                        "adql_schema"
-                        );
-
-        base().views().select(
-            "adql_view"
-            ).catalogs().select(
-                "adql_catalog"
-                ).schemas().select(
-                    "adql_schema"
-                    ).tables().select(
-                        "jdbc_table"
-                        ).name(
-                            "adql_table"
-                            );
-
-        base().views().select(
-            "adql_view"
-            ).catalogs().select(
-                "adql_catalog"
-                ).schemas().select(
-                    "adql_schema"
-                    ).tables().select(
-                        "adql_table"
-                        ).columns().select(
-                            "jdbc_ra"
-                            ).name(
-                                "adql_ra"
-                                );
-
-        base().views().select(
-            "adql_view"
-            ).catalogs().select(
-                "adql_catalog"
-                ).schemas().select(
-                    "adql_schema"
-                    ).tables().select(
-                        "adql_table"
-                        ).columns().select(
-                            "jdbc_dec"
-                            ).name(
-                                "adql_dec"
-                                );
-
-        base().views().select(
-            "adql_view"
-            ).catalogs().select(
-                "adql_catalog"
-                ).schemas().select(
-                    "adql_schema"
-                    ).tables().select(
-                        "adql_table"
-                        ).columns().select(
-                            "jdbc_pts"
-                            ).name(
-                                "adql_pts"
-                                );
-
+                    ),
+        		"adql_schema"
+        		);
         //
-        // Wrap the AdqlResource.AdqlTable in an AdqlDBTable.
-        return factory.create(
-            base().views().select(
-                "adql_view"
-                ).catalogs().select(
-                    "adql_catalog"
-                    ).schemas().select(
-                        "adql_schema"
-                        ).tables().select(
-                            "adql_table"
-                            )
-            );
- */
-        return null ;
+        // Change the table name.
+		adqlResource.schemas().select(
+				"adql_schema"
+				).tables().select(
+					"jdbc_table"
+					).name(
+						"adql_table"
+						);
+        //
+        // Change the column names.
+		adqlResource.schemas().select(
+				"adql_schema"
+				).tables().select(
+					"adql_table"
+					).columns().select(
+						"jdbc_ra"
+						).name(
+							"adql_ra"
+							);
+		adqlResource.schemas().select(
+				"adql_schema"
+				).tables().select(
+					"adql_table"
+					).columns().select(
+						"jdbc_dec"
+						).name(
+							"adql_dec"
+							);
+		adqlResource.schemas().select(
+				"adql_schema"
+				).tables().select(
+					"adql_table"
+					).columns().select(
+						"jdbc_pts"
+						).name(
+							"adql_pts"
+							);
+        
+        return adqlTables().create(
+        		adqlResource.schemas().select(
+    				"adql_schema"
+    				).tables().select(
+						"adql_table"
+    					)
+    		) ;
         }
 
     /**
@@ -566,8 +531,8 @@ extends JdbcResourceTestBase
     /**
      * Simple test with no table checker.
      *
-    @Test
      */
+    @Test
     public void test000()
     throws Exception
         {
@@ -594,8 +559,8 @@ extends JdbcResourceTestBase
     /**
      * Use DefaultDBTable based metadata for the QueryChecker.
      *
-    @Test
      */
+    @Test
     public void testDBTableSimpleQuery()
     throws Exception
         {
@@ -608,8 +573,8 @@ extends JdbcResourceTestBase
     /**
      * Use AdqlDBTable based metadata for the QueryChecker.
      *
-    @Test
      */
+    @Test
     public void testAdqlTableSimpleQuery()
     throws Exception
         {
@@ -621,9 +586,9 @@ extends JdbcResourceTestBase
 
     /**
      * Use DefaultDBTable based metadata for the QueryChecker.
-    @Test
      *
      */
+    @Test
     public void testDBTableQuery000()
     throws Exception
         {
@@ -636,8 +601,8 @@ extends JdbcResourceTestBase
     /**
      * Use AdqlDBTable based metadata for the QueryChecker.
      *
-    @Test
      */
+    @Test
     public void testAdqlTableQuery000()
     throws Exception
         {
@@ -680,8 +645,8 @@ extends JdbcResourceTestBase
     /**
      * Use DefaultDBTable based metadata for the QueryChecker.
      *
-    @Test
      */
+    @Test
     public void testDBTableQuery002()
     throws Exception
         {
@@ -694,8 +659,8 @@ extends JdbcResourceTestBase
     /**
      * Use AdqlDBTable based metadata for the QueryChecker.
      *
-    @Test
      */
+    @Test
     public void testAdqlTableQuery002()
     throws Exception
         {
@@ -708,8 +673,8 @@ extends JdbcResourceTestBase
     /**
      * Use DefaultDBTable based metadata for the QueryChecker.
      *
-    @Test
      */
+    @Test
     public void testDBTableQuery003()
     throws Exception
         {
@@ -722,8 +687,8 @@ extends JdbcResourceTestBase
     /**
      * Use AdqlDBTable based metadata for the QueryChecker.
      *
-    @Test
      */
+    @Test
     public void testAdqlTableQuery003()
     throws Exception
         {
