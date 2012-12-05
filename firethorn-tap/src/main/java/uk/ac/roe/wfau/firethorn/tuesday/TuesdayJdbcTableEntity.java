@@ -287,8 +287,7 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
     @Override
     public String alias()
         {
-        // TODO Auto-generated method stub
-        return null;
+        return "jdbc_table_" + ident();
         }
 
     @Override

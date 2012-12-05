@@ -140,7 +140,7 @@ extends TuesdayBaseComponentEntity
     @Override
     public String alias()
         {
-        return "ogsa_column_" + ident();
+        return "base_column_" + ident();
         }
 
     @Override

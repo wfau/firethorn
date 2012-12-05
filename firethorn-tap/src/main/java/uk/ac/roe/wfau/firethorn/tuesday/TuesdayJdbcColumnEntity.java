@@ -234,6 +234,12 @@ public class TuesdayJdbcColumnEntity
         }
 
     @Override
+    public String alias()
+        {
+        return "jdbc_column_" + ident();
+        }
+
+    @Override
     public String link()
         {
         // TODO Auto-generated method stub
@@ -289,5 +295,4 @@ public class TuesdayJdbcColumnEntity
         {
         this.sqlsize = size;
         }
-
     }

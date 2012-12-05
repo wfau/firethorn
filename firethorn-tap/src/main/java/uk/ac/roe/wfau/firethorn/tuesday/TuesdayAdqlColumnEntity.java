@@ -289,6 +289,12 @@ public class TuesdayAdqlColumnEntity
         }
 
     @Override
+    public String alias()
+        {
+        return "adql_column_" + ident();
+        }
+
+    @Override
     public String link()
         {
         // TODO Auto-generated method stub

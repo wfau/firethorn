@@ -136,7 +136,7 @@ extends TuesdayBaseComponentEntity
     @Override
     public String alias()
         {
-        return "ogsa_table_" + ident();
+        return "base_table_" + ident();
         }
 
     @Override

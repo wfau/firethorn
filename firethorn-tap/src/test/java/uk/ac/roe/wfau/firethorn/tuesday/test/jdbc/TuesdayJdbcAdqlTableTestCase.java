@@ -47,7 +47,7 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
 
 /**
- * TODO experiment with this
+ * TODO experiment with DatabaseBuilder
  * http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/jdbc/datasource/embedded/EmbeddedDatabaseBuilder.html
  *
  */
@@ -56,40 +56,60 @@ public class TuesdayJdbcAdqlTableTestCase
     extends TuesdayJdbcResourceTestCase
     {
 
-    @Test
-    public void test001()
-    throws Exception
-        {
-        TuesdayJdbcResource jdbcResource = factories().jdbc().resources().create(
+	public TuesdayJdbcResource resource()
+		{
+        return factories().jdbc().resources().create(
             "test-resource",
             "spring:RoeLiveData"
             );
-        jdbcResource.inport();
+		}
 
-        display(jdbcResource);
-
-        TuesdayAdqlResource adqlWorkspace = factories().adql().resources().create(
+	public TuesdayAdqlResource workspace()
+		{
+        return factories().adql().resources().create(
             "test-workspace"
             );
-        
-        TuesdayAdqlSchema adqlSchema = adqlWorkspace.schemas().create(
-            "wednesday"
-            ); 
+		}
 
-        TuesdayJdbcSchema jdbcSchema = jdbcResource.schemas().select("dbo");
-        TuesdayJdbcTable jdbcTable   = jdbcSchema .tables().select("twomass_psc");
-
+	@Test
+    public void test001()
+    throws Exception
+        {
+        TuesdayJdbcResource resource = resource();
+        TuesdayAdqlResource workspace = workspace();
         //
         // Import a JdbcTable into an AdqlSchema
-        TuesdayAdqlTable adqlTable = adqlSchema.tables().create(
-            jdbcTable,
-            "albert"
-            ); 
-        
-        display(adqlWorkspace);
+        resource.inport();
+        workspace.schemas().create(
+            "test-schema"
+            ).tables().create(
+	    		resource.schemas().select("dbo").tables().select("twomass_psc"),
+	            "test-table"
+	            ); 
+        display(
+    		workspace
+    		);
 
         }
 
+	@Test
+    public void test002()
+    throws Exception
+        {
+        TuesdayJdbcResource resource  = resource();
+        TuesdayAdqlResource workspace = workspace();
+        //
+        // Import a JdbcSchema into our workspace.
+        resource.inport();
+        workspace.schemas().create(
+    		resource.schemas().select("dbo"),
+    		"test-schema"
+            ); 
+        display(
+    		workspace
+    		);
+        }
+	
     public void display(final TuesdayAdqlResource resource)
         {
         log.debug("---");
@@ -100,7 +120,8 @@ public class TuesdayJdbcAdqlTableTestCase
             log.debug("--- Schema [{}][{}]", new Object[] {resource.name(), schema.name()});
             for (final TuesdayAdqlTable table : schema.tables().select())
                 {
-                log.debug("---- Table [{}][{}.{}]", new Object[] {resource.name(), schema.name(), table.name()});
+                log.debug("---- Table [{}][{}][{}]", new Object[] {table.resource().name(), table.alias(), table.fullname()});
+                log.debug("---- Base  [{}][{}][{}]", new Object[] {table.base().resource().name(), table.base().alias(), table.base().fullname()});
                 for (final TuesdayAdqlColumn column : table.columns().select())
                     {
                     log.debug("----- Column [{}][{}][{}]", new Object[] {column.resource().name(),        column.alias(),        column.fullname()});
