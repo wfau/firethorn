@@ -163,6 +163,7 @@ implements AdqlDBTable
             return this.adqlName ;
             }
         else {
+            //return this.adqlTable.name();
             return this.adqlTable.name();
             }
         }
@@ -207,7 +208,7 @@ implements AdqlDBTable
             return this.jdbcName ;
             }
         else {
-            return this.adqlTable.base().name();
+            return this.adqlTable.base().alias();
             }
         }
 
@@ -224,7 +225,7 @@ implements AdqlDBTable
             return null ;
             }
         else {
-            return this.adqlTable.base().schema().name();
+            return this.adqlTable.base().schema().alias();
             }
         }
 
@@ -241,7 +242,7 @@ implements AdqlDBTable
             return null ;
             }
         else {
-            return null ;
+            return this.adqlTable.base().resource().alias();
             }
         }
 
@@ -478,7 +479,7 @@ implements AdqlDBTable
                 return this.jdbcName ;
                 }
             else {
-                return adqlColumn.base().name();
+                return adqlColumn.base().alias();
                 }
             }
 

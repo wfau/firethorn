@@ -94,5 +94,7 @@ extends TuesdayBaseComponent
      */
     public Schemas<SchemaType> schemas();
 
+    public String alias();
     public StringBuilder fullname();
+    
     }

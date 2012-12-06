@@ -251,4 +251,10 @@ public class TuesdayJdbcSchemaEntity
             this
             );
         }
+
+	@Override
+	public String alias()
+		{
+		return "jdbc_schema_" + ident();
+		}
     }

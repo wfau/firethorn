@@ -33,6 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
@@ -53,7 +54,7 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
  */
 @Slf4j
 public class TuesdayJdbcAdqlTableTestCase
-    extends TuesdayJdbcResourceTestCase
+    extends TestBase
     {
 
 	public TuesdayJdbcResource resource()
@@ -70,6 +71,27 @@ public class TuesdayJdbcAdqlTableTestCase
             "test-workspace"
             );
 		}
+
+    public void display(final TuesdayAdqlResource resource)
+	    {
+	    log.debug("---");
+	    log.debug("- ADQL resource [{}]", resource.name());
+	
+	    for (final TuesdayAdqlSchema schema : resource.schemas().select())
+	        {
+	        log.debug("--- Schema [{}][{}]", new Object[] {resource.name(), schema.name()});
+	        for (final TuesdayAdqlTable table : schema.tables().select())
+	            {
+	            log.debug("---- Table [{}][{}][{}]", new Object[] {table.resource().name(), table.alias(), table.fullname()});
+	            log.debug("---- Base  [{}][{}][{}]", new Object[] {table.base().resource().name(), table.base().alias(), table.base().fullname()});
+	            for (final TuesdayAdqlColumn column : table.columns().select())
+	                {
+	                log.debug("----- Column [{}][{}][{}]", new Object[] {column.resource().name(),        column.alias(),        column.fullname()});
+	                log.debug("----- Base   [{}][{}][{}]", new Object[] {column.base().resource().name(), column.base().alias(), column.base().fullname()});
+	                }
+	            }
+	        }
+	    }
 
 	@Test
     public void test001()
@@ -109,25 +131,16 @@ public class TuesdayJdbcAdqlTableTestCase
     		workspace
     		);
         }
-	
-    public void display(final TuesdayAdqlResource resource)
-        {
-        log.debug("---");
-        log.debug("- ADQL resource [{}]", resource.name());
 
-        for (final TuesdayAdqlSchema schema : resource.schemas().select())
-            {
-            log.debug("--- Schema [{}][{}]", new Object[] {resource.name(), schema.name()});
-            for (final TuesdayAdqlTable table : schema.tables().select())
-                {
-                log.debug("---- Table [{}][{}][{}]", new Object[] {table.resource().name(), table.alias(), table.fullname()});
-                log.debug("---- Base  [{}][{}][{}]", new Object[] {table.base().resource().name(), table.base().alias(), table.base().fullname()});
-                for (final TuesdayAdqlColumn column : table.columns().select())
-                    {
-                    log.debug("----- Column [{}][{}][{}]", new Object[] {column.resource().name(),        column.alias(),        column.fullname()});
-                    log.debug("----- Base   [{}][{}][{}]", new Object[] {column.base().resource().name(), column.base().alias(), column.base().fullname()});
-                    }
-                }
-            }
-        }
+    /**
+     * Our autowired AdqlDBTable factory.
+     *
+     */
+    @Autowired
+    private AdqlDBTable.Factory tables;
+    public AdqlDBTable.Factory tables()
+    	{
+    	return this.tables ;
+    	}
+
     }

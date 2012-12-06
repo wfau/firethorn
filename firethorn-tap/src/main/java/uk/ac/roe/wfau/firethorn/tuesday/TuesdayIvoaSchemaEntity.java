@@ -229,4 +229,10 @@ public class TuesdayIvoaSchemaEntity
         // TODO Auto-generated method stub
         return null;
         }
+
+	@Override
+	public String alias()
+		{
+		return "ivoa_schema_" + ident();
+		}
     }

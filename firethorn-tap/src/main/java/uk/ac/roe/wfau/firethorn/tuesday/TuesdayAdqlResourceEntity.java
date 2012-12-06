@@ -192,4 +192,10 @@ extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
         // TODO Auto-generated method stub
         return null;
         }
+
+	@Override
+	public String alias()
+		{
+		return "adql_resource_" + ident();
+		}
     }

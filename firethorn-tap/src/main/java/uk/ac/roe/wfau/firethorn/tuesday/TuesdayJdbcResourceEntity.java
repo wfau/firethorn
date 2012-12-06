@@ -514,4 +514,10 @@ public class TuesdayJdbcResourceEntity
                 );
             }
         }
+
+	@Override
+	public String alias()
+		{
+		return "jdbc_resource_" + ident();
+		}
     }

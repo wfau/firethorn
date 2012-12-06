@@ -267,4 +267,9 @@ public class TuesdayAdqlSchemaEntity
         // TODO Auto-generated method stub
         return null;
         }
+
+	@Override
+	public String alias() {
+		return "adql_schema_" + ident();
+		}
     }
