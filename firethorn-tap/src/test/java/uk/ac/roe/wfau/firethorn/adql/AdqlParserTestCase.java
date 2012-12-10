@@ -757,7 +757,43 @@ extends TestBase
 
         };
 
-	public TuesdayJdbcResource resource()
+    private static final String[] IMPORTED_001 = {
+
+        "SELECT"
+      + "    pts_key,"
+      + "    ra || ' - ' || dec as \"Position\""
+      + " FROM"
+      + "    twomass_psc"
+      + " WHERE"
+      + "    Contains(Point('ICRS', ra, dec), Circle('ICRS', 10, 5, 1)) = 1"
+      + " ORDER BY pts_key"
+      + "",
+
+      "twomass_psc",
+      null,
+      null,         
+      "twomass_psc",
+
+      "twomass_psc",
+      "adql_schema",
+      null,
+
+      "twomass_psc",
+      "dbo",
+      null,
+
+      "ra",
+      "dec",
+      "pts",
+
+      "ra",
+      "dec",
+      "pts"
+
+      };
+
+    
+    public TuesdayJdbcResource resource()
 		{
 	    return factories().jdbc().resources().create(
 	        "test-resource",
@@ -821,7 +857,7 @@ extends TestBase
     			}
     		}
 
-    	ADQLTranslator translator = new PostgreSQLTranslator();
+    	ADQLTranslator translator = new PostgreSQLTranslator(false);
     	log.debug("ADQL [{}]", query.toADQL());
     	log.debug("SQL  [{}]",  translator.translate(query));
 

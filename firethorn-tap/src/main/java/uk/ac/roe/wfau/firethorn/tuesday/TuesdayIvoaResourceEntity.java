@@ -230,4 +230,28 @@ public class TuesdayIvoaResourceEntity
 		{
 		return "ivoa_schema_" + ident();
 		}
+
+	/**
+	 * The the OGSA-DAI resource ID.
+	 * @todo Move to a common base class.
+	 * 
+	 */
+    protected static final String DB_OGSA_ID_COL = "ogsa_id";
+    @Column(
+        name = DB_OGSA_ID_COL,
+        unique = false,
+        nullable = false,
+        updatable = false
+        )
+	private String ogsaid;
+	@Override
+	public String ogsaid()
+		{
+		return this.ogsaid;
+		}
+	@Override
+	public void ogsaid(String ogsaid)
+		{
+		this.ogsaid = ogsaid;
+		}
     }

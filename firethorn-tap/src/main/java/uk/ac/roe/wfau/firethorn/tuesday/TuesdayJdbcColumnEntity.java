@@ -236,7 +236,7 @@ public class TuesdayJdbcColumnEntity
     @Override
     public String alias()
         {
-        return "jdbc_column_" + ident();
+        return this.name();
         }
 
     @Override

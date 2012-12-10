@@ -40,4 +40,14 @@ implements EntityBean<TuesdayJdbcTable>
             entity
             );
         }
-    }
+
+    public String getFullName()
+    	{
+    	return entity().fullname().toString();
+    	}
+
+    public String getOgsaResourceId()
+		{
+		return entity().resource().ogsaid();
+		}
+	}

@@ -19,10 +19,11 @@ curl -v \
     http://${hostname}:${hostport}/firethorn/jdbc/resources/select
 
 #
-# Create with connection URL.
+# Create JDBC resource with connection URL.
 curl -v \
     -H 'Accept: application/json' \
     --data "jdbc.resources.create.url=spring:RoeLiveData" \
     --data "jdbc.resources.create.name=RoeLiveData" \
     http://${hostname}:${hostport}/firethorn/jdbc/resources/create 
+
 
