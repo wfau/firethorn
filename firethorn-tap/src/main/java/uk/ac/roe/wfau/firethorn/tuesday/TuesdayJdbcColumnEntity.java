@@ -169,12 +169,19 @@ public class TuesdayJdbcColumnEntity
             }
 
         @Autowired
-        protected TuesdayJdbcColumn.IdentFactory idents ;
-
+        protected TuesdayJdbcColumn.IdentFactory idents;
         @Override
         public TuesdayJdbcColumn.IdentFactory idents()
             {
-            return this.idents ;
+            return this.idents;
+            }
+
+        @Autowired
+        protected TuesdayJdbcColumn.LinkFactory links;
+        @Override
+        public TuesdayJdbcColumn.LinkFactory links()
+            {
+            return this.links;
             }
         }
 

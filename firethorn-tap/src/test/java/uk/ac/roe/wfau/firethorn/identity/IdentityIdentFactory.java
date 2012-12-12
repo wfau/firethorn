@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.identity;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
+import uk.ac.roe.wfau.firethorn.test.TuesdayTestIdentFactory;
 
 /**
  *
@@ -27,12 +28,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
  */
 @Component
 public class IdentityIdentFactory
-extends AbstractIdentFactory<Identity>
-implements Identity.IdentFactory
+extends TuesdayTestIdentFactory<Identity>
+implements Identity.IdentFactory, Identity.LinkFactory
     {
-    @Override
-    public String link(final Identity entity)
-        {
-        return null;
-        }
     }

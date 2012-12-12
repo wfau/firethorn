@@ -188,11 +188,19 @@ public class TuesdayAdqlTableEntity
             }
 
         @Autowired
-        protected TuesdayAdqlTable.IdentFactory idents ;
+        protected TuesdayAdqlTable.IdentFactory idents;
         @Override
         public TuesdayAdqlTable.IdentFactory idents()
             {
-            return this.idents ;
+            return this.idents;
+            }
+
+        @Autowired
+        protected TuesdayAdqlTable.LinkFactory links;
+        @Override
+        public TuesdayAdqlTable.LinkFactory links()
+            {
+            return this.links;
             }
         }
     
@@ -357,15 +365,10 @@ public class TuesdayAdqlTableEntity
         }
 
     @Override
-    public String alias()
-        {
-        return "adql_table_" + ident();
-        }
-
-    @Override
     public String link()
         {
-        // TODO Auto-generated method stub
-        return null;
+        return factories().adql().tables().links().link(
+            this
+            );
         }
     }

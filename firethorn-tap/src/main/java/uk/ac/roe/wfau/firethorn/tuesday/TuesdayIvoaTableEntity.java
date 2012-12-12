@@ -161,13 +161,20 @@ public class TuesdayIvoaTableEntity
             }
 
         @Autowired
-        protected TuesdayIvoaTable.IdentFactory identifiers ;
+        protected TuesdayIvoaTable.IdentFactory idents;
         @Override
         public TuesdayIvoaTable.IdentFactory idents()
             {
-            return this.identifiers ;
+            return this.idents;
             }
 
+        @Autowired
+        protected TuesdayIvoaTable.LinkFactory links;
+        @Override
+        public TuesdayIvoaTable.LinkFactory links()
+            {
+            return this.links;
+            }
         }
     
     protected TuesdayIvoaTableEntity()
@@ -243,16 +250,10 @@ public class TuesdayIvoaTableEntity
         }
     
     @Override
-    public String alias()
-        {
-        // TODO Auto-generated method stub
-        return null;
-        }
-
-    @Override
     public String link()
         {
-        // TODO Auto-generated method stub
-        return null;
+        return factories().ivoa().tables().links().link(
+            this
+            );
         }
     }

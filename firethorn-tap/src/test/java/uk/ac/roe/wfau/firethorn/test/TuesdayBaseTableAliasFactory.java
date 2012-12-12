@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.LongIdentifier;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable.AliasFactory;
 
@@ -34,23 +35,21 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable.AliasFactory;
 @Slf4j
 @Component
 public class TuesdayBaseTableAliasFactory
-extends AbstractIdentFactory<TuesdayBaseTable<?,?>>
-implements AliasFactory
+//extends AbstractIdentFactory<TuesdayBaseTable<?,?>>
+//implements AliasFactory
     {
-
+/*
     protected static final String PREFIX = "TABLE_" ;
     
-    @Override
+    //@Override
     public String alias(final TuesdayBaseTable<?,?> table)
         {
         return PREFIX + table.ident().toString();
         }
 
-    @Override
+    //@Override
     public Identifier ident(final String alias)
         {
-        log.debug("ALIAS [{}]", alias);
-        log.debug("ALIAS [{}]", alias.substring(PREFIX.length()));
         return super.ident(
             alias.substring(
                 PREFIX.length()
@@ -58,9 +57,17 @@ implements AliasFactory
             );
         }
 
-    @Override
+    //@Override
     public String link(TuesdayBaseTable<?,?> entity)
         {
         return null;
         }
+
+    //@Override
+    public TuesdayBaseTable<?, ?> select(String alias) throws NotFoundException
+        {
+        // TODO Auto-generated method stub
+        return null;
+        }
+ */        
     }

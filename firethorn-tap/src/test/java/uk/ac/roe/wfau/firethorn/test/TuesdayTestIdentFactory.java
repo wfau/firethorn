@@ -15,49 +15,25 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.tuesday;
+package uk.ac.roe.wfau.firethorn.test;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+
 /**
- *
+ * JUnit test implementation.
  *
  */
 @Component
-public class TuesdayAdqlFactoryImpl
-    implements TuesdayAdqlFactories
+public class TuesdayTestIdentFactory<EntityType extends Entity>
+extends AbstractIdentFactory<EntityType>
+implements Entity.IdentFactory<EntityType>, Entity.LinkFactory<EntityType>
     {
-
-    @Autowired
-    private TuesdayAdqlResource.Factory resources;
     @Override
-    public TuesdayAdqlResource.Factory resources()
+    public String link(final EntityType entity)
         {
-        return this.resources;
-        }
-
-    @Autowired
-    private TuesdayAdqlSchema.Factory schemas;
-    @Override
-    public TuesdayAdqlSchema.Factory schemas()
-        {
-        return this.schemas;
-        }
-
-    @Autowired
-    private TuesdayAdqlTable.Factory tables;
-    @Override
-    public TuesdayAdqlTable.Factory tables()
-        {
-        return this.tables;
-        }
-
-    @Autowired
-    private TuesdayAdqlColumn.Factory columns;
-    @Override
-    public TuesdayAdqlColumn.Factory columns()
-        {
-        return this.columns;
+        return null;
         }
     }

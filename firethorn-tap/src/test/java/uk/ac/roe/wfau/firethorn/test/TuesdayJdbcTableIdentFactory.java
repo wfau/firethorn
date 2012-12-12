@@ -19,9 +19,8 @@ package uk.ac.roe.wfau.firethorn.test;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable.IdentFactory;
 
 /**
  * JUnit test implementation.
@@ -29,12 +28,7 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable.IdentFactory;
  */
 @Component
 public class TuesdayJdbcTableIdentFactory
-extends AbstractIdentFactory<TuesdayJdbcTable>
-implements TuesdayJdbcTable.IdentFactory
+extends TuesdayTestIdentFactory<TuesdayJdbcTable>
+implements TuesdayJdbcTable.IdentFactory, TuesdayJdbcTable.LinkFactory
     {
-    @Override
-    public String link(final TuesdayJdbcTable entity)
-        {
-        return null;
-        }
     }

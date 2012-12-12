@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.test;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource.IdentFactory;
 
@@ -29,12 +30,7 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource.IdentFactory;
  */
 @Component
 public class TuesdayJdbcResourceIdentFactory
-extends AbstractIdentFactory<TuesdayJdbcResource>
-implements TuesdayJdbcResource.IdentFactory
+extends TuesdayTestIdentFactory<TuesdayJdbcResource>
+implements TuesdayJdbcResource.IdentFactory, TuesdayJdbcResource.LinkFactory
     {
-    @Override
-    public String link(final TuesdayJdbcResource entity)
-        {
-        return null;
-        }
     }

@@ -134,12 +134,19 @@ implements ConfigProperty
             }
 
         @Autowired
-        protected ConfigProperty.IdentFactory identifiers ;
-
+        protected ConfigProperty.IdentFactory idents;
         @Override
         public ConfigProperty.IdentFactory idents()
             {
-            return this.identifiers;
+            return this.idents;
+            }
+
+        @Autowired
+        protected ConfigProperty.LinkFactory links;
+        @Override
+        public ConfigProperty.LinkFactory links()
+            {
+            return this.links;
             }
         }
 

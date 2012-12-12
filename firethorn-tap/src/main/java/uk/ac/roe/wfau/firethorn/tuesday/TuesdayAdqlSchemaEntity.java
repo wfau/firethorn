@@ -164,7 +164,6 @@ public class TuesdayAdqlSchemaEntity
         
         @Autowired
         protected TuesdayAdqlTable.Factory tables;
-
         @Override
         public TuesdayAdqlTable.Factory tables()
             {
@@ -172,14 +171,20 @@ public class TuesdayAdqlSchemaEntity
             }
 
         @Autowired
-        protected TuesdayAdqlSchema.IdentFactory identifiers ;
-
+        protected TuesdayAdqlSchema.IdentFactory idents ;
         @Override
         public TuesdayAdqlSchema.IdentFactory idents()
             {
-            return this.identifiers ;
+            return this.idents ;
             }
 
+        @Autowired
+        protected TuesdayAdqlSchema.LinkFactory links;
+        @Override
+        public TuesdayAdqlSchema.LinkFactory links()
+            {
+            return this.links;
+            }
         }
 
     protected TuesdayAdqlSchemaEntity()

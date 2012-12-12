@@ -40,6 +40,12 @@ public interface TuesdayFactories
     public TuesdayHibernateThings hibernate();
 
     /**
+     * Our base component factories.
+     *
+     */
+    public TuesdayBaseFactories base();
+
+    /**
      * Our ADQL component factories.
      *
      */
@@ -58,19 +64,19 @@ public interface TuesdayFactories
     public TuesdayJdbcFactories jdbc();
 
     /**
-     * Access to our Identity factory.
+     * Our local Identity factory.
      *
      */
     public Identity.Factory identities();
 
     /**
-     * Access to the current Identity context.
+     * The current Identity context.
      *
      */
     public Identity.Context context();
 
     /**
-     * Access to our ConfigProperty factory.
+     * Our local ConfigProperty factory.
      *
      */
     public ConfigProperty.Factory config();

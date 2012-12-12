@@ -177,19 +177,19 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
             }
 
         @Autowired
-        protected TuesdayJdbcTable.IdentFactory identifiers ;
+        protected TuesdayJdbcTable.IdentFactory idents ;
         @Override
         public TuesdayJdbcTable.IdentFactory idents()
             {
-            return this.identifiers ;
+            return this.idents ;
             }
 
         @Autowired
-        protected TuesdayBaseTable.AliasFactory aliases;
+        protected TuesdayJdbcTable.LinkFactory links;
         @Override
-        public TuesdayBaseTable.AliasFactory aliases()
+        public TuesdayJdbcTable.LinkFactory links()
             {
-            return this.aliases;
+            return this.links;
             }
         }
     
@@ -291,22 +291,6 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
             };
         }
 
-    @Override
-    public String alias()
-        {
-        return factories().jdbc().tables().aliases().alias(
-            this
-            );
-        }
-
-    @Override
-    public String link()
-        {
-        return factories().jdbc().tables().idents().link(
-            this
-            );
-        }
-
     /**
      * Metadata database column name.
      * 
@@ -330,5 +314,13 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
     public void jdbctype(final JdbcTableType type)
         {
         this.jdbctype = type;
+        }
+
+    @Override
+    public String link()
+        {
+        return factories().jdbc().tables().links().link(
+            this
+            );
         }
     }

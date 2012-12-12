@@ -27,6 +27,15 @@ public interface TuesdayJdbcSchema
 extends TuesdayBaseSchema<TuesdayJdbcSchema, TuesdayJdbcTable>
     {
     /**
+     * Link factory interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<TuesdayJdbcSchema>
+        {
+        }
+
+    /**
      * Identifier factory interface.
      *
      */

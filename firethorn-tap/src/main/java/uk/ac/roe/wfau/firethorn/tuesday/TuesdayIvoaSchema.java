@@ -27,6 +27,15 @@ public interface TuesdayIvoaSchema
 extends TuesdayBaseSchema<TuesdayIvoaSchema, TuesdayIvoaTable>
     {
     /**
+     * Link factory interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<TuesdayIvoaSchema>
+        {
+        }
+
+    /**
      * Identifier factory interface.
      *
      */

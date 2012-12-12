@@ -106,12 +106,19 @@ implements Identity
             }
 
         @Autowired
-        protected Identity.IdentFactory identifiers ;
-
+        protected Identity.IdentFactory idents;
         @Override
         public Identity.IdentFactory idents()
             {
-            return this.identifiers;
+            return this.idents;
+            }
+
+        @Autowired
+        protected Identity.LinkFactory links;
+        @Override
+        public Identity.LinkFactory links()
+            {
+            return this.links;
             }
         }
 

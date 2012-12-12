@@ -27,6 +27,15 @@ public interface TuesdayIvoaResource
 extends TuesdayOgsaResource<TuesdayIvoaSchema>
     {
     /**
+     * Link factory interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<TuesdayIvoaResource>
+        {
+        }
+
+    /**
      * Identifier factory interface.
      *
      */

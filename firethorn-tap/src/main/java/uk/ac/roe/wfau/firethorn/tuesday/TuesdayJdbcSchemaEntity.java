@@ -148,7 +148,6 @@ public class TuesdayJdbcSchemaEntity
         
         @Autowired
         protected TuesdayJdbcTable.Factory tables;
-
         @Override
         public TuesdayJdbcTable.Factory tables()
             {
@@ -156,12 +155,19 @@ public class TuesdayJdbcSchemaEntity
             }
 
         @Autowired
-        protected TuesdayJdbcSchema.IdentFactory identifiers ;
-
+        protected TuesdayJdbcSchema.IdentFactory idents ;
         @Override
         public TuesdayJdbcSchema.IdentFactory idents()
             {
-            return this.identifiers ;
+            return this.idents ;
+            }
+
+        @Autowired
+        protected TuesdayJdbcSchema.LinkFactory links;
+        @Override
+        public TuesdayJdbcSchema.LinkFactory links()
+            {
+            return this.links;
             }
         }
 
@@ -247,14 +253,8 @@ public class TuesdayJdbcSchemaEntity
     @Override
     public String link()
         {
-        return factories().jdbc().schemas().idents().link(
+        return factories().jdbc().schemas().links().link(
             this
             );
         }
-
-	@Override
-	public String alias()
-		{
-		return "jdbc_schema_" + ident();
-		}
     }

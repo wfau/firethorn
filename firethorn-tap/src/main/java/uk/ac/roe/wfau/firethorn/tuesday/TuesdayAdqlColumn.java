@@ -27,6 +27,15 @@ public interface TuesdayAdqlColumn
 extends TuesdayBaseColumn<TuesdayAdqlColumn>
     {
     /**
+     * Link factory interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<TuesdayAdqlColumn>
+        {
+        }
+
+    /**
      * Identifier factory interface.
      *
      */

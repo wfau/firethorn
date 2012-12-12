@@ -147,7 +147,6 @@ public class TuesdayIvoaSchemaEntity
         
         @Autowired
         protected TuesdayIvoaTable.Factory tables;
-
         @Override
         public TuesdayIvoaTable.Factory tables()
             {
@@ -155,12 +154,19 @@ public class TuesdayIvoaSchemaEntity
             }
 
         @Autowired
-        protected TuesdayIvoaSchema.IdentFactory identifiers ;
-
+        protected TuesdayIvoaSchema.IdentFactory idents ;
         @Override
         public TuesdayIvoaSchema.IdentFactory idents()
             {
-            return this.identifiers ;
+            return this.idents ;
+            }
+
+        @Autowired
+        protected TuesdayIvoaSchema.LinkFactory links;
+        @Override
+        public TuesdayIvoaSchema.LinkFactory links()
+            {
+            return this.links;
             }
         }
     

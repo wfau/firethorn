@@ -29,12 +29,7 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema.IdentFactory;
  */
 @Component
 public class TuesdayAdqlSchemaIdentFactory
-extends AbstractIdentFactory<TuesdayAdqlSchema>
-implements TuesdayAdqlSchema.IdentFactory
+extends TuesdayTestIdentFactory<TuesdayAdqlSchema>
+implements TuesdayAdqlSchema.IdentFactory, TuesdayAdqlSchema.LinkFactory
     {
-    @Override
-    public String link(final TuesdayAdqlSchema entity)
-        {
-        return null;
-        }
     }

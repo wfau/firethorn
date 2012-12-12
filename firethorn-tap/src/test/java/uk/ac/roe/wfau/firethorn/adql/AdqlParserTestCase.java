@@ -30,6 +30,7 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayOgsaTable;
 
@@ -733,7 +734,7 @@ extends TestBase
         + "    dec,"
         + "    pts_key"
         + " FROM"
-        + "    twomass_psc"
+        + "    adql_schema.twomass_psc"
         + " WHERE"
         + "    ra  Between '56.0' AND '57.9'"
         + " AND"
@@ -860,7 +861,7 @@ extends TestBase
     		log.debug("  Schema   [{}]", querytable.getDBLink().getDBSchemaName());
     		log.debug("  Catalog  [{}]", querytable.getDBLink().getDBCatalogName());
 
-            TuesdayOgsaTable<?,?> mapped = resolve(
+            TuesdayBaseTable<?,?> mapped = resolve(
                 querytable.getDBLink().getDBName()
                 );
 
@@ -869,14 +870,13 @@ extends TestBase
     		log.debug("  Name     [{}]", mapped.fullname());
     		log.debug("  Resource [{}]", mapped.resource().name());
 
-/*
     		for (DBColumn column : query.getFrom().getDBColumns())
     			{
         		log.debug("   ------- ");
     			log.debug("  Column [catalog][{}][{}][{}]", column.getTable().getADQLSchemaName(), column.getTable().getADQLName(),     column.getADQLName());
     			log.debug("         [{}][{}][{}][{}]",      column.getTable().getDBCatalogName(),  column.getTable().getDBSchemaName(), column.getTable().getDBName(), column.getDBName());
     			}
-*/
+
     		}
 
     	ADQLTranslator translator = new PostgreSQLTranslator(false);
@@ -885,13 +885,11 @@ extends TestBase
 
         }
 
-    public TuesdayOgsaTable<?,?> resolve(String source)
+    public TuesdayBaseTable<?,?> resolve(String source)
     throws Exception
         {
-        return factories().jdbc().tables().select(
-            factories().jdbc().tables().aliases().ident(
-                source
-                )
+        return factories().base().tables().select(
+            source
             );
         }
     }

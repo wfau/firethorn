@@ -161,7 +161,6 @@ public class TuesdayJdbcResourceEntity
 
         @Autowired
         protected TuesdayJdbcSchema.Factory schemas;
-
         @Override
         public TuesdayJdbcSchema.Factory schemas()
             {
@@ -170,11 +169,18 @@ public class TuesdayJdbcResourceEntity
 
         @Autowired
         protected TuesdayJdbcResource.IdentFactory idents ;
-
         @Override
         public TuesdayJdbcResource.IdentFactory idents()
             {
             return this.idents ;
+            }
+
+        @Autowired
+        protected TuesdayJdbcResource.LinkFactory links;
+        @Override
+        public TuesdayJdbcResource.LinkFactory links()
+            {
+            return this.links;
             }
         }
     
@@ -257,15 +263,6 @@ public class TuesdayJdbcResourceEntity
         {
         return this.connection;
         }
-
-    @Override
-    public String link()
-        {
-        return factories().jdbc().resources().idents().link(
-            this
-            );
-        }
-
 
     @Override
     public void inport()
@@ -545,4 +542,12 @@ public class TuesdayJdbcResourceEntity
 		{
 		this.ogsaid = ogsaid;
 		}
+
+    @Override
+    public String link()
+        {
+        return factories().jdbc().resources().links().link(
+            this
+            );
+        }
     }

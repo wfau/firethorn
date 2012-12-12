@@ -35,6 +35,15 @@ public interface TuesdayJdbcResource
 extends TuesdayOgsaResource<TuesdayJdbcSchema>, TuesdayBaseResource<TuesdayJdbcSchema>
     {
     /**
+     * Link factory interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<TuesdayJdbcResource>
+        {
+        }
+
+    /**
      * Identifier factory interface.
      *
      */

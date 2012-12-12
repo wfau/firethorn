@@ -30,6 +30,15 @@ extends TuesdayBaseColumn<TuesdayJdbcColumn>, TuesdayOgsaColumn<TuesdayJdbcColum
      * Identifier factory interface.
      *
      */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<TuesdayJdbcColumn>
+        {
+        }
+
+    /**
+     * Identifier factory interface.
+     *
+     */
     public static interface IdentFactory
     extends Entity.IdentFactory<TuesdayJdbcColumn>
         {

@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 
 /**
  *
@@ -55,11 +56,12 @@ extends TuesdayBaseComponent
          */
 
         /**
-         * Resolve an alias into an Identifier.
+         * Resolve an alias into a table.
          *
          */
-        public Identifier ident(final String alias);        
-
+        public TuesdayBaseTable<?,?> select(final String alias)
+        throws NotFoundException;
+        
         }
 
     /**
@@ -90,8 +92,8 @@ extends TuesdayBaseComponent
         /**
          * Our local alias factory.
          * 
-         */
         public AliasFactory aliases();
+         */
         
         }
     

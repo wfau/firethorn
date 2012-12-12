@@ -30,6 +30,15 @@ public interface TuesdayJdbcTable
 extends TuesdayOgsaTable<TuesdayJdbcTable, TuesdayJdbcColumn>, TuesdayBaseTable<TuesdayJdbcTable, TuesdayJdbcColumn>
     {
     /**
+     * Link factory interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<TuesdayJdbcTable>
+        {
+        }
+
+    /**
      * Identifier factory interface.
      *
      */

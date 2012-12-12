@@ -148,14 +148,21 @@ public class TuesdayIvoaColumnEntity
             }
 
         @Autowired
-        protected TuesdayIvoaColumn.IdentFactory idents ;
-
+        protected TuesdayIvoaColumn.IdentFactory idents;
         @Override
         public TuesdayIvoaColumn.IdentFactory idents()
             {
-            return this.idents ;
+            return this.idents;
             }
-        }
+
+        @Autowired
+        protected TuesdayIvoaColumn.LinkFactory links;
+        @Override
+        public TuesdayIvoaColumn.LinkFactory links()
+            {
+            return this.links;
+            }
+}
     
     protected TuesdayIvoaColumnEntity()
         {

@@ -25,6 +25,23 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 public interface Identity
 extends Entity
     {
+    /**
+     * Link factory interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<Identity>
+        {
+        }
+
+    /**
+     * Identifier factory interface.
+     *
+     */
+    public static interface IdentFactory
+    extends Entity.IdentFactory<Identity>
+        {
+        }
 
     /**
      * An Identity context.
@@ -58,15 +75,6 @@ extends Entity
          */
         public Identity identity();
 
-        }
-
-    /**
-     * Factory interface for identifiers.
-     *
-     */
-    public static interface IdentFactory
-    extends Entity.IdentFactory<Identity>
-        {
         }
 
     /**

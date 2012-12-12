@@ -34,6 +34,20 @@ public interface Entity
     {
 
     /**
+     * Common interface for a link factory.
+     *
+     */
+    public interface LinkFactory<EntityType extends Entity>
+        {
+        /**
+         * Create an Entity URI (as a string).
+         *
+         */
+        public String link(final EntityType entity);
+
+        }
+
+    /**
      * Common interface for an Identifier factory.
      *
      */
@@ -48,8 +62,8 @@ public interface Entity
         /**
          * Create an Entity URI (as a string).
          *
-         */
         public String link(final EntityType entity);
+         */
 
         }
 
@@ -58,7 +72,6 @@ public interface Entity
      *
      */
     public interface Factory<EntityType extends Entity>
-    //extends IdentFactory<EntityType>
         {
         /**
          * Select a specific Entity by Identifier.
@@ -72,6 +85,12 @@ public interface Entity
          * 
          */
         public IdentFactory<EntityType> idents();
+
+        /**
+         * Our local link factory.
+         * 
+         */
+        public LinkFactory<EntityType> links();
         
         }
 

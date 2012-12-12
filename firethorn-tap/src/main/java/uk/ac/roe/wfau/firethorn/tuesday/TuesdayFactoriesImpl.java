@@ -112,6 +112,14 @@ public class TuesdayFactoriesImpl
         }
 
     @Autowired
+    protected TuesdayBaseFactories base;
+    @Override
+    public TuesdayBaseFactories base()
+        {
+        return this.base;
+        }
+
+    @Autowired
     private TuesdayAdqlFactories adql;
     @Override
     public TuesdayAdqlFactories adql()
@@ -141,7 +149,6 @@ public class TuesdayFactoriesImpl
      */
     @Autowired
     protected Identity.Factory identities ;
-
     @Override
     public Factory identities()
         {
@@ -154,7 +161,6 @@ public class TuesdayFactoriesImpl
      */
     @Autowired
     protected Identity.Context.Factory contexts ;
-
     @Override
     public Context context()
         {
@@ -167,7 +173,6 @@ public class TuesdayFactoriesImpl
      */
     @Autowired
     protected ConfigProperty.Factory config ;
-
     @Override
     public ConfigProperty.Factory config()
         {

@@ -112,7 +112,6 @@ extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
 
         @Autowired
         protected TuesdayAdqlSchema.Factory schemas;
-
         @Override
         public TuesdayAdqlSchema.Factory schemas()
             {
@@ -120,12 +119,19 @@ extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
             }
 
         @Autowired
-        protected TuesdayAdqlResource.IdentFactory idents ;
-
+        protected TuesdayAdqlResource.IdentFactory idents;
         @Override
         public TuesdayAdqlResource.IdentFactory idents()
             {
-            return this.idents ;
+            return this.idents;
+            }
+
+        @Autowired
+        protected TuesdayAdqlResource.LinkFactory links;
+        @Override
+        public TuesdayAdqlResource.LinkFactory links()
+            {
+            return this.links;
             }
         }
 

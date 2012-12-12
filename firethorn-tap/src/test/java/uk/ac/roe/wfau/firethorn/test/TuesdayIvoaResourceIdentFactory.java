@@ -29,12 +29,7 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaResource.IdentFactory;
  */
 @Component
 public class TuesdayIvoaResourceIdentFactory
-extends AbstractIdentFactory<TuesdayIvoaResource>
-implements TuesdayIvoaResource.IdentFactory
+extends TuesdayTestIdentFactory<TuesdayIvoaResource>
+implements TuesdayIvoaResource.IdentFactory, TuesdayIvoaResource.LinkFactory
     {
-    @Override
-    public String link(final TuesdayIvoaResource entity)
-        {
-        return null;
-        }
     }
