@@ -82,7 +82,8 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<TuesdayJdbcTable>
+    //extends AbstractFactory<TuesdayJdbcTable>
+    extends TuesdayBaseTableEntity.Factory<TuesdayJdbcSchema, TuesdayJdbcTable>
     implements TuesdayJdbcTable.Factory
         {
 
@@ -169,7 +170,6 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
 
         @Autowired
         protected TuesdayJdbcColumn.Factory columns;
-
         @Override
         public TuesdayJdbcColumn.Factory columns()
             {
@@ -178,11 +178,18 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
 
         @Autowired
         protected TuesdayJdbcTable.IdentFactory identifiers ;
-
         @Override
-        public TuesdayJdbcTable.IdentFactory identifiers()
+        public TuesdayJdbcTable.IdentFactory idents()
             {
             return this.identifiers ;
+            }
+
+        @Autowired
+        protected TuesdayBaseTable.AliasFactory aliases;
+        @Override
+        public TuesdayBaseTable.AliasFactory aliases()
+            {
+            return this.aliases;
             }
         }
     
@@ -287,14 +294,17 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
     @Override
     public String alias()
         {
-        return "jdbc_table_" + ident();
+        return factories().jdbc().tables().aliases().alias(
+            this
+            );
         }
 
     @Override
     public String link()
         {
-        // TODO Auto-generated method stub
-        return null;
+        return factories().jdbc().tables().idents().link(
+            this
+            );
         }
 
     /**

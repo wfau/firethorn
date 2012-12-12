@@ -133,7 +133,7 @@ public class TuesdayIvoaResourceEntity
         protected TuesdayIvoaResource.IdentFactory idents ;
 
         @Override
-        public TuesdayIvoaResource.IdentFactory identifiers()
+        public TuesdayIvoaResource.IdentFactory idents()
             {
             return this.idents ;
             }

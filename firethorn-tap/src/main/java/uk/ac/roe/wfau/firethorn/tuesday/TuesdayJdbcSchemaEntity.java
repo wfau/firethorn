@@ -159,7 +159,7 @@ public class TuesdayJdbcSchemaEntity
         protected TuesdayJdbcSchema.IdentFactory identifiers ;
 
         @Override
-        public TuesdayJdbcSchema.IdentFactory identifiers()
+        public TuesdayJdbcSchema.IdentFactory idents()
             {
             return this.identifiers ;
             }
@@ -247,7 +247,7 @@ public class TuesdayJdbcSchemaEntity
     @Override
     public String link()
         {
-        return factories().jdbc().schemas().link(
+        return factories().jdbc().schemas().idents().link(
             this
             );
         }

@@ -33,15 +33,4 @@ implements IdentFactory<EntityType>
             string
             );
         }
-    /*
-     *
-    @Override
-    public String link(final EntityType entity)
-        {
-        return this.link(
-            entity.ident()
-            );
-        }
-*/
-
     }

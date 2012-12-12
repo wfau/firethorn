@@ -151,7 +151,7 @@ public class TuesdayIvoaColumnEntity
         protected TuesdayIvoaColumn.IdentFactory idents ;
 
         @Override
-        public TuesdayIvoaColumn.IdentFactory identifiers()
+        public TuesdayIvoaColumn.IdentFactory idents()
             {
             return this.idents ;
             }

@@ -137,7 +137,7 @@ implements ConfigProperty
         protected ConfigProperty.IdentFactory identifiers ;
 
         @Override
-        public ConfigProperty.IdentFactory identifiers()
+        public ConfigProperty.IdentFactory idents()
             {
             return this.identifiers;
             }

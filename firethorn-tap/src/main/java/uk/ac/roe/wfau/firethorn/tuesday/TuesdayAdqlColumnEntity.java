@@ -163,7 +163,7 @@ public class TuesdayAdqlColumnEntity
         protected TuesdayAdqlColumn.IdentFactory idents ;
 
         @Override
-        public TuesdayAdqlColumn.IdentFactory identifiers()
+        public TuesdayAdqlColumn.IdentFactory idents()
             {
             return this.idents ;
             }

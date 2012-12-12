@@ -27,9 +27,12 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
+
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceTestBase;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayOgsaTable;
+
 import adql.db.DBChecker;
 import adql.db.DBColumn;
 import adql.db.DBTable;
@@ -41,6 +44,9 @@ import adql.query.from.ADQLTable;
 import adql.translator.ADQLTranslator;
 import adql.translator.PgSphereTranslator;
 import adql.translator.PostgreSQLTranslator;
+
+//import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMapping;
+//import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMappingService;
 
 /**
  *
@@ -812,55 +818,81 @@ extends TestBase
     public void testImportedTable()
     throws Exception
         {
-        TuesdayJdbcResource resource  = resource();
-        TuesdayAdqlResource workspace = workspace();
+        TuesdayJdbcResource adqlresource  = resource();
+        TuesdayAdqlResource adqlworkspace = workspace();
         //
         // Import a JdbcSchema into our AdqlWorkspace.
-        resource.inport();
-        workspace.schemas().create(
-    		resource.schemas().select("dbo"),
+        adqlresource.inport();
+        adqlworkspace.schemas().create(
+    		adqlresource.schemas().select("dbo"),
     		"adql_schema"
             ); 
         //
         // Create an ADQL DBTable.
-        AdqlDBTable dbtable = tables.create(
-    		workspace.schemas().select("adql_schema").tables().select("twomass_psc")
+        AdqlDBTable aqdbtable = tables.create(
+    		adqlworkspace.schemas().select(
+    		    "adql_schema"
+    		    ).tables().select(
+    		        "twomass_psc"
+    		        )
     		);
 
         ADQLQuery query = query(
-    		dbtable ,
+    		aqdbtable,
     		IMPORTED_000[0]
             );
         
-    	for (ADQLTable aqtable : query.getFrom().getTables())
+    	for (ADQLTable querytable : query.getFrom().getTables())
     		{
-    		log.debug("ADQLTable  [{}]", aqtable.getName());
+    		log.debug("ADQLTable  [{}]", querytable.getName());
+    		log.debug("  Class    [{}]", querytable.getClass().getName());
     		log.debug(" --------- ");
-    		log.debug("  Table    [{}]", aqtable.getTableName());
-    		log.debug("  Schema   [{}]", aqtable.getSchemaName());
-    		log.debug("  Catalog  [{}]", aqtable.getCatalogName());
-    		log.debug("  FullName [{}]", aqtable.getFullTableName());
-    		log.debug(" --------- ");
-    		log.debug("  Table    [{}]", aqtable.getDBLink().getADQLName());
-    		log.debug("  Schema   [{}]", aqtable.getDBLink().getADQLSchemaName());
-    		log.debug("  Catalog  [{}]", aqtable.getDBLink().getADQLCatalogName());
-    		log.debug(" --------- ");
-    		log.debug("  Table    [{}]", aqtable.getDBLink().getDBName());
-    		log.debug("  Schema   [{}]", aqtable.getDBLink().getDBSchemaName());
-    		log.debug("  Catalog  [{}]", aqtable.getDBLink().getDBCatalogName());
+    		log.debug("  Table    [{}]", querytable.getTableName());
+    		log.debug("  Schema   [{}]", querytable.getSchemaName());
+    		log.debug("  Catalog  [{}]", querytable.getCatalogName());
+    		log.debug("  FullName [{}]", querytable.getFullTableName());
+    		log.debug(" ADQL --------- ");
+    		log.debug("  Table    [{}]", querytable.getDBLink().getADQLName());
+    		log.debug("  Schema   [{}]", querytable.getDBLink().getADQLSchemaName());
+    		log.debug("  Catalog  [{}]", querytable.getDBLink().getADQLCatalogName());
+    		log.debug(" OGSA --------- ");
+    		log.debug("  Table    [{}]", querytable.getDBLink().getDBName());
+    		log.debug("  Schema   [{}]", querytable.getDBLink().getDBSchemaName());
+    		log.debug("  Catalog  [{}]", querytable.getDBLink().getDBCatalogName());
 
+            TuesdayOgsaTable<?,?> mapped = resolve(
+                querytable.getDBLink().getDBName()
+                );
+
+    		log.debug(" MAPPED --------- ");
+    		log.debug("  Alias    [{}]", mapped.alias());
+    		log.debug("  Name     [{}]", mapped.fullname());
+    		log.debug("  Resource [{}]", mapped.resource().name());
+
+/*
     		for (DBColumn column : query.getFrom().getDBColumns())
     			{
         		log.debug("   ------- ");
-    			log.debug("  Column [{}][{}][{}]", column.getTable().getADQLSchemaName(), column.getTable().getADQLName(), column.getADQLName());
-    			log.debug("         [{}][{}][{}][{}]", column.getTable().getDBCatalogName(), column.getTable().getDBSchemaName(), column.getTable().getDBName(), column.getDBName());
+    			log.debug("  Column [catalog][{}][{}][{}]", column.getTable().getADQLSchemaName(), column.getTable().getADQLName(),     column.getADQLName());
+    			log.debug("         [{}][{}][{}][{}]",      column.getTable().getDBCatalogName(),  column.getTable().getDBSchemaName(), column.getTable().getDBName(), column.getDBName());
     			}
+*/
     		}
 
     	ADQLTranslator translator = new PostgreSQLTranslator(false);
     	log.debug("ADQL [{}]", query.toADQL());
     	log.debug("SQL  [{}]",  translator.translate(query));
 
+        }
+
+    public TuesdayOgsaTable<?,?> resolve(String source)
+    throws Exception
+        {
+        return factories().jdbc().tables().select(
+            factories().jdbc().tables().aliases().ident(
+                source
+                )
+            );
         }
     }
 

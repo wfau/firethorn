@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.tuesday;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
  *
@@ -33,6 +34,32 @@ extends TuesdayBaseComponent
     public static interface IdentFactory
     extends Entity.IdentFactory<TuesdayBaseTable<?,?>>
         {
+        }
+
+    /**
+     * Alias factory interface.
+     *
+     */
+    public static interface AliasFactory
+        {
+        /**
+         * Create a Table alias.
+         *
+         */
+        public String alias(final TuesdayBaseTable<?,?> table);
+
+        /**
+         * Create a Table URI (as a string).
+         *
+        public String link(final TuesdayBaseTable<?,?> table);
+         */
+
+        /**
+         * Resolve an alias into an Identifier.
+         *
+         */
+        public Identifier ident(final String alias);        
+
         }
 
     /**
@@ -60,6 +87,12 @@ extends TuesdayBaseComponent
          */
         public Iterable<TableType> search(final SchemaType parent, final String text);
 
+        /**
+         * Our local alias factory.
+         * 
+         */
+        public AliasFactory aliases();
+        
         }
     
     public String type();
@@ -71,12 +104,14 @@ extends TuesdayBaseComponent
     public String ucd();
     public void ucd(String ucd);
 
-    public String alias();    //"table_ident"
-    public StringBuilder fullname(); //"catalog.schema.table"
+    public String alias();
+
+    public StringBuilder fullname();
 
     public TuesdayOgsaTable<?, ?> ogsa();
 
     public TuesdayBaseSchema<?,TableType> schema();
+
     public TuesdayBaseResource<?> resource();
 
     /**

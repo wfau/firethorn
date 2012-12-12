@@ -109,7 +109,7 @@ implements Identity
         protected Identity.IdentFactory identifiers ;
 
         @Override
-        public Identity.IdentFactory identifiers()
+        public Identity.IdentFactory idents()
             {
             return this.identifiers;
             }

@@ -79,7 +79,8 @@ public class TuesdayIvoaTableEntity
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<TuesdayIvoaTable>
+    //extends AbstractFactory<TuesdayIvoaTable>
+    extends TuesdayBaseTableEntity.Factory<TuesdayIvoaSchema, TuesdayIvoaTable>
     implements TuesdayIvoaTable.Factory
         {
 
@@ -153,7 +154,6 @@ public class TuesdayIvoaTableEntity
 
         @Autowired
         protected TuesdayIvoaColumn.Factory columns;
-
         @Override
         public TuesdayIvoaColumn.Factory columns()
             {
@@ -162,12 +162,12 @@ public class TuesdayIvoaTableEntity
 
         @Autowired
         protected TuesdayIvoaTable.IdentFactory identifiers ;
-
         @Override
-        public TuesdayIvoaTable.IdentFactory identifiers()
+        public TuesdayIvoaTable.IdentFactory idents()
             {
             return this.identifiers ;
             }
+
         }
     
     protected TuesdayIvoaTableEntity()

@@ -77,7 +77,8 @@ public class TuesdayAdqlTableEntity
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<TuesdayAdqlTable>
+    //extends AbstractFactory<TuesdayAdqlTable>
+    extends TuesdayBaseTableEntity.Factory<TuesdayAdqlSchema, TuesdayAdqlTable>
     implements TuesdayAdqlTable.Factory
         {
 
@@ -180,7 +181,6 @@ public class TuesdayAdqlTableEntity
 
         @Autowired
         protected TuesdayAdqlColumn.Factory columns;
-
         @Override
         public TuesdayAdqlColumn.Factory columns()
             {
@@ -188,12 +188,11 @@ public class TuesdayAdqlTableEntity
             }
 
         @Autowired
-        protected TuesdayAdqlTable.IdentFactory identifiers ;
-
+        protected TuesdayAdqlTable.IdentFactory idents ;
         @Override
-        public TuesdayAdqlTable.IdentFactory identifiers()
+        public TuesdayAdqlTable.IdentFactory idents()
             {
-            return this.identifiers ;
+            return this.idents ;
             }
         }
     
@@ -215,20 +214,6 @@ public class TuesdayAdqlTableEntity
         this.base   = base;
         this.schema = schema;
         }
-
-    /*
-    @Override
-    public String name()
-        {
-        if (super.name() == null)
-            {
-            return base().name();
-            }
-        else {
-            return super.name();
-            }
-        }
-    */
 
     @Override
     public String text()

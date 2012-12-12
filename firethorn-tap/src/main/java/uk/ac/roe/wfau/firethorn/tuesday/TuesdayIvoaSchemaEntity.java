@@ -158,7 +158,7 @@ public class TuesdayIvoaSchemaEntity
         protected TuesdayIvoaSchema.IdentFactory identifiers ;
 
         @Override
-        public TuesdayIvoaSchema.IdentFactory identifiers()
+        public TuesdayIvoaSchema.IdentFactory idents()
             {
             return this.identifiers ;
             }

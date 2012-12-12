@@ -58,7 +58,7 @@ public interface Entity
      *
      */
     public interface Factory<EntityType extends Entity>
-    extends IdentFactory<EntityType>
+    //extends IdentFactory<EntityType>
         {
         /**
          * Select a specific Entity by Identifier.
@@ -67,6 +67,12 @@ public interface Entity
         public EntityType select(final Identifier ident)
         throws NotFoundException;
 
+        /**
+         * Our local Identifier factory.
+         * 
+         */
+        public IdentFactory<EntityType> idents();
+        
         }
 
     /**

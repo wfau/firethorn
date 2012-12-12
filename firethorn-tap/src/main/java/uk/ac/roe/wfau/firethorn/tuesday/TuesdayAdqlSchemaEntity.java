@@ -175,7 +175,7 @@ public class TuesdayAdqlSchemaEntity
         protected TuesdayAdqlSchema.IdentFactory identifiers ;
 
         @Override
-        public TuesdayAdqlSchema.IdentFactory identifiers()
+        public TuesdayAdqlSchema.IdentFactory idents()
             {
             return this.identifiers ;
             }

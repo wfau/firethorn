@@ -15,25 +15,25 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.tuesday.test.ivoa;
+package uk.ac.roe.wfau.firethorn.test;
 
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaTable;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaTable.IdentFactory;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource.IdentFactory;
 
 /**
- *
+ * JUnit test implementation.
  *
  */
 @Component
-public class TuesdayIvoaTableIdentFactory
-extends AbstractIdentFactory<TuesdayIvoaTable>
-implements TuesdayIvoaTable.IdentFactory
+public class TuesdayAdqlResourceIdentFactory
+extends AbstractIdentFactory<TuesdayAdqlResource>
+implements TuesdayAdqlResource.IdentFactory
     {
     @Override
-    public String link(final TuesdayIvoaTable entity)
+    public String link(final TuesdayAdqlResource entity)
         {
         return null;
         }

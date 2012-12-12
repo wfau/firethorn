@@ -25,9 +25,10 @@ public interface TuesdayOgsaTable<TableType extends TuesdayBaseTable<TableType, 
 extends TuesdayBaseTable<TableType, ColumnType>
     {
     @Override
-    public String alias();    //"ogsa_table_ident"
+    public String alias();
+
     @Override
-    public StringBuilder fullname(); //"catalog.schema.table"
+    public StringBuilder fullname();
 
     @Override
     public TuesdayOgsaResource<?> resource();

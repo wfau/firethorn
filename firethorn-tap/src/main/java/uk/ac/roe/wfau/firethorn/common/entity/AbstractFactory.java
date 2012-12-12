@@ -62,7 +62,7 @@ implements Entity.Factory<EntityType>
     private TuesdayFactories factories;
     public TuesdayFactories factories()
         {
-        return factories;
+        return this.factories;
         }
 
     /**
@@ -84,7 +84,7 @@ implements Entity.Factory<EntityType>
     @SuppressWarnings("unchecked")
     public EntityType insert(final EntityType entity)
         {
-        log.debug("insert [{}]", entity);
+        //log.debug("insert [{}]", entity);
         return (EntityType) factories().hibernate().insert(
             entity
             );
@@ -99,7 +99,7 @@ implements Entity.Factory<EntityType>
     public EntityType select(final Identifier ident)
     throws NotFoundException
         {
-        log.debug("select [{}]", (ident != null) ? ident.value() : null);
+        //log.debug("select [{}]", (ident != null) ? ident.value() : null);
         @SuppressWarnings("unchecked")
         final
         EntityType result = (EntityType) factories().hibernate().select(
@@ -125,7 +125,7 @@ implements Entity.Factory<EntityType>
     @SuppressWarnings("unchecked")
     public EntityType update(final EntityType entity)
         {
-        log.debug("update [{}]", entity);
+        //log.debug("update [{}]", entity);
         if (etype().isInstance(entity))
             {
             return (EntityType) factories().hibernate().update(
@@ -149,7 +149,7 @@ implements Entity.Factory<EntityType>
     @DeleteEntityMethod
     public void delete(final EntityType entity)
         {
-        log.debug("delete [{}]", entity);
+        //log.debug("delete [{}]", entity);
         if (etype().isInstance(entity))
             {
             factories().hibernate().delete(
@@ -277,27 +277,9 @@ implements Entity.Factory<EntityType>
         return new StringBuilder(text).append("%").toString();
         }
 
-    /**
-     * Our corresponding Identifier factory.
-     *
-     */
-    public abstract Entity.IdentFactory<EntityType> identifiers();
-
     @Override
-    public String link(final EntityType entity)
-        {
-        return identifiers().link(
-            entity
-            );
-        }
+    public abstract Entity.IdentFactory<EntityType> idents();
 
-    @Override
-    public Identifier ident(final String string)
-        {
-        return identifiers().ident(
-            string
-            );
-        }
     }
 
 

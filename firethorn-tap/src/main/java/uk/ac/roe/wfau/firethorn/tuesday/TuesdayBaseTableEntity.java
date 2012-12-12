@@ -32,6 +32,11 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable.IdentFactory;
 
 /**
  *
@@ -64,6 +69,24 @@ extends TuesdayBaseComponentEntity
     implements TuesdayBaseTable<TableType, ColumnType>
     {
     protected static final String DB_TABLE_NAME = "TuesdayBaseTableEntity";
+
+    /**
+     * Table factory implementation.
+     *
+     */
+    @Repository
+    public static abstract class Factory<SchemaType extends TuesdayBaseSchema<SchemaType, TableType>, TableType extends TuesdayBaseTable<TableType, ?>>
+    extends AbstractFactory<TableType>
+    implements TuesdayBaseTable.Factory<SchemaType, TableType>
+        {
+        @Autowired
+        protected TuesdayBaseTable.AliasFactory aliases;
+        @Override
+        public TuesdayBaseTable.AliasFactory aliases()
+            {
+            return this.aliases;
+            }
+        }
 
     protected TuesdayBaseTableEntity()
         {

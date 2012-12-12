@@ -123,7 +123,7 @@ extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
         protected TuesdayAdqlResource.IdentFactory idents ;
 
         @Override
-        public TuesdayAdqlResource.IdentFactory identifiers()
+        public TuesdayAdqlResource.IdentFactory idents()
             {
             return this.idents ;
             }

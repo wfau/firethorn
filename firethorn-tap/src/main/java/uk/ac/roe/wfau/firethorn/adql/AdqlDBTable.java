@@ -27,7 +27,7 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 
 
 /**
- * AdqlResource.AdqlTable based extension of the DBTable interface.
+ * Firethorn extension of the CDS DBTable interface.
  * See http://cdsportal.u-strasbg.fr/adqltuto/gettingstarted.html
  *
  */
@@ -67,13 +67,13 @@ extends DBTable
         }
 
     /**
-     * Access to our columns as AdqlColumns rather than DBColumns.
+     * Access to our columns as AdqlDBColumns.
      *
      */
     public Columns columns();
 
     /**
-     * AdqlResource.AdqlColumn based extension of the DBColumn interface.
+     * Firethorn extension of the CDS DBColumn interface.
      *
      */
     public interface AdqlDBColumn

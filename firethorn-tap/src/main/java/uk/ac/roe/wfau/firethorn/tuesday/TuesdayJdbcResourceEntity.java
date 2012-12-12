@@ -172,7 +172,7 @@ public class TuesdayJdbcResourceEntity
         protected TuesdayJdbcResource.IdentFactory idents ;
 
         @Override
-        public TuesdayJdbcResource.IdentFactory identifiers()
+        public TuesdayJdbcResource.IdentFactory idents()
             {
             return this.idents ;
             }
@@ -261,7 +261,7 @@ public class TuesdayJdbcResourceEntity
     @Override
     public String link()
         {
-        return factories().jdbc().resources().link(
+        return factories().jdbc().resources().idents().link(
             this
             );
         }
@@ -531,7 +531,7 @@ public class TuesdayJdbcResourceEntity
     @Column(
         name = DB_OGSA_ID_COL,
         unique = false,
-        nullable = false,
+        nullable = true,
         updatable = false
         )
 	private String ogsaid;

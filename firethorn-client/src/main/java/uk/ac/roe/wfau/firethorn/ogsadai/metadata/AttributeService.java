@@ -47,7 +47,7 @@ public interface AttributeService
      *      This should be the table alias used in SQL queries passed into OGSA-DAI,
      *      before the mapping from table alias to fully qualified resource table name.
      * @param name
-     *      The Attribute(column) name.
+     *      The Attribute (column) name.
      * 
      * @return The specified Attribute, or null if there is no match.
      * 
