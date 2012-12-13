@@ -26,8 +26,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Index;
-import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -175,7 +175,7 @@ public class TuesdayAdqlColumnEntity
             return this.links;
             }
         }
-    
+
     protected TuesdayAdqlColumnEntity()
         {
         super();
@@ -239,7 +239,7 @@ public class TuesdayAdqlColumnEntity
             return super.ucd();
             }
         }
-    
+
     @Index(
         name=DB_TABLE_NAME + "IndexByParent"
         )

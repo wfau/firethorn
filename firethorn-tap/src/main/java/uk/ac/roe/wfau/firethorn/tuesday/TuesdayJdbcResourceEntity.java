@@ -71,13 +71,13 @@ public class TuesdayJdbcResourceEntity
     {
     /**
      * Metadata database table name.
-     * 
+     *
      */
     protected static final String DB_TABLE_NAME = "TuesdayJdbcResourceEntity";
 
     /**
      * Our SQLException translator.
-     * 
+     *
      */
     protected static final SQLExceptionTranslator translator = new SQLExceptionSubclassTranslator();
 
@@ -183,7 +183,7 @@ public class TuesdayJdbcResourceEntity
             return this.links;
             }
         }
-    
+
     protected TuesdayJdbcResourceEntity()
         {
         super();
@@ -229,7 +229,7 @@ public class TuesdayJdbcResourceEntity
                     );
                 }
             @Override
-            public TuesdayJdbcSchema select(String name)
+            public TuesdayJdbcSchema select(final String name)
                 {
                 return factories().jdbc().schemas().select(
                     TuesdayJdbcResourceEntity.this,
@@ -237,7 +237,7 @@ public class TuesdayJdbcResourceEntity
                     );
                 }
             @Override
-            public TuesdayJdbcSchema create(String name)
+            public TuesdayJdbcSchema create(final String name)
                 {
                 return factories().jdbc().schemas().create(
                     TuesdayJdbcResourceEntity.this,
@@ -245,7 +245,7 @@ public class TuesdayJdbcResourceEntity
                     );
                 }
             @Override
-            public Iterable<TuesdayJdbcSchema> search(String text)
+            public Iterable<TuesdayJdbcSchema> search(final String text)
                 {
                 return factories().jdbc().schemas().search(
                     TuesdayJdbcResourceEntity.this,
@@ -269,8 +269,8 @@ public class TuesdayJdbcResourceEntity
         {
         log.debug("inport()");
         try {
-            DatabaseMetaData metadata = this.connection.metadata(); 
-            JdbcProductType  product  = JdbcProductType.match(
+            final DatabaseMetaData metadata = this.connection.metadata();
+            final JdbcProductType  product  = JdbcProductType.match(
                 metadata
                 );
 
@@ -316,11 +316,18 @@ public class TuesdayJdbcResourceEntity
                     schemaname = tcname ;
                     }
                 //
-                // Skip if the schema is on our ignore list. 
+                // Skip if the schema is on our ignore list.
                 if (product.ignores().contains(schemaname))
                     {
                     log.debug("Schema is on the ignore list, skipping ...");
                     continue;
+                    }
+                //
+                // In SQLServer, include the catalog name.
+                // (temp fix for ROE system)
+                if (product == JdbcProductType.MSSQL)
+                    {
+                    schemaname = tcname + "." + tsname ;
                     }
 
                 boolean create = false ;
@@ -366,7 +373,7 @@ public class TuesdayJdbcResourceEntity
                             TuesdayJdbcTable.JdbcTableType.match(
                                 tttype
                                 )
-                            ); 
+                            );
                         }
                     else {
                         if (create)
@@ -378,7 +385,7 @@ public class TuesdayJdbcResourceEntity
                                 TuesdayJdbcTable.JdbcTableType.match(
                                     tttype
                                     )
-                                ); 
+                                );
                             }
                         else {
                             if (table.name().equals(ttname))
@@ -401,7 +408,7 @@ public class TuesdayJdbcResourceEntity
                                         TuesdayJdbcTable.JdbcTableType.match(
                                             tttype
                                             )
-                                        ); 
+                                        );
                                     }
                                 }
                             }
@@ -417,12 +424,12 @@ public class TuesdayJdbcResourceEntity
                             );
                         while (columns.next())
                             {
-                            String ccname = columns.getString(JDBC_META_TABLE_CAT);
-                            String csname = columns.getString(JDBC_META_TABLE_SCHEM);
-                            String ctname = columns.getString(JDBC_META_TABLE_NAME);
-                            String colname = columns.getString(JDBC_META_COLUMN_NAME);
-                            int    coltype = columns.getInt(JDBC_META_COLUMN_TYPE_TYPE);
-                            int    colsize = columns.getInt(JDBC_META_COLUMN_SIZE);
+                            final String ccname = columns.getString(JDBC_META_TABLE_CAT);
+                            final String csname = columns.getString(JDBC_META_TABLE_SCHEM);
+                            final String ctname = columns.getString(JDBC_META_TABLE_NAME);
+                            final String colname = columns.getString(JDBC_META_COLUMN_NAME);
+                            final int    coltype = columns.getInt(JDBC_META_COLUMN_TYPE_TYPE);
+                            final int    colsize = columns.getInt(JDBC_META_COLUMN_SIZE);
                             log.debug("Column result [{}.{}.{}.{}]", new Object[]{
                                 ccname,
                                 csname,
@@ -487,7 +494,7 @@ public class TuesdayJdbcResourceEntity
                                 }
                             }
                         }
-                    catch (SQLException ouch)
+                    catch (final SQLException ouch)
                         {
                         log.error("Exception reading database metadata [{}]", ouch.getMessage());
 /*
@@ -502,7 +509,7 @@ public class TuesdayJdbcResourceEntity
                     }
                 }
             }
-        catch (SQLException ouch)
+        catch (final SQLException ouch)
             {
             log.error("Exception reading database metadata [{}]", ouch.getMessage());
             throw translator.translate(
@@ -516,7 +523,7 @@ public class TuesdayJdbcResourceEntity
 	/**
 	 * The the OGSA-DAI resource ID.
 	 * @todo Move to a common base class.
-	 * 
+	 *
 	 */
     protected static final String DB_OGSA_ID_COL = "ogsa_id";
     @Column(
@@ -532,7 +539,7 @@ public class TuesdayJdbcResourceEntity
 		return this.ogsaid;
 		}
 	@Override
-	public void ogsaid(String ogsaid)
+	public void ogsaid(final String ogsaid)
 		{
 		this.ogsaid = ogsaid;
 		}

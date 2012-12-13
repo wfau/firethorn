@@ -60,12 +60,12 @@ extends TuesdayBaseComponent
          *
          */
         public Iterable<ResourceType> search(final String text);
-        
+
         }
 
     /**
      * Access to the schemas for this resource.
-     * 
+     *
      */
     public interface Schemas<SchemaType>
         {
@@ -79,22 +79,22 @@ extends TuesdayBaseComponent
          * Select a specific schema by name.
          *
          */
-        public SchemaType select(String name);
+        public SchemaType select(final String name);
 
         /**
          * Search for schemas by name.
          *
          */
-        public Iterable<SchemaType> search(String text);
-        } 
+        public Iterable<SchemaType> search(final String text);
+        }
 
     /**
      * Access to the schemas for this resource.
-     * 
+     *
      */
     public Schemas<SchemaType> schemas();
 
     //public String alias();
     public StringBuilder fullname();
-    
+
     }

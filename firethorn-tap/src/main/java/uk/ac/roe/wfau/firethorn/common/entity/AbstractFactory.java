@@ -263,7 +263,7 @@ implements Entity.Factory<EntityType>
                 );
             }
         }
-    
+
     /**
      * Create a text search string.
      * TODO .. lots !!

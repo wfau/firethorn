@@ -28,51 +28,51 @@ public interface TuesdayJdbcConnection
     {
     /**
      * Get the connection URL (as a String).
-     *  
+     *
      */
     public String url();
 
     /**
      * Set the connection URL (as a String).
-     *  
+     *
      */
-    public void url(String url);
+    public void url(final String url);
 
     /**
      * Get the JDBC driver class name.
-     *  
+     *
      */
     public String driver();
 
     /**
      * Set the JDBC driver class name.
-     *  
+     *
      */
-    public void driver(String driver);
-    
+    public void driver(final String driver);
+
     /**
      * Get the JDBC user name.
-     *  
+     *
      */
     public String user();
 
     /**
      * Set the JDBC user name.
-     *  
+     *
      */
-    public void user(String user);
+    public void user(final String user);
 
     /**
      * Get the JDBC password.
-     *  
+     *
      */
     public String pass();
 
     /**
      * Set the JDBC password.
-     *  
+     *
      */
-    public void pass(String pass);
+    public void pass(final String pass);
 
     /**
      * Open a database Connection.
@@ -94,19 +94,19 @@ public interface TuesdayJdbcConnection
 
     /**
      * Get a list of catalog names.
-     * 
+     *
      */
     public Iterable<String> catalogs();
 
     /**
      * Get the catalog name of the current database Connection.
-     * 
+     *
      */
     public String catalog();
 
     /**
      * Connection status values.
-     * 
+     *
      */
     public enum Status
         {
@@ -118,14 +118,14 @@ public interface TuesdayJdbcConnection
 
     /**
      * Get the connection status.
-     * 
+     *
      */
     public Status status();
 
     /**
      * Set the connection status.
-     * 
+     *
      */
-    public void status(Status status);
-    
+    public void status(final Status status);
+
     }

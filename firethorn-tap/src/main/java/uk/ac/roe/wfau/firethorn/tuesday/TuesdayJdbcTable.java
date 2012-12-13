@@ -90,9 +90,9 @@ extends TuesdayOgsaTable<TuesdayJdbcTable, TuesdayJdbcColumn>, TuesdayBaseTable<
 
     /**
      * The table columns.
-     * 
+     *
      */
-    public interface Columns extends TuesdayBaseTable.Columns<TuesdayJdbcColumn> 
+    public interface Columns extends TuesdayBaseTable.Columns<TuesdayJdbcColumn>
         {
         /**
          * Create a new column.
@@ -105,14 +105,14 @@ extends TuesdayOgsaTable<TuesdayJdbcTable, TuesdayJdbcColumn>, TuesdayBaseTable<
          *
          */
         public TuesdayJdbcColumn create(final String name, final int type, final int size);
-        
-        } 
+
+        }
     @Override
     public Columns columns();
 
     /**
      * JDBC table types.
-     * 
+     *
      */
     public static enum JdbcTableType
         {
@@ -130,14 +130,14 @@ extends TuesdayOgsaTable<TuesdayJdbcTable, TuesdayJdbcColumn>, TuesdayBaseTable<
             return this.jdbc;
             }
 
-        private JdbcTableType(String jdbc)
+        private JdbcTableType(final String jdbc)
             {
             this.jdbc = jdbc;
             }
 
         static protected Map<String, JdbcTableType> mapping = new HashMap<String, JdbcTableType>();
         static {
-            for (JdbcTableType type : JdbcTableType.values())
+            for (final JdbcTableType type : JdbcTableType.values())
                 {
                 mapping.put(
                     type.jdbc,
@@ -146,7 +146,7 @@ extends TuesdayOgsaTable<TuesdayJdbcTable, TuesdayJdbcColumn>, TuesdayBaseTable<
                 }
             }
 
-        static public JdbcTableType match(String string)
+        static public JdbcTableType match(final String string)
             {
             return mapping.get(
                 string
@@ -156,14 +156,14 @@ extends TuesdayOgsaTable<TuesdayJdbcTable, TuesdayJdbcColumn>, TuesdayBaseTable<
 
     /**
      * Get the database table type.
-     * 
+     *
      */
     public JdbcTableType jdbctype();
 
     /**
      * Set the database table type.
-     * 
+     *
      */
-    public void jdbctype(JdbcTableType type);
+    public void jdbctype(final JdbcTableType type);
 
     }

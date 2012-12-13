@@ -69,13 +69,13 @@ extends TuesdayBaseComponent
     public TuesdayBaseResource<?> resource();
 
     public String type();
-    public void type(String type);
-    
+    public void type(final String type);
+
     public Integer size();
-    public void size(Integer size);
-    
+    public void size(final Integer size);
+
     public String ucd();
-    public void ucd(String ucd);
+    public void ucd(final String ucd);
 
     public String alias();    //"column_ident"
     public StringBuilder fullname(); //"catalog.schema.table.column"

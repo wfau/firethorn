@@ -92,7 +92,7 @@ extends AbstractEntity
         EnumType.STRING
         )
     private Status status = Status.CREATED ;
-    
+
     @Override
     public Status status()
         {

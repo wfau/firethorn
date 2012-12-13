@@ -41,6 +41,12 @@ implements Identifier
         }
 
     @Override
+    public int hashCode()
+        {
+        return this.value.hashCode();
+        }
+
+    @Override
     public boolean equals(final Object that)
         {
         if (that != null)

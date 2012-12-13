@@ -30,7 +30,6 @@ import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 
@@ -69,7 +68,7 @@ public class TuesdayIvoaTableEntity
     {
     /**
      * Hibernate database table name.
-     * 
+     *
      */
     protected static final String DB_TABLE_NAME = "TuesdayIvoaTableEntity";
 
@@ -83,10 +82,10 @@ public class TuesdayIvoaTableEntity
         {
         /**
          * The alias prefix for this type.
-         * 
+         *
          */
         protected static final String PREFIX = "IVOA_" ;
-        
+
         @Override
         public String alias(final TuesdayIvoaTable table)
             {
@@ -204,13 +203,13 @@ public class TuesdayIvoaTableEntity
             return this.aliases;
             }
         }
-    
+
     protected TuesdayIvoaTableEntity()
         {
         super();
         }
 
-    protected TuesdayIvoaTableEntity(TuesdayIvoaSchema schema, String name)
+    protected TuesdayIvoaTableEntity(final TuesdayIvoaSchema schema, final String name)
         {
         super(schema, name);
         this.schema = schema;
@@ -258,7 +257,7 @@ public class TuesdayIvoaTableEntity
                 }
 
             @Override
-            public TuesdayIvoaColumn select(String name)
+            public TuesdayIvoaColumn select(final String name)
                 {
                 return factories().ivoa().columns().select(
                     TuesdayIvoaTableEntity.this,
@@ -267,7 +266,7 @@ public class TuesdayIvoaTableEntity
                 }
 
             @Override
-            public Iterable<TuesdayIvoaColumn> search(String text)
+            public Iterable<TuesdayIvoaColumn> search(final String text)
                 {
                 return factories().ivoa().columns().search(
                     TuesdayIvoaTableEntity.this,
@@ -276,7 +275,7 @@ public class TuesdayIvoaTableEntity
                 }
             };
         }
-    
+
     @Override
     public String link()
         {

@@ -26,12 +26,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Index;
-import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
@@ -71,7 +70,7 @@ public class TuesdayAdqlTableEntity
     {
     /**
      * Hibernate database table name.
-     * 
+     *
      */
     protected static final String DB_TABLE_NAME = "TuesdayAdqlTableEntity";
 
@@ -85,10 +84,10 @@ public class TuesdayAdqlTableEntity
         {
         /**
          * The alias prefix for this type.
-         * 
+         *
          */
         protected static final String PREFIX = "ADQL_" ;
-        
+
         @Override
         public String alias(final TuesdayAdqlTable table)
             {
@@ -119,10 +118,10 @@ public class TuesdayAdqlTableEntity
             super.insert(
                 entity
                 );
-            for (TuesdayBaseColumn<?> base : entity.base().columns().select())
+            for (final TuesdayBaseColumn<?> base : entity.base().columns().select())
                 {
                 entity.columns().create(
-                    base 
+                    base
                     );
                 }
             return entity ;
@@ -235,7 +234,7 @@ public class TuesdayAdqlTableEntity
             return this.aliases;
             }
         }
-    
+
     protected TuesdayAdqlTableEntity()
         {
         super();
@@ -320,7 +319,7 @@ public class TuesdayAdqlTableEntity
         return this.schema;
         }
     @Override
-    public void schema(TuesdayAdqlSchema schema)
+    public void schema(final TuesdayAdqlSchema schema)
         {
         super.schema(schema);
         this.schema = schema;
@@ -370,7 +369,7 @@ public class TuesdayAdqlTableEntity
                     );
                 }
             @Override
-            public TuesdayAdqlColumn select(String name)
+            public TuesdayAdqlColumn select(final String name)
                 {
                 return factories().adql().columns().select(
                     TuesdayAdqlTableEntity.this,
@@ -378,7 +377,7 @@ public class TuesdayAdqlTableEntity
                     );
                 }
             @Override
-            public TuesdayAdqlColumn create(TuesdayBaseColumn<?> base)
+            public TuesdayAdqlColumn create(final TuesdayBaseColumn<?> base)
                 {
                 return factories().adql().columns().create(
                     TuesdayAdqlTableEntity.this,
@@ -386,7 +385,7 @@ public class TuesdayAdqlTableEntity
                     );
                 }
             @Override
-            public Iterable<TuesdayAdqlColumn> search(String text)
+            public Iterable<TuesdayAdqlColumn> search(final String text)
                 {
                 return factories().adql().columns().search(
                     TuesdayAdqlTableEntity.this,

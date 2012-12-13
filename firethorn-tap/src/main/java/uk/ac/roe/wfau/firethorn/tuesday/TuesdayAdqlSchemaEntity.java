@@ -26,8 +26,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Index;
-import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -99,11 +99,11 @@ public class TuesdayAdqlSchemaEntity
 		@Override
 		public TuesdayAdqlSchema create(final TuesdayAdqlResourceEntity parent, final TuesdayBaseSchema<?, ?> base, final String name)
 			{
-			TuesdayAdqlSchema schema = this.create(
+			final TuesdayAdqlSchema schema = this.create(
 					parent,
 					name
 					);
-			for (TuesdayBaseTable<?,?> table : base.tables().select())
+			for (final TuesdayBaseTable<?,?> table : base.tables().select())
 				{
 				schema.tables().create(
 						table
@@ -114,7 +114,7 @@ public class TuesdayAdqlSchemaEntity
 
         @Override
         @SelectEntityMethod
-        public Iterable<TuesdayAdqlSchema> select(TuesdayAdqlResource parent)
+        public Iterable<TuesdayAdqlSchema> select(final TuesdayAdqlResource parent)
             {
             return super.list(
                 super.query(
@@ -128,7 +128,7 @@ public class TuesdayAdqlSchemaEntity
 
         @Override
         @SelectEntityMethod
-        public TuesdayAdqlSchema select(TuesdayAdqlResource parent, String name)
+        public TuesdayAdqlSchema select(final TuesdayAdqlResource parent, final String name)
             {
             return super.first(
                 super.query(
@@ -145,7 +145,7 @@ public class TuesdayAdqlSchemaEntity
 
         @Override
         @SelectEntityMethod
-        public Iterable<TuesdayAdqlSchema> search(TuesdayAdqlResource parent, String text)
+        public Iterable<TuesdayAdqlSchema> search(final TuesdayAdqlResource parent, final String text)
             {
             return super.iterable(
                 super.query(
@@ -161,7 +161,7 @@ public class TuesdayAdqlSchemaEntity
                         )
                 );
             }
-        
+
         @Autowired
         protected TuesdayAdqlTable.Factory tables;
         @Override
@@ -192,7 +192,7 @@ public class TuesdayAdqlSchemaEntity
         super();
         }
 
-    protected TuesdayAdqlSchemaEntity(TuesdayAdqlResource resource, String name)
+    protected TuesdayAdqlSchemaEntity(final TuesdayAdqlResource resource, final String name)
         {
         super(resource, name);
         this.resource = resource;
@@ -256,7 +256,7 @@ public class TuesdayAdqlSchemaEntity
                     );
                 }
             @Override
-            public Iterable<TuesdayAdqlTable> search(String text)
+            public Iterable<TuesdayAdqlTable> search(final String text)
                 {
                 return factories().adql().tables().search(
                     TuesdayAdqlSchemaEntity.this,

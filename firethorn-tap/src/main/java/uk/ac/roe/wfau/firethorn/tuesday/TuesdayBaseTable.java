@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.tuesday;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 
 /**
@@ -71,7 +70,7 @@ extends TuesdayBaseComponent
          */
         public TuesdayBaseTable<?,?> select(final String alias)
         throws NotFoundException;
-        
+
         }
 
     /**
@@ -101,20 +100,20 @@ extends TuesdayBaseComponent
 
         /**
          * Our local alias factory.
-         * 
+         *
          */
-        public AliasFactory aliases();
-        
+        public AliasFactory<TableType> aliases();
+
         }
-    
+
     public String type();
-    public void type(String type);
-    
+    public void type(final String type);
+
     public Integer size();
-    public void size(Integer size);
-    
+    public void size(final Integer size);
+
     public String ucd();
-    public void ucd(String ucd);
+    public void ucd(final String ucd);
 
     public String alias();
 
@@ -141,13 +140,13 @@ extends TuesdayBaseComponent
          * Search for columns (name starts with).
          *
          */
-        public Iterable<ColumnType> search(String text);
+        public Iterable<ColumnType> search(final String text);
         /**
          * Select a specific column by name.
          *
          */
-        public ColumnType select(String name);
-        } 
+        public ColumnType select(final String name);
+        }
 
     /**
      * The table columns.

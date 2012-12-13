@@ -26,13 +26,13 @@ extends TuesdayBaseResource<SchemaType>
     {
 	/**
 	 * Get the OGSA-DAI resource ID.
-	 * 
+	 *
 	 */
 	public String ogsaid();
 
 	/**
 	 * Set the OGSA-DAI resource ID.
-	 * 
+	 *
 	 */
-	public void ogsaid(String ogsaid);
+	public void ogsaid(final String ogsaid);
     }

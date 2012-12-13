@@ -25,8 +25,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -163,12 +163,12 @@ public class TuesdayIvoaColumnEntity
             return this.links;
             }
 }
-    
+
     protected TuesdayIvoaColumnEntity()
         {
         }
 
-    protected TuesdayIvoaColumnEntity(TuesdayIvoaTable table, String name)
+    protected TuesdayIvoaColumnEntity(final TuesdayIvoaTable table, final String name)
         {
         super(table, name);
         this.table = table;

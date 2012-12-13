@@ -29,8 +29,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.joda.time.DateTime;
 
@@ -52,7 +50,6 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayFactoriesImpl;
  *   http://javaprogrammingtips4u.blogspot.co.uk/2010/04/field-versus-property-access-in.html
  *
  */
-@Slf4j
 @MappedSuperclass
 @Access(
     AccessType.FIELD
@@ -77,18 +74,9 @@ implements Entity
     protected static final String DB_MODIFIED_COL = "modified" ;
 
     /**
-     * Access to our Womble instance - naff, but works for now.
+     * Access to our TuesdayFactories singleton instance.
      * @todo Replace this with something, anything, else.
      * @todo re-enable compiler warnings for indirect access to static members
-     *
-    public static Womble womble()
-        {
-        return WombleImpl.womble();
-        }
-     */
-
-    /**
-     * Access to our TuesdayFactories singleton instance.
      *
      */
     public TuesdayFactories factories()
@@ -307,7 +295,7 @@ implements Entity
         return this.text;
         }
     @Override
-    public void text(String text)
+    public void text(final String text)
         {
         this.text = text;
         }
@@ -368,20 +356,20 @@ implements Entity
         }
 
     /**
-     * Object hashCode() method.
+     * Object hashCode() method (based on ident only).
      *
+     */
     @Override
     public int hashCode()
         {
-        if (ident != null)
+        if (this.ident != null)
             {
-            return ident.hashCode() ;
+            return this.ident.hashCode() ;
             }
         else {
             return -1 ;
             }
         }
-     */
 
     /**
      * Update (store) this Entity in the database.

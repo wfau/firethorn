@@ -72,7 +72,7 @@ extends TuesdayOgsaTable<TuesdayIvoaTable, TuesdayIvoaColumn>, TuesdayBaseTable<
          */
         public TuesdayIvoaColumn.Factory columns();
         }
-    
+
     @Override
     public TuesdayIvoaResource resource();
     @Override
@@ -80,11 +80,11 @@ extends TuesdayOgsaTable<TuesdayIvoaTable, TuesdayIvoaColumn>, TuesdayBaseTable<
 
     /**
      * The table columns.
-     * 
+     *
      */
     public interface Columns extends TuesdayBaseTable.Columns<TuesdayIvoaColumn>
         {
-        } 
+        }
     @Override
     public Columns columns();
 

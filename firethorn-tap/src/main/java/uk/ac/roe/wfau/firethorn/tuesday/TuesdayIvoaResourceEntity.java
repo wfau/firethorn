@@ -25,8 +25,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -63,8 +63,8 @@ public class TuesdayIvoaResourceEntity
     {
     protected static final String DB_TABLE_NAME = "TuesdayIvoaResourceEntity";
 
-    protected static final String DB_URI_COL  = "uri"; 
-    protected static final String DB_URL_COL  = "url"; 
+    protected static final String DB_URI_COL  = "uri";
+    protected static final String DB_URL_COL  = "url";
 
     /**
      * Our Entity Factory implementation.
@@ -144,13 +144,13 @@ public class TuesdayIvoaResourceEntity
             return this.links;
             }
         }
-    
+
     protected TuesdayIvoaResourceEntity()
         {
         super();
         }
 
-    protected TuesdayIvoaResourceEntity(String name)
+    protected TuesdayIvoaResourceEntity(final String name)
         {
         super(name);
         }
@@ -169,7 +169,7 @@ public class TuesdayIvoaResourceEntity
         return this.uri;
         }
     @Override
-    public void uri(String uri)
+    public void uri(final String uri)
         {
         this.uri = uri;
         }
@@ -188,7 +188,7 @@ public class TuesdayIvoaResourceEntity
         return this.url;
         }
     @Override
-    public void url(String url)
+    public void url(final String url)
         {
         this.url = url;
         }
@@ -206,7 +206,7 @@ public class TuesdayIvoaResourceEntity
                     );
                 }
             @Override
-            public TuesdayIvoaSchema select(String name)
+            public TuesdayIvoaSchema select(final String name)
                 {
                 return factories().ivoa().schemas().select(
                     TuesdayIvoaResourceEntity.this,
@@ -214,7 +214,7 @@ public class TuesdayIvoaResourceEntity
                     );
                 }
             @Override
-            public Iterable<TuesdayIvoaSchema> search(String text)
+            public Iterable<TuesdayIvoaSchema> search(final String text)
                 {
                 return factories().ivoa().schemas().search(
                     TuesdayIvoaResourceEntity.this,
@@ -227,7 +227,7 @@ public class TuesdayIvoaResourceEntity
 	/**
 	 * The the OGSA-DAI resource ID.
 	 * @todo Move to a common base class.
-	 * 
+	 *
 	 */
     protected static final String DB_OGSA_ID_COL = "ogsa_id";
     @Column(
@@ -243,7 +243,7 @@ public class TuesdayIvoaResourceEntity
 		return this.ogsaid;
 		}
 	@Override
-	public void ogsaid(String ogsaid)
+	public void ogsaid(final String ogsaid)
 		{
 		this.ogsaid = ogsaid;
 		}

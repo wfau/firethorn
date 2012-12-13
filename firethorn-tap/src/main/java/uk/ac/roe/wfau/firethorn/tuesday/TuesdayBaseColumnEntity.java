@@ -30,10 +30,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
-
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
+
+import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 
 /**
  *
@@ -72,7 +72,7 @@ extends TuesdayBaseComponentEntity
         super();
         }
 
-    protected TuesdayBaseColumnEntity(TuesdayBaseTable<?,ColumnType> parent, String name)
+    protected TuesdayBaseColumnEntity(final TuesdayBaseTable<?,ColumnType> parent, final String name)
         {
         super(name);
         this.parent = parent;
@@ -92,7 +92,7 @@ extends TuesdayBaseComponentEntity
         return this.type;
         }
     @Override
-    public void type(String type)
+    public void type(final String type)
         {
         this.type = type;
         }
@@ -112,7 +112,7 @@ extends TuesdayBaseComponentEntity
         }
 
     @Override
-    public void size(Integer size)
+    public void size(final Integer size)
         {
         this.size = size;
         }
@@ -132,7 +132,7 @@ extends TuesdayBaseComponentEntity
         }
 
     @Override
-    public void ucd(String ucd)
+    public void ucd(final String ucd)
         {
         this.ucd = ucd;
         }
@@ -195,5 +195,5 @@ extends TuesdayBaseComponentEntity
 
     @Override
     public abstract TuesdayOgsaColumn<?> ogsa();
-    
+
     }

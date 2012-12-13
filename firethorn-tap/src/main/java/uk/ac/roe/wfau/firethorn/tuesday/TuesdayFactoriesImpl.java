@@ -94,7 +94,7 @@ public class TuesdayFactoriesImpl
             this
             );
         }
-    
+
     @Autowired
     private TuesdaySpringThings spring;
     @Override

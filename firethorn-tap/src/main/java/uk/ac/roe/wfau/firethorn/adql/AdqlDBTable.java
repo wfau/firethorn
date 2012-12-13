@@ -17,13 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.adql ;
 
-import adql.db.DBTable;
-import adql.db.DBColumn;
-
 import java.util.Iterator;
 
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
+import adql.db.DBColumn;
+import adql.db.DBTable;
 
 
 /**

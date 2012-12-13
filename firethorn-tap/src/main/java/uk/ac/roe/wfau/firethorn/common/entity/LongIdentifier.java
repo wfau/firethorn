@@ -17,7 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.common.entity ;
 
-import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierFormatException ;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierFormatException;
 
 /**
  * Identifier based on a Long value.

@@ -86,7 +86,7 @@ public class TuesdayJdbcSchemaEntity
 
         @Override
         @CreateEntityMethod
-        public TuesdayJdbcSchema create(TuesdayJdbcResource parent, String name)
+        public TuesdayJdbcSchema create(final TuesdayJdbcResource parent, final String name)
             {
             return this.insert(
                 new TuesdayJdbcSchemaEntity(
@@ -98,7 +98,7 @@ public class TuesdayJdbcSchemaEntity
 
         @Override
         @SelectEntityMethod
-        public Iterable<TuesdayJdbcSchema> select(TuesdayJdbcResource parent)
+        public Iterable<TuesdayJdbcSchema> select(final TuesdayJdbcResource parent)
             {
             return super.list(
                 super.query(
@@ -112,7 +112,7 @@ public class TuesdayJdbcSchemaEntity
 
         @Override
         @SelectEntityMethod
-        public TuesdayJdbcSchema select(TuesdayJdbcResource parent, String name)
+        public TuesdayJdbcSchema select(final TuesdayJdbcResource parent, final String name)
             {
             return super.first(
                 super.query(
@@ -129,7 +129,7 @@ public class TuesdayJdbcSchemaEntity
 
         @Override
         @SelectEntityMethod
-        public Iterable<TuesdayJdbcSchema> search(TuesdayJdbcResource parent, String text)
+        public Iterable<TuesdayJdbcSchema> search(final TuesdayJdbcResource parent, final String text)
             {
             return super.iterable(
                 super.query(
@@ -145,7 +145,7 @@ public class TuesdayJdbcSchemaEntity
                         )
                 );
             }
-        
+
         @Autowired
         protected TuesdayJdbcTable.Factory tables;
         @Override
@@ -176,7 +176,7 @@ public class TuesdayJdbcSchemaEntity
         super();
         }
 
-    protected TuesdayJdbcSchemaEntity(TuesdayJdbcResource resource, String name)
+    protected TuesdayJdbcSchemaEntity(final TuesdayJdbcResource resource, final String name)
         {
         super(resource, name);
         this.resource = resource;
@@ -215,7 +215,7 @@ public class TuesdayJdbcSchemaEntity
                     );
                 }
             @Override
-            public TuesdayJdbcTable select(String name)
+            public TuesdayJdbcTable select(final String name)
                 {
                 return factories().jdbc().tables().select(
                     TuesdayJdbcSchemaEntity.this,
@@ -223,7 +223,7 @@ public class TuesdayJdbcSchemaEntity
                     );
                 }
             @Override
-            public TuesdayJdbcTable create(String name)
+            public TuesdayJdbcTable create(final String name)
                 {
                 return factories().jdbc().tables().create(
                     TuesdayJdbcSchemaEntity.this,
@@ -231,7 +231,7 @@ public class TuesdayJdbcSchemaEntity
                     );
                 }
             @Override
-            public TuesdayJdbcTable create(String name, TuesdayJdbcTable.JdbcTableType type)
+            public TuesdayJdbcTable create(final String name, final TuesdayJdbcTable.JdbcTableType type)
                 {
                 return factories().jdbc().tables().create(
                     TuesdayJdbcSchemaEntity.this,
@@ -240,7 +240,7 @@ public class TuesdayJdbcSchemaEntity
                     );
                 }
             @Override
-            public Iterable<TuesdayJdbcTable> search(String text)
+            public Iterable<TuesdayJdbcTable> search(final String text)
                 {
                 return factories().jdbc().tables().search(
                     TuesdayJdbcSchemaEntity.this,

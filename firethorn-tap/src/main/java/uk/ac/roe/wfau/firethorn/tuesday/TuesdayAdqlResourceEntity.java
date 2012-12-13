@@ -22,8 +22,8 @@ import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -140,7 +140,7 @@ extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
         super();
         }
 
-    protected TuesdayAdqlResourceEntity(String name)
+    protected TuesdayAdqlResourceEntity(final String name)
         {
         super(name);
         }
@@ -174,12 +174,13 @@ extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
                     );
                 }
 			@Override
-			public TuesdayAdqlSchema create(final TuesdayBaseSchema base, final String name) {
+			public TuesdayAdqlSchema create(final TuesdayBaseSchema<?,?> base, final String name)
+			    {
                 return factories().adql().schemas().create(
-                        TuesdayAdqlResourceEntity.this,
-                        base,
-                        name
-                        );
+                    TuesdayAdqlResourceEntity.this,
+                    base,
+                    name
+                    );
 				}
             @Override
             public Iterable<TuesdayAdqlSchema> search(final String text)

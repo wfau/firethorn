@@ -28,7 +28,7 @@ public class TuesdayJdbcConnectionFailedException
     {
 
     /**
-     * 
+     *
      *
      */
     private static final long serialVersionUID = 7369839935575033862L;
@@ -38,7 +38,7 @@ public class TuesdayJdbcConnectionFailedException
      * @param cause
      *
      */
-    public TuesdayJdbcConnectionFailedException(SQLException cause)
+    public TuesdayJdbcConnectionFailedException(final SQLException cause)
         {
         super(
             cause
@@ -51,7 +51,7 @@ public class TuesdayJdbcConnectionFailedException
      * @param cause
      *
      */
-    public TuesdayJdbcConnectionFailedException(String message, SQLException cause)
+    public TuesdayJdbcConnectionFailedException(final String message, final SQLException cause)
         {
         super(
             message,

@@ -180,7 +180,7 @@ public class TuesdayHibernateThingsImpl
         }
 
     @Override
-    public void delete(Entity entity)
+    public void delete(final Entity entity)
         {
         try {
             if (entity == null)
@@ -240,7 +240,7 @@ public class TuesdayHibernateThingsImpl
         }
 
     @Override
-    public Entity single(Query query)
+    public Entity single(final Query query)
         {
         return first(
             query
@@ -248,7 +248,7 @@ public class TuesdayHibernateThingsImpl
         }
 
     @Override
-    public Entity first(Query query)
+    public Entity first(final Query query)
         {
         if (query == null)
             {

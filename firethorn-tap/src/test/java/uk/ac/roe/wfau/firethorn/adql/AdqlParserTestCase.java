@@ -825,7 +825,7 @@ extends TestBase
         // Import a JdbcSchema into our AdqlWorkspace.
         adqlresource.inport();
         adqlworkspace.schemas().create(
-    		adqlresource.schemas().select("dbo"),
+    		adqlresource.schemas().select("TWOMASS.dbo"),
     		"adql_schema"
             ); 
         //

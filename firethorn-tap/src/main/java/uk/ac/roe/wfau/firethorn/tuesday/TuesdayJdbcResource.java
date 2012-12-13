@@ -81,30 +81,30 @@ extends TuesdayOgsaResource<TuesdayJdbcSchema>, TuesdayBaseResource<TuesdayJdbcS
 
     /**
      * Access to the resource schemas.
-     * 
+     *
      */
     public interface Schemas extends TuesdayBaseResource.Schemas<TuesdayJdbcSchema>
         {
         /**
          * Create a new schema.
-         * 
+         *
          */
-        public TuesdayJdbcSchema create(String name);
-        
-        } 
+        public TuesdayJdbcSchema create(final String name);
+
+        }
 
     @Override
     public Schemas schemas();
 
     /**
      * Access to our JDBC resource connection.
-     * 
+     *
      */
     public TuesdayJdbcConnection connection();
-    
+
     /**
      * Import the metadata from our database.
-     * 
+     *
      */
     public void inport();
 
@@ -129,7 +129,7 @@ extends TuesdayOgsaResource<TuesdayJdbcSchema>, TuesdayBaseResource<TuesdayJdbcS
 
     /**
      * Known database types, indexed by the product name in DatabaseMetaData.getDatabaseProductName()
-     * 
+     *
      */
     @Slf4j
     public static enum JdbcProductType
@@ -157,19 +157,19 @@ extends TuesdayOgsaResource<TuesdayJdbcSchema>, TuesdayBaseResource<TuesdayJdbcS
             new String[]{}
             );
 
-        private JdbcProductType(String alias)
+        private JdbcProductType(final String alias)
             {
             this(
                 alias,
                 null
                 );
             }
-        private JdbcProductType(String alias, String[] ignores)
+        private JdbcProductType(final String alias, final String[] ignores)
             {
             this.alias = alias;
             if (ignores != null)
                 {
-                for (String ignore : ignores)
+                for (final String ignore : ignores)
                     {
                     this.ignores.add(
                         ignore
@@ -178,13 +178,13 @@ extends TuesdayOgsaResource<TuesdayJdbcSchema>, TuesdayBaseResource<TuesdayJdbcS
                 }
             }
 
-        private String alias ;
+        private final String alias ;
         public String alias()
             {
             return this.alias;
             }
 
-        private Collection<String> ignores = new ArrayList<String>();
+        private final Collection<String> ignores = new ArrayList<String>();
         public Collection<String>  ignores()
             {
             return this.ignores;
@@ -192,7 +192,7 @@ extends TuesdayOgsaResource<TuesdayJdbcSchema>, TuesdayBaseResource<TuesdayJdbcS
 
         static protected Map<String, JdbcProductType> mapping = new HashMap<String, JdbcProductType>();
         static {
-            for (JdbcProductType type : JdbcProductType.values())
+            for (final JdbcProductType type : JdbcProductType.values())
                 {
                 mapping.put(
                     type.alias(),
@@ -201,7 +201,7 @@ extends TuesdayOgsaResource<TuesdayJdbcSchema>, TuesdayBaseResource<TuesdayJdbcS
                 }
             }
 
-        static public JdbcProductType match(String alias)
+        static public JdbcProductType match(final String alias)
             {
             if (mapping.containsKey(alias))
                 {
@@ -213,14 +213,14 @@ extends TuesdayOgsaResource<TuesdayJdbcSchema>, TuesdayBaseResource<TuesdayJdbcS
                 return UNKNOWN;
                 }
             }
-        static public JdbcProductType match(DatabaseMetaData metadata)
+        static public JdbcProductType match(final DatabaseMetaData metadata)
             {
             try {
                 return match(
                     metadata.getDatabaseProductName()
                     );
                 }
-            catch (SQLException ouch)
+            catch (final SQLException ouch)
                 {
                 log.error("SQLException reading database metadata [{}]", ouch.getMessage());
                 return UNKNOWN;

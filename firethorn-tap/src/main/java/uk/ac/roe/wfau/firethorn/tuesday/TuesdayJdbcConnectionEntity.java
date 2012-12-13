@@ -35,20 +35,18 @@ import javax.persistence.FetchType;
 import javax.persistence.Transient;
 import javax.sql.DataSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.annotations.Parent;
 import org.hibernate.exception.internal.StandardSQLExceptionConverter;
 import org.hibernate.exception.spi.SQLExceptionConverter;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.jdbc.datasource.lookup.DataSourceLookup;
 import org.springframework.jdbc.datasource.lookup.BeanFactoryDataSourceLookup;
+import org.springframework.jdbc.datasource.lookup.DataSourceLookup;
 import org.springframework.jdbc.datasource.lookup.DataSourceLookupFailureException;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.jdbc.support.SQLExceptionSubclassTranslator;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
-
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseComponent.Status;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * JDBC resource connection details.
@@ -63,24 +61,24 @@ public class TuesdayJdbcConnectionEntity
     extends TuesdayBaseObject
     implements TuesdayJdbcConnection
     {
-    protected static final String DB_JDBC_URL_COL    = "jdbcurl"; 
-    protected static final String DB_JDBC_USER_COL   = "jdbcuser"; 
-    protected static final String DB_JDBC_PASS_COL   = "jdbcpass"; 
-    protected static final String DB_JDBC_STATUS_COL = "jdbcstatus"; 
-    protected static final String DB_JDBC_DRIVER_COL = "jdbcdriver"; 
+    protected static final String DB_JDBC_URL_COL    = "jdbcurl";
+    protected static final String DB_JDBC_USER_COL   = "jdbcuser";
+    protected static final String DB_JDBC_PASS_COL   = "jdbcpass";
+    protected static final String DB_JDBC_STATUS_COL = "jdbcstatus";
+    protected static final String DB_JDBC_DRIVER_COL = "jdbcdriver";
 
     /**
      * Our Spring SQLException translator.
-     * 
+     *
      */
     protected static final SQLExceptionTranslator translator = new SQLExceptionSubclassTranslator();
 
     /**
      * Our Hibernate SQLException converter.
-     * 
+     *
      */
-    protected static final SQLExceptionConverter converter = new StandardSQLExceptionConverter(); 
-    
+    protected static final SQLExceptionConverter converter = new StandardSQLExceptionConverter();
+
     public TuesdayJdbcConnectionEntity()
         {
         }
@@ -121,7 +119,7 @@ public class TuesdayJdbcConnectionEntity
         {
         return this.parent;
         }
-    protected void setParent(TuesdayJdbcResourceEntity parent)
+    protected void setParent(final TuesdayJdbcResourceEntity parent)
         {
         this.parent = parent;
         }
@@ -140,7 +138,7 @@ public class TuesdayJdbcConnectionEntity
         return this.url;
         }
     @Override
-    public synchronized void url(String url)
+    public synchronized void url(final String url)
         {
         this.url = url;
         this.reset();
@@ -160,7 +158,7 @@ public class TuesdayJdbcConnectionEntity
         return this.user;
         }
     @Override
-    public synchronized void user(String user)
+    public synchronized void user(final String user)
         {
         this.user = user;
         this.reset();
@@ -180,7 +178,7 @@ public class TuesdayJdbcConnectionEntity
         return this.pass;
         }
     @Override
-    public synchronized void pass(String pass)
+    public synchronized void pass(final String pass)
         {
         this.pass = pass;
         this.reset();
@@ -200,7 +198,7 @@ public class TuesdayJdbcConnectionEntity
         return this.driver;
         }
     @Override
-    public synchronized void driver(String driver)
+    public synchronized void driver(final String driver)
         {
         this.driver = driver;
         this.reset();
@@ -208,32 +206,32 @@ public class TuesdayJdbcConnectionEntity
 
     /**
      * JDBC connection URL prefix for a DriverManager connection.
-     * 
+     *
      */
     public static final String JDBC_URL_PREFIX = "jdbc:" ;
 
     /**
      * JDBC connection URL prefix for a JNDI registered DataSource.
-     * 
+     *
      */
     public static final String JNDI_URL_PREFIX = "jndi:" ;
 
     /**
      * JDBC connection URL prefix for a Spring registered DataSource.
-     * 
+     *
      */
     public static final String SPRING_URL_PREFIX = "spring:" ;
 
     /**
      * Our JDBC DataSource.
-     * 
+     *
      */
     @Transient
     private DataSource source ;
 
     /**
      * Initialise our JDBC DataSource.
-     * 
+     *
      */
     protected synchronized DataSource source()
         {
@@ -275,7 +273,7 @@ public class TuesdayJdbcConnectionEntity
                     }
                 else if (this.url.startsWith(JNDI_URL_PREFIX))
                     {
-                    DataSourceLookup resolver = new JndiDataSourceLookup();
+                    final DataSourceLookup resolver = new JndiDataSourceLookup();
                     this.source = resolver.getDataSource(
                         this.url.substring(
                             JNDI_URL_PREFIX.length()
@@ -284,7 +282,7 @@ public class TuesdayJdbcConnectionEntity
                     }
                 else if (this.url.startsWith(SPRING_URL_PREFIX))
                     {
-                    DataSourceLookup resolver = new BeanFactoryDataSourceLookup(
+                    final DataSourceLookup resolver = new BeanFactoryDataSourceLookup(
                         this.factories().spring().context()
                         );
                     this.source = resolver.getDataSource(
@@ -296,7 +294,7 @@ public class TuesdayJdbcConnectionEntity
                 else {
                     log.error("Unexpected prefix for JDBC connection URL [{}]", this.url);
                     throw new IllegalArgumentException(
-                        "Unexpected prefix for JDBC connection URL [" + this.url + "]" 
+                        "Unexpected prefix for JDBC connection URL [" + this.url + "]"
                         );
                     }
                 }
@@ -310,7 +308,7 @@ public class TuesdayJdbcConnectionEntity
         }
 
     @Transient
-    private ThreadLocal<Connection> local = new ThreadLocal<Connection>()
+    private final ThreadLocal<Connection> local = new ThreadLocal<Connection>()
         {
         @Override
         public Connection get()
@@ -320,14 +318,14 @@ public class TuesdayJdbcConnectionEntity
             }
 
         @Override
-        public void set(Connection connection)
+        public void set(final Connection connection)
             {
             //log.debug("ThreadLocal<Connection>.set()");
             super.set(
                 connection
                 );
             }
-        
+
         @Override
         protected Connection initialValue()
             {
@@ -351,11 +349,11 @@ public class TuesdayJdbcConnectionEntity
                     );
                 }
             }
-        }; 
+        };
 
     /**
      * Reset our JDBC DataSource.
-     * 
+     *
      */
     protected synchronized void reset()
         {
@@ -410,7 +408,7 @@ public class TuesdayJdbcConnectionEntity
         try {
             return this.local.get().getCatalog();
             }
-        catch(Exception ouch)
+        catch(final Exception ouch)
             {
             //log.error("Exception reading database metadata", ouch);
             return null ;
@@ -420,10 +418,10 @@ public class TuesdayJdbcConnectionEntity
     @Override
     public Iterable<String> catalogs()
         {
-        List<String> catalogs = new ArrayList<String>();
+        final List<String> catalogs = new ArrayList<String>();
         try {
-            DatabaseMetaData metadata = this.metadata();
-            ResultSet results = metadata.getCatalogs();
+            final DatabaseMetaData metadata = this.metadata();
+            final ResultSet results = metadata.getCatalogs();
             while (results.next())
                 {
                 catalogs.add(
@@ -433,7 +431,7 @@ public class TuesdayJdbcConnectionEntity
                     );
                 }
             }
-        catch(SQLException ouch)
+        catch(final SQLException ouch)
             {
             log.error("Exception reading database metadata [{}]", ouch.getMessage());
             }
@@ -454,7 +452,7 @@ public class TuesdayJdbcConnectionEntity
         EnumType.STRING
         )
     private Status status = Status.CREATED;
-    
+
     @Override
     public Status status()
         {
@@ -462,7 +460,7 @@ public class TuesdayJdbcConnectionEntity
         }
 
     @Override
-    public void status(Status update)
+    public void status(final Status update)
         {
         switch(update)
             {
@@ -473,7 +471,7 @@ public class TuesdayJdbcConnectionEntity
                     try {
                         this.parent.inport();
                         }
-                    catch (RuntimeException ouch)
+                    catch (final RuntimeException ouch)
                         {
                         this.status = Status.FAILED;
                         throw ouch;

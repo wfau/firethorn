@@ -69,7 +69,7 @@ extends TuesdayBaseSchema<TuesdayAdqlSchema, TuesdayAdqlTable>
 
     /**
      * Access to the schema tables.
-     * 
+     *
      */
     public interface Tables extends TuesdayBaseSchema.Tables<TuesdayAdqlTable>
         {
@@ -85,7 +85,7 @@ extends TuesdayBaseSchema<TuesdayAdqlSchema, TuesdayAdqlTable>
          */
         public TuesdayAdqlTable create(final TuesdayBaseTable<?,?> base, final String name);
 
-        } 
+        }
     @Override
     public Tables tables();
 

@@ -57,29 +57,29 @@ extends TuesdayBaseSchema<TuesdayJdbcSchema, TuesdayJdbcTable>
          */
         public TuesdayJdbcTable.Factory tables();
         }
-    
+
     @Override
     public TuesdayJdbcResource resource();
 
     /**
      * Access to the schema tables.
-     * 
+     *
      */
     public interface Tables extends TuesdayBaseSchema.Tables<TuesdayJdbcTable>
         {
         /**
          *  Create a new table.
-         *  
+         *
          */
-        public TuesdayJdbcTable create(String name);
+        public TuesdayJdbcTable create(final String name);
 
         /**
          *  Create a new table.
-         *  
+         *
          */
-        public TuesdayJdbcTable create(String name, TuesdayJdbcTable.JdbcTableType type);
+        public TuesdayJdbcTable create(final String name, final TuesdayJdbcTable.JdbcTableType type);
 
-        } 
+        }
     @Override
     public Tables tables();
 

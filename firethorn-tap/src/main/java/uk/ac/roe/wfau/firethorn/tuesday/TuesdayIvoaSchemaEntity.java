@@ -25,8 +25,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -85,7 +85,7 @@ public class TuesdayIvoaSchemaEntity
 
         @Override
         @CreateEntityMethod
-        public TuesdayIvoaSchema create(TuesdayIvoaResource parent, String name)
+        public TuesdayIvoaSchema create(final TuesdayIvoaResource parent, final String name)
             {
             return this.insert(
                 new TuesdayIvoaSchemaEntity(
@@ -97,7 +97,7 @@ public class TuesdayIvoaSchemaEntity
 
         @Override
         @SelectEntityMethod
-        public Iterable<TuesdayIvoaSchema> select(TuesdayIvoaResource parent)
+        public Iterable<TuesdayIvoaSchema> select(final TuesdayIvoaResource parent)
             {
             return super.list(
                 super.query(
@@ -111,7 +111,7 @@ public class TuesdayIvoaSchemaEntity
 
         @Override
         @SelectEntityMethod
-        public TuesdayIvoaSchema select(TuesdayIvoaResource parent, String name)
+        public TuesdayIvoaSchema select(final TuesdayIvoaResource parent, final String name)
             {
             return super.first(
                 super.query(
@@ -128,7 +128,7 @@ public class TuesdayIvoaSchemaEntity
 
         @Override
         @SelectEntityMethod
-        public Iterable<TuesdayIvoaSchema> search(TuesdayIvoaResource parent, String text)
+        public Iterable<TuesdayIvoaSchema> search(final TuesdayIvoaResource parent, final String text)
             {
             return super.iterable(
                 super.query(
@@ -144,7 +144,7 @@ public class TuesdayIvoaSchemaEntity
                         )
                 );
             }
-        
+
         @Autowired
         protected TuesdayIvoaTable.Factory tables;
         @Override
@@ -169,13 +169,13 @@ public class TuesdayIvoaSchemaEntity
             return this.links;
             }
         }
-    
+
     protected TuesdayIvoaSchemaEntity()
         {
         super();
         }
 
-    protected TuesdayIvoaSchemaEntity(TuesdayIvoaResource resource, String name)
+    protected TuesdayIvoaSchemaEntity(final TuesdayIvoaResource resource, final String name)
         {
         super(resource, name);
         this.resource = resource;
@@ -211,7 +211,7 @@ public class TuesdayIvoaSchemaEntity
                     );
                 }
             @Override
-            public TuesdayIvoaTable select(String name)
+            public TuesdayIvoaTable select(final String name)
                 {
                 return factories().ivoa().tables().select(
                     TuesdayIvoaSchemaEntity.this,
@@ -219,7 +219,7 @@ public class TuesdayIvoaSchemaEntity
                     );
                 }
             @Override
-            public Iterable<TuesdayIvoaTable> search(String text)
+            public Iterable<TuesdayIvoaTable> search(final String text)
                 {
                 return factories().ivoa().tables().search(
                     TuesdayIvoaSchemaEntity.this,

@@ -57,7 +57,7 @@ public abstract class TuesdayBaseResourceEntity<SchemaType extends TuesdayBaseSc
         super();
         }
 
-    protected TuesdayBaseResourceEntity(String name)
+    protected TuesdayBaseResourceEntity(final String name)
         {
         super(name);
         }

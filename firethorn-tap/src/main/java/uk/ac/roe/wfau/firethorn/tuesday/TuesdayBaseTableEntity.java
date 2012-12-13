@@ -36,9 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable.IdentFactory;
 
 /**
  *
@@ -72,7 +70,7 @@ extends TuesdayBaseComponentEntity
     {
     /**
      * Hibernate database table name.
-     * 
+     *
      */
     protected static final String DB_TABLE_NAME = "TuesdayBaseTableEntity";
 
@@ -84,7 +82,7 @@ extends TuesdayBaseComponentEntity
     implements TuesdayBaseTable.AliasFactory
         {
         protected static final String PREFIX = "BASE_" ;
-        
+
         @Override
         public String alias(final TuesdayBaseTable<?,?> table)
             {
@@ -123,7 +121,7 @@ extends TuesdayBaseComponentEntity
             }
 
         protected static final String PREFIX = "BASE_" ;
-        
+
         @Override
         public TuesdayBaseTable<?,?> select(final String alias)
         throws NotFoundException
@@ -137,7 +135,7 @@ extends TuesdayBaseComponentEntity
                 );
             }
         }
-    
+
     /**
      * Table factory implementation.
      *
@@ -154,7 +152,7 @@ extends TuesdayBaseComponentEntity
         super();
         }
 
-    protected TuesdayBaseTableEntity(TuesdayBaseSchema<?,TableType> parent, String name)
+    protected TuesdayBaseTableEntity(final TuesdayBaseSchema<?,TableType> parent, final String name)
         {
         super(name);
         this.parent = parent;
@@ -174,7 +172,7 @@ extends TuesdayBaseComponentEntity
         return this.type;
         }
     @Override
-    public void type(String type)
+    public void type(final String type)
         {
         this.type = type;
         }
@@ -193,7 +191,7 @@ extends TuesdayBaseComponentEntity
         return this.size;
         }
     @Override
-    public void size(Integer size)
+    public void size(final Integer size)
         {
         this.size = size;
         }
@@ -212,7 +210,7 @@ extends TuesdayBaseComponentEntity
         return this.ucd;
         }
     @Override
-    public void ucd(String ucd)
+    public void ucd(final String ucd)
         {
         this.ucd = ucd;
         }
@@ -245,7 +243,7 @@ extends TuesdayBaseComponentEntity
         {
         return this.parent;
         }
-    protected void schema(TuesdayBaseSchema<?, TableType> schema)
+    protected void schema(final TuesdayBaseSchema<?, TableType> schema)
         {
         this.parent = schema;
         }

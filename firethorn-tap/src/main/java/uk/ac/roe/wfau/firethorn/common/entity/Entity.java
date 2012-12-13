@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.common.entity ;
 
 import org.joda.time.DateTime;
 
-import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
@@ -76,16 +75,16 @@ public interface Entity
 
         /**
          * Our local Identifier factory.
-         * 
+         *
          */
         public IdentFactory<EntityType> idents();
 
         /**
          * Our local link factory.
-         * 
+         *
          */
         public LinkFactory<EntityType> links();
-        
+
         }
 
     /**
@@ -123,7 +122,7 @@ public interface Entity
      * Set the Entity description.
      *
      */
-    public void text(String text);
+    public void text(final String text);
 
     /**
      * Get the Entity owner.

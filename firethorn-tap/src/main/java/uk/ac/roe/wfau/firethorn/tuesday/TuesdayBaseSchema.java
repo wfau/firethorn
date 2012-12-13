@@ -47,7 +47,7 @@ extends TuesdayBaseComponent
          *
          */
         public SchemaType create(final ResourceType parent, final String name);
-        
+
         /**
          * Select all the schemas from a resource.
          *
@@ -67,7 +67,7 @@ extends TuesdayBaseComponent
         public Iterable<SchemaType> search(final ResourceType parent, final String text);
 
         }
-    
+
     /**
      * Access to our parent resource.
      *
@@ -76,7 +76,7 @@ extends TuesdayBaseComponent
 
     /**
      * Access to the schema tables.
-     * 
+     *
      */
     public interface Tables<TableType>
         {
@@ -89,20 +89,20 @@ extends TuesdayBaseComponent
          * Search for tables (name starts with).
          *
          */
-        public Iterable<TableType> search(String text);
+        public Iterable<TableType> search(final String text);
         /**
          * Select a specific column by name.
          *
          */
-        public TableType select(String name);
-        } 
+        public TableType select(final String name);
+        }
 
     /**
      * Access to the schema tables.
-     * 
+     *
      */
     public Tables<TableType> tables();
-    
+
     public String alias();
     public StringBuilder fullname();
 

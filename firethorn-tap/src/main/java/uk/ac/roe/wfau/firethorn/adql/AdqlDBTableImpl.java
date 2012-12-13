@@ -23,7 +23,6 @@ import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
-
 import adql.db.DBColumn;
 import adql.db.DBTable;
 
@@ -265,14 +264,14 @@ implements AdqlDBTable
         else {
 /*
  * Search base columns by name, and then step back up to this table
- * 
+ *
             adqlColumn = this.adqlTable.columns().select(
                 this.adqlTable.base().columns().select(
                     name
                     )
                 );
  */
-        
+
         }
 
         if (adqlColumn != null)

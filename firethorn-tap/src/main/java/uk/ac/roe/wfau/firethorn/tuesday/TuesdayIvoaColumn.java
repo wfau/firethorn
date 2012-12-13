@@ -56,7 +56,7 @@ extends TuesdayBaseColumn<TuesdayIvoaColumn>, TuesdayOgsaColumn<TuesdayIvoaColum
          *
          */
         public TuesdayIvoaColumn create(final TuesdayIvoaTable parent, final String name);
-       
+
         }
 
     @Override

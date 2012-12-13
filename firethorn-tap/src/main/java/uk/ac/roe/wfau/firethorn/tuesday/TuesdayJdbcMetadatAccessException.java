@@ -28,7 +28,7 @@ public class TuesdayJdbcMetadatAccessException
     {
 
     /**
-     * 
+     *
      *
      */
     private static final long serialVersionUID = -4567384444408505866L;
@@ -38,7 +38,7 @@ public class TuesdayJdbcMetadatAccessException
      * @param cause
      *
      */
-    public TuesdayJdbcMetadatAccessException(SQLException cause)
+    public TuesdayJdbcMetadatAccessException(final SQLException cause)
         {
         super(
             cause
@@ -51,7 +51,7 @@ public class TuesdayJdbcMetadatAccessException
      * @param cause
      *
      */
-    public TuesdayJdbcMetadatAccessException(String message, SQLException cause)
+    public TuesdayJdbcMetadatAccessException(final String message, final SQLException cause)
         {
         super(
             message,

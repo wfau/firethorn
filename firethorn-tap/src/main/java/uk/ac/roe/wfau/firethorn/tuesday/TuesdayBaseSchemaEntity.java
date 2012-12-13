@@ -64,7 +64,7 @@ public abstract class TuesdayBaseSchemaEntity<SchemaType extends TuesdayBaseSche
     {
     /**
      * Metadata database table name.
-     * 
+     *
      */
     protected static final String DB_TABLE_NAME = "TuesdayBaseSchemaEntity";
 
@@ -73,7 +73,7 @@ public abstract class TuesdayBaseSchemaEntity<SchemaType extends TuesdayBaseSche
         super();
         }
 
-    protected TuesdayBaseSchemaEntity(TuesdayBaseResource<SchemaType> resource, String name)
+    protected TuesdayBaseSchemaEntity(final TuesdayBaseResource<SchemaType> resource, final String name)
         {
         super(name);
         this.parent = resource;

@@ -61,18 +61,18 @@ extends TuesdayOgsaResource<TuesdayIvoaSchema>
 
     /**
      * Access to the resource schemas.
-     * 
+     *
      */
     public interface Schemas extends TuesdayBaseResource.Schemas<TuesdayIvoaSchema>
         {
-        } 
+        }
     @Override
     public Schemas schemas();
 
     public String uri();
-    public void uri(String uri);
+    public void uri(final String uri);
 
     public String url();
-    public void url(String url);
+    public void url(final String url);
 
     }

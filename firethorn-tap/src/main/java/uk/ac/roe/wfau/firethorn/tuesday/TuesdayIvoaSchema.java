@@ -57,17 +57,17 @@ extends TuesdayBaseSchema<TuesdayIvoaSchema, TuesdayIvoaTable>
          */
         public TuesdayIvoaTable.Factory tables();
         }
-    
+
     @Override
     public TuesdayIvoaResource resource();
 
     /**
      * Access to the schema tables.
-     * 
+     *
      */
     public interface Tables extends TuesdayBaseSchema.Tables<TuesdayIvoaTable>
         {
-        } 
+        }
     @Override
     public Tables tables();
 

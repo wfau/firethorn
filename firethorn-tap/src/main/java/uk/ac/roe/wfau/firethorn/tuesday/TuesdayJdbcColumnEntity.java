@@ -185,12 +185,12 @@ public class TuesdayJdbcColumnEntity
             }
         }
 
-    protected TuesdayJdbcColumnEntity() 
+    protected TuesdayJdbcColumnEntity()
         {
         super();
         }
 
-    protected TuesdayJdbcColumnEntity(final TuesdayJdbcTable table, final String name) 
+    protected TuesdayJdbcColumnEntity(final TuesdayJdbcTable table, final String name)
         {
         super(table, name);
         this.table = table;
@@ -255,7 +255,7 @@ public class TuesdayJdbcColumnEntity
 
     /**
      * Metadata database column name.
-     * 
+     *
      */
     protected static final String SQL_TYPE_COL = "sqltype" ;
 
@@ -273,14 +273,14 @@ public class TuesdayJdbcColumnEntity
         return this.sqltype;
         }
     @Override
-    public void sqltype(int type)
+    public void sqltype(final int type)
         {
         this.sqltype = type;
         }
 
     /**
      * Metadata database column name.
-     * 
+     *
      */
     protected static final String SQL_SIZE_COL = "sqlsize" ;
 
@@ -298,7 +298,7 @@ public class TuesdayJdbcColumnEntity
         return this.sqlsize;
         }
     @Override
-    public void sqlsize(int size)
+    public void sqlsize(final int size)
         {
         this.sqlsize = size;
         }

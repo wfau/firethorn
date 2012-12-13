@@ -62,23 +62,23 @@ extends TuesdayBaseResource<TuesdayAdqlSchema>
 
     /**
      * Access to the resource schemas.
-     * 
+     *
      */
     public interface Schemas extends TuesdayBaseResource.Schemas<TuesdayAdqlSchema>
         {
         /**
          * Create a new schema.
-         * 
+         *
          */
         public TuesdayAdqlSchema create(final String name);
 
         /**
          * Create a new schema.
-         * 
+         *
          */
         public TuesdayAdqlSchema create(final TuesdayBaseSchema<?,?> base, final String name);
 
-        } 
+        }
     @Override
     public Schemas schemas();
 
