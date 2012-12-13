@@ -295,18 +295,18 @@ public class TuesdayJdbcResourceEntity
                 final String tsname = tables.getString(JDBC_META_TABLE_SCHEM);
                 final String ttname = tables.getString(JDBC_META_TABLE_NAME);
                 final String tttype = tables.getString(JDBC_META_TABLE_TYPE);
-                log.debug("Found table [{}.{}.{}]", new Object[]{tcname, tsname, ttname});
+                //log.debug("Found table [{}.{}.{}]", new Object[]{tcname, tsname, ttname});
                 //
                 // If the catalog name is null.
                 if (tcname == null)
                     {
-                    log.debug("Catalog is null, whatever ..");
+                    //log.debug("Catalog is null, whatever ..");
                     }
                 //
                 // If the schema name is null.
                 if (tsname == null)
                     {
-                    log.debug("Schema is null, whatever ..");
+                    //log.debug("Schema is null, whatever ..");
                     }
                 //
                 // In MySQL the schema name is always null, use the catalog name instead.
@@ -319,7 +319,7 @@ public class TuesdayJdbcResourceEntity
                 // Skip if the schema is on our ignore list.
                 if (product.ignores().contains(schemaname))
                     {
-                    log.debug("Schema is on the ignore list, skipping ...");
+                    //log.debug("Schema is on the ignore list, skipping ...");
                     continue;
                     }
                 //
@@ -357,13 +357,12 @@ public class TuesdayJdbcResourceEntity
                 // If the table name is null.
                 if (ttname == null)
                     {
-                    log.debug("Table is null, whatever ..");
+                    //log.debug("Table is null, whatever ..");
                     }
                 //
                 // If the table name is not null.
                 else {
-                    log.debug("Table is [{}], processing", ttname);
-
+                    log.debug("Processing table [{}][{}][{}]", new Object[]{tcname, tsname, ttname});
                     if (table == null)
                         {
                         column = null ;
@@ -430,13 +429,12 @@ public class TuesdayJdbcResourceEntity
                             final String colname = columns.getString(JDBC_META_COLUMN_NAME);
                             final int    coltype = columns.getInt(JDBC_META_COLUMN_TYPE_TYPE);
                             final int    colsize = columns.getInt(JDBC_META_COLUMN_SIZE);
-                            log.debug("Column result [{}.{}.{}.{}]", new Object[]{
+                            log.debug("Processing column [{}][{}][{}][{}]", new Object[]{
                                 ccname,
                                 csname,
                                 ctname,
                                 colname
                                 });
-
                             if (column == null)
                                 {
                                 create = true ;
