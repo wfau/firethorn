@@ -94,7 +94,10 @@ extends TuesdayBaseComponent
      */
     public Schemas<SchemaType> schemas();
 
-    //public String alias();
+    /**
+     * The fully qualified name.
+     *
+     */
     public StringBuilder fullname();
 
     }

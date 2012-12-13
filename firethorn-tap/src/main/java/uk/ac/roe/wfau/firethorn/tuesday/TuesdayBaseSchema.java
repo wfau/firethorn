@@ -103,7 +103,10 @@ extends TuesdayBaseComponent
      */
     public Tables<TableType> tables();
 
-    public String alias();
+    /**
+     * The fully qualified name.
+     *
+     */
     public StringBuilder fullname();
 
     }

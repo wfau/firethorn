@@ -232,13 +232,8 @@ public class TuesdayIvoaSchemaEntity
     @Override
     public String link()
         {
-        // TODO Auto-generated method stub
-        return null;
+        return factories().ivoa().schemas().links().link(
+            this
+            );
         }
-
-	@Override
-	public String alias()
-		{
-		return "ivoa_schema_" + ident();
-		}
     }

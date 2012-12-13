@@ -104,10 +104,4 @@ public abstract class TuesdayBaseSchemaEntity<SchemaType extends TuesdayBaseSche
         {
         return new StringBuilder(this.name());
         }
-
-    @Override
-    public String alias()
-        {
-        return null;
-        }
     }

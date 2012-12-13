@@ -865,11 +865,11 @@ extends TestBase
     			{
         		log.debug("   ------- ");
     			log.debug("  Column ADQL [{}][{}][{}][{}]", column.getTable().getADQLCatalogName(), column.getTable().getADQLSchemaName(), column.getTable().getADQLName(),     column.getADQLName());
-    			log.debug("         OGSA [{}][{}][{}][{}]",   column.getTable().getDBCatalogName(),  column.getTable().getDBSchemaName(), column.getTable().getDBName(), column.getDBName());
+    			log.debug("         OGSA [{}][{}][{}][{}]", column.getTable().getDBCatalogName(),  column.getTable().getDBSchemaName(), column.getTable().getDBName(), column.getDBName());
     			}
 
             TuesdayBaseTable<?,?> mapped = resolve(
-                querytable.getDBLink().getDBName()
+                querytable
                 );
 
             log.debug(" MAPPED --------- ");
@@ -887,11 +887,11 @@ extends TestBase
 
         }
 
-    public TuesdayBaseTable<?,?> resolve(String source)
+    public TuesdayBaseTable<?,?> resolve(ADQLTable querytable)
     throws Exception
         {
         return factories().base().tables().resolver().select(
-            source
+            querytable.getDBLink().getDBName()
             );
         }
     }

@@ -319,7 +319,7 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
         }
 
     /**
-     * Metadata database column name.
+     * Hibernate database column name.
      *
      */
     protected static final String JDBC_TYPE_COL = "jdbctype" ;

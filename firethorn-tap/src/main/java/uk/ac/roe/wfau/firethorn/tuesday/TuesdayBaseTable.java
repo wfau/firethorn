@@ -115,8 +115,16 @@ extends TuesdayBaseComponent
     public String ucd();
     public void ucd(final String ucd);
 
+    /**
+     * The OGSA-DAI DQP table alias.
+     *
+     */
     public String alias();
 
+    /**
+     * The fully qualified name.
+     *
+     */
     public StringBuilder fullname();
 
     public TuesdayOgsaTable<?, ?> ogsa();

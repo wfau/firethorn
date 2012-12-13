@@ -269,12 +269,8 @@ public class TuesdayAdqlSchemaEntity
     @Override
     public String link()
         {
-        // TODO Auto-generated method stub
-        return null;
+        return factories().adql().schemas().links().link(
+            this
+            );
         }
-
-	@Override
-	public String alias() {
-		return "adql_schema_" + ident();
-		}
     }

@@ -208,6 +208,7 @@ implements AdqlDBTable
             }
         else {
             return this.adqlTable.base().alias();
+            //return this.adqlTable.base().name();
             }
         }
 
@@ -224,7 +225,7 @@ implements AdqlDBTable
             return null ;
             }
         else {
-            //return this.adqlTable.base().schema().alias();
+            //return this.adqlTable.base().schema().name();
         	return null ;
             }
         }
@@ -242,7 +243,6 @@ implements AdqlDBTable
             return null ;
             }
         else {
-            //return this.adqlTable.base().resource().alias();
         	return null ;
             }
         }
