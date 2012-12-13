@@ -70,16 +70,37 @@ public abstract class TuesdayBaseTableEntity<TableType extends TuesdayBaseTable<
 extends TuesdayBaseComponentEntity
     implements TuesdayBaseTable<TableType, ColumnType>
     {
+    /**
+     * Hibernate database table name.
+     * 
+     */
     protected static final String DB_TABLE_NAME = "TuesdayBaseTableEntity";
 
     /**
      * Alias factory implementation.
      *
-     */
     @Repository
     public static class AliasFactory
-    extends AbstractFactory<TuesdayBaseTable<?,?>>
     implements TuesdayBaseTable.AliasFactory
+        {
+        protected static final String PREFIX = "BASE_" ;
+        
+        @Override
+        public String alias(final TuesdayBaseTable<?,?> table)
+            {
+            return PREFIX + table.ident();
+            }
+        }
+     */
+
+    /**
+     * Alias resolver implementation.
+     *
+     */
+    @Repository
+    public static class AliasResolver
+    extends AbstractFactory<TuesdayBaseTable<?,?>>
+    implements TuesdayBaseTable.AliasResolver
         {
         @Override
         public Class<?> etype()
@@ -95,41 +116,28 @@ extends TuesdayBaseComponentEntity
             return this.idents;
             }
 
-        protected static final String PREFIX = "TABLE_" ;
-        
         @Override
-        public String alias(final TuesdayBaseTable<?,?> table)
+        public TuesdayBaseTable.LinkFactory links()
             {
-            return PREFIX + table.ident().toString();
+            return null;
             }
 
-        public Identifier ident(final String alias)
-            {
-            return this.idents.ident(
-                alias.substring(
-                    PREFIX.length()
-                    )
-                );
-            }
-
+        protected static final String PREFIX = "BASE_" ;
+        
         @Override
         public TuesdayBaseTable<?,?> select(final String alias)
         throws NotFoundException
             {
             return this.select(
-                this.ident(
-                    alias
+                this.idents.ident(
+                    alias.substring(
+                        PREFIX.length()
+                        )
                     )
                 );
             }
-
-        @Override
-        public LinkFactory<TuesdayBaseTable<?, ?>> links()
-            {
-            return null;
-            }
         }
-
+    
     /**
      * Table factory implementation.
      *
@@ -139,15 +147,6 @@ extends TuesdayBaseComponentEntity
     extends AbstractFactory<TableType>
     implements TuesdayBaseTable.Factory<SchemaType, TableType>
         {
-/*
-        @Autowired
-        protected TuesdayBaseTable.AliasFactory aliases;
-        @Override
-        public TuesdayBaseTable.AliasFactory aliases()
-            {
-            return this.aliases;
-            }
- */
         }
 
     protected TuesdayBaseTableEntity()
@@ -269,10 +268,5 @@ extends TuesdayBaseComponentEntity
         }
 
     @Override
-    public String alias()
-        {
-        return factories().base().tables().alias(
-            this
-            );
-        }
+    public abstract String alias();
     }

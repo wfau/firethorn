@@ -31,9 +31,9 @@ public class TuesdayBaseFactoriesImpl
     implements TuesdayBaseFactories
     {
     @Autowired
-    protected TuesdayBaseTable.AliasFactory tables;
+    protected TuesdayBaseTableFactories tables;
     @Override
-    public TuesdayBaseTable.AliasFactory tables()
+    public TuesdayBaseTableFactories tables()
         {
         return this.tables;
         }

@@ -27,6 +27,6 @@ public interface TuesdayBaseFactories
      * Our table alias resolver.
      *
      */
-    public TuesdayBaseTable.AliasFactory tables();
+    public TuesdayBaseTableFactories tables();
 
     }

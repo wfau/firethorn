@@ -224,19 +224,6 @@ public class TuesdayIvoaResourceEntity
             };
         }
 
-    @Override
-    public String link()
-        {
-        // TODO Auto-generated method stub
-        return null;
-        }
-
-	@Override
-	public String alias()
-		{
-		return "ivoa_schema_" + ident();
-		}
-
 	/**
 	 * The the OGSA-DAI resource ID.
 	 * @todo Move to a common base class.
@@ -260,4 +247,12 @@ public class TuesdayIvoaResourceEntity
 		{
 		this.ogsaid = ogsaid;
 		}
+
+    @Override
+    public String link()
+        {
+        return factories().ivoa().resources().links().link(
+            this
+            );
+        }
     }

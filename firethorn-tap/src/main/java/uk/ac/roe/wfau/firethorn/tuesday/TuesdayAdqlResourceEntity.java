@@ -195,13 +195,8 @@ extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
     @Override
     public String link()
         {
-        // TODO Auto-generated method stub
-        return null;
+        return factories().adql().resources().links().link(
+            this
+            );
         }
-
-	@Override
-	public String alias()
-		{
-		return "adql_resource_" + ident();
-		}
     }

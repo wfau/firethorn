@@ -69,7 +69,32 @@ public class TuesdayAdqlTableEntity
     extends TuesdayBaseTableEntity<TuesdayAdqlTable, TuesdayAdqlColumn>
     implements TuesdayAdqlTable
     {
+    /**
+     * Hibernate database table name.
+     * 
+     */
     protected static final String DB_TABLE_NAME = "TuesdayAdqlTableEntity";
+
+    /**
+     * Alias factory implementation.
+     *
+     */
+    @Repository
+    public static class AliasFactory
+    implements TuesdayAdqlTable.AliasFactory
+        {
+        /**
+         * The alias prefix for this type.
+         * 
+         */
+        protected static final String PREFIX = "ADQL_" ;
+        
+        @Override
+        public String alias(final TuesdayAdqlTable table)
+            {
+            return PREFIX + table.ident();
+            }
+        }
 
     /**
      * Table factory implementation.
@@ -77,7 +102,6 @@ public class TuesdayAdqlTableEntity
      */
     @Repository
     public static class Factory
-    //extends AbstractFactory<TuesdayAdqlTable>
     extends TuesdayBaseTableEntity.Factory<TuesdayAdqlSchema, TuesdayAdqlTable>
     implements TuesdayAdqlTable.Factory
         {
@@ -201,6 +225,14 @@ public class TuesdayAdqlTableEntity
         public TuesdayAdqlTable.LinkFactory links()
             {
             return this.links;
+            }
+
+        @Autowired
+        protected TuesdayAdqlTable.AliasFactory aliases;
+        @Override
+        public TuesdayAdqlTable.AliasFactory aliases()
+            {
+            return this.aliases;
             }
         }
     
@@ -368,6 +400,14 @@ public class TuesdayAdqlTableEntity
     public String link()
         {
         return factories().adql().tables().links().link(
+            this
+            );
+        }
+
+    @Override
+    public String alias()
+        {
+        return factories().adql().tables().aliases().alias(
             this
             );
         }

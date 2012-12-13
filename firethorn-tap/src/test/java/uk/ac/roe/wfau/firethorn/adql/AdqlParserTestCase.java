@@ -830,7 +830,7 @@ extends TestBase
             ); 
         //
         // Create an ADQL DBTable.
-        AdqlDBTable aqdbtable = tables.create(
+        AdqlDBTable aqdbtable = this.tables.create(
     		adqlworkspace.schemas().select(
     		    "adql_schema"
     		    ).tables().select(
@@ -861,21 +861,23 @@ extends TestBase
     		log.debug("  Schema   [{}]", querytable.getDBLink().getDBSchemaName());
     		log.debug("  Catalog  [{}]", querytable.getDBLink().getDBCatalogName());
 
+    		for (DBColumn column : query.getFrom().getDBColumns())
+    			{
+        		log.debug("   ------- ");
+    			log.debug("  Column ADQL [{}][{}][{}][{}]", column.getTable().getADQLCatalogName(), column.getTable().getADQLSchemaName(), column.getTable().getADQLName(),     column.getADQLName());
+    			log.debug("         OGSA [{}][{}][{}][{}]",   column.getTable().getDBCatalogName(),  column.getTable().getDBSchemaName(), column.getTable().getDBName(), column.getDBName());
+    			}
+
             TuesdayBaseTable<?,?> mapped = resolve(
                 querytable.getDBLink().getDBName()
                 );
 
-    		log.debug(" MAPPED --------- ");
-    		log.debug("  Alias    [{}]", mapped.alias());
-    		log.debug("  Name     [{}]", mapped.fullname());
-    		log.debug("  Resource [{}]", mapped.resource().name());
-
-    		for (DBColumn column : query.getFrom().getDBColumns())
-    			{
-        		log.debug("   ------- ");
-    			log.debug("  Column [catalog][{}][{}][{}]", column.getTable().getADQLSchemaName(), column.getTable().getADQLName(),     column.getADQLName());
-    			log.debug("         [{}][{}][{}][{}]",      column.getTable().getDBCatalogName(),  column.getTable().getDBSchemaName(), column.getTable().getDBName(), column.getDBName());
-    			}
+            log.debug(" MAPPED --------- ");
+            log.debug("  Class    [{}]", mapped.getClass().getName());
+            log.debug("  Alias    [{}]", mapped.alias());
+            log.debug("  Link     [{}]", mapped.link());
+            log.debug("  FullName [{}]", mapped.fullname());
+            log.debug("  Resource [{}]", mapped.resource().name());
 
     		}
 
@@ -888,7 +890,7 @@ extends TestBase
     public TuesdayBaseTable<?,?> resolve(String source)
     throws Exception
         {
-        return factories().base().tables().select(
+        return factories().base().tables().resolver().select(
             source
             );
         }

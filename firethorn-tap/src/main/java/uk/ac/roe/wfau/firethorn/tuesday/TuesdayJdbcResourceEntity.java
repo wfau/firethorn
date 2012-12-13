@@ -513,12 +513,6 @@ public class TuesdayJdbcResourceEntity
             }
         }
 
-	@Override
-	public String alias()
-		{
-		return "jdbc_resource_" + ident();
-		}
-
 	/**
 	 * The the OGSA-DAI resource ID.
 	 * @todo Move to a common base class.

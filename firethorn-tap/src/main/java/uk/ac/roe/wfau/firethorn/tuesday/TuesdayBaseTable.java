@@ -29,6 +29,15 @@ public interface TuesdayBaseTable<TableType extends TuesdayBaseTable<TableType, 
 extends TuesdayBaseComponent
     {
     /**
+     * Link factory interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<TuesdayBaseTable<?,?>>
+        {
+        }
+
+    /**
      * Identifier factory interface.
      *
      */
@@ -41,20 +50,21 @@ extends TuesdayBaseComponent
      * Alias factory interface.
      *
      */
-    public static interface AliasFactory
+    public static interface AliasFactory<TableType extends TuesdayBaseTable<?,?>>
         {
         /**
          * Create a Table alias.
          *
          */
-        public String alias(final TuesdayBaseTable<?,?> table);
+        public String alias(final TableType table);
+        }
 
-        /**
-         * Create a Table URI (as a string).
-         *
-        public String link(final TuesdayBaseTable<?,?> table);
-         */
-
+    /**
+     * Alias resolver interface.
+     *
+     */
+    public static interface AliasResolver
+        {
         /**
          * Resolve an alias into a table.
          *
@@ -92,8 +102,8 @@ extends TuesdayBaseComponent
         /**
          * Our local alias factory.
          * 
-        public AliasFactory aliases();
          */
+        public AliasFactory aliases();
         
         }
     

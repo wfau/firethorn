@@ -30,6 +30,15 @@ public interface TuesdayJdbcTable
 extends TuesdayOgsaTable<TuesdayJdbcTable, TuesdayJdbcColumn>, TuesdayBaseTable<TuesdayJdbcTable, TuesdayJdbcColumn>
     {
     /**
+     * Alias factory interface.
+     *
+     */
+    public static interface AliasFactory
+    extends TuesdayBaseTable.AliasFactory<TuesdayJdbcTable>
+        {
+        }
+
+    /**
      * Link factory interface.
      *
      */

@@ -59,12 +59,6 @@ public interface Entity
          */
         public Identifier ident(final String string);
 
-        /**
-         * Create an Entity URI (as a string).
-         *
-        public String link(final EntityType entity);
-         */
-
         }
 
     /**

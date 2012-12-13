@@ -68,10 +68,31 @@ public class TuesdayIvoaTableEntity
     implements TuesdayIvoaTable
     {
     /**
-     * Metadata database table name.
+     * Hibernate database table name.
      * 
      */
     protected static final String DB_TABLE_NAME = "TuesdayIvoaTableEntity";
+
+    /**
+     * Alias factory implementation.
+     *
+     */
+    @Repository
+    public static class AliasFactory
+    implements TuesdayIvoaTable.AliasFactory
+        {
+        /**
+         * The alias prefix for this type.
+         * 
+         */
+        protected static final String PREFIX = "IVOA_" ;
+        
+        @Override
+        public String alias(final TuesdayIvoaTable table)
+            {
+            return PREFIX + table.ident();
+            }
+        }
 
     /**
      * Table factory implementation.
@@ -79,7 +100,6 @@ public class TuesdayIvoaTableEntity
      */
     @Repository
     public static class Factory
-    //extends AbstractFactory<TuesdayIvoaTable>
     extends TuesdayBaseTableEntity.Factory<TuesdayIvoaSchema, TuesdayIvoaTable>
     implements TuesdayIvoaTable.Factory
         {
@@ -175,6 +195,14 @@ public class TuesdayIvoaTableEntity
             {
             return this.links;
             }
+
+        @Autowired
+        protected TuesdayIvoaTable.AliasFactory aliases;
+        @Override
+        public TuesdayIvoaTable.AliasFactory aliases()
+            {
+            return this.aliases;
+            }
         }
     
     protected TuesdayIvoaTableEntity()
@@ -253,6 +281,14 @@ public class TuesdayIvoaTableEntity
     public String link()
         {
         return factories().ivoa().tables().links().link(
+            this
+            );
+        }
+
+    @Override
+    public String alias()
+        {
+        return factories().ivoa().tables().aliases().alias(
             this
             );
         }

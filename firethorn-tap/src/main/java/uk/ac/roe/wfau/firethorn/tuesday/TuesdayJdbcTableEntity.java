@@ -71,10 +71,31 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
     implements TuesdayJdbcTable
     {
     /**
-     * Metadata database table name.
+     * Hibernate database table name.
      * 
      */
     protected static final String DB_TABLE_NAME = "TuesdayJdbcTableEntity";
+
+    /**
+     * Alias factory implementation.
+     *
+     */
+    @Repository
+    public static class AliasFactory
+    implements TuesdayJdbcTable.AliasFactory
+        {
+        /**
+         * The alias prefix for this type.
+         * 
+         */
+        protected static final String PREFIX = "JDBC_" ;
+        
+        @Override
+        public String alias(final TuesdayJdbcTable table)
+            {
+            return PREFIX + table.ident();
+            }
+        }
 
     /**
      * Table factory implementation.
@@ -82,7 +103,6 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
      */
     @Repository
     public static class Factory
-    //extends AbstractFactory<TuesdayJdbcTable>
     extends TuesdayBaseTableEntity.Factory<TuesdayJdbcSchema, TuesdayJdbcTable>
     implements TuesdayJdbcTable.Factory
         {
@@ -190,6 +210,14 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
         public TuesdayJdbcTable.LinkFactory links()
             {
             return this.links;
+            }
+
+        @Autowired
+        protected TuesdayJdbcTable.AliasFactory aliases;
+        @Override
+        public TuesdayJdbcTable.AliasFactory aliases()
+            {
+            return this.aliases;
             }
         }
     
@@ -320,6 +348,14 @@ extends TuesdayBaseTableEntity<TuesdayJdbcTable, TuesdayJdbcColumn>
     public String link()
         {
         return factories().jdbc().tables().links().link(
+            this
+            );
+        }
+
+    @Override
+    public String alias()
+        {
+        return factories().jdbc().tables().aliases().alias(
             this
             );
         }

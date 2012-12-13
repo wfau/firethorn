@@ -19,21 +19,22 @@ package uk.ac.roe.wfau.firethorn.test;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
 
 /**
  * JUnit test implementation.
  *
  */
 @Component
-public class TuesdayTestIdentFactory<EntityType extends Entity>
-extends AbstractIdentFactory<EntityType>
-implements Entity.IdentFactory<EntityType>, Entity.LinkFactory<EntityType>
+public class TuesdayBaseTableIdentFactory
+extends TuesdayTestIdentFactory<TuesdayBaseTable<?,?>>
+implements TuesdayBaseTable.IdentFactory
     {
     @Override
-    public String link(final EntityType entity)
+    public String link(final TuesdayBaseTable<?,?> entity)
         {
-        return "test/" + entity.ident();
+        return "base/table/" + entity.ident();
         }
     }

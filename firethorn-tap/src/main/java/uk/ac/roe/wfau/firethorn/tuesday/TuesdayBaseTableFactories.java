@@ -15,25 +15,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.test;
-
-import org.springframework.stereotype.Component;
-
-import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+package uk.ac.roe.wfau.firethorn.tuesday;
 
 /**
- * JUnit test implementation.
+ * Our JDBC component factories
  *
  */
-@Component
-public class TuesdayTestIdentFactory<EntityType extends Entity>
-extends AbstractIdentFactory<EntityType>
-implements Entity.IdentFactory<EntityType>, Entity.LinkFactory<EntityType>
+public interface TuesdayBaseTableFactories
     {
-    @Override
-    public String link(final EntityType entity)
-        {
-        return "test/" + entity.ident();
-        }
+    /**
+     * Our table alias resolver.
+     *
+     */
+    public TuesdayBaseTable.AliasResolver resolver();
+
     }

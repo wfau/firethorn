@@ -27,6 +27,15 @@ public interface TuesdayIvoaTable
 extends TuesdayOgsaTable<TuesdayIvoaTable, TuesdayIvoaColumn>, TuesdayBaseTable<TuesdayIvoaTable, TuesdayIvoaColumn>
     {
     /**
+     * Alias factory interface.
+     *
+     */
+    public static interface AliasFactory
+    extends TuesdayBaseTable.AliasFactory<TuesdayIvoaTable>
+        {
+        }
+
+    /**
      * Link factory interface.
      *
      */
