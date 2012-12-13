@@ -61,7 +61,7 @@ public class TuesdayJdbcAdqlTableTestCase
 		{
         return factories().jdbc().resources().create(
             "test-resource",
-            "spring:RoeLiveData"
+            "spring:RoeTWOMASS"
             );
 		}
 

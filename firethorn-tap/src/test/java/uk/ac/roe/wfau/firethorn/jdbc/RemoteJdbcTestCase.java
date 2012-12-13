@@ -94,7 +94,7 @@ extends TestBase
         //
         // Set the database connection properties.
         jdbcResource.connection().url(
-            "spring:RoeLiveData"
+            "spring:RoeTWOMASS"
             );
         //
         // Scan the resource for catalogs.

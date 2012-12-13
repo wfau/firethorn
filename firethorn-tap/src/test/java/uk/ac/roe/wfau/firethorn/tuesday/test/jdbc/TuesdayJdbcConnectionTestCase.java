@@ -154,7 +154,7 @@ public class TuesdayJdbcConnectionTestCase
             resource
             );
         resource.connection().url(
-            "spring:RoeLiveData"
+            "spring:RoeTWOMASS"
             );
         assertNotNull(
             resource.connection().open()
@@ -192,7 +192,7 @@ public class TuesdayJdbcConnectionTestCase
             resource
             );
         resource.connection().url(
-            "spring:RoeLiveData"
+            "spring:RoeTWOMASS"
             //"spring:PgSqlLocalTest"
             //"spring:MySqlLocalTest"
             );
