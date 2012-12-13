@@ -35,6 +35,35 @@ extends DBTable
     {
 
     /**
+     * Mapping mode for table references.
+     * 
+     */
+    public enum Mode
+        {
+        /**
+         * Table references use aliases that will be decoded by the OGSA-DAI DQP.
+         * 
+         */
+        ALIASED(),
+
+        /**
+         * Table references use fully qualified SQL names.
+         * 
+         */
+        DIRECT();
+
+        }
+
+    /**
+     * Mode container interface.
+     * 
+     */
+    public static interface ModeContainer
+        {
+        public Mode mode();
+        }
+
+    /**
      * Factory interface.
      *
      */
@@ -44,15 +73,21 @@ extends DBTable
          * Create a new AdqlDBTable.
          *
          */
-        public AdqlDBTable create(final TuesdayAdqlTable meta);
+        public AdqlDBTable create(final Mode mode, final TuesdayAdqlTable table);
 
         }
 
     /**
-     * Access to our AdqlResource.AdqlTable metadata.
+     * The current mapping mode.
+     * 
+     */
+    public Mode mode();
+
+    /**
+     * Access to our underlying AdqlTable.
      *
      */
-    public TuesdayAdqlTable meta();
+    public TuesdayAdqlTable table();
 
     /**
      * Access to our columns as AdqlColumns.
@@ -83,7 +118,7 @@ extends DBTable
          * Access to our AdqlColumn metadata.
          *
          */
-        public TuesdayAdqlColumn meta();
+        public TuesdayAdqlColumn column();
 
         }
     }

@@ -21,6 +21,7 @@ import java.util.Iterator;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable.Mode;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import adql.db.DBColumn;
@@ -50,34 +51,50 @@ implements AdqlDBTable
          *
          */
         @Override
-        public AdqlDBTableImpl create(final TuesdayAdqlTable adqlTable)
+        public AdqlDBTableImpl create(final Mode mode, final TuesdayAdqlTable table)
             {
             return new AdqlDBTableImpl(
-                adqlTable
+                mode,
+                table
                 );
             }
         }
 
     /**
-     * Our AdqlTable metadata source.
-     *
+     * The mapping mode for table references.
+     * 
      */
-    private final TuesdayAdqlTable adqlTable ;
-
+    private Mode mode;
     @Override
-    public TuesdayAdqlTable meta()
+    public Mode mode()
         {
-        return this.adqlTable;
+        return this.mode;
+        }
+    @Override
+    public void mode(Mode mode)
+        {
+        this.mode = mode;
         }
 
     /**
-     * Local ADQL name, if different to the original AdqlTable.
+     * Our underlying AdqlTable.
+     *
+     */
+    private final TuesdayAdqlTable table ;
+    @Override
+    public TuesdayAdqlTable table()
+        {
+        return this.table;
+        }
+
+    /**
+     * The local ADQL name, if different to the original AdqlTable.
      *
      */
     private String adqlName ;
 
     /**
-     * Local JDBC name, if different to the original JdbcTable.
+     * The local JDBC name, if different to the original JdbcTable.
      *
      */
     private String jdbcName ;
@@ -86,10 +103,11 @@ implements AdqlDBTable
      * Protected constructor.
      *
      */
-    private AdqlDBTableImpl(final TuesdayAdqlTable adqlTable)
+    private AdqlDBTableImpl(final Mode mode, final TuesdayAdqlTable table)
         {
         this(
-            adqlTable,
+            mode,
+            table,
             null,
             null
             );
@@ -99,16 +117,17 @@ implements AdqlDBTable
      * Protected constructor, used by the copy method.
      *
      */
-    private AdqlDBTableImpl(final TuesdayAdqlTable adqlTable, final String jdbcName, final String adqlName)
+    private AdqlDBTableImpl(final Mode mode, final TuesdayAdqlTable table, final String jdbcName, final String adqlName)
         {
-        this.adqlTable = adqlTable ;
+        this.mode  = mode ;
+        this.table = table ;
         //
         // Only set the ADQL name if it is not the same as the original.
         if (adqlName != null)
             {
             if (adqlName.length() > 0)
                 {
-                if (adqlName.equals(adqlTable.name()) == false)
+                if (adqlName.equals(table.name()) == false)
                     {
                     this.adqlName = adqlName;
                     }
@@ -120,7 +139,7 @@ implements AdqlDBTable
             {
             if (jdbcName.length() > 0)
                 {
-                if (jdbcName.equals(adqlTable.base().name()) == false)
+                if (jdbcName.equals(table.base().name()) == false)
                     {
                     this.jdbcName = jdbcName;
                     }
@@ -128,13 +147,13 @@ implements AdqlDBTable
             }
         }
 
-    @Override
     /**
      * Make a copy of the AdqlDBTable, changing the ADQL and JDBC names.
      * @param jdbcName - The new JDBC name (optional). If this is null, then the new AdqlDBTable inherits its JDBC name, schema and catalog from the original.
      * @param adqlName - The new ADQL name (required). This can't be null or empty.
      *
      */
+    @Override
     public AdqlDBTable copy(final String jdbcName, final String adqlName)
         {
         if ((adqlName == null) || (adqlName.length() == 0))
@@ -144,7 +163,8 @@ implements AdqlDBTable
                 );
             }
         return new AdqlDBTableImpl(
-            this.adqlTable,
+            this.mode,
+            this.table,
             jdbcName,
             adqlName
             );
@@ -162,8 +182,7 @@ implements AdqlDBTable
             return this.adqlName ;
             }
         else {
-            //return this.adqlTable.name();
-            return this.adqlTable.name();
+            return this.table.name();
             }
         }
 
@@ -180,7 +199,7 @@ implements AdqlDBTable
             return null ;
             }
         else {
-            return this.adqlTable.schema().name();
+            return this.table.schema().name();
             }
         }
 
@@ -207,8 +226,13 @@ implements AdqlDBTable
             return this.jdbcName ;
             }
         else {
-            return this.adqlTable.base().alias();
-            //return this.adqlTable.base().name();
+            if (this.mode == AdqlDBTable.Mode.ALIASED)
+                {
+                return this.table.base().alias();
+                }
+            else {
+                return this.table.base().name();
+                }
             }
         }
 
@@ -225,8 +249,13 @@ implements AdqlDBTable
             return null ;
             }
         else {
-            //return this.adqlTable.base().schema().name();
-        	return null ;
+            if (this.mode == AdqlDBTable.Mode.ALIASED)
+                {
+                return null ;
+                }
+            else {
+                return this.table.base().schema().name();
+                }
             }
         }
 
@@ -243,7 +272,14 @@ implements AdqlDBTable
             return null ;
             }
         else {
-        	return null ;
+            if (this.mode == AdqlDBTable.Mode.ALIASED)
+                {
+                return null ;
+                }
+            else {
+                //return this.table.base().catalog().name();
+                return null ;
+                }
             }
         }
 
@@ -255,15 +291,15 @@ implements AdqlDBTable
         // If 'name' is an ADQL name, then search the AdqlTable.
         if (adql)
             {
-            adqlColumn = this.adqlTable.columns().select(
+            adqlColumn = this.table.columns().select(
                 name
                 );
             }
         //
-        // If 'name' is not an ADQL name, then search the BaseTable.
+        // If 'name' is a SQL name, then search the BaseTable.
         else {
 /*
- * Search base columns by name, and then step back up to this table
+ * Search base columns by name, and then find a matching column in our adql table.
  *
             adqlColumn = this.adqlTable.columns().select(
                 this.adqlTable.base().columns().select(
@@ -291,20 +327,20 @@ implements AdqlDBTable
         return new Iterator<DBColumn>()
             {
 
-            private final Iterator<TuesdayAdqlColumn> iter = adqlTable.columns().select().iterator();
+            private final Iterator<TuesdayAdqlColumn> iter = table().columns().select().iterator();
 
             @Override
             public DBColumn next()
                 {
                 return wrap(
-                    iter.next()
+                    this.iter.next()
                     );
                 }
 
             @Override
             public boolean hasNext()
                 {
-                return iter.hasNext();
+                return this.iter.hasNext();
                 }
 
             @Override
@@ -332,20 +368,20 @@ implements AdqlDBTable
                 return new Iterator<AdqlDBColumn>()
                     {
 
-                    private final Iterator<TuesdayAdqlColumn> iter = adqlTable.columns().select().iterator();
+                    private final Iterator<TuesdayAdqlColumn> iter = table().columns().select().iterator();
 
                     @Override
                     public AdqlDBColumn next()
                         {
                         return wrap(
-                            iter.next()
+                            this.iter.next()
                             );
                         }
 
                     @Override
                     public boolean hasNext()
                         {
-                        return iter.hasNext();
+                        return this.iter.hasNext();
                         }
 
                     @Override
@@ -361,7 +397,7 @@ implements AdqlDBTable
         }
 
     /**
-     * Create a new adqlColumn metadata.
+     * Create a new AdqlColumn wrapper.
      *
      */
     private AdqlColumnImpl wrap(final TuesdayAdqlColumn adqlColumn)
@@ -372,7 +408,7 @@ implements AdqlDBTable
         }
 
     /**
-     * Create a new adqlColumn metadata.
+     * Create a new AdqlColumn wrapper.
      *
      */
     private AdqlColumnImpl wrap(final TuesdayAdqlColumn adqlColumn, final String jdbcName, final String adqlName, final DBTable parent)
@@ -386,7 +422,7 @@ implements AdqlDBTable
         }
 
     /**
-     * Inner class to represent an adqlColumn.
+     * Inner class to represent an AdqlColumn.
      *
      */
     public class AdqlColumnImpl
@@ -394,15 +430,15 @@ implements AdqlDBTable
         {
 
         /**
-         * Our AdqlColumn metadata source.
+         * Our underlying AdqlColumn.
          *
          */
-        private final TuesdayAdqlColumn adqlColumn ;
+        private final TuesdayAdqlColumn column ;
 
         @Override
-        public TuesdayAdqlColumn meta()
+        public TuesdayAdqlColumn column()
             {
-            return this.adqlColumn ;
+            return this.column ;
             }
 
         /**
@@ -444,7 +480,7 @@ implements AdqlDBTable
         private AdqlColumnImpl(final TuesdayAdqlColumn adqlColumn, final String jdbcName, final String adqlName, final DBTable parent)
             {
             this.parent = parent ;
-            this.adqlColumn = adqlColumn ;
+            this.column = adqlColumn ;
             this.jdbcName = jdbcName;
             this.adqlName = adqlName;
             }
@@ -453,8 +489,8 @@ implements AdqlDBTable
         public AdqlColumnImpl copy(final String dbName, final String adqlName, final DBTable parent)
             {
             return AdqlDBTableImpl.this.wrap(
-                this.adqlColumn,
-                jdbcName,
+                this.column,
+                this.jdbcName,
                 adqlName,
                 parent
                 );
@@ -468,7 +504,7 @@ implements AdqlDBTable
                 return this.adqlName ;
                 }
             else {
-                return adqlColumn.name();
+                return this.column.name();
                 }
             }
 
@@ -480,7 +516,7 @@ implements AdqlDBTable
                 return this.jdbcName ;
                 }
             else {
-                return adqlColumn.base().alias();
+                return this.column.base().alias();
                 }
             }
 
