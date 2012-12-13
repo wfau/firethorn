@@ -73,7 +73,7 @@ extends DBTable
          * Create a new AdqlDBTable.
          *
          */
-        public AdqlDBTable create(final Mode mode, final TuesdayAdqlTable table);
+        public AdqlDBTable create(final ModeContainer mode, final TuesdayAdqlTable table);
 
         }
 

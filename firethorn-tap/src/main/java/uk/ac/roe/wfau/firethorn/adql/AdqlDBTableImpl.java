@@ -51,7 +51,7 @@ implements AdqlDBTable
          *
          */
         @Override
-        public AdqlDBTableImpl create(final Mode mode, final TuesdayAdqlTable table)
+        public AdqlDBTableImpl create(final ModeContainer mode, final TuesdayAdqlTable table)
             {
             return new AdqlDBTableImpl(
                 mode,
@@ -64,16 +64,11 @@ implements AdqlDBTable
      * The mapping mode for table references.
      * 
      */
-    private Mode mode;
+    private ModeContainer mode;
     @Override
     public Mode mode()
         {
-        return this.mode;
-        }
-    @Override
-    public void mode(Mode mode)
-        {
-        this.mode = mode;
+        return this.mode.mode();
         }
 
     /**
@@ -103,7 +98,7 @@ implements AdqlDBTable
      * Protected constructor.
      *
      */
-    private AdqlDBTableImpl(final Mode mode, final TuesdayAdqlTable table)
+    private AdqlDBTableImpl(final ModeContainer mode, final TuesdayAdqlTable table)
         {
         this(
             mode,
@@ -117,7 +112,7 @@ implements AdqlDBTable
      * Protected constructor, used by the copy method.
      *
      */
-    private AdqlDBTableImpl(final Mode mode, final TuesdayAdqlTable table, final String jdbcName, final String adqlName)
+    private AdqlDBTableImpl(final ModeContainer mode, final TuesdayAdqlTable table, final String jdbcName, final String adqlName)
         {
         this.mode  = mode ;
         this.table = table ;
@@ -226,7 +221,7 @@ implements AdqlDBTable
             return this.jdbcName ;
             }
         else {
-            if (this.mode == AdqlDBTable.Mode.ALIASED)
+            if (this.mode() == AdqlDBTable.Mode.ALIASED)
                 {
                 return this.table.base().alias();
                 }
@@ -249,7 +244,7 @@ implements AdqlDBTable
             return null ;
             }
         else {
-            if (this.mode == AdqlDBTable.Mode.ALIASED)
+            if (this.mode() == AdqlDBTable.Mode.ALIASED)
                 {
                 return null ;
                 }
@@ -272,7 +267,7 @@ implements AdqlDBTable
             return null ;
             }
         else {
-            if (this.mode == AdqlDBTable.Mode.ALIASED)
+            if (this.mode() == AdqlDBTable.Mode.ALIASED)
                 {
                 return null ;
                 }

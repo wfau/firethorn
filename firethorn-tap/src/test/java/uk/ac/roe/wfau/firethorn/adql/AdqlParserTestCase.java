@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable.Mode;
+import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable.ModeContainer;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
@@ -64,6 +65,28 @@ import adql.translator.PostgreSQLTranslator;
 public class AdqlParserTestCase
 extends TestBase
     {
+
+    /**
+     * The ADQL parser mode.
+     * 
+     */
+    private Mode mode = Mode.ALIASED; 
+    public ModeContainer mode(Mode mode)
+        {
+        this.mode = mode;
+        return this.mode();
+        }
+    public ModeContainer mode()
+        {
+        return new ModeContainer()
+            {
+            @Override
+            public Mode mode()
+                {
+                return AdqlParserTestCase.this.mode ;
+                }
+            };
+        }
 
     /**
      * Our autowired AdqlDBTable factory.
@@ -418,7 +441,9 @@ extends TestBase
 							);
         
         return tables().create(
-            AdqlDBTable.Mode.ALIASED,
+            this.mode(
+                AdqlDBTable.Mode.ALIASED
+                ),
     		adqlResource.schemas().select(
 				"adql_schema"
 				).tables().select(
@@ -800,7 +825,9 @@ extends TestBase
                 {
                 tableset.add(
                     this.tables.create(
-                        AdqlDBTable.Mode.ALIASED,
+                        this.mode(
+                            AdqlDBTable.Mode.ALIASED
+                            ),
                         table
                         )
                     );
@@ -899,6 +926,7 @@ extends TestBase
             ); 
         //
         // Wrap the workspace tables as parser DBTables.
+
         List<DBTable> tableset = new ArrayList<DBTable>();
         for (TuesdayAdqlSchema schema : adqlworkspace.schemas().select())
             {
@@ -906,7 +934,7 @@ extends TestBase
                 {
                 tableset.add(
                     this.tables.create(
-                        AdqlDBTable.Mode.ALIASED,
+                        this.mode(),
                         table
                         )
                     );
@@ -984,9 +1012,12 @@ extends TestBase
                 }
             }
 
-        ADQLTranslator translator = new PostgreSQLTranslator(false);
-        log.debug("ADQL [{}]", query.toADQL());
-        log.debug("SQL  [{}]", translator.translate(query));
+
+        log.debug("Resources ----");
+        for (TuesdayOgsaResource<?> resource : resources)
+            {
+            log.debug("Resource [{}][{}][{}]", resource.ident(), resource.ogsaid(), resource.name());
+            }
         if (resources.size() == 1)
             {
             log.debug("Single resource, use direct");
@@ -994,10 +1025,14 @@ extends TestBase
         else {
             log.debug("Multiple resource, use DQP");
             }
-        for (TuesdayOgsaResource<?> resource : resources)
-            {
-            log.debug("Resource [{}][{}][{}]", resource.ident(), resource.ogsaid(), resource.name());
-            }
+
+        ADQLTranslator translator = new PostgreSQLTranslator(false);
+        log.debug("ADQL [{}]", query.toADQL());
+        this.mode(Mode.DIRECT);
+        log.debug("DIRECT SQL : {}", translator.translate(query));
+        this.mode(Mode.ALIASED);
+        log.debug("ALIASED SQL : {}", translator.translate(query));
+        
         }
     }
 
