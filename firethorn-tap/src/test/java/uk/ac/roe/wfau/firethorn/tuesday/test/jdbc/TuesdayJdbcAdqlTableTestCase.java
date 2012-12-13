@@ -105,7 +105,7 @@ public class TuesdayJdbcAdqlTableTestCase
         workspace.schemas().create(
             "test-schema"
             ).tables().create(
-	    		resource.schemas().select("dbo").tables().select("twomass_psc"),
+	    		resource.schemas().select("TWOMASS.dbo").tables().select("twomass_psc"),
 	            "test-table"
 	            ); 
         display(
@@ -124,7 +124,7 @@ public class TuesdayJdbcAdqlTableTestCase
         // Import a JdbcSchema into our workspace.
         resource.inport();
         workspace.schemas().create(
-    		resource.schemas().select("dbo"),
+    		resource.schemas().select("TWOMASS.dbo"),
     		"test-schema"
             ); 
         display(
