@@ -24,8 +24,14 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 public interface TuesdayOgsaColumn<ColumnType extends TuesdayBaseColumn<ColumnType>>
     extends TuesdayBaseColumn<ColumnType>
     {
+
     @Override
-    public String alias(); //"ogsa_column_ident"
+    public String alias();
+
     @Override
-    public StringBuilder fullname(); //"catalog.schema.table.column"
+    public StringBuilder fullname();
+
+    @Override
+    public TuesdayOgsaResource<?> resource();
+    
     }

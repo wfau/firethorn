@@ -51,7 +51,7 @@ implements AdqlDBTable
          *
          */
         @Override
-        public AdqlDBTableImpl create(final ModeContainer mode, final TuesdayAdqlTable table)
+        public AdqlDBTableImpl create(final ModeApi mode, final TuesdayAdqlTable table)
             {
             return new AdqlDBTableImpl(
                 mode,
@@ -64,7 +64,7 @@ implements AdqlDBTable
      * The mapping mode for table references.
      * 
      */
-    private ModeContainer mode;
+    private ModeApi mode;
     @Override
     public Mode mode()
         {
@@ -98,7 +98,7 @@ implements AdqlDBTable
      * Protected constructor.
      *
      */
-    private AdqlDBTableImpl(final ModeContainer mode, final TuesdayAdqlTable table)
+    private AdqlDBTableImpl(final ModeApi mode, final TuesdayAdqlTable table)
         {
         this(
             mode,
@@ -112,7 +112,7 @@ implements AdqlDBTable
      * Protected constructor, used by the copy method.
      *
      */
-    private AdqlDBTableImpl(final ModeContainer mode, final TuesdayAdqlTable table, final String jdbcName, final String adqlName)
+    private AdqlDBTableImpl(final ModeApi mode, final TuesdayAdqlTable table, final String jdbcName, final String adqlName)
         {
         this.mode  = mode ;
         this.table = table ;

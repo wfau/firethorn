@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable.Mode;
-import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable.ModeContainer;
+import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable.ModeApi;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
@@ -71,14 +71,14 @@ extends TestBase
      * 
      */
     private Mode mode = Mode.ALIASED; 
-    public ModeContainer mode(Mode mode)
+    public ModeApi mode(Mode mode)
         {
         this.mode = mode;
         return this.mode();
         }
-    public ModeContainer mode()
+    public ModeApi mode()
         {
-        return new ModeContainer()
+        return new ModeApi()
             {
             @Override
             public Mode mode()

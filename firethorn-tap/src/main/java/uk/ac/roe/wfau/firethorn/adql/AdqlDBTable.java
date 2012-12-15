@@ -55,10 +55,10 @@ extends DBTable
         }
 
     /**
-     * Mode container interface.
+     * Api for something that has a Mode.
      * 
      */
-    public static interface ModeContainer
+    public static interface ModeApi
         {
         public Mode mode();
         }
@@ -73,7 +73,7 @@ extends DBTable
          * Create a new AdqlDBTable.
          *
          */
-        public AdqlDBTable create(final ModeContainer mode, final TuesdayAdqlTable table);
+        public AdqlDBTable create(final ModeApi mode, final TuesdayAdqlTable table);
 
         }
 
