@@ -90,7 +90,7 @@ public abstract class TuesdayBaseSchemaEntity<SchemaType extends TuesdayBaseSche
         name = DB_PARENT_COL,
         unique = false,
         nullable = false,
-        updatable = false
+        updatable = true // TODO - false
         )
     private TuesdayBaseResource<SchemaType> parent;
     @Override
@@ -98,7 +98,15 @@ public abstract class TuesdayBaseSchemaEntity<SchemaType extends TuesdayBaseSche
         {
         return this.parent;
         }
-
+    /**
+     * Test method.
+     *
+     */
+    public void resource(TuesdayBaseResource<SchemaType> parent)
+        {
+        this.parent = parent;
+        }
+    
     @Override
     public StringBuilder fullname()
         {

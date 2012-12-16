@@ -193,13 +193,23 @@ public class TuesdayJdbcSchemaEntity
         name = DB_PARENT_COL,
         unique = false,
         nullable = false,
-        updatable = false
+        updatable = true // TODO - false
         )
     private TuesdayJdbcResource resource;
     @Override
     public TuesdayJdbcResource resource()
         {
         return this.resource;
+        }
+    /**
+     * Test method.
+     *
+     */
+    public void resource(TuesdayJdbcResource resource)
+        {
+        this.resource = resource;
+        super.resource(resource);
+        this.update();
         }
 
     @Override

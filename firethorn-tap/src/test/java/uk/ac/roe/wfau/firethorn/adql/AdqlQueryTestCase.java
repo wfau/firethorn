@@ -28,11 +28,11 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchemaEntity;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayOgsaResource;
 import adql.query.from.ADQLTable;
 
-//import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMapping;
-//import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMappingService;
 
 /**
  *
@@ -93,7 +93,7 @@ extends TestBase
         twomass.inport();
         workspace.schemas().create(
             twomass.schemas().select("TWOMASS.dbo"),
-            "adql_twomass"
+            "twomass"
             ); 
         //
         // Create our query.
@@ -136,8 +136,8 @@ extends TestBase
         + "    twomass_scn.tile,"
         + "    twomass_psc.ra || ' - ' || twomass_psc.dec as \"Position\""
         + " FROM"
-        + "    adql_twomass.twomass_psc,"
-        + "    adql_twomass.twomass_scn"
+        + "    twomass.twomass_psc,"
+        + "    twomass.twomass_scn"
         + " WHERE"
         + "    (Contains(Point('ICRS', twomass_psc.ra, twomass_psc.dec), Circle('ICRS', 10, 5, 1)) = 1)"
         + " AND"
@@ -166,7 +166,7 @@ extends TestBase
         twomass.inport();
         workspace.schemas().create(
             twomass.schemas().select("TWOMASS.dbo"),
-            "adql_twomass"
+            "twomass"
             ); 
         //
         // Create our query.
@@ -209,10 +209,10 @@ extends TestBase
         + "    scn.tile,"
         + "    psc.ra || ' - ' || psc.dec as \"Position\""
         + " FROM"
-        + "    adql_twomass.twomass_psc AS psc,"
-        + "    adql_twomass.twomass_scn AS scn,"
-        + "    adql_twomass.twomass_pscXBestDR7PhotoObjAll AS match,"
-        + "    adql_bestdr7.PhotoObjAll AS photo"
+        + "    twomass.twomass_psc AS psc,"
+        + "    twomass.twomass_scn AS scn,"
+        + "    twomass.twomass_pscXBestDR7PhotoObjAll AS match,"
+        + "    bestdr7.PhotoObjAll AS photo"
         + " WHERE"
         + "    (psc.scan_key = scn.scan_key)"
         + " AND"
@@ -258,19 +258,19 @@ extends TestBase
             twomass.schemas().select(
                 "TWOMASS.dbo"
                 ),
-            "adql_twomass"
+            "twomass"
             ); 
         workspace.schemas().create(
             twoxmm.schemas().select(
                 "TWOXMM.dbo"
                 ),
-            "adql_twoxmm"
+            "twoxmm"
             ); 
         workspace.schemas().create(
             bestdr7.schemas().select(
                 "BestDR7.dbo"
                 ),
-            "adql_bestdr7"
+            "bestdr7"
             ); 
         //
         // Create our query.
@@ -305,77 +305,100 @@ extends TestBase
         log.debug("OGSA   [{}]", query.ogsa());
         }
 
-
-    /**
-     * Process the tree of query objects.
-     *
-    public void process(final ADQLObject source, final Set<TuesdayOgsaResource<?>> resources, final Set<TuesdayAdqlTable> tables , final Set<TuesdayAdqlColumn> columns)
+    @Test
+    public void testImported003()
+    throws Exception
         {
-        Iterable<ADQLObject> iter = new Iterable<ADQLObject>()
+        //
+        // Create our JDBC resources.
+        TuesdayJdbcResource twomass = factories().jdbc().resources().create(
+            "twomass",
+            "spring:RoeTWOMASS"
+            );
+        TuesdayJdbcResource twoxmm = factories().jdbc().resources().create(
+            "twoxmm",
+            "spring:RoeTWOXMM"
+            );
+        TuesdayJdbcResource bestdr7  = factories().jdbc().resources().create(
+            "bestdr7",
+            "spring:RoeBestDR7"
+            );
+        twomass.inport();
+        twoxmm.inport();
+        bestdr7.inport();
+        //
+        // Re-assign the JDBC table resources.
+        for (TuesdayJdbcSchema schema : twoxmm.schemas().select())
             {
-            @Override
-            public Iterator<ADQLObject> iterator()
-                {
-                return source.adqlIterator();
-                }
-            }; 
-        
-        for (ADQLObject object: iter)
-            {
-            log.debug("----");
-            log.debug("ADQLObject [{}]", object.getClass().getName());
-
-            if (object instanceof ADQLColumn)
-                {
-                log.debug("  ----");
-                log.debug("  ADQLColumn [{}]", ((ADQLColumn) object).getName());
-                if (((ADQLColumn) object).getDBLink() instanceof AdqlDBColumn)
-                    {
-                    TuesdayAdqlColumn adql = ((AdqlDBColumn) ((ADQLColumn) object).getDBLink()).column();
-                    log.debug("  ----");
-                    log.debug("  TuesdayAdqlColumn [{}]", adql.fullname());
-                    log.debug("  TuesdayBaseColumn [{}]", adql.base().fullname());
-                    columns.add(
-                        adql
-                        );                    
-                    tables.add(
-                        adql.table()
-                        );
-                    resources.add(
-                        adql.ogsa().resource()
-                        );
-                    }
-                continue;
-                }
-
-            if (object instanceof ADQLTable)
-                {
-                log.debug("  ----");
-                log.debug("  ADQLTable [{}]", ((ADQLTable) object).getName());
-                if (((ADQLTable) object).getDBLink() instanceof AdqlDBTable)
-                    {
-                    TuesdayAdqlTable adql = ((AdqlDBTable) ((ADQLTable) object).getDBLink()).table();
-                    log.debug("  ----");
-                    log.debug("  TuesdayAdqlTable [{}]", adql.fullname());
-                    log.debug("  TuesdayBaseTable [{}]", adql.base().fullname());
-                    tables.add(
-                        adql
-                        );
-                    resources.add(
-                        adql.ogsa().resource()
-                        );
-                    }
-                continue;
-                }
-
-            process(
-                object,
-                resources,
-                tables,
-                columns
+            log.debug("Relocating schema [{}]", schema.name());
+            ((TuesdayJdbcSchemaEntity)schema).resource(
+                twomass
                 );
             }
+        for (TuesdayJdbcSchema schema : bestdr7.schemas().select())
+            {
+            log.debug("Relocating schema [{}]", schema.name());
+            ((TuesdayJdbcSchemaEntity)schema).resource(
+                twomass
+                );
+            }
+        factories().hibernate().flush();
+        //
+        // Create our ADQL workspace.
+        TuesdayAdqlResource workspace = factories().adql().resources().create(
+            "test-workspace"
+            );
+        //
+        // Import the JdbcSchema into our AdqlWorkspace.
+        workspace.schemas().create(
+            twomass.schemas().select(
+                "TWOMASS.dbo"
+                ),
+            "twomass"
+            ); 
+        workspace.schemas().create(
+            twomass.schemas().select(
+                "TWOXMM.dbo"
+                ),
+            "twoxmm"
+            ); 
+        workspace.schemas().create(
+            twomass.schemas().select(
+                "BestDR7.dbo"
+                ),
+            "bestdr7"
+            ); 
+        //
+        // Create our query.
+        TuesdayAdqlQuery query = factories().adql().queries().create(
+            workspace,
+            IMPORTED_002
+            );        
+        //
+        // Parse the query ...
+        query.parse();
+        //
+        // Check the results ...
+        log.debug("Columns -- ");
+        for (TuesdayAdqlColumn column : query.columns())
+            {
+            log.debug("Column [{}]", column.fullname());
+            }
+        log.debug("Tables -- ");
+        for (TuesdayAdqlTable table : query.tables())
+            {
+            log.debug("Table [{}]", table.fullname());
+            }
+        log.debug("Resources -- ");
+        for (TuesdayOgsaResource<?> resource : query.resources())
+            {
+            log.debug("Resource [{}]", resource.fullname());
+            }
+        log.debug("Query -- ");
+        log.debug("Mode   [{}]", query.mode());
+        log.debug("Status [{}]", query.status());
+        log.debug("ADQL   [{}]", query.adql());
+        log.debug("OGSA   [{}]", query.ogsa());
         }
-     */
     }
 
