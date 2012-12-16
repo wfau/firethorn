@@ -43,7 +43,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcResourceIdentFactory.SCHEMA_PATH)
+@RequestMapping(JdbcResourceLinkFactory.SCHEMA_PATH)
 public class JdbcResourceSchemaController
 extends AbstractController
     {
@@ -51,7 +51,7 @@ extends AbstractController
     public Path path()
         {
         return new PathImpl(
-            JdbcResourceIdentFactory.SCHEMA_PATH
+            JdbcResourceLinkFactory.SCHEMA_PATH
             );
         }
 
@@ -114,7 +114,7 @@ extends AbstractController
 
     /**
      * Get the parent entity based on the request ident.
-     * @throws NotFoundException 
+     * @throws NotFoundException
      *
      */
     @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
@@ -124,7 +124,7 @@ extends AbstractController
         ) throws NotFoundException{
         log.debug("schema() [{}]", ident);
         return factories().jdbc().resources().select(
-            factories().jdbc().resources().ident(
+            factories().jdbc().resources().idents().ident(
                 ident
                 )
             );

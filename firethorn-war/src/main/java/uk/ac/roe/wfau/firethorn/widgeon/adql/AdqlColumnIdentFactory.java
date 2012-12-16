@@ -24,17 +24,11 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
  * Ident factory for <code>AdqlColumn</code>.
- * TODO
- * 
+ *
  */
 @Component
 public class AdqlColumnIdentFactory
 extends WebappIdentFactory<TuesdayAdqlColumn>
 implements TuesdayAdqlColumn.IdentFactory
     {
-    @Override
-    public String link(final TuesdayAdqlColumn entity)
-        {
-        return null;
-        }
     }

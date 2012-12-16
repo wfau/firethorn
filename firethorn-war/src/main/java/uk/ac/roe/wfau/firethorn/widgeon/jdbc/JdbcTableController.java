@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
@@ -42,7 +41,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcTableIdentFactory.TABLE_PATH)
+@RequestMapping(JdbcTableLinkFactory.TABLE_PATH)
 public class JdbcTableController
     extends AbstractController
     {
@@ -51,7 +50,7 @@ public class JdbcTableController
     public Path path()
         {
         return new PathImpl(
-            JdbcTableIdentFactory.TABLE_PATH
+            JdbcTableLinkFactory.TABLE_PATH
             );
         }
 
@@ -90,7 +89,7 @@ public class JdbcTableController
 
     /**
      * Get the target entity based on the ident in the path.
-     * @throws NotFoundException 
+     * @throws NotFoundException
      *
      */
     @ModelAttribute(JdbcTableController.TABLE_ENTITY)
@@ -100,7 +99,7 @@ public class JdbcTableController
         ) throws NotFoundException {
         log.debug("table() [{}]", ident);
         return factories().jdbc().tables().select(
-            factories().jdbc().tables().ident(
+            factories().jdbc().tables().idents().ident(
                 ident
                 )
             );

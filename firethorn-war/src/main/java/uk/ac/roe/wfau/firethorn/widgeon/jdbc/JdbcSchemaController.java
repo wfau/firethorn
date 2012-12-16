@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
@@ -42,7 +41,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcSchemaIdentFactory.SCHEMA_PATH)
+@RequestMapping(JdbcSchemaLinkFactory.SCHEMA_PATH)
 public class JdbcSchemaController
     extends AbstractController
     {
@@ -51,7 +50,7 @@ public class JdbcSchemaController
     public Path path()
         {
         return new PathImpl(
-            JdbcSchemaIdentFactory.SCHEMA_PATH
+            JdbcSchemaLinkFactory.SCHEMA_PATH
             );
         }
 
@@ -90,7 +89,7 @@ public class JdbcSchemaController
 
     /**
      * Get the target entity based on the ident in the path.
-     * @throws NotFoundException  
+     * @throws NotFoundException
      *
      */
     @ModelAttribute(SCHEMA_ENTITY)
@@ -100,7 +99,7 @@ public class JdbcSchemaController
         ) throws NotFoundException {
         log.debug("schema() [{}]", ident);
         return factories().jdbc().schemas().select(
-            factories().jdbc().schemas().ident(
+            factories().jdbc().schemas().idents().ident(
                 ident
                 )
             );

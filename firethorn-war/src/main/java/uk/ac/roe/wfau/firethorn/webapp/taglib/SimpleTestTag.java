@@ -17,13 +17,13 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.taglib;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
 
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-import java.io.IOException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.JspException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  *

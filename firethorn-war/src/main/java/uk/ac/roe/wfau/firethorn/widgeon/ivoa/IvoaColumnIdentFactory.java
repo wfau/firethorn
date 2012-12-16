@@ -25,16 +25,11 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 /**
  * Ident factory for <code>IvoaColumn</code>.
  * TODO
- * 
+ *
  */
 @Component
 public class IvoaColumnIdentFactory
 extends WebappIdentFactory<TuesdayIvoaColumn>
 implements TuesdayIvoaColumn.IdentFactory
     {
-    @Override
-    public String link(final TuesdayIvoaColumn entity)
-        {
-        return null;
-        }
     }

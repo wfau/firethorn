@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,7 +33,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  * TODO better exception handling.
  */
 @Controller
-@RequestMapping(AdqlResourceIdentFactory.RESOURCES_PATH)
+@RequestMapping(AdqlResourceLinkFactory.RESOURCES_PATH)
 public class AdqlResourcesController
 extends AbstractController
     {
@@ -44,7 +42,7 @@ extends AbstractController
     public Path path()
         {
         return new PathImpl(
-            AdqlResourceIdentFactory.RESOURCES_PATH
+            AdqlResourceLinkFactory.RESOURCES_PATH
             );
         }
 

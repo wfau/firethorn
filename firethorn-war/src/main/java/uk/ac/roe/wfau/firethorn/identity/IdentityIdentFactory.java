@@ -23,7 +23,6 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
  * Ident factory for <code>Identity</code>.
- * TODO
  *
  */
 @Component
@@ -31,9 +30,4 @@ public class IdentityIdentFactory
 extends WebappIdentFactory<Identity>
 implements Identity.IdentFactory
     {
-    @Override
-    public String link(final Identity entity)
-        {
-        return null;
-        }
     }

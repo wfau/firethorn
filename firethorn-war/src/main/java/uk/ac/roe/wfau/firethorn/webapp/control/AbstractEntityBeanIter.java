@@ -39,13 +39,15 @@ implements EntityBeanIter<EntityType>
         this.iterable = iterable ;
         }
 
-    /**
-     *
-     */
     protected Iterable<EntityType> iterable ;
+    protected Iterable<EntityType> iterable()
+        {
+        return this.iterable;
+        }
 
     /**
-     *
+     * Wrap an Entity as an EntityBean.
+     * 
      */
     public abstract EntityBean<EntityType> bean(final EntityType entity);
 
@@ -54,24 +56,24 @@ implements EntityBeanIter<EntityType>
         {
         return new Iterator<EntityBean<EntityType>>()
             {
-            private final Iterator<EntityType> iterator = iterable.iterator();
+            private final Iterator<EntityType> iterator = iterable().iterator();
 
             @Override
             public boolean hasNext()
                 {
-                return iterator.hasNext();
+                return this.iterator.hasNext();
                 }
             @Override
             public EntityBean<EntityType> next()
                 {
                 return bean(
-                    iterator.next()
+                    this.iterator.next()
                     );
                 }
             @Override
             public void remove()
                 {
-                iterator.remove();
+                this.iterator.remove();
                 }
             };
         }

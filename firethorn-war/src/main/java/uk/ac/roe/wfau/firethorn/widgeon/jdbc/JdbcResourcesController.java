@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -39,10 +37,10 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  * TODO better exception handling.
  * http://blog.newsplore.com/2010/08/04/restful-error-handling-with-tomcat-springmvc
  * http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/util/AntPathMatcher.html
+ * 
  */
-@Slf4j
 @Controller
-@RequestMapping(JdbcResourceIdentFactory.RESOURCES_PATH)
+@RequestMapping(JdbcResourceLinkFactory.RESOURCES_PATH)
 public class JdbcResourcesController
 extends AbstractController
     {
@@ -51,7 +49,7 @@ extends AbstractController
     public Path path()
         {
         return new PathImpl(
-            JdbcResourceIdentFactory.RESOURCES_PATH
+            JdbcResourceLinkFactory.RESOURCES_PATH
             );
         }
 
@@ -300,7 +298,7 @@ extends AbstractController
 
         final ModelAndView model
         ){
-        
+
         final JdbcResourceBean bean = new JdbcResourceBean(
             factories().jdbc().resources().create(
                 name,

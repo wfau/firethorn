@@ -15,22 +15,26 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.common.entity;
+package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Entity.IdentFactory;
+import org.springframework.stereotype.Component;
+
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- *
+ * Link factory for <code>AdqlTable</code>.
+ * TODO
  *
  */
-public abstract class AbstractIdentFactory<EntityType extends Entity>
-implements IdentFactory<EntityType>
+@Component
+public class AdqlTableLinkFactory
+extends WebappLinkFactory<TuesdayAdqlTable>
+implements TuesdayAdqlTable.LinkFactory
     {
     @Override
-    public Identifier ident(final String string)
+    public String link(final TuesdayAdqlTable entity)
         {
-        return new LongIdentifier(
-            string
-            );
+        return null;
         }
     }

@@ -43,7 +43,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcResourceIdentFactory.RESOURCE_PATH)
+@RequestMapping(JdbcResourceLinkFactory.RESOURCE_PATH)
 public class JdbcResourceController
     extends AbstractController
     {
@@ -52,7 +52,7 @@ public class JdbcResourceController
     public Path path()
         {
         return new PathImpl(
-            JdbcResourceIdentFactory.RESOURCE_PATH
+            JdbcResourceLinkFactory.RESOURCE_PATH
             );
         }
 
@@ -106,7 +106,7 @@ public class JdbcResourceController
      *
      */
     public static final String UPDATE_CONN_STATUS = "jdbc.resource.connection.update.status" ;
-    
+
     /**
      * Wrap an entity as a bean.
      *
@@ -115,7 +115,7 @@ public class JdbcResourceController
         final TuesdayJdbcResource entity
         ){
         log.debug("bean() [{}]", entity);
-        JdbcResourceBean bean = new JdbcResourceBean(
+        final JdbcResourceBean bean = new JdbcResourceBean(
             entity
             );
         log.debug("bean() [{}]", bean);
@@ -133,14 +133,14 @@ public class JdbcResourceController
         ) throws NotFoundException  {
         log.debug("entity()");
         log.debug("ident [{}]", ident);
-        TuesdayJdbcResource entity = factories().jdbc().resources().select(
-            factories().jdbc().resources().ident(
+        final TuesdayJdbcResource entity = factories().jdbc().resources().select(
+            factories().jdbc().resources().idents().ident(
                 ident
                 )
             );
         return entity ;
         }
-    
+
     /**
      * HTML GET request.
      *
@@ -172,7 +172,7 @@ public class JdbcResourceController
                 entity
                 );
             }
-        catch (Exception ouch)
+        catch (final Exception ouch)
             {
             log.error("Ouch ...", ouch);
             return null ;
@@ -187,18 +187,18 @@ public class JdbcResourceController
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
     public JdbcResourceBean jsonUpdate(
-        @RequestParam(value=UPDATE_NAME, required=false)
+        @RequestParam(value=UPDATE_NAME, required=false) final
         String name,
-        @RequestParam(value=UPDATE_STATUS, required=false)
+        @RequestParam(value=UPDATE_STATUS, required=false) final
         String status,
 
-        @RequestParam(value=UPDATE_CONN_URL, required=false)
+        @RequestParam(value=UPDATE_CONN_URL, required=false) final
         String url,
-        @RequestParam(value=UPDATE_CONN_USER, required=false)
+        @RequestParam(value=UPDATE_CONN_USER, required=false) final
         String user,
-        @RequestParam(value=UPDATE_CONN_PASS, required=false)
+        @RequestParam(value=UPDATE_CONN_PASS, required=false) final
         String pass,
-        @RequestParam(value=UPDATE_CONN_STATUS, required=false)
+        @RequestParam(value=UPDATE_CONN_STATUS, required=false) final
         String action,
 
         @ModelAttribute(RESOURCE_ENTITY)
@@ -259,7 +259,7 @@ public class JdbcResourceController
                     );
                 }
             }
-        
+
         if (status != null)
             {
             entity.status(

@@ -45,7 +45,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResourceBeanIter;
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcResourceIdentFactory.ADQL_PATH )
+@RequestMapping(JdbcResourceLinkFactory.ADQL_PATH )
 public class JdbcResourceAdqlController
 extends AbstractController
     {
@@ -54,7 +54,7 @@ extends AbstractController
     public Path path()
         {
         return new PathImpl(
-            JdbcResourceIdentFactory.ADQL_PATH 
+            JdbcResourceLinkFactory.ADQL_PATH
             );
         }
 
@@ -117,7 +117,7 @@ extends AbstractController
 
     /**
      * Get the base entity based on the request ident.
-     * @throws NotFoundException  
+     * @throws NotFoundException
      *
      */
     @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
@@ -127,7 +127,7 @@ extends AbstractController
         ) throws NotFoundException {
         log.debug("resource() [{}]", ident);
         return factories().jdbc().resources().select(
-            factories().jdbc().resources().ident(
+            factories().jdbc().resources().idents().ident(
                 ident
                 )
             );

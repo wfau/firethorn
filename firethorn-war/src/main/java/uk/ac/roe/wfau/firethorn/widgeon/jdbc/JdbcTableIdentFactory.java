@@ -40,25 +40,4 @@ implements TuesdayJdbcTable.IdentFactory
     public static final URI TYPE_URI = URI.create(
         "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json"
         );
-
-    /**
-     * The URI path for individual tables.
-     *
-     */
-    public static final String TABLE_PATH = "/jdbc/table/" + IDENT_TOKEN ;
-
-    /**
-     * The URI path for table columns.
-     *
-     */
-    public static final String COLUMNS_PATH = TABLE_PATH + "/columns" ;
-
-    @Override
-    public String link(final TuesdayJdbcTable entity)
-        {
-        return link(
-            TABLE_PATH,
-            entity
-            );
-        }
     }

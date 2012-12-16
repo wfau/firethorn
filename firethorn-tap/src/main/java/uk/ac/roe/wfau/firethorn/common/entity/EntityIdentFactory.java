@@ -15,21 +15,20 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.test;
-
-import org.springframework.stereotype.Component;
-
-import uk.ac.roe.wfau.firethorn.common.entity.EntityIdentFactory;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema.IdentFactory;
+package uk.ac.roe.wfau.firethorn.common.entity;
 
 /**
- * JUnit test implementation.
+ *
  *
  */
-@Component
-public class TuesdayAdqlSchemaIdentFactory
-extends TuesdayTestIdentFactory<TuesdayAdqlSchema>
-implements TuesdayAdqlSchema.IdentFactory, TuesdayAdqlSchema.LinkFactory
+public abstract class EntityIdentFactory<EntityType extends Entity>
+implements Entity.IdentFactory<EntityType>
     {
+    @Override
+    public Identifier ident(final String string)
+        {
+        return new LongIdentifier(
+            string
+            );
+        }
     }

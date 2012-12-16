@@ -42,7 +42,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  */
 @Slf4j
 @Controller
-@RequestMapping(AdqlResourceIdentFactory.RESOURCE_PATH)
+@RequestMapping(AdqlResourceLinkFactory.RESOURCE_PATH)
 public class AdqlResourceController
     extends AbstractController
     {
@@ -51,7 +51,7 @@ public class AdqlResourceController
     public Path path()
         {
         return new PathImpl(
-            AdqlResourceIdentFactory.RESOURCE_PATH
+            AdqlResourceLinkFactory.RESOURCE_PATH
             );
         }
 
@@ -106,14 +106,14 @@ public class AdqlResourceController
         ) throws NotFoundException  {
         log.debug("entity(}");
         log.debug("ident [{}]", ident);
-        TuesdayAdqlResource entity = factories().adql().resources().select(
-            factories().adql().resources().ident(
+        final TuesdayAdqlResource entity = factories().adql().resources().select(
+            factories().adql().resources().idents().ident(
                 ident
                 )
             );
         return entity ;
         }
-    
+
     /**
      * HTML GET request.
      *
@@ -151,9 +151,9 @@ public class AdqlResourceController
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
     public AdqlResourceBean jsonUpdate(
-        @RequestParam(value=UPDATE_NAME, required=false)
+        @RequestParam(value=UPDATE_NAME, required=false) final
         String name,
-        @RequestParam(value=UPDATE_STATUS, required=false)
+        @RequestParam(value=UPDATE_STATUS, required=false) final
         String status,
         @ModelAttribute(RESOURCE_ENTITY)
         final TuesdayAdqlResource entity
@@ -180,7 +180,7 @@ public class AdqlResourceController
                     );
                 }
             }
-        
+
         return bean(
             entity
             );

@@ -24,7 +24,6 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
  * Ident factory for <code>AdqlTable</code>.
- * TODO
  *
  */
 @Component
@@ -32,9 +31,4 @@ public class AdqlTableIdentFactory
 extends WebappIdentFactory<TuesdayAdqlTable>
 implements TuesdayAdqlTable.IdentFactory
     {
-    @Override
-    public String link(final TuesdayAdqlTable entity)
-        {
-        return null;
-        }
     }

@@ -15,21 +15,34 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.test;
+package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.EntityIdentFactory;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema.IdentFactory;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- * JUnit test implementation.
+ * Link factory for <code>JdbcColumn</code>.
  *
  */
 @Component
-public class TuesdayAdqlSchemaIdentFactory
-extends TuesdayTestIdentFactory<TuesdayAdqlSchema>
-implements TuesdayAdqlSchema.IdentFactory, TuesdayAdqlSchema.LinkFactory
+public class JdbcColumnLinkFactory
+extends WebappLinkFactory<TuesdayJdbcColumn>
+implements TuesdayJdbcColumn.LinkFactory
     {
+    /**
+     * The URI path for individual columns.
+     *
+     */
+    public static final String COLUMN_PATH = "/jdbc/column/" + IDENT_TOKEN ;
+
+    @Override
+    public String link(final TuesdayJdbcColumn entity)
+        {
+        return link(
+            COLUMN_PATH,
+            entity
+            );
+        }
     }

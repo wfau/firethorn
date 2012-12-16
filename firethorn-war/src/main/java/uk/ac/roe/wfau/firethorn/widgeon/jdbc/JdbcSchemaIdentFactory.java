@@ -40,25 +40,4 @@ implements TuesdayJdbcSchema.IdentFactory
     public static final URI TYPE_URI = URI.create(
         "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json"
         );
-
-    /**
-     * The URI path for individual schema.
-     *
-     */
-    public static final String SCHEMA_PATH = "/jdbc/schema/" + IDENT_TOKEN ;
-
-    /**
-     * The URI path for schema tables.
-     *
-     */
-    public static final String TABLES_PATH = SCHEMA_PATH + "/tables" ;
-
-    @Override
-    public String link(final TuesdayJdbcSchema entity)
-        {
-        return link(
-            SCHEMA_PATH,
-            entity
-            );
-        }
     }

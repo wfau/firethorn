@@ -15,21 +15,25 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.test;
+package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.EntityIdentFactory;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema.IdentFactory;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- * JUnit test implementation.
- *
+ * Link factory for <code>AdqlSchema</code>.
+ * TODO
  */
 @Component
-public class TuesdayAdqlSchemaIdentFactory
-extends TuesdayTestIdentFactory<TuesdayAdqlSchema>
-implements TuesdayAdqlSchema.IdentFactory, TuesdayAdqlSchema.LinkFactory
+public class AdqlSchemaLinkFactory
+extends WebappLinkFactory<TuesdayAdqlSchema>
+implements TuesdayAdqlSchema.LinkFactory
     {
+    @Override
+    public String link(final TuesdayAdqlSchema entity)
+        {
+        return null;
+        }
     }

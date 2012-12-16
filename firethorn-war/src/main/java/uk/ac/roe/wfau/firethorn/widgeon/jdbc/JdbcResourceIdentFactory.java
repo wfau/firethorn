@@ -40,37 +40,4 @@ implements TuesdayJdbcResource.IdentFactory
     public static final URI TYPE_URI = URI.create(
         "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json"
         );
-
-    /**
-     * The URI path for the resource service.
-     *
-     */
-    public static final String RESOURCES_PATH = "/jdbc/resources";
-
-    /**
-     * The URI path for individual resources.
-     *
-     */
-    public static final String RESOURCE_PATH = "/jdbc/resource/" + IDENT_TOKEN ;
-
-    /**
-     * The URI path for resource schemas.
-     *
-     */
-    public static final String SCHEMA_PATH = RESOURCE_PATH + "/schemas" ;
-
-    /**
-     * The URI path for the corresponding ADQL resources.
-     *
-     */
-    public static final String ADQL_PATH = RESOURCE_PATH + "/adql" ;
-
-    @Override
-    public String link(final TuesdayJdbcResource entity)
-        {
-        return link(
-            RESOURCE_PATH,
-            entity
-            );
-        }
     }

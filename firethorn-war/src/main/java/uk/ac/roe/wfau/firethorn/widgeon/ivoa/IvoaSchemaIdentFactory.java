@@ -31,9 +31,4 @@ public class IvoaSchemaIdentFactory
 extends WebappIdentFactory<TuesdayIvoaSchema>
 implements TuesdayIvoaSchema.IdentFactory
     {
-    @Override
-    public String link(final TuesdayIvoaSchema entity)
-        {
-        return null;
-        }
     }

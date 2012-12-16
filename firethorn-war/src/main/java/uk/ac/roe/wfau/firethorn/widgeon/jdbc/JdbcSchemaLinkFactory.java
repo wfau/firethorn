@@ -15,21 +15,40 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.test;
+package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.EntityIdentFactory;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema.IdentFactory;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- * JUnit test implementation.
+ * Link factory for <code>JdbcSchema</code>.
  *
  */
 @Component
-public class TuesdayAdqlSchemaIdentFactory
-extends TuesdayTestIdentFactory<TuesdayAdqlSchema>
-implements TuesdayAdqlSchema.IdentFactory, TuesdayAdqlSchema.LinkFactory
+public class JdbcSchemaLinkFactory
+extends WebappLinkFactory<TuesdayJdbcSchema>
+implements TuesdayJdbcSchema.LinkFactory
     {
+    /**
+     * The URI path for individual schema.
+     *
+     */
+    public static final String SCHEMA_PATH = "/jdbc/schema/" + IDENT_TOKEN ;
+
+    /**
+     * The URI path for schema tables.
+     *
+     */
+    public static final String TABLES_PATH = SCHEMA_PATH + "/tables" ;
+
+    @Override
+    public String link(final TuesdayJdbcSchema entity)
+        {
+        return link(
+            SCHEMA_PATH,
+            entity
+            );
+        }
     }

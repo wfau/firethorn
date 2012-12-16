@@ -41,7 +41,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcColumnIdentFactory.COLUMN_PATH)
+@RequestMapping(JdbcColumnLinkFactory.COLUMN_PATH)
 public class JdbcColumnController
     extends AbstractController
     {
@@ -50,7 +50,7 @@ public class JdbcColumnController
     public Path path()
         {
         return new PathImpl(
-            JdbcColumnIdentFactory.COLUMN_PATH
+            JdbcColumnLinkFactory.COLUMN_PATH
             );
         }
 
@@ -89,7 +89,7 @@ public class JdbcColumnController
 
     /**
      * Get the target entity based on the ident in the path.
-     * @throws NotFoundException 
+     * @throws NotFoundException
      *
      */
     @ModelAttribute(COLUMN_ENTITY)
@@ -99,7 +99,7 @@ public class JdbcColumnController
         ) throws NotFoundException {
         log.debug("table() [{}]", ident);
         return factories().jdbc().columns().select(
-            factories().jdbc().columns().ident(
+            factories().jdbc().columns().idents().ident(
                 ident
                 )
             );

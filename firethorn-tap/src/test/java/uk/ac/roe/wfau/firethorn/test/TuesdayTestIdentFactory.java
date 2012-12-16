@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.test;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.EntityIdentFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 
 /**
@@ -28,7 +28,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
  */
 @Component
 public class TuesdayTestIdentFactory<EntityType extends Entity>
-extends AbstractIdentFactory<EntityType>
+extends EntityIdentFactory<EntityType>
 implements Entity.IdentFactory<EntityType>, Entity.LinkFactory<EntityType>
     {
     @Override

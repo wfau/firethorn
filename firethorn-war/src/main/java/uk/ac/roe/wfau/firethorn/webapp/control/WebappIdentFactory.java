@@ -17,43 +17,17 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
-import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.common.entity.Entity.IdentFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.EntityIdentFactory;
 
 /**
  * Base class for IdentFactory implementations within the webapp.
  *
  */
 public abstract class WebappIdentFactory<EntityType extends Entity>
-extends AbstractIdentFactory<EntityType>
+extends EntityIdentFactory<EntityType>
+implements IdentFactory<EntityType>
     {
 
-    public static final String IDENT_FIELD = "ident" ;
-    public static final String IDENT_TOKEN = "{ident}" ;
-    public static final String IDENT_REGEX = "\\{ident\\}" ;
-
-    public static final String SERVICE_BASE = "http://localhost:8080/" ;
-    public static final String CONTEXT_PATH = "firethorn" ;
-    public static final String SERVLET_PATH = "" ;
-
-    public static final String SERVICE_PATH = SERVICE_BASE + CONTEXT_PATH ;
-
-    /*
-     * 
-     * http://static.springsource.org/spring/docs/current/spring-framework-reference/html/mvc.html#mvc-buildinguris
-     * Re-use host, port, context path
-     * Append the literal part of the servlet mapping to the path
-     * Append "/accounts" to the path
-     *
-     * ServletUriComponentsBuilder ucb = 
-     *   ServletUriComponentsBuilder.fromServletMapping(request).path("/accounts").build()
-     * 
-     */
-    protected String link(final String path, final Entity entity)
-        {
-        return SERVICE_PATH + path.replaceFirst(
-            IDENT_REGEX,
-            entity.ident().value().toString()
-            );
-        }
     }
