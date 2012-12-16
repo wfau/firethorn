@@ -17,48 +17,19 @@
  */
 package uk.ac.roe.wfau.firethorn.adql ;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable.AdqlDBColumn;
-import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable.Mode;
-import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable.ModeApi;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseResource;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayOgsaResource;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayOgsaTable;
-
-import adql.db.DBChecker;
-import adql.db.DBColumn;
-import adql.db.DBTable;
-import adql.db.DefaultDBColumn;
-import adql.db.DefaultDBTable;
-import adql.parser.ADQLParser;
-import adql.query.ADQLObject;
-import adql.query.ADQLQuery;
 import adql.query.from.ADQLTable;
-import adql.query.operand.ADQLColumn;
-import adql.translator.ADQLTranslator;
-import adql.translator.PgSphereTranslator;
-import adql.translator.PostgreSQLTranslator;
 
 //import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMapping;
 //import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMappingService;
@@ -70,39 +41,6 @@ import adql.translator.PostgreSQLTranslator;
 public class AdqlQueryTestCase
 extends TestBase
     {
-
-    /**
-     * Our ADQL parser mode.
-     * 
-     */
-    private Mode mode = Mode.ALIASED; 
-    public ModeApi mode(Mode mode)
-        {
-        this.mode = mode;
-        return this.mode();
-        }
-    public ModeApi mode()
-        {
-        return new ModeApi()
-            {
-            @Override
-            public Mode mode()
-                {
-                return AdqlQueryTestCase.this.mode ;
-                }
-            };
-        }
-
-    /**
-     * Our Autowired AdqlDBTable factory.
-     *
-     */
-    @Autowired
-    private AdqlDBTable.Factory tables;
-    public AdqlDBTable.Factory tables()
-    	{
-    	return this.tables ;
-    	}
 
    /**
      * Resolve a table alias into a BaseTable. 
@@ -155,83 +93,39 @@ extends TestBase
         twomass.inport();
         workspace.schemas().create(
             twomass.schemas().select("TWOMASS.dbo"),
-    		"test_schema"
+            "adql_twomass"
             ); 
         //
-        // Wrap the workspace tables as parser DBTables.
-        List<DBTable> tableset = new ArrayList<DBTable>();
-        for (TuesdayAdqlSchema schema : workspace.schemas().select())
-            {
-            for (TuesdayAdqlTable table : schema.tables().select())
-                {
-                tableset.add(
-                    this.tables.create(
-                        this.mode(
-                            AdqlDBTable.Mode.ALIASED
-                            ),
-                        table
-                        )
-                    );
-                }
-            }
-        //
-        // Create an ADQL parser:
-        final ADQLParser parser = new ADQLParser();
-        //
-        // Add a DBChecker using the DBTables.
-        parser.setQueryChecker(
-            new DBChecker(
-                tableset
-                )
-            );
-        //
-        // Parse our query.
-        ADQLQuery query = parser.parseQuery(
+        // Create our query.
+        TuesdayAdqlQuery query = factories().adql().queries().create(
+            workspace,
             IMPORTED_000
-            );
+            );        
         //
-        // Iterate the list of tables used by the query.
-    	for (ADQLTable querytable : query.getFrom().getTables())
-    		{
-    		log.debug("ADQLTable  [{}]", querytable.getName());
-    		log.debug("  Class    [{}]", querytable.getClass().getName());
-            log.debug("  Class    [{}]", querytable.getDBLink().getClass().getName());
-    		log.debug(" --------- ");
-    		log.debug("  Table    [{}]", querytable.getTableName());
-    		log.debug("  Schema   [{}]", querytable.getSchemaName());
-    		log.debug("  Catalog  [{}]", querytable.getCatalogName());
-    		log.debug("  FullName [{}]", querytable.getFullTableName());
-    		log.debug(" ADQL --------- ");
-    		log.debug("  Table    [{}]", querytable.getDBLink().getADQLName());
-    		log.debug("  Schema   [{}]", querytable.getDBLink().getADQLSchemaName());
-    		log.debug("  Catalog  [{}]", querytable.getDBLink().getADQLCatalogName());
-    		log.debug(" JDBC --------- ");
-    		log.debug("  Table    [{}]", querytable.getDBLink().getDBName());
-    		log.debug("  Schema   [{}]", querytable.getDBLink().getDBSchemaName());
-    		log.debug("  Catalog  [{}]", querytable.getDBLink().getDBCatalogName());
-
-    		for (DBColumn column : query.getFrom().getDBColumns())
-    			{
-        		log.debug("   ------- ");
-    			log.debug("  Column ADQL [{}][{}][{}][{}]", column.getTable().getADQLCatalogName(), column.getTable().getADQLSchemaName(), column.getTable().getADQLName(),     column.getADQLName());
-    			log.debug("         OGSA [{}][{}][{}][{}]", column.getTable().getDBCatalogName(),  column.getTable().getDBSchemaName(), column.getTable().getDBName(), column.getDBName());
-    			}
-
-            TuesdayBaseTable<?,?> mapped = this.resolve(
-                querytable
-                );
-            log.debug(" MAPPED --------- ");
-            log.debug("  Class    [{}]", mapped.getClass().getName());
-            log.debug("  Alias    [{}]", mapped.alias());
-            log.debug("  Link     [{}]", mapped.link());
-            log.debug("  FullName [{}]", mapped.fullname());
-            log.debug("  Resource [{}]", mapped.resource().name());
-    		}
-
-    	ADQLTranslator translator = new PostgreSQLTranslator(false);
-    	log.debug("ADQL [{}]", query.toADQL());
-    	log.debug("SQL  [{}]",  translator.translate(query));
-
+        // Parse the query ...
+        query.parse();
+        //
+        // Check the results ...
+        log.debug("Columns -- ");
+        for (TuesdayAdqlColumn column : query.columns())
+            {
+            log.debug("Column [{}]", column.fullname());
+            }
+        log.debug("Tables -- ");
+        for (TuesdayAdqlTable table : query.tables())
+            {
+            log.debug("Table [{}]", table.fullname());
+            }
+        log.debug("Resources -- ");
+        for (TuesdayOgsaResource<?> resource : query.resources())
+            {
+            log.debug("Resource [{}]", resource.fullname());
+            }
+        log.debug("Query -- ");
+        log.debug("Mode   [{}]", query.mode());
+        log.debug("Status [{}]", query.status());
+        log.debug("ADQL   [{}]", query.adql());
+        log.debug("OGSA   [{}]", query.ogsa());
         }
 
     private static final String IMPORTED_001 =
@@ -271,119 +165,40 @@ extends TestBase
         // Import a JdbcSchema into our AdqlWorkspace.
         twomass.inport();
         workspace.schemas().create(
-            twomass.schemas().select(
-                "TWOMASS.dbo"
-                ),
+            twomass.schemas().select("TWOMASS.dbo"),
             "adql_twomass"
             ); 
         //
-        // Wrap the workspace tables as parser DBTables.
-        List<DBTable> tableset = new ArrayList<DBTable>();
-        for (TuesdayAdqlSchema schema : workspace.schemas().select())
-            {
-            for (TuesdayAdqlTable table : schema.tables().select())
-                {
-                tableset.add(
-                    this.tables.create(
-                        this.mode(),
-                        table
-                        )
-                    );
-                }
-            }
-        //
-        // Create an ADQL parser:
-        final ADQLParser parser = new ADQLParser();
-        //
-        // Add a DBChecker using the DBTables.
-        parser.setQueryChecker(
-            new DBChecker(
-                tableset
-                )
-            );
-        //
-        // Parse our query.
-        ADQLQuery query = parser.parseQuery(
+        // Create our query.
+        TuesdayAdqlQuery query = factories().adql().queries().create(
+            workspace,
             IMPORTED_001
-            );
+            );        
         //
-        // Keep a list of the resources used.
-        Set<TuesdayOgsaResource<?>> resources = new HashSet<TuesdayOgsaResource<?>>();
-
+        // Parse the query ...
+        query.parse();
         //
-        // Iterate the list of tables used by the query.
-        for (ADQLTable querytable : query.getFrom().getTables())
+        // Check the results ...
+        log.debug("Columns -- ");
+        for (TuesdayAdqlColumn column : query.columns())
             {
-            log.debug("ADQLTable  [{}]", querytable.getName());
-            log.debug("  Class    [{}]", querytable.getClass().getName());
-            log.debug("  Class    [{}]", querytable.getDBLink().getClass().getName());
-            log.debug("  Table    [{}]", querytable.getTableName());
-            log.debug("  Schema   [{}]", querytable.getSchemaName());
-            log.debug("  Catalog  [{}]", querytable.getCatalogName());
-            log.debug("  FullName [{}]", querytable.getFullTableName());
-            log.debug(" ADQL --------- ");
-            log.debug("  Table    [{}]", querytable.getDBLink().getADQLName());
-            log.debug("  Schema   [{}]", querytable.getDBLink().getADQLSchemaName());
-            log.debug("  Catalog  [{}]", querytable.getDBLink().getADQLCatalogName());
-            log.debug(" JDBC --------- ");
-            log.debug("  Table    [{}]", querytable.getDBLink().getDBName());
-            log.debug("  Schema   [{}]", querytable.getDBLink().getDBSchemaName());
-            log.debug("  Catalog  [{}]", querytable.getDBLink().getDBCatalogName());
-
-            if (querytable.getDBLink() instanceof AdqlDBTable)
-                {
-                AdqlDBTable table = (AdqlDBTable) querytable.getDBLink(); 
-                //
-                // Add the table resource to our set.
-                resources.add(
-                    table.table().ogsa().resource()
-                    );
-
-                if (table.mode() == Mode.ALIASED)
-                    {
-                    TuesdayBaseTable<?,?> mapped = this.resolve(
-                        querytable
-                        );
-                    log.debug(" Mode.ALIASED --------- ");
-                    log.debug("  Class    [{}]", mapped.getClass().getName());
-                    log.debug("  Alias    [{}]", mapped.alias());
-                    log.debug("  Link     [{}]", mapped.link());
-                    log.debug("  FullName [{}]", mapped.fullname());
-                    log.debug("  Resource [{}]", mapped.resource().name());
-                    }
-                else {
-                    log.debug(" Mode.DIRECT --------- ");
-                    log.debug("  Table    [{}]", querytable.getDBLink().getDBName());
-                    log.debug("  Schema   [{}]", querytable.getDBLink().getDBSchemaName());
-                    log.debug("  Catalog  [{}]", querytable.getDBLink().getDBCatalogName());
-                    }
-                }
-            else {
-                log.warn("DBLink is not instanceof AdqlDBTable");
-                log.debug("  DBLink [{}]", querytable.getDBLink().getClass().getName());
-                }
+            log.debug("Column [{}]", column.fullname());
             }
-
-        log.debug("Resources ----");
-        for (TuesdayOgsaResource<?> resource : resources)
+        log.debug("Tables -- ");
+        for (TuesdayAdqlTable table : query.tables())
             {
-            log.debug("Resource [{}][{}][{}]", resource.ident(), resource.ogsaid(), resource.name());
+            log.debug("Table [{}]", table.fullname());
             }
-        if (resources.size() == 1)
+        log.debug("Resources -- ");
+        for (TuesdayOgsaResource<?> resource : query.resources())
             {
-            log.debug("Single resource, use direct");
+            log.debug("Resource [{}]", resource.fullname());
             }
-        else {
-            log.debug("Multiple resource, use DQP");
-            }
-
-        ADQLTranslator translator = new PostgreSQLTranslator(false);
-        log.debug("ADQL [{}]", query.toADQL());
-        this.mode(Mode.DIRECT);
-        log.debug("DIRECT SQL : {}", translator.translate(query));
-        this.mode(Mode.ALIASED);
-        log.debug("ALIASED SQL : {}", translator.translate(query));
-        
+        log.debug("Query -- ");
+        log.debug("Mode   [{}]", query.mode());
+        log.debug("Status [{}]", query.status());
+        log.debug("ADQL   [{}]", query.adql());
+        log.debug("OGSA   [{}]", query.ogsa());
         }
 
     private static final String IMPORTED_002 =
@@ -438,7 +253,7 @@ extends TestBase
             "test-workspace"
             );
         //
-        // Import a JdbcSchema into our AdqlWorkspace.
+        // Import the JdbcSchema into our AdqlWorkspace.
         workspace.schemas().create(
             twomass.schemas().select(
                 "TWOMASS.dbo"
@@ -458,239 +273,42 @@ extends TestBase
             "adql_bestdr7"
             ); 
         //
-        // Wrap the workspace tables as parser DBTables.
-        List<DBTable> tableset = new ArrayList<DBTable>();
-        for (TuesdayAdqlSchema schema : workspace.schemas().select())
-            {
-            for (TuesdayAdqlTable table : schema.tables().select())
-                {
-                tableset.add(
-                    this.tables.create(
-                        this.mode(),
-                        table
-                        )
-                    );
-                }
-            }
-        //
-        // Create an ADQL parser:
-        final ADQLParser parser = new ADQLParser();
-        //
-        // Add a DBChecker using the DBTables.
-        parser.setQueryChecker(
-            new DBChecker(
-                tableset
-                )
-            );
-        //
-        // Parse our query.
-        ADQLQuery query = parser.parseQuery(
+        // Create our query.
+        TuesdayAdqlQuery query = factories().adql().queries().create(
+            workspace,
             IMPORTED_002
-            );
+            );        
         //
-        // Keep a list of the resources used.
-        Set<TuesdayOgsaResource<?>> resources = new HashSet<TuesdayOgsaResource<?>>();
+        // Parse the query ...
+        query.parse();
         //
-        // Iterate the list of tables used by the query.
-        for (ADQLTable querytable : query.getFrom().getTables())
+        // Check the results ...
+        log.debug("Columns -- ");
+        for (TuesdayAdqlColumn column : query.columns())
             {
-            log.debug("ADQLTable  [{}]", querytable.getName());
-            log.debug("  Class    [{}]", querytable.getClass().getName());
-            log.debug("  Class    [{}]", querytable.getDBLink().getClass().getName());
-            log.debug("  Table    [{}]", querytable.getTableName());
-            log.debug("  Schema   [{}]", querytable.getSchemaName());
-            log.debug("  Catalog  [{}]", querytable.getCatalogName());
-            log.debug("  FullName [{}]", querytable.getFullTableName());
-            log.debug(" ADQL --------- ");
-            log.debug("  Table    [{}]", querytable.getDBLink().getADQLName());
-            log.debug("  Schema   [{}]", querytable.getDBLink().getADQLSchemaName());
-            log.debug("  Catalog  [{}]", querytable.getDBLink().getADQLCatalogName());
-            log.debug(" JDBC --------- ");
-            log.debug("  Table    [{}]", querytable.getDBLink().getDBName());
-            log.debug("  Schema   [{}]", querytable.getDBLink().getDBSchemaName());
-            log.debug("  Catalog  [{}]", querytable.getDBLink().getDBCatalogName());
-
-            if (querytable.getDBLink() instanceof AdqlDBTable)
-                {
-                AdqlDBTable table = (AdqlDBTable) querytable.getDBLink(); 
-                //
-                // Add the table resource to our set.
-                resources.add(
-                    table.table().ogsa().resource()
-                    );
-
-                if (table.mode() == Mode.ALIASED)
-                    {
-                    TuesdayBaseTable<?,?> mapped = this.resolve(
-                        querytable
-                        );
-                    log.debug(" Mode.ALIASED --------- ");
-                    log.debug("  Class    [{}]", mapped.getClass().getName());
-                    log.debug("  Alias    [{}]", mapped.alias());
-                    log.debug("  Link     [{}]", mapped.link());
-                    log.debug("  FullName [{}]", mapped.fullname());
-                    log.debug("  Resource [{}]", mapped.resource().name());
-                    }
-                else {
-                    log.debug(" Mode.DIRECT --------- ");
-                    log.debug("  Table    [{}]", querytable.getDBLink().getDBName());
-                    log.debug("  Schema   [{}]", querytable.getDBLink().getDBSchemaName());
-                    log.debug("  Catalog  [{}]", querytable.getDBLink().getDBCatalogName());
-                    }
-                }
-            else {
-                log.warn("DBLink is not instanceof AdqlDBTable");
-                log.debug("  DBLink [{}]", querytable.getDBLink().getClass().getName());
-                }
+            log.debug("Column [{}]", column.fullname());
             }
-    
-        log.debug("Resources ----");
-        for (TuesdayOgsaResource<?> resource : resources)
+        log.debug("Tables -- ");
+        for (TuesdayAdqlTable table : query.tables())
             {
-            log.debug("Resource [{}][{}][{}]", resource.ident(), resource.ogsaid(), resource.name());
+            log.debug("Table [{}]", table.fullname());
             }
-        if (resources.size() <= 1)
+        log.debug("Resources -- ");
+        for (TuesdayOgsaResource<?> resource : query.resources())
             {
-            log.debug("Single resource, use direct");
+            log.debug("Resource [{}]", resource.fullname());
             }
-        else {
-            log.debug("Multiple resource, use DQP");
-            }
-        
-        ADQLTranslator translator = new PostgreSQLTranslator(false);
-        log.debug("ADQL [{}]", query.toADQL());
-        this.mode(Mode.DIRECT);
-        log.debug("DIRECT SQL : {}", translator.translate(query));
-        this.mode(Mode.ALIASED);
-        log.debug("ALIASED SQL : {}", translator.translate(query));
-          
+        log.debug("Query -- ");
+        log.debug("Mode   [{}]", query.mode());
+        log.debug("Status [{}]", query.status());
+        log.debug("ADQL   [{}]", query.adql());
+        log.debug("OGSA   [{}]", query.ogsa());
         }
 
-    @Test
-    public void testImported003()
-    throws Exception
-        {
-        //
-        // Create our JDBC resources.
-        TuesdayJdbcResource twomass = factories().jdbc().resources().create(
-            "twomass",
-            "spring:RoeTWOMASS"
-            );
-        TuesdayJdbcResource twoxmm = factories().jdbc().resources().create(
-            "twoxmm",
-            "spring:RoeTWOXMM"
-            );
-        TuesdayJdbcResource bestdr7  = factories().jdbc().resources().create(
-            "bestdr7",
-            "spring:RoeBestDR7"
-            );
-        twomass.inport();
-        twoxmm.inport();
-        bestdr7.inport();
-        //
-        // Create our ADQL workspace.
-        TuesdayAdqlResource workspace = factories().adql().resources().create(
-            "test-workspace"
-            );
-        //
-        // Import a JdbcSchema into our AdqlWorkspace.
-        workspace.schemas().create(
-            twomass.schemas().select(
-                "TWOMASS.dbo"
-                ),
-            "adql_twomass"
-            ); 
-        workspace.schemas().create(
-            twoxmm.schemas().select(
-                "TWOXMM.dbo"
-                ),
-            "adql_twoxmm"
-            ); 
-        workspace.schemas().create(
-            bestdr7.schemas().select(
-                "BestDR7.dbo"
-                ),
-            "adql_bestdr7"
-            ); 
-        //
-        // Wrap the workspace tables as parser DBTables.
-        List<DBTable> tableset = new ArrayList<DBTable>();
-        for (TuesdayAdqlSchema schema : workspace.schemas().select())
-            {
-            for (TuesdayAdqlTable table : schema.tables().select())
-                {
-                tableset.add(
-                    this.tables.create(
-                        this.mode(),
-                        table
-                        )
-                    );
-                }
-            }
-        //
-        // Create an ADQL parser:
-        final ADQLParser parser = new ADQLParser();
-        //
-        // Add a DBChecker using the DBTables.
-        parser.setQueryChecker(
-            new DBChecker(
-                tableset
-                )
-            );
-        //
-        // Parse our query.
-        final ADQLQuery query = parser.parseQuery(
-            IMPORTED_002
-            );
-        //
-        // Collect a list of the resources used.
-        final Set<TuesdayOgsaResource<?>> resources = new HashSet<TuesdayOgsaResource<?>>();
-        final Set<TuesdayAdqlTable>  tables  = new HashSet<TuesdayAdqlTable>();
-        final Set<TuesdayAdqlColumn> columns = new HashSet<TuesdayAdqlColumn>();
-        
-        process(
-            query,
-            resources,
-            tables,
-            columns
-            );
-
-        log.debug("Columns ----");
-        for (TuesdayAdqlColumn column: columns)
-            {
-            log.debug("Column [{}][{}]", column.ident(), column.name());
-            }
-        log.debug("Tables ----");
-        for (TuesdayAdqlTable table: tables)
-            {
-            log.debug("Table [{}][{}]", table.ident(), table.name());
-            }
-        log.debug("Resources ----");
-        for (TuesdayOgsaResource<?> resource : resources)
-            {
-            log.debug("Resource [{}][{}][{}]", resource.ident(), resource.ogsaid(), resource.name());
-            }
-        if (resources.size() <= 1)
-            {
-            log.debug("Single resource, use direct");
-            }
-        else {
-            log.debug("Multiple resource, use DQP");
-            }
-
-        ADQLTranslator translator = new PostgreSQLTranslator(false);
-        log.debug("ADQL [{}]", query.toADQL());
-        this.mode(Mode.DIRECT);
-        log.debug("DIRECT SQL : {}", translator.translate(query));
-        this.mode(Mode.ALIASED);
-        log.debug("ALIASED SQL : {}", translator.translate(query));
-          
-        }
 
     /**
      * Process the tree of query objects.
      *
-     */
     public void process(final ADQLObject source, final Set<TuesdayOgsaResource<?>> resources, final Set<TuesdayAdqlTable> tables , final Set<TuesdayAdqlColumn> columns)
         {
         Iterable<ADQLObject> iter = new Iterable<ADQLObject>()
@@ -758,5 +376,6 @@ extends TestBase
                 );
             }
         }
+     */
     }
 

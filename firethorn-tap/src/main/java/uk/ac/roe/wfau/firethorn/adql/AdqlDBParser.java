@@ -15,50 +15,35 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.tuesday;
+package uk.ac.roe.wfau.firethorn.adql;
 
-import uk.ac.roe.wfau.firethorn.adql.AdqlDBParser;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 
 /**
- * Our ADQL component factories
+ *
  *
  */
-public interface TuesdayAdqlFactories
+public interface AdqlDBParser
     {
     /**
-     * Our resource factory.
-     *
-     */
-    public TuesdayAdqlResource.Factory resources();
-
-    /**
-     * Our schema factory.
-     *
-     */
-    public TuesdayAdqlSchema.Factory schemas();
-
-    /**
-     * Our table factory.
-     *
-     */
-    public TuesdayAdqlTable.Factory tables();
-
-    /**
-     * Our column factory.
-     *
-     */
-    public TuesdayAdqlColumn.Factory columns();
-
-    /**
-     * Our query factory.
-     *
-     */
-    public TuesdayAdqlQuery.Factory queries();
-
-    /**
-     * The local ADQL parser factory.
+     * Factory interface.
      * 
      */
-    public AdqlDBParser.Factory parsers();
+    public static interface Factory
+        {
+        /**
+         * Create a parser for a workspace.
+         * 
+         */
+        public AdqlDBParser create(final TuesdayAdqlQuery.Mode mode, final TuesdayAdqlResource workspace);
 
+        }
+
+    /**
+     * Process an ADQL query and populate its components.
+     * 
+     */
+    public void process(final AdqlDBQuery query);
+    
     }

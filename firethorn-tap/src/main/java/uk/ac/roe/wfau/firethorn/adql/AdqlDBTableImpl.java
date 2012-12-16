@@ -19,10 +19,11 @@ package uk.ac.roe.wfau.firethorn.adql ;
 
 import java.util.Iterator;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable.Mode;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import adql.db.DBColumn;
 import adql.db.DBTable;
@@ -45,13 +46,8 @@ implements AdqlDBTable
     public static class Factory
     implements AdqlDBTable.Factory
         {
-
-        /**
-         * Create a new AdqlDBTable.
-         *
-         */
         @Override
-        public AdqlDBTableImpl create(final ModeApi mode, final TuesdayAdqlTable table)
+        public AdqlDBTableImpl create(final TuesdayAdqlQuery.Mode mode, final TuesdayAdqlTable table)
             {
             return new AdqlDBTableImpl(
                 mode,
@@ -60,17 +56,13 @@ implements AdqlDBTable
             }
         }
 
-    /**
-     * The mapping mode for table references.
-     * 
-     */
-    private ModeApi mode;
+    private TuesdayAdqlQuery.Mode mode;
     @Override
-    public Mode mode()
+    public TuesdayAdqlQuery.Mode mode()
         {
-        return this.mode.mode();
+        return this.mode;
         }
-
+    
     /**
      * Our underlying AdqlTable.
      *
@@ -98,7 +90,7 @@ implements AdqlDBTable
      * Protected constructor.
      *
      */
-    private AdqlDBTableImpl(final ModeApi mode, final TuesdayAdqlTable table)
+    private AdqlDBTableImpl(final TuesdayAdqlQuery.Mode mode, final TuesdayAdqlTable table)
         {
         this(
             mode,
@@ -112,9 +104,9 @@ implements AdqlDBTable
      * Protected constructor, used by the copy method.
      *
      */
-    private AdqlDBTableImpl(final ModeApi mode, final TuesdayAdqlTable table, final String jdbcName, final String adqlName)
+    private AdqlDBTableImpl(final TuesdayAdqlQuery.Mode mode, final TuesdayAdqlTable table, final String jdbcName, final String adqlName)
         {
-        this.mode  = mode ;
+        this.mode  = mode  ;
         this.table = table ;
         //
         // Only set the ADQL name if it is not the same as the original.
@@ -221,7 +213,7 @@ implements AdqlDBTable
             return this.jdbcName ;
             }
         else {
-            if (this.mode() == AdqlDBTable.Mode.ALIASED)
+            if (this.mode() == TuesdayAdqlQuery.Mode.DISTRIBUTED)
                 {
                 return this.table.base().alias();
                 }
@@ -244,7 +236,7 @@ implements AdqlDBTable
             return null ;
             }
         else {
-            if (this.mode() == AdqlDBTable.Mode.ALIASED)
+            if (this.mode() == TuesdayAdqlQuery.Mode.DISTRIBUTED)
                 {
                 return null ;
                 }
@@ -267,7 +259,7 @@ implements AdqlDBTable
             return null ;
             }
         else {
-            if (this.mode() == AdqlDBTable.Mode.ALIASED)
+            if (this.mode() == TuesdayAdqlQuery.Mode.DISTRIBUTED)
                 {
                 return null ;
                 }

@@ -20,48 +20,20 @@ package uk.ac.roe.wfau.firethorn.adql ;
 import java.util.Iterator;
 
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import adql.db.DBColumn;
 import adql.db.DBTable;
 
 
 /**
- * Firethorn extension of the CDS DBTable interface.
+ * Local extension of the CDS DBTable interface.
  * See http://cdsportal.u-strasbg.fr/adqltuto/gettingstarted.html
  *
  */
 public interface AdqlDBTable
 extends DBTable
     {
-
-    /**
-     * Mapping mode for table references.
-     * 
-     */
-    public enum Mode
-        {
-        /**
-         * Table references use aliases that will be decoded by the OGSA-DAI DQP.
-         * 
-         */
-        ALIASED(),
-
-        /**
-         * Table references use fully qualified SQL names.
-         * 
-         */
-        DIRECT();
-
-        }
-
-    /**
-     * Api for something that has a Mode.
-     * 
-     */
-    public static interface ModeApi
-        {
-        public Mode mode();
-        }
 
     /**
      * Factory interface.
@@ -73,18 +45,18 @@ extends DBTable
          * Create a new AdqlDBTable.
          *
          */
-        public AdqlDBTable create(final ModeApi mode, final TuesdayAdqlTable table);
-
+        public AdqlDBTable create(final TuesdayAdqlQuery.Mode mode, final TuesdayAdqlTable table);
+        
         }
 
     /**
-     * The current mapping mode.
+     * The query mode.
      * 
      */
-    public Mode mode();
+    public TuesdayAdqlQuery.Mode mode();
 
     /**
-     * Access to our underlying AdqlTable.
+     * Our underlying AdqlTable.
      *
      */
     public TuesdayAdqlTable table();
@@ -107,7 +79,7 @@ extends DBTable
     public Columns columns();
 
     /**
-     * Firethorn extension of the CDS DBColumn interface.
+     * Local extension of the CDS DBColumn interface.
      *
      */
     public interface AdqlDBColumn

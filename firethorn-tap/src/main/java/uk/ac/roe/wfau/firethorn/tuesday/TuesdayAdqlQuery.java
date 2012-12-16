@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
-import java.util.Set;
-
 /**
  *
  *
@@ -27,7 +25,27 @@ public interface TuesdayAdqlQuery
     {
 
     /**
-     * The query status.
+     * Factory interface.
+     * 
+     */
+    public static interface Factory
+        {
+        /**
+         * Create a new query.
+         * 
+         */
+        public TuesdayAdqlQuery create(final TuesdayAdqlResource workspace, final String query);
+
+        /**
+         * Create a new query.
+         * 
+         */
+        public TuesdayAdqlQuery create(final TuesdayAdqlResource workspace, final String name, final String query);
+
+        }
+    
+    /**
+     * Query status indicator.
      * 
      */
     public enum Status
@@ -83,7 +101,13 @@ public interface TuesdayAdqlQuery
         DISTRIBUTED();
 
         }
-    
+
+    /**
+     * The ADQL workspace this query applies to. 
+     * 
+     */
+    public TuesdayAdqlResource workspace();
+
     /**
      * The query mode.
      * 
@@ -91,10 +115,22 @@ public interface TuesdayAdqlQuery
     public Mode mode();
 
     /**
-     * The original input string.
+     * The query status.
+     * 
+     */
+    public Status status();
+
+    /**
+     * The input query.
      * 
      */
     public String input();
+
+    /**
+     * The input query.
+     * 
+     */
+    public void input(String input);
 
     /**
      * The processed ADQL query.
@@ -109,21 +145,27 @@ public interface TuesdayAdqlQuery
     public String ogsa();
 
     /**
-     * A list of the AdqlColumns used by the query.
+     * The set of the AdqlColumns used by the query.
      * 
      */
     public Iterable<TuesdayAdqlColumn> columns();
 
     /**
-     * A list of the AdqlTables used by the query.
+     * The set of the AdqlTables used by the query.
      * 
      */
     public Iterable<TuesdayAdqlTable> tables();
 
     /**
-     * A list of the OGSA-DAI resources used by the query.
+     * The set of the OGSA-DAI resources used by the query.
      * 
      */
     public Iterable<TuesdayOgsaResource<?>> resources();
+
+    /**
+     * Parse the query and update our properties.
+     * 
+     */
+    public void parse();
 
     }

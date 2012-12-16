@@ -20,6 +20,9 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.adql.AdqlDBParser;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery.Factory;
+
 /**
  *
  *
@@ -59,5 +62,21 @@ public class TuesdayAdqlFactoriesImpl
     public TuesdayAdqlColumn.Factory columns()
         {
         return this.columns;
+        }
+
+    @Autowired
+    private TuesdayAdqlQuery.Factory queries;
+    @Override
+    public TuesdayAdqlQuery.Factory queries()
+        {
+        return this.queries;
+        }
+
+    @Autowired
+    private AdqlDBParser.Factory parsers;
+    @Override
+    public AdqlDBParser.Factory parsers()
+        {
+        return this.parsers;
         }
     }

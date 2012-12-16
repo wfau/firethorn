@@ -19,41 +19,23 @@ package uk.ac.roe.wfau.firethorn.adql ;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable.Mode;
-import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable.ModeApi;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseResource;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayOgsaResource;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayOgsaTable;
-
 import adql.db.DBChecker;
-import adql.db.DBColumn;
 import adql.db.DBTable;
 import adql.db.DefaultDBColumn;
 import adql.db.DefaultDBTable;
 import adql.parser.ADQLParser;
 import adql.query.ADQLQuery;
-import adql.query.from.ADQLTable;
-import adql.translator.ADQLTranslator;
-import adql.translator.PgSphereTranslator;
-import adql.translator.PostgreSQLTranslator;
 
 //import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMapping;
 //import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMappingService;
@@ -65,28 +47,6 @@ import adql.translator.PostgreSQLTranslator;
 public class AdqlParserTestCase
 extends TestBase
     {
-
-    /**
-     * The ADQL parser mode.
-     * 
-     */
-    private Mode mode = Mode.ALIASED; 
-    public ModeApi mode(Mode mode)
-        {
-        this.mode = mode;
-        return this.mode();
-        }
-    public ModeApi mode()
-        {
-        return new ModeApi()
-            {
-            @Override
-            public Mode mode()
-                {
-                return AdqlParserTestCase.this.mode ;
-                }
-            };
-        }
 
     /**
      * Our autowired AdqlDBTable factory.
@@ -441,9 +401,7 @@ extends TestBase
 							);
         
         return tables().create(
-            this.mode(
-                AdqlDBTable.Mode.ALIASED
-                ),
+            TuesdayAdqlQuery.Mode.DIRECT,
     		adqlResource.schemas().select(
 				"adql_schema"
 				).tables().select(
