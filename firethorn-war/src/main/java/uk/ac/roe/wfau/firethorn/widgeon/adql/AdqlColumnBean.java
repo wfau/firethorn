@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import lombok.extern.slf4j.Slf4j;
+
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
@@ -29,6 +31,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
  * Bean wrapper for <code>AdqlColumn</code>.
  *
  */
+@Slf4j
 public class AdqlColumnBean
 extends AbstractEntityBeanImpl<TuesdayAdqlColumn>
 implements EntityBean<TuesdayAdqlColumn>
@@ -45,6 +48,7 @@ implements EntityBean<TuesdayAdqlColumn>
             super(
                 iterable
                 );
+            log.debug("Iter(Iterable)");
             }
         @Override
         public EntityBean<TuesdayAdqlColumn> bean(final TuesdayAdqlColumn entity)
@@ -64,9 +68,12 @@ implements EntityBean<TuesdayAdqlColumn>
             AdqlColumnIdentFactory.TYPE_URI,
             entity
             );
+        log.debug("AdqlColumnBean()");
         }
+
     public URI getTable()
         {
+        log.debug("getTable()");
         try {
             return new URI(
                 entity().table().link()
@@ -82,6 +89,7 @@ implements EntityBean<TuesdayAdqlColumn>
 
     public String getFullName()
         {
+        log.debug("getFullName()");
         return entity().fullname().toString();
         }
     }

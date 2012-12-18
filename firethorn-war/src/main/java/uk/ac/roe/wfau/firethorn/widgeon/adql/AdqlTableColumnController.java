@@ -110,7 +110,7 @@ extends AbstractController
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException{
-        log.debug("schema() [{}]", ident);
+        log.debug("table() [{}]", ident);
         return factories().adql().tables().select(
             factories().adql().tables().idents().ident(
                 ident
@@ -129,9 +129,18 @@ extends AbstractController
         final TuesdayAdqlTable table
         ){
         log.debug("jsonSelect()");
-        return new AdqlColumnBean.Iter(
-            table.columns().select()
-            );
+        try {
+            return new AdqlColumnBean.Iter(
+                table.columns().select()
+                );
+            }
+        catch (Throwable ouch)
+            {
+            log.debug("Error executing JsonSelect()");
+            log.debug("  Class [{}]", ouch.getClass());
+            log.debug("  Error [{}]", ouch.getMessage());
+            return null ;
+            }
         }
 
     /**

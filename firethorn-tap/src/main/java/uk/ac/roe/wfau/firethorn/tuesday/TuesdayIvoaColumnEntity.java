@@ -210,7 +210,8 @@ public class TuesdayIvoaColumnEntity
     @Override
     public String link()
         {
-        // TODO Auto-generated method stub
-        return null;
+        return factories().ivoa().columns().links().link(
+            this
+            );
         }
     }

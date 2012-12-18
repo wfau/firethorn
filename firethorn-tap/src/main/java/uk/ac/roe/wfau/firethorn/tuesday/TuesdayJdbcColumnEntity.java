@@ -249,8 +249,9 @@ public class TuesdayJdbcColumnEntity
     @Override
     public String link()
         {
-        // TODO Auto-generated method stub
-        return null;
+        return factories().jdbc().columns().links().link(
+            this
+            );
         }
 
     /**

@@ -304,7 +304,8 @@ public class TuesdayAdqlColumnEntity
     @Override
     public String link()
         {
-        // TODO Auto-generated method stub
-        return null;
+        return factories().adql().columns().links().link(
+            this
+            );
         }
     }
