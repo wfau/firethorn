@@ -32,7 +32,7 @@ extends TuesdayBaseComponent
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory<TuesdayBaseResource<?>>
+    extends Entity.IdentFactory
         {
         }
 

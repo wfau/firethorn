@@ -18,6 +18,8 @@
 package uk.ac.roe.wfau.firethorn.tuesday;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.common.entity.Entity.LinkFactory;
 
 /**
  *
@@ -49,7 +51,7 @@ extends TuesdayBaseTable<TuesdayAdqlTable, TuesdayAdqlColumn>
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory<TuesdayAdqlTable>
+    extends Entity.IdentFactory
         {
         }
 
@@ -78,6 +80,12 @@ extends TuesdayBaseTable<TuesdayAdqlTable, TuesdayAdqlColumn>
          */
         public TuesdayAdqlColumn.Factory columns();
 
+        @Override
+        public TuesdayAdqlTable.IdentFactory idents();
+
+        @Override
+        public TuesdayAdqlTable.LinkFactory links();
+        
         }
 
     @Override

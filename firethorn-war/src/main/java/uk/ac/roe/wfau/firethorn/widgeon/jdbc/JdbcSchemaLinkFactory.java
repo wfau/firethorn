@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
@@ -41,7 +42,7 @@ implements TuesdayJdbcSchema.LinkFactory
      * The URI path for schema tables.
      *
      */
-    public static final String TABLES_PATH = SCHEMA_PATH + "/tables" ;
+    public static final String SCHEMA_TABLE_PATH = SCHEMA_PATH + "/tables" ;
 
     @Override
     public String link(final TuesdayJdbcSchema entity)
@@ -50,5 +51,12 @@ implements TuesdayJdbcSchema.LinkFactory
             SCHEMA_PATH,
             entity
             );
+        }
+
+    @Override
+    public Identifier parse(String string)
+        {
+        // TODO Auto-generated method stub
+        return null;
         }
     }

@@ -27,7 +27,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
  */
 @Component
 public class IdentityIdentFactory
-extends WebappIdentFactory<Identity>
+extends WebappIdentFactory
 implements Identity.IdentFactory
     {
     }

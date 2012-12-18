@@ -23,10 +23,11 @@ package uk.ac.roe.wfau.firethorn.tuesday;
  */
 public interface TuesdayBaseFactories
     {
+
     /**
-     * Our table alias resolver.
+     * Our table resolver.
      *
      */
-    public TuesdayBaseTableFactories tables();
+    public TuesdayBaseTable.Resolver tables();
 
     }

@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
+import java.net.URI;
+
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
@@ -28,7 +30,15 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
  */
 @Component
 public class AdqlSchemaIdentFactory
-extends WebappIdentFactory<TuesdayAdqlSchema>
+extends WebappIdentFactory
 implements TuesdayAdqlSchema.IdentFactory
     {
+    /**
+     * The type URI for this type.
+     * TODO - Move to AdqlSchema interface.
+     *
+     */
+    public static final URI TYPE_URI = URI.create(
+        "http://data.metagrid.co.uk/wfau/firethorn/types/adql-schema-1.0.json"
+        );
     }

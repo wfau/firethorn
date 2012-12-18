@@ -29,9 +29,9 @@ public class TuesdayBaseFactoriesImpl
     implements TuesdayBaseFactories
     {
     @Autowired
-    protected TuesdayBaseTableFactories tables;
+    protected TuesdayBaseTable.Resolver tables;
     @Override
-    public TuesdayBaseTableFactories tables()
+    public TuesdayBaseTable.Resolver tables()
         {
         return this.tables;
         }

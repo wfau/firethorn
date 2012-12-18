@@ -17,33 +17,50 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 
 /**
- * Bean iterator for <code>JdbcResource</code>.
+ * Bean wrapper for <code>AdqlTable</code>.
  *
  */
-public class AdqlResourceBeanIter
-extends AbstractEntityBeanIter<TuesdayAdqlResource>
+public class AdqlTableBean
+extends AbstractEntityBeanImpl<TuesdayAdqlTable>
+implements EntityBean<TuesdayAdqlTable>
     {
     /**
      * Public constructor.
      *
      */
-    public AdqlResourceBeanIter(final Iterable<TuesdayAdqlResource> iterable)
+    public AdqlTableBean(final TuesdayAdqlTable entity)
         {
         super(
-            iterable
+            AdqlTableIdentFactory.TYPE_URI,
+            entity
             );
         }
 
-    @Override
-    public EntityBean<TuesdayAdqlResource> bean(final TuesdayAdqlResource entity)
+    public static class Iter
+    extends AbstractEntityBeanIter<TuesdayAdqlTable>
         {
-        return new AdqlResourceBean(
-            entity
-            );
+        /**
+         * Public constructor.
+         *
+         */
+        public Iter(final Iterable<TuesdayAdqlTable> iterable)
+            {
+            super(
+                iterable
+                );
+            }
+        @Override
+        public EntityBean<TuesdayAdqlTable> bean(final TuesdayAdqlTable entity)
+            {
+            return new AdqlTableBean(
+                entity
+                );
+            }
         }
     }

@@ -21,8 +21,8 @@ package uk.ac.roe.wfau.firethorn.common.entity;
  *
  *
  */
-public abstract class EntityIdentFactory<EntityType extends Entity>
-implements Entity.IdentFactory<EntityType>
+public abstract class EntityIdentFactory
+implements Entity.IdentFactory
     {
     @Override
     public Identifier ident(final String string)

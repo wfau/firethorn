@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
@@ -31,9 +33,31 @@ public class AdqlSchemaLinkFactory
 extends WebappLinkFactory<TuesdayAdqlSchema>
 implements TuesdayAdqlSchema.LinkFactory
     {
+    /**
+     * The URI path for individual schema.
+     *
+     */
+    public static final String SCHEMA_PATH = "/adql/schema/" + IDENT_TOKEN ;
+
+    /**
+     * The URI path for schema tables.
+     *
+     */
+    public static final String SCHEMA_TABLE_PATH = SCHEMA_PATH + "/tables" ;
+
     @Override
     public String link(final TuesdayAdqlSchema entity)
         {
+        return link(
+            SCHEMA_PATH,
+            entity
+            );
+        }
+
+    @Override
+    public Identifier parse(String string)
+        {
+        // TODO Auto-generated method stub
         return null;
         }
     }

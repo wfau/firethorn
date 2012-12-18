@@ -120,6 +120,14 @@ public class TuesdayFactoriesImpl
         }
 
     @Autowired
+    private TuesdayOgsaFactories ogsa;
+    @Override
+    public TuesdayOgsaFactories ogsa()
+        {
+        return this.ogsa;
+        }
+
+    @Autowired
     private TuesdayAdqlFactories adql;
     @Override
     public TuesdayAdqlFactories adql()

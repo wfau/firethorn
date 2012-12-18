@@ -42,7 +42,7 @@ extends Entity
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory<ConfigProperty>
+    extends Entity.IdentFactory
         {
         }
 

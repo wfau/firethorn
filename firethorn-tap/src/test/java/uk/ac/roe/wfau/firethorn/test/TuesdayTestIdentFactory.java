@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.EntityIdentFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 
 /**
  * JUnit test implementation.
@@ -28,12 +29,18 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
  */
 @Component
 public class TuesdayTestIdentFactory<EntityType extends Entity>
-extends EntityIdentFactory<EntityType>
-implements Entity.IdentFactory<EntityType>, Entity.LinkFactory<EntityType>
+extends EntityIdentFactory
+implements Entity.IdentFactory, Entity.LinkFactory<EntityType>
     {
     @Override
     public String link(final EntityType entity)
         {
         return "test/" + entity.ident();
+        }
+
+    @Override
+    public Identifier parse(String string)
+        {
+        return null;
         }
     }

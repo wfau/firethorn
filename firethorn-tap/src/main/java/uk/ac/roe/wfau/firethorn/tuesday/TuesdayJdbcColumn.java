@@ -40,7 +40,7 @@ extends TuesdayBaseColumn<TuesdayJdbcColumn>, TuesdayOgsaColumn<TuesdayJdbcColum
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory<TuesdayJdbcColumn>
+    extends Entity.IdentFactory
         {
         }
 

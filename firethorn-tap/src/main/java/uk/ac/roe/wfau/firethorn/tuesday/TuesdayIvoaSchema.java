@@ -40,7 +40,7 @@ extends TuesdayBaseSchema<TuesdayIvoaSchema, TuesdayIvoaTable>
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory<TuesdayIvoaSchema>
+    extends Entity.IdentFactory
         {
         }
 

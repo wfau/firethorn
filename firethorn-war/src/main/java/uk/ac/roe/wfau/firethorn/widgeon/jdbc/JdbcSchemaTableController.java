@@ -43,7 +43,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcSchemaLinkFactory.TABLES_PATH)
+@RequestMapping(JdbcSchemaLinkFactory.SCHEMA_TABLE_PATH)
 public class JdbcSchemaTableController
 extends AbstractController
     {
@@ -51,7 +51,7 @@ extends AbstractController
     public Path path()
         {
         return new PathImpl(
-            JdbcSchemaLinkFactory.TABLES_PATH
+            JdbcSchemaLinkFactory.SCHEMA_TABLE_PATH
             );
         }
 
@@ -77,12 +77,6 @@ extends AbstractController
     public static final String SEARCH_PATH = "search" ;
 
     /**
-     * URL path for the create method.
-     *
-     */
-    public static final String CREATE_PATH = "create" ;
-
-    /**
      * MVC property for the Resource name.
      *
      */
@@ -105,12 +99,6 @@ extends AbstractController
      *
      */
     public static final String SEARCH_RESULT = "jdbc.schema.table.search.result" ;
-
-    /**
-     * MVC property for the create name.
-     *
-     */
-    public static final String CREATE_NAME = "jdbc.schema.table.create.name" ;
 
     /**
      * Get the parent entity based on the request ident.
@@ -145,52 +133,6 @@ extends AbstractController
         }
 
     /**
-     * Default HTML GET request (select all).
-     *
-     */
-    @RequestMapping(value="", method=RequestMethod.GET)
-    public ModelAndView htmlIndex(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final TuesdayJdbcSchema schema,
-        final ModelAndView model
-        ){
-        log.debug("htmlIndex()");
-        model.addObject(
-            JdbcSchemaTableController.SELECT_RESULT,
-            select(
-                schema
-                )
-            );
-        model.setViewName(
-            "jdbc/schema/select"
-            );
-        return model ;
-        }
-
-    /**
-     * HTML GET request to select all.
-     *
-     */
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
-    public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final TuesdayJdbcSchema schema,
-        final ModelAndView model
-        ){
-        log.debug("htmlSelect()");
-        model.addObject(
-            JdbcSchemaTableController.SELECT_RESULT,
-            select(
-                schema
-                )
-            );
-        model.setViewName(
-            "jdbc/catalog/select"
-            );
-        return model ;
-        }
-
-    /**
      * JSON GET request to select all.
      *
      */
@@ -222,36 +164,6 @@ extends AbstractController
                 name
                 )
             );
-        }
-
-    /**
-     * HTML request to select by name.
-     *
-     */
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
-    public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final TuesdayJdbcSchema schema,
-        @RequestParam(SELECT_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        log.debug("htmlSelect(String) [{}]", name);
-        model.addObject(
-            SELECT_NAME,
-            name
-            );
-        model.addObject(
-            SELECT_RESULT,
-            select(
-                schema,
-                name
-                )
-            );
-        model.setViewName(
-            "jdbc/catalog/select"
-            );
-        return model ;
         }
 
     /**
@@ -292,53 +204,6 @@ extends AbstractController
         }
 
     /**
-     * HTML GET request for the search form.
-     *
-     */
-    @RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
-    public ModelAndView htmlSearch(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final TuesdayJdbcSchema schema,
-        final ModelAndView model
-        ){
-        log.debug("htmlSearch");
-        model.setViewName(
-            "jdbc/catalog/search"
-            );
-        return model ;
-        }
-
-    /**
-     * HTML request to search by text.
-     *
-     */
-    @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
-    public ModelAndView htmlSearch(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final TuesdayJdbcSchema schema,
-        @RequestParam(SEARCH_TEXT)
-        final String text,
-        final ModelAndView model
-        ){
-        log.debug("htmlSearch(String) [{}]", text);
-        model.addObject(
-            SEARCH_TEXT,
-            text
-            );
-        model.addObject(
-            SEARCH_RESULT,
-            search(
-                schema,
-                text
-                )
-            );
-        model.setViewName(
-            "jdbc/catalog/search"
-            );
-        return model ;
-        }
-
-    /**
      * JSON request to search by text.
      *
      */
@@ -355,90 +220,6 @@ extends AbstractController
         return search(
             schema,
             text
-            );
-        }
-
-    /**
-     * HTML GET request for the create form.
-     *
-     */
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.GET)
-    public ModelAndView htmlCreate(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final TuesdayJdbcSchema schema,
-        final ModelAndView model
-        ){
-        log.debug("htmlCreate()");
-        model.setViewName(
-            "jdbc/catalog/create"
-            );
-        return model ;
-        }
-
-    /**
-     * Create a new entity.
-     *
-     */
-    public JdbcTableBean create(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final TuesdayJdbcSchema schema,
-        final String name
-        ){
-        log.debug("create(String) [{}]", name);
-        return new JdbcTableBean(
-            schema.tables().create(
-                name
-                )
-            );
-        }
-
-    /**
-     * HTML POST request to create a new entity.
-     *
-     */
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST)
-    public ResponseEntity<String>  htmlCreate(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final TuesdayJdbcSchema schema,
-        @RequestParam(CREATE_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        log.debug("htmlCreate(String) [{}]", name);
-        return new ResponseEntity<String>(
-            new RedirectHeader(
-                create(
-                    schema,
-                    name
-                    )
-                ),
-            HttpStatus.SEE_OTHER
-            );
-        }
-
-    /**
-     * JSON POST request to create a new entity.
-     *
-     */
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<JdbcTableBean> jsonCreate(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final TuesdayJdbcSchema schema,
-        @RequestParam(CREATE_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        log.debug("jsonCreate(String) [{}]", name);
-        final JdbcTableBean table = create(
-            schema,
-            name
-            );
-        return new ResponseEntity<JdbcTableBean>(
-            table,
-            new RedirectHeader(
-                table
-                ),
-            HttpStatus.CREATED
             );
         }
     }

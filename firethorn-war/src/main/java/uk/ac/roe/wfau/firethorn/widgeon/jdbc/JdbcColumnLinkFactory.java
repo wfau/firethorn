@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
@@ -44,5 +45,12 @@ implements TuesdayJdbcColumn.LinkFactory
             COLUMN_PATH,
             entity
             );
+        }
+
+    @Override
+    public Identifier parse(String string)
+        {
+        // TODO Auto-generated method stub
+        return null;
         }
     }

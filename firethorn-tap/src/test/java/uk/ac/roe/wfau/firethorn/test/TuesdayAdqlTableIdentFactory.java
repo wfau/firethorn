@@ -32,6 +32,6 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
 @Component
 public class TuesdayAdqlTableIdentFactory
 extends TuesdayTestIdentFactory<TuesdayAdqlTable>
-implements TuesdayAdqlTable.IdentFactory, TuesdayAdqlTable.LinkFactory
+implements TuesdayAdqlTable.IdentFactory
     {
     }

@@ -40,7 +40,7 @@ extends TuesdayBaseSchema<TuesdayJdbcSchema, TuesdayJdbcTable>
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory<TuesdayJdbcSchema>
+    extends Entity.IdentFactory
         {
         }
 

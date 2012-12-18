@@ -52,7 +52,7 @@ extends TuesdayOgsaTable<TuesdayJdbcTable, TuesdayJdbcColumn>, TuesdayBaseTable<
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory<TuesdayJdbcTable>
+    extends Entity.IdentFactory
         {
         }
 

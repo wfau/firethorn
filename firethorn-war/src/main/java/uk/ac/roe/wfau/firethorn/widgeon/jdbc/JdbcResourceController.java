@@ -87,25 +87,25 @@ public class JdbcResourceController
      * MVC property for updating the connection URL.
      *
      */
-    public static final String UPDATE_CONN_URL = "jdbc.resource.connection.update.url" ;
+    public static final String UPDATE_CONN_URL = "jdbc.resource.connection.url" ;
 
     /**
      * MVC property for updating the connection user name.
      *
      */
-    public static final String UPDATE_CONN_USER = "jdbc.resource.connection.update.user" ;
+    public static final String UPDATE_CONN_USER = "jdbc.resource.connection.user" ;
 
     /**
      * MVC property for updating the connection password.
      *
      */
-    public static final String UPDATE_CONN_PASS = "jdbc.resource.connection.update.pass" ;
+    public static final String UPDATE_CONN_PASS = "jdbc.resource.connection.pass" ;
 
     /**
      * MVC property for updating the connection status.
      *
      */
-    public static final String UPDATE_CONN_STATUS = "jdbc.resource.connection.update.status" ;
+    public static final String UPDATE_CONN_STATUS = "jdbc.resource.connection.status" ;
 
     /**
      * Wrap an entity as a bean.

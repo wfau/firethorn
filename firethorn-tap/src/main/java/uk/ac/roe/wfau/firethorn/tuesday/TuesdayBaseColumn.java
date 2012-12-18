@@ -31,7 +31,7 @@ extends TuesdayBaseComponent
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory<TuesdayBaseColumn<?>>
+    extends Entity.IdentFactory
         {
         }
 

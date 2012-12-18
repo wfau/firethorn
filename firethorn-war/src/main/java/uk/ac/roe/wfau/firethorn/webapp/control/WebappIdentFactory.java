@@ -18,16 +18,15 @@
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.Entity.IdentFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.EntityIdentFactory;
 
 /**
  * Base class for IdentFactory implementations within the webapp.
  *
  */
-public abstract class WebappIdentFactory<EntityType extends Entity>
-extends EntityIdentFactory<EntityType>
-implements IdentFactory<EntityType>
+public abstract class WebappIdentFactory
+extends EntityIdentFactory
+implements Entity.IdentFactory
     {
 
     }

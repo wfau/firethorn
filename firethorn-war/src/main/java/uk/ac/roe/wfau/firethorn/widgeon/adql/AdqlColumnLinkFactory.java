@@ -19,7 +19,9 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
@@ -32,9 +34,25 @@ public class AdqlColumnLinkFactory
 extends WebappLinkFactory<TuesdayAdqlColumn>
 implements TuesdayAdqlColumn.LinkFactory
     {
+    /**
+     * The URI path for individual columns.
+     *
+     */
+    public static final String COLUMN_PATH = "/adql/column/" + IDENT_TOKEN ;
+
     @Override
     public String link(final TuesdayAdqlColumn entity)
         {
+        return link(
+            COLUMN_PATH,
+            entity
+            );
+        }
+
+    @Override
+    public Identifier parse(String string)
+        {
+        // TODO Auto-generated method stub
         return null;
         }
     }

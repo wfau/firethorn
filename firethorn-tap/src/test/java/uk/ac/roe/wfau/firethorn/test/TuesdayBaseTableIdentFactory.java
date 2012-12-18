@@ -20,8 +20,6 @@ package uk.ac.roe.wfau.firethorn.test;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
 
 /**
  * JUnit test implementation.
@@ -30,7 +28,7 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
 @Component
 public class TuesdayBaseTableIdentFactory
 extends TuesdayTestIdentFactory<TuesdayBaseTable<?,?>>
-implements TuesdayBaseTable.IdentFactory
+implements TuesdayBaseTable.IdentFactory, TuesdayBaseTable.LinkFactory
     {
     @Override
     public String link(final TuesdayBaseTable<?,?> entity)

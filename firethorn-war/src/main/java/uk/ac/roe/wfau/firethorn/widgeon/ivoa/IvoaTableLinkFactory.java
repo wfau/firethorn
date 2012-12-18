@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
@@ -35,6 +36,14 @@ implements TuesdayIvoaTable.LinkFactory
     @Override
     public String link(final TuesdayIvoaTable entity)
         {
+        // TODO Auto-generated method stub
+        return null;
+        }
+
+    @Override
+    public Identifier parse(String string)
+        {
+        // TODO Auto-generated method stub
         return null;
         }
     }

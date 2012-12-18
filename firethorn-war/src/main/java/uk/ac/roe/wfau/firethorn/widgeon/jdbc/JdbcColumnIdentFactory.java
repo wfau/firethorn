@@ -30,12 +30,13 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
  */
 @Component
 public class JdbcColumnIdentFactory
-extends WebappIdentFactory<TuesdayJdbcColumn>
+extends WebappIdentFactory
 implements TuesdayJdbcColumn.IdentFactory
     {
     /**
      * The type URI for this type.
-     *
+     * TODO - Move to JdbcColumn interface.
+     *   
      */
     public static final URI TYPE_URI = URI.create(
         "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-column-1.0.json"

@@ -48,7 +48,7 @@ extends TuesdayOgsaResource<TuesdayJdbcSchema>, TuesdayBaseResource<TuesdayJdbcS
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory<TuesdayJdbcResource>
+    extends Entity.IdentFactory
         {
         }
 

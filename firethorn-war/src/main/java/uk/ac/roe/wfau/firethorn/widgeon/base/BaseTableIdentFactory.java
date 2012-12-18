@@ -15,18 +15,20 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.tuesday;
+package uk.ac.roe.wfau.firethorn.widgeon.base;
+
+import org.springframework.stereotype.Component;
+
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- * Our JDBC component factories
+ * Ident factory for <code>JdbcColumn</code>.
  *
  */
-public interface TuesdayBaseTableFactories
+@Component
+public class BaseTableIdentFactory
+extends WebappIdentFactory
+implements TuesdayBaseTable.IdentFactory
     {
-    /**
-     * Our table alias resolver.
-     *
-     */
-    public TuesdayBaseTable.AliasResolver resolver();
-
     }

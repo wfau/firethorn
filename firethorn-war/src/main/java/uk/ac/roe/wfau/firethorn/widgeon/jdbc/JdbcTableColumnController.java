@@ -43,7 +43,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcTableLinkFactory.COLUMNS_PATH)
+@RequestMapping(JdbcTableLinkFactory.TABLE_COLUMN_PATH)
 public class JdbcTableColumnController
 extends AbstractController
     {
@@ -51,7 +51,7 @@ extends AbstractController
     public Path path()
         {
         return new PathImpl(
-            JdbcTableLinkFactory.COLUMNS_PATH
+            JdbcTableLinkFactory.TABLE_COLUMN_PATH
             );
         }
 
@@ -77,12 +77,6 @@ extends AbstractController
     public static final String SEARCH_PATH = "search" ;
 
     /**
-     * URL path for the create method.
-     *
-     */
-    public static final String CREATE_PATH = "create" ;
-
-    /**
      * MVC property for the Resource name.
      *
      */
@@ -105,12 +99,6 @@ extends AbstractController
      *
      */
     public static final String SEARCH_RESULT = "jdbc.table.column.search.result" ;
-
-    /**
-     * MVC property for the create name.
-     *
-     */
-    public static final String CREATE_NAME = "jdbc.table.column.create.name" ;
 
     /**
      * Get the parent entity based on the request ident.
@@ -355,90 +343,6 @@ extends AbstractController
         return search(
             table,
             text
-            );
-        }
-
-    /**
-     * HTML GET request for the create form.
-     *
-     */
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.GET)
-    public ModelAndView htmlCreate(
-        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final TuesdayJdbcTable table,
-        final ModelAndView model
-        ){
-        log.debug("htmlCreate()");
-        model.setViewName(
-            "jdbc/catalog/create"
-            );
-        return model ;
-        }
-
-    /**
-     * Create a new entity.
-     *
-     */
-    public JdbcColumnBean create(
-        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final TuesdayJdbcTable table,
-        final String name
-        ){
-        log.debug("create(String) [{}]", name);
-        return new JdbcColumnBean(
-            table.columns().create(
-                name
-                )
-            );
-        }
-
-    /**
-     * HTML POST request to create a new entity.
-     *
-     */
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST)
-    public ResponseEntity<String>  htmlCreate(
-        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final TuesdayJdbcTable table,
-        @RequestParam(CREATE_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        log.debug("htmlCreate(String) [{}]", name);
-        return new ResponseEntity<String>(
-            new RedirectHeader(
-                create(
-                    table,
-                    name
-                    )
-                ),
-            HttpStatus.SEE_OTHER
-            );
-        }
-
-    /**
-     * JSON POST request to create a new entity.
-     *
-     */
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<JdbcColumnBean> jsonCreate(
-        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final TuesdayJdbcTable table,
-        @RequestParam(CREATE_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        log.debug("jsonCreate(String) [{}]", name);
-        final JdbcColumnBean column = create(
-            table,
-            name
-            );
-        return new ResponseEntity<JdbcColumnBean>(
-            column,
-            new RedirectHeader(
-                column
-                ),
-            HttpStatus.CREATED
             );
         }
     }

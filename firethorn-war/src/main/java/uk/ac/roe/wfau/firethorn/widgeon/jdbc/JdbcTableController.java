@@ -106,21 +106,6 @@ public class JdbcTableController
         }
 
     /**
-     * HTML GET request.
-     *
-     */
-    @RequestMapping(method=RequestMethod.GET)
-    public ModelAndView htmlSelect(
-        final ModelAndView model
-        ){
-        log.debug("htmlSelect()");
-        model.setViewName(
-            "jdbc/catalog/display"
-            );
-        return model ;
-        }
-
-    /**
      * JSON GET request.
      *
      */

@@ -17,6 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
+
 /**
  *
  *
@@ -24,6 +27,30 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 public interface TuesdayOgsaTable<TableType extends TuesdayBaseTable<TableType,  ColumnType>, ColumnType extends TuesdayBaseColumn<ColumnType>>
 extends TuesdayBaseTable<TableType, ColumnType>
     {
+    /**
+     * Link factory interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<TuesdayOgsaTable<?,?>>
+        {
+        }
+
+    /**
+     * Alias resolver interface.
+     *
+     */
+    public static interface AliasResolver
+        {
+        /**
+         * Resolve an alias into a table.
+         *
+         */
+        public TuesdayOgsaTable<?,?> resolve(final String alias)
+        throws NotFoundException;
+
+        }
+
     @Override
     public String alias();
 

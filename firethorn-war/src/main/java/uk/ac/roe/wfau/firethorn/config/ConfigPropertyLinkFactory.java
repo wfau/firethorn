@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.config;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
@@ -33,6 +34,14 @@ implements ConfigProperty.LinkFactory
     @Override
     public String link(final ConfigProperty entity)
         {
+        // TODO Auto-generated method stub
+        return null;
+        }
+
+    @Override
+    public Identifier parse(String string)
+        {
+        // TODO Auto-generated method stub
         return null;
         }
     }

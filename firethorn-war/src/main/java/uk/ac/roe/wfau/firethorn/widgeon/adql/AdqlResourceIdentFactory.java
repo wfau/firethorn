@@ -30,11 +30,12 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
  */
 @Component
 public class AdqlResourceIdentFactory
-extends WebappIdentFactory<TuesdayAdqlResource>
+extends WebappIdentFactory
 implements TuesdayAdqlResource.IdentFactory
     {
     /**
      * The type URI for this type.
+     * TODO - Move to AdqlResource interface.
      *
      */
     public static final URI TYPE_URI = URI.create(

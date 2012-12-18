@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
@@ -33,22 +34,22 @@ implements TuesdayAdqlResource.LinkFactory
     {
 
     /**
-     * The URI path for the resource service.
+     * The URI path for the service.
      *
      */
-    public static final String RESOURCES_PATH = "/adql/resources";
+    public static final String SERVICE_PATH = "/adql/resources";
 
     /**
-     * The URI path for individual resources.
+     * The URI path for individual objects.
      *
      */
     public static final String RESOURCE_PATH = "/adql/resource/" + IDENT_TOKEN ;
 
     /**
-     * The URI path for resource catalogs.
+     * The URI path for resource schema.
      *
      */
-    public static final String CATALOGS_PATH = RESOURCE_PATH + "/catalogs" ;
+    public static final String RESOURCE_SCHEMA_PATH = RESOURCE_PATH + "/schemas" ;
 
     @Override
     public String link(final TuesdayAdqlResource entity)
@@ -57,5 +58,12 @@ implements TuesdayAdqlResource.LinkFactory
             RESOURCE_PATH,
             entity
             );
+        }
+
+    @Override
+    public Identifier parse(String string)
+        {
+        // TODO Auto-generated method stub
+        return null;
         }
     }

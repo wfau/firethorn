@@ -38,12 +38,12 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
- * Spring MVC controller for <code>JdbcSchema</code> schemas.
+ * Spring MVC controller for <code>JdbcResource</code> schema.
  *
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcResourceLinkFactory.SCHEMA_PATH)
+@RequestMapping(JdbcResourceLinkFactory.RESOURCE_SCHEMA_PATH)
 public class JdbcResourceSchemaController
 extends AbstractController
     {
@@ -51,7 +51,7 @@ extends AbstractController
     public Path path()
         {
         return new PathImpl(
-            JdbcResourceLinkFactory.SCHEMA_PATH
+            JdbcResourceLinkFactory.RESOURCE_SCHEMA_PATH
             );
         }
 
@@ -79,8 +79,8 @@ extends AbstractController
     /**
      * URL path for the create method.
      *
-     */
     public static final String CREATE_PATH = "create" ;
+     */
 
     /**
      * MVC property for the Resource name.
@@ -109,8 +109,8 @@ extends AbstractController
     /**
      * MVC property for the create name.
      *
-     */
     public static final String CREATE_NAME = "jdbc.resource.schema.create.name" ;
+     */
 
     /**
      * Get the parent entity based on the request ident.
@@ -359,26 +359,8 @@ extends AbstractController
         }
 
     /**
-     * HTML GET request for the create form.
+     * Create a new schema.
      *
-     */
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.GET)
-    public ModelAndView htmlCreate(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final TuesdayJdbcResource resource,
-        final ModelAndView model
-        ){
-        log.debug("htmlCreate()");
-        model.setViewName(
-            "jdbc/catalog/create"
-            );
-        return model ;
-        }
-
-    /**
-     * Create a new entity.
-     *
-     */
     public JdbcSchemaBean create(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
         final TuesdayJdbcResource resource,
@@ -391,35 +373,11 @@ extends AbstractController
                 )
             );
         }
+     */
 
     /**
-     * HTML POST request to create a new entity.
+     * JSON POST request to create a new schema.
      *
-     */
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST)
-    public ResponseEntity<String>  htmlCreate(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final TuesdayJdbcResource resource,
-        @RequestParam(CREATE_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        log.debug("htmlCreate(String) [{}]", name);
-        return new ResponseEntity<String>(
-            new RedirectHeader(
-                create(
-                    resource,
-                    name
-                    )
-                ),
-            HttpStatus.SEE_OTHER
-            );
-        }
-
-    /**
-     * JSON POST request to create a new entity.
-     *
-     */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<JdbcSchemaBean> jsonCreate(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
@@ -441,4 +399,5 @@ extends AbstractController
             HttpStatus.CREATED
             );
         }
+     */
     }

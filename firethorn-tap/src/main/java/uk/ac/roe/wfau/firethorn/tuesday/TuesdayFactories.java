@@ -46,6 +46,12 @@ public interface TuesdayFactories
     public TuesdayBaseFactories base();
 
     /**
+     * Our ogsa component factories.
+     *
+     */
+    public TuesdayOgsaFactories ogsa();
+
+    /**
      * Our ADQL component factories.
      *
      */

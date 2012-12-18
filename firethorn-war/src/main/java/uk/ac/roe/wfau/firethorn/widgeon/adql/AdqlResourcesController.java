@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,15 +27,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
- * Spring MVC controller for <code>JdbcResource</code>.
+ * Spring MVC controller for <code>AdqlResources</code>.
  * TODO better exception handling.
+ * 
  */
 @Controller
-@RequestMapping(AdqlResourceLinkFactory.RESOURCES_PATH)
+@RequestMapping(AdqlResourceLinkFactory.SERVICE_PATH)
 public class AdqlResourcesController
 extends AbstractController
     {
@@ -42,7 +46,7 @@ extends AbstractController
     public Path path()
         {
         return new PathImpl(
-            AdqlResourceLinkFactory.RESOURCES_PATH
+            AdqlResourceLinkFactory.SERVICE_PATH
             );
         }
 
@@ -77,60 +81,31 @@ extends AbstractController
      * MVC property for the select name.
      *
      */
-    public static final String SELECT_NAME = "adql.resources.select.name" ;
+    public static final String SELECT_NAME = "adql.resource.select.name" ;
 
     /**
      * MVC property for the select results.
      *
      */
-    public static final String SELECT_RESULT = "adql.resources.select.result" ;
+    public static final String SELECT_RESULT = "adql.resource.select.result" ;
 
     /**
      * MVC property for the search text.
      *
      */
-    public static final String SEARCH_TEXT = "adql.resources.search.text" ;
+    public static final String SEARCH_TEXT = "adql.resource.search.text" ;
 
     /**
      * MVC property for the search results.
      *
      */
-    public static final String SEARCH_RESULT = "adql.resources.search.result" ;
+    public static final String SEARCH_RESULT = "adql.resource.search.result" ;
 
     /**
-     * HTML GET request to display the index page.
+     * MVC property for the create name.
      *
      */
-    @RequestMapping(value="", method=RequestMethod.GET)
-    public ModelAndView htmlIndex(
-        final ModelAndView model
-        ){
-        model.setViewName(
-            "adql/resource/index"
-            );
-        return model ;
-        }
-
-    /**
-     * HTML GET request to select all.
-     * @todo Wrap the entities as beans (with URI)
-     *
-     */
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
-    public ModelAndView htmlSelect(
-        final ModelAndView model
-        ){
-        model.addObject(
-            SELECT_RESULT,
-            new AdqlResourceBeanIter(
-                factories().adql().resources().select()
-                )
-            );
-        model.setViewName(
-            "adql/resource/select"
-            );
-        return model ;
-        }
+    public static final String CREATE_NAME = "adql.resource.create.name" ;
 
     /**
      * JSON GET request to select all.
@@ -138,55 +113,12 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public AdqlResourceBeanIter jsonSelect(
+    public AdqlResourceBean.Iter jsonSelect(
         final ModelAndView model
         ){
-        return new AdqlResourceBeanIter(
+        return new AdqlResourceBean.Iter(
             factories().adql().resources().select()
             );
-        }
-
-    /**
-     * HTML GET request to display the search form.
-     *
-     */
-    @RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
-    public ModelAndView htmlSearch(
-        final ModelAndView model
-        ){
-        model.setViewName(
-            "adql/resource/search"
-            );
-        return model ;
-        }
-
-    /**
-     * HTML GET or POST request to search by text.
-     * @todo Wrap the entities as beans (with URI)
-     *
-     */
-    @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
-    public ModelAndView htmlSearch(
-        @RequestParam(SEARCH_TEXT)
-        final String text,
-        final ModelAndView model
-        ){
-        model.addObject(
-            SEARCH_TEXT,
-            text
-            );
-        model.addObject(
-            SEARCH_RESULT,
-            new AdqlResourceBeanIter(
-                factories().adql().resources().search(
-                    text
-                    )
-                )
-            );
-        model.setViewName(
-            "adql/resource/search"
-            );
-        return model ;
         }
 
     /**
@@ -195,17 +127,39 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public AdqlResourceBeanIter jsonSearch(
+    public AdqlResourceBean.Iter jsonSearch(
         @RequestParam(SEARCH_TEXT)
         final String text,
         final ModelAndView model
         ){
-        return new AdqlResourceBeanIter(
+        return new AdqlResourceBean.Iter(
             factories().adql().resources().search(
                 text
                 )
             );
         }
 
+    /**
+     * JSON POST request to create a new resource.
+     *
+     */
+    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
+    public ResponseEntity<AdqlResourceBean> jsonCreate(
+        @RequestParam(value=CREATE_NAME, required=true)
+        final String name,
+        final ModelAndView model
+        ){
+        final AdqlResourceBean bean = new AdqlResourceBean(
+            factories().adql().resources().create(
+                name
+                )
+            );
+        return new ResponseEntity<AdqlResourceBean>(
+            bean,
+            new RedirectHeader(
+                bean
+                ),
+            HttpStatus.CREATED
+            );
+        }
     }
-

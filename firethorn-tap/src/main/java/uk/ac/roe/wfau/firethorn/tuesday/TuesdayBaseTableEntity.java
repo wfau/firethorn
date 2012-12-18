@@ -37,6 +37,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable.IdentFactory;
 
 /**
  *
@@ -75,30 +76,13 @@ extends TuesdayBaseComponentEntity
     protected static final String DB_TABLE_NAME = "TuesdayBaseTableEntity";
 
     /**
-     * Alias factory implementation.
-     *
-    @Repository
-    public static class AliasFactory
-    implements TuesdayBaseTable.AliasFactory
-        {
-        protected static final String PREFIX = "BASE_" ;
-
-        @Override
-        public String alias(final TuesdayBaseTable<?,?> table)
-            {
-            return PREFIX + table.ident();
-            }
-        }
-     */
-
-    /**
      * Alias resolver implementation.
      *
      */
     @Repository
-    public static class AliasResolver
+    public static class Resolver
     extends AbstractFactory<TuesdayBaseTable<?,?>>
-    implements TuesdayBaseTable.AliasResolver
+    implements TuesdayBaseTable.Resolver
         {
         @Override
         public Class<?> etype()
@@ -120,10 +104,12 @@ extends TuesdayBaseComponentEntity
             return null;
             }
 
+        //
+        // TODO Change this to use a regex to match the alias.
         protected static final String PREFIX = "BASE_" ;
 
         @Override
-        public TuesdayBaseTable<?,?> select(final String alias)
+        public TuesdayBaseTable<?,?> resolve(final String alias)
         throws NotFoundException
             {
             return this.select(

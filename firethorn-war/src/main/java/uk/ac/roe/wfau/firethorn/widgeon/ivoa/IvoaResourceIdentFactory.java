@@ -30,7 +30,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
  */
 @Component
 public class IvoaResourceIdentFactory
-extends WebappIdentFactory<TuesdayIvoaResource>
+extends WebappIdentFactory
 implements TuesdayIvoaResource.IdentFactory
     {
     /**

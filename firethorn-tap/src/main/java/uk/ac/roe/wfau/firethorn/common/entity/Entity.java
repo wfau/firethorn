@@ -44,13 +44,19 @@ public interface Entity
          */
         public String link(final EntityType entity);
 
+        /**
+         * Parse a link into an Identifier.
+         *
+         */
+        public Identifier parse(final String string);
+
         }
 
     /**
      * Common interface for an Identifier factory.
      *
      */
-    public interface IdentFactory<EntityType extends Entity>
+    public interface IdentFactory
         {
         /**
          * Create an Identifier from a String.
@@ -77,7 +83,7 @@ public interface Entity
          * Our local Identifier factory.
          *
          */
-        public IdentFactory<EntityType> idents();
+        public IdentFactory idents();
 
         /**
          * Our local link factory.

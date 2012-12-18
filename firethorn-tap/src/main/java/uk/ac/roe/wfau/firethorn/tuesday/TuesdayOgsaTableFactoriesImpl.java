@@ -19,19 +19,20 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  *
  */
 @Component
-public class TuesdayBaseTableFactoriesImpl
-    implements TuesdayBaseTableFactories
+public class TuesdayOgsaTableFactoriesImpl
+    implements TuesdayOgsaTableFactories
     {
     @Autowired
-    protected TuesdayBaseTable.AliasResolver resolver;
+    protected TuesdayOgsaTable.AliasResolver resolver;
     @Override
-    public TuesdayBaseTable.AliasResolver resolver()
+    public TuesdayOgsaTable.AliasResolver resolver()
         {
         return this.resolver;
         }

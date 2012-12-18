@@ -41,7 +41,7 @@ extends TuesdayBaseComponent
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory<TuesdayBaseTable<?,?>>
+    extends Entity.IdentFactory
         {
         }
 
@@ -62,13 +62,14 @@ extends TuesdayBaseComponent
      * Alias resolver interface.
      *
      */
-    public static interface AliasResolver
+    public static interface Resolver
+    extends Entity.Factory<TuesdayBaseTable<?,?>>
         {
         /**
          * Resolve an alias into a table.
          *
          */
-        public TuesdayBaseTable<?,?> select(final String alias)
+        public TuesdayBaseTable<?,?> resolve(final String alias)
         throws NotFoundException;
 
         }

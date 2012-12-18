@@ -37,7 +37,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
- * Spring MVC controller for <code>JdbcResource</code>.
+ * Spring MVC controller for <code>AdqlResource</code>.
  *
  */
 @Slf4j
@@ -112,20 +112,6 @@ public class AdqlResourceController
                 )
             );
         return entity ;
-        }
-
-    /**
-     * HTML GET request.
-     *
-     */
-    @RequestMapping(method=RequestMethod.GET)
-    public ModelAndView htmlSelect(
-        final ModelAndView model
-        ){
-        model.setViewName(
-            "adql/resource/display"
-            );
-        return model ;
         }
 
     /**

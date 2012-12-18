@@ -45,6 +45,9 @@ public abstract class AbstractFactory<EntityType extends Entity>
 implements Entity.Factory<EntityType>
     {
 
+    @Override
+    public abstract Entity.IdentFactory idents();
+
     /**
      * Get the class of Entity we manage.
      * Required because we can't get this from the generics at runtime, because ....
@@ -276,10 +279,6 @@ implements Entity.Factory<EntityType>
         // http://www.stpe.se/2008/07/hibernate-hql-like-query-named-parameters/
         return new StringBuilder(text).append("%").toString();
         }
-
-    @Override
-    public abstract Entity.IdentFactory<EntityType> idents();
-
     }
 
 

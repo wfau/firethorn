@@ -40,7 +40,7 @@ extends TuesdayBaseColumn<TuesdayIvoaColumn>, TuesdayOgsaColumn<TuesdayIvoaColum
      *
      */
     public static interface IdentFactory
-    extends Entity.IdentFactory<TuesdayIvoaColumn>
+    extends Entity.IdentFactory
         {
         }
 

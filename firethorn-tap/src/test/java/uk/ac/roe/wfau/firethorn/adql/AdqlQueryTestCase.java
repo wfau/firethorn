@@ -49,7 +49,7 @@ extends TestBase
     public TuesdayBaseTable<?,?> resolve(ADQLTable querytable)
     throws Exception
         {
-        return factories().base().tables().resolver().select(
+        return factories().base().tables().resolve(
             querytable.getDBLink().getDBName()
             );
         }

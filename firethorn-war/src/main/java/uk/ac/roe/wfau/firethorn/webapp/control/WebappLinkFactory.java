@@ -17,12 +17,15 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
+import org.springframework.stereotype.Component;
+
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 
 /**
  * Base class for IdentFactory implementations within the webapp.
  *
  */
+@Component
 public abstract class WebappLinkFactory<EntityType extends Entity>
 implements Entity.LinkFactory<EntityType>
     {
@@ -50,9 +53,17 @@ implements Entity.LinkFactory<EntityType>
      */
     protected String link(final String path, final Entity entity)
         {
+        return link(
+            path,
+            entity.ident().value().toString()
+            ); 
+        }
+
+    protected String link(final String path, final String ident)
+        {
         return SERVICE_PATH + path.replaceFirst(
             IDENT_REGEX,
-            entity.ident().value().toString()
+            ident
             );
         }
     }

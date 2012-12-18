@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
@@ -41,7 +42,7 @@ implements TuesdayJdbcTable.LinkFactory
      * The URI path for table columns.
      *
      */
-    public static final String COLUMNS_PATH = TABLE_PATH + "/columns" ;
+    public static final String TABLE_COLUMN_PATH = TABLE_PATH + "/columns" ;
 
     @Override
     public String link(final TuesdayJdbcTable entity)
@@ -50,5 +51,12 @@ implements TuesdayJdbcTable.LinkFactory
             TABLE_PATH,
             entity
             );
+        }
+
+    @Override
+    public Identifier parse(String string)
+        {
+        // TODO Auto-generated method stub
+        return null;
         }
     }

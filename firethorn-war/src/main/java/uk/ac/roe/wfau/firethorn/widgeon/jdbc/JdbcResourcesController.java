@@ -40,7 +40,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  * 
  */
 @Controller
-@RequestMapping(JdbcResourceLinkFactory.RESOURCES_PATH)
+@RequestMapping(JdbcResourceLinkFactory.SERVICE_PATH)
 public class JdbcResourcesController
 extends AbstractController
     {
@@ -49,7 +49,7 @@ extends AbstractController
     public Path path()
         {
         return new PathImpl(
-            JdbcResourceLinkFactory.RESOURCES_PATH
+            JdbcResourceLinkFactory.SERVICE_PATH
             );
         }
 
@@ -84,49 +84,49 @@ extends AbstractController
      * MVC property for the select name.
      *
      */
-    public static final String SELECT_NAME = "jdbc.resources.select.name" ;
+    public static final String SELECT_NAME = "jdbc.resource.select.name" ;
 
     /**
      * MVC property for the select results.
      *
      */
-    public static final String SELECT_RESULT = "jdbc.resources.select.result" ;
+    public static final String SELECT_RESULT = "jdbc.resource.select.result" ;
 
     /**
      * MVC property for the search text.
      *
      */
-    public static final String SEARCH_TEXT = "jdbc.resources.search.text" ;
+    public static final String SEARCH_TEXT = "jdbc.resource.search.text" ;
 
     /**
      * MVC property for the search results.
      *
      */
-    public static final String SEARCH_RESULT = "jdbc.resources.search.result" ;
+    public static final String SEARCH_RESULT = "jdbc.resource.search.result" ;
 
     /**
      * MVC property for the create name.
      *
      */
-    public static final String CREATE_NAME = "jdbc.resources.create.name" ;
+    public static final String CREATE_NAME = "jdbc.resource.create.name" ;
 
     /**
      * MVC property for setting the connection URL.
      *
      */
-    public static final String CREATE_URL = "jdbc.resources.create.url" ;
+    public static final String CREATE_URL = "jdbc.resource.create.url" ;
 
     /**
      * MVC property for setting the connection user name.
      *
      */
-    public static final String CREATE_USER = "jdbc.resources.create.user" ;
+    public static final String CREATE_USER = "jdbc.resource.create.user" ;
 
     /**
      * MVC property for setting the connection password.
      *
      */
-    public static final String CREATE_PASS = "jdbc.resources.create.pass" ;
+    public static final String CREATE_PASS = "jdbc.resource.create.pass" ;
 
     /**
      * HTML GET request to display the index page.
@@ -307,11 +307,11 @@ extends AbstractController
                 pass
                 )
             );
-
+        //
+        // TODO - temp fix to trigger scan
         bean.entity().connection().status(
                 TuesdayJdbcConnection.Status.ENABLED
                 );
-
         return new ResponseEntity<JdbcResourceBean>(
             bean,
             new RedirectHeader(

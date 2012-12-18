@@ -19,10 +19,11 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 
 /**
- * Bean wrapper for <code>JdbcResource</code>.
+ * Bean wrapper for <code>AdqlResource</code>.
  *
  */
 public class AdqlResourceBean
@@ -41,4 +42,25 @@ implements EntityBean<TuesdayAdqlResource>
             );
         }
 
+    public static class Iter
+    extends AbstractEntityBeanIter<TuesdayAdqlResource>
+        {
+        /**
+         * Public constructor.
+         *
+         */
+        public Iter(final Iterable<TuesdayAdqlResource> iterable)
+            {
+            super(
+                iterable
+                );
+            }
+        @Override
+        public EntityBean<TuesdayAdqlResource> bean(final TuesdayAdqlResource entity)
+            {
+            return new AdqlResourceBean(
+                entity
+                );
+            }
+        }
     }
