@@ -34,7 +34,7 @@ implements TuesdayAdqlColumn.LinkFactory
     public TuesdayAdqlColumnLinkFactory()
         {
         super(
-            "adql/column"
+            "/adql/column"
             );
         }
     }

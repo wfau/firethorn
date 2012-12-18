@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 
 /**
@@ -29,6 +30,28 @@ public class JdbcResourceBean
 extends AbstractEntityBeanImpl<TuesdayJdbcResource>
 implements EntityBean<TuesdayJdbcResource>
     {
+    public static class Iter
+    extends AbstractEntityBeanIter<TuesdayJdbcResource>
+        {
+        /**
+         * Public constructor.
+         *
+         */
+        public Iter(final Iterable<TuesdayJdbcResource> iterable)
+            {
+            super(
+                iterable
+                );
+            }
+
+        @Override
+        public EntityBean<TuesdayJdbcResource> bean(final TuesdayJdbcResource entity)
+            {
+            return new JdbcResourceBean(
+                entity
+                );
+            }
+        }
     /**
      * Public constructor.
      *
@@ -43,9 +66,9 @@ implements EntityBean<TuesdayJdbcResource>
 
     public class ConnectionBean
         {
-        public String getUrl()
+        public String getUri()
             {
-            return entity().connection().url();
+            return entity().connection().uri();
             }
         public String getUser()
             {
@@ -62,7 +85,7 @@ implements EntityBean<TuesdayJdbcResource>
         return new ConnectionBean();
         }
 
-    public String getOgsaResourceId()
+    public String getOgsaResource()
     	{
     	return entity().ogsaid();
     	}

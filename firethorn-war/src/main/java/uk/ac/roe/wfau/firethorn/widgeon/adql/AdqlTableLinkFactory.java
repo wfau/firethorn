@@ -17,14 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
@@ -38,11 +32,24 @@ public class AdqlTableLinkFactory
 extends WebappLinkFactory<TuesdayAdqlTable>
 implements TuesdayAdqlTable.LinkFactory
     {
+    protected AdqlTableLinkFactory()
+        {
+        super(
+            SERVICE_PATH
+            );
+        }
+
+    /**
+     * The URI path for the service.
+     *
+     */
+    public static final String SERVICE_PATH = "/adql/table";
+
     /**
      * The URI path for individual tables.
      *
      */
-    public static final String TABLE_PATH = "/adql/table/" + IDENT_TOKEN ;
+    public static final String TABLE_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
 
     /**
      * The URI path for table columns.
@@ -57,47 +64,5 @@ implements TuesdayAdqlTable.LinkFactory
             TABLE_PATH,
             entity
             );
-        }
-
-    @Override
-    public Identifier parse(String string)
-        {
-        return parse(
-            pattern,
-            string
-            );
-        }
-
-    /**
-     * Our local Identifier factory.
-     * 
-     */
-    @Autowired
-    private TuesdayAdqlTable.IdentFactory idents ;
-
-    /**
-     * Our link regular expression pattern.
-     * 
-     */
-    protected static final Pattern pattern = Pattern.compile(
-        ".*/adql/table/(\\p{Alnum}+).*"
-        );
-
-    protected Identifier parse(Pattern pattern, String string)
-        {
-        Matcher matcher = pattern.matcher(
-            string
-            );
-        if (matcher.matches())
-            {
-            return this.idents.ident(
-                matcher.group(1)
-                );
-            }
-        else {
-            throw new IdentifierFormatException(
-                string
-                );
-            }
         }
     }

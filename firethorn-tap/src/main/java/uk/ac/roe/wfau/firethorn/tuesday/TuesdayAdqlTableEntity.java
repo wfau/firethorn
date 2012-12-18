@@ -249,7 +249,7 @@ public class TuesdayAdqlTableEntity
 
     protected TuesdayAdqlTableEntity(final TuesdayAdqlSchema schema, final TuesdayBaseTable<?, ?> base, final String name)
         {
-        super(schema, name);
+        super(schema, ((name != null) ? name : base.name()));
         this.base   = base;
         this.schema = schema;
         }

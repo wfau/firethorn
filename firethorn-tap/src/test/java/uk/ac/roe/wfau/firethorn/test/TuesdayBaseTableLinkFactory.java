@@ -41,7 +41,7 @@ implements TuesdayBaseTable.LinkFactory
     public TuesdayBaseTableLinkFactory()
         {
         super(
-            "base/table"
+            "/base/table"
             );
         }
     }

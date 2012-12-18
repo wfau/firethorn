@@ -122,12 +122,12 @@ extends AbstractController
      * Select all.
      *
      */
-    public JdbcTableBeanIter select(
+    public JdbcTableBean.Iter select(
         @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
         final TuesdayJdbcSchema schema
         ){
         log.debug("select()");
-        return new JdbcTableBeanIter(
+        return new JdbcTableBean.Iter(
             schema.tables().select()
             );
         }
@@ -138,7 +138,7 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcTableBeanIter jsonSelect(
+    public JdbcTableBean.Iter jsonSelect(
         @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
         final TuesdayJdbcSchema schema,
         final ModelAndView model
@@ -190,13 +190,13 @@ extends AbstractController
      * Search by text.
      *
      */
-    public JdbcTableBeanIter search(
+    public JdbcTableBean.Iter search(
         @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
         final TuesdayJdbcSchema schema,
         final String text
         ){
         log.debug("search(String) [{}]", text);
-        return new JdbcTableBeanIter(
+        return new JdbcTableBean.Iter(
             schema.tables().search(
                 text
                 )
@@ -209,7 +209,7 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public JdbcTableBeanIter jsonSearch(
+    public JdbcTableBean.Iter jsonSearch(
         @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
         final TuesdayJdbcSchema schema,
         @RequestParam(SEARCH_TEXT)

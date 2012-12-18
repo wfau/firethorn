@@ -19,8 +19,6 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +31,6 @@ import org.springframework.web.servlet.ModelAndView;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
-import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
@@ -134,12 +131,12 @@ extends AbstractController
      * Select all.
      *
      */
-    public JdbcSchemaBeanIter select(
+    public JdbcSchemaBean.Iter select(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
         final TuesdayJdbcResource resource
         ){
         log.debug("select()");
-        return new JdbcSchemaBeanIter(
+        return new JdbcSchemaBean.Iter(
             resource.schemas().select()
             );
         }
@@ -196,7 +193,7 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcSchemaBeanIter jsonSelect(
+    public JdbcSchemaBean.Iter jsonSelect(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
         final TuesdayJdbcResource resource,
         final ModelAndView model
@@ -278,13 +275,13 @@ extends AbstractController
      * Search by text.
      *
      */
-    public JdbcSchemaBeanIter search(
+    public JdbcSchemaBean.Iter search(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
         final TuesdayJdbcResource resource,
         final String text
         ){
         log.debug("search(String) [{}]", text);
-        return new JdbcSchemaBeanIter(
+        return new JdbcSchemaBean.Iter(
             resource.schemas().search(
                 text
                 )
@@ -344,7 +341,7 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public JdbcSchemaBeanIter jsonSearch(
+    public JdbcSchemaBean.Iter jsonSearch(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
         final TuesdayJdbcResource resource,
         @RequestParam(SEARCH_TEXT)

@@ -190,7 +190,7 @@ public class TuesdayAdqlColumnEntity
 
     protected TuesdayAdqlColumnEntity(final TuesdayAdqlTable table, final TuesdayBaseColumn<?> base, final String name)
         {
-        super(table, name);
+        super(table, ((name != null) ? name : base.name()));
         this.base  = base ;
         this.table = table;
         }

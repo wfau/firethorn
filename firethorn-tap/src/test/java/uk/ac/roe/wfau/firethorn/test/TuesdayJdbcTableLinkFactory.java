@@ -35,7 +35,7 @@ implements TuesdayJdbcTable.LinkFactory
     public TuesdayJdbcTableLinkFactory()
         {
         super(
-            "jdbc/table"
+            "/jdbc/table"
             );
         }
     }

@@ -34,7 +34,7 @@ implements TuesdayJdbcSchema.LinkFactory
     public TuesdayJdbcSchemaLinkFactory()
         {
         super(
-            "jdbc/schema"
+            "/jdbc/schema"
             );
         }
     }

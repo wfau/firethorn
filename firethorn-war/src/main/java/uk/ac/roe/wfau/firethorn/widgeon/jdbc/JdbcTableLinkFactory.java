@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
@@ -32,11 +33,24 @@ public class JdbcTableLinkFactory
 extends WebappLinkFactory<TuesdayJdbcTable>
 implements TuesdayJdbcTable.LinkFactory
     {
+    protected JdbcTableLinkFactory()
+        {
+        super(
+            SERVICE_PATH
+            );
+        }
+
+    /**
+     * The URI path for the service.
+     *
+     */
+    public static final String SERVICE_PATH = "/jdbc/table";
+
     /**
      * The URI path for individual tables.
      *
      */
-    public static final String TABLE_PATH = "/jdbc/table/" + IDENT_TOKEN ;
+    public static final String TABLE_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
 
     /**
      * The URI path for table columns.
@@ -47,16 +61,9 @@ implements TuesdayJdbcTable.LinkFactory
     @Override
     public String link(final TuesdayJdbcTable entity)
         {
-        return link(
+        return this.link(
             TABLE_PATH,
             entity
             );
-        }
-
-    @Override
-    public Identifier parse(String string)
-        {
-        // TODO Auto-generated method stub
-        return null;
         }
     }

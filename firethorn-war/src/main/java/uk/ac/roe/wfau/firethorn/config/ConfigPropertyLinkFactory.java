@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.config;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
@@ -31,17 +32,31 @@ public class ConfigPropertyLinkFactory
 extends WebappLinkFactory<ConfigProperty>
 implements ConfigProperty.LinkFactory
     {
+    protected ConfigPropertyLinkFactory()
+        {
+        super(
+            SERVICE_PATH
+            );
+        }
+
+    /**
+     * The URI path for the service.
+     *
+     */
+    public static final String SERVICE_PATH = "/conf/property";
+
+    /**
+     * The URI path for individual properties.
+     *
+     */
+    public static final String PROPERTY_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
+
     @Override
     public String link(final ConfigProperty entity)
         {
-        // TODO Auto-generated method stub
-        return null;
-        }
-
-    @Override
-    public Identifier parse(String string)
-        {
-        // TODO Auto-generated method stub
-        return null;
+        return this.link(
+            PROPERTY_PATH,
+            entity
+            );
         }
     }

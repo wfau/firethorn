@@ -133,7 +133,7 @@ public class TuesdayJdbcConnectionEntity
         )
     private String url = "";
     @Override
-    public String url()
+    public String uri()
         {
         return this.url;
         }

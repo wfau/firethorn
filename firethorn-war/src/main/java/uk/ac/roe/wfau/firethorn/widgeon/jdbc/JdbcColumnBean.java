@@ -17,8 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 
 /**
@@ -29,6 +33,29 @@ public class JdbcColumnBean
 extends AbstractEntityBeanImpl<TuesdayJdbcColumn>
 implements EntityBean<TuesdayJdbcColumn>
     {
+    public static class Iter
+    extends AbstractEntityBeanIter<TuesdayJdbcColumn>
+        {
+        /**
+         * Public constructor.
+         *
+         */
+        public Iter(final Iterable<TuesdayJdbcColumn> iterable)
+            {
+            super(
+                iterable
+                );
+            }
+
+        @Override
+        public EntityBean<TuesdayJdbcColumn> bean(final TuesdayJdbcColumn entity)
+            {
+            return new JdbcColumnBean(
+                entity
+                );
+            }
+        }    
+
     /**
      * Public constructor.
      *
@@ -39,5 +66,25 @@ implements EntityBean<TuesdayJdbcColumn>
             JdbcColumnIdentFactory.TYPE_URI,
             entity
             );
+        }
+
+    public URI getTable()
+        {
+        try {
+            return new URI(
+                entity().table().link()
+                );
+            }
+        catch (final URISyntaxException ouch)
+            {
+            throw new RuntimeException(
+                ouch
+                );
+            }
+        }
+
+    public String getFullName()
+        {
+        return entity().fullname().toString();
         }
     }

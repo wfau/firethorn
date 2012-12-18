@@ -19,8 +19,8 @@ package uk.ac.roe.wfau.firethorn.widgeon.base;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
@@ -32,17 +32,43 @@ public class BaseTableLinkFactory
 extends WebappLinkFactory<TuesdayBaseTable<?,?>>
 implements TuesdayBaseTable.LinkFactory
     {
-    @Override
-    public String link(TuesdayBaseTable<?, ?> entity)
+    protected BaseTableLinkFactory()
         {
-        // TODO Auto-generated method stub
-        return null;
+        super(
+            LINK_PATH
+            );
         }
 
+    /**
+     * The URI path for link parser.
+     *
+     */
+    public static final String LINK_PATH = "/table";
+
+    /**
+     * The URI path for the service.
+     *
+     */
+    public static final String SERVICE_PATH = "/base/table";
+
+    /**
+     * The URI path for individual tables.
+     *
+     */
+    public static final String TABLE_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
+
+    /**
+     * The URI path for table columns.
+     *
+    public static final String TABLE_COLUMN_PATH = TABLE_PATH + "/columns" ;
+     */
+
     @Override
-    public Identifier parse(String string)
+    public String link(final TuesdayBaseTable<?,?> entity)
         {
-        // TODO Auto-generated method stub
-        return null;
+        return this.link(
+            TABLE_PATH,
+            entity
+            );
         }
     }

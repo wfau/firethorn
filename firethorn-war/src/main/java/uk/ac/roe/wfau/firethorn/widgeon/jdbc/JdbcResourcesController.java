@@ -153,7 +153,7 @@ extends AbstractController
         ){
         model.addObject(
             SELECT_RESULT,
-            new JdbcResourceBeanIter(
+            new JdbcResourceBean.Iter(
                 factories().jdbc().resources().select()
                 )
             );
@@ -169,10 +169,10 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcResourceBeanIter jsonSelect(
+    public JdbcResourceBean.Iter jsonSelect(
         final ModelAndView model
         ){
-        return new JdbcResourceBeanIter(
+        return new JdbcResourceBean.Iter(
             factories().jdbc().resources().select()
             );
         }
@@ -208,7 +208,7 @@ extends AbstractController
             );
         model.addObject(
             SEARCH_RESULT,
-            new JdbcResourceBeanIter(
+            new JdbcResourceBean.Iter(
                 factories().jdbc().resources().search(
                     text
                     )
@@ -226,12 +226,12 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public JdbcResourceBeanIter jsonSearch(
+    public JdbcResourceBean.Iter jsonSearch(
         @RequestParam(SEARCH_TEXT)
         final String text,
         final ModelAndView model
         ){
-        return new JdbcResourceBeanIter(
+        return new JdbcResourceBean.Iter(
             factories().jdbc().resources().search(
                 text
                 )

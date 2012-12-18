@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
@@ -33,17 +32,37 @@ public class IvoaSchemaLinkFactory
 extends WebappLinkFactory<TuesdayIvoaSchema>
 implements TuesdayIvoaSchema.LinkFactory
     {
+    protected IvoaSchemaLinkFactory()
+        {
+        super(
+            SERVICE_PATH
+            );
+        }
+
+    /**
+     * The URI path for the service.
+     *
+     */
+    public static final String SERVICE_PATH = "/ivoa/schema";
+
+    /**
+     * The URI path for individual schema.
+     *
+     */
+    public static final String SCHEMA_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
+
+    /**
+     * The URI path for schema tables.
+     *
+     */
+    public static final String SCHEMA_TABLE_PATH = SCHEMA_PATH + "/tables" ;
+
     @Override
     public String link(final TuesdayIvoaSchema entity)
         {
-        // TODO Auto-generated method stub
-        return null;
-        }
-
-    @Override
-    public Identifier parse(String string)
-        {
-        // TODO Auto-generated method stub
-        return null;
+        return link(
+            SCHEMA_PATH,
+            entity
+            );
         }
     }

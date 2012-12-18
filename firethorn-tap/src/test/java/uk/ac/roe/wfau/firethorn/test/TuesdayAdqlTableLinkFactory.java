@@ -40,7 +40,7 @@ implements TuesdayAdqlTable.LinkFactory
     public TuesdayAdqlTableLinkFactory()
         {
         super(
-            "adql/table"
+            "/adql/table"
             );
         }
     }

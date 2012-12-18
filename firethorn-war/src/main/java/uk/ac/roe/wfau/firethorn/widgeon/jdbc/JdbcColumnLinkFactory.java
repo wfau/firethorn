@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
@@ -32,11 +33,24 @@ public class JdbcColumnLinkFactory
 extends WebappLinkFactory<TuesdayJdbcColumn>
 implements TuesdayJdbcColumn.LinkFactory
     {
+    protected JdbcColumnLinkFactory()
+        {
+        super(
+            SERVICE_PATH 
+            );
+        }
+
+    /**
+     * The URI path for the service.
+     *
+     */
+    protected static final String SERVICE_PATH = "/jdbc/column" ;
+
     /**
      * The URI path for individual columns.
      *
      */
-    public static final String COLUMN_PATH = "/jdbc/column/" + IDENT_TOKEN ;
+    public static final String COLUMN_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
 
     @Override
     public String link(final TuesdayJdbcColumn entity)
@@ -45,12 +59,5 @@ implements TuesdayJdbcColumn.LinkFactory
             COLUMN_PATH,
             entity
             );
-        }
-
-    @Override
-    public Identifier parse(String string)
-        {
-        // TODO Auto-generated method stub
-        return null;
         }
     }

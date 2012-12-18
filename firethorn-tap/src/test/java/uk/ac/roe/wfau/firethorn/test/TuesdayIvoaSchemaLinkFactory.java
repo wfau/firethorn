@@ -35,7 +35,7 @@ implements TuesdayIvoaSchema.LinkFactory
     public TuesdayIvoaSchemaLinkFactory()
         {
         super(
-            "ivoa/schema"
+            "/ivoa/schema"
             );
         }
     }

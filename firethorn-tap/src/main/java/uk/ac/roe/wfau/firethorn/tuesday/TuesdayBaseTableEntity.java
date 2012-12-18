@@ -98,10 +98,12 @@ extends TuesdayBaseComponentEntity
             return this.idents;
             }
 
+        @Autowired
+        protected TuesdayBaseTable.LinkFactory links ;
         @Override
         public TuesdayBaseTable.LinkFactory links()
             {
-            return null;
+            return this.links;
             }
 
         //

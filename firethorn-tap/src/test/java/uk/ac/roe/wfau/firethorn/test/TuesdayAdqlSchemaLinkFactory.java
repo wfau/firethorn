@@ -35,7 +35,7 @@ implements TuesdayAdqlSchema.LinkFactory
     public TuesdayAdqlSchemaLinkFactory()
         {
         super(
-            "adql/schema"
+            "/adql/schema"
             );
         }
     

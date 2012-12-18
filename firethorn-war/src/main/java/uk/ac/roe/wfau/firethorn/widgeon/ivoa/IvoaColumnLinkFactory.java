@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
@@ -33,17 +32,31 @@ public class IvoaColumnLinkFactory
 extends WebappLinkFactory<TuesdayIvoaColumn>
 implements TuesdayIvoaColumn.LinkFactory
     {
+    protected IvoaColumnLinkFactory()
+        {
+        super(
+            BASE_PATH 
+            );
+        }
+
+    /**
+     * The base path for URIs.
+     *
+     */
+    protected static final String BASE_PATH = "/ivoa/column" ;
+
+    /**
+     * The URI path for individual columns.
+     *
+     */
+    public static final String COLUMN_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
+
     @Override
     public String link(final TuesdayIvoaColumn entity)
         {
-        // TODO Auto-generated method stub
-        return null;
-        }
-
-    @Override
-    public Identifier parse(String string)
-        {
-        // TODO Auto-generated method stub
-        return null;
+        return link(
+            COLUMN_PATH,
+            entity
+            );
         }
     }

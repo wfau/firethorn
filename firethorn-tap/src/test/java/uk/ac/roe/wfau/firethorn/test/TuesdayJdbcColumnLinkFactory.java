@@ -33,7 +33,7 @@ implements TuesdayJdbcColumn.LinkFactory
     public TuesdayJdbcColumnLinkFactory()
         {
         super(
-            "jdbc/column"
+            "/jdbc/column"
             );
         }
     }

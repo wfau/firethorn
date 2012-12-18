@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.identity;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
@@ -31,17 +32,31 @@ public class IdentityLinkFactory
 extends WebappLinkFactory<Identity>
 implements Identity.LinkFactory
     {
+    protected IdentityLinkFactory()
+        {
+        super(
+            SERVICE_PATH
+            );
+        }
+
+    /**
+     * The URI path for the service.
+     *
+     */
+    public static final String SERVICE_PATH = "/auth/identity";
+
+    /**
+     * The URI path for individual identities.
+     *
+     */
+    public static final String IDENTITY_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
+
     @Override
     public String link(final Identity entity)
         {
-        // TODO Auto-generated method stub
-        return null;
-        }
-
-    @Override
-    public Identifier parse(String string)
-        {
-        // TODO Auto-generated method stub
-        return null;
+        return this.link(
+            IDENTITY_PATH,
+            entity
+            );
         }
     }

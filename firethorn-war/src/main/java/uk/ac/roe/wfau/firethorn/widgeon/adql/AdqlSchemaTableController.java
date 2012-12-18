@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierFormatException;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
@@ -205,10 +207,14 @@ extends AbstractController
     public TuesdayBaseTable<?,?> base(final String link)
     throws NotFoundException
         {
+        log.debug("base()");
+        log.debug("  link [{}]", link);
+        Identifier ident = factories().base().tables().links().parse(
+            link
+            );
+        log.debug("  ident [{}]", ident);
         return factories().base().tables().select(
-            factories().base().tables().links().parse(
-                link
-                )
+            ident
             );
         }
     
@@ -223,14 +229,17 @@ extends AbstractController
         @ModelAttribute(AdqlSchemaController.SCHEMA_ENTITY)
         final TuesdayAdqlSchema schema,
         @RequestParam(value=CREATE_BASE, required=true)
-        final String link,
+        final String base,
         @RequestParam(value=CREATE_NAME, required=false)
         final String name
         ) throws NotFoundException {
+        log.debug("jsonCreate()");
+        log.debug("  base [{}]", base);
+        log.debug("  name [{}]", name);
         final AdqlTableBean bean = new AdqlTableBean(
             schema.tables().create(
                 base(
-                    link
+                    base
                     ),
                 name
                 )

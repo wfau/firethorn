@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
@@ -32,23 +33,30 @@ public class IvoaResourceLinkFactory
 extends WebappLinkFactory<TuesdayIvoaResource>
 implements TuesdayIvoaResource.LinkFactory
     {
+    protected IvoaResourceLinkFactory()
+        {
+        super(
+            SERVICE_PATH
+            );
+        }
+
     /**
-     * The URI path for the resource service.
+     * The URI path for the service.
      *
      */
-    public static final String RESOURCES_PATH = "/ivoa/resources";
+    public static final String SERVICE_PATH = "/ivoa/resource";
 
     /**
      * The URI path for individual resources.
      *
      */
-    public static final String RESOURCE_PATH = "/ivoa/resource/" + IDENT_TOKEN ;
+    public static final String RESOURCE_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
 
     /**
-     * The URI path for resource catalogs.
+     * The URI path for resource schema.
      *
      */
-    public static final String CATALOGS_PATH = RESOURCE_PATH + "/catalogs" ;
+    public static final String RESOURCE_SCHEMA_PATH = RESOURCE_PATH + "/schemas" ;
 
     @Override
     public String link(final TuesdayIvoaResource entity)
@@ -57,12 +65,5 @@ implements TuesdayIvoaResource.LinkFactory
             RESOURCE_PATH,
             entity
             );
-        }
-
-    @Override
-    public Identifier parse(String string)
-        {
-        // TODO Auto-generated method stub
-        return null;
         }
     }

@@ -20,12 +20,15 @@ package uk.ac.roe.wfau.firethorn.common.entity;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.extern.slf4j.Slf4j;
+
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierFormatException;
 
 /**
  *
  *
  */
+@Slf4j
 public abstract class EntityLinkFactory<EntityType extends Entity>
 implements Entity.LinkFactory<EntityType>
     {
@@ -33,7 +36,7 @@ implements Entity.LinkFactory<EntityType>
     protected EntityLinkFactory(String path)
         {
         this.pattern = Pattern.compile(
-            ".*/" + path + "/(\\p{Alnum}+).*"
+            ".*" + path + "/(\\p{Alnum}+).*"
             );
         }
     
@@ -43,16 +46,24 @@ implements Entity.LinkFactory<EntityType>
     @Override
     public Identifier parse(String string)
         {
+        log.debug("parse(String)");
+        log.debug("  string [{}]", string);
+        log.debug("  pattern [{}]", pattern.pattern());
+        
         Matcher matcher = this.pattern.matcher(
             string
             );
         if (matcher.matches())
             {
+            log.debug("PASS");
+            String temp = matcher.group(1);
+            log.debug("  temp [{}]", temp);
             return this.idents.ident(
-                matcher.group(1)
+                temp
                 );
             }
         else {
+            log.debug("FAIL");
             throw new IdentifierFormatException(
                 string
                 );

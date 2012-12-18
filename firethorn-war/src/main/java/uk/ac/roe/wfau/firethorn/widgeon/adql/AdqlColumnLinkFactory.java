@@ -34,11 +34,24 @@ public class AdqlColumnLinkFactory
 extends WebappLinkFactory<TuesdayAdqlColumn>
 implements TuesdayAdqlColumn.LinkFactory
     {
+    protected AdqlColumnLinkFactory()
+        {
+        super(
+            BASE_PATH 
+            );
+        }
+
+    /**
+     * The URI path for the service.
+     *
+     */
+    protected static final String BASE_PATH = "/adql/column" ;
+
     /**
      * The URI path for individual columns.
      *
      */
-    public static final String COLUMN_PATH = "/adql/column/" + IDENT_TOKEN ;
+    public static final String COLUMN_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
 
     @Override
     public String link(final TuesdayAdqlColumn entity)
@@ -47,12 +60,5 @@ implements TuesdayAdqlColumn.LinkFactory
             COLUMN_PATH,
             entity
             );
-        }
-
-    @Override
-    public Identifier parse(String string)
-        {
-        // TODO Auto-generated method stub
-        return null;
         }
     }

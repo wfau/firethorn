@@ -17,6 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import com.sun.org.apache.regexp.internal.recompile;
+
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
@@ -30,18 +35,6 @@ public class AdqlTableBean
 extends AbstractEntityBeanImpl<TuesdayAdqlTable>
 implements EntityBean<TuesdayAdqlTable>
     {
-    /**
-     * Public constructor.
-     *
-     */
-    public AdqlTableBean(final TuesdayAdqlTable entity)
-        {
-        super(
-            AdqlTableIdentFactory.TYPE_URI,
-            entity
-            );
-        }
-
     public static class Iter
     extends AbstractEntityBeanIter<TuesdayAdqlTable>
         {
@@ -62,5 +55,37 @@ implements EntityBean<TuesdayAdqlTable>
                 entity
                 );
             }
+        }
+
+    /**
+     * Public constructor.
+     *
+     */
+    public AdqlTableBean(final TuesdayAdqlTable entity)
+        {
+        super(
+            AdqlTableIdentFactory.TYPE_URI,
+            entity
+            );
+        }
+
+    public URI getSchema()
+        {
+        try {
+            return new URI(
+                entity().schema().link()
+                );
+            }
+        catch (final URISyntaxException ouch)
+            {
+            throw new RuntimeException(
+                ouch
+                );
+            }
+        }
+
+    public String getFullName()
+        {
+        return entity().fullname().toString();
         }
     }

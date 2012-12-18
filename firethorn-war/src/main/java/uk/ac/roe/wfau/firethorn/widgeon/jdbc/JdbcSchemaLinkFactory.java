@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
@@ -32,11 +33,24 @@ public class JdbcSchemaLinkFactory
 extends WebappLinkFactory<TuesdayJdbcSchema>
 implements TuesdayJdbcSchema.LinkFactory
     {
+    protected JdbcSchemaLinkFactory()
+        {
+        super(
+            SERVICE_PATH
+            );
+        }
+
+    /**
+     * The URI path for the service.
+     *
+     */
+    public static final String SERVICE_PATH = "/jdbc/schema";
+
     /**
      * The URI path for individual schema.
      *
      */
-    public static final String SCHEMA_PATH = "/jdbc/schema/" + IDENT_TOKEN ;
+    public static final String SCHEMA_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
 
     /**
      * The URI path for schema tables.
@@ -51,12 +65,5 @@ implements TuesdayJdbcSchema.LinkFactory
             SCHEMA_PATH,
             entity
             );
-        }
-
-    @Override
-    public Identifier parse(String string)
-        {
-        // TODO Auto-generated method stub
-        return null;
         }
     }

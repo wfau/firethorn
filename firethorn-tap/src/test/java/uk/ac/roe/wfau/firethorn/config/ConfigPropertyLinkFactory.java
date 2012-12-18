@@ -33,7 +33,7 @@ implements ConfigProperty.LinkFactory
     public ConfigPropertyLinkFactory()
         {
         super(
-            "config/property"
+            "/config/property"
             );
         }
     }

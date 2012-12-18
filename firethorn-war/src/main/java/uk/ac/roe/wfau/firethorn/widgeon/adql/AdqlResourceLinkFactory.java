@@ -32,18 +32,24 @@ public class AdqlResourceLinkFactory
 extends WebappLinkFactory<TuesdayAdqlResource>
 implements TuesdayAdqlResource.LinkFactory
     {
+    protected AdqlResourceLinkFactory()
+        {
+        super(
+            SERVICE_PATH
+            );
+        }
 
     /**
      * The URI path for the service.
      *
      */
-    public static final String SERVICE_PATH = "/adql/resources";
+    public static final String SERVICE_PATH = "/adql/resource";
 
     /**
-     * The URI path for individual objects.
+     * The URI path for individual resources.
      *
      */
-    public static final String RESOURCE_PATH = "/adql/resource/" + IDENT_TOKEN ;
+    public static final String RESOURCE_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
 
     /**
      * The URI path for resource schema.
@@ -58,12 +64,5 @@ implements TuesdayAdqlResource.LinkFactory
             RESOURCE_PATH,
             entity
             );
-        }
-
-    @Override
-    public Identifier parse(String string)
-        {
-        // TODO Auto-generated method stub
-        return null;
         }
     }

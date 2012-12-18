@@ -30,18 +30,6 @@ public class AdqlResourceBean
 extends AbstractEntityBeanImpl<TuesdayAdqlResource>
 implements EntityBean<TuesdayAdqlResource>
     {
-    /**
-     * Public constructor.
-     *
-     */
-    public AdqlResourceBean(final TuesdayAdqlResource entity)
-        {
-        super(
-            AdqlResourceIdentFactory.TYPE_URI,
-            entity
-            );
-        }
-
     public static class Iter
     extends AbstractEntityBeanIter<TuesdayAdqlResource>
         {
@@ -62,5 +50,17 @@ implements EntityBean<TuesdayAdqlResource>
                 entity
                 );
             }
+        }
+
+    /**
+     * Public constructor.
+     *
+     */
+    public AdqlResourceBean(final TuesdayAdqlResource entity)
+        {
+        super(
+            AdqlResourceIdentFactory.TYPE_URI,
+            entity
+            );
         }
     }

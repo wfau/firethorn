@@ -35,7 +35,7 @@ implements TuesdayAdqlResource.LinkFactory
     public TuesdayAdqlResourceLinkFactory()
         {
         super(
-            "adql/resource"
+            "/adql/resource"
             );
         }
     }

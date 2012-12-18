@@ -33,11 +33,24 @@ public class AdqlSchemaLinkFactory
 extends WebappLinkFactory<TuesdayAdqlSchema>
 implements TuesdayAdqlSchema.LinkFactory
     {
+    protected AdqlSchemaLinkFactory()
+        {
+        super(
+            SERVICE_PATH
+            );
+        }
+
+    /**
+     * The URI path for the service.
+     *
+     */
+    public static final String SERVICE_PATH = "/adql/schema";
+
     /**
      * The URI path for individual schema.
      *
      */
-    public static final String SCHEMA_PATH = "/adql/schema/" + IDENT_TOKEN ;
+    public static final String SCHEMA_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
 
     /**
      * The URI path for schema tables.
@@ -52,12 +65,5 @@ implements TuesdayAdqlSchema.LinkFactory
             SCHEMA_PATH,
             entity
             );
-        }
-
-    @Override
-    public Identifier parse(String string)
-        {
-        // TODO Auto-generated method stub
-        return null;
         }
     }

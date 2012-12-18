@@ -33,7 +33,7 @@ implements Identity.LinkFactory
     public IdentityLinkFactory()
         {
         super(
-            "auth/identity"
+            "/auth/identity"
             );
         }
     }

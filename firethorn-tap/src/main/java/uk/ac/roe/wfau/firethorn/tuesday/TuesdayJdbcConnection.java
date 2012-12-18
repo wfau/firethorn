@@ -30,7 +30,7 @@ public interface TuesdayJdbcConnection
      * Get the connection URL (as a String).
      *
      */
-    public String url();
+    public String uri();
 
     /**
      * Set the connection URL (as a String).

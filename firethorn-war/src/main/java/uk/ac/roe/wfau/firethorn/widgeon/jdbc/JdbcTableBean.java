@@ -17,8 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 
 /**
@@ -29,6 +33,27 @@ public class JdbcTableBean
 extends AbstractEntityBeanImpl<TuesdayJdbcTable>
 implements EntityBean<TuesdayJdbcTable>
     {
+    public static class Iter
+    extends AbstractEntityBeanIter<TuesdayJdbcTable>
+        {
+        /**
+         * Public constructor.
+         *
+         */
+        public Iter(final Iterable<TuesdayJdbcTable> iterable)
+            {
+            super(
+                iterable
+                );
+            }
+        @Override
+        public EntityBean<TuesdayJdbcTable> bean(final TuesdayJdbcTable entity)
+            {
+            return new JdbcTableBean(
+                entity
+                );
+            }
+        }
     /**
      * Public constructor.
      *
@@ -41,13 +66,18 @@ implements EntityBean<TuesdayJdbcTable>
             );
         }
 
-    public String getFullName()
-    	{
-    	return entity().fullname().toString();
-    	}
-
-    public String getOgsaResourceId()
-		{
-		return entity().resource().ogsaid();
-		}
+    public URI getSchema()
+        {
+        try {
+            return new URI(
+                entity().schema().link()
+                );
+            }
+        catch (final URISyntaxException ouch)
+            {
+            throw new RuntimeException(
+                ouch
+                );
+            }
+        }
 	}
