@@ -28,7 +28,7 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
  */
 @Component
 public class TuesdayAdqlColumnIdentFactory
-extends TuesdayTestIdentFactory<TuesdayAdqlColumn>
-implements TuesdayAdqlColumn.IdentFactory, TuesdayAdqlColumn.LinkFactory
+extends EntityIdentFactory
+implements TuesdayAdqlColumn.IdentFactory
     {
     }

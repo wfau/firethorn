@@ -20,18 +20,22 @@ package uk.ac.roe.wfau.firethorn.test;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.EntityIdentFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable.IdentFactory;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaResource;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaResource.IdentFactory;
 
 /**
  * JUnit test implementation.
  *
  */
 @Component
-public class TuesdayAdqlTableIdentFactory
-extends EntityIdentFactory
-implements TuesdayAdqlTable.IdentFactory
+public class TuesdayIvoaResourceLinkFactory
+extends TuesdayTestLinkFactory<TuesdayIvoaResource>
+implements TuesdayIvoaResource.LinkFactory
     {
+    public TuesdayIvoaResourceLinkFactory()
+        {
+        super(
+            "ivoa/resource"
+            );
+        }
     }

@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.test;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.common.entity.EntityIdentFactory;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
 
 /**
@@ -27,12 +28,7 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
  */
 @Component
 public class TuesdayBaseTableIdentFactory
-extends TuesdayTestIdentFactory<TuesdayBaseTable<?,?>>
-implements TuesdayBaseTable.IdentFactory, TuesdayBaseTable.LinkFactory
+extends EntityIdentFactory
+implements TuesdayBaseTable.IdentFactory
     {
-    @Override
-    public String link(final TuesdayBaseTable<?,?> entity)
-        {
-        return "base/table/" + entity.ident();
-        }
     }

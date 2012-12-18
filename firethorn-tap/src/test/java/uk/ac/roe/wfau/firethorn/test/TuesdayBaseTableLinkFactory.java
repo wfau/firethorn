@@ -17,12 +17,16 @@
  */
 package uk.ac.roe.wfau.firethorn.test;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.EntityIdentFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierFormatException;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable.IdentFactory;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
 
 /**
@@ -30,8 +34,14 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
  *
  */
 @Component
-public class TuesdayAdqlTableIdentFactory
-extends EntityIdentFactory
-implements TuesdayAdqlTable.IdentFactory
+public class TuesdayBaseTableLinkFactory
+extends TuesdayTestLinkFactory<TuesdayBaseTable<?,?>>
+implements TuesdayBaseTable.LinkFactory
     {
+    public TuesdayBaseTableLinkFactory()
+        {
+        super(
+            "base/table"
+            );
+        }
     }

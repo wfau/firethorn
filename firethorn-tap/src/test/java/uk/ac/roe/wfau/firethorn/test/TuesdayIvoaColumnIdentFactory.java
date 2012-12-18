@@ -29,7 +29,7 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaColumn.IdentFactory;
  */
 @Component
 public class TuesdayIvoaColumnIdentFactory
-extends TuesdayTestIdentFactory<TuesdayIvoaColumn>
-implements TuesdayIvoaColumn.IdentFactory, TuesdayIvoaColumn.LinkFactory
+extends EntityIdentFactory
+implements TuesdayIvoaColumn.IdentFactory
     {
     }

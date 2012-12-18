@@ -30,7 +30,7 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn.IdentFactory;
  */
 @Component
 public class TuesdayJdbcColumnIdentFactory
-extends TuesdayTestIdentFactory<TuesdayJdbcColumn>
-implements TuesdayJdbcColumn.IdentFactory, TuesdayJdbcColumn.LinkFactory
+extends EntityIdentFactory
+implements TuesdayJdbcColumn.IdentFactory
     {
     }

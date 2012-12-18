@@ -15,32 +15,47 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.test;
+package uk.ac.roe.wfau.firethorn.common.entity;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierFormatException;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
 
 /**
- * JUnit test implementation.
+ *
  *
  */
-@Component
-public class TuesdayAdqlTableLinkFactory
-extends TuesdayTestLinkFactory<TuesdayAdqlTable>
-implements TuesdayAdqlTable.LinkFactory
+public abstract class EntityLinkFactory<EntityType extends Entity>
+implements Entity.LinkFactory<EntityType>
     {
-    public TuesdayAdqlTableLinkFactory()
+
+    protected EntityLinkFactory(String path)
         {
-        super(
-            "adql/table"
+        this.pattern = Pattern.compile(
+            ".*/" + path + "/(\\p{Alnum}+).*"
             );
+        }
+    
+    protected final Entity.IdentFactory idents = new EntityIdentFactory();
+    protected final Pattern pattern ;
+
+    @Override
+    public Identifier parse(String string)
+        {
+        Matcher matcher = this.pattern.matcher(
+            string
+            );
+        if (matcher.matches())
+            {
+            return this.idents.ident(
+                matcher.group(1)
+                );
+            }
+        else {
+            throw new IdentifierFormatException(
+                string
+                );
+            }
         }
     }

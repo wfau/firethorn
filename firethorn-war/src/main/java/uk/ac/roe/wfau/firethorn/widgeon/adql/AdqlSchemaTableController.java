@@ -34,10 +34,12 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnection;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
+import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceBean;
 
 /**
  * Spring MVC controller for <code>AdqlSchema</code> tables.
@@ -77,6 +79,12 @@ extends AbstractController
      *
      */
     public static final String SEARCH_PATH = "search" ;
+
+    /**
+     * URL path for the create method.
+     *
+     */
+    public static final String CREATE_PATH = "create" ;
 
     /**
      * MVC property for the Resource name.
@@ -190,36 +198,49 @@ extends AbstractController
 
     
     /**
-     * Base table from identifier.
+     * Resolve our bBase table from identifier.
      * @throws NotFoundException 
      * 
      */
-    public TuesdayBaseTable<?,?> base(final String ident)
+    public TuesdayBaseTable<?,?> base(final String link)
     throws NotFoundException
         {
         return factories().base().tables().select(
             factories().base().tables().links().parse(
-                ident
+                link
                 )
             );
         }
     
     /**
      * JSON request to create a new table.
+     * @throws NotFoundException 
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public AdqlTableBean jsonCreate(
+    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
+    public ResponseEntity<AdqlTableBean> jsonCreate(
         @ModelAttribute(AdqlSchemaController.SCHEMA_ENTITY)
         final TuesdayAdqlSchema schema,
-        @RequestParam(CREATE_BASE)
-        final String base,
-        @RequestParam(CREATE_NAME)
+        @RequestParam(value=CREATE_BASE, required=true)
+        final String link,
+        @RequestParam(value=CREATE_NAME, required=false)
         final String name
-        ){
-
-        return null ;
-
+        ) throws NotFoundException {
+        final AdqlTableBean bean = new AdqlTableBean(
+            schema.tables().create(
+                base(
+                    link
+                    ),
+                name
+                )
+            );
+        return new ResponseEntity<AdqlTableBean>(
+            bean,
+            new RedirectHeader(
+                bean
+                ),
+            HttpStatus.CREATED
+            );
         }
     }

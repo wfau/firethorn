@@ -19,19 +19,23 @@ package uk.ac.roe.wfau.firethorn.test;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.EntityIdentFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable.IdentFactory;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
 
 /**
  * JUnit test implementation.
  *
  */
 @Component
-public class TuesdayAdqlTableIdentFactory
-extends EntityIdentFactory
-implements TuesdayAdqlTable.IdentFactory
+public class TuesdayJdbcTableLinkFactory
+extends TuesdayTestLinkFactory<TuesdayJdbcTable>
+implements TuesdayJdbcTable.LinkFactory
     {
+    public TuesdayJdbcTableLinkFactory()
+        {
+        super(
+            "jdbc/table"
+            );
+        }
     }

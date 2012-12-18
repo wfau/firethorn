@@ -20,27 +20,22 @@ package uk.ac.roe.wfau.firethorn.test;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.EntityIdentFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaSchema.IdentFactory;
 
 /**
  * JUnit test implementation.
  *
  */
 @Component
-public class TuesdayTestIdentFactory<EntityType extends Entity>
-extends EntityIdentFactory
-implements Entity.IdentFactory, Entity.LinkFactory<EntityType>
+public class TuesdayIvoaSchemaLinkFactory
+extends TuesdayTestLinkFactory<TuesdayIvoaSchema>
+implements TuesdayIvoaSchema.LinkFactory
     {
-    @Override
-    public String link(final EntityType entity)
+    public TuesdayIvoaSchemaLinkFactory()
         {
-        return "test/" + entity.ident();
-        }
-
-    @Override
-    public Identifier parse(String string)
-        {
-        return null;
+        super(
+            "ivoa/schema"
+            );
         }
     }

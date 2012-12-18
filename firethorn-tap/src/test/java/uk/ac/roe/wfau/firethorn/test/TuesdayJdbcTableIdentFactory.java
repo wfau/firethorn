@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.test;
 
 import org.springframework.stereotype.Component;
 
+import uk.ac.roe.wfau.firethorn.common.entity.EntityIdentFactory;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
@@ -29,12 +30,7 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
  */
 @Component
 public class TuesdayJdbcTableIdentFactory
-extends TuesdayTestIdentFactory<TuesdayJdbcTable>
-implements TuesdayJdbcTable.IdentFactory, TuesdayJdbcTable.LinkFactory
+extends EntityIdentFactory
+implements TuesdayJdbcTable.IdentFactory
     {
-    @Override
-    public String link(final TuesdayJdbcTable entity)
-        {
-        return "jdbc/table/" + entity.ident();
-        }
     }
