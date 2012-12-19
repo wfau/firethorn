@@ -23,7 +23,7 @@ curl \
 # Create our JDBC resource.
 curl \
     -H 'Accept: application/json' \
-    --data "jdbc.resource.create.url=spring:RoeLiveData" \
+    --data "jdbc.resource.create.url=spring:RoeTWOMASS" \
     --data "jdbc.resource.create.name=jdbc-resource-$(unique)" \
     "${basename}/jdbc/resource/create"
 
