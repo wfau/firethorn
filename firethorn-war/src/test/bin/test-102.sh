@@ -106,26 +106,26 @@ curl \
     --data-urlencode "adql.resource.query.create.query@-" \
     "${basename}/adql/resource/4/queries/create"  \
 << EOF
-SELECT
-    scn.date,
-    scn.scan,
-    scn.tile,
-    psc.ra || ' - ' || psc.dec as \"position\"
-FROM"
-    adql_twomass.twomass_psc AS psc,
-    adql_twomass.twomass_scn AS scn,
-    adql_twomass.twomass_pscXBestDR7PhotoObjAll AS match,
-    adql_bestdr7.PhotoObjAll AS photo
-WHERE
-    (psc.scan_key = scn.scan_key)
-AND
-    (match.masterObjID = psc.pts_key)
-AND
-    (match.slaveObjID  = photo.objID)
-AND
-    (match.distanceMins < 0.01)
-ORDER BY
-    psc.pts_key
+    SELECT
+        scn.date,
+        scn.scan,
+        scn.tile,
+        psc.ra || ' - ' || psc.dec as position
+    FROM
+        adql_twomass.twomass_psc AS psc,
+        adql_twomass.twomass_scn AS scn,
+        adql_twomass.twomass_pscXBestDR7PhotoObjAll AS match,
+        adql_bestdr7.PhotoObjAll AS photo
+    WHERE
+        (psc.scan_key = scn.scan_key)
+    AND
+        (match.masterObjID = psc.pts_key)
+    AND
+        (match.slaveObjID  = photo.objID)
+    AND
+        (match.distanceMins < 0.01)
+    ORDER BY
+        psc.pts_key
 EOF
 
 echo ""
