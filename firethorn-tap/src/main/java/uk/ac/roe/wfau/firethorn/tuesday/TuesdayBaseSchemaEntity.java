@@ -30,6 +30,11 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 
 /**
  *
@@ -63,10 +68,42 @@ public abstract class TuesdayBaseSchemaEntity<SchemaType extends TuesdayBaseSche
     implements TuesdayBaseSchema<SchemaType, TableType>
     {
     /**
-     * Metadata database table name.
+     * Hibernate database table name.
      *
      */
     protected static final String DB_TABLE_NAME = "TuesdayBaseSchemaEntity";
+
+    /**
+     * Table resolver implementation.
+     *
+     */
+    @Repository
+    public static class Resolver
+    extends AbstractFactory<TuesdayBaseSchema<?,?>>
+    implements TuesdayBaseSchema.Resolver
+        {
+        @Override
+        public Class<?> etype()
+            {
+            return TuesdayBaseSchemaEntity.class;
+            }
+
+        @Autowired
+        protected TuesdayBaseSchema.IdentFactory idents ;
+        @Override
+        public TuesdayBaseSchema.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        protected TuesdayBaseSchema.LinkFactory links;
+        @Override
+        public TuesdayBaseSchema.LinkFactory links()
+            {
+            return this.links;
+            }
+        }
 
     protected TuesdayBaseSchemaEntity()
         {

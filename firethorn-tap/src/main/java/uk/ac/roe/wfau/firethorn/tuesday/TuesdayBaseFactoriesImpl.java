@@ -35,4 +35,12 @@ public class TuesdayBaseFactoriesImpl
         {
         return this.tables;
         }
+
+    @Autowired
+    protected TuesdayBaseSchema.Resolver schema;
+    @Override
+    public TuesdayBaseSchema.Resolver schema()
+        {
+        return this.schema;
+        }
     }

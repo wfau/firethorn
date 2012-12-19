@@ -23,7 +23,7 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- * Ident factory for <code>JdbcColumn</code>.
+ * Ident factory for <code>BaseTable</code>.
  *
  */
 @Component

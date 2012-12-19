@@ -70,11 +70,26 @@ implements EntityBean<TuesdayAdqlColumn>
             );
         }
 
-    public URI getTable()
+    public URI getParent()
         {
         try {
             return new URI(
                 entity().table().link()
+                );
+            }
+        catch (final URISyntaxException ouch)
+            {
+            throw new RuntimeException(
+                ouch
+                );
+            }
+        }
+
+    public URI getBase()
+        {
+        try {
+            return new URI(
+                entity().base().link()
                 );
             }
         catch (final URISyntaxException ouch)

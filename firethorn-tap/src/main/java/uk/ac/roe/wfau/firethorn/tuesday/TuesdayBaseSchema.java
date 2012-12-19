@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.tuesday;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 
 /**
  *
@@ -27,12 +28,31 @@ public interface TuesdayBaseSchema<SchemaType extends TuesdayBaseSchema<SchemaTy
 extends TuesdayBaseComponent
     {
     /**
+     * Link factory interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<TuesdayBaseSchema<?,?>>
+        {
+        }
+
+    /**
      * Identifier factory interface.
      *
      */
     public static interface IdentFactory
     extends Entity.IdentFactory
         {
+        }
+
+    /**
+     * Schema resolver interface.
+     *
+     */
+    public static interface Resolver
+    extends Entity.Factory<TuesdayBaseSchema<?,?>>
+        {
+
         }
 
     /**

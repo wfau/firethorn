@@ -83,10 +83,10 @@ extends AbstractController
     public static final String SEARCH_PATH = "search" ;
 
     /**
-     * URL path for the create method.
+     * URL path for the import method.
      *
      */
-    public static final String CREATE_PATH = "create" ;
+    public static final String IMPORT_PATH = "import" ;
 
     /**
      * MVC property for the Resource name.
@@ -113,16 +113,17 @@ extends AbstractController
     public static final String SEARCH_RESULT = "adql.schema.table.search.result" ;
 
     /**
-     * MVC property for the create name.
+     * MVC property for the import base.
      *
      */
-    public static final String CREATE_NAME = "adql.schema.table.create.name" ;
+    public static final String IMPORT_BASE = "adql.schema.table.import.base" ;
 
     /**
-     * MVC property for the create base.
+     * MVC property for the import name.
      *
      */
-    public static final String CREATE_BASE = "adql.schema.table.create.base" ;
+    public static final String IMPORT_NAME = "adql.schema.table.import.name" ;
+
 
     /**
      * Get the parent entity based on the request ident.
@@ -198,39 +199,19 @@ extends AbstractController
             );
         }
 
-    
-    /**
-     * Resolve our bBase table from identifier.
-     * @throws NotFoundException 
-     * 
-     */
-    public TuesdayBaseTable<?,?> base(final String link)
-    throws NotFoundException
-        {
-        log.debug("base()");
-        log.debug("  link [{}]", link);
-        Identifier ident = factories().base().tables().links().parse(
-            link
-            );
-        log.debug("  ident [{}]", ident);
-        return factories().base().tables().select(
-            ident
-            );
-        }
-    
     /**
      * JSON request to create a new table.
      * @throws NotFoundException 
      *
      */
     @ResponseBody
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<AdqlTableBean> jsonCreate(
+    @RequestMapping(value=IMPORT_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
+    public ResponseEntity<AdqlTableBean> jsonInport(
         @ModelAttribute(AdqlSchemaController.SCHEMA_ENTITY)
         final TuesdayAdqlSchema schema,
-        @RequestParam(value=CREATE_BASE, required=true)
+        @RequestParam(value=IMPORT_BASE, required=true)
         final String base,
-        @RequestParam(value=CREATE_NAME, required=false)
+        @RequestParam(value=IMPORT_NAME, required=false)
         final String name
         ) throws NotFoundException {
         log.debug("jsonCreate()");
@@ -238,8 +219,10 @@ extends AbstractController
         log.debug("  name [{}]", name);
         final AdqlTableBean bean = new AdqlTableBean(
             schema.tables().create(
-                base(
-                    base
+                factories().base().tables().select(
+                    factories().base().tables().links().parse(
+                        base
+                        )
                     ),
                 name
                 )

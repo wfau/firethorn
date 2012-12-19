@@ -84,6 +84,21 @@ implements EntityBean<TuesdayAdqlTable>
             }
         }
 
+    public URI getBase()
+        {
+        try {
+            return new URI(
+                entity().base().link()
+                );
+            }
+        catch (final URISyntaxException ouch)
+            {
+            throw new RuntimeException(
+                ouch
+                );
+            }
+        }
+
     public String getFullname()
         {
         return entity().fullname().toString();

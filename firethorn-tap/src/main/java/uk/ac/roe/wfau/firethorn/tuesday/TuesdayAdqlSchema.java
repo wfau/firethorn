@@ -58,10 +58,10 @@ extends TuesdayBaseSchema<TuesdayAdqlSchema, TuesdayAdqlTable>
         public TuesdayAdqlTable.Factory tables();
 
         /**
-         * Create a new schema.
+         * Import a table.
          *
          */
-		public TuesdayAdqlSchema create(final TuesdayAdqlResourceEntity parent, final TuesdayBaseSchema<?,?> base, final String name);
+		public TuesdayAdqlSchema inport(final TuesdayAdqlResourceEntity parent, final TuesdayBaseSchema<?,?> base, final String name);
         }
 
     @Override

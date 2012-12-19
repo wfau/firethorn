@@ -76,7 +76,7 @@ extends TuesdayBaseComponentEntity
     protected static final String DB_TABLE_NAME = "TuesdayBaseTableEntity";
 
     /**
-     * Alias resolver implementation.
+     * Table resolver implementation.
      *
      */
     @Repository

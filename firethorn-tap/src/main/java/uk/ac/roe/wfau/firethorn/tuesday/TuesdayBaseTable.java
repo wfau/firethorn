@@ -59,7 +59,7 @@ extends TuesdayBaseComponent
         }
 
     /**
-     * Alias resolver interface.
+     * Table resolver interface.
      *
      */
     public static interface Resolver

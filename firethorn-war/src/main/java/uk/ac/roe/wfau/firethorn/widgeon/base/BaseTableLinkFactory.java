@@ -60,8 +60,8 @@ implements TuesdayBaseTable.LinkFactory
     /**
      * The URI path for table columns.
      *
-    public static final String TABLE_COLUMN_PATH = TABLE_PATH + "/columns" ;
      */
+    public static final String TABLE_COLUMN_PATH = TABLE_PATH + "/columns" ;
 
     @Override
     public String link(final TuesdayBaseTable<?,?> entity)

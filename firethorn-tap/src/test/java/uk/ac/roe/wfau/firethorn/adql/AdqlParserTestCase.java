@@ -355,7 +355,7 @@ extends TestBase
         //
         // Create our ADQL resource.
         TuesdayAdqlResource adqlResource = factories().adql().resources().create("test"); 
-        adqlResource.schemas().create(
+        adqlResource.schemas().inport(
         		jdbcResource.schemas().select(
                     "jdbc_schema"
                     ),

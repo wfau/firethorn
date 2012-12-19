@@ -91,7 +91,7 @@ extends TestBase
         //
         // Import from our JDBC resource into our ADQL workspace.
         twomass.inport();
-        workspace.schemas().create(
+        workspace.schemas().inport(
             twomass.schemas().select("TWOMASS.dbo"),
             "twomass"
             ); 
@@ -164,7 +164,7 @@ extends TestBase
         //
         // Import a JdbcSchema into our AdqlWorkspace.
         twomass.inport();
-        workspace.schemas().create(
+        workspace.schemas().inport(
             twomass.schemas().select("TWOMASS.dbo"),
             "twomass"
             ); 
@@ -254,19 +254,19 @@ extends TestBase
             );
         //
         // Import the JdbcSchema into our AdqlWorkspace.
-        workspace.schemas().create(
+        workspace.schemas().inport(
             twomass.schemas().select(
                 "TWOMASS.dbo"
                 ),
             "twomass"
             ); 
-        workspace.schemas().create(
+        workspace.schemas().inport(
             twoxmm.schemas().select(
                 "TWOXMM.dbo"
                 ),
             "twoxmm"
             ); 
-        workspace.schemas().create(
+        workspace.schemas().inport(
             bestdr7.schemas().select(
                 "BestDR7.dbo"
                 ),
@@ -350,19 +350,19 @@ extends TestBase
             );
         //
         // Import the JdbcSchema into our AdqlWorkspace.
-        workspace.schemas().create(
+        workspace.schemas().inport(
             twomass.schemas().select(
                 "TWOMASS.dbo"
                 ),
             "twomass"
             ); 
-        workspace.schemas().create(
+        workspace.schemas().inport(
             twomass.schemas().select(
                 "TWOXMM.dbo"
                 ),
             "twoxmm"
             ); 
-        workspace.schemas().create(
+        workspace.schemas().inport(
             twomass.schemas().select(
                 "BestDR7.dbo"
                 ),

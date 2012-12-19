@@ -73,10 +73,10 @@ extends TuesdayBaseResource<TuesdayAdqlSchema>
         public TuesdayAdqlSchema create(final String name);
 
         /**
-         * Create a new schema.
+         * Import tables from a schema.
          *
          */
-        public TuesdayAdqlSchema create(final TuesdayBaseSchema<?,?> base, final String name);
+        public TuesdayAdqlSchema inport(final TuesdayBaseSchema<?,?> base, final String name);
 
         }
     @Override

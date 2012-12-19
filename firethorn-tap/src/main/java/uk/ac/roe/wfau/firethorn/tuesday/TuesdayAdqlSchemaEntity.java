@@ -97,7 +97,7 @@ public class TuesdayAdqlSchemaEntity
             }
 
 		@Override
-		public TuesdayAdqlSchema create(final TuesdayAdqlResourceEntity parent, final TuesdayBaseSchema<?, ?> base, final String name)
+		public TuesdayAdqlSchema inport(final TuesdayAdqlResourceEntity parent, final TuesdayBaseSchema<?, ?> base, final String name)
 			{
 			final TuesdayAdqlSchema schema = this.create(
 					parent,

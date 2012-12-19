@@ -174,9 +174,9 @@ extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
                     );
                 }
 			@Override
-			public TuesdayAdqlSchema create(final TuesdayBaseSchema<?,?> base, final String name)
+			public TuesdayAdqlSchema inport(final TuesdayBaseSchema<?,?> base, final String name)
 			    {
-                return factories().adql().schemas().create(
+                return factories().adql().schemas().inport(
                     TuesdayAdqlResourceEntity.this,
                     base,
                     name

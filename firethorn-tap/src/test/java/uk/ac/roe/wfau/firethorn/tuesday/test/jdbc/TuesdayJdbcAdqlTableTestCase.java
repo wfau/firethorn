@@ -106,7 +106,7 @@ public class TuesdayJdbcAdqlTableTestCase
         //
         // Import a JdbcSchema into our workspace.
         resource.inport();
-        workspace.schemas().create(
+        workspace.schemas().inport(
     		resource.schemas().select("TWOMASS.dbo"),
     		"test-schema"
             ); 

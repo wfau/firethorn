@@ -82,7 +82,7 @@ curl \
 # Create our ADQL schema.
 curl \
     -H 'Accept: application/json' \
-    --data "adql.resource.schema.create.name=adql-schema-$(unique)" \
+    --data "adql.resource.schema.create.name=created_schema" \
     "${basename}/adql/resource/2/schemas/create"
 
 #
@@ -103,22 +103,58 @@ curl \
 # Import a JDBC table into our ADQL schema.
 curl \
     -H 'Accept: application/json' \
-    --data "adql.schema.table.create.base=${basename}/jdbc/table/5" \
-    "${basename}/adql/schema/2/tables/create"
+    --data "adql.schema.table.import.base=${basename}/jdbc/table/5" \
+    "${basename}/adql/schema/2/tables/import"
 
 #
-# Get the table details.
+# Import a JDBC table with a new name.
+curl \
+    -H 'Accept: application/json' \
+    --data "adql.schema.table.import.name=imported_table" \
+    --data "adql.schema.table.import.base=${basename}/jdbc/table/6" \
+    "${basename}/adql/schema/2/tables/import"
+
+#
+# List the schema tables.
+curl \
+    -H 'Accept: application/json' \
+    "${basename}/adql/schema/2/tables/select"
+
+# -------- --------
+
+#
+# Get the details for a table.
 curl \
     -H 'Accept: application/json' \
     "${basename}/adql/table/12"
-
-# -------- --------
 
 #
 # List the table columns.
 curl \
     -H 'Accept: application/json' \
     "${basename}/adql/table/12/columns/select"
+
+# -------- --------
+
+#
+# List the ADQL schema.
+curl \
+    -H 'Accept: application/json' \
+    "${basename}/adql/resource/2/schemas/select"
+
+#
+# Import the tables from a JDBC schema.
+curl \
+    -H 'Accept: application/json' \
+    --data "adql.resource.schema.import.name=imported_schema" \
+    --data "adql.resource.schema.import.base=${basename}/jdbc/schema/1" \
+    "${basename}/adql/resource/2/schemas/import"
+
+#
+# List the ADQL schema.
+curl \
+    -H 'Accept: application/json' \
+    "${basename}/adql/resource/2/schemas/select"
 
 
 

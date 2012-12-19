@@ -86,6 +86,12 @@ extends AbstractController
     public static final String CREATE_PATH = "create" ;
 
     /**
+     * URL path for the import method.
+     *
+     */
+    public static final String IMPORT_PATH = "import" ;
+
+    /**
      * MVC property for the Resource name.
      *
      */
@@ -115,6 +121,19 @@ extends AbstractController
      */
     public static final String CREATE_NAME = "adql.resource.schema.create.name" ;
 
+    /**
+     * MVC property for the import base.
+     *
+     */
+    public static final String IMPORT_BASE = "adql.resource.schema.import.base" ;
+
+    /**
+     * MVC property for the import name.
+     *
+     */
+    public static final String IMPORT_NAME = "adql.resource.schema.import.name" ;
+
+    
     /**
      * Get the parent entity based on the request ident.
      * @throws NotFoundException
@@ -222,6 +241,39 @@ extends AbstractController
         log.debug("jsonCreate(String) [{}]", name);
         final AdqlSchemaBean schema = new AdqlSchemaBean(
             resource.schemas().create(
+                name
+                )
+            );
+        return new ResponseEntity<AdqlSchemaBean>(
+            schema,
+            new RedirectHeader(
+                schema
+                ),
+            HttpStatus.CREATED
+            );
+        }
+
+    /**
+     * JSON POST request to import tables from another schema.
+     *
+     */
+    @RequestMapping(value=IMPORT_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
+    public ResponseEntity<AdqlSchemaBean> jsonInport(
+        @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
+        final TuesdayAdqlResource resource,
+        @RequestParam(value=IMPORT_BASE, required=true)
+        final String base,
+        @RequestParam(value=IMPORT_NAME, required=false)
+        final String name
+        ) throws NotFoundException {
+        log.debug("jsonInport(String) [{}]", name);
+        final AdqlSchemaBean schema = new AdqlSchemaBean(
+            resource.schemas().inport(
+                factories().base().schema().select(
+                    factories().base().schema().links().parse(
+                        base
+                        )
+                    ),
                 name
                 )
             );
