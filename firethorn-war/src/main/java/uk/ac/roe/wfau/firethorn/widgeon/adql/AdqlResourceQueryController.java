@@ -31,9 +31,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -44,15 +47,15 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  */
 @Slf4j
 @Controller
-@RequestMapping(AdqlResourceLinkFactory.RESOURCE_SCHEMA_PATH)
-public class AdqlResourceSchemaController
-extends AbstractController
+@RequestMapping(AdqlResourceLinkFactory.RESOURCE_QUERY_PATH)
+public class AdqlResourceQueryController
+extends AbstractEntityController<TuesdayAdqlQuery>
     {
     @Override
     public Path path()
         {
         return new PathImpl(
-            AdqlResourceLinkFactory.RESOURCE_SCHEMA_PATH
+            AdqlResourceLinkFactory.RESOURCE_QUERY_PATH
             );
         }
 
@@ -60,7 +63,7 @@ extends AbstractController
      * Public constructor.
      *
      */
-    public AdqlResourceSchemaController()
+    public AdqlResourceQueryController()
         {
         super();
         }
@@ -84,55 +87,47 @@ extends AbstractController
     public static final String CREATE_PATH = "create" ;
 
     /**
-     * URL path for the import method.
-     *
-     */
-    public static final String IMPORT_PATH = "import" ;
-
-    /**
-     * MVC property for the select name.
-     *
-     */
-    public static final String SELECT_NAME = "adql.resource.schema.select.name" ;
-
-    /**
-     * MVC property for the select results.
-     *
-     */
-    public static final String SELECT_RESULT = "adql.resource.schema.select.result" ;
-
-    /**
      * MVC property for the search text.
      *
      */
-    public static final String SEARCH_TEXT = "adql.resource.schema.search.text" ;
+    public static final String SEARCH_TEXT = "adql.resource.query.search.text" ;
 
     /**
      * MVC property for the search results.
      *
      */
-    public static final String SEARCH_RESULT = "adql.resource.schema.search.result" ;
+    public static final String SEARCH_RESULT = "adql.resource.query.search.result" ;
 
     /**
      * MVC property for the create name.
      *
      */
-    public static final String CREATE_NAME = "adql.resource.schema.create.name" ;
+    public static final String CREATE_NAME = "adql.resource.query.create.name" ;
 
     /**
-     * MVC property for the import base.
+     * MVC property for the create query.
      *
      */
-    public static final String IMPORT_BASE = "adql.resource.schema.import.base" ;
+    public static final String CREATE_QUERY = "adql.resource.query.create.query" ;
+
+    @Override
+    public EntityBean<TuesdayAdqlQuery> bean(final TuesdayAdqlQuery entity)
+        {
+        return new AdqlQueryBean(
+            entity
+            );
+        }
+
+    @Override
+    public Iterable<EntityBean<TuesdayAdqlQuery>> bean(final Iterable<TuesdayAdqlQuery> iter)
+        {
+        return new AdqlQueryBean.Iter(
+            iter
+            );
+        }
 
     /**
-     * MVC property for the import name.
-     *
-     */
-    public static final String IMPORT_NAME = "adql.resource.schema.import.name" ;
-
-    /**
-     * Get the parent entity based on the request ident.
+     * Get the parent resource based on the request ident.
      * @throws NotFoundException
      *
      */
@@ -154,33 +149,12 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public AdqlSchemaBean.Iter jsonSelect(
+    public Iterable<EntityBean<TuesdayAdqlQuery>> jsonSelect(
         @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
         final TuesdayAdqlResource resource
         ){
-        log.debug("jsonSelect()");
-        return new AdqlSchemaBean.Iter(
-            resource.schemas().select()
-            );
-        }
-
-    /**
-     * JSON request to select by name.
-     *
-     */
-    @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public AdqlSchemaBean jsonSelect(
-        @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
-        final TuesdayAdqlResource resource,
-        @RequestParam(SELECT_NAME)
-        final String name
-        ){
-        log.debug("jsonSelect(String) [{}]", name);
-        return new AdqlSchemaBean(
-            resource.schemas().select(
-                name
-                )
+        return bean(
+            resource.queries().select()
             );
         }
 
@@ -190,98 +164,39 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public AdqlSchemaBean.Iter jsonSearch(
+    public Iterable<EntityBean<TuesdayAdqlQuery>> jsonSearch(
         @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
         final TuesdayAdqlResource resource,
         @RequestParam(SEARCH_TEXT)
         final String text
         ){
         log.debug("jsonSearch(String) [{}]", text);
-        return new AdqlSchemaBean.Iter(
-            resource.schemas().search(
+        return bean(
+            resource.queries().search(
                 text
                 )
             );
         }
 
     /**
-     * Resolve a base schema from an identifier.
-     * @throws NotFoundException
-     *
-     */
-    public TuesdayBaseSchema<?,?> base(final String link)
-    throws NotFoundException
-        {
-        log.debug("base()");
-        log.debug("  link [{}]", link);
-        final Identifier ident = factories().base().schema().links().parse(
-            link
-            );
-        log.debug("  ident [{}]", ident);
-        return factories().base().schema().select(
-            ident
-            );
-        }
-
-    /**
-     * Create a response entity.
-     * 
-     */
-    public ResponseEntity<AdqlSchemaBean> response(final AdqlSchemaBean bean)
-        {
-        return new ResponseEntity<AdqlSchemaBean>(
-            bean,
-            new RedirectHeader(
-                bean
-                ),
-            HttpStatus.CREATED
-            );
-        }
-
-    /**
-     * JSON POST request to create a new schema.
+     * JSON POST request to create a new query.
      *
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<AdqlSchemaBean> jsonCreate(
+    public ResponseEntity<EntityBean<TuesdayAdqlQuery>> jsonCreate(
         @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
         final TuesdayAdqlResource resource,
-        @RequestParam(CREATE_NAME)
+        @RequestParam(value=CREATE_QUERY, required=true)
+        final String query,
+        @RequestParam(value=CREATE_NAME, required=false)
         final String name
         ){
         log.debug("jsonCreate(String) [{}]", name);
-        return response (
-            new AdqlSchemaBean(
-                resource.schemas().create(
-                    name
-                    )
-                )
-            );
-        }
-
-    /**
-     * JSON POST request to import tables from another schema.
-     *
-     */
-    @RequestMapping(value=IMPORT_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<AdqlSchemaBean> jsonInport(
-        @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
-        final TuesdayAdqlResource resource,
-        @RequestParam(value=IMPORT_BASE, required=true)
-        final String base,
-        @RequestParam(value=IMPORT_NAME, required=false)
-        final String name
-        ) throws NotFoundException {
-        log.debug("jsonInport(String) [{}]", name);
         return response(
-            new AdqlSchemaBean(
-                resource.schemas().inport(
-                    factories().base().schema().select(
-                        factories().base().schema().links().parse(
-                            base
-                            )
-                        ),
-                    name
+            new AdqlQueryBean(
+                resource.queries().create(
+                    name,
+                    query
                     )
                 )
             );

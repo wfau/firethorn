@@ -29,8 +29,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -38,21 +38,21 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
- * Spring MVC controller for <code>AdqlColumn</code>.
+ * Spring MVC controller for <code>AdqlQuery</code>.
  *
  */
 @Slf4j
 @Controller
-@RequestMapping(AdqlColumnLinkFactory.COLUMN_PATH)
-public class AdqlColumnController
-extends AbstractEntityController<TuesdayAdqlColumn>
+@RequestMapping(AdqlQueryLinkFactory.QUERY_PATH)
+public class AdqlQueryController
+extends AbstractEntityController<TuesdayAdqlQuery>
     {
 
     @Override
     public Path path()
         {
         return new PathImpl(
-            AdqlColumnLinkFactory.COLUMN_PATH
+            AdqlQueryLinkFactory.QUERY_PATH
             );
         }
 
@@ -60,7 +60,7 @@ extends AbstractEntityController<TuesdayAdqlColumn>
      * Public constructor.
      *
      */
-    public AdqlColumnController()
+    public AdqlQueryController()
         {
         super();
         }
@@ -69,26 +69,38 @@ extends AbstractEntityController<TuesdayAdqlColumn>
      * MVC property for the target entity.
      *
      */
-    public static final String COLUMN_ENTITY = "urn:adql.column.entity" ;
+    public static final String QUERY_ENTITY = "urn:adql.query.entity" ;
 
     /**
      * MVC property for updating the name.
      *
      */
-    public static final String UPDATE_NAME = "adql.column.update.name" ;
+    public static final String UPDATE_NAME = "adql.query.update.name" ;
+
+    /**
+     * MVC property for updating the query.
+     *
+     */
+    public static final String UPDATE_QUERY = "adql.query.update.query" ;
+
+    /**
+     * MVC property for updating the status.
+     *
+     */
+    public static final String UPDATE_STATUS = "adql.query.update.status" ;
 
     @Override
-    public EntityBean<TuesdayAdqlColumn> bean(TuesdayAdqlColumn entity)
+    public EntityBean<TuesdayAdqlQuery> bean(final TuesdayAdqlQuery entity)
         {
-        return new AdqlColumnBean(
+        return new AdqlQueryBean(
             entity
             );
         }
 
     @Override
-    public Iterable<EntityBean<TuesdayAdqlColumn>> bean(Iterable<TuesdayAdqlColumn> iter)
+    public Iterable<EntityBean<TuesdayAdqlQuery>> bean(Iterable<TuesdayAdqlQuery> iter)
         {
-        return new AdqlColumnBean.Iter(
+        return new AdqlQueryBean.Iter(
             iter
             );
         }
@@ -98,14 +110,13 @@ extends AbstractEntityController<TuesdayAdqlColumn>
      * @throws NotFoundException
      *
      */
-    @ModelAttribute(COLUMN_ENTITY)
-    public TuesdayAdqlColumn entity(
+    @ModelAttribute(QUERY_ENTITY)
+    public TuesdayAdqlQuery entity(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException {
-        log.debug("schema() [{}]", ident);
-        return factories().adql().columns().select(
-            factories().adql().columns().idents().ident(
+        return factories().adql().queries().select(
+            factories().adql().queries().idents().ident(
                 ident
                 )
             );
@@ -117,9 +128,9 @@ extends AbstractEntityController<TuesdayAdqlColumn>
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public EntityBean<TuesdayAdqlColumn> jsonSelect(
-        @ModelAttribute(COLUMN_ENTITY)
-        final TuesdayAdqlColumn entity
+    public EntityBean<TuesdayAdqlQuery> jsonSelect(
+        @ModelAttribute(QUERY_ENTITY)
+        final TuesdayAdqlQuery entity
         ){
         return bean(
             entity
@@ -133,11 +144,15 @@ extends AbstractEntityController<TuesdayAdqlColumn>
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public EntityBean<TuesdayAdqlColumn> jsonUpdate(
+    public EntityBean<TuesdayAdqlQuery> jsonUpdate(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
-        @ModelAttribute(COLUMN_ENTITY)
-        final TuesdayAdqlColumn entity
+        @RequestParam(value=UPDATE_QUERY, required=false)
+        final String query,
+        @RequestParam(value=UPDATE_STATUS, required=false)
+        final TuesdayAdqlQuery.Status status,
+        @ModelAttribute(QUERY_ENTITY)
+        final TuesdayAdqlQuery entity
         ){
 
         if (name != null)
@@ -148,6 +163,23 @@ extends AbstractEntityController<TuesdayAdqlColumn>
                     name
                     );
                 }
+            }
+
+        if (query != null)
+            {
+            if (query.length() > 0)
+                {
+                entity.query(
+                    query
+                    );
+                }
+            }
+
+        if (status != null)
+            {
+            entity.status(
+                status
+                );
             }
 
         return bean(

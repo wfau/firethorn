@@ -15,17 +15,28 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.control;
+package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import java.net.URI;
+
+import org.springframework.stereotype.Component;
+
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- * Java Bean interface for an <code>Iterable</code> set of <code>EntityBean</code>s.
+ * Ident factory for <code>AdqlQuery</code>.
  *
  */
-@Deprecated
-public interface EntityBeanIter<EntityType extends Entity>
-extends Iterable<EntityBean<EntityType>>
+@Component
+public class AdqlQueryNameFactory
+extends WebappIdentFactory
+implements TuesdayAdqlQuery.NameFactory
     {
-
+    @Override
+    public String name()
+        {
+        // TODO ....
+        return "test-query";
+        }
     }

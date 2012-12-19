@@ -125,7 +125,7 @@ implements AdqlDBParser
         // Parse the query.
         try {
             final ADQLQuery object = this.parser.parseQuery(
-                subject.input()
+                subject.query()
                 );
             //
             // Update the query mode.

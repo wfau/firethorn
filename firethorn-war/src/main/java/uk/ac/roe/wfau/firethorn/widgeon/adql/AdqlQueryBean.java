@@ -21,7 +21,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery.Mode;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery.Status;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -83,12 +84,17 @@ implements EntityBean<TuesdayAdqlQuery>
             }
         }
 
-    public String getMode()
+    public String getInput()
+        {
+        return entity().query();
+        }
+
+    public Mode getMode()
         {
         return entity().mode();
         }
 
-    public String getStatus()
+    public Status getStatus()
         {
         return entity().status();
         }
@@ -98,4 +104,8 @@ implements EntityBean<TuesdayAdqlQuery>
         return entity().adql();
         }
 
+    public String getOgsa()
+        {
+        return entity().ogsa();
+        }
     }

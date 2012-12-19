@@ -92,10 +92,10 @@ implements TuesdayAdqlQuery, AdqlDBQuery
      * Hibernate column mapping.
      * 
      */
-    protected static final String DB_MODE_COL   = "mode";
-    protected static final String DB_INPUT_COL  = "input";
-    protected static final Integer DB_INPUT_LEN  = new Integer(1024);
-    protected static final String DB_STATUS_COL = "status";
+    protected static final String DB_MODE_COL     = "mode";
+    protected static final String DB_QUERY_COL    = "query";
+    protected static final Integer DB_QUERY_LEN   = new Integer(1024);
+    protected static final String DB_STATUS_COL   = "status";
     protected static final String DB_RESOURCE_COL = "resource";
 
     /**
@@ -115,26 +115,26 @@ implements TuesdayAdqlQuery, AdqlDBQuery
 
         @Override
         @CreateEntityMethod
-        public TuesdayAdqlQuery create(final TuesdayAdqlResource resource, final String input)
+        public TuesdayAdqlQuery create(final TuesdayAdqlResource resource, final String query)
             {
             return this.insert(
                 new TuesdayAdqlQueryEntity(
                     resource,
                     this.names.name(),
-                    input
+                    query
                     )
                 );
             }
 
         @Override
         @CreateEntityMethod
-        public TuesdayAdqlQuery create(final TuesdayAdqlResource resource, final String name, final String input)
+        public TuesdayAdqlQuery create(final TuesdayAdqlResource resource, final String name, final String query)
             {
             return this.insert(
                 new TuesdayAdqlQueryEntity(
                     resource,
                     name,
-                    input
+                    query
                     )
                 );
             }
@@ -201,14 +201,16 @@ implements TuesdayAdqlQuery, AdqlDBQuery
         {
         }
 
-    protected TuesdayAdqlQueryEntity(final TuesdayAdqlResource resource, final String name, final String input)
+    protected TuesdayAdqlQueryEntity(final TuesdayAdqlResource resource, final String name, final String query)
     throws NameFormatException
         {
         super(
             name
             );
-        this.input = input;
         this.resource = resource;
+        this.query(
+            query
+            );
         }
 
     @Index(
@@ -272,15 +274,15 @@ implements TuesdayAdqlQuery, AdqlDBQuery
     org.hsqldb.HsqlException: data exception: string data, right truncation
 
     length=DB_INPUT_LEN,
-    => input varchar(1000)
+    => query varchar(1000)
 
     @org.hibernate.annotations.Type(
         type="org.hibernate.type.TextType"
         )        
-    => input longvarchar
+    => query longvarchar
     
     @Lob
-    => input clob
+    => query clob
 
      *
      */
@@ -288,28 +290,38 @@ implements TuesdayAdqlQuery, AdqlDBQuery
         type="org.hibernate.type.TextType"
         )        
     @Column(
-        name = DB_INPUT_COL,
+        name = DB_QUERY_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    private String input;
+    private String query;
     @Override
-    public String input()
+    public String query()
         {
-        return this.input;
+        return this.query;
         }
     @Override
-    public void input(final String input)
+    public void query(final String next)
         {
-        this.input = input;
-        }
+        final String prev = this.query ; 
+        this.query = next;
+        //
+        // Parse the query if it has changed.
+        if (next != null)
+            {
+            if ((prev == null) || (prev.compareTo(next) > 0))
+                {
+                parse();
+                }
+            }
+       }
 
     /**
      * Parse the query and update our properties.
      *
-     */
     @Override
+     */
     public void parse()
         {
         //
@@ -402,13 +414,14 @@ implements TuesdayAdqlQuery, AdqlDBQuery
         return this.resources;
         }
 
-
     @Override
     public String link()
         {
-        // TODO Auto-generated method stub
-        return null;
+        return factories().adql().queries().links().link(
+            this
+            );
         }
+
 
 //    
 // AdqlDBQuery methods ..

@@ -170,6 +170,28 @@ curl \
     -H 'Accept: application/json' \
     "${basename}/adql/table/24/columns/select"
 
+# -------- --------
+
+#
+# Create an ADQL query.
+curl \
+    -H 'Accept: application/json' \
+    --data-urlencode "adql.resource.query.create.name=test-query" \
+    --data-urlencode "adql.resource.query.create.query@-" \
+    "${basename}/adql/resource/2/queries/create"  \
+<< EOF
+    SELECT
+        ra,
+        dec,
+        pts_key
+    FROM
+        imported_schema.twomass_psc
+    WHERE
+        ra  Between '56.0' AND '57.9'
+    AND
+        dec Between '24.0' AND '24.2'
+EOF
+
 
 
 

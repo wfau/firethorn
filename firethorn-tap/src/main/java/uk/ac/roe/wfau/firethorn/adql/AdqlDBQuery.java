@@ -32,7 +32,7 @@ public interface AdqlDBQuery
      * The initial AQDL input.
      *
      */
-    public String input();
+    public String query();
 
     /**
      * The query mode.

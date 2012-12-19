@@ -102,7 +102,7 @@ extends TestBase
             );
         //
         // Parse the query ...
-        query.parse();
+        //query.parse();
         //
         // Check the results ...
         log.debug("Columns -- ");
@@ -174,7 +174,7 @@ extends TestBase
             );
         //
         // Parse the query ...
-        query.parse();
+        //query.parse();
         //
         // Check the results ...
         log.debug("Columns -- ");
@@ -277,7 +277,7 @@ extends TestBase
             );
         //
         // Parse the query ...
-        query.parse();
+        //query.parse();
         //
         // Check the results ...
         log.debug("Columns -- ");
@@ -372,7 +372,7 @@ extends TestBase
             );
         //
         // Parse the query ...
-        query.parse();
+        //query.parse();
         //
         // Check the results ...
         log.debug("Columns -- ");

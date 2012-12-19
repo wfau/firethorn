@@ -58,6 +58,7 @@ extends Entity
      *
      */
     public static interface Factory
+    extends Entity.Factory<TuesdayAdqlQuery>
         {
         /**
          * Create a new query.
@@ -110,6 +111,12 @@ extends Entity
         ERROR(),
 
         /**
+         * The query is waiting in the queue.
+         *
+         */
+        PENDING(),
+
+        /**
          * The query is running.
          *
          */
@@ -120,6 +127,12 @@ extends Entity
          *
          */
         COMPLETED(),
+
+        /**
+         * The query was cancelled.
+         *
+         */
+        CANCELLED(),
 
         /**
          * The query failed to execute.
@@ -168,16 +181,22 @@ extends Entity
     public Status status();
 
     /**
-     * The input query.
+     * Set the query status.
      *
      */
-    public String input();
+    public void status(Status status);
 
     /**
      * The input query.
      *
      */
-    public void input(final String input);
+    public String query();
+
+    /**
+     * Set the input query.
+     *
+     */
+    public void query(final String input);
 
     /**
      * The processed ADQL query.
@@ -212,7 +231,7 @@ extends Entity
     /**
      * Parse the query and update our properties.
      *
-     */
     public void parse();
+     */
 
     }
