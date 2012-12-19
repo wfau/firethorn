@@ -68,12 +68,10 @@ implements EntityBean<TuesdayAdqlColumn>
             AdqlColumnIdentFactory.TYPE_URI,
             entity
             );
-        log.debug("AdqlColumnBean()");
         }
 
     public URI getTable()
         {
-        log.debug("getTable()");
         try {
             return new URI(
                 entity().table().link()
@@ -87,9 +85,8 @@ implements EntityBean<TuesdayAdqlColumn>
             }
         }
 
-    public String getFullName()
+    public String getFullname()
         {
-        log.debug("getFullName()");
         return entity().fullname().toString();
         }
     }

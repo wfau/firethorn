@@ -84,9 +84,4 @@ implements EntityBean<TuesdayJdbcResource>
         {
         return new ConnectionBean();
         }
-
-    public String getOgsaResource()
-    	{
-    	return entity().ogsaid();
-    	}
     }

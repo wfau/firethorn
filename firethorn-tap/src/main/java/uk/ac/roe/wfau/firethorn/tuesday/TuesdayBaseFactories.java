@@ -30,4 +30,10 @@ public interface TuesdayBaseFactories
      */
     public TuesdayBaseTable.Resolver tables();
 
+    /**
+     * Our schema resolver.
+     *
+     */
+    public TuesdayBaseSchema.Resolver schema();
+
     }

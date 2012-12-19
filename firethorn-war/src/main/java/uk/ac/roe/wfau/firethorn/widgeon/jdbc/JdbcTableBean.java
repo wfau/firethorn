@@ -66,7 +66,7 @@ implements EntityBean<TuesdayJdbcTable>
             );
         }
 
-    public URI getSchema()
+    public URI getParent()
         {
         try {
             return new URI(
@@ -79,5 +79,9 @@ implements EntityBean<TuesdayJdbcTable>
                 ouch
                 );
             }
+        }
+    public String getFullname()
+        {
+        return entity().fullname().toString();
         }
 	}

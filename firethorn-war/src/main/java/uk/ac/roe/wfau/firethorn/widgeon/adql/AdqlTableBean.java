@@ -69,7 +69,7 @@ implements EntityBean<TuesdayAdqlTable>
             );
         }
 
-    public URI getSchema()
+    public URI getParent()
         {
         try {
             return new URI(
@@ -84,7 +84,7 @@ implements EntityBean<TuesdayAdqlTable>
             }
         }
 
-    public String getFullName()
+    public String getFullname()
         {
         return entity().fullname().toString();
         }
