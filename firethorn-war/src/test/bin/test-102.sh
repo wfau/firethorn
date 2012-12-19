@@ -96,7 +96,7 @@ curl \
 # -------- --------
 
 #
-# Create an ADQL query.
+# Create a 'DISTRIBUTED' ADQL query.
 echo ""
 echo "----"
 echo ""
