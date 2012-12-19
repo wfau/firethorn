@@ -28,15 +28,18 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.hibernate.type.TextType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.hibernate.annotations.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -91,7 +94,7 @@ implements TuesdayAdqlQuery, AdqlDBQuery
      */
     protected static final String DB_MODE_COL   = "mode";
     protected static final String DB_INPUT_COL  = "input";
-    protected static final int    DB_INPUT_LEN  = 1000;
+    protected static final Integer DB_INPUT_LEN  = new Integer(1024);
     protected static final String DB_STATUS_COL = "status";
     protected static final String DB_RESOURCE_COL = "resource";
 
@@ -264,9 +267,28 @@ implements TuesdayAdqlQuery, AdqlDBQuery
         return this.mode;
         }
 
+    /*
+     *
+    org.hsqldb.HsqlException: data exception: string data, right truncation
+
+    length=DB_INPUT_LEN,
+    => input varchar(1000)
+
+    @org.hibernate.annotations.Type(
+        type="org.hibernate.type.TextType"
+        )        
+    => input longvarchar
+    
+    @Lob
+    => input clob
+
+     *
+     */
+    @Type(
+        type="org.hibernate.type.TextType"
+        )        
     @Column(
         name = DB_INPUT_COL,
-        length=DB_INPUT_LEN,
         unique = false,
         nullable = true,
         updatable = true
