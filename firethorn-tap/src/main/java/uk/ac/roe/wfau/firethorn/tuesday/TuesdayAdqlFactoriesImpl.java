@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.adql.AdqlDBParser;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery.Factory;
 
 /**
  *

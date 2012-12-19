@@ -34,7 +34,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 
 /**
  *
@@ -139,11 +138,11 @@ public abstract class TuesdayBaseSchemaEntity<SchemaType extends TuesdayBaseSche
      * Test method.
      *
      */
-    public void resource(TuesdayBaseResource<SchemaType> parent)
+    public void resource(final TuesdayBaseResource<SchemaType> parent)
         {
         this.parent = parent;
         }
-    
+
     @Override
     public StringBuilder fullname()
         {

@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.adql ;
 
 import java.util.Iterator;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
@@ -56,13 +55,13 @@ implements AdqlDBTable
             }
         }
 
-    private TuesdayAdqlQuery.Mode mode;
+    private final TuesdayAdqlQuery.Mode mode;
     @Override
     public TuesdayAdqlQuery.Mode mode()
         {
         return this.mode;
         }
-    
+
     /**
      * Our underlying AdqlTable.
      *

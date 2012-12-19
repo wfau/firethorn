@@ -59,7 +59,7 @@ public class TuesdayJdbcAdqlTableTestCase
 	    {
 	    log.debug("---");
 	    log.debug("- ADQL resource [{}]", resource.name());
-	
+
 	    for (final TuesdayAdqlSchema schema : resource.schemas().select())
 	        {
 	        log.debug("--- Schema [{}][{}]", new Object[] {resource.name(), schema.name()});
@@ -80,8 +80,8 @@ public class TuesdayJdbcAdqlTableTestCase
     public void test001()
     throws Exception
         {
-        TuesdayJdbcResource resource = resource();
-        TuesdayAdqlResource workspace = workspace();
+        final TuesdayJdbcResource resource = resource();
+        final TuesdayAdqlResource workspace = workspace();
         //
         // Import a JdbcTable into an AdqlSchema
         resource.inport();
@@ -90,7 +90,7 @@ public class TuesdayJdbcAdqlTableTestCase
             ).tables().create(
 	    		resource.schemas().select("TWOMASS.dbo").tables().select("twomass_psc"),
 	            "test-table"
-	            ); 
+	            );
         display(
     		workspace
     		);
@@ -101,15 +101,15 @@ public class TuesdayJdbcAdqlTableTestCase
     public void test002()
     throws Exception
         {
-        TuesdayJdbcResource resource  = resource();
-        TuesdayAdqlResource workspace = workspace();
+        final TuesdayJdbcResource resource  = resource();
+        final TuesdayAdqlResource workspace = workspace();
         //
         // Import a JdbcSchema into our workspace.
         resource.inport();
         workspace.schemas().inport(
     		resource.schemas().select("TWOMASS.dbo"),
     		"test-schema"
-            ); 
+            );
         display(
     		workspace
     		);

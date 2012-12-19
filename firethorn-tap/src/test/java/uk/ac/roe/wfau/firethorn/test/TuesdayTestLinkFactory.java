@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.test;
 
-import org.springframework.stereotype.Component;
-
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.EntityLinkFactory;
 
@@ -34,9 +32,9 @@ implements Entity.LinkFactory<EntityType>
         {
         super(path);
         }
-    
+
     @Override
-    public String link(EntityType entity)
+    public String link(final EntityType entity)
         {
         return null;
         }

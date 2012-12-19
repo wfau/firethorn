@@ -264,7 +264,7 @@ extends TestBase
 
         };
 
-    
+
     /**
      * Use DefaultDBTable to create a DBTable metadata.
      *
@@ -316,7 +316,7 @@ extends TestBase
     public DBTable adqlTable()
     throws Exception
         {
-    	TuesdayJdbcResource jdbcResource = factories().jdbc().resources().create(
+    	final TuesdayJdbcResource jdbcResource = factories().jdbc().resources().create(
 			"jdbc_resource"
 			);
     	//
@@ -354,7 +354,7 @@ extends TestBase
 
         //
         // Create our ADQL resource.
-        TuesdayAdqlResource adqlResource = factories().adql().resources().create("test"); 
+        final TuesdayAdqlResource adqlResource = factories().adql().resources().create("test");
         adqlResource.schemas().inport(
         		jdbcResource.schemas().select(
                     "jdbc_schema"
@@ -399,7 +399,7 @@ extends TestBase
 						).name(
 							"adql_pts"
 							);
-        
+
         return tables().create(
             TuesdayAdqlQuery.Mode.DIRECT,
     		adqlResource.schemas().select(
@@ -494,7 +494,7 @@ extends TestBase
             data[8],
             query.getFrom().getTables().get(0).getDBLink().getDBName()
             );
- * 
+ *
  */
 /*
  * The CDS implementation behaves differently with aliased tables.
@@ -527,7 +527,7 @@ extends TestBase
         //
         // Check the associated DBColumn JDBC names.
 /*
- * 
+ *
         assertEquals(
             data[14],
             query.getFrom().getDBColumns().get(0).getDBName()
@@ -540,7 +540,7 @@ extends TestBase
             data[16],
             query.getFrom().getDBColumns().get(2).getDBName()
             );
- * 
+ *
  */
         }
 

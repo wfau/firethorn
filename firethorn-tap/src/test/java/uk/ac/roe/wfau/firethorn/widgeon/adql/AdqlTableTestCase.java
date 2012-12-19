@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
@@ -46,10 +45,10 @@ extends TestBase
                 "IdentifierFormatException expected"
                 );
             }
-        catch (IdentifierFormatException ouch)
+        catch (final IdentifierFormatException ouch)
             {
             }
-        catch (Exception ouch)
+        catch (final Exception ouch)
             {
             fail(
                 "IdentifierFormatException expected"
@@ -125,10 +124,10 @@ extends TestBase
                 "IdentifierFormatException expected"
                 );
             }
-        catch (IdentifierFormatException ouch)
+        catch (final IdentifierFormatException ouch)
             {
             }
-        catch (Exception ouch)
+        catch (final Exception ouch)
             {
             fail(
                 "IdentifierFormatException expected"
@@ -148,10 +147,10 @@ extends TestBase
                 "IdentifierFormatException expected"
                 );
             }
-        catch (IdentifierFormatException ouch)
+        catch (final IdentifierFormatException ouch)
             {
             }
-        catch (Exception ouch)
+        catch (final Exception ouch)
             {
             fail(
                 "IdentifierFormatException expected"
@@ -171,10 +170,10 @@ extends TestBase
                 "IdentifierFormatException expected"
                 );
             }
-        catch (IdentifierFormatException ouch)
+        catch (final IdentifierFormatException ouch)
             {
             }
-        catch (Exception ouch)
+        catch (final Exception ouch)
             {
             fail(
                 "IdentifierFormatException expected"

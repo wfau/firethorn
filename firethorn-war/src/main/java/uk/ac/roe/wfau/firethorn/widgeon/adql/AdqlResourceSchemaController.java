@@ -28,13 +28,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseSchema;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -133,7 +131,7 @@ extends AbstractController
      */
     public static final String IMPORT_NAME = "adql.resource.schema.import.name" ;
 
-    
+
     /**
      * Get the parent entity based on the request ident.
      * @throws NotFoundException
@@ -210,15 +208,15 @@ extends AbstractController
 
     /**
      * Resolve a base schema from an identifier.
-     * @throws NotFoundException 
-     * 
+     * @throws NotFoundException
+     *
      */
     public TuesdayBaseSchema<?,?> base(final String link)
     throws NotFoundException
         {
         log.debug("base()");
         log.debug("  link [{}]", link);
-        Identifier ident = factories().base().schema().links().parse(
+        final Identifier ident = factories().base().schema().links().parse(
             link
             );
         log.debug("  ident [{}]", ident);

@@ -34,7 +34,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 /**
  * Spring MVC controller for <code>AdqlResources</code>.
  * TODO better exception handling.
- * 
+ *
  */
 @Controller
 @RequestMapping(AdqlResourceLinkFactory.SERVICE_PATH)

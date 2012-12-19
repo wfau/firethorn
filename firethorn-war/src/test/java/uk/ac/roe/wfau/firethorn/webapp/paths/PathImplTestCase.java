@@ -17,7 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.paths;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.Serializable;
 
@@ -36,7 +36,7 @@ extends TestBase
 
     public static class AppendTest
         {
-        public AppendTest(String base, String string, String result)
+        public AppendTest(final String base, final String string, final String result)
             {
             this.base = base ;
             this.string = string ;
@@ -46,9 +46,9 @@ extends TestBase
         public String string ;
         public String result ;
         }
-    
+
     public AppendTest[] appends = {
-        
+
         new AppendTest("", "", ""),
 
         new AppendTest("here",   "", "here"),
@@ -58,7 +58,7 @@ extends TestBase
         new AppendTest("/here/", "", "/here/"),
 
 
-        
+
         new AppendTest("here",   "/", "here/"),
         new AppendTest("here/",  "/", "here//"),
 
@@ -86,20 +86,20 @@ extends TestBase
         new AppendTest("/here",  "there/", "/here/there/"),
         new AppendTest("/here/", "there/", "/here/there/"),
 
-        
+
         new AppendTest("here",   "/there/", "here/there/"),
         new AppendTest("here/",  "/there/", "here//there/"),
 
         new AppendTest("/here",  "/there/", "/here/there/"),
         new AppendTest("/here/", "/there/", "/here//there/"),
-        
+
         };
-    
+
     @Test
     public void testAppend()
     throws Exception
         {
-        for (AppendTest test : appends)
+        for (final AppendTest test : appends)
             {
             assertEquals(
                 test.result,
@@ -115,20 +115,21 @@ extends TestBase
     public static class TestIdent
     implements Identifier
         {
-        public TestIdent(String value)
+        public TestIdent(final String value)
             {
             this.value = value ;
             }
-        private String value ;
+        private final String value ;
+        @Override
         public Serializable value()
             {
             return value ;
             }
         }
-    
+
     public static class ResolveTest
         {
-        public ResolveTest(String base, String ident, String result)
+        public ResolveTest(final String base, final String ident, final String result)
             {
             this(
                 base,
@@ -138,7 +139,7 @@ extends TestBase
                 result
                 );
             }
-        public ResolveTest(String base, Identifier ident, String result)
+        public ResolveTest(final String base, final Identifier ident, final String result)
             {
             this.base = base ;
             this.ident=  ident ;
@@ -149,7 +150,7 @@ extends TestBase
         public Identifier ident ;
         public String result ;
         }
-    
+
     public ResolveTest[] resolves = {
 
         new ResolveTest("", "", ""),
@@ -165,13 +166,13 @@ extends TestBase
         new ResolveTest("here/ident/there",   "00000", "here/ident/there"),
         new ResolveTest("here/{ident}/there", "00000", "here/00000/there")
 
-        }; 
+        };
 
     @Test
     public void testResolve()
     throws Exception
         {
-        for (ResolveTest test : resolves)
+        for (final ResolveTest test : resolves)
             {
             assertEquals(
                 test.result,

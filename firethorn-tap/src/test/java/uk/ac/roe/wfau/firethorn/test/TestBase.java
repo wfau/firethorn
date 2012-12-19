@@ -193,7 +193,7 @@ public abstract class TestBase
     public long count(final Iterable<?> iterable)
         {
         long count = 0 ;
-        for (final Object object : iterable)
+        for (@SuppressWarnings("unused") final Object object : iterable)
             {
             count++ ;
             }

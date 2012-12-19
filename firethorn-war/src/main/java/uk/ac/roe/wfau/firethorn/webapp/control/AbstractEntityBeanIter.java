@@ -47,7 +47,7 @@ implements EntityBeanIter<EntityType>
 
     /**
      * Wrap an Entity as an EntityBean.
-     * 
+     *
      */
     public abstract EntityBean<EntityType> bean(final EntityType entity);
 

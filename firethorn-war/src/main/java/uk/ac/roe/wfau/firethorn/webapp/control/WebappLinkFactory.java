@@ -39,7 +39,7 @@ implements Entity.LinkFactory<EntityType>
 
     public static final String SERVICE_PATH = SERVICE_BASE + CONTEXT_PATH ;
 
-    protected WebappLinkFactory(String path)
+    protected WebappLinkFactory(final String path)
         {
         super(path);
         }
@@ -60,7 +60,7 @@ implements Entity.LinkFactory<EntityType>
         return link(
             path,
             entity.ident().value().toString()
-            ); 
+            );
         }
 
     protected String link(final String path, final String ident)

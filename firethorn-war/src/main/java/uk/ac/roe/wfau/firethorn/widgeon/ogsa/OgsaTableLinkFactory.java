@@ -19,8 +19,6 @@ package uk.ac.roe.wfau.firethorn.widgeon.ogsa;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayOgsaTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 

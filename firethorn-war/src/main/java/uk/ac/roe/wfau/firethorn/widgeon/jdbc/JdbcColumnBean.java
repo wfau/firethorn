@@ -54,7 +54,7 @@ implements EntityBean<TuesdayJdbcColumn>
                 entity
                 );
             }
-        }    
+        }
 
     /**
      * Public constructor.

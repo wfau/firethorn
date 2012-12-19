@@ -17,32 +17,20 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Transient;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import adql.db.DBChecker;
-import adql.db.DBTable;
-import adql.parser.ADQLParser;
-import adql.parser.ParseException;
-import adql.query.ADQLQuery;
 
 import uk.ac.roe.wfau.firethorn.adql.AdqlDBParser;
 import uk.ac.roe.wfau.firethorn.adql.AdqlDBQuery;
-import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
-import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery.Status;
 
 /**
  *
@@ -53,7 +41,7 @@ public class TuesdayAdqlQueryEntity
 extends AbstractEntity
 implements TuesdayAdqlQuery, AdqlDBQuery
     {
-    
+
     /**
      * Factory implementation.
      *
@@ -86,7 +74,7 @@ implements TuesdayAdqlQuery, AdqlDBQuery
             }
 
         }
-    
+
     protected TuesdayAdqlQueryEntity()
         {
         }
@@ -107,14 +95,14 @@ implements TuesdayAdqlQuery, AdqlDBQuery
         {
         return this.workspace;
         }
- 
+
     private Status status;
     @Override
     public Status status()
         {
         return this.status;
         }
-    
+
     private Mode mode = Mode.DIRECT ;
     @Override
     public Mode mode()
@@ -129,14 +117,14 @@ implements TuesdayAdqlQuery, AdqlDBQuery
         return this.input;
         }
     @Override
-    public void input(String input)
+    public void input(final String input)
         {
         this.input = input;
         }
 
     /**
      * Parse the query and update our properties.
-     * 
+     *
      */
     @Override
     public void parse()
@@ -147,14 +135,14 @@ implements TuesdayAdqlQuery, AdqlDBQuery
         //
         // Create the two query parsers.
         // TODO -- This should be part of the workspace.
-        AdqlDBParser direct = this.factories().adql().parsers().create(
+        final AdqlDBParser direct = this.factories().adql().parsers().create(
             Mode.DIRECT,
             this.workspace
-            );        
-        AdqlDBParser distrib = this.factories().adql().parsers().create(
+            );
+        final AdqlDBParser distrib = this.factories().adql().parsers().create(
             Mode.DISTRIBUTED,
             this.workspace
-            );        
+            );
         //
         // Process as a direct query to start with.
         direct.process(
@@ -204,7 +192,7 @@ implements TuesdayAdqlQuery, AdqlDBQuery
         }
 
     @Transient
-    private Set<TuesdayAdqlColumn> columns = new HashSet<TuesdayAdqlColumn>();
+    private final Set<TuesdayAdqlColumn> columns = new HashSet<TuesdayAdqlColumn>();
     @Override
     public Iterable<TuesdayAdqlColumn> columns()
         {
@@ -212,7 +200,7 @@ implements TuesdayAdqlQuery, AdqlDBQuery
         }
 
     @Transient
-    private Set<TuesdayAdqlTable> tables = new HashSet<TuesdayAdqlTable>();
+    private final Set<TuesdayAdqlTable> tables = new HashSet<TuesdayAdqlTable>();
     @Override
     public Iterable<TuesdayAdqlTable> tables()
         {
@@ -220,7 +208,7 @@ implements TuesdayAdqlQuery, AdqlDBQuery
         }
 
     @Transient
-    private Set<TuesdayOgsaResource<?>> resources = new HashSet<TuesdayOgsaResource<?>>();
+    private final Set<TuesdayOgsaResource<?>> resources = new HashSet<TuesdayOgsaResource<?>>();
     @Override
     public Iterable<TuesdayOgsaResource<?>> resources()
         {
@@ -240,31 +228,31 @@ implements TuesdayAdqlQuery, AdqlDBQuery
 // AdqlDBQuery methods ..
 //
     @Override
-    public void mode(Mode mode)
+    public void mode(final Mode mode)
         {
         this.mode = mode;
         }
-    
+
     @Override
-    public void status(Status status)
+    public void status(final Status status)
         {
         this.status = status;
         }
 
     @Override
-    public void adql(String adql)
+    public void adql(final String adql)
         {
         this.adql = adql;
         }
 
     @Override
-    public void ogsa(String ogsa)
+    public void ogsa(final String ogsa)
         {
         this.ogsa = ogsa;
         }
 
     @Override
-    public void add(TuesdayAdqlColumn column)
+    public void add(final TuesdayAdqlColumn column)
         {
         this.columns.add(
             column
@@ -278,7 +266,7 @@ implements TuesdayAdqlQuery, AdqlDBQuery
         }
 
     @Override
-    public void add(TuesdayAdqlTable table)
+    public void add(final TuesdayAdqlTable table)
         {
         this.tables.add(
             table

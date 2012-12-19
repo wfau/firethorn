@@ -17,13 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.adql;
 
-import java.util.Set;
-
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayOgsaResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 
 /**
  *
@@ -34,56 +30,56 @@ public interface AdqlDBQuery
 
     /**
      * The initial AQDL input.
-     * 
+     *
      */
     public String input();
 
     /**
      * The query mode.
-     * 
+     *
      */
     public TuesdayAdqlQuery.Mode mode();
 
     /**
      * Set the query mode.
-     * 
+     *
      */
-    public void mode(TuesdayAdqlQuery.Mode mode);
+    public void mode(final TuesdayAdqlQuery.Mode mode);
 
     /**
      * The query status.
-     * 
+     *
      */
     public TuesdayAdqlQuery.Status status();
 
     /**
      * Set the query status.
-     * 
+     *
      */
-    public void status(TuesdayAdqlQuery.Status status);
+    public void status(final TuesdayAdqlQuery.Status status);
 
     /**
      * Set the processed ADQL query.
-     * 
+     *
      */
-    public void adql(String adql);
+    public void adql(final String adql);
 
     /**
      * Set the processed SQL query we pass to OGSA-DAI.
-     * 
+     *
      */
-    public void ogsa(String ogsa);
+    public void ogsa(final String ogsa);
 
     /**
      * Add an AdqlColumn.
-     * 
+     *
      */
-    public void add(TuesdayAdqlColumn column);
+    public void add(final TuesdayAdqlColumn column);
 
     /**
      * Add an AdqlTable.
-     * 
+     *
      */
-    public void add(TuesdayAdqlTable table);
+    public void add(final TuesdayAdqlTable table);
 
     }

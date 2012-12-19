@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc ;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.junit.Before;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
@@ -30,12 +28,12 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
 public class JdbcResourceTestBase
 extends TestBase
     {
-    
+
     private TuesdayJdbcResource jdbcResource ;
 
     public interface JdbcTargets
         {
-        public TuesdayJdbcResource resource(); 
+        public TuesdayJdbcResource resource();
         }
 
     public JdbcTargets jdbc()

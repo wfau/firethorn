@@ -28,13 +28,13 @@ public interface AdqlDBParser
     {
     /**
      * Factory interface.
-     * 
+     *
      */
     public static interface Factory
         {
         /**
          * Create a parser for a workspace.
-         * 
+         *
          */
         public AdqlDBParser create(final TuesdayAdqlQuery.Mode mode, final TuesdayAdqlResource workspace);
 
@@ -42,8 +42,8 @@ public interface AdqlDBParser
 
     /**
      * Process an ADQL query and populate its components.
-     * 
+     *
      */
     public void process(final AdqlDBQuery query);
-    
+
     }

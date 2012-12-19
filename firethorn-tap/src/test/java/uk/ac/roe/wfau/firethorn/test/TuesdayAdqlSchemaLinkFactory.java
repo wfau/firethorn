@@ -19,9 +19,7 @@ package uk.ac.roe.wfau.firethorn.test;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.EntityIdentFactory;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema.IdentFactory;
 
 /**
  * JUnit test implementation.
@@ -38,5 +36,5 @@ implements TuesdayAdqlSchema.LinkFactory
             "/adql/schema"
             );
         }
-    
+
     }

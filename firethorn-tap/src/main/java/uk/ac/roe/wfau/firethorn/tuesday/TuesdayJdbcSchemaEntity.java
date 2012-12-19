@@ -205,7 +205,7 @@ public class TuesdayJdbcSchemaEntity
      * Test method.
      *
      */
-    public void resource(TuesdayJdbcResource resource)
+    public void resource(final TuesdayJdbcResource resource)
         {
         this.resource = resource;
         super.resource(resource);

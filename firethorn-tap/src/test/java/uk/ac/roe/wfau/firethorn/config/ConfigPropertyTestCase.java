@@ -17,7 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.config;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.net.URI;
 

@@ -156,5 +156,20 @@ curl \
     -H 'Accept: application/json' \
     "${basename}/adql/resource/2/schemas/select"
 
+# -------- --------
+
+#
+# List the tables in a schema.
+curl \
+    -H 'Accept: application/json' \
+    "${basename}/adql/schema/3/tables/select"
+
+#
+# List the columns in a table.
+curl \
+    -H 'Accept: application/json' \
+    "${basename}/adql/table/24/columns/select"
+
+
 
 

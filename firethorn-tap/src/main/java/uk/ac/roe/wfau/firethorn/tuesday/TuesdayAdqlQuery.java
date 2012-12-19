@@ -26,57 +26,57 @@ public interface TuesdayAdqlQuery
 
     /**
      * Factory interface.
-     * 
+     *
      */
     public static interface Factory
         {
         /**
          * Create a new query.
-         * 
+         *
          */
         public TuesdayAdqlQuery create(final TuesdayAdqlResource workspace, final String query);
 
         /**
          * Create a new query.
-         * 
+         *
          */
         public TuesdayAdqlQuery create(final TuesdayAdqlResource workspace, final String name, final String query);
 
         }
-    
+
     /**
      * Query status indicator.
-     * 
+     *
      */
     public enum Status
         {
         /**
          * The query is being edited.
-         * 
+         *
          */
         EDITING(),
 
         /**
          * The query has an (ADQL) error.
-         * 
+         *
          */
         ERROR(),
 
         /**
          * The query is running.
-         * 
+         *
          */
         RUNNING(),
 
         /**
          * The query completed.
-         * 
+         *
          */
         COMPLETED(),
 
         /**
          * The query failed to execute.
-         * 
+         *
          */
         FAILED();
 
@@ -84,87 +84,87 @@ public interface TuesdayAdqlQuery
 
     /**
      * OGSA-DAI query mode.
-     * 
+     *
      */
     public enum Mode
         {
         /**
          * Direct query to a single resource.
-         * 
+         *
          */
         DIRECT(),
 
         /**
          * Distributed query handled by the OGSA-DAI DQP.
-         * 
+         *
          */
         DISTRIBUTED();
 
         }
 
     /**
-     * The ADQL workspace this query applies to. 
-     * 
+     * The ADQL workspace this query applies to.
+     *
      */
     public TuesdayAdqlResource workspace();
 
     /**
      * The query mode.
-     * 
+     *
      */
     public Mode mode();
 
     /**
      * The query status.
-     * 
+     *
      */
     public Status status();
 
     /**
      * The input query.
-     * 
+     *
      */
     public String input();
 
     /**
      * The input query.
-     * 
+     *
      */
-    public void input(String input);
+    public void input(final String input);
 
     /**
      * The processed ADQL query.
-     * 
+     *
      */
     public String adql();
 
     /**
      * The processed SQL query we pass to OGSA-DAI.
-     * 
+     *
      */
     public String ogsa();
 
     /**
      * The set of the AdqlColumns used by the query.
-     * 
+     *
      */
     public Iterable<TuesdayAdqlColumn> columns();
 
     /**
      * The set of the AdqlTables used by the query.
-     * 
+     *
      */
     public Iterable<TuesdayAdqlTable> tables();
 
     /**
      * The set of the OGSA-DAI resources used by the query.
-     * 
+     *
      */
     public Iterable<TuesdayOgsaResource<?>> resources();
 
     /**
      * Parse the query and update our properties.
-     * 
+     *
      */
     public void parse();
 

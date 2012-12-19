@@ -46,12 +46,12 @@ extends DBTable
          *
          */
         public AdqlDBTable create(final TuesdayAdqlQuery.Mode mode, final TuesdayAdqlTable table);
-        
+
         }
 
     /**
      * The query mode.
-     * 
+     *
      */
     public TuesdayAdqlQuery.Mode mode();
 

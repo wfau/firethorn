@@ -33,5 +33,5 @@ public interface TuesdayOgsaColumn<ColumnType extends TuesdayBaseColumn<ColumnTy
 
     @Override
     public TuesdayOgsaResource<?> resource();
-    
+
     }

@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.tuesday;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
@@ -29,16 +28,16 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
  */
 @Repository
 public class TuesdayOgsaTableResolver
-implements TuesdayOgsaTable.AliasResolver 
+implements TuesdayOgsaTable.AliasResolver
     {
     @Autowired
     private TuesdayBaseTable.Resolver resolver ;
-    
+
     @Override
-    public TuesdayOgsaTable<?,?> resolve(String alias)
+    public TuesdayOgsaTable<?,?> resolve(final String alias)
         throws NotFoundException
         {
-        TuesdayBaseTable<?,?> base = this.resolver.resolve(
+        final TuesdayBaseTable<?,?> base = this.resolver.resolve(
             alias
             );
         if (base != null)

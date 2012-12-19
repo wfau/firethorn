@@ -66,7 +66,7 @@ implements EntityBean<TuesdayAdqlSchema>
             entity
             );
         }
-    
+
     public URI getParent()
         {
         try {

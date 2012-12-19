@@ -17,11 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql ;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
@@ -56,7 +52,7 @@ extends TestBase
         {
         //
         // Create with name works.
-        TuesdayAdqlResource created = factories().adql().resources().create(
+        final TuesdayAdqlResource created = factories().adql().resources().create(
             this.unique(
                 "resource"
                 )

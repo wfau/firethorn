@@ -17,27 +17,19 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday.test.jdbc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayFactories;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnection;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnectionEntity;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
@@ -63,6 +55,7 @@ public class TuesdayJdbcResourceTestCase
      * Access to our TuesdayFactories singleton instance.
      *
      */
+    @Override
     public TuesdayFactories factories()
         {
         return this.factories;
@@ -70,12 +63,12 @@ public class TuesdayJdbcResourceTestCase
 
     /**
      * Local properties file.
-     * 
+     *
      */
-    private Properties config = new Properties();
+    private final Properties config = new Properties();
     /**
      * Local properties file.
-     * 
+     *
      */
     public Properties config()
         {
@@ -101,7 +94,7 @@ public class TuesdayJdbcResourceTestCase
                     )
                 )
             );
-        }    
+        }
 
     @After
     @Override

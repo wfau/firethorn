@@ -21,7 +21,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lombok.extern.slf4j.Slf4j;
-
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierFormatException;
 
 /**
@@ -33,30 +32,30 @@ public abstract class EntityLinkFactory<EntityType extends Entity>
 implements Entity.LinkFactory<EntityType>
     {
 
-    protected EntityLinkFactory(String path)
+    protected EntityLinkFactory(final String path)
         {
         this.pattern = Pattern.compile(
             ".*" + path + "/(\\p{Alnum}+).*"
             );
         }
-    
+
     protected final Entity.IdentFactory idents = new EntityIdentFactory();
     protected final Pattern pattern ;
 
     @Override
-    public Identifier parse(String string)
+    public Identifier parse(final String string)
         {
         log.debug("parse(String)");
         log.debug("  string [{}]", string);
         log.debug("  pattern [{}]", pattern.pattern());
-        
-        Matcher matcher = this.pattern.matcher(
+
+        final Matcher matcher = this.pattern.matcher(
             string
             );
         if (matcher.matches())
             {
             log.debug("PASS");
-            String temp = matcher.group(1);
+            final String temp = matcher.group(1);
             log.debug("  temp [{}]", temp);
             return this.idents.ident(
                 temp

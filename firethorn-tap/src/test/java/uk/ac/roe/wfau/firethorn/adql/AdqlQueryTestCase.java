@@ -43,10 +43,10 @@ extends TestBase
     {
 
    /**
-     * Resolve a table alias into a BaseTable. 
+     * Resolve a table alias into a BaseTable.
      *
      */
-    public TuesdayBaseTable<?,?> resolve(ADQLTable querytable)
+    public TuesdayBaseTable<?,?> resolve(final ADQLTable querytable)
     throws Exception
         {
         return factories().base().tables().resolve(
@@ -58,7 +58,7 @@ extends TestBase
      * Simple ADQL query for the imported table.
      *
      */
-    private static final String IMPORTED_000 = 
+    private static final String IMPORTED_000 =
 
           "SELECT"
         + "    ra,"
@@ -79,13 +79,13 @@ extends TestBase
         {
         //
         // Create our JDBC resource.
-        TuesdayJdbcResource twomass = factories().jdbc().resources().create(
+        final TuesdayJdbcResource twomass = factories().jdbc().resources().create(
             "test-resource",
             "spring:RoeTWOMASS"
             );
         //
         // Create our ADQL workspace.
-        TuesdayAdqlResource workspace = factories().adql().resources().create(
+        final TuesdayAdqlResource workspace = factories().adql().resources().create(
             "test-workspace"
             );
         //
@@ -94,30 +94,30 @@ extends TestBase
         workspace.schemas().inport(
             twomass.schemas().select("TWOMASS.dbo"),
             "twomass"
-            ); 
+            );
         //
         // Create our query.
-        TuesdayAdqlQuery query = factories().adql().queries().create(
+        final TuesdayAdqlQuery query = factories().adql().queries().create(
             workspace,
             IMPORTED_000
-            );        
+            );
         //
         // Parse the query ...
         query.parse();
         //
         // Check the results ...
         log.debug("Columns -- ");
-        for (TuesdayAdqlColumn column : query.columns())
+        for (final TuesdayAdqlColumn column : query.columns())
             {
             log.debug("Column [{}]", column.fullname());
             }
         log.debug("Tables -- ");
-        for (TuesdayAdqlTable table : query.tables())
+        for (final TuesdayAdqlTable table : query.tables())
             {
             log.debug("Table [{}]", table.fullname());
             }
         log.debug("Resources -- ");
-        for (TuesdayOgsaResource<?> resource : query.resources())
+        for (final TuesdayOgsaResource<?> resource : query.resources())
             {
             log.debug("Resource [{}]", resource.fullname());
             }
@@ -152,13 +152,13 @@ extends TestBase
         {
         //
         // Create our JDBC resource.
-        TuesdayJdbcResource twomass = factories().jdbc().resources().create(
+        final TuesdayJdbcResource twomass = factories().jdbc().resources().create(
             "test-resource",
             "spring:RoeTWOMASS"
             );
         //
         // Create our ADQL workspace.
-        TuesdayAdqlResource workspace = factories().adql().resources().create(
+        final TuesdayAdqlResource workspace = factories().adql().resources().create(
             "test-workspace"
             );
         //
@@ -167,30 +167,30 @@ extends TestBase
         workspace.schemas().inport(
             twomass.schemas().select("TWOMASS.dbo"),
             "twomass"
-            ); 
+            );
         //
         // Create our query.
-        TuesdayAdqlQuery query = factories().adql().queries().create(
+        final TuesdayAdqlQuery query = factories().adql().queries().create(
             workspace,
             IMPORTED_001
-            );        
+            );
         //
         // Parse the query ...
         query.parse();
         //
         // Check the results ...
         log.debug("Columns -- ");
-        for (TuesdayAdqlColumn column : query.columns())
+        for (final TuesdayAdqlColumn column : query.columns())
             {
             log.debug("Column [{}]", column.fullname());
             }
         log.debug("Tables -- ");
-        for (TuesdayAdqlTable table : query.tables())
+        for (final TuesdayAdqlTable table : query.tables())
             {
             log.debug("Table [{}]", table.fullname());
             }
         log.debug("Resources -- ");
-        for (TuesdayOgsaResource<?> resource : query.resources())
+        for (final TuesdayOgsaResource<?> resource : query.resources())
             {
             log.debug("Resource [{}]", resource.fullname());
             }
@@ -232,15 +232,15 @@ extends TestBase
         {
         //
         // Create our JDBC resources.
-        TuesdayJdbcResource twomass = factories().jdbc().resources().create(
+        final TuesdayJdbcResource twomass = factories().jdbc().resources().create(
             "twomass",
             "spring:RoeTWOMASS"
             );
-        TuesdayJdbcResource twoxmm = factories().jdbc().resources().create(
+        final TuesdayJdbcResource twoxmm = factories().jdbc().resources().create(
             "twoxmm",
             "spring:RoeTWOXMM"
             );
-        TuesdayJdbcResource bestdr7  = factories().jdbc().resources().create(
+        final TuesdayJdbcResource bestdr7  = factories().jdbc().resources().create(
             "bestdr7",
             "spring:RoeBestDR7"
             );
@@ -249,7 +249,7 @@ extends TestBase
         bestdr7.inport();
         //
         // Create our ADQL workspace.
-        TuesdayAdqlResource workspace = factories().adql().resources().create(
+        final TuesdayAdqlResource workspace = factories().adql().resources().create(
             "test-workspace"
             );
         //
@@ -259,42 +259,42 @@ extends TestBase
                 "TWOMASS.dbo"
                 ),
             "twomass"
-            ); 
+            );
         workspace.schemas().inport(
             twoxmm.schemas().select(
                 "TWOXMM.dbo"
                 ),
             "twoxmm"
-            ); 
+            );
         workspace.schemas().inport(
             bestdr7.schemas().select(
                 "BestDR7.dbo"
                 ),
             "bestdr7"
-            ); 
+            );
         //
         // Create our query.
-        TuesdayAdqlQuery query = factories().adql().queries().create(
+        final TuesdayAdqlQuery query = factories().adql().queries().create(
             workspace,
             IMPORTED_002
-            );        
+            );
         //
         // Parse the query ...
         query.parse();
         //
         // Check the results ...
         log.debug("Columns -- ");
-        for (TuesdayAdqlColumn column : query.columns())
+        for (final TuesdayAdqlColumn column : query.columns())
             {
             log.debug("Column [{}]", column.fullname());
             }
         log.debug("Tables -- ");
-        for (TuesdayAdqlTable table : query.tables())
+        for (final TuesdayAdqlTable table : query.tables())
             {
             log.debug("Table [{}]", table.fullname());
             }
         log.debug("Resources -- ");
-        for (TuesdayOgsaResource<?> resource : query.resources())
+        for (final TuesdayOgsaResource<?> resource : query.resources())
             {
             log.debug("Resource [{}]", resource.fullname());
             }
@@ -311,15 +311,15 @@ extends TestBase
         {
         //
         // Create our JDBC resources.
-        TuesdayJdbcResource twomass = factories().jdbc().resources().create(
+        final TuesdayJdbcResource twomass = factories().jdbc().resources().create(
             "twomass",
             "spring:RoeTWOMASS"
             );
-        TuesdayJdbcResource twoxmm = factories().jdbc().resources().create(
+        final TuesdayJdbcResource twoxmm = factories().jdbc().resources().create(
             "twoxmm",
             "spring:RoeTWOXMM"
             );
-        TuesdayJdbcResource bestdr7  = factories().jdbc().resources().create(
+        final TuesdayJdbcResource bestdr7  = factories().jdbc().resources().create(
             "bestdr7",
             "spring:RoeBestDR7"
             );
@@ -328,14 +328,14 @@ extends TestBase
         bestdr7.inport();
         //
         // Re-assign the JDBC table resources.
-        for (TuesdayJdbcSchema schema : twoxmm.schemas().select())
+        for (final TuesdayJdbcSchema schema : twoxmm.schemas().select())
             {
             log.debug("Relocating schema [{}]", schema.name());
             ((TuesdayJdbcSchemaEntity)schema).resource(
                 twomass
                 );
             }
-        for (TuesdayJdbcSchema schema : bestdr7.schemas().select())
+        for (final TuesdayJdbcSchema schema : bestdr7.schemas().select())
             {
             log.debug("Relocating schema [{}]", schema.name());
             ((TuesdayJdbcSchemaEntity)schema).resource(
@@ -345,7 +345,7 @@ extends TestBase
         factories().hibernate().flush();
         //
         // Create our ADQL workspace.
-        TuesdayAdqlResource workspace = factories().adql().resources().create(
+        final TuesdayAdqlResource workspace = factories().adql().resources().create(
             "test-workspace"
             );
         //
@@ -355,42 +355,42 @@ extends TestBase
                 "TWOMASS.dbo"
                 ),
             "twomass"
-            ); 
+            );
         workspace.schemas().inport(
             twomass.schemas().select(
                 "TWOXMM.dbo"
                 ),
             "twoxmm"
-            ); 
+            );
         workspace.schemas().inport(
             twomass.schemas().select(
                 "BestDR7.dbo"
                 ),
             "bestdr7"
-            ); 
+            );
         //
         // Create our query.
-        TuesdayAdqlQuery query = factories().adql().queries().create(
+        final TuesdayAdqlQuery query = factories().adql().queries().create(
             workspace,
             IMPORTED_002
-            );        
+            );
         //
         // Parse the query ...
         query.parse();
         //
         // Check the results ...
         log.debug("Columns -- ");
-        for (TuesdayAdqlColumn column : query.columns())
+        for (final TuesdayAdqlColumn column : query.columns())
             {
             log.debug("Column [{}]", column.fullname());
             }
         log.debug("Tables -- ");
-        for (TuesdayAdqlTable table : query.tables())
+        for (final TuesdayAdqlTable table : query.tables())
             {
             log.debug("Table [{}]", table.fullname());
             }
         log.debug("Resources -- ");
-        for (TuesdayOgsaResource<?> resource : query.resources())
+        for (final TuesdayOgsaResource<?> resource : query.resources())
             {
             log.debug("Resource [{}]", resource.fullname());
             }

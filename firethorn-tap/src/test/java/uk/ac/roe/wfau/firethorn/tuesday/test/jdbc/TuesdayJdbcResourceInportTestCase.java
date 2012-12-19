@@ -17,30 +17,16 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday.test.jdbc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayFactories;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnection;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnectionEntity;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
 
 /**
  * TODO experiment with this
@@ -52,13 +38,13 @@ public class TuesdayJdbcResourceInportTestCase
     extends TuesdayJdbcResourceTestCase
     {
 
-    public TuesdayJdbcResource inport(String catalog)
+    public TuesdayJdbcResource inport(final String catalog)
     throws Exception
         {
         log.debug("Catalog [{}]",catalog);
-        String url = "jdbc:jtds:sqlserver://localhost:1433/" + catalog ;             
+        final String url = "jdbc:jtds:sqlserver://localhost:1433/" + catalog ;
 
-        TuesdayJdbcResource resource = factories().jdbc().resources().create(
+        final TuesdayJdbcResource resource = factories().jdbc().resources().create(
             catalog
             );
         resource.connection().url(
@@ -77,7 +63,7 @@ public class TuesdayJdbcResourceInportTestCase
         try {
             resource.inport();
             }
-        catch(Exception ouch)
+        catch(final Exception ouch)
             {
             log.debug("Failed to import resource [{}]", ouch.getMessage());
             }
@@ -95,19 +81,19 @@ public class TuesdayJdbcResourceInportTestCase
             inport(
                 "WORLDR2"
                 )
-            );            
+            );
         }
 
     //@Test
     public void test002()
     throws Exception
         {
-        TuesdayJdbcConnection connection = new TuesdayJdbcConnectionEntity(
+        final TuesdayJdbcConnection connection = new TuesdayJdbcConnectionEntity(
             "spring:RoeLiveData"
             );
-        List<TuesdayJdbcResource> resources = new ArrayList<TuesdayJdbcResource>();
+        final List<TuesdayJdbcResource> resources = new ArrayList<TuesdayJdbcResource>();
 
-        for (String catalog : connection.catalogs())
+        for (final String catalog : connection.catalogs())
             {
             resources.add(
                 inport(
@@ -115,11 +101,11 @@ public class TuesdayJdbcResourceInportTestCase
                     )
                 );
             }
-        for (TuesdayJdbcResource resource : resources)
+        for (final TuesdayJdbcResource resource : resources)
             {
             display(
                 resource
-                );            
+                );
             }
         }
     }

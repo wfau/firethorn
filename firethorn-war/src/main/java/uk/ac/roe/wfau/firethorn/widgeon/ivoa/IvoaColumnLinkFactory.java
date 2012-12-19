@@ -35,7 +35,7 @@ implements TuesdayIvoaColumn.LinkFactory
     protected IvoaColumnLinkFactory()
         {
         super(
-            BASE_PATH 
+            BASE_PATH
             );
         }
 

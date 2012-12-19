@@ -57,7 +57,7 @@ public interface TuesdayAdqlFactories
 
     /**
      * The local ADQL parser factory.
-     * 
+     *
      */
     public AdqlDBParser.Factory parsers();
 

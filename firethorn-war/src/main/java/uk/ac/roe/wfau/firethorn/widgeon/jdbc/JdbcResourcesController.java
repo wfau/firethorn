@@ -37,7 +37,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
  * TODO better exception handling.
  * http://blog.newsplore.com/2010/08/04/restful-error-handling-with-tomcat-springmvc
  * http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/util/AntPathMatcher.html
- * 
+ *
  */
 @Controller
 @RequestMapping(JdbcResourceLinkFactory.SERVICE_PATH)

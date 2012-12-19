@@ -18,8 +18,6 @@
 package uk.ac.roe.wfau.firethorn.tuesday;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.common.entity.Entity.LinkFactory;
 
 /**
  *
@@ -85,7 +83,7 @@ extends TuesdayBaseTable<TuesdayAdqlTable, TuesdayAdqlColumn>
 
         @Override
         public TuesdayAdqlTable.LinkFactory links();
-        
+
         }
 
     @Override

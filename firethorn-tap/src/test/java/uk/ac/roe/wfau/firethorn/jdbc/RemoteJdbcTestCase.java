@@ -47,7 +47,7 @@ extends TestBase
 
     //
     // Local properties file.
-    private Properties config = new Properties();
+    private final Properties config = new Properties();
 
     public static final String CONFIG_PATH = "user.home" ;
     public static final String CONFIG_FILE = "firethorn.properties" ;
@@ -67,7 +67,7 @@ extends TestBase
                     )
                 )
             );
-        }    
+        }
 
     @Test
     public void testPull()
@@ -90,7 +90,7 @@ extends TestBase
             "base.1352861674755.0"
             ).iterator().next();
          */
-        
+
         //
         // Set the database connection properties.
         jdbcResource.connection().url(
@@ -110,7 +110,7 @@ extends TestBase
             jdbcResource
             );
         }
-    
+
     public void display(final TuesdayJdbcResource resource)
         {
         log.debug("---");

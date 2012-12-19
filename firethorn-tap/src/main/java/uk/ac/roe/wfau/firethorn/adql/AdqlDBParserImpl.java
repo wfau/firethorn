@@ -29,12 +29,10 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable.AdqlDBColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
+import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery.Status;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayOgsaResource;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery.Status;
-
 import adql.db.DBChecker;
 import adql.db.DBTable;
 import adql.parser.ADQLParser;
@@ -49,7 +47,7 @@ import adql.translator.TranslationException;
 
 /**
  * ADQL parser implementation.
- * 
+ *
  */
 @Slf4j
 public class AdqlDBParserImpl
@@ -58,7 +56,7 @@ implements AdqlDBParser
 
     /**
      * Factory implementation.
-     * 
+     *
      */
     @Repository
     public static class Factory
@@ -76,7 +74,7 @@ implements AdqlDBParser
 
         /**
          * Autowired reference to the local table factory.
-         * 
+         *
          */
         @Autowired
         private AdqlDBTable.Factory tables;
@@ -90,11 +88,11 @@ implements AdqlDBParser
     protected AdqlDBParserImpl(final AdqlDBTable.Factory factory, final TuesdayAdqlQuery.Mode mode, final TuesdayAdqlResource workspace)
         {
         this.mode = mode ;
-        
-        Set<DBTable> tables = new HashSet<DBTable>();
-        for (TuesdayAdqlSchema schema : workspace.schemas().select())
+
+        final Set<DBTable> tables = new HashSet<DBTable>();
+        for (final TuesdayAdqlSchema schema : workspace.schemas().select())
             {
-            for (TuesdayAdqlTable table : schema.tables().select())
+            for (final TuesdayAdqlTable table : schema.tables().select())
                 {
                 tables.add(
                     factory.create(
@@ -135,22 +133,22 @@ implements AdqlDBParser
                 this.mode
                 );
             //
-            // Update the processed ADQL. 
+            // Update the processed ADQL.
             subject.adql(
                 object.toADQL()
                 );
             //
-            // Process the query components. 
+            // Process the query components.
             process(
                 subject,
                 object
                 );
 
-            // IF we are single resource .. then translate into the resource dialect ? 
-            
+            // IF we are single resource .. then translate into the resource dialect ?
+
             //
             // Translate the query into SQL.
-            ADQLTranslator translator = new PostgreSQLTranslator(false);
+            final ADQLTranslator translator = new PostgreSQLTranslator(false);
             subject.ogsa(
                 translator.translate(
                     object
@@ -171,7 +169,7 @@ implements AdqlDBParser
 
     /**
      * Wrap an ADQLObject as an Iterable.
-     *  
+     *
      */
     public Iterable<ADQLObject> iter(final ADQLObject object)
         {
@@ -182,7 +180,7 @@ implements AdqlDBParser
                 {
                 return object.adqlIterator();
                 }
-            }; 
+            };
         }
 
     /**
@@ -205,7 +203,7 @@ implements AdqlDBParser
      */
     public void process(final AdqlDBQuery subject, final Iterable<ADQLObject> objects)
         {
-        for (ADQLObject object: objects)
+        for (final ADQLObject object: objects)
             {
             log.debug("----");
             log.debug("ADQLObject [{}]", object.getClass().getName());
@@ -216,13 +214,13 @@ implements AdqlDBParser
                 log.debug("  ADQLColumn [{}]", ((ADQLColumn) object).getName());
                 if (((ADQLColumn) object).getDBLink() instanceof AdqlDBColumn)
                     {
-                    TuesdayAdqlColumn adql = ((AdqlDBColumn) ((ADQLColumn) object).getDBLink()).column();
+                    final TuesdayAdqlColumn adql = ((AdqlDBColumn) ((ADQLColumn) object).getDBLink()).column();
                     log.debug("  ----");
                     log.debug("  TuesdayAdqlColumn [{}]", adql.fullname());
                     log.debug("  TuesdayBaseColumn [{}]", adql.base().fullname());
                     subject.add(
                         adql
-                        );                    
+                        );
                     }
                 }
 
@@ -232,7 +230,7 @@ implements AdqlDBParser
                 log.debug("  ADQLTable [{}]", ((ADQLTable) object).getName());
                 if (((ADQLTable) object).getDBLink() instanceof AdqlDBTable)
                     {
-                    TuesdayAdqlTable adql = ((AdqlDBTable) ((ADQLTable) object).getDBLink()).table();
+                    final TuesdayAdqlTable adql = ((AdqlDBTable) ((ADQLTable) object).getDBLink()).table();
                     log.debug("  ----");
                     log.debug("  TuesdayAdqlTable [{}]", adql.fullname());
                     log.debug("  TuesdayBaseTable [{}]", adql.base().fullname());

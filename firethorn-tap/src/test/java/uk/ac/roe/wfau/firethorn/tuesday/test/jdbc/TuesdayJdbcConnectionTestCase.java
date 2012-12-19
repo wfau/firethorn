@@ -19,28 +19,11 @@ package uk.ac.roe.wfau.firethorn.tuesday.test.jdbc;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
 import lombok.extern.slf4j.Slf4j;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayFactories;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnection;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnectionEntity;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
 
 /**
  * TODO experiment with this
@@ -63,7 +46,7 @@ public class TuesdayJdbcConnectionTestCase
         assertNotNull(
             factories()
             );
-        TuesdayJdbcResource resource = factories().jdbc().resources().create(
+        final TuesdayJdbcResource resource = factories().jdbc().resources().create(
             unique("resource")
             );
         assertNotNull(
@@ -105,7 +88,7 @@ public class TuesdayJdbcConnectionTestCase
         assertNotNull(
             factories()
             );
-        TuesdayJdbcResource resource = factories().jdbc().resources().create(
+        final TuesdayJdbcResource resource = factories().jdbc().resources().create(
             unique("resource")
             );
         assertNotNull(
@@ -147,7 +130,7 @@ public class TuesdayJdbcConnectionTestCase
         assertNotNull(
             factories()
             );
-        TuesdayJdbcResource resource = factories().jdbc().resources().create(
+        final TuesdayJdbcResource resource = factories().jdbc().resources().create(
             unique("resource")
             );
         assertNotNull(
@@ -199,7 +182,7 @@ public class TuesdayJdbcConnectionTestCase
         resource.inport();
 
         display(resource);
-        
+
         }
 */
     }
