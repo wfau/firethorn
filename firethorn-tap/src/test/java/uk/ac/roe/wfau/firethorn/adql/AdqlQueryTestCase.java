@@ -93,12 +93,11 @@ extends TestBase
         twomass.inport();
         workspace.schemas().inport(
             twomass.schemas().select("TWOMASS.dbo"),
-            "twomass"
+            "test_schema"
             );
         //
         // Create our query.
-        final TuesdayAdqlQuery query = factories().adql().queries().create(
-            workspace,
+        final TuesdayAdqlQuery query = workspace.queries().create(
             IMPORTED_000
             );
         //
@@ -170,8 +169,7 @@ extends TestBase
             );
         //
         // Create our query.
-        final TuesdayAdqlQuery query = factories().adql().queries().create(
-            workspace,
+        final TuesdayAdqlQuery query = workspace.queries().create(
             IMPORTED_001
             );
         //
@@ -274,8 +272,7 @@ extends TestBase
             );
         //
         // Create our query.
-        final TuesdayAdqlQuery query = factories().adql().queries().create(
-            workspace,
+        final TuesdayAdqlQuery query = workspace.queries().create(
             IMPORTED_002
             );
         //
@@ -370,8 +367,7 @@ extends TestBase
             );
         //
         // Create our query.
-        final TuesdayAdqlQuery query = factories().adql().queries().create(
-            workspace,
+        final TuesdayAdqlQuery query = workspace.queries().create(
             IMPORTED_002
             );
         //

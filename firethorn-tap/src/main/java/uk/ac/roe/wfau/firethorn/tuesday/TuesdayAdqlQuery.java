@@ -17,12 +17,41 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+
 /**
  *
  *
  */
 public interface TuesdayAdqlQuery
+extends Entity
     {
+    /**
+     * Nname factory interface.
+     *
+     */
+    public static interface NameFactory
+    extends Entity.NameFactory
+        {
+        }
+
+    /**
+     * Link factory interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<TuesdayAdqlQuery>
+        {
+        }
+
+    /**
+     * Identifier factory interface.
+     *
+     */
+    public static interface IdentFactory
+    extends Entity.IdentFactory
+        {
+        }
 
     /**
      * Factory interface.
@@ -34,13 +63,31 @@ public interface TuesdayAdqlQuery
          * Create a new query.
          *
          */
-        public TuesdayAdqlQuery create(final TuesdayAdqlResource workspace, final String query);
+        public TuesdayAdqlQuery create(final TuesdayAdqlResource resource, final String input);
 
         /**
          * Create a new query.
          *
          */
-        public TuesdayAdqlQuery create(final TuesdayAdqlResource workspace, final String name, final String query);
+        public TuesdayAdqlQuery create(final TuesdayAdqlResource resource, final String name, final String input);
+
+        /**
+         * Select all the queries from a resource.
+         *
+         */
+        public Iterable<TuesdayAdqlQuery> select(final TuesdayAdqlResource resource);
+
+        /**
+         * Text search for queries (name starts with).
+         *
+         */
+        public Iterable<TuesdayAdqlQuery> search(final TuesdayAdqlResource resource, final String text);
+        
+        /**
+         * Access to our name factory.
+         *
+         */
+        public TuesdayAdqlQuery.NameFactory names();
 
         }
 
@@ -106,7 +153,7 @@ public interface TuesdayAdqlQuery
      * The ADQL workspace this query applies to.
      *
      */
-    public TuesdayAdqlResource workspace();
+    public TuesdayAdqlResource resource();
 
     /**
      * The query mode.

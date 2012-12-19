@@ -200,4 +200,47 @@ extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
             this
             );
         }
+
+    @Override
+    public Queries queries()
+        {
+        return new Queries()
+            {
+            @Override
+            public TuesdayAdqlQuery create(String query)
+                {
+                return factories().adql().queries().create(
+                    TuesdayAdqlResourceEntity.this,
+                    query
+                    );
+                }
+
+            @Override
+            public TuesdayAdqlQuery create(String name, String query)
+                {
+                return factories().adql().queries().create(
+                    TuesdayAdqlResourceEntity.this,
+                    name,
+                    query
+                    );
+                }
+
+            @Override
+            public Iterable<TuesdayAdqlQuery> select()
+                {
+                return factories().adql().queries().select(
+                    TuesdayAdqlResourceEntity.this
+                    );
+                }
+
+            @Override
+            public Iterable<TuesdayAdqlQuery> search(String text)
+                {
+                return factories().adql().queries().search(
+                    TuesdayAdqlResourceEntity.this,
+                    text
+                    );
+                }
+            };
+        }
     }

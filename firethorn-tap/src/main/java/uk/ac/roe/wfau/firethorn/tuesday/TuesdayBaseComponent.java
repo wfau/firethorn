@@ -17,6 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.tuesday;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.MappedSuperclass;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -29,6 +33,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 public interface TuesdayBaseComponent
 extends Entity
     {
+
     /**
      * Enum representing the status.
      *

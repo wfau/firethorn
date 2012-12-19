@@ -63,9 +63,13 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
         }
     )
 public class TuesdayAdqlSchemaEntity
-    extends TuesdayBaseSchemaEntity<TuesdayAdqlSchema, TuesdayAdqlTable>
-    implements TuesdayAdqlSchema
+extends TuesdayBaseSchemaEntity<TuesdayAdqlSchema, TuesdayAdqlTable>
+implements TuesdayAdqlSchema
     {
+    /**
+     * Hibernate table mapping.
+     * 
+     */
     protected static final String DB_TABLE_NAME = "TuesdayAdqlSchemaEntity";
 
     /**

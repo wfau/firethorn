@@ -38,10 +38,13 @@ public abstract class TuesdayBaseComponentEntity
 extends AbstractEntity
     implements TuesdayBaseComponent
     {
+    /**
+     * Hibernate column mapping.
+     * 
+     */
     protected static final String DB_BASE_COL   = "base";
     protected static final String DB_PARENT_COL = "parent";
     protected static final String DB_STATUS_COL = "status";
-
     protected static final String DB_ALIAS_COL  = "alias";
     protected static final String DB_TYPE_COL   = "datatype" ;
     protected static final String DB_SIZE_COL   = "datasize" ;

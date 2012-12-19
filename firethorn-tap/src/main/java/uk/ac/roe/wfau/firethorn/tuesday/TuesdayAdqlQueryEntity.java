@@ -20,16 +20,32 @@ package uk.ac.roe.wfau.firethorn.tuesday;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.AdqlDBParser;
 import uk.ac.roe.wfau.firethorn.adql.AdqlDBQuery;
 import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
+import uk.ac.roe.wfau.firethorn.common.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
 
 /**
@@ -37,10 +53,47 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
  *
  */
 @Slf4j
+@Entity()
+@Access(
+    AccessType.FIELD
+    )
+@Table(
+    name = TuesdayAdqlQueryEntity.DB_TABLE_NAME
+    )
+@NamedQueries(
+        {
+        @NamedQuery(
+            name  = "TuesdayAdqlQuery-select-resource",
+            query = "FROM TuesdayAdqlQueryEntity WHERE resource = :resource ORDER BY name asc, ident desc"
+            ),
+        @NamedQuery(
+            name  = "TuesdayAdqlQuery-select-resource.name",
+            query = "FROM TuesdayAdqlQueryEntity WHERE ((resource = :resource) AND (name = :name)) ORDER BY name asc, ident desc"
+            ),
+        @NamedQuery(
+            name  = "TuesdayAdqlQuery-search-resource.text",
+            query = "FROM TuesdayAdqlQueryEntity WHERE ((resource = :resource) AND (name LIKE :text)) ORDER BY name asc, ident desc"
+            )
+        }
+     )       
 public class TuesdayAdqlQueryEntity
 extends AbstractEntity
 implements TuesdayAdqlQuery, AdqlDBQuery
     {
+    /**
+     * Hibernate table mapping.
+     * 
+     */
+    protected static final String DB_TABLE_NAME = "TuesdayAdqlQueryEntity";
+    /**
+     * Hibernate column mapping.
+     * 
+     */
+    protected static final String DB_MODE_COL   = "mode";
+    protected static final String DB_INPUT_COL  = "input";
+    protected static final int    DB_INPUT_LEN  = 1000;
+    protected static final String DB_STATUS_COL = "status";
+    protected static final String DB_RESOURCE_COL = "resource";
 
     /**
      * Factory implementation.
@@ -48,61 +101,162 @@ implements TuesdayAdqlQuery, AdqlDBQuery
      */
     @Repository
     public static class Factory
+    extends AbstractFactory<TuesdayAdqlQuery>
     implements TuesdayAdqlQuery.Factory
         {
+        @Override
+        public Class<?> etype()
+            {
+            return TuesdayAdqlQueryEntity.class ;
+            }
 
         @Override
         @CreateEntityMethod
-        public TuesdayAdqlQuery create(final TuesdayAdqlResource workspace, final String input)
+        public TuesdayAdqlQuery create(final TuesdayAdqlResource resource, final String input)
             {
-            return create(
-                workspace,
-                "query",
-                input
+            return this.insert(
+                new TuesdayAdqlQueryEntity(
+                    resource,
+                    this.names.name(),
+                    input
+                    )
                 );
             }
 
         @Override
         @CreateEntityMethod
-        public TuesdayAdqlQuery create(final TuesdayAdqlResource workspace, final String name, final String input)
+        public TuesdayAdqlQuery create(final TuesdayAdqlResource resource, final String name, final String input)
             {
-            return new TuesdayAdqlQueryEntity(
-                workspace,
-                name,
-                input
+            return this.insert(
+                new TuesdayAdqlQueryEntity(
+                    resource,
+                    name,
+                    input
+                    )
                 );
             }
 
+        @Autowired
+        private TuesdayAdqlQuery.NameFactory names;
+        @Override
+        public TuesdayAdqlQuery.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
+        private TuesdayAdqlQuery.LinkFactory links;
+        @Override
+        public TuesdayAdqlQuery.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private TuesdayAdqlQuery.IdentFactory idents;
+        @Override
+        public TuesdayAdqlQuery.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<TuesdayAdqlQuery> select(TuesdayAdqlResource resource)
+            {
+            return super.list(
+                super.query(
+                    "TuesdayAdqlQuery-select-resource"
+                    ).setEntity(
+                        "resource",
+                        resource
+                        )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<TuesdayAdqlQuery> search(TuesdayAdqlResource resource, String text)
+            {
+            return super.iterable(
+                super.query(
+                    "TuesdayAdqlQuery-search-resource.text"
+                    ).setEntity(
+                        "resource",
+                        resource
+                    ).setString(
+                        "text",
+                        searchParam(
+                            text
+                            )
+                        )
+                );
+            }
         }
 
     protected TuesdayAdqlQueryEntity()
         {
         }
 
-    protected TuesdayAdqlQueryEntity(final TuesdayAdqlResource workspace, final String name, final String input)
+    protected TuesdayAdqlQueryEntity(final TuesdayAdqlResource resource, final String name, final String input)
     throws NameFormatException
         {
         super(
             name
             );
         this.input = input;
-        this.workspace = workspace;
+        this.resource = resource;
         }
 
-    private TuesdayAdqlResource workspace;
+    @Index(
+        name=DB_TABLE_NAME + "IndexByResource"
+        )
+    @ManyToOne(
+        fetch = FetchType.EAGER,
+        targetEntity = TuesdayAdqlResourceEntity.class
+        )
+    @JoinColumn(
+        name = DB_RESOURCE_COL,
+        unique = false,
+        nullable = false,
+        updatable = false
+        )
+    private TuesdayAdqlResource resource;
     @Override
-    public TuesdayAdqlResource workspace()
+    public TuesdayAdqlResource resource()
         {
-        return this.workspace;
+        return this.resource;
         }
 
-    private Status status;
+    /**
+     * The component status.
+     *
+     */
+    @Column(
+        name = DB_STATUS_COL,
+        unique = false,
+        nullable = false,
+        updatable = true
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    private Status status = Status.EDITING;
     @Override
     public Status status()
         {
         return this.status;
         }
 
+    @Column(
+        name = DB_MODE_COL,
+        unique = false,
+        nullable = false,
+        updatable = true
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
     private Mode mode = Mode.DIRECT ;
     @Override
     public Mode mode()
@@ -110,6 +264,13 @@ implements TuesdayAdqlQuery, AdqlDBQuery
         return this.mode;
         }
 
+    @Column(
+        name = DB_INPUT_COL,
+        length=DB_INPUT_LEN,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
     private String input;
     @Override
     public String input()
@@ -137,11 +298,11 @@ implements TuesdayAdqlQuery, AdqlDBQuery
         // TODO -- This should be part of the workspace.
         final AdqlDBParser direct = this.factories().adql().parsers().create(
             Mode.DIRECT,
-            this.workspace
+            this.resource
             );
         final AdqlDBParser distrib = this.factories().adql().parsers().create(
             Mode.DISTRIBUTED,
-            this.workspace
+            this.resource
             );
         //
         // Process as a direct query to start with.
@@ -175,6 +336,10 @@ implements TuesdayAdqlQuery, AdqlDBQuery
         this.resources.clear();
         }
 
+//
+// These are all transient for now,
+// will make them persistent later ...
+    
     @Transient
     private String adql;
     @Override
@@ -223,8 +388,7 @@ implements TuesdayAdqlQuery, AdqlDBQuery
         return null;
         }
 
-
-//
+//    
 // AdqlDBQuery methods ..
 //
     @Override

@@ -31,6 +31,19 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
  */
 public interface Entity
     {
+    /**
+     * Common interface for a name factory.
+     *
+     */
+    public interface NameFactory
+        {
+        /**
+         * Generate a new name.
+         * 
+         */
+        public String name();
+
+        }
 
     /**
      * Common interface for a link factory.
