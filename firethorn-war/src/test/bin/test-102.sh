@@ -125,10 +125,6 @@ curl \
         psc.pts_key
 EOF
 
-echo ""
-echo "----"
-echo ""
-
 #
 # Create a 'DISTRIBUTED' ADQL query.
 echo ""
