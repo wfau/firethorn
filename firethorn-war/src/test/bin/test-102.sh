@@ -96,6 +96,40 @@ curl \
 # -------- --------
 
 #
+# Create a 'DIRECT' ADQL query.
+echo ""
+echo "----"
+echo ""
+curl \
+    -H 'Accept: application/json' \
+    --data-urlencode "adql.resource.query.create.name=test-query" \
+    --data-urlencode "adql.resource.query.create.query@-" \
+    "${basename}/adql/resource/4/queries/create"  \
+<< EOF
+    SELECT
+        scn.date,
+        scn.scan,
+        scn.tile,
+        psc.ra || ' - ' || psc.dec as position
+    FROM
+        adql_twomass.twomass_psc AS psc,
+        adql_twomass.twomass_scn AS scn,
+        adql_twomass.twomass_pscXBestDR7PhotoObjAll AS match
+    WHERE
+        (psc.scan_key = scn.scan_key)
+    AND
+        (match.masterObjID = psc.pts_key)
+    AND
+        (match.distanceMins < 0.01)
+    ORDER BY
+        psc.pts_key
+EOF
+
+echo ""
+echo "----"
+echo ""
+
+#
 # Create a 'DISTRIBUTED' ADQL query.
 echo ""
 echo "----"
@@ -131,6 +165,5 @@ EOF
 echo ""
 echo "----"
 echo ""
-
 
 
