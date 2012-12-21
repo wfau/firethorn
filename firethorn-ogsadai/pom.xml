@@ -55,13 +55,13 @@
 
         <!--+
             | Local repository for OGSA-DAI dependencies.
+            +-->
         <repository>
-            <id>ogsadai-local</id>
+            <id>ogsadai-repo</id>
             <name>Local repository for OGSA-DAI components</name>
-            <url>http://data-6.metagrid.co.uk/roe/wfau/firethorn/maven/ogsadai/</url>
+            <url>http://data.metagrid.co.uk/wfau/maven/external/</url>
             <layout>default</layout>
         </repository>
-            +-->
 
         <!--+
             | Apache release repository for Jena.

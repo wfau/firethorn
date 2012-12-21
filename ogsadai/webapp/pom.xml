@@ -112,6 +112,10 @@
                         | The webapp context file.
                     <contextFile>src/test/conf/test-context.xml</contextFile>
                         +-->
+
+                    <!--+
+                        | Use the unpacked war file as the webapp.
+                        +-->
                     <warSourceDirectory>
                         ${project.build.directory}/apache-tomcat-maven-plugin/${project.artifactId}
                     </warSourceDirectory>
@@ -143,6 +147,13 @@
                         | The webapp context file.
                     <contextFile>src/test/conf/test-context.xml</contextFile>
                         +-->
+
+                    <!--+
+                        | Use the unpacked war file as the webapp.
+                        +-->
+                    <warSourceDirectory>
+                        ${project.build.directory}/apache-tomcat-maven-plugin/${project.artifactId}
+                    </warSourceDirectory>
                 </configuration>
             </plugin>
         </plugins>
