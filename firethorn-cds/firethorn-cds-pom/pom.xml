@@ -38,6 +38,18 @@
         Maven POM to handle 3rd party dependencies for the CDS libraries.
         ]]>
     </description>
+
+    <!--+
+        | Local repository for 3rd party dependencies.
+        +-->
+    <repositories>
+        <repository>
+            <id>ogsadai-repo</id>
+            <name>Local repository for OGSA-DAI components</name>
+            <url>http://data.metagrid.co.uk/wfau/maven/external/</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
     
     <dependencies>
 
