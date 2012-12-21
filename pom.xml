@@ -194,21 +194,14 @@
         </repository>
 
         <!--+
-            | Local repository for external components.
+            | Local repository for 3rd party dependencies.
             +-->
         <repository>
             <id>firethorn-external</id>
             <name>Local repository for 3rd party components</name>
-            <url>http://data.metagrid.co.uk/roe/wfau/firethorn/maven/external</url>
+            <url>http://data.metagrid.co.uk/wfau/maven/external/</url>
             <layout>default</layout>
         </repository>
-
-        <!--+
-            | HSQLDB
-            | http://www.hsqldb.org/repos/org/hsqldb/hsqldb/
-            +-->
-
-
 
     </repositories>
 
