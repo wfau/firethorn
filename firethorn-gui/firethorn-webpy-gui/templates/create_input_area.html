@@ -1,26 +1,36 @@
 $def with (obj_type)
 
 <div id="input_div">
-			<h2>Create new $obj_type</h2>
+		<h2>Create new $obj_type</h2>
 
 		<div id="input_form_container">
 			<br />
 			<form method="post" class="input_form">
-				<h4>Database Info</h4>
-				Name:
-				<input name="obj_name" type="text" id="obj_name"/><br />
-				<span>Enter the name of a new $obj_type to add</span><br />
-				URL:
-				<input name="obj_url" type="text" id="obj_url"/><br />
-				<span>Enter the name of a new $obj_type to add</span><br /><br />
-				<h4>Account info</h4>
-				Username:
-				<input name="username" type="text" id="username"/><br />
-				Password:
-				<input name="password" type="password" id="password"/><br />
-				<input name="obj_type" type="hidden" id="obj_type" value="$obj_type" /><br />				
-				
-				<input type="submit" value="Next" class="submit" />
+		
+				$if obj_type=='Workspace':
+					<h4>Workspace Info</h4>
+					Name:
+					<input name="obj_name" type="text" id="obj_name"/><br />
+					<span>Enter the name of a new $obj_type to add</span><br />
+					<input name="obj_type" type="hidden" id="obj_type" value="$obj_type" /><br />	
+					<input type="submit" value="Submit" class="submit" />
+
+				$else:
+					<h4>Database Info</h4>
+					Name:
+					<input name="obj_name" type="text" id="obj_name"/><br />
+					<span>Enter the name of a new $obj_type to add</span><br />
+					URL:
+					<input name="obj_url" type="text" id="obj_url"/><br />
+					<span>Enter the URL of a new $obj_type to add</span><br /><br />
+					<h4>Account info</h4>
+					Username:
+					<input name="username" type="text" id="username"/><br />
+					Password:
+					<input name="password" type="password" id="password"/><br />
+					<input name="obj_type" type="hidden" id="obj_type" value="$obj_type" /><br />				
+					
+					<input type="submit" value="Next" class="submit" />
 			</form>
 			
 			<br />	

@@ -21,10 +21,12 @@ var helper_functions = new function() {
 		jQuery(parent).children(error_div_id).fadeIn('normal');
 		jQuery(parent).children(error_div_id).delay(3800).fadeOut('slow');
 	}
+	
+	
 	/*
 	 * Toggle a minimize button
 	 */
-	function toggle_minimize_button(id_link, id_content, toggle_on, toggle_off){
+	this.toggle_minimize_button = function(id_link, id_content, toggle_on, toggle_off){
 		 
 	  	if (jQuery(id_link).html() == toggle_on){ 
 	  		jQuery(id_link).html(toggle_off);
@@ -35,7 +37,22 @@ var helper_functions = new function() {
 		jQuery(id_content).slideToggle('slow');
 	  
 	
-}
+	}
+	
+	/*
+	 * Initiate Load 
+	 */
+	this.initiate_loading  = function(load_div){
+		jQuery(load_div).show();
+	}
+	
+	/*
+	 * Load Completet
+	 */
+	this.loading_complete = function(load_div){
+		jQuery(load_div).hide();	
+	}
+	
 	/*
 	 * Ajax call helper
 	 */

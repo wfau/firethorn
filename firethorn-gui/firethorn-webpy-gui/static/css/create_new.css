@@ -7,10 +7,14 @@
 	
 #input_form_container {
 		width:500px;
-		height:400px;
 		display:block;
 		margin-left:100px;
 		text-align:right;
+	}
+
+#input_form_container .notify{
+		font-size:13px;
+		text-align:left;
 	}
 	
 #input_div {
@@ -18,21 +22,21 @@
 		color:black;
 		width:890px;
 		min-width: 540px !important; 
-		height:400px;
 		margin:10px auto 5px 170px;
-		
 		padding-top:20px;
 		padding-bottom: 15px;
 
 	}
-#input_div h2{
+	
+#input_div h2 {
 	text-align:left;
 	font-style:italic;
 	margin-left:50px;
-}
+ 	}
+ 	
 #input_div h4{
 	margin-left:50px;
-}
+	}
 
 #input_div input{
 		padding:4px 2px;

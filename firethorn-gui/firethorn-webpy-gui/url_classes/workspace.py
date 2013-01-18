@@ -40,10 +40,10 @@ class workspace:
             counter = 0
             for i in data:
                 if counter>0:
-                    workspace_list += ", "
+                    workspace_list += "</br> "
                 workspace_list += '<a id="workspace" href="workspace?_id=' + string_functions.encode(i["ident"]) + '">' + i["name"] + '</a>' 
                 counter += 1
-            return_html = "<div id ='sub_item' class='rounded'><h4>Welcome to your workspaces!</h4><br/>Available workspaces: <i>" + workspace_list + "</i></div>"
+            return_html = "<div id ='sub_item' class='rounded'><h4>Welcome to your workspaces!</h4><br/>Available workspaces: <p style='word-wrap:break-word;'><i>" + workspace_list + "</i></p></div>"
         
         return return_html
     
@@ -63,6 +63,7 @@ class workspace:
         return_value = ''
         f= ""
         json_data = session_helpers().get_workspaces()
+
         try:
          
             if request_type == "GET":
@@ -103,9 +104,12 @@ class workspace:
         GET function 
         
         """
-      
-        data = web.input(_id="", parent_folder="", workspace="")
-        return  self.__workspace_handler(data, 'GET')
+        try:
+            data = web.input(_id="", parent_folder="", workspace="")
+            return  self.__workspace_handler(data, 'GET')
+        except Exception as e:
+            print e
+     
     
     
     def POST(self):

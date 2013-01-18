@@ -79,6 +79,7 @@ class workspace_actions:
      
         return ok  
      
+     
     def __move(self, data):
         
         drag_path =   string_functions.decode(data.drag_path)

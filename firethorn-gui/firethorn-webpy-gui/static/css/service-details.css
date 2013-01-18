@@ -85,3 +85,42 @@
 		margin-bottom:10px;	
 	}
     
+#open_new{
+		margin-right:12px;	
+		margin-bottom:6px;	
+			
+	}
+.tree-expanded{
+	display:inline-block;
+	width:16px;
+	height:18px;
+	vertical-align:middle;
+	background:url('../images/tree_arrows.gif') no-repeat -18px 0px;
+	
+}
+
+.tree-expanded:hover{
+	background:url('../images/tree_arrows.gif') no-repeat -50px 0px;
+	cursor:pointer;
+
+}
+
+.tree-collapsed{
+	display:inline-block;
+	width:16px;
+	height:18px;
+	vertical-align:middle;
+	background:url('../images/tree_arrows.gif') no-repeat 0px 0px;
+	
+}
+
+.tree-collapsed:hover{
+	background:url('../images/tree_arrows.gif') no-repeat -32px 0px;
+	cursor:pointer;
+
+}
+
+#tree-folder-indiv:hover {
+		cursor:pointer;
+	
+}

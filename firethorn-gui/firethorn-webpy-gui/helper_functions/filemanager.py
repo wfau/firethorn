@@ -391,7 +391,6 @@ class Filemanager:
         """
         Get chilren nodes for an object based on it's id, type, parent_folder and workspace
         """        
-        
         json_data = []
         
         try:
@@ -456,7 +455,7 @@ myFilemanager = Filemanager(fileroot=vospace_dir)
 def handler(req): 
     method=str(req['mode'])
     req['req']  =  {'time' : req.time}
-   
+    
     temp_dict = {key: value for key, value in req.items() if key is not 'mode'}
     temp_dict1 = {key: value for key, value in temp_dict.items() if key is not 'showThumbs'}
     temp_dict2 = {key: value for key, value in temp_dict1.items() if key is not 'method'}

@@ -29,29 +29,37 @@ var properties = new function() {
 	this.table_type = 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json';
 
 	// Types that may have children
-	this.types_as_folders = ['http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json',
+	this.types_as_folders = [
+	                         'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json',
 	                         'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-catalog-1.0.json',
 	                         'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json',
+	                         'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json',
 	                         'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json',
 	                         'http://data.metagrid.co.uk/wfau/firethorn/types/adql-catalog-1.0.json',
 	                         'http://data.metagrid.co.uk/wfau/firethorn/types/adql-schema-1.0.json'
 	                         ]
 	
 	// Associative array containing types and their parent types
-	this.parent_types = {'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json',
-			'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-catalog-1.0.json' : 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json',
-			'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json' : 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-catalog-1.0.json',
+	this.parent_types = {
+			'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json',
+			'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json' : 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json',
 			'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json' : 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json',
-			'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-column-1.0.json' :'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json'
+			'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-column-1.0.json' :'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json',
+			'http://data.metagrid.co.uk/wfau/firethorn/types/aql-resource-1.0.json' : 'http://data.metagrid.co.uk/wfau/firethorn/types/aql-resource-1.0.json',
+			'http://data.metagrid.co.uk/wfau/firethorn/types/aql-schema-1.0.json' : 'http://data.metagrid.co.uk/wfau/firethorn/types/aql-resource-1.0.json',
+			'http://data.metagrid.co.uk/wfau/firethorn/types/aql-table-1.0.json' : 'http://data.metagrid.co.uk/wfau/firethorn/types/aql-schema-1.0.json',
+			'http://data.metagrid.co.uk/wfau/firethorn/types/aql-column-1.0.json' :'http://data.metagrid.co.uk/wfau/firethorn/types/aql-table-1.0.json'
 		};
 
 	
-	this.type_images = {'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : 'static/js/jquery-treeview/themes/default/images/res1.png',
+	this.type_images = {
+			'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : 'static/js/jquery-treeview/themes/default/images/res1.png',
 			'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-catalog-1.0.json' : 'static/js/jquery-treeview/themes/default/images/catalogue.png',
 			'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json' : 'static/js/jquery-treeview/themes/default/images/schema.png',
 			'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json' : 'static/js/jquery-treeview/themes/default/images/table.png',
 			'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-column-1.0.json' :'static/js/jquery-treeview/themes/default/images/column.png',
 			'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' : 'static/js/jquery-treeview/themes/default/images/res.png',
+			'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json' : 'static/js/jquery-treeview/themes/default/images/res.png',
 			'http://data.metagrid.co.uk/wfau/firethorn/types/adql-catalog-1.0.json' : 'static/js/jquery-treeview/themes/default/images/catalogue.png',
 			'http://data.metagrid.co.uk/wfau/firethorn/types/adql-schema-1.0.json' : 'static/js/jquery-treeview/themes/default/images/schema.png',
 			'http://data.metagrid.co.uk/wfau/firethorn/types/adql-table-1.0.json' : 'static/js/jquery-treeview/themes/default/images/table.png',
@@ -59,14 +67,21 @@ var properties = new function() {
 			"" : 'images/res.png'
 		};
 	
-	this.table_types = ['http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json',
-	                    'http://data.metagrid.co.uk/wfau/firethorn/types/adql-table-1.0.json'];
+	this.table_types = [
+	                    'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json',
+	                    'http://data.metagrid.co.uk/wfau/firethorn/types/adql-table-1.0.json'
+	                    ];
 	
-	this.schema_types = ['http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json',
-	                    'http://data.metagrid.co.uk/wfau/firethorn/types/adql-schema-1.0.json'];
+	this.schema_types = [
+	                     'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json',
+	                    'http://data.metagrid.co.uk/wfau/firethorn/types/adql-schema-1.0.json'
+	                     ];
 	
-	this.resource_types = ['http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json',
-		                    'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json'];
+	this.resource_types = [
+	                       'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json',
+		                   'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json',
+		                   'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json'
+	                       ];
 
 	//Get the Path
 	this.getPath = function () {

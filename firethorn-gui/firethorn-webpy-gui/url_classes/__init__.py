@@ -15,3 +15,4 @@ from vospace import vospace
 from workspace import workspace
 from workspace_actions import workspace_actions
 from resource_actions import resource_actions
+from data_tables_processing import data_tables_processing

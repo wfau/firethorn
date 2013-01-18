@@ -28,7 +28,8 @@ web.config.debug = False
 urls = ('/', 'index','/index', 'index', '/services', 'services', '/create_new',
          'create_new', '/create_view','create_view', '/create_view_edit_handler', 
          'create_view_edit_handler', '/jdbc_resources','jdbc_resources', '/vospace', 'vospace',
-         '/workspace', 'workspace', '/workspace_actions','workspace_actions', '/resource_actions','resource_actions')
+         '/workspace', 'workspace', '/workspace_actions','workspace_actions', '/resource_actions','resource_actions',
+         '/data_tables_processing','data_tables_processing')
 
 
 ### For apache production env
@@ -64,8 +65,10 @@ def session_hook():
     
 app.add_processor(web.loadhook(session_hook))  
 
+from helper_functions import type_helpers
+from config import types
 ### Render templates
-render = web.template.render('templates/', globals={'context': session})  
+render = web.template.render('templates/', globals={'context': session, 'type_helpers' : type_helpers, 'types' : types})  
 
 from url_classes import *
 

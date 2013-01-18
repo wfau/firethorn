@@ -19,6 +19,7 @@ class session_helpers:
     def __init__(self, session=""):
         self.session = session if session != "" else web.ctx.session       
     
+    
     def get_menu_items_by_permissions(self):
         
         html_content = ""
@@ -49,10 +50,10 @@ class session_helpers:
     
     
     def get_workspaces(self):
-        
+
         workspaces =[]
         try:
-            workspaces = web.ctx.session.get('workspaces')
+            workspaces = self.session.get('workspaces')
         except Exception:
             workspaces = []
                     
@@ -108,15 +109,23 @@ class session_helpers:
         return 1                
 
     
-    def generate_workspace_selection(self):
+    def generate_workspace_selection(self, workspace):
         
         html_data = ""
         workspace_data = self.get_workspaces()
         if len(workspace_data)>0:
             html_data += '<select id="workspace_selection">'
             for i in workspace_data:
-                html_data += '<option value="'+ i["ident"] + '">' + i["name"] + '</option>'
+                if workspace==i["ident"]:
+                    html_data += '<option value="'+ i["ident"] + '" selected="selected">' + i["name"] + '</option>'
+                else :
+                    html_data += '<option value="'+ i["ident"] + '">' + i["name"] + '</option>'
+                    
             html_data += '</select>'
         return html_data
 
- 
+
+    def new_workspace(self, workspace_name , workspace):
+        self.session.workspaces.append(workspace)
+        self.session[workspace_name] = []
+        

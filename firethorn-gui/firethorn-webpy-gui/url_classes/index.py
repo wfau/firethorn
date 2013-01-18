@@ -41,15 +41,14 @@ class index:
                 code = -1
             else:
                 for entry in data:
+                  
                     converted_dict = dict([(str(k), v) for k, v in entry.items()])
-                    for entry in json_data:
-                        converted_dict = dict([(str(k), v) for k, v in entry.items()])
-                        if type_helpers.isSchema(converted_dict["type"]) or type_helpers.isTable(converted_dict["type"]):
-                            available_action = "<div id='toggle_expand'> Expand:" + config.available_object_actions["expand"] + "</div>" + "Add to:" + session_helpers(session).generate_workspace_selection() + config.available_object_actions["add"] 
-                        elif type_helpers.isColumn(converted_dict["type"]):
-                            available_action = config.available_object_actions["none"]
-                        else :           
-                            available_action = "<div id='toggle_expand'> Expand:" + config.available_object_actions["expand"] + "</div>" 
+                    if type_helpers.isSchema(converted_dict["type"]) or type_helpers.isTable(converted_dict["type"]):
+                        available_action = "<div id='open_new'> <a target='_blank' href='"  + config.local_hostname[converted_dict["type"]] + '?' + config.get_param + '='  + string_functions.encode(converted_dict["ident"])  + "'>Open in new window</a></div>" + "Add to:" + session_helpers(session).generate_workspace_selection() + config.available_object_actions["add"] 
+                    elif type_helpers.isColumn(converted_dict["type"]):
+                        available_action = config.available_object_actions["none"]
+                    else :           
+                        available_action = "<div id='open_new'> <a target='_blank' href='"  + config.local_hostname[converted_dict["type"]] + '?' + config.get_param + '='  + string_functions.encode(converted_dict["ident"]) +  "'>Open in new window</a></div>" 
                     sub_item = render.select_service_response('<a id="id_url" href=' + config.local_hostname[converted_dict["type"]] + '?' + config.get_param + '='  + string_functions.encode(converted_dict["ident"]) + '>' + converted_dict["name"] + '</a>', datetime.strptime(converted_dict["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(converted_dict["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), converted_dict["type"], available_action,type_helpers.get_img_from_type(converted_dict["type"]))
                     return_html += str(sub_item)
                 code = 1
@@ -162,7 +161,6 @@ class index:
                 if data.db_type == "all":
                     data_type_services = config.types['service']
                     data_type_jdbc = config.types['JDBC connection']
-                    
                     encoded_args_services = urllib.urlencode({getattr(config, action + '_params')[data_type_services] :  action_value})
                     encoded_args_jdbc = urllib.urlencode({getattr(config, action + '_params')[data_type_jdbc] :  action_value})
                   

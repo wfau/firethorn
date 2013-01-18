@@ -4,6 +4,74 @@
  * 
  */
 jQuery(document).ready(function() {
+
+	
+	 jQuery('#icon_helper').fadeIn('slow');
+
+	 jQuery('.tree-collapsed, #tree-folder-indiv').live('click', function(e){
+			
+		 var _this = this;
+		 if (this.id == 'tree-folder-indiv'){
+			 _this = jQuery(_this).parent().find(".tree-arrow")[0];
+		 }
+		 
+		 if (jQuery(_this).parent().find("#children").length>0){
+
+				jQuery(_this).parent().children("#children").slideToggle("slow");
+
+				if (jQuery(_this).hasClass("tree-expanded")){
+					jQuery(_this).addClass('tree-collapsed');
+					jQuery(_this).removeClass('tree-expanded');
+				} else {
+					jQuery(_this).addClass('tree-expanded');
+					jQuery(_this).removeClass('tree-collapsed');
+				}
+				
+		  
+		 } else { 
+				e.preventDefault();
+				var id_url = encodeURIComponent(jQuery(_this).parent().find("#id_url")[0].href.trim());
+				var db_type = encodeURIComponent(jQuery(_this).parent().find("#db_type")[0].innerHTML.trim());
+				var workspace = jQuery("#cur_workspace").val();
+				var action = 'expand';
+				
+				var success =  function(data) {
+					if (data.Code!=null){
+						if (data.Code==-1){
+							 helper_functions.displayErrorFromParent(jQuery(_this).parent(), "#expand_error", data.Content);
+						} else {
+							
+							if (jQuery(_this).parent().find("#children").length<=0){
+								var children = jQuery("<div id='children'>" + data.Content + "</div>").hide();
+								children.appendTo(jQuery(_this).parent()).slideDown();
+							} else {
+								jQuery(_this).parent().children("#children").slideToggle("slow");
+							}
+
+							jQuery(_this).addClass('tree-expanded');
+							jQuery(_this).removeClass('tree-collapsed');
+
+						}
+					}
+		         }
+				
+				e.preventDefault();
+				helper_functions.ajaxCall( {ident : id_url, _type : db_type, action : action, workspace : workspace}, "POST", properties.getPath() + "resource_actions", 1000000, function(e) {helper_functions.displayError("#error", data.Content);} , success);
+
+			}
+		 
+	 });
+	
+	 
+	 jQuery('.tree-expanded').live('click', function(e){
+		 	var _this = this;
+		    e.preventDefault();
+			jQuery(jQuery(_this).parent().find("#children")).slideUp('slow');
+			jQuery(_this).addClass('tree-collapsed');
+			jQuery(_this).removeClass('tree-expanded');
+	 });
+	
+	
 	
 	  jQuery('.input_form').submit(function(){
 		
@@ -15,7 +83,12 @@ jQuery(document).ready(function() {
 					if (data.Code==-1){
 						helper_functions.displayError("#import_error", data.Content);
 				    } else {
-			    	    jQuery('#import_dialog').append('<div id="import_content">' + data.Content + '</div>');
+				
+				    	if (jQuery('#import_content').length==0){
+				    	    jQuery('#import_dialog').append('<div id="import_content">' + data.Content + '</div>');
+				    	} else {
+				    	    jQuery('#import_content').html(data.Content);
+				    	}
 					}
 			    }
 				
@@ -29,6 +102,7 @@ jQuery(document).ready(function() {
 	 });
 	
 	 jQuery('a').live('click', function(e){
+		 
 	 		var id_prevented = 'ignore';
 	 		var workspace = 'workspace'
 	 		var id_add_to = 'add_to';
@@ -45,7 +119,8 @@ jQuery(document).ready(function() {
 				var id_url = encodeURIComponent(jQuery(this).parent().parent().find("#id_url")[0].href.trim());
 				var db_type = encodeURIComponent(jQuery(this).parent().parent().find("#db_type")[0].innerHTML.trim());
 				var name = encodeURIComponent(jQuery(this).parent().parent().find("#id_url")[0].innerHTML.trim());
-				var workspace = encodeURIComponent(jQuery("#workspace_selection").find(":selected").val());
+				var workspace = encodeURIComponent(jQuery(this).parent().parent().find("#workspace_selection :selected").val());
+			
 				var action = 'add';
 				
 				var success =  function(data) {
@@ -68,51 +143,7 @@ jQuery(document).ready(function() {
 				helper_functions.ajaxCall( {id_url : id_url, db_type : db_type, name : name, workspace : workspace, action : action}, "POST", properties.getPath() + "workspace_actions", 1000000, function(e) {console.log(e);} , success);
 			    
 			
-			} else if  (this.id == expand){
-				if (jQuery(_this).parent().parent().parent().find("#children").length>0){
-
-					jQuery(_this).parent().parent().parent().children("#children").slideDown('slow');
-					var expand_button = jQuery(_this).parent().parent().parent().find("#toggle_expand")[0];
-					jQuery(expand_button).html('Minimize:<a id="minimize"><img src="static/images/16arrow-up.png" style="vertical-align:middle"/></a>');
-
-				} else { 
-					e.preventDefault();
-					var id_url = encodeURIComponent(jQuery(_this).parent().parent().parent().find("#id_url")[0].href.trim());
-					var db_type = encodeURIComponent(jQuery(_this).parent().parent().parent().find("#db_type")[0].innerHTML.trim());
-					var action = 'expand';
-					
-					var success =  function(data) {
-						if (data.Code!=null){
-							if (data.Code==-1){
-								 helper_functions.displayErrorFromParent(jQuery(_this).parent(), "#expand_error", data.Content);
-							} else {
-								
-								if (jQuery(_this).parent().parent().parent().find("#children").length<=0){
-									jQuery(_this).parent().parent().parent().append("<div id='children'>" + data.Content + "</div>" );
-								} else {
-									jQuery(_this).parent().parent().parent().children("#children").slideDown('slow');
-								}
-								
-								var expand_button = jQuery(_this).parent().parent().parent().find("#toggle_expand")[0];
-								jQuery(expand_button).html('Minimize:<a id="minimize"><img src="static/images/16arrow-up.png" style="vertical-align:middle"/></a>');
-		
-								
-							}
-						}
-			         }
-					
-					e.preventDefault();
-					helper_functions.ajaxCall( {ident : id_url, _type : db_type, action : action}, "POST", properties.getPath() + "resource_actions", 1000000, function(e) {helper_functions.displayError("#error", data.Content);} , success);
-
-				}
-			} else if  (this.id == minimize){
-				e.preventDefault();
-				jQuery(jQuery(_this).parent().parent().parent().find("#children")).slideUp('slow');
-				var minimize_button = jQuery(_this).parent().parent().parent().find("#toggle_expand")[0];
-				jQuery(minimize_button).html('Expand:<a id="expand"><img src="static/images/16arrow-down.png" style="vertical-align:middle"/></a>');
-			} else if  (this.id == workspace){
-		
-			}
+			} 
  	 
 	 });
  	

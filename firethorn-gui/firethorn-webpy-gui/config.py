@@ -7,6 +7,9 @@ Created on Sep 17, 2012
 import web
 import os
 
+
+
+### Domain and URL Information
 web_services_host = 'localhost'
 web_services_port = '8080'
 
@@ -16,59 +19,143 @@ webpy_gui_port = '8090'
 web_services_url = 'http://' +  web_services_host + ':' + web_services_port
 webpy_gui_url = 'http://' +  webpy_gui_host + ':' + webpy_gui_port
 
+
+
+### Directory Information (Do not change unless static directory is modified)
 base_location = os.getcwd()
 vospace_dir = base_location + '/static/static_vospace'
+host_temp_directory = webpy_gui_url + 'static/static_vo_tool/temp/'
+vospace_root = "/"
 
-local_hostname = {'index' : webpy_gui_url ,'services' : webpy_gui_url + '/services', 'jdbc_resources' : webpy_gui_url + '/jdbc_resources',
+
+
+### URL, Type and Parameter associations and Information
+local_hostname = {
+                  'index' : webpy_gui_url ,'services' : webpy_gui_url + '/services', 'jdbc_resources' : webpy_gui_url + '/jdbc_resources',
+                  'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json' : webpy_gui_url + '/services',
                   'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' : webpy_gui_url + '/services', 
-                  'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : webpy_gui_url +'/jdbc_resources'}
+                  'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : webpy_gui_url +'/jdbc_resources',
+                  'http://data.metagrid.co.uk/wfau/firethorn/types/adql-catalog-1.0.json' : webpy_gui_url + '/services', 
+                  'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-catalog-1.0.json' : webpy_gui_url +'/jdbc_resources',
+                  'http://data.metagrid.co.uk/wfau/firethorn/types/adql-schema-1.0.json' : webpy_gui_url + '/services', 
+                  'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json' : webpy_gui_url +'/jdbc_resources',
+                  'http://data.metagrid.co.uk/wfau/firethorn/types/adql-table-1.0.json' : webpy_gui_url + '/services', 
+                  'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json' : webpy_gui_url +'/jdbc_resources',
+                  'http://data.metagrid.co.uk/wfau/firethorn/types/adql-column-1.0.json' : webpy_gui_url + '/services', 
+                  'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-column-1.0.json' : webpy_gui_url +'/jdbc_resources'
+                  }
 
-get_jdbc_resources_url = "/firethorn/jdbc/resources/select"
+
+get_jdbc_resources_url = "/firethorn/jdbc/resource/select"
+get_adql_resources_url = "/firethorn/adql/resource/select"
 
 get_param = 'id'
 
-create_menu_items = {'admin' : ['Service','JDBC connection'] , 'user' : ['Service']}
 
-create_params = {'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : 'jdbc.resources.create.name', 
-                 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' : 'adql.services.create.name'}
+create_menu_items = {'admin' : ['TAP Connection','JDBC connection', 'Workspace'] , 'user' : ['TAP Connection', 'Workspace']}
 
-create_urls = {'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : web_services_url + '/firethorn/jdbc/resources/create', 
-               'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' : web_services_url + '/firethorn/adql/services/create'
+
+resource_create_name_params = {
+                               'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : 'jdbc.resource.create.name', 
+                               'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json' : 'adql.resource.create.name',
+                               'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' : 'adql.resource.create.name'
+
+                               }
+
+
+resource_create_url_params = {
+                              'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : 'jdbc.resource.create.url',
+                              'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json' : 'adql.resource.create.url',
+                              'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' : 'adql.resource.create.url'
+
+                              }
+
+
+resource_create_username_params = {
+                                   'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : 'jdbc.resource.create.user',
+                                   'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json' : 'adql.resource.create.user',
+                                   'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' : 'adql.resource.create.user'
+                                   }
+
+
+resource_create_password_params = {
+                                   'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : 'jdbc.resource.create.pass',
+                                   'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json' : 'adql.resource.create.pass',
+                                   'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' : 'adql.resource.create.pass'
+                                   }
+
+
+create_urls = {
+               'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : web_services_url + '/firethorn/jdbc/resource/create', 
+               'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json' : web_services_url + '/firethorn/adql/resource/create',
+               'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' : web_services_url + '/firethorn/adql/resource/create'
                }
 
-get_urls = {'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' : web_services_url + '/firethorn/adql/service/',
+
+get_urls = {
+            'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' : web_services_url + '/firethorn/adql/resource/',
+            'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json' : web_services_url + '/firethorn/adql/resource/',
             'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : web_services_url + '/firethorn/jdbc/resource/'
             }
 
-db_select_by_name_urls = {'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' : web_services_url + '/firethorn/adql/services/select?',
-                       'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : web_services_url + '/firethorn/jdbc/resources/select?'
-                       }
 
-db_select_with_text_urls = {'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' :  web_services_url + '/firethorn/adql/services/search?',
-                       'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' :  web_services_url + ' /firethorn/jdbc/resources/search?'
-                       }
+db_select_by_name_urls = {
+                          'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' : web_services_url + '/firethorn/adql/resource/select?',
+                          'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json' : web_services_url + '/firethorn/adql/resource/select?',
+                          'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : web_services_url + '/firethorn/jdbc/resource/select?'
+                          }
+
+
+db_select_with_text_urls = {
+                            'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' :  web_services_url + '/firethorn/adql/resource/search?',
+                            'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json' :  web_services_url + '/firethorn/adql/resource/search?',
+                            'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' :  web_services_url + ' /firethorn/jdbc/resource/search?'
+                            }
+                   
                        
-resource_uris = {'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json': '/catalogs/select',
+resource_uris = {
+                 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json': '/schemas/select',
                  'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-catalog-1.0.json': '/schemas/select',
                  'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json': '/tables/select',
-                 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json': '/columns/select'}
-
-type_update_params = {'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json': 'jdbc.resource.update.name',
-                 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-catalog-1.0.json': 'jdbc.catalog.update.name',
-                 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json': 'jdbc.schema.update.name',
-                 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json': 'jdbc.table.update.name',
-                 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-column-1.0.json': 'jdbc.column.update.name'
+                 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json': '/columns/select',
+                 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json': '/schemas/select',
+                 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json': '/schemas/select',
+                 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-catalog-1.0.json': '/schemas/select',
+                 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-schema-1.0.json': '/tables/select',
+                 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-table-1.0.json': '/columns/select',
                  }
 
-db_select_with_text_params = {'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json': 'jdbc.resources.search.text',
-                    'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json': 'adql.services.search.text'
+
+type_update_params = {
+                    'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json': 'jdbc.resource.update.name',
+                    'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-catalog-1.0.json': 'jdbc.catalog.update.name',
+                    'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json': 'jdbc.schema.update.name',
+                    'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json': 'jdbc.table.update.name',
+                    'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-column-1.0.json': 'jdbc.column.update.name',
+                    'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json': 'adql.resource.update.name',
+                    'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json': 'adql.resource.update.name',
+                    'http://data.metagrid.co.uk/wfau/firethorn/types/adql-catalog-1.0.json': 'adql.catalog.update.name',
+                    'http://data.metagrid.co.uk/wfau/firethorn/types/adql-schema-1.0.json': 'adql.schema.update.name',
+                    'http://data.metagrid.co.uk/wfau/firethorn/types/adql-table-1.0.json': 'adql.table.update.name',
+                    'http://data.metagrid.co.uk/wfau/firethorn/types/adql-column-1.0.json': 'adql.column.update.name'
                     }
 
-db_select_by_name_params = {'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json': 'jdbc.resources.select.name',
-                              'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json': 'adql.services.select.name'
+
+db_select_with_text_params = {
+                              'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json': 'jdbc.resource.search.text',
+                              'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json': 'adql.resource.search.text',
+                              'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json': 'adql.resource.search.text'
                               }
 
-types = {'service' : 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json', 
+
+db_select_by_name_params = {
+                            'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json': 'jdbc.resource.select.name',
+                            'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json': 'adql.resource.select.name',
+                            'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json': 'adql.resource.select.name'
+                            }
+
+types = {
+         'service' : 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json', 
          'Service' : 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json',
          'JDBC connection' : 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json',
          'resource' : 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json',
@@ -80,23 +167,13 @@ types = {'service' : 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-servi
          'jdbc_schema' : 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json',
          'adql_schema' : 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-schema-1.0.json',
          'jdbc_column' : 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-column-1.0.json',
-         'adql_column' : 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-column-1.0.json'
-         
-         
-         }
+         'adql_column' : 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-column-1.0.json',
+         'Workspace' : 'Workspace'
+        }
 
-errors = {'INVALID_PARAM' : 'Parameter provided was invalid', 
-          'INVALID_NETWORK_REQUEST' : 'Error processing a network request',
-          'INVALID_REQUEST' : 'Invalid request to the server',
-          'INVALID_TYPE' : 'Invalid type for the requested URL',
-          'INVALID_ACTION' : 'Invalid action requested to server',
-          'INVALID_CHECKBOX_VALUE' : 'Invalid checkbox value passed to server',
-          'UNKNOWN_ERROR' : 'Unknown server error while processing a request',
-          }
 
-vospace_root = "/"
-
-available_object_actions = { 'add' : """ <a id="add_to"><img src="static/images/plusButton.png" style="vertical-align:middle"/></a>
+available_object_actions = { 
+                            'add' : """ <a id="add_to"><img src="static/images/plusButton.png" style="vertical-align:middle"/></a>
                                         <br/>
                                         <div id="add_notification" style="display:none;color:green;margin-left:30px;"></div>
                                         <div id="add_error" style="display:none;color:red;margin-left:30px;"></div>
@@ -107,10 +184,23 @@ available_object_actions = { 'add' : """ <a id="add_to"><img src="static/images/
                              'none' : ''
                              }
 
-types_as_images =  {'resource' : 'static/js/jquery-treeview/themes/default/images/res1.png',
-                    'catalog' : 'static/js/jquery-treeview/themes/default/images/catalogue.png',
+types_as_images =  {
+                    'resource' : 'static/js/jquery-treeview/themes/default/images/res1.png',
                     'schema' : 'static/js/jquery-treeview/themes/default/images/schema.png',
                     'table' : 'static/js/jquery-treeview/themes/default/images/table.png',
                     'column' :'static/js/jquery-treeview/themes/default/images/column.png',
                     "" : 'images/res.png'
-                };
+                    }
+
+
+### Error messages
+errors = {
+          'INVALID_PARAM' : 'Parameter provided was invalid', 
+          'INVALID_NETWORK_REQUEST' : 'Error processing a network request',
+          'INVALID_REQUEST' : 'Invalid request to the server',
+          'INVALID_TYPE' : 'Invalid type for the requested URL',
+          'INVALID_ACTION' : 'Invalid action requested to server',
+          'INVALID_CHECKBOX_VALUE' : 'Invalid checkbox value passed to server',
+          'UNKNOWN_ERROR' : 'Unknown server error while processing a request',
+          }
+

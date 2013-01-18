@@ -3,6 +3,11 @@ $def with (name, created, modified, db_type, available_action, img)
 <div id ='sub_item' class='rounded' >
 	
 	<div id="available_action" style="float:right;text-align:right">$:available_action </div>
+	
+	$if not type_helpers.isColumn(db_type): 
+		<span class='tree-collapsed tree-arrow' style="float:left"></span>
+
+		
 	<div id="tree-folder-indiv"><img src=" $:img " /></div>
 	<div id='name'><span>Name: </span> $:name</div>
 	<div id='created'><span>Created on: </span> $:created</div>

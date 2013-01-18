@@ -11,7 +11,7 @@ import traceback
 import urllib
 import urllib2
 import web
-from datetime import datetime
+from datetime import datetime,date
 from helper_functions.string_functions import string_functions
 string_functions = string_functions()
 
@@ -104,10 +104,9 @@ class create_new:
         
         """
         
-        data = web.input(obj_type='', obj_name='', username='', password='')
+        data = web.input(obj_type='', obj_url='', obj_name='', username='', password='')
         return_string = ''
         f=''
-        f2 =''
         
         obj_type = config.types[string_functions.decode(data.obj_type)]
         obj_name = string_functions.decode(data.obj_name)
@@ -117,19 +116,37 @@ class create_new:
       
         
         try:
-           
-            if  self.__input_validator(obj_name, obj_type,obj_url, username, password):
-                encoded_args = urllib.urlencode({config.create_params[obj_type] : obj_name})
-                request = urllib2.Request(config.create_urls[obj_type], encoded_args, headers={"Accept" : "application/json"})
-                f = urllib2.urlopen(request)
-                result = f.read()
-                return_string = self.__generate_resource_url(result, obj_name, obj_type)
+            if obj_type==config.types['Workspace']:
+                date_today = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
+                new_workspace = {'ident' : obj_name, 'name' : obj_name ,'created':date_today , 'modified': date_today, 'type': config.types["resource"]}
+                session_helpers(session).new_workspace(obj_name, new_workspace)
+
+                return json.dumps({
+                            'Code' : 1,
+                            'Content' : "<br /><br /><div class='notify'>Workspace <a href='" + config.webpy_gui_url + '/workspace?_id=' + obj_name + "'>" + obj_name + "</a> has been successfully created.</div><br />"
+                        })
+                
+
             else:
-                return_string = json.dumps({
-                                    'Code' : -1,
-                                    'Content' : config.errors['INVALID_PARAM']
-                                })
-            
+                if  self.__input_validator(obj_name, obj_type, obj_url, username, password):
+                    params = {config.resource_create_name_params[obj_type] : obj_name}
+                    if obj_url!="":
+                        params[config.resource_create_url_params[obj_type]] = obj_url
+                    if username!="":
+                        params[config.resource_create_username_params[obj_type]] = username
+                    if password!="":
+                        params[config.resource_create_password_params[obj_type]] = password
+                    encoded_args = urllib.urlencode(params)
+                    request = urllib2.Request(config.create_urls[obj_type], encoded_args, headers={"Accept" : "application/json"})
+                    f = urllib2.urlopen(request)
+                    result = f.read()
+                    return_string = self.__generate_resource_url(result, obj_name, obj_type)
+                else:
+                    return_string = json.dumps({
+                                        'Code' : -1,
+                                        'Content' : config.errors['INVALID_PARAM']
+                                    })
+                
         except Exception:
             traceback.print_exc()
             if f!="":

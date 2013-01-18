@@ -51,11 +51,12 @@ class jdbc_resources:
             return_html = "<div id='sub_item'>There was an error creating your JDBC connection</div>"
         else :
             if type_helpers.isSchema(data["type"]) or type_helpers.isTable(data["type"]):
-                available_action = "<div id='toggle_expand'> Expand:" + config.available_object_actions["expand"] + "</div>" + "Add to:" + session_helpers(session).generate_workspace_selection() + config.available_object_actions["add"] 
-            elif type_helpers.isColumn(data["type"]):
+                available_action = "Add to:" + session_helpers(session).generate_workspace_selection("") + config.available_object_actions["add"] 
+            elif type_helpers.isRootType(data["type"]):
+                available_action = "<div id='open_new'> <a target='_blank' href='"  + config.local_hostname[data["type"]] + '?' + config.get_param + '='  + string_functions.encode(data["ident"]) +  "'>Open in new window</a></div>" 
+            else:
                 available_action = config.available_object_actions["none"]
-            else :           
-                available_action = "<div id='toggle_expand'> Expand:" + config.available_object_actions["expand"] + "</div>" 
+
             return_html = str(render.select_service_response('<a id="id_url" href=' + config.local_hostname['jdbc_resources'] + '?'+ config.get_param + '='  +  string_functions.encode(data["ident"])  + '>' + data["name"] + '</a>',datetime.strptime(data["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(data["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), config.types["JDBC connection"], available_action,type_helpers.get_img_from_type(data["type"])))
         return return_html
     

@@ -5,28 +5,64 @@ $def with (cur_path)
 <link rel="stylesheet" type="text/css" href="static/static_vospace/scripts/jquery.filetree/jqueryFileTree.css" />
 <link rel="stylesheet" type="text/css" href="static/static_vospace/scripts/jquery.contextmenu/jquery.contextMenu-1.01.css" />
 <link rel="stylesheet" type="text/css" href="static/static_vospace/styles/filemanager.css" />
+<link rel="stylesheet" type="text/css" href="static/css/superfish.css" />
+
+
+<link rel="stylesheet" type="text/css" href="static/css/dataTables_stylesheets/ColReorder.css" />
+<link rel="stylesheet" type="text/css" href="static/css/dataTables_stylesheets/ColVis.css" />
+<link rel="stylesheet" type="text/css" href="static/css/dataTables_stylesheets/demo_table_jui.css" />	
+<link rel="stylesheet" type="text/css" href="static/css/dataTables_stylesheets/TableTools.css" />
+
+
 <!--[if IE]>
 <link rel="stylesheet" type="text/css" href="styles/ie.css" />
 <![endif]-->
 </head>
 <div id = "vospace_content">
 <form id="uploader" method="post">
-<button id="home" name="home" type="button" value="Home">&nbsp;</button>
+	<button  class="shadow" id="home" name="home" type="button" value="Home">&nbsp;</button>
+	
+	<h1></h1>
+	<div id="uploadresponse"></div>
+	<input id="mode" name="mode" type="hidden" value="add" /> 
+	<input id="currentpath" name="currentpath" type="hidden" /> 
+	<input id="cur_workspace" name="cur_workspace" type="hidden" value="" /> 
+	<input id="cur_parent_folder" name="cur_parent_folder" type="hidden" value=""/> 
+	<input id="cur_parent_name" name="cur_name" type="hidden" value=""/> 
+	<input id="temp_tbl_path" name="temp_tbl_path" type="hidden" value="/home/stelios/Desktop/workspace/firethorn-webpy-gui/static/temp/tmp72maP2" /> 
+	<ul class="sf-menu" style="margin-left:15px;">
+				<li class="current">
+					<a><img style="vertical-align:bottom;" src="static/static_vospace/images/add.png" /> &nbsp;Import</a>
+					<ul>
+						<li>
+							<a href="#aa" id="import" type="button" >By Search</a>
+						</li>
+						<li class="current">
+							<a href="#ab">By URL</a>
+							<ul>
+								<li class="current"><a href="#">JDBC</a></li>
+								<li><a href="#aba">TAP</a></li>
+							</ul>
+						</li>
+						<li>
+							<a href="#aa" id="import" type="button" >Other</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a  id="newfolder" type="button">&nbsp;<img style="vertical-align:bottom;" src="static/static_vospace/images/folder_add.png" /> &nbsp;</a>
+				</li>
+	</ul>
+	
+	
+	<input	id="newfile" name="newfile" type="file" />
+	<input	id="upload_name" name="upload_name" type="hidden" />
+	<button class="shadow" id="upload" name="upload" type="submit" value="Upload"></button>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	
+	<button id="grid" class="ON" type="button">&nbsp;</button>
+	<button id="list" type="button">&nbsp;</button>
 
-<h1></h1>
-<div id="uploadresponse"></div>
-<input id="mode" name="mode" type="hidden" value="add" /> 
-<input id="currentpath" name="currentpath" type="hidden" /> 
-<input id="cur_workspace" name="cur_workspace" type="hidden" value="" /> 
-<input id="cur_parent_folder" name="cur_parent_folder" type="hidden" value=""/> 
-<input id="cur_parent_name" name="cur_name" type="hidden" value=""/> 
-<input	id="newfile" name="newfile" type="file" />
-<input	id="upload_name" name="upload_name" type="hidden" />
-<button id="upload" name="upload" type="submit" value="Upload"></button>
-<button id="import" name="import" type="button" value="Import"></button>
-<button id="newfolder" name="newfolder" type="button" value="New Folder"></button>
-<button id="grid" class="ON" type="button">&nbsp;</button>
-<button id="list" type="button">&nbsp;</button>
 </form>
 <div id="splitter">
 <div id="filetree"></div>
@@ -43,15 +79,33 @@ $def with (cur_path)
 	<li class="delete separator"><a href="#delete"></a></li>
 </ul>
 
+<script type="text/javascript" src="static/js/external_libs/dataTables/jquery.lightbox-0.5.js"></script>
+<script src="static/js/jquery-ui-1.9.1.custom.js"></script>
+<script src="static/js/external_libs/dataTables/jquery.easing.1.3.js" type="text/javascript" charset="utf-8"></script>
+<script src="static/js/external_libs/dataTables/jquery.dataTables.js" type="text/javascript"></script> 
+<script src="static/js/external_libs/dataTables/ColReorder.js" type="text/javascript"></script> 
+<script src="static/js/external_libs/dataTables/ColVis.js" type="text/javascript"></script>
+<script type="text/javascript" charset="utf-8" src="static/js/external_libs/dataTables/ZeroClipboard.js"></script>
+<script type="text/javascript" charset="utf-8" src="static/js/external_libs/dataTables/TableTools.js"></script> 	
+<script type="text/javascript" src="static/js/external_libs/dataTables/Table_Tools_additional.js"></script>
+<script src="static/js/external_libs/dataTables/jquery.mousewheel.js" type="text/javascript" charset="utf-8"></script>
+<script src="static/js/external_libs/dataTables/mwheelIntent.js" type="text/javascript" charset="utf-8"></script>
+<script src="static/js/external_libs/dataTables/jquery.doubleScroll.js" type="text/javascript" charset="utf-8"></script>
+<script src="static/js/external_libs/dataTables/parser.js" type="text/javascript" charset="utf-8"></script>
+<script src="static/js/external_libs/dataTables/jquery.actual.js" type="text/javascript" charset="utf-8"></script>
  
 <script type="text/javascript" src="static/static_vospace/scripts/jquery.form-2.63.js"></script>
 <script type="text/javascript" src="static/static_vospace/scripts/jquery.splitter/jquery.splitter-1.5.1.js"></script>
 <script type="text/javascript" src="static/static_vospace/scripts/jquery.filetree/jqueryFileTree.js"></script>
 <script type="text/javascript" src="static/static_vospace/scripts/jquery.contextmenu/jquery.contextMenu-1.01.js"></script>
-<script type="text/javascript" src="static/static_vospace/scripts/jquery.impromptu-3.1.min.js"></script>
+<script type="text/javascript" src="static/static_vospace/scripts/jquery-impromptu.js"></script>
 <script type="text/javascript" src="static/static_vospace/scripts/jquery.tablesorter-2.0.5b.min.js"></script>
-<script src="static/js/jquery-ui-1.9.1.custom.js"></script>
-
 <script type="text/javascript" src="static/static_vospace/scripts/filemanager.config.js"></script>
 <script type="text/javascript" src="static/static_vospace/scripts/filemanager.js"></script>
+<script type="text/javascript" src="static/js/superfish.js"></script>
+<script type="text/javascript" src="static/js/supersubs.js"></script>
+
+
+
+
 </div>

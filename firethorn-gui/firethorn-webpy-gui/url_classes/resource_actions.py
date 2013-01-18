@@ -34,8 +34,8 @@ class resource_actions:
     """
  
             
-    def __get_children(self,  ident, _type):
-        
+    def __get_children(self,  ident, _type, workspace):
+     
         code = 1
         return_val = ''
         f= ""
@@ -54,6 +54,7 @@ class resource_actions:
         try:
             ident =  parse_qs(urlparse(string_functions.decode(ident)).query)['id'][0]
             _type = string_functions.decode(_type)
+       
             
             if ident!="" and _type!="" and (not type_helpers.isColumn(_type)):
                 ident = ident + config.resource_uris[_type]
@@ -67,12 +68,13 @@ class resource_actions:
                     for entry in json_data:
                         converted_dict = dict([(str(k), v) for k, v in entry.items()])
                         if type_helpers.isSchema(converted_dict["type"]) or type_helpers.isTable(converted_dict["type"]):
-                            available_action = "<div id='toggle_expand'> Expand:" + config.available_object_actions["expand"] + "</div>" + "Add to:" + session_helpers(session).generate_workspace_selection() + config.available_object_actions["add"] 
-                        elif type_helpers.isColumn(converted_dict["type"]):
+                            available_action = "Add to:" + session_helpers(session).generate_workspace_selection(workspace) + config.available_object_actions["add"] 
+                        elif type_helpers.isRootType(converted_dict["type"]):
+                            available_action = "<div id='open_new'> <a target='_blank' href='"  + config.local_hostname[converted_dict["type"]] + '?' + config.get_param + '='  + string_functions.encode(converted_dict["ident"]) +  "'>Open in new window</a></div>" 
+                        else:
                             available_action = config.available_object_actions["none"]
-                        else :           
-                            available_action = "<div id='toggle_expand'> Expand:" + config.available_object_actions["expand"] + "</div>" 
-                        sub_item = render.select_service_response('<a id="id_url" href=' + config.local_hostname[config.types["resource"]] + '?' + config.get_param + '=' + string_functions.encode(converted_dict["ident"]) + '>' + converted_dict["name"] + '</a>', datetime.strptime(converted_dict["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(converted_dict["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), converted_dict["type"], available_action, type_helpers.get_img_from_type(converted_dict["type"]))
+
+                        sub_item = render.select_service_response('<a id="id_url" href=' + config.local_hostname[converted_dict["type"]] + '?' + config.get_param + '=' + string_functions.encode(converted_dict["ident"]) + '>' + converted_dict["name"] + '</a>', datetime.strptime(converted_dict["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(converted_dict["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), converted_dict["type"], available_action, type_helpers.get_img_from_type(converted_dict["type"]))
                         return_val += str(sub_item)
                     code = 1
 
@@ -108,7 +110,7 @@ class resource_actions:
         try:
             action = data.action
             if action=='expand':
-                return_value = self.__get_children(data.ident,data._type)
+                return_value = self.__get_children(data.ident,data._type,data.workspace)
                 
         except Exception as e:
             traceback.print_exc()
@@ -129,6 +131,8 @@ class resource_actions:
         
         """
         
-        data = web.input(ident = "", _type = "", action="")
+        data = web.input(ident = "", _type = "", action="", workspace="")
         web.header('Content-Type', 'application/json')        
         return  self.__resource_actions_handler(data)
+    
+    

@@ -34,6 +34,7 @@
 	"select": "Select",
 	"download": "Download",
 	"move_up" : "Move up",
+	"view" : "View data",
 	"del": "Delete",
 	"parentfolder": "Parent folder",
 	"dimensions": "Dimensions",
