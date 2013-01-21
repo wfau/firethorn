@@ -1,0 +1,21 @@
+
+
+svn update
+A    ogsa-dai/trunk/extensions/astro/server/src/test/unit/java/uk/org/ogsadai/dqp
+A    ogsa-dai/trunk/extensions/astro/server/src/test/unit/java/uk/org/ogsadai/dqp/firethorn
+A    ogsa-dai/trunk/extensions/astro/server/src/test/unit/java/uk/org/ogsadai/dqp/firethorn/TAPMetadataCollectorTest.java
+U    ogsa-dai/trunk/extensions/astro/server/src/test/unit/java/uk/org/ogsadai/activity/astro/MockGenericResourceState.java
+A    ogsa-dai/trunk/extensions/astro/server/src/test/unit/java/uk/org/ogsadai/activity/astro/ADQLAsyncQueryActivityTest.java
+A    ogsa-dai/trunk/extensions/astro/server/src/main/java/uk/org/ogsadai/dqp/firethorn/TAPService.java
+A    ogsa-dai/trunk/extensions/astro/server/src/main/java/uk/org/ogsadai/dqp/firethorn/TAPMetadataCollector.java
+U    ogsa-dai/trunk/extensions/astro/server/src/main/java/uk/org/ogsadai/activity/astro/UWSJobStatus.java
+U    ogsa-dai/trunk/extensions/astro/server/src/main/java/uk/org/ogsadai/activity/astro/ADQLAsyncQueryActivity.java
+A    sandbox/dqp/server/server-config
+A    sandbox/dqp/server/server-config/dqp
+A    sandbox/dqp/server/server-config/dqp/DQPFunctionsConfig.txt
+A    sandbox/dqp/server/server-config/dqp/DQPContextTemplate.xml
+A    sandbox/dqp/server/server-config/dqp/DQPCompilerConfiguration.xml
+A    sandbox/dqp/server/server-config/configuration.txt
+A    sandbox/dqp/server/server-config/resourceTemplates
+A    sandbox/dqp/server/server-config/resourceTemplates/uk.org.ogsadai.DQP_RESOURCE_TEMPLATE
+
