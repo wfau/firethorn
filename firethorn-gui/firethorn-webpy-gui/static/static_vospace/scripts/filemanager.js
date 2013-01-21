@@ -326,6 +326,7 @@ var setUploader = function(path){
 	var parent_name = $('#cur_parent_name').val();
 	$('#currentpath').val(path);
 
+	
 	if (path==properties.vospace_dir){
 		$('#cur_workspace').val(workspace);
 		$('#cur_parent_folder').val(parent_folder);
@@ -333,7 +334,11 @@ var setUploader = function(path){
 	} else if (properties.isResource(type_param)){
 		$('#cur_workspace').val(path);
 		$('#cur_parent_folder').val(parent_folder);
-		full_path = '/' + path + '/';
+		if (path !="" && path!=null) {
+			full_path = '/' + path + '/';
+		} else {
+			full_path = '/';
+		}
 
 	} else if (properties.isSchema(type_param)){
 		$('#cur_workspace').val(workspace);
@@ -341,17 +346,15 @@ var setUploader = function(path){
 		if (parent_name!=""){
 			full_path = '/' + $('#cur_workspace').val() + '/' + parent_name + '/';
 		} else {
-			full_path = '/' + $('#cur_workspace').val() + '/' + path + '/';
+			full_path = '/' + $('#cur_workspace').val() + '/' + path;
 		}
 	} else if (properties.isTable(type_param)){
 		$('#cur_workspace').val(workspace);
 		$('#cur_parent_folder').val(parent_folder);
 		if (parent_folder!="" && parent_folder!=null){
-			if (parent_name!=""){
-				full_path = '/' + $('#cur_workspace').val() + '/' + parent_name + '/';
-			} else {
-				full_path = '/' + $('#cur_workspace').val() + '/' + parent_folder + '/' ;
-			}
+			full_path = '/' + $('#cur_workspace').val() + '/' + parent_folder + '/' + path ;
+		} else if (path!=""){
+			full_path = '/' + $('#cur_workspace').val() + '/' + path; ;
 		} else {
 			full_path = '/' + $('#cur_workspace').val() + '/' ;
 		}
@@ -678,6 +681,8 @@ var moveUp = function(data, parent_folder, workspace){
     	drop_path : parent_folder,
 		action : 'move'
 	}
+	
+
 	
 	var success = function(data) {  
 		if (data.Code!=null){
@@ -1035,6 +1040,7 @@ var setMenus = function(action, path, type){
 				break;
 				
 			case 'move_up':
+			
 				if (parent_folder==""){
 					helper_functions.displayError("#error", "No parent folder to move selected item to");
 
@@ -1062,7 +1068,7 @@ var setMenus = function(action, path, type){
 // clicked in the file tree or list views.
 var getFileInfo = function(file, type, parent_obj){
 	// Update location for status, upload, & new folder functions.
-	setUploader(parent_obj);
+	setUploader(file);
 
 	// Include the template.
 	var template = '<div id="preview"><img /><h1></h1><dl></dl></div>';
@@ -1089,7 +1095,8 @@ var getFileInfo = function(file, type, parent_obj){
 		} else {
 			parent_folder="";
 			$('#cur_parent_folder').val('');
-			type_param= properties.schema_type;
+			type_param = properties.schema_type;
+			
 			getFolderInfo( parent_obj, properties.schema_type );
 			
 		}
@@ -1121,14 +1128,24 @@ var getFileInfo = function(file, type, parent_obj){
 			$('#fileinfo').find('h1').text(data['Filename']).attr('title', file);
 			$('#fileinfo').find('img').attr('src',data['Preview']);
 			
-			var properties = '';
+			var _properties = '';
 		
-			if(data['Properties']['Width'] && data['Properties']['Width'] != '') properties += '<dt>' + lg.dimensions + '</dt><dd>' + data['Properties']['Width'] + 'x' + data['Properties']['Height'] + '</dd>';
-			if(data['Properties']['Date Created'] && data['Properties']['Date Created'] != '') properties += '<dt>' + lg.created + '</dt><dd>' + data['Properties']['Date Created'] + '</dd>';
-			if(data['Properties']['Date Modified'] && data['Properties']['Date Modified'] != '') properties += '<dt>' + lg.modified + '</dt><dd>' + data['Properties']['Date Modified'] + '</dd>';
-			if(data['Properties']['Size'] || parseInt(data['Properties']['Size'])==0) properties += '<dt>' + lg.size + '</dt><dd>' + formatBytes(data['Properties']['Size']) + '</dd>';
-			$('#fileinfo').find('dl').html(properties);
+			if(data['Properties']['Width'] && data['Properties']['Width'] != '') _properties += '<dt>' + lg.dimensions + '</dt><dd>' + data['Properties']['Width'] + 'x' + data['Properties']['Height'] + '</dd>';
+			if(data['Properties']['Date Created'] && data['Properties']['Date Created'] != '') _properties += '<dt>' + lg.created + '</dt><dd>' + data['Properties']['Date Created'] + '</dd>';
+			if(data['Properties']['Date Modified'] && data['Properties']['Date Modified'] != '') _properties += '<dt>' + lg.modified + '</dt><dd>' + data['Properties']['Date Modified'] + '</dd>';
+			if(data['Properties']['Size'] || parseInt(data['Properties']['Size'])==0) _properties += '<dt>' + lg.size + '</dt><dd>' + formatBytes(data['Properties']['Size']) + '</dd>';
+			$('#fileinfo').find('dl').html(_properties);
+		
+			if ($('#cur_parent_folder').val()=="" || $('#cur_parent_folder').val()==null){
+				root_type = properties.root_type;
+			} else {
+				
+				root_type = properties.schema_type;
+			}
+			
 
+			
+			$('#fileinfo').append('<span class="meta root_type">' + root_type + '</span>');
 			
 		
 		
@@ -1361,7 +1378,7 @@ var getFolderInfo = function(path, type){
 				var parent_folder = encodeURIComponent($('#cur_parent_folder').val());
 				var workspace = encodeURIComponent($('#cur_workspace').val());
 				var name = encodeURIComponent($(this).find('p').text());
-				window.location.href = properties.base_url + '/workspace?_id=' + path + '&type=' + type + '&parent=' + name + '&parent_folder=' + parent_folder + '&workspace=' + workspace + '&workspace=';
+				window.location.href = properties.base_url + '/workspace?_id=' + path + '&type=' + type  + '&parent_folder=' + parent_folder + '&workspace=' + workspace;
 				//getDetailView(path, type);
 			}).each(function() {
 				$(this).contextMenu(
@@ -1481,17 +1498,6 @@ $(function(){
 	}
 
 	
-
-	
-	if($.urlParam('parent') != 0) {
-		parent_name = decodeURIComponent($.urlParam('parent'));
-		jQuery("#cur_parent_name").val(parent_name);
-		
-	} else {
-		parent_name = "";
-
-	}
-
 	
 	if($.urlParam('workspace') != 0) {
 		workspace = decodeURIComponent($.urlParam('workspace'));
@@ -1501,10 +1507,13 @@ $(function(){
 	}
 
 	if($.urlParam('parent_folder') != 0) {
-		parent_folder =  decodeURIComponent($.urlParam('parent_folder'));
+		parent_folder =  decodeURIComponent($.urlParam('parent_folder'))
+		parent_name = decodeURIComponent($.urlParam('parent_folder'));
+		jQuery("#cur_parent_name").val(parent_name);
+		
 	} else {
 		parent_folder = "";
-		
+		parent_name = "";
 	}
 	
 	if (parent_folder != "" && parent_folder!=null) {
@@ -1564,21 +1573,25 @@ $(function(){
 		setViewButtonsFor('grid');
 		$('#fileinfo').data('view', 'grid');
 		var root_type = "";
-
+		
 		var selectors = $('.root_type');
 		if (selectors.length>0){
 			root_type = selectors[0].innerHTML;
 		}
+	
 		if ($('#cur_parent_folder').val()==""){
 			root_type = properties.root_type;
+			$('#cur_parent_name').val($('#cur_workspace').val());
+			
 		} else {
 			root_type = properties.schema_type;
-			parent_folder = "";
-			$('cur_parent_folder').val();
+			parent_folder="";
+			$('#cur_parent_name').val($('#cur_parent_folder').val());
 		}
-	
+		$('#cur_parent_folder').val("");
 
-		getFolderInfo($('#currentpath').val(),root_type);
+		type_param = root_type;
+		getFolderInfo($('#cur_parent_name').val(),root_type);
 	});
 	
 	$('#list').click(function(){
@@ -1587,20 +1600,24 @@ $(function(){
 		var root_type = "";
 
 		var selectors = $('.root_type');
+
 		if (selectors.length>0){
 			root_type = selectors[0].innerHTML;
 		}
+
 		
 		if ($('#cur_parent_folder').val()==""){
 			root_type = properties.root_type;
+			$('#cur_parent_name').val($('#cur_workspace').val());
 		} else {
 			root_type = properties.schema_type;
-			parent_folder = "";
-			$('cur_parent_folder').val();
+			parent_folder="";
+			$('#cur_parent_name').val($('#cur_parent_folder').val());
 		}
+		$('#cur_parent_folder').val("");
+		type_param = root_type;
 		
-		
-		getFolderInfo($('#currentpath').val(),root_type);
+		getFolderInfo($('#cur_parent_name').val(),root_type);
 	});
 
 	// Provide initial values for upload form, status, etc.

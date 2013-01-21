@@ -22,7 +22,7 @@ var properties = new function() {
 	// Root type
 	this.root_type = 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json';
 	
-	// Schems type
+	// Schema type
 	this.schema_type = 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json';
 
 	// Type of object that has no children
