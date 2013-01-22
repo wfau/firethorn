@@ -72,15 +72,35 @@
     <dependencies>
 
         <!--+
-            | OGSA-DAI webapp.
+            | Base OGSA-DAI webapp.
             +-->
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-webapp</artifactId>
+            <artifactId>ogsadai-jersey-webapp</artifactId>
             <version>${ogsadai.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
+
+        <!--+
+            | Our metadata service client.
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-tap</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+            +-->
+
+        <!--+
+            | Our logging components.
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-logging</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+            +-->
 
     </dependencies>
 
@@ -117,7 +137,7 @@
                         | Use the unpacked war file as the webapp.
                         +-->
                     <warSourceDirectory>
-                        ${project.build.directory}/apache-tomcat-maven-plugin/${project.artifactId}
+                        ${project.build.directory}/apache-tomcat-maven-plugin/ogsadai-jersey-webapp
                     </warSourceDirectory>
                 </configuration>
             </plugin>
@@ -152,7 +172,7 @@
                         | Use the unpacked war file as the webapp.
                         +-->
                     <warSourceDirectory>
-                        ${project.build.directory}/apache-tomcat-maven-plugin/${project.artifactId}
+                        ${project.build.directory}/apache-tomcat-maven-plugin/ogsadai-jersey-webapp
                     </warSourceDirectory>
                 </configuration>
             </plugin>

@@ -1,21 +1,274 @@
+#-----------------------------------------------------------------------
+# Update our local copy.
+#
+[Zarquan@threonine ~]$ 
+
+    pushd /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn
+
+        svn update
+
+            A    ogsa-dai/trunk/extensions/astro/server/src/test/unit/java/uk/org/ogsadai/dqp
+            A    ogsa-dai/trunk/extensions/astro/server/src/test/unit/java/uk/org/ogsadai/dqp/firethorn
+            A    ogsa-dai/trunk/extensions/astro/server/src/test/unit/java/uk/org/ogsadai/dqp/firethorn/TAPMetadataCollectorTest.java
+            U    ogsa-dai/trunk/extensions/astro/server/src/test/unit/java/uk/org/ogsadai/activity/astro/MockGenericResourceState.java
+            A    ogsa-dai/trunk/extensions/astro/server/src/test/unit/java/uk/org/ogsadai/activity/astro/ADQLAsyncQueryActivityTest.java
+            A    ogsa-dai/trunk/extensions/astro/server/src/main/java/uk/org/ogsadai/dqp/firethorn/TAPService.java
+            A    ogsa-dai/trunk/extensions/astro/server/src/main/java/uk/org/ogsadai/dqp/firethorn/TAPMetadataCollector.java
+            U    ogsa-dai/trunk/extensions/astro/server/src/main/java/uk/org/ogsadai/activity/astro/UWSJobStatus.java
+            U    ogsa-dai/trunk/extensions/astro/server/src/main/java/uk/org/ogsadai/activity/astro/ADQLAsyncQueryActivity.java
+            A    sandbox/dqp/server/server-config
+            A    sandbox/dqp/server/server-config/dqp
+            A    sandbox/dqp/server/server-config/dqp/DQPFunctionsConfig.txt
+            A    sandbox/dqp/server/server-config/dqp/DQPContextTemplate.xml
+            A    sandbox/dqp/server/server-config/dqp/DQPCompilerConfiguration.xml
+            A    sandbox/dqp/server/server-config/configuration.txt
+            A    sandbox/dqp/server/server-config/resourceTemplates
+            A    sandbox/dqp/server/server-config/resourceTemplates/uk.org.ogsadai.DQP_RESOURCE_TEMPLATE
+
+    popd
+
+#-----------------------------------------------------------------------
+# Based on build instructions from Amy ..
+#
+#
+# Build the binary release.
+[Zarquan@threonine ~]$ 
+
+    OGSADAI_ROOT=/var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn
+
+    pushd ${OGSADAI_ROOT}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey
+
+        ant -Ddependencies.dir=${OGSADAI_ROOT}/third-party/dependencies
+
+    popd
+
+#
+# Replace the DQP server source in the source release by the sandbox sources.
+[Zarquan@threonine ~]$ 
+
+    pushd ${OGSADAI_ROOT}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/src/extensions/dqp
+
+        #
+        # Replace the DQP server source with the sandbox version.
+        rm -r server/
+        cp -r ${OGSADAI_ROOT}/sandbox/dqp/server .
+
+        #
+        # Remove references to 'ogsa-dai/trunk' from 'server/ant.properties'
+        sed -i '
+            s#/ogsa-dai/trunk/#/#g
+            ' server/ant.properties
+
+    popd
+
+#
+# Re-build the binary release.
+[Zarquan@threonine ~]$ 
+
+    pushd ${OGSADAI_ROOT}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey
+
+        ant -Ddependencies.dir=${OGSADAI_ROOT}/third-party/dependencies
+
+    popd
 
 
-svn update
-A    ogsa-dai/trunk/extensions/astro/server/src/test/unit/java/uk/org/ogsadai/dqp
-A    ogsa-dai/trunk/extensions/astro/server/src/test/unit/java/uk/org/ogsadai/dqp/firethorn
-A    ogsa-dai/trunk/extensions/astro/server/src/test/unit/java/uk/org/ogsadai/dqp/firethorn/TAPMetadataCollectorTest.java
-U    ogsa-dai/trunk/extensions/astro/server/src/test/unit/java/uk/org/ogsadai/activity/astro/MockGenericResourceState.java
-A    ogsa-dai/trunk/extensions/astro/server/src/test/unit/java/uk/org/ogsadai/activity/astro/ADQLAsyncQueryActivityTest.java
-A    ogsa-dai/trunk/extensions/astro/server/src/main/java/uk/org/ogsadai/dqp/firethorn/TAPService.java
-A    ogsa-dai/trunk/extensions/astro/server/src/main/java/uk/org/ogsadai/dqp/firethorn/TAPMetadataCollector.java
-U    ogsa-dai/trunk/extensions/astro/server/src/main/java/uk/org/ogsadai/activity/astro/UWSJobStatus.java
-U    ogsa-dai/trunk/extensions/astro/server/src/main/java/uk/org/ogsadai/activity/astro/ADQLAsyncQueryActivity.java
-A    sandbox/dqp/server/server-config
-A    sandbox/dqp/server/server-config/dqp
-A    sandbox/dqp/server/server-config/dqp/DQPFunctionsConfig.txt
-A    sandbox/dqp/server/server-config/dqp/DQPContextTemplate.xml
-A    sandbox/dqp/server/server-config/dqp/DQPCompilerConfiguration.xml
-A    sandbox/dqp/server/server-config/configuration.txt
-A    sandbox/dqp/server/server-config/resourceTemplates
-A    sandbox/dqp/server/server-config/resourceTemplates/uk.org.ogsadai.DQP_RESOURCE_TEMPLATE
+#-----------------------------------------------------------------------
+#
+# Once we have built the full release, we can just build the DQP part.
+[Zarquan@threonine ~]$ 
+
+    pushd ${OGSADAI_ROOT}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/src/extensions/dqp/server
+
+        ant -Ddependencies.dir=${OGSADAI_ROOT}/third-party/dependencies jar
+
+    popd
+
+#-----------------------------------------------------------------------
+# Just building the DQP jar on its own doesn't work.
+# It needs to have the other components built first.
+#
+[Zarquan@threonine ~]$ 
+
+    pushd ${OGSADAI_ROOT}/sandbox/dqp/server
+
+        ant -Ddependencies.dir=${OGSADAI_ROOT}/third-party/dependencies jar
+        
+            BUILD FAILED
+            .... ogsa-dai/trunk/common/build-root.xml:118: The following error occurred while executing this line:
+            .... ogsa-dai/trunk/common/build-root.xml:460: .... ogsa-dai/trunk/core/common/build/lib not found.
+
+    popd
+
+#-----------------------------------------------------------------------
+# Run the full build ...
+#
+[Zarquan@threonine ~]$ 
+
+    pushd ${OGSADAI_ROOT}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey
+
+        ant -Ddependencies.dir=${OGSADAI_ROOT}/third-party/dependencies
+
+            ....
+
+            [war] Building war: /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/build/ogsadai-4.2-jersey-1.10-bin/dai.war
+
+            ....
+
+            [zip] Building zip: /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/build/ogsadai-4.2-jersey-1.10-bin.zip
+
+            BUILD SUCCESSFUL
+            Total time: 37 seconds
+
+    popd
+
+    pushd ${OGSADAI_ROOT}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/src/extensions/dqp/server
+
+        ant -Ddependencies.dir=${OGSADAI_ROOT}/third-party/dependencies jar
+
+            ....
+            
+            [jar] Building jar: /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/src/extensions/dqp/server/build/lib/ogsadai-dqp-server-4.2.jar
+
+            BUILD SUCCESSFUL
+            Total time: 9 seconds
+
+    popd
+
+#
+# Transfer the resulting war and jar files into our Maven repository.
+[Zarquan@threonine ~]$ 
+
+    mvn install:install-file  \
+        -D groupId=uk.org.ogsadai  \
+        -D artifactId=ogsadai-jersey-webapp \
+        -D version=4.2 \
+        -D packaging=war \
+        -D file=${OGSADAI_ROOT}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/build/ogsadai-4.2-jersey-1.10-bin/dai.war
+
+        [INFO] Scanning for projects...
+        [INFO]                                                                         
+        [INFO] ------------------------------------------------------------------------
+        [INFO] Building Maven Stub Project (No POM) 1
+        [INFO] ------------------------------------------------------------------------
+        [INFO] 
+        [INFO] --- maven-install-plugin:2.3.1:install-file (default-cli) @ standalone-pom ---
+        [INFO] Installing /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/build/ogsadai-4.2-jersey-1.10-bin/dai.war to /var/local/toolkits/maven/repository/uk/org/ogsadai/ogsadai-jersey-webapp/4.2/ogsadai-jersey-webapp-4.2.war
+        [INFO] Installing /tmp/mvninstall4142251984654934378.pom to /var/local/toolkits/maven/repository/uk/org/ogsadai/ogsadai-jersey-webapp/4.2/ogsadai-jersey-webapp-4.2.pom
+        [INFO] ------------------------------------------------------------------------
+        [INFO] BUILD SUCCESS
+        [INFO] ------------------------------------------------------------------------
+        [INFO] Total time: 1.640s
+        [INFO] Finished at: Mon Jan 21 17:59:28 GMT 2013
+        [INFO] Final Memory: 4M/117M
+        [INFO] ------------------------------------------------------------------------
+
+    mvn install:install-file  \
+        -D groupId=uk.org.ogsadai  \
+        -D artifactId=ogsadai-dqp-server \
+        -D version=4.2 \
+        -D packaging=jar \
+        -D file=${OGSADAI_ROOT}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/src/extensions/dqp/server/build/lib/ogsadai-dqp-server-4.2.jar
+
+        [INFO] Scanning for projects...
+        [INFO]                                                                         
+        [INFO] ------------------------------------------------------------------------
+        [INFO] Building Maven Stub Project (No POM) 1
+        [INFO] ------------------------------------------------------------------------
+        [INFO] 
+        [INFO] --- maven-install-plugin:2.3.1:install-file (default-cli) @ standalone-pom ---
+        [INFO] Installing /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/src/extensions/dqp/server/build/lib/ogsadai-dqp-server-4.2.jar to /var/local/toolkits/maven/repository/uk/org/ogsadai/ogsadai-dqp-server/4.2/ogsadai-dqp-server-4.2.jar
+        [INFO] ------------------------------------------------------------------------
+        [INFO] BUILD SUCCESS
+        [INFO] ------------------------------------------------------------------------
+        [INFO] Total time: 0.674s
+        [INFO] Finished at: Mon Jan 21 18:00:01 GMT 2013
+        [INFO] Final Memory: 3M/117M
+        [INFO] ------------------------------------------------------------------------
+
+#
+# Try running the webapp in Tomcat.
+[Zarquan@threonine ~]$ 
+
+    pushd /var/local/projects/edinburgh/wfau/firethorn/devel/ogsadai/webapp
+
+        mvn clean tomcat7:run
+
+            ....
+
+            [INFO] Running war on http://localhost:8080/ogsadai
+            [INFO] Creating Tomcat server configuration at /var/local/projects/edinburgh/wfau/firethorn/devel/ogsadai/webapp/target/tomcat
+            [INFO] create webapp with contextPath: /ogsadai
+            Jan 21, 2013 6:13:31 PM org.apache.coyote.AbstractProtocol init
+            INFO: Initializing ProtocolHandler ["http-bio-8080"]
+            Jan 21, 2013 6:13:31 PM org.apache.catalina.core.StandardService startInternal
+            INFO: Starting service Tomcat
+            Jan 21, 2013 6:13:31 PM org.apache.catalina.core.StandardEngine startInternal
+            INFO: Starting Servlet Engine: Apache Tomcat/7.0.34
+            Jan 21, 2013 6:13:40 PM org.apache.catalina.core.ApplicationContext log
+            INFO: No Spring WebApplicationInitializer types detected on classpath
+            Jan 21, 2013 6:13:40 PM com.sun.jersey.api.core.PackagesResourceConfig init
+            INFO: Scanning for root resource and provider classes in the packages:
+              uk.org.ogsadai.service.rest
+            Jan 21, 2013 6:13:41 PM com.sun.jersey.api.core.ScanningResourceConfig logClasses
+            INFO: Root resource classes found:
+              class uk.org.ogsadai.service.rest.JerseySessions
+              class uk.org.ogsadai.service.rest.JerseyRootService
+              class uk.org.ogsadai.service.rest.JerseyDataSources
+              class uk.org.ogsadai.service.rest.JerseyDRER
+              class uk.org.ogsadai.service.rest.JerseyDataResources
+              class uk.org.ogsadai.service.rest.JerseyDataSinks
+              class uk.org.ogsadai.service.rest.JerseyRequests
+
+            Jan 21, 2013 6:23:33 PM com.sun.jersey.api.core.ScanningResourceConfig init
+            INFO: No provider classes found.
+            Jan 21, 2013 6:23:34 PM com.sun.jersey.server.impl.application.WebApplicationImpl _initiate
+            INFO: Initiating Jersey application, version 'Jersey: 1.10 11/02/2011 04:41 PM'
+            SLF4J: This version of SLF4J requires log4j version 1.2.12 or later. See also http://www.slf4j.org/codes.html#log4j_version
+            2013-01-21 18:23:36,402 FATAL rest.JerseyStaticOGSADAIContextInitializer
+
+            ....
+
+            java.lang.IllegalArgumentException:
+                java.lang.RuntimeException:
+                    org.springframework.beans.factory.BeanDefinitionStoreException:
+                        Unexpected exception parsing XML document from class path resource [ogsadai-context.xml];
+                            nested exception is java.lang.NoSuchMethodError:
+                                org.slf4j.spi.LocationAwareLogger.log(Lorg/slf4j/Marker;Ljava/lang/String;ILjava/lang/String;[Ljava/lang/Object;Ljava/lang/Throwable;)V
+	                            uk.org.ogsadai.service.rest.JerseyStaticOGSADAIContextInitializer.initialize(JerseyStaticOGSADAIContextInitializer.java:80)
+	                            uk.org.ogsadai.service.rest.JerseyRootService.<init>(JerseyRootService.java:73)
+	                            sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	                            sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:57)
+	                            ....
+
+        #
+        # Caused by old version of slf4j ..
+        # http://stackoverflow.com/questions/8252597/slf4j-nosuchmethoderror-on-locationawarelogger
+
+        ls -1 target/apache-tomcat-maven-plugin/ogsadai-jersey-webapp/WEB-INF/lib/
+
+            log4j-1.2.8.jar
+            ....
+            slf4j-api-1.5.6.jar
+            slf4j-log4j12-1.5.6.jar
+            ....
+
+        
+    #
+    # Caused by incompatibility problems between our library and ogsa-dai.
+    # Goes away if we don't include any of our logging components.
+
+    #
+    # Index page fails in embeded Tomcat 7.
+    # http://localhost:8080/ogsadai/dai-index.jsp
+
+        SEVERE: Servlet.service() for servlet [jsp] in context with path [/ogsadai] threw exception [javax.servlet.ServletException: java.lang.NullPointerException] with root cause
+        java.lang.NullPointerException
+	        at org.apache.tomcat.util.http.parser.HttpParser.parseMediaType(HttpParser.java:208)
+	        at org.apache.tomcat.util.http.parser.MediaTypeCache.parse(MediaTypeCache.java:54)
+	        at org.apache.catalina.connector.Response.setContentType(Response.java:806)
+	        at org.apache.catalina.connector.ResponseFacade.setContentType(ResponseFacade.java:245)
+	        at org.apache.jsp.dai_002dindex_jsp._jspService(dai_002dindex_jsp.java:136)
+	        at org.apache.jasper.runtime.HttpJspBase.service(HttpJspBase.java:70)
+	        at javax.servlet.http.HttpServlet.service(HttpServlet.java:728)
+
 
