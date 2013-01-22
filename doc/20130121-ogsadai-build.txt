@@ -296,10 +296,78 @@ username=$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.user=\(.*\)/\1/
 password=$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.pass=\(.*\)/\1/p')
 LOGIN-END
 END
+id=ukidss
+userID=*
+username=$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.user=\(.*\)/\1/p')
+password=$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.pass=\(.*\)/\1/p')
+LOGIN-END
+END
+id=combined
+userID=*
+username=$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.user=\(.*\)/\1/p')
+password=$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.pass=\(.*\)/\1/p')
+LOGIN-END
+END
 EOF
 
 cat > ${targetpath?}/WEB-INF/etc/dai/resources/twomass << EOF
 id=twomass
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.driver.class=net.sourceforge.jtds.jdbc.Driver
+dai.data.resource.uri=jdbc:jtds:sqlserver://localhost:1433/TWOMASS
+dai.login.provider=uk.org.ogsadai.LOGIN_PROVIDER
+END
+ACTIVITIES
+uk.org.ogsadai.SQLNestedInClauseQuery=uk.org.ogsadai.SQLNestedInClauseQuery
+uk.org.ogsadai.SQLUpdate=uk.org.ogsadai.SQLUpdate
+uk.org.ogsadai.SQLParameterisedQuery=uk.org.ogsadai.SQLParameterisedQuery
+uk.org.ogsadai.GetAvailableTables=uk.org.ogsadai.GetAvailableTables
+uk.org.ogsadai.FilteredSQLQuery=uk.org.ogsadai.FilteredSQLQuery
+uk.org.ogsadai.ExtractTableSchema=uk.org.ogsadai.ExtractTableSchema
+uk.org.ogsadai.SQLStatement=uk.org.ogsadai.SQLStatement
+uk.org.ogsadai.SQLBulkLoadTuple=uk.org.ogsadai.SQLBulkLoadTuple
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.SQLQuery
+uk.org.ogsadai.SQLParameterisedUpdate=uk.org.ogsadai.SQLParameterisedUpdate
+uk.org.ogsadai.SQLNestedInClauseJoin=uk.org.ogsadai.SQLNestedInClauseJoin
+END
+dataResourceClass=uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource
+EOF
+
+cat > ${targetpath?}/WEB-INF/etc/dai/resources/ukidss << EOF
+id=ukidss
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.driver.class=net.sourceforge.jtds.jdbc.Driver
+dai.data.resource.uri=jdbc:jtds:sqlserver://localhost:1433/UKIDSSDR5PLUS
+dai.login.provider=uk.org.ogsadai.LOGIN_PROVIDER
+END
+ACTIVITIES
+uk.org.ogsadai.SQLNestedInClauseQuery=uk.org.ogsadai.SQLNestedInClauseQuery
+uk.org.ogsadai.SQLUpdate=uk.org.ogsadai.SQLUpdate
+uk.org.ogsadai.SQLParameterisedQuery=uk.org.ogsadai.SQLParameterisedQuery
+uk.org.ogsadai.GetAvailableTables=uk.org.ogsadai.GetAvailableTables
+uk.org.ogsadai.FilteredSQLQuery=uk.org.ogsadai.FilteredSQLQuery
+uk.org.ogsadai.ExtractTableSchema=uk.org.ogsadai.ExtractTableSchema
+uk.org.ogsadai.SQLStatement=uk.org.ogsadai.SQLStatement
+uk.org.ogsadai.SQLBulkLoadTuple=uk.org.ogsadai.SQLBulkLoadTuple
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.SQLQuery
+uk.org.ogsadai.SQLParameterisedUpdate=uk.org.ogsadai.SQLParameterisedUpdate
+uk.org.ogsadai.SQLNestedInClauseJoin=uk.org.ogsadai.SQLNestedInClauseJoin
+END
+dataResourceClass=uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource
+EOF
+
+cat > ${targetpath?}/WEB-INF/etc/dai/resources/combined << EOF
+id=combined
 type=uk.org.ogsadai.DATA_RESOURCE
 creationTime=null
 terminationTime=null

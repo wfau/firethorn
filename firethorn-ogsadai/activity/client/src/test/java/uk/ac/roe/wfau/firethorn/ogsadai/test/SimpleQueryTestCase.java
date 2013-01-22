@@ -215,7 +215,7 @@ public class SimpleQueryTestCase
             "    twomass.ra," +
             "    twomass.dec" +
             " FROM" +
-            "    TWOMASS.dbo.twomass_psc AS twomass" +
+            "    twomass_psc AS twomass" +
             " WHERE" +
             "    twomass.ra  BETWEEN '55.0' AND '55.9'" +
             " AND" +
@@ -233,12 +233,12 @@ public class SimpleQueryTestCase
         {
         execute(
             endpoint,
-            "twomass",
+            "ukidss",
             " SELECT" +
             "    ukidss.ra," +
             "    ukidss.dec" +
             " FROM" +
-            "    UKIDSSDR5PLUS.dbo.gcsPointSource AS ukidss" +
+            "    gcsPointSource AS ukidss" +
             " WHERE" +
             "    ukidss.ra  BETWEEN '55.0' AND '55.9'" +
             " AND" +
@@ -256,7 +256,7 @@ public class SimpleQueryTestCase
         {
         execute(
             endpoint,
-            "twomass",
+            "combined",
             " SELECT" +
             "    twomass.ra AS tmra," +
             "    ukidss.ra  AS ukra,"  +
