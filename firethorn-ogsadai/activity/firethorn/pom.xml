@@ -41,13 +41,13 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <artifactId>ogsadai-activity-client</artifactId>
+    <artifactId>firethorn-activity-firethorn</artifactId>
     <packaging>jar</packaging>
 
-    <name>OGSA-DAI activity client</name>
+    <name>OGSA-DAI activity (firethorn webapp)</name>
     <description>
         <![CDATA[
-        OGSA-DAI activity client.
+        OGSA-DAI activity components that get included in the firethorn webapp.
         ]]>
     </description>
     
