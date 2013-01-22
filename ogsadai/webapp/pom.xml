@@ -26,10 +26,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!--+
-        | Notes
-        | JSTL TagLib
-        | http://jstl.java.net/download.html
-        | http://search.maven.org/#browse|-1002239620
+        | IMPORTANT - importing external jars .. 
+        | http://stackoverflow.com/questions/364114/can-i-add-jars-to-maven-2-build-classpath-without-installing-them/764684#764684
         +-->
 
     <!--+
@@ -53,6 +51,7 @@
     </description>
     
     <properties>
+        <ogsadai.tomcat.port>8081</ogsadai.tomcat.port>
         <ogsadai.version>4.2</ogsadai.version>
     </properties>
 
@@ -92,21 +91,140 @@
         </dependency>
             +-->
 
+
         <!--+
-            | Our logging components.
+            | JUnit test framework.
+            +-->
+    	<dependency>
+    		<groupId>junit</groupId>
+    		<artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
+    	</dependency>
+
+        <!--+
+            | SLf4J libraries.
+            | 
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-logging</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.5.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.5.6</version>
         </dependency>
             +-->
+
+        <!--+
+            | Log4J libraries.
+            | http://logging.apache.org/log4j/1.2/index.html
+            +-->
+    	<dependency>
+    		<groupId>log4j</groupId>
+    		<artifactId>log4j</artifactId>
+            <version>1.2.8</version>
+    	</dependency>
+
+        <!--+
+            | Apache commons logging.
+            +-->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+
+        <!--+
+            | Sun Jersey client.
+            +-->
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>1.10</version>
+        </dependency>
+
+        <!--+
+            | 3rd party dependencies ....
+            | http://stackoverflow.com/questions/364114/can-i-add-jars-to-maven-2-build-classpath-without-installing-them/764684#764684
+            +-->
+
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-common</artifactId>
+            <version>4.2</version>
+            <scope>system</scope>
+            <systemPath>${project.build.directory}/apache-tomcat-maven-plugin/ogsadai-jersey-webapp/WEB-INF/lib/ogsadai-common-4.2.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-client</artifactId>
+            <version>4.2</version>
+            <scope>system</scope>
+            <systemPath>${project.build.directory}/apache-tomcat-maven-plugin/ogsadai-jersey-webapp/WEB-INF/lib/ogsadai-client-4.2.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-basic-client</artifactId>
+            <version>4.2</version>
+            <scope>system</scope>
+            <systemPath>${project.build.directory}/apache-tomcat-maven-plugin/ogsadai-jersey-webapp/WEB-INF/lib/ogsadai-basic-client-4.2.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-jersey-client</artifactId>
+            <version>4.2</version>
+            <scope>system</scope>
+            <systemPath>${project.build.directory}/apache-tomcat-maven-plugin/ogsadai-jersey-webapp/WEB-INF/lib/ogsadai-jersey-client-4.2.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-jersey-common</artifactId>
+            <version>4.2</version>
+            <scope>system</scope>
+            <systemPath>${project.build.directory}/apache-tomcat-maven-plugin/ogsadai-jersey-webapp/WEB-INF/lib/ogsadai-jersey-common-4.2.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-clientserver</artifactId>
+            <version>4.2</version>
+            <scope>system</scope>
+            <systemPath>${project.build.directory}/apache-tomcat-maven-plugin/ogsadai-jersey-webapp/WEB-INF/lib/ogsadai-clientserver-4.2.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-relational-client</artifactId>
+            <version>4.2</version>
+            <scope>system</scope>
+            <systemPath>${project.build.directory}/apache-tomcat-maven-plugin/ogsadai-jersey-webapp/WEB-INF/lib/ogsadai-relational-client-4.2.jar</systemPath>
+        </dependency>
 
     </dependencies>
 
     <build>
 
         <plugins>
+
+            <!--+
+                | Surefire test plugin.
+                +-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <additionalClasspathElements>
+                            <additionalClasspathElement>${project.build.directory}/apache-tomcat-maven-plugin/ogsadai-jersey-webapp/WEB-INF/lib</additionalClasspathElement>
+                        </additionalClasspathElements>
+                </configuration>
+            </plugin>
+
             <!--+
                 | Tomcat 6 plugin.
                 | https://tomcat.apache.org/maven-plugin-2.0/
@@ -117,7 +235,11 @@
                 <version>2.1-SNAPSHOT</version>
                 <configuration>
                     <!--+
-                        | Enable JNDI nameing service.
+                        | The network port number.
+                        +-->
+                    <port>${ogsadai.tomcat.port}</port>
+                    <!--+
+                        | Enable JNDI service.
                         +-->
                     <enableNaming>true</enableNaming>
                     <!--+
@@ -152,7 +274,11 @@
                 <version>2.1-SNAPSHOT</version>
                 <configuration>
                     <!--+
-                        | Enable JNDI nameing service.
+                        | The network port number.
+                        +-->
+                    <port>${ogsadai.tomcat.port}</port>
+                    <!--+
+                        | Enable JNDI service.
                         +-->
                     <enableNaming>true</enableNaming>
                     <!--+

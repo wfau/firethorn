@@ -257,18 +257,75 @@
     # Caused by incompatibility problems between our library and ogsa-dai.
     # Goes away if we don't include any of our logging components.
 
-    #
-    # Index page fails in embeded Tomcat 7.
-    # http://localhost:8080/ogsadai/dai-index.jsp
+#-----------------------------------------------------------------------
+# Index page fails in Tomcat 7.
+# http://localhost:8080/ogsadai/dai-index.jsp
+#
 
-        SEVERE: Servlet.service() for servlet [jsp] in context with path [/ogsadai] threw exception [javax.servlet.ServletException: java.lang.NullPointerException] with root cause
-        java.lang.NullPointerException
-	        at org.apache.tomcat.util.http.parser.HttpParser.parseMediaType(HttpParser.java:208)
-	        at org.apache.tomcat.util.http.parser.MediaTypeCache.parse(MediaTypeCache.java:54)
-	        at org.apache.catalina.connector.Response.setContentType(Response.java:806)
-	        at org.apache.catalina.connector.ResponseFacade.setContentType(ResponseFacade.java:245)
-	        at org.apache.jsp.dai_002dindex_jsp._jspService(dai_002dindex_jsp.java:136)
-	        at org.apache.jasper.runtime.HttpJspBase.service(HttpJspBase.java:70)
-	        at javax.servlet.http.HttpServlet.service(HttpServlet.java:728)
+    SEVERE: Servlet.service() for servlet [jsp] in context with path [/ogsadai] threw exception [javax.servlet.ServletException: java.lang.NullPointerException] with root cause
+    java.lang.NullPointerException
+        at org.apache.tomcat.util.http.parser.HttpParser.parseMediaType(HttpParser.java:208)
+        at org.apache.tomcat.util.http.parser.MediaTypeCache.parse(MediaTypeCache.java:54)
+        at org.apache.catalina.connector.Response.setContentType(Response.java:806)
+        at org.apache.catalina.connector.ResponseFacade.setContentType(ResponseFacade.java:245)
+        at org.apache.jsp.dai_002dindex_jsp._jspService(dai_002dindex_jsp.java:136)
+        at org.apache.jasper.runtime.HttpJspBase.service(HttpJspBase.java:70)
+        at javax.servlet.http.HttpServlet.service(HttpServlet.java:728)
+
+
+#-----------------------------------------------------------------------
+# Alter the Tomcat port number.
+#
+
+    pushd ogsadai/webapp
+
+        mvn tomcat6:run
+
+            [INFO] --- tomcat6-maven-plugin:2.1-SNAPSHOT:run (default-cli) @ ogsadai-webapp ---
+            [INFO] Running war on http://localhost:8080/ogsadai
+
+    popd
+
+    pushd ogsadai/webapp/target/apache-tomcat-maven-plugin/ogsadai-jersey-webapp
+
+        vi WEB-INF/etc/dai/logins.txt
+
+            id=twomass
+            userID=*
+            username=xxxx
+            password=xxxx
+            LOGIN-END
+            END
+
+        vi WEB-INF/etc/dai/resources/twomass
+
+            id=twomass
+            type=uk.org.ogsadai.DATA_RESOURCE
+            creationTime=null
+            terminationTime=null
+            PROPERTIES
+            END
+            CONFIG
+            dai.driver.class=net.sourceforge.jtds.jdbc.Driver
+            dai.data.resource.uri=jdbc:jtds:sqlserver://localhost:1433/TWOMASS
+            dai.login.provider=uk.org.ogsadai.LOGIN_PROVIDER
+            END
+            ACTIVITIES
+            uk.org.ogsadai.SQLNestedInClauseQuery=uk.org.ogsadai.SQLNestedInClauseQuery
+            uk.org.ogsadai.SQLUpdate=uk.org.ogsadai.SQLUpdate
+            uk.org.ogsadai.SQLParameterisedQuery=uk.org.ogsadai.SQLParameterisedQuery
+            uk.org.ogsadai.GetAvailableTables=uk.org.ogsadai.GetAvailableTables
+            uk.org.ogsadai.FilteredSQLQuery=uk.org.ogsadai.FilteredSQLQuery
+            uk.org.ogsadai.ExtractTableSchema=uk.org.ogsadai.ExtractTableSchema
+            uk.org.ogsadai.SQLStatement=uk.org.ogsadai.SQLStatement
+            uk.org.ogsadai.SQLBulkLoadTuple=uk.org.ogsadai.SQLBulkLoadTuple
+            uk.org.ogsadai.SQLQuery=uk.org.ogsadai.SQLQuery
+            uk.org.ogsadai.SQLParameterisedUpdate=uk.org.ogsadai.SQLParameterisedUpdate
+            uk.org.ogsadai.SQLNestedInClauseJoin=uk.org.ogsadai.SQLNestedInClauseJoin
+            END
+            dataResourceClass=uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource
+
+    popd
+
 
 
