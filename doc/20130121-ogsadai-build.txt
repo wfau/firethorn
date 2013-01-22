@@ -277,55 +277,54 @@
 # Alter the Tomcat port number.
 #
 
-    pushd ogsadai/webapp
+    pushd firethorn-ogsadai/webapp
 
         mvn tomcat6:run
 
             [INFO] --- tomcat6-maven-plugin:2.1-SNAPSHOT:run (default-cli) @ ogsadai-webapp ---
             [INFO] Running war on http://localhost:8080/ogsadai
 
+
+    pushd firethorn-ogsadai/webapp
+
+        targetpath=target/apache-tomcat-maven-plugin/ogsadai-jersey-webapp
+
+cat > ${targetpath?}/WEB-INF/etc/dai/logins.txt << EOF
+id=twomass
+userID=*
+username=$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.user=\(.*\)/\1/p')
+password=$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.pass=\(.*\)/\1/p')
+LOGIN-END
+END
+EOF
+
+cat > ${targetpath?}/WEB-INF/etc/dai/resources/twomass << EOF
+id=twomass
+type=uk.org.ogsadai.DATA_RESOURCE
+creationTime=null
+terminationTime=null
+PROPERTIES
+END
+CONFIG
+dai.driver.class=net.sourceforge.jtds.jdbc.Driver
+dai.data.resource.uri=jdbc:jtds:sqlserver://localhost:1433/TWOXMM
+dai.login.provider=uk.org.ogsadai.LOGIN_PROVIDER
+END
+ACTIVITIES
+uk.org.ogsadai.SQLNestedInClauseQuery=uk.org.ogsadai.SQLNestedInClauseQuery
+uk.org.ogsadai.SQLUpdate=uk.org.ogsadai.SQLUpdate
+uk.org.ogsadai.SQLParameterisedQuery=uk.org.ogsadai.SQLParameterisedQuery
+uk.org.ogsadai.GetAvailableTables=uk.org.ogsadai.GetAvailableTables
+uk.org.ogsadai.FilteredSQLQuery=uk.org.ogsadai.FilteredSQLQuery
+uk.org.ogsadai.ExtractTableSchema=uk.org.ogsadai.ExtractTableSchema
+uk.org.ogsadai.SQLStatement=uk.org.ogsadai.SQLStatement
+uk.org.ogsadai.SQLBulkLoadTuple=uk.org.ogsadai.SQLBulkLoadTuple
+uk.org.ogsadai.SQLQuery=uk.org.ogsadai.SQLQuery
+uk.org.ogsadai.SQLParameterisedUpdate=uk.org.ogsadai.SQLParameterisedUpdate
+uk.org.ogsadai.SQLNestedInClauseJoin=uk.org.ogsadai.SQLNestedInClauseJoin
+END
+dataResourceClass=uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource
+EOF
+
     popd
-
-    pushd ogsadai/webapp/target/apache-tomcat-maven-plugin/ogsadai-jersey-webapp
-
-        vi WEB-INF/etc/dai/logins.txt
-
-            id=twomass
-            userID=*
-            username=xxxx
-            password=xxxx
-            LOGIN-END
-            END
-
-        vi WEB-INF/etc/dai/resources/twomass
-
-            id=twomass
-            type=uk.org.ogsadai.DATA_RESOURCE
-            creationTime=null
-            terminationTime=null
-            PROPERTIES
-            END
-            CONFIG
-            dai.driver.class=net.sourceforge.jtds.jdbc.Driver
-            dai.data.resource.uri=jdbc:jtds:sqlserver://localhost:1433/TWOMASS
-            dai.login.provider=uk.org.ogsadai.LOGIN_PROVIDER
-            END
-            ACTIVITIES
-            uk.org.ogsadai.SQLNestedInClauseQuery=uk.org.ogsadai.SQLNestedInClauseQuery
-            uk.org.ogsadai.SQLUpdate=uk.org.ogsadai.SQLUpdate
-            uk.org.ogsadai.SQLParameterisedQuery=uk.org.ogsadai.SQLParameterisedQuery
-            uk.org.ogsadai.GetAvailableTables=uk.org.ogsadai.GetAvailableTables
-            uk.org.ogsadai.FilteredSQLQuery=uk.org.ogsadai.FilteredSQLQuery
-            uk.org.ogsadai.ExtractTableSchema=uk.org.ogsadai.ExtractTableSchema
-            uk.org.ogsadai.SQLStatement=uk.org.ogsadai.SQLStatement
-            uk.org.ogsadai.SQLBulkLoadTuple=uk.org.ogsadai.SQLBulkLoadTuple
-            uk.org.ogsadai.SQLQuery=uk.org.ogsadai.SQLQuery
-            uk.org.ogsadai.SQLParameterisedUpdate=uk.org.ogsadai.SQLParameterisedUpdate
-            uk.org.ogsadai.SQLNestedInClauseJoin=uk.org.ogsadai.SQLNestedInClauseJoin
-            END
-            dataResourceClass=uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource
-
-    popd
-
-
 

@@ -1,0 +1,213 @@
+<?xml version="1.0"?>
+<!--+
+    |
+    | Copyright (c) 2012, ROE (http://www.roe.ac.uk/)
+    | All rights reserved.
+    |
+    | This program is free software: you can redistribute it and/or modify
+    | it under the terms of the GNU General Public License as published by
+    | the Free Software Foundation, either version 3 of the License, or
+    | (at your option) any later version.
+    |
+    | This program is distributed in the hope that it will be useful,
+    | but WITHOUT ANY WARRANTY; without even the implied warranty of
+    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    | GNU General Public License for more details.
+    |
+    | You should have received a copy of the GNU General Public License
+    | along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    |
+    +-->
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+    >
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--+
+        | IMPORTANT - importing external jars .. 
+        | http://stackoverflow.com/questions/364114/can-i-add-jars-to-maven-2-build-classpath-without-installing-them/764684#764684
+        +-->
+
+    <!--+
+        | Maven parent project.
+        | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
+        +-->
+    <parent>
+        <groupId>uk.ac.roe.wfau</groupId>
+        <artifactId>firethorn-ogsadai</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>ogsadai-webapp</artifactId>
+    <packaging>war</packaging>
+
+    <name>OGSA-DAI webapp</name>
+    <description>
+        <![CDATA[
+        OGSA-DAI webapp.
+        ]]>
+    </description>
+
+    <properties>
+    </properties>
+
+    <!--+
+        | Apache Tomcat plugin repository.
+        +-->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>apache-snapshot</id>
+            <name>Apache snapshot</name>
+            <url>https://repository.apache.org/content/groups/snapshots/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <dependencies>
+
+        <!--+
+            | Base OGSA-DAI webapp.
+            +-->
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-jersey-webapp</artifactId>
+            <version>${ogsadai.version}</version>
+            <type>war</type>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!--+
+            | Our metadata service client.
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-tap</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+            +-->
+
+        <!--+
+            | jTDS SQLServer JDBC driver.
+            | http://jtds.sourceforge.net/
+            +-->
+        <dependency>
+            <groupId>net.sourceforge.jtds</groupId>
+            <artifactId>jtds</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+
+        <plugins>
+
+            <!--+
+                | Tomcat 6 plugin.
+                | https://tomcat.apache.org/maven-plugin-2.0/
+                +-->
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat6-maven-plugin</artifactId>
+                <version>2.1-SNAPSHOT</version>
+                <configuration>
+                    <!--+
+                        | The network port number.
+                        +-->
+                    <port>${ogsadai.webapp.port}</port>
+                    <!--+
+                        | Enable JNDI service.
+                        +-->
+                    <enableNaming>true</enableNaming>
+                    <!--+
+                        | Use the Maven test classpath.
+                        +-->
+                    <useTestClasspath>true</useTestClasspath>
+                    <!--+
+                        | The webapp context path.
+                        +-->
+                    <path>/${ogsadai.webapp.path}</path>
+                    <!--+
+                        | The webapp context file.
+                    <contextFile>src/test/conf/test-context.xml</contextFile>
+                        +-->
+
+                    <!--+
+                        | Use the unpacked war file as the webapp.
+                        +-->
+                    <warSourceDirectory>
+                        ${project.build.directory}/apache-tomcat-maven-plugin/ogsadai-jersey-webapp
+                    </warSourceDirectory>
+                </configuration>
+            </plugin>
+
+            <!--+
+                | Tomcat 7 plugin.
+                | https://tomcat.apache.org/maven-plugin-2.0/
+                +-->
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.1-SNAPSHOT</version>
+                <configuration>
+                    <!--+
+                        | The network port number.
+                        +-->
+                    <port>${ogsadai.webapp.port}</port>
+                    <!--+
+                        | Enable JNDI service.
+                        +-->
+                    <enableNaming>true</enableNaming>
+                    <!--+
+                        | Use the Maven test classpath.
+                        +-->
+                    <useTestClasspath>true</useTestClasspath>
+                    <!--+
+                        | The webapp context path.
+                        +-->
+                    <path>/${ogsadai.webapp.path}</path>
+                    <!--+
+                        | The webapp context file.
+                    <contextFile>src/test/conf/test-context.xml</contextFile>
+                        +-->
+
+                    <!--+
+                        | Use the unpacked war file as the webapp.
+                        +-->
+                    <warSourceDirectory>
+                        ${project.build.directory}/apache-tomcat-maven-plugin/ogsadai-jersey-webapp
+                    </warSourceDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+
+        <resources>
+        </resources>
+
+        <testResources>
+
+            <!--+
+                | Test configuration files.
+                +-->
+    		<testResource>
+    			<directory>${basedir}/src/test/conf</directory>
+                <includes>
+                    <include>*.properties</include>
+                    <include>*.xml</include>
+                </includes>
+    		</testResource>
+
+        </testResources>
+
+    </build>
+
+    <reporting>
+        <plugins>
+        </plugins>
+    </reporting>
+
+    <profiles>
+    </profiles>
+</project>
+
+
