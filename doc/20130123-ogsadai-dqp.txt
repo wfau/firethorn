@@ -1,0 +1,717 @@
+# --------------------------------------------------------------------------
+# Test queries for DQP ....
+
+    /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn/sandbox/dqp/server/src/test/unit/resources/UKIDSS_SDSS_external_link.txt
+    /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn/sandbox/dqp/server/src/test/unit/resources/UKIDSS_SDSS_nearest_match.txt
+    /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn/sandbox/dqp/server/src/test/unit/resources/UKIDSS_SDSS_part_of_nearest_match.txt
+    /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn/sandbox/dqp/server/src/test/unit/resources/UKIDSS_SDSS_plane_sweep.txt
+    /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn/sandbox/dqp/server/src/test/unit/resources/UKIDSS_SDSS_single_feature.txt
+
+# --------------------------------------------------------------------------
+#
+
+    jdbcresource()
+        {
+        local basepath=target/apache-tomcat-maven-plugin/ogsadai-jersey-webapp
+        local dbname=${1?}
+        local dbclass='net.sourceforge.jtds.jdbc.Driver'
+        local dbcatalog=${2?}
+        local dburl=jdbc:jtds:sqlserver://localhost:1433/${dbcatalog}
+
+        echo "JDBC resource [${dbname?}][${dburl}]"
+        echo "  Name [${dbname?}]"
+        echo "  URL  [${dburl}]"
+
+        sed 's/^ *//g' >> ${basepath?}/WEB-INF/etc/dai/logins.txt << EOF
+            id=${dbname?}
+            userID=*
+            username=$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.user=\(.*\)/\1/p')
+            password=$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.pass=\(.*\)/\1/p')
+            LOGIN-END
+            END
+EOF
+
+        sed '
+            s|^id=.*|id='${dbname}'|
+            s|^dai.driver.class=.*|dai.driver.class='${dbclass}'|
+            s|^dai.data.resource.uri=.*|dai.data.resource.uri='${dburl}'|
+            ' ${basepath?}/WEB-INF/etc/dai/resourceTemplates/uk.org.ogsadai.JDBC_RESOURCE_TEMPLATE \
+            > ${basepath?}/WEB-INF/etc/dai/resources/${dbname}
+
+        }
+
+    pushd /var/local/projects/edinburgh/wfau/firethorn/devel/
+
+        pushd firethorn-ogsadai/webapp
+
+            mvn tomcat6:run
+
+                [INFO] --- tomcat6-maven-plugin:2.1-SNAPSHOT:run (default-cli) @ ogsadai-webapp ---
+                [INFO] Running war on http://localhost:8080/ogsadai
+
+   
+        pushd firethorn-ogsadai/webapp
+
+            jdbcresource twomass TWOMASS
+            jdbcresource ukidss  UKIDSSDR5PLUS
+            jdbcresource roespan TWOXMM
+
+# --------------------------------------------------------------------------
+# Deploying DQP resource ....
+# http://ogsa-dai.sourceforge.net/documentation/ogsadai4.2/ogsadai4.2-jersey/DQPDeployers.html
+
+#
+# Try using the method described in the OGSA-DAI documentation.
+# http://ogsa-dai.sourceforge.net/documentation/ogsadai4.2/ogsadai4.2-jersey/DQPDeployers.html
+
+#
+# Many of the examples are missing :-(
+# http://ogsa-dai.sourceforge.net/documentation/ogsadai4.2/ogsadai4.2-jersey/DQPDeployers.html#DQP-HowToDeployResource
+
+    For example:
+        << MISSING >>
+    This example specifies two evaluation nodes (or OGSA-DAI services) and three data resources on these services that will be included in the federation.
+    For each evaluation node the base URL of the OGSA-DAI service is specified.
+    Additionally a parameter specifies if this evaluation node resides on the same OGSA-DAI server that the DQP resource is deployed to.
+    For each data node the data resource ID and the evaluation node where it resides is specified. 
+
+#
+# To run the ant configure command, you need to be in the top level of a binary build.
+# e.g. 'ogsadai-4.2-jersey-1.10-bin'
+
+# 
+# When bulding from source, this is buried deep in nested directories.
+
+    /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/build/ogsadai-4.2-jersey-1.10-bin
+
+    OGSADAI_ROOT=/var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn
+    OGSADAI_PATH=${OGSADAI_ROOT?}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey
+    OGSADAI_HOME=${OGSADAI_PATH?}/build/ogsadai-4.2-jersey-1.10-src/build/ogsadai-4.2-jersey-1.10-bin
+
+#
+# The Ant script needs 'CATALINA_HOME'.
+
+    CATALINA_HOME=/var/local/projects/edinburgh/wfau/firethorn/devel/firethorn-ogsadai/webapp/target/tomcat
+
+#
+# The Ant script fails with non standard deployments.
+
+configure:
+     [java] /var/local/projects/edinburgh/wfau/firethorn/devel/firethorn-ogsadai/webapp/webapps/dai/WEB-INF/etc/dai is not found.
+
+#
+# The Ant script assumes :
+# 1) A standard Tomcat install, with webapps deployed into '${CATALINA_HOME}/webapps'
+# 2) A standard binary install, with the webapp deployed in '${CATALINA_HOME}/webapps/dai'
+# 
+
+#
+# We can 'fake this using a symlink.
+
+    pushd ${CATALINA_HOME?}/webapps
+        ln -s ../../apache-tomcat-maven-plugin/ogsadai-jersey-webapp/ dai
+    popd
+
+#
+# Create our configure 'script'.
+#   DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/
+#   DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/services/drers/
+#   DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/services/drers/DataRequestExecutionResource
+
+    sed 's/^ *//g' > /tmp/config.txt << EOF
+        DQP deploy mydqp
+        DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/services/drers/DataRequestExecutionResource true
+        DQP addDataNode mydqp mydqpeval twomass
+        DQP addDataNode mydqp mydqpeval ukidss
+EOF
+
+#
+# Run the configure command ...
+
+    pushd ${OGSADAI_HOME}
+
+        ant -Dtomcat.dir=$CATALINA_HOME -Dconfig.file=/tmp/config.txt configure
+
+    popd
+
+#
+# Figure out what it created ....
+
+    ls -al ${CATALINA_HOME?}/webapps/dai/WEB-INF/
+
+        classes
+        etc
+        lib
+        web.xml
+
+    ls -al ${CATALINA_HOME?}/webapps/dai/WEB-INF/etc/
+
+        dai
+
+    ls -al ${CATALINA_HOME?}/webapps/dai/WEB-INF/etc/dai/
+
+        activities.txt
+        dqp
+        logins.txt
+        resources
+        resourceTemplates
+        views
+
+    ls -al ${CATALINA_HOME?}/webapps/dai/WEB-INF/etc/dai/resources
+
+        DataRequestExecutionResource
+        mydqp
+        roespan
+        twomass
+        ukidss
+
+    cat ${CATALINA_HOME?}/webapps/dai/WEB-INF/etc/dai/resources/mydqp 
+
+        id=mydqp
+        type=uk.org.ogsadai.DATA_RESOURCE
+        creationTime=null
+        terminationTime=null
+        PROPERTIES
+        END
+        CONFIG
+        dqp.config.path=dqp/mydqp/DQPContext.xml
+        END
+        ACTIVITIES
+        uk.org.ogsadai.GetAvailableTables=uk.org.ogsadai.GetAvailableTablesDQP
+        uk.org.ogsadai.ExtractTableSchema=uk.org.ogsadai.ExtractTableSchemaDQP
+        uk.org.ogsadai.SQLQuery=uk.org.ogsadai.SQLQueryDQP
+        END
+        dataResourceClass=uk.org.ogsadai.resource.dataresource.dqp.DQPResource
+
+    ls -al ${CATALINA_HOME?}/webapps/dai/WEB-INF/etc/dai/dqp/
+        
+        DQPCompilerConfiguration.xml
+        DQPContextTemplate.xml
+        DQPFunctionsConfig.txt
+        mydqp
+
+    ls -al ${CATALINA_HOME?}/webapps/dai/WEB-INF/etc/dai/dqp/mydqp/
+
+        DQPContext.xml
+
+    cat ${CATALINA_HOME?}/webapps/dai/WEB-INF/etc/dai/dqp/mydqp/DQPContext.xml 
+
+        <?xml version="1.0" encoding="UTF-8"?>
+        <beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd        http://www.springframework.org/schema/context        http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+            <import resource="../DQPCompilerConfiguration.xml"/>
+            <!-- ***********************
+                DQP Federation 
+               *********************** -->
+            <!--
+             Feature support helper - default can be configured here
+             or replace with another implementation class.
+           -->
+            <bean class="uk.org.ogsadai.dqp.presentation.common.DefaultFeatureSupportHelper" id="defaultFeatureSupport"/>
+            <!--
+               This specifies the DQP federation. 
+          -->
+            <bean class="uk.org.ogsadai.dqp.presentation.common.SimpleDQPFederation" id="federation">
+                <property name="configuration">
+                    <bean class="uk.org.ogsadai.dqp.presentation.common.SimpleDQPConfiguration" init-method="validate">
+                        <property name="dataNodes">
+                            <list>
+                                <bean class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+                                    <constructor-arg name="resourceID" value="twomass"/>
+                                    <constructor-arg name="evaluationNode" ref="mydqpeval"/>
+                                    <property name="operatorSupport" ref="defaultFeatureSupport"/>
+                                    <property name="expressionSupport" ref="defaultFeatureSupport"/>
+                                    <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
+                                </bean>
+                                <bean class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+                                    <constructor-arg name="resourceID" value="ukidss"/>
+                                    <constructor-arg name="evaluationNode" ref="mydqpeval"/>
+                                    <property name="operatorSupport" ref="defaultFeatureSupport"/>
+                                    <property name="expressionSupport" ref="defaultFeatureSupport"/>
+                                    <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
+                                </bean>
+                            </list>
+                        </property>
+                        <property name="evaluationNodes">
+                            <list>
+                                <ref bean="mydqpeval"/>
+                            </list>
+                        </property>
+                        <!-- Table schema fetcher - below is the default -->
+                        <!-- 
+			            <property name="tableSchemaFetcher">
+			                <bean class="uk.org.ogsadai.dqp.presentation.common.SimpleTableSchemaFetcher"/>
+			            </property>
+			            -->
+                    </bean>
+                </property>
+                <!-- Fetch physical schemas? Default is true -->
+                <property name="fetchPhysicalSchema" value="true"/>
+            </bean>
+            <bean class="uk.org.ogsadai.dqp.presentation.common.SimpleEvaluationNode" id="mydqpeval">
+                <constructor-arg name="url" value="http://localhost:8081/albert/"/>
+                <constructor-arg name="drerID" value="DataRequestExecutionResource"/>
+                <constructor-arg name="dsos" value="DataSourceService"/>
+                <constructor-arg name="dsis" value="DataSinkService"/>
+                <constructor-arg name="isLocal" type="boolean" value="true"/>
+            </bean>
+        </beans>
+
+#
+# Check the resource has been created ....
+
+    curl http://localhost:8081/albert/dai-resources.jsp
+    curl http://localhost:8081/albert/services
+    curl http://localhost:8081/albert/services/dataResources
+    curl http://localhost:8081/albert/services/dataResources/mydqp    
+    curl http://localhost:8081/albert/services/dataResources/mydqp/type
+    curl http://localhost:8081/albert/services/dataResources/mydqp/properties
+    curl http://localhost:8081/albert/services/dataResources/mydqp/properties/CurrentTime
+    <?xml version="1.0" encoding="UTF-8"?><resourceProperty name="http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceLifetime-1.2-draft-01.xsd.CurrentTime">2013-01-23T17:25:35.655+0000</resourceProperty>
+
+#
+# Try run a test query ....
+
+    2013-01-23 17:32:12,127 WARN  common.SimpleDQPFederation [pool-1-thread-7,warnExceptionAndChildren:343] #1358962332127:176# uk.org.ogsadai.EXTRACT_TABLE_SCHEMA_ERROR
+    2013-01-23 17:32:12,130 WARN  common.SimpleDQPFederation [pool-1-thread-7,warnExceptionAndChildren:343] #1358962332127:176# A problem occured initialising the server.
+    2013-01-23 17:32:12,130 WARN  common.SimpleDQPFederation [pool-1-thread-7,warnExceptionAndChildren:343] #1358962332127:176# java.io.FileNotFoundException: http://localhost:8081/albert/DataRequestExecutionService?wsdl
+    2013-01-23 17:32:12,135 WARN  common.SimpleDQPFederation [pool-1-thread-7,warnExceptionAndChildren:343] #1358962332135:178# uk.org.ogsadai.EXTRACT_TABLE_SCHEMA_ERROR
+    2013-01-23 17:32:12,135 WARN  common.SimpleDQPFederation [pool-1-thread-7,warnExceptionAndChildren:343] #1358962332135:178# A problem occured initialising the server.
+    2013-01-23 17:32:12,135 WARN  common.SimpleDQPFederation [pool-1-thread-7,warnExceptionAndChildren:343] #1358962332135:178# java.io.FileNotFoundException: http://localhost:8081/albert/DataRequestExecutionService?wsdl
+    2013-01-23 17:32:12,145 WARN  event.LoggingActivityListener [pool-1-thread-7,warnExceptionAndChildren:343] #1358962332145:180# A problem has occurred during processing of activity uk.org.ogsadai.SQLQuery with instance name uk.org.ogsadai.SQLQuery-ogsadai-2881441e-ca5c-45fd-a23e-880835614aba.
+
+#
+# This looks like it is trying to find a SOAP interface.
+
+    java.io.FileNotFoundException
+    http://localhost:8081/albert/DataRequestExecutionService?wsdl
+
+#
+# I think the REST interface is here ...
+
+    http://localhost:8081/albert/services/drers/DataRequestExecutionResource
+
+#
+# Change the DRER URL ..
+#   DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/
+#   DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/services/drers/
+
+
+    2013-01-23 17:57:25,177 WARN  common.SimpleDQPFederation [pool-1-thread-3,warnExceptionAndChildren:343] #1358963845177:11# uk.org.ogsadai.EXTRACT_TABLE_SCHEMA_ERROR
+    2013-01-23 17:57:25,181 WARN  common.SimpleDQPFederation [pool-1-thread-3,warnExceptionAndChildren:343] #1358963845177:11# A problem occured initialising the server.
+    2013-01-23 17:57:25,182 WARN  common.SimpleDQPFederation [pool-1-thread-3,warnExceptionAndChildren:343] #1358963845177:11# java.io.FileNotFoundException: http://localhost:8081/albert/services/drers/DataRequestExecutionService?wsdl
+    2013-01-23 17:57:25,190 WARN  common.SimpleDQPFederation [pool-1-thread-3,warnExceptionAndChildren:343] #1358963845190:14# uk.org.ogsadai.EXTRACT_TABLE_SCHEMA_ERROR
+    2013-01-23 17:57:25,191 WARN  common.SimpleDQPFederation [pool-1-thread-3,warnExceptionAndChildren:343] #1358963845190:14# A problem occured initialising the server.
+    2013-01-23 17:57:25,191 WARN  common.SimpleDQPFederation [pool-1-thread-3,warnExceptionAndChildren:343] #1358963845190:14# java.io.FileNotFoundException: http://localhost:8081/albert/services/drers/DataRequestExecutionService?wsdl
+    2013-01-23 17:57:25,208 WARN  event.LoggingActivityListener [pool-1-thread-3,warnExceptionAndChildren:343] #1358963845208:16# A problem has occurred during processing of activity uk.org.ogsadai.SQLQuery with instance name uk.org.ogsadai.SQLQuery-ogsadai-4954b7e8-30bb-4062-a342-081d239439ce.
+
+#
+# Change the DRER URL ..
+#   DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/
+#   DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/services/drers/
+#   DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/services/drers/DataRequestExecutionResource
+
+
+# --------------------------------------------------------------------------
+# Modified code to use Jersey Server ...
+
+    /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn/sandbox/dqp/server/src/main/java/uk/org/ogsadai/dqp/presentation/common/SimpleEvaluationNode.java
+    /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn/sandbox/dqp/server/src/main/java/uk/org/ogsadai/dqp/presentation/common/SimpleEvaluationNodeFactory.java
+
+    /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn/sandbox/dqp/server/src/main/java/uk/org/ogsadai/dqp/presentation/common/JerseyEvaluationNode.java
+    /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn/sandbox/dqp/server/src/main/java/uk/org/ogsadai/dqp/presentation/common/JerseyEvaluationNodeFactory.java
+
+# --------------------------------------------------------------------------
+# Re-build the binary release.
+#
+    OGSADAI_ROOT=/var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn
+
+    #
+    # Main build script first ....
+    pushd ${OGSADAI_ROOT}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey
+
+        ant -Ddependencies.dir=${OGSADAI_ROOT}/third-party/dependencies
+
+            [echo] **** DONE: creating Jersey Binary Relase.
+             [zip] Building zip: /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/build/ogsadai-4.2-jersey-1.10-bin.zip
+            [copy] Copying 1 file to /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build
+
+            BUILD SUCCESSFUL
+            Total time: 36 seconds
+
+    popd
+
+    #
+    # Then the DQP jar ....
+    pushd ${OGSADAI_ROOT}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/src/extensions/dqp/server
+
+        ant -Ddependencies.dir=${OGSADAI_ROOT}/third-party/dependencies jar
+
+            ....
+            
+            [jar] Building jar: /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/src/extensions/dqp/server/build/lib/ogsadai-dqp-server-4.2.jar
+
+            BUILD SUCCESSFUL
+            Total time: 1 second
+
+    popd
+
+    #
+    # Transfer the new binaries to our local Maven repository.
+    mvn install:install-file  \
+        -D groupId=uk.org.ogsadai  \
+        -D artifactId=ogsadai-jersey-webapp \
+        -D version=4.2 \
+        -D packaging=war \
+        -D file=${OGSADAI_ROOT}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/build/ogsadai-4.2-jersey-1.10-bin/dai.war
+
+# --------------------------------------------------------------------------
+# Run the webapp ...
+#
+
+    WEBAPP_BASE=/var/local/projects/edinburgh/wfau/firethorn/devel/firethorn-ogsadai/webapp
+
+    pushd ${WEBAPP_BASE}
+
+        mvn clean tomcat6:run
+
+            [INFO] --- tomcat6-maven-plugin:2.1-SNAPSHOT:run (default-cli) @ ogsadai-webapp ---
+            [INFO] Running war on http://localhost:8081/albert
+
+    popd
+
+# --------------------------------------------------------------------------
+# Add our JDBC resources.
+#
+
+    jdbcresource()
+        {
+        local webappbase=/var/local/projects/edinburgh/wfau/firethorn/devel/firethorn-ogsadai/webapp
+        local webapppath=${webappbase}/target/apache-tomcat-maven-plugin/ogsadai-jersey-webapp
+        local dbname=${1?}
+        local dbclass='net.sourceforge.jtds.jdbc.Driver'
+        local dbcatalog=${2?}
+        local dburl=jdbc:jtds:sqlserver://localhost:1433/${dbcatalog}
+
+        echo "JDBC resource [${dbname?}][${dburl}]"
+        echo "  Name [${dbname?}]"
+        echo "  URL  [${dburl}]"
+
+        sed 's/^ *//g' >> ${webapppath?}/WEB-INF/etc/dai/logins.txt << EOF
+            id=${dbname?}
+            userID=*
+            username=$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.user=\(.*\)/\1/p')
+            password=$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.pass=\(.*\)/\1/p')
+            LOGIN-END
+            END
+EOF
+
+        sed '
+            s|^id=.*|id='${dbname}'|
+            s|^dai.driver.class=.*|dai.driver.class='${dbclass}'|
+            s|^dai.data.resource.uri=.*|dai.data.resource.uri='${dburl}'|
+            ' ${webapppath?}/WEB-INF/etc/dai/resourceTemplates/uk.org.ogsadai.JDBC_RESOURCE_TEMPLATE \
+            > ${webapppath?}/WEB-INF/etc/dai/resources/${dbname}
+
+        }
+
+    jdbcresource twomass TWOMASS
+    jdbcresource ukidss  UKIDSSDR5PLUS
+    jdbcresource roespan TWOXMM
+
+# --------------------------------------------------------------------------
+# Create the DQP resource ..
+
+    OGSADAI_ROOT=/var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn
+    OGSADAI_PATH=${OGSADAI_ROOT?}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey
+    OGSADAI_HOME=${OGSADAI_PATH?}/build/ogsadai-4.2-jersey-1.10-src/build/ogsadai-4.2-jersey-1.10-bin
+
+    CATALINA_HOME=/var/local/projects/edinburgh/wfau/firethorn/devel/firethorn-ogsadai/webapp/target/tomcat
+
+#
+# Add a symlink to make tomcat look right.
+
+    pushd ${CATALINA_HOME?}/webapps
+        ln -s ../../apache-tomcat-maven-plugin/ogsadai-jersey-webapp/ dai
+    popd
+
+#
+# Create our configure 'script'.
+#   DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/
+#   DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/services/drers/
+#   DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/services/drers/DataRequestExecutionResource
+
+    sed 's/^ *//g' > /tmp/config.txt << EOF
+        DQP deploy mydqp
+        DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/ true
+        DQP addDataNode mydqp mydqpeval twomass
+        DQP addDataNode mydqp mydqpeval ukidss
+EOF
+
+#
+# Run the OGSADAI configure scripts ...
+
+    pushd ${OGSADAI_HOME}
+
+        ant -Dtomcat.dir=$CATALINA_HOME -Dconfig.file=/tmp/config.txt configure
+
+    popd
+
+#
+# Tweak the DQP config
+
+    sed -i '
+        s/<bean class=".*" id="mydqpeval">/<bean class="uk.org.ogsadai.dqp.presentation.common.JerseyEvaluationNode" id="mydqpeval">/
+        ' ${CATALINA_HOME?}/webapps/dai/WEB-INF/etc/dai/dqp/mydqp/DQPContext.xml 
+
+    cat ${CATALINA_HOME?}/webapps/dai/WEB-INF/etc/dai/dqp/mydqp/DQPContext.xml 
+
+#
+# Fails to find our new class ..
+
+    2013-01-23 19:18:03,051 ERROR dqp.DQPResource [http-8081-1,errorExceptionAndChildren:401] #1358968683046:0# java.lang.ClassNotFoundException: uk.org.ogsadai.dqp.presentation.common.JerseyEvaluationNode
+
+#
+# In the process, found an existing Jersey based EvaluationNode implementation in a different package.
+
+    find . -name 'JerseyEvaluationNode.java'
+
+        ./ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/src/presentation/jersey/server/src/main/java/uk/org/ogsadai/dqp/presentation/jersey/JerseyEvaluationNode.java
+        ./ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/build/javadoc-src/uk/org/ogsadai/dqp/presentation/jersey/JerseyEvaluationNode.java
+        ./ogsa-dai/trunk/presentation/jersey/server/src/main/java/uk/org/ogsadai/dqp/presentation/jersey/JerseyEvaluationNode.java
+
+#
+# Tweak the DQP config
+
+    sed -i '
+        s/<bean class=".*" id="mydqpeval">/<bean class="uk.org.ogsadai.dqp.presentation.jersey.JerseyEvaluationNode" id="mydqpeval">/
+        ' ${CATALINA_HOME?}/webapps/dai/WEB-INF/etc/dai/dqp/mydqp/DQPContext.xml 
+
+    cat ${CATALINA_HOME?}/webapps/dai/WEB-INF/etc/dai/dqp/mydqp/DQPContext.xml 
+
+#
+# Null pointer exception ....
+
+    2013-01-23 19:45:35,510 ERROR drer.SimpleEventfulRequest [pool-2-thread-2,errorExceptionAndChildren:401] #1358970335510:11# A problem has occurred during request processing.
+    2013-01-23 19:45:35,511 ERROR drer.SimpleEventfulRequest [pool-2-thread-2,errorExceptionAndChildren:401] #1358970335510:11# java.lang.NullPointerException: null
+    2013-01-23 19:45:35,512 ERROR drer.SimpleEventfulRequest [pool-2-thread-2,logStackTraceError:567] uk.org.ogsadai.exception.RequestProcessingException: A problem has occurred during request processing.
+	    at uk.org.ogsadai.activity.workflow.SimpleWorkflowProcessor.visitActivityPipelineWorkflow(SimpleWorkflowProcessor.java:157)
+	    at uk.org.ogsadai.activity.workflow.ActivityPipelineWorkflow.accept(ActivityPipelineWorkflow.java:99)
+	    at uk.org.ogsadai.activity.request.WorkflowRequest.process(WorkflowRequest.java:146)
+	    at uk.org.ogsadai.resource.drer.SimpleEventfulRequest.process(SimpleEventfulRequest.java:180)
+	    at uk.org.ogsadai.engine.RequestRunner.run(RequestRunner.java:67)
+	    at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	    at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	    at java.lang.Thread.run(Thread.java:679)
+    Caused by: java.lang.NullPointerException
+	    at uk.org.ogsadai.resource.dataresource.dqp.DQPResource.getState(DQPResource.java:57)
+	    at uk.org.ogsadai.resource.SimpleResourceManager.getResource(SimpleResourceManager.java:168)
+	    at uk.org.ogsadai.resource.SimpleResourceManager.getPublicResource(SimpleResourceManager.java:189)
+	    at uk.org.ogsadai.activity.SimpleActivityFactory.createActivity(SimpleActivityFactory.java:122)
+	    at uk.org.ogsadai.activity.SimpleActivityFactory.createActivities(SimpleActivityFactory.java:87)
+	    at uk.org.ogsadai.activity.extension.InitialisingActivityFactory.createActivities(InitialisingActivityFactory.java:66)
+	    at uk.org.ogsadai.activity.event.EventfulActivityFactory.createActivities(EventfulActivityFactory.java:67)
+	    at uk.org.ogsadai.activity.concurrency.ActivityPipelineProcessingTask.createActivities(ActivityPipelineProcessingTask.java:127)
+	    at uk.org.ogsadai.activity.concurrency.ActivityPipelineProcessingTask.call(ActivityPipelineProcessingTask.java:103)
+	    at uk.org.ogsadai.activity.concurrency.ActivityPipelineProcessingTask.call(ActivityPipelineProcessingTask.java:53)
+	    ... 5 more
+
+    2013-01-23 19:45:35,513 ERROR drer.JAXBUtilities [http-8081-1,errorExceptionAndChildren:401] #1358970335510:11# A problem has occurred during request processing.
+    2013-01-23 19:45:35,514 ERROR drer.JAXBUtilities [http-8081-1,errorExceptionAndChildren:401] #1358970335510:11# java.lang.NullPointerException: null
+
+#
+# Redo From Start
+
+    2013-01-23 19:51:27,987 WARN  common.SimpleDQPFederation [pool-1-thread-3,warnExceptionAndChildren:343] #1358970687987:10# uk.org.ogsadai.EXTRACT_TABLE_SCHEMA_ERROR
+    2013-01-23 19:51:27,991 WARN  common.SimpleDQPFederation [pool-1-thread-3,warnExceptionAndChildren:343] #1358970687987:10# The resource DataRequestExecutionResource is unknown.
+    2013-01-23 19:51:28,336 WARN  common.SimpleDQPFederation [pool-1-thread-3,warnExceptionAndChildren:343] #1358970688336:12# uk.org.ogsadai.EXTRACT_TABLE_SCHEMA_ERROR
+    2013-01-23 19:51:28,336 WARN  common.SimpleDQPFederation [pool-1-thread-3,warnExceptionAndChildren:343] #1358970688336:12# The resource DataRequestExecutionResource is unknown.
+    2013-01-23 19:51:28,349 WARN  event.LoggingActivityListener [pool-1-thread-3,warnExceptionAndChildren:343] #1358970688349:14# A problem has occurred during processing of activity uk.org.ogsadai.SQLQuery with instance name uk.org.ogsadai.SQLQuery-ogsadai-432f1c02-8103-4ea6-8dcf-adb1947aa596.
+    2013-01-23 19:51:28,350 WARN  event.LoggingActivityListener [pool-1-thread-3,warnExceptionAndChildren:343] #1358970688349:14# A user problem has occured during activity processing.
+    2013-01-23 19:51:28,351 WARN  event.LoggingActivityListener [pool-1-thread-3,warnExceptionAndChildren:343] #1358970688349:14# A user problem has occured during activity processing.
+    2013-01-23 19:51:28,351 WARN  event.LoggingActivityListener [pool-1-thread-3,warnExceptionAndChildren:343] #1358970688349:14# uk.org.ogsadai.dqp.lqp.exceptions.TableNotFoundException: Table not found twomass_twomass_psc
+    2013-01-23 19:51:28,356 WARN  event.LoggingActivityListener [pool-1-thread-2,warnExceptionAndChildren:343] #1358970688356:17# A problem has occurred during processing of activity uk.org.ogsadai.TupleToByteArrays with instance name uk.org.ogsadai.TupleToByteArrays-ogsadai-fb987081-c929-437f-bb85-a7fd954042cf.
+    2013-01-23 19:51:28,357 WARN  event.LoggingActivityListener [pool-1-thread-2,warnExceptionAndChildren:343] #1358970688356:17# The pipe has been closed due to an error that occurred at the data producer.
+    2013-01-23 19:51:28,359 WARN  event.LoggingActivityListener [pool-1-thread-4,warnExceptionAndChildren:343] #1358970688359:20# A problem has occurred during processing of activity uk.org.ogsadai.DeliverToRequestStatus with instance name uk.org.ogsadai.DeliverToRequestStatus-ogsadai-93f867fa-3773-42b4-9dab-8de56ec8ff13.
+    2013-01-23 19:51:28,359 WARN  event.LoggingActivityListener [pool-1-thread-4,warnExceptionAndChildren:343] #1358970688359:20# The pipe has been closed due to an error that occurred at the data producer.
+
+#
+# Suspect config settings are wrong ....
+
+    <bean class="uk.org.ogsadai.dqp.presentation.jersey.JerseyEvaluationNode" id="mydqpeval">
+        <constructor-arg name="url" value="http://localhost:8081/albert/"/>
+        <constructor-arg name="drerID" value="DataRequestExecutionResource"/>
+        <constructor-arg name="dsos" value="DataSourceService"/>
+        <constructor-arg name="dsis" value="DataSinkService"/>
+        <constructor-arg name="isLocal" type="boolean" value="true"/>
+    </bean>
+
+
+
+# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
+# Redo From Start
+
+# --------------------------------------------------------------------------
+# Re-build the binary release.
+#
+    OGSADAI_ROOT=/var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn
+
+    #
+    # Main build script first ....
+    pushd ${OGSADAI_ROOT}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey
+
+        ant -Ddependencies.dir=${OGSADAI_ROOT}/third-party/dependencies
+
+    popd
+
+    #
+    # Then the DQP jar ....
+    pushd ${OGSADAI_ROOT}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/src/extensions/dqp/server
+
+        ant -Ddependencies.dir=${OGSADAI_ROOT}/third-party/dependencies jar
+
+    popd
+
+    #
+    # Transfer the new binaries to our local Maven repository.
+    mvn install:install-file  \
+        -D groupId=uk.org.ogsadai  \
+        -D artifactId=ogsadai-jersey-webapp \
+        -D version=4.2 \
+        -D packaging=war \
+        -D file=${OGSADAI_ROOT}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/build/ogsadai-4.2-jersey-1.10-bin/dai.war
+
+    mvn install:install-file  \
+        -D groupId=uk.org.ogsadai  \
+        -D artifactId=ogsadai-dqp-server \
+        -D version=4.2 \
+        -D packaging=jar \
+        -D file=${OGSADAI_ROOT}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/src/extensions/dqp/server/build/lib/ogsadai-dqp-server-4.2.jar
+
+# --------------------------------------------------------------------------
+# Run the webapp ...
+#
+
+    WEBAPP_BASE=/var/local/projects/edinburgh/wfau/firethorn/devel/firethorn-ogsadai/webapp
+
+    pushd ${WEBAPP_BASE}
+
+        mvn clean tomcat6:run
+
+    popd
+
+# --------------------------------------------------------------------------
+# Add our JDBC resources.
+#
+
+    jdbcresource()
+        {
+        local webappbase=/var/local/projects/edinburgh/wfau/firethorn/devel/firethorn-ogsadai/webapp
+        local webapppath=${webappbase}/target/apache-tomcat-maven-plugin/ogsadai-jersey-webapp
+        local dbname=${1?}
+        local dbclass='net.sourceforge.jtds.jdbc.Driver'
+        local dbcatalog=${2?}
+        local dburl=jdbc:jtds:sqlserver://localhost:1433/${dbcatalog}
+
+        echo "JDBC resource [${dbname?}][${dburl}]"
+        echo "  Name [${dbname?}]"
+        echo "  URL  [${dburl}]"
+
+        sed 's/^ *//g' >> ${webapppath?}/WEB-INF/etc/dai/logins.txt << EOF
+            id=${dbname?}
+            userID=*
+            username=$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.user=\(.*\)/\1/p')
+            password=$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.pass=\(.*\)/\1/p')
+            LOGIN-END
+            END
+EOF
+
+        sed '
+            s|^id=.*|id='${dbname}'|
+            s|^dai.driver.class=.*|dai.driver.class='${dbclass}'|
+            s|^dai.data.resource.uri=.*|dai.data.resource.uri='${dburl}'|
+            ' ${webapppath?}/WEB-INF/etc/dai/resourceTemplates/uk.org.ogsadai.JDBC_RESOURCE_TEMPLATE \
+            > ${webapppath?}/WEB-INF/etc/dai/resources/${dbname}
+
+        }
+
+    jdbcresource twomass TWOMASS
+    jdbcresource ukidss  UKIDSSDR5PLUS
+    jdbcresource roespan TWOXMM
+
+# --------------------------------------------------------------------------
+# Create the DQP resource ..
+
+    OGSADAI_ROOT=/var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn
+    OGSADAI_PATH=${OGSADAI_ROOT?}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey
+    OGSADAI_HOME=${OGSADAI_PATH?}/build/ogsadai-4.2-jersey-1.10-src/build/ogsadai-4.2-jersey-1.10-bin
+
+    CATALINA_HOME=/var/local/projects/edinburgh/wfau/firethorn/devel/firethorn-ogsadai/webapp/target/tomcat
+
+#
+# Add a symlink to make tomcat look right.
+
+    pushd ${CATALINA_HOME?}/webapps
+        ln -s ../../apache-tomcat-maven-plugin/ogsadai-jersey-webapp/ dai
+    popd
+
+#
+# Create our configure 'script'.
+#   DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/
+#   DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/services/drers/
+#   DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/services/drers/DataRequestExecutionResource
+
+    sed 's/^ *//g' > /tmp/config.txt << EOF
+        DQP deploy mydqp
+        DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/ true
+        DQP addDataNode mydqp mydqpeval twomass
+        DQP addDataNode mydqp mydqpeval ukidss
+EOF
+
+#
+# Run the OGSADAI configure scripts ...
+
+    pushd ${OGSADAI_HOME}
+
+        ant -Dtomcat.dir=$CATALINA_HOME -Dconfig.file=/tmp/config.txt configure
+
+    popd
+
+#
+# Tweak the DQP config
+
+    sed -i '
+        s/<bean class=".*" id="mydqpeval">/<bean class="uk.org.ogsadai.dqp.presentation.jersey.JerseyEvaluationNode" id="mydqpeval">/
+        ' ${CATALINA_HOME?}/webapps/dai/WEB-INF/etc/dai/dqp/mydqp/DQPContext.xml 
+
+    cat ${CATALINA_HOME?}/webapps/dai/WEB-INF/etc/dai/dqp/mydqp/DQPContext.xml 
+
+
+    #
+    # Test query causes same errors.
+
+    2013-01-23 20:26:06,869 WARN  common.SimpleDQPFederation [pool-1-thread-3,warnExceptionAndChildren:343] #1358972766869:10# uk.org.ogsadai.EXTRACT_TABLE_SCHEMA_ERROR
+    2013-01-23 20:26:06,873 WARN  common.SimpleDQPFederation [pool-1-thread-3,warnExceptionAndChildren:343] #1358972766869:10# The resource DataRequestExecutionResource is unknown.
+    2013-01-23 20:26:07,219 WARN  common.SimpleDQPFederation [pool-1-thread-3,warnExceptionAndChildren:343] #1358972767219:12# uk.org.ogsadai.EXTRACT_TABLE_SCHEMA_ERROR
+    2013-01-23 20:26:07,221 WARN  common.SimpleDQPFederation [pool-1-thread-3,warnExceptionAndChildren:343] #1358972767219:12# The resource DataRequestExecutionResource is unknown.
+    2013-01-23 20:26:07,235 WARN  event.LoggingActivityListener [pool-1-thread-3,warnExceptionAndChildren:343] #1358972767234:14# A problem has occurred during processing of activity uk.org.ogsadai.SQLQuery with instance name uk.org.ogsadai.SQLQuery-ogsadai-3ebcea57-5aa4-4227-9806-c7c2043d7bbe.
+    2013-01-23 20:26:07,235 WARN  event.LoggingActivityListener [pool-1-thread-3,warnExceptionAndChildren:343] #1358972767234:14# A user problem has occured during activity processing.
+    2013-01-23 20:26:07,235 WARN  event.LoggingActivityListener [pool-1-thread-3,warnExceptionAndChildren:343] #1358972767234:14# A user problem has occured during activity processing.
+    2013-01-23 20:26:07,236 WARN  event.LoggingActivityListener [pool-1-thread-3,warnExceptionAndChildren:343] #1358972767234:14# uk.org.ogsadai.dqp.lqp.exceptions.TableNotFoundException: Table not found twomass_twomass_psc
+    2013-01-23 20:26:07,238 WARN  event.LoggingActivityListener [pool-1-thread-2,warnExceptionAndChildren:343] #1358972767237:17# A problem has occurred during processing of activity uk.org.ogsadai.TupleToByteArrays with instance name uk.org.ogsadai.TupleToByteArrays-ogsadai-f956db9b-352b-458d-87ae-87bf10df0967.
+    2013-01-23 20:26:07,239 WARN  event.LoggingActivityListener [pool-1-thread-2,warnExceptionAndChildren:343] #1358972767237:17# The pipe has been closed due to an error that occurred at the data producer.
+    2013-01-23 20:26:07,240 WARN  event.LoggingActivityListener [pool-1-thread-4,warnExceptionAndChildren:343] #1358972767240:20# A problem has occurred during processing of activity uk.org.ogsadai.DeliverToRequestStatus with instance name uk.org.ogsadai.DeliverToRequestStatus-ogsadai-70e1bd9d-e1c8-4a33-b814-fff066abd031.
+    2013-01-23 20:26:07,240 WARN  event.LoggingActivityListener [pool-1-thread-4,warnExceptionAndChildren:343] #1358972767240:20# The pipe has been closed due to an error that occurred at the data producer.
+
+
+    #
+    # JSP pages deon't give much clue (DataRequestExecutionResource is hardcoded in the page).
+    http://localhost:8081/albert/dqp-index.jsp
+
+

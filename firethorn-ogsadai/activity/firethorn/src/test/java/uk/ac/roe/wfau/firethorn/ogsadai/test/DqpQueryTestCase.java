@@ -57,7 +57,7 @@ import uk.org.ogsadai.client.toolkit.activities.transform.TupleToByteArrays;
  *
  *
  */
-public class SimpleQueryTestCase
+public class DqpQueryTestCase
 extends SimpleQueryTestBase
     {
 
@@ -65,7 +65,7 @@ extends SimpleQueryTestBase
      * Our debug logger.
      * 
      */
-    private static Log log = LogFactory.getLog(SimpleQueryTestCase.class);
+    private static Log log = LogFactory.getLog(DqpQueryTestCase.class);
 
     /**
      * Our test service endpoint.
@@ -74,57 +74,11 @@ extends SimpleQueryTestBase
     public static final String endpoint = "http://localhost:8081/albert/services/" ;
 
     /**
-     * Single catalog, TWOMASS.
-     *
-     */
-    @Test
-    public void test001()
-    throws Exception
-        {
-        execute(
-            endpoint,
-            "twomass",
-            " SELECT" +
-            "    twomass.ra," +
-            "    twomass.dec" +
-            " FROM" +
-            "    twomass_psc AS twomass" +
-            " WHERE" +
-            "    twomass.ra  BETWEEN '55.0' AND '55.9'" +
-            " AND" +
-            "    twomass.dec BETWEEN '20.0' AND '22.9'"
-            );
-        }
-
-    /**
-     * Single catalog, UKIDSSDR1.
-     *
-     */
-    @Test
-    public void test002()
-    throws Exception
-        {
-        execute(
-            endpoint,
-            "ukidss",
-            " SELECT" +
-            "    ukidss.ra," +
-            "    ukidss.dec" +
-            " FROM" +
-            "    gcsPointSource AS ukidss" +
-            " WHERE" +
-            "    ukidss.ra  BETWEEN '55.0' AND '55.9'" +
-            " AND" +
-            "    ukidss.dec BETWEEN '20.0' AND '22.9'"
-            );
-        }
-
-    /**
      * Multiple catalog, TWOMASS and UKIDSSDR1, using JDBC direct.
      *
      */
-    @Test
-    public void test003()
+    //@Test
+    public void test001()
     throws Exception
         {
         execute(
@@ -142,6 +96,43 @@ extends SimpleQueryTestBase
             "    TWOMASS.dbo.twomass_psc AS twomass," +
             "    UKIDSSDR5PLUS.dbo.gcsPointSource AS ukidss," +
             "    UKIDSSDR5PLUS.dbo.gcsSourceXtwomass_psc AS match" +
+            " WHERE" +
+            "    ukidss.ra  BETWEEN '55.0' AND '55.9'" +
+            " AND" +
+            "    ukidss.dec BETWEEN '20.0' AND '22.9'" +
+            " AND" +
+            "    match.masterObjID = ukidss.sourceID" +
+            " AND" +
+            "    match.slaveObjID = twomass.pts_key" +
+            " AND" +
+            "    match.distanceMins < 1E-3"
+            );
+        }
+
+
+    /**
+     * Multiple catalog, TWOMASS and UKIDSSDR1, using DQP.
+     *
+     */
+    @Test
+    public void test002()
+    throws Exception
+        {
+        execute(
+            endpoint,
+            "mydqp",
+            " SELECT" +
+            "    twomass.ra AS tmra," +
+            "    ukidss.ra  AS ukra,"  +
+            "    (twomass.ra - ukidss.ra) AS difra," +
+            "    twomass.dec AS tmdec," +
+            "    ukidss.dec  AS ukdec,"  +
+            "    (twomass.ra - ukidss.ra) AS difdec," +
+            "    match.distanceMins AS dist" +
+            " FROM" +
+            "    twomass_twomass_psc AS twomass," +
+            "    ukidss_gcsPointSource AS ukidss," +
+            "    ukidss_gcsSourceXtwomass_psc AS match" +
             " WHERE" +
             "    ukidss.ra  BETWEEN '55.0' AND '55.9'" +
             " AND" +
