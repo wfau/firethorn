@@ -692,7 +692,6 @@ EOF
 
     cat ${CATALINA_HOME?}/webapps/dai/WEB-INF/etc/dai/dqp/mydqp/DQPContext.xml 
 
-
 #
 # Test query causes same errors.
 
@@ -701,7 +700,6 @@ EOF
         mvn -D test=DqpQueryTestCase test
 
     popd
-
 
     2013-01-23 20:26:06,869 WARN  common.SimpleDQPFederation [pool-1-thread-3,warnExceptionAndChildren:343] #1358972766869:10# uk.org.ogsadai.EXTRACT_TABLE_SCHEMA_ERROR
     2013-01-23 20:26:06,873 WARN  common.SimpleDQPFederation [pool-1-thread-3,warnExceptionAndChildren:343] #1358972766869:10# The resource DataRequestExecutionResource is unknown.
@@ -782,4 +780,174 @@ EOF
         DQP addDataNode mydqp mydqpeval twomass
         DQP addDataNode mydqp mydqpeval ukidss
 EOF
+
+# --------------------------------------------------------------------------
+# Run the webapp ...
+#
+
+    PROJECT_BASE=/var/local/projects/edinburgh/wfau/firethorn/devel
+
+    pushd ${PROJECT_BASE}/firethorn-ogsadai/webapp
+
+        mvn clean tomcat6:run
+
+    popd
+
+# --------------------------------------------------------------------------
+# Add our JDBC resources.
+#
+
+    PROJECT_BASE=/var/local/projects/edinburgh/wfau/firethorn/devel
+
+    jdbcresource()
+        {
+        local webappbase=${PROJECT_BASE?}/firethorn-ogsadai/webapp
+        local webapppath=${webappbase}/target/apache-tomcat-maven-plugin/ogsadai-jersey-webapp
+        local dbname=${1?}
+        local dbclass='net.sourceforge.jtds.jdbc.Driver'
+        local dbcatalog=${2?}
+        local dburl=jdbc:jtds:sqlserver://localhost:1433/${dbcatalog}
+
+        echo "JDBC resource [${dbname?}][${dburl}]"
+        echo "  Name [${dbname?}]"
+        echo "  URL  [${dburl}]"
+
+        sed 's/^ *//g' >> ${webapppath?}/WEB-INF/etc/dai/logins.txt << EOF
+            id=${dbname?}
+            userID=*
+            username=$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.user=\(.*\)/\1/p')
+            password=$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.pass=\(.*\)/\1/p')
+            LOGIN-END
+            END
+EOF
+
+        sed '
+            s|^id=.*|id='${dbname}'|
+            s|^dai.driver.class=.*|dai.driver.class='${dbclass}'|
+            s|^dai.data.resource.uri=.*|dai.data.resource.uri='${dburl}'|
+            ' ${webapppath?}/WEB-INF/etc/dai/resourceTemplates/uk.org.ogsadai.JDBC_RESOURCE_TEMPLATE \
+            > ${webapppath?}/WEB-INF/etc/dai/resources/${dbname}
+
+        }
+
+    jdbcresource twomass TWOMASS
+    jdbcresource ukidss  UKIDSSDR5PLUS
+    jdbcresource roespan TWOXMM
+
+# --------------------------------------------------------------------------
+# Create the DQP resource ..
+
+    OGSADAI_ROOT=/var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn
+    OGSADAI_PATH=${OGSADAI_ROOT?}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey
+    OGSADAI_HOME=${OGSADAI_PATH?}/build/ogsadai-4.2-jersey-1.10-src/build/ogsadai-4.2-jersey-1.10-bin
+
+    PROJECT_BASE=/var/local/projects/edinburgh/wfau/firethorn/devel
+    CATALINA_HOME=${PROJECT_BASE}/firethorn-ogsadai/webapp/target/tomcat
+
+#
+# Add a symlink to make tomcat look right.
+
+    pushd ${CATALINA_HOME?}/webapps
+        ln -s ../../apache-tomcat-maven-plugin/ogsadai-jersey-webapp/ dai
+    popd
+
+#
+# Create our configure 'script'.
+#   DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/services
+
+    sed 's/^ *//g' > /tmp/config.txt << EOF
+        DQP deploy mydqp
+        DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/services true
+        DQP addDataNode mydqp mydqpeval twomass
+        DQP addDataNode mydqp mydqpeval ukidss
+EOF
+
+#
+# Run the OGSADAI configure scripts ...
+
+    pushd ${OGSADAI_HOME}
+
+        ant -Dtomcat.dir=$CATALINA_HOME -Dconfig.file=/tmp/config.txt configure
+
+    popd
+
+#
+# Tweak the DQP config
+
+    sed -i '
+        s/<bean class=".*" id="mydqpeval">/<bean class="uk.org.ogsadai.dqp.presentation.jersey.JerseyEvaluationNode" id="mydqpeval">/
+        ' ${CATALINA_HOME?}/webapps/dai/WEB-INF/etc/dai/dqp/mydqp/DQPContext.xml 
+
+    cat ${CATALINA_HOME?}/webapps/dai/WEB-INF/etc/dai/dqp/mydqp/DQPContext.xml 
+
+#
+# Test query ....
+
+    pushd /var/local/projects/edinburgh/wfau/firethorn/devel/firethorn-ogsadai/activity/firethorn/
+    
+        mvn -D test=DqpQueryTestCase test
+
+    popd
+
+# --------------------------------------------------------------------------
+# Moved on a bit .. a different error.
+
+    java.lang.NullPointerException
+	    at uk.org.ogsadai.dqp.presentation.common.SimpleDQPFederation.getURL(SimpleDQPFederation.java:323)
+	    at uk.org.ogsadai.dqp.presentation.common.SimpleDQPFederation.populateDataDictionary(SimpleDQPFederation.java:243)
+	    at uk.org.ogsadai.dqp.presentation.common.SimpleDQPFederation.getDataDictionary(SimpleDQPFederation.java:114)
+	    at uk.org.ogsadai.dqp.execute.SQLQueryPlanBuilder.buildValidatedLQP(SQLQueryPlanBuilder.java:124)
+	    at uk.org.ogsadai.dqp.execute.SQLQueryPlanBuilder.buildQueryPlan(SQLQueryPlanBuilder.java:70)
+	    at uk.org.ogsadai.dqp.execute.Coordinator.execute(Coordinator.java:179)
+	    at uk.org.ogsadai.activity.dqp.SQLQueryActivity.processIteration(SQLQueryActivity.java:294)
+	    at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+	    at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	    at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	    at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	    at java.lang.Thread.run(Thread.java:679)
+    2013-01-24 10:59:45,751 ERROR common.SimpleDQPFederation [pool-1-thread-2,errorExceptionAndChildren:401] #1359025185750:50# java.lang.NullPointerException: null
+    uk.org.ogsadai.dqp.presentation.common.DQPResourceConfigurationException: [1359025185754:52] uk.org.ogsadai.DQP_RESOURCE_CONFIGURATION_ERROR
+	    at uk.org.ogsadai.dqp.presentation.common.SimpleDQPFederation.getDataDictionary(SimpleDQPFederation.java:122)
+	    at uk.org.ogsadai.dqp.execute.SQLQueryPlanBuilder.buildValidatedLQP(SQLQueryPlanBuilder.java:124)
+	    at uk.org.ogsadai.dqp.execute.SQLQueryPlanBuilder.buildQueryPlan(SQLQueryPlanBuilder.java:70)
+	    at uk.org.ogsadai.dqp.execute.Coordinator.execute(Coordinator.java:179)
+	    at uk.org.ogsadai.activity.dqp.SQLQueryActivity.processIteration(SQLQueryActivity.java:294)
+	    at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+	    at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	    at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	    at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	    at java.lang.Thread.run(Thread.java:679)
+    Caused by: uk.org.ogsadai.dqp.presentation.common.ExtractLogicalSchemaException: [1359025185754:51] uk.org.ogsadai.EXTRACT_TABLE_SCHEMA_ERROR
+	    at uk.org.ogsadai.dqp.presentation.common.SimpleDQPFederation.populateDataDictionary(SimpleDQPFederation.java:287)
+	    at uk.org.ogsadai.dqp.presentation.common.SimpleDQPFederation.getDataDictionary(SimpleDQPFederation.java:114)
+	    ... 15 more
+    Caused by: java.lang.NullPointerException
+	    at uk.org.ogsadai.dqp.presentation.common.SimpleDQPFederation.getURL(SimpleDQPFederation.java:323)
+	    at uk.org.ogsadai.dqp.presentation.common.SimpleDQPFederation.populateDataDictionary(SimpleDQPFederation.java:243)
+	    ... 16 more
+    2013-01-24 10:59:45,757 WARN  event.LoggingActivityListener [pool-1-thread-2,warnExceptionAndChildren:343] #1359025185756:54# A problem has occurred during processing of activity uk.org.ogsadai.SQLQuery with instance name uk.org.ogsadai.SQLQuery-ogsadai-62b8bbcc-fa8a-4020-9f95-6976649dd036.
+    2013-01-24 10:59:45,757 WARN  event.LoggingActivityListener [pool-1-thread-2,warnExceptionAndChildren:343] #1359025185756:54# A user problem has occured during activity processing.
+    2013-01-24 10:59:45,757 WARN  event.LoggingActivityListener [pool-1-thread-2,warnExceptionAndChildren:343] #1359025185756:54# A problem has occured during activity processing.
+    2013-01-24 10:59:45,758 WARN  event.LoggingActivityListener [pool-1-thread-2,warnExceptionAndChildren:343] #1359025185756:54# uk.org.ogsadai.DQP_RESOURCE_CONFIGURATION_ERROR
+    2013-01-24 10:59:45,758 WARN  event.LoggingActivityListener [pool-1-thread-2,warnExceptionAndChildren:343] #1359025185756:54# uk.org.ogsadai.EXTRACT_TABLE_SCHEMA_ERROR
+    2013-01-24 10:59:45,758 WARN  event.LoggingActivityListener [pool-1-thread-2,warnExceptionAndChildren:343] #1359025185756:54# java.lang.NullPointerException: null
+    2013-01-24 10:59:45,759 WARN  event.LoggingActivityListener [pool-1-thread-4,warnExceptionAndChildren:343] #1359025185759:57# A problem has occurred during processing of activity uk.org.ogsadai.TupleToByteArrays with instance name uk.org.ogsadai.TupleToByteArrays-ogsadai-7d1907dc-f12d-4c6a-82d0-412f6e4546d2.
+    2013-01-24 10:59:45,760 WARN  event.LoggingActivityListener [pool-1-thread-4,warnExceptionAndChildren:343] #1359025185759:57# The pipe has been closed due to an error that occurred at the data producer.
+    2013-01-24 10:59:45,761 WARN  event.LoggingActivityListener [pool-1-thread-3,warnExceptionAndChildren:343] #1359025185761:60# A problem has occurred during processing of activity uk.org.ogsadai.DeliverToRequestStatus with instance name uk.org.ogsadai.DeliverToRequestStatus-ogsadai-1b4b3007-0195-4704-95e7-3b6e8538fd2d.
+    2013-01-24 10:59:45,762 WARN  event.LoggingActivityListener [pool-1-thread-3,warnExceptionAndChildren:343] #1359025185761:60# The pipe has been closed due to an error that occurred at the data producer.
+
+
+
 
