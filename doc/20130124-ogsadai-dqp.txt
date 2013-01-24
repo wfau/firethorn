@@ -137,8 +137,6 @@
 #
 #    cat ${CATALINA_HOME?}/webapps/dai/WEB-INF/etc/dai/dqp/mydqp/DQPContext.xml 
 #
-
-
 # --------------------------------------------------------------------------
 # Resources page triggers ClassNotFoundException.
 # http://localhost:8081/albert/dai-resources.jsp
