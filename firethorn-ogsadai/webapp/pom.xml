@@ -129,9 +129,10 @@
 
                     <!--+
                         | Use the unpacked war file as the webapp.
+                        ${project.build.directory}/apache-tomcat-maven-plugin/ogsadai-jersey-webapp
                         +-->
                     <warSourceDirectory>
-                        ${project.build.directory}/apache-tomcat-maven-plugin/ogsadai-jersey-webapp
+                        ${project.build.directory}/${project.build.finalName}
                     </warSourceDirectory>
                 </configuration>
             </plugin>
@@ -168,9 +169,10 @@
 
                     <!--+
                         | Use the unpacked war file as the webapp.
+                        ${project.build.directory}/apache-tomcat-maven-plugin/ogsadai-jersey-webapp
                         +-->
                     <warSourceDirectory>
-                        ${project.build.directory}/apache-tomcat-maven-plugin/ogsadai-jersey-webapp
+                        ${project.build.directory}/${project.build.finalName}
                     </warSourceDirectory>
                 </configuration>
             </plugin>

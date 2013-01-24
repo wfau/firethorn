@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+        >
+    <import resource="../DQPCompilerConfiguration.xml"/>
+    <!-- ***********************
+        DQP Federation 
+       *********************** -->
+    <!--
+     Feature support helper - default can be configured here
+     or replace with another implementation class.
+   -->
+    <bean class="uk.org.ogsadai.dqp.presentation.common.DefaultFeatureSupportHelper" id="defaultFeatureSupport"/>
+    <!--
+       This specifies the DQP federation. 
+  -->
+    <bean class="uk.org.ogsadai.dqp.presentation.common.SimpleDQPFederation" id="federation">
+        <property name="configuration">
+            <bean class="uk.org.ogsadai.dqp.presentation.common.SimpleDQPConfiguration" init-method="validate">
+                <property name="dataNodes">
+                    <list>
+                        <bean class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+                            <constructor-arg name="resourceID" value="twomass"/>
+                            <constructor-arg name="evaluationNode" ref="mydqpeval"/>
+                            <property name="operatorSupport" ref="defaultFeatureSupport"/>
+                            <property name="expressionSupport" ref="defaultFeatureSupport"/>
+                            <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
+                        </bean>
+                        <bean class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+                            <constructor-arg name="resourceID" value="ukidss"/>
+                            <constructor-arg name="evaluationNode" ref="mydqpeval"/>
+                            <property name="operatorSupport" ref="defaultFeatureSupport"/>
+                            <property name="expressionSupport" ref="defaultFeatureSupport"/>
+                            <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
+                        </bean>
+                    </list>
+                </property>
+                <property name="evaluationNodes">
+                    <list>
+                        <ref bean="mydqpeval"/>
+                    </list>
+                </property>
+                <!-- Table schema fetcher - below is the default -->
+                <!-- 
+			    <property name="tableSchemaFetcher">
+			        <bean class="uk.org.ogsadai.dqp.presentation.common.SimpleTableSchemaFetcher"/>
+			    </property>
+			    -->
+            </bean>
+        </property>
+        <!-- Fetch physical schemas? Default is true -->
+        <property name="fetchPhysicalSchema" value="true"/>
+    </bean>
+    <bean class="uk.org.ogsadai.dqp.presentation.jersey.JerseyEvaluationNode" id="mydqpeval">
+        <constructor-arg name="url" value="http://localhost:8081/albert/services"/>
+        <constructor-arg name="drerID" value="DataRequestExecutionResource"/>
+        <constructor-arg name="dsos" value="dataSources"/>
+        <constructor-arg name="dsis" value="dataSinks"/>
+        <constructor-arg name="isLocal" type="boolean" value="true"/>
+    </bean>
+</beans>

@@ -1,6 +1,7 @@
 syntax: glob
 
 # Text editor backups
+*~
 *.*~
 
 # Python code.

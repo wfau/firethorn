@@ -83,7 +83,7 @@ extends SimpleQueryTestBase
         {
         execute(
             endpoint,
-            "roespan",
+            "uber",
             " SELECT" +
             "    twomass.ra AS tmra," +
             "    ukidss.ra  AS ukra,"  +
@@ -130,7 +130,7 @@ extends SimpleQueryTestBase
             "    (twomass.ra - ukidss.ra) AS difdec," +
             "    match.distanceMins AS dist" +
             " FROM" +
-            "    twomass_twomass_psc AS twomass," +
+            "    twomass_twomass_psc   AS twomass," +
             "    ukidss_gcsPointSource AS ukidss," +
             "    ukidss_gcsSourceXtwomass_psc AS match" +
             " WHERE" +

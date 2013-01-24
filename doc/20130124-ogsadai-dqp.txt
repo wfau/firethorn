@@ -1,0 +1,372 @@
+#-----------------------------------------------------------------------
+# Start with a clean copy of the code.
+#
+
+    OGSADAI_ROOT=/var/local/projects/edinburgh/ogsa-dai
+    OGSADAI_BASE=${OGSADAI_ROOT}/ogsa-dai-code
+
+    mkdir ${OGSADAI_BASE?}
+    pushd ${OGSADAI_BASE?}
+
+        svn export http://svn.code.sf.net/p/ogsa-dai/code/ogsa-dai/trunk ogsa-dai/trunk
+
+        svn export http://svn.code.sf.net/p/ogsa-dai/code/sandbox sandbox
+
+        svn export http://svn.code.sf.net/p/ogsa-dai/code/third-party third-party
+        
+    popd
+
+#
+# Build the binary release.
+
+    pushd ${OGSADAI_BASE?}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey
+
+        #
+        # Initial build, to populate the build tree.
+        ant -Ddependencies.dir=${OGSADAI_BASE?}/third-party/dependencies
+
+        #
+        # Replace the DQP server code with the sandbox version.
+        pushd build/ogsadai-4.2-jersey-1.10-src/src/extensions/dqp
+
+            #
+            # Replace the DQP server code with the sandbox version.
+            rm -r server
+            ln -s ../../../../../../../../../../sandbox/dqp/server
+
+            #
+            # Remove references to 'ogsa-dai/trunk' from 'server/ant.properties'
+            sed -i '
+                s|/ogsa-dai/trunk/|/|g
+                ' server/ant.properties
+
+        popd
+
+# Need to tweak this ...
+# /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-code/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/src/core/server/xml/ogsadai-context.xml
+#    <!--
+#    <bean id="uk.org.ogsadai.WEB_SERVER_URL"  class="java.lang.String">
+#        <constructor-arg value="http://myhost:9120/dai"/>
+#    </bean>
+#    -->
+#
+
+        #
+        # Re-build using the modified source.
+        pushd build/ogsadai-4.2-jersey-1.10-src/
+
+            ant -Ddependencies.dir=${OGSADAI_BASE?}/third-party/dependencies
+
+        popd
+    popd
+
+#
+# Transfer the resulting war and jar files into our local Maven repository.
+
+    mvn install:install-file  \
+        -D groupId=uk.org.ogsadai  \
+        -D artifactId=ogsadai-jersey-webapp \
+        -D version=4.2 \
+        -D packaging=war \
+        -D file=${OGSADAI_BASE?}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/build/ogsadai-4.2-jersey-1.10-bin/dai.war
+
+    mvn install:install-file  \
+        -D groupId=uk.org.ogsadai  \
+        -D artifactId=ogsadai-dqp-server \
+        -D version=4.2 \
+        -D packaging=jar \
+        -D file=${OGSADAI_BASE?}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/build/ogsadai-4.2-jersey-1.10-bin/dai/WEB-INF/lib/ogsadai-dqp-server-4.2.jar
+
+# --------------------------------------------------------------------------
+# Run the webapp in Tomcat.
+#
+
+    PROJECT_BASE=/var/local/projects/edinburgh/wfau/firethorn/devel
+    pushd ${PROJECT_BASE?}/firethorn-ogsadai/webapp
+
+        #
+        # Create a clean war file.
+        mvn clean
+        mvn war:war
+
+        #
+        # Set the database passwords.
+        sed -i '
+            s/{SQL-USER}/'$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.user=\(.*\)/\1/p')'/
+            s/{SQL-PASS}/'$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.pass=\(.*\)/\1/p')'/
+            ' target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/logins.txt
+
+        #
+        # Set the endpoint URL ?
+
+        #
+        # Run the webapp in Tomcat
+        mvn tomcat6:run
+
+    popd
+
+# --------------------------------------------------------------------------
+# Runtime config (not required, config files are included in Maven build)
+#
+#
+#    PROJECT_BASE=/var/local/projects/edinburgh/wfau/firethorn/devel
+#    CATALINA_HOME=${PROJECT_BASE?}/firethorn-ogsadai/webapp/target/tomcat
+#
+#
+# Add a symlink to make tomcat look right.
+#
+#    pushd ${CATALINA_HOME?}/webapps
+#        ln -s ../../ogsadai-webapp-1.0-SNAPSHOT/ dai
+#    popd
+#
+#
+# Create our configure script.
+#
+#    sed 's/^ *//g' > /tmp/config.txt << EOF
+#        DQP deploy mydqp
+#        DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/services DataRequestExecutionResource dataSources dataSinks true uk.org.ogsadai.dqp.presentation.jersey.JerseyEvaluationNode
+#        DQP addDataNode mydqp mydqpeval twomass
+#        DQP addDataNode mydqp mydqpeval ukidss
+#EOF
+
+#
+# Run the configure script.
+#
+#    OGSADAI_TRUNK=/var/local/projects/edinburgh/ogsa-dai/ogsa-dai-code/ogsa-dai/trunk
+#
+#    pushd ${OGSADAI_TRUNK?}/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/build/ogsadai-4.2-jersey-1.10-bin
+#
+#        ant -Dtomcat.dir=${CATALINA_HOME?} -Dconfig.file=/tmp/config.txt configure
+#
+#    popd
+#
+#
+# Check the DQP config.
+#
+#    cat ${CATALINA_HOME?}/webapps/dai/WEB-INF/etc/dai/dqp/mydqp/DQPContext.xml 
+#
+
+
+# --------------------------------------------------------------------------
+# Resources page triggers ClassNotFoundException.
+# http://localhost:8081/albert/dai-resources.jsp
+# 
+
+    2013-01-24 14:32:52,670 DEBUG dqp.DQPResource [http-8081-1,debug:84] In DQPResource#initialize()
+    2013-01-24 14:32:52,906 DEBUG dqp.DQPResource [http-8081-1,debug:84] DQPResource#initialize throws [1359037972906:0] uk.org.ogsadai.DQP_RESOURCE_CONFIGURATION_ERROR
+    2013-01-24 14:32:52,907 ERROR dqp.DQPResource [http-8081-1,errorExceptionAndChildren:401] #1359037972906:0# uk.org.ogsadai.DQP_RESOURCE_CONFIGURATION_ERROR
+    2013-01-24 14:32:52,907 ERROR dqp.DQPResource [http-8081-1,errorExceptionAndChildren:401] #1359037972906:0# org.springframework.beans.factory.CannotLoadBeanClassException: Cannot find class [uk.org.ogsadai.dqp.lqp.cardinality.SimpleCardinalityEstimator] for bean with name 'cardinalityEstimator' defined in URL [file:/var/local/projects/edinburgh/wfau/firethorn/devel/firethorn-ogsadai/webapp/target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/dqp/DQPCompilerConfiguration.xml]; nested exception is java.lang.ClassNotFoundException: uk.org.ogsadai.dqp.lqp.cardinality.SimpleCardinalityEstimator
+    2013-01-24 14:32:52,908 ERROR dqp.DQPResource [http-8081-1,errorExceptionAndChildren:401] #1359037972906:0# java.lang.ClassNotFoundException: uk.org.ogsadai.dqp.lqp.cardinality.SimpleCardinalityEstimator
+    2013-01-24 14:32:52,908 DEBUG dqp.DQPResource [http-8081-1,debug:84] Exiting DQPResource#initialize()
+    2013-01-24 14:32:52,909 DEBUG dqp.DQPResource [http-8081-1,debug:84] In DQPResource#getState()
+    2013-01-24 14:32:52,945 DEBUG activity.OGSADAIActivityFramework [http-8081-1,debug:84] No WORKFLOW_AUTHORIZER in OGSA-DAI context
+    2013-01-24 14:32:52,947 DEBUG activity.OGSADAIActivityFramework [http-8081-1,debug:84] No MONITORING_FRAMEWORK in OGSA-DAI context
+
+# --------------------------------------------------------------------------
+# DQP page triggers JSP compile error.
+# http://localhost:8081/albert/dqp-index.jsp
+# 
+
+    Jan 24, 2013 2:34:36 PM org.apache.catalina.core.StandardWrapperValve invoke
+    SEVERE: Servlet.service() for servlet jsp threw exception
+    org.apache.jasper.JasperException: Unable to compile class for JSP: 
+
+    An error occurred at line: 124 in the jsp file: /dqp-index.jsp
+    Type mismatch: cannot convert from LogicalSchema to TableMetaData
+    121:             table.append("</td></tr>\n");
+    122:                         
+    123:             table.append("<tr><td valign=\"top\">SCHEMA</td><td><table width=\"100%\" border=\"1\">\n");
+    124:             TableMetaData metadata = schema.getSchema();
+    125:             for (int i=1; i<=metadata.getColumnCount(); i++)
+    126:             {
+    127:                 table.append("<tr><td>");
+
+
+    Stacktrace:
+	    at org.apache.jasper.compiler.DefaultErrorHandler.javacError(DefaultErrorHandler.java:92)
+	    at org.apache.jasper.compiler.ErrorDispatcher.javacError(ErrorDispatcher.java:330)
+	    at org.apache.jasper.compiler.JDTCompiler.generateClass(JDTCompiler.java:439)
+	    at org.apache.jasper.compiler.Compiler.compile(Compiler.java:356)
+	    at org.apache.jasper.compiler.Compiler.compile(Compiler.java:334)
+	    at org.apache.jasper.compiler.Compiler.compile(Compiler.java:321)
+	    at org.apache.jasper.JspCompilationContext.compile(JspCompilationContext.java:592)
+	    at org.apache.jasper.servlet.JspServletWrapper.service(JspServletWrapper.java:328)
+	    at org.apache.jasper.servlet.JspServlet.serviceJspFile(JspServlet.java:313)
+	    at org.apache.jasper.servlet.JspServlet.service(JspServlet.java:260)
+	    at javax.servlet.http.HttpServlet.service(HttpServlet.java:717)
+	    at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)
+	    at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+	    at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233)
+	    at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:191)
+	    at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:127)
+	    at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:103)
+	    at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)
+	    at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293)
+	    at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:861)
+	    at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:606)
+	    at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:489)
+	    at java.lang.Thread.run(Thread.java:679)
+
+# --------------------------------------------------------------------------
+# Test query ....
+# 
+
+    PROJECT_BASE=/var/local/projects/edinburgh/wfau/firethorn/devel
+    pushd ${PROJECT_BASE?}/firethorn-ogsadai/activity/firethorn/
+    
+        mvn -D test=DqpQueryTestCase test
+
+    popd
+
+# --------------------------------------------------------------------------
+# Tomcat debug log
+# 
+
+    2013-01-24 14:45:07,043 DEBUG drer.SimpleDRER [http-8081-1,debug:84] Entered execute(CandidateRequestDescriptor)
+    2013-01-24 14:45:07,045 DEBUG drer.SimpleDRER [http-8081-1,debug:84] Workflow: Activity:
+        activity name   = uk.org.ogsadai.SQLQuery
+        instance name   = uk.org.ogsadai.SQLQuery-ogsadai-640d0d5e-41f2-45f8-a2e8-ac0b399279e7
+        target resource = mydqp
+        inputs:
+            Literal: expression :  SELECT    twomass.ra AS tmra,    ukidss.ra  AS ukra,    (twomass.ra - ukidss.ra) AS difra,    twomass.dec AS tmdec,    ukidss.dec  AS ukdec,    (twomass.ra - ukidss.ra) AS difdec,    match.distanceMins AS dist FROM    twomass_twomass_psc   AS twomass,    ukidss_gcsPointSource AS ukidss,    ukidss_gcsSourceXtwomass_psc AS match WHERE    ukidss.ra  BETWEEN '55.0' AND '55.9' AND    ukidss.dec BETWEEN '20.0' AND '22.9' AND    match.masterObjID = ukidss.sourceID AND    match.slaveObjID = twomass.pts_key AND    match.distanceMins < 1E-3
+        outputs:
+            ActivityOutputStream[name=data,pipeName=ogsadai-19831c58-0a65-4663-aea8-156c04a54bcc,source=uk.org.ogsadai.SQLQuery-ogsadai-640d0d5e-41f2-45f8-a2e8-ac0b399279e7
+
+    Activity:
+        activity name   = uk.org.ogsadai.DeliverToRequestStatus
+        instance name   = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-d2ec7bfc-65b5-4bb7-a8ff-ae4534ef4188
+        inputs:
+            ActivityInputStream[name=input,pipeName=ogsadai-d9b7d339-cc0d-44e9-808c-4e5f498e70ed]
+        outputs:
+
+    Activity:
+        activity name   = uk.org.ogsadai.TupleToByteArrays
+        instance name   = uk.org.ogsadai.TupleToByteArrays-ogsadai-e63a98b1-407a-443d-bc21-1c37068492ea
+        inputs:
+            ActivityInputStream[name=data,pipeName=ogsadai-19831c58-0a65-4663-aea8-156c04a54bcc]
+            Literal: size : 20
+        outputs:
+            ActivityOutputStream[name=result,pipeName=ogsadai-d9b7d339-cc0d-44e9-808c-4e5f498e70ed,source=uk.org.ogsadai.TupleToByteArrays-ogsadai-e63a98b1-407a-443d-bc21-1c37068492ea
+
+
+    2013-01-24 14:45:07,046 DEBUG drer.SimpleDRER [http-8081-1,debug:84] Entered execute(activity.RequestDescriptor)
+    2013-01-24 14:45:07,049 DEBUG activity.OGSADAIActivityFramework [http-8081-1,debug:84] Found Workflow in RequestDescriptor: Activity:
+        activity name   = uk.org.ogsadai.SQLQuery
+        instance name   = uk.org.ogsadai.SQLQuery-ogsadai-640d0d5e-41f2-45f8-a2e8-ac0b399279e7
+        target resource = mydqp
+        inputs:
+            Literal: expression :  SELECT    twomass.ra AS tmra,    ukidss.ra  AS ukra,    (twomass.ra - ukidss.ra) AS difra,    twomass.dec AS tmdec,    ukidss.dec  AS ukdec,    (twomass.ra - ukidss.ra) AS difdec,    match.distanceMins AS dist FROM    twomass_twomass_psc   AS twomass,    ukidss_gcsPointSource AS ukidss,    ukidss_gcsSourceXtwomass_psc AS match WHERE    ukidss.ra  BETWEEN '55.0' AND '55.9' AND    ukidss.dec BETWEEN '20.0' AND '22.9' AND    match.masterObjID = ukidss.sourceID AND    match.slaveObjID = twomass.pts_key AND    match.distanceMins < 1E-3
+        outputs:
+            ActivityOutputStream[name=data,pipeName=ogsadai-19831c58-0a65-4663-aea8-156c04a54bcc,source=uk.org.ogsadai.SQLQuery-ogsadai-640d0d5e-41f2-45f8-a2e8-ac0b399279e7
+
+    Activity:
+        activity name   = uk.org.ogsadai.DeliverToRequestStatus
+        instance name   = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-d2ec7bfc-65b5-4bb7-a8ff-ae4534ef4188
+        inputs:
+            ActivityInputStream[name=input,pipeName=ogsadai-d9b7d339-cc0d-44e9-808c-4e5f498e70ed]
+        outputs:
+
+    Activity:
+        activity name   = uk.org.ogsadai.TupleToByteArrays
+        instance name   = uk.org.ogsadai.TupleToByteArrays-ogsadai-e63a98b1-407a-443d-bc21-1c37068492ea
+        inputs:
+            ActivityInputStream[name=data,pipeName=ogsadai-19831c58-0a65-4663-aea8-156c04a54bcc]
+            Literal: size : 20
+        outputs:
+            ActivityOutputStream[name=result,pipeName=ogsadai-d9b7d339-cc0d-44e9-808c-4e5f498e70ed,source=uk.org.ogsadai.TupleToByteArrays-ogsadai-e63a98b1-407a-443d-bc21-1c37068492ea
+
+
+    2013-01-24 14:45:07,049 DEBUG drer.SimpleDRER [http-8081-1,debug:84] Created engine.Request: uk.org.ogsadai.activity.request.WorkflowRequest@57f7a5ab
+    2013-01-24 14:45:07,050 DEBUG drer.SimpleDRER [http-8081-1,debug:84] About to submit request to engine: uk.org.ogsadai.engine.RequestQueueingEngine@40964823
+    2013-01-24 14:45:07,057 DEBUG drer.SimpleDRER [http-8081-1,debug:84] Sucessfully submitted request to engine: uk.org.ogsadai.engine.RequestQueueingEngine@40964823
+    2013-01-24 14:45:07,058 DEBUG request.WorkflowRequest [pool-2-thread-4,debug:84] Did not get a workflow transformation from the context
+    2013-01-24 14:45:07,059 DEBUG pipeline.AutomaticTee [pool-2-thread-4,debug:84] Graph before transformation: 
+    2013-01-24 14:45:07,060 DEBUG pipeline.AutomaticTee [pool-2-thread-4,debug:84] Activity:
+        activity name   = uk.org.ogsadai.SQLQuery
+        instance name   = uk.org.ogsadai.SQLQuery-ogsadai-640d0d5e-41f2-45f8-a2e8-ac0b399279e7
+        target resource = mydqp
+        inputs:
+            Literal: expression :  SELECT    twomass.ra AS tmra,    ukidss.ra  AS ukra,    (twomass.ra - ukidss.ra) AS difra,    twomass.dec AS tmdec,    ukidss.dec  AS ukdec,    (twomass.ra - ukidss.ra) AS difdec,    match.distanceMins AS dist FROM    twomass_twomass_psc   AS twomass,    ukidss_gcsPointSource AS ukidss,    ukidss_gcsSourceXtwomass_psc AS match WHERE    ukidss.ra  BETWEEN '55.0' AND '55.9' AND    ukidss.dec BETWEEN '20.0' AND '22.9' AND    match.masterObjID = ukidss.sourceID AND    match.slaveObjID = twomass.pts_key AND    match.distanceMins < 1E-3
+        outputs:
+            ActivityOutputStream[name=data,pipeName=ogsadai-19831c58-0a65-4663-aea8-156c04a54bcc,source=uk.org.ogsadai.SQLQuery-ogsadai-640d0d5e-41f2-45f8-a2e8-ac0b399279e7
+
+    Activity:
+        activity name   = uk.org.ogsadai.DeliverToRequestStatus
+        instance name   = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-d2ec7bfc-65b5-4bb7-a8ff-ae4534ef4188
+        inputs:
+            ActivityInputStream[name=input,pipeName=ogsadai-d9b7d339-cc0d-44e9-808c-4e5f498e70ed]
+        outputs:
+
+    Activity:
+        activity name   = uk.org.ogsadai.TupleToByteArrays
+        instance name   = uk.org.ogsadai.TupleToByteArrays-ogsadai-e63a98b1-407a-443d-bc21-1c37068492ea
+        inputs:
+            ActivityInputStream[name=data,pipeName=ogsadai-19831c58-0a65-4663-aea8-156c04a54bcc]
+            Literal: size : 20
+        outputs:
+            ActivityOutputStream[name=result,pipeName=ogsadai-d9b7d339-cc0d-44e9-808c-4e5f498e70ed,source=uk.org.ogsadai.TupleToByteArrays-ogsadai-e63a98b1-407a-443d-bc21-1c37068492ea
+
+
+    2013-01-24 14:45:07,060 DEBUG pipeline.AutomaticTee [pool-2-thread-4,debug:84] Transformed graph: 
+    2013-01-24 14:45:07,060 DEBUG pipeline.AutomaticTee [pool-2-thread-4,debug:84] Activity:
+        activity name   = uk.org.ogsadai.SQLQuery
+        instance name   = uk.org.ogsadai.SQLQuery-ogsadai-640d0d5e-41f2-45f8-a2e8-ac0b399279e7
+        target resource = mydqp
+        inputs:
+            Literal: expression :  SELECT    twomass.ra AS tmra,    ukidss.ra  AS ukra,    (twomass.ra - ukidss.ra) AS difra,    twomass.dec AS tmdec,    ukidss.dec  AS ukdec,    (twomass.ra - ukidss.ra) AS difdec,    match.distanceMins AS dist FROM    twomass_twomass_psc   AS twomass,    ukidss_gcsPointSource AS ukidss,    ukidss_gcsSourceXtwomass_psc AS match WHERE    ukidss.ra  BETWEEN '55.0' AND '55.9' AND    ukidss.dec BETWEEN '20.0' AND '22.9' AND    match.masterObjID = ukidss.sourceID AND    match.slaveObjID = twomass.pts_key AND    match.distanceMins < 1E-3
+        outputs:
+            ActivityOutputStream[name=data,pipeName=ogsadai-19831c58-0a65-4663-aea8-156c04a54bcc,source=uk.org.ogsadai.SQLQuery-ogsadai-640d0d5e-41f2-45f8-a2e8-ac0b399279e7
+
+    Activity:
+        activity name   = uk.org.ogsadai.DeliverToRequestStatus
+        instance name   = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-d2ec7bfc-65b5-4bb7-a8ff-ae4534ef4188
+        inputs:
+            ActivityInputStream[name=input,pipeName=ogsadai-d9b7d339-cc0d-44e9-808c-4e5f498e70ed]
+        outputs:
+
+    Activity:
+        activity name   = uk.org.ogsadai.TupleToByteArrays
+        instance name   = uk.org.ogsadai.TupleToByteArrays-ogsadai-e63a98b1-407a-443d-bc21-1c37068492ea
+        inputs:
+            ActivityInputStream[name=data,pipeName=ogsadai-19831c58-0a65-4663-aea8-156c04a54bcc]
+            Literal: size : 20
+        outputs:
+            ActivityOutputStream[name=result,pipeName=ogsadai-d9b7d339-cc0d-44e9-808c-4e5f498e70ed,source=uk.org.ogsadai.TupleToByteArrays-ogsadai-e63a98b1-407a-443d-bc21-1c37068492ea
+
+
+    2013-01-24 14:45:07,063 DEBUG dqp.DQPResource [pool-1-thread-7,debug:84] In DQPResource#getState()
+    2013-01-24 14:45:07,064 ERROR drer.SimpleEventfulRequest [pool-2-thread-4,errorExceptionAndChildren:401] #1359038707064:76# A problem has occurred during request processing.
+    2013-01-24 14:45:07,065 ERROR drer.SimpleEventfulRequest [pool-2-thread-4,errorExceptionAndChildren:401] #1359038707064:76# java.lang.NullPointerException: null
+    2013-01-24 14:45:07,066 ERROR drer.SimpleEventfulRequest [pool-2-thread-4,logStackTraceError:567] uk.org.ogsadai.exception.RequestProcessingException: A problem has occurred during request processing.
+	    at uk.org.ogsadai.activity.workflow.SimpleWorkflowProcessor.visitActivityPipelineWorkflow(SimpleWorkflowProcessor.java:157)
+	    at uk.org.ogsadai.activity.workflow.ActivityPipelineWorkflow.accept(ActivityPipelineWorkflow.java:99)
+	    at uk.org.ogsadai.activity.request.WorkflowRequest.process(WorkflowRequest.java:146)
+	    at uk.org.ogsadai.resource.drer.SimpleEventfulRequest.process(SimpleEventfulRequest.java:180)
+	    at uk.org.ogsadai.engine.RequestRunner.run(RequestRunner.java:67)
+	    at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	    at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	    at java.lang.Thread.run(Thread.java:679)
+    Caused by: java.lang.NullPointerException
+	    at uk.org.ogsadai.resource.dataresource.dqp.DQPResource.getState(DQPResource.java:57)
+	    at uk.org.ogsadai.resource.SimpleResourceManager.getResource(SimpleResourceManager.java:168)
+	    at uk.org.ogsadai.resource.SimpleResourceManager.getPublicResource(SimpleResourceManager.java:189)
+	    at uk.org.ogsadai.activity.SimpleActivityFactory.createActivity(SimpleActivityFactory.java:122)
+	    at uk.org.ogsadai.activity.SimpleActivityFactory.createActivities(SimpleActivityFactory.java:87)
+	    at uk.org.ogsadai.activity.extension.InitialisingActivityFactory.createActivities(InitialisingActivityFactory.java:66)
+	    at uk.org.ogsadai.activity.event.EventfulActivityFactory.createActivities(EventfulActivityFactory.java:67)
+	    at uk.org.ogsadai.activity.concurrency.ActivityPipelineProcessingTask.createActivities(ActivityPipelineProcessingTask.java:127)
+	    at uk.org.ogsadai.activity.concurrency.ActivityPipelineProcessingTask.call(ActivityPipelineProcessingTask.java:103)
+	    at uk.org.ogsadai.activity.concurrency.ActivityPipelineProcessingTask.call(ActivityPipelineProcessingTask.java:53)
+	    ... 5 more
+
+    2013-01-24 14:45:07,067 ERROR drer.JAXBUtilities [http-8081-1,errorExceptionAndChildren:401] #1359038707064:76# A problem has occurred during request processing.
+    2013-01-24 14:45:07,068 ERROR drer.JAXBUtilities [http-8081-1,errorExceptionAndChildren:401] #1359038707064:76# java.lang.NullPointerException: null
+
+
+
