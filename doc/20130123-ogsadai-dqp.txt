@@ -693,8 +693,15 @@ EOF
     cat ${CATALINA_HOME?}/webapps/dai/WEB-INF/etc/dai/dqp/mydqp/DQPContext.xml 
 
 
-    #
-    # Test query causes same errors.
+#
+# Test query causes same errors.
+
+    pushd /var/local/projects/edinburgh/wfau/firethorn/devel/firethorn-ogsadai/activity/firethorn/
+    
+        mvn -D test=DqpQueryTestCase test
+
+    popd
+
 
     2013-01-23 20:26:06,869 WARN  common.SimpleDQPFederation [pool-1-thread-3,warnExceptionAndChildren:343] #1358972766869:10# uk.org.ogsadai.EXTRACT_TABLE_SCHEMA_ERROR
     2013-01-23 20:26:06,873 WARN  common.SimpleDQPFederation [pool-1-thread-3,warnExceptionAndChildren:343] #1358972766869:10# The resource DataRequestExecutionResource is unknown.
@@ -714,4 +721,65 @@ EOF
     # JSP pages deon't give much clue (DataRequestExecutionResource is hardcoded in the page).
     http://localhost:8081/albert/dqp-index.jsp
 
+# --------------------------------------------------------------------------
+# Found an example in the main source code.
+
+    pushd /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-svn/ogsa-dai/trunk
+
+        grep -r 'presentation.common.SimpleEvaluationNode' .
+
+        #
+        # Example config.
+        gedit ./extensions/dqp/server/src/test/unit/resources/uk/org/ogsadai/resource/dataresource/dqp/DQPContext.xml
+
+            <bean id="localEvaluationNode" 
+                class="uk.org.ogsadai.dqp.presentation.common.SimpleEvaluationNode">
+                <constructor-arg name="url" value="http://localhost:8080/dai/services"/>
+                <constructor-arg name="drerID" value="DataRequestExecutionResource"/>
+                <constructor-arg name="dsos" value="DataSourceService"/>
+                <constructor-arg name="dsis" value="DataSinkService"/>
+                <constructor-arg name="isLocal" type="boolean" value="true"/>
+            </bean>
+
+        #
+        # Config editor.
+        gedit ./extensions/dqp/server/src/main/java/uk/org/ogsadai/tools/DQPEditor.java &
+
+        #
+        # Class name defaults to the Axis version.
+        class DQPEditor
+            {
+            public void addEvaluationNode(
+                String resourceID, 
+                String name, 
+                String url, 
+                String drer, 
+                String dsos, 
+                String dsis, 
+                String isLocal)
+            throws FileNotFoundException, IOException
+                {
+                addEvaluationNode(
+                resourceID, 
+                name, 
+                url, 
+                drer, 
+                dsos, 
+                dsis,
+                isLocal, 
+                "uk.org.ogsadai.dqp.presentation.common.SimpleEvaluationNode");
+                }
+            }
+
+# --------------------------------------------------------------------------
+# Setting the DRER base URL to 'services' gets us a bit further ...
+#   DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/services
+#
+
+    sed 's/^ *//g' > /tmp/config.txt << EOF
+        DQP deploy mydqp
+        DQP addEvaluationNode mydqp mydqpeval http://localhost:8081/albert/services true
+        DQP addDataNode mydqp mydqpeval twomass
+        DQP addDataNode mydqp mydqpeval ukidss
+EOF
 
