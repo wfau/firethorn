@@ -3,7 +3,7 @@
 #
 
     OGSADAI_ROOT=/var/local/projects/edinburgh/ogsa-dai
-    OGSADAI_BASE=${OGSADAI_ROOT}/ogsa-dai-code
+    OGSADAI_BASE=${OGSADAI_ROOT?}/ogsa-dai-code
 
     mkdir ${OGSADAI_BASE?}
     pushd ${OGSADAI_BASE?}
@@ -42,10 +42,14 @@
 
         popd
 
+
+        rm build/*.zip
+
         #
         # Re-build using the modified source.
         pushd build/ogsadai-4.2-jersey-1.10-src/
 
+            rm -r build
             ant -Ddependencies.dir=${OGSADAI_BASE?}/third-party/dependencies
 
         popd
@@ -358,5 +362,13 @@
     2013-01-24 14:45:07,067 ERROR drer.JAXBUtilities [http-8081-1,errorExceptionAndChildren:401] #1359038707064:76# A problem has occurred during request processing.
     2013-01-24 14:45:07,068 ERROR drer.JAXBUtilities [http-8081-1,errorExceptionAndChildren:401] #1359038707064:76# java.lang.NullPointerException: null
 
+
+# --------------------------------------------------------------------------
+
+
+    #
+    # Check for missing files ..
+    find . -name 'SimpleCardinalityEstimator.java'
+    find . -name 'DQPCompilerConfiguration.xml'
 
 

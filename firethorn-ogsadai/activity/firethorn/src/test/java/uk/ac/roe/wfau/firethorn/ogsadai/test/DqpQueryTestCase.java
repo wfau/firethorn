@@ -130,9 +130,9 @@ extends SimpleQueryTestBase
             "    (twomass.ra - ukidss.ra) AS difdec," +
             "    match.distanceMins AS dist" +
             " FROM" +
-            "    twomass_twomass_psc   AS twomass," +
-            "    ukidss_gcsPointSource AS ukidss," +
-            "    ukidss_gcsSourceXtwomass_psc AS match" +
+            "    twomass_dbo.twomass_psc   AS twomass," +
+            "    ukidss_dbo.gcsPointSource AS ukidss," +
+            "    ukidss_dbo.gcsSourceXtwomass_psc AS match" +
             " WHERE" +
             "    ukidss.ra  BETWEEN '55.0' AND '55.9'" +
             " AND" +
