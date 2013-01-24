@@ -30,7 +30,7 @@
         pushd build/ogsadai-4.2-jersey-1.10-src/src/extensions/dqp
 
             #
-            # Replace the DQP server code with the sandbox version.
+            # Replace with a symlink to the sandbox version.
             rm -r server
             ln -s ../../../../../../../../../../sandbox/dqp/server
 
@@ -41,15 +41,6 @@
                 ' server/ant.properties
 
         popd
-
-# Need to tweak this ...
-# /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-code/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/src/core/server/xml/ogsadai-context.xml
-#    <!--
-#    <bean id="uk.org.ogsadai.WEB_SERVER_URL"  class="java.lang.String">
-#        <constructor-arg value="http://myhost:9120/dai"/>
-#    </bean>
-#    -->
-#
 
         #
         # Re-build using the modified source.
@@ -106,7 +97,8 @@
     popd
 
 # --------------------------------------------------------------------------
-# Runtime config (not required, config files are included in Maven build)
+# Runtime config.
+# -- No longer required, the modified config files are included in Maven build.
 #
 #
 #    PROJECT_BASE=/var/local/projects/edinburgh/wfau/firethorn/devel
@@ -128,7 +120,7 @@
 #        DQP addDataNode mydqp mydqpeval twomass
 #        DQP addDataNode mydqp mydqpeval ukidss
 #EOF
-
+#
 #
 # Run the configure script.
 #
