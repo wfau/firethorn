@@ -998,14 +998,13 @@ EOF
 #
 # Test query ....
 
-    pushd /var/local/projects/edinburgh/wfau/firethorn/devel/firethorn-ogsadai/activity/firethorn/
+    pushd ${PROJECT_BASE}/firethorn-ogsadai/activity/firethorn/
     
         mvn -D test=DqpQueryTestCase test
 
     popd
 
 # --------------------------------------------------------------------------
-
 
     java.lang.NullPointerException
 	    at uk.org.ogsadai.dqp.presentation.common.SimpleDQPFederation.getURL(SimpleDQPFederation.java:323)
@@ -1062,5 +1061,51 @@ EOF
     2013-01-24 11:34:51,802 WARN  event.LoggingActivityListener [pool-1-thread-3,warnExceptionAndChildren:343] #1359027291801:57# The pipe has been closed due to an error that occurred at the data producer.
     2013-01-24 11:34:51,803 WARN  event.LoggingActivityListener [pool-1-thread-4,warnExceptionAndChildren:343] #1359027291803:60# A problem has occurred during processing of activity uk.org.ogsadai.DeliverToRequestStatus with instance name uk.org.ogsadai.DeliverToRequestStatus-ogsadai-7475e59f-5ab5-44ed-b744-955cf82a12b8.
     2013-01-24 11:34:51,803 WARN  event.LoggingActivityListener [pool-1-thread-4,warnExceptionAndChildren:343] #1359027291803:60# The pipe has been closed due to an error that occurred at the data producer.
+
+# --------------------------------------------------------------------------
+# Change logging to DEBUG.
+
+    sed '
+        s/^log4j.category.uk.org.ogsadai=.*/log4j.category.uk.org.ogsadai=DEBUG/
+        ' CATALINA_HOME=${PROJECT_BASE}/firethorn-ogsadai/webapp/target/apache-tomcat-maven-plugin/ogsadai-jersey-webapp/WEB-INF/classes/log4j.properties
+
+# --------------------------------------------------------------------------
+# Add the server URL to the OGSA-DAI context
+#
+# In WEB-INF/classes/ogsadai-context.xml uncomment the following property:
+#    <bean id="uk.org.ogsadai.WEB_SERVER_URL"  class="java.lang.String">
+#      <constructor-arg value="http://localhost:8080/dai"/>
+#    </bean>
+# and fill in the correct URL for the web application.
+#
+# Wijki page about it hee.
+# http://sourceforge.net/apps/trac/ogsa-dai/wiki/ConfigureDQPforOGSADAIJersey
+#
+        vi ${CATALINA_HOME?}/webapps/dai/WEB-INF/classes/ogsadai-context.xml
+
+
+        pushd ${CATALINA_HOME?}/webapps/dai/WEB-INF/classes/
+
+            cp ogsadai-context.xml ogsadai-context.bak
+            vi ogsadai-context.xml
+            diff ogsadai-context.xml ogsadai-context.bak
+
+67a68
+>     <!--
+69c70
+<         <constructor-arg value="http://localhost:8081/albert"/>
+---
+>         <constructor-arg value="http://myhost:9120/dai"/>
+70a72
+>     -->
+
+        popd
+
+# --------------------------------------------------------------------------
+# Looks like I have an old (unmodified) version of the DQP code.
+# Need to re-visit the build process to make sure I get the right version ....
+
+
+
 
 
