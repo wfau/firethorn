@@ -77,7 +77,7 @@ extends SimpleQueryTestBase
      * Multiple catalog, TWOMASS and UKIDSSDR1, using JDBC direct.
      *
      */
-    //@Test
+    @Test
     public void test001()
     throws Exception
         {
