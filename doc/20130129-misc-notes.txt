@@ -1,0 +1,104 @@
+
+
+#
+# Old TAPFactory code ..
+/var/local/projects/edinburgh/ogsa-dai/ogsa-dai-code/sandbox/astrodata/TAPFactory/src/uk/org/ogsadai/astro/server/CreateTAPServerFederation.java
+
+        //
+        // create a generic resource for each of the TAP servers 
+        List<String> names = new ArrayList<String>();
+        CreateGenericResource create = new CreateGenericResource();
+        for (TAPServerConfig config : properties)
+            {
+            names.add(config.getName());
+            System.out.println("     " + config);
+            create.addConfiguration(
+                Arrays.asList(
+                    TAP_URL_KEY + "=" + config.getTAPEndpoint(),
+                    TAP_METADATA_URL_KEY + "=" + config.getMetadataEndpoint()
+                    )
+                );
+            }
+
+        ....
+        
+        //
+        // create a DQP resource for the TAP servers
+        CharArrayWriter writer = new CharArrayWriter();
+        writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        writer.write("<DQPResourceConfig>\n");
+        writer.write("  <dataResources>\n");
+        Iterator<String> iterator = names.iterator();
+        for (ResourceID id : genericResources)
+            {
+            writer.write("    <resource url=\"");
+            writer.write(server.getDefaultBaseServicesURL().toString());
+            writer.write("\" resourceID=\"");
+            writer.write(id.toString());
+            writer.write("\" alias=\"");
+            writer.write(iterator.next());
+            writer.write("\" isLocal=\"true\"/>\n");
+            }
+        writer.write("  </dataResources>\n");
+        writer.write("</DQPResourceConfig>");
+        writer.close();
+
+        PipelineWorkflow dqpWorkflow = new PipelineWorkflow();
+        CreateDQPResource createDQP = new CreateDQPResource();
+        createDQP.addConfiguration(new CharArrayReader(writer.toCharArray()));
+        DeliverToRequestStatus deliverdqp = new DeliverToRequestStatus();
+        deliverdqp.connectInput(createDQP.getResultOutput());
+        dqpWorkflow.add(createDQP);
+        dqpWorkflow.add(deliverdqp);
+
+        drer.execute(dqpWorkflow, RequestExecutionType.SYNCHRONOUS);
+
+        ResourceID dqpResource = createDQP.nextResult();
+        return dqpResource;
+
+#
+# New DQP code .. configure DQP federation using Spring.
+# Suggests we could do it programatically ?
+
+    # Create a new federation for each workspace ?
+    # Depends on how much they 'cost'.
+
+    # Do we need to update whenever a new table is added ?
+    # Probably not, if we are handling all of the resolving ourselves.
+
+
+    #
+    # Default template for DQP resource
+    # /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-code/sandbox/dqp/server/server-config/resourceTemplates/uk.org.ogsadai.DQP_RESOURCE_TEMPLATE
+
+        uk.org.ogsadai.GetAvailableTables=uk.org.ogsadai.GetAvailableTablesDQP
+        uk.org.ogsadai.ExtractTableSchema=uk.org.ogsadai.ExtractTableSchemaDQP
+        uk.org.ogsadai.SQLQuery=uk.org.ogsadai.SQLQueryDQP
+     
+    #
+    # Create resource activity.
+    # /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-code/sandbox/dqp/server/src/main/java/uk/org/ogsadai/activity/dqp/CreateDQPResourceActivity.java
+
+
+
+
+#
+# Interesting things in Derby  activities. 
+
+
+            import java.sql.PreparedStatement;
+            import uk.org.ogsadai.activity.sql.SQLUtilities;
+
+            final String sql = SQLUtilities.createInsertStatementSQL(tableName, metadata);
+            PreparedStatement statement = connection.prepareStatement(sql);
+
+
+
+
+
+
+
+/var/local/projects/edinburgh/ogsa-dai/ogsa-dai-code/ogsa-dai/trunk/extensions/astro/server/src/main/java/uk/org/ogsadai/dqp/firethorn
+
+
+
