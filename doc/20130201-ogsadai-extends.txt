@@ -1,0 +1,255 @@
+
+#
+# The custom build instructions don't include the astro extensions.
+# http://redmine.roe.ac.uk/projects/waae/wiki/AmyKrauseBlog  
+
+    #
+    # Astro extensions.
+
+    OGSADAI_ROOT=/var/local/projects/edinburgh/ogsa-dai
+    OGSADAI_CODE=${OGSADAI_ROOT?}/ogsa-dai-code
+    OGSADAI_ASTRO=${OGSADAI_CODE?}/ogsa-dai/trunk/extensions/astro
+
+    #
+    # Generic TAP client related things
+
+        An activity that executes an ADQL query against a TAP service. It
+        ${OGSADAI_ASTRO?}/client/src/main/java/uk/org/ogsadai/client/toolkit/activities/astro/ADQLQuery.java
+
+        An activity that creates a generic data resource based upon a resource template available on the server.
+        ${OGSADAI_ASTRO?}/client/src/main/java/uk/org/ogsadai/client/toolkit/activities/astro/CreateGenericResource.java
+
+        An activity that executes a join of two ordered datasets where the join condition is a range
+        ${OGSADAI_ASTRO?}/client/src/main/java/uk/org/ogsadai/client/toolkit/activities/astro/TupleSweepProduct.java
+
+        Simple command line client for executing ADQL queries and printing out the results.
+        ${OGSADAI_ASTRO?}/client/src/main/java/uk/org/ogsadai/client/toolkit/astro/TAPClient.java
+
+    #
+    # Firethorn metadata service interfaces (copied from the firethorn code base).
+
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/metadata/AttributeService.java
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/metadata/StatisticsService.java
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/metadata/TableMapping.java
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/metadata/TableMappingService.java
+
+
+    #
+    # Generic TAP server related things
+
+        Utility methods for use by TAP activities.
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/activity/astro/util/TupleUtilities.java
+
+        Utility that maps VOTable types to OGSA-DAI types. 
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/activity/astro/votable/StarTableTypeToTupleTypeMapper.java
+
+        VOTable column meta data to OGSA-DAI column meta data mapping.
+        Conversions are done with the help of <code>uk.ac.starlink.table.StarTable</code>.
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/activity/astro/votable/VOTableColumnMetadata.java
+
+        VOTable meta data to OGSA-DAI meta data mapping.
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/activity/astro/votable/VOTableMetaData.java
+
+    #
+    # Generic Derby/SQL related things
+
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/activity/derby/DerbyBulkLoad.java
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/activity/derby/DerbyJoinActivity.java
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/activity/derby/DerbyUtilities.java
+
+        Builds activities for operator INNER THETA JOIN. Creates a DerbyJoin activity and handles the renaming of the columns
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/dqp/execute/workflow/DerbyJoinBuilder.java
+
+    #
+    # Firethorn metadata service implementation.
+
+
+        Collects DQP statistics from a JDBC connection to a database.
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/dqp/firethorn/MetadataCollector.java
+
+        Cardinality statistics for a set of attributes which fetches the statistics from a statistics service.
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/dqp/firethorn/MetadataServiceCardinalityStatistics.java
+
+        MetadataService based DataDictionary
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/dqp/firethorn/MetadataServiceDataDictionary.java
+
+        DQPFederation implementation that creates a new MetadataService DataDictionary based on RequestDetails.
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/dqp/firethorn/MetadataServiceDQPFederation.java
+
+        Creates AttributeService, TableMappingService and StatisticsService based on RequestDetails.
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/dqp/firethorn/MetadataServiceFactory.java
+
+        TableSchema implementation that retrieves the logical and physical table metadata on demand and caches it.
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/dqp/firethorn/MetadataServiceTableSchema.java
+
+
+        Executes an asynchronous ADQL query at a TAP service.
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/dqp/firethorn/TAPService.java
+        Uses TAPService to generate database statistics.
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/dqp/firethorn/TAPMetadataCollector.java
+
+        Simple implementation (not spring confgurable ?)
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/dqp/firethorn/TestMetadataService.java
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/dqp/firethorn/TestMetadataServiceFactory.java
+
+        Simple implementation of the Firethorn metadata service interface.
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/dqp/firethorn/SimpleTableMapping.java
+
+        HashMap based cache.
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/dqp/firethorn/CachedMetadataService.java
+        ${OGSADAI_ASTRO?}/server/src/main/java/uk/org/ogsadai/dqp/firethorn/CachedMetadataServiceFactory.java
+
+
+#
+# See if we can add our astro extensions 
+# Try adding our extensions to the binary build.
+
+    vi ${OGSADAI_CODE?}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/build.xml
+
+    +   <deployModule name="extensions/astro/client"/>
+    +   <deployModule name="extensions/astro/server"/>
+
+#
+# Nope, not that simple.
+
+    BUILD FAILED
+    /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-code/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/build.xml:160: Basedir /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-code/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/src/extensions/astro/client does not exist
+
+#
+# Changes need to be in the original source for that build file.
+
+    vi ${OGSADAI_CODE?}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/source-ant/build.xml
+
+    +   <!--+ ZRQ 20130201 +-->
+    +   <deployModule name="extensions/astro/client"/>
+    +   <deployModule name="extensions/astro/server"/>
+
+#
+# Need to copy the module source into place.
+
+    vi ${OGSADAI_CODE?}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build.xml
+
+    +   <!--+ ZRQ 20130201 +-->
+    +   <copyModule path="extensions/astro"/>
+
+
+#
+# Astro extensions are missing build files.
+
+    #
+    # Create a build.xml file for the astro client extensions.
+    pushd src/extensions/astro/client
+
+        cp ../../basic/client/build.xml .
+        cp ../../basic/client/ant.properties .
+
+        sed -i '
+            s/OGSA-DAI basic extensions/OGSA-DAI astro extensions/
+            ' ant.properties
+
+        sed -i '
+            s/name="basic-client"/name="astro-client"/
+            ' build.xml
+
+        sed -i '
+            s/OGSA-DAI basic extensions/OGSA-DAI astro extensions/
+            ' build.xml
+
+    popd
+
+#
+# Compile process reports missing or unknown classes.
+
+    compile:
+        [javac] Compiling 4 source files to /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-code/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/src/extensions/astro/client/build/bin
+        [javac] /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-code/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/src/extensions/astro/client/src/main/java/uk/org/ogsadai/client/toolkit/astro/TAPClient.java:10: package org.apache.http does not exist
+        [javac] import org.apache.http.HttpResponse;
+
+        [javac] /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-code/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/src/extensions/astro/client/src/main/java/uk/org/ogsadai/client/toolkit/astro/TAPClient.java:18: package uk.ac.starlink.table does not exist
+        [javac] import uk.ac.starlink.table.ColumnInfo;
+
+#
+# Find each of the missing 3rd party dependencies 
+
+    grep -r 'org.apache.http.HttpResponse' ${OGSADAI_CODE?}/third-party/dependencies 
+        Binary file /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-code/third-party/dependencies/org/apache/hc/4.0.1/httpcore-4.0.1.jar matches
+
+    grep -r 'uk.ac.starlink.table.ColumnInfo' ${OGSADAI_CODE?}/third-party/dependencies 
+        Binary file /var/local/projects/edinburgh/ogsa-dai/ogsa-dai-code/third-party/dependencies/stil/2.8/stil.jar matches
+
+#
+# Need to add the 3rd party dependencies to build files.
+# Not able to automate this, needs to be added to the original source.
+
+    pushd src/extensions/astro/client
+
+        vi ant.properties
+
+            +   # ZRQ 20130201
+            +   apachehc.lib.dir=${dependencies.dir}/org/apache/hc/4.0.1
+            +   starlink.lib.dir=${dependencies.dir}/stil/2.8/
+
+        vi build.xml
+
+                ....
+                <path id="module.build.classpath">
+
+                    ....
+            +       <!--+ ZRQ 20130201 +-->
+            +       <fileset dir="${apachehc.lib.dir}">
+            +           <include name="**/*.jar"/>
+            +       </fileset>
+            +       <fileset dir="${starlink.lib.dir}">
+            +           <include name="**/*.jar"/>
+            +       </fileset>
+
+                </path>
+                ....
+
+    popd
+
+    pushd src/extensions/astro/server
+
+        vi ant.properties
+
+            +   # ZRQ 20130201
+            +   apachehc.lib.dir=${dependencies.dir}/org/apache/hc/4.0.1
+            +   starlink.lib.dir=${dependencies.dir}/stil/2.8/
+            +   ogsadai.dqp.server.lib.dir=../../../extensions/dqp/server/build/lib/
+
+        vi build.xml
+
+                ....
+                <path id="module.build.classpath">
+
+                    ....
+            +       <!--+ ZRQ 20130201 +-->
+            +       <fileset dir="${apachehc.lib.dir}">
+            +           <include name="**/*.jar"/>
+            +       </fileset>
+            +       <fileset dir="${starlink.lib.dir}">
+            +           <include name="**/*.jar"/>
+            +       </fileset>
+
+                </path>
+                ....
+
+
+    popd
+
+#
+# Still missing some internal dependencies 
+
+        grep -r ' class CardinalityUtils' .
+        grep -r ' interface LogicalSchema' .
+
+        ./sandbox/dqp/server/src/main/java/uk/org/ogsadai/dqp/lqp/cardinality/CardinalityUtils.java:public class CardinalityUtils
+        ./sandbox/dqp/server/src/main/java/uk/org/ogsadai/dqp/common/LogicalSchema.java:public interface LogicalSchema
+
+#
+# Results ..
+
+
+
+
+

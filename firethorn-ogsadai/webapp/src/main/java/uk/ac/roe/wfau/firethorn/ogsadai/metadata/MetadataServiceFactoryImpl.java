@@ -20,12 +20,12 @@ package uk.ac.roe.wfau.firethorn.ogsadai.metadata ;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.org.ogsadai.dqp.firethorn.MetadataServiceFactory;
-
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.AttributeService;
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.StatisticsService;
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMappingService;
+
 import uk.org.ogsadai.dqp.common.RequestDetails;
+import uk.org.ogsadai.dqp.firethorn.MetadataServiceFactory;
 
 class MetadataServiceFactoryImpl
 implements MetadataServiceFactory
@@ -56,7 +56,7 @@ implements MetadataServiceFactory
      *            request details
      * @return attribute service for the request
      */
-    AttributeService getAttributeService(RequestDetails details)
+    public AttributeService getAttributeService(RequestDetails details)
         {
         log.debug("getAttributeService() [" + details + "]");
         return null ;
@@ -69,7 +69,7 @@ implements MetadataServiceFactory
      *            request details
      * @return table mapping service for the request
      */
-    TableMappingService getTableMappingService(RequestDetails details)
+    public TableMappingService getTableMappingService(RequestDetails details)
         {
         log.debug("getTableMappingService() [" + details + "]");
         return null ;
@@ -82,7 +82,7 @@ implements MetadataServiceFactory
      *            request details
      * @return statistics service for the request
      */
-    StatisticsService getStatisticsService(RequestDetails details)
+    public StatisticsService getStatisticsService(RequestDetails details)
         {
         log.debug("getStatisticsService() [" + details + "]");
         return null ;

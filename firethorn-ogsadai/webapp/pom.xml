@@ -73,7 +73,7 @@
         </dependency>
 
         <!--+
-            | The client jar (compile only).
+            | The DQP server jar (compile only).
             +-->
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
@@ -82,6 +82,14 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-astro-server</artifactId>
+            <version>${ogsadai.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+
 
         <!--+
             | Our metadata service client.

@@ -129,7 +129,7 @@ extends SimpleQueryTestBase
         {
         execute(
             endpoint,
-            "roespan",
+            "uber",
             " SELECT" +
             "    twomass.ra AS tmra," +
             "    ukidss.ra  AS ukra,"  +

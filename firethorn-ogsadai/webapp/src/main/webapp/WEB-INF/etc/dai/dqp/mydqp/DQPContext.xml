@@ -100,7 +100,7 @@
     <!--+
         | Jersey evaluation node.
         +-->
-    <bean class="uk.org.ogsadai.dqp.presentation.jersey.JerseyEvaluationNode" id="uri:mydqpeval">
+    <bean class="uk.org.ogsadai.dqp.presentation.jersey.JerseyEvaluationNode" id="mydqpeval">
         <constructor-arg name="url"     value="http://localhost:8081/albert/services"/>
         <constructor-arg name="drerID"  value="DataRequestExecutionResource"/>
         <constructor-arg name="dsos"    value="dataSources"/>
@@ -111,9 +111,9 @@
     <!--+
         | TWOMASS data node.
         +-->
-    <bean id="uri:twomass" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+    <bean id="twomass" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
         <constructor-arg name="resourceID"     value="twomass"/>
-        <constructor-arg name="evaluationNode" ref="uri:mydqpeval"/>
+        <constructor-arg name="evaluationNode" ref="mydqpeval"/>
         <property name="operatorSupport"       ref="defaultFeatureSupport"/>
         <property name="expressionSupport"     ref="defaultFeatureSupport"/>
         <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
@@ -122,9 +122,9 @@
     <!--+
         | UKIDSS data node.
         +-->
-    <bean id="uri:ukidss" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+    <bean id="ukidss" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
         <constructor-arg name="resourceID"     value="ukidss"/>
-        <constructor-arg name="evaluationNode" ref="uri:mydqpeval"/>
+        <constructor-arg name="evaluationNode" ref="mydqpeval"/>
         <property name="operatorSupport"       ref="defaultFeatureSupport"/>
         <property name="expressionSupport"     ref="defaultFeatureSupport"/>
         <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
@@ -144,18 +144,18 @@
 
         <property name="dataNodesMap">
             <map>
-                <entry key="urn:twomass">
-                    <ref bean="uri:twomass"/>
+                <entry key="twomass">
+                    <ref bean="twomass"/>
                 </entry>
-                <entry key="urn:ukidss">
-                    <ref bean="uri:ukidss"/>
+                <entry key="ukidss">
+                    <ref bean="ukidss"/>
                 </entry>
             </map>
         </property>
 
         <property name="evaluationNodes">
             <list>
-                <ref bean="uri:mydqpeval"/>
+                <ref bean="mydqpeval"/>
             </list>
         </property>
 
