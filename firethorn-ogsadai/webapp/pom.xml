@@ -73,6 +73,17 @@
         </dependency>
 
         <!--+
+            | The client jar (compile only).
+            +-->
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-dqp-server</artifactId>
+            <version>${ogsadai.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <!--+
             | Our metadata service client.
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -89,6 +100,15 @@
         <dependency>
             <groupId>net.sourceforge.jtds</groupId>
             <artifactId>jtds</artifactId>
+        </dependency>
+
+        <!--+
+            | Apache commons logging, conflicts with the version used in Mallow.
+            +-->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.0.4</version>
         </dependency>
 
     </dependencies>

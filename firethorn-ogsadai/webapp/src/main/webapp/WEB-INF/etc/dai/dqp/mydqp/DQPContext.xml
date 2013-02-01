@@ -16,10 +16,10 @@
      or replace with another implementation class.
    -->
     <bean class="uk.org.ogsadai.dqp.presentation.common.DefaultFeatureSupportHelper" id="defaultFeatureSupport"/>
+
     <!--
        This specifies the DQP federation. 
        id="federation"
-    -->
     <bean id="federation" class="uk.org.ogsadai.dqp.presentation.common.SimpleDQPFederation">
         <property name="configuration">
             <bean class="uk.org.ogsadai.dqp.presentation.common.SimpleDQPConfiguration" init-method="validate">
@@ -50,14 +50,7 @@
         </property>
         <property name="fetchPhysicalSchema" value="true"/>
     </bean>
-
-    <bean class="uk.org.ogsadai.dqp.presentation.jersey.JerseyEvaluationNode" id="mydqpeval">
-        <constructor-arg name="url" value="http://localhost:8081/albert/services"/>
-        <constructor-arg name="drerID" value="DataRequestExecutionResource"/>
-        <constructor-arg name="dsos" value="dataSources"/>
-        <constructor-arg name="dsis" value="dataSinks"/>
-        <constructor-arg name="isLocal" type="boolean" value="true"/>
-    </bean>
+    -->
 
     <!--
        Test version using mocks.
@@ -65,7 +58,7 @@
     <bean class="uk.org.ogsadai.dqp.firethorn.MetadataServiceDQPFederation" id="federation">
 
         <property name="metadataServiceFactory">
-            <bean class="enter your metadata service here"/>
+            <bean class="uk.ac.roe.wfau.firethorn.ogsadai.MetadataServiceFactoryImpl"/>
         </property>
 
             | Specifies the data nodes in this federation.
@@ -104,20 +97,68 @@
     </bean>
     -->
 
-    <bean id="twomass" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
-        <constructor-arg name="resourceID" value="twomass"/>
-        <constructor-arg name="evaluationNode" ref="mydqpeval"/>
-        <property name="operatorSupport" ref="defaultFeatureSupport"/>
-        <property name="expressionSupport" ref="defaultFeatureSupport"/>
+    <!--+
+        | Jersey evaluation node.
+        +-->
+    <bean class="uk.org.ogsadai.dqp.presentation.jersey.JerseyEvaluationNode" id="uri:mydqpeval">
+        <constructor-arg name="url"     value="http://localhost:8081/albert/services"/>
+        <constructor-arg name="drerID"  value="DataRequestExecutionResource"/>
+        <constructor-arg name="dsos"    value="dataSources"/>
+        <constructor-arg name="dsis"    value="dataSinks"/>
+        <constructor-arg name="isLocal" type="boolean" value="true"/>
+    </bean>
+
+    <!--+
+        | TWOMASS data node.
+        +-->
+    <bean id="uri:twomass" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+        <constructor-arg name="resourceID"     value="twomass"/>
+        <constructor-arg name="evaluationNode" ref="uri:mydqpeval"/>
+        <property name="operatorSupport"       ref="defaultFeatureSupport"/>
+        <property name="expressionSupport"     ref="defaultFeatureSupport"/>
         <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
     </bean>
 
-    <bean id="ukidss" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
-        <constructor-arg name="resourceID" value="ukidss"/>
-        <constructor-arg name="evaluationNode" ref="mydqpeval"/>
-        <property name="operatorSupport" ref="defaultFeatureSupport"/>
-        <property name="expressionSupport" ref="defaultFeatureSupport"/>
+    <!--+
+        | UKIDSS data node.
+        +-->
+    <bean id="uri:ukidss" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+        <constructor-arg name="resourceID"     value="ukidss"/>
+        <constructor-arg name="evaluationNode" ref="uri:mydqpeval"/>
+        <property name="operatorSupport"       ref="defaultFeatureSupport"/>
+        <property name="expressionSupport"     ref="defaultFeatureSupport"/>
         <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
+    </bean>
+
+    <!--+
+        | DQP federation.
+        +-->
+    <bean id="federation" 
+        class="uk.org.ogsadai.dqp.firethorn.MetadataServiceDQPFederation">
+
+        <property name="metadataServiceFactory">
+            <bean class="uk.ac.roe.wfau.firethorn.ogsadai.metadata.MetadataServiceFactoryImpl">
+                <constructor-arg name="name" value="Roxanne"/>
+            </bean>
+        </property>
+
+        <property name="dataNodesMap">
+            <map>
+                <entry key="urn:twomass">
+                    <ref bean="uri:twomass"/>
+                </entry>
+                <entry key="urn:ukidss">
+                    <ref bean="uri:ukidss"/>
+                </entry>
+            </map>
+        </property>
+
+        <property name="evaluationNodes">
+            <list>
+                <ref bean="uri:mydqpeval"/>
+            </list>
+        </property>
+
     </bean>
 
 </beans>

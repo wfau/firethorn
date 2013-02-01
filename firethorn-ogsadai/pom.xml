@@ -56,7 +56,7 @@
         +-->
     <modules>
         <module>webapp</module>
-        <module>activity/client</module>
+        <!--module>activity/client</module-->
         <!--module>metadata</module-->
     </modules>
     
