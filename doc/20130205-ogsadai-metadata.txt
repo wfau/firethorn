@@ -177,6 +177,20 @@ EOF
 
             mvn install:install-file  \
                 -D groupId=uk.org.ogsadai  \
+                -D artifactId=ogsadai-server \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D file=src/core/server/build/lib/ogsadai-server-4.2.jar
+
+            mvn install:install-file  \
+                -D groupId=uk.org.ogsadai  \
+                -D artifactId=ogsadai-clientserver \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D file=src/core/clientserver/build/lib/ogsadai-clientserver-4.2.jar
+
+            mvn install:install-file  \
+                -D groupId=uk.org.ogsadai  \
                 -D artifactId=ogsadai-dqp-server \
                 -D version=4.2 \
                 -D packaging=jar \
@@ -298,6 +312,7 @@ EOF
         grep -r 'interface ActivityInstanceName' .
 
             ./build/ogsadai-4.2-jersey-1.10-src/src/core/clientserver/src/main/java/uk/org/ogsadai/activity/ActivityInstanceName.java:public class ActivityInstanceName extends ID
+
 
 # --------------------------------------------------------------------------
 # Add the jars to the Maven dependencies and re-build our Eclipse project file.
@@ -507,8 +522,7 @@ EOF
     </property>
 
     #
-    # Just commenting out the BatchTableScanBuilder doesn't work.
-
+    # Commenting out the BatchTableScanBuilder avoids this problem ....
     <property name="operatorBuilders">
         <map>
             ....
@@ -525,8 +539,7 @@ EOF
     </property>
 
     #
-    # DQP is tries to find a filteredTableScan builder.
-
+    # But now DQP is trying to find a filteredTableScan builder.
 
     Caused by: uk.org.ogsadai.activity.ActivityProcessingException: A problem has occured during activity processing.
         at uk.org.ogsadai.dqp.execute.Coordinator.execute(Coordinator.java:260)
@@ -546,5 +559,47 @@ EOF
     Caused by: java.lang.Exception: Configuration exception: No builder defined for operator uk.org.ogsadai.dqp.lqp.operators.TableScanOperator and implementation annotation 'filteredTableScan'.
         ... 21 more
 
+    #
+    # Comparing DQPCompilerConfiguration.xml between the release branch and sandbox version we are using ...
+    # In the sandbox version FILTERED_TABLE_SCAN is commented out.
+    
+        <entry key="TABLE_SCAN">
+            <map>
+	            <entry key="DEFAULT"> <bean class="uk.org.ogsadai.dqp.execute.workflow.TableScanBuilder"/></entry>
+                <entry key="filteredTableScan"> <bean class="uk.org.ogsadai.dqp.execute.workflow.BatchTableScanBuilder"/></entry>
+            </map>
+        </entry>
+        <!-- 
+        <entry key="FILTERED_TABLE_SCAN">
+            <map><entry key="DEFAULT"> <bean class="uk.org.ogsadai.dqp.execute.workflow.FilteredTableScanBuilder"/></entry></map>
+        </entry>
+         -->
+    
+    #
+    # In the release version, FilteredTableScanBuilder is present, BatchTableScanBuilder isn't
 
+        <entry key="TABLE_SCAN">
+            <map><entry key="DEFAULT"> <bean class="uk.org.ogsadai.dqp.execute.workflow.TableScanBuilder"/></entry></map>
+        </entry>
+        <entry key="FILTERED_TABLE_SCAN">
+            <map><entry key="DEFAULT"> <bean class="uk.org.ogsadai.dqp.execute.workflow.FilteredTableScanBuilder"/></entry></map>
+        </entry>
+
+    #
+    # So try putting FilteredTableScanBuilder back in ...
+    
+        <entry key="TABLE_SCAN">
+            <map>
+	            <entry key="DEFAULT"> <bean class="uk.org.ogsadai.dqp.execute.workflow.TableScanBuilder"/></entry>
+                <!--entry key="filteredTableScan"> <bean class="uk.org.ogsadai.dqp.execute.workflow.BatchTableScanBuilder"/></entry-->
+            </map>
+        </entry>
+        <entry key="FILTERED_TABLE_SCAN">
+            <map><entry key="DEFAULT"> <bean class="uk.org.ogsadai.dqp.execute.workflow.FilteredTableScanBuilder"/></entry></map>
+        </entry>
+
+    #
+    # Still not right ...
+
+    Caused by: java.lang.Exception: Configuration exception: No builder defined for operator uk.org.ogsadai.dqp.lqp.operators.TableScanOperator and implementation annotation 'filteredTableScan'.
 

@@ -104,13 +104,13 @@ implements MetadataServiceFactory
             "masterObjID",
             TupleTypes._LONG,
             "table22",
-            false
+            true
             );        
         this.attrib.add(
             "slaveObjID",
             TupleTypes._LONG,
             "table22",
-            false
+            true
             );        
         this.attrib.add(
             "distanceMins",
