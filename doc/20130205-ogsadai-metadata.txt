@@ -1,0 +1,525 @@
+#-----------------------------------------------------------------------
+# Start with a clean copy of the code.
+#
+
+    OGSADAI_ROOT=/var/local/projects/edinburgh/ogsa-dai
+    OGSADAI_CODE=${OGSADAI_ROOT?}/ogsa-dai-code
+
+    mkdir ${OGSADAI_CODE?}
+    pushd ${OGSADAI_CODE?}
+
+        svn export http://svn.code.sf.net/p/ogsa-dai/code/ogsa-dai/trunk ogsa-dai/trunk
+
+        svn export http://svn.code.sf.net/p/ogsa-dai/code/sandbox/dqp/server sandbox/dqp/server
+
+        svn export http://svn.code.sf.net/p/ogsa-dai/code/third-party third-party
+        
+    popd
+
+#
+# Build the binary release.
+
+
+    pushd ${OGSADAI_CODE?}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey
+
+        #
+        # Add the astro extension.
+        #   <!--+ ZRQ 20130201 +-->
+        #   <copyModule path="extensions/astro"/>
+        sed -i '
+            /<target name="copyModules"/,/<\/target>/ {
+                /<echo message="\** DONE/i \
+            <!--+ ZRQ 20130201 +--> \
+            <copyModule path="extensions/astro"/> \
+            <!--+ ZRQ 20130201 +--> \
+            
+                }
+            ' build.xml
+
+        #   <!--+ ZRQ 20130201 +-->
+        #   <deployModule name="extensions/astro/client"/>
+        #   <deployModule name="extensions/astro/server"/>
+        #   <!--+ ZRQ 20130201 +-->
+        sed -i '
+            /<echo message="\** Deploying modules/,/<echo message="\** modules deployed/ {
+                /<echo message="\** modules deployed/i \
+                    <!--+ ZRQ 20130201 +--> \
+                    <deployModule name="extensions/astro/client"/> \
+                    <deployModule name="extensions/astro/server"/> \
+                    <!--+ ZRQ 20130201 +--> \
+                    
+                }
+            ' source-ant/build.xml
+
+        #
+        # Populate the source release.
+        ant -Ddependencies.dir=${OGSADAI_CODE?}/third-party/dependencies clean buildSourceRelease
+
+        #
+        # Add our customisations to the source code.
+        pushd build/ogsadai-4.2-jersey-1.10-src/
+
+            #
+            # Replace the DQP server code with the sandbox version.
+            pushd src/extensions/dqp
+
+                #
+                # Replace dqp/server with the sandbox version.
+                # Note - don't use a link, the Ant build assumes this directory as writeable. 
+                # 'ant clean' will recursively delete everything from the original.
+                rm -r server
+                cp -r ${OGSADAI_CODE?}/sandbox/dqp/server .
+
+                #
+                # Remove references to 'ogsa-dai/trunk' from 'server/ant.properties'
+                sed -i '
+                    s|/ogsa-dai/trunk/|/|g
+                    ' server/ant.properties
+
+            popd
+
+            #
+            # Create a build.xml file for the astro client extensions.
+            pushd src/extensions/astro/client
+
+                cp ../../basic/client/build.xml .
+                cp ../../basic/client/ant.properties .
+
+                sed -i '
+                    s/OGSA-DAI basic extensions/OGSA-DAI astro extensions/
+                    ' ant.properties
+
+                sed -i '
+                    s/name="basic-client"/name="astro-client"/
+                    ' build.xml
+
+                sed -i '
+                    s/OGSA-DAI basic extensions/OGSA-DAI astro extensions/
+                    ' build.xml
+
+cat >> ant.properties << EOF
+# ZRQ 20130201
+apachehc.lib.dir=\${dependencies.dir}/org/apache/hc/4.0.1
+starlink.lib.dir=\${dependencies.dir}/stil/2.8/
+EOF
+
+                sed -i '
+                /<path id="module.build.classpath">/,/<\/path>/ {
+                    /<\/path>/i \
+                        <!--+ ZRQ 20130201 +--> \
+                        <fileset dir="${apachehc.lib.dir}"> \
+                          <include name="**/*.jar"/> \
+                        </fileset> \
+                        <fileset dir="${starlink.lib.dir}"> \
+                          <include name="**/*.jar"/> \
+                        </fileset> \
+                        <!--+ ZRQ 20130201 +--> \
+                        
+                    }
+                ' build.xml
+
+            popd
+
+            #
+            # Create a build.xml file for the astro server extensions.
+            pushd src/extensions/astro/server
+
+                cp ../../basic/server/build.xml .
+                cp ../../basic/server/ant.properties .
+
+                sed -i '
+                    s/OGSA-DAI basic extensions/OGSA-DAI astro extensions/
+                    ' ant.properties
+
+                sed -i '
+                    s/name="basic-server"/name="astro-server"/
+                    ' build.xml
+
+                sed -i '
+                    s/OGSA-DAI basic extensions/OGSA-DAI astro extensions/
+                    ' build.xml
+
+cat >> ant.properties << EOF
+# ZRQ 20130201
+apachehc.lib.dir=\${dependencies.dir}/org/apache/hc/4.0.1
+starlink.lib.dir=\${dependencies.dir}/stil/2.8/
+EOF
+
+            sed -i '
+            /<path id="module.build.classpath">/,/<\/path>/ {
+                /<\/path>/i \
+                    <!--+ ZRQ 20130201 +--> \
+                    <fileset dir="${apachehc.lib.dir}"> \
+                      <include name="**/*.jar"/> \
+                    </fileset> \
+                    <fileset dir="${starlink.lib.dir}"> \
+                      <include name="**/*.jar"/> \
+                    </fileset> \
+                    <!--+ ZRQ 20130201 +--> \
+                    
+                }
+            ' build.xml
+
+            popd
+
+            #
+            # Build the binary release using the modified source.
+            ant -Ddependencies.dir=${OGSADAI_CODE?}/third-party/dependencies clean buildBinaryRelease
+
+            #
+            # Transfer the resulting war and jar files into our local Maven repository.
+            mvn install:install-file  \
+                -D groupId=uk.org.ogsadai  \
+                -D artifactId=ogsadai-jersey-webapp \
+                -D version=4.2 \
+                -D packaging=war \
+                -D file=build/ogsadai-4.2-jersey-1.10-bin/dai.war
+
+            mvn install:install-file  \
+                -D groupId=uk.org.ogsadai  \
+                -D artifactId=ogsadai-dqp-server \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D file=src/extensions/dqp/server/build/lib/ogsadai-dqp-server-4.2.jar
+
+            mvn install:install-file  \
+                -D groupId=uk.org.ogsadai  \
+                -D artifactId=ogsadai-astro-client \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D file=src/extensions/astro/client/build/lib/ogsadai-astro-client-4.2.jar
+
+            mvn install:install-file  \
+                -D groupId=uk.org.ogsadai  \
+                -D artifactId=ogsadai-astro-server \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D file=src/extensions/astro/server/build/lib/ogsadai-astro-server-4.2.jar
+
+        popd
+    popd
+
+
+# --------------------------------------------------------------------------
+# Run the webapp in Tomcat.
+#
+
+    PROJECT_BASE=/var/local/projects/edinburgh/wfau/firethorn/devel
+    pushd ${PROJECT_BASE?}/firethorn-ogsadai/webapp
+
+        #
+        # Create a clean war file.
+        mvn clean compile war:war
+
+        #
+        # Set the database passwords.
+        sed -i '
+            s/{SQL-USER}/'$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.user=\(.*\)/\1/p')'/
+            s/{SQL-PASS}/'$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.pass=\(.*\)/\1/p')'/
+            ' target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/logins.txt
+
+        #
+        # Run the webapp in Tomcat
+        mvn tomcat6:run
+
+    popd
+
+# --------------------------------------------------------------------------
+# Run the test queries in a separate terminal.
+#
+
+    PROJECT_BASE=/var/local/projects/edinburgh/wfau/firethorn/devel
+    pushd ${PROJECT_BASE?}/firethorn-ogsadai/activity/firethorn
+
+        mvn -D test=DqpQueryTestCase test
+
+    popd
+
+# --------------------------------------------------------------------------
+# Create an Eclipse project.
+#
+
+    PROJECT_BASE=/var/local/projects/edinburgh/wfau/firethorn/devel
+    pushd ${PROJECT_BASE?}/firethorn-ogsadai/webapp
+
+        mvn eclipse:eclipse
+
+    popd
+
+# --------------------------------------------------------------------------
+# MetadataServiceFactoryImpl refers to or uses additioanl ogsadai classes.
+# To include them in the Eclipse build we need to figure out which jars they are in.
+#
+
+    OGSADAI_ROOT=/var/local/projects/edinburgh/ogsa-dai
+    OGSADAI_CODE=${OGSADAI_ROOT?}/ogsa-dai-code
+    pushd ${OGSADAI_CODE?}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey
+
+        grep -r 'interface ResourceID' .
+        grep -r 'class ResourceID' .
+
+            ./build/ogsadai-4.2-jersey-1.10-src/src/core/clientserver/src/main/java/uk/org/ogsadai/resource/ResourceID.java:public class ResourceID extends ID 
+            ./build/ogsadai-4.2-jersey-1.10-src/src/core/server/src/main/java/uk/org/ogsadai/resource/ResourceIDAlreadyAssignedException.java:public class ResourceIDAlreadyAssignedException extends DAIException
+
+        ls build/ogsadai-4.2-jersey-1.10-src/src/core/clientserver/
+        ls build/ogsadai-4.2-jersey-1.10-src/src/core/clientserver/build
+        ls build/ogsadai-4.2-jersey-1.10-src/src/core/clientserver/build/lib/
+
+            ogsadai-clientserver-4.2.jar
+
+        grep -r 'interface RequestDetails' .
+
+            ./build/ogsadai-4.2-jersey-1.10-src/src/extensions/dqp/server/src/main/java/uk/org/ogsadai/dqp/common/RequestDetails.java:public interface RequestDetails
+
+        ls build/ogsadai-4.2-jersey-1.10-src/src/extensions/dqp/server/
+        ls build/ogsadai-4.2-jersey-1.10-src/src/extensions/dqp/server/build/
+        ls build/ogsadai-4.2-jersey-1.10-src/src/extensions/dqp/server/build/lib/
+
+            ogsadai-dqp-server-4.2.jar
+
+        grep -r 'interface RequestResource' .
+
+            ./build/ogsadai-4.2-jersey-1.10-src/src/core/client/src/main/java/uk/org/ogsadai/client/toolkit/RequestResource.java:public interface RequestResource extends Resource
+            ./build/ogsadai-4.2-jersey-1.10-src/src/core/server/src/main/java/uk/org/ogsadai/resource/request/RequestResourceState.java:public interface RequestResourceState extends ResourceState 
+            ./build/ogsadai-4.2-jersey-1.10-src/src/core/server/src/main/java/uk/org/ogsadai/resource/request/RequestResource.java:public interface RequestResource extends Resource 
+
+         ls build/ogsadai-4.2-jersey-1.10-src/src/core/server
+         ls build/ogsadai-4.2-jersey-1.10-src/src/core/server/build/
+         ls build/ogsadai-4.2-jersey-1.10-src/src/core/server/build/lib/
+
+            ogsadai-server-4.2.jar
+
+        grep -r 'interface SecurityContext' .
+
+            ./build/ogsadai-4.2-jersey-1.10-src/src/core/server/src/main/java/uk/org/ogsadai/authorization/SecurityContext.java:public interface SecurityContext 
+            ./build/ogsadai-4.2-jersey-1.10-src/src/presentation/jersey/server/src/main/java/uk/org/ogsadai/service/rest/authorisation/SecurityContextFactory.java:public interface SecurityContextFactory 
+
+        grep -r 'interface ActivityInstanceName' .
+
+            ./build/ogsadai-4.2-jersey-1.10-src/src/core/clientserver/src/main/java/uk/org/ogsadai/activity/ActivityInstanceName.java:public class ActivityInstanceName extends ID
+
+# --------------------------------------------------------------------------
+# Add the jars to the Maven dependencies and re-build our Eclipse project file.
+#
+
+    PROJECT_BASE=/var/local/projects/edinburgh/wfau/firethorn/devel
+    pushd ${PROJECT_BASE?}/firethorn-ogsadai/webapp
+
+        vi project.xml
+        
+            <!--+
+                | OGSA-DAI jars used to compile code for our components.
+                +-->
+            <dependency>
+                <groupId>uk.org.ogsadai</groupId>
+                <artifactId>ogsadai-clientserver</artifactId>
+                <version>${ogsadai.version}</version>
+                <type>jar</type>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>uk.org.ogsadai</groupId>
+                <artifactId>ogsadai-server</artifactId>
+                <version>${ogsadai.version}</version>
+                <type>jar</type>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>uk.org.ogsadai</groupId>
+                <artifactId>ogsadai-dqp-server</artifactId>
+                <version>${ogsadai.version}</version>
+                <type>jar</type>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>uk.org.ogsadai</groupId>
+                <artifactId>ogsadai-astro-server</artifactId>
+                <version>${ogsadai.version}</version>
+                <type>jar</type>
+                <scope>compile</scope>
+            </dependency>
+
+        mvn eclipse:eclipse
+
+    popd
+
+# --------------------------------------------------------------------------
+# NullPointerException caused by missing DataNode
+#
+
+    2013-02-05 16:03:49,897 DEBUG metadata.AttributeServiceMock [pool-1-thread-3,get:99] get(String) [table22]
+    2013-02-05 16:03:49,898 DEBUG metadata.TableMappingServiceMock [pool-1-thread-3,get:91] get(String) [table22]
+    2013-02-05 16:03:49,899 DEBUG lqp.HeadingImpl [pool-1-thread-3,debug:84] ATTRIBUTE NOT FOUND match.masterObjID:UNKNOWN NOT IN [ twomass.ra:DOUBLE  twomass.dec:DOUBLE  twomass.pts_key:LONG ]
+    2013-02-05 16:03:49,899 DEBUG lqp.HeadingImpl [pool-1-thread-3,debug:84] ATTRIBUTE NOT FOUND match.masterObjID:UNKNOWN NOT IN [ ukidss.sourceID:LONG  ukidss.ra:DOUBLE  ukidss.dec:DOUBLE ]
+    2013-02-05 16:03:49,900 DEBUG lqp.HeadingImpl [pool-1-thread-3,debug:84] ATTRIBUTE NOT FOUND ukidss.sourceID:UNKNOWN NOT IN [ match.distanceMins:DOUBLE  match.slaveObjID:LONG  match.masterObjID:LONG ]
+    2013-02-05 16:03:49,900 DEBUG lqp.HeadingImpl [pool-1-thread-3,debug:84] ATTRIBUTE NOT FOUND match.slaveObjID:UNKNOWN NOT IN [ twomass.ra:DOUBLE  twomass.dec:DOUBLE  twomass.pts_key:LONG ]
+    2013-02-05 16:03:49,901 DEBUG lqp.HeadingImpl [pool-1-thread-3,debug:84] ATTRIBUTE NOT FOUND match.slaveObjID:UNKNOWN NOT IN [ ukidss.sourceID:LONG  ukidss.ra:DOUBLE  ukidss.dec:DOUBLE ]
+    2013-02-05 16:03:49,901 DEBUG lqp.HeadingImpl [pool-1-thread-3,debug:84] ATTRIBUTE NOT FOUND twomass.pts_key:UNKNOWN NOT IN [ match.distanceMins:DOUBLE  match.slaveObjID:LONG  match.masterObjID:LONG ]
+    java.lang.NullPointerException
+	    at uk.org.ogsadai.dqp.lqp.QueryGraph.getEvaluationNode(QueryGraph.java:817)
+	    at uk.org.ogsadai.dqp.lqp.QueryGraph.getEvaluationNode(QueryGraph.java:829)
+	    at uk.org.ogsadai.dqp.lqp.QueryGraph.getEvaluationNode(QueryGraph.java:829)
+	    at uk.org.ogsadai.dqp.lqp.QueryGraph.getNextPredicate(QueryGraph.java:741)
+	    at uk.org.ogsadai.dqp.lqp.QueryGraph.getQueryPlan(QueryGraph.java:302)
+	    at uk.org.ogsadai.dqp.lqp.LQPBuilder.buildQuery(LQPBuilder.java:387)
+	    at uk.org.ogsadai.dqp.lqp.LQPBuilder.buildStatement(LQPBuilder.java:211)
+	    at uk.org.ogsadai.dqp.lqp.LQPBuilder.buildLQP(LQPBuilder.java:133)
+	    at uk.org.ogsadai.dqp.execute.SQLQueryPlanBuilder.buildValidatedLQP(SQLQueryPlanBuilder.java:129)
+	    at uk.org.ogsadai.dqp.execute.SQLQueryPlanBuilder.buildQueryPlan(SQLQueryPlanBuilder.java:70)
+	    at uk.org.ogsadai.dqp.execute.Coordinator.execute(Coordinator.java:179)
+	    at uk.org.ogsadai.activity.dqp.SQLQueryActivity.processIteration(SQLQueryActivity.java:288)
+	    at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+	    at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	    at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+
+#
+# DQPContext.xml SataNodesMap has SimpleDataNode entries for twomass and ukidss.
+
+        <property name="dataNodesMap">
+            <map>
+                <entry key="twomass">
+                    <ref bean="twomass"/>
+                </entry>
+                <entry key="ukidss">
+                    <ref bean="ukidss"/>
+                </entry>
+            </map>
+        </property>
+
+#
+# Test query referes to a table in a resource called 'other'
+
+    this.tables = new TableMappingServiceMock();
+    this.tables.put(
+        "other",
+        "table20",
+        "TWOMASS.dbo.twomass_psc"
+        );
+    this.tables.put(
+        "ukidss",
+        "table21",
+        "UKIDSSDR5PLUS.dbo.gcsPointSource"
+        );
+    this.tables.put(
+        "ukidss",
+        "table22",
+        "UKIDSSDR5PLUS.dbo.gcsSourceXtwomass_psc"
+        );
+
+#
+# Null test with meaningful message required here :
+
+    public class QueryGraph
+    {
+
+        private EvaluationNode getEvaluationNode(Operator op)
+        {
+            // If we have a evaluation node then return it
+            EvaluationNode evalNode = null;
+            if (op instanceof ScanOperator)
+            {
+ --->           evalNode = ((ScanOperator) op).getDataNode().getEvaluationNode();
+            }
+            if (evalNode != null) return evalNode;
+
+
+# --------------------------------------------------------------------------
+# NullPointerException caused by missing initialiser in Spring config.
+#
+
+    2013-02-05 16:39:01,175 DEBUG execute.Coordinator [pool-1-thread-3,debug:84] Applied optimisers
+    2013-02-05 16:39:01,175 DEBUG execute.Coordinator [pool-1-thread-3,debug:84] Query plan: (NIL (RENAME (PROJECT (INNER_THETA_JOIN (TABLE_SCAN null) (TABLE_SCAN null)))))
+    2013-02-05 16:39:01,183 DEBUG execute.Coordinator [pool-1-thread-3,debug:84] Partition: LOCAL PARTITION (EvaluationNode [URL=http://localhost:8081/albert/services])(NIL (RENAME (PROJECT (INNER_THETA_JOIN (TABLE_SCAN null) (TABLE_SCAN null)))))
+    2013-02-05 16:39:01,222 DEBUG metadata.AttributeServiceMock [pool-1-thread-3,get:107] get(String, String) [table22][distanceMins]
+    2013-02-05 16:39:01,223 DEBUG metadata.AttributeServiceMock [pool-1-thread-3,get:107] get(String, String) [table22][slaveObjID]
+    2013-02-05 16:39:01,224 DEBUG metadata.AttributeServiceMock [pool-1-thread-3,get:107] get(String, String) [table21][ra]
+    2013-02-05 16:39:01,224 DEBUG metadata.AttributeServiceMock [pool-1-thread-3,get:107] get(String, String) [table21][dec]
+    2013-02-05 16:39:01,225 DEBUG metadata.TableMappingServiceMock [pool-1-thread-3,get:91] get(String) [table22]
+
+    java.lang.NullPointerException
+	    at uk.org.ogsadai.dqp.execute.workflow.BatchTableScanBuilder.addAndImplodeSelect(BatchTableScanBuilder.java:248)
+	    at uk.org.ogsadai.dqp.execute.workflow.BatchTableScanBuilder.build(BatchTableScanBuilder.java:122)
+	    at uk.org.ogsadai.dqp.execute.workflow.PipelineWorkflowBuilder.buildOperator(PipelineWorkflowBuilder.java:219)
+	    at uk.org.ogsadai.dqp.execute.workflow.PipelineWorkflowBuilder.buildChild(PipelineWorkflowBuilder.java:165)
+	    at uk.org.ogsadai.dqp.execute.workflow.PipelineWorkflowBuilder.buildChild(PipelineWorkflowBuilder.java:159)
+	    at uk.org.ogsadai.dqp.execute.workflow.PipelineWorkflowBuilder.buildChild(PipelineWorkflowBuilder.java:159)
+	    at uk.org.ogsadai.dqp.execute.workflow.PipelineWorkflowBuilder.buildChild(PipelineWorkflowBuilder.java:159)
+	    at uk.org.ogsadai.dqp.execute.workflow.PipelineWorkflowBuilder.buildChild(PipelineWorkflowBuilder.java:159)
+	    at uk.org.ogsadai.dqp.execute.workflow.PipelineWorkflowBuilder.build(PipelineWorkflowBuilder.java:120)
+	    at uk.org.ogsadai.dqp.execute.partition.LocalPartition.buildWorkflow(LocalPartition.java:92)
+	    at uk.org.ogsadai.dqp.execute.Coordinator.execute(Coordinator.java:219)
+	    at uk.org.ogsadai.activity.dqp.SQLQueryActivity.processIteration(SQLQueryActivity.java:288)
+	    at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+	    at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	    at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+
+    #
+    # NullPointerException is here
+
+    public class BatchTableScanBuilder implements ActivityPipelineBuilder
+    {
+    ....
+        private TableScanOperator addAndImplodeSelect(TableScanOperator operator) 
+        throws ActivityConstructionException
+        {
+        ....
+            try 
+            {
+                mOptimiser.optimise(nil, requestFederation, null, null);
+            }
+        ....
+        }
+    ....
+    }
+
+    #
+    # BatchTableScanBuilder expects Spring to inject an Optimiser bean. 
+
+    public class BatchTableScanBuilder implements ActivityPipelineBuilder
+    {
+    ....
+        public void setTableScanImplosionOptimiser(Optimiser optimiser)
+        {
+            mOptimiser = optimiser;
+        }
+    ....
+    }
+
+    #
+    # DQPCompilerConfiguration.xml has an entry for a BatchTableScanBuilder, but does not provide an Optimiser. 
+
+    <property name="operatorBuilders">
+        <map>
+            ....
+	        <entry key="TABLE_SCAN">
+	            <map>
+    	            <entry key="DEFAULT">
+    	                <bean class="uk.org.ogsadai.dqp.execute.workflow.TableScanBuilder"/>
+	                </entry>
+                    <entry key="filteredTableScan">
+                        <bean class="uk.org.ogsadai.dqp.execute.workflow.BatchTableScanBuilder"/>
+                    </entry>
+                </map>
+	        </entry>
+            ....
+        </map>
+    </property>
+
+    #
+    # Temp fix is to just use the default TableScanBuilder.
+
+    <property name="operatorBuilders">
+        <map>
+            ....
+	        <entry key="TABLE_SCAN">
+	            <map>
+    	            <entry key="DEFAULT"> <bean class="uk.org.ogsadai.dqp.execute.workflow.TableScanBuilder"/></entry>
+                    <!--entry key="filteredTableScan">
+                        <bean class="uk.org.ogsadai.dqp.execute.workflow.BatchTableScanBuilder"/>
+                    </entry-->
+                </map>
+	        </entry>
+            ....
+        </map>
+    </property>
+

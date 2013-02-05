@@ -131,13 +131,24 @@
     </bean>
 
     <!--+
+        | Uber spanning data node.
+        +-->
+    <bean id="uber" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+        <constructor-arg name="resourceID"     value="uber"/>
+        <constructor-arg name="evaluationNode" ref="mydqpeval"/>
+        <property name="operatorSupport"       ref="defaultFeatureSupport"/>
+        <property name="expressionSupport"     ref="defaultFeatureSupport"/>
+        <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
+    </bean>
+
+    <!--+
         | DQP federation.
         +-->
     <bean id="federation" 
         class="uk.org.ogsadai.dqp.firethorn.MetadataServiceDQPFederation">
 
         <property name="metadataServiceFactory">
-            <bean class="uk.ac.roe.wfau.firethorn.ogsadai.metadata.MetadataServiceFactoryImpl">
+            <bean class="uk.ac.roe.wfau.firethorn.ogsadai.metadata.MetadataServiceFactoryMock">
                 <constructor-arg name="name" value="Roxanne"/>
             </bean>
         </property>
@@ -149,6 +160,9 @@
                 </entry>
                 <entry key="ukidss">
                     <ref bean="ukidss"/>
+                </entry>
+                <entry key="uber">
+                    <ref bean="uber"/>
                 </entry>
             </map>
         </property>
