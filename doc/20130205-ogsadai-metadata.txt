@@ -362,6 +362,7 @@ EOF
     popd
 
 # --------------------------------------------------------------------------
+# IGNORE THIS SECTION - Fixed in MetadataServiceFactoryMock
 # NullPointerException caused by missing DataNode
 #
 
@@ -540,9 +541,12 @@ EOF
         </map>
     </property>
 
-    #
-    # But now DQP is trying to find a filteredTableScan builder.
+# --------------------------------------------------------------------------
+# Unable to find builder for 'filteredTableScan'
+#
 
+    #
+    # DQP is trying to find a filteredTableScan builder.
     Caused by: uk.org.ogsadai.activity.ActivityProcessingException: A problem has occured during activity processing.
         at uk.org.ogsadai.dqp.execute.Coordinator.execute(Coordinator.java:260)
         at uk.org.ogsadai.activity.dqp.SQLQueryActivity.processIteration(SQLQueryActivity.java:288)
