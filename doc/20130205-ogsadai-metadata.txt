@@ -231,6 +231,7 @@ EOF
     PROJECT_BASE=/var/local/projects/edinburgh/wfau/firethorn/devel
     pushd ${PROJECT_BASE?}/firethorn-ogsadai/activity/firethorn
 
+        mvn -D test=SimpleQueryTestCase test
         mvn -D test=DqpQueryTestCase test
 
     popd
@@ -506,7 +507,7 @@ EOF
     </property>
 
     #
-    # Temp fix is to just use the default TableScanBuilder.
+    # Just commenting out the BatchTableScanBuilder doesn't work.
 
     <property name="operatorBuilders">
         <map>
@@ -522,4 +523,28 @@ EOF
             ....
         </map>
     </property>
+
+    #
+    # DQP is tries to find a filteredTableScan builder.
+
+
+    Caused by: uk.org.ogsadai.activity.ActivityProcessingException: A problem has occured during activity processing.
+        at uk.org.ogsadai.dqp.execute.Coordinator.execute(Coordinator.java:260)
+        at uk.org.ogsadai.activity.dqp.SQLQueryActivity.processIteration(SQLQueryActivity.java:288)
+        ... 11 more
+    Caused by: uk.org.ogsadai.dqp.execute.ActivityConstructionException: [1360083784803:9] uk.org.ogsadai.ACTIVITY_CONSTRUCTION_EXCEPTION
+        at uk.org.ogsadai.dqp.execute.workflow.PipelineWorkflowBuilder.buildOperator(PipelineWorkflowBuilder.java:210)
+        at uk.org.ogsadai.dqp.execute.workflow.PipelineWorkflowBuilder.buildChild(PipelineWorkflowBuilder.java:165)
+        at uk.org.ogsadai.dqp.execute.workflow.PipelineWorkflowBuilder.buildChild(PipelineWorkflowBuilder.java:159)
+        at uk.org.ogsadai.dqp.execute.workflow.PipelineWorkflowBuilder.buildChild(PipelineWorkflowBuilder.java:159)
+        at uk.org.ogsadai.dqp.execute.workflow.PipelineWorkflowBuilder.buildChild(PipelineWorkflowBuilder.java:159)
+        at uk.org.ogsadai.dqp.execute.workflow.PipelineWorkflowBuilder.buildChild(PipelineWorkflowBuilder.java:159)
+        at uk.org.ogsadai.dqp.execute.workflow.PipelineWorkflowBuilder.build(PipelineWorkflowBuilder.java:120)
+        at uk.org.ogsadai.dqp.execute.partition.LocalPartition.buildWorkflow(LocalPartition.java:92)
+        at uk.org.ogsadai.dqp.execute.Coordinator.execute(Coordinator.java:219)
+        ... 12 more
+    Caused by: java.lang.Exception: Configuration exception: No builder defined for operator uk.org.ogsadai.dqp.lqp.operators.TableScanOperator and implementation annotation 'filteredTableScan'.
+        ... 21 more
+
+
 
