@@ -262,7 +262,8 @@ EOF
     popd
 
 # --------------------------------------------------------------------------
-# MetadataServiceFactoryImpl refers to or uses additioanl ogsadai classes.
+# IGNORE THIS SECTION - the jars have been added to Maven dependencies.
+# MetadataServiceFactoryImpl uses ogsadai classes not already listed in our Maven dependencies.
 # To include them in the Eclipse build we need to figure out which jars they are in.
 #
 
@@ -315,6 +316,7 @@ EOF
 
 
 # --------------------------------------------------------------------------
+# IGNORE THIS SECTION - the jars have been added to Maven dependencies.
 # Add the jars to the Maven dependencies and re-build our Eclipse project file.
 #
 
@@ -389,7 +391,7 @@ EOF
 	    at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
 
 #
-# DQPContext.xml SataNodesMap has SimpleDataNode entries for twomass and ukidss.
+# DQPContext.xml DataNodesMap has SimpleDataNode entries for twomass and ukidss.
 
         <property name="dataNodesMap">
             <map>
@@ -403,21 +405,21 @@ EOF
         </property>
 
 #
-# Test query referes to a table in a resource called 'other'
+# Test query referes to a table in a resource called 'uber'
 
     this.tables = new TableMappingServiceMock();
     this.tables.put(
-        "other",
+        "uber",
         "table20",
         "TWOMASS.dbo.twomass_psc"
         );
     this.tables.put(
-        "ukidss",
+        "uber",
         "table21",
         "UKIDSSDR5PLUS.dbo.gcsPointSource"
         );
     this.tables.put(
-        "ukidss",
+        "uber",
         "table22",
         "UKIDSSDR5PLUS.dbo.gcsSourceXtwomass_psc"
         );
