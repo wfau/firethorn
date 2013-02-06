@@ -443,6 +443,7 @@ EOF
 
 
 # --------------------------------------------------------------------------
+# IGNORE THIS SECTION - Fixed by new compiler config from Amy.
 # NullPointerException caused by missing initialiser in Spring config.
 #
 
@@ -542,6 +543,7 @@ EOF
     </property>
 
 # --------------------------------------------------------------------------
+# IGNORE THIS SECTION - Fixed by new compiler config from Amy.
 # Unable to find builder for 'filteredTableScan'
 #
 
@@ -960,4 +962,82 @@ EOF
         mvn tomcat6:run
 
     popd
+
+#
+# Run the test queries in a separate terminal.
+
+    PROJECT_BASE=/var/local/projects/edinburgh/wfau/firethorn/devel
+    pushd ${PROJECT_BASE?}/firethorn-ogsadai/activity/firethorn
+
+        mvn -D test=SimpleQueryTestCase test
+        mvn -D test=DqpQueryTestCase test
+
+    popd
+
+#
+# Same error message ...
+
+    2013-02-06 11:22:45,748 DEBUG io.BufferedPipe [pool-1-thread-6,debug:84] Created a BufferedPipe: ogsadai-d057ab91-e675-4381-b9e0-2f2d5a1e34d0
+    2013-02-06 11:22:45,795 DEBUG execute.Coordinator [pool-1-thread-5,debug:84] EXECUTION EXCEPTION: LOCAL PARTITION (EvaluationNode [URL=http://localhost:8081/albert/services])(NIL (RENAME (PROJECT (INNER_THETA_JOIN (RENAME (TABLE_SCAN null)) (TABLE_SCAN null)))))
+    2013-02-06 11:22:45,799 DEBUG execute.Coordinator [pool-1-thread-5,debug:84] uk.org.ogsadai.dqp.execute.ExecutionException: [1360149765795:14] uk.org.ogsadai.EXECUTION_ERROR
+	    at uk.org.ogsadai.activity.dqp.SQLQueryActivity.executeConnectedPipeline(SQLQueryActivity.java:598)
+	    at uk.org.ogsadai.activity.dqp.SQLQueryActivity.executePipeline(SQLQueryActivity.java:493)
+	    at uk.org.ogsadai.dqp.execute.partition.LocalPartition.execute(LocalPartition.java:152)
+	    at uk.org.ogsadai.dqp.execute.Coordinator$1.call(Coordinator.java:386)
+	    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	    at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	    at java.lang.Thread.run(Thread.java:679)
+    Caused by: uk.org.ogsadai.exception.RequestUserException: A user problem has occurred during request processing.
+	    at uk.org.ogsadai.activity.concurrency.ActivityPipelineProcessingTask.createActivities(ActivityPipelineProcessingTask.java:136)
+	    at uk.org.ogsadai.activity.concurrency.ActivityPipelineProcessingTask.call(ActivityPipelineProcessingTask.java:103)
+	    at uk.org.ogsadai.activity.concurrency.ActivityPipelineProcessingTask.call(ActivityPipelineProcessingTask.java:53)
+	    ... 5 more
+    Caused by: uk.org.ogsadai.activity.ActivityUserException: A user problem has occured during activity processing.
+	    at uk.org.ogsadai.activity.SimpleActivityFactory.createActivity(SimpleActivityFactory.java:148)
+	    at uk.org.ogsadai.activity.SimpleActivityFactory.createActivities(SimpleActivityFactory.java:87)
+	    at uk.org.ogsadai.activity.extension.InitialisingActivityFactory.createActivities(InitialisingActivityFactory.java:66)
+	    at uk.org.ogsadai.activity.event.EventfulActivityFactory.createActivities(EventfulActivityFactory.java:67)
+	    at uk.org.ogsadai.activity.concurrency.ActivityPipelineProcessingTask.createActivities(ActivityPipelineProcessingTask.java:127)
+	    ... 7 more
+    Caused by: uk.org.ogsadai.activity.UnsupportedActivityException: An activity named uk.org.ogsadai.CreateEmptyTupleList is not supported by the resource DataRequestExecutionResource.
+	    ... 12 more
+
+#
+# Check the config changes made it into the webapp. 
+
+    PROJECT_BASE=/var/local/projects/edinburgh/wfau/firethorn/devel
+    pushd ${PROJECT_BASE?}/firethorn-ogsadai/webapp
+
+        tail -5 target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/activities.txt 
+
+            id=uk.org.ogsadai.CreateEmptyTupleList
+            class=uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity
+            description=
+            CONFIG
+            END
+
+        head -n 12 target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/resources/DataRequestExecutionResource 
+
+            id=DataRequestExecutionResource
+            type=uk.org.ogsadai.DATA_REQUEST_EXECUTION_RESOURCE
+            creationTime=null
+            terminationTime=null
+            PROPERTIES
+            END
+            CONFIG
+            END
+            ACTIVITIES
+            uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity=uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity
+            uk.org.ogsadai.activity.astro.ADQLQueryActivity=uk.org.ogsadai.activity.astro.ADQLQueryActivity
+            uk.org.ogsadai.ObtainFromDataSource=uk.org.ogsadai.ObtainFromDataSource
+
+        popd
+    popd
+
+
 
