@@ -84,32 +84,48 @@ else
 
         #
         # Add the astro extension.
-        #   <!--+ ZRQ 20130201 +-->
-        #   <copyModule path="extensions/astro"/>
-        sed -i '
-            /<target name="copyModules"/,/<\/target>/ {
-                /<echo message="\** DONE/i \
-            <!--+ ZRQ 20130201 +--> \
-            <copyModule path="extensions/astro"/> \
-            <!--+ ZRQ 20130201 +--> \
-            
-                }
-            ' build.xml
+        echo "----"
+        echo "Checking for astro extension in 'build.xml'"
+        if [[ $(grep -c 'ZRQ 20130201' build.xml) -gt 0 ]]
+        then
+            echo "Astro extension already added to 'build.xml'"
+        else
+            echo "Adding astro extension to 'build.xml'"
+            #   <!--+ ZRQ 20130201 +-->
+            #   <copyModule path="extensions/astro"/>
+            sed -i '
+                /<target name="copyModules"/,/<\/target>/ {
+                    /<echo message="\** DONE/i \
+                <!--+ ZRQ 20130201 +--> \
+                <copyModule path="extensions/astro"/> \
+                <!--+ ZRQ 20130201 +--> \
+                
+                    }
+                ' build.xml
+        fi
 
-        #   <!--+ ZRQ 20130201 +-->
-        #   <deployModule name="extensions/astro/client"/>
-        #   <deployModule name="extensions/astro/server"/>
-        #   <!--+ ZRQ 20130201 +-->
-        sed -i '
-            /<echo message="\** Deploying modules/,/<echo message="\** modules deployed/ {
-                /<echo message="\** modules deployed/i \
-                    <!--+ ZRQ 20130201 +--> \
-                    <deployModule name="extensions/astro/client"/> \
-                    <deployModule name="extensions/astro/server"/> \
-                    <!--+ ZRQ 20130201 +--> \
-                    
-                }
-            ' source-ant/build.xml
+        echo "----"
+        echo "Checking for astro extension in 'source-ant/build.xml'"
+        if [[ $(grep -c 'ZRQ 20130201' source-ant/build.xml) -gt 0 ]]
+        then
+            echo "Astro extension already added to 'source-ant/build.xml'"
+        else
+            echo "Adding astro extension to 'source-ant/build.xml'"
+            #   <!--+ ZRQ 20130201 +-->
+            #   <deployModule name="extensions/astro/client"/>
+            #   <deployModule name="extensions/astro/server"/>
+            #   <!--+ ZRQ 20130201 +-->
+            sed -i '
+                /<echo message="\** Deploying modules/,/<echo message="\** modules deployed/ {
+                    /<echo message="\** modules deployed/i \
+                        <!--+ ZRQ 20130201 +--> \
+                        <deployModule name="extensions/astro/client"/> \
+                        <deployModule name="extensions/astro/server"/> \
+                        <!--+ ZRQ 20130201 +--> \
+                        
+                    }
+                ' source-ant/build.xml
+        fi
     popd
 fi
 

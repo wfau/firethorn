@@ -113,3 +113,20 @@ fi
 	    at java.lang.Thread.run(Thread.java:679)
 
 
+#---------------------------------------------------
+# Possible bug - related query remains active
+# At least one of the SQL queries, possibly the "SELECT ra, dec FROM twomass" remains active after the main workflow has failed and returned with an error.
+# It showed up as network activity via the tunneled ssh connection to ROE.
+# Closing the ssh connection with 'exit'and then and Ctrl^C triggered an exception in the tomcat logs.
+#
+
+    2013-02-06 16:00:35,183 WARN  activity.MatchedIterativeActivity [pool-1-thread-53,warnExceptionAndChildren:343] #1360166435183:3157# There was a problem cleaning up the activity instance (activity name uk.org.ogsadai.SQLQuery, instance name uk.org.ogsadai.SQLQuery-ogsadai-82317ca2-d1a4-4ecd-81ff-ee61144d531f).
+    2013-02-06 16:00:35,183 WARN  activity.MatchedIterativeActivity [pool-1-thread-16,warnExceptionAndChildren:343] #1360166435183:3158# There was a problem cleaning up the activity instance (activity name uk.org.ogsadai.SQLQuery, instance name uk.org.ogsadai.SQLQuery-ogsadai-77327512-7668-4587-8a57-1bf4e0b3257c).
+    2013-02-06 16:00:35,189 WARN  activity.MatchedIterativeActivity [pool-1-thread-16,warnExceptionAndChildren:343] #1360166435183:3158# java.sql.SQLException: I/O Error: DB server closed connection.
+    2013-02-06 16:00:35,190 WARN  activity.MatchedIterativeActivity [pool-1-thread-16,warnExceptionAndChildren:343] #1360166435183:3158# java.io.IOException: DB server closed connection.
+    2013-02-06 16:00:35,190 DEBUG event.LoggingActivityListener [pool-1-thread-16,debug:84] TERMINATED: Activity uk.org.ogsadai.SQLQuery (instance name = uk.org.ogsadai.SQLQuery-ogsadai-77327512-7668-4587-8a57-1bf4e0b3257c)
+    2013-02-06 16:00:35,189 WARN  activity.MatchedIterativeActivity [pool-1-thread-53,warnExceptionAndChildren:343] #1360166435183:3157# java.sql.SQLException: I/O Error: DB server closed connection.
+    2013-02-06 16:00:35,191 WARN  activity.MatchedIterativeActivity [pool-1-thread-53,warnExceptionAndChildren:343] #1360166435183:3157# java.io.IOException: DB server closed connection.
+    2013-02-06 16:00:35,191 DEBUG event.LoggingActivityListener [pool-1-thread-53,debug:84] TERMINATED: Activity uk.org.ogsadai.SQLQuery (instance name = uk.org.ogsadai.SQLQuery-ogsadai-82317ca2-d1a4-4ecd-81ff-ee61144d531f)
+
+
