@@ -1066,10 +1066,62 @@ We copied the existing entry for ADQLQueryActivity, using the class name rather 
     ~   Resource addActivity DataRequestExecutionResource uk.org.ogsadai.ADQLQueryActivity            uk.org.ogsadai.ADQLQueryActivity
     ~   Resource addActivity DataRequestExecutionResource uk.org.ogsadai.CreateEmptyTupleListActivity uk.org.ogsadai.CreateEmptyTupleListActivity
 
+# --------------------------------------------------------------------------
+# Checking the configuration syntax in the documentation.
+# http://ogsa-dai.sourceforge.net/documentation/ogsadai4.2/ogsadai4.2-jersey/DeployerConfigFileSyntax.html
 
+    # Add activity
+    Resource addActivity RESOURCE_ID ACTIVITY_NAME ACTIVITY_ID
 
+#
+# Our error message says it is looking for "An activity named uk.org.ogsadai.CreateEmptyTupleList"
 
+    Caused by: uk.org.ogsadai.activity.UnsupportedActivityException: An activity named uk.org.ogsadai.CreateEmptyTupleList is not supported by the resource DataRequestExecutionResource.
 
+#
+# Which suggests the *name* (or ID) should be "uk.org.ogsadai.CreateEmptyTupleList"
+# My bad ... I set the name to "CreateEmptyTupleListActivity" rather than "CreateEmptyTupleList"
 
+# --------------------------------------------------------------------------
+# Editing, rebuilding and testing ....
 
+    ${OGSADAI_CODE?}/ogsa-dai/trunk/extensions/astro/server/server-config/configuration.txt
+
+        #
+        # Declare activities
+        #
+    ~   Activity add uk.org.ogsadai.ADQLQuery            uk.org.ogsadai.activity.astro.ADQLQueryActivity
+    ~   Activity add uk.org.ogsadai.CreateEmptyTupleList uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity
+
+        #
+        # Configure DataRequestExecutionResource
+        #
+    ~   Resource addActivity DataRequestExecutionResource uk.org.ogsadai.ADQLQuery            uk.org.ogsadai.ADQLQueryActivity
+    ~   Resource addActivity DataRequestExecutionResource uk.org.ogsadai.CreateEmptyTupleList uk.org.ogsadai.CreateEmptyTupleListActivity
+
+# --------------------------------------------------------------------------
+# Seems to have solved that one ... moved on to the next
+#
+
+    2013-02-06 12:16:05,380 DEBUG event.LoggingActivityListener [pool-1-thread-13,debug:84] PROCESSING: Activity uk.org.ogsadai.IfEmptyList (instance name = uk.org.ogsadai.IfEmptyList-ogsadai-f407cbad-3b9f-40f3-9645-2d1d8760500f)
+    2013-02-06 12:16:05,381 DEBUG event.LoggingActivityListener [pool-1-thread-11,debug:84] PROCESSING: Activity uk.org.ogsadai.ControlledRepeat (instance name = uk.org.ogsadai.ControlledRepeat-ogsadai-2099d907-575c-4ccc-9b01-eb2a01310700)
+    2013-02-06 12:16:05,381 DEBUG activity.IterativeActivity [pool-1-thread-11,debug:84] performing first stage of processing
+    2013-02-06 12:16:05,383 DEBUG activity.IterativeActivity [pool-1-thread-11,debug:84] performing iterative stage of processing
+    2013-02-06 12:16:05,383 DEBUG activity.MatchedIterativeActivity [pool-1-thread-9,debug:84] performing first stage of processing
+    2013-02-06 12:16:05,383 DEBUG activity.MatchedIterativeActivity [pool-1-thread-9,debug:84] performing iterative stage of processing
+    2013-02-06 12:16:05,385 DEBUG event.LoggingActivityListener [pool-1-thread-13,debug:84] uk.org.ogsadai.activity.InvalidActivityOutputsException: The activity cannot process because it requires 1 output(s) named "trueOutput".
+	    at uk.org.ogsadai.activity.ActivityBase.validateOutput(ActivityBase.java:342)
+	    at uk.org.ogsadai.activity.block.IfEmptyListActivity.process(IfEmptyListActivity.java:52)
+	    at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	    at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	    at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	    at java.lang.Thread.run(Thread.java:679)
+
+    2013-02-06 12:16:05,387 WARN  event.LoggingActivityListener [pool-1-thread-13,warnExceptionAndChildren:343] #1360152965381:9# A problem has occurred during processing of activity uk.org.ogsadai.IfEmptyList with instance name uk.org.ogsadai.IfEmptyList-ogsadai-f407cbad-3b9f-40f3-9645-2d1d8760500f.
 
