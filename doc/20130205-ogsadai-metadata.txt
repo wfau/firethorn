@@ -739,6 +739,8 @@ EOF
     +   Resource addActivity DataRequestExecutionResource uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity
 
 
+----
+
     pushd ${OGSADAI_CODE?}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey
 
         #
@@ -901,5 +903,61 @@ EOF
                 -D file=src/extensions/astro/server/build/lib/ogsadai-astro-server-4.2.jar
 
         popd
+    popd
+
+#
+# Quick check to see if the config files got updated ...
+
+    pushd ${OGSADAI_CODE?}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey
+        pushd build/ogsadai-4.2-jersey-1.10-src/build/ogsadai-4.2-jersey-1.10-bin/
+
+            head -n 12 dai/WEB-INF/etc/dai/resources/DataRequestExecutionResource 
+
+                id=DataRequestExecutionResource
+                type=uk.org.ogsadai.DATA_REQUEST_EXECUTION_RESOURCE
+                creationTime=null
+                terminationTime=null
+                PROPERTIES
+                END
+                CONFIG
+                END
+                ACTIVITIES
+                uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity=uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity
+                uk.org.ogsadai.activity.astro.ADQLQueryActivity=uk.org.ogsadai.activity.astro.ADQLQueryActivity
+                uk.org.ogsadai.ObtainFromDataSource=uk.org.ogsadai.ObtainFromDataSource
+                .....
+
+            tail -5 dai/WEB-INF/etc/dai/activities.txt 
+
+
+                id=uk.org.ogsadai.CreateEmptyTupleList
+                class=uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity
+                description=
+                CONFIG
+                END
+
+        popd
+    popd
+
+#
+# Run the webapp in Tomcat.
+
+    pushd ${PROJECT_BASE?}/firethorn-ogsadai/webapp
+
+        #
+        # Create a clean war file.
+        mvn clean compile war:war
+
+        #
+        # Set the database passwords.
+        sed -i '
+            s/{SQL-USER}/'$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.user=\(.*\)/\1/p')'/
+            s/{SQL-PASS}/'$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.pass=\(.*\)/\1/p')'/
+            ' target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/logins.txt
+
+        #
+        # Run the webapp in Tomcat
+        mvn tomcat6:run
+
     popd
 
