@@ -63,7 +63,7 @@ fi
 
     pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/ogsadai"
 
-        bin/ogsadai-build.sh
+        source 'bin/ogsadai-build.sh'
 
     popd
 
@@ -73,7 +73,7 @@ fi
 
     pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/ogsadai"
 
-        bin/ogsadai-tomcat.sh
+        source 'bin/ogsadai-tomcat.sh'
 
     popd
 
@@ -83,8 +83,7 @@ fi
 
     pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/ogsadai"
 
-        bin/ogsadai-test.sh
-
+        source 'bin/ogsadai-test.sh'
     popd
 
 
