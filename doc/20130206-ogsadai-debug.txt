@@ -28,14 +28,13 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
     then
         echo "ERROR : can't find FIRETHORN base directory at [${FIRETHORN_BASE?}]"
     else
+        pushd "${FIRETHORN_BASE?}"
 
-        pushd "${FIRETHORN_BASE?}
-
-            if [ ! -e "$(FIRETHORN_NAME?)" ]
+            if [ ! -e "${FIRETHORN_NAME?}" ]
             then
-                hg clone 'http://wfau.metagrid.co.uk/code/firethorn' "$(FIRETHORN_NAME?)"
+                hg clone 'http://wfau.metagrid.co.uk/code/firethorn' "${FIRETHORN_NAME?}"
             else
-                pushd "$(FIRETHORN_NAME?)"
+                pushd "${FIRETHORN_NAME?}"
                     hg fetch
 # If you don't have the fetch extension installed
 # hg pull
@@ -74,17 +73,43 @@ fi
 
     pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/ogsadai"
 
-        bin/ogsadai-build.sh
+        bin/ogsadai-tomcat.sh
 
     popd
 
 #---------------------------------------------------
 # To run the tests ...
-#
+# *** run this in a separate terminal while the webapp is running in tomcat ***
 
     pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/ogsadai"
 
         bin/ogsadai-test.sh
 
     popd
+
+
+#---------------------------------------------------
+# JDBC direct test works, DQP test fails.
+#
+
+    2013-02-06 15:25:10,384 DEBUG activity.IterativeActivity [pool-1-thread-12,debug:84] performing first stage of processing
+    2013-02-06 15:25:10,384 DEBUG file.SimpleFileLoginProvider [pool-1-thread-16,debug:84] Found 0 lines that match
+    2013-02-06 15:25:10,385 DEBUG file.SimpleFileLoginProvider [pool-1-thread-16,debug:84] Failed to find entry. Looking for wildcard
+    2013-02-06 15:25:10,386 DEBUG file.SimpleFileLoginProvider [pool-1-thread-16,debug:84] Found a login for null
+    2013-02-06 15:25:10,384 DEBUG activity.IterativeActivity [pool-1-thread-14,debug:84] performing iterative stage of processing
+    2013-02-06 15:25:10,387 DEBUG jdbc.JDBCDataResource [pool-1-thread-16,debug:84] Using JDBC URL : jdbc:apache:commons:dbcp:ogsadai-jdbcpool-twomass
+    2013-02-06 15:25:10,386 DEBUG event.LoggingActivityListener [pool-1-thread-19,debug:84] uk.org.ogsadai.activity.InvalidActivityOutputsException: The activity cannot process because it requires 1 output(s) named "trueOutput".
+	    at uk.org.ogsadai.activity.ActivityBase.validateOutput(ActivityBase.java:342)
+	    at uk.org.ogsadai.activity.block.IfEmptyListActivity.process(IfEmptyListActivity.java:52)
+	    at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	    at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	    at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	    at java.lang.Thread.run(Thread.java:679)
+
 
