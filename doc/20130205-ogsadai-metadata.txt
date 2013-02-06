@@ -851,8 +851,8 @@ EOF
                     </fileset> \
                     <!--+ ZRQ 20130201 +--> \
                     
-                }
-            ' build.xml
+                    }
+                ' build.xml
 
             popd
 
@@ -924,13 +924,12 @@ EOF
                 CONFIG
                 END
                 ACTIVITIES
-                uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity=uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity
-                uk.org.ogsadai.activity.astro.ADQLQueryActivity=uk.org.ogsadai.activity.astro.ADQLQueryActivity
+                uk.org.ogsadai.CreateEmptyTupleListActivity=uk.org.ogsadai.CreateEmptyTupleListActivity
+                uk.org.ogsadai.ADQLQueryActivity=uk.org.ogsadai.ADQLQueryActivity
                 uk.org.ogsadai.ObtainFromDataSource=uk.org.ogsadai.ObtainFromDataSource
                 .....
 
             tail -5 dai/WEB-INF/etc/dai/activities.txt 
-
 
                 id=uk.org.ogsadai.CreateEmptyTupleList
                 class=uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity
