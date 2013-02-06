@@ -1057,7 +1057,15 @@ Note they use the *activity name* to add it to the DRER not the implementation c
 We copied the existing entry for ADQLQueryActivity, using the class name rather than the activity name.
 
 # --------------------------------------------------------------------------
-# Editing, rebuilding and testing .... 
+# Editing, rebuilding and testing ....
+ 
+    ${OGSADAI_CODE?}/ogsa-dai/trunk/extensions/astro/server/server-config/configuration.txt
+
+        #
+        # Configure DataRequestExecutionResource
+        #
+    ~   Resource addActivity DataRequestExecutionResource uk.org.ogsadai.ADQLQueryActivity            uk.org.ogsadai.ADQLQueryActivity
+    ~   Resource addActivity DataRequestExecutionResource uk.org.ogsadai.CreateEmptyTupleListActivity uk.org.ogsadai.CreateEmptyTupleListActivity
 
 
 
