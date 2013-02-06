@@ -650,6 +650,74 @@ EOF
 	    ... 11 more
 
 
+# --------------------------------------------------------------------------
+# Grep the code base to find the activity.
+
+    OGSADAI_ROOT=/var/local/projects/edinburgh/ogsa-dai
+    OGSADAI_CODE=${OGSADAI_ROOT?}/ogsa-dai-code
+
+    pushd ${OGSADAI_CODE?}
+
+        grep -r 'class CreateEmptyTupleList' *
+        
+    popd
+
+#
+# Looks like this is part of the 'astro' extension.
+
+    ogsa-dai/trunk/extensions/astro/server/src/test/unit/java/uk/org/ogsadai/activity/astro/CreateEmptyTupleListActivityTest.java:public class CreateEmptyTupleListActivityTest extends TestCase 
+    ogsa-dai/trunk/extensions/astro/server/src/main/java/uk/org/ogsadai/activity/astro/CreateEmptyTupleListActivity.java:public class CreateEmptyTupleListActivity extends MatchedIterativeActivity
+    ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/src/extensions/astro/server/src/main/java/uk/org/ogsadai/activity/astro/CreateEmptyTupleListActivity.java:public class CreateEmptyTupleListActivity extends MatchedIterativeActivity
+    ogsa-dai/trunk/release-scripts/ogsa-dai/jersey/build/ogsadai-4.2-jersey-1.10-src/build/javadoc-src/uk/org/ogsadai/activity/astro/CreateEmptyTupleListActivity.java:public class CreateEmptyTupleListActivity extends MatchedIterativeActivity
+
+#
+# The java source code is in our build tree.
+
+    ogsa-dai/trunk/extensions/astro/server/src/main/java/uk/org/ogsadai/activity/astro/CreateEmptyTupleListActivity.java
+
+#
+# The astro module server-config has an entry for the ADQLQueryActivity, but not the CreateEmptyTupleListActivity
+
+    ogsa-dai/trunk/extensions/astro/server/server-config/configuration.txt
+
+        #
+        # Astro module configuration
+        #
+        # Declare activities
+        #
+        Activity add uk.org.ogsadai.ADQLQuery uk.org.ogsadai.activity.astro.ADQLQueryActivity
+        #
+        # Configure DataRequestExecutionResource
+        #
+        Resource addActivity DataRequestExecutionResource uk.org.ogsadai.activity.astro.ADQLQueryActivity uk.org.ogsadai.activity.astro.ADQLQueryActivity
+
+#
+# In the deployed webapp, both the activities.txt and the DataRequestExecutionResource config
+# contain the astro ADQLQueryActivity but not the CreateEmptyTupleListActivity.
+
+    firethorn-ogsadai/webapp/target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/activities.txt
+
+        id=uk.org.ogsadai.ADQLQuery
+        class=uk.org.ogsadai.activity.astro.ADQLQueryActivity
+        description=
+        CONFIG
+        END
+
+    firethorn-ogsadai/webapp/target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/resources/DataRequestExecutionResource
+
+        uk.org.ogsadai.activity.astro.ADQLQueryActivity=uk.org.ogsadai.activity.astro.ADQLQueryActivity
+
+#
+# Try adding CreateEmptyTupleListActivity manually ...
+
+        id=uk.org.ogsadai.CreateEmptyTupleListActivity
+        class=uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity
+        description=
+        CONFIG
+        END
+
+        uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity=uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity
+
 
 
 
