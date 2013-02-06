@@ -673,12 +673,12 @@ EOF
 #
 # The java source code is in our build tree.
 
-    ogsa-dai/trunk/extensions/astro/server/src/main/java/uk/org/ogsadai/activity/astro/CreateEmptyTupleListActivity.java
+    ${OGSADAI_CODE?}/ogsa-dai/trunk/extensions/astro/server/src/main/java/uk/org/ogsadai/activity/astro/CreateEmptyTupleListActivity.java
 
 #
 # The astro module server-config has an entry for the ADQLQueryActivity, but not the CreateEmptyTupleListActivity
 
-    ogsa-dai/trunk/extensions/astro/server/server-config/configuration.txt
+    ${OGSADAI_CODE?}/ogsa-dai/trunk/extensions/astro/server/server-config/configuration.txt
 
         #
         # Astro module configuration
@@ -695,7 +695,7 @@ EOF
 # In the deployed webapp, both the activities.txt and the DataRequestExecutionResource config
 # contain the astro ADQLQueryActivity but not the CreateEmptyTupleListActivity.
 
-    firethorn-ogsadai/webapp/target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/activities.txt
+    ${PROJECT_BASE?}/firethorn-ogsadai/webapp/target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/activities.txt
 
         id=uk.org.ogsadai.ADQLQuery
         class=uk.org.ogsadai.activity.astro.ADQLQueryActivity
@@ -703,7 +703,7 @@ EOF
         CONFIG
         END
 
-    firethorn-ogsadai/webapp/target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/resources/DataRequestExecutionResource
+    ${PROJECT_BASE?}/firethorn-ogsadai/webapp/target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/resources/DataRequestExecutionResource
 
         uk.org.ogsadai.activity.astro.ADQLQueryActivity=uk.org.ogsadai.activity.astro.ADQLQueryActivity
 
@@ -718,9 +718,188 @@ EOF
 
         uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity=uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity
 
+#
+# Nope - didn't seem to recognise it, probably not adding it in the right places.
+# Try adding it to the module configuration and re-building ....
+
+    ${OGSADAI_CODE?}/ogsa-dai/trunk/extensions/astro/server/server-config/configuration.txt
+
+        #
+        # Astro module configuration
+        #
+        # Declare activities
+        #
+        Activity add uk.org.ogsadai.ADQLQuery uk.org.ogsadai.activity.astro.ADQLQueryActivity
+    +   Activity add uk.org.ogsadai.CreateEmptyTupleList uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity
+
+        #
+        # Configure DataRequestExecutionResource
+        #
+        Resource addActivity DataRequestExecutionResource uk.org.ogsadai.activity.astro.ADQLQueryActivity uk.org.ogsadai.activity.astro.ADQLQueryActivity
+    +   Resource addActivity DataRequestExecutionResource uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity uk.org.ogsadai.activity.astro.CreateEmptyTupleListActivity
 
 
+    pushd ${OGSADAI_CODE?}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey
 
+        #
+        # Populate the source release.
+        ant -Ddependencies.dir=${OGSADAI_CODE?}/third-party/dependencies clean buildSourceRelease
 
+        #
+        # Add our customisations to the source code.
+        pushd build/ogsadai-4.2-jersey-1.10-src/
 
+            #
+            # Replace the DQP server code with the sandbox version.
+            pushd src/extensions/dqp
+
+                #
+                # Replace dqp/server with the sandbox version.
+                # Note - don't use a link, the Ant build assumes this directory as writeable. 
+                # 'ant clean' will recursively delete everything from the original.
+                rm -r server
+                cp -r ${OGSADAI_CODE?}/sandbox/dqp/server .
+
+                #
+                # Remove references to 'ogsa-dai/trunk' from 'server/ant.properties'
+                sed -i '
+                    s|/ogsa-dai/trunk/|/|g
+                    ' server/ant.properties
+
+            popd
+
+            #
+            # Create a build.xml file for the astro client extensions.
+            pushd src/extensions/astro/client
+
+                cp ../../basic/client/build.xml .
+                cp ../../basic/client/ant.properties .
+
+                sed -i '
+                    s/OGSA-DAI basic extensions/OGSA-DAI astro extensions/
+                    ' ant.properties
+
+                sed -i '
+                    s/name="basic-client"/name="astro-client"/
+                    ' build.xml
+
+                sed -i '
+                    s/OGSA-DAI basic extensions/OGSA-DAI astro extensions/
+                    ' build.xml
+
+cat >> ant.properties << EOF
+# ZRQ 20130201
+apachehc.lib.dir=\${dependencies.dir}/org/apache/hc/4.0.1
+starlink.lib.dir=\${dependencies.dir}/stil/2.8/
+EOF
+
+                sed -i '
+                /<path id="module.build.classpath">/,/<\/path>/ {
+                    /<\/path>/i \
+                        <!--+ ZRQ 20130201 +--> \
+                        <fileset dir="${apachehc.lib.dir}"> \
+                          <include name="**/*.jar"/> \
+                        </fileset> \
+                        <fileset dir="${starlink.lib.dir}"> \
+                          <include name="**/*.jar"/> \
+                        </fileset> \
+                        <!--+ ZRQ 20130201 +--> \
+                        
+                    }
+                ' build.xml
+
+            popd
+
+            #
+            # Create a build.xml file for the astro server extensions.
+            pushd src/extensions/astro/server
+
+                cp ../../basic/server/build.xml .
+                cp ../../basic/server/ant.properties .
+
+                sed -i '
+                    s/OGSA-DAI basic extensions/OGSA-DAI astro extensions/
+                    ' ant.properties
+
+                sed -i '
+                    s/name="basic-server"/name="astro-server"/
+                    ' build.xml
+
+                sed -i '
+                    s/OGSA-DAI basic extensions/OGSA-DAI astro extensions/
+                    ' build.xml
+
+cat >> ant.properties << EOF
+# ZRQ 20130201
+apachehc.lib.dir=\${dependencies.dir}/org/apache/hc/4.0.1
+starlink.lib.dir=\${dependencies.dir}/stil/2.8/
+EOF
+
+            sed -i '
+            /<path id="module.build.classpath">/,/<\/path>/ {
+                /<\/path>/i \
+                    <!--+ ZRQ 20130201 +--> \
+                    <fileset dir="${apachehc.lib.dir}"> \
+                      <include name="**/*.jar"/> \
+                    </fileset> \
+                    <fileset dir="${starlink.lib.dir}"> \
+                      <include name="**/*.jar"/> \
+                    </fileset> \
+                    <!--+ ZRQ 20130201 +--> \
+                    
+                }
+            ' build.xml
+
+            popd
+
+            #
+            # Build the binary release using the modified source.
+            ant -Ddependencies.dir=${OGSADAI_CODE?}/third-party/dependencies clean buildBinaryRelease
+
+            #
+            # Transfer the resulting war and jar files into our local Maven repository.
+            mvn install:install-file  \
+                -D groupId=uk.org.ogsadai  \
+                -D artifactId=ogsadai-jersey-webapp \
+                -D version=4.2 \
+                -D packaging=war \
+                -D file=build/ogsadai-4.2-jersey-1.10-bin/dai.war
+
+            mvn install:install-file  \
+                -D groupId=uk.org.ogsadai  \
+                -D artifactId=ogsadai-server \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D file=src/core/server/build/lib/ogsadai-server-4.2.jar
+
+            mvn install:install-file  \
+                -D groupId=uk.org.ogsadai  \
+                -D artifactId=ogsadai-clientserver \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D file=src/core/clientserver/build/lib/ogsadai-clientserver-4.2.jar
+
+            mvn install:install-file  \
+                -D groupId=uk.org.ogsadai  \
+                -D artifactId=ogsadai-dqp-server \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D file=src/extensions/dqp/server/build/lib/ogsadai-dqp-server-4.2.jar
+
+            mvn install:install-file  \
+                -D groupId=uk.org.ogsadai  \
+                -D artifactId=ogsadai-astro-client \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D file=src/extensions/astro/client/build/lib/ogsadai-astro-client-4.2.jar
+
+            mvn install:install-file  \
+                -D groupId=uk.org.ogsadai  \
+                -D artifactId=ogsadai-astro-server \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D file=src/extensions/astro/server/build/lib/ogsadai-astro-server-4.2.jar
+
+        popd
+    popd
 
