@@ -1039,5 +1039,30 @@ EOF
         popd
     popd
 
+# --------------------------------------------------------------------------
+# Comparing with an example in the OGSA-DAI documentation
+# http://ogsa-dai.sourceforge.net/documentation/ogsadai4.1/ogsadai4.1-axis/ConfigDeployIntro.html
+
+    Activity add uk.org.ogsadai.CreateDQPResource uk.org.ogsadai.activity.dqp.CreateDQPResourceActivity "A DQP factory"
+    Activity addConfig uk.org.ogsadai.CreateDQPResource dqp.config.dir dqp
+    Activity addConfig uk.org.ogsadai.CreateDQPResource dai.template.id uk.org.ogsadai.DQP_RESOURCE_TEMPLATE
+    Resource addActivity DataRequestExecutionResource uk.org.ogsadai.CreateDQPResource uk.org.ogsadai.CreateDQPResource
+
+    "
+    Instructs OGSA-DAI to support an activity called uk.org.ogsadai.CreateDQPResource, telling it the name of the implementation class and an English-language description (line 1).
+    It then sets two configuration properties of this activity (lines 2 and 3). Finally, it configures the resource called DataRequestExecutionResource to expose this activity.
+    "
+
+Note they use the *activity name* to add it to the DRER not the implementation class.
+We copied the existing entry for ADQLQueryActivity, using the class name rather than the activity name.
+
+# --------------------------------------------------------------------------
+# Editing, rebuilding and testing .... 
+
+
+
+
+
+
 
 
