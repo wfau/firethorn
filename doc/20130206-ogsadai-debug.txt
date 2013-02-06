@@ -1,0 +1,90 @@
+
+
+# --------------------------------------------------------------------------
+# Starting a new notes file ....
+#
+
+#
+# Created a set of shell scripts to build and deploy the ogsa-dai webapp.
+
+    #
+    # Override the settings for OGSADAI_BASE and FIRETHORN_BASE to change the location used by the scripts.
+    # OGSADAI_BASE=....
+    # FIRETHORN_BASE=....
+    #
+
+FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
+FIRETHORN_NAME=devel
+FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
+
+    echo "----"
+    echo "Checking FIRETHORN source code"
+    if [ ! -e "${FIRETHORN_BASE?}" ]
+    then
+        mkdir "${FIRETHORN_BASE?}"
+    fi
+
+    if [ ! -e "${FIRETHORN_BASE?}" ]
+    then
+        echo "ERROR : can't find FIRETHORN base directory at [${FIRETHORN_BASE?}]"
+    else
+
+        pushd "${FIRETHORN_BASE?}
+
+            if [ ! -e "$(FIRETHORN_NAME?)" ]
+            then
+                hg clone 'http://wfau.metagrid.co.uk/code/firethorn' "$(FIRETHORN_NAME?)"
+            else
+                pushd "$(FIRETHORN_NAME?)"
+                    hg fetch
+# If you don't have the fetch extension installed
+# hg pull
+# hg update
+                popd
+            fi
+        popd
+    fi
+
+if [ ! -e "${FIRETHORN_CODE?}" ]
+then
+    echo "ERROR : can't find FIRETHORN source code at [${FIRETHORN_CODE?}]"
+else
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/ogsadai"
+
+        chmod a+x bin/ogsadai-build.sh
+        chmod a+x bin/ogsadai-tomcat.sh
+        chmod a+x bin/ogsadai-test.sh
+
+    popd
+fi
+
+#---------------------------------------------------
+# To run the build ...
+#
+
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/ogsadai"
+
+        bin/ogsadai-build.sh
+
+    popd
+
+#---------------------------------------------------
+# To deploy in Tomcat ...
+#
+
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/ogsadai"
+
+        bin/ogsadai-build.sh
+
+    popd
+
+#---------------------------------------------------
+# To run the tests ...
+#
+
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/ogsadai"
+
+        bin/ogsadai-test.sh
+
+    popd
+

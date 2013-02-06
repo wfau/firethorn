@@ -1125,3 +1125,11 @@ We copied the existing entry for ADQLQueryActivity, using the class name rather 
 
     2013-02-06 12:16:05,387 WARN  event.LoggingActivityListener [pool-1-thread-13,warnExceptionAndChildren:343] #1360152965381:9# A problem has occurred during processing of activity uk.org.ogsadai.IfEmptyList with instance name uk.org.ogsadai.IfEmptyList-ogsadai-f407cbad-3b9f-40f3-9645-2d1d8760500f.
 
+# --------------------------------------------------------------------------
+# Starting a new file for notes ....
+# Updating build steps to add the fix for the CreateEmptyTupleListActivity
+#
+
+
+
+
