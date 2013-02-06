@@ -29,7 +29,7 @@ else
     pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/firethorn"
 
         mvn -D test=SimpleQueryTestCase test
-        mvn -D test=DqpQueryTestCase test
+        mvn -D test=DqpQueryTestCase    test
 
     popd
 fi
