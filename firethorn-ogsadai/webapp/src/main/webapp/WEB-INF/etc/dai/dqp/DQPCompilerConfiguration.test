@@ -49,18 +49,13 @@
 	        <bean class="uk.org.ogsadai.dqp.lqp.optimiser.implosion.ExtendedTableScanImplosionOptimiser">
                 <property name="partitioner" ref="partitioner"/>
                 <property name="cardinalityEstimator" ref="cardinalityEstimator"/>
-                <property name="tableScanImplosionOptimiser">
-                    <bean class="uk.org.ogsadai.dqp.lqp.optimiser.implosion.TableScanImplosionOptimiser">
-                        <property name="cardinalityEstimator" ref="cardinalityEstimator"/>
-                    </bean>
-                </property>
 	        </bean>
              -->
             <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.JoinImplementationOptimiser">
                 <property name="joinImplementations">
                     <list>
                         <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.EquiJoinBatch">
-                            <property name="batchSize" value="10000" />
+                            <property name="batchSize" value="1000" />
                         </bean>
                         <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.InMemoryJoin"/>
                         <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.OrderedSweepJoin"/>
@@ -103,11 +98,7 @@
 	            <map>
 	                <entry key="DEFAULT"> <bean class="uk.org.ogsadai.dqp.execute.workflow.ProductSelectBuilder" /> </entry>
 	                <entry key="PRIMARY_EXPRESSION"> <bean class="uk.org.ogsadai.dqp.execute.workflow.ThetaJoinBuilder"/> </entry>
-                    <entry key="EquiJoinBatch"> 
-                        <bean class="uk.org.ogsadai.dqp.execute.workflow.BatchJoinBuilder">
-                            <property name="batchSize" value="10000" />
-                        </bean>
-                    </entry>
+                    <entry key="EquiJoinBatch"> <bean class="uk.org.ogsadai.dqp.execute.workflow.BatchJoinBuilder"/> </entry>
                     <entry key="PLANE_SWEEP"> <bean class="uk.org.ogsadai.dqp.execute.workflow.OrderedSweepJoinBuilder"/> </entry>
                     <entry key="DERBY_JOIN">
                        <bean class="uk.org.ogsadai.dqp.execute.workflow.DerbyJoinBuilder">
@@ -157,23 +148,12 @@
 	        <entry key="TABLE_SCAN">
 	            <map>
     	            <entry key="DEFAULT"> <bean class="uk.org.ogsadai.dqp.execute.workflow.TableScanBuilder"/></entry>
-                    <entry key="filteredTableScan"> 
-                        <bean class="uk.org.ogsadai.dqp.execute.workflow.BatchTableScanBuilder">
-                            <property name="tableScanImplosionOptimiser">
-                                <bean class="uk.org.ogsadai.dqp.lqp.optimiser.implosion.ExtendedTableScanImplosionOptimiser">
-                                    <property name="partitioner" ref="partitioner"/>
-                                    <property name="cardinalityEstimator" ref="cardinalityEstimator"/>
-                                </bean>
-                            </property>
-                        </bean>
-                    </entry>
+                    <!--entry key="filteredTableScan"> <bean class="uk.org.ogsadai.dqp.execute.workflow.BatchTableScanBuilder"/></entry-->
                 </map>
 	        </entry>
-	        <!-- 
 	        <entry key="FILTERED_TABLE_SCAN">
 	            <map><entry key="DEFAULT"> <bean class="uk.org.ogsadai.dqp.execute.workflow.FilteredTableScanBuilder"/></entry></map>
 	        </entry>
-	         -->
 	        <entry key="UNION">
 	            <map><entry key="DEFAULT"> <bean class="uk.org.ogsadai.dqp.execute.workflow.UnionBuilder"/></entry></map>
 	        </entry>
