@@ -609,3 +609,50 @@ EOF
 
     Caused by: java.lang.Exception: Configuration exception: No builder defined for operator uk.org.ogsadai.dqp.lqp.operators.TableScanOperator and implementation annotation 'filteredTableScan'.
 
+# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
+# Amy gave us a new compiler configuration file.
+# Added the new config to our hg code base for now.
+# Amy has checked the updated config onto the ogsa-dai svn, in which case in the long run we shouldn't need our own copy.
+#
+
+# --------------------------------------------------------------------------
+# Moving on to the next problem ...
+#
+
+    2013-02-06 09:56:15,555 DEBUG io.BufferedPipe [pool-6-thread-7,debug:84] Created a BufferedPipe: ogsadai-7244777e-c9d9-41bc-bd55-37204791f1c4
+    2013-02-06 09:56:15,562 DEBUG execute.Coordinator [pool-6-thread-5,debug:84] EXECUTION EXCEPTION: LOCAL PARTITION (EvaluationNode [URL=http://localhost:8081/albert/services])(NIL (RENAME (PROJECT (INNER_THETA_JOIN (RENAME (TABLE_SCAN null)) (TABLE_SCAN null)))))
+    2013-02-06 09:56:15,565 DEBUG execute.Coordinator [pool-6-thread-5,debug:84] uk.org.ogsadai.dqp.execute.ExecutionException: [1360144575562:125] uk.org.ogsadai.EXECUTION_ERROR
+	    at uk.org.ogsadai.activity.dqp.SQLQueryActivity.executeConnectedPipeline(SQLQueryActivity.java:598)
+	    at uk.org.ogsadai.activity.dqp.SQLQueryActivity.executePipeline(SQLQueryActivity.java:493)
+	    at uk.org.ogsadai.dqp.execute.partition.LocalPartition.execute(LocalPartition.java:152)
+	    at uk.org.ogsadai.dqp.execute.Coordinator$1.call(Coordinator.java:386)
+	    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	    at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	    at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	    at java.lang.Thread.run(Thread.java:679)
+    Caused by: uk.org.ogsadai.exception.RequestUserException: A user problem has occurred during request processing.
+	    at uk.org.ogsadai.activity.concurrency.ActivityPipelineProcessingTask.createActivities(ActivityPipelineProcessingTask.java:132)
+	    at uk.org.ogsadai.activity.concurrency.ActivityPipelineProcessingTask.call(ActivityPipelineProcessingTask.java:100)
+	    ... 5 more
+    Caused by: uk.org.ogsadai.activity.ActivityUserException: A user problem has occured during activity processing.
+	    at uk.org.ogsadai.activity.SimpleActivityFactory.createActivity(SimpleActivityFactory.java:151)
+	    at uk.org.ogsadai.activity.SimpleActivityFactory.createActivities(SimpleActivityFactory.java:91)
+	    at uk.org.ogsadai.activity.extension.InitialisingActivityFactory.createActivities(InitialisingActivityFactory.java:66)
+	    at uk.org.ogsadai.activity.event.EventfulActivityFactory.createActivities(EventfulActivityFactory.java:67)
+	    at uk.org.ogsadai.activity.concurrency.ActivityPipelineProcessingTask.createActivities(ActivityPipelineProcessingTask.java:123)
+	    ... 6 more
+    Caused by: uk.org.ogsadai.activity.UnsupportedActivityException: An activity named uk.org.ogsadai.CreateEmptyTupleList is not supported by the resource DataRequestExecutionResource.
+	    ... 11 more
+
+
+
+
+
+
+
+
