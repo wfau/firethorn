@@ -91,21 +91,21 @@ extends SimpleQueryTestBase
             "    twomass.dec AS tmdec," +
             "    ukidss.dec  AS ukdec,"  +
             "    (twomass.ra - ukidss.ra) AS difdec," +
-            "    match.distanceMins AS dist" +
+            "    neighbour.distanceMins AS dist" +
             " FROM" +
             "    TWOMASS.dbo.twomass_psc AS twomass," +
             "    UKIDSSDR5PLUS.dbo.gcsPointSource AS ukidss," +
-            "    UKIDSSDR5PLUS.dbo.gcsSourceXtwomass_psc AS match" +
+            "    UKIDSSDR5PLUS.dbo.gcsSourceXtwomass_psc AS neighbour" +
             " WHERE" +
             "    ukidss.ra  BETWEEN '55.0' AND '55.9'" +
             " AND" +
             "    ukidss.dec BETWEEN '20.0' AND '22.9'" +
             " AND" +
-            "    match.masterObjID = ukidss.sourceID" +
+            "    neighbour.masterObjID = ukidss.sourceID" +
             " AND" +
-            "    match.slaveObjID = twomass.pts_key" +
+            "    neighbour.slaveObjID = twomass.pts_key" +
             " AND" +
-            "    match.distanceMins < 1E-3"
+            "    neighbour.distanceMins < 1E-3"
             );
         }
 
@@ -127,21 +127,21 @@ extends SimpleQueryTestBase
             "    twomass.dec AS tmdec," +
             "    ukidss.dec  AS ukdec,"  +
             "    (twomass.ra - ukidss.ra) AS difdec," +
-            "    match.distanceMins AS dist" +
+            "    neighbour.distanceMins AS dist" +
             " FROM" +
             "    table20 AS twomass," +
             "    table21 AS ukidss," +
-            "    table22 AS match" +
+            "    table22 AS neighbour" +
             " WHERE" +
             "    ukidss.ra  BETWEEN '55.0' AND '55.9'" +
             " AND" +
             "    ukidss.dec BETWEEN '20.0' AND '22.9'" +
             " AND" +
-            "    match.masterObjID = ukidss.sourceID" +
+            "    neighbour.masterObjID = ukidss.sourceID" +
             " AND" +
-            "    match.slaveObjID = twomass.pts_key" +
+            "    neighbour.slaveObjID = twomass.pts_key" +
             " AND" +
-            "    match.distanceMins < 1E-3"
+            "    neighbour.distanceMins < 1E-3"
             );
         }
     }

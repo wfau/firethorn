@@ -80,3 +80,11 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 #
 
 
+
+    2013-02-07 13:19:11,043 DEBUG metadata.TableMappingServiceMock [pool-6-thread-2,get:91] get(String) [table22]
+    2013-02-07 13:19:11,044 DEBUG metadata.TableMappingServiceMock [pool-6-thread-2,get:91] get(String) [table21]
+    2013-02-07 13:19:11,045 DEBUG metadata.TableMappingServiceMock [pool-6-thread-2,get:91] get(String) [UKIDSSDR5PLUS.dbo.gcsPointSource]
+    java.lang.RuntimeException: uk.org.ogsadai.dqp.lqp.exceptions.TableNotFoundException: Table not found UKIDSSDR5PLUS.dbo.gcsPointSource
+	    at uk.org.ogsadai.expression.arithmetic.visitors.AttrRenameToPhysicalAttrArithmeticExprVisitor.visitTableColumn(AttrRenameToPhysicalAttrArithmeticExprVisitor.java:85)
+
+

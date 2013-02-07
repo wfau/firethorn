@@ -196,7 +196,6 @@
 
 #-----------------------------------------
 
-
     useradd Stelios
     usermod -a -G users Stelios
     
@@ -212,6 +211,22 @@
     restorecon -R -v      /home/Stelios/.ssh
     chmod g=,o=,u=rwx     /home/Stelios/.ssh
 
+#-----------------------------------------
+
+    useradd Amy
+    usermod -a -G users Amy
+    
+    mkdir /home/Amy/.ssh
+    pushd /home/Amy/.ssh
+        
+        #wget http://data.metagrid.co.uk/sshkeys/amy.roe.ac.uk.pub
+        #cat amy.roe.ac.uk.pub >> authorized_keys
+
+    popd
+    
+    chown Amy:Amy       /home/Amy/.ssh
+    restorecon -R -v    /home/Amy/.ssh
+    chmod g=,o=,u=rwx   /home/Amy/.ssh
 
 #-----------------------------------------
 

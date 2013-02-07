@@ -111,3 +111,4 @@ public class StatisticsServiceMock
         return new HistogramBasedAttributeStatistics(); 
         }
     }
+

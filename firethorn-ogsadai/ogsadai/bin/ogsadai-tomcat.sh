@@ -43,7 +43,7 @@ else
 
         #
         # Run the webapp in Tomcat
-        mvn tomcat6:run
+        mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
 
     popd
 fi
