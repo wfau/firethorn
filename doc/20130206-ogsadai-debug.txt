@@ -84,6 +84,7 @@ fi
     pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/ogsadai"
 
         source 'bin/ogsadai-test.sh'
+
     popd
 
 
