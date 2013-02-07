@@ -1,0 +1,16 @@
+TOP 1000 Ukidss.gcsPointSource_psc 
+----------------------------------
+(SELECT top 1000 * from gcsPointSource_psc  where ra between '55.0' AND '55.9')
+
+
+
+TOP 1000 twomass_psc
+--------------------
+(SELECT top 1000 * from twomass_psc  where ra between '55.0' AND '55.9')
+
+
+
+TOP 1000 Match
+-------------
+
+select top 1000 * from gcsSourceXtwomass_psc where masterObjID between '442383650253' and '442383843095' and slaveObjID between '728548380' and '1181082776'
