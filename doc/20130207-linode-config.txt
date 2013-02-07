@@ -1,0 +1,276 @@
+#--------------------------------------------------------
+# Setting up external VM on linode.
+#
+
+    Linode  1024
+
+        memory  1G
+        disc    48GB
+        data    400G
+
+        host    li473-226.members.linode.com
+        ipv4    176.58.108.226
+        ipv6    2a01:7e00::f03c:91ff:fe70:73fa
+
+    EasyDNS
+
+        ogsadai-one.gentap.org
+            A       176.58.108.226
+            AAAA    2a01:7e00::f03c:91ff:fe70:73fa
+
+# ----------------------------------------------------------
+# CentOS 6.2
+
+#
+# Login using password.
+[Zarquan@threonine ~]$ 
+
+    ssh root@ogsadai-one.gentap.org
+
+#
+# Install our SSH keys.
+[root@linode ~]#
+
+    mkdir /root/.ssh
+    pushd /root/.ssh
+    
+        wget http://data.metagrid.co.uk/sshkeys/zarquan.metagrid.co.uk.pub
+        wget http://data.metagrid.co.uk/sshkeys/stelios.roe.ac.uk.pub
+            
+        cat zarquan.metagrid.co.uk.pub >> authorized_keys
+        cat stelios.roe.ac.uk.pub      >> authorized_keys
+
+    popd
+
+    chown root:root   /root/.ssh
+    restorecon -R -v  /root/.ssh
+    chmod g=,o=,u=rwx /root/.ssh
+
+    exit
+    
+#
+# Login using keys.
+[Zarquan@threonine ~]$ 
+
+    ssh root@ogsadai-one.gentap.org
+
+#
+# Install EPEL repository.
+[root@linode ~]#
+
+    yum -y localinstall --nogpgcheck \
+        https://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+
+#
+# Allow http port 8080 through the firewall.
+[root@linode ~]#
+
+    vi /etc/sysconfig/iptables
+
+        -A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+    +   -A INPUT -m state --state NEW -m tcp -p tcp --dport 8080 -j ACCEPT
+    
+    vi /etc/sysconfig/ip6tables
+
+        -A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+    +   -A INPUT -m state --state NEW -m tcp -p tcp --dport 8080 -j ACCEPT
+
+    service iptables  restart
+    service ip6tables restart
+    
+#
+# Install Apache and PHP.
+[root@linode ~]#
+
+        yum -y install httpd
+        yum -y install php php-gd php-mbstring php-mysql php-pear php-xml
+
+#
+# Install mysql and pgsql.
+[root@linode ~]#
+
+        yum -y install mysql-server
+        yum -y install postgresql-server
+
+# ----------------------------------------------------------
+# CentOS 6.2, Java and Maven.
+
+#
+# Install Java 1.6 and 1.7
+[root@linode ~]#
+
+        yum -y install java-1.6.0-openjdk
+        yum -y install java-1.6.0-openjdk-devel
+
+        yum -y install java-1.7.0-openjdk
+        yum -y install java-1.7.0-openjdk-devel
+
+#
+# Install Tomcat
+[root@linode ~]#
+
+        yum -y install tomcat6 tomcat6-webapps tomcat6-admin-webapps
+        yum -y install tomcat-native
+
+#
+# Install Mercurial, Subversion and Git 
+[root@linode ~]#
+
+    yum -y install mercurial
+    yum -y install subversion
+    yum -y install git
+
+#
+# Install Maven
+[root@zeta ~]#
+
+    mkdir /var/local/projects
+    chgrp users /var/local/projects
+    chmod g+rws /var/local/projects
+
+    mkdir /var/local/toolkits
+    chgrp users /var/local/toolkits
+    chmod g+rws /var/local/toolkits
+
+    mkdir /var/local/toolkits/maven
+    pushd /var/local/toolkits/maven
+
+        mkdir downloads
+        pushd downloads
+
+            wget http://www.mirrorservice.org/sites/ftp.apache.org/maven/maven-3/3.0.4/binaries/apache-maven-3.0.4-bin.tar.gz
+
+            md5sum apache-maven-3.0.4-bin.tar.gz 
+            >   e513740978238cb9e4d482103751f6b7  apache-maven-3.0.4-bin.tar.gz
+
+        popd
+
+        tar xvf downloads/apache-maven-3.0.4-bin.tar.gz 
+        ln -s apache-maven-3.0.4 current
+
+        mkdir repository
+        chgrp users repository
+        chmod g+rws repository
+
+    popd
+
+#
+# Add Maven to the shell path.
+[root@zeta ~]#
+
+    vi /etc/profile.d/maven.sh
+
+    +   #!/bin/sh
+    +   #
+    +   # Manual install of Apache Maven.
+    +   # http://maven.apache.org/download.html
+    +   export M2_HOME=/var/local/toolkits/maven/current
+    +   export PATH=${M2_HOME}/bin:${PATH} 
+
+#
+# Add local repository to the Maven config.
+[root@zeta ~]#
+
+    vi /var/local/toolkits/maven/current/conf/settings.xml
+
+    +   <localRepository>/var/local/toolkits/maven/repository</localRepository>
+
+#
+# Create test user(s).
+[root@zeta ~]#
+
+    useradd Dave
+    usermod -a -G users Dave
+    
+    mkdir /home/Dave/.ssh
+    pushd /home/Dave/.ssh
+        
+        wget http://data.metagrid.co.uk/sshkeys/zarquan.metagrid.co.uk.pub
+        cat zarquan.metagrid.co.uk.pub >> authorized_keys
+
+    popd
+    
+    chown Dave:Dave /home/Dave/.ssh
+    restorecon -R -v  /home/Dave/.ssh
+    chmod g=,o=,u=rwx /home/Dave/.ssh
+
+#-----------------------------------------
+
+
+    useradd Stelios
+    usermod -a -G users Stelios
+    
+    mkdir /home/Stelios/.ssh
+    pushd /home/Stelios/.ssh
+        
+        wget http://data.metagrid.co.uk/sshkeys/stelios.roe.ac.uk.pub
+        cat stelios.roe.ac.uk.pub >> authorized_keys
+
+    popd
+    
+    chown Stelios:Stelios /home/Stelios/.ssh
+    restorecon -R -v      /home/Stelios/.ssh
+    chmod g=,o=,u=rwx     /home/Stelios/.ssh
+
+
+#-----------------------------------------
+
+    ssh Dave@ogsadai-one.gentap.org
+
+#
+# Open the SSH tunnel to ROE.
+[albert@zeta ~]$
+
+#    ssh -v -M -N -f -S /tmp/fenrir.ssh.sock  dave@fenrir.roe.ac.uk 
+#    ssh -v    -N -f -S /tmp/fenrir.ssh.sock -L 1433:ramses3:1433 dave@fenrir.roe.ac.uk 
+
+    ssh -v -L 1433:ramses3:1433 dave@fenrir.roe.ac.uk 
+
+# --------------------------------------------------------------------------
+#
+
+FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
+FIRETHORN_NAME=devel
+FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
+
+    echo "----"
+    echo "Checking FIRETHORN source code"
+    if [ ! -e "${FIRETHORN_BASE?}" ]
+    then
+        mkdir "${FIRETHORN_BASE?}"
+    fi
+
+    if [ ! -e "${FIRETHORN_BASE?}" ]
+    then
+        echo "ERROR : can't find FIRETHORN base directory at [${FIRETHORN_BASE?}]"
+    else
+        pushd "${FIRETHORN_BASE?}"
+
+            if [ ! -e "${FIRETHORN_NAME?}" ]
+            then
+                hg clone 'http://wfau.metagrid.co.uk/code/firethorn' "${FIRETHORN_NAME?}"
+            else
+                pushd "${FIRETHORN_NAME?}"
+                    hg fetch
+# If you don't have the fetch extension installed
+# hg pull
+# hg update
+                popd
+            fi
+        popd
+    fi
+
+if [ ! -e "${FIRETHORN_CODE?}" ]
+then
+    echo "ERROR : can't find FIRETHORN source code at [${FIRETHORN_CODE?}]"
+else
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/ogsadai"
+
+        chmod a+x bin/ogsadai-build.sh
+        chmod a+x bin/ogsadai-tomcat.sh
+        chmod a+x bin/ogsadai-test.sh
+
+    popd
+fi
+    
+
