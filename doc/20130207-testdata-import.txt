@@ -187,16 +187,22 @@ TESTDATA_DATA="${FIRETHORN_CODE?}/firethorn-gui/firethorn-webpy-gui/test-data"
     pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
 
     psql -w --user ${pgsqluser} ${pgsqldata?}
+        \pset pager off
 
         \d
-         Schema |    Name     | Type  |   Owner    
-        --------+-------------+-------+------------
-         public | twomass_psc | table | emureijoey
-
         \d "twomass_psc"
 
-        -- Fix for column name
+        -- Fix for VOTable column name
         ALTER TABLE "twomass_psc" RENAME COLUMN "dec_" TO "dec"
+
+        -- Test query
+        SELECT
+            twomass_psc.ra,
+            twomass_psc.dec,
+            twomass_psc.pts_key
+        FROM
+            twomass_psc
+            ;
 
         \q
 
@@ -207,16 +213,49 @@ TESTDATA_DATA="${FIRETHORN_CODE?}/firethorn-gui/firethorn-webpy-gui/test-data"
     pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
 
     psql -w --user ${pgsqluser} ${pgsqldata?}
-
+        \pset pager off
 
         \d
-         Schema |         Name          | Type  |   Owner    
-        --------+-----------------------+-------+------------
-         public | gcsPointSource_psc    | table | dahbohnguu
-         public | gcsSourceXtwomass_psc | table | dahbohnguu
+        \d "gcspointsource"
+        \d "gcssourcextwomass_psc"
 
-        \d "gcsPointSource_psc"
-        \d "gcsSourceXtwomass_psc"
+        -- Fix for VOTable column name
+        ALTER TABLE "gcsPointSource_psc" RENAME COLUMN "dec_" TO "dec" ;
+        ALTER TABLE "gcsPointSource_psc" RENAME TO "gcsPointSource" ;
+
+        -- Fix for Postgresql case names
+        ALTER TABLE "gcsSourceXtwomass_psc" RENAME COLUMN "slaveObjID"   TO "slaveobjid" ;
+        ALTER TABLE "gcsSourceXtwomass_psc" RENAME COLUMN "masterObjID"  TO "masterobjid" ;
+        ALTER TABLE "gcsSourceXtwomass_psc" RENAME COLUMN "distanceMins" TO "distancemins" ;
+        ALTER TABLE "gcsSourceXtwomass_psc" RENAME TO "gcssourcextwomass_psc" ;
+
+        -- Fix for Postgresql case names
+        ALTER TABLE "gcsPointSource"        RENAME COLUMN "sourceID"     TO "sourceid" ;
+        ALTER TABLE "gcsPointSource"        RENAME TO "gcspointsource" ;
+
+        -- Test query
+        SELECT
+            gcsSourceXtwomass_psc.distanceMins,
+            gcsSourceXtwomass_psc.slaveObjID,
+            gcsPointSource.ra,
+            gcsPointSource.dec
+        FROM
+            gcsSourceXtwomass_psc,
+            gcsPointSource
+        WHERE  
+            ( gcsSourceXtwomass_psc.distanceMins < 0.001 )
+        AND
+            ( gcsPointSource.ra <= '55.9' )
+        AND
+            ( gcsPointSource.dec >= '20.0' )
+        AND
+            ( gcsPointSource.ra >= '55.0' )
+        AND
+            ( gcsPointSource.dec <= '22.9' )
+        AND
+            ( gcsSourceXtwomass_psc.masterObjID = gcsPointSource.sourceID ) 
+        ;
+
         \q
 
 # --------------------------------------------------------------------------
@@ -238,9 +277,20 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 ** compile errors
 
 #---------------------------------------------------
-# Deploy in Tomcat ...
+# Build the core firethorn components. 
 #
 
+    pushd ${FIRETHORN_CODE?}
+        mvn ckean install
+    popd
+
+#---------------------------------------------------
+# Deploy the ogsadai webapp in Tomcat ...
+#
+
+    #
+    # Modify the JDBC resources to use local Postgresql database, rather than the ROE SQLServer.
+    # TODO make this switchable.
     pgsqlconfg()
         {
         local pgsqlname=${1?}
