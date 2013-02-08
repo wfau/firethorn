@@ -82,15 +82,15 @@
 # Install Apache and PHP.
 [root@linode ~]#
 
-        yum -y install httpd
-        yum -y install php php-gd php-mbstring php-mysql php-pear php-xml
+    yum -y install httpd
+    yum -y install php php-gd php-mbstring php-mysql php-pear php-xml
 
 #
 # Install mysql and pgsql.
 [root@linode ~]#
 
-        yum -y install mysql-server
-        yum -y install postgresql-server
+    yum -y install mysql-server
+    yum -y install postgresql-server
 
 # ----------------------------------------------------------
 # CentOS 6.2, Java and Maven.
@@ -99,24 +99,28 @@
 # Install Java 1.6 and 1.7
 [root@linode ~]#
 
-        yum -y install java-1.6.0-openjdk
-        yum -y install java-1.6.0-openjdk-devel
+    yum -y install java-1.6.0-openjdk
+    yum -y install java-1.6.0-openjdk-devel
 
-        yum -y install java-1.7.0-openjdk
-        yum -y install java-1.7.0-openjdk-devel
+    yum -y install java-1.7.0-openjdk
+    yum -y install java-1.7.0-openjdk-devel
+
+    #
+    # Use JDK 1.6 for now.
+    alternatives --config java
 
 #
 # Install Ant
 [root@linode ~]#
 
-        yum -y install ant
+    yum -y install ant
 
 #
 # Install Tomcat
 [root@linode ~]#
 
-        yum -y install tomcat6 tomcat6-webapps tomcat6-admin-webapps
-        yum -y install tomcat-native
+    yum -y install tomcat6 tomcat6-webapps tomcat6-admin-webapps
+    yum -y install tomcat-native
 
 #
 # Install Mercurial, Subversion and Git 

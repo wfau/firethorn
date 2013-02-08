@@ -1,6 +1,9 @@
 # --------------------------------------------------------------------------
 # Install postgresql dtabase server.
 #
+
+    ssh root@ogsadai-one.gentap.org
+
 [root@linode ~]#
 
     yum -y install pwgen
@@ -97,6 +100,9 @@ EOF
 # --------------------------------------------------------------------------
 # Importing the test data.
 #
+
+    ssh Dave@ogsadai-one.gentap.org
+
 [Dave@linode ~]#
 
 FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
@@ -206,7 +212,6 @@ TESTDATA_DATA="${FIRETHORN_CODE?}/firethorn-gui/firethorn-webpy-gui/test-data"
 
         \q
 
-
     #
     # Check UKIDSS
     pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
@@ -274,14 +279,15 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 
     popd
 
-** compile errors
-
 #---------------------------------------------------
-# Build the core firethorn components. 
+# Build the core firethorn components.
+# ** Only required once to install things like logging.
+# ** Tests require JDBC connection to ROE.
+# ** TODO - remove this requirement
 #
 
     pushd ${FIRETHORN_CODE?}
-        mvn ckean install
+        mvn clean install
     popd
 
 #---------------------------------------------------
