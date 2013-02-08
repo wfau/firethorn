@@ -194,6 +194,10 @@ TESTDATA_DATA="${FIRETHORN_CODE?}/firethorn-gui/firethorn-webpy-gui/test-data"
          public | twomass_psc | table | emureijoey
 
         \d "twomass_psc"
+
+        -- Fix for column name
+        ALTER TABLE "twomass_psc" RENAME COLUMN "dec_" TO "dec"
+
         \q
 
 
