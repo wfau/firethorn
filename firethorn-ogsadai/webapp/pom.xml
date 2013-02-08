@@ -122,6 +122,14 @@
             <groupId>net.sourceforge.jtds</groupId>
             <artifactId>jtds</artifactId>
         </dependency>
+        <!--+
+            | Postgresql JDBC driver.
+            | http://jdbc.postgresql.org/
+            +-->
+    	<dependency>
+    		<groupId>postgresql</groupId>
+    		<artifactId>postgresql</artifactId>
+    	</dependency>
 
         <!--+
             | Apache commons logging, conflicts with the version used in Mallow.
