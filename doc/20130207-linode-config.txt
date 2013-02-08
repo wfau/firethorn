@@ -106,6 +106,12 @@
         yum -y install java-1.7.0-openjdk-devel
 
 #
+# Install Ant
+[root@linode ~]#
+
+        yum -y install ant
+
+#
 # Install Tomcat
 [root@linode ~]#
 
@@ -122,7 +128,7 @@
 
 #
 # Install Maven
-[root@zeta ~]#
+[root@linode ~]#
 
     mkdir /var/local/projects
     chgrp users /var/local/projects
@@ -156,7 +162,7 @@
 
 #
 # Add Maven to the shell path.
-[root@zeta ~]#
+[root@linode ~]#
 
     vi /etc/profile.d/maven.sh
 
@@ -169,7 +175,7 @@
 
 #
 # Add local repository to the Maven config.
-[root@zeta ~]#
+[root@linode ~]#
 
     vi /var/local/toolkits/maven/current/conf/settings.xml
 
@@ -177,7 +183,7 @@
 
 #
 # Create test user(s).
-[root@zeta ~]#
+[root@linode ~]#
 
     useradd Dave
     usermod -a -G users Dave
@@ -190,11 +196,12 @@
 
     popd
     
-    chown Dave:Dave /home/Dave/.ssh
+    chown Dave:Dave   /home/Dave/.ssh
     restorecon -R -v  /home/Dave/.ssh
     chmod g=,o=,u=rwx /home/Dave/.ssh
 
 #-----------------------------------------
+[root@linode ~]#
 
     useradd Stelios
     usermod -a -G users Stelios
@@ -212,6 +219,7 @@
     chmod g=,o=,u=rwx     /home/Stelios/.ssh
 
 #-----------------------------------------
+[root@linode ~]#
 
     useradd Amy
     usermod -a -G users Amy
@@ -224,9 +232,9 @@
 
     popd
     
-    chown Amy:Amy       /home/Amy/.ssh
-    restorecon -R -v    /home/Amy/.ssh
-    chmod g=,o=,u=rwx   /home/Amy/.ssh
+    chown Amy:Amy     /home/Amy/.ssh
+    restorecon -R -v  /home/Amy/.ssh
+    chmod g=,o=,u=rwx /home/Amy/.ssh
 
 #-----------------------------------------
 
@@ -234,7 +242,7 @@
 
 #
 # Open the SSH tunnel to ROE.
-[albert@zeta ~]$
+[Dave@linode ~]#
 
 #    ssh -v -M -N -f -S /tmp/fenrir.ssh.sock  dave@fenrir.roe.ac.uk 
 #    ssh -v    -N -f -S /tmp/fenrir.ssh.sock -L 1433:ramses3:1433 dave@fenrir.roe.ac.uk 
@@ -242,7 +250,8 @@
     ssh -v -L 1433:ramses3:1433 dave@fenrir.roe.ac.uk 
 
 # --------------------------------------------------------------------------
-#
+# Import the firethorn source code.
+[Dave@linode ~]#
 
 FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
 FIRETHORN_NAME=devel
@@ -275,17 +284,5 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
         popd
     fi
 
-if [ ! -e "${FIRETHORN_CODE?}" ]
-then
-    echo "ERROR : can't find FIRETHORN source code at [${FIRETHORN_CODE?}]"
-else
-    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/ogsadai"
 
-        chmod a+x bin/ogsadai-build.sh
-        chmod a+x bin/ogsadai-tomcat.sh
-        chmod a+x bin/ogsadai-test.sh
-
-    popd
-fi
-    
 

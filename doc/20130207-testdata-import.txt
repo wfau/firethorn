@@ -1,0 +1,309 @@
+# --------------------------------------------------------------------------
+# Install postgresql dtabase server.
+#
+[root@linode ~]#
+
+    yum -y install pwgen
+    yum -y install postgresql postgresql-server postgresql-jdbc
+
+    chkconfig postgresql on
+
+    service postgresql initdb
+
+    #
+    # Use MD5 passwords for local connections.
+    vi /var/lib/pgsql/data/pg_hba.conf
+    
+        # "local" is for Unix domain socket connections only
+        local   all         all                               ident
+        # IPv4 local connections:
+      - host    all         all         127.0.0.1/32          ident
+      + host    all         all         127.0.0.1/32          md5
+        # IPv6 local connections:
+      - host    all         all         ::1/128               ident
+      + host    all         all         ::1/128               md5
+
+    service postgresql start
+
+    #
+    # Create our database config files.
+    if [ ! -e /etc/firethorn ] 
+    then
+        mkdir /etc/firethorn
+    fi
+    if [ ! -e /etc/firethorn/database ] 
+    then
+        mkdir /etc/firethorn/database
+    fi
+
+#
+# Settings for the 'root' postgres password.
+cat > /etc/firethorn/database/postgres.conf << EOF
+type=pgsql
+host=localhost
+name=postgres
+user=postgres
+pass=$(pwgen -s 40 1)
+EOF
+
+#
+# Settings for the testtwomass database.
+cat > /etc/firethorn/database/testtwomass.conf << EOF
+type=pgsql
+host=localhost
+name=testtwomass
+user=$(pwgen -0 10 1)
+pass=$(pwgen -s 40 1)
+EOF
+
+#
+# Settings for the testukidss database.
+cat > /etc/firethorn/database/testukidss.conf << EOF
+type=pgsql
+host=localhost
+name=testukidss
+user=$(pwgen -0 10 1)
+pass=$(pwgen -s 40 1)
+EOF
+
+    #
+    # Set the 'root' postgres password.
+    pgsqlpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/database/postgres.conf)"
+    pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/postgres.conf)"
+    echo "ALTER ROLE ${pgsqluser?} WITH PASSWORD '${pgsqlpass?}'" | su - postgres -c 'psql postgres'
+
+    #
+    # Create the test users and databases.
+    pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+    pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+    pgsqlpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+    echo "${pgsqlhost?}:*:${pgsqldata?}:${pgsqluser?}:${pgsqlpass?}" >> /etc/firethorn/database/pgpass
+
+    echo "CREATE USER     ${pgsqluser?} WITH LOGIN PASSWORD '${pgsqlpass?}'" | su - postgres -c 'psql postgres'
+    echo "CREATE DATABASE ${pgsqldata?} WITH OWNER ${pgsqluser?}"            | su - postgres -c 'psql postgres'
+
+    pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+    pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+    pgsqlpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+    echo "${pgsqlhost?}:*:${pgsqldata?}:${pgsqluser?}:${pgsqlpass?}" >> /etc/firethorn/database/pgpass
+
+    echo "CREATE USER     ${pgsqluser?} WITH LOGIN PASSWORD '${pgsqlpass?}'" | su - postgres -c 'psql postgres'
+    echo "CREATE DATABASE ${pgsqldata?} WITH OWNER ${pgsqluser?}"            | su - postgres -c 'psql postgres'
+
+    unset pgsqldata
+    unset pgsqlpass
+    unset pgsqluser
+
+# --------------------------------------------------------------------------
+# Importing the test data.
+#
+[Dave@linode ~]#
+
+FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
+FIRETHORN_NAME=devel
+FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
+
+TESTDATA_BASE="${FIRETHORN_CODE?}/firethorn-ogsadai/ogsadai"
+TESTDATA_DATA="${FIRETHORN_CODE?}/firethorn-gui/firethorn-webpy-gui/test-data"
+
+    cp /etc/firethorn/database/pgpass ~/.pgpass
+    chmod u=rw,g=,o= ~/.pgpass
+
+    pushd "${TESTDATA_BASE?}"
+
+        if [ ! -e 'lib' ]
+        then
+            mkdir 'lib'
+        fi
+        
+        #
+        # Download the STILTS jar
+        if [ ! -e 'lib/stilts.jar' ]
+        then
+            curl --output lib/stilts.jar http://www.star.bristol.ac.uk/~mbt/stilts/stilts.jar
+        fi
+
+        #
+        # Import the twomass test data.
+        pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+        pgsqlhost="$(sed -n 's/^host=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+        pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+        pgsqlpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+
+        java \
+            -classpath lib/stilts.jar:/usr/share/java/postgresql-jdbc.jar \
+            -Djdbc.drivers=org.postgresql.Driver \
+            uk.ac.starlink.ttools.Stilts tpipe \
+            in=${TESTDATA_DATA?}/TOP1000twomass.xml \
+            omode=tosql  \
+            write=create \
+            protocol=postgresql   \
+            db=${pgsqldata?}      \
+            host=${pgsqlhost?}    \
+            user=${pgsqluser}     \
+            password=${pgsqlpass} \
+            dbtable=twomass_psc
+
+        #
+        # Import the ukidss test data.
+        pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+        pgsqlhost="$(sed -n 's/^host=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+        pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+        pgsqlpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+
+        java \
+            -classpath lib/stilts.jar:/usr/share/java/postgresql-jdbc.jar \
+            -Djdbc.drivers=org.postgresql.Driver \
+            uk.ac.starlink.ttools.Stilts tpipe \
+            in=${TESTDATA_DATA?}/TOP1000gcsPointSource.xml \
+            omode=tosql  \
+            write=create \
+            protocol=postgresql   \
+            db=${pgsqldata?}      \
+            host=${pgsqlhost?}    \
+            user=${pgsqluser}     \
+            password=${pgsqlpass} \
+            dbtable=gcsPointSource_psc
+
+        java \
+            -classpath lib/stilts.jar:/usr/share/java/postgresql-jdbc.jar \
+            -Djdbc.drivers=org.postgresql.Driver \
+            uk.ac.starlink.ttools.Stilts tpipe \
+            in=${TESTDATA_DATA?}/TOP100Match.xml \
+            omode=tosql  \
+            write=create \
+            protocol=postgresql   \
+            db=${pgsqldata?}      \
+            host=${pgsqlhost?}    \
+            user=${pgsqluser}     \
+            password=${pgsqlpass} \
+            dbtable=gcsSourceXtwomass_psc
+
+    popd
+
+    #
+    # Check TWOMASS
+    pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+    pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+
+    psql -w --user ${pgsqluser} ${pgsqldata?}
+
+        \d
+         Schema |    Name     | Type  |   Owner    
+        --------+-------------+-------+------------
+         public | twomass_psc | table | emureijoey
+
+        \d "twomass_psc"
+        \q
+
+
+    #
+    # Check UKIDSS
+    pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+    pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+
+    psql -w --user ${pgsqluser} ${pgsqldata?}
+
+
+        \d
+         Schema |         Name          | Type  |   Owner    
+        --------+-----------------------+-------+------------
+         public | gcsPointSource_psc    | table | dahbohnguu
+         public | gcsSourceXtwomass_psc | table | dahbohnguu
+
+        \d "gcsPointSource_psc"
+        \d "gcsSourceXtwomass_psc"
+        \q
+
+# --------------------------------------------------------------------------
+
+FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
+FIRETHORN_NAME=devel
+FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
+
+#---------------------------------------------------
+# Run the build ...
+#
+
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/ogsadai"
+
+        source 'bin/ogsadai-build.sh'
+
+    popd
+
+** compile errors
+
+#---------------------------------------------------
+# Deploy in Tomcat ...
+#
+
+    pgsqlconfg()
+        {
+        local pgsqlname=${1?}
+        local pgsqlconf=${2?}
+        local pgsqldrv=org.postgresql.Driver
+        local pgsqluri=jdbc:postgresql://localhost:5432
+
+        local pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/${pgsqlconf?})"
+        local pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/${pgsqlconf?})"
+        local pgsqlpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/database/${pgsqlconf?})"
+
+        #
+        # Set the database driver and url.
+        sed -i '
+            s|^dai.driver.class=.*|dai.driver.class='${pgsqldrv}'|
+            s|^dai.data.resource.uri=.*|dai.data.resource.uri='${pgsqluri}/${pgsqldata?}'|
+            ' "target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/resources/${pgsqlname?}"
+
+        #
+        # Set the database password.
+        sed -i '
+            /^id='${pgsqlname?}'/,/^END/ {
+                s|^username=.*|username='${pgsqluser?}'|
+                s|^password=.*|password='${pgsqlpass?}'|
+                }
+            ' "target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/logins.txt"
+        }
+
+    pushd ${FIRETHORN_CODE?}/firethorn-ogsadai/webapp
+
+        #
+        # Create a clean war file.
+        mvn clean compile war:war
+
+        #
+        # Set the database passwords.
+        pgsqlconfg twomass testtwomass.conf
+        pgsqlconfg ukidss  testukidss.conf
+
+        #cat target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/logins.txt
+        #cat target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/resources/twomass
+        #cat target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/resources/ukidss
+
+        #
+        # Run the webapp in Tomcat
+        mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
+
+    popd
+
+#---------------------------------------------------
+# To run the tests ...
+# *** run this in a separate terminal while the webapp is running in tomcat ***
+
+FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
+FIRETHORN_NAME=devel
+FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
+
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/firethorn"
+
+        mvn -D test=SimpleQueryTestCase test
+        mvn -D test=DqpQueryTestCase    test
+
+    popd
+
+
+
+
+
+
+

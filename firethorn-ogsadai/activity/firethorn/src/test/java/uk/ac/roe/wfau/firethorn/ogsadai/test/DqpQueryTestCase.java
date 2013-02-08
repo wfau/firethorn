@@ -112,8 +112,8 @@ extends SimpleQueryTestBase
     /**
      * Multiple catalog, TWOMASS and UKIDSSDR1, using DQP.
      *
-     */
     @Test
+     */
     public void test002()
     throws Exception
         {
@@ -136,6 +136,46 @@ extends SimpleQueryTestBase
             "    ukidss.ra  BETWEEN '55.0' AND '55.9'" +
             " AND" +
             "    ukidss.dec BETWEEN '20.0' AND '22.9'" +
+            " AND" +
+            "    neighbour.masterObjID = ukidss.sourceID" +
+            " AND" +
+            "    neighbour.slaveObjID = twomass.pts_key" +
+            " AND" +
+            "    neighbour.distanceMins < 1E-3"
+            );
+        }
+
+    /**
+     * Multiple catalog, TWOMASS and UKIDSSDR1, using DQP.
+     *
+     */
+    @Test
+    public void test003()
+    throws Exception
+        {
+        execute(
+            endpoint,
+            "mydqp",
+            " SELECT" +
+            "    twomass.ra AS tmra," +
+            "    ukidss.ra  AS ukra,"  +
+            "    (twomass.ra - ukidss.ra) AS difra," +
+            "    twomass.dec AS tmdec," +
+            "    ukidss.dec  AS ukdec,"  +
+            "    (twomass.ra - ukidss.ra) AS difdec," +
+            "    neighbour.distanceMins AS dist" +
+            " FROM" +
+            "    table20 AS twomass," +
+            "    table21 AS ukidss," +
+            "    table22 AS neighbour" +
+            " WHERE" +
+            "    ukidss.ra  >= '55.0'" +
+            " AND" +
+            "    ukidss.ra  <= '55.9'" +
+            " AND" +
+            "    ukidss.dec >= '20.0'" +
+            " AND" +
+            "    ukidss.dec <= '22.9'" +
             " AND" +
             "    neighbour.masterObjID = ukidss.sourceID" +
             " AND" +

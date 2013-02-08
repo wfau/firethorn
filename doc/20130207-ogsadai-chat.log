@@ -1,0 +1,501 @@
+	 	
+  More ▼
+ You have invited Stelios to this chat.
+ This is now a group chat. Add another person.
+ Amy Krause has joined.
+ Stelios has joined.
+ me:  Ok, see if this works then
+yay ... I get one window with shared chat
+this work for you too ?
+ Amy:  yes
+ Sent at 12:22 on Thursday
+ me:  Stelios you ok with this one ?
+ Sent at 12:24 on Thursday
+ me:  poot .. missing Stelios
+ Amy:  there he is
+ Stelios:  ok its fine with me
+ me:  ah - yay :-D
+ Stelios:  I thought of a way to make that chat wider but probably too much work
+changing the css style with firebug /web developer tools
+ Amy:  ok ... so ... what do you want to do
+ Stelios:  wonder if that would work
+but lets go ahead yupp
+ Amy:  that sounds like a lot of work :D
+ Stelios:  yea indeed
+ Amy:  almost lunchtime...;)
+ me:  ok, so the target is/was to get a simple DQP service up and running, using JDBC resources at ROE
+I created a Maven project that takes a war file, unpacks it, adds things to it and then runs it in an embedded Tomcat
+Fairly standard way of working with Tomcat/Maven, but it isn't everyones favorite
+If the bugs are due to that then .. my bad
+ Amy:  fine
+it should work like that
+ me:  All the source code is checked into our mercurial repo
+ Sent at 12:29 on Thursday
+ me:  So these are the files that are 'added' to the war file
+http://wfau.metagrid.co.uk/code/firethorn/file/ae0130beac3e/firethorn-ogsadai/webapp/src/main/webapp
+Basically, anything in this section of the source code overrides whatever is in the webapp
+We have logins.txt to handle the auth to the ROE server
+Three JDBC resources and a DQP resource
+http://wfau.metagrid.co.uk/code/firethorn/file/ae0130beac3e/firethorn-ogsadai/webapp/src/main/webapp/WEB-INF/etc/dai/resources
+Plus the config for the DQP itself.
+http://wfau.metagrid.co.uk/code/firethorn/file/ae0130beac3e/firethorn-ogsadai/webapp/src/main/webapp/WEB-INF/etc/dai/dqp/
+Note - the DQPComplierConfiguration is renamed from '.xml' to '.test' because Amy added a new one to the ogsadai source code
+This one was here just as a temp fix until I re-built the ogsadai war
+If we need to tweak it we can change this one back to .xml and it will override the confing from the war file
+ Amy:  ok that looks good
+ me:  Latest notes are here
+http://wfau.metagrid.co.uk/code/firethorn/file/tip/doc
+haven't added much since we chatted yesterday.
+in your email you mentioned checking the astro activities
+but at the moment I'm only using JDBC resources, so I was suprised it needed them
+ Amy:  but i saw afterwards that you build a jar and include them
+you don't need them for the JDBC resources
+but some of the activities are there, like the empty list one
+ me:  ok - so this is what I wasn't sure of
+the new DQP code relies on activities that are in the astro extension ?
+ Amy:  well that particular join implementation
+that's part of the prototype for astro
+that's why i said you should remove all those join implementation
+try the in-memory one first
+i think it's all there, just the batch one is very complicated
+lots of things that can go wrong
+ Sent at 12:40 on Thursday
+ Amy going to have a quick lunch
+ Amy:  :)
+ me:  oK
+ Sent at 12:49 on Thursday
+ me:  poot
+looks like ROE firewall blocks ssh connections from the vm host that I'm using :-(
+means the ssh tunneled JDBC connection won't work :-(
+ Sent at 13:08 on Thursday
+ Stelios:  hm
+ me:  I was tring to setup the test on the vm so that yu could access it if needed
+rather than me posting fragments of logs
+never mind
+will do it on local to test for now
+ Sent at 13:12 on Thursday
+ me:  The simple JDBC test still works :-)
+The DQP query fails - different reason this time
+ Sent at 13:19 on Thursday
+ me:  So this is with the changes to DQPCompilerConfiguration.xml recommended by Amy
+Need to check I haven't broken anything else
+The exception is
+2013-02-07 13:19:11,044 DEBUG metadata.TableMappingServiceMock [pool-6-thread-2,get:91] get(String) [table21]
+2013-02-07 13:19:11,045 DEBUG metadata.TableMappingServiceMock [pool-6-thread-2,get:91] get(String) [UKIDSSDR5PLUS.dbo.gcsPointSource]
+java.lang.RuntimeException: uk.org.ogsadai.dqp.lqp.exceptions.TableNotFoundException: Table not found UKIDSSDR5PLUS.dbo.gcsPointSource
+       at uk.org.ogsadai.expression.arithmetic.visitors.AttrRenameToPhysicalAttrArithmeticExprVisitor.visitTableColumn(AttrRenameToPhysicalAttrArithmeticExprVisitor.java:85)
+       at uk.org.ogsadai.expression.arithmetic.TableColumn.accept(TableColumn.java:280)
+which may be due to config error on my part
+ Sent at 13:22 on Thursday
+ me:  Stelios, could you hae a go at getting some test data for us to experiment with.
+ Stelios:  sure
+ me:  hmm ... not sure if that will work
+ Stelios:  what do we need
+ me:  worth a try though
+ok
+The test queries are here
+http://wfau.metagrid.co.uk/code/firethorn/file/8199e5ed39ab/firethorn-ogsadai/activity/firethorn/src/test/java/uk/ac/roe/wfau/firethorn/ogsadai/test/DqpQueryTestCase.java
+Don't need exactly these but something close
+test001 does the join by taking advantage of the fact that in SQLServer, we an see all of the other databases
+so 'uber' actually connects to the XMM database, but we can 'see' the others and query them
+test002 trie todo the same thing using DQP to do the join
+so DQP has JDBC resources that connect to the twomass and ukidss databases at ROE
+which works on our machines .....
+two problems with this
+1) it isn't portable, so Amy won't be able to use it because you need a ssh login to ROE to setup the tunneled JDBC connections
+ Amy:  ok i'm back
+ me:  2) it looks like the ROE firewall is blocking ssh acces from the cloud VM I was using
+Hiya :-)
+Amy - the shared VM is provinmg complicated ... issues with the ROE firewall
+so I'm running the tests on my machine here
+means I have to make the changesrun the tests and then post the logs which is a slow process
+ Amy:  ok
+table not found would be a problem at the metadata service
+ me:  I made the change to the DQP compiler config and an a new test ... got 'table not found'
+ok
+ Amy:  mmm
+ me:  we are also looking at getting some test data prepared so that we can test without the ROE databases
+So Stelios - can you create some test data by running queries on the TAP services ?
+we need a small subset of data from the three tables that overlaps
+ Stelios:  yea
+ me:  TWOMASS.dbo.twomass_psc
+UKIDSSDR5PLUS.dbo.gcsPointSource
+and
+UKIDSSDR5PLUS.dbo.gcsSourceXtwomass_psc
+if yo could collect some votables and upload them to hg that would be useful
+somewhere in the region of 1,000 rows would be ok
+ Stelios:  yup are we looking for any specific queries or any area selection
+ me:  doing the joins in DQP I saw a query in the logs last nght
+""SELECT ra,dec, ptskey FROM twomass_psc"
+which means it is getting the whole set .... which could be big
+ Stelios:  top 1000?
+ me:  yes - but they need to overlap
+if we have votables for the three sets of data then we can import them into a local postgresql database
+ Sent at 13:36 on Thursday
+ Stelios:  ok just need to restart my computer one sec
+ me:  Amy - I made the change to the DQPcomilerConfig
+haven't tweaked the list of activities yet
+ Stelios has left.
+ Amy:  ok
+with the changes in the compiler config it should be alright even without the activities
+ me:  Looks like we are using the astro implementation of IfEmptyList
+ Amy:  ok good
+ Sent at 13:40 on Thursday
+ me:  id=uk.org.ogsadai.IfEmptyList
+       class=uk.org.ogsadai.activity.astro.IfEmptyListActivity
+That is in the webapp activities.txt
+ Amy:  looks good
+ Sent at 13:44 on Thursday
+ me:  Compiler config is this
+http://wfau.metagrid.co.uk/code/firethorn/file/tip/firethorn-ogsadai/webapp/src/main/webapp/WEB-INF/etc/dai/dqp/DQPCompilerConfiguration.xml#l58
+Question ... why are we commenting the others out ?
+ Sent at 13:46 on Thursday
+ Amy:  just making things simple
+sweep join is a special case
+DerbyJoin needs some more setup
+and the batch join needed some more setup too
+so ... simple in-memory join is best test case]
+ Sent at 13:49 on Thursday
+ me:  ok
+interesting part from the log
+2013-02-07 13:19:11,043 DEBUG metadata.TableMappingServiceMock [pool-6-thread-2,get:91] get(String) [table22]
+   2013-02-07 13:19:11,044 DEBUG metadata.TableMappingServiceMock [pool-6-thread-2,get:91] get(String) [table21]
+   2013-02-07 13:19:11,045 DEBUG metadata.TableMappingServiceMock [pool-6-thread-2,get:91] get(String) [UKIDSSDR5PLUS.dbo.gcsPointSource]
+   java.lang.RuntimeException: uk.org.ogsadai.dqp.lqp.exceptions.TableNotFoundException: Table not found UKIDSSDR5PLUS.dbo.gcsPointSource
+           at uk.org.ogsadai.expression.arithmetic.visitors.AttrRenameToPhysicalAttrArithmeticExprVisitor.visitTableColumn(AttrRenameToPhysicalAttrArithmeticExprVisitor.java:85)
+ Amy:  ok...
+ me:  the debug from before the exception is from y mock
+ Amy:  what's the cause...
+ me:  http://wfau.metagrid.co.uk/code/firethorn/file/5915a71202de/firethorn-ogsadai/webapp/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/metadata/TableMappingServiceMock.java
+lines 88 - 103
+interesting ... that the TableMappingService gets called first with the source aliases
+table22, table 21 etc
+then it gets called with one of the resolved real table names
+[UKIDSSDR5PLUS.dbo.gcsPointSource]
+.... should that happen ?
+ Amy:  probably not
+ me:  The original query comes from test002 here
+http://wfau.metagrid.co.uk/code/firethorn/file/5915a71202de/firethorn-ogsadai/activity/firethorn/src/test/java/uk/ac/roe/wfau/firethorn/ogsadai/test/DqpQueryTestCase.java#l111
+ Sent at 13:54 on Thursday
+ me:  the tabel names are all hard coded in here
+http://wfau.metagrid.co.uk/code/firethorn/file/5915a71202de/firethorn-ogsadai/webapp/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/metadata/MetadataServiceFactoryMock.java#l39
+ You have invited Stelios to this chat.
+ Stelios has joined.
+ me:  Amy - I can get the full debug log generated by the query if that would hepl
+ Amy:  yes that would help
+not sure why there would be a real table name...
+ Sent at 13:58 on Thursday
+ me:  Ok, I'll re-run the query and get a hard copy of the log
+ Sent at 13:59 on Thursday
+ Amy:  table22 and table21 are the aliases i assume...
+what's the rest of that error stacktrace?
+ Sent at 14:01 on Thursday
+ me:  http://data.metagrid.co.uk/temp/firethorn/ogsadai-tomcat.log
+ Sent at 14:04 on Thursday
+ me:  Stelios - probably three queries
+select * from twomass where ra and dec between ....
+select * from ukidds where ra and dec between ...
+then re-create the neigbour table
+ Sent at 14:06 on Thursday
+ me:  select * from gcsSourceXtwomass_psc where master is in [data from ukidss]
+and
+select * from gcsSourceXtwomass_psc where slave is in [data from twomass]
+probably be able to wrap those up as joins rather than using 'in'
+ Sent at 14:09 on Thursday
+ me:  Amy - I just thought, possible cause of table not found is a typo onmy part .... am checking the spilling
+ Amy:  ok...
+although looking at the code there shouldn't be a physical table name ther
+there
+ Sent at 14:11 on Thursday
+ Stelios:  by the way in those queries there is the use of match as an alias
+I think its a keyword in some SQL languages
+not sure if thats the case for SQL Server
+ me:  no problem
+will change it and retest
+ Sent at 14:26 on Thursday
+ me:  Ok, retested and log updated
+ Stelios:  do you know if this is valid SQL?
+ me:  It should be ok, becausee test001 does the same query direct to SQLServer via JDBC
+ Stelios:  select top 1000 ukidss.ra AS ukra, ukidss.dec AS ukdec  from gcsSourceXtwomass_psc as matc, (SELECT top 1000 * from twomass_psc  where ra between '55.0' AND '55.9') as ukidss  WHERE matc.masterObjID = ukidss.sourceID
+oops I know
+actually
+how would I join with twomass
+since its a different survey /TAP
+ me:  good question ....
+ Amy:  DQP ;)
+ me:  indeed
+:-)
+TAP factpry ?
+or yuo could add a Junit test that uses the 'uer' connection.
+ Stelios:  dont know if there is one running somewhere
+ me:  'uber'
+ Sent at 14:31 on Thursday
+ me:  You could take a copy of this test and modify it to do what we need.
+ Stelios:  if we are just looking for sample data
+ me:  http://wfau.metagrid.co.uk/code/firethorn/file/5915a71202de/firethorn-ogsadai/activity/firethorn/src/test/java/uk/ac/roe/wfau/firethorn/ogsadai/test/SimpleQueryTestCase.java
+hmm .. t would need some extra code to pipe the output into a text file
+or .. were you going to suggest we just made some up for now ?
+vaild test
+go for it
+depends which is more work, making up 1000 rows that look right or tweaking the query to get them
+ Stelios:  i was going to say if just a few matches suffice
+i could just get top X from the neighbours table
+with an ID range
+where I know there will be data matching
+ me:  yep, that would work
+but the ra and dec would need to be within an area too ?
+or would they
+go for it, see what you get
+ Sent at 14:36 on Thursday
+ Stelios:  I dont know much about the data, but if its a foreign key match then if you give the ID is in the range than it should have the right ra/dec values
+but I may be completely wrong
+ Sent at 14:38 on Thursday
+ me:  to simulate real use we would need to have a where clause in the test query
+at the moment it is "where ra between ... and dec between ...."
+so we would need something similar to test the system
+DQL has all kinds of clever stuff in it that uses the where clause
+ Stelios:  yea I was just refering to the test data that im fetching
+ me:  ok - two parts to the test data
+one is getting the process inplace, collecting the data and importing it into test databases
+two is making sure the data represents a possible science use case
+to do step one ... go for it, whatever is the easiest
+ Stelios:  okay Im uploading 3 sets
+to repo
+ me:  we can import the data into a local postgresql database to break the dependency on roe sqlserver
+later we do step two and tweak the data into the right shape
+ Sent at 14:47 on Thursday
+ Stelios:  okay files have been added to the firethorn-gui directory
+ me:  :-)
+ Stelios:  firethorn-gui/firethorn-webpy-gui/test-data
+ me:  Ok - I'll have a got at importing them into postgresql
+ Stelios:  there was something wrong with the TAP interfaces
+I cant seem to run any query directry from a TAP
+I get an error saying unknown protocol
+ me:  Amy - anything you want me to try or are you ok for now ?
+ Stelios:  I think server settings need to be checked by mark
+ Amy:  ok for now
+but no idea where the error comes from
+ me:  Stelios ... I haven't touched the TAP services ..honest !
+;-)
+Amy - ok, let me know if there is something you want me to experiment with
+ Stelios:  yea I know usually somebody changed around ROE server stuff
+and breaks all ROE TAPs
+happened before
+ me:  Now things are setup, the build process is automated, so we can tweak stuff, rebuild and retest fairly quickly
+ Stelios:  but I ran them from my interface
+ok cool
+Im adding everything to have a Run query interface for firethorn
+inc syntax highlighting autocomplete etc
+so I'll get back to that for now
+did we get DQP tests working?
+ me:  actually before you do ... can you run a clean test on your machine
+ Stelios:  sure
+ me:  DQP tests are not working, but a different error than yesterday
+I think everything is in hg
+so if you get the lates from hg and run the test scipts
+did you use the test scripts yesterday .. ?
+or just the copy/paste
+I think you did run the scripts in the afternoon ?
+ Sent at 15:00 on Thursday
+ Stelios:  yea
+ me:  Anyway ...
+could you try this on your machine
+http://wfau.metagrid.co.uk/code/firethorn/file/281033ca60ac/doc/20130207-ogsadai-debug.txt
+ Stelios:  im trying to remember if there was a problem or not
+ me:  see if you get the same exception at the end
+if not then it may be something snafu on my system here and I've asked Amy to chase an illusion
+ Sent at 15:02 on Thursday
+ me:  Amy - If the missing table bug only came up with the in memory join, then is it worth trying to configure one of the other joins ?
+ Sent at 15:06 on Thursday
+ Amy:  Dave - no that's not the issue
+ Sent at 15:22 on Thursday
+ me:  ok
+how about adding some more debug to the codeto work out how it gets here ?
+ Sent at 15:24 on Thursday
+ Amy:  can you send me the full stack trace?
+and the query?
+ Sent at 15:25 on Thursday
+ me:  All I have is the tomcat log
+http://data.metagrid.co.uk/temp/firethorn/ogsadai-tomcat.log
+ Sent at 15:26 on Thursday
+ me:  Query is test002 from here
+http://wfau.metagrid.co.uk/code/firethorn/file/tip/firethorn-ogsadai/activity/firethorn/src/test/java/uk/ac/roe/wfau/firethorn/ogsadai/test/DqpQueryTestCase.java#l111
+ Sent at 15:28 on Thursday
+ Amy:  thanks
+ Sent at 15:30 on Thursday
+ Stelios:  okay finished run
+java.lang.RuntimeException: uk.org.ogsadai.dqp.lqp.exceptions.TableNotFoundException: Table not found UKIDSSDR5PLUS.dbo.gcsPointSource
+same error as you I think
+ me:  yep, looks like it
+Just before the exception is thrown do you get this
+2013-02-07 14:28:08,155 DEBUG metadata.TableMappingServiceMock [pool-1-thread-2,get:91] get(String) [table22]
+2013-02-07 14:28:08,156 DEBUG metadata.TableMappingServiceMock [pool-1-thread-2,get:91] get(String) [table21]
+2013-02-07 14:28:08,156 DEBUG metadata.TableMappingServiceMock [pool-1-thread-2,get:91] get(String) [UKIDSSDR5PLUS.dbo.gcsPointSource]
+ Sent at 15:34 on Thursday
+ Stelios:  yea
+ me:  ok, it is that third one that has us scratching our heads
+basically it shouldn't be there
+any thoughts, ideas, clues welcome .....
+questions are good too
+questions from someone else may catch something that Amy and I have missed
+ Amy:  ok i think i have an idea
+ Sent at 15:39 on Thursday
+ Stelios:  could this be a problem mapping the table due to the dots?
+ me:  could be
+ Sent at 15:42 on Thursday
+ Amy:  dot?
+ah
+no
+ok i'll check in a fix (i hope)
+ Sent at 15:44 on Thursday
+ me:  Nope
+2013-02-07 15:48:29,369 DEBUG metadata.TableMappingServiceMock [pool-1-thread-2,get:91] get(String) [table22]
+2013-02-07 15:48:29,370 DEBUG metadata.TableMappingServiceMock [pool-1-thread-2,get:91] get(String) [table21]
+2013-02-07 15:48:29,370 DEBUG metadata.TableMappingServiceMock [pool-1-thread-2,get:91] get(String) [gcsPointSource]
+java.lang.RuntimeException: uk.org.ogsadai.dqp.lqp.exceptions.TableNotFoundException: Table not found gcsPointSource
+       at uk.org.ogsadai.expression.arithmetic.visitors.AttrRenameToPhysicalAttrArithmeticExprVisitor.visitTableColumn(AttrRenameToPhysicalAttrArithmeticExprVisitor.java:85)
+       at uk.org.ogsadai.expression.arithmetic.TableColumn.accept(TableColumn.java:280)
+I retested with plain names rather than the fully qualified names
+Looks like it went in the same place
+Sorry
+ Sent at 15:49 on Thursday
+ me:  I'm working on getting the test data imported
+ Sent at 15:51 on Thursday
+ Amy:  no surprise - i'm pretty sure i know what it is
+ Sent at 15:52 on Thursday
+ me:  cool
+ Sent at 15:54 on Thursday
+ Amy:  checked in
+ Stelios:  sorry I have to head out to get some lunch its abit late here
+ me:  ok, no problem
+thank you
+ Stelios:  if you get it working I can check on mine to verify if you want
+ me:  yep, will do
+ Stelios:  talk to you all later :)
+ me:  :-)
+ Amy:  :)
+ Sent at 16:01 on Thursday
+ Stelios has left.
+ Amy:  any luck?
+ Sent at 16:12 on Thursday
+ me:  installing postgresql
+ Amy:  ok :)
+ Sent at 16:15 on Thursday
+ me:  Are you waiting for the test data ?
+This was a nice to have but not essential.
+ Amy:  test data?
+ me:  sorry - you asked 'any luck'
+sounded like you are waiting for me
+ Amy:  testing the test query again
+i committed a bugfix to the source (hopefully a bug fix)
+so try again whenever you have time
+ me:  Ok - sorry, didn't know about the bug fix ... will rebuild and test
+looking abck at the trace - sorry yr message got hidden by Stelio's
+my bad
+testing ....
+Got updated ExpressionFactory
+built
+running
+ Amy:  np
+fingers crossed
+ me:  testing
+Initial results ... no :-(
+2013-02-07 16:23:03,816 DEBUG metadata.TableMappingServiceMock [pool-1-thread-4,get:91] get(String) [table21]
+2013-02-07 16:23:03,817 DEBUG metadata.TableMappingServiceMock [pool-1-thread-4,get:91] get(String) [gcsPointSource]
+java.lang.RuntimeException: uk.org.ogsadai.dqp.lqp.exceptions.TableNotFoundException: Table not found gcsPointSource
+       at uk.org.ogsadai.expression.arithmetic.visitors.AttrRenameToPhysicalAttrArithmeticExprVisitor.visitTableColumn(AttrRenameToPhysicalAttrArithmeticExprVisitor.java:85)
+       at uk.org.ogsadai.expression.arithmetic.TableColumn.accept(TableColumn.java:280)
+ Amy:  different
+ me:  Is there a way to check I got the updated code
+ Amy:  no
+not different
+mmmm not sure
+you've got the ExpressionFactory so that's correct
+that's the only update
+ me:  if you ADD A VERY OBVIOUS DEBUG just to check I built it right
+I saw updated Expressionfactory listed in the call svn update
+but I can't guarantee the build process delivered it to the webapp
+had that before - where I was using an old version of jars :-(
+ Amy:  hang on - doh
+i fixed the wrong thing :(
+"fixed"
+ Sent at 16:27 on Thursday
+ Amy:  i still think that's the problem but i made the wrong changes
+sorry
+nice that you can quickly run those tests again :)
+ Sent at 16:29 on Thursday
+ Amy:  great, now i'm getting an internal server error from sourceforge
+i was trying to check in another bugfix
+ Sent at 16:40 on Thursday
+ me:  On a different topic .. do you have a ssh key ?
+ Amy:  ok it worked - you can try the test again
+yes probably somewhere
+or can generate one
+ Amy Krause has left.
+ me:  I've asked Mark to give you a ssh login on one of the tomcat servers at roe.
+that will enable you to get a connection to the SQLServer database
+ Sent at 16:47 on Thursday
+ me:  sorry
+2013-02-07 16:49:26,102 DEBUG metadata.TableMappingServiceMock [pool-1-thread-4,get:91] get(String) [table22]
+2013-02-07 16:49:26,102 DEBUG metadata.TableMappingServiceMock [pool-1-thread-4,get:91] get(String) [table21]
+2013-02-07 16:49:26,103 DEBUG metadata.TableMappingServiceMock [pool-1-thread-4,get:91] get(String) [gcsPointSource]
+       at uk.org.ogsadai.expression.arithmetic.visitors.AttrRenameToPhysicalAttrArithmeticExprVisitor.visitTableColumn(AttrRenameToPhysicalAttrArithmeticExprVisitor.java:85)
+       at uk.org.ogsadai.expression.arithmetic.TableColumn.accept(TableColumn.java:280)
+       at uk.org.ogsadai.expression.visitors.AttrRenameToPhysicalAttrExpressionVisitor.processLeftOperand(AttrRenameToPhysicalAttrExpressionVisitor.java:58)
+       at uk.org.ogsadai.expression.visitors.AttrExpressionVisitorBase.visitComparison(AttrExpressionVisitorBase.java:59)
+Transferring the log to public web server ..
+Log updated
+http://data.metagrid.co.uk/temp/firethorn/ogsadai-tomcat.log
+ Sent at 16:53 on Thursday
+ You have invited Amy to this chat.
+ Amy Krause has joined.
+ me:  same result, sorry
+2013-02-07 16:49:26,102 DEBUG metadata.TableMappingServiceMock [pool-1-thread-4,get:91] get(String) [table22]
+2013-02-07 16:49:26,102 DEBUG metadata.TableMappingServiceMock [pool-1-thread-4,get:91] get(String) [table21]
+2013-02-07 16:49:26,103 DEBUG metadata.TableMappingServiceMock [pool-1-thread-4,get:91] get(String) [gcsPointSource]
+       at uk.org.ogsadai.expression.arithmetic.visitors.AttrRenameToPhysicalAttrArithmeticExprVisitor.visitTableColumn(AttrRenameToPhysicalAttrArithmeticExprVisitor.java:85)
+       at uk.org.ogsadai.expression.arithmetic.TableColumn.accept(TableColumn.java:280)
+       at uk.org.ogsadai.expression.visitors.AttrRenameToPhysicalAttrExpressionVisitor.processLeftOperand(AttrRenameToPhysicalAttrExpressionVisitor.java:58)
+       at uk.org.ogsadai.expression.visitors.AttrExpressionVisitorBase.visitComparison(AttrExpressionVisitorBase.java:59)
+       at uk.org.ogsadai.expression.visitors.AttrExpressionVisitorBase.visitLessThanExpression(AttrExpressionVisitorBase.java:113)
+Full log on public web server
+http://data.metagrid.co.uk/temp/firethorn/ogsadai-tomcat.log
+ Sent at 16:56 on Thursday
+ Amy:  very weird
+gcsPointSource is which table? table 21 or 22?
+table21, right?
+ me:  table21
+yep
+Could it be the dummy statistics service causing problems ?
+really really simplistic stubsat the moment.
+http://wfau.metagrid.co.uk/code/firethorn/file/281033ca60ac/firethorn-ogsadai/webapp/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/metadata/StatisticsServiceMock.java#l99
+return new HistogramBasedAttributeStatistics();
+ Amy:  no, i don't think so
+it's a problem with the between i believe
+ me:  I didn't add more because I got diverted by the config problems
+ Amy:  could you remove the between statements for a moment?
+if that fixes it i can keep looking
+ me:  If I re-write the query to use < and > .. useful test ?
+ Amy:  fine
+ me:  ok, will do
+ Amy:  that's basically what DQP does :)
+but i think it's reusing objects and then renaming them
+and then trying to rename them again
+which is why there is already the physical table name in the column
+let me know
+have to go
+chat tomorrow
+ me:  ok
+testing ...
+ me:  progress :-)
+lots and lots of this
+2013-02-07 17:05:10,699 DEBUG join.ThetaJoin [pool-1-thread-18,debug:84] Storing key: 548471128 of type : java.lang.Long
+2013-02-07 17:05:10,700 DEBUG join.ThetaJoin [pool-1-thread-18,debug:84] String tuple: [44.162194, 50.636131, 548471130]
+2013-02-07 17:05:10,700 DEBUG join.ThetaJoin [pool-1-thread-18,debug:84] Storing key: 548471130 of type : java.lang.Long
+2013-02-07 17:05:10,700 DEBUG join.ThetaJoin [pool-1-thread-18,debug:84] String tuple: [44.084348, 50.633728, 548471136]
+2013-02-07 17:05:10,700 DEBUG join.ThetaJoin [pool-1-thread-18,debug:84] Storing key: 548471136 of type : java.lang.Long
+2013-02-07 17:05:10,700 DEBUG join.ThetaJoin [pool-1-thread-18,debug:84] String tuple: [44.161836, 50.631523, 548471138]
+ Sent at 17:05 on Thursday
+ 
+	
+
