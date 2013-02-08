@@ -291,6 +291,13 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
     popd
 
 #---------------------------------------------------
+# Update the FireThorn source code.
+
+    pushd ${FIRETHORN_CODE?}
+        hg fetch
+    popd
+
+#---------------------------------------------------
 # Deploy the ogsadai webapp in Tomcat ...
 #
 

@@ -104,7 +104,7 @@ public class StatisticsServiceMock
         return getStatistics(
             attrib.getSource(),
             attrib.getName()
-            )
+            );
         }
 
     @Override
