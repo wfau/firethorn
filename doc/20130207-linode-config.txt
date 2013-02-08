@@ -102,11 +102,13 @@
     yum -y install java-1.6.0-openjdk
     yum -y install java-1.6.0-openjdk-devel
 
-    yum -y install java-1.7.0-openjdk
-    yum -y install java-1.7.0-openjdk-devel
+    #yum -y install java-1.7.0-openjdk
+    #yum -y install java-1.7.0-openjdk-devel
 
     #
-    # Use JDK 1.6 for now.
+    # Use JDK 1.6 for now - Java code hasn't been 
+    # Our code hasn't been tested on JDK 1.7 yet,
+    # so it may cause unexpected compile errors.
     alternatives --config java
 
 #
