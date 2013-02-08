@@ -100,8 +100,11 @@ public class StatisticsServiceMock
     @Override
     public AttributeStatistics getStatistics(Attribute attrib)
         {
-        log.debug("getStatistics(Attribute) [" + attrib.getName() + "]");
-        return new HistogramBasedAttributeStatistics(); 
+        log.debug("getStatistics(Attribute) [" + attrib.getSource() + "][" + attrib.getName() + "]");
+        return getStatistics(
+            attrib.getSource(),
+            attrib.getName()
+            )
         }
 
     @Override
