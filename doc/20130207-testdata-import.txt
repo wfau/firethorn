@@ -335,6 +335,10 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
     pushd ${FIRETHORN_CODE?}/firethorn-ogsadai/webapp
 
         #
+        # Get the latest changes.
+        hg fetch
+
+        #
         # Create a clean war file.
         mvn clean compile war:war
 
@@ -343,9 +347,11 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
         pgsqlconfg twomass testtwomass.conf
         pgsqlconfg ukidss  testukidss.conf
 
-        #cat target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/logins.txt
-        #cat target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/resources/twomass
-        #cat target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/resources/ukidss
+or
+
+        pgsqlconfg twomass livetwomass.conf
+        pgsqlconfg ukidss  liveukidss.conf
+
 
         #
         # Run the webapp in Tomcat
@@ -368,9 +374,261 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 
     popd
 
+#---------------------------------------------------
+# Add case back in to the TableMappingServiceMock
+# (using quotes to preserve case)
+
+        this.tables.put(
+            "ukidss",
+            "table22",
+            "\"gcsSourceXtwomass_psc\""
+            );
+
+        this.attrib.add(
+            "\"ra\"",
+            TupleTypes._DOUBLE,
+            "table20",
+            false
+            );        
+
+    #
+    # Side effect is that DQP is unable to find the attribute (columns) by name.
+    2013-02-12 12:42:17,430 DEBUG lqp.HeadingImpl [pool-1-thread-4,debug:84] ATTRIBUTE NOT FOUND ukidss.ra:UNKNOWN NOT IN [ twomass."dec":DOUBLE  twomass."pts_key":LONG  twomass."ra":DOUBLE ]
+    2013-02-12 12:42:17,430 DEBUG lqp.HeadingImpl [pool-1-thread-4,debug:84] ATTRIBUTE NOT FOUND ukidss.ra:UNKNOWN NOT IN [ neighbour."masterObjID":LONG  neighbour."distanceMins":DOUBLE  neighbour."slaveObjID":LONG ]
+    2013-02-12 12:42:17,431 DEBUG lqp.HeadingImpl [pool-1-thread-4,debug:84] ATTRIBUTE NOT FOUND ukidss.ra:UNKNOWN NOT IN [ ukidss."sourceID":LONG  ukidss."dec":DOUBLE  ukidss."ra":DOUBLE ]
+    2013-02-12 12:42:17,433 DEBUG lqp.HeadingImpl [pool-1-thread-4,debug:84] ATTRIBUTE NOT FOUND ukidss.ra:UNKNOWN NOT IN [ twomass."dec":DOUBLE  twomass."pts_key":LONG  twomass."ra":DOUBLE ]
+    2013-02-12 12:42:17,434 DEBUG lqp.HeadingImpl [pool-1-thread-4,debug:84] ATTRIBUTE NOT FOUND ukidss.ra:UNKNOWN NOT IN [ neighbour."masterObjID":LONG  neighbour."distanceMins":DOUBLE  neighbour."slaveObjID":LONG ]
+    2013-02-12 12:42:17,434 DEBUG lqp.HeadingImpl [pool-1-thread-4,debug:84] ATTRIBUTE NOT FOUND ukidss.ra:UNKNOWN NOT IN [ ukidss."sourceID":LONG  ukidss."dec":DOUBLE  ukidss."ra":DOUBLE ]
+
+    #
+    # Tables have an alias and real name, attributes (columns) only have name.
+    # Means we have to use the same name for both ... and " get in the way of the match.
+
+    #
+    # Try just the quoting the table names ... closer.
+    2013-02-12 12:56:48,161 DEBUG sql.SQLQueryActivity [pool-1-thread-11,debug:84] CallableStatement returned ResultSet
+    2013-02-12 12:56:48,179 DEBUG sql.SQLQueryActivity [pool-1-thread-13,debug:84] CallableStatement encountered problem in query execution
+    2013-02-12 12:56:48,181 DEBUG activity.MatchedIterativeActivity [pool-1-thread-13,debug:84] performing clean-up
+    2013-02-12 12:56:48,185 DEBUG event.LoggingActivityListener [pool-1-thread-13,debug:84] uk.org.ogsadai.activity.sql.ActivitySQLUserException: The activity encountered a problem while interacting with a relational database.
+	    at uk.org.ogsadai.activity.sql.SQLQueryActivity.processIteration(SQLQueryActivity.java:286)
+
+        Caused by: org.postgresql.util.PSQLException: ERROR: relation "gcsSourceXtwomass_psc" does not exist
+          Position: 129
+    
+    #
+    # Alter the table names back to their original values.
+    pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+    pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+
+    psql -w --user ${pgsqluser} ${pgsqldata?}
+        \pset pager off
+
+        \d
+        \d "gcspointsource"
+        \d "gcssourcextwomass_psc"
+
+        -- Fix for Postgresql case names
+        ALTER TABLE "gcspointsource"        RENAME TO "gcsPointSource" ;
+        ALTER TABLE "gcssourcextwomass_psc" RENAME TO "gcsSourceXtwomass_psc" ;
+
+        \q
+
+    #
+    # Ok - that works ... 
+    2013-02-12 13:01:13,430 DEBUG activity.MatchedIterativeActivity [pool-1-thread-24,debug:84] performing iterative stage of processing
+    2013-02-12 13:01:13,431 DEBUG sql.SQLQueryActivity [pool-1-thread-24,debug:84] SQL QUERY: SELECT "gcsSourceXtwomass_psc".distanceMins, "gcsSourceXtwomass_psc".slaveObjID, "gcsPointSource".ra, "gcsPointSource".dec FROM "gcsSourceXtwomass_psc", "gcsPointSource" WHERE  ( "gcsSourceXtwomass_psc".distanceMins < 0.001 )  AND  ( "gcsPointSource".ra >= '55.0' )  AND  ( "gcsPointSource".ra <= '55.9' )  AND  ( "gcsPointSource".dec >= '20.0' )  AND  ( "gcsPointSource".dec <= '22.9' )  AND  ( "gcsSourceXtwomass_psc".masterObjID = "gcsPointSource".sourceID ) 
+    2013-02-12 13:01:13,431 DEBUG sql.SQLQueryActivity [pool-1-thread-24,debug:84] Creating CallableStatement for query
+    
+        SELECT
+            "gcsSourceXtwomass_psc".distanceMins,
+            "gcsSourceXtwomass_psc".slaveObjID,
+            "gcsPointSource".ra,
+            "gcsPointSource".dec
+        FROM
+            "gcsSourceXtwomass_psc",
+            "gcsPointSource"
+        WHERE
+            ( "gcsSourceXtwomass_psc".distanceMins < 0.001 )
+        AND
+            ( "gcsPointSource".ra >= '55.0' )
+        AND
+            ( "gcsPointSource".ra <= '55.9' )
+        AND
+            ( "gcsPointSource".dec >= '20.0' )
+        AND
+            ( "gcsPointSource".dec <= '22.9' )
+        AND
+            ( "gcsSourceXtwomass_psc".masterObjID = "gcsPointSource".sourceID ) 
+
+    #
+    # Table names are quoted, column names aren't.
+    # Table names are case sensitive, column names are treated as lower case.
+
+    #
+    # Try putting the BETWEEN back in .... not fixed yet.
+    2013-02-12 13:06:09,393 DEBUG metadata.TableMappingServiceMock [pool-1-thread-32,get:91] get(String) [table22]
+    2013-02-12 13:06:09,393 DEBUG metadata.TableMappingServiceMock [pool-1-thread-32,get:91] get(String) [table21]
+    2013-02-12 13:06:09,393 DEBUG metadata.TableMappingServiceMock [pool-1-thread-32,get:91] get(String) ["gcsPointSource"]
+    java.lang.RuntimeException: uk.org.ogsadai.dqp.lqp.exceptions.TableNotFoundException: Table not found "gcsPointSource"
+	    at uk.org.ogsadai.expression.arithmetic.visitors.AttrRenameToPhysicalAttrArithmeticExprVisitor.visitTableColumn(AttrRenameToPhysicalAttrArithmeticExprVisitor.java:85)
+	    at uk.org.ogsadai.expression.arithmetic.TableColumn.accept(TableColumn.java:280)
+    
+    #
+    # Try using full cataldog and schema references in the psql client ...
+    pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+    pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+
+    psql -w --user ${pgsqluser} ${pgsqldata?}
+        \pset pager off
+
+        \d
+                          List of relations
+         Schema |         Name          | Type  |   Owner    
+        --------+-----------------------+-------+------------
+         public | gcsPointSource        | table | dahbohnguu
+         public | gcsSourceXtwomass_psc | table | dahbohnguu
 
 
+        SELECT COUNT(sourceid) FROM "gcsPointSource" ;
+             count 
+            -------
+              1000
 
+        SELECT COUNT(sourceid) FROM public."gcsPointSource" ;
+             count 
+            -------
+              1000
 
+        SELECT COUNT(sourceid) FROM testukidss.public."gcsPointSource" ;
+             count 
+            -------
+              1000
+
+        SELECT COUNT(sourceid) FROM testukidss.public."albert" ;
+            ERROR:  relation "public.albert" does not exist
+            LINE 1: SELECT COUNT(sourceid) FROM testukidss.public."albert" ;
+
+        SELECT COUNT(sourceid) FROM testukidss.albert."gcsPointSource" ;
+            ERROR:  schema "albert" does not exist
+            LINE 1: SELECT COUNT(sourceid) FROM testukidss.albert."gcsPointSource" ;
+
+        SELECT COUNT(sourceid) FROM testalbert.public."gcsPointSource" ;
+            ERROR:  cross-database references are not implemented: "testalbert.public.gcsPointSource"
+            LINE 1: SELECT COUNT(sourceid) FROM testalbert.public."gcsPointSourc...
+
+        \q
+
+    #
+    # Try access UKIDSS from  TWOMASS
+    pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+    pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+
+    psql -w --user ${pgsqluser} ${pgsqldata?}
+        \pset pager off
+
+        SELECT COUNT(sourceid) FROM testukidss.public."gcsPointSource" ;
+        ERROR:  cross-database references are not implemented: "testukidss.public.gcsPointSource"
+        LINE 1: SELECT COUNT(sourceid) FROM testukidss.public."gcsPointSourc...
+
+        \q
+
+    #
+    # Put the full catalog.schema.column names into our TableMappingServiceMock
+
+        this.tables.put(
+            "twomass",
+            "table20",
+            "testtwomass.public.\"twomass_psc\""
+            );
+        this.tables.put(
+            "ukidss",
+            "table21",
+            "testukidss.public.\"gcsPointSource\""
+            );
+        this.tables.put(
+            "ukidss",
+            "table22",
+            "testukidss.public.\"gcsSourceXtwomass_psc\""
+            );
+
+    #
+    # Try adding quotes to preserve case ..
+
+        this.tables.put(
+            "twomass",
+            "table20",
+            "\"testtwomass\".\"public\".\"twomass_psc\""
+            );
+        this.tables.put(
+            "ukidss",
+            "table21",
+            "\"testukidss\".\"public\".\"gcsPointSource\""
+            );
+        this.tables.put(
+            "ukidss",
+            "table22",
+            "\"testukidss\".\"public\".\"gcsSourceXtwomass_psc\""
+            );
+
+    #
+    # Two fully qualified queries.
+    2013-02-12 13:25:04,185 DEBUG activity.MatchedIterativeActivity [pool-1-thread-12,debug:84] performing iterative stage of processing
+    2013-02-12 13:25:04,185 DEBUG sql.SQLQueryActivity [pool-1-thread-9,debug:84] SQL QUERY: SELECT "testtwomass"."public"."twomass_psc".ra, "testtwomass"."public"."twomass_psc".dec, "testtwomass"."public"."twomass_psc".pts_key FROM "testtwomass"."public"."twomass_psc"
+    2013-02-12 13:25:04,186 DEBUG sql.SQLQueryActivity [pool-1-thread-12,debug:84] SQL QUERY: SELECT "testukidss"."public"."gcsSourceXtwomass_psc".distanceMins, "testukidss"."public"."gcsSourceXtwomass_psc".slaveObjID, "testukidss"."public"."gcsPointSource".ra, "testukidss"."public"."gcsPointSource".dec FROM "testukidss"."public"."gcsSourceXtwomass_psc", "testukidss"."public"."gcsPointSource" WHERE  ( "testukidss"."public"."gcsSourceXtwomass_psc".distanceMins < 0.001 )  AND  ( "testukidss"."public"."gcsPointSource".dec <= '22.9' )  AND  ( "testukidss"."public"."gcsPointSource".dec >= '20.0' )  AND  ( "testukidss"."public"."gcsPointSource".ra >= '55.0' )  AND  ( "testukidss"."public"."gcsPointSource".ra <= '55.9' )  AND  ( "testukidss"."public"."gcsSourceXtwomass_psc".masterObjID = "testukidss"."public"."gcsPointSource".sourceID ) 
+    2013-02-12 13:25:04,329 DEBUG sql.SQLQueryActivity [pool-1-thread-12,debug:84] Creating CallableStatement for query
+
+    # ----------------------
+
+        SELECT
+            "testtwomass"."public"."twomass_psc".ra,
+            "testtwomass"."public"."twomass_psc".dec,
+            "testtwomass"."public"."twomass_psc".pts_key
+        FROM
+            "testtwomass"."public"."twomass_psc"
+
+    # ----------------------
+
+        SELECT
+            "testukidss"."public"."gcsSourceXtwomass_psc".distanceMins,
+            "testukidss"."public"."gcsSourceXtwomass_psc".slaveObjID,
+            "testukidss"."public"."gcsPointSource".ra,
+            "testukidss"."public"."gcsPointSource".dec
+        FROM
+            "testukidss"."public"."gcsSourceXtwomass_psc",
+            "testukidss"."public"."gcsPointSource"
+        WHERE
+            ( "testukidss"."public"."gcsSourceXtwomass_psc".distanceMins < 0.001 )
+        AND
+            ( "testukidss"."public"."gcsPointSource".dec <= '22.9' )
+        AND
+            ( "testukidss"."public"."gcsPointSource".dec >= '20.0' )
+        AND
+            ( "testukidss"."public"."gcsPointSource".ra >= '55.0' )
+        AND
+            ( "testukidss"."public"."gcsPointSource".ra <= '55.9' )
+        AND
+            ( "testukidss"."public"."gcsSourceXtwomass_psc".masterObjID = "testukidss"."public"."gcsPointSource".sourceID ) 
+    
+    # ----------------------
+    # Swap back to using the ROE SQLServer database ...
+    #
+        this.tables.put(
+            "twomass",
+            "table20",
+            //"\"testtwomass\".\"public\".\"twomass_psc\""
+            "TWOMASS.dbo.twomass_psc"
+            );
+        this.tables.put(
+            "ukidss",
+            "table21",
+            //"\"testukidss\".\"public\".\"gcsPointSource\""
+            "UKIDSSDR5PLUS.dbo.gcsPointSource"
+            );
+        this.tables.put(
+            "ukidss",
+            "table22",
+            //"\"testukidss\".\"public\".\"gcsSourceXtwomass_psc\""
+            "UKIDSSDR5PLUS.dbo.gcsSourceXtwomass_psc"
+            );
 
 
