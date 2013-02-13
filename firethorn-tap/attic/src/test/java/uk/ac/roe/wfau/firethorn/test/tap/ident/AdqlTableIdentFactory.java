@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.test.tap.ident;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.common.entity.AbstractIdentFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractIdentFactory;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlTable.IdentFactory;
 

@@ -17,7 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.mallard;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 
 /**
  * Public interface for an ADQL job.

@@ -60,27 +60,27 @@
 
                 <value>uk.ac.roe.wfau.firethorn.identity.IdentityEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.tuesday.AdqlResourceEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.tuesday.AdqlSchemaEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.tuesday.AdqlTableEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumnEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.tuesday.AdqlQueryEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.spring.TuesdayAdqlColumnEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.tuesday.IvoaResourceEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.tuesday.IvoaSchemaEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.tuesday.IvoaTableEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.tuesday.IvoaColumnEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResourceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchemaEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaTableEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumnEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.tuesday.BaseResourceEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.tuesday.BaseSchemaEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.tuesday.BaseTableEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.tuesday.BaseColumnEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity</value>
 
-                <value>uk.ac.roe.wfau.firethorn.tuesday.JdbcResourceEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.tuesday.JdbcSchemaEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.tuesday.JdbcTableEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.tuesday.JdbcColumnEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.tuesday.JdbcConnectionEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumnEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity</value>
 
                 <!--+
                     |

@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.config;
 
 import java.net.URI;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 
 /**
  * Public interface for a configuration property.

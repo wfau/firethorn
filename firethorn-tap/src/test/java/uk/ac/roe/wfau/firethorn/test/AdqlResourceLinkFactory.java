@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.test;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 
 /**
  * JUnit test implementation.

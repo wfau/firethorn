@@ -17,7 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.widgeon.data.DataTable;

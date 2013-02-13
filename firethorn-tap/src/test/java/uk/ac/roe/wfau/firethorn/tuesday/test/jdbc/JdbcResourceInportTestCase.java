@@ -24,9 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.tuesday.JdbcConnection;
-import uk.ac.roe.wfau.firethorn.tuesday.JdbcConnectionEntity;
-import uk.ac.roe.wfau.firethorn.tuesday.JdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
  * TODO experiment with this
@@ -35,7 +35,7 @@ import uk.ac.roe.wfau.firethorn.tuesday.JdbcResource;
  */
 @Slf4j
 public class JdbcResourceInportTestCase
-    extends JdbcResourceTestCase
+    extends JdbcResourceTestThing
     {
 
     public JdbcResource inport(final String catalog)

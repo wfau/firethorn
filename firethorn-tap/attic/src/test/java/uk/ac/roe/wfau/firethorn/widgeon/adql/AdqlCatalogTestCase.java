@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceTestBase;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceTestBase;
 
 /**
  *

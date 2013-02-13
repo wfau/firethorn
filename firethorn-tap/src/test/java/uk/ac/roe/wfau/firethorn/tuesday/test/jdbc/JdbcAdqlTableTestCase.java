@@ -22,13 +22,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable;
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.tuesday.AdqlResource;
-import uk.ac.roe.wfau.firethorn.tuesday.AdqlSchema;
-import uk.ac.roe.wfau.firethorn.tuesday.AdqlTable;
-import uk.ac.roe.wfau.firethorn.tuesday.JdbcResource;
 
 /**
  * TODO experiment with DatabaseBuilder
@@ -116,12 +116,12 @@ public class JdbcAdqlTableTestCase
         }
 
     /**
-     * Our autowired AdqlDBTable factory.
+     * Our autowired AdqlParserTable factory.
      *
      */
     @Autowired
-    private AdqlDBTable.Factory tables;
-    public AdqlDBTable.Factory tables()
+    private AdqlParserTable.Factory tables;
+    public AdqlParserTable.Factory tables()
     	{
     	return this.tables ;
     	}

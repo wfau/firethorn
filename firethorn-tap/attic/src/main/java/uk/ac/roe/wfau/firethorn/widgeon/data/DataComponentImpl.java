@@ -25,7 +25,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 
 
 /**

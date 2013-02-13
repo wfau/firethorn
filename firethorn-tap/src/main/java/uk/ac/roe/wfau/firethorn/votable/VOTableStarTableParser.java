@@ -106,11 +106,11 @@ implements Iterator<StarTable>
     @Override
     public boolean hasNext()
         {
-        if (tableIndex < tableCount)
+        if (this.tableIndex < this.tableCount)
             {
             return true;
             }
-        else if (resourceIndex < resourceCount)
+        else if (this.resourceIndex < this.resourceCount)
             {
             return true;
             }
@@ -152,45 +152,45 @@ implements Iterator<StarTable>
         {
         //
         // Find the RESOURCE elements using standard DOM method.
-        resourceList = top.getElementsByTagName(
+        this.resourceList = top.getElementsByTagName(
             "RESOURCE"
             );
-        resourceCount = resourceList.getLength() ;
-        resourceIndex = 0 ;
+        this.resourceCount = this.resourceList.getLength() ;
+        this.resourceIndex = 0 ;
         }
 
     protected void nextResource()
         {
         log.debug("VOTableParser.nextResource()");
-        log.debug("Resources [" + resourceIndex + "][" + resourceCount + "]");
-        if (resourceIndex < resourceCount)
+        log.debug("Resources [" + this.resourceIndex + "][" + this.resourceCount + "]");
+        if (this.resourceIndex < this.resourceCount)
             {
             //
             // Get the TABLE elements using VOElement method.
-            final VOElement resource = (VOElement) resourceList.item(
-                resourceIndex++
+            final VOElement resource = (VOElement) this.resourceList.item(
+                this.resourceIndex++
                 );
-            tableArray = resource.getChildrenByName("TABLE");
-            tableCount = tableArray.length ;
-            tableIndex = 0 ;
+            this.tableArray = resource.getChildrenByName("TABLE");
+            this.tableCount = this.tableArray.length ;
+            this.tableIndex = 0 ;
             }
         else {
-            tableCount = 0 ;
-            tableIndex = 0 ;
+        this.tableCount = 0 ;
+            this.tableIndex = 0 ;
             }
         }
 
     protected TableElement nextTable()
         {
         log.debug("VOTableParser.nextTable()");
-        log.debug("Tables [" + tableIndex + "][" + tableCount + "]");
-        if (tableIndex >= tableCount)
+        log.debug("Tables [" + this.tableIndex + "][" + this.tableCount + "]");
+        if (this.tableIndex >= this.tableCount)
             {
             nextResource();
             }
-        if (tableIndex < tableCount)
+        if (this.tableIndex < this.tableCount)
             {
-            return (TableElement) tableArray[tableIndex++] ;
+            return (TableElement) this.tableArray[this.tableIndex++] ;
             }
         else {
             throw new IllegalStateException(

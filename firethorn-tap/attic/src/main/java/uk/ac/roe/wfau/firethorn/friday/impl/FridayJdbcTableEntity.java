@@ -30,9 +30,9 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Index;
 import org.joda.time.DateTime;
 
-import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.friday.api.FridayAdqlTable;
 import uk.ac.roe.wfau.firethorn.friday.api.FridayJdbcCatalog;
 import uk.ac.roe.wfau.firethorn.friday.api.FridayJdbcColumn;

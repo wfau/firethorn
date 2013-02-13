@@ -16,7 +16,7 @@
  */
 package uk.ac.roe.wfau.firethorn.identity;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 
 /**
  * Public interface for an identity.

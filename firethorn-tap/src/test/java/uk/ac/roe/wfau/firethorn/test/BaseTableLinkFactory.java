@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.test;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
 /**
  * JUnit test implementation.

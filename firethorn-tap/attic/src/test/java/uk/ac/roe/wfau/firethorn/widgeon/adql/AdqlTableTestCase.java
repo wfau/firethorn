@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcResourceTestBase;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceTestBase;
 
 /**
  *

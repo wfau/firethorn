@@ -34,7 +34,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.ac.roe.wfau.firethorn.tuesday.ComponentFactories;
+import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
  * Base class for tests.

@@ -26,8 +26,8 @@ import org.springframework.dao.DataAccessException;
 
 import org.springframework.context.ApplicationContext;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 
 import uk.ac.roe.wfau.firethorn.mallard.AdqlService;

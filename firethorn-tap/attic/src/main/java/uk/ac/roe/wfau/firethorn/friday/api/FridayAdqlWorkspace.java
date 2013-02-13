@@ -17,7 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.friday.api;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 
 /**
  *

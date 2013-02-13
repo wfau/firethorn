@@ -29,8 +29,8 @@ import javax.persistence.MappedSuperclass;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Parent;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.friday.api.FridayAdqlTable;
 import uk.ac.roe.wfau.firethorn.friday.api.FridayJdbcSchema;
 import uk.ac.roe.wfau.firethorn.friday.api.FridayOgsaResource;

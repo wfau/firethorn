@@ -26,7 +26,7 @@ import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
 
-import uk.ac.roe.wfau.firethorn.common.entity.AbstractEntity;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.friday.api.FridayJdbcCatalog;
 import uk.ac.roe.wfau.firethorn.friday.api.FridayJdbcResource;
 import uk.ac.roe.wfau.firethorn.friday.api.FridayOgsaResource;
