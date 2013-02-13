@@ -68,6 +68,16 @@
         </dependency>
 
         <!--+
+            | Our testing components.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-testing</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
             | Our Spring components.
             +-->
         <dependency>
@@ -221,54 +231,20 @@
         <plugins>
 
             <!--+
-                | Project reports.
-                | https://maven.apache.org/plugins/maven-project-info-reports-plugin/
-                +-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.5.1</version>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>index</report>
-                            <report>summary</report>
-                            <report>license</report>
-                            <report>project-team</report>
-                            <report>scm</report>
-                            <report>issue-tracking</report>
-                            <!--report>cim</report-->
-                            <report>dependencies</report>
-                            <!--report>dependency-convergence</report-->
-                            <!--report>dependency-info</report-->
-                            <!--report>dependency-management</report-->
-                            <!--report>distribution-management</report-->
-                            <!--report>help</report-->
-                            <!--report>mailing-list</report-->
-                            <!--report>modules</report-->
-                            <!--report>plugin-management</report-->
-                            <report>plugins</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-
-            <!--+
                 | SureFire unit test report.
                 | https://maven.apache.org/plugins/maven-surefire-plugin/
                 | https://maven.apache.org/plugins/maven-surefire-plugin/examples/junit.html
-                +-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.12.3</version>
+                <version>2.13</version>
             </plugin>
+                +-->
 
             <!--+
                 | Cobertura code coverage report.
                 | http://cobertura.sourceforge.net/
                 | http://mojo.codehaus.org/cobertura-maven-plugin/
-                +-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
@@ -280,6 +256,7 @@
                     </formats>
                 </configuration>
             </plugin>
+                +-->
 
             <!--+
                 | PMD report.
@@ -313,7 +290,6 @@
                 | https://maven.apache.org/plugins/maven-javadoc-plugin/
                 | https://maven.apache.org/plugins/maven-javadoc-plugin/usage.html
                 | http://docs.oracle.com/javase/6/docs/technotes/tools/solaris/javadoc.html#@inheritDoc
-                +-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -323,31 +299,18 @@
                     <detectJavaApiLink>true</detectJavaApiLink>
                     <detectLinks>true</detectLinks>
                     <links>
-                        <link>http://docs.oracle.com/javase/6/docs/api/</link>
-                        <link>http://docs.oracle.com/javaee/5/api</link>
-
-                        <link>http://static.springsource.org/spring/docs/3.0.x/javadoc-api/</link>
-                        <link>https://docs.jboss.org/hibernate/orm/4.1/javadocs/</link>
-
-                        <link>http://www.star.bristol.ac.uk/~mbt/stil/javadocs/</link>
-
-                        <!--link>http://projectlombok.org/api/</link-->
-                        <!--link>http://joda-time.sourceforge.net/api-release/</link-->
-
-                        <!--link>http://commons.apache.org/dbcp/apidocs/</link-->
-                        <!--link>http://commons.apache.org/fileupload/apidocs/</link-->
 
                         <link>http://hsqldb.org/doc/2.0/apidocs/index.html</link>
                         <link>http://jdbc.postgresql.org/documentation/publicapi/</link>
                         <link>http://ogsa-dai.sourceforge.net/documentation/ogsadai4.2/ogsadai4.2-jersey-javadoc/</link>
 
-                        <!--+
+                        [!-+
                             | Replace these with our own versions ?
                         <link>http://cds.u-strasbg.fr/cdsdevcorner/savot2.6/doc1/index.html</link>
                         <link>http://cdsportal.u-strasbg.fr/taptuto/javadoc/index.html</link>
                         <link>http://cdsportal.u-strasbg.fr/adqltuto/javadoc/index.html</link>
                         <link>http://cdsportal.u-strasbg.fr/uwstuto/javadoc/index.html</link>
-                            +-->
+                            +-]
 
                     </links>
                 </configuration>
@@ -358,21 +321,21 @@
                             <report>javadoc</report>
                         </reports>
                     </reportSet>
-                    <!--+
+                    [!-+
                     <reportSet>
                         <id>test-html</id>
                         <reports>
                             <report>test-javadoc</report>
                         </reports>
                     </reportSet>
-                        +-->
+                        +-]
                 </reportSets>
             </plugin>
+                +-->
 
             <!--+
                 | Maven JXR Plugin
                 | http://maven.apache.org/plugins/maven-jxr-plugin/
-                +-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
@@ -395,6 +358,7 @@
                     </reportSet>
                 </reportSets>
             </plugin>
+                +-->
 
         </plugins>
     </reporting>
