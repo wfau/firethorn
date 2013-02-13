@@ -169,6 +169,16 @@ extends SimpleQueryTestBase
             "    table21 AS ukidss," +
             "    table22 AS neighbour" +
             " WHERE" +
+
+            "    twomass.ra  >= '55.0'" +
+            " AND" +
+            "    twomass.ra  <= '55.9'" +
+            " AND" +
+            "    twomass.dec >= '20.0'" +
+            " AND" +
+            "    twomass.dec <= '22.9'" +
+            " AND" +
+
             "    ukidss.ra  >= '55.0'" +
             " AND" +
             "    ukidss.ra  <= '55.9'" +
