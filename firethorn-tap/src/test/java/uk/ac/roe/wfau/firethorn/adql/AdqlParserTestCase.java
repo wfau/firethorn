@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
 import adql.db.DBChecker;
@@ -401,7 +401,7 @@ extends TestBase
 							);
 
         return tables().create(
-            TuesdayAdqlQuery.Mode.DIRECT,
+            AdqlQuery.Mode.DIRECT,
     		adqlResource.schemas().select(
 				"adql_schema"
 				).tables().select(

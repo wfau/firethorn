@@ -20,9 +20,9 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery.Mode;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery.Status;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery.Mode;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery.Status;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -32,24 +32,24 @@ import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
  *
  */
 public class AdqlQueryBean
-extends AbstractEntityBeanImpl<TuesdayAdqlQuery>
-implements EntityBean<TuesdayAdqlQuery>
+extends AbstractEntityBeanImpl<AdqlQuery>
+implements EntityBean<AdqlQuery>
     {
     public static class Iter
-    extends AbstractEntityBeanIter<TuesdayAdqlQuery>
+    extends AbstractEntityBeanIter<AdqlQuery>
         {
         /**
          * Public constructor.
          *
          */
-        public Iter(final Iterable<TuesdayAdqlQuery> iterable)
+        public Iter(final Iterable<AdqlQuery> iterable)
             {
             super(
                 iterable
                 );
             }
         @Override
-        public EntityBean<TuesdayAdqlQuery> bean(final TuesdayAdqlQuery entity)
+        public EntityBean<AdqlQuery> bean(final AdqlQuery entity)
             {
             return new AdqlQueryBean(
                 entity
@@ -61,7 +61,7 @@ implements EntityBean<TuesdayAdqlQuery>
      * Public constructor.
      *
      */
-    public AdqlQueryBean(final TuesdayAdqlQuery entity)
+    public AdqlQueryBean(final AdqlQuery entity)
         {
         super(
             AdqlQueryIdentFactory.TYPE_URI,

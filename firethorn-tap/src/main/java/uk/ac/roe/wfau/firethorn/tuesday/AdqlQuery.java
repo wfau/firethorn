@@ -23,7 +23,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
  *
  *
  */
-public interface TuesdayAdqlQuery
+public interface AdqlQuery
 extends Entity
     {
     /**
@@ -40,7 +40,7 @@ extends Entity
      *
      */
     public static interface LinkFactory
-    extends Entity.LinkFactory<TuesdayAdqlQuery>
+    extends Entity.LinkFactory<AdqlQuery>
         {
         }
 
@@ -58,37 +58,37 @@ extends Entity
      *
      */
     public static interface Factory
-    extends Entity.Factory<TuesdayAdqlQuery>
+    extends Entity.Factory<AdqlQuery>
         {
         /**
          * Create a new query.
          *
          */
-        public TuesdayAdqlQuery create(final TuesdayAdqlResource resource, final String input);
+        public AdqlQuery create(final TuesdayAdqlResource resource, final String input);
 
         /**
          * Create a new query.
          *
          */
-        public TuesdayAdqlQuery create(final TuesdayAdqlResource resource, final String name, final String input);
+        public AdqlQuery create(final TuesdayAdqlResource resource, final String name, final String input);
 
         /**
          * Select all the queries from a resource.
          *
          */
-        public Iterable<TuesdayAdqlQuery> select(final TuesdayAdqlResource resource);
+        public Iterable<AdqlQuery> select(final TuesdayAdqlResource resource);
 
         /**
          * Text search for queries (name starts with).
          *
          */
-        public Iterable<TuesdayAdqlQuery> search(final TuesdayAdqlResource resource, final String text);
+        public Iterable<AdqlQuery> search(final TuesdayAdqlResource resource, final String text);
         
         /**
          * Access to our name factory.
          *
          */
-        public TuesdayAdqlQuery.NameFactory names();
+        public AdqlQuery.NameFactory names();
 
         }
 

@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
@@ -49,7 +49,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 @Controller
 @RequestMapping(AdqlResourceLinkFactory.RESOURCE_QUERY_PATH)
 public class AdqlResourceQueryController
-extends AbstractEntityController<TuesdayAdqlQuery>
+extends AbstractEntityController<AdqlQuery>
     {
     @Override
     public Path path()
@@ -111,7 +111,7 @@ extends AbstractEntityController<TuesdayAdqlQuery>
     public static final String CREATE_QUERY = "adql.resource.query.create.query" ;
 
     @Override
-    public EntityBean<TuesdayAdqlQuery> bean(final TuesdayAdqlQuery entity)
+    public EntityBean<AdqlQuery> bean(final AdqlQuery entity)
         {
         return new AdqlQueryBean(
             entity
@@ -119,7 +119,7 @@ extends AbstractEntityController<TuesdayAdqlQuery>
         }
 
     @Override
-    public Iterable<EntityBean<TuesdayAdqlQuery>> bean(final Iterable<TuesdayAdqlQuery> iter)
+    public Iterable<EntityBean<AdqlQuery>> bean(final Iterable<AdqlQuery> iter)
         {
         return new AdqlQueryBean.Iter(
             iter
@@ -149,7 +149,7 @@ extends AbstractEntityController<TuesdayAdqlQuery>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public Iterable<EntityBean<TuesdayAdqlQuery>> jsonSelect(
+    public Iterable<EntityBean<AdqlQuery>> jsonSelect(
         @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
         final TuesdayAdqlResource resource
         ){
@@ -164,7 +164,7 @@ extends AbstractEntityController<TuesdayAdqlQuery>
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public Iterable<EntityBean<TuesdayAdqlQuery>> jsonSearch(
+    public Iterable<EntityBean<AdqlQuery>> jsonSearch(
         @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
         final TuesdayAdqlResource resource,
         @RequestParam(SEARCH_TEXT)
@@ -183,7 +183,7 @@ extends AbstractEntityController<TuesdayAdqlQuery>
      *
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<EntityBean<TuesdayAdqlQuery>> jsonCreate(
+    public ResponseEntity<EntityBean<AdqlQuery>> jsonCreate(
         @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
         final TuesdayAdqlResource resource,
         @RequestParam(value=CREATE_QUERY, required=true)

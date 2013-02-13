@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -45,7 +45,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 @Controller
 @RequestMapping(AdqlQueryLinkFactory.QUERY_PATH)
 public class AdqlQueryController
-extends AbstractEntityController<TuesdayAdqlQuery>
+extends AbstractEntityController<AdqlQuery>
     {
 
     @Override
@@ -90,7 +90,7 @@ extends AbstractEntityController<TuesdayAdqlQuery>
     public static final String UPDATE_STATUS = "adql.query.update.status" ;
 
     @Override
-    public EntityBean<TuesdayAdqlQuery> bean(final TuesdayAdqlQuery entity)
+    public EntityBean<AdqlQuery> bean(final AdqlQuery entity)
         {
         return new AdqlQueryBean(
             entity
@@ -98,7 +98,7 @@ extends AbstractEntityController<TuesdayAdqlQuery>
         }
 
     @Override
-    public Iterable<EntityBean<TuesdayAdqlQuery>> bean(Iterable<TuesdayAdqlQuery> iter)
+    public Iterable<EntityBean<AdqlQuery>> bean(Iterable<AdqlQuery> iter)
         {
         return new AdqlQueryBean.Iter(
             iter
@@ -111,7 +111,7 @@ extends AbstractEntityController<TuesdayAdqlQuery>
      *
      */
     @ModelAttribute(QUERY_ENTITY)
-    public TuesdayAdqlQuery entity(
+    public AdqlQuery entity(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException {
@@ -128,9 +128,9 @@ extends AbstractEntityController<TuesdayAdqlQuery>
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public EntityBean<TuesdayAdqlQuery> jsonSelect(
+    public EntityBean<AdqlQuery> jsonSelect(
         @ModelAttribute(QUERY_ENTITY)
-        final TuesdayAdqlQuery entity
+        final AdqlQuery entity
         ){
         return bean(
             entity
@@ -144,15 +144,15 @@ extends AbstractEntityController<TuesdayAdqlQuery>
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public EntityBean<TuesdayAdqlQuery> jsonUpdate(
+    public EntityBean<AdqlQuery> jsonUpdate(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @RequestParam(value=UPDATE_QUERY, required=false)
         final String query,
         @RequestParam(value=UPDATE_STATUS, required=false)
-        final TuesdayAdqlQuery.Status status,
+        final AdqlQuery.Status status,
         @ModelAttribute(QUERY_ENTITY)
-        final TuesdayAdqlQuery entity
+        final AdqlQuery entity
         ){
 
         if (name != null)

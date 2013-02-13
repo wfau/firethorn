@@ -22,7 +22,7 @@ import java.util.Iterator;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import adql.db.DBColumn;
 import adql.db.DBTable;
@@ -46,7 +46,7 @@ implements AdqlDBTable
     implements AdqlDBTable.Factory
         {
         @Override
-        public AdqlDBTableImpl create(final TuesdayAdqlQuery.Mode mode, final TuesdayAdqlTable table)
+        public AdqlDBTableImpl create(final AdqlQuery.Mode mode, final TuesdayAdqlTable table)
             {
             return new AdqlDBTableImpl(
                 mode,
@@ -55,9 +55,9 @@ implements AdqlDBTable
             }
         }
 
-    private final TuesdayAdqlQuery.Mode mode;
+    private final AdqlQuery.Mode mode;
     @Override
-    public TuesdayAdqlQuery.Mode mode()
+    public AdqlQuery.Mode mode()
         {
         return this.mode;
         }
@@ -89,7 +89,7 @@ implements AdqlDBTable
      * Protected constructor.
      *
      */
-    private AdqlDBTableImpl(final TuesdayAdqlQuery.Mode mode, final TuesdayAdqlTable table)
+    private AdqlDBTableImpl(final AdqlQuery.Mode mode, final TuesdayAdqlTable table)
         {
         this(
             mode,
@@ -103,7 +103,7 @@ implements AdqlDBTable
      * Protected constructor, used by the copy method.
      *
      */
-    private AdqlDBTableImpl(final TuesdayAdqlQuery.Mode mode, final TuesdayAdqlTable table, final String jdbcName, final String adqlName)
+    private AdqlDBTableImpl(final AdqlQuery.Mode mode, final TuesdayAdqlTable table, final String jdbcName, final String adqlName)
         {
         this.mode  = mode  ;
         this.table = table ;
@@ -212,7 +212,7 @@ implements AdqlDBTable
             return this.jdbcName ;
             }
         else {
-            if (this.mode() == TuesdayAdqlQuery.Mode.DISTRIBUTED)
+            if (this.mode() == AdqlQuery.Mode.DISTRIBUTED)
                 {
                 return this.table.base().alias();
                 }
@@ -235,7 +235,7 @@ implements AdqlDBTable
             return null ;
             }
         else {
-            if (this.mode() == TuesdayAdqlQuery.Mode.DISTRIBUTED)
+            if (this.mode() == AdqlQuery.Mode.DISTRIBUTED)
                 {
                 return null ;
                 }
@@ -258,7 +258,7 @@ implements AdqlDBTable
             return null ;
             }
         else {
-            if (this.mode() == TuesdayAdqlQuery.Mode.DISTRIBUTED)
+            if (this.mode() == AdqlQuery.Mode.DISTRIBUTED)
                 {
                 return null ;
                 }

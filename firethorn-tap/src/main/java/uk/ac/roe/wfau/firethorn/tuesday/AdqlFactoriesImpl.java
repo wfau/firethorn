@@ -27,7 +27,7 @@ import uk.ac.roe.wfau.firethorn.adql.AdqlDBParser;
  *
  */
 @Component
-public class TuesdayAdqlFactoriesImpl
+public class AdqlFactoriesImpl
     implements AdqlFactories
     {
 
@@ -64,9 +64,9 @@ public class TuesdayAdqlFactoriesImpl
         }
 
     @Autowired
-    private TuesdayAdqlQuery.Factory queries;
+    private AdqlQuery.Factory queries;
     @Override
-    public TuesdayAdqlQuery.Factory queries()
+    public AdqlQuery.Factory queries()
         {
         return this.queries;
         }

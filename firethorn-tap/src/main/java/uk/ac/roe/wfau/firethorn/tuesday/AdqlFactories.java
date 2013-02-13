@@ -53,7 +53,7 @@ public interface AdqlFactories
      * Our query factory.
      *
      */
-    public TuesdayAdqlQuery.Factory queries();
+    public AdqlQuery.Factory queries();
 
     /**
      * The local ADQL parser factory.

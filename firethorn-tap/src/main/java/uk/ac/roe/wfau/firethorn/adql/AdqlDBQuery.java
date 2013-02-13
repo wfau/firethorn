@@ -18,7 +18,7 @@
 package uk.ac.roe.wfau.firethorn.adql;
 
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 
 /**
@@ -38,25 +38,25 @@ public interface AdqlDBQuery
      * The query mode.
      *
      */
-    public TuesdayAdqlQuery.Mode mode();
+    public AdqlQuery.Mode mode();
 
     /**
      * Set the query mode.
      *
      */
-    public void mode(final TuesdayAdqlQuery.Mode mode);
+    public void mode(final AdqlQuery.Mode mode);
 
     /**
      * The query status.
      *
      */
-    public TuesdayAdqlQuery.Status status();
+    public AdqlQuery.Status status();
 
     /**
      * Set the query status.
      *
      */
-    public void status(final TuesdayAdqlQuery.Status status);
+    public void status(final AdqlQuery.Status status);
 
     /**
      * Set the processed ADQL query.

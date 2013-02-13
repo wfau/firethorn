@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
@@ -28,8 +28,8 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
  */
 @Component
 public class AdqlQueryLinkFactory
-extends WebappLinkFactory<TuesdayAdqlQuery>
-implements TuesdayAdqlQuery.LinkFactory
+extends WebappLinkFactory<AdqlQuery>
+implements AdqlQuery.LinkFactory
     {
     protected AdqlQueryLinkFactory()
         {
@@ -51,7 +51,7 @@ implements TuesdayAdqlQuery.LinkFactory
     public static final String QUERY_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
 
     @Override
-    public String link(final TuesdayAdqlQuery entity)
+    public String link(final AdqlQuery entity)
         {
         return link(
             QUERY_PATH,

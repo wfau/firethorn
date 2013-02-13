@@ -28,8 +28,8 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable.AdqlDBColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery.Status;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery.Status;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
@@ -63,7 +63,7 @@ implements AdqlDBParser
     implements AdqlDBParser.Factory
         {
         @Override
-        public AdqlDBParser create(final TuesdayAdqlQuery.Mode mode, final TuesdayAdqlResource workspace)
+        public AdqlDBParser create(final AdqlQuery.Mode mode, final TuesdayAdqlResource workspace)
             {
             return new AdqlDBParserImpl(
                 this.tables,
@@ -85,7 +85,7 @@ implements AdqlDBParser
      * Protected constructor.
      *
      */
-    protected AdqlDBParserImpl(final AdqlDBTable.Factory factory, final TuesdayAdqlQuery.Mode mode, final TuesdayAdqlResource workspace)
+    protected AdqlDBParserImpl(final AdqlDBTable.Factory factory, final AdqlQuery.Mode mode, final TuesdayAdqlResource workspace)
         {
         this.mode = mode ;
 
@@ -114,7 +114,7 @@ implements AdqlDBParser
             );
         }
 
-    protected TuesdayAdqlQuery.Mode mode ;
+    protected AdqlQuery.Mode mode ;
 
     protected ADQLParser parser ;
 

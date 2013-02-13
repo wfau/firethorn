@@ -92,25 +92,25 @@ extends TuesdayBaseResource<TuesdayAdqlSchema>
          * Create a new query.
          *
          */
-        public TuesdayAdqlQuery create(final String query);
+        public AdqlQuery create(final String query);
 
         /**
          * Create a new query.
          *
          */
-        public TuesdayAdqlQuery create(final String name, final String query);
+        public AdqlQuery create(final String name, final String query);
 
         /**
          * Select all the queries for this resource.
          *
          */
-        public Iterable<TuesdayAdqlQuery> select();
+        public Iterable<AdqlQuery> select();
 
         /**
          * Text search for queries (name starts with).
          *
          */
-        public Iterable<TuesdayAdqlQuery> search(final String text);
+        public Iterable<AdqlQuery> search(final String text);
 
         }
 

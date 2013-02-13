@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
@@ -97,7 +97,7 @@ extends TestBase
             );
         //
         // Create our query.
-        final TuesdayAdqlQuery query = workspace.queries().create(
+        final AdqlQuery query = workspace.queries().create(
             IMPORTED_000
             );
         //
@@ -169,7 +169,7 @@ extends TestBase
             );
         //
         // Create our query.
-        final TuesdayAdqlQuery query = workspace.queries().create(
+        final AdqlQuery query = workspace.queries().create(
             IMPORTED_001
             );
         //
@@ -272,7 +272,7 @@ extends TestBase
             );
         //
         // Create our query.
-        final TuesdayAdqlQuery query = workspace.queries().create(
+        final AdqlQuery query = workspace.queries().create(
             IMPORTED_002
             );
         //
@@ -367,7 +367,7 @@ extends TestBase
             );
         //
         // Create our query.
-        final TuesdayAdqlQuery query = workspace.queries().create(
+        final AdqlQuery query = workspace.queries().create(
             IMPORTED_002
             );
         //

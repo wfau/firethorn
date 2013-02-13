@@ -20,7 +20,7 @@ package uk.ac.roe.wfau.firethorn.test;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.EntityIdentFactory;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
 
 /**
  * JUnit test implementation.
@@ -28,7 +28,7 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
  */
 @Component
 public class TuesdayAdqlQueryNameFactory
-implements TuesdayAdqlQuery.NameFactory
+implements AdqlQuery.NameFactory
     {
     @Override
     public String name()

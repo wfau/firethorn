@@ -17,7 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.adql;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 
 /**
@@ -36,7 +36,7 @@ public interface AdqlDBParser
          * Create a parser for a workspace.
          *
          */
-        public AdqlDBParser create(final TuesdayAdqlQuery.Mode mode, final TuesdayAdqlResource workspace);
+        public AdqlDBParser create(final AdqlQuery.Mode mode, final TuesdayAdqlResource workspace);
 
         }
 

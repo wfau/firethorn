@@ -66,22 +66,22 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "TuesdayAdqlQuery-select-resource",
+            name  = "AdqlQuery-select-resource",
             query = "FROM TuesdayAdqlQueryEntity WHERE resource = :resource ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
-            name  = "TuesdayAdqlQuery-select-resource.name",
+            name  = "AdqlQuery-select-resource.name",
             query = "FROM TuesdayAdqlQueryEntity WHERE ((resource = :resource) AND (name = :name)) ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
-            name  = "TuesdayAdqlQuery-search-resource.text",
+            name  = "AdqlQuery-search-resource.text",
             query = "FROM TuesdayAdqlQueryEntity WHERE ((resource = :resource) AND (name LIKE :text)) ORDER BY name asc, ident desc"
             )
         }
      )       
 public class TuesdayAdqlQueryEntity
 extends AbstractEntity
-implements TuesdayAdqlQuery, AdqlDBQuery
+implements AdqlQuery, AdqlDBQuery
     {
     /**
      * Hibernate table mapping.
@@ -104,8 +104,8 @@ implements TuesdayAdqlQuery, AdqlDBQuery
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<TuesdayAdqlQuery>
-    implements TuesdayAdqlQuery.Factory
+    extends AbstractFactory<AdqlQuery>
+    implements AdqlQuery.Factory
         {
         @Override
         public Class<?> etype()
@@ -115,7 +115,7 @@ implements TuesdayAdqlQuery, AdqlDBQuery
 
         @Override
         @CreateEntityMethod
-        public TuesdayAdqlQuery create(final TuesdayAdqlResource resource, final String query)
+        public AdqlQuery create(final TuesdayAdqlResource resource, final String query)
             {
             return this.insert(
                 new TuesdayAdqlQueryEntity(
@@ -128,7 +128,7 @@ implements TuesdayAdqlQuery, AdqlDBQuery
 
         @Override
         @CreateEntityMethod
-        public TuesdayAdqlQuery create(final TuesdayAdqlResource resource, final String name, final String query)
+        public AdqlQuery create(final TuesdayAdqlResource resource, final String name, final String query)
             {
             return this.insert(
                 new TuesdayAdqlQueryEntity(
@@ -140,36 +140,36 @@ implements TuesdayAdqlQuery, AdqlDBQuery
             }
 
         @Autowired
-        private TuesdayAdqlQuery.NameFactory names;
+        private AdqlQuery.NameFactory names;
         @Override
-        public TuesdayAdqlQuery.NameFactory names()
+        public AdqlQuery.NameFactory names()
             {
             return this.names;
             }
 
         @Autowired
-        private TuesdayAdqlQuery.LinkFactory links;
+        private AdqlQuery.LinkFactory links;
         @Override
-        public TuesdayAdqlQuery.LinkFactory links()
+        public AdqlQuery.LinkFactory links()
             {
             return this.links;
             }
 
         @Autowired
-        private TuesdayAdqlQuery.IdentFactory idents;
+        private AdqlQuery.IdentFactory idents;
         @Override
-        public TuesdayAdqlQuery.IdentFactory idents()
+        public AdqlQuery.IdentFactory idents()
             {
             return this.idents;
             }
 
         @Override
         @SelectEntityMethod
-        public Iterable<TuesdayAdqlQuery> select(TuesdayAdqlResource resource)
+        public Iterable<AdqlQuery> select(TuesdayAdqlResource resource)
             {
             return super.list(
                 super.query(
-                    "TuesdayAdqlQuery-select-resource"
+                    "AdqlQuery-select-resource"
                     ).setEntity(
                         "resource",
                         resource
@@ -179,11 +179,11 @@ implements TuesdayAdqlQuery, AdqlDBQuery
 
         @Override
         @SelectEntityMethod
-        public Iterable<TuesdayAdqlQuery> search(TuesdayAdqlResource resource, String text)
+        public Iterable<AdqlQuery> search(TuesdayAdqlResource resource, String text)
             {
             return super.iterable(
                 super.query(
-                    "TuesdayAdqlQuery-search-resource.text"
+                    "AdqlQuery-search-resource.text"
                     ).setEntity(
                         "resource",
                         resource

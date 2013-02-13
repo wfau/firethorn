@@ -20,7 +20,7 @@ package uk.ac.roe.wfau.firethorn.adql ;
 import java.util.Iterator;
 
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import adql.db.DBColumn;
 import adql.db.DBTable;
@@ -45,7 +45,7 @@ extends DBTable
          * Create a new AdqlDBTable.
          *
          */
-        public AdqlDBTable create(final TuesdayAdqlQuery.Mode mode, final TuesdayAdqlTable table);
+        public AdqlDBTable create(final AdqlQuery.Mode mode, final TuesdayAdqlTable table);
 
         }
 
@@ -53,7 +53,7 @@ extends DBTable
      * The query mode.
      *
      */
-    public TuesdayAdqlQuery.Mode mode();
+    public AdqlQuery.Mode mode();
 
     /**
      * Our underlying AdqlTable.
