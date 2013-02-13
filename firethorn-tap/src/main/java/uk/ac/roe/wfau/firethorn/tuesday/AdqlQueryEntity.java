@@ -61,25 +61,25 @@ import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
     AccessType.FIELD
     )
 @Table(
-    name = TuesdayAdqlQueryEntity.DB_TABLE_NAME
+    name = AdqlQueryEntity.DB_TABLE_NAME
     )
 @NamedQueries(
         {
         @NamedQuery(
             name  = "AdqlQuery-select-resource",
-            query = "FROM TuesdayAdqlQueryEntity WHERE resource = :resource ORDER BY name asc, ident desc"
+            query = "FROM AdqlQueryEntity WHERE resource = :resource ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
             name  = "AdqlQuery-select-resource.name",
-            query = "FROM TuesdayAdqlQueryEntity WHERE ((resource = :resource) AND (name = :name)) ORDER BY name asc, ident desc"
+            query = "FROM AdqlQueryEntity WHERE ((resource = :resource) AND (name = :name)) ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
             name  = "AdqlQuery-search-resource.text",
-            query = "FROM TuesdayAdqlQueryEntity WHERE ((resource = :resource) AND (name LIKE :text)) ORDER BY name asc, ident desc"
+            query = "FROM AdqlQueryEntity WHERE ((resource = :resource) AND (name LIKE :text)) ORDER BY name asc, ident desc"
             )
         }
      )       
-public class TuesdayAdqlQueryEntity
+public class AdqlQueryEntity
 extends AbstractEntity
 implements AdqlQuery, AdqlDBQuery
     {
@@ -87,7 +87,7 @@ implements AdqlQuery, AdqlDBQuery
      * Hibernate table mapping.
      * 
      */
-    protected static final String DB_TABLE_NAME = "TuesdayAdqlQueryEntity";
+    protected static final String DB_TABLE_NAME = "AdqlQueryEntity";
     /**
      * Hibernate column mapping.
      * 
@@ -110,7 +110,7 @@ implements AdqlQuery, AdqlDBQuery
         @Override
         public Class<?> etype()
             {
-            return TuesdayAdqlQueryEntity.class ;
+            return AdqlQueryEntity.class ;
             }
 
         @Override
@@ -118,7 +118,7 @@ implements AdqlQuery, AdqlDBQuery
         public AdqlQuery create(final TuesdayAdqlResource resource, final String query)
             {
             return this.insert(
-                new TuesdayAdqlQueryEntity(
+                new AdqlQueryEntity(
                     resource,
                     this.names.name(),
                     query
@@ -131,7 +131,7 @@ implements AdqlQuery, AdqlDBQuery
         public AdqlQuery create(final TuesdayAdqlResource resource, final String name, final String query)
             {
             return this.insert(
-                new TuesdayAdqlQueryEntity(
+                new AdqlQueryEntity(
                     resource,
                     name,
                     query
@@ -197,11 +197,11 @@ implements AdqlQuery, AdqlDBQuery
             }
         }
 
-    protected TuesdayAdqlQueryEntity()
+    protected AdqlQueryEntity()
         {
         }
 
-    protected TuesdayAdqlQueryEntity(final TuesdayAdqlResource resource, final String name, final String query)
+    protected AdqlQueryEntity(final TuesdayAdqlResource resource, final String name, final String query)
     throws NameFormatException
         {
         super(

@@ -62,7 +62,7 @@
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchemaEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTableEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.tuesday.AdqlColumnEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQueryEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.tuesday.AdqlQueryEntity</value>
 
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaResourceEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaSchemaEntity</value>
