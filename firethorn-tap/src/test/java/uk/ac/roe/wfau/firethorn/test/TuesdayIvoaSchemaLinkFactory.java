@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.test;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.IvoaSchema;
 
 /**
  * JUnit test implementation.
@@ -27,8 +27,8 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaSchema;
  */
 @Component
 public class TuesdayIvoaSchemaLinkFactory
-extends TuesdayTestLinkFactory<TuesdayIvoaSchema>
-implements TuesdayIvoaSchema.LinkFactory
+extends TuesdayTestLinkFactory<IvoaSchema>
+implements IvoaSchema.LinkFactory
     {
     public TuesdayIvoaSchemaLinkFactory()
         {

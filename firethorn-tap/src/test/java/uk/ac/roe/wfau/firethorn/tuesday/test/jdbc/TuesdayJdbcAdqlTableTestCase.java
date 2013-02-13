@@ -26,9 +26,9 @@ import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlResource;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlTable;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcResource;
 
 /**
  * TODO experiment with DatabaseBuilder
@@ -40,7 +40,7 @@ public class TuesdayJdbcAdqlTableTestCase
     extends TestBase
     {
 
-	public TuesdayJdbcResource resource()
+	public JdbcResource resource()
 		{
         return factories().jdbc().resources().create(
             "test-resource",
@@ -60,10 +60,10 @@ public class TuesdayJdbcAdqlTableTestCase
 	    log.debug("---");
 	    log.debug("- ADQL resource [{}]", resource.name());
 
-	    for (final TuesdayAdqlSchema schema : resource.schemas().select())
+	    for (final AdqlSchema schema : resource.schemas().select())
 	        {
 	        log.debug("--- Schema [{}][{}]", new Object[] {resource.name(), schema.name()});
-	        for (final TuesdayAdqlTable table : schema.tables().select())
+	        for (final AdqlTable table : schema.tables().select())
 	            {
 	            log.debug("---- Table [{}][{}][{}]", new Object[] {table.resource().name(), table.alias(), table.fullname()});
 	            log.debug("---- Base  [{}][{}][{}]", new Object[] {table.base().resource().name(), table.base().alias(), table.base().fullname()});
@@ -80,7 +80,7 @@ public class TuesdayJdbcAdqlTableTestCase
     public void test001()
     throws Exception
         {
-        final TuesdayJdbcResource resource = resource();
+        final JdbcResource resource = resource();
         final AdqlResource workspace = workspace();
         //
         // Import a JdbcTable into an AdqlSchema
@@ -101,7 +101,7 @@ public class TuesdayJdbcAdqlTableTestCase
     public void test002()
     throws Exception
         {
-        final TuesdayJdbcResource resource  = resource();
+        final JdbcResource resource  = resource();
         final AdqlResource workspace = workspace();
         //
         // Import a JdbcSchema into our workspace.

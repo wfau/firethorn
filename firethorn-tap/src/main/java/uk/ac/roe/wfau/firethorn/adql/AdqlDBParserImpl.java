@@ -31,8 +31,8 @@ import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery.Status;
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlResource;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlTable;
 import adql.db.DBChecker;
 import adql.db.DBTable;
 import adql.parser.ADQLParser;
@@ -90,9 +90,9 @@ implements AdqlDBParser
         this.mode = mode ;
 
         final Set<DBTable> tables = new HashSet<DBTable>();
-        for (final TuesdayAdqlSchema schema : workspace.schemas().select())
+        for (final AdqlSchema schema : workspace.schemas().select())
             {
-            for (final TuesdayAdqlTable table : schema.tables().select())
+            for (final AdqlTable table : schema.tables().select())
                 {
                 tables.add(
                     factory.create(
@@ -217,7 +217,7 @@ implements AdqlDBParser
                     final AdqlColumn adql = ((AdqlDBColumn) ((ADQLColumn) object).getDBLink()).column();
                     log.debug("  ----");
                     log.debug("  AdqlColumn [{}]", adql.fullname());
-                    log.debug("  TuesdayBaseColumn [{}]", adql.base().fullname());
+                    log.debug("  BaseColumn [{}]", adql.base().fullname());
                     subject.add(
                         adql
                         );
@@ -230,10 +230,10 @@ implements AdqlDBParser
                 log.debug("  ADQLTable [{}]", ((ADQLTable) object).getName());
                 if (((ADQLTable) object).getDBLink() instanceof AdqlDBTable)
                     {
-                    final TuesdayAdqlTable adql = ((AdqlDBTable) ((ADQLTable) object).getDBLink()).table();
+                    final AdqlTable adql = ((AdqlDBTable) ((ADQLTable) object).getDBLink()).table();
                     log.debug("  ----");
-                    log.debug("  TuesdayAdqlTable [{}]", adql.fullname());
-                    log.debug("  TuesdayBaseTable [{}]", adql.base().fullname());
+                    log.debug("  AdqlTable [{}]", adql.fullname());
+                    log.debug("  BaseTable [{}]", adql.base().fullname());
                     subject.add(
                         adql
                         );

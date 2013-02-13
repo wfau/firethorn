@@ -33,7 +33,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayFactories;
+import uk.ac.roe.wfau.firethorn.tuesday.ComponentFactories;
 
 /**
  * Generic base class for a persistent Entity Factory.
@@ -62,8 +62,8 @@ implements Entity.Factory<EntityType>
      *
      */
     @Autowired
-    private TuesdayFactories factories;
-    public TuesdayFactories factories()
+    private ComponentFactories factories;
+    public ComponentFactories factories()
         {
         return this.factories;
         }

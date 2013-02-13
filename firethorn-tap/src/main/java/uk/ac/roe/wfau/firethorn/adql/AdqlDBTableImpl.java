@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlTable;
 import adql.db.DBColumn;
 import adql.db.DBTable;
 
@@ -46,7 +46,7 @@ implements AdqlDBTable
     implements AdqlDBTable.Factory
         {
         @Override
-        public AdqlDBTableImpl create(final AdqlQuery.Mode mode, final TuesdayAdqlTable table)
+        public AdqlDBTableImpl create(final AdqlQuery.Mode mode, final AdqlTable table)
             {
             return new AdqlDBTableImpl(
                 mode,
@@ -66,9 +66,9 @@ implements AdqlDBTable
      * Our underlying AdqlTable.
      *
      */
-    private final TuesdayAdqlTable table ;
+    private final AdqlTable table ;
     @Override
-    public TuesdayAdqlTable table()
+    public AdqlTable table()
         {
         return this.table;
         }
@@ -89,7 +89,7 @@ implements AdqlDBTable
      * Protected constructor.
      *
      */
-    private AdqlDBTableImpl(final AdqlQuery.Mode mode, final TuesdayAdqlTable table)
+    private AdqlDBTableImpl(final AdqlQuery.Mode mode, final AdqlTable table)
         {
         this(
             mode,
@@ -103,7 +103,7 @@ implements AdqlDBTable
      * Protected constructor, used by the copy method.
      *
      */
-    private AdqlDBTableImpl(final AdqlQuery.Mode mode, final TuesdayAdqlTable table, final String jdbcName, final String adqlName)
+    private AdqlDBTableImpl(final AdqlQuery.Mode mode, final AdqlTable table, final String jdbcName, final String adqlName)
         {
         this.mode  = mode  ;
         this.table = table ;

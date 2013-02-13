@@ -37,8 +37,8 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateEntityMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayFactories;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayFactoriesImpl;
+import uk.ac.roe.wfau.firethorn.tuesday.ComponentFactories;
+import uk.ac.roe.wfau.firethorn.tuesday.ComponentFactoriesImpl;
 
 /**
  * Generic base class for a persistent Entity.
@@ -74,14 +74,14 @@ implements Entity
     protected static final String DB_MODIFIED_COL = "modified" ;
 
     /**
-     * Access to our TuesdayFactories singleton instance.
+     * Access to our ComponentFactories singleton instance.
      * @todo Replace this with something, anything, else.
      * @todo re-enable compiler warnings for indirect access to static members
      *
      */
-    public TuesdayFactories factories()
+    public ComponentFactories factories()
         {
-        return TuesdayFactoriesImpl.instance();
+        return ComponentFactoriesImpl.instance();
         }
 
     /**

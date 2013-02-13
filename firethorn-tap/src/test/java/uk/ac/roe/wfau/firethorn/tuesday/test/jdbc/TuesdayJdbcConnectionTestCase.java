@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcResource;
 
 /**
  * TODO experiment with this
@@ -46,7 +46,7 @@ public class TuesdayJdbcConnectionTestCase
         assertNotNull(
             factories()
             );
-        final TuesdayJdbcResource resource = factories().jdbc().resources().create(
+        final JdbcResource resource = factories().jdbc().resources().create(
             unique("resource")
             );
         assertNotNull(
@@ -66,12 +66,12 @@ public class TuesdayJdbcConnectionTestCase
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
-            TuesdayJdbcResource.JdbcProductType.PGSQL.alias(),
+            JdbcResource.JdbcProductType.PGSQL.alias(),
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
-            TuesdayJdbcResource.JdbcProductType.PGSQL,
-            TuesdayJdbcResource.JdbcProductType.match(
+            JdbcResource.JdbcProductType.PGSQL,
+            JdbcResource.JdbcProductType.match(
                 resource.connection().metadata().getDatabaseProductName()
                 )
             );
@@ -88,7 +88,7 @@ public class TuesdayJdbcConnectionTestCase
         assertNotNull(
             factories()
             );
-        final TuesdayJdbcResource resource = factories().jdbc().resources().create(
+        final JdbcResource resource = factories().jdbc().resources().create(
             unique("resource")
             );
         assertNotNull(
@@ -108,12 +108,12 @@ public class TuesdayJdbcConnectionTestCase
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
-            TuesdayJdbcResource.JdbcProductType.MYSQL.alias(),
+            JdbcResource.JdbcProductType.MYSQL.alias(),
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
-            TuesdayJdbcResource.JdbcProductType.MYSQL,
-            TuesdayJdbcResource.JdbcProductType.match(
+            JdbcResource.JdbcProductType.MYSQL,
+            JdbcResource.JdbcProductType.match(
                 resource.connection().metadata().getDatabaseProductName()
                 )
             );
@@ -130,7 +130,7 @@ public class TuesdayJdbcConnectionTestCase
         assertNotNull(
             factories()
             );
-        final TuesdayJdbcResource resource = factories().jdbc().resources().create(
+        final JdbcResource resource = factories().jdbc().resources().create(
             unique("resource")
             );
         assertNotNull(
@@ -150,12 +150,12 @@ public class TuesdayJdbcConnectionTestCase
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
-            TuesdayJdbcResource.JdbcProductType.MSSQL.alias(),
+            JdbcResource.JdbcProductType.MSSQL.alias(),
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
-            TuesdayJdbcResource.JdbcProductType.MSSQL,
-            TuesdayJdbcResource.JdbcProductType.match(
+            JdbcResource.JdbcProductType.MSSQL,
+            JdbcResource.JdbcProductType.match(
                 resource.connection().metadata().getDatabaseProductName()
                 )
             );
@@ -168,7 +168,7 @@ public class TuesdayJdbcConnectionTestCase
         assertNotNull(
             factories()
             );
-        TuesdayJdbcResource resource = factories().jdbc().resources().create(
+        JdbcResource resource = factories().jdbc().resources().create(
             unique("resource")
             );
         assertNotNull(

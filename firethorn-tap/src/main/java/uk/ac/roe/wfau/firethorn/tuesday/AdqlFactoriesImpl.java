@@ -40,17 +40,17 @@ public class AdqlFactoriesImpl
         }
 
     @Autowired
-    private TuesdayAdqlSchema.Factory schemas;
+    private AdqlSchema.Factory schemas;
     @Override
-    public TuesdayAdqlSchema.Factory schemas()
+    public AdqlSchema.Factory schemas()
         {
         return this.schemas;
         }
 
     @Autowired
-    private TuesdayAdqlTable.Factory tables;
+    private AdqlTable.Factory tables;
     @Override
-    public TuesdayAdqlTable.Factory tables()
+    public AdqlTable.Factory tables()
         {
         return this.tables;
         }

@@ -35,13 +35,13 @@ public interface AdqlFactories
      * Our schema factory.
      *
      */
-    public TuesdayAdqlSchema.Factory schemas();
+    public AdqlSchema.Factory schemas();
 
     /**
      * Our table factory.
      *
      */
-    public TuesdayAdqlTable.Factory tables();
+    public AdqlTable.Factory tables();
 
     /**
      * Our column factory.

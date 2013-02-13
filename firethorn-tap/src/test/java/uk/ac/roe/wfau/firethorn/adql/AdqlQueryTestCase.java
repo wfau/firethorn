@@ -25,12 +25,12 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlResource;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchemaEntity;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayOgsaResource;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlTable;
+import uk.ac.roe.wfau.firethorn.tuesday.BaseTable;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcResource;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcSchemaEntity;
+import uk.ac.roe.wfau.firethorn.tuesday.OgsaResource;
 import adql.query.from.ADQLTable;
 
 
@@ -46,7 +46,7 @@ extends TestBase
      * Resolve a table alias into a BaseTable.
      *
      */
-    public TuesdayBaseTable<?,?> resolve(final ADQLTable querytable)
+    public BaseTable<?,?> resolve(final ADQLTable querytable)
     throws Exception
         {
         return factories().base().tables().resolve(
@@ -79,7 +79,7 @@ extends TestBase
         {
         //
         // Create our JDBC resource.
-        final TuesdayJdbcResource twomass = factories().jdbc().resources().create(
+        final JdbcResource twomass = factories().jdbc().resources().create(
             "test-resource",
             "spring:RoeTWOMASS"
             );
@@ -111,12 +111,12 @@ extends TestBase
             log.debug("Column [{}]", column.fullname());
             }
         log.debug("Tables -- ");
-        for (final TuesdayAdqlTable table : query.tables())
+        for (final AdqlTable table : query.tables())
             {
             log.debug("Table [{}]", table.fullname());
             }
         log.debug("Resources -- ");
-        for (final TuesdayOgsaResource<?> resource : query.resources())
+        for (final OgsaResource<?> resource : query.resources())
             {
             log.debug("Resource [{}]", resource.fullname());
             }
@@ -151,7 +151,7 @@ extends TestBase
         {
         //
         // Create our JDBC resource.
-        final TuesdayJdbcResource twomass = factories().jdbc().resources().create(
+        final JdbcResource twomass = factories().jdbc().resources().create(
             "test-resource",
             "spring:RoeTWOMASS"
             );
@@ -183,12 +183,12 @@ extends TestBase
             log.debug("Column [{}]", column.fullname());
             }
         log.debug("Tables -- ");
-        for (final TuesdayAdqlTable table : query.tables())
+        for (final AdqlTable table : query.tables())
             {
             log.debug("Table [{}]", table.fullname());
             }
         log.debug("Resources -- ");
-        for (final TuesdayOgsaResource<?> resource : query.resources())
+        for (final OgsaResource<?> resource : query.resources())
             {
             log.debug("Resource [{}]", resource.fullname());
             }
@@ -230,15 +230,15 @@ extends TestBase
         {
         //
         // Create our JDBC resources.
-        final TuesdayJdbcResource twomass = factories().jdbc().resources().create(
+        final JdbcResource twomass = factories().jdbc().resources().create(
             "twomass",
             "spring:RoeTWOMASS"
             );
-        final TuesdayJdbcResource twoxmm = factories().jdbc().resources().create(
+        final JdbcResource twoxmm = factories().jdbc().resources().create(
             "twoxmm",
             "spring:RoeTWOXMM"
             );
-        final TuesdayJdbcResource bestdr7  = factories().jdbc().resources().create(
+        final JdbcResource bestdr7  = factories().jdbc().resources().create(
             "bestdr7",
             "spring:RoeBestDR7"
             );
@@ -286,12 +286,12 @@ extends TestBase
             log.debug("Column [{}]", column.fullname());
             }
         log.debug("Tables -- ");
-        for (final TuesdayAdqlTable table : query.tables())
+        for (final AdqlTable table : query.tables())
             {
             log.debug("Table [{}]", table.fullname());
             }
         log.debug("Resources -- ");
-        for (final TuesdayOgsaResource<?> resource : query.resources())
+        for (final OgsaResource<?> resource : query.resources())
             {
             log.debug("Resource [{}]", resource.fullname());
             }
@@ -308,15 +308,15 @@ extends TestBase
         {
         //
         // Create our JDBC resources.
-        final TuesdayJdbcResource twomass = factories().jdbc().resources().create(
+        final JdbcResource twomass = factories().jdbc().resources().create(
             "twomass",
             "spring:RoeTWOMASS"
             );
-        final TuesdayJdbcResource twoxmm = factories().jdbc().resources().create(
+        final JdbcResource twoxmm = factories().jdbc().resources().create(
             "twoxmm",
             "spring:RoeTWOXMM"
             );
-        final TuesdayJdbcResource bestdr7  = factories().jdbc().resources().create(
+        final JdbcResource bestdr7  = factories().jdbc().resources().create(
             "bestdr7",
             "spring:RoeBestDR7"
             );
@@ -325,17 +325,17 @@ extends TestBase
         bestdr7.inport();
         //
         // Re-assign the JDBC table resources.
-        for (final TuesdayJdbcSchema schema : twoxmm.schemas().select())
+        for (final JdbcSchema schema : twoxmm.schemas().select())
             {
             log.debug("Relocating schema [{}]", schema.name());
-            ((TuesdayJdbcSchemaEntity)schema).resource(
+            ((JdbcSchemaEntity)schema).resource(
                 twomass
                 );
             }
-        for (final TuesdayJdbcSchema schema : bestdr7.schemas().select())
+        for (final JdbcSchema schema : bestdr7.schemas().select())
             {
             log.debug("Relocating schema [{}]", schema.name());
-            ((TuesdayJdbcSchemaEntity)schema).resource(
+            ((JdbcSchemaEntity)schema).resource(
                 twomass
                 );
             }
@@ -381,12 +381,12 @@ extends TestBase
             log.debug("Column [{}]", column.fullname());
             }
         log.debug("Tables -- ");
-        for (final TuesdayAdqlTable table : query.tables())
+        for (final AdqlTable table : query.tables())
             {
             log.debug("Table [{}]", table.fullname());
             }
         log.debug("Resources -- ");
-        for (final TuesdayOgsaResource<?> resource : query.resources())
+        for (final OgsaResource<?> resource : query.resources())
             {
             log.debug("Resource [{}]", resource.fullname());
             }

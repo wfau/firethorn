@@ -28,11 +28,11 @@ import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayFactories;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
+import uk.ac.roe.wfau.firethorn.tuesday.ComponentFactories;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcResource;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcTable;
 
 /**
  * TODO experiment with this
@@ -45,18 +45,18 @@ public class TuesdayJdbcResourceTestCase
     {
 
     /**
-     * Our TuesdayFactories instance.
+     * Our ComponentFactories instance.
      *
      */
     @Autowired
-    private TuesdayFactories factories;
+    private ComponentFactories factories;
 
     /**
-     * Access to our TuesdayFactories singleton instance.
+     * Access to our ComponentFactories singleton instance.
      *
      */
     @Override
-    public TuesdayFactories factories()
+    public ComponentFactories factories()
         {
         return this.factories;
         }
@@ -103,18 +103,18 @@ public class TuesdayJdbcResourceTestCase
         log.debug("After ----");
         }
 
-    public void display(final TuesdayJdbcResource resource)
+    public void display(final JdbcResource resource)
         {
         log.debug("---");
         log.debug("- JDBC resource [{}]", resource.name());
 
-        for (final TuesdayJdbcSchema schema : resource.schemas().select())
+        for (final JdbcSchema schema : resource.schemas().select())
             {
             log.debug("--- Schema [{}][{}]", new Object[] {resource.name(), schema.name()});
-            for (final TuesdayJdbcTable table : schema.tables().select())
+            for (final JdbcTable table : schema.tables().select())
                 {
                 log.debug("---- Table [{}][{}.{}]", new Object[] {resource.name(), schema.name(), table.name()});
-                for (final TuesdayJdbcColumn column : table.columns().select())
+                for (final JdbcColumn column : table.columns().select())
                     {
                     log.debug("----- Column [{}][{}.{}.{}]", new Object[] {resource.name(), schema.name(), table.name(), column.name()});
                     }

@@ -24,7 +24,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
  *
  */
 public interface AdqlColumn
-extends TuesdayBaseColumn<AdqlColumn>
+extends BaseColumn<AdqlColumn>
     {
     /**
      * Link factory interface.
@@ -49,29 +49,29 @@ extends TuesdayBaseColumn<AdqlColumn>
      *
      */
     public static interface Factory
-    extends TuesdayBaseColumn.Factory<TuesdayAdqlTable, AdqlColumn>
+    extends BaseColumn.Factory<AdqlTable, AdqlColumn>
         {
         /**
          * Create a new column.
          *
          */
-        public AdqlColumn create(final TuesdayAdqlTable parent, final TuesdayBaseColumn<?> base);
+        public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base);
 
         /**
          * Create a new column.
          *
          */
-        public AdqlColumn create(final TuesdayAdqlTable parent, final TuesdayBaseColumn<?> base, final String name);
+        public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base, final String name);
 
         }
 
     @Override
-    public TuesdayAdqlTable table();
+    public AdqlTable table();
     @Override
-    public TuesdayAdqlSchema schema();
+    public AdqlSchema schema();
     @Override
     public AdqlResource resource();
 
-    public TuesdayBaseColumn<?> base();
+    public BaseColumn<?> base();
 
     }

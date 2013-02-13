@@ -20,7 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc ;
 import org.junit.Before;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcResource;
 
 /**
  *
@@ -29,11 +29,11 @@ public class JdbcResourceTestBase
 extends TestBase
     {
 
-    private TuesdayJdbcResource jdbcResource ;
+    private JdbcResource jdbcResource ;
 
     public interface JdbcTargets
         {
-        public TuesdayJdbcResource resource();
+        public JdbcResource resource();
         }
 
     public JdbcTargets jdbc()
@@ -41,7 +41,7 @@ extends TestBase
         return new JdbcTargets()
             {
             @Override
-            public TuesdayJdbcResource resource()
+            public JdbcResource resource()
                 {
                 return jdbcResource;
                 }

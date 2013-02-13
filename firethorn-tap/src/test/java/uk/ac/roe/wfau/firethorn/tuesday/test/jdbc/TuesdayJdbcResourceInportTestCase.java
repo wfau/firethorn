@@ -24,9 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnection;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnectionEntity;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcConnection;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcConnectionEntity;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcResource;
 
 /**
  * TODO experiment with this
@@ -38,13 +38,13 @@ public class TuesdayJdbcResourceInportTestCase
     extends TuesdayJdbcResourceTestCase
     {
 
-    public TuesdayJdbcResource inport(final String catalog)
+    public JdbcResource inport(final String catalog)
     throws Exception
         {
         log.debug("Catalog [{}]",catalog);
         final String url = "jdbc:jtds:sqlserver://localhost:1433/" + catalog ;
 
-        final TuesdayJdbcResource resource = factories().jdbc().resources().create(
+        final JdbcResource resource = factories().jdbc().resources().create(
             catalog
             );
         resource.connection().url(
@@ -88,10 +88,10 @@ public class TuesdayJdbcResourceInportTestCase
     public void test002()
     throws Exception
         {
-        final TuesdayJdbcConnection connection = new TuesdayJdbcConnectionEntity(
+        final JdbcConnection connection = new JdbcConnectionEntity(
             "spring:RoeLiveData"
             );
-        final List<TuesdayJdbcResource> resources = new ArrayList<TuesdayJdbcResource>();
+        final List<JdbcResource> resources = new ArrayList<JdbcResource>();
 
         for (final String catalog : connection.catalogs())
             {
@@ -101,7 +101,7 @@ public class TuesdayJdbcResourceInportTestCase
                     )
                 );
             }
-        for (final TuesdayJdbcResource resource : resources)
+        for (final JdbcResource resource : resources)
             {
             display(
                 resource

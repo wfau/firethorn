@@ -21,7 +21,7 @@ import java.net.URI;
 
 import uk.ac.roe.wfau.firethorn.common.entity.Entity;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.PathBuilder.Path;
 
 @Deprecated

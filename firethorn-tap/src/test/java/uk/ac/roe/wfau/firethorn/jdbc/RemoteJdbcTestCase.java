@@ -29,10 +29,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcResource;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcTable;
 
 /**
  *
@@ -80,7 +80,7 @@ extends TestBase
 
         //
         // Create an empty resource tree.
-        final TuesdayJdbcResource jdbcResource = factories().jdbc().resources().create(
+        final JdbcResource jdbcResource = factories().jdbc().resources().create(
             this.unique(
                 "base"
                 )
@@ -111,18 +111,18 @@ extends TestBase
             );
         }
 
-    public void display(final TuesdayJdbcResource resource)
+    public void display(final JdbcResource resource)
         {
         log.debug("---");
         log.debug("- JDBC resource [{}]", resource.name());
 
-        for (final TuesdayJdbcSchema schema : resource.schemas().select())
+        for (final JdbcSchema schema : resource.schemas().select())
             {
             log.debug("--- Schema [{}]", schema.fullname());
-            for (final TuesdayJdbcTable table : schema.tables().select())
+            for (final JdbcTable table : schema.tables().select())
                 {
                 log.debug("---- Table [{}]", table.fullname());
-                for (final TuesdayJdbcColumn column : table.columns().select())
+                for (final JdbcColumn column : table.columns().select())
                     {
                     log.debug("----- Column [{}]", column.fullname());
                     }

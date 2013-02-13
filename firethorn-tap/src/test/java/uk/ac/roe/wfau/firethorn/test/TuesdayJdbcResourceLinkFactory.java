@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.test;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcResource;
 
 /**
  * JUnit test implementation.
@@ -27,8 +27,8 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
  */
 @Component
 public class TuesdayJdbcResourceLinkFactory
-extends TuesdayTestLinkFactory<TuesdayJdbcResource>
-implements TuesdayJdbcResource.LinkFactory
+extends TuesdayTestLinkFactory<JdbcResource>
+implements JdbcResource.LinkFactory
     {
     public TuesdayJdbcResourceLinkFactory()
         {

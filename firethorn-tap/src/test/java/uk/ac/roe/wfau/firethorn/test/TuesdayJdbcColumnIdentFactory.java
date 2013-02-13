@@ -20,7 +20,7 @@ package uk.ac.roe.wfau.firethorn.test;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.EntityIdentFactory;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcColumn;
 
 /**
  * JUnit test implementation.
@@ -29,6 +29,6 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
 @Component
 public class TuesdayJdbcColumnIdentFactory
 extends EntityIdentFactory
-implements TuesdayJdbcColumn.IdentFactory
+implements JdbcColumn.IdentFactory
     {
     }

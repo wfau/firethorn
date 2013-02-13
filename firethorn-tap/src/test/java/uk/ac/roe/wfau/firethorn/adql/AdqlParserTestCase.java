@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlResource;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcResource;
 import adql.db.DBChecker;
 import adql.db.DBTable;
 import adql.db.DefaultDBColumn;
@@ -316,7 +316,7 @@ extends TestBase
     public DBTable adqlTable()
     throws Exception
         {
-    	final TuesdayJdbcResource jdbcResource = factories().jdbc().resources().create(
+    	final JdbcResource jdbcResource = factories().jdbc().resources().create(
 			"jdbc_resource"
 			);
     	//

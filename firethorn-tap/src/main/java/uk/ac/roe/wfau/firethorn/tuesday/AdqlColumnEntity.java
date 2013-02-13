@@ -63,7 +63,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
         }
     )
 public class AdqlColumnEntity
-    extends TuesdayBaseColumnEntity<AdqlColumn>
+    extends BaseColumnEntity<AdqlColumn>
     implements AdqlColumn
     {
     protected static final String DB_TABLE_NAME = "AdqlColumnEntity";
@@ -86,7 +86,7 @@ public class AdqlColumnEntity
 
         @Override
         @CreateEntityMethod
-        public AdqlColumn create(final TuesdayAdqlTable parent, final TuesdayBaseColumn<?> base)
+        public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base)
             {
             return this.insert(
                 new AdqlColumnEntity(
@@ -98,7 +98,7 @@ public class AdqlColumnEntity
 
         @Override
         @CreateEntityMethod
-        public AdqlColumn create(final TuesdayAdqlTable parent, final TuesdayBaseColumn<?> base, final String name)
+        public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base, final String name)
             {
             return this.insert(
                 new AdqlColumnEntity(
@@ -111,7 +111,7 @@ public class AdqlColumnEntity
 
         @Override
         @SelectEntityMethod
-        public Iterable<AdqlColumn> select(final TuesdayAdqlTable parent)
+        public Iterable<AdqlColumn> select(final AdqlTable parent)
             {
             return super.list(
                 super.query(
@@ -125,7 +125,7 @@ public class AdqlColumnEntity
 
         @Override
         @SelectEntityMethod
-        public AdqlColumn select(final TuesdayAdqlTable parent, final String name)
+        public AdqlColumn select(final AdqlTable parent, final String name)
             {
             return super.first(
                 super.query(
@@ -142,7 +142,7 @@ public class AdqlColumnEntity
 
         @Override
         @SelectEntityMethod
-        public Iterable<AdqlColumn> search(final TuesdayAdqlTable parent, final String text)
+        public Iterable<AdqlColumn> search(final AdqlTable parent, final String text)
             {
             return super.iterable(
                 super.query(
@@ -181,14 +181,14 @@ public class AdqlColumnEntity
         super();
         }
 
-    protected AdqlColumnEntity(final TuesdayAdqlTable table, final TuesdayBaseColumn<?> base)
+    protected AdqlColumnEntity(final AdqlTable table, final BaseColumn<?> base)
         {
         super(table, base.name());
         this.base  = base ;
         this.table = table;
         }
 
-    protected AdqlColumnEntity(final TuesdayAdqlTable table, final TuesdayBaseColumn<?> base, final String name)
+    protected AdqlColumnEntity(final AdqlTable table, final BaseColumn<?> base, final String name)
         {
         super(table, ((name != null) ? name : base.name()));
         this.base  = base ;
@@ -245,7 +245,7 @@ public class AdqlColumnEntity
         )
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = TuesdayAdqlTableEntity.class
+        targetEntity = AdqlTableEntity.class
         )
     @JoinColumn(
         name = DB_PARENT_COL,
@@ -253,14 +253,14 @@ public class AdqlColumnEntity
         nullable = false,
         updatable = true
         )
-    private TuesdayAdqlTable table;
+    private AdqlTable table;
     @Override
-    public TuesdayAdqlTable table()
+    public AdqlTable table()
         {
         return this.table;
         }
     @Override
-    public TuesdayAdqlSchema schema()
+    public AdqlSchema schema()
         {
         return this.table().schema();
         }
@@ -275,7 +275,7 @@ public class AdqlColumnEntity
         )
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = TuesdayBaseColumnEntity.class
+        targetEntity = BaseColumnEntity.class
         )
     @JoinColumn(
         name = DB_BASE_COL,
@@ -283,14 +283,14 @@ public class AdqlColumnEntity
         nullable = false,
         updatable = false
         )
-    private TuesdayBaseColumn<?> base ;
+    private BaseColumn<?> base ;
     @Override
-    public TuesdayBaseColumn<?> base()
+    public BaseColumn<?> base()
         {
         return this.base ;
         }
     @Override
-    public TuesdayOgsaColumn<?> ogsa()
+    public OgsaColumn<?> ogsa()
         {
         return base().ogsa();
         }

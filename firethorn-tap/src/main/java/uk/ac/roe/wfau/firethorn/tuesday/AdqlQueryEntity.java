@@ -218,7 +218,7 @@ implements AdqlQuery, AdqlDBQuery
         )
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = TuesdayAdqlResourceEntity.class
+        targetEntity = AdqlResourceEntity.class
         )
     @JoinColumn(
         name = DB_RESOURCE_COL,
@@ -399,17 +399,17 @@ implements AdqlQuery, AdqlDBQuery
         }
 
     @Transient
-    private final Set<TuesdayAdqlTable> tables = new HashSet<TuesdayAdqlTable>();
+    private final Set<AdqlTable> tables = new HashSet<AdqlTable>();
     @Override
-    public Iterable<TuesdayAdqlTable> tables()
+    public Iterable<AdqlTable> tables()
         {
         return this.tables;
         }
 
     @Transient
-    private final Set<TuesdayOgsaResource<?>> resources = new HashSet<TuesdayOgsaResource<?>>();
+    private final Set<OgsaResource<?>> resources = new HashSet<OgsaResource<?>>();
     @Override
-    public Iterable<TuesdayOgsaResource<?>> resources()
+    public Iterable<OgsaResource<?>> resources()
         {
         return this.resources;
         }
@@ -465,7 +465,7 @@ implements AdqlQuery, AdqlDBQuery
         }
 
     @Override
-    public void add(final TuesdayAdqlTable table)
+    public void add(final AdqlTable table)
         {
         this.tables.add(
             table

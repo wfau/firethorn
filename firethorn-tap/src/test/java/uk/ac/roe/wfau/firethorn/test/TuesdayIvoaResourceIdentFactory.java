@@ -20,7 +20,7 @@ package uk.ac.roe.wfau.firethorn.test;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.common.entity.EntityIdentFactory;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaResource;
+import uk.ac.roe.wfau.firethorn.tuesday.IvoaResource;
 
 /**
  * JUnit test implementation.
@@ -29,6 +29,6 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaResource;
 @Component
 public class TuesdayIvoaResourceIdentFactory
 extends EntityIdentFactory
-implements TuesdayIvoaResource.IdentFactory
+implements IvoaResource.IdentFactory
     {
     }

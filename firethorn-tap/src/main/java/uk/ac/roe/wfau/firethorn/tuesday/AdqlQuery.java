@@ -220,13 +220,13 @@ extends Entity
      * The set of the AdqlTables used by the query.
      *
      */
-    public Iterable<TuesdayAdqlTable> tables();
+    public Iterable<AdqlTable> tables();
 
     /**
      * The set of the OGSA-DAI resources used by the query.
      *
      */
-    public Iterable<TuesdayOgsaResource<?>> resources();
+    public Iterable<OgsaResource<?>> resources();
 
     /**
      * Parse the query and update our properties.

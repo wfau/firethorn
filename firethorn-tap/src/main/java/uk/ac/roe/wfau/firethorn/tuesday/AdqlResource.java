@@ -25,7 +25,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
  *
  */
 public interface AdqlResource
-extends TuesdayBaseResource<TuesdayAdqlSchema>
+extends BaseResource<AdqlSchema>
     {
     /**
      * Link factory interface.
@@ -50,13 +50,13 @@ extends TuesdayBaseResource<TuesdayAdqlSchema>
      *
      */
     public static interface Factory
-    extends TuesdayBaseResource.Factory<AdqlResource>
+    extends BaseResource.Factory<AdqlResource>
         {
         /**
          * The resource schema factory.
          *
          */
-        public TuesdayAdqlSchema.Factory schemas();
+        public AdqlSchema.Factory schemas();
 
         }
 
@@ -64,19 +64,19 @@ extends TuesdayBaseResource<TuesdayAdqlSchema>
      * Access to the resource schemas.
      *
      */
-    public interface Schemas extends TuesdayBaseResource.Schemas<TuesdayAdqlSchema>
+    public interface Schemas extends BaseResource.Schemas<AdqlSchema>
         {
         /**
          * Create a new schema.
          *
          */
-        public TuesdayAdqlSchema create(final String name);
+        public AdqlSchema create(final String name);
 
         /**
          * Import tables from a schema.
          *
          */
-        public TuesdayAdqlSchema inport(final TuesdayBaseSchema<?,?> base, final String name);
+        public AdqlSchema inport(final BaseSchema<?,?> base, final String name);
 
         }
     @Override
