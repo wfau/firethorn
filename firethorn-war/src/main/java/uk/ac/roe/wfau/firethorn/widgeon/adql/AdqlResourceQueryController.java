@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -132,7 +132,7 @@ extends AbstractEntityController<AdqlQuery>
      *
      */
     @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
-    public TuesdayAdqlResource resource(
+    public AdqlResource resource(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException {
@@ -151,7 +151,7 @@ extends AbstractEntityController<AdqlQuery>
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
     public Iterable<EntityBean<AdqlQuery>> jsonSelect(
         @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
-        final TuesdayAdqlResource resource
+        final AdqlResource resource
         ){
         return bean(
             resource.queries().select()
@@ -166,7 +166,7 @@ extends AbstractEntityController<AdqlQuery>
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
     public Iterable<EntityBean<AdqlQuery>> jsonSearch(
         @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
-        final TuesdayAdqlResource resource,
+        final AdqlResource resource,
         @RequestParam(SEARCH_TEXT)
         final String text
         ){
@@ -185,7 +185,7 @@ extends AbstractEntityController<AdqlQuery>
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<EntityBean<AdqlQuery>> jsonCreate(
         @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
-        final TuesdayAdqlResource resource,
+        final AdqlResource resource,
         @RequestParam(value=CREATE_QUERY, required=true)
         final String query,
         @RequestParam(value=CREATE_NAME, required=false)

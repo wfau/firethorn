@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
@@ -48,14 +48,14 @@ public class TuesdayJdbcAdqlTableTestCase
             );
 		}
 
-	public TuesdayAdqlResource workspace()
+	public AdqlResource workspace()
 		{
         return factories().adql().resources().create(
             "test-workspace"
             );
 		}
 
-    public void display(final TuesdayAdqlResource resource)
+    public void display(final AdqlResource resource)
 	    {
 	    log.debug("---");
 	    log.debug("- ADQL resource [{}]", resource.name());
@@ -81,7 +81,7 @@ public class TuesdayJdbcAdqlTableTestCase
     throws Exception
         {
         final TuesdayJdbcResource resource = resource();
-        final TuesdayAdqlResource workspace = workspace();
+        final AdqlResource workspace = workspace();
         //
         // Import a JdbcTable into an AdqlSchema
         resource.inport();
@@ -102,7 +102,7 @@ public class TuesdayJdbcAdqlTableTestCase
     throws Exception
         {
         final TuesdayJdbcResource resource  = resource();
-        final TuesdayAdqlResource workspace = workspace();
+        final AdqlResource workspace = workspace();
         //
         // Import a JdbcSchema into our workspace.
         resource.inport();

@@ -115,7 +115,7 @@ implements AdqlQuery, AdqlDBQuery
 
         @Override
         @CreateEntityMethod
-        public AdqlQuery create(final TuesdayAdqlResource resource, final String query)
+        public AdqlQuery create(final AdqlResource resource, final String query)
             {
             return this.insert(
                 new AdqlQueryEntity(
@@ -128,7 +128,7 @@ implements AdqlQuery, AdqlDBQuery
 
         @Override
         @CreateEntityMethod
-        public AdqlQuery create(final TuesdayAdqlResource resource, final String name, final String query)
+        public AdqlQuery create(final AdqlResource resource, final String name, final String query)
             {
             return this.insert(
                 new AdqlQueryEntity(
@@ -165,7 +165,7 @@ implements AdqlQuery, AdqlDBQuery
 
         @Override
         @SelectEntityMethod
-        public Iterable<AdqlQuery> select(TuesdayAdqlResource resource)
+        public Iterable<AdqlQuery> select(AdqlResource resource)
             {
             return super.list(
                 super.query(
@@ -179,7 +179,7 @@ implements AdqlQuery, AdqlDBQuery
 
         @Override
         @SelectEntityMethod
-        public Iterable<AdqlQuery> search(TuesdayAdqlResource resource, String text)
+        public Iterable<AdqlQuery> search(AdqlResource resource, String text)
             {
             return super.iterable(
                 super.query(
@@ -201,7 +201,7 @@ implements AdqlQuery, AdqlDBQuery
         {
         }
 
-    protected AdqlQueryEntity(final TuesdayAdqlResource resource, final String name, final String query)
+    protected AdqlQueryEntity(final AdqlResource resource, final String name, final String query)
     throws NameFormatException
         {
         super(
@@ -226,9 +226,9 @@ implements AdqlQuery, AdqlDBQuery
         nullable = false,
         updatable = false
         )
-    private TuesdayAdqlResource resource;
+    private AdqlResource resource;
     @Override
-    public TuesdayAdqlResource resource()
+    public AdqlResource resource()
         {
         return this.resource;
         }

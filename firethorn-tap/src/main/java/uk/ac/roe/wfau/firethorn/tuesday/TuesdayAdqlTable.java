@@ -87,7 +87,7 @@ extends TuesdayBaseTable<TuesdayAdqlTable, AdqlColumn>
         }
 
     @Override
-    public TuesdayAdqlResource resource();
+    public AdqlResource resource();
     @Override
     public TuesdayAdqlSchema schema();
     public void schema(final TuesdayAdqlSchema schema);

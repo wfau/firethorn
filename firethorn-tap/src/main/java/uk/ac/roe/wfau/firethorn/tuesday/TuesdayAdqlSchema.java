@@ -49,7 +49,7 @@ extends TuesdayBaseSchema<TuesdayAdqlSchema, TuesdayAdqlTable>
      *
      */
     public static interface Factory
-    extends TuesdayBaseSchema.Factory<TuesdayAdqlResource, TuesdayAdqlSchema>
+    extends TuesdayBaseSchema.Factory<AdqlResource, TuesdayAdqlSchema>
         {
         /**
          * The schema table factory.
@@ -65,7 +65,7 @@ extends TuesdayBaseSchema<TuesdayAdqlSchema, TuesdayAdqlTable>
         }
 
     @Override
-    public TuesdayAdqlResource resource();
+    public AdqlResource resource();
 
     /**
      * Access to the schema tables.

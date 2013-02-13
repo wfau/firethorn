@@ -28,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
 import adql.db.DBChecker;
 import adql.db.DBTable;
@@ -354,7 +354,7 @@ extends TestBase
 
         //
         // Create our ADQL resource.
-        final TuesdayAdqlResource adqlResource = factories().adql().resources().create("test");
+        final AdqlResource adqlResource = factories().adql().resources().create("test");
         adqlResource.schemas().inport(
         		jdbcResource.schemas().select(
                     "jdbc_schema"

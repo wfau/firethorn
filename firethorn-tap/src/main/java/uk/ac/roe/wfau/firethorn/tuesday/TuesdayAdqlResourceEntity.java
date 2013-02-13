@@ -41,18 +41,18 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "TuesdayAdqlResource-select-all",
+            name  = "AdqlResource-select-all",
             query = "FROM TuesdayAdqlResourceEntity ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
-            name  = "TuesdayAdqlResource-search-text",
+            name  = "AdqlResource-search-text",
             query = "FROM TuesdayAdqlResourceEntity WHERE (name LIKE :text) ORDER BY ident desc"
             )
         }
     )
 public class TuesdayAdqlResourceEntity
 extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
-    implements TuesdayAdqlResource
+    implements AdqlResource
     {
     protected static final String DB_TABLE_NAME = "TuesdayAdqlResourceEntity";
 
@@ -62,8 +62,8 @@ extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<TuesdayAdqlResource>
-    implements TuesdayAdqlResource.Factory
+    extends AbstractFactory<AdqlResource>
+    implements AdqlResource.Factory
         {
 
         @Override
@@ -74,22 +74,22 @@ extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
 
         @Override
         @SelectEntityMethod
-        public Iterable<TuesdayAdqlResource> select()
+        public Iterable<AdqlResource> select()
             {
             return super.iterable(
                 super.query(
-                    "TuesdayAdqlResource-select-all"
+                    "AdqlResource-select-all"
                     )
                 );
             }
 
         @Override
         @SelectEntityMethod
-        public Iterable<TuesdayAdqlResource> search(final String text)
+        public Iterable<AdqlResource> search(final String text)
             {
             return super.iterable(
                 super.query(
-                    "TuesdayAdqlResource-search-text"
+                    "AdqlResource-search-text"
                     ).setString(
                         "text",
                         searchParam(
@@ -101,7 +101,7 @@ extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
 
         @Override
         @CreateEntityMethod
-        public TuesdayAdqlResource  create(final String name)
+        public AdqlResource  create(final String name)
             {
             return super.insert(
                 new TuesdayAdqlResourceEntity(
@@ -119,17 +119,17 @@ extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
             }
 
         @Autowired
-        protected TuesdayAdqlResource.IdentFactory idents;
+        protected AdqlResource.IdentFactory idents;
         @Override
-        public TuesdayAdqlResource.IdentFactory idents()
+        public AdqlResource.IdentFactory idents()
             {
             return this.idents;
             }
 
         @Autowired
-        protected TuesdayAdqlResource.LinkFactory links;
+        protected AdqlResource.LinkFactory links;
         @Override
-        public TuesdayAdqlResource.LinkFactory links()
+        public AdqlResource.LinkFactory links()
             {
             return this.links;
             }
@@ -146,9 +146,9 @@ extends TuesdayBaseResourceEntity<TuesdayAdqlSchema>
         }
 
     @Override
-    public TuesdayAdqlResource.Schemas schemas()
+    public AdqlResource.Schemas schemas()
         {
-        return new TuesdayAdqlResource.Schemas()
+        return new AdqlResource.Schemas()
             {
             @Override
             public Iterable<TuesdayAdqlSchema> select()

@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseComponent;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -86,7 +86,7 @@ public class AdqlResourceController
      *
      */
     public AdqlResourceBean bean(
-        final TuesdayAdqlResource entity
+        final AdqlResource entity
         ){
         log.debug("bean() [{}]", entity);
         return new AdqlResourceBean(
@@ -99,13 +99,13 @@ public class AdqlResourceController
      *
      */
     @ModelAttribute(RESOURCE_ENTITY)
-    public TuesdayAdqlResource entity(
+    public AdqlResource entity(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException  {
         log.debug("entity(}");
         log.debug("ident [{}]", ident);
-        final TuesdayAdqlResource entity = factories().adql().resources().select(
+        final AdqlResource entity = factories().adql().resources().select(
             factories().adql().resources().idents().ident(
                 ident
                 )
@@ -121,7 +121,7 @@ public class AdqlResourceController
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public AdqlResourceBean jsonSelect(
         @ModelAttribute(RESOURCE_ENTITY)
-        final TuesdayAdqlResource entity
+        final AdqlResource entity
         ){
         return bean(
             entity
@@ -141,7 +141,7 @@ public class AdqlResourceController
         @RequestParam(value=UPDATE_STATUS, required=false) final
         String status,
         @ModelAttribute(RESOURCE_ENTITY)
-        final TuesdayAdqlResource entity
+        final AdqlResource entity
         ){
 
         if (name != null)

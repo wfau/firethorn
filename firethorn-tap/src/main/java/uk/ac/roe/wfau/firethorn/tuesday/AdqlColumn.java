@@ -70,7 +70,7 @@ extends TuesdayBaseColumn<AdqlColumn>
     @Override
     public TuesdayAdqlSchema schema();
     @Override
-    public TuesdayAdqlResource resource();
+    public AdqlResource resource();
 
     public TuesdayBaseColumn<?> base();
 

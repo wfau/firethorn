@@ -90,7 +90,7 @@ implements TuesdayAdqlSchema
 
         @Override
         @CreateEntityMethod
-        public TuesdayAdqlSchema create(final TuesdayAdqlResource parent, final String name)
+        public TuesdayAdqlSchema create(final AdqlResource parent, final String name)
             {
             return this.insert(
                 new TuesdayAdqlSchemaEntity(
@@ -118,7 +118,7 @@ implements TuesdayAdqlSchema
 
         @Override
         @SelectEntityMethod
-        public Iterable<TuesdayAdqlSchema> select(final TuesdayAdqlResource parent)
+        public Iterable<TuesdayAdqlSchema> select(final AdqlResource parent)
             {
             return super.list(
                 super.query(
@@ -132,7 +132,7 @@ implements TuesdayAdqlSchema
 
         @Override
         @SelectEntityMethod
-        public TuesdayAdqlSchema select(final TuesdayAdqlResource parent, final String name)
+        public TuesdayAdqlSchema select(final AdqlResource parent, final String name)
             {
             return super.first(
                 super.query(
@@ -149,7 +149,7 @@ implements TuesdayAdqlSchema
 
         @Override
         @SelectEntityMethod
-        public Iterable<TuesdayAdqlSchema> search(final TuesdayAdqlResource parent, final String text)
+        public Iterable<TuesdayAdqlSchema> search(final AdqlResource parent, final String text)
             {
             return super.iterable(
                 super.query(
@@ -196,7 +196,7 @@ implements TuesdayAdqlSchema
         super();
         }
 
-    protected TuesdayAdqlSchemaEntity(final TuesdayAdqlResource resource, final String name)
+    protected TuesdayAdqlSchemaEntity(final AdqlResource resource, final String name)
         {
         super(resource, name);
         this.resource = resource;
@@ -215,9 +215,9 @@ implements TuesdayAdqlSchema
         nullable = false,
         updatable = true
         )
-    private TuesdayAdqlResource resource;
+    private AdqlResource resource;
     @Override
-    public TuesdayAdqlResource resource()
+    public AdqlResource resource()
         {
         return this.resource;
         }

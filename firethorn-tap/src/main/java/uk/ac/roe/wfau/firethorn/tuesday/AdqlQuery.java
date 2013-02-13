@@ -64,25 +64,25 @@ extends Entity
          * Create a new query.
          *
          */
-        public AdqlQuery create(final TuesdayAdqlResource resource, final String input);
+        public AdqlQuery create(final AdqlResource resource, final String input);
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final TuesdayAdqlResource resource, final String name, final String input);
+        public AdqlQuery create(final AdqlResource resource, final String name, final String input);
 
         /**
          * Select all the queries from a resource.
          *
          */
-        public Iterable<AdqlQuery> select(final TuesdayAdqlResource resource);
+        public Iterable<AdqlQuery> select(final AdqlResource resource);
 
         /**
          * Text search for queries (name starts with).
          *
          */
-        public Iterable<AdqlQuery> search(final TuesdayAdqlResource resource, final String text);
+        public Iterable<AdqlQuery> search(final AdqlResource resource, final String text);
         
         /**
          * Access to our name factory.
@@ -166,7 +166,7 @@ extends Entity
      * The ADQL workspace this query applies to.
      *
      */
-    public TuesdayAdqlResource resource();
+    public AdqlResource resource();
 
     /**
      * The query mode.

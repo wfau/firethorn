@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlResource;
 
 /**
  *
@@ -34,8 +34,8 @@ public class AdqlSchemaTestCase
 extends TestBase
     {
 
-    private TuesdayAdqlResource resource ;
-    public TuesdayAdqlResource resource()
+    private AdqlResource resource ;
+    public AdqlResource resource()
         {
         return this.resource ;
         }

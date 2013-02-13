@@ -17,7 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -27,24 +27,24 @@ import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
  *
  */
 public class AdqlResourceBean
-extends AbstractEntityBeanImpl<TuesdayAdqlResource>
-implements EntityBean<TuesdayAdqlResource>
+extends AbstractEntityBeanImpl<AdqlResource>
+implements EntityBean<AdqlResource>
     {
     public static class Iter
-    extends AbstractEntityBeanIter<TuesdayAdqlResource>
+    extends AbstractEntityBeanIter<AdqlResource>
         {
         /**
          * Public constructor.
          *
          */
-        public Iter(final Iterable<TuesdayAdqlResource> iterable)
+        public Iter(final Iterable<AdqlResource> iterable)
             {
             super(
                 iterable
                 );
             }
         @Override
-        public EntityBean<TuesdayAdqlResource> bean(final TuesdayAdqlResource entity)
+        public EntityBean<AdqlResource> bean(final AdqlResource entity)
             {
             return new AdqlResourceBean(
                 entity
@@ -56,7 +56,7 @@ implements EntityBean<TuesdayAdqlResource>
      * Public constructor.
      *
      */
-    public AdqlResourceBean(final TuesdayAdqlResource entity)
+    public AdqlResourceBean(final AdqlResource entity)
         {
         super(
             AdqlResourceIdentFactory.TYPE_URI,

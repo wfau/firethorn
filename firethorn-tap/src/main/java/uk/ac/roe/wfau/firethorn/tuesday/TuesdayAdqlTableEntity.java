@@ -325,7 +325,7 @@ public class TuesdayAdqlTableEntity
         this.schema = schema;
         }
     @Override
-    public TuesdayAdqlResource resource()
+    public AdqlResource resource()
         {
         return this.schema.resource();
         }

@@ -32,9 +32,9 @@ public class AdqlFactoriesImpl
     {
 
     @Autowired
-    private TuesdayAdqlResource.Factory resources;
+    private AdqlResource.Factory resources;
     @Override
-    public TuesdayAdqlResource.Factory resources()
+    public AdqlResource.Factory resources()
         {
         return this.resources;
         }

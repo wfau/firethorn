@@ -24,7 +24,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
  *
  *
  */
-public interface TuesdayAdqlResource
+public interface AdqlResource
 extends TuesdayBaseResource<TuesdayAdqlSchema>
     {
     /**
@@ -32,7 +32,7 @@ extends TuesdayBaseResource<TuesdayAdqlSchema>
      *
      */
     public static interface LinkFactory
-    extends Entity.LinkFactory<TuesdayAdqlResource>
+    extends Entity.LinkFactory<AdqlResource>
         {
         }
 
@@ -50,7 +50,7 @@ extends TuesdayBaseResource<TuesdayAdqlSchema>
      *
      */
     public static interface Factory
-    extends TuesdayBaseResource.Factory<TuesdayAdqlResource>
+    extends TuesdayBaseResource.Factory<AdqlResource>
         {
         /**
          * The resource schema factory.

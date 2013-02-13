@@ -24,7 +24,7 @@ import org.junit.Test;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
@@ -85,7 +85,7 @@ extends TestBase
             );
         //
         // Create our ADQL workspace.
-        final TuesdayAdqlResource workspace = factories().adql().resources().create(
+        final AdqlResource workspace = factories().adql().resources().create(
             "test-workspace"
             );
         //
@@ -157,7 +157,7 @@ extends TestBase
             );
         //
         // Create our ADQL workspace.
-        final TuesdayAdqlResource workspace = factories().adql().resources().create(
+        final AdqlResource workspace = factories().adql().resources().create(
             "test-workspace"
             );
         //
@@ -247,7 +247,7 @@ extends TestBase
         bestdr7.inport();
         //
         // Create our ADQL workspace.
-        final TuesdayAdqlResource workspace = factories().adql().resources().create(
+        final AdqlResource workspace = factories().adql().resources().create(
             "test-workspace"
             );
         //
@@ -342,7 +342,7 @@ extends TestBase
         factories().hibernate().flush();
         //
         // Create our ADQL workspace.
-        final TuesdayAdqlResource workspace = factories().adql().resources().create(
+        final AdqlResource workspace = factories().adql().resources().create(
             "test-workspace"
             );
         //

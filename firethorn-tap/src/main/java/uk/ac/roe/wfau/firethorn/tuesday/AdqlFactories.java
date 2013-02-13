@@ -29,7 +29,7 @@ public interface AdqlFactories
      * Our resource factory.
      *
      */
-    public TuesdayAdqlResource.Factory resources();
+    public AdqlResource.Factory resources();
 
     /**
      * Our schema factory.

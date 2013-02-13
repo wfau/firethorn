@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlResource;
 
 /**
  *
@@ -52,7 +52,7 @@ extends TestBase
         {
         //
         // Create with name works.
-        final TuesdayAdqlResource created = factories().adql().resources().create(
+        final AdqlResource created = factories().adql().resources().create(
             this.unique(
                 "resource"
                 )
