@@ -71,31 +71,31 @@ EOF
 
     #
     # Set the 'root' postgres password.
-    pgsqlpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/database/postgres.conf)"
-    pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/postgres.conf)"
-    echo "ALTER ROLE ${pgsqluser?} WITH PASSWORD '${pgsqlpass?}'" | su - postgres -c 'psql postgres'
+    dbpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/database/postgres.conf)"
+    dbuser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/postgres.conf)"
+    echo "ALTER ROLE ${dbuser?} WITH PASSWORD '${dbpass?}'" | su - postgres -c 'psql postgres'
 
     #
     # Create the test users and databases.
-    pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
-    pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
-    pgsqlpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
-    echo "${pgsqlhost?}:*:${pgsqldata?}:${pgsqluser?}:${pgsqlpass?}" >> /etc/firethorn/database/pgpass
+    dbdata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+    dbuser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+    dbpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+    echo "${dbhost?}:*:${dbdata?}:${dbuser?}:${dbpass?}" >> /etc/firethorn/database/pgpass
 
-    echo "CREATE USER     ${pgsqluser?} WITH LOGIN PASSWORD '${pgsqlpass?}'" | su - postgres -c 'psql postgres'
-    echo "CREATE DATABASE ${pgsqldata?} WITH OWNER ${pgsqluser?}"            | su - postgres -c 'psql postgres'
+    echo "CREATE USER     ${dbuser?} WITH LOGIN PASSWORD '${dbpass?}'" | su - postgres -c 'psql postgres'
+    echo "CREATE DATABASE ${dbdata?} WITH OWNER ${dbuser?}"            | su - postgres -c 'psql postgres'
 
-    pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
-    pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
-    pgsqlpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
-    echo "${pgsqlhost?}:*:${pgsqldata?}:${pgsqluser?}:${pgsqlpass?}" >> /etc/firethorn/database/pgpass
+    dbdata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+    dbuser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+    dbpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+    echo "${dbhost?}:*:${dbdata?}:${dbuser?}:${dbpass?}" >> /etc/firethorn/database/pgpass
 
-    echo "CREATE USER     ${pgsqluser?} WITH LOGIN PASSWORD '${pgsqlpass?}'" | su - postgres -c 'psql postgres'
-    echo "CREATE DATABASE ${pgsqldata?} WITH OWNER ${pgsqluser?}"            | su - postgres -c 'psql postgres'
+    echo "CREATE USER     ${dbuser?} WITH LOGIN PASSWORD '${dbpass?}'" | su - postgres -c 'psql postgres'
+    echo "CREATE DATABASE ${dbdata?} WITH OWNER ${dbuser?}"            | su - postgres -c 'psql postgres'
 
-    unset pgsqldata
-    unset pgsqlpass
-    unset pgsqluser
+    unset dbdata
+    unset dbpass
+    unset dbuser
 
 # --------------------------------------------------------------------------
 # Importing the test data.
@@ -131,10 +131,10 @@ TESTDATA_DATA="${FIRETHORN_CODE?}/firethorn-gui/firethorn-webpy-gui/test-data"
 
         #
         # Import the twomass test data.
-        pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
-        pgsqlhost="$(sed -n 's/^host=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
-        pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
-        pgsqlpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+        dbdata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+        dbhost="$(sed -n 's/^host=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+        dbuser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+        dbpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
 
         java \
             -classpath lib/stilts.jar:/usr/share/java/postgresql-jdbc.jar \
@@ -144,18 +144,18 @@ TESTDATA_DATA="${FIRETHORN_CODE?}/firethorn-gui/firethorn-webpy-gui/test-data"
             omode=tosql  \
             write=create \
             protocol=postgresql   \
-            db=${pgsqldata?}      \
-            host=${pgsqlhost?}    \
-            user=${pgsqluser}     \
-            password=${pgsqlpass} \
+            db=${dbdata?}      \
+            host=${dbhost?}    \
+            user=${dbuser}     \
+            password=${dbpass} \
             dbtable=twomass_psc
 
         #
         # Import the ukidss test data.
-        pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
-        pgsqlhost="$(sed -n 's/^host=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
-        pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
-        pgsqlpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+        dbdata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+        dbhost="$(sed -n 's/^host=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+        dbuser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+        dbpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
 
         java \
             -classpath lib/stilts.jar:/usr/share/java/postgresql-jdbc.jar \
@@ -165,10 +165,10 @@ TESTDATA_DATA="${FIRETHORN_CODE?}/firethorn-gui/firethorn-webpy-gui/test-data"
             omode=tosql  \
             write=create \
             protocol=postgresql   \
-            db=${pgsqldata?}      \
-            host=${pgsqlhost?}    \
-            user=${pgsqluser}     \
-            password=${pgsqlpass} \
+            db=${dbdata?}      \
+            host=${dbhost?}    \
+            user=${dbuser}     \
+            password=${dbpass} \
             dbtable=gcsPointSource_psc
 
         java \
@@ -179,20 +179,20 @@ TESTDATA_DATA="${FIRETHORN_CODE?}/firethorn-gui/firethorn-webpy-gui/test-data"
             omode=tosql  \
             write=create \
             protocol=postgresql   \
-            db=${pgsqldata?}      \
-            host=${pgsqlhost?}    \
-            user=${pgsqluser}     \
-            password=${pgsqlpass} \
+            db=${dbdata?}      \
+            host=${dbhost?}    \
+            user=${dbuser}     \
+            password=${dbpass} \
             dbtable=gcsSourceXtwomass_psc
 
     popd
 
     #
     # Check TWOMASS
-    pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
-    pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+    dbdata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+    dbuser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
 
-    psql -w --user ${pgsqluser} ${pgsqldata?}
+    psql -w --user ${dbuser} ${dbdata?}
         \pset pager off
 
         \d
@@ -214,10 +214,10 @@ TESTDATA_DATA="${FIRETHORN_CODE?}/firethorn-gui/firethorn-webpy-gui/test-data"
 
     #
     # Check UKIDSS
-    pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
-    pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+    dbdata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+    dbuser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
 
-    psql -w --user ${pgsqluser} ${pgsqldata?}
+    psql -w --user ${dbuser} ${dbdata?}
         \pset pager off
 
         \d
@@ -265,6 +265,8 @@ TESTDATA_DATA="${FIRETHORN_CODE?}/firethorn-gui/firethorn-webpy-gui/test-data"
 
 # --------------------------------------------------------------------------
 
+    ssh Dave@ogsadai-one.gentap.org
+
 FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
 FIRETHORN_NAME=devel
 FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
@@ -303,51 +305,50 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 
     #
     # Modify the JDBC resources to use local Postgresql database, rather than the ROE SQLServer.
-    # TODO make this switchable.
-    pgsqlconfg()
+    dbconfg()
         {
-        local pgsqlname=${1?}
-        local pgsqlconf=${2?}
+        local dbname=${1?}
+        local dbconf=${2?}
 
-        local pgsqltype="$(sed -n 's/^type=\(.*\)/\1/p' /etc/firethorn/database/${pgsqlconf?})"
-        local pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/${pgsqlconf?})"
-        local pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/${pgsqlconf?})"
-        local pgsqlpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/database/${pgsqlconf?})"
+        local dbtype="$(sed -n 's/^type=\(.*\)/\1/p' ${dbconf?})"
+        local dbdata="$(sed -n 's/^name=\(.*\)/\1/p' ${dbconf?})"
+        local dbuser="$(sed -n 's/^user=\(.*\)/\1/p' ${dbconf?})"
+        local dbpass="$(sed -n 's/^pass=\(.*\)/\1/p' ${dbconf?})"
 
-        local pgsqldrv
-        local pgsqluri
+        local dbdrv
+        local dburi
 
-        case ${pgsqltype?} in
+        case ${dbtype?} in
 
             pgsql)
                 echo "Postgresql database"
-                pgsqldrv=org.postgresql.Driver
-                pgsqluri=jdbc:postgresql://localhost:5432
+                dbdrv=org.postgresql.Driver
+                dburi=jdbc:postgresql://localhost:5432
                 ;;
 
             mssql)
                 echo "SQLServer database"
-                pgsqldrv=net.sourceforge.jtds.jdbc.Driver
-                pgsqluri=jdbc:jtds:sqlserver://localhost:1433
+                dbdrv=net.sourceforge.jtds.jdbc.Driver
+                dburi=jdbc:jtds:sqlserver://localhost:1433
                 ;;
 
-            *)  echo "ERROR : unknown database type [${pgsqltype}]"
+            *)  echo "ERROR : unknown database type [${dbtype}]"
                 ;;
         esac
 
         #
         # Set the database driver and url.
         sed -i '
-            s|^dai.driver.class=.*|dai.driver.class='${pgsqldrv}'|
-            s|^dai.data.resource.uri=.*|dai.data.resource.uri='${pgsqluri}/${pgsqldata?}'|
-            ' "target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/resources/${pgsqlname?}"
+            s|^dai.driver.class=.*|dai.driver.class='${dbdrv}'|
+            s|^dai.data.resource.uri=.*|dai.data.resource.uri='${dburi}/${dbdata?}'|
+            ' "target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/resources/${dbname?}"
 
         #
         # Set the database password.
         sed -i '
-            /^id='${pgsqlname?}'/,/^END/ {
-                s|^username=.*|username='${pgsqluser?}'|
-                s|^password=.*|password='${pgsqlpass?}'|
+            /^id='${dbname?}'/,/^END/ {
+                s|^username=.*|username='${dbuser?}'|
+                s|^password=.*|password='${dbpass?}'|
                 }
             ' "target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/logins.txt"
         }
@@ -364,14 +365,13 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 
         #
         # Set the database passwords.
-        pgsqlconfg twomass testtwomass.conf
-        pgsqlconfg ukidss  testukidss.conf
+        dbconfg twomass /etc/firethorn/database/testtwomass.conf
+        dbconfg ukidss  /etc/firethorn/database/testukidss.conf
 
 or
 
-        pgsqlconfg twomass livetwomass.conf
-        pgsqlconfg ukidss  liveukidss.conf
-
+        dbconfg twomass /etc/firethorn/database/livetwomass.conf
+        dbconfg ukidss  /etc/firethorn/database/liveukidss.conf
 
         #
         # Run the webapp in Tomcat
@@ -380,8 +380,18 @@ or
     popd
 
 #---------------------------------------------------
+# Crate the SSH tunnel to ROE ...
+# *** run this in a separate terminal while the webapp is running in tomcat ***
+
+    ssh Dave@ogsadai-one.gentap.org
+
+        ssh -L 1433:ramses3:1433 dave@fenrir.roe.ac.uk
+
+#---------------------------------------------------
 # To run the tests ...
 # *** run this in a separate terminal while the webapp is running in tomcat ***
+
+    ssh Dave@ogsadai-one.gentap.org
 
 FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
 FIRETHORN_NAME=devel
@@ -389,7 +399,6 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 
     pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/firethorn"
 
-        mvn -D test=SimpleQueryTestCase test
         mvn -D test=DqpQueryTestCase    test
 
     popd
@@ -437,10 +446,10 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
     
     #
     # Alter the table names back to their original values.
-    pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
-    pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+    dbdata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+    dbuser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
 
-    psql -w --user ${pgsqluser} ${pgsqldata?}
+    psql -w --user ${dbuser} ${dbdata?}
         \pset pager off
 
         \d
@@ -495,10 +504,10 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
     
     #
     # Try using full cataldog and schema references in the psql client ...
-    pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
-    pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+    dbdata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
+    dbuser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testukidss.conf)"
 
-    psql -w --user ${pgsqluser} ${pgsqldata?}
+    psql -w --user ${dbuser} ${dbdata?}
         \pset pager off
 
         \d
@@ -540,10 +549,10 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 
     #
     # Try access UKIDSS from  TWOMASS
-    pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
-    pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+    dbdata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
+    dbuser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/testtwomass.conf)"
 
-    psql -w --user ${pgsqluser} ${pgsqldata?}
+    psql -w --user ${dbuser} ${dbdata?}
         \pset pager off
 
         SELECT COUNT(sourceid) FROM testukidss.public."gcsPointSource" ;
@@ -635,20 +644,50 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
         this.tables.put(
             "twomass",
             "table20",
-            //"\"testtwomass\".\"public\".\"twomass_psc\""
             "TWOMASS.dbo.twomass_psc"
             );
         this.tables.put(
             "ukidss",
             "table21",
-            //"\"testukidss\".\"public\".\"gcsPointSource\""
             "UKIDSSDR5PLUS.dbo.gcsPointSource"
             );
         this.tables.put(
             "ukidss",
             "table22",
-            //"\"testukidss\".\"public\".\"gcsSourceXtwomass_psc\""
             "UKIDSSDR5PLUS.dbo.gcsSourceXtwomass_psc"
             );
 
+    # ----------------------
+    # Request for all rows in twomass fails .. probably out of memory.
+    # Added 2nd where clause to the query, works.
+    #
+
+            " WHERE" +
+
+        +   "    twomass.ra  >= '55.0'" +
+        +   " AND" +
+        +   "    twomass.ra  <= '55.9'" +
+        +   " AND" +
+        +   "    twomass.dec >= '20.0'" +
+        +   " AND" +
+        +   "    twomass.dec <= '22.9'" +
+        +   " AND" +
+
+            "    ukidss.ra  >= '55.0'" +
+            " AND" +
+            "    ukidss.ra  <= '55.9'" +
+            " AND" +
+            "    ukidss.dec >= '20.0'" +
+            " AND" +
+            "    ukidss.dec <= '22.9'" +
+
+            " AND" +
+            "    neighbour.masterObjID = ukidss.sourceID" +
+            " AND" +
+            "    neighbour.slaveObjID = twomass.pts_key" +
+            " AND" +
+            "    neighbour.distanceMins < 1E-3"
+
+
+#---------------------------------------------------
 

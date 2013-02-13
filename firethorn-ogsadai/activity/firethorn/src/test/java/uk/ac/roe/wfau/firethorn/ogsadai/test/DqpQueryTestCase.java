@@ -74,7 +74,7 @@ extends SimpleQueryTestBase
     public static final String endpoint = "http://localhost:8081/albert/services/" ;
 
     /**
-     * Multiple catalog, TWOMASS and UKIDSSDR1, using JDBC direct.
+     * TWOMASS and UKIDSSDR1, using single JDBC connection.
     @Test
      *
      */
@@ -110,7 +110,7 @@ extends SimpleQueryTestBase
         }
 
     /**
-     * Multiple catalog, TWOMASS and UKIDSSDR1, using DQP.
+     * TWOMASS and UKIDSSDR1, using DQP, using BETWEEN.
      *
     @Test
      */
@@ -146,7 +146,7 @@ extends SimpleQueryTestBase
         }
 
     /**
-     * Multiple catalog, TWOMASS and UKIDSSDR1, using DQP.
+     * TWOMASS and UKIDSSDR1, using DQP, using GT and LT on both tables.
      *
      */
     @Test
@@ -186,6 +186,7 @@ extends SimpleQueryTestBase
             "    ukidss.dec >= '20.0'" +
             " AND" +
             "    ukidss.dec <= '22.9'" +
+
             " AND" +
             "    neighbour.masterObjID = ukidss.sourceID" +
             " AND" +
