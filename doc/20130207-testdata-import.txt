@@ -308,12 +308,32 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
         {
         local pgsqlname=${1?}
         local pgsqlconf=${2?}
-        local pgsqldrv=org.postgresql.Driver
-        local pgsqluri=jdbc:postgresql://localhost:5432
 
+        local pgsqltype="$(sed -n 's/^type=\(.*\)/\1/p' /etc/firethorn/database/${pgsqlconf?})"
         local pgsqldata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/database/${pgsqlconf?})"
         local pgsqluser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/database/${pgsqlconf?})"
         local pgsqlpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/database/${pgsqlconf?})"
+
+        local pgsqldrv
+        local pgsqluri
+
+        case ${pgsqltype?} in
+
+            pgsql)
+                echo "Postgresql database"
+                pgsqldrv=org.postgresql.Driver
+                pgsqluri=jdbc:postgresql://localhost:5432
+                ;;
+
+            mssql)
+                echo "SQLServer database"
+                pgsqldrv=net.sourceforge.jtds.jdbc.Driver
+                pgsqluri=jdbc:jtds:sqlserver://localhost:1433
+                ;;
+
+            *)  echo "ERROR : unknown database type [${pgsqltype}]"
+                ;;
+        esac
 
         #
         # Set the database driver and url.
