@@ -36,7 +36,7 @@
     </parent>
 
     <artifactId>firethorn-logging</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <!--+
         | In theory, we should be able to select the logging profile using the logtype property.
@@ -48,7 +48,7 @@
         | http://blog.frankel.ch/configuring-maven-to-use-slf4j
         | http://www.jaxzin.com/2010/09/simplifying-logging-with-maven-and.html
         +-->
-    <name>Logging components</name>
+    <name>FireThorn logging components</name>
     <description>
         <![CDATA[
         A placeholder POM to include all of the logging related dependencies in one place.
@@ -93,13 +93,13 @@
 
         <!--+
             | Our Spring components.
-            +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-spring</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>
+            +-->
 
     </dependencies>
 

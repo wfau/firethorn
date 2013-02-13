@@ -426,11 +426,10 @@
         		<groupId>junit</groupId>
         		<artifactId>junit</artifactId>
                 <version>4.11</version>
-                <scope>test</scope>
         	</dependency>
 
             <!--+
-                | Starlink Tables library.
+                | Starlink libraries.
                 | http://www.star.bris.ac.uk/~mbt/stil/
                 +-->
             <dependency>
@@ -448,6 +447,78 @@
                 <artifactId>stil-votable</artifactId>
                 <version>3.0.2</version>
             </dependency>
+
+            <!--+
+                | Our logging components.
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>firethorn-logging</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+            </dependency>
+                +-->
+
+            <!--+
+                | Our testing components.
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>firethorn-testing</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+                <type>pom</type>
+            </dependency>
+                +-->
+
+            <!--+
+                | Our Spring components.
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>firethorn-spring</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+            </dependency>
+                +-->
+
+            <!--+
+                | Our OGSA-DAI components.
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>firethorn-ogsadai</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+            </dependency>
+                +-->
+
+            <!--+
+                | Local build of the CDS tools based on a pre-release version of the CDS TAP library.
+                | This may contain some unpublished classes from the other CDS projects (cds-uws-3.1).
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>firethorn-cds-lib</artifactId>
+                <version>${project.version}</version>
+                <type>jar</type>
+            </dependency>
+                +-->
+
+            <!--+
+                | The FireThorn webservice.
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>firethorn-tap</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+            </dependency>
+                +-->
+
+            <!--+
+                | The FireThorn webapp.
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>firethorn-war</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+            </dependency>
+                +-->
 
         </dependencies>
     </dependencyManagement>

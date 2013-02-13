@@ -38,7 +38,7 @@
     <artifactId>firethorn-tap</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn service</name>
+    <name>FireThorn webservice</name>
     <description>
         <![CDATA[
         The core FireThorn service implementation.

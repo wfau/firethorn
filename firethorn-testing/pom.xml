@@ -38,7 +38,7 @@
     <artifactId>firethorn-testing</artifactId>
     <packaging>pom</packaging>
 
-    <name>WFAU FireThorn testing components</name>
+    <name>FireThorn testing components</name>
     <description>
         <![CDATA[
         This is a placeholder POM to include all of the test related dependencies in one place.
@@ -54,13 +54,22 @@
     <dependencies>
 
         <!--+
+            | Our logging components.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-logging</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
             | JUnit test framework.
             | http://www.junit.org/
             +-->
     	<dependency>
     		<groupId>junit</groupId>
     		<artifactId>junit</artifactId>
-            <scope>test</scope>
     	</dependency>
 
     </dependencies>

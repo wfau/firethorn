@@ -44,10 +44,10 @@
     <artifactId>firethorn-activity-firethorn</artifactId>
     <packaging>jar</packaging>
 
-    <name>OGSA-DAI activity (firethorn webapp)</name>
+    <name>OGSA-DAI activity (FireThorn server)</name>
     <description>
         <![CDATA[
-        OGSA-DAI activity components that get included in the firethorn webapp.
+        Client side components for the OGSA-DAI activities that get included in the FireThorn server.
         ]]>
     </description>
     

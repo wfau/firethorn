@@ -38,10 +38,10 @@
     <artifactId>ogsadai-webapp</artifactId>
     <packaging>war</packaging>
 
-    <name>OGSA-DAI webapp</name>
+    <name>FireThorn OGSA-DAI webapp</name>
     <description>
         <![CDATA[
-        OGSA-DAI webapp.
+        This Maven build takes the standard OGSA-DAI webapp and adds the modifications we need to implement our service.
         ]]>
     </description>
 
@@ -62,7 +62,7 @@
     <dependencies>
 
         <!--+
-            | Base OGSA-DAI webapp.
+            | Core OGSA-DAI webapp.
             +-->
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
@@ -122,6 +122,7 @@
             <groupId>net.sourceforge.jtds</groupId>
             <artifactId>jtds</artifactId>
         </dependency>
+
         <!--+
             | Postgresql JDBC driver.
             | http://jdbc.postgresql.org/
