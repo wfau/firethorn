@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.adql ;
 
 import java.util.Iterator;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import adql.db.DBColumn;
@@ -90,7 +90,7 @@ extends DBTable
          * Access to our AdqlColumn metadata.
          *
          */
-        public TuesdayAdqlColumn column();
+        public AdqlColumn column();
 
         }
     }

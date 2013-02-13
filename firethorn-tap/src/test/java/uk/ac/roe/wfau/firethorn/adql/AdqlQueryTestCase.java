@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
@@ -106,7 +106,7 @@ extends TestBase
         //
         // Check the results ...
         log.debug("Columns -- ");
-        for (final TuesdayAdqlColumn column : query.columns())
+        for (final AdqlColumn column : query.columns())
             {
             log.debug("Column [{}]", column.fullname());
             }
@@ -178,7 +178,7 @@ extends TestBase
         //
         // Check the results ...
         log.debug("Columns -- ");
-        for (final TuesdayAdqlColumn column : query.columns())
+        for (final AdqlColumn column : query.columns())
             {
             log.debug("Column [{}]", column.fullname());
             }
@@ -281,7 +281,7 @@ extends TestBase
         //
         // Check the results ...
         log.debug("Columns -- ");
-        for (final TuesdayAdqlColumn column : query.columns())
+        for (final AdqlColumn column : query.columns())
             {
             log.debug("Column [{}]", column.fullname());
             }
@@ -376,7 +376,7 @@ extends TestBase
         //
         // Check the results ...
         log.debug("Columns -- ");
-        for (final TuesdayAdqlColumn column : query.columns())
+        for (final AdqlColumn column : query.columns())
             {
             log.debug("Column [{}]", column.fullname());
             }

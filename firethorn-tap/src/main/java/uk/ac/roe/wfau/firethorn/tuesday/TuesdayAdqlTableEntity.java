@@ -65,7 +65,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
         }
     )
 public class TuesdayAdqlTableEntity
-    extends TuesdayBaseTableEntity<TuesdayAdqlTable, TuesdayAdqlColumn>
+    extends TuesdayBaseTableEntity<TuesdayAdqlTable, AdqlColumn>
     implements TuesdayAdqlTable
     {
     /**
@@ -203,9 +203,9 @@ public class TuesdayAdqlTableEntity
             }
 
         @Autowired
-        protected TuesdayAdqlColumn.Factory columns;
+        protected AdqlColumn.Factory columns;
         @Override
-        public TuesdayAdqlColumn.Factory columns()
+        public AdqlColumn.Factory columns()
             {
             return this.columns;
             }
@@ -362,14 +362,14 @@ public class TuesdayAdqlTableEntity
         return new TuesdayAdqlTable.Columns()
             {
             @Override
-            public Iterable<TuesdayAdqlColumn> select()
+            public Iterable<AdqlColumn> select()
                 {
                 return factories().adql().columns().select(
                     TuesdayAdqlTableEntity.this
                     );
                 }
             @Override
-            public TuesdayAdqlColumn select(final String name)
+            public AdqlColumn select(final String name)
                 {
                 return factories().adql().columns().select(
                     TuesdayAdqlTableEntity.this,
@@ -377,7 +377,7 @@ public class TuesdayAdqlTableEntity
                     );
                 }
             @Override
-            public TuesdayAdqlColumn create(final TuesdayBaseColumn<?> base)
+            public AdqlColumn create(final TuesdayBaseColumn<?> base)
                 {
                 return factories().adql().columns().create(
                     TuesdayAdqlTableEntity.this,
@@ -385,7 +385,7 @@ public class TuesdayAdqlTableEntity
                     );
                 }
             @Override
-            public Iterable<TuesdayAdqlColumn> search(final String text)
+            public Iterable<AdqlColumn> search(final String text)
                 {
                 return factories().adql().columns().search(
                     TuesdayAdqlTableEntity.this,

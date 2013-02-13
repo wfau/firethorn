@@ -23,15 +23,15 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
  *
  *
  */
-public interface TuesdayAdqlColumn
-extends TuesdayBaseColumn<TuesdayAdqlColumn>
+public interface AdqlColumn
+extends TuesdayBaseColumn<AdqlColumn>
     {
     /**
      * Link factory interface.
      *
      */
     public static interface LinkFactory
-    extends Entity.LinkFactory<TuesdayAdqlColumn>
+    extends Entity.LinkFactory<AdqlColumn>
         {
         }
 
@@ -49,19 +49,19 @@ extends TuesdayBaseColumn<TuesdayAdqlColumn>
      *
      */
     public static interface Factory
-    extends TuesdayBaseColumn.Factory<TuesdayAdqlTable, TuesdayAdqlColumn>
+    extends TuesdayBaseColumn.Factory<TuesdayAdqlTable, AdqlColumn>
         {
         /**
          * Create a new column.
          *
          */
-        public TuesdayAdqlColumn create(final TuesdayAdqlTable parent, final TuesdayBaseColumn<?> base);
+        public AdqlColumn create(final TuesdayAdqlTable parent, final TuesdayBaseColumn<?> base);
 
         /**
          * Create a new column.
          *
          */
-        public TuesdayAdqlColumn create(final TuesdayAdqlTable parent, final TuesdayBaseColumn<?> base, final String name);
+        public AdqlColumn create(final TuesdayAdqlTable parent, final TuesdayBaseColumn<?> base, final String name);
 
         }
 

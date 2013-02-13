@@ -391,9 +391,9 @@ implements TuesdayAdqlQuery, AdqlDBQuery
         }
 
     @Transient
-    private final Set<TuesdayAdqlColumn> columns = new HashSet<TuesdayAdqlColumn>();
+    private final Set<AdqlColumn> columns = new HashSet<AdqlColumn>();
     @Override
-    public Iterable<TuesdayAdqlColumn> columns()
+    public Iterable<AdqlColumn> columns()
         {
         return this.columns;
         }
@@ -451,7 +451,7 @@ implements TuesdayAdqlQuery, AdqlDBQuery
         }
 
     @Override
-    public void add(final TuesdayAdqlColumn column)
+    public void add(final AdqlColumn column)
         {
         this.columns.add(
             column

@@ -55,7 +55,7 @@ public interface TuesdayFactories
      * Our ADQL component factories.
      *
      */
-    public TuesdayAdqlFactories adql();
+    public AdqlFactories adql();
 
     /**
      * Our IVOA component factories.

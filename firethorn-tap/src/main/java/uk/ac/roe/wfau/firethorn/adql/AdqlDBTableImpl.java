@@ -21,7 +21,7 @@ import java.util.Iterator;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 import adql.db.DBColumn;
@@ -272,7 +272,7 @@ implements AdqlDBTable
     @Override
     public DBColumn getColumn(final String name, final boolean adql)
         {
-        TuesdayAdqlColumn adqlColumn = null ;
+        AdqlColumn adqlColumn = null ;
         //
         // If 'name' is an ADQL name, then search the AdqlTable.
         if (adql)
@@ -313,7 +313,7 @@ implements AdqlDBTable
         return new Iterator<DBColumn>()
             {
 
-            private final Iterator<TuesdayAdqlColumn> iter = table().columns().select().iterator();
+            private final Iterator<AdqlColumn> iter = table().columns().select().iterator();
 
             @Override
             public DBColumn next()
@@ -354,7 +354,7 @@ implements AdqlDBTable
                 return new Iterator<AdqlDBColumn>()
                     {
 
-                    private final Iterator<TuesdayAdqlColumn> iter = table().columns().select().iterator();
+                    private final Iterator<AdqlColumn> iter = table().columns().select().iterator();
 
                     @Override
                     public AdqlDBColumn next()
@@ -386,7 +386,7 @@ implements AdqlDBTable
      * Create a new AdqlColumn wrapper.
      *
      */
-    private AdqlColumnImpl wrap(final TuesdayAdqlColumn adqlColumn)
+    private AdqlColumnImpl wrap(final AdqlColumn adqlColumn)
         {
         return new AdqlColumnImpl(
             adqlColumn
@@ -397,7 +397,7 @@ implements AdqlDBTable
      * Create a new AdqlColumn wrapper.
      *
      */
-    private AdqlColumnImpl wrap(final TuesdayAdqlColumn adqlColumn, final String jdbcName, final String adqlName, final DBTable parent)
+    private AdqlColumnImpl wrap(final AdqlColumn adqlColumn, final String jdbcName, final String adqlName, final DBTable parent)
         {
         return new AdqlColumnImpl(
             adqlColumn,
@@ -419,10 +419,10 @@ implements AdqlDBTable
          * Our underlying AdqlColumn.
          *
          */
-        private final TuesdayAdqlColumn column ;
+        private final AdqlColumn column ;
 
         @Override
-        public TuesdayAdqlColumn column()
+        public AdqlColumn column()
             {
             return this.column ;
             }
@@ -449,7 +449,7 @@ implements AdqlDBTable
          * Private constructor.
          *
          */
-        private AdqlColumnImpl(final TuesdayAdqlColumn adqlColumn)
+        private AdqlColumnImpl(final AdqlColumn adqlColumn)
             {
             this(
                 adqlColumn,
@@ -463,7 +463,7 @@ implements AdqlDBTable
          * Private constructor, used by the copy method.
          *
          */
-        private AdqlColumnImpl(final TuesdayAdqlColumn adqlColumn, final String jdbcName, final String adqlName, final DBTable parent)
+        private AdqlColumnImpl(final AdqlColumn adqlColumn, final String jdbcName, final String adqlName, final DBTable parent)
             {
             this.parent = parent ;
             this.column = adqlColumn ;

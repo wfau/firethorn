@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
@@ -67,7 +67,7 @@ public class TuesdayJdbcAdqlTableTestCase
 	            {
 	            log.debug("---- Table [{}][{}][{}]", new Object[] {table.resource().name(), table.alias(), table.fullname()});
 	            log.debug("---- Base  [{}][{}][{}]", new Object[] {table.base().resource().name(), table.base().alias(), table.base().fullname()});
-	            for (final TuesdayAdqlColumn column : table.columns().select())
+	            for (final AdqlColumn column : table.columns().select())
 	                {
 	                log.debug("----- Column [{}][{}][{}]", new Object[] {column.resource().name(),        column.alias(),        column.fullname()});
 	                log.debug("----- Base   [{}][{}][{}]", new Object[] {column.base().resource().name(), column.base().alias(), column.base().fullname()});

@@ -21,7 +21,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -32,17 +32,17 @@ import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
  */
 @Slf4j
 public class AdqlColumnBean
-extends AbstractEntityBeanImpl<TuesdayAdqlColumn>
-implements EntityBean<TuesdayAdqlColumn>
+extends AbstractEntityBeanImpl<AdqlColumn>
+implements EntityBean<AdqlColumn>
     {
     public static class Iter
-    extends AbstractEntityBeanIter<TuesdayAdqlColumn>
+    extends AbstractEntityBeanIter<AdqlColumn>
         {
         /**
          * Public constructor.
          *
          */
-        public Iter(final Iterable<TuesdayAdqlColumn> iterable)
+        public Iter(final Iterable<AdqlColumn> iterable)
             {
             super(
                 iterable
@@ -50,7 +50,7 @@ implements EntityBean<TuesdayAdqlColumn>
             log.debug("Iter(Iterable)");
             }
         @Override
-        public EntityBean<TuesdayAdqlColumn> bean(final TuesdayAdqlColumn entity)
+        public EntityBean<AdqlColumn> bean(final AdqlColumn entity)
             {
             return new AdqlColumnBean(
                 entity
@@ -61,7 +61,7 @@ implements EntityBean<TuesdayAdqlColumn>
      * Public constructor.
      *
      */
-    public AdqlColumnBean(final TuesdayAdqlColumn entity)
+    public AdqlColumnBean(final AdqlColumn entity)
         {
         super(
             AdqlColumnIdentFactory.TYPE_URI,

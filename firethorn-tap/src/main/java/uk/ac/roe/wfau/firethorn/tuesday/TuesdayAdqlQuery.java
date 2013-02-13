@@ -214,7 +214,7 @@ extends Entity
      * The set of the AdqlColumns used by the query.
      *
      */
-    public Iterable<TuesdayAdqlColumn> columns();
+    public Iterable<AdqlColumn> columns();
 
     /**
      * The set of the AdqlTables used by the query.

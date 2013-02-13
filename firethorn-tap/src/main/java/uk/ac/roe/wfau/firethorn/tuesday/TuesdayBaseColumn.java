@@ -82,7 +82,7 @@ extends TuesdayBaseComponent
 
     interface Linked
         {
-        public Iterable<TuesdayAdqlColumn> select();
+        public Iterable<AdqlColumn> select();
         }
     public Linked linked();
 

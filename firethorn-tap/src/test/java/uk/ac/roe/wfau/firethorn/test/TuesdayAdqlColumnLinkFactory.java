@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.test;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
 
 /**
  * JUnit test implementation.
@@ -27,8 +27,8 @@ import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
  */
 @Component
 public class TuesdayAdqlColumnLinkFactory
-extends TuesdayTestLinkFactory<TuesdayAdqlColumn>
-implements TuesdayAdqlColumn.LinkFactory
+extends TuesdayTestLinkFactory<AdqlColumn>
+implements AdqlColumn.LinkFactory
     {
     public TuesdayAdqlColumnLinkFactory()
         {

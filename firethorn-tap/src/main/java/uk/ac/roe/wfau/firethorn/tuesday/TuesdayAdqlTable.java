@@ -24,7 +24,7 @@ import uk.ac.roe.wfau.firethorn.common.entity.Entity;
  *
  */
 public interface TuesdayAdqlTable
-extends TuesdayBaseTable<TuesdayAdqlTable, TuesdayAdqlColumn>
+extends TuesdayBaseTable<TuesdayAdqlTable, AdqlColumn>
     {
     /**
      * Alias factory interface.
@@ -76,7 +76,7 @@ extends TuesdayBaseTable<TuesdayAdqlTable, TuesdayAdqlColumn>
          * The table column factory.
          *
          */
-        public TuesdayAdqlColumn.Factory columns();
+        public AdqlColumn.Factory columns();
 
         @Override
         public TuesdayAdqlTable.IdentFactory idents();
@@ -96,13 +96,13 @@ extends TuesdayBaseTable<TuesdayAdqlTable, TuesdayAdqlColumn>
      * The table columns.
      *
      */
-    public interface Columns extends TuesdayBaseTable.Columns<TuesdayAdqlColumn>
+    public interface Columns extends TuesdayBaseTable.Columns<AdqlColumn>
         {
         /**
          * Create a new column.
          *
          */
-        public TuesdayAdqlColumn create(final TuesdayBaseColumn<?> base);
+        public AdqlColumn create(final TuesdayBaseColumn<?> base);
 
         }
     @Override

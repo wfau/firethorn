@@ -185,9 +185,9 @@ extends TuesdayBaseComponentEntity
         return new Linked()
             {
             @Override
-            public Iterable<TuesdayAdqlColumn> select()
+            public Iterable<AdqlColumn> select()
                 {
-                //"SELECT FROM TuesdayAdqlColumn WHERE base = :base"
+                //"SELECT FROM AdqlColumn WHERE base = :base"
                 return null;
                 }
             };

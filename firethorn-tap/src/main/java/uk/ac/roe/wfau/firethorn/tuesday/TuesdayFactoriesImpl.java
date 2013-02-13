@@ -128,9 +128,9 @@ public class TuesdayFactoriesImpl
         }
 
     @Autowired
-    private TuesdayAdqlFactories adql;
+    private AdqlFactories adql;
     @Override
-    public TuesdayAdqlFactories adql()
+    public AdqlFactories adql()
         {
         return this.adql;
         }

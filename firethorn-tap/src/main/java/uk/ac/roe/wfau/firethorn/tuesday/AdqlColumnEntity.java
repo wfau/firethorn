@@ -44,29 +44,29 @@ import uk.ac.roe.wfau.firethorn.common.entity.annotation.SelectEntityMethod;
     AccessType.FIELD
     )
 @Table(
-    name = TuesdayAdqlColumnEntity.DB_TABLE_NAME
+    name = AdqlColumnEntity.DB_TABLE_NAME
     )
 @NamedQueries(
         {
         @NamedQuery(
-            name  = "TuesdayAdqlColumn-select-parent",
-            query = "FROM TuesdayAdqlColumnEntity WHERE parent = :parent ORDER BY ident desc"
+            name  = "AdqlColumn-select-parent",
+            query = "FROM AdqlColumnEntity WHERE parent = :parent ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "TuesdayAdqlColumn-select-parent.name",
-            query = "FROM TuesdayAdqlColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
+            name  = "AdqlColumn-select-parent.name",
+            query = "FROM AdqlColumnEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
             ),
         @NamedQuery(
-            name  = "TuesdayAdqlColumn-search-parent.text",
-            query = "FROM TuesdayAdqlColumnEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident desc"
+            name  = "AdqlColumn-search-parent.text",
+            query = "FROM AdqlColumnEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident desc"
             )
         }
     )
-public class TuesdayAdqlColumnEntity
-    extends TuesdayBaseColumnEntity<TuesdayAdqlColumn>
-    implements TuesdayAdqlColumn
+public class AdqlColumnEntity
+    extends TuesdayBaseColumnEntity<AdqlColumn>
+    implements AdqlColumn
     {
-    protected static final String DB_TABLE_NAME = "TuesdayAdqlColumnEntity";
+    protected static final String DB_TABLE_NAME = "AdqlColumnEntity";
 
     /**
      * Column factory implementation.
@@ -74,22 +74,22 @@ public class TuesdayAdqlColumnEntity
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<TuesdayAdqlColumn>
-    implements TuesdayAdqlColumn.Factory
+    extends AbstractFactory<AdqlColumn>
+    implements AdqlColumn.Factory
         {
 
         @Override
         public Class<?> etype()
             {
-            return TuesdayAdqlColumnEntity.class ;
+            return AdqlColumnEntity.class ;
             }
 
         @Override
         @CreateEntityMethod
-        public TuesdayAdqlColumn create(final TuesdayAdqlTable parent, final TuesdayBaseColumn<?> base)
+        public AdqlColumn create(final TuesdayAdqlTable parent, final TuesdayBaseColumn<?> base)
             {
             return this.insert(
-                new TuesdayAdqlColumnEntity(
+                new AdqlColumnEntity(
                     parent,
                     base
                     )
@@ -98,10 +98,10 @@ public class TuesdayAdqlColumnEntity
 
         @Override
         @CreateEntityMethod
-        public TuesdayAdqlColumn create(final TuesdayAdqlTable parent, final TuesdayBaseColumn<?> base, final String name)
+        public AdqlColumn create(final TuesdayAdqlTable parent, final TuesdayBaseColumn<?> base, final String name)
             {
             return this.insert(
-                new TuesdayAdqlColumnEntity(
+                new AdqlColumnEntity(
                     parent,
                     base,
                     name
@@ -111,11 +111,11 @@ public class TuesdayAdqlColumnEntity
 
         @Override
         @SelectEntityMethod
-        public Iterable<TuesdayAdqlColumn> select(final TuesdayAdqlTable parent)
+        public Iterable<AdqlColumn> select(final TuesdayAdqlTable parent)
             {
             return super.list(
                 super.query(
-                    "TuesdayAdqlColumn-select-parent"
+                    "AdqlColumn-select-parent"
                     ).setEntity(
                         "parent",
                         parent
@@ -125,11 +125,11 @@ public class TuesdayAdqlColumnEntity
 
         @Override
         @SelectEntityMethod
-        public TuesdayAdqlColumn select(final TuesdayAdqlTable parent, final String name)
+        public AdqlColumn select(final TuesdayAdqlTable parent, final String name)
             {
             return super.first(
                 super.query(
-                    "TuesdayAdqlColumn-select-parent.name"
+                    "AdqlColumn-select-parent.name"
                     ).setEntity(
                         "parent",
                         parent
@@ -142,11 +142,11 @@ public class TuesdayAdqlColumnEntity
 
         @Override
         @SelectEntityMethod
-        public Iterable<TuesdayAdqlColumn> search(final TuesdayAdqlTable parent, final String text)
+        public Iterable<AdqlColumn> search(final TuesdayAdqlTable parent, final String text)
             {
             return super.iterable(
                 super.query(
-                    "TuesdayAdqlColumn-search-parent.text"
+                    "AdqlColumn-search-parent.text"
                     ).setEntity(
                         "parent",
                         parent
@@ -160,35 +160,35 @@ public class TuesdayAdqlColumnEntity
             }
 
         @Autowired
-        protected TuesdayAdqlColumn.IdentFactory idents;
+        protected AdqlColumn.IdentFactory idents;
         @Override
-        public TuesdayAdqlColumn.IdentFactory idents()
+        public AdqlColumn.IdentFactory idents()
             {
             return this.idents;
             }
 
         @Autowired
-        protected TuesdayAdqlColumn.LinkFactory links;
+        protected AdqlColumn.LinkFactory links;
         @Override
-        public TuesdayAdqlColumn.LinkFactory links()
+        public AdqlColumn.LinkFactory links()
             {
             return this.links;
             }
         }
 
-    protected TuesdayAdqlColumnEntity()
+    protected AdqlColumnEntity()
         {
         super();
         }
 
-    protected TuesdayAdqlColumnEntity(final TuesdayAdqlTable table, final TuesdayBaseColumn<?> base)
+    protected AdqlColumnEntity(final TuesdayAdqlTable table, final TuesdayBaseColumn<?> base)
         {
         super(table, base.name());
         this.base  = base ;
         this.table = table;
         }
 
-    protected TuesdayAdqlColumnEntity(final TuesdayAdqlTable table, final TuesdayBaseColumn<?> base, final String name)
+    protected AdqlColumnEntity(final TuesdayAdqlTable table, final TuesdayBaseColumn<?> base, final String name)
         {
         super(table, ((name != null) ? name : base.name()));
         this.base  = base ;

@@ -17,7 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.adql;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
 
@@ -74,7 +74,7 @@ public interface AdqlDBQuery
      * Add an AdqlColumn.
      *
      */
-    public void add(final TuesdayAdqlColumn column);
+    public void add(final AdqlColumn column);
 
     /**
      * Add an AdqlTable.

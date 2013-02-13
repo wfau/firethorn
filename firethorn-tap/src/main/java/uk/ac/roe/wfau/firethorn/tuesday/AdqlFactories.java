@@ -23,7 +23,7 @@ import uk.ac.roe.wfau.firethorn.adql.AdqlDBParser;
  * Our ADQL component factories
  *
  */
-public interface TuesdayAdqlFactories
+public interface AdqlFactories
     {
     /**
      * Our resource factory.
@@ -47,7 +47,7 @@ public interface TuesdayAdqlFactories
      * Our column factory.
      *
      */
-    public TuesdayAdqlColumn.Factory columns();
+    public AdqlColumn.Factory columns();
 
     /**
      * Our query factory.

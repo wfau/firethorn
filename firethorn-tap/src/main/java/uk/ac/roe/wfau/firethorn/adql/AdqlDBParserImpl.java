@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.AdqlDBTable.AdqlDBColumn;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlQuery.Status;
 import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlResource;
@@ -214,9 +214,9 @@ implements AdqlDBParser
                 log.debug("  ADQLColumn [{}]", ((ADQLColumn) object).getName());
                 if (((ADQLColumn) object).getDBLink() instanceof AdqlDBColumn)
                     {
-                    final TuesdayAdqlColumn adql = ((AdqlDBColumn) ((ADQLColumn) object).getDBLink()).column();
+                    final AdqlColumn adql = ((AdqlDBColumn) ((ADQLColumn) object).getDBLink()).column();
                     log.debug("  ----");
-                    log.debug("  TuesdayAdqlColumn [{}]", adql.fullname());
+                    log.debug("  AdqlColumn [{}]", adql.fullname());
                     log.debug("  TuesdayBaseColumn [{}]", adql.base().fullname());
                     subject.add(
                         adql
