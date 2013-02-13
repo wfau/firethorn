@@ -48,7 +48,7 @@
         | http://blog.frankel.ch/configuring-maven-to-use-slf4j
         | http://www.jaxzin.com/2010/09/simplifying-logging-with-maven-and.html
         +-->
-    <name>FireThorn logging components</name>
+    <name>FireThorn logging</name>
     <description>
         <![CDATA[
         A placeholder POM to include all of the logging related dependencies in one place.

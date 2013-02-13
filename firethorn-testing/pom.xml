@@ -38,7 +38,7 @@
     <artifactId>firethorn-testing</artifactId>
     <packaging>pom</packaging>
 
-    <name>FireThorn testing components</name>
+    <name>FireThorn testing</name>
     <description>
         <![CDATA[
         This is a placeholder POM to include all of the test related dependencies in one place.

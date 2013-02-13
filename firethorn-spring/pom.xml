@@ -38,7 +38,7 @@
     <artifactId>firethorn-spring</artifactId>
     <packaging>pom</packaging>
 
-    <name>FireThorn Spring components</name>
+    <name>FireThorn Spring</name>
     <description>
         <![CDATA[
         A placeholder POM to include all of the Spring and Hibernate related dependencies in one place.

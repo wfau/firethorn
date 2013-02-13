@@ -43,7 +43,7 @@
     <artifactId>firethorn-ogsadai</artifactId>
     <packaging>pom</packaging>
 
-    <name>FireThorn OGSA-DAI components</name>
+    <name>FireThorn OGSA-DAI</name>
     <description>
         <![CDATA[
         OGSA-DAI components.
