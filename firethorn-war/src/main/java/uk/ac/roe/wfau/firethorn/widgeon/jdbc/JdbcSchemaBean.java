@@ -20,7 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -30,17 +30,17 @@ import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
  *
  */
 public class JdbcSchemaBean
-extends AbstractEntityBeanImpl<TuesdayJdbcSchema>
-implements EntityBean<TuesdayJdbcSchema>
+extends AbstractEntityBeanImpl<JdbcSchema>
+implements EntityBean<JdbcSchema>
     {
     public static class Iter
-    extends AbstractEntityBeanIter<TuesdayJdbcSchema>
+    extends AbstractEntityBeanIter<JdbcSchema>
         {
         /**
          * Public constructor.
          *
          */
-        public Iter(final Iterable<TuesdayJdbcSchema> iterable)
+        public Iter(final Iterable<JdbcSchema> iterable)
             {
             super(
                 iterable
@@ -48,7 +48,7 @@ implements EntityBean<TuesdayJdbcSchema>
             }
 
         @Override
-        public EntityBean<TuesdayJdbcSchema> bean(final TuesdayJdbcSchema entity)
+        public EntityBean<JdbcSchema> bean(final JdbcSchema entity)
             {
             return new JdbcSchemaBean(
                 entity
@@ -60,7 +60,7 @@ implements EntityBean<TuesdayJdbcSchema>
      * Public constructor.
      *
      */
-    public JdbcSchemaBean(final TuesdayJdbcSchema entity)
+    public JdbcSchemaBean(final JdbcSchema entity)
         {
         super(
             JdbcSchemaIdentFactory.TYPE_URI,

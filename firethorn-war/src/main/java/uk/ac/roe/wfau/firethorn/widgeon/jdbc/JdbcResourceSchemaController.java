@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -115,7 +115,7 @@ extends AbstractController
      *
      */
     @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-    public TuesdayJdbcResource resource(
+    public JdbcResource resource(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException{
@@ -133,7 +133,7 @@ extends AbstractController
      */
     public JdbcSchemaBean.Iter select(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final TuesdayJdbcResource resource
+        final JdbcResource resource
         ){
         log.debug("select()");
         return new JdbcSchemaBean.Iter(
@@ -148,7 +148,7 @@ extends AbstractController
     @RequestMapping(value="", method=RequestMethod.GET)
     public ModelAndView htmlIndex(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final TuesdayJdbcResource resource,
+        final JdbcResource resource,
         final ModelAndView model
         ){
         log.debug("htmlIndex()");
@@ -171,7 +171,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
     public ModelAndView htmlSelect(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final TuesdayJdbcResource resource,
+        final JdbcResource resource,
         final ModelAndView model
         ){
         log.debug("htmlSelect()");
@@ -195,7 +195,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcSchemaBean.Iter jsonSelect(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final TuesdayJdbcResource resource,
+        final JdbcResource resource,
         final ModelAndView model
         ){
         log.debug("jsonSelect()");
@@ -210,7 +210,7 @@ extends AbstractController
      */
     public JdbcSchemaBean select(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final TuesdayJdbcResource resource,
+        final JdbcResource resource,
         final String name
         ){
         log.debug("select(String) [{}]", name);
@@ -228,7 +228,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
     public ModelAndView htmlSelect(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final TuesdayJdbcResource resource,
+        final JdbcResource resource,
         @RequestParam(SELECT_NAME)
         final String name,
         final ModelAndView model
@@ -259,7 +259,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
     public JdbcSchemaBean jsonSelect(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final TuesdayJdbcResource resource,
+        final JdbcResource resource,
         @RequestParam(SELECT_NAME)
         final String name,
         final ModelAndView model
@@ -277,7 +277,7 @@ extends AbstractController
      */
     public JdbcSchemaBean.Iter search(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final TuesdayJdbcResource resource,
+        final JdbcResource resource,
         final String text
         ){
         log.debug("search(String) [{}]", text);
@@ -295,7 +295,7 @@ extends AbstractController
     @RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
     public ModelAndView htmlSearch(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final TuesdayJdbcResource resource,
+        final JdbcResource resource,
         final ModelAndView model
         ){
         log.debug("htmlSearch");
@@ -312,7 +312,7 @@ extends AbstractController
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
     public ModelAndView htmlSearch(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final TuesdayJdbcResource resource,
+        final JdbcResource resource,
         @RequestParam(SEARCH_TEXT)
         final String text,
         final ModelAndView model
@@ -343,7 +343,7 @@ extends AbstractController
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
     public JdbcSchemaBean.Iter jsonSearch(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final TuesdayJdbcResource resource,
+        final JdbcResource resource,
         @RequestParam(SEARCH_TEXT)
         final String text,
         final ModelAndView model
@@ -360,7 +360,7 @@ extends AbstractController
      *
     public JdbcSchemaBean create(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final TuesdayJdbcResource resource,
+        final JdbcResource resource,
         final String name
         ){
         log.debug("create(String) [{}]", name);
@@ -378,7 +378,7 @@ extends AbstractController
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<JdbcSchemaBean> jsonCreate(
         @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final TuesdayJdbcResource resource,
+        final JdbcResource resource,
         @RequestParam(CREATE_NAME)
         final String name,
         final ModelAndView model

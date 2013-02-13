@@ -30,7 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -80,7 +80,7 @@ public class JdbcColumnController
      *
      */
     public JdbcColumnBean bean(
-        final TuesdayJdbcColumn entity
+        final JdbcColumn entity
         ){
         return new JdbcColumnBean(
             entity
@@ -93,7 +93,7 @@ public class JdbcColumnController
      *
      */
     @ModelAttribute(COLUMN_ENTITY)
-    public TuesdayJdbcColumn entity(
+    public JdbcColumn entity(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException {
@@ -128,7 +128,7 @@ public class JdbcColumnController
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcColumnBean jsonSelect(
         @ModelAttribute(COLUMN_ENTITY)
-        final TuesdayJdbcColumn entity
+        final JdbcColumn entity
         ){
         log.debug("jsonSelect()");
         return bean(
@@ -147,7 +147,7 @@ public class JdbcColumnController
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @ModelAttribute(COLUMN_ENTITY)
-        final TuesdayJdbcColumn entity
+        final JdbcColumn entity
         ){
 
         if (name != null)

@@ -30,9 +30,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseComponent;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcConnection;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
+import uk.ac.roe.wfau.firethorn.tuesday.BaseComponent;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcConnection;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -112,7 +112,7 @@ public class JdbcResourceController
      *
      */
     public JdbcResourceBean bean(
-        final TuesdayJdbcResource entity
+        final JdbcResource entity
         ){
         log.debug("bean() [{}]", entity);
         final JdbcResourceBean bean = new JdbcResourceBean(
@@ -127,13 +127,13 @@ public class JdbcResourceController
      *
      */
     @ModelAttribute(RESOURCE_ENTITY)
-    public TuesdayJdbcResource entity(
+    public JdbcResource entity(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException  {
         log.debug("entity()");
         log.debug("ident [{}]", ident);
-        final TuesdayJdbcResource entity = factories().jdbc().resources().select(
+        final JdbcResource entity = factories().jdbc().resources().select(
             factories().jdbc().resources().idents().ident(
                 ident
                 )
@@ -163,7 +163,7 @@ public class JdbcResourceController
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcResourceBean jsonSelect(
         @ModelAttribute(RESOURCE_ENTITY)
-        final TuesdayJdbcResource entity
+        final JdbcResource entity
         ){
         log.debug("JSON GET request");
         try
@@ -202,7 +202,7 @@ public class JdbcResourceController
         String action,
 
         @ModelAttribute(RESOURCE_ENTITY)
-        final TuesdayJdbcResource entity
+        final JdbcResource entity
         ){
 
         if (name != null)
@@ -263,7 +263,7 @@ public class JdbcResourceController
         if (status != null)
             {
             entity.status(
-                TuesdayBaseComponent.Status.valueOf(
+                BaseComponent.Status.valueOf(
                     status
                     )
                 );
@@ -272,7 +272,7 @@ public class JdbcResourceController
         if (action != null)
             {
             entity.connection().status(
-                TuesdayJdbcConnection.Status.valueOf(
+                JdbcConnection.Status.valueOf(
                     action
                     )
                 );

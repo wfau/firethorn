@@ -17,7 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -27,17 +27,17 @@ import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
  *
  */
 public class JdbcResourceBean
-extends AbstractEntityBeanImpl<TuesdayJdbcResource>
-implements EntityBean<TuesdayJdbcResource>
+extends AbstractEntityBeanImpl<JdbcResource>
+implements EntityBean<JdbcResource>
     {
     public static class Iter
-    extends AbstractEntityBeanIter<TuesdayJdbcResource>
+    extends AbstractEntityBeanIter<JdbcResource>
         {
         /**
          * Public constructor.
          *
          */
-        public Iter(final Iterable<TuesdayJdbcResource> iterable)
+        public Iter(final Iterable<JdbcResource> iterable)
             {
             super(
                 iterable
@@ -45,7 +45,7 @@ implements EntityBean<TuesdayJdbcResource>
             }
 
         @Override
-        public EntityBean<TuesdayJdbcResource> bean(final TuesdayJdbcResource entity)
+        public EntityBean<JdbcResource> bean(final JdbcResource entity)
             {
             return new JdbcResourceBean(
                 entity
@@ -56,7 +56,7 @@ implements EntityBean<TuesdayJdbcResource>
      * Public constructor.
      *
      */
-    public JdbcResourceBean(final TuesdayJdbcResource entity)
+    public JdbcResourceBean(final JdbcResource entity)
         {
         super(
             JdbcResourceIdentFactory.TYPE_URI,

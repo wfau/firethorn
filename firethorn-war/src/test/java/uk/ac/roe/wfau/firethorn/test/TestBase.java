@@ -32,7 +32,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayFactories;
+import uk.ac.roe.wfau.firethorn.tuesday.ComponentFactories;
 
 /**
  * Base class for tests.
@@ -65,13 +65,13 @@ public abstract class TestBase
      *
      */
     @Autowired
-    private TuesdayFactories factories;
+    private ComponentFactories factories;
 
     /**
      * Our component Factories.
      *
      */
-    public TuesdayFactories factories()
+    public ComponentFactories factories()
         {
         return this.factories;
         }

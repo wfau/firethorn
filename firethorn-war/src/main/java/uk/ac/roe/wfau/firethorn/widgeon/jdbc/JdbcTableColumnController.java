@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcTable;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -103,7 +103,7 @@ extends AbstractController
      *
      */
     @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-    public TuesdayJdbcTable table(
+    public JdbcTable table(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException{
@@ -121,7 +121,7 @@ extends AbstractController
      */
     public JdbcColumnBean.Iter select(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final TuesdayJdbcTable table
+        final JdbcTable table
         ){
         log.debug("select()");
         return new JdbcColumnBean.Iter(
@@ -136,7 +136,7 @@ extends AbstractController
     @RequestMapping(value="", method=RequestMethod.GET)
     public ModelAndView htmlIndex(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final TuesdayJdbcTable table,
+        final JdbcTable table,
         final ModelAndView model
         ){
         log.debug("htmlIndex()");
@@ -159,7 +159,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
     public ModelAndView htmlSelect(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final TuesdayJdbcTable table,
+        final JdbcTable table,
         final ModelAndView model
         ){
         log.debug("htmlSelect()");
@@ -183,7 +183,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcColumnBean.Iter jsonSelect(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final TuesdayJdbcTable table,
+        final JdbcTable table,
         final ModelAndView model
         ){
         log.debug("jsonSelect()");
@@ -198,7 +198,7 @@ extends AbstractController
      */
     public JdbcColumnBean select(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final TuesdayJdbcTable table,
+        final JdbcTable table,
         final String name
         ){
         log.debug("select(String) [{}]", name);
@@ -216,7 +216,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
     public ModelAndView htmlSelect(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final TuesdayJdbcTable table,
+        final JdbcTable table,
         @RequestParam(SELECT_NAME)
         final String name,
         final ModelAndView model
@@ -247,7 +247,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
     public JdbcColumnBean jsonSelect(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final TuesdayJdbcTable table,
+        final JdbcTable table,
         @RequestParam(SELECT_NAME)
         final String name,
         final ModelAndView model
@@ -265,7 +265,7 @@ extends AbstractController
      */
     public JdbcColumnBean.Iter search(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final TuesdayJdbcTable table,
+        final JdbcTable table,
         final String text
         ){
         log.debug("search(String) [{}]", text);
@@ -283,7 +283,7 @@ extends AbstractController
     @RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
     public ModelAndView htmlSearch(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final TuesdayJdbcTable table,
+        final JdbcTable table,
         final ModelAndView model
         ){
         log.debug("htmlSearch");
@@ -300,7 +300,7 @@ extends AbstractController
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
     public ModelAndView htmlSearch(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final TuesdayJdbcTable table,
+        final JdbcTable table,
         @RequestParam(SEARCH_TEXT)
         final String text,
         final ModelAndView model
@@ -331,7 +331,7 @@ extends AbstractController
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
     public JdbcColumnBean.Iter jsonSearch(
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final TuesdayJdbcTable table,
+        final JdbcTable table,
         @RequestParam(SEARCH_TEXT)
         final String text,
         final ModelAndView model

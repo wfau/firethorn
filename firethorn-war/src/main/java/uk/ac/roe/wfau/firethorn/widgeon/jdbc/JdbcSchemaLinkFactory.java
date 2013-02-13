@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
@@ -28,8 +28,8 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
  */
 @Component
 public class JdbcSchemaLinkFactory
-extends WebappLinkFactory<TuesdayJdbcSchema>
-implements TuesdayJdbcSchema.LinkFactory
+extends WebappLinkFactory<JdbcSchema>
+implements JdbcSchema.LinkFactory
     {
     protected JdbcSchemaLinkFactory()
         {
@@ -57,7 +57,7 @@ implements TuesdayJdbcSchema.LinkFactory
     public static final String SCHEMA_TABLE_PATH = SCHEMA_PATH + "/tables" ;
 
     @Override
-    public String link(final TuesdayJdbcSchema entity)
+    public String link(final JdbcSchema entity)
         {
         return link(
             SCHEMA_PATH,

@@ -21,7 +21,7 @@ import java.net.URI;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
@@ -31,7 +31,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 @Component
 public class JdbcSchemaIdentFactory
 extends WebappIdentFactory
-implements TuesdayJdbcSchema.IdentFactory
+implements JdbcSchema.IdentFactory
     {
     /**
      * The type URI for this type.

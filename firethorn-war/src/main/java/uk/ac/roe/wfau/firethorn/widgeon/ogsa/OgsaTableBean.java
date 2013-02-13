@@ -3,7 +3,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.ogsa;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayOgsaTable;
+import uk.ac.roe.wfau.firethorn.tuesday.OgsaTable;
 
 /**
  * Bean wrapper for <code>OgsaTable</code>.
@@ -16,13 +16,13 @@ public class OgsaTableBean
      * Public constructor.
      *
      */
-    public OgsaTableBean(final TuesdayOgsaTable<?,?> table)
+    public OgsaTableBean(final OgsaTable<?,?> table)
         {
         this.table = table;
         }
 
-    private final TuesdayOgsaTable<?,?> table ;
-    protected TuesdayOgsaTable<?,?> table()
+    private final OgsaTable<?,?> table ;
+    protected OgsaTable<?,?> table()
         {
         return this.table;
         }

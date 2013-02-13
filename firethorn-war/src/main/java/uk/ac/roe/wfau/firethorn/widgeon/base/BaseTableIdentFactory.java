@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.base;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseTable;
+import uk.ac.roe.wfau.firethorn.tuesday.BaseTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
@@ -29,6 +29,6 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 @Component
 public class BaseTableIdentFactory
 extends WebappIdentFactory
-implements TuesdayBaseTable.IdentFactory
+implements BaseTable.IdentFactory
     {
     }

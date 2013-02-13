@@ -20,7 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -30,24 +30,24 @@ import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
  *
  */
 public class AdqlSchemaBean
-extends AbstractEntityBeanImpl<TuesdayAdqlSchema>
-implements EntityBean<TuesdayAdqlSchema>
+extends AbstractEntityBeanImpl<AdqlSchema>
+implements EntityBean<AdqlSchema>
     {
     public static class Iter
-    extends AbstractEntityBeanIter<TuesdayAdqlSchema>
+    extends AbstractEntityBeanIter<AdqlSchema>
         {
         /**
          * Public constructor.
          *
          */
-        public Iter(final Iterable<TuesdayAdqlSchema> iterable)
+        public Iter(final Iterable<AdqlSchema> iterable)
             {
             super(
                 iterable
                 );
             }
         @Override
-        public EntityBean<TuesdayAdqlSchema> bean(final TuesdayAdqlSchema entity)
+        public EntityBean<AdqlSchema> bean(final AdqlSchema entity)
             {
             return new AdqlSchemaBean(
                 entity
@@ -59,7 +59,7 @@ implements EntityBean<TuesdayAdqlSchema>
      * Public constructor.
      *
      */
-    public AdqlSchemaBean(final TuesdayAdqlSchema entity)
+    public AdqlSchemaBean(final AdqlSchema entity)
         {
         super(
             AdqlSchemaIdentFactory.TYPE_URI,

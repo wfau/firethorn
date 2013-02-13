@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayFactories;
+import uk.ac.roe.wfau.firethorn.tuesday.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
@@ -64,13 +64,13 @@ public abstract class AbstractController
      *
      */
     @Autowired
-    private TuesdayFactories factories;
+    private ComponentFactories factories;
 
     /**
      * Our system services.
      *
      */
-    public TuesdayFactories factories()
+    public ComponentFactories factories()
         {
         return this.factories;
         }

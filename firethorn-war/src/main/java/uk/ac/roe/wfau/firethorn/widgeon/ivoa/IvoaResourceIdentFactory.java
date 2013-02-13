@@ -21,7 +21,7 @@ import java.net.URI;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaResource;
+import uk.ac.roe.wfau.firethorn.tuesday.IvoaResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
@@ -31,7 +31,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 @Component
 public class IvoaResourceIdentFactory
 extends WebappIdentFactory
-implements TuesdayIvoaResource.IdentFactory
+implements IvoaResource.IdentFactory
     {
     /**
      * The type URI for this type.

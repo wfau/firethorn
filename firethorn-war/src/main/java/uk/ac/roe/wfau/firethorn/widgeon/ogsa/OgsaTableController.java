@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayOgsaTable;
+import uk.ac.roe.wfau.firethorn.tuesday.OgsaTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -71,7 +71,7 @@ public class OgsaTableController
      *
      */
     public OgsaTableBean bean(
-        final TuesdayOgsaTable<?,?> entity
+        final OgsaTable<?,?> entity
         ){
         return new OgsaTableBean(
             entity
@@ -84,7 +84,7 @@ public class OgsaTableController
      *
      */
     @ModelAttribute(OgsaTableController.TABLE_ENTITY)
-    public TuesdayOgsaTable<?,?> entity(
+    public OgsaTable<?,?> entity(
         @PathVariable("alias")
         final String alias
         ) throws NotFoundException {
@@ -102,7 +102,7 @@ public class OgsaTableController
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public OgsaTableBean jsonSelect(
         @ModelAttribute(TABLE_ENTITY)
-        final TuesdayOgsaTable<?,?> entity
+        final OgsaTable<?,?> entity
         ){
         log.debug("jsonSelect()");
         return bean(

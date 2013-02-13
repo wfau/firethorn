@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.IvoaColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
@@ -29,8 +29,8 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
  */
 @Component
 public class IvoaColumnLinkFactory
-extends WebappLinkFactory<TuesdayIvoaColumn>
-implements TuesdayIvoaColumn.LinkFactory
+extends WebappLinkFactory<IvoaColumn>
+implements IvoaColumn.LinkFactory
     {
     protected IvoaColumnLinkFactory()
         {
@@ -52,7 +52,7 @@ implements TuesdayIvoaColumn.LinkFactory
     public static final String COLUMN_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
 
     @Override
-    public String link(final TuesdayIvoaColumn entity)
+    public String link(final IvoaColumn entity)
         {
         return link(
             COLUMN_PATH,

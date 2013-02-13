@@ -20,7 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcColumn;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -30,17 +30,17 @@ import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
  *
  */
 public class JdbcColumnBean
-extends AbstractEntityBeanImpl<TuesdayJdbcColumn>
-implements EntityBean<TuesdayJdbcColumn>
+extends AbstractEntityBeanImpl<JdbcColumn>
+implements EntityBean<JdbcColumn>
     {
     public static class Iter
-    extends AbstractEntityBeanIter<TuesdayJdbcColumn>
+    extends AbstractEntityBeanIter<JdbcColumn>
         {
         /**
          * Public constructor.
          *
          */
-        public Iter(final Iterable<TuesdayJdbcColumn> iterable)
+        public Iter(final Iterable<JdbcColumn> iterable)
             {
             super(
                 iterable
@@ -48,7 +48,7 @@ implements EntityBean<TuesdayJdbcColumn>
             }
 
         @Override
-        public EntityBean<TuesdayJdbcColumn> bean(final TuesdayJdbcColumn entity)
+        public EntityBean<JdbcColumn> bean(final JdbcColumn entity)
             {
             return new JdbcColumnBean(
                 entity
@@ -60,7 +60,7 @@ implements EntityBean<TuesdayJdbcColumn>
      * Public constructor.
      *
      */
-    public JdbcColumnBean(final TuesdayJdbcColumn entity)
+    public JdbcColumnBean(final JdbcColumn entity)
         {
         super(
             JdbcColumnIdentFactory.TYPE_URI,

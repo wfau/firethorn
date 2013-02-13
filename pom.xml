@@ -34,14 +34,19 @@
         | http://repos.fedorapeople.org/repos/dchen/apache-maven/
         | http://repos.fedorapeople.org/repos/dchen/apache-maven/fedora-apache-maven.repo
         +-->
-        
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>uk.ac.roe.wfau</groupId>
     <artifactId>firethorn</artifactId>
-
-    <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+
+    <!--+
+        | Semantic Versioning (SemVer)
+        | http://semver.org/
+        | Maven project versions
+        | http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-pom-syntax.html
+        +-->
+    <version>1.0-SNAPSHOT</version>
 
     <prerequisites>
         <maven>2.2.1</maven>
@@ -192,6 +197,23 @@
             <name>Local repository for our own products</name>
             <url>http://data.metagrid.co.uk/wfau/maven/publish</url>
             <layout>default</layout>
+            <!--+
+                | SNAPSHOT cacheing policy.
+                | http://stackoverflow.com/questions/5901378/what-exactly-is-a-maven-snapshot-and-why-do-we-need-it
+                +-->
+            <snapshots>
+                <enabled>true</enabled>
+                <!--+
+                    | always: Maven will check for a newer version on every build;
+                    | daily, the default value;
+                    | interval:XXX: an interval in minutes (XXX)
+                    | never: Maven will never try to retrieve another version.
+                    | It will do that only if it doesn't exist locally. With the configuration, 
+                    | SNAPSHOT version will be handled as the stable libraries.
+                    +-->
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
+
         </repository>
 
         <!--+

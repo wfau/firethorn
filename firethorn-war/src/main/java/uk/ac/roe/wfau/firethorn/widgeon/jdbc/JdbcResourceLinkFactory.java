@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcResource;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
@@ -28,8 +28,8 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
  */
 @Component
 public class JdbcResourceLinkFactory
-extends WebappLinkFactory<TuesdayJdbcResource>
-implements TuesdayJdbcResource.LinkFactory
+extends WebappLinkFactory<JdbcResource>
+implements JdbcResource.LinkFactory
     {
     protected JdbcResourceLinkFactory()
         {
@@ -57,7 +57,7 @@ implements TuesdayJdbcResource.LinkFactory
     public static final String RESOURCE_SCHEMA_PATH = RESOURCE_PATH + "/schemas" ;
 
     @Override
-    public String link(final TuesdayJdbcResource entity)
+    public String link(final JdbcResource entity)
         {
         return link(
             RESOURCE_PATH,

@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -79,7 +79,7 @@ public class AdqlSchemaController
      *
      */
     public AdqlSchemaBean bean(
-        final TuesdayAdqlSchema entity
+        final AdqlSchema entity
         ){
         return new AdqlSchemaBean(
             entity
@@ -92,7 +92,7 @@ public class AdqlSchemaController
      *
      */
     @ModelAttribute(SCHEMA_ENTITY)
-    public TuesdayAdqlSchema entity(
+    public AdqlSchema entity(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException {
@@ -112,7 +112,7 @@ public class AdqlSchemaController
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public AdqlSchemaBean jsonSelect(
         @ModelAttribute(SCHEMA_ENTITY)
-        final TuesdayAdqlSchema entity
+        final AdqlSchema entity
         ){
         log.debug("jsonSelect()");
         return bean(
@@ -131,7 +131,7 @@ public class AdqlSchemaController
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @ModelAttribute(SCHEMA_ENTITY)
-        final TuesdayAdqlSchema entity
+        final AdqlSchema entity
         ){
 
         if (name != null)

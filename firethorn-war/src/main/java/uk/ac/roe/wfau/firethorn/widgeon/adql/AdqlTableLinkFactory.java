@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
@@ -29,8 +29,8 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
  */
 @Component
 public class AdqlTableLinkFactory
-extends WebappLinkFactory<TuesdayAdqlTable>
-implements TuesdayAdqlTable.LinkFactory
+extends WebappLinkFactory<AdqlTable>
+implements AdqlTable.LinkFactory
     {
     protected AdqlTableLinkFactory()
         {
@@ -58,7 +58,7 @@ implements TuesdayAdqlTable.LinkFactory
     public static final String TABLE_COLUMN_PATH = TABLE_PATH + "/columns" ;
 
     @Override
-    public String link(final TuesdayAdqlTable entity)
+    public String link(final AdqlTable entity)
         {
         return this.link(
             TABLE_PATH,

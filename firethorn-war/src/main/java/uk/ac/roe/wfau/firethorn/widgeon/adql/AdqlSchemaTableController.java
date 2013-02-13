@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -124,7 +124,7 @@ extends AbstractController
      *
      */
     @ModelAttribute(AdqlSchemaController.SCHEMA_ENTITY)
-    public TuesdayAdqlSchema schema(
+    public AdqlSchema schema(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException {
@@ -144,7 +144,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
     public AdqlTableBean.Iter jsonSelect(
         @ModelAttribute(AdqlSchemaController.SCHEMA_ENTITY)
-        final TuesdayAdqlSchema schema
+        final AdqlSchema schema
         ){
         log.debug("jsonSelect()");
         return new AdqlTableBean.Iter(
@@ -160,7 +160,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
     public AdqlTableBean jsonSelect(
         @ModelAttribute(AdqlSchemaController.SCHEMA_ENTITY)
-        final TuesdayAdqlSchema schema,
+        final AdqlSchema schema,
         @RequestParam(SELECT_NAME)
         final String name
         ){
@@ -180,7 +180,7 @@ extends AbstractController
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
     public AdqlTableBean.Iter jsonSearch(
         @ModelAttribute(AdqlSchemaController.SCHEMA_ENTITY)
-        final TuesdayAdqlSchema schema,
+        final AdqlSchema schema,
         @RequestParam(SEARCH_TEXT)
         final String text
         ){
@@ -201,7 +201,7 @@ extends AbstractController
     @RequestMapping(value=IMPORT_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<AdqlTableBean> jsonInport(
         @ModelAttribute(AdqlSchemaController.SCHEMA_ENTITY)
-        final TuesdayAdqlSchema schema,
+        final AdqlSchema schema,
         @RequestParam(value=IMPORT_BASE, required=true)
         final String base,
         @RequestParam(value=IMPORT_NAME, required=false)

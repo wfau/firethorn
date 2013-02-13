@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaResource;
+import uk.ac.roe.wfau.firethorn.tuesday.IvoaResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
@@ -28,8 +28,8 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
  */
 @Component
 public class IvoaResourceLinkFactory
-extends WebappLinkFactory<TuesdayIvoaResource>
-implements TuesdayIvoaResource.LinkFactory
+extends WebappLinkFactory<IvoaResource>
+implements IvoaResource.LinkFactory
     {
     protected IvoaResourceLinkFactory()
         {
@@ -57,7 +57,7 @@ implements TuesdayIvoaResource.LinkFactory
     public static final String RESOURCE_SCHEMA_PATH = RESOURCE_PATH + "/schemas" ;
 
     @Override
-    public String link(final TuesdayIvoaResource entity)
+    public String link(final IvoaResource entity)
         {
         return link(
             RESOURCE_PATH,

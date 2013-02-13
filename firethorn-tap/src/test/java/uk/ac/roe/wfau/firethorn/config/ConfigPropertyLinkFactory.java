@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.config;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.test.TuesdayTestLinkFactory;
+import uk.ac.roe.wfau.firethorn.test.TestLinkFactory;
 
 /**
  *
@@ -27,7 +27,7 @@ import uk.ac.roe.wfau.firethorn.test.TuesdayTestLinkFactory;
  */
 @Component
 public class ConfigPropertyLinkFactory
-extends TuesdayTestLinkFactory<ConfigProperty>
+extends TestLinkFactory<ConfigProperty>
 implements ConfigProperty.LinkFactory
     {
     public ConfigPropertyLinkFactory()

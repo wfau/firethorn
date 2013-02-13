@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -103,7 +103,7 @@ extends AbstractController
      *
      */
     @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-    public TuesdayJdbcSchema schema(
+    public JdbcSchema schema(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException{
@@ -121,7 +121,7 @@ extends AbstractController
      */
     public JdbcTableBean.Iter select(
         @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final TuesdayJdbcSchema schema
+        final JdbcSchema schema
         ){
         log.debug("select()");
         return new JdbcTableBean.Iter(
@@ -137,7 +137,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcTableBean.Iter jsonSelect(
         @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final TuesdayJdbcSchema schema,
+        final JdbcSchema schema,
         final ModelAndView model
         ){
         log.debug("jsonSelect()");
@@ -152,7 +152,7 @@ extends AbstractController
      */
     public JdbcTableBean select(
         @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final TuesdayJdbcSchema schema,
+        final JdbcSchema schema,
         final String name
         ){
         log.debug("select(String) [{}]", name);
@@ -171,7 +171,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
     public JdbcTableBean jsonSelect(
         @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final TuesdayJdbcSchema schema,
+        final JdbcSchema schema,
         @RequestParam(SELECT_NAME)
         final String name,
         final ModelAndView model
@@ -189,7 +189,7 @@ extends AbstractController
      */
     public JdbcTableBean.Iter search(
         @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final TuesdayJdbcSchema schema,
+        final JdbcSchema schema,
         final String text
         ){
         log.debug("search(String) [{}]", text);
@@ -208,7 +208,7 @@ extends AbstractController
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
     public JdbcTableBean.Iter jsonSearch(
         @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final TuesdayJdbcSchema schema,
+        final JdbcSchema schema,
         @RequestParam(SEARCH_TEXT)
         final String text,
         final ModelAndView model

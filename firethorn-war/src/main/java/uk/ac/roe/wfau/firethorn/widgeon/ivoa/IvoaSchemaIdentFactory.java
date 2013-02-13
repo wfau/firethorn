@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.ivoa;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayIvoaSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.IvoaSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
@@ -29,6 +29,6 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 @Component
 public class IvoaSchemaIdentFactory
 extends WebappIdentFactory
-implements TuesdayIvoaSchema.IdentFactory
+implements IvoaSchema.IdentFactory
     {
     }

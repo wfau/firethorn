@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.ogsa;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayOgsaTable;
+import uk.ac.roe.wfau.firethorn.tuesday.OgsaTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
@@ -28,8 +28,8 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
  */
 @Component
 public class OgsaTableLinkFactory
-extends WebappLinkFactory<TuesdayOgsaTable<?,?>>
-implements TuesdayOgsaTable.LinkFactory
+extends WebappLinkFactory<OgsaTable<?,?>>
+implements OgsaTable.LinkFactory
     {
     protected OgsaTableLinkFactory()
         {
@@ -57,7 +57,7 @@ implements TuesdayOgsaTable.LinkFactory
      */
 
     @Override
-    public String link(final TuesdayOgsaTable<?,?> entity)
+    public String link(final OgsaTable<?,?> entity)
         {
         return this.link(
             TABLE_PATH,

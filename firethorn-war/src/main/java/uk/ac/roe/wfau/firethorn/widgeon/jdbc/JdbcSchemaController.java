@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayJdbcSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -79,7 +79,7 @@ public class JdbcSchemaController
      *
      */
     public JdbcSchemaBean bean(
-        final TuesdayJdbcSchema entity
+        final JdbcSchema entity
         ){
         return new JdbcSchemaBean(
             entity
@@ -92,7 +92,7 @@ public class JdbcSchemaController
      *
      */
     @ModelAttribute(SCHEMA_ENTITY)
-    public TuesdayJdbcSchema entity(
+    public JdbcSchema entity(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException {
@@ -112,7 +112,7 @@ public class JdbcSchemaController
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcSchemaBean jsonSelect(
         @ModelAttribute(SCHEMA_ENTITY)
-        final TuesdayJdbcSchema entity
+        final JdbcSchema entity
         ){
         log.debug("jsonSelect()");
         return bean(
@@ -131,7 +131,7 @@ public class JdbcSchemaController
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @ModelAttribute(SCHEMA_ENTITY)
-        final TuesdayJdbcSchema entity
+        final JdbcSchema entity
         ){
 
         if (name != null)

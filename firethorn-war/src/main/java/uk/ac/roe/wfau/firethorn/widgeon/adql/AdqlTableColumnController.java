@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -102,7 +102,7 @@ extends AbstractController
      *
      */
     @ModelAttribute(AdqlTableController.TABLE_ENTITY)
-    public TuesdayAdqlTable table(
+    public AdqlTable table(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException{
@@ -122,7 +122,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
     public AdqlColumnBean.Iter jsonSelect(
         @ModelAttribute(AdqlTableController.TABLE_ENTITY)
-        final TuesdayAdqlTable table
+        final AdqlTable table
         ){
         log.debug("jsonSelect()");
         try {
@@ -147,7 +147,7 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
     public AdqlColumnBean jsonSelect(
         @ModelAttribute(AdqlTableController.TABLE_ENTITY)
-        final TuesdayAdqlTable table,
+        final AdqlTable table,
         @RequestParam(SELECT_NAME)
         final String name
         ){
@@ -167,7 +167,7 @@ extends AbstractController
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
     public AdqlColumnBean.Iter jsonSearch(
         @ModelAttribute(AdqlTableController.TABLE_ENTITY)
-        final TuesdayAdqlTable table,
+        final AdqlTable table,
         @RequestParam(SEARCH_TEXT)
         final String text
         ){

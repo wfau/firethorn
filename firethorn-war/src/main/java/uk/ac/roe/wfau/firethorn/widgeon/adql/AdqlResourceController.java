@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.common.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.common.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.tuesday.AdqlResource;
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseComponent;
+import uk.ac.roe.wfau.firethorn.tuesday.BaseComponent;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
@@ -159,7 +159,7 @@ public class AdqlResourceController
             if (status.length() > 0)
                 {
                 entity.status(
-                    TuesdayBaseComponent.Status.valueOf(
+                    BaseComponent.Status.valueOf(
                         status
                         )
                     );

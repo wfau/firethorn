@@ -21,7 +21,7 @@ import java.net.URI;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayAdqlTable;
+import uk.ac.roe.wfau.firethorn.tuesday.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
@@ -31,7 +31,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 @Component
 public class AdqlTableIdentFactory
 extends WebappIdentFactory
-implements TuesdayAdqlTable.IdentFactory
+implements AdqlTable.IdentFactory
     {
     /**
      * The type URI for this type.

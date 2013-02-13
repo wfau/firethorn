@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.base;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.TuesdayBaseSchema;
+import uk.ac.roe.wfau.firethorn.tuesday.BaseSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
@@ -28,8 +28,8 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
  */
 @Component
 public class BaseSchemaLinkFactory
-extends WebappLinkFactory<TuesdayBaseSchema<?,?>>
-implements TuesdayBaseSchema.LinkFactory
+extends WebappLinkFactory<BaseSchema<?,?>>
+implements BaseSchema.LinkFactory
     {
     protected BaseSchemaLinkFactory()
         {
@@ -63,7 +63,7 @@ implements TuesdayBaseSchema.LinkFactory
     public static final String SCHEMA_TABLE_PATH = SCHEMA_PATH + "/tables" ;
 
     @Override
-    public String link(final TuesdayBaseSchema<?,?> entity)
+    public String link(final BaseSchema<?,?> entity)
         {
         return this.link(
             SCHEMA_PATH,
