@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.webapp.control;
 
 import java.util.Iterator;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 
 /**
  * Abstract base class for <code>EntityBeanIter</code> implementations.

@@ -23,7 +23,7 @@ import java.io.Serializable;
 
 import org.junit.Test;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**

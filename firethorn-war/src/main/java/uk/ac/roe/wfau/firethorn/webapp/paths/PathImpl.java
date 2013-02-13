@@ -18,8 +18,8 @@
 package uk.ac.roe.wfau.firethorn.webapp.paths;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 
 /**
  * Path implementation.
@@ -53,18 +53,18 @@ implements Path
     @Override
     public Path append(final String string)
         {
-        log.debug("append() [{}][{}]", base, string);
+        log.debug("append() [{}][{}]", this.base, string);
         if (string != null)
             {
             final String trimmed = string.trim();
             if (trimmed.length() > 0)
                 {
                 final StringBuilder builder = new StringBuilder(
-                    base
+                    this.base
                     );
                 if (!trimmed.startsWith(DELIMITER))
                     {
-                    if (!base.endsWith(DELIMITER))
+                    if (!this.base.endsWith(DELIMITER))
                         {
                         builder.append(
                             DELIMITER
@@ -106,8 +106,8 @@ implements Path
     @Override
     public String resolve(final Identifier ident)
         {
-        log.debug("resolve() [{}][{}]", base, ident.value());
-        return base.replaceFirst(
+        log.debug("resolve() [{}][{}]", this.base, ident.value());
+        return this.base.replaceFirst(
             IDENT_REGEX,
             ident.value().toString()
             );

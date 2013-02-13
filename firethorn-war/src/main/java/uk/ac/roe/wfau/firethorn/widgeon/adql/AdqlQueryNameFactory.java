@@ -17,11 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import java.net.URI;
-
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**

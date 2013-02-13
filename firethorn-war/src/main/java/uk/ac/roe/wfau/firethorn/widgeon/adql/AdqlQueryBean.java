@@ -20,9 +20,9 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery.Mode;
-import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery.Status;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Status;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;

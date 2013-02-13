@@ -20,8 +20,8 @@ package uk.ac.roe.wfau.firethorn.webapp.paths;
 import java.net.URI;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 
 /**
  *
@@ -92,8 +92,8 @@ implements UriBuilder
     @Override
     public URI uri(final Identifier ident)
         {
-        return base.resolve(
-            path.resolve(
+        return this.base.resolve(
+            this.path.resolve(
                 ident
                 )
             );
@@ -110,7 +110,7 @@ implements UriBuilder
     @Override
     public String str(final Identifier ident)
         {
-        return path.resolve(
+        return this.path.resolve(
             ident
             );
         }

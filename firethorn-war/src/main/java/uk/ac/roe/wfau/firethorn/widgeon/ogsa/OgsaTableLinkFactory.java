@@ -19,7 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.ogsa;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.tuesday.OgsaTable;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**

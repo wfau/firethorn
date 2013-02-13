@@ -17,21 +17,13 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
-import java.net.URI;
-
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
-import uk.ac.roe.wfau.firethorn.tuesday.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.tuesday.ComponentFactories;
-import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlQueryBean;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 
 /**
  * Abstract base class for Spring MVC controllers.

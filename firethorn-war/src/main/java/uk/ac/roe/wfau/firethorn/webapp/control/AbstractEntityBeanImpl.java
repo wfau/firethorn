@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 
 /**
  * Abstract base class for <code>EntityBean</code> implementations.

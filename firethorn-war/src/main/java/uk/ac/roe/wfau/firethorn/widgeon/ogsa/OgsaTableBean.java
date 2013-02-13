@@ -3,7 +3,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.ogsa;
 
-import uk.ac.roe.wfau.firethorn.tuesday.OgsaTable;
+import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaTable;
 
 /**
  * Bean wrapper for <code>OgsaTable</code>.

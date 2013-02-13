@@ -61,7 +61,7 @@ implements Identity.Context
                 protected Identity initialValue()
                     {
                     log.debug("initial()");
-                    return factory.create(
+                    return Factory.this.factory.create(
                         "anon-identity"
                         );
                     }
@@ -72,7 +72,7 @@ implements Identity.Context
             {
             //log.debug("Identity.Context.Factory.context()");
             return new SimpleContext(
-                tracker.get()
+                this.tracker.get()
                 );
             }
         }

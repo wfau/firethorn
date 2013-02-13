@@ -19,8 +19,8 @@ package uk.ac.roe.wfau.firethorn.webapp.paths;
 
 import java.net.URI;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 
 /**
  *

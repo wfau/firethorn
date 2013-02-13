@@ -17,8 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.paths;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 
 /**
  * Public interface for a webapp path.

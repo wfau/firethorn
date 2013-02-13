@@ -17,8 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
-import uk.ac.roe.wfau.firethorn.common.entity.EntityLinkFactory;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.EntityLinkFactory;
 
 /**
  * Base class for IdentFactory implementations within the webapp.

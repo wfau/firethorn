@@ -20,7 +20,7 @@ package uk.ac.roe.wfau.firethorn.webapp.control;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 
 /**
  * This doesn't work - the Spring dispatcher doesn't recognise the method result as a ResponseEntity.

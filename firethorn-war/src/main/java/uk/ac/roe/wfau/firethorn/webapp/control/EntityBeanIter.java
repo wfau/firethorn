@@ -17,7 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
-import uk.ac.roe.wfau.firethorn.common.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 
 /**
  * Java Bean interface for an <code>Iterable</code> set of <code>EntityBean</code>s.
