@@ -363,7 +363,9 @@ public class JdbcResourceEntity
                 //
                 // If the table name is not null.
                 else {
+/*
                     log.debug("Processing table [{}][{}][{}]", new Object[]{tcname, tsname, ttname});
+ */
                     if (table == null)
                         {
                         column = null ;
@@ -430,12 +432,14 @@ public class JdbcResourceEntity
                             final String colname = columns.getString(JDBC_META_COLUMN_NAME);
                             final int    coltype = columns.getInt(JDBC_META_COLUMN_TYPE_TYPE);
                             final int    colsize = columns.getInt(JDBC_META_COLUMN_SIZE);
+/*
                             log.debug("Processing column [{}][{}][{}][{}]", new Object[]{
                                 ccname,
                                 csname,
                                 ctname,
                                 colname
                                 });
+ */
                             if (column == null)
                                 {
                                 create = true ;

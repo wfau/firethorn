@@ -406,12 +406,11 @@ implements AdqlQuery, AdqlParserQuery
         direct.process(
             this
             );
-        
         //
         // If we have multiple resources, re-process as a distributed query.
         // TODO - In theory, we could re-use the same parser by using a ThreadLocal for the mode ...
         // .. should we reset ?
-        if (this.resources.size() > 1)
+        if (this.connects.size() > 1)
             {
             log.debug("Query uses multiple resources");
             distrib.process(
@@ -433,6 +432,7 @@ implements AdqlQuery, AdqlParserQuery
         this.columns.clear();
         this.tables.clear();
         this.resources.clear();
+        this.connects.clear();
         }
 
     @ManyToMany(
@@ -463,29 +463,8 @@ implements AdqlQuery, AdqlParserQuery
         {
         return this.columns;
         }
-    
-    @ManyToMany(
-        fetch   = FetchType.LAZY,
-        cascade = CascadeType.ALL,
-        targetEntity = AdqlTableEntity.class
-        )
-    @JoinTable(
-        name=DB_JOIN_NAME + "AdqlTable",
-        joinColumns = { 
-            @JoinColumn(
-                name = "adqlquery",
-                nullable = false,
-                updatable = false
-                )
-            }, 
-        inverseJoinColumns = {
-            @JoinColumn(
-                name = "adqltable", 
-                nullable = false,
-                updatable = false
-                )
-            }
-        )
+
+    @Transient
     private final Set<AdqlTable> tables = new HashSet<AdqlTable>();
     @Override
     public Iterable<AdqlTable> tables()
@@ -493,28 +472,7 @@ implements AdqlQuery, AdqlParserQuery
         return this.tables;
         }
 
-    @ManyToMany(
-        fetch   = FetchType.LAZY,
-        cascade = CascadeType.ALL,
-        targetEntity = BaseResourceEntity.class
-        )
-    @JoinTable(
-        name=DB_JOIN_NAME + "BaseResource",
-        joinColumns = { 
-            @JoinColumn(
-                name = "adqlquery",
-                nullable = false,
-                updatable = false
-                )
-            }, 
-        inverseJoinColumns = {
-            @JoinColumn(
-                name = "baseresource", 
-                nullable = false,
-                updatable = false
-                )
-            }
-        )
+    @Transient
     private final Set<OgsaResource<?>> resources = new HashSet<OgsaResource<?>>();
     @Override
     public Iterable<OgsaResource<?>> resources()
@@ -522,6 +480,13 @@ implements AdqlQuery, AdqlParserQuery
         return this.resources;
         }
 
+    @Transient
+    private final Set<String> connects = new HashSet<String>();
+    public Iterable<String> connects()
+        {
+        return this.connects ;
+        }
+    
     @Override
     public String link()
         {
@@ -540,11 +505,8 @@ implements AdqlQuery, AdqlParserQuery
         this.columns.add(
             column
             );
-        this.tables.add(
+        this.add(
             column.table()
-            );
-        this.resources.add(
-            column.ogsa().resource()
             );
         }
 
@@ -554,11 +516,18 @@ implements AdqlQuery, AdqlParserQuery
         this.tables.add(
             table
             );
-        this.resources.add(
+        this.add(
             table.ogsa().resource()
             );
         }
 
-    
-    
+    public void add(final OgsaResource<?> resource)
+        {
+        this.resources.add(
+            resource
+            );
+        this.connects.add(
+            resource.ogsaid()
+            );
+        }
     }

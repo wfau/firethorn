@@ -227,9 +227,15 @@ extends Entity
     public Iterable<AdqlTable> tables();
 
     /**
-     * The set of the OGSA-DAI resources used by the query.
+     * The set of the resources used by the query.
      *
      */
     public Iterable<OgsaResource<?>> resources();
+
+    /**
+     * The set of the OGSA-DAI connection used by the query.
+     *
+     */
+    public Iterable<String> connects();
 
     }
