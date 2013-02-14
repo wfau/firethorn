@@ -125,7 +125,7 @@ implements AdqlParser
         // Parse the query.
         try {
             final ADQLQuery object = this.parser.parseQuery(
-                subject.query()
+                subject.input()
                 );
             //
             // Update the query mode.
@@ -149,7 +149,7 @@ implements AdqlParser
             //
             // Translate the query into SQL.
             final ADQLTranslator translator = new PostgreSQLTranslator(false);
-            subject.ogsa(
+            subject.osql(
                 translator.translate(
                     object
                     )

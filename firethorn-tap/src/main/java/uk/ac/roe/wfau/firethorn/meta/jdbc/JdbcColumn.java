@@ -80,6 +80,7 @@ extends BaseColumn<JdbcColumn>, OgsaColumn<JdbcColumn>
      *
      */
     public int sqltype();
+
     /**
      * The SQL type code.
      * @see java.sql.Types

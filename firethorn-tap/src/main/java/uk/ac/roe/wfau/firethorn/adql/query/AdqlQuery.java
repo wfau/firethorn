@@ -191,16 +191,16 @@ extends Entity
     public void status(Status status);
 
     /**
-     * The input query.
+     * The original input query.
      *
      */
-    public String query();
+    public String input();
 
     /**
-     * Set the input query.
+     * Update the input query.
      *
      */
-    public void query(final String input);
+    public void input(final String input);
 
     /**
      * The processed ADQL query.
@@ -212,7 +212,7 @@ extends Entity
      * The processed SQL query we pass to OGSA-DAI.
      *
      */
-    public String ogsa();
+    public String osql();
 
     /**
      * The set of the AdqlColumns used by the query.
@@ -231,11 +231,5 @@ extends Entity
      *
      */
     public Iterable<OgsaResource<?>> resources();
-
-    /**
-     * Parse the query and update our properties.
-     *
-    public void parse();
-     */
 
     }

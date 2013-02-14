@@ -99,7 +99,7 @@ extends OgsaResource<JdbcSchema>, BaseResource<JdbcSchema>
     public Schemas schemas();
 
     /**
-     * Access to our JDBC resource connection.
+     * Access to our JDBC connection.
      *
      */
     public JdbcConnection connection();

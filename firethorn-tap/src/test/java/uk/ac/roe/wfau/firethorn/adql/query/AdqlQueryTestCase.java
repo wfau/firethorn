@@ -123,7 +123,7 @@ extends TestBase
         log.debug("Mode   [{}]", query.mode());
         log.debug("Status [{}]", query.status());
         log.debug("ADQL   [{}]", query.adql());
-        log.debug("OGSA   [{}]", query.ogsa());
+        log.debug("OGSA   [{}]", query.osql());
         }
 
     private static final String IMPORTED_001 =
@@ -195,7 +195,7 @@ extends TestBase
         log.debug("Mode   [{}]", query.mode());
         log.debug("Status [{}]", query.status());
         log.debug("ADQL   [{}]", query.adql());
-        log.debug("OGSA   [{}]", query.ogsa());
+        log.debug("OGSA   [{}]", query.osql());
         }
 
     private static final String IMPORTED_002 =
@@ -298,7 +298,7 @@ extends TestBase
         log.debug("Mode   [{}]", query.mode());
         log.debug("Status [{}]", query.status());
         log.debug("ADQL   [{}]", query.adql());
-        log.debug("OGSA   [{}]", query.ogsa());
+        log.debug("OGSA   [{}]", query.osql());
         }
 
     @Test
@@ -393,7 +393,7 @@ extends TestBase
         log.debug("Mode   [{}]", query.mode());
         log.debug("Status [{}]", query.status());
         log.debug("ADQL   [{}]", query.adql());
-        log.debug("OGSA   [{}]", query.ogsa());
+        log.debug("OGSA   [{}]", query.osql());
         }
     }
 

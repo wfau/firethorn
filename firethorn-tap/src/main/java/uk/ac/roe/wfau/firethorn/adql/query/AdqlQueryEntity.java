@@ -27,8 +27,11 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.CascadeType;
+import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -48,10 +51,14 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
+import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaResource;
 
 /**
@@ -90,14 +97,17 @@ implements AdqlQuery, AdqlParserQuery
      * Hibernate table mapping.
      * 
      */
+    protected static final String DB_JOIN_NAME  = "AdqlQueryJoin";
     protected static final String DB_TABLE_NAME = "AdqlQueryEntity";
+
     /**
      * Hibernate column mapping.
      * 
      */
     protected static final String DB_MODE_COL     = "mode";
-    protected static final String DB_QUERY_COL    = "query";
-    protected static final Integer DB_QUERY_LEN   = new Integer(1024);
+    protected static final String DB_ADQL_COL     = "adql";
+    protected static final String DB_OSQL_COL     = "osql";
+    protected static final String DB_INPUT_COL    = "input";
     protected static final String DB_STATUS_COL   = "status";
     protected static final String DB_RESOURCE_COL = "resource";
 
@@ -211,7 +221,7 @@ implements AdqlQuery, AdqlParserQuery
             name
             );
         this.resource = resource;
-        this.query(
+        this.input(
             query
             );
         }
@@ -255,6 +265,11 @@ implements AdqlQuery, AdqlParserQuery
         {
         return this.status;
         }
+    @Override
+    public void status(final Status status)
+        {
+        this.status = status;
+        }
 
     @Column(
         name = DB_MODE_COL,
@@ -271,46 +286,50 @@ implements AdqlQuery, AdqlParserQuery
         {
         return this.mode;
         }
+    @Override
+    public void mode(final Mode mode)
+        {
+        this.mode = mode;
+        }
 
     /*
      *
-    org.hsqldb.HsqlException: data exception: string data, right truncation
-
-    length=DB_INPUT_LEN,
-    => query varchar(1000)
-
-    @org.hibernate.annotations.Type(
-        type="org.hibernate.type.TextType"
-        )        
-    => query longvarchar
-    
-    @Lob
-    => query clob
-
+     * org.hsqldb.HsqlException: data exception: string data, right truncation
+     *    
+     *    length=DB_INPUT_LEN,
+     *    => query varchar(1000)
+     *
+     *    @org.hibernate.annotations.Type(
+     *        type="org.hibernate.type.TextType"
+     *        )        
+     *    => query longvarchar
+     *    
+     *    @Lob
+     *    => query clob
      *
      */
     @Type(
         type="org.hibernate.type.TextType"
         )        
     @Column(
-        name = DB_QUERY_COL,
+        name = DB_INPUT_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    private String query;
+    private String input;
     @Override
-    public String query()
+    public String input()
         {
-        return this.query;
+        return this.input;
         }
     @Override
-    public void query(final String next)
+    public void input(final String next)
         {
-        final String prev = this.query ; 
-        this.query = next;
+        final String prev = this.input ; 
+        this.input = next;
         //
-        // Parse the query if it has changed.
+        // Process the query if it has changed.
         if (next != null)
             {
             if ((prev == null) || (prev.compareTo(next) > 0))
@@ -320,10 +339,51 @@ implements AdqlQuery, AdqlParserQuery
             }
        }
 
+    @Type(
+        type="org.hibernate.type.TextType"
+        )        
+    @Column(
+        name = DB_ADQL_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String adql;
+    @Override
+    public String adql()
+        {
+        return this.adql;
+        }
+    @Override
+    public void adql(final String adql)
+        {
+        this.adql = adql;
+        }
+
+    @Type(
+        type="org.hibernate.type.TextType"
+        )        
+    @Column(
+        name = DB_OSQL_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String osql;
+    @Override
+    public String osql()
+        {
+        return this.osql;
+        }
+    @Override
+    public void osql(final String ogsa)
+        {
+        this.osql = ogsa;
+        }
+    
     /**
      * Parse the query and update our properties.
      *
-    @Override
      */
     public void parse()
         {
@@ -342,13 +402,15 @@ implements AdqlQuery, AdqlParserQuery
             this.resource
             );
         //
-        // Process as a direct query to start with.
+        // Process it as a direct query to start with.
         direct.process(
             this
             );
+        
         //
         // If we have multiple resources, re-process as a distributed query.
-        // TODO - In theory, we could re-use the same parsers by using a ThreadLocal for the mode ...
+        // TODO - In theory, we could re-use the same parser by using a ThreadLocal for the mode ...
+        // .. should we reset ?
         if (this.resources.size() > 1)
             {
             log.debug("Query uses multiple resources");
@@ -365,7 +427,7 @@ implements AdqlQuery, AdqlParserQuery
     protected void reset()
         {
         this.adql = null ;
-        this.ogsa = null ;
+        this.osql = null ;
         this.mode = Mode.DIRECT ;
 
         this.columns.clear();
@@ -373,35 +435,57 @@ implements AdqlQuery, AdqlParserQuery
         this.resources.clear();
         }
 
-//
-// These are all transient for now,
-// will make them persistent later ...
-    
-    @Transient
-    private String adql;
-    @Override
-    public String adql()
-        {
-        return this.adql;
-        }
-
-    @Transient
-    private String ogsa;
-    @Override
-    public String ogsa()
-        {
-        return this.ogsa;
-        }
-
-    @Transient
+    @ManyToMany(
+        fetch   = FetchType.LAZY,
+        cascade = CascadeType.ALL,
+        targetEntity = AdqlColumnEntity.class
+        )
+    @JoinTable(
+        name=DB_JOIN_NAME + "AdqlColumn",
+        joinColumns = { 
+            @JoinColumn(
+                name = "adqlquery",
+                nullable = false,
+                updatable = false
+                )
+            }, 
+        inverseJoinColumns = {
+            @JoinColumn(
+                name = "adqlcolumn", 
+                nullable = false,
+                updatable = false
+                )
+            }
+        )
     private final Set<AdqlColumn> columns = new HashSet<AdqlColumn>();
     @Override
     public Iterable<AdqlColumn> columns()
         {
         return this.columns;
         }
-
-    @Transient
+    
+    @ManyToMany(
+        fetch   = FetchType.LAZY,
+        cascade = CascadeType.ALL,
+        targetEntity = AdqlTableEntity.class
+        )
+    @JoinTable(
+        name=DB_JOIN_NAME + "AdqlTable",
+        joinColumns = { 
+            @JoinColumn(
+                name = "adqlquery",
+                nullable = false,
+                updatable = false
+                )
+            }, 
+        inverseJoinColumns = {
+            @JoinColumn(
+                name = "adqltable", 
+                nullable = false,
+                updatable = false
+                )
+            }
+        )
     private final Set<AdqlTable> tables = new HashSet<AdqlTable>();
     @Override
     public Iterable<AdqlTable> tables()
@@ -409,7 +493,28 @@ implements AdqlQuery, AdqlParserQuery
         return this.tables;
         }
 
-    @Transient
+    @ManyToMany(
+        fetch   = FetchType.LAZY,
+        cascade = CascadeType.ALL,
+        targetEntity = BaseResourceEntity.class
+        )
+    @JoinTable(
+        name=DB_JOIN_NAME + "BaseResource",
+        joinColumns = { 
+            @JoinColumn(
+                name = "adqlquery",
+                nullable = false,
+                updatable = false
+                )
+            }, 
+        inverseJoinColumns = {
+            @JoinColumn(
+                name = "baseresource", 
+                nullable = false,
+                updatable = false
+                )
+            }
+        )
     private final Set<OgsaResource<?>> resources = new HashSet<OgsaResource<?>>();
     @Override
     public Iterable<OgsaResource<?>> resources()
@@ -425,33 +530,9 @@ implements AdqlQuery, AdqlParserQuery
             );
         }
 
-
 //    
 // AdqlParserQuery methods ..
 //
-    @Override
-    public void mode(final Mode mode)
-        {
-        this.mode = mode;
-        }
-
-    @Override
-    public void status(final Status status)
-        {
-        this.status = status;
-        }
-
-    @Override
-    public void adql(final String adql)
-        {
-        this.adql = adql;
-        }
-
-    @Override
-    public void ogsa(final String ogsa)
-        {
-        this.ogsa = ogsa;
-        }
 
     @Override
     public void add(final AdqlColumn column)
@@ -477,4 +558,7 @@ implements AdqlQuery, AdqlParserQuery
             table.ogsa().resource()
             );
         }
+
+    
+    
     }

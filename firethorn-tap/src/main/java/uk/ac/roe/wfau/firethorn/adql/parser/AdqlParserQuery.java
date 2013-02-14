@@ -32,7 +32,7 @@ public interface AdqlParserQuery
      * The initial AQDL input.
      *
      */
-    public String query();
+    public String input();
 
     /**
      * The query mode.
@@ -68,7 +68,7 @@ public interface AdqlParserQuery
      * Set the processed SQL query we pass to OGSA-DAI.
      *
      */
-    public void ogsa(final String ogsa);
+    public void osql(final String ogsa);
 
     /**
      * Add an AdqlColumn.
