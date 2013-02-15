@@ -52,7 +52,7 @@ extends AbstractEntityController<AdqlQuery>
     @Override
     public Path path()
         {
-        return new PathImpl(
+        return path(
             AdqlQueryLinkFactory.QUERY_PATH
             );
         }

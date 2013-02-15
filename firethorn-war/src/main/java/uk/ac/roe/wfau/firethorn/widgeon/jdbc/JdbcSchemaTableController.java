@@ -47,7 +47,7 @@ extends AbstractController
     @Override
     public Path path()
         {
-        return new PathImpl(
+        return path(
             JdbcSchemaLinkFactory.SCHEMA_TABLE_PATH
             );
         }

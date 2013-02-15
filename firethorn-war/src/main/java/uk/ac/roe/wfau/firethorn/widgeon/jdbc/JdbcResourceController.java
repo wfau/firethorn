@@ -51,7 +51,7 @@ public class JdbcResourceController
     @Override
     public Path path()
         {
-        return new PathImpl(
+        return path(
             JdbcResourceLinkFactory.RESOURCE_PATH
             );
         }

@@ -48,7 +48,7 @@ public class AdqlTableController
     @Override
     public Path path()
         {
-        return new PathImpl(
+        return path(
             AdqlTableLinkFactory.TABLE_PATH
             );
         }

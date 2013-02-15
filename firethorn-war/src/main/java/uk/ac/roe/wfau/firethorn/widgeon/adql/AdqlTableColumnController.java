@@ -46,7 +46,7 @@ extends AbstractController
     @Override
     public Path path()
         {
-        return new PathImpl(
+        return path(
             AdqlTableLinkFactory.TABLE_COLUMN_PATH
             );
         }

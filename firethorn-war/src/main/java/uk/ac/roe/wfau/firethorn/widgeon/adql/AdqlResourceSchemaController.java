@@ -51,7 +51,7 @@ extends AbstractController
     @Override
     public Path path()
         {
-        return new PathImpl(
+        return path(
             AdqlResourceLinkFactory.RESOURCE_SCHEMA_PATH
             );
         }

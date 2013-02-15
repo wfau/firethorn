@@ -49,7 +49,7 @@ public class AdqlResourceController
     @Override
     public Path path()
         {
-        return new PathImpl(
+        return path(
             AdqlResourceLinkFactory.RESOURCE_PATH
             );
         }

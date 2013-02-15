@@ -49,7 +49,7 @@ public class JdbcColumnController
     @Override
     public Path path()
         {
-        return new PathImpl(
+        return path(
             JdbcColumnLinkFactory.COLUMN_PATH
             );
         }

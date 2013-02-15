@@ -36,17 +36,25 @@ implements Path
 
     private final String base ;
 
-    public PathImpl(final StringBuilder builder)
+    /**
+     * Protected constructor.
+     * @param builder
+     *
+     */
+    protected PathImpl(final StringBuilder builder)
         {
         this(
             builder.toString()
             );
         }
 
+    /**
+     * Protected constructor.
+     * @param string
+     *
+     */
     public PathImpl(final String string)
         {
-        log.debug("PathImpl()");
-        log.debug(" base [{}]", string);
         this.base = string;
         }
 

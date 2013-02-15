@@ -49,7 +49,7 @@ extends AbstractController
     @Override
     public Path path()
         {
-        return new PathImpl(
+        return path(
             AdqlSchemaLinkFactory.SCHEMA_TABLE_PATH
             );
         }

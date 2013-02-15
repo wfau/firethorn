@@ -45,7 +45,7 @@ extends AbstractController
     @Override
     public Path path()
         {
-        return new PathImpl(
+        return path(
             AdqlResourceLinkFactory.SERVICE_PATH
             );
         }

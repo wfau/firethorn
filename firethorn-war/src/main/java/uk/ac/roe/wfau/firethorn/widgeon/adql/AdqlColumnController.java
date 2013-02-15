@@ -49,7 +49,7 @@ extends AbstractEntityController<AdqlColumn>
     @Override
     public Path path()
         {
-        return new PathImpl(
+        return path(
             AdqlColumnLinkFactory.COLUMN_PATH
             );
         }

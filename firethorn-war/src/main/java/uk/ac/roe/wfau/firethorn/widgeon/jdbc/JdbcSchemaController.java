@@ -48,7 +48,7 @@ public class JdbcSchemaController
     @Override
     public Path path()
         {
-        return new PathImpl(
+        return path(
             JdbcSchemaLinkFactory.SCHEMA_PATH
             );
         }
