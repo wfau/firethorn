@@ -32,7 +32,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
  * Spring MVC controller for <code>JdbcSchema</code> tables.
@@ -47,7 +46,7 @@ extends AbstractController
     @Override
     public Path path()
         {
-        return new PathImpl(
+        return path(
             JdbcSchemaLinkFactory.SCHEMA_TABLE_PATH
             );
         }

@@ -30,7 +30,6 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
  * Spring MVC controller for <code>JdbcResource</code>.
@@ -48,7 +47,7 @@ extends AbstractController
     @Override
     public Path path()
         {
-        return new PathImpl(
+        return path(
             JdbcResourceLinkFactory.SERVICE_PATH
             );
         }
