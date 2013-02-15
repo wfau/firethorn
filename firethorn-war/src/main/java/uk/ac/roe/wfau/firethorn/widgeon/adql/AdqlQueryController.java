@@ -29,7 +29,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+
+import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -146,9 +149,9 @@ extends AbstractEntityController<AdqlQuery>
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @RequestParam(value=UPDATE_QUERY, required=false)
-        final String query,
+        final String input,
         @RequestParam(value=UPDATE_STATUS, required=false)
-        final AdqlQuery.Status status,
+        final Status status,
         @ModelAttribute(QUERY_ENTITY)
         final AdqlQuery entity
         ){
@@ -163,23 +166,23 @@ extends AbstractEntityController<AdqlQuery>
                 }
             }
 
-        if (query != null)
+        if (input != null)
             {
-            if (query.length() > 0)
+            if (input.length() > 0)
                 {
-                entity.query(
-                    query
+                entity.input(
+                    input
                     );
                 }
             }
-
+/*
         if (status != null)
             {
             entity.status(
                 status
                 );
             }
-
+ */
         return bean(
             entity
             );

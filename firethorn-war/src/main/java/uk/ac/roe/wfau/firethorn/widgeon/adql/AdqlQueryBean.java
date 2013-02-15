@@ -20,9 +20,9 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Status;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -86,7 +86,7 @@ implements EntityBean<AdqlQuery>
 
     public String getInput()
         {
-        return entity().query();
+        return entity().input();
         }
 
     public Mode getMode()
@@ -104,8 +104,8 @@ implements EntityBean<AdqlQuery>
         return entity().adql();
         }
 
-    public String getOgsa()
+    public String getOsql()
         {
-        return entity().ogsa();
+        return entity().osql();
         }
     }
