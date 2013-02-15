@@ -28,7 +28,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Status;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuerySyntax;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -128,8 +128,8 @@ implements AdqlParser
                 subject.input()
                 );
             //
-            // Update the query mode.
-            subject.mode(
+            // Reset the query state.
+            subject.reset(
                 this.mode
                 );
             //
@@ -154,15 +154,26 @@ implements AdqlParser
                     object
                     )
                 );
+            //
+            // If we got this far, then the query is valid.
+            subject.syntax(
+                AdqlQuerySyntax.Status.VALID
+                );
             }
         catch (final ParseException ouch)
             {
-            subject.status(Status.ERROR);
+            subject.syntax(
+                AdqlQuerySyntax.Status.PARSE_ERROR,
+                ouch.getMessage()
+                );
             log.warn("Error parsing query [{}]", ouch.getMessage());
             }
         catch (final TranslationException ouch)
             {
-            subject.status(Status.ERROR);
+            subject.syntax(
+                AdqlQuerySyntax.Status.TRANS_ERROR,
+                ouch.getMessage()
+                );
             log.warn("Error translating query [{}]", ouch.getMessage());
             }
         }

@@ -18,45 +18,28 @@
 package uk.ac.roe.wfau.firethorn.adql.parser;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuerySyntax;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 
 /**
- *
+ * Internal interface used by the AdqlParser during processing. 
  *
  */
 public interface AdqlParserQuery
     {
 
     /**
-     * The initial AQDL input.
+     * Get the input text.
      *
      */
     public String input();
 
     /**
-     * The query mode.
+     * Reset the query state.
      *
      */
-    public AdqlQuery.Mode mode();
-
-    /**
-     * Set the query mode.
-     *
-     */
-    public void mode(final AdqlQuery.Mode mode);
-
-    /**
-     * The query status.
-     *
-     */
-    public AdqlQuery.Status status();
-
-    /**
-     * Set the query status.
-     *
-     */
-    public void status(final AdqlQuery.Status status);
+    public void reset(AdqlQuery.Mode mode);
 
     /**
      * Set the processed ADQL query.
@@ -65,7 +48,7 @@ public interface AdqlParserQuery
     public void adql(final String adql);
 
     /**
-     * Set the processed SQL query we pass to OGSA-DAI.
+     * Set the processed SQL query.
      *
      */
     public void osql(final String ogsa);
@@ -81,5 +64,17 @@ public interface AdqlParserQuery
      *
      */
     public void add(final AdqlTable table);
+
+    /**
+     * Set the ADQL syntax status.
+     * 
+     */
+    public void syntax(AdqlQuerySyntax.Status status);
+
+    /**
+     * Set the ADQL syntax status.
+     * 
+     */
+    public void syntax(AdqlQuerySyntax.Status status, String message);
 
     }

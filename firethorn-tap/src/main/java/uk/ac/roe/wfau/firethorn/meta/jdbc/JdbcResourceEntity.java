@@ -363,9 +363,7 @@ public class JdbcResourceEntity
                 //
                 // If the table name is not null.
                 else {
-/*
                     log.debug("Processing table [{}][{}][{}]", new Object[]{tcname, tsname, ttname});
- */
                     if (table == null)
                         {
                         column = null ;
@@ -533,7 +531,7 @@ public class JdbcResourceEntity
         name = DB_OGSA_ID_COL,
         unique = false,
         nullable = true,
-        updatable = false
+        updatable = true
         )
 	private String ogsaid;
 	@Override

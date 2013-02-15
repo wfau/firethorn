@@ -23,6 +23,7 @@ import java.util.Set;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -59,6 +60,8 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaResource;
 
 /**
@@ -128,26 +131,26 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @CreateEntityMethod
-        public AdqlQuery create(final AdqlResource resource, final String query)
+        public AdqlQuery create(final AdqlResource resource, final String input)
             {
             return this.insert(
                 new AdqlQueryEntity(
                     resource,
                     this.names.name(),
-                    query
+                    input
                     )
                 );
             }
 
         @Override
         @CreateEntityMethod
-        public AdqlQuery create(final AdqlResource resource, final String name, final String query)
+        public AdqlQuery create(final AdqlResource resource, final String name, final String input)
             {
             return this.insert(
                 new AdqlQueryEntity(
                     resource,
                     name,
-                    query
+                    input
                     )
                 );
             }
@@ -210,44 +213,41 @@ implements AdqlQuery, AdqlParserQuery
             }
         }
 
+    /**
+     * Protected constructor, used by Hibernate.
+     *
+     */
     protected AdqlQueryEntity()
         {
         }
 
-    protected AdqlQueryEntity(final AdqlResource resource, final String name, final String query)
+    /**
+     * Protected constructor, used by factory.
+     *
+     */
+    protected AdqlQueryEntity(final AdqlResource resource, final String name, final String input)
     throws NameFormatException
         {
         super(
             name
             );
-        this.resource = resource;
+        this.workspace = resource;
         this.input(
-            query
+            input
             );
         }
 
-    @Index(
-        name=DB_TABLE_NAME + "IndexByResource"
-        )
-    @ManyToOne(
-        fetch = FetchType.EAGER,
-        targetEntity = AdqlResourceEntity.class
-        )
-    @JoinColumn(
-        name = DB_RESOURCE_COL,
-        unique = false,
-        nullable = false,
-        updatable = false
-        )
-    private AdqlResource resource;
     @Override
-    public AdqlResource resource()
+    public String link()
         {
-        return this.resource;
+        return factories().adql().queries().links().link(
+            this
+            );
         }
 
     /**
-     * The component status.
+     * The job status.
+     * @todo Move to a common base class.
      *
      */
     @Column(
@@ -265,12 +265,79 @@ implements AdqlQuery, AdqlParserQuery
         {
         return this.status;
         }
-    @Override
+//  @Override
     public void status(final Status status)
         {
         this.status = status;
         }
+    
+    @Index(
+        name=DB_TABLE_NAME + "IndexByResource"
+        )
+    @ManyToOne(
+        fetch = FetchType.EAGER,
+        targetEntity = AdqlResourceEntity.class
+        )
+    @JoinColumn(
+        name = DB_RESOURCE_COL,
+        unique = false,
+        nullable = false,
+        updatable = false
+        )
+    private AdqlResource workspace;
+    @Override
+    public AdqlResource resource()
+        {
+        return this.workspace;
+        }
 
+    /*
+    *
+    * org.hsqldb.HsqlException: data exception: string data, right truncation
+    *    
+    *    length=DB_INPUT_LEN,
+    *    => query varchar(1000)
+    *
+    *    @org.hibernate.annotations.Type(
+    *        type="org.hibernate.type.TextType"
+    *        )        
+    *    => query longvarchar
+    *    
+    *    @Lob
+    *    => query clob
+    *
+    */
+   @Type(
+       type="org.hibernate.type.TextType"
+       )        
+   @Column(
+       name = DB_INPUT_COL,
+       unique = false,
+       nullable = true,
+       updatable = true
+       )
+   private String input;
+   @Override
+   public String input()
+       {
+       return this.input;
+       }
+   @Override
+   public void input(final String next)
+       {
+       final String prev = this.input ; 
+       this.input = next;
+       //
+       // Process the query if it has changed.
+       if (next != null)
+           {
+           if ((prev == null) || (prev.compareTo(next) > 0))
+               {
+               parse();
+               }
+           }
+      }
+    
     @Column(
         name = DB_MODE_COL,
         unique = false,
@@ -286,58 +353,6 @@ implements AdqlQuery, AdqlParserQuery
         {
         return this.mode;
         }
-    @Override
-    public void mode(final Mode mode)
-        {
-        this.mode = mode;
-        }
-
-    /*
-     *
-     * org.hsqldb.HsqlException: data exception: string data, right truncation
-     *    
-     *    length=DB_INPUT_LEN,
-     *    => query varchar(1000)
-     *
-     *    @org.hibernate.annotations.Type(
-     *        type="org.hibernate.type.TextType"
-     *        )        
-     *    => query longvarchar
-     *    
-     *    @Lob
-     *    => query clob
-     *
-     */
-    @Type(
-        type="org.hibernate.type.TextType"
-        )        
-    @Column(
-        name = DB_INPUT_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String input;
-    @Override
-    public String input()
-        {
-        return this.input;
-        }
-    @Override
-    public void input(final String next)
-        {
-        final String prev = this.input ; 
-        this.input = next;
-        //
-        // Process the query if it has changed.
-        if (next != null)
-            {
-            if ((prev == null) || (prev.compareTo(next) > 0))
-                {
-                parse();
-                }
-            }
-       }
 
     @Type(
         type="org.hibernate.type.TextType"
@@ -380,60 +395,6 @@ implements AdqlQuery, AdqlParserQuery
         {
         this.osql = ogsa;
         }
-    
-    /**
-     * Parse the query and update our properties.
-     *
-     */
-    public void parse()
-        {
-        //
-        // Reset everything.
-        reset();
-        //
-        // Create the two query parsers.
-        // TODO -- This should be part of the workspace.
-        final AdqlParser direct = this.factories().adql().parsers().create(
-            Mode.DIRECT,
-            this.resource
-            );
-        final AdqlParser distrib = this.factories().adql().parsers().create(
-            Mode.DISTRIBUTED,
-            this.resource
-            );
-        //
-        // Process it as a direct query to start with.
-        direct.process(
-            this
-            );
-        //
-        // If we have multiple resources, re-process as a distributed query.
-        // TODO - In theory, we could re-use the same parser by using a ThreadLocal for the mode ...
-        // .. should we reset ?
-        if (this.connects.size() > 1)
-            {
-            log.debug("Query uses multiple resources");
-            distrib.process(
-                this
-                );
-            }
-        }
-
-    /**
-     * Reset our internal data.
-     *
-     */
-    protected void reset()
-        {
-        this.adql = null ;
-        this.osql = null ;
-        this.mode = Mode.DIRECT ;
-
-        this.columns.clear();
-        this.tables.clear();
-        this.resources.clear();
-        this.connects.clear();
-        }
 
     @ManyToMany(
         fetch   = FetchType.LAZY,
@@ -464,6 +425,89 @@ implements AdqlQuery, AdqlParserQuery
         return this.columns;
         }
 
+   
+    @Embedded
+    private AdqlQuerySyntax syntax;
+    @Override
+    public AdqlQuerySyntax syntax()
+        {
+        return this.syntax;
+        }
+    
+    /**
+     * Parse the query and update our properties.
+     *
+     */
+    public void parse()
+        {
+        //
+        // Create the two query parsers.
+        // TODO -- This should be part of the workspace.
+        final AdqlParser direct = this.factories().adql().parsers().create(
+            Mode.DIRECT,
+            this.workspace
+            );
+        final AdqlParser distrib = this.factories().adql().parsers().create(
+            Mode.DISTRIBUTED,
+            this.workspace
+            );
+        //
+        // Process as a direct query.
+        direct.process(
+            this
+            );
+        //
+        // If the query uses multiple resources, re-process as a distributed query.
+        // TODO - In theory, we could re-use the same parser by using a ThreadLocal for the mode ...
+        if (this.connects.size() > 1)
+            {
+            log.debug("Query uses multiple connects");
+            log.debug("----");
+            for (String connect : this.connects())
+                {
+                log.debug("Connect [{}]", connect);
+                }
+            log.debug("----");
+            //
+            // Process as a distributed query.
+            distrib.process(
+                this
+                );
+            }
+        }
+
+    @Override
+    public void reset(Mode mode)
+        {
+        this.adql = null ;
+        this.osql = null ;
+        this.mode = mode ;
+        this.syntax = new AdqlQuerySyntaxEntity(
+            AdqlQuerySyntax.Status.UNKNOWN
+            );
+        this.columns.clear();
+        this.tables.clear();
+        this.resources.clear();
+        this.connects.clear();
+        }
+
+    @Override
+    public void syntax(AdqlQuerySyntax.Status status)
+        {
+        this.syntax = new AdqlQuerySyntaxEntity(
+            status
+            );
+        }
+
+    @Override
+    public void syntax(AdqlQuerySyntax.Status status, String message)
+        {
+        this.syntax = new AdqlQuerySyntaxEntity(
+            status,
+            message
+            );
+        }
+
     @Transient
     private final Set<AdqlTable> tables = new HashSet<AdqlTable>();
     @Override
@@ -482,23 +526,12 @@ implements AdqlQuery, AdqlParserQuery
 
     @Transient
     private final Set<String> connects = new HashSet<String>();
+    @Override
     public Iterable<String> connects()
         {
         return this.connects ;
         }
     
-    @Override
-    public String link()
-        {
-        return factories().adql().queries().links().link(
-            this
-            );
-        }
-
-//    
-// AdqlParserQuery methods ..
-//
-
     @Override
     public void add(final AdqlColumn column)
         {

@@ -18,6 +18,8 @@
 package uk.ac.roe.wfau.firethorn.adql.query;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.job.Job;
+import uk.ac.roe.wfau.firethorn.job.Query;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -28,10 +30,10 @@ import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaResource;
  *
  */
 public interface AdqlQuery
-extends Entity
+extends Entity, Query
     {
     /**
-     * Nname factory interface.
+     * Name factory interface.
      *
      */
     public static interface NameFactory
@@ -96,56 +98,13 @@ extends Entity
 
         }
 
+
     /**
-     * Query status indicator.
+     * The ADQL syntax validation status.
      *
      */
-    public enum Status
-        {
-        /**
-         * The query is being edited.
-         *
-         */
-        EDITING(),
-
-        /**
-         * The query has an (ADQL) error.
-         *
-         */
-        ERROR(),
-
-        /**
-         * The query is waiting in the queue.
-         *
-         */
-        PENDING(),
-
-        /**
-         * The query is running.
-         *
-         */
-        RUNNING(),
-
-        /**
-         * The query completed.
-         *
-         */
-        COMPLETED(),
-
-        /**
-         * The query was cancelled.
-         *
-         */
-        CANCELLED(),
-
-        /**
-         * The query failed to execute.
-         *
-         */
-        FAILED();
-
-        }
-
+    public AdqlQuerySyntax syntax();
+    
     /**
      * OGSA-DAI query mode.
      *
@@ -159,7 +118,7 @@ extends Entity
         DIRECT(),
 
         /**
-         * Distributed query handled by the OGSA-DAI DQP.
+         * Distributed query handled DQP.
          *
          */
         DISTRIBUTED();
@@ -167,41 +126,17 @@ extends Entity
         }
 
     /**
-     * The ADQL workspace this query applies to.
-     *
-     */
-    public AdqlResource resource();
-
-    /**
-     * The query mode.
+     * The OGSA-DAI query mode.
      *
      */
     public Mode mode();
 
     /**
-     * The query status.
+     * The ADQL workspace this query applies to.
      *
      */
-    public Status status();
-
-    /**
-     * Set the query status.
-     *
-     */
-    public void status(Status status);
-
-    /**
-     * The original input query.
-     *
-     */
-    public String input();
-
-    /**
-     * Update the input query.
-     *
-     */
-    public void input(final String input);
-
+    public AdqlResource resource();
+    
     /**
      * The processed ADQL query.
      *
@@ -209,31 +144,31 @@ extends Entity
     public String adql();
 
     /**
-     * The processed SQL query we pass to OGSA-DAI.
+     * The processed SQL query.
      *
      */
     public String osql();
 
     /**
-     * The set of the AdqlColumns used by the query.
+     * A list of AdqlColumns used by the query.
      *
      */
     public Iterable<AdqlColumn> columns();
 
     /**
-     * The set of the AdqlTables used by the query.
+     * A list of AdqlTables used by the query.
      *
      */
     public Iterable<AdqlTable> tables();
 
     /**
-     * The set of the resources used by the query.
+     * A list of resources (databases) used by the query.
      *
      */
     public Iterable<OgsaResource<?>> resources();
 
     /**
-     * The set of the OGSA-DAI connection used by the query.
+     * A list of connections (resources) used by the query.
      *
      */
     public Iterable<String> connects();
