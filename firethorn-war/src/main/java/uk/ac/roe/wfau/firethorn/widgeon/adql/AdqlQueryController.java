@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
+package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,27 +29,31 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+
+import uk.ac.roe.wfau.firethorn.job.Job.Status;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
- * Spring MVC controller for <code>JdbcSchema</code>.
+ * Spring MVC controller for <code>AdqlQuery</code>.
  *
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcSchemaLinkFactory.SCHEMA_PATH)
-public class JdbcSchemaController
-    extends AbstractController
+@RequestMapping(AdqlQueryLinkFactory.QUERY_PATH)
+public class AdqlQueryController
+extends AbstractEntityController<AdqlQuery>
     {
 
     @Override
     public Path path()
         {
         return new PathImpl(
-            JdbcSchemaLinkFactory.SCHEMA_PATH
+            AdqlQueryLinkFactory.QUERY_PATH
             );
         }
 
@@ -57,7 +61,7 @@ public class JdbcSchemaController
      * Public constructor.
      *
      */
-    public JdbcSchemaController()
+    public AdqlQueryController()
         {
         super();
         }
@@ -66,23 +70,39 @@ public class JdbcSchemaController
      * MVC property for the target entity.
      *
      */
-    public static final String SCHEMA_ENTITY = "urn:jdbc.schema.entity" ;
+    public static final String QUERY_ENTITY = "urn:adql.query.entity" ;
 
     /**
      * MVC property for updating the name.
      *
      */
-    public static final String UPDATE_NAME = "jdbc.schema.update.name" ;
+    public static final String UPDATE_NAME = "adql.query.update.name" ;
 
     /**
-     * Wrap an entity as a bean.
+     * MVC property for updating the query.
      *
      */
-    public JdbcSchemaBean bean(
-        final JdbcSchema entity
-        ){
-        return new JdbcSchemaBean(
+    public static final String UPDATE_QUERY = "adql.query.update.query" ;
+
+    /**
+     * MVC property for updating the status.
+     *
+     */
+    public static final String UPDATE_STATUS = "adql.query.update.status" ;
+
+    @Override
+    public EntityBean<AdqlQuery> bean(final AdqlQuery entity)
+        {
+        return new AdqlQueryBean(
             entity
+            );
+        }
+
+    @Override
+    public Iterable<EntityBean<AdqlQuery>> bean(Iterable<AdqlQuery> iter)
+        {
+        return new AdqlQueryBean.Iter(
+            iter
             );
         }
 
@@ -91,14 +111,13 @@ public class JdbcSchemaController
      * @throws NotFoundException
      *
      */
-    @ModelAttribute(SCHEMA_ENTITY)
-    public JdbcSchema entity(
+    @ModelAttribute(QUERY_ENTITY)
+    public AdqlQuery entity(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException {
-        log.debug("schema() [{}]", ident);
-        return factories().jdbc().schemas().select(
-            factories().jdbc().schemas().idents().ident(
+        return factories().adql().queries().select(
+            factories().adql().queries().idents().ident(
                 ident
                 )
             );
@@ -110,11 +129,10 @@ public class JdbcSchemaController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcSchemaBean jsonSelect(
-        @ModelAttribute(SCHEMA_ENTITY)
-        final JdbcSchema entity
+    public EntityBean<AdqlQuery> jsonSelect(
+        @ModelAttribute(QUERY_ENTITY)
+        final AdqlQuery entity
         ){
-        log.debug("jsonSelect()");
         return bean(
             entity
             );
@@ -127,11 +145,15 @@ public class JdbcSchemaController
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public JdbcSchemaBean jsonUpdate(
+    public EntityBean<AdqlQuery> jsonUpdate(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
-        @ModelAttribute(SCHEMA_ENTITY)
-        final JdbcSchema entity
+        @RequestParam(value=UPDATE_QUERY, required=false)
+        final String input,
+        @RequestParam(value=UPDATE_STATUS, required=false)
+        final Status status,
+        @ModelAttribute(QUERY_ENTITY)
+        final AdqlQuery entity
         ){
 
         if (name != null)
@@ -144,6 +166,23 @@ public class JdbcSchemaController
                 }
             }
 
+        if (input != null)
+            {
+            if (input.length() > 0)
+                {
+                entity.input(
+                    input
+                    );
+                }
+            }
+/*
+        if (status != null)
+            {
+            entity.status(
+                status
+                );
+            }
+ */
         return bean(
             entity
             );

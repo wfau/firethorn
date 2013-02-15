@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
+package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,19 +29,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
- * Spring MVC controller for <code>JdbcSchema</code>.
+ * Spring MVC controller for <code>AdqlResource</code>.
  *
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcSchemaLinkFactory.SCHEMA_PATH)
-public class JdbcSchemaController
+@RequestMapping(AdqlResourceLinkFactory.RESOURCE_PATH)
+public class AdqlResourceController
     extends AbstractController
     {
 
@@ -49,7 +50,7 @@ public class JdbcSchemaController
     public Path path()
         {
         return new PathImpl(
-            JdbcSchemaLinkFactory.SCHEMA_PATH
+            AdqlResourceLinkFactory.RESOURCE_PATH
             );
         }
 
@@ -57,7 +58,7 @@ public class JdbcSchemaController
      * Public constructor.
      *
      */
-    public JdbcSchemaController()
+    public AdqlResourceController()
         {
         super();
         }
@@ -66,42 +67,50 @@ public class JdbcSchemaController
      * MVC property for the target entity.
      *
      */
-    public static final String SCHEMA_ENTITY = "urn:jdbc.schema.entity" ;
+    public static final String RESOURCE_ENTITY = "urn:adql.resource.entity" ;
 
     /**
      * MVC property for updating the name.
      *
      */
-    public static final String UPDATE_NAME = "jdbc.schema.update.name" ;
+    public static final String UPDATE_NAME = "adql.resource.update.name" ;
+
+    /**
+     * MVC property for updating the status.
+     *
+     */
+    public static final String UPDATE_STATUS = "adql.resource.update.status" ;
 
     /**
      * Wrap an entity as a bean.
      *
      */
-    public JdbcSchemaBean bean(
-        final JdbcSchema entity
+    public AdqlResourceBean bean(
+        final AdqlResource entity
         ){
-        return new JdbcSchemaBean(
+        log.debug("bean() [{}]", entity);
+        return new AdqlResourceBean(
             entity
             );
         }
 
     /**
      * Get the target entity based on the ident in the path.
-     * @throws NotFoundException
      *
      */
-    @ModelAttribute(SCHEMA_ENTITY)
-    public JdbcSchema entity(
+    @ModelAttribute(RESOURCE_ENTITY)
+    public AdqlResource entity(
         @PathVariable("ident")
         final String ident
-        ) throws NotFoundException {
-        log.debug("schema() [{}]", ident);
-        return factories().jdbc().schemas().select(
-            factories().jdbc().schemas().idents().ident(
+        ) throws NotFoundException  {
+        log.debug("entity(}");
+        log.debug("ident [{}]", ident);
+        final AdqlResource entity = factories().adql().resources().select(
+            factories().adql().resources().idents().ident(
                 ident
                 )
             );
+        return entity ;
         }
 
     /**
@@ -110,11 +119,10 @@ public class JdbcSchemaController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcSchemaBean jsonSelect(
-        @ModelAttribute(SCHEMA_ENTITY)
-        final JdbcSchema entity
+    public AdqlResourceBean jsonSelect(
+        @ModelAttribute(RESOURCE_ENTITY)
+        final AdqlResource entity
         ){
-        log.debug("jsonSelect()");
         return bean(
             entity
             );
@@ -127,11 +135,13 @@ public class JdbcSchemaController
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public JdbcSchemaBean jsonUpdate(
-        @RequestParam(value=UPDATE_NAME, required=false)
-        final String name,
-        @ModelAttribute(SCHEMA_ENTITY)
-        final JdbcSchema entity
+    public AdqlResourceBean jsonUpdate(
+        @RequestParam(value=UPDATE_NAME, required=false) final
+        String name,
+        @RequestParam(value=UPDATE_STATUS, required=false) final
+        String status,
+        @ModelAttribute(RESOURCE_ENTITY)
+        final AdqlResource entity
         ){
 
         if (name != null)
@@ -140,6 +150,18 @@ public class JdbcSchemaController
                 {
                 entity.name(
                     name
+                    );
+                }
+            }
+
+        if (status != null)
+            {
+            if (status.length() > 0)
+                {
+                entity.status(
+                    BaseComponent.Status.valueOf(
+                        status
+                        )
                     );
                 }
             }

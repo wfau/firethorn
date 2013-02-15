@@ -47,7 +47,7 @@
     <name>OGSA-DAI activity (OGSA-DAI server)</name>
     <description>
         <![CDATA[
-        Server side components for the OGSA-DAI activities that get included in the OGSA-DAI server.
+        Server side components for the OGSA-DAI activities that get included in the modified OGSA-DAI server.
         ]]>
     </description>
     

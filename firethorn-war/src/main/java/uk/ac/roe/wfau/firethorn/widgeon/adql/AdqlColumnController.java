@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
+package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,27 +29,28 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
- * Spring MVC controller for <code>JdbcSchema</code>.
+ * Spring MVC controller for <code>AdqlColumn</code>.
  *
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcSchemaLinkFactory.SCHEMA_PATH)
-public class JdbcSchemaController
-    extends AbstractController
+@RequestMapping(AdqlColumnLinkFactory.COLUMN_PATH)
+public class AdqlColumnController
+extends AbstractEntityController<AdqlColumn>
     {
 
     @Override
     public Path path()
         {
         return new PathImpl(
-            JdbcSchemaLinkFactory.SCHEMA_PATH
+            AdqlColumnLinkFactory.COLUMN_PATH
             );
         }
 
@@ -57,7 +58,7 @@ public class JdbcSchemaController
      * Public constructor.
      *
      */
-    public JdbcSchemaController()
+    public AdqlColumnController()
         {
         super();
         }
@@ -66,23 +67,27 @@ public class JdbcSchemaController
      * MVC property for the target entity.
      *
      */
-    public static final String SCHEMA_ENTITY = "urn:jdbc.schema.entity" ;
+    public static final String COLUMN_ENTITY = "urn:adql.column.entity" ;
 
     /**
      * MVC property for updating the name.
      *
      */
-    public static final String UPDATE_NAME = "jdbc.schema.update.name" ;
+    public static final String UPDATE_NAME = "adql.column.update.name" ;
 
-    /**
-     * Wrap an entity as a bean.
-     *
-     */
-    public JdbcSchemaBean bean(
-        final JdbcSchema entity
-        ){
-        return new JdbcSchemaBean(
+    @Override
+    public EntityBean<AdqlColumn> bean(AdqlColumn entity)
+        {
+        return new AdqlColumnBean(
             entity
+            );
+        }
+
+    @Override
+    public Iterable<EntityBean<AdqlColumn>> bean(Iterable<AdqlColumn> iter)
+        {
+        return new AdqlColumnBean.Iter(
+            iter
             );
         }
 
@@ -91,14 +96,14 @@ public class JdbcSchemaController
      * @throws NotFoundException
      *
      */
-    @ModelAttribute(SCHEMA_ENTITY)
-    public JdbcSchema entity(
+    @ModelAttribute(COLUMN_ENTITY)
+    public AdqlColumn entity(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException {
         log.debug("schema() [{}]", ident);
-        return factories().jdbc().schemas().select(
-            factories().jdbc().schemas().idents().ident(
+        return factories().adql().columns().select(
+            factories().adql().columns().idents().ident(
                 ident
                 )
             );
@@ -110,11 +115,10 @@ public class JdbcSchemaController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcSchemaBean jsonSelect(
-        @ModelAttribute(SCHEMA_ENTITY)
-        final JdbcSchema entity
+    public EntityBean<AdqlColumn> jsonSelect(
+        @ModelAttribute(COLUMN_ENTITY)
+        final AdqlColumn entity
         ){
-        log.debug("jsonSelect()");
         return bean(
             entity
             );
@@ -127,11 +131,11 @@ public class JdbcSchemaController
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public JdbcSchemaBean jsonUpdate(
+    public EntityBean<AdqlColumn> jsonUpdate(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
-        @ModelAttribute(SCHEMA_ENTITY)
-        final JdbcSchema entity
+        @ModelAttribute(COLUMN_ENTITY)
+        final AdqlColumn entity
         ){
 
         if (name != null)

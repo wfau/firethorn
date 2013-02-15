@@ -30,6 +30,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
  * Spring MVC controller for <code>JdbcTables</code>.
@@ -45,7 +46,7 @@ public class OgsaTableController
     @Override
     public Path path()
         {
-        return path(
+        return new PathImpl(
             OgsaTableLinkFactory.TABLE_PATH
             );
         }

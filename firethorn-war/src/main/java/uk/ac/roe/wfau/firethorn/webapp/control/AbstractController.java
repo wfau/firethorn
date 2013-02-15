@@ -27,7 +27,6 @@ import org.springframework.stereotype.Controller;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
  * Abstract base class for Spring MVC controllers.
@@ -110,17 +109,6 @@ public abstract class AbstractController
      */
     public abstract Path path();
 
-    /**
-     * Create a URI Path from a String.
-     *
-     */
-    protected Path path(String path)
-        {
-        return new PathImpl(
-            path
-            );
-        }
-    
     /**
      * URI builder for this Controller.
      *

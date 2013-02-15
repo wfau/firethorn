@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
+package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,19 +29,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
- * Spring MVC controller for <code>JdbcSchema</code>.
+ * Spring MVC controller for <code>AdqlSchema</code>.
  *
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcSchemaLinkFactory.SCHEMA_PATH)
-public class JdbcSchemaController
+@RequestMapping(AdqlSchemaLinkFactory.SCHEMA_PATH)
+public class AdqlSchemaController
     extends AbstractController
     {
 
@@ -49,7 +49,7 @@ public class JdbcSchemaController
     public Path path()
         {
         return new PathImpl(
-            JdbcSchemaLinkFactory.SCHEMA_PATH
+            AdqlSchemaLinkFactory.SCHEMA_PATH
             );
         }
 
@@ -57,7 +57,7 @@ public class JdbcSchemaController
      * Public constructor.
      *
      */
-    public JdbcSchemaController()
+    public AdqlSchemaController()
         {
         super();
         }
@@ -66,22 +66,22 @@ public class JdbcSchemaController
      * MVC property for the target entity.
      *
      */
-    public static final String SCHEMA_ENTITY = "urn:jdbc.schema.entity" ;
+    public static final String SCHEMA_ENTITY = "urn:adql.schema.entity" ;
 
     /**
      * MVC property for updating the name.
      *
      */
-    public static final String UPDATE_NAME = "jdbc.schema.update.name" ;
+    public static final String UPDATE_NAME = "adql.schema.update.name" ;
 
     /**
      * Wrap an entity as a bean.
      *
      */
-    public JdbcSchemaBean bean(
-        final JdbcSchema entity
+    public AdqlSchemaBean bean(
+        final AdqlSchema entity
         ){
-        return new JdbcSchemaBean(
+        return new AdqlSchemaBean(
             entity
             );
         }
@@ -92,13 +92,13 @@ public class JdbcSchemaController
      *
      */
     @ModelAttribute(SCHEMA_ENTITY)
-    public JdbcSchema entity(
+    public AdqlSchema entity(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException {
         log.debug("schema() [{}]", ident);
-        return factories().jdbc().schemas().select(
-            factories().jdbc().schemas().idents().ident(
+        return factories().adql().schemas().select(
+            factories().adql().schemas().idents().ident(
                 ident
                 )
             );
@@ -110,9 +110,9 @@ public class JdbcSchemaController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcSchemaBean jsonSelect(
+    public AdqlSchemaBean jsonSelect(
         @ModelAttribute(SCHEMA_ENTITY)
-        final JdbcSchema entity
+        final AdqlSchema entity
         ){
         log.debug("jsonSelect()");
         return bean(
@@ -127,11 +127,11 @@ public class JdbcSchemaController
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public JdbcSchemaBean jsonUpdate(
+    public AdqlSchemaBean jsonUpdate(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @ModelAttribute(SCHEMA_ENTITY)
-        final JdbcSchema entity
+        final AdqlSchema entity
         ){
 
         if (name != null)
@@ -148,4 +148,6 @@ public class JdbcSchemaController
             entity
             );
         }
+
+
     }

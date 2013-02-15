@@ -33,6 +33,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
  * Spring MVC controller for <code>JdbcColumn</code>.
@@ -48,7 +49,7 @@ public class JdbcColumnController
     @Override
     public Path path()
         {
-        return path(
+        return new PathImpl(
             JdbcColumnLinkFactory.COLUMN_PATH
             );
         }

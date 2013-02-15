@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
+package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,29 +26,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
- * Spring MVC controller for <code>JdbcSchema</code> tables.
+ * Spring MVC controller for <code>AdqlSchema</code> tables.
  *
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcSchemaLinkFactory.SCHEMA_TABLE_PATH)
-public class JdbcSchemaTableController
+@RequestMapping(AdqlTableLinkFactory.TABLE_COLUMN_PATH)
+public class AdqlTableColumnController
 extends AbstractController
     {
     @Override
     public Path path()
         {
         return new PathImpl(
-            JdbcSchemaLinkFactory.SCHEMA_TABLE_PATH
+            AdqlTableLinkFactory.TABLE_COLUMN_PATH
             );
         }
 
@@ -56,7 +55,7 @@ extends AbstractController
      * Public constructor.
      *
      */
-    public JdbcSchemaTableController()
+    public AdqlTableColumnController()
         {
         super();
         }
@@ -77,55 +76,41 @@ extends AbstractController
      * MVC property for the Resource name.
      *
      */
-    public static final String SELECT_NAME = "jdbc.schema.table.select.name" ;
+    public static final String SELECT_NAME = "adql.table.column.select.name" ;
 
     /**
      * MVC property for the select results.
      *
      */
-    public static final String SELECT_RESULT = "jdbc.schema.table.select.result" ;
+    public static final String SELECT_RESULT = "adql.table.column.select.result" ;
 
     /**
      * MVC property for the search text.
      *
      */
-    public static final String SEARCH_TEXT = "jdbc.schema.table.search.text" ;
+    public static final String SEARCH_TEXT = "adql.table.column.search.text" ;
 
     /**
      * MVC property for the search results.
      *
      */
-    public static final String SEARCH_RESULT = "jdbc.schema.table.search.result" ;
+    public static final String SEARCH_RESULT = "adql.table.column.search.result" ;
 
     /**
      * Get the parent entity based on the request ident.
      * @throws NotFoundException
      *
      */
-    @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-    public JdbcSchema schema(
+    @ModelAttribute(AdqlTableController.TABLE_ENTITY)
+    public AdqlTable table(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException{
-        log.debug("schema() [{}]", ident);
-        return factories().jdbc().schemas().select(
-            factories().jdbc().schemas().idents().ident(
+        log.debug("table() [{}]", ident);
+        return factories().adql().tables().select(
+            factories().adql().tables().idents().ident(
                 ident
                 )
-            );
-        }
-
-    /**
-     * Select all.
-     *
-     */
-    public JdbcTableBean.Iter select(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema
-        ){
-        log.debug("select()");
-        return new JdbcTableBean.Iter(
-            schema.tables().select()
             );
         }
 
@@ -135,32 +120,23 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcTableBean.Iter jsonSelect(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema,
-        final ModelAndView model
+    public AdqlColumnBean.Iter jsonSelect(
+        @ModelAttribute(AdqlTableController.TABLE_ENTITY)
+        final AdqlTable table
         ){
         log.debug("jsonSelect()");
-        return select(
-            schema
-            );
-        }
-
-    /**
-     * Select by name.
-     *
-     */
-    public JdbcTableBean select(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema,
-        final String name
-        ){
-        log.debug("select(String) [{}]", name);
-        return new JdbcTableBean(
-            schema.tables().select(
-                name
-                )
-            );
+        try {
+            return new AdqlColumnBean.Iter(
+                table.columns().select()
+                );
+            }
+        catch (final Throwable ouch)
+            {
+            log.debug("Error executing JsonSelect()");
+            log.debug("  Class [{}]", ouch.getClass());
+            log.debug("  Error [{}]", ouch.getMessage());
+            return null ;
+            }
         }
 
     /**
@@ -169,33 +145,16 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public JdbcTableBean jsonSelect(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema,
+    public AdqlColumnBean jsonSelect(
+        @ModelAttribute(AdqlTableController.TABLE_ENTITY)
+        final AdqlTable table,
         @RequestParam(SELECT_NAME)
-        final String name,
-        final ModelAndView model
+        final String name
         ){
         log.debug("jsonSelect(String) [{}]", name);
-        return select(
-            schema,
-            name
-            );
-        }
-
-    /**
-     * Search by text.
-     *
-     */
-    public JdbcTableBean.Iter search(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema,
-        final String text
-        ){
-        log.debug("search(String) [{}]", text);
-        return new JdbcTableBean.Iter(
-            schema.tables().search(
-                text
+        return new AdqlColumnBean(
+            table.columns().select(
+                name
                 )
             );
         }
@@ -206,17 +165,17 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public JdbcTableBean.Iter jsonSearch(
-        @ModelAttribute(JdbcSchemaController.SCHEMA_ENTITY)
-        final JdbcSchema schema,
+    public AdqlColumnBean.Iter jsonSearch(
+        @ModelAttribute(AdqlTableController.TABLE_ENTITY)
+        final AdqlTable table,
         @RequestParam(SEARCH_TEXT)
-        final String text,
-        final ModelAndView model
+        final String text
         ){
         log.debug("jsonSearch(String) [{}]", text);
-        return search(
-            schema,
-            text
+        return new AdqlColumnBean.Iter(
+            table.columns().search(
+                text
+                )
             );
         }
     }
