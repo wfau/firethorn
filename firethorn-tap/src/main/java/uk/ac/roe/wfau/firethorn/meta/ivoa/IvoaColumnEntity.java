@@ -176,7 +176,12 @@ public class IvoaColumnEntity
         }
 
     @Override
-    public IvoaColumn ogsa()
+    public IvoaColumn base()
+        {
+        return this ;
+        }
+    @Override
+    public IvoaColumn root()
         {
         return this ;
         }

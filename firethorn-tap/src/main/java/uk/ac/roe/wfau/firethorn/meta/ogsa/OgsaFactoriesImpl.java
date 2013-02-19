@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
+@Deprecated
 public class OgsaFactoriesImpl
     implements OgsaFactories
     {

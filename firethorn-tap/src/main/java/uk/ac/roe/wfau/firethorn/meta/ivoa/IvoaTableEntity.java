@@ -241,12 +241,12 @@ public class IvoaTableEntity
         }
 
     @Override
-    public BaseTable<IvoaTable, IvoaColumn> base()
+    public IvoaTable base()
         {
         return this;
         }
     @Override
-    public BaseTable<IvoaTable, IvoaColumn> root()
+    public IvoaTable root()
         {
         return this;
         }

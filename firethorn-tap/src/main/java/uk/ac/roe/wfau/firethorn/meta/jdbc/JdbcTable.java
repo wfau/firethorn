@@ -29,7 +29,7 @@ import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaTable;
  *
  */
 public interface JdbcTable
-extends OgsaTable<JdbcTable, JdbcColumn>, BaseTable<JdbcTable, JdbcColumn>
+extends BaseTable<JdbcTable, JdbcColumn>
     {
     /**
      * Alias factory interface.

@@ -24,6 +24,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
  *
  *
  */
+@Deprecated
 public interface OgsaResource<SchemaType extends BaseSchema<SchemaType,?>>
 extends BaseResource<SchemaType>
     {

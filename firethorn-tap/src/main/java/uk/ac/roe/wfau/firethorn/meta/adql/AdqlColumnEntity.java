@@ -293,9 +293,9 @@ public class AdqlColumnEntity
         return this.base ;
         }
     @Override
-    public OgsaColumn<?> ogsa()
+    public BaseColumn<?> root()
         {
-        return base().ogsa();
+        return base().root();
         }
 
     @Override

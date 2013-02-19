@@ -26,7 +26,7 @@ import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaColumn;
  *
  */
 public interface JdbcColumn
-extends BaseColumn<JdbcColumn>, OgsaColumn<JdbcColumn>
+extends BaseColumn<JdbcColumn>
     {
     /**
      * Identifier factory interface.

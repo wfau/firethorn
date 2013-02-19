@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
  *
  *
  */
+@Deprecated
 @Component
 public class OgsaTableFactoriesImpl
     implements OgsaTableFactories

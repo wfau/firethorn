@@ -36,6 +36,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaColumn;
 
@@ -207,7 +208,12 @@ public class JdbcColumnEntity
         }
 
     @Override
-    public OgsaColumn<?> ogsa()
+    public JdbcColumn base()
+        {
+        return this ;
+        }
+    @Override
+    public JdbcColumn root()
         {
         return this ;
         }

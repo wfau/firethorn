@@ -64,9 +64,10 @@ extends BaseComponent
 
         }
 
-    public OgsaColumn<?> ogsa();
+    public BaseColumn<?>   base();
+    public BaseColumn<?>   root();
 
-    public BaseTable<?,?> table();
+    public BaseTable<?,?>  table();
     public BaseSchema<?,?> schema();
     public BaseResource<?> resource();
 

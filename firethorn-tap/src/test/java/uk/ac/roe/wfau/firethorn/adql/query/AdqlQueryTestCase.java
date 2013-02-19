@@ -136,20 +136,16 @@ extends TestBase
             log.debug("Table [{}]", table.fullname());
             }
         log.debug("Resources -- ");
-        for (final BaseResource<?> resource : query.resources())
+        for (final BaseResource<?> target : query.targets())
             {
-            log.debug("Resource [{}]", resource.fullname());
-            }
-        log.debug("Connects -- ");
-        for (final String connect : query.connects())
-            {
-            log.debug("Connect [{}]", connect);
+            log.debug("Resource [{}]", target.fullname());
             }
         log.debug("Query -- ");
         log.debug("Mode   [{}]", query.mode());
         log.debug("Status [{}]", query.status());
         log.debug("ADQL   [{}]", query.adql());
         log.debug("OSQL   [{}]", query.osql());
+        log.debug("Target [{}]", query.target().ident());
         }
 
     /**

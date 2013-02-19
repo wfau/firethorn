@@ -21,6 +21,7 @@ package uk.ac.roe.wfau.firethorn.meta.ogsa;
  * Our JDBC component factories
  *
  */
+@Deprecated
 public interface OgsaFactories
     {
     /**

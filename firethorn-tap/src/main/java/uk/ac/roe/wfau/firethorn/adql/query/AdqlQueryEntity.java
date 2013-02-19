@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.adql.query;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.persistence.Access;
@@ -232,7 +233,7 @@ implements AdqlQuery, AdqlParserQuery
         super(
             name
             );
-        this.workspace = resource;
+        this.resource = resource;
         this.input(
             input
             );
@@ -266,7 +267,6 @@ implements AdqlQuery, AdqlParserQuery
         {
         return this.status;
         }
-//  @Override
     public void status(final Status status)
         {
         this.status = status;
@@ -285,13 +285,13 @@ implements AdqlQuery, AdqlParserQuery
         nullable = false,
         updatable = false
         )
-    private AdqlResource workspace;
+    private AdqlResource resource;
     @Override
     public AdqlResource resource()
         {
-        return this.workspace;
+        return this.resource;
         }
-
+    
     /*
     *
     * org.hsqldb.HsqlException: data exception: string data, right truncation
@@ -338,8 +338,12 @@ implements AdqlQuery, AdqlParserQuery
                }
            }
       }
-    
-    @Column(
+
+   /**
+    * The query mode (DIRECT|DISTRIBUTED).
+    *  
+    */
+   @Column(
         name = DB_MODE_COL,
         unique = false,
         nullable = false,
@@ -355,6 +359,10 @@ implements AdqlQuery, AdqlParserQuery
         return this.mode;
         }
 
+    /**
+     * The processed ADQL query.
+     * 
+     */
     @Type(
         type="org.hibernate.type.TextType"
         )        
@@ -376,6 +384,10 @@ implements AdqlQuery, AdqlParserQuery
         this.adql = adql;
         }
 
+    /**
+     * The processed SQL query.
+     * 
+     */
     @Type(
         type="org.hibernate.type.TextType"
         )        
@@ -397,6 +409,37 @@ implements AdqlQuery, AdqlParserQuery
         this.osql = ogsa;
         }
 
+    /**
+     * The AQDL processing status.
+     *     
+     */
+    @Embedded
+    private AdqlQuerySyntax syntax;
+    @Override
+    public AdqlQuerySyntax syntax()
+        {
+        return this.syntax;
+        }
+    @Override
+    public void syntax(AdqlQuerySyntax.Status status)
+        {
+        this.syntax = new AdqlQuerySyntaxEntity(
+            status
+            );
+        }
+    @Override
+    public void syntax(AdqlQuerySyntax.Status status, String message)
+        {
+        this.syntax = new AdqlQuerySyntaxEntity(
+            status,
+            message
+            );
+        }
+    
+    /**
+     * The set of AdqlColumns used by the query.
+     * 
+     */
     @ManyToMany(
         fetch   = FetchType.LAZY,
         cascade = CascadeType.ALL,
@@ -426,13 +469,56 @@ implements AdqlQuery, AdqlParserQuery
         return this.columns;
         }
 
-   
-    @Embedded
-    private AdqlQuerySyntax syntax;
+    /**
+     * The set of BaseResources used by the query.
+     * 
+     */
+    @ManyToMany(
+        fetch   = FetchType.LAZY,
+        cascade = CascadeType.ALL,
+        targetEntity = BaseResourceEntity.class
+        )
+    @JoinTable(
+        name=DB_JOIN_NAME + "BaseResource",
+        joinColumns = { 
+            @JoinColumn(
+                name = "adqlquery",
+                nullable = false,
+                updatable = false
+                )
+            }, 
+        inverseJoinColumns = {
+            @JoinColumn(
+                name = "baseresource", 
+                nullable = false,
+                updatable = false
+                )
+            }
+        )
+    private final Set<BaseResource<?>> targets = new HashSet<BaseResource<?>>();
     @Override
-    public AdqlQuerySyntax syntax()
+    public Iterable<BaseResource<?>> targets()
         {
-        return this.syntax;
+        return this.targets;
+        }
+
+    @Override
+    public BaseResource<?> target()
+        {
+        if (this.mode == Mode.DIRECT)
+            {
+            Iterator<BaseResource<?>> iter = this.targets.iterator();
+            if (iter.hasNext())
+                {
+                return iter.next();
+                }
+            else {
+                return null ;
+                }
+            }
+        else {
+            return this.resource;
+            }
         }
     
     /**
@@ -443,14 +529,15 @@ implements AdqlQuery, AdqlParserQuery
         {
         //
         // Create the two query parsers.
-        // TODO -- This should be part of the workspace.
+        // TODO - The parsers should be part of the workspace.
+        // TODO - In theory, we could re-use the same parser by using a ThreadLocal for the mode ...
         final AdqlParser direct = this.factories().adql().parsers().create(
             Mode.DIRECT,
-            this.workspace
+            this.resource
             );
         final AdqlParser distrib = this.factories().adql().parsers().create(
             Mode.DISTRIBUTED,
-            this.workspace
+            this.resource
             );
         //
         // Process as a direct query.
@@ -459,14 +546,13 @@ implements AdqlQuery, AdqlParserQuery
             );
         //
         // If the query uses multiple resources, re-process as a distributed query.
-        // TODO - In theory, we could re-use the same parser by using a ThreadLocal for the mode ...
-        if (this.connects.size() > 1)
+        if (this.targets.size() > 1)
             {
-            log.debug("Query uses multiple connects");
+            log.debug("Query uses multiple resources");
             log.debug("----");
-            for (String connect : this.connects())
+            for (BaseResource<?> target : this.targets())
                 {
-                log.debug("Connect [{}]", connect);
+                log.debug("Resource [{}]", target);
                 }
             log.debug("----");
             //
@@ -488,25 +574,7 @@ implements AdqlQuery, AdqlParserQuery
             );
         this.columns.clear();
         this.tables.clear();
-        this.resources.clear();
-        this.connects.clear();
-        }
-
-    @Override
-    public void syntax(AdqlQuerySyntax.Status status)
-        {
-        this.syntax = new AdqlQuerySyntaxEntity(
-            status
-            );
-        }
-
-    @Override
-    public void syntax(AdqlQuerySyntax.Status status, String message)
-        {
-        this.syntax = new AdqlQuerySyntaxEntity(
-            status,
-            message
-            );
+        this.targets.clear();
         }
 
     @Transient
@@ -517,22 +585,6 @@ implements AdqlQuery, AdqlParserQuery
         return this.tables;
         }
 
-    @Transient
-    private final Set<BaseResource<?>> resources = new HashSet<BaseResource<?>>();
-    @Override
-    public Iterable<BaseResource<?>> resources()
-        {
-        return this.resources;
-        }
-
-    @Transient
-    private final Set<String> connects = new HashSet<String>();
-    @Override
-    public Iterable<String> connects()
-        {
-        return this.connects ;
-        }
-    
     @Override
     public void add(final AdqlColumn column)
         {
@@ -557,11 +609,8 @@ implements AdqlQuery, AdqlParserQuery
 
     public void add(final BaseResource<?> resource)
         {
-        this.resources.add(
+        this.targets.add(
             resource
-            );
-        this.connects.add(
-            resource.ogsaid()
             );
         }
     }

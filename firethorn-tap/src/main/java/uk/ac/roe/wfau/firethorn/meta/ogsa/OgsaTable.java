@@ -26,6 +26,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
  *
  *
  */
+@Deprecated
 public interface OgsaTable<TableType extends BaseTable<TableType,  ColumnType>, ColumnType extends BaseColumn<ColumnType>>
 extends BaseTable<TableType, ColumnType>
     {

@@ -27,6 +27,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
  *
  *
  */
+@Deprecated
 @Repository
 public class OgsaTableResolver
 implements OgsaTable.AliasResolver

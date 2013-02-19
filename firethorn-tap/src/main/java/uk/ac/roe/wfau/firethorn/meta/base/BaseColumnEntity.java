@@ -196,6 +196,9 @@ extends BaseComponentEntity
         }
 
     @Override
-    public abstract OgsaColumn<?> ogsa();
+    public abstract BaseColumn<?> base();
+
+    @Override
+    public abstract BaseColumn<?> root();
 
     }

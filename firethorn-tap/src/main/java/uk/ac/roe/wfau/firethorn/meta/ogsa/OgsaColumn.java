@@ -23,6 +23,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
  *
  *
  */
+@Deprecated
 public interface OgsaColumn<ColumnType extends BaseColumn<ColumnType>>
     extends BaseColumn<ColumnType>
     {

@@ -267,12 +267,12 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
         }
 
     @Override
-    public BaseTable<JdbcTable, JdbcColumn> base()
+    public JdbcTable base()
         {
         return this;
         }
     @Override
-    public BaseTable<JdbcTable, JdbcColumn> root()
+    public JdbcTable root()
         {
         return this;
         }

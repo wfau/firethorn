@@ -133,7 +133,7 @@ extends Entity, Query
     public Mode mode();
 
     /**
-     * The ADQL workspace this query applies to.
+     * The ADQL resource this query applies to.
      *
      */
     public AdqlResource resource();
@@ -163,15 +163,15 @@ extends Entity, Query
     public Iterable<AdqlTable> tables();
 
     /**
-     * A list of resources (databases) used by the query.
+     * A list of BaseResources used by the query.
      *
      */
-    public Iterable<BaseResource<?>> resources();
+    public Iterable<BaseResource<?>> targets();
 
     /**
-     * A list of connections (resources) used by the query.
+     * The primary BaseResource used by the query.
      *
      */
-    public Iterable<String> connects();
-
+    public BaseResource<?> target();
+    
     }
