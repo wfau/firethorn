@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -67,4 +68,29 @@ public abstract class BaseResourceEntity<SchemaType extends BaseSchema<SchemaTyp
         {
         return new StringBuilder(this.name());
         }
+
+    /**
+     * The the OGSA-DAI resource ID.
+     * @todo Move to a common base class.
+     *
+     */
+    protected static final String DB_OGSA_ID_COL = "ogsa_id";
+    @Column(
+        name = DB_OGSA_ID_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String ogsaid;
+    @Override
+    public String ogsaid()
+        {
+        return this.ogsaid;
+        }
+    @Override
+    public void ogsaid(final String ogsaid)
+        {
+        this.ogsaid = ogsaid;
+        }
+    
     }

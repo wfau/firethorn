@@ -23,6 +23,7 @@ import uk.ac.roe.wfau.firethorn.job.Query;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaResource;
 
 /**
@@ -165,7 +166,7 @@ extends Entity, Query
      * A list of resources (databases) used by the query.
      *
      */
-    public Iterable<OgsaResource<?>> resources();
+    public Iterable<BaseResource<?>> resources();
 
     /**
      * A list of connections (resources) used by the query.

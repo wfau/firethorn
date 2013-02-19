@@ -1,0 +1,541 @@
+# ------------------------------------------------------------
+# Integrating the services together ...
+#
+
+FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
+FIRETHORN_NAME=devel
+FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
+
+# ------------------------------------------------------------
+# Metadata webservice ..
+#
+
+    pushd "${FIRETHORN_CODE?}/firethorn-tap"
+
+        mvn clean install
+        
+    popd
+
+    pushd "${FIRETHORN_CODE?}/firethorn-war"
+
+        mvn clean tomcat7:run
+        
+    popd
+
+# ------------------------------------------------------------
+# Command line tests ...
+#
+
+    # -------- --------
+    # REST wrapper for curl
+    # https://github.com/micha/resty
+
+    # -------- --------
+    # AWK for JSON
+    # https://github.com/micha/jsawk
+
+
+    yum install perl-JSON
+
+
+    base=$(mktemp --directory)
+    pushd ${base?}
+
+        #
+        # Install the 'resty' wrapper for curl.
+        curl -L http://github.com/micha/resty/raw/master/resty > resty
+        source ./resty
+
+        #
+        # Install the 'pp' pretty print script.
+        curl -L http://github.com/micha/resty/raw/master/pp > pp
+        chmod a+x ./pp
+
+        #
+        # Set the base URL and options.
+        metahostname=localhost
+        metahostport=8080
+        metabasename="http://${metahostname?}:${metahostport?}/firethorn"
+        
+        resty "${metabasename?}" -H 'Accept: application/json'
+
+        unique()
+            {
+            date '+%Y%m%d-%H%M%S%N'
+            }
+
+        # -------- --------
+        # JDBC ....
+
+        #
+        # List current JDBC resources.
+        GET "/jdbc/resource/select" | ./pp
+
+            []
+
+        #
+        # Create a new JDBC resource.
+        POST "/jdbc/resource/create" \
+            -d "jdbc.resource.create.url=spring:RoeTWOMASS" \
+            -d "jdbc.resource.create.name=jdbc-resource-$(unique)" \
+            | ./pp
+
+            {
+               "created" : "2013-02-18T17:17:47.646",
+               "connection" : {
+                  "status" : "ENABLED",
+                  "user" : null,
+                  "uri" : "spring:RoeTWOMASS"
+               },
+               "name" : "jdbc-resource-20130218-171747533783956",
+               "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json",
+               "ident" : "http://localhost:8080/firethorn/jdbc/resource/1",
+               "modified" : "2013-02-18T17:17:48.147"
+            }
+
+        #
+        # Check the resource details.
+        GET "/jdbc/resource/1" | ./pp
+
+            {
+               "created" : "2013-02-18T17:17:47.646",
+               "connection" : {
+                  "status" : "ENABLED",
+                  "user" : null,
+                  "uri" : "spring:RoeTWOMASS"
+               },
+               "name" : "jdbc-resource-20130218-171747533783956",
+               "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json",
+               "ident" : "http://localhost:8080/firethorn/jdbc/resource/1",
+               "modified" : "2013-02-18T17:17:47.716"
+            }
+
+        #
+        # List the resource schema.
+        GET "/jdbc/resource/1/schemas/select" | ./pp
+
+            [
+               {
+                  "created" : "2013-02-18T17:17:48.130",
+                  "parent" : "http://localhost:8080/firethorn/jdbc/resource/1",
+                  "fullname" : "TWOMASS.dbo",
+                  "name" : "TWOMASS.dbo",
+                  "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json",
+                  "ident" : "http://localhost:8080/firethorn/jdbc/schema/1",
+                  "modified" : "2013-02-18T17:17:48.130"
+               }
+            ]
+
+        #
+        # Check the details of a schema.
+        GET "/jdbc/schema/1" | ./pp
+
+            {
+               "created" : "2013-02-18T17:17:48.130",
+               "parent" : "http://localhost:8080/firethorn/jdbc/resource/1",
+               "fullname" : "TWOMASS.dbo",
+               "name" : "TWOMASS.dbo",
+               "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json",
+               "ident" : "http://localhost:8080/firethorn/jdbc/schema/1",
+               "modified" : "2013-02-18T17:17:48.130"
+            }
+
+        #
+        # List the schema tables.
+        GET "/jdbc/schema/1/tables/select" | ./pp
+
+            [
+               {
+                  "created" : "2013-02-18T17:17:51.058",
+                  "parent" : "http://localhost:8080/firethorn/jdbc/schema/1",
+                  "fullname" : "TWOMASS.dbo.twomass_xsc",
+                  "name" : "twomass_xsc",
+                  "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json",
+                  "ident" : "http://localhost:8080/firethorn/jdbc/table/11",
+                  "modified" : "2013-02-18T17:17:51.058"
+               },
+               {
+                  "created" : "2013-02-18T17:17:50.727",
+                  "parent" : "http://localhost:8080/firethorn/jdbc/schema/1",
+                  "fullname" : "TWOMASS.dbo.twomass_sixx2_xsc",
+                  "name" : "twomass_sixx2_xsc",
+                  "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json",
+                  "ident" : "http://localhost:8080/firethorn/jdbc/table/10",
+                  "modified" : "2013-02-18T17:17:50.727"
+               },
+
+           ....
+
+               {
+                  "created" : "2013-02-18T17:17:48.989",
+                  "parent" : "http://localhost:8080/firethorn/jdbc/schema/1",
+                  "fullname" : "TWOMASS.dbo.twomass_psc",
+                  "name" : "twomass_psc",
+                  "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json",
+                  "ident" : "http://localhost:8080/firethorn/jdbc/table/5",
+                  "modified" : "2013-02-18T17:17:48.990"
+               },
+
+           ....
+
+               {
+                  "created" : "2013-02-18T17:17:48.307",
+                  "parent" : "http://localhost:8080/firethorn/jdbc/schema/1",
+                  "fullname" : "TWOMASS.dbo.martest",
+                  "name" : "martest",
+                  "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json",
+                  "ident" : "http://localhost:8080/firethorn/jdbc/table/2",
+                  "modified" : "2013-02-18T17:17:48.307"
+               },
+               {
+                  "created" : "2013-02-18T17:17:48.179",
+                  "parent" : "http://localhost:8080/firethorn/jdbc/schema/1",
+                  "fullname" : "TWOMASS.dbo.dtproperties",
+                  "name" : "dtproperties",
+                  "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json",
+                  "ident" : "http://localhost:8080/firethorn/jdbc/table/1",
+                  "modified" : "2013-02-18T17:17:48.180"
+               }
+            ]
+
+        #
+        # Check the details of a table.
+        GET "/jdbc/table/5" | ./pp
+
+            {
+               "created" : "2013-02-18T17:17:48.989",
+               "parent" : "http://localhost:8080/firethorn/jdbc/schema/1",
+               "fullname" : "TWOMASS.dbo.twomass_psc",
+               "name" : "twomass_psc",
+               "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-table-1.0.json",
+               "ident" : "http://localhost:8080/firethorn/jdbc/table/5",
+               "modified" : "2013-02-18T17:17:48.990"
+            }
+
+        # -------- --------
+        # ADQL ....
+
+        #
+        # List current ADQL resources.
+        GET "/adql/resource/select" | ./pp
+
+            []
+
+        #
+        # Create a new ADQL resource.
+        POST "/adql/resource/create" \
+            --data "adql.resource.create.name=adql-resource-$(unique)" \
+            | ./pp
+
+            {
+               "created" : "2013-02-18T17:29:44.043",
+               "name" : "adql-resource-20130218-172943962527614",
+               "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json",
+               "ident" : "http://localhost:8080/firethorn/adql/resource/2",
+               "modified" : "2013-02-18T17:29:44.043"
+            }
+
+        #
+        # Check the resource details.
+        GET "/adql/resource/2" | ./pp
+
+            {
+               "created" : "2013-02-18T17:29:44.043",
+               "name" : "adql-resource-20130218-172943962527614",
+               "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json",
+               "ident" : "http://localhost:8080/firethorn/adql/resource/2",
+               "modified" : "2013-02-18T17:29:44.043"
+            }
+
+        #
+        # List the resource schema.
+        GET "/adql/resource/2/schemas/select" | ./pp
+
+            []
+
+        #
+        # Create a new schema.
+        POST "/adql/resource/2/schemas/create" \
+            --data "adql.resource.schema.create.name=schema_one" \
+            | ./pp
+
+            {
+               "created" : "2013-02-18T17:33:12.228",
+               "parent" : "http://localhost:8080/firethorn/adql/resource/2",
+               "fullname" : "schema_one",
+               "name" : "schema_one",
+               "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/adql-schema-1.0.json",
+               "ident" : "http://localhost:8080/firethorn/adql/schema/2",
+               "modified" : "2013-02-18T17:33:12.228"
+            }
+
+        #
+        # Check the schema details.
+        GET "/adql/schema/2" | ./pp
+
+            {
+               "created" : "2013-02-18T17:33:12.228",
+               "parent" : "http://localhost:8080/firethorn/adql/resource/2",
+               "fullname" : "schema_one",
+               "name" : "schema_one",
+               "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/adql-schema-1.0.json",
+               "ident" : "http://localhost:8080/firethorn/adql/schema/2",
+               "modified" : "2013-02-18T17:33:12.228"
+            }
+
+        #
+        # List the schema tables.
+        GET "/adql/schema/2/tables/select" | ./pp
+
+            []
+
+        #
+        # Import a JDBC table into our ADQL schema.
+        POST "/adql/schema/2/tables/import" \
+            --data "adql.schema.table.import.base=${metabasename?}/jdbc/table/5" \
+            | ./pp
+
+            {
+               "base" : "http://localhost:8080/firethorn/jdbc/table/5",
+               "created" : "2013-02-18T17:39:17.664",
+               "parent" : "http://localhost:8080/firethorn/adql/schema/2",
+               "fullname" : "schema_one.twomass_psc",
+               "name" : "twomass_psc",
+               "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/adql-table-1.0.json",
+               "ident" : "http://localhost:8080/firethorn/adql/table/12",
+               "modified" : "2013-02-18T17:39:17.664"
+            }
+
+        #
+        # Import a JDBC table, giving it a new name.
+        POST "/adql/schema/2/tables/import" \
+            --data "adql.schema.table.import.name=table_one" \
+            --data "adql.schema.table.import.base=${metabasename?}/jdbc/table/6" \
+            | ./pp
+
+            {
+               "base" : "http://localhost:8080/firethorn/jdbc/table/6",
+               "created" : "2013-02-18T17:41:47.430",
+               "parent" : "http://localhost:8080/firethorn/adql/schema/2",
+               "fullname" : "schema_one.table_one",
+               "name" : "table_one",
+               "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/adql-table-1.0.json",
+               "ident" : "http://localhost:8080/firethorn/adql/table/13",
+               "modified" : "2013-02-18T17:41:47.431"
+            }
+
+        #
+        # List the schema tables.
+        GET "/adql/schema/2/tables/select" | ./pp
+
+            [
+               {
+                  "base" : "http://localhost:8080/firethorn/jdbc/table/6",
+                  "created" : "2013-02-18T17:41:47.430",
+                  "parent" : "http://localhost:8080/firethorn/adql/schema/2",
+                  "fullname" : "schema_one.table_one",
+                  "name" : "table_one",
+                  "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/adql-table-1.0.json",
+                  "ident" : "http://localhost:8080/firethorn/adql/table/13",
+                  "modified" : "2013-02-18T17:41:47.431"
+               },
+               {
+                  "base" : "http://localhost:8080/firethorn/jdbc/table/5",
+                  "created" : "2013-02-18T17:39:17.664",
+                  "parent" : "http://localhost:8080/firethorn/adql/schema/2",
+                  "fullname" : "schema_one.twomass_psc",
+                  "name" : "twomass_psc",
+                  "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/adql-table-1.0.json",
+                  "ident" : "http://localhost:8080/firethorn/adql/table/12",
+                  "modified" : "2013-02-18T17:39:17.664"
+               }
+            ]
+
+        #
+        # Check the details of a table.
+        GET "/adql/table/12" | ./pp
+
+            {
+               "base" : "http://localhost:8080/firethorn/jdbc/table/5",
+               "created" : "2013-02-18T17:39:17.664",
+               "parent" : "http://localhost:8080/firethorn/adql/schema/2",
+               "fullname" : "schema_one.twomass_psc",
+               "name" : "twomass_psc",
+               "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/adql-table-1.0.json",
+               "ident" : "http://localhost:8080/firethorn/adql/table/12",
+               "modified" : "2013-02-18T17:39:17.664"
+            }
+
+        #
+        # List the table columns.
+        GET "/adql/table/12/columns/select" | ./pp
+
+            [
+               {
+                  "base" : "http://localhost:8080/firethorn/jdbc/column/88",
+                  "created" : "2013-02-18T17:39:17.807",
+                  "parent" : "http://localhost:8080/firethorn/adql/table/12",
+                  "fullname" : "schema_one.twomass_psc.cx",
+                  "name" : "cx",
+                  "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/adql-column-1.0.json",
+                  "ident" : "http://localhost:8080/firethorn/adql/column/840",
+                  "modified" : "2013-02-18T17:39:17.808"
+               },
+               {
+                  "base" : "http://localhost:8080/firethorn/jdbc/column/89",
+                  "created" : "2013-02-18T17:39:17.806",
+                  "parent" : "http://localhost:8080/firethorn/adql/table/12",
+                  "fullname" : "schema_one.twomass_psc.cy",
+                  "name" : "cy",
+                  "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/adql-column-1.0.json",
+                  "ident" : "http://localhost:8080/firethorn/adql/column/839",
+                  "modified" : "2013-02-18T17:39:17.806"
+               },
+
+            ....
+
+               {
+                  "base" : "http://localhost:8080/firethorn/jdbc/column/150",
+                  "created" : "2013-02-18T17:39:17.727",
+                  "parent" : "http://localhost:8080/firethorn/adql/table/12",
+                  "fullname" : "schema_one.twomass_psc.coadd_key",
+                  "name" : "coadd_key",
+                  "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/adql-column-1.0.json",
+                  "ident" : "http://localhost:8080/firethorn/adql/column/778",
+                  "modified" : "2013-02-18T17:39:17.728"
+               },
+               {
+                  "base" : "http://localhost:8080/firethorn/jdbc/column/151",
+                  "created" : "2013-02-18T17:39:17.722",
+                  "parent" : "http://localhost:8080/firethorn/adql/table/12",
+                  "fullname" : "schema_one.twomass_psc.coadd",
+                  "name" : "coadd",
+                  "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/adql-column-1.0.json",
+                  "ident" : "http://localhost:8080/firethorn/adql/column/777",
+                  "modified" : "2013-02-18T17:39:17.722"
+               }
+            ]
+
+
+#
+# Create a 'define' function for setting heredoc variables.
+# http://stackoverflow.com/questions/1167746/how-to-assign-a-heredoc-value-to-a-variable-in-bash
+
+    define()
+        {
+        IFS='\n' read -r -d '' ${1} || true;
+        }
+
+define query << 'EOF'
+SELECT
+    ra,
+    dec,
+    pts_key
+FROM
+    schema_one.twomass_psc
+WHERE
+    ra  Between '56.0' AND '57.9'
+AND
+    dec Between '24.0' AND '24.2'
+EOF
+
+        #
+        # Create an ADQL query.
+        POST "/adql/resource/2/queries/create" \
+            --data-urlencode "adql.resource.query.create.name=query_one" \
+            --data-urlencode "adql.resource.query.create.query=${query?}" \
+            | ./pp
+
+            {
+               "input" : "SELECT\n    ra,\n    dec,\n    pts_key\nFROM\n    schema_one.twomass_psc\nWHERE\n    ra  Between '56.0' AND '57.9'\nAND\n    dec Between '24.0' AND '24.2'\n",
+               "status" : "EDITING",
+               "mode" : "DIRECT",
+               "name" : "query_one",
+               "ident" : "http://localhost:8080/firethorn/adql/query/1",
+               "modified" : "2013-02-18T18:27:52.938",
+               "created" : "2013-02-18T18:27:52.408",
+               "resource" : "http://localhost:8080/firethorn/adql/resource/2",
+               "osql" : "SELECT TWOMASS.dbo.twomass_psc.ra AS ra , TWOMASS.dbo.twomass_psc.dec AS dec , TWOMASS.dbo.twomass_psc.pts_key AS pts_key\nFROM TWOMASS.dbo.twomass_psc\nWHERE TWOMASS.dbo.twomass_psc.ra BETWEEN '56.0' AND '57.9' AND TWOMASS.dbo.twomass_psc.dec BETWEEN '24.0' AND '24.2'",
+               "adql" : "SELECT ra , dec , pts_key\nFROM schema_one.twomass_psc\nWHERE ra BETWEEN '56.0' AND '57.9' AND dec BETWEEN '24.0' AND '24.2'",
+               "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/adql-query-1.0.json"
+            }
+
+
+#
+# Ok ... got this far ....
+
+    SELECT
+        TWOMASS.dbo.twomass_psc.ra AS ra ,
+        TWOMASS.dbo.twomass_psc.dec AS dec ,
+        TWOMASS.dbo.twomass_psc.pts_key AS pts_key
+    FROM
+        TWOMASS.dbo.twomass_psc
+    WHERE
+        TWOMASS.dbo.twomass_psc.ra BETWEEN '56.0' AND '57.9'
+    AND
+        TWOMASS.dbo.twomass_psc.dec BETWEEN '24.0' AND '24.2'
+
+#
+# At the moment, DQP won't handle BETWEEN, so need to refactor the query to use > and <.
+
+    SELECT
+        TWOMASS.dbo.twomass_psc.ra AS ra ,
+        TWOMASS.dbo.twomass_psc.dec AS dec ,
+        TWOMASS.dbo.twomass_psc.pts_key AS pts_key
+    FROM
+        TWOMASS.dbo.twomass_psc
+    WHERE
+        TWOMASS.dbo.twomass_psc.ra >= '56.0'
+    AND
+        TWOMASS.dbo.twomass_psc.ra <= '57.9'
+    AND
+        TWOMASS.dbo.twomass_psc.dec >= '24.0'
+    AND
+        TWOMASS.dbo.twomass_psc.dec <= 24.2'
+
+#
+# Need to choose which OGSA-DAI resource to send this to, direct SQL query, or indirect via DQP.
+
+    For a direct SQL query, the resource ID comes from the root BaseResource
+    For an indirect DQP query .. the resource ID comes from local config ?
+    Also need the JerseyServer endpoint URL ...
+
+    package uk.ac.roe.wfau.firethorn.ogsadai.test;
+    public class SimpleQueryTestBase
+
+        Server server = new JerseyServer();        
+        server.setDefaultBaseServicesURL(
+            new URL(
+                endpoint <-- URL
+                )
+                
+                
+            );
+
+        SQLQuery sqlquery = new SQLQuery();
+        sqlquery.setResourceID(
+            dataset <-- resource ID
+            );
+        sqlquery.addExpression(
+            query <-- SQL query
+            );
+
+
+
+  
+
+
+
+
+# ------------------------------------------------------------
+# TODO ....
+#
+
+    need to include the ogsadai resource id for a direct/indirect query.
+
+    add base, root, and alias to table
+    add catalog names to adql table fullname .... (probably means put catalog back into the tree)
+
+    prevent spaces (and punct) in schema names ...
+
+

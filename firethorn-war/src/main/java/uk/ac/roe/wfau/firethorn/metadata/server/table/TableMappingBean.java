@@ -1,28 +1,28 @@
 /**
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.ogsa;
+package uk.ac.roe.wfau.firethorn.metadata.server.table;
 
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
 /**
- * Bean wrapper for <code>OgsaTable</code>.
+ * Bean wrapper for <code>TableMapping</code>.
  *
  */
-public class OgsaTableBean
+public class TableMappingBean
     {
 
     /**
      * Public constructor.
      *
      */
-    public OgsaTableBean(final OgsaTable<?,?> table)
+    public TableMappingBean(final BaseTable<?,?> table)
         {
         this.table = table;
         }
 
-    private final OgsaTable<?,?> table ;
-    protected OgsaTable<?,?> table()
+    private final BaseTable<?,?> table ;
+    protected BaseTable<?,?> table()
         {
         return this.table;
         }

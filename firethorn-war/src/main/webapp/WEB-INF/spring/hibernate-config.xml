@@ -63,8 +63,7 @@
                 <value>uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.spring.TuesdayAdqlColumnEntity</value>
-                <value>uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity</value>
 
                 <value>uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaResourceEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaSchemaEntity</value>
@@ -81,6 +80,9 @@
                 <value>uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumnEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity</value>
+
+                <value>uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity</value>
+
 
                 <!--+
                     |

@@ -95,9 +95,21 @@ extends BaseComponent
     public Schemas<SchemaType> schemas();
 
     /**
-     * The fully qualified name.
+     * The fully qualified resource name.
      *
      */
     public StringBuilder fullname();
+
+    /**
+     * Get the OGSA-DAI resource ID.
+     *
+     */
+    public String ogsaid();
+
+    /**
+     * Set the OGSA-DAI resource ID.
+     *
+     */
+    public void ogsaid(final String ogsaid);
 
     }

@@ -158,12 +158,14 @@ extends OgsaTable<JdbcTable, JdbcColumn>, BaseTable<JdbcTable, JdbcColumn>
 
     /**
      * Get the database table type.
-     *
+     * @todo Move these to a sub-interface
+     * 
      */
     public JdbcTableType jdbctype();
 
     /**
      * Set the database table type.
+     * @todo Move these to a sub-interface
      *
      */
     public void jdbctype(final JdbcTableType type);

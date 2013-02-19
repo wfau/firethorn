@@ -211,7 +211,9 @@ extends BaseComponentEntity
         }
 
     @Override
-    public abstract OgsaTable<?, ?> ogsa();
+    public abstract BaseTable<?, ?> base();
+    @Override
+    public abstract BaseTable<?, ?> root();
 
     @Index(
         name=DB_TABLE_NAME + "IndexByParent"

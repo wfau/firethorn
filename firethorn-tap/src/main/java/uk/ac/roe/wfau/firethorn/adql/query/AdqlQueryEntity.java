@@ -59,6 +59,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity;
@@ -517,9 +518,9 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Transient
-    private final Set<OgsaResource<?>> resources = new HashSet<OgsaResource<?>>();
+    private final Set<BaseResource<?>> resources = new HashSet<BaseResource<?>>();
     @Override
-    public Iterable<OgsaResource<?>> resources()
+    public Iterable<BaseResource<?>> resources()
         {
         return this.resources;
         }
@@ -550,11 +551,11 @@ implements AdqlQuery, AdqlParserQuery
             table
             );
         this.add(
-            table.ogsa().resource()
+            table.root().resource()
             );
         }
 
-    public void add(final OgsaResource<?> resource)
+    public void add(final BaseResource<?> resource)
         {
         this.resources.add(
             resource

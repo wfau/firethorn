@@ -521,29 +521,6 @@ public class JdbcResourceEntity
             }
         }
 
-	/**
-	 * The the OGSA-DAI resource ID.
-	 * @todo Move to a common base class.
-	 *
-	 */
-    protected static final String DB_OGSA_ID_COL = "ogsa_id";
-    @Column(
-        name = DB_OGSA_ID_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-	private String ogsaid;
-	@Override
-	public String ogsaid()
-		{
-		return this.ogsaid;
-		}
-	@Override
-	public void ogsaid(final String ogsaid)
-		{
-		this.ogsaid = ogsaid;
-		}
 
     @Override
     public String link()

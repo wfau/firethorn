@@ -27,7 +27,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaResource;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 
@@ -38,18 +38,6 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 public class AdqlQueryTestCase
 extends TestBase
     {
-
-   /**
-     * Resolve a table alias into a BaseTable.
-     *
-    public BaseTable<?,?> resolve(final ADQLTable querytable)
-    throws Exception
-        {
-        return factories().base().tables().resolve(
-            querytable.getDBLink().getDBName()
-            );
-        }
-     */
 
     private JdbcResource twomass ;
     private JdbcResource twoxmm  ;
@@ -148,7 +136,7 @@ extends TestBase
             log.debug("Table [{}]", table.fullname());
             }
         log.debug("Resources -- ");
-        for (final OgsaResource<?> resource : query.resources())
+        for (final BaseResource<?> resource : query.resources())
             {
             log.debug("Resource [{}]", resource.fullname());
             }

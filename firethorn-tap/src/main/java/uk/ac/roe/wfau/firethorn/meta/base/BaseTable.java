@@ -130,7 +130,8 @@ extends BaseComponent
      */
     public StringBuilder fullname();
 
-    public OgsaTable<?, ?> ogsa();
+    public BaseTable<?, ?> base();
+    public BaseTable<?, ?> root();
 
     public BaseSchema<?,TableType> schema();
 

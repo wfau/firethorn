@@ -31,9 +31,10 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 public class OgsaTableResolver
 implements OgsaTable.AliasResolver
     {
+/*
     @Autowired
     private BaseTable.Resolver resolver ;
-
+    
     @Override
     public OgsaTable<?,?> resolve(final String alias)
         throws NotFoundException
@@ -51,4 +52,5 @@ implements OgsaTable.AliasResolver
                 );
             }
         }
+ */
     }

@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.ogsa;
+package uk.ac.roe.wfau.firethorn.metadata.server.table;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,8 +26,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
@@ -37,8 +38,8 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
  */
 @Slf4j
 @Controller
-@RequestMapping(OgsaTableLinkFactory.TABLE_PATH)
-public class OgsaTableController
+@RequestMapping(TableMappingLinkFactory.TABLE_PATH)
+public class TableMappingController
     extends AbstractController
     {
 
@@ -46,7 +47,7 @@ public class OgsaTableController
     public Path path()
         {
         return path(
-            OgsaTableLinkFactory.TABLE_PATH
+            TableMappingLinkFactory.TABLE_PATH
             );
         }
 
@@ -54,7 +55,7 @@ public class OgsaTableController
      * Public constructor.
      *
      */
-    public OgsaTableController()
+    public TableMappingController()
         {
         super();
         }
@@ -69,10 +70,10 @@ public class OgsaTableController
      * Wrap an entity as a bean.
      *
      */
-    public OgsaTableBean bean(
-        final OgsaTable<?,?> entity
+    public TableMappingBean bean(
+        final BaseTable<?,?> entity
         ){
-        return new OgsaTableBean(
+        return new TableMappingBean(
             entity
             );
         }
@@ -82,15 +83,15 @@ public class OgsaTableController
      * @throws NotFoundException
      *
      */
-    @ModelAttribute(OgsaTableController.TABLE_ENTITY)
-    public OgsaTable<?,?> entity(
+    @ModelAttribute(TableMappingController.TABLE_ENTITY)
+    public BaseTable<?,?> entity(
         @PathVariable("alias")
         final String alias
         ) throws NotFoundException {
         log.debug("table() [{}]", alias);
         return factories().base().tables().resolve(
             alias
-            ).ogsa();
+            ).root();
         }
 
     /**
@@ -99,9 +100,9 @@ public class OgsaTableController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public OgsaTableBean jsonSelect(
+    public TableMappingBean jsonSelect(
         @ModelAttribute(TABLE_ENTITY)
-        final OgsaTable<?,?> entity
+        final BaseTable<?,?> entity
         ){
         log.debug("jsonSelect()");
         return bean(

@@ -32,6 +32,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaTable;
 
@@ -240,7 +241,12 @@ public class IvoaTableEntity
         }
 
     @Override
-    public OgsaTable<IvoaTable, IvoaColumn> ogsa()
+    public BaseTable<IvoaTable, IvoaColumn> base()
+        {
+        return this;
+        }
+    @Override
+    public BaseTable<IvoaTable, IvoaColumn> root()
         {
         return this;
         }

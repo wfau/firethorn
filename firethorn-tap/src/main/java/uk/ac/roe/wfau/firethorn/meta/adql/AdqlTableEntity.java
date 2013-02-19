@@ -353,11 +353,10 @@ public class AdqlTableEntity
         {
         return this.base ;
         }
-
     @Override
-    public OgsaTable<?,?> ogsa()
+    public BaseTable<?,?> root()
         {
-        return base().ogsa();
+        return base().root();
         }
 
     @Override

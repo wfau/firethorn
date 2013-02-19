@@ -47,12 +47,12 @@ extends BaseTable<TableType, ColumnType>
         /**
          * Resolve an alias into a table.
          *
-         */
         public OgsaTable<?,?> resolve(final String alias)
         throws NotFoundException;
+         */
 
         }
-
+/*
     @Override
     public String alias();
 
@@ -61,5 +61,5 @@ extends BaseTable<TableType, ColumnType>
 
     @Override
     public OgsaResource<?> resource();
-
+ */
     }

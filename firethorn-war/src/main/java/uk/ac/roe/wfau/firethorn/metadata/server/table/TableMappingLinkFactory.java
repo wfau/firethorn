@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.ogsa;
+package uk.ac.roe.wfau.firethorn.metadata.server.table;
 
 import org.springframework.stereotype.Component;
 
@@ -27,11 +27,11 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
  *
  */
 @Component
-public class OgsaTableLinkFactory
+public class TableMappingLinkFactory
 extends WebappLinkFactory<OgsaTable<?,?>>
 implements OgsaTable.LinkFactory
     {
-    protected OgsaTableLinkFactory()
+    protected TableMappingLinkFactory()
         {
         super(
             SERVICE_PATH

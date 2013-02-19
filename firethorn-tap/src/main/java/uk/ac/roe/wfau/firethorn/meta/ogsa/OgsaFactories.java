@@ -26,7 +26,7 @@ public interface OgsaFactories
     /**
      * Our table alias resolver.
      *
-     */
     public OgsaTableFactories tables();
+     */
 
     }

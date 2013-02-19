@@ -26,7 +26,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 public interface OgsaColumn<ColumnType extends BaseColumn<ColumnType>>
     extends BaseColumn<ColumnType>
     {
-
+/*
     @Override
     public String alias();
 
@@ -35,5 +35,5 @@ public interface OgsaColumn<ColumnType extends BaseColumn<ColumnType>>
 
     @Override
     public OgsaResource<?> resource();
-
+ */
     }
