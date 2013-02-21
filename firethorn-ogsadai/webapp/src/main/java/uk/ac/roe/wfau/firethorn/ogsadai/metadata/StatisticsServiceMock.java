@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.metadata;
 
+import uk.org.ogsadai.dqp.common.RequestDetails;
+
 import uk.org.ogsadai.dqp.lqp.Attribute;
 import uk.org.ogsadai.dqp.lqp.cardinality.ArithmeticOperator;
 import uk.org.ogsadai.dqp.lqp.cardinality.AttributeStatistics;

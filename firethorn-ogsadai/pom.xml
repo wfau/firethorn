@@ -56,8 +56,10 @@
         +-->
     <modules>
         <module>webapp</module>
-        <!--module>activity/client</module-->
-        <!--module>metadata</module-->
+        <!--module>activity/firethorn</module-->
+        <!--module>activity/ogsadai</module-->
+        <!--module>metadata/firethorn</module-->
+        <module>metadata/ogsadai</module>
     </modules>
     
     <properties>

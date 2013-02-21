@@ -24,10 +24,10 @@ import uk.ac.roe.wfau.firethorn.ogsadai.metadata.AttributeService;
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.StatisticsService;
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMappingService;
 
+import uk.org.ogsadai.tuple.TupleTypes;
 import uk.org.ogsadai.dqp.common.RequestDetails;
 import uk.org.ogsadai.dqp.firethorn.MetadataServiceFactory;
 
-import uk.org.ogsadai.tuple.TupleTypes;
 
 class MetadataServiceFactoryMock
 implements MetadataServiceFactory

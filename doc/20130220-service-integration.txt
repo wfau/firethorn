@@ -386,8 +386,38 @@ EOF
 
 TODO
 
-    Read-only transaction - so the flags set by a scan are ignored.
-    Error response for query syntax errors is abysmal.
+    GET request for schema tables triggers a re-scan
+
+        Read-only transaction - so the flags set by a scan are ignored ?
+        Nope, because the actual list of tables persists (id numbers are the same).
+        First creates them, subsequent scans finds them. 
+
+        Who sets the 'scan' flag ?
+        Tables are created by a call from Schema -> TableFactory.
+        Scan status is a call from Schema -> Schema (using this).
+        So changes to the schema don't go via the proxy wrapper.
+
+        DAO pattern ... no 'smarts' on the objects themselves.
+        Longer term ... create our own pattern of DAO wrappers ?
+
+        Scan needs to be performed by an external actor ...
+        Part of the factory ?
+
+        SchemaUpdater
+        Updates a schema object.
+
+            //
+            // Update the Schema itself
+            updater.update(Schema schema)
+
+            //
+            // Update the Schema tables
+            updater.tables(Schema schema)
+
+            Add 'modifed' to the tables list.
+            Add 'status'  to the tables list.
+
+    Error response for query syntax errors is terrible.
     Select by name causes NullPointer rather than 404.
     
     Create a JUnit test for the client to test "/meta/table/ALIAS"
@@ -397,6 +427,9 @@ TODO
     Create a JUnit test to send query to OGSA-DAI.
 
     Intergrate client into FireThorn.
+
+# ----------------------------------------------------------------------------------------
+#
 
 
 

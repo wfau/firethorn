@@ -11,91 +11,11 @@
     <!-- ***********************
         DQP Federation 
        *********************** -->
-    <!--
-     Feature support helper - default can be configured here
-     or replace with another implementation class.
-   -->
+    <!--+
+        | Feature support helper - default can be configured here
+        | or replace with another implementation class.
+        +-->
     <bean class="uk.org.ogsadai.dqp.presentation.common.DefaultFeatureSupportHelper" id="defaultFeatureSupport"/>
-
-    <!--
-       This specifies the DQP federation. 
-       id="federation"
-    <bean id="federation" class="uk.org.ogsadai.dqp.presentation.common.SimpleDQPFederation">
-        <property name="configuration">
-            <bean class="uk.org.ogsadai.dqp.presentation.common.SimpleDQPConfiguration" init-method="validate">
-                <property name="dataNodes">
-                    <list>
-                        <bean class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
-                            <constructor-arg name="resourceID" value="twomass"/>
-                            <constructor-arg name="evaluationNode" ref="mydqpeval"/>
-                            <property name="operatorSupport" ref="defaultFeatureSupport"/>
-                            <property name="expressionSupport" ref="defaultFeatureSupport"/>
-                            <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
-                        </bean>
-                        <bean class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
-                            <constructor-arg name="resourceID" value="ukidss"/>
-                            <constructor-arg name="evaluationNode" ref="mydqpeval"/>
-                            <property name="operatorSupport" ref="defaultFeatureSupport"/>
-                            <property name="expressionSupport" ref="defaultFeatureSupport"/>
-                            <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
-                        </bean>
-                    </list>
-                </property>
-                <property name="evaluationNodes">
-                    <list>
-                        <ref bean="mydqpeval"/>
-                    </list>
-                </property>
-            </bean>
-        </property>
-        <property name="fetchPhysicalSchema" value="true"/>
-    </bean>
-    -->
-
-    <!--
-       Test version using mocks.
-
-    <bean class="uk.org.ogsadai.dqp.firethorn.MetadataServiceDQPFederation" id="federation">
-
-        <property name="metadataServiceFactory">
-            <bean class="uk.ac.roe.wfau.firethorn.ogsadai.MetadataServiceFactoryImpl"/>
-        </property>
-
-            | Specifies the data nodes in this federation.
-            | Data nodes are identified by names that the table mapping service uses.
-        <property name="dataNodesMap">
-            <map>
-                <entry key="http://localhost:8081/albert/services/services/dataResources/twomass">
-                    <ref bean="twomass"/>
-                </entry>
-                <entry key="http://localhost:8081/albert/services/dataResources/ukidss">
-                    <ref bean="ukidss"/>
-                </entry>        
-            </map>
-        </property>
-
-        <property name="federation">
-            <bean class="uk.org.ogsadai.dqp.presentation.common.SimpleDQPFederation">
-                <property name="configuration">
-                    <bean class="uk.org.ogsadai.dqp.presentation.common.SimpleDQPConfiguration" init-method="validate">
-                        <property name="dataNodes">
-                            <list>
-                                <ref bean="twomass"/>
-                                <ref bean="ukidss"/>
-                            </list>
-                        </property>
-                        <property name="evaluationNodes">
-                            <list>
-                                <ref bean="mydqpeval"/>
-                            </list>
-                        </property>
-                    </bean>
-                </property>
-                <property name="fetchPhysicalSchema" value="false"/>
-            </bean>
-        </property>
-    </bean>
-    -->
 
     <!--+
         | Jersey evaluation node.

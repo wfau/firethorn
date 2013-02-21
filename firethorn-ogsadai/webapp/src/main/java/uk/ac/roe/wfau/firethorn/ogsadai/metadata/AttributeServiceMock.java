@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.org.ogsadai.dqp.lqp.Attribute;
 import uk.org.ogsadai.dqp.lqp.AttributeImpl;
+import uk.org.ogsadai.dqp.common.RequestDetails;
 
 /**
  *
