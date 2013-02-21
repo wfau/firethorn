@@ -20,12 +20,20 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLInvalidAuthorizationSpecException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +45,12 @@ import org.springframework.jdbc.support.SQLExceptionSubclassTranslator;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.stereotype.Repository;
 
+import org.joda.time.DateTime;
+import org.joda.time.Hours;
+import org.joda.time.ReadablePeriod;
+
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
@@ -71,16 +84,16 @@ public class JdbcResourceEntity
     implements JdbcResource
     {
     /**
-     * Metadata database table name.
+     * Hibernate table mapping.
      *
      */
     protected static final String DB_TABLE_NAME = "JdbcResourceEntity";
 
     /**
-     * Our SQLException translator.
-     *
+     * Hibernate column mapping.
+     * 
      */
-    protected static final SQLExceptionTranslator translator = new SQLExceptionSubclassTranslator();
+    protected static final String DB_JDBC_CATALOG_COL = "jdbccatalog";
 
     /**
      * Resource factory implementation.
@@ -221,12 +234,36 @@ public class JdbcResourceEntity
     @Override
     public JdbcResource.Schemas schemas()
         {
+        this.scan(false);
+        return this.schemasimpl();
+        }
+
+    protected JdbcResource.Schemas schemasimpl()
+        {
         return new JdbcResource.Schemas(){
             @Override
             public Iterable<JdbcSchema> select()
                 {
                 return factories().jdbc().schemas().select(
                     JdbcResourceEntity.this
+                    );
+                }
+            @Override
+            public JdbcSchema create(final String catalog, final String schema)
+                {
+                return factories().jdbc().schemas().create(
+                    JdbcResourceEntity.this,
+                    catalog,
+                    schema
+                    );
+                }
+            @Override
+            public JdbcSchema select(final String catalog, final String schema)
+                {
+                return factories().jdbc().schemas().select(
+                    JdbcResourceEntity.this,
+                    catalog,
+                    schema
                     );
                 }
             @Override
@@ -238,20 +275,17 @@ public class JdbcResourceEntity
                     );
                 }
             @Override
-            public JdbcSchema create(final String name)
-                {
-                return factories().jdbc().schemas().create(
-                    JdbcResourceEntity.this,
-                    name
-                    );
-                }
-            @Override
             public Iterable<JdbcSchema> search(final String text)
                 {
                 return factories().jdbc().schemas().search(
                     JdbcResourceEntity.this,
                     text
                     );
+                }
+            @Override
+            public void scan()
+                {
+                JdbcResourceEntity.this.scan(true);
                 }
             };
         }
@@ -265,262 +299,25 @@ public class JdbcResourceEntity
         return this.connection;
         }
 
+    @Basic(fetch = FetchType.EAGER)
+    @Column(
+        name = DB_JDBC_CATALOG_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String catalog ;
     @Override
-    public void inport()
+    public String catalog()
         {
-        log.debug("inport()");
-        try {
-            final DatabaseMetaData metadata = this.connection.metadata();
-            final JdbcProductType  product  = JdbcProductType.match(
-                metadata
-                );
-
-            final ResultSet tables = metadata.getTables(
-                null,
-                null,
-                null,
-                new String[]
-                    {
-                    JDBC_META_TABLE_TYPE_TABLE,
-                    JDBC_META_TABLE_TYPE_VIEW
-                    }
-                );
-
-            JdbcSchema schema = null ;
-            JdbcTable  table  = null ;
-            JdbcColumn column = null ;
-
-            while (tables.next())
-                {
-                final String tcname = tables.getString(JDBC_META_TABLE_CAT);
-                final String tsname = tables.getString(JDBC_META_TABLE_SCHEM);
-                final String ttname = tables.getString(JDBC_META_TABLE_NAME);
-                final String tttype = tables.getString(JDBC_META_TABLE_TYPE);
-                //log.debug("Found table [{}.{}.{}]", new Object[]{tcname, tsname, ttname});
-                //
-                // If the catalog name is null.
-                if (tcname == null)
-                    {
-                    //log.debug("Catalog is null, whatever ..");
-                    }
-                //
-                // If the schema name is null.
-                if (tsname == null)
-                    {
-                    //log.debug("Schema is null, whatever ..");
-                    }
-                //
-                // In MySQL the schema name is always null, use the catalog name instead.
-                String schemaname = tsname ;
-                if (product == JdbcProductType.MYSQL)
-                    {
-                    schemaname = tcname ;
-                    }
-                //
-                // Skip if the schema is on our ignore list.
-                if (product.ignores().contains(schemaname))
-                    {
-                    //log.debug("Schema is on the ignore list, skipping ...");
-                    continue;
-                    }
-                //
-                // In SQLServer, include the catalog name.
-                // (temp fix for ROE system)
-                if (product == JdbcProductType.MSSQL)
-                    {
-                    schemaname = tcname + "." + tsname ;
-                    }
-
-                boolean create = false ;
-
-                if ((schema != null) && (schema.name().equals(schemaname)))
-                    {
-                    create = false ;
-                    }
-                else {
-                    table  = null ;
-                    column = null ;
-                    schema = this.schemas().select(
-                        schemaname
-                        );
-                    if (schema != null)
-                        {
-                        create = false ;
-                        }
-                    else {
-                        create = true ;
-                        schema = this.schemas().create(
-                            schemaname
-                            );
-                        }
-                    }
-                //
-                // If the table name is null.
-                if (ttname == null)
-                    {
-                    //log.debug("Table is null, whatever ..");
-                    }
-                //
-                // If the table name is not null.
-                else {
-                    log.debug("Processing table [{}][{}][{}]", new Object[]{tcname, tsname, ttname});
-                    if (table == null)
-                        {
-                        column = null ;
-                        create = true ;
-                        table  = schema.tables().create(
-                            ttname,
-                            JdbcTable.JdbcTableType.match(
-                                tttype
-                                )
-                            );
-                        }
-                    else {
-                        if (create)
-                            {
-                            column = null ;
-                            create = true ;
-                            table  = schema.tables().create(
-                                ttname,
-                                JdbcTable.JdbcTableType.match(
-                                    tttype
-                                    )
-                                );
-                            }
-                        else {
-                            if (table.name().equals(ttname))
-                                {
-                                create = false ;
-                                }
-                            else {
-                                column = null ;
-                                table = schema.tables().select(
-                                    ttname
-                                    );
-                                if (table != null)
-                                    {
-                                    create = false ;
-                                    }
-                                else {
-                                    create = true ;
-                                    table  = schema.tables().create(
-                                        ttname,
-                                        JdbcTable.JdbcTableType.match(
-                                            tttype
-                                            )
-                                        );
-                                    }
-                                }
-                            }
-                        }
-                    //
-                    // Import the table columns.
-                    try {
-                        final ResultSet columns = metadata.getColumns(
-                            tcname,
-                            tsname,
-                            ttname,
-                            null
-                            );
-                        while (columns.next())
-                            {
-                            final String ccname = columns.getString(JDBC_META_TABLE_CAT);
-                            final String csname = columns.getString(JDBC_META_TABLE_SCHEM);
-                            final String ctname = columns.getString(JDBC_META_TABLE_NAME);
-                            final String colname = columns.getString(JDBC_META_COLUMN_NAME);
-                            final int    coltype = columns.getInt(JDBC_META_COLUMN_TYPE_TYPE);
-                            final int    colsize = columns.getInt(JDBC_META_COLUMN_SIZE);
-/*
-                            log.debug("Processing column [{}][{}][{}][{}]", new Object[]{
-                                ccname,
-                                csname,
-                                ctname,
-                                colname
-                                });
- */
-                            if (column == null)
-                                {
-                                create = true ;
-                                column = table.columns().create(
-                                    colname,
-                                    coltype,
-                                    colsize
-                                    );
-                                }
-                            else {
-                                if (create)
-                                    {
-                                    create = true ;
-                                    column = table.columns().create(
-                                        colname,
-                                        coltype,
-                                        colsize
-                                        );
-                                    }
-                                else {
-                                    if (column.name().equals(colname))
-                                        {
-                                        create = false ;
-                                        column.sqlsize(
-                                            colsize
-                                            );
-                                        column.sqltype(
-                                            coltype
-                                            );
-                                        }
-                                    else {
-                                        column = table.columns().select(
-                                                colname
-                                                );
-                                        if (column != null)
-                                            {
-                                            create = false ;
-                                            column.sqlsize(
-                                                colsize
-                                                );
-                                            column.sqltype(
-                                                coltype
-                                                );
-                                            }
-                                        else {
-                                            create = true ;
-                                            column = table.columns().create(
-                                                colname,
-                                                coltype,
-                                                colsize
-                                                );
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    catch (final SQLException ouch)
-                        {
-                        log.error("Exception reading database metadata [{}]", ouch.getMessage());
-/*
- * Do we want to continue ?
-                        throw translator.translate(
-                            "Reading database metadata",
-                            null,
-                            ouch
-                            );
- */
-                        }
-                    }
-                }
-            }
-        catch (final SQLException ouch)
-            {
-            log.error("Exception reading database metadata [{}]", ouch.getMessage());
-            throw translator.translate(
-                "Reading database metadata",
-                null,
-                ouch
-                );
-            }
+        return this.catalog ;
         }
-
+    @Override
+    public void catalog(String catalog)
+        {
+        this.catalog = catalog ;
+        this.scan(true);
+        }
 
     @Override
     public String link()
@@ -528,5 +325,153 @@ public class JdbcResourceEntity
         return factories().jdbc().resources().links().link(
             this
             );
+        }
+
+    @Override
+    protected void scanimpl()
+        {
+        log.debug("scanimpl()");
+        //
+        // Default to using the catalog name from the Connection.
+        // Explicitly set it to 'ALL_CATALOGS' to get all.
+        if (this.catalog == null)
+            {
+            this.catalog = connection().catalog();
+            }
+        //
+        // Scan all the catalogs.
+        if (ALL_CATALOGS.equals(this.catalog))
+            {
+            for (String cname : connection().catalogs())
+                {
+                try {
+                    scanimpl(
+                        cname 
+                        );
+                    }
+                catch (Exception ouch)
+                    {
+                    log.debug("Exception in catalog processing loop");
+                    log.debug("Exception text   [{}]", ouch.getMessage());
+                    log.debug("Exception string [{}]", ouch.toString());
+                    log.debug("Exception class  [{}]", ouch.getClass().toString());
+                    //
+                    // Continue with the rest of the catalogs ...
+                    // 
+                    }
+                }
+            }
+        //
+        // Just scan one catalog.
+        else {
+            scanimpl(
+                this.catalog
+                );
+            }
+//
+// TODO
+// Reprocess the list disable missing ones ...
+//                     
+        scandate(new DateTime());
+        scanflag(false);
+
+        }
+
+    protected void scanimpl(String catalog)
+        {
+        log.debug("scanimpl(String)");
+        log.debug("  Catalog [{}]", catalog);
+        //
+        // Get the database metadata
+        final DatabaseMetaData metadata = connection().metadata();
+        final JdbcProductType  product  = JdbcProductType.match(
+            metadata
+            );
+        // TODO - fix connection errors 
+        if (metadata != null)
+            {
+            try {
+                final ResultSet tables = metadata.getTables(
+                    catalog,
+                    null, // sch
+                    null, // tab
+                    new String[]
+                        {
+                        JdbcMetadata.JDBC_META_TABLE_TYPE_TABLE,
+                        JdbcMetadata.JDBC_META_TABLE_TYPE_VIEW
+                        }
+                    );
+        
+                String cprev = null ;
+                String sprev = null ;
+                while (tables.next())
+                    {
+                    String cname = tables.getString(JdbcMetadata.JDBC_META_TABLE_CAT);
+                    String sname = tables.getString(JdbcMetadata.JDBC_META_TABLE_SCHEM);
+                    //log.debug("Found schema [{}.{}]", new Object[]{cname, sname});
+                    //
+                    // In MySQL the schema name is always null, use the catalog name instead.
+                    if (product == JdbcProductType.MYSQL)
+                        {
+                        sname = cname ;
+                        cname = null ;
+                        }
+                    //
+                    // Skip if the schema is on our ignore list.
+                    if (product.ignores().contains(sname))
+                        {
+                        //log.debug("Schema [{}] is on the ignore list for [{}]", sname, product);
+                        continue;
+                        }
+                    //
+                    // Check if we have already done this one.
+                    if (((cname == null) ? cprev == null : cname.equals(cprev))
+                        &&
+                        ((sname == null) ? sprev == null : sname.equals(sprev))
+                        ){
+                        //log.debug("Already done [{}][{}], skipping", cname, sname);
+                        continue;
+                        }
+                    else {
+                        cprev = cname; 
+                        sprev = sname; 
+                        }
+        
+                    log.debug("Found schema [{}.{}]", new Object[]{cname, sname});
+        
+                    //
+                    // Check for an existing schema.
+                    JdbcSchema schema = this.schemasimpl().select(
+                        cname,
+                        sname
+                        );
+                    //
+                    // If none found, create a new one.
+                    if (schema == null)
+                        {
+                        schema = this.schemasimpl().create(
+                            cname,
+                            sname
+                            );
+                        }
+                    }
+                }
+            catch (final SQLInvalidAuthorizationSpecException ouch)
+                {
+                log.debug("Authorization exception reading JDBC metadata for [{}][{}][{}]", connection().uri(), catalog, ouch.getMessage());
+                }
+            catch (final SQLException ouch)
+                {
+                log.error("Exception reading JDBC metadata for [{}][{}][{}]", connection().uri(), catalog, ouch.getMessage());
+                log.debug("Exception text   [{}]", ouch.getMessage());
+                log.debug("Exception string [{}]", ouch.toString());
+                log.debug("Exception class  [{}]", ouch.getClass().toString());
+                throw connection().translator().translate(
+                    "Reading JDBC catalog schemas",
+                    null,
+                    ouch
+                    );
+                }
+            }
         }
     }

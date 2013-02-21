@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
@@ -39,11 +40,13 @@ public class AdqlQueryTestCase
 extends TestBase
     {
 
-    private JdbcResource twomass ;
-    private JdbcResource twoxmm  ;
-    private JdbcResource bestdr7 ;
-    private AdqlResource workspace; 
+    private JdbcResource twomass  ;
+    private JdbcResource twoxmm   ;
+    private JdbcResource bestdr7  ;
+    private JdbcResource combined ;
 
+    private String prefix = unique();
+    
     /**
      * Create our resources.
      *  
@@ -51,74 +54,29 @@ extends TestBase
     @Before
     public void init()
         {
-        log.debug(" twomass [{}]", twomass);
-        log.debug(" twoxmm  [{}]", twoxmm);
-        log.debug(" bestdr7 [{}]", bestdr7);
         //
-        // Create our JDBC resources and import the metadata.
-        // TODO -should the import be automatic?
-        if (twomass == null)
-            {
-            twomass = factories().jdbc().resources().create(
-                "twomass-resource",
-                "spring:RoeTWOMASS"
-                );
-            twomass.inport();
-            }
-        if (twoxmm == null)
-            {
-            twoxmm = factories().jdbc().resources().create(
-                "twoxmm-resource",
-                "spring:RoeTWOXMM"
-                );
-            twoxmm.inport();
-            }
-        if (bestdr7 == null)
-            {
-            bestdr7 = factories().jdbc().resources().create(
-                "bestdr7-resource",
-                "spring:RoeBestDR7"
-                );
-            bestdr7.inport();
-            }
-        //
-        // Create our ADQL workspace.
-        this.workspace = factories().adql().resources().create(
-            "adql-workspace"
+        // Create our JDBC resources.
+        this.twomass = factories().jdbc().resources().create(
+            "twomass-resource",
+            "spring:RoeTWOMASS"
             );
-        //
-        // Import the some of the JDBC tables into our ADQL workspace.
-        this.workspace.schemas().inport(
-            twomass.schemas().select(
-                "TWOMASS.dbo"
-                ),
-            "adql_twomass"
+        this.twoxmm = factories().jdbc().resources().create(
+            "twoxmm-resource",
+            "spring:RoeTWOXMM"
             );
-        this.workspace.schemas().inport(
-            twoxmm.schemas().select(
-                "TWOXMM.dbo"
-                ),
-            "adql_twoxmm"
+        this.bestdr7 = factories().jdbc().resources().create(
+            "bestdr7-resource",
+            "spring:RoeBestDR7"
             );
-        this.workspace.schemas().inport(
-            bestdr7.schemas().select(
-                "BestDR7.dbo"
-                ),
-            "adql_bestdr7"
+        this.combined = factories().jdbc().resources().create(
+            "combined-resource",
+            "spring:RoeTWOXMM"
+            );
+        this.combined.catalog(
+            JdbcResource.ALL_CATALOGS
             );
         }
     
-    /**
-     * Create an AdqlQuery and display the results.
-     * 
-     */
-    public AdqlQuery query(final String input)
-        {
-        return this.workspace.queries().create(
-            input
-            );
-        }
-
     /**
      * Debug display of a query.
      *
@@ -172,19 +130,26 @@ extends TestBase
     throws Exception
         {
         //
-        // Assign *different* OGSA resource IDs.
-        twomass.ogsaid(
-            "ogsa-twomass"
-            );
-        twoxmm.ogsaid(
-            "ogsa-twoxmm"
-            );
-        bestdr7.ogsaid(
-            "ogsa-bestdr7"
+        // Create our ADQL workspace.
+        AdqlResource workspace = factories().adql().resources().create(
+            "adql-workspace"
             );
         //
-        // Parse the query and check the results.
-        final AdqlQuery query = this.query(
+        // Import the JDBC tables into our workspace.
+        AdqlSchema schema = workspace.schemas().create(
+            "adql_twomass"
+            );
+        schema.tables().create(
+            this.twomass.schemas().select(
+                "TWOMASS",
+                "dbo"
+                ).tables().select(
+                    "twomass_psc"
+                    )
+            );
+        //
+        // Create the query and check the results.
+        final AdqlQuery query = workspace.queries().create(
             IMPORTED_000
             );
         assertEquals(
@@ -227,19 +192,34 @@ extends TestBase
     throws Exception
         {
         //
-        // Assign *different* OGSA resource IDs.
-        twomass.ogsaid(
-            "ogsa-twomass"
-            );
-        twoxmm.ogsaid(
-            "ogsa-twoxmm"
-            );
-        bestdr7.ogsaid(
-            "ogsa-bestdr7"
+        // Create our ADQL workspace.
+        AdqlResource workspace = factories().adql().resources().create(
+            "adql-workspace"
             );
         //
-        // Parse the query and check the results.
-        final AdqlQuery query = this.query(
+        // Import the JDBC tables into our workspace.
+        AdqlSchema a = workspace.schemas().create(
+            "adql_twomass"
+            );
+        a.tables().create(
+            this.twomass.schemas().select(
+                "TWOMASS",
+                "dbo"
+                ).tables().select(
+                    "twomass_psc"
+                    )
+            );
+        a.tables().create(
+            this.twomass.schemas().select(
+                "TWOMASS",
+                "dbo"
+                ).tables().select(
+                    "twomass_scn"
+                    )
+            );
+        //
+        // Create the query and check the results.
+        final AdqlQuery query = workspace.queries().create(
             IMPORTED_001
             );
         assertEquals(
@@ -289,19 +269,54 @@ extends TestBase
     throws Exception
         {
         //
-        // Assign *different* OGSA resource IDs.
-        twomass.ogsaid(
-            "ogsa-twomass"
-            );
-        twoxmm.ogsaid(
-            "ogsa-twoxmm"
-            );
-        bestdr7.ogsaid(
-            "ogsa-bestdr7"
+        // Create our ADQL workspace.
+        AdqlResource workspace = factories().adql().resources().create(
+            "adql-workspace"
             );
         //
-        // Parse the query and check the results.
-        final AdqlQuery query = this.query(
+        // Import the JDBC tables into our workspace.
+        AdqlSchema a = workspace.schemas().create(
+            "adql_twomass"
+            );
+        a.tables().create(
+            this.twomass.schemas().select(
+                "TWOMASS",
+                "dbo"
+                ).tables().select(
+                    "twomass_psc"
+                    )
+            );
+        a.tables().create(
+            this.twomass.schemas().select(
+                "TWOMASS",
+                "dbo"
+                ).tables().select(
+                    "twomass_scn"
+                    )
+            );
+        a.tables().create(
+            this.twomass.schemas().select(
+                "TWOMASS",
+                "dbo"
+                ).tables().select(
+                    "twomass_pscXBestDR7PhotoObjAll"
+                    )
+            );
+                
+        AdqlSchema b = workspace.schemas().create(
+            "adql_bestdr7"
+            );
+        b.tables().create(
+            this.bestdr7.schemas().select(
+                "BestDR7",
+                "dbo"
+                ).tables().select(
+                    "PhotoObjAll"
+                    )
+            );
+        //
+        // Create the query and check the results.
+        final AdqlQuery query = workspace.queries().create(
             IMPORTED_002
             );
         assertEquals(
@@ -333,19 +348,54 @@ extends TestBase
     throws Exception
         {
         //
-        // Assign the *same* OGSA resource IDs.
-        twomass.ogsaid(
-            "ogsa-shared"
-            );
-        twoxmm.ogsaid(
-            "ogsa-shared"
-            );
-        bestdr7.ogsaid(
-            "ogsa-shared"
+        // Create our ADQL workspace.
+        AdqlResource workspace = factories().adql().resources().create(
+            "adql-workspace"
             );
         //
-        // Parse the query and check the results.
-        final AdqlQuery query = this.query(
+        // Import the JDBC tables into our workspace.
+        AdqlSchema a = workspace.schemas().create(
+            "adql_twomass"
+            );
+        a.tables().create(
+            this.combined.schemas().select(
+                "TWOMASS",
+                "dbo"
+                ).tables().select(
+                    "twomass_psc"
+                    )
+            );
+        a.tables().create(
+            this.combined.schemas().select(
+                "TWOMASS",
+                "dbo"
+                ).tables().select(
+                    "twomass_scn"
+                    )
+            );
+        a.tables().create(
+            this.combined.schemas().select(
+                "TWOMASS",
+                "dbo"
+                ).tables().select(
+                    "twomass_pscXBestDR7PhotoObjAll"
+                    )
+            );
+                
+        AdqlSchema b = workspace.schemas().create(
+            "adql_bestdr7"
+            );
+        b.tables().create(
+            this.combined.schemas().select(
+                "BestDR7",
+                "dbo"
+                ).tables().select(
+                    "PhotoObjAll"
+                    )
+            );
+        //
+        // Create the query and check the results.
+        final AdqlQuery query = workspace.queries().create(
             IMPORTED_002
             );
         assertEquals(
@@ -354,111 +404,6 @@ extends TestBase
             );
         assertEquals(
             AdqlQuery.Mode.DIRECT,
-            query.mode()
-            );
-        assertEquals(
-            AdqlQuerySyntax.Status.VALID,
-            query.syntax().status()
-            );
-        assertIsNull(
-            query.syntax().error()
-            );
-        }
-
-    @Test
-    public void testImported004()
-    throws Exception
-        {
-        //
-        // Assign *different* OGSA resource IDs.
-        twomass.ogsaid(
-            "ogsa-twomass"
-            );
-        twoxmm.ogsaid(
-            "ogsa-twoxmm"
-            );
-        bestdr7.ogsaid(
-            "ogsa-bestdr7"
-            );
-        //
-        // Parse the query and display the results.
-        final AdqlQuery query = this.query(
-            IMPORTED_002
-            );
-        assertEquals(
-            AdqlQuery.Status.EDITING,
-            query.status()
-            );
-        assertEquals(
-            AdqlQuery.Mode.DISTRIBUTED,
-            query.mode()
-            );
-        assertEquals(
-            AdqlQuerySyntax.Status.VALID,
-            query.syntax().status()
-            );
-        assertIsNull(
-            query.syntax().error()
-            );
-        //
-        // Assign the *same* OGSA resource IDs.
-        twomass.ogsaid(
-            "ogsa-shared"
-            );
-        twoxmm.ogsaid(
-            "ogsa-shared"
-            );
-        bestdr7.ogsaid(
-            "ogsa-shared"
-            );
-        //
-        // Re-process the same query and check the results.
-        query.input(
-            null
-            );
-        query.input(
-            IMPORTED_002
-            );
-        assertEquals(
-            AdqlQuery.Status.EDITING,
-            query.status()
-            );
-        assertEquals(
-            AdqlQuery.Mode.DIRECT,
-            query.mode()
-            );
-        assertEquals(
-            AdqlQuerySyntax.Status.VALID,
-            query.syntax().status()
-            );
-        assertIsNull(
-            query.syntax().error()
-            );
-        //
-        // Assign *different* OGSA resource IDs.
-        twomass.ogsaid(
-            "ogsa-twomass"
-            );
-        twoxmm.ogsaid(
-            "ogsa-twoxmm"
-            );
-        bestdr7.ogsaid(
-            "ogsa-bestdr7"
-            );
-        //
-        // Re-process the same query and check the results.
-        query.input(
-            null
-            );
-        query.input(
-            IMPORTED_002
-            );
-        assertEquals(
-            AdqlQuery.Status.EDITING,
-            query.status()
-            );
-        assertEquals(
-            AdqlQuery.Mode.DISTRIBUTED,
             query.mode()
             );
         assertEquals(

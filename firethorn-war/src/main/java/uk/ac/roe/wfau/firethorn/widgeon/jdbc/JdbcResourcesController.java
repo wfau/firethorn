@@ -111,6 +111,12 @@ extends AbstractController
     public static final String CREATE_NAME = "jdbc.resource.create.name" ;
 
     /**
+     * MVC property for the create name.
+     *
+     */
+    public static final String CREATE_CATALOG = "jdbc.resource.create.catalog" ;
+
+    /**
      * MVC property for setting the connection URL.
      *
      */
@@ -295,6 +301,8 @@ extends AbstractController
         final String user,
         @RequestParam(value=CREATE_PASS, required=false)
         final String pass,
+        @RequestParam(value=CREATE_CATALOG, required=false)
+        final String catalog,
 
         final ModelAndView model
         ){
@@ -308,10 +316,13 @@ extends AbstractController
                 )
             );
         //
-        // TODO - temp fix to trigger scan
-        bean.entity().connection().status(
-                JdbcConnection.Status.ENABLED
+        // TODO - set the initial catalog
+        if (catalog != null)
+            {
+            bean.entity().catalog(
+                catalog
                 );
+            }
         return new ResponseEntity<JdbcResourceBean>(
             bean,
             new RedirectHeader(

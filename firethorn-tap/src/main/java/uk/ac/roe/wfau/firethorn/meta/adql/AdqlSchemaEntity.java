@@ -103,8 +103,21 @@ implements AdqlSchema
                 );
             }
 
-		@Override
-		public AdqlSchema inport(final AdqlResourceEntity parent, final BaseSchema<?, ?> base, final String name)
+        @Override
+        public AdqlSchema create(AdqlResourceEntity parent, String name, BaseTable<?, ?> base)
+            {
+            final AdqlSchema schema = this.create(
+                parent,
+                name
+                );
+            schema.tables().create(
+                base
+                );
+            return schema;
+            }
+        
+        @Override
+		public AdqlSchema create(final AdqlResourceEntity parent, final String name, final BaseSchema<?, ?> base)
 			{
 			final AdqlSchema schema = this.create(
 					parent,

@@ -20,6 +20,9 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 
+import org.hibernate.exception.spi.SQLExceptionConverter;
+import org.springframework.jdbc.support.SQLExceptionTranslator;
+
 /**
  * JDBC resource connection details.
  *
@@ -127,5 +130,18 @@ public interface JdbcConnection
      *
      */
     public void status(final Status status);
+
+    /**
+     * Our Spring SQLException translator.
+     *
+     */
+    public SQLExceptionTranslator translator();
+
+    /**
+     * Our Hibernate SQLException converter.
+     *
+     */
+    public SQLExceptionConverter converter();
+
 
     }

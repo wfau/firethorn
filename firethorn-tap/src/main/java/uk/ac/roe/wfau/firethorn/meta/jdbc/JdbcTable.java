@@ -82,7 +82,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          *
          */
         public JdbcColumn.Factory columns();
-
+        
         }
 
     @Override
@@ -108,10 +108,22 @@ extends BaseTable<JdbcTable, JdbcColumn>
          */
         public JdbcColumn create(final String name, final int type, final int size);
 
+        /**
+         * Update the columns.
+         * 
+         */
+        public void scan();
+
         }
     @Override
     public Columns columns();
 
+    /**
+     * Update the table.
+     * 
+     */
+    public void scan();
+    
     /**
      * JDBC table types.
      *

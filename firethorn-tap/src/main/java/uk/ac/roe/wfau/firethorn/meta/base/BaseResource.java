@@ -86,6 +86,7 @@ extends BaseComponent
          *
          */
         public Iterable<SchemaType> search(final String text);
+
         }
 
     /**

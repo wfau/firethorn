@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
@@ -66,12 +67,12 @@ public class JdbcConnectionTestCase
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
-            JdbcResource.JdbcProductType.PGSQL.alias(),
+            JdbcProductType.PGSQL.alias(),
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
-            JdbcResource.JdbcProductType.PGSQL,
-            JdbcResource.JdbcProductType.match(
+            JdbcProductType.PGSQL,
+            JdbcProductType.match(
                 resource.connection().metadata().getDatabaseProductName()
                 )
             );
@@ -108,12 +109,12 @@ public class JdbcConnectionTestCase
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
-            JdbcResource.JdbcProductType.MYSQL.alias(),
+            JdbcProductType.MYSQL.alias(),
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
-            JdbcResource.JdbcProductType.MYSQL,
-            JdbcResource.JdbcProductType.match(
+            JdbcProductType.MYSQL,
+            JdbcProductType.match(
                 resource.connection().metadata().getDatabaseProductName()
                 )
             );
@@ -150,39 +151,14 @@ public class JdbcConnectionTestCase
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
-            JdbcResource.JdbcProductType.MSSQL.alias(),
+            JdbcProductType.MSSQL.alias(),
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
-            JdbcResource.JdbcProductType.MSSQL,
-            JdbcResource.JdbcProductType.match(
+            JdbcProductType.MSSQL,
+            JdbcProductType.match(
                 resource.connection().metadata().getDatabaseProductName()
                 )
             );
         }
-/*
-    @Test
-    public void test004()
-    throws Exception
-        {
-        assertNotNull(
-            factories()
-            );
-        JdbcResource resource = factories().jdbc().resources().create(
-            unique("resource")
-            );
-        assertNotNull(
-            resource
-            );
-        resource.connection().url(
-            "spring:RoeTWOMASS"
-            //"spring:PgSqlLocalTest"
-            //"spring:MySqlLocalTest"
-            );
-        resource.inport();
-
-        display(resource);
-
-        }
-*/
     }

@@ -51,6 +51,10 @@ public abstract class BaseResourceEntity<SchemaType extends BaseSchema<SchemaTyp
     extends BaseComponentEntity
     implements BaseResource<SchemaType>
     {
+    /**
+     * Hibernate database table name.
+     *
+     */
     protected static final String DB_TABLE_NAME = "BaseResourceEntity";
 
     protected BaseResourceEntity()

@@ -80,8 +80,10 @@ implements EntityBean<JdbcTable>
                 );
             }
         }
+
     public String getFullname()
         {
         return entity().fullname().toString();
         }
-	}
+
+    }

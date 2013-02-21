@@ -17,6 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -27,9 +31,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -43,6 +50,7 @@ import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaTable;
  *
  *
  */
+@Slf4j
 @Entity()
 @Access(
     AccessType.FIELD
@@ -73,10 +81,16 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
     implements JdbcTable
     {
     /**
-     * Hibernate database table name.
+     * Hibernate table mapping.
      *
      */
     protected static final String DB_TABLE_NAME = "JdbcTableEntity";
+
+    /**
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String JDBC_TYPE_COL = "jdbctype" ;
 
     /**
      * Alias factory implementation.
@@ -280,6 +294,12 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
     @Override
     public JdbcTable.Columns columns()
         {
+        this.scan(false);
+        return columnsimpl();
+        }
+
+    public JdbcTable.Columns columnsimpl()
+        {
         return new JdbcTable.Columns()
             {
             @Override
@@ -323,14 +343,13 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
                     text
                     );
                 }
+            @Override
+            public void scan()
+                {
+                JdbcTableEntity.this.scan();
+                }
             };
         }
-
-    /**
-     * Hibernate database column name.
-     *
-     */
-    protected static final String JDBC_TYPE_COL = "jdbctype" ;
 
     @Basic(fetch = FetchType.EAGER)
     @Column(
@@ -365,5 +384,83 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
         return factories().jdbc().tables().aliases().alias(
             this
             );
+        }
+
+    @Override
+    public void scanimpl()
+        {
+        log.debug("scanimpl()");
+        final DatabaseMetaData metadata = resource().connection().metadata();
+        final JdbcProductType  product  = JdbcProductType.match(
+            metadata
+            );
+        // TODO - fix connection errors 
+        if (metadata != null)
+            {
+            try {
+                final ResultSet columns = metadata.getColumns(
+                    this.schema().catalog(),
+                    this.schema().schema(),
+                    this.name(),
+                    null
+                    );
+                while (columns.next())
+                    {
+                    final String ccname = columns.getString(JdbcMetadata.JDBC_META_TABLE_CAT);
+                    final String csname = columns.getString(JdbcMetadata.JDBC_META_TABLE_SCHEM);
+                    final String ctname = columns.getString(JdbcMetadata.JDBC_META_TABLE_NAME);
+                    final String colname = columns.getString(JdbcMetadata.JDBC_META_COLUMN_NAME);
+                    final int    coltype = columns.getInt(JdbcMetadata.JDBC_META_COLUMN_TYPE_TYPE);
+                    final int    colsize = columns.getInt(JdbcMetadata.JDBC_META_COLUMN_SIZE);
+                    log.debug(
+                        "Found column [{}][{}][{}][{}]",
+                        new Object[]{
+                            ccname,
+                            csname,
+                            ctname,
+                            colname
+                            }
+                        );
+                    JdbcColumn column = columnsimpl().select(
+                        colname
+                        );
+                    if (column != null)
+                        {
+                        column.sqlsize(
+                            colsize
+                            );
+                        column.sqltype(
+                            coltype
+                            );
+                        }
+                    else {
+                        column = columnsimpl().create(
+                            colname,
+                            coltype,
+                            colsize
+                            );
+                        }
+                    }
+    //
+    // TODO
+    // Reprocess the list disable missing ones ...
+    //                                  
+                scandate(
+                    new DateTime()
+                    );
+                scanflag(
+                    false
+                    );
+                }
+            catch (final SQLException ouch)
+                {
+                log.error("Exception reading JDBC table metadata [{}]", ouch.getMessage());
+                throw resource().connection().translator().translate(
+                    "Reading JDBC table metadata",
+                    null,
+                    ouch
+                    );
+                }
+            }
         }
     }

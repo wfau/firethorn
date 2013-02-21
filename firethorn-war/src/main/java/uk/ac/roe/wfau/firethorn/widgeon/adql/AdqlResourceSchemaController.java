@@ -35,6 +35,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
@@ -138,7 +139,7 @@ extends AbstractController
      */
     @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
     public AdqlResource resource(
-        @PathVariable("ident")
+        @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         ) throws NotFoundException {
         return factories().adql().resources().select(
@@ -275,13 +276,13 @@ extends AbstractController
         log.debug("jsonInport(String) [{}]", name);
         return response(
             new AdqlSchemaBean(
-                resource.schemas().inport(
+                resource.schemas().create(
+                    name,
                     factories().base().schema().select(
                         factories().base().schema().links().parse(
                             base
                             )
-                        ),
-                    name
+                        )
                     )
                 )
             );

@@ -100,4 +100,10 @@ extends BaseColumn<JdbcColumn>
      */
     public void sqlsize(final int size);
 
+    /**
+     * Update the column.
+     * 
+     */
+    public void scan();
+
     }

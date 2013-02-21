@@ -55,7 +55,8 @@ extends TestBase
         this.jdbcResource = factories().jdbc().resources().create(
             this.unique(
                 "base"
-                )
+                ),
+            "test:database"
             );
         }
 

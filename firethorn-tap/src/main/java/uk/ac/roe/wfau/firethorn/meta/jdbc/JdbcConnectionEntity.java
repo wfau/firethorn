@@ -63,6 +63,10 @@ public class JdbcConnectionEntity
     extends BaseObject
     implements JdbcConnection
     {
+    /**
+     * Hibernate column mapping.
+     * 
+     */
     protected static final String DB_JDBC_URL_COL    = "jdbcurl";
     protected static final String DB_JDBC_USER_COL   = "jdbcuser";
     protected static final String DB_JDBC_PASS_COL   = "jdbcpass";
@@ -75,12 +79,24 @@ public class JdbcConnectionEntity
      */
     protected static final SQLExceptionTranslator translator = new SQLExceptionSubclassTranslator();
 
+    @Override
+    public SQLExceptionTranslator translator()
+        {
+        return translator ;
+        }
+
     /**
      * Our Hibernate SQLException converter.
      *
      */
     protected static final SQLExceptionConverter converter = new StandardSQLExceptionConverter();
 
+    @Override
+    public SQLExceptionConverter converter()
+        {
+        return converter ;
+        }
+    
     public JdbcConnectionEntity()
         {
         }
@@ -225,6 +241,12 @@ public class JdbcConnectionEntity
     public static final String SPRING_URL_PREFIX = "spring:" ;
 
     /**
+     * JDBC connection URL prefix for a test resource.
+     *
+     */
+    public static final String TEST_URL_PREFIX = "test:" ;
+
+    /**
      * Our JDBC DataSource.
      *
      */
@@ -232,58 +254,108 @@ public class JdbcConnectionEntity
     private DataSource source ;
 
     /**
-     * Initialise our JDBC DataSource.
+     * Our JDBC DataSource.
      *
      */
-    protected synchronized DataSource source()
+    public DataSource source()
         {
+        return this.source;
+        }
+    
+    /**
+     * Initialise our JDBC DataSource and create a Connection.
+     * @todo Messed up and not thread safe at all.
+     * 
+     */
+    private synchronized Connection connect()
+        {
+        log.debug("connect()");
+
+        if (this.state == State.CLOSED)
+            {
+            log.debug("State is CLOSED, updating to READY");
+            this.state = State.READY;
+            }
+
         if (this.source == null)
             {
-            try {
-                if (this.url == null)
+            log.debug("Source is null, updating to INIT");
+            this.state = State.EMPTY;
+            }
+
+        if (this.state == State.EMPTY)
+            {
+            log.debug("State is INIT, initialising DataSource");
+            if (this.url == null)
+                {
+                this.state = State.INVALID;
+                throw new IllegalArgumentException(
+                    "JDBC connection URL required"
+                    );
+                }
+
+            else if (this.url.equals(""))
+                {
+                this.state = State.INVALID;
+                throw new IllegalArgumentException(
+                    "JDBC connection URL required"
+                    );
+                }
+
+            else if (this.url.startsWith(JDBC_URL_PREFIX))
+                {
+                if (this.driver != null)
                     {
-                    throw new IllegalArgumentException(
-                        "JDBC connection URL required"
-                        );
-                    }
-                else if (this.url.equals(""))
-                    {
-                    throw new IllegalArgumentException(
-                        "JDBC connection URL required"
-                        );
-                    }
-                else if (this.url.startsWith(JDBC_URL_PREFIX))
-                    {
-                    if (this.driver != null)
-                        {
-                        try {
-                            Class.forName(
-                                this.driver
-                                );
-                            }
-                        catch (final Exception ouch)
-                            {
-                            log.error("Unable to load JDBC driver [{}]", this.driver);
-                            throw new RuntimeException(
-                                ouch
-                                );
-                            }
+                    try {
+                        Class.forName(
+                            this.driver
+                            );
                         }
-                    this.source = new DriverManagerDataSource(
-                        this.url
-                        );
+                    catch (final Exception ouch)
+                        {
+                        this.state = State.FAILED;
+                        log.error("Unable to load JDBC driver [{}]", this.driver);
+                        throw new RuntimeException(
+                            ouch
+                            );
+                        }
                     }
-                else if (this.url.startsWith(JNDI_URL_PREFIX))
-                    {
+                this.source = new DriverManagerDataSource(
+                    this.url
+                    );
+                this.state = State.READY;
+                }
+
+            else if (this.url.startsWith(JNDI_URL_PREFIX))
+                {
+                try {
                     final DataSourceLookup resolver = new JndiDataSourceLookup();
                     this.source = resolver.getDataSource(
                         this.url.substring(
                             JNDI_URL_PREFIX.length()
                             )
                         );
+                    this.state = State.READY;
                     }
-                else if (this.url.startsWith(SPRING_URL_PREFIX))
+                catch (final DataSourceLookupFailureException ouch)
                     {
+                    this.state = State.FAILED;
+                    log.error("Unable to resolve DataSource [{}]", this.url);
+                    throw ouch;
+                    }
+                catch (final Exception ouch)
+                    {
+                    this.state = State.FAILED;
+                    log.error("Unable to resolve DataSource [{}]", this.url);
+                    throw new RuntimeException(
+                        ouch
+                        );
+                    }
+                }
+
+            else if (this.url.startsWith(SPRING_URL_PREFIX))
+                {
+                try {
                     final DataSourceLookup resolver = new BeanFactoryDataSourceLookup(
                         this.factories().spring().context()
                         );
@@ -292,37 +364,101 @@ public class JdbcConnectionEntity
                             SPRING_URL_PREFIX.length()
                             )
                         );
+                    this.state = State.READY;
                     }
-                else {
-                    log.error("Unexpected prefix for JDBC connection URL [{}]", this.url);
-                    throw new IllegalArgumentException(
-                        "Unexpected prefix for JDBC connection URL [" + this.url + "]"
+                catch (final DataSourceLookupFailureException ouch)
+                    {
+                    this.state = State.FAILED;
+                    log.error("Unable to resolve DataSource [{}]", this.url);
+                    throw ouch;
+                    }
+                catch (final Exception ouch)
+                    {
+                    this.state = State.FAILED;
+                    log.error("Unable to resolve DataSource [{}]", this.url);
+                    throw new RuntimeException(
+                        ouch
                         );
                     }
                 }
-            catch (final DataSourceLookupFailureException ouch)
+
+            else if (this.url.startsWith(TEST_URL_PREFIX))
                 {
-                log.error("Unable to locate DataSource [{}]", this.url);
-                throw ouch;
+                this.source = null ;
+                this.state  = State.READY;
+                }
+
+            else {
+                this.state = State.INVALID;
+                log.error("Unexpected prefix for JDBC connection URL [{}]", this.url);
+                throw new IllegalArgumentException(
+                    "Unexpected prefix for JDBC connection URL [" + this.url + "]"
+                    );
                 }
             }
-        return this.source ;
+        
+        if (this.state == State.READY)
+            {
+            log.debug("State is READY, initialising Connection");
+            if (this.source == null)
+                {
+                log.error("Null DataSource when state is READY");
+                this.state = State.INVALID;
+                }
+            else {
+                if (this.user != null)
+                    {
+                    try {
+                        Connection connection = this.source.getConnection(
+                            this.user,
+                            this.pass
+                            );
+                        state(State.CONNECTED);
+                        return connection;
+                        }
+                    catch (final SQLException ouch)
+                        {
+                        state(State.FAILED);
+                        throw new JdbcConnectionFailedException(
+                            ouch
+                            );
+                        }
+                    }
+                else {
+                    try {
+                        Connection connection = this.source.getConnection();
+                        state(State.CONNECTED);
+                        return connection ;
+                        }
+                    catch (final SQLException ouch)
+                        {
+                        state(State.FAILED);
+                        throw new JdbcConnectionFailedException(
+                            ouch
+                            );
+                        }
+                    }
+                }
+            }
+        return null ;
         }
 
+    /*
+     * ThreadLocal database Connection.
+     *
+     */
     @Transient
     private final ThreadLocal<Connection> local = new ThreadLocal<Connection>()
         {
         @Override
         public Connection get()
             {
-            //log.debug("ThreadLocal<Connection>.get()");
             return super.get();
             }
 
         @Override
         public void set(final Connection connection)
             {
-            //log.debug("ThreadLocal<Connection>.set()");
             super.set(
                 connection
                 );
@@ -331,25 +467,7 @@ public class JdbcConnectionEntity
         @Override
         protected Connection initialValue()
             {
-            //log.debug("ThreadLocal<Connection>.initialValue()");
-            try {
-                if (user() != null)
-                    {
-                    return source().getConnection(
-                        user(),
-                        pass()
-                        );
-                    }
-                else {
-                    return source().getConnection() ;
-                    }
-                }
-            catch (final SQLException ouch)
-                {
-                throw new JdbcConnectionFailedException(
-                    ouch
-                    );
-                }
+            return connect();
             }
         };
 
@@ -359,43 +477,42 @@ public class JdbcConnectionEntity
      */
     protected synchronized void reset()
         {
-        //log.debug("reset()");
+        log.debug("reset()");
         this.source = null ;
+        this.state = State.EMPTY; 
         this.local.remove();
         }
 
     @Override
     public Connection open()
         {
-        return this.local.get();
-        }
-
-    @Override
-    public DatabaseMetaData metadata()
-        {
-        try {
-            return this.local.get().getMetaData();
-            }
-        catch (final SQLException ouch)
+        log.debug("open()");
+        synchronized (this.local)
             {
-            throw new JdbcMetadataAccessException(
-                ouch
-                );
+            return this.local.get();
             }
         }
 
     @Override
     public void close()
         {
+        log.debug("close()");
         synchronized (this.local)
             {
             try {
-                // TODO Need to be able to 'peek' at the connection.
-                // Otherwise, if the connection has failed, this just tries to open it again.
-                this.local.get().close();
+                if (this.state == State.CONNECTED)
+                    {
+                    Connection connection = this.local.get();
+                    if (connection != null)
+                        {
+                        connection.close();
+                        }
+                    this.state = State.CLOSED;
+                    }
                 }
             catch (final Throwable ouch)
                 {
+                this.state = State.FAILED;
                 log.error("Error closing database connection [{}]", ouch.getMessage());
                 }
             finally {
@@ -405,16 +522,43 @@ public class JdbcConnectionEntity
         }
 
     @Override
+    public DatabaseMetaData metadata()
+        {
+        Connection connection = open();
+        if (connection != null)
+            {
+            try {
+                return connection.getMetaData();
+                }
+            catch (final SQLException ouch)
+                {
+                log.warn("Exception fetching JDBC metadata [{}]", ouch.getMessage());
+                throw new JdbcMetadataAccessException(
+                    ouch
+                    );
+                }
+            }
+        return null ;
+        }
+
+    @Override
     public String catalog()
         {
-        try {
-            return this.local.get().getCatalog();
-            }
-        catch(final Exception ouch)
+        Connection connection = open();
+        if (connection != null)
             {
-            //log.error("Exception reading database metadata", ouch);
-            return null ;
+            try {
+                return connection.getCatalog();
+                }
+            catch (final SQLException ouch)
+                {
+                log.warn("Exception fetching JDBC catalog name [{}]", ouch.getMessage());
+                throw new JdbcMetadataAccessException(
+                    ouch
+                    );
+                }
             }
+        return null ;
         }
 
     @Override
@@ -428,14 +572,17 @@ public class JdbcConnectionEntity
                 {
                 catalogs.add(
                     results.getString(
-                        JdbcResource.JDBC_META_TABLE_CAT
+                        JdbcMetadata.JDBC_META_TABLE_CAT
                         )
                     );
                 }
             }
         catch(final SQLException ouch)
             {
-            log.error("Exception reading database metadata [{}]", ouch.getMessage());
+            log.warn("Exception fetching JDBC catalog list [{}]", ouch.getMessage());
+            throw new JdbcMetadataAccessException(
+                ouch
+                );
             }
         return catalogs;
         }
@@ -454,7 +601,6 @@ public class JdbcConnectionEntity
         EnumType.STRING
         )
     private Status status = Status.CREATED;
-
     @Override
     public Status status()
         {
@@ -462,16 +608,16 @@ public class JdbcConnectionEntity
         }
 
     @Override
-    public void status(final Status update)
+    public void status(final Status value)
         {
-        switch(update)
+        switch(value)
             {
             case ENABLED:
                 this.status = Status.ENABLED;
                 if (this.parent != null)
                     {
                     try {
-                        this.parent.inport();
+                        this.parent.scan();
                         }
                     catch (final RuntimeException ouch)
                         {
@@ -485,8 +631,49 @@ public class JdbcConnectionEntity
                 break ;
             default :
                 throw new IllegalArgumentException(
-                    "Invalid status update [" + update.name() + "]"
+                    "Invalid status update [" + value.name() + "]"
                     );
             }
+        }
+
+    /**
+     * This connection state.
+     * 
+     */
+    public enum State
+        {
+        EMPTY(),
+        RESET(),
+        READY(),
+        CONNECTED(),
+        CLOSED(),
+        FAILED(),
+        INVALID(),
+        UNKNOWN();
+        }
+
+    /**
+     * The connection state.
+     * 
+     */
+    @Transient
+    private State state = State.EMPTY ;
+
+    /**
+     * The connection state.
+     * 
+     */
+    public State state()
+        {
+        return this.state;
+        }
+
+    /**
+     * The connection state.
+     * 
+     */
+    public void state(State state)
+        {
+        this.state = state ;
         }
     }

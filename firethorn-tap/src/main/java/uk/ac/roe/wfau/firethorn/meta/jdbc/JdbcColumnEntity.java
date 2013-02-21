@@ -27,6 +27,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
@@ -44,6 +46,7 @@ import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaColumn;
  *
  *
  */
+@Slf4j
 @Entity()
 @Access(
     AccessType.FIELD
@@ -77,7 +80,18 @@ public class JdbcColumnEntity
     extends BaseColumnEntity<JdbcColumn>
     implements JdbcColumn
     {
+    /**
+     * Hibernate table mapping.
+     *
+     */
     protected static final String DB_TABLE_NAME = "JdbcColumnEntity";
+
+    /**
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String SQL_TYPE_COL = "sqltype" ;
+    protected static final String SQL_SIZE_COL = "sqlsize" ;
 
     /**
      * Column factory implementation.
@@ -254,20 +268,6 @@ public class JdbcColumnEntity
         return this.name();
         }
 
-    @Override
-    public String link()
-        {
-        return factories().jdbc().columns().links().link(
-            this
-            );
-        }
-
-    /**
-     * Metadata database column name.
-     *
-     */
-    protected static final String SQL_TYPE_COL = "sqltype" ;
-
     @Basic(fetch = FetchType.EAGER)
     @Column(
         name = SQL_TYPE_COL,
@@ -287,12 +287,6 @@ public class JdbcColumnEntity
         this.sqltype = type;
         }
 
-    /**
-     * Metadata database column name.
-     *
-     */
-    protected static final String SQL_SIZE_COL = "sqlsize" ;
-
     @Basic(fetch = FetchType.EAGER)
     @Column(
         name = SQL_SIZE_COL,
@@ -310,5 +304,19 @@ public class JdbcColumnEntity
     public void sqlsize(final int size)
         {
         this.sqlsize = size;
+        }
+
+    @Override
+    public String link()
+        {
+        return factories().jdbc().columns().links().link(
+            this
+            );
+        }
+
+    @Override
+    public void scanimpl()
+        {
+        log.debug("scanimpl()");
         }
     }

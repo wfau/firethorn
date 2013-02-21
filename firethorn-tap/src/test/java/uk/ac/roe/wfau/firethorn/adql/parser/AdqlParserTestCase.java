@@ -317,11 +317,13 @@ extends TestBase
     throws Exception
         {
     	final JdbcResource jdbcResource = factories().jdbc().resources().create(
-			"jdbc_resource"
+			"jdbc_resource",
+			"test:database"
 			);
     	//
         // Create base catalog, schema and table.
     	jdbcResource.schemas().create(
+            "jdbc_catalog",
             "jdbc_schema"
             ).tables().create(
                 "jdbc_table"
@@ -329,6 +331,7 @@ extends TestBase
         //
         // Create the columns.
     	jdbcResource.schemas().select(
+            "jdbc_catalog",
             "jdbc_schema"
             ).tables().select(
                 "jdbc_table"
@@ -337,6 +340,7 @@ extends TestBase
                     );
 
     	jdbcResource.schemas().select(
+            "jdbc_catalog",
             "jdbc_schema"
             ).tables().select(
                 "jdbc_table"
@@ -345,6 +349,7 @@ extends TestBase
                     );
 
     	jdbcResource.schemas().select(
+            "jdbc_catalog",
             "jdbc_schema"
             ).tables().select(
                 "jdbc_table"
@@ -355,11 +360,12 @@ extends TestBase
         //
         // Create our ADQL resource.
         final AdqlResource adqlResource = factories().adql().resources().create("test");
-        adqlResource.schemas().inport(
+        adqlResource.schemas().create(
+                "adql_schema",
         		jdbcResource.schemas().select(
+                    "jdbc_catalog",
                     "jdbc_schema"
-                    ),
-        		"adql_schema"
+                    )
         		);
         //
         // Change the table name.

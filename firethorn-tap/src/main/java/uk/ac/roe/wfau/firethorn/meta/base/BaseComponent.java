@@ -155,4 +155,11 @@ extends Entity
             return this.status;
             }
         }
+
+    /**
+     * Update the metadata for this component.
+     * 
+    public void inport();
+     */
+
     }

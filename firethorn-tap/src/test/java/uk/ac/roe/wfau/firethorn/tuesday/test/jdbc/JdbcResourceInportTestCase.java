@@ -38,17 +38,21 @@ public class JdbcResourceInportTestCase
     extends JdbcResourceTestThing
     {
 
-    public JdbcResource inport(final String catalog)
+    public JdbcResource create(final String catalog)
     throws Exception
         {
         log.debug("Catalog [{}]",catalog);
-        final String url = "jdbc:jtds:sqlserver://localhost:1433/" + catalog ;
 
         final JdbcResource resource = factories().jdbc().resources().create(
+            unique(
+                "resource"
+                ),
             catalog
             );
         resource.connection().url(
-            url
+            config().getProperty(
+                "firethorn.wfau.base"
+                ) + "/" + catalog
             );
         resource.connection().user(
             config().getProperty(
@@ -61,7 +65,7 @@ public class JdbcResourceInportTestCase
                 )
             );
         try {
-            resource.inport();
+            resource.scan();
             }
         catch(final Exception ouch)
             {
@@ -78,7 +82,7 @@ public class JdbcResourceInportTestCase
     throws Exception
         {
         display(
-            inport(
+            create(
                 "WORLDR2"
                 )
             );
@@ -89,23 +93,29 @@ public class JdbcResourceInportTestCase
     throws Exception
         {
         final JdbcConnection connection = new JdbcConnectionEntity(
-            "spring:RoeLiveData"
+            "spring:RoeTWOMASS"
             );
         final List<JdbcResource> resources = new ArrayList<JdbcResource>();
 
         for (final String catalog : connection.catalogs())
             {
             resources.add(
-                inport(
+                create(
                     catalog
                     )
                 );
             }
         for (final JdbcResource resource : resources)
             {
-            display(
-                resource
-                );
+            try {
+                display(
+                    resource
+                    );
+                }
+            catch(Exception ouch)
+                {
+                
+                }
             }
         }
     }

@@ -38,16 +38,31 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
  */
 @Slf4j
 @Controller
-@RequestMapping(TableMappingLinkFactory.TABLE_PATH)
+@RequestMapping(TableMappingController.TABLE_PATH)
 public class TableMappingController
     extends AbstractController
     {
+    public static final String ALIAS_FIELD = "alias" ;
+    public static final String ALIAS_TOKEN = "{alias}" ;
+    public static final String ALIAS_REGEX = "\\{alias\\}" ;
 
+    /**
+     * The URI path for the service.
+     *
+     */
+    public static final String SERVICE_PATH = "/meta/table";
+
+    /**
+     * The URI path for a table.
+     *
+     */
+    public static final String TABLE_PATH = SERVICE_PATH + "/" + ALIAS_TOKEN ;
+    
     @Override
     public Path path()
         {
         return path(
-            TableMappingLinkFactory.TABLE_PATH
+            TableMappingController.TABLE_PATH
             );
         }
 
@@ -85,7 +100,7 @@ public class TableMappingController
      */
     @ModelAttribute(TableMappingController.TABLE_ENTITY)
     public BaseTable<?,?> entity(
-        @PathVariable("alias")
+        @PathVariable(TableMappingController.ALIAS_FIELD)
         final String alias
         ) throws NotFoundException {
         log.debug("table() [{}]", alias);

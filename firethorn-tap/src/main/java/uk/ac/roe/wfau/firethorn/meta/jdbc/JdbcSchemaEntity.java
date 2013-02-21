@@ -17,17 +17,26 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -40,6 +49,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
  *
  *
  */
+@Slf4j
 @Entity()
 @Access(
     AccessType.FIELD
@@ -52,6 +62,10 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
         @NamedQuery(
             name  = "JdbcSchema-select-parent",
             query = "FROM JdbcSchemaEntity WHERE parent = :parent ORDER BY name asc, ident desc"
+            ),
+        @NamedQuery(
+            name  = "JdbcSchema-select-parent.catalog.schema",
+            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (catalog = :catalog) AND (schema = :schema)) ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
             name  = "JdbcSchema-select-parent.name",
@@ -67,7 +81,18 @@ public class JdbcSchemaEntity
     extends BaseSchemaEntity<JdbcSchema, JdbcTable>
     implements JdbcSchema
     {
+    /**
+     * Hibernate table mapping.
+     * 
+     */
     protected static final String DB_TABLE_NAME = "JdbcSchemaEntity";
+
+    /**
+     * Hibernate column mapping.
+     * 
+     */
+    protected static final String DB_JDBC_SCHEMA_COL = "jdbcschema";
+    protected static final String DB_JDBC_COLUMN_COL = "jdbccolumn";
 
     /**
      * Schema factory implementation.
@@ -86,13 +111,45 @@ public class JdbcSchemaEntity
             }
 
         @Override
+        public String name(final String catalog, final String schema)
+            {
+            if (catalog == null)
+                {
+                return schema.trim() ;
+                }
+            else if (schema == null)
+                {
+                return catalog.trim() ;
+                }
+            else {
+                return catalog.trim() + "." + schema.trim() ;
+                }
+            }
+
+        @Override
         @CreateEntityMethod
-        public JdbcSchema create(final JdbcResource parent, final String name)
+        public JdbcSchema create(final JdbcResource parent, final String schema)
+            {
+            return this.create(
+                parent,
+                null,
+                schema
+                );
+            }
+
+        @Override
+        @CreateEntityMethod
+        public JdbcSchema create(final JdbcResource parent, final String catalog, final String schema)
             {
             return this.insert(
                 new JdbcSchemaEntity(
                     parent,
-                    name
+                    catalog,
+                    schema,
+                    name(
+                        catalog,
+                        schema
+                        )
                     )
                 );
             }
@@ -111,6 +168,26 @@ public class JdbcSchemaEntity
                 );
             }
 
+        @Override
+        @SelectEntityMethod
+        public JdbcSchema select(final JdbcResource parent, final String catalog, final String schema)
+            {
+            return super.first(
+                super.query(
+                    "JdbcSchema-select-parent.catalog.schema"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setString(
+                        "catalog",
+                        catalog
+                    ).setString(
+                        "schema",
+                        schema
+                    )
+                );
+            }
+        
         @Override
         @SelectEntityMethod
         public JdbcSchema select(final JdbcResource parent, final String name)
@@ -177,12 +254,14 @@ public class JdbcSchemaEntity
         super();
         }
 
-    protected JdbcSchemaEntity(final JdbcResource resource, final String name)
+    protected JdbcSchemaEntity(final JdbcResource resource, final String catalog, final String schema, final String name)
         {
         super(resource, name);
+        this.catalog  = catalog ;
+        this.schema   = schema  ;
         this.resource = resource;
         }
-
+    
     @Index(
         name=DB_TABLE_NAME + "IndexByParent"
         )
@@ -194,7 +273,7 @@ public class JdbcSchemaEntity
         name = DB_PARENT_COL,
         unique = false,
         nullable = false,
-        updatable = true // TODO - false
+        updatable = false
         )
     private JdbcResource resource;
     @Override
@@ -202,19 +281,43 @@ public class JdbcSchemaEntity
         {
         return this.resource;
         }
-    /**
-     * Test method.
-     *
-     */
-    public void resource(final JdbcResource resource)
-        {
-        this.resource = resource;
-        super.resource(resource);
-        this.update();
-        }
 
+    @Basic(fetch = FetchType.EAGER)
+    @Column(
+        name = DB_JDBC_COLUMN_COL,
+        unique = false,
+        nullable = true,
+        updatable = false
+        )
+    private String catalog;
+    @Override
+    public  String catalog()
+        {
+        return this.catalog;
+        }
+    
+    @Basic(fetch = FetchType.EAGER)
+    @Column(
+        name = DB_JDBC_SCHEMA_COL,
+        unique = false,
+        nullable = false,
+        updatable = false
+        )
+    private String schema; 
+    @Override
+    public  String schema()
+        {
+        return this.schema;
+        }
+    
     @Override
     public JdbcSchema.Tables tables()
+        {
+        this.scan(false);
+        return tablesimpl();
+        }
+
+    protected JdbcSchema.Tables tablesimpl()
         {
         return new JdbcSchema.Tables()
             {
@@ -258,6 +361,11 @@ public class JdbcSchemaEntity
                     text
                     );
                 }
+            @Override
+            public void scan()
+                {
+                JdbcSchemaEntity.this.scan();
+                }
             };
         }
 
@@ -267,5 +375,79 @@ public class JdbcSchemaEntity
         return factories().jdbc().schemas().links().link(
             this
             );
+        }
+    
+    @Override
+    protected void scanimpl()
+        {
+        log.debug("scanimpl()");
+        final DatabaseMetaData metadata = resource().connection().metadata();
+        final JdbcProductType  product  = JdbcProductType.match(
+            metadata
+            );
+        // TODO - fix connection errors 
+        if (metadata != null)
+            {
+            try {
+                final ResultSet tables = metadata.getTables(
+                    this.catalog(),
+                    this.schema(),
+                    null, // tab
+                    new String[]
+                        {
+                        JdbcMetadata.JDBC_META_TABLE_TYPE_TABLE,
+                        JdbcMetadata.JDBC_META_TABLE_TYPE_VIEW
+                        }
+                    );
+    
+                while (tables.next())
+                    {
+                    final String tcname = tables.getString(JdbcMetadata.JDBC_META_TABLE_CAT);
+                    final String tsname = tables.getString(JdbcMetadata.JDBC_META_TABLE_SCHEM);
+                    final String ttname = tables.getString(JdbcMetadata.JDBC_META_TABLE_NAME);
+                    final String tttype = tables.getString(JdbcMetadata.JDBC_META_TABLE_TYPE);
+                    log.debug("Found table [{}.{}.{}]", new Object[]{tcname, tsname, ttname});
+    
+                    JdbcTable table = tablesimpl().select(
+                        ttname
+                        );
+                    if (table != null)
+                        {
+                        table.jdbctype(
+                            JdbcTable.JdbcTableType.match(
+                                tttype
+                                )
+                            );
+                        }
+                    else {
+                        table = tablesimpl().create(
+                            ttname,
+                            JdbcTable.JdbcTableType.match(
+                                tttype
+                                )
+                            );
+                        }
+                    }
+    //
+    // TODO
+    // Reprocess the list disable missing ones ...
+    //                         
+                scandate(
+                    new DateTime()
+                    );
+                scanflag(
+                    false
+                    );
+                }
+            catch (final SQLException ouch)
+                {
+                log.error("Exception reading JDBC schema metadata [{}]", ouch.getMessage());
+                throw resource().connection().translator().translate(
+                    "Reading JDBC resource metadata",
+                    null,
+                    ouch
+                    );
+                }
+            }
         }
     }

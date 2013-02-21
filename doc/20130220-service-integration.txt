@@ -1,0 +1,404 @@
+
+# ------------------------------------------------------------
+# Integrating the services together ...
+#
+
+FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
+FIRETHORN_NAME=devel
+FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
+
+# ------------------------------------------------------------
+# Metadata webservice ..
+#
+
+    pushd "${FIRETHORN_CODE?}/firethorn-tap"
+
+        mvn clean install
+        
+    popd
+
+    pushd "${FIRETHORN_CODE?}/firethorn-war"
+
+        mvn clean tomcat7:run
+        
+    popd
+
+# ------------------------------------------------------------
+# Command line tests ...
+#
+
+    # -------- --------
+    # REST wrapper for curl
+    # https://github.com/micha/resty
+
+    # -------- --------
+    # AWK for JSON
+    # https://github.com/micha/jsawk
+
+
+    yum install perl-JSON
+
+
+    base=$(mktemp --directory)
+    pushd ${base?}
+
+        #
+        # Install the 'resty' wrapper for curl.
+        curl -# -L http://github.com/micha/resty/raw/master/resty > resty
+        source ./resty
+
+        #
+        # Install the 'pp' pretty print script.
+        curl -# -L http://github.com/micha/resty/raw/master/pp > pp
+        chmod a+x ./pp
+
+        #
+        # Set the base URL and options.
+        metahostname=localhost
+        metahostport=8080
+        metabasename="http://${metahostname?}:${metahostport?}/firethorn"
+        
+        #
+        # Unique name generator 
+        unique()
+            {
+            date '+%Y%m%d-%H%M%S%N'
+            }
+
+        #
+        # Create a 'define' function for setting heredoc variables.
+        # http://stackoverflow.com/questions/1167746/how-to-assign-a-heredoc-value-to-a-variable-in-bash
+        define()
+            {
+            IFS='\n' read -r -d '' ${1} || true;
+            }
+
+        #
+        # Initialise our REST client.
+        resty "${metabasename?}" -H 'Accept: application/json'
+
+        # -------- --------
+        # JDBC ....
+
+        #
+        # Create our JDBC TWOMASS resource.
+        POST "/jdbc/resource/create" \
+            -d "jdbc.resource.create.url=spring:RoeTWOMASS" \
+            -d "jdbc.resource.create.name=jdbc-twomass" \
+            | ./pp
+
+
+        #
+        # Create our JDBC UKIDSS resource.
+        POST "/jdbc/resource/create" \
+            -d "jdbc.resource.create.url=spring:RoeUKIDSS" \
+            -d "jdbc.resource.create.name=jdbc-ukidssdr5" \
+            | ./pp
+
+        #
+        # List the JDBC TWOMASS schema.
+        GET "/jdbc/resource/1/schemas/select" | ./pp
+
+        #
+        # List the JDBC UKIDSS schema.
+        GET "/jdbc/resource/2/schemas/select" | ./pp
+
+        #
+        # List the JDBC TWOMASS tables.
+        GET "/jdbc/schema/1/tables/select" | ./pp
+
+        #
+        # List the JDBC UKIDSS tables.
+        GET "/jdbc/schema/2/tables/select" | ./pp
+
+        #
+        # Get the details for the twomass_psc table.
+        GET "/jdbc/schema/1/tables/select" \
+            -q "jdbc.schema.table.select.name=twomass_psc" \
+            | ./pp
+
+# http://localhost:8080/firethorn/jdbc/table/5
+
+        #
+        # Get the details for the gcsPointSource table.
+        GET "/jdbc/schema/2/tables/select" \
+            -q "jdbc.schema.table.select.name=gcsPointSource" \
+            | ./pp
+
+# http://localhost:8080/firethorn/jdbc/table/120
+
+        #
+        # Get the details for the gcsSourceXtwomass_psc table.
+        GET "/jdbc/schema/2/tables/select" \
+            -q "jdbc.schema.table.select.name=gcsSourceXtwomass_psc" \
+            | ./pp
+
+# http://localhost:8080/firethorn/jdbc/table/41
+
+
+        # -------- --------
+        # ADQL ....
+
+        #
+        # Create a new ADQL resource.
+        POST "/adql/resource/create" \
+            --data "adql.resource.create.name=adql-workspace" \
+            | ./pp
+
+        #
+        # Create a new ADQL schema.
+        POST "/adql/resource/3/schemas/create" \
+            --data "adql.resource.schema.create.name=adql_schema" \
+            | ./pp
+
+        #
+        # Import the twomass table into the ADQL schema.
+        POST "/adql/schema/3/tables/import" \
+            --data "adql.schema.table.import.base=${metabasename?}/jdbc/table/5" \
+            | ./pp
+
+# http://localhost:8080/firethorn/adql/table/140
+
+        #
+        # Import the ukidss tables into the ADQL schema.
+        POST "/adql/schema/3/tables/import" \
+            --data "adql.schema.table.import.base=${metabasename?}/jdbc/table/41" \
+            | ./pp
+
+# http://localhost:8080/firethorn/adql/table/141
+
+        POST "/adql/schema/3/tables/import" \
+            --data "adql.schema.table.import.base=${metabasename?}/jdbc/table/120" \
+            | ./pp
+
+# http://localhost:8080/firethorn/adql/table/142
+
+        #
+        # Check the ADQL tables.
+        GET "/adql/schema/3/tables/select" | ./pp
+
+#
+# Create our ADQL query.
+
+define query << 'EOF'
+
+    SELECT
+        twomass.ra AS tmra,
+        ukidss.ra  AS ukra,
+        (twomass.ra - ukidss.ra) AS difra,
+        twomass.dec AS tmdec,
+        ukidss.dec  AS ukdec,
+        (twomass.ra - ukidss.ra) AS difdec,
+        neighbour.distanceMins AS dist
+    FROM
+        adql_schema.twomass_psc AS twomass,
+        adql_schema.gcsPointSource AS ukidss,
+        adql_schema.gcsSourceXtwomass_psc AS neighbour
+    WHERE
+        twomass.ra  >= '55.0'
+    AND
+        twomass.ra  <= '55.9'
+    AND
+        twomass.dec >= '20.0'
+    AND
+        twomass.dec <= '22.9'
+    AND
+        ukidss.ra  >= '55.0'
+    AND
+        ukidss.ra  <= '55.9'
+    AND
+        ukidss.dec >= '20.0'
+    AND
+        ukidss.dec <= '22.9'
+    AND
+        neighbour.masterObjID = ukidss.sourceID
+    AND
+        neighbour.slaveObjID = twomass.pts_key
+    AND
+        neighbour.distanceMins < 1E-3
+EOF
+
+        #
+        # Create the ADQL query.
+        POST "/adql/resource/3/queries/create" \
+            --data-urlencode "adql.resource.query.create.name=test-query" \
+            --data-urlencode "adql.resource.query.create.query=${query?}" \
+            | ./pp
+
+        {
+        "targets" :
+            [
+            "http://localhost:8080/firethorn/jdbc/resource/1",
+            "http://localhost:8080/firethorn/jdbc/resource/2"
+            ],
+       "status" : "EDITING",
+       "mode" : "DISTRIBUTED",
+       "name" : "test-query",
+       "ident" : "http://localhost:8080/firethorn/adql/query/3",
+       "modified" : "2013-02-21T02:31:50.163",
+       "created" : "2013-02-21T02:31:48.538",
+       "resource" : "http://localhost:8080/firethorn/adql/resource/3",
+       "type" : "http://data.metagrid.co.uk/wfau/firethorn/types/adql-query-1.0.json"
+       "input" : "
+            SELECT
+                twomass.ra AS tmra,
+                ukidss.ra  AS ukra,
+                (twomass.ra - ukidss.ra) AS difra,
+                twomass.dec AS tmdec,
+                ukidss.dec  AS ukdec,
+                (twomass.ra - ukidss.ra) AS difdec,
+                neighbour.distanceMins AS dist
+            FROM
+                adql_schema.twomass_psc AS twomass,
+                adql_schema.gcsPointSource AS ukidss,
+                adql_schema.gcsSourceXtwomass_psc AS neighbour
+            WHERE
+                twomass.ra  >= '55.0'
+            AND
+                twomass.ra  <= '55.9'
+            AND
+                twomass.dec >= '20.0'
+            AND
+                twomass.dec <= '22.9'
+            AND
+                ukidss.ra  >= '55.0'
+            AND
+                ukidss.ra  <= '55.9'
+            AND
+                ukidss.dec >= '20.0'
+            AND
+                ukidss.dec <= '22.9'
+            AND
+                neighbour.masterObjID = ukidss.sourceID
+            AND
+                neighbour.slaveObjID = twomass.pts_key
+            AND
+                neighbour.distanceMins < 1E-3
+            ",
+       "osql" : "
+            SELECT
+                twomass.ra AS tmra,
+                ukidss.ra AS ukra,
+                twomass.ra-ukidss.ra AS difra,
+                twomass.dec AS tmdec,
+                ukidss.dec AS ukdec,
+                twomass.ra-ukidss.ra AS difdec,
+                neighbour.distanceMins AS dist
+            FROM
+                JDBC_5 AS twomass
+            CROSS JOIN
+                JDBC_120 AS ukidss
+            CROSS JOIN
+                JDBC_41 AS neighbour
+            WHERE
+                twomass.ra >= '55.0'
+            AND
+                twomass.ra <= '55.9'
+            AND
+                twomass.dec >= '20.0'
+            AND
+                twomass.dec <= '22.9'
+            AND
+                ukidss.ra >= '55.0'
+            AND
+                ukidss.ra <= '55.9'
+            AND
+                ukidss.dec >= '20.0'
+            AND
+                ukidss.dec <= '22.9'
+            AND
+                neighbour.masterObjID = ukidss.sourceID
+            AND
+                neighbour.slaveObjID = twomass.pts_key
+            AND
+                neighbour.distanceMins < 1E-3
+            ",
+       "adql" : "
+            SELECT
+                twomass.ra AS tmra,
+                ukidss.ra AS ukra,
+                twomass.ra-ukidss.ra AS difra,
+                twomass.dec AS tmdec,
+                ukidss.dec AS ukdec,
+                twomass.ra-ukidss.ra AS difdec,
+                neighbour.distanceMins AS dist
+            FROM
+                adql_schema.twomass_psc AS twomass
+            CROSS JOIN
+                adql_schema.gcsPointSource AS ukidss
+            CROSS JOIN
+                adql_schema.gcsSourceXtwomass_psc AS neighbour
+            WHERE
+                twomass.ra >= '55.0'
+            AND
+                twomass.ra <= '55.9'
+            AND
+                twomass.dec >= '20.0'
+            AND
+                twomass.dec <= '22.9'
+            AND
+                ukidss.ra >= '55.0'
+            AND
+                ukidss.ra <= '55.9'
+            AND
+                ukidss.dec >= '20.0'
+            AND
+                ukidss.dec <= '22.9'
+            AND
+                neighbour.masterObjID = ukidss.sourceID
+            AND
+                neighbour.slaveObjID = twomass.pts_key
+            AND
+                neighbour.distanceMins < 1E-3
+            ",
+        }
+
+# ----------------------------------------------------------------------------------------
+#
+
+        GET "/meta/table/JDBC_5"   | ./pp
+
+            {
+               "resource" : null,
+               "name" : "TWOMASS.dbo.twomass_psc",
+               "alias" : "JDBC_5"
+            }
+
+        GET "/meta/table/JDBC_41"  | ./pp
+
+            {
+               "resource" : null,
+               "name" : "UKIDSSDR5PLUS.dbo.gcsSourceXtwomass_psc",
+               "alias" : "JDBC_41"
+            }
+
+
+        GET "/meta/table/JDBC_120" | ./pp
+
+            {
+               "resource" : null,
+               "name" : "UKIDSSDR5PLUS.dbo.gcsPointSource",
+               "alias" : "JDBC_120"
+            }
+ 
+# ----------------------------------------------------------------------------------------
+#
+
+TODO
+
+    Read-only transaction - so the flags set by a scan are ignored.
+    Error response for query syntax errors is abysmal.
+    Select by name causes NullPointer rather than 404.
+    
+    Create a JUnit test for the client to test "/meta/table/ALIAS"
+
+    Intergrate client into OGSA-DAI.
+    
+    Create a JUnit test to send query to OGSA-DAI.
+
+    Intergrate client into FireThorn.
+
+
+
+
+

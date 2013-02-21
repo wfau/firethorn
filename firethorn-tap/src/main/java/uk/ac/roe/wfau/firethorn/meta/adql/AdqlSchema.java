@@ -60,10 +60,16 @@ extends BaseSchema<AdqlSchema, AdqlTable>
         public AdqlTable.Factory tables();
 
         /**
-         * Import a table.
+         * Create a schema, importing a base table.
          *
          */
-		public AdqlSchema inport(final AdqlResourceEntity parent, final BaseSchema<?,?> base, final String name);
+        public AdqlSchema create(final AdqlResourceEntity parent, final String name, final BaseTable<?,?> base);
+
+        /**
+         * Create a schema, importing the tables from a base schema.
+         *
+         */
+		public AdqlSchema create(final AdqlResourceEntity parent, final String name, final BaseSchema<?,?> base);
         }
 
     @Override
@@ -76,13 +82,13 @@ extends BaseSchema<AdqlSchema, AdqlTable>
     public interface Tables extends BaseSchema.Tables<AdqlTable>
         {
         /**
-         * The create a new table.
+         * The create a new table, importing the columns from a base table.
          *
          */
         public AdqlTable create(final BaseTable<?,?> base);
 
         /**
-         * The create a new table.
+         * The create a new table, importing the columns from a base table.
          *
          */
         public AdqlTable create(final BaseTable<?,?> base, final String name);

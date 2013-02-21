@@ -80,15 +80,21 @@ public class JdbcAdqlTableTestCase
     public void test001()
     throws Exception
         {
-        final JdbcResource resource = resource();
+        final JdbcResource resource  = resource();
         final AdqlResource workspace = workspace();
         //
+        // Import the JdbcSchema metadata.
+        //resource.inport();
+        Object a = resource.schemas();
+        Object b = resource.schemas().select("TWOMASS","dbo");
+        Object c = resource.schemas().select("TWOMASS","dbo").tables();
+        Object d = resource.schemas().select("TWOMASS","dbo").tables().select("twomass_psc");
+        //
         // Import a JdbcTable into an AdqlSchema
-        resource.inport();
         workspace.schemas().create(
             "test-schema"
             ).tables().create(
-	    		resource.schemas().select("TWOMASS.dbo").tables().select("twomass_psc"),
+	    		resource.schemas().select("TWOMASS","dbo").tables().select("twomass_psc"),
 	            "test-table"
 	            );
         display(
@@ -105,10 +111,12 @@ public class JdbcAdqlTableTestCase
         final AdqlResource workspace = workspace();
         //
         // Import a JdbcSchema into our workspace.
-        resource.inport();
-        workspace.schemas().inport(
-    		resource.schemas().select("TWOMASS.dbo"),
-    		"test-schema"
+        workspace.schemas().create(
+            "test-schema",
+    		resource.schemas().select(
+    		    "TWOMASS",
+    		    "dbo"
+    		    )
             );
         display(
     		workspace
@@ -125,5 +133,4 @@ public class JdbcAdqlTableTestCase
     	{
     	return this.tables ;
     	}
-
     }

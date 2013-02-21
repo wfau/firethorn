@@ -43,12 +43,12 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 
         #
         # Install the 'resty' wrapper for curl.
-        curl -L http://github.com/micha/resty/raw/master/resty > resty
+        curl -# -L http://github.com/micha/resty/raw/master/resty > resty
         source ./resty
 
         #
         # Install the 'pp' pretty print script.
-        curl -L http://github.com/micha/resty/raw/master/pp > pp
+        curl -# -L http://github.com/micha/resty/raw/master/pp > pp
         chmod a+x ./pp
 
         #
@@ -211,6 +211,15 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
                "ident" : "http://localhost:8080/firethorn/jdbc/table/5",
                "modified" : "2013-02-18T17:17:48.990"
             }
+
+        #
+        # List the table columns.
+        GET "/jdbc/table/5/columns/select" | ./pp
+
+        #
+        # Check the details of a column.
+        GET "/jdbc/column/6" | ./pp
+
 
         # -------- --------
         # ADQL ....
@@ -421,26 +430,29 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 # Create a 'define' function for setting heredoc variables.
 # http://stackoverflow.com/questions/1167746/how-to-assign-a-heredoc-value-to-a-variable-in-bash
 
-    define()
-        {
-        IFS='\n' read -r -d '' ${1} || true;
-        }
+        define()
+            {
+            IFS='\n' read -r -d '' ${1} || true;
+            }
 
-define query << 'EOF'
-SELECT
-    ra,
-    dec,
-    pts_key
-FROM
-    schema_one.twomass_psc
-WHERE
-    ra  Between '56.0' AND '57.9'
-AND
-    dec Between '24.0' AND '24.2'
+#
+# Create our ADQL statement.
+
+        define query << 'EOF'
+        SELECT
+            ra,
+            dec,
+            pts_key
+        FROM
+            schema_one.twomass_psc
+        WHERE
+            ra  Between '56.0' AND '57.9'
+        AND
+            dec Between '24.0' AND '24.2'
 EOF
 
         #
-        # Create an ADQL query.
+        # Create the ADQL query.
         POST "/adql/resource/2/queries/create" \
             --data-urlencode "adql.resource.query.create.name=query_one" \
             --data-urlencode "adql.resource.query.create.query=${query?}" \
@@ -520,22 +532,21 @@ EOF
             query <-- SQL query
             );
 
-
-
-  
-
-
-
-
 # ------------------------------------------------------------
 # TODO ....
 #
 
-    need to include the ogsadai resource id for a direct/indirect query.
-
     add base, root, and alias to table
+    add base, root, and alias to column
+
     add catalog names to adql table fullname .... (probably means put catalog back into the tree)
 
     prevent spaces (and punct) in schema names ...
+
+    add list of resources to a query.
+
+    link() should return a URI ..
+    
+
 
 

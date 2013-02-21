@@ -24,17 +24,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.joda.time.DateTime;
+
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaResource;
 
 /**
  *
  *
  */
 public interface JdbcResource
-extends OgsaResource<JdbcSchema>, BaseResource<JdbcSchema>
+extends BaseResource<JdbcSchema>
     {
     /**
      * Link factory interface.
@@ -61,11 +62,13 @@ extends OgsaResource<JdbcSchema>, BaseResource<JdbcSchema>
     public static interface Factory
     extends BaseResource.Factory<JdbcResource>
         {
+
         /**
-         * The resource schema factory.
+         * Create a new resource.
          *
          */
-        public JdbcSchema.Factory schemas();
+        @Override
+        public JdbcResource create(final String name);
 
         /**
          * Create a new resource.
@@ -79,6 +82,12 @@ extends OgsaResource<JdbcSchema>, BaseResource<JdbcSchema>
          */
         public JdbcResource create(final String name, final String url, final String user, final String pass);
 
+        /**
+         * Our schema factory.
+         *
+         */
+        public JdbcSchema.Factory schemas();
+
         }
 
     /**
@@ -91,8 +100,20 @@ extends OgsaResource<JdbcSchema>, BaseResource<JdbcSchema>
          * Create a new schema.
          *
          */
-        public JdbcSchema create(final String name);
+        public JdbcSchema create(final String catalog, final String schema);
 
+        /**
+         * Select a schema.
+         * 
+         */
+        public JdbcSchema select(final String catalog, final String schema);
+
+        /**
+         * Update the schemas.
+         * 
+         */
+        public void scan();
+        
         }
 
     @Override
@@ -105,128 +126,27 @@ extends OgsaResource<JdbcSchema>, BaseResource<JdbcSchema>
     public JdbcConnection connection();
 
     /**
-     * Import the metadata from our database.
-     *
+     * The 'wildcard' catalog name.
+     * 
      */
-    public void inport();
+    public static final String ALL_CATALOGS = "*" ;
 
     /**
-     * JDBC DatabaseMetaData column names.
-     * @see DatabaseMetaData
-     *
+     * The resource catalog name.
+     * 
      */
-    public static final String JDBC_META_TABLE_CAT     = "TABLE_CAT" ;
-    public static final String JDBC_META_TABLE_CATALOG = "TABLE_CATALOG" ;
-    public static final String JDBC_META_TABLE_TYPE    = "TABLE_TYPE" ;
-    public static final String JDBC_META_TABLE_NAME    = "TABLE_NAME" ;
-    public static final String JDBC_META_TABLE_SCHEM   = "TABLE_SCHEM" ;
-
-    public static final String JDBC_META_TABLE_TYPE_VIEW  = "VIEW" ;
-    public static final String JDBC_META_TABLE_TYPE_TABLE = "TABLE" ;
-
-    public static final String JDBC_META_COLUMN_NAME      = "COLUMN_NAME" ;
-    public static final String JDBC_META_COLUMN_TYPE_TYPE = "DATA_TYPE";
-    public static final String JDBC_META_COLUMN_TYPE_NAME = "TYPE_NAME";
-    public static final String JDBC_META_COLUMN_SIZE      = "COLUMN_SIZE";
+    public String catalog();
 
     /**
-     * Known database types, indexed by the product name in DatabaseMetaData.getDatabaseProductName()
-     *
+     * The resource catalog name.
+     * 
      */
-    @Slf4j
-    public static enum JdbcProductType
-        {
-        UNKNOWN(
-            "unknown"
-            ),
-        PGSQL(
-            "PostgreSQL",
-            new String[]{}
-            ),
-        MYSQL(
-            "MySQL",
-            new String[]{}
-            ),
-        MSSQL(
-            "Microsoft SQL Server",
-            new String[]{
-                "sys",
-                "INFORMATION_SCHEMA"
-                }
-            ),
-        HSQLDB(
-            "unknown",
-            new String[]{}
-            );
+    public void catalog(String catalog);
 
-        private JdbcProductType(final String alias)
-            {
-            this(
-                alias,
-                null
-                );
-            }
-        private JdbcProductType(final String alias, final String[] ignores)
-            {
-            this.alias = alias;
-            if (ignores != null)
-                {
-                for (final String ignore : ignores)
-                    {
-                    this.ignores.add(
-                        ignore
-                        );
-                    }
-                }
-            }
+    /**
+     * Update the resource.
+     * 
+     */
+    public void scan();
 
-        private final String alias ;
-        public String alias()
-            {
-            return this.alias;
-            }
-
-        private final Collection<String> ignores = new ArrayList<String>();
-        public Collection<String>  ignores()
-            {
-            return this.ignores;
-            }
-
-        static protected Map<String, JdbcProductType> mapping = new HashMap<String, JdbcProductType>();
-        static {
-            for (final JdbcProductType type : JdbcProductType.values())
-                {
-                mapping.put(
-                    type.alias(),
-                    type
-                    );
-                }
-            }
-
-        static public JdbcProductType match(final String alias)
-            {
-            if (mapping.containsKey(alias))
-                {
-                return mapping.get(
-                    alias
-                    );
-                }
-            else {
-                return UNKNOWN;
-                }
-            }
-        static public JdbcProductType match(final DatabaseMetaData metadata)
-            {
-            try {
-                return match(
-                    metadata.getDatabaseProductName()
-                    );
-                }
-            catch (final SQLException ouch)
-                {
-                log.error("SQLException reading database metadata [{}]", ouch.getMessage());
-                return UNKNOWN;
-                }
-            }
-        }
     }

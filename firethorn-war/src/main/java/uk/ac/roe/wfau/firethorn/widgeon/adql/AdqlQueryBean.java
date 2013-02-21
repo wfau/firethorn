@@ -19,8 +19,10 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Iterator;
 
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
@@ -107,5 +109,44 @@ implements EntityBean<AdqlQuery>
     public String getOsql()
         {
         return entity().osql();
+        }
+
+    public Iterable<URI> getTargets()
+        {
+        return new Iterable<URI>()
+            {
+            @Override
+            public Iterator<URI> iterator()
+                {
+                return new Iterator<URI>()
+                    {
+                    Iterator<BaseResource<?>> iter = entity().targets().iterator();
+                    @Override
+                    public boolean hasNext()
+                        {
+                        return this.iter.hasNext();
+                        }
+                    @Override
+                    public URI next()
+                        {
+                        try {
+                            return new URI(
+                                this.iter.next().link()
+                                );
+                            }
+                        catch (final URISyntaxException ouch)
+                            {
+                            throw new RuntimeException(
+                                ouch
+                                );
+                            }
+                        }
+                    @Override
+                    public void remove()
+                        {
+                        }
+                    };
+                }
+            };
         }
     }

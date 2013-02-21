@@ -43,6 +43,7 @@ extends JdbcResourceTestBase
         {
         assertIsNull(
             jdbc().resource().schemas().select(
+                "catalog-A",
                 "schema-A"
                 )
             );
@@ -54,6 +55,7 @@ extends JdbcResourceTestBase
         {
         assertNotNull(
             jdbc().resource().schemas().create(
+                "catalog-A",
                 "schema-A"
                 )
             );
@@ -65,11 +67,13 @@ extends JdbcResourceTestBase
         {
         assertNotNull(
             jdbc().resource().schemas().create(
+                "catalog-A",
                 "schema-A"
                 )
             );
         assertNotNull(
             jdbc().resource().schemas().select(
+                "catalog-A",
                 "schema-A"
                 )
             );
@@ -81,11 +85,13 @@ extends JdbcResourceTestBase
         {
         assertNotNull(
             jdbc().resource().schemas().create(
+                "catalog-A",
                 "schema-A"
                 )
             );
         assertIsNull(
             jdbc().resource().schemas().select(
+                "catalog-A",
                 "schema-A"
                 ).tables().select(
                     "table-A"
@@ -99,6 +105,7 @@ extends JdbcResourceTestBase
         {
         assertNotNull(
             jdbc().resource().schemas().create(
+                "catalog-A",
                 "schema-A"
                 ).tables().create(
                     "table-A"
@@ -107,6 +114,7 @@ extends JdbcResourceTestBase
 
         assertNotNull(
             jdbc().resource().schemas().select(
+                "catalog-A",
                 "schema-A"
                 ).tables().select(
                     "table-A"
@@ -120,6 +128,7 @@ extends JdbcResourceTestBase
         {
         assertNotNull(
             jdbc().resource().schemas().create(
+                "catalog-A",
                 "schema-A"
                 ).tables().create(
                     "table-A"
@@ -127,6 +136,7 @@ extends JdbcResourceTestBase
             );
         assertIsNull(
             jdbc().resource().schemas().select(
+                "catalog-A",
                 "schema-A"
                 ).tables().select(
                     "table-A"
@@ -142,6 +152,7 @@ extends JdbcResourceTestBase
         {
         assertNotNull(
             jdbc().resource().schemas().create(
+                "catalog-A",
                 "schema-A"
                 ).tables().create(
                     "table-A"
@@ -152,6 +163,7 @@ extends JdbcResourceTestBase
 
         assertNotNull(
             jdbc().resource().schemas().select(
+                "catalog-A",
                 "schema-A"
                 ).tables().select(
                     "table-A"
@@ -167,6 +179,7 @@ extends JdbcResourceTestBase
         {
         assertNotNull(
             jdbc().resource().schemas().create(
+                "catalog-A",
                 "schema-A"
                 ).tables().create(
                     "table-A"
@@ -177,6 +190,7 @@ extends JdbcResourceTestBase
 
         assertIsNull(
             jdbc().resource().schemas().select(
+                "catalog-A",
                 "schema-A"
                 ).tables().select(
                     "table-A"
@@ -192,6 +206,7 @@ extends JdbcResourceTestBase
         {
         assertNotNull(
             jdbc().resource().schemas().create(
+                "catalog-A",
                 "schema-A"
                 ).tables().create(
                     "table-A"
@@ -202,6 +217,7 @@ extends JdbcResourceTestBase
 
         assertIsNull(
             jdbc().resource().schemas().select(
+                "catalog-A",
                 "schema-A"
                 ).tables().select(
                     "table-A"
@@ -211,6 +227,7 @@ extends JdbcResourceTestBase
             );
 
         jdbc().resource().schemas().select(
+            "catalog-A",
             "schema-A"
             ).tables().select(
                 "table-A"
@@ -222,6 +239,7 @@ extends JdbcResourceTestBase
 
         assertNotNull(
             jdbc().resource().schemas().select(
+                "catalog-A",
                 "schema-A"
                 ).tables().select(
                     "table-A"
@@ -232,6 +250,7 @@ extends JdbcResourceTestBase
 
         assertIsNull(
             jdbc().resource().schemas().select(
+                "catalog-A",
                 "schema-A"
                 ).tables().select(
                     "table-A"

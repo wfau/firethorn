@@ -21,6 +21,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
 
 /**
@@ -76,10 +77,16 @@ extends BaseResource<AdqlSchema>
         public AdqlSchema create(final String name);
 
         /**
-         * Import tables from a schema.
+         * Create a new schema, importing a base table.
          *
          */
-        public AdqlSchema inport(final BaseSchema<?,?> base, final String name);
+        public AdqlSchema create(final String name, final BaseTable<?,?> base);
+
+        /**
+         * Create a new schema, importing tables from a base schema.
+         *
+         */
+        public AdqlSchema create(final String name, final BaseSchema<?,?> base);
 
         }
     @Override

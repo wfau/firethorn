@@ -58,4 +58,10 @@ public class JdbcConnectionFailedException
             cause
             );
         }
+
+    @Override
+    public SQLException getCause()
+        {
+        return (SQLException) super.getCause();
+        }
     }

@@ -99,6 +99,26 @@ implements EntityBean<AdqlColumn>
             }
         }
 
+    public URI getRoot()
+        {
+        try {
+            return new URI(
+                entity().root().link()
+                );
+            }
+        catch (final URISyntaxException ouch)
+            {
+            throw new RuntimeException(
+                ouch
+                );
+            }
+        }
+
+    public String getAlias()
+        {
+        return entity().alias();
+        }
+
     public String getFullname()
         {
         return entity().fullname().toString();

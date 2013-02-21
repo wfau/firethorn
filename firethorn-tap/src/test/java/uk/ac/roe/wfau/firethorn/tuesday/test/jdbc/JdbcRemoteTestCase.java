@@ -85,11 +85,6 @@ extends TestBase
                 "base"
                 )
             );
-        /*
-        final JdbcResource jdbcResource = womble().jdbc().resources().select(
-            "base.1352861674755.0"
-            ).iterator().next();
-         */
 
         //
         // Set the database connection properties.
@@ -97,18 +92,14 @@ extends TestBase
             "spring:RoeTWOMASS"
             );
         //
-        // Scan the resource for catalogs.
-        jdbcResource.inport();
-
-        //
-        // Close our JDBC connection.
-        jdbcResource.connection().close();
-
-        //
         // Verify we got what we expected.
         display(
             jdbcResource
             );
+        //
+        // Close our JDBC connection.
+        jdbcResource.connection().close();
+
         }
 
     public void display(final JdbcResource resource)

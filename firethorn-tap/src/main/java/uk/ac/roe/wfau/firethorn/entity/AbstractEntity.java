@@ -251,7 +251,6 @@ implements Entity
         updatable = false
         )
     private DateTime created ;
-
     @Override
     public DateTime created()
         {
@@ -270,7 +269,6 @@ implements Entity
         updatable = false
         )
     private DateTime modified ;
-
     @Override
     public DateTime modified()
         {

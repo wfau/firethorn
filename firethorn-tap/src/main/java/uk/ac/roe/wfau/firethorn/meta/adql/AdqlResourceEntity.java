@@ -33,6 +33,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
 @Entity()
 @Access(
@@ -176,13 +177,22 @@ extends BaseResourceEntity<AdqlSchema>
                     name
                     );
                 }
-			@Override
-			public AdqlSchema inport(final BaseSchema<?,?> base, final String name)
-			    {
-                return factories().adql().schemas().inport(
+            @Override
+            public AdqlSchema create(String name, BaseTable<?, ?> base)
+                {
+                return factories().adql().schemas().create(
                     AdqlResourceEntity.this,
-                    base,
-                    name
+                    name,
+                    base
+                    );
+                }
+			@Override
+			public AdqlSchema create(final String name, final BaseSchema<?,?> base)
+			    {
+                return factories().adql().schemas().create(
+                    AdqlResourceEntity.this,
+                    name,
+                    base
                     );
 				}
             @Override
