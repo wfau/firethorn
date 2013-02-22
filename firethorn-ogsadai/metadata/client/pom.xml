@@ -38,16 +38,16 @@
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../..</relativePath>
+        <!--relativePath>../..</relativePath-->
     </parent>
 
-    <artifactId>firethorn-activity-server</artifactId>
+    <artifactId>firethorn-metadata-client</artifactId>
     <packaging>jar</packaging>
 
     <name>OGSA-DAI activity (OGSA-DAI server)</name>
     <description>
         <![CDATA[
-        Server side components for the firethorn OGSA-DAI activities that are included in the modified OGSA-DAI server.
+        Client side components for the metadata service that get included in the OGSA-DAI server.
         ]]>
     </description>
     
@@ -57,11 +57,11 @@
     <dependencies>
 
         <!--+
-            | The common activity classes.
+            | The common metadata classes.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-activity-common</artifactId>
+            <artifactId>firethorn-metadata-common</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>
@@ -87,54 +87,51 @@
         </dependency>
 
         <!--+
-            | The OGSA-DAI components used by our activity.
-            | http://data.metagrid.co.uk/wfau/maven/external/uk/org/ogsadai/
+            | Our Spring components.
             +-->
-        <!--dependency>
-            <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-common</artifactId>
-            <version>${ogsadai.version}</version>
-        </dependency-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-spring</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
 
-        <!--dependency>
-            <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-client</artifactId>
-            <version>${ogsadai.version}</version>
-        </dependency-->
-
-        <!--dependency>
-            <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-basic-client</artifactId>
-            <version>${ogsadai.version}</version>
-        </dependency-->
-
-        <!--dependency>
-            <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-jersey-client</artifactId>
-            <version>${ogsadai.version}</version>
-        </dependency-->
-
-        <!--dependency>
-            <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-jersey-common</artifactId>
-            <version>${ogsadai.version}</version>
-        </dependency-->
-
-        <!--dependency>
+        <!--+
+            | The OGSA-DAI components used in our client.
+            +-->
+        <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-clientserver</artifactId>
             <version>${ogsadai.version}</version>
-        </dependency-->
-
-        <!--dependency>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-relational-client</artifactId>
+            <artifactId>ogsadai-server</artifactId>
             <version>${ogsadai.version}</version>
-        </dependency-->
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-dqp-server</artifactId>
+            <version>${ogsadai.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-astro-server</artifactId>
+            <version>${ogsadai.version}</version>
+            <type>jar</type>
+        </dependency>
 
     </dependencies>
 
     <build>
+        <plugins>
+        </plugins>
+
+        <resources>
+        </resources>
 
         <testResources>
 
@@ -150,7 +147,6 @@
     		</testResource>
 
         </testResources>
-
     </build>
 
 </project>
