@@ -38,10 +38,10 @@
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../..</relativePath>
+        <!--relativePath>../..</relativePath-->
     </parent>
 
-    <artifactId>firethorn-activity-ogsadai</artifactId>
+    <artifactId>firethorn-metadata-ogsadai</artifactId>
     <packaging>jar</packaging>
 
     <name>OGSA-DAI activity (OGSA-DAI server)</name>
@@ -65,6 +65,16 @@
             <type>pom</type>
         </dependency>
             +-->
+
+        <!--+
+            | Our testing components.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-testing</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
 
         <!--+
             | Our Spring components.

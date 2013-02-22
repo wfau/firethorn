@@ -106,13 +106,13 @@
 
         <!--+
             | Our metadata service client.
+            +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-tap</artifactId>
+            <artifactId>firethorn-metadata-ogsadai</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-            +-->
 
         <!--+
             | jTDS SQLServer JDBC driver.

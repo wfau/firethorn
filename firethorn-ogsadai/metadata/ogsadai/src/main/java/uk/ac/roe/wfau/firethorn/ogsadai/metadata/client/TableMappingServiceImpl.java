@@ -17,18 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.org.ogsadai.dqp.common.RequestDetails;
-
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.AttributeService;
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.StatisticsService;
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMapping;
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMappingService;
+import uk.org.ogsadai.dqp.common.RequestDetails;
 
 /**
  *
@@ -38,28 +32,98 @@ public class TableMappingServiceImpl
 extends MetadataServiceBase
 implements TableMappingService
     {
-
-    private static Log log = LogFactory.getLog(TableMappingServiceImpl.class);
-
-    /*
-     *
+    /**
+     * Debug logger.
      *
      */
-    public TableMappingServiceImpl(String endpoint, RequestDetails request)
+    private static Log log = LogFactory.getLog(TableMappingServiceImpl.class);
+
+    /**
+     * Web service path.
+     *
+     */
+    public static final String TABLE_PATH = "/meta/table/{table}" ;
+    
+    /**
+     * Protected constructor.
+     *
+     */
+    protected TableMappingServiceImpl(final String endpoint, final RequestDetails request)
         {
         super(
             endpoint,
             request
             );
-        log.debug("TableMappingServiceImpl()");
         }
 
     @Override
-    public TableMapping getTableMapping(String table)
+    public TableMapping getTableMapping(final String table)
         {
         log.debug("getTableMapping(String)");
         log.debug("  Table  [" + table  + "]");
-        return null ;
+
+        TableMappingBean bean = rest().getForObject(
+            endpoint(TABLE_PATH),
+            TableMappingBean.class,
+            table
+            );        
+
+        log.debug("Got bean ----");
+        log.debug("  Name  [" + bean.tableName()  + "]");
+        log.debug("  Alias [" + bean.tableAlias() + "]");
+        log.debug("  Resource [" + bean.resourceIdent() + "]");
+        log.debug("----");
+
+        return bean ;
+        }
+
+    /**
+     * Bean implementation.
+     * 
+     */
+    public static class TableMappingBean
+    implements TableMapping
+        {
+
+        public TableMappingBean()
+            {
+            }
+
+        private String alias;
+        public  void setAlias(final String value)
+            {
+            this.alias= value ;
+            }
+
+        private String name;
+        public  void setName(final String value)
+            {
+            this.name = value ;
+            }
+        
+        private String resource;
+        public  void setResource(final String value)
+            {
+            this.resource = value ;
+            }
+
+        @Override
+        public String resourceIdent()
+            {
+            return this.resource;
+            }
+
+        @Override
+        public String tableAlias()
+            {
+            return this.alias;
+            }
+
+        @Override
+        public String tableName()
+            {
+            return this.name;
+            }
         }
     }
 

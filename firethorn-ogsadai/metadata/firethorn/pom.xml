@@ -41,7 +41,7 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <artifactId>firethorn-activity-firethorn</artifactId>
+    <artifactId>firethorn-metadata-firethorn-metadata-ogsadai</artifactId>
     <packaging>jar</packaging>
 
     <name>OGSA-DAI activity (FireThorn server)</name>
