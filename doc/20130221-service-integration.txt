@@ -1,25 +1,11 @@
 # ------------------------------------------------------------
-# Update the MetadataServiceFactory config  ...
-#
-
-    <bean id="federation" 
-        class="uk.org.ogsadai.dqp.firethorn.MetadataServiceDQPFederation">
-
-        <property name="metadataServiceFactory">
-
-            <bean class="uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.MetadataServiceFactoryImpl">
-                <constructor-arg name="endpoint" value="http://localhost:8080/firethorn/"/>
-            </bean>
-
-        </property>
-
-# ------------------------------------------------------------
 # Project paths
 #
 
 FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
 FIRETHORN_NAME=devel
 FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
+
 
 # ------------------------------------------------------------
 # Build and deploy the firethorn webapp 
@@ -235,64 +221,115 @@ EOF
 
 
 # ------------------------------------------------------------
-# Create a Junit test to send query to OGSA-DAI
+# Build the activity components.
 #
 
-    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/firethorn"
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/common"
 
+        mvn install
         mvn eclipse:eclipse
         
     popd
 
-    /**
-     * TWOMASS and UKIDSSDR1, using DQP, using GT and LT on both tables.
-     *
-     */
-    @Test
-    public void test100()
-    throws Exception
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/server"
+
+        mvn install
+        mvn eclipse:eclipse
+        
+    popd
+
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/client"
+
+        mvn install
+        mvn eclipse:eclipse
+        
+    popd
+
+# ------------------------------------------------------------
+# Create a Junit test to send query to OGSA-DAI
+#
+
+    public class TestDqpQueryTestCase
+    extends SimpleQueryTestBase
         {
-        execute(
-            endpoint,
-            "mydqp",
-            " SELECT" +
-            "     twomass.ra AS tmra," +
-            "     ukidss.ra AS ukra," +
-            "     twomass.ra-ukidss.ra AS difra," +
-            "     twomass.dec AS tmdec," +
-            "     ukidss.dec AS ukdec," +
-            "     twomass.ra-ukidss.ra AS difdec," +
-            "     neighbour.distanceMins AS dist" +
-            " FROM" +
-            "     JDBC_5 AS twomass" +
-            " CROSS JOIN" +
-            "     JDBC_120 AS ukidss" +
-            " CROSS JOIN" +
-            "     JDBC_41 AS neighbour" +
-            " WHERE" +
-            "     twomass.ra >= '55.0'" +
-            " AND" +
-            "     twomass.ra <= '55.9'" +
-            " AND" +
-            "     twomass.dec >= '20.0'" +
-            " AND" +
-            "     twomass.dec <= '22.9'" +
-            " AND" +
-            "     ukidss.ra >= '55.0'" +
-            " AND" +
-            "     ukidss.ra <= '55.9'" +
-            " AND" +
-            "     ukidss.dec >= '20.0'" +
-            " AND" +
-            "     ukidss.dec <= '22.9'" +
-            " AND" +
-            "     neighbour.masterObjID = ukidss.sourceID" +
-            " AND" +
-            "     neighbour.slaveObjID = twomass.pts_key" +
-            " AND" +
-            "     neighbour.distanceMins < 1E-3"
-            );
+        /**
+         * TWOMASS and UKIDSSDR1, using DQP, using GT and LT on both tables.
+         *
+         */
+        @Test
+        public void test100()
+        throws Exception
+            {
+            execute(
+                endpoint,
+                "mydqp",
+                " SELECT" +
+                "     twomass.ra AS tmra," +
+                "     ukidss.ra AS ukra," +
+                "     twomass.ra-ukidss.ra AS difra," +
+                "     twomass.dec AS tmdec," +
+                "     ukidss.dec AS ukdec," +
+                "     twomass.ra-ukidss.ra AS difdec," +
+                "     neighbour.distanceMins AS dist" +
+                " FROM" +
+                "     JDBC_5 AS twomass" +
+                " CROSS JOIN" +
+                "     JDBC_120 AS ukidss" +
+                " CROSS JOIN" +
+                "     JDBC_41 AS neighbour" +
+                " WHERE" +
+                "     twomass.ra >= '55.0'" +
+                " AND" +
+                "     twomass.ra <= '55.9'" +
+                " AND" +
+                "     twomass.dec >= '20.0'" +
+                " AND" +
+                "     twomass.dec <= '22.9'" +
+                " AND" +
+                "     ukidss.ra >= '55.0'" +
+                " AND" +
+                "     ukidss.ra <= '55.9'" +
+                " AND" +
+                "     ukidss.dec >= '20.0'" +
+                " AND" +
+                "     ukidss.dec <= '22.9'" +
+                " AND" +
+                "     neighbour.masterObjID = ukidss.sourceID" +
+                " AND" +
+                "     neighbour.slaveObjID = twomass.pts_key" +
+                " AND" +
+                "     neighbour.distanceMins < 1E-3"
+                );
+            }
         }
+
+# ------------------------------------------------------------
+# Create a new DQP contet using our MetadataServiceFactoryImpl  ...
+#
+
+    <bean id="federation" 
+        class="uk.org.ogsadai.dqp.firethorn.MetadataServiceDQPFederation">
+
+        <property name="metadataServiceFactory">
+
+            <bean class="uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.MetadataServiceFactoryImpl">
+                <constructor-arg name="endpoint" value="http://localhost:8080/firethorn/"/>
+            </bean>
+
+        </property>
+
+
+# ------------------------------------------------------------
+# Build and run the OGSA-DAI webapp.
+
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/webapp"
+
+        mvn clean
+        mvn tomcat6:run
+        
+    popd
+
+
 
 
 

@@ -109,18 +109,34 @@
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-metadata-ogsadai</artifactId>
+            <artifactId>firethorn-metadata-common</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-metadata-client</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
 
         <!--+
-            | jTDS SQLServer JDBC driver.
-            | http://jtds.sourceforge.net/
+            | Apache commons logging.
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+            +-->
+
+        <!--+
+            | HSQLDB Java database and JDBC driver.
+            | http://hsqldb.org/
             +-->
         <dependency>
-            <groupId>net.sourceforge.jtds</groupId>
-            <artifactId>jtds</artifactId>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
         </dependency>
 
         <!--+
@@ -133,12 +149,21 @@
     	</dependency>
 
         <!--+
-            | Apache commons logging, conflicts with the version used in Mallow.
+            | Mysql JDBC driver.
+            | https://dev.mysql.com/usingmysql/java/
             +-->
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.0.4</version>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <!--+
+            | jTDS SQLServer JDBC driver.
+            | http://jtds.sourceforge.net/
+            +-->
+        <dependency>
+            <groupId>net.sourceforge.jtds</groupId>
+            <artifactId>jtds</artifactId>
         </dependency>
 
     </dependencies>

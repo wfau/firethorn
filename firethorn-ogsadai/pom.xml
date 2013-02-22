@@ -46,7 +46,7 @@
     <name>FireThorn OGSA-DAI</name>
     <description>
         <![CDATA[
-        OGSA-DAI components.
+        FireThorn OGSA-DAI components.
         ]]>
     </description>
 
@@ -55,11 +55,13 @@
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
         +-->
     <modules>
+        <module>metadata/activity/common</module>
+        <module>metadata/activity/client</module>
+        <module>metadata/activity/server</module>
+        <module>metadata/common</module>
+        <module>metadata/client</module>
+        <module>metadata/server</module>
         <module>webapp</module>
-        <!--module>activity/firethorn</module-->
-        <!--module>activity/ogsadai</module-->
-        <!--module>metadata/firethorn</module-->
-        <module>metadata/ogsadai</module>
     </modules>
     
     <properties>

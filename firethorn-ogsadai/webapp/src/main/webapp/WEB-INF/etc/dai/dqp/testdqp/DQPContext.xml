@@ -20,8 +20,8 @@
     <!--+
         | Jersey evaluation node.
         +-->
-    <bean class="uk.org.ogsadai.dqp.presentation.jersey.JerseyEvaluationNode" id="mydqpeval">
-        <constructor-arg name="url"     value="http://localhost:8081/albert/services"/>
+    <bean class="uk.org.ogsadai.dqp.presentation.jersey.JerseyEvaluationNode" id="TestDqpEval">
+        <constructor-arg name="url"     value="http://localhost:8081/albert/services/test"/>
         <constructor-arg name="drerID"  value="DataRequestExecutionResource"/>
         <constructor-arg name="dsos"    value="dataSources"/>
         <constructor-arg name="dsis"    value="dataSinks"/>
@@ -33,7 +33,7 @@
         +-->
     <bean id="twomass" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
         <constructor-arg name="resourceID"     value="twomass"/>
-        <constructor-arg name="evaluationNode" ref="mydqpeval"/>
+        <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
         <property name="operatorSupport"       ref="defaultFeatureSupport"/>
         <property name="expressionSupport"     ref="defaultFeatureSupport"/>
         <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
@@ -44,7 +44,7 @@
         +-->
     <bean id="ukidss" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
         <constructor-arg name="resourceID"     value="ukidss"/>
-        <constructor-arg name="evaluationNode" ref="mydqpeval"/>
+        <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
         <property name="operatorSupport"       ref="defaultFeatureSupport"/>
         <property name="expressionSupport"     ref="defaultFeatureSupport"/>
         <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
@@ -55,7 +55,7 @@
         +-->
     <bean id="uber" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
         <constructor-arg name="resourceID"     value="uber"/>
-        <constructor-arg name="evaluationNode" ref="mydqpeval"/>
+        <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
         <property name="operatorSupport"       ref="defaultFeatureSupport"/>
         <property name="expressionSupport"     ref="defaultFeatureSupport"/>
         <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
@@ -68,9 +68,6 @@
         class="uk.org.ogsadai.dqp.firethorn.MetadataServiceDQPFederation">
 
         <property name="metadataServiceFactory">
-            <!--bean class="uk.ac.roe.wfau.firethorn.ogsadai.metadata.MetadataServiceFactoryMock">
-                <constructor-arg name="name" value="Roxanne"/>
-            </bean-->
             <bean class="uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.MetadataServiceFactoryImpl">
                 <constructor-arg name="endpoint" value="http://localhost:8080/firethorn/"/>
             </bean>
@@ -92,7 +89,7 @@
 
         <property name="evaluationNodes">
             <list>
-                <ref bean="mydqpeval"/>
+                <ref bean="TestDqpEval"/>
             </list>
         </property>
 
