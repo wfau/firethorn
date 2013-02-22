@@ -38,16 +38,16 @@
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <!--relativePath>../..</relativePath-->
+        <relativePath>../..</relativePath>
     </parent>
 
-    <artifactId>firethorn-activity-firethorn</artifactId>
+    <artifactId>firethorn-activity-server</artifactId>
     <packaging>jar</packaging>
 
-    <name>OGSA-DAI activity (FireThorn server)</name>
+    <name>OGSA-DAI activity (OGSA-DAI server)</name>
     <description>
         <![CDATA[
-        Client side components for the OGSA-DAI activities that get included in the FireThorn server.
+        Server side components for the OGSA-DAI activities that get included in the modified OGSA-DAI server.
         ]]>
     </description>
     
