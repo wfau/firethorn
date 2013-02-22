@@ -26,11 +26,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!--+
-        | IMPORTANT - importing external jars .. 
-        | http://stackoverflow.com/questions/364114/can-i-add-jars-to-maven-2-build-classpath-without-installing-them/764684#764684
-        +-->
-
-    <!--+
         | Maven parent project.
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
         +-->
@@ -38,26 +33,23 @@
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <!--relativePath>../..</relativePath-->
+        <relativePath>../..</relativePath>
     </parent>
 
     <artifactId>firethorn-metadata-client</artifactId>
     <packaging>jar</packaging>
 
-    <name>OGSA-DAI activity (OGSA-DAI server)</name>
+    <name>FireThorn metadata client</name>
     <description>
         <![CDATA[
         Client side components for the metadata service that get included in the OGSA-DAI server.
         ]]>
     </description>
     
-    <properties>
-    </properties>
-
     <dependencies>
 
         <!--+
-            | The common metadata classes.
+            | Our common metadata classes.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -67,33 +59,40 @@
         </dependency>
 
         <!--+
-            | Our logging components.
+            | JUnit test framework.
+            | http://www.junit.org/
+            +-->
+    	<dependency>
+    		<groupId>junit</groupId>
+    		<artifactId>junit</artifactId>
+    		<scope>test</scope>
+    	</dependency>
+
+        <!--+
+            | Apache commons-logging.
             +-->
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-logging</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>${ogsadai.logging.version}</version>
         </dependency>
 
         <!--+
-            | Our testing components.
+            | Spring framework HTTP tools.
             +-->
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-testing</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${ogsadai.spring.version}</version>
         </dependency>
 
         <!--+
-            | Our Spring components.
+            | Jackson JSON tools.
             +-->
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-spring</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>${ogsadai.jackson.version}</version>
         </dependency>
 
         <!--+

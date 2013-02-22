@@ -53,22 +53,42 @@
     <!--+
         | Maven parent/child projects.
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
-        +-->
     <modules>
-        <module>metadata/activity/common</module>
-        <module>metadata/activity/client</module>
-        <module>metadata/activity/server</module>
+        <module>activity/common</module>
+        <module>activity/client</module>
+        <module>activity/server</module>
         <module>metadata/common</module>
         <module>metadata/client</module>
         <module>metadata/server</module>
         <module>webapp</module>
     </modules>
+        +-->
     
     <properties>
+
+		<ogsadai.spring.version>3.0.1.RELEASE</ogsadai.spring.version>
+        <ogsadai.logging.version>1.0.4</ogsadai.logging.version>
+        <ogsadai.jersey.version>1.10</ogsadai.jersey.version>
+        <ogsadai.jackson.version>1.9.9</ogsadai.jackson.version>
+
         <ogsadai.webapp.path>albert</ogsadai.webapp.path>
         <ogsadai.webapp.port>8081</ogsadai.webapp.port>
         <ogsadai.version>4.2</ogsadai.version>
+
     </properties>
+
+    <repositories>
+
+        <!--+
+            | SpringSource repository.
+            +-->
+        <repository>
+            <id>springsource-repo</id>
+            <name>SpringSource Repository</name>
+            <url>http://repo.springsource.org/release</url>
+        </repository>
+
+    </repositories>
 
 </project>
 

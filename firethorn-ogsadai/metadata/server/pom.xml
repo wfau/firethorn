@@ -44,7 +44,7 @@
     <artifactId>firethorn-metadata-server</artifactId>
     <packaging>jar</packaging>
 
-    <name>OGSA-DAI activity (FireThorn server)</name>
+    <name>FireThorn metadata server</name>
     <description>
         <![CDATA[
         Server side components for the metadata service that get included in the FireThorn server.
@@ -57,7 +57,7 @@
     <dependencies>
 
         <!--+
-            | The common metadata classes.
+            | Our common metadata classes.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>

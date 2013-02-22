@@ -6,9 +6,8 @@ FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
 FIRETHORN_NAME=devel
 FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 
-
 # ------------------------------------------------------------
-# Build and deploy the firethorn webapp 
+# Build our metadata service components. 
 #
 
     pushd "${FIRETHORN_CODE?}/firethorn-tap"
@@ -17,11 +16,21 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
         
     popd
 
-    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/metadata/ogsadai/"
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/metadata/common"
 
         mvn clean install
         
     popd
+
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/metadata/server"
+
+        mvn clean install
+        
+    popd
+
+# ------------------------------------------------------------
+# Build and run the firethorn webapp 
+#
 
     pushd "${FIRETHORN_CODE?}/firethorn-war"
 
@@ -30,7 +39,7 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
     popd
 
 # ------------------------------------------------------------
-# Initialise the metadata 
+# Initialise our test metadata 
 #
 
     base=$(mktemp --directory)
@@ -221,7 +230,7 @@ EOF
 
 
 # ------------------------------------------------------------
-# Build the activity components.
+# Build our OGSA-DAI activity components.
 #
 
     pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/common"
@@ -325,10 +334,82 @@ EOF
     pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/webapp"
 
         mvn clean
-        mvn tomcat6:run
+        mvn install
+
+#---------------------------------------------------
+# Deploy the ogsadai webapp in Tomcat ...
+#
+    #
+    # Shell script function to configure the JDBC resources.
+    dbconfg()
+        {
+        local dbname=${1?}
+        local dbconf=${2?}
+
+        local dbtype="$(sed -n 's/^type=\(.*\)/\1/p' ${dbconf?})"
+        local dbdata="$(sed -n 's/^name=\(.*\)/\1/p' ${dbconf?})"
+        local dbuser="$(sed -n 's/^user=\(.*\)/\1/p' ${dbconf?})"
+        local dbpass="$(sed -n 's/^pass=\(.*\)/\1/p' ${dbconf?})"
+
+        local dbdrv
+        local dburi
+
+        case ${dbtype?} in
+
+            pgsql)
+                echo "Postgresql database"
+                dbdrv=org.postgresql.Driver
+                dburi=jdbc:postgresql://localhost:5432
+                ;;
+
+            mssql)
+                echo "SQLServer database"
+                dbdrv=net.sourceforge.jtds.jdbc.Driver
+                dburi=jdbc:jtds:sqlserver://localhost:1433
+                ;;
+
+            *)  echo "ERROR : unknown database type [${dbtype}]"
+                ;;
+        esac
+
+        #
+        # Set the database driver and url.
+        sed -i '
+            s|^dai.driver.class=.*|dai.driver.class='${dbdrv}'|
+            s|^dai.data.resource.uri=.*|dai.data.resource.uri='${dburi}/${dbdata?}'|
+            ' "target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/resources/${dbname?}"
+
+        #
+        # Set the database password.
+        sed -i '
+            /^id='${dbname?}'/,/^END/ {
+                s|^username=.*|username='${dbuser?}'|
+                s|^password=.*|password='${dbpass?}'|
+                }
+            ' "target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/logins.txt"
+        }
+
+    pushd ${FIRETHORN_CODE?}/firethorn-ogsadai/webapp
+
+        #
+        # Create a clean war file.
+        mvn clean compile war:war
+
+        #
+        # Set the database passwords.
+        dbconfg twomass /etc/firethorn/livetwomass.conf
+        dbconfg ukidss  /etc/firethorn/liveukidss.conf
+        dbconfg uber    /etc/firethorn/livetwoxmm.conf
+
+        #
+        # Run the webapp in Tomcat
+        mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
         
     popd
 
+# ------------------------------------------------------------
+# Run the OGSA-DAI query tests ..
+ 
 
 
 

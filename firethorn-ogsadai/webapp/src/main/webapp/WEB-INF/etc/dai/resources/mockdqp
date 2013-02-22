@@ -5,7 +5,7 @@ terminationTime=null
 PROPERTIES
 END
 CONFIG
-dqp.config.path=dqp/mydqp/DQPContext.xml
+dqp.config.path=dqp/mockdqp/DQPContext.xml
 END
 ACTIVITIES
 uk.org.ogsadai.GetAvailableTables=uk.org.ogsadai.GetAvailableTablesDQP

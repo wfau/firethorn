@@ -49,15 +49,8 @@
 
     <properties>
 
-		<!--org.spring.version>3.0.5.RELEASE</org.spring.version-->
-		<!--org.spring.version>3.1.1.RELEASE</org.spring.version-->
 		<org.spring.version>3.2.0.M1</org.spring.version>
-
-        <!--org.hibernate.version>3.6.9.Final</org.hibernate.version-->
-        <!--org.hibernate.version>4.1.4.Final</org.hibernate.version-->
         <org.hibernate.version>4.1.6.Final</org.hibernate.version>
-
-		<!--org.aspectj.version>1.6.11</org.aspectj.version-->
 
     </properties>
 
@@ -71,40 +64,6 @@
             <name>SpringSource Repository</name>
             <url>http://repo.springsource.org/release</url>
         </repository>
-
-<!--
-        <repository>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-          <id>central</id>
-          <name>release</name>
-          <url>http://repo.springsource.org/release</url>
-        </repository>
-        <repository>
-          <snapshots />
-          <id>snapshots</id>
-          <name>snapshot</name>
-          <url>http://repo.springsource.org/snapshot</url>
-        </repository>
-      </repositories>
-      <pluginRepositories>
-        <pluginRepository>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-          <id>central</id>
-          <name>plugins-release</name>
-          <url>http://repo.springsource.org/plugins-release</url>
-        </pluginRepository>
-        <pluginRepository>
-          <snapshots />
-          <id>snapshots</id>
-          <name>plugins-snapshot</name>
-          <url>http://repo.springsource.org/plugins-snapshot</url>
-        </pluginRepository>
-      </pluginRepositories>
--->
 
         <!--+
             | JBoss/Hibernate repository.
@@ -120,8 +79,8 @@
     <dependencies>
 
         <!--+
-        <url>http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/index.html</url>
-        <url>${org.spring.reference}</url>
+            | <url>http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/index.html</url>
+            | <url>${org.spring.reference}</url>
             +-->
 
         <!--+

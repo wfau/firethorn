@@ -57,7 +57,7 @@
     <dependencies>
 
         <!--+
-            | The common activity classes.
+            | Our common activity classes.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -67,23 +67,22 @@
         </dependency>
 
         <!--+
-            | Our logging components.
+            | JUnit test framework.
+            | http://www.junit.org/
             +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-logging</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
+    	<dependency>
+    		<groupId>junit</groupId>
+    		<artifactId>junit</artifactId>
+    		<scope>test</scope>
+    	</dependency>
 
         <!--+
-            | Our testing components.
+            | Apache commons-logging.
             +-->
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-testing</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>${ogsadai.logging.version}</version>
         </dependency>
 
         <!--+

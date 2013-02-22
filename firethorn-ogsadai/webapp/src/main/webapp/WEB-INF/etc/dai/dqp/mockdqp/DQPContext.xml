@@ -21,7 +21,7 @@
         | Jersey evaluation node.
         +-->
     <bean class="uk.org.ogsadai.dqp.presentation.jersey.JerseyEvaluationNode" id="MockDqpEval">
-        <constructor-arg name="url"     value="http://localhost:8081/albert/services/mock"/>
+        <constructor-arg name="url"     value="http://localhost:8081/albert/services"/>
         <constructor-arg name="drerID"  value="DataRequestExecutionResource"/>
         <constructor-arg name="dsos"    value="dataSources"/>
         <constructor-arg name="dsis"    value="dataSinks"/>

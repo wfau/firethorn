@@ -44,7 +44,7 @@
     <artifactId>firethorn-metadata-common</artifactId>
     <packaging>jar</packaging>
 
-    <name>OGSA-DAI activity (common)</name>
+    <name>FireThorn metadata common</name>
     <description>
         <![CDATA[
         Common components for the metadata service used in both the client and server.
@@ -56,46 +56,7 @@
 
     <dependencies>
 
-        <!--+
-            | Our logging components.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-logging</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-
-        <!--+
-            | Our testing components.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-testing</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-
     </dependencies>
-
-    <build>
-
-        <testResources>
-
-            <!--+
-                | Test configuration files.
-                +-->
-    		<testResource>
-    			<directory>${basedir}/src/test/conf</directory>
-                <includes>
-                    <include>*.properties</include>
-                    <include>*.xml</include>
-                </includes>
-    		</testResource>
-
-        </testResources>
-
-    </build>
 
 </project>
 

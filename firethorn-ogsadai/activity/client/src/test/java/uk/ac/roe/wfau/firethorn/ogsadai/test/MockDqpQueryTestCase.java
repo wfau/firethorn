@@ -22,39 +22,7 @@ package uk.ac.roe.wfau.firethorn.ogsadai.test;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.junit.Test;
-
-import java.net.URL;
-
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-
-import uk.org.ogsadai.resource.ResourceID;
-import uk.org.ogsadai.resource.request.RequestStatus;
-
-import uk.org.ogsadai.client.toolkit.Server;
-import uk.org.ogsadai.client.toolkit.ServerProxy;
-import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
-
-import uk.org.ogsadai.client.toolkit.presentation.jersey.JerseyServer;
-
-import uk.org.ogsadai.client.toolkit.RequestResource;
-import uk.org.ogsadai.client.toolkit.RequestExecutionType;
-
-import uk.org.ogsadai.client.toolkit.DataSourceResource;
-import uk.org.ogsadai.client.toolkit.DataRequestExecutionResource;
-
-import uk.org.ogsadai.client.toolkit.resource.ResourceFactory;
-
-import uk.org.ogsadai.client.toolkit.activities.sql.SQLQuery;
-import uk.org.ogsadai.client.toolkit.activities.sql.SQLBulkLoadTuple;
-
-import uk.org.ogsadai.client.toolkit.activities.delivery.WriteToDataSource;
-import uk.org.ogsadai.client.toolkit.activities.delivery.DeliverToRequestStatus;
-
-import uk.org.ogsadai.client.toolkit.activities.transform.TupleToCSV;
-import uk.org.ogsadai.client.toolkit.activities.transform.TupleToByteArrays;
 
 /**
  *
@@ -74,7 +42,7 @@ extends SimpleQueryTestBase
      * Our test service endpoint.
      * 
      */
-    public static final String endpoint = "http://localhost:8081/albert/services/" ;
+    public static final String endpoint = "http://localhost:8081/albert/services" ;
 
     /**
      * TWOMASS and UKIDSSDR1, using single JDBC connection.
@@ -115,14 +83,14 @@ extends SimpleQueryTestBase
     /**
      * TWOMASS and UKIDSSDR1, using DQP, using BETWEEN.
      *
-    @Test
      */
+    @Test
     public void test002()
     throws Exception
         {
         execute(
             endpoint,
-            "mydqp",
+            "mockdqp",
             " SELECT" +
             "    twomass.ra AS tmra," +
             "    ukidss.ra  AS ukra,"  +
@@ -158,7 +126,7 @@ extends SimpleQueryTestBase
         {
         execute(
             endpoint,
-            "mydqp",
+            "mockdqp",
             " SELECT" +
             "    twomass.ra AS tmra," +
             "    ukidss.ra  AS ukra,"  +
