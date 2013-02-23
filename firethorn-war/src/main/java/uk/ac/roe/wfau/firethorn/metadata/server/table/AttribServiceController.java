@@ -126,12 +126,11 @@ public class AttribServiceController
         final String alias
         ) throws NotFoundException {
 
-        Iterable<BaseColumn> cols = factories().base().tables().resolve(
-            alias
-            ).root().columns().select();
-
+        // I HATE GENERICS
         return new ColumnBean.Iter(
-            cols
+            (Iterable<BaseColumn<?>>) factories().base().tables().resolve(
+                alias
+                ).root().columns().select()
             );
         }
 

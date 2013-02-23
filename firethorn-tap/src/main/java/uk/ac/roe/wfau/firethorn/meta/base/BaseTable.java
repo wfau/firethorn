@@ -141,7 +141,7 @@ extends BaseComponent
      * The table columns.
      *
      */
-    public interface Columns<ColumnType extends BaseColumn<ColumnType>>
+    public interface Columns<ColumnType>
         {
         /**
          * Select all of the columns in this table.

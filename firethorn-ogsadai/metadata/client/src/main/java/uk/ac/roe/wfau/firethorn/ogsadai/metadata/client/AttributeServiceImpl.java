@@ -17,6 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -40,10 +44,16 @@ implements AttributeService
     private static Log log = LogFactory.getLog(AttributeServiceImpl.class);
 
     /**
-     * Webservice path.
+     * Webservice path for an indiviual column.
      *
      */
-    public static final String SERVICE_PATH = "/meta/table/{table}/attrib/{attrib}" ;
+    public static final String COLUMN_NAME_PATH = "/meta/table/{table}/column/{column}" ;
+
+    /**
+     * Webservice path for a lst of columns.
+     *
+     */
+    public static final String COLUMN_LIST_PATH = "/meta/table/{table}/columns" ;
 
     /**
      * Protected constructor.
@@ -67,7 +77,7 @@ implements AttributeService
 
         AttributeBean bean = rest().getForObject(
             endpoint(
-                SERVICE_PATH
+                COLUMN_NAME_PATH
                 ),
             AttributeBean.class,
             source,
@@ -80,32 +90,80 @@ implements AttributeService
         log.debug("  Type   [" + bean.getType()   + "]");
         log.debug("----");
 
-        return new AttributeBeanWrapper(
+        return new BeanWrapper(
             bean
             );
         }
 
     @Override
-    public Iterable<Attribute> getAttributes(String table)
+    public Iterable<Attribute> getAttributes(String source)
         {
         log.debug("getAttributes(String)");
-        log.debug("  Table [" + table  + "]");
-        return null ;
+        log.debug("  Source [" + source + "]");
+
+        AttributeBean[] array = rest().getForObject(
+            endpoint(
+                COLUMN_LIST_PATH
+                ),
+                AttributeBean[].class,
+            source
+            );        
+        
+        return new BeanWrapper.Iter(
+            array
+            );
         }
 
     /**
      * AttributeImpl based wrapper for the Bean class.
      * 
      */
-    public static class AttributeBeanWrapper
+    public static class BeanWrapper
     extends AttributeImpl
     implements Attribute
         {
+        public static class Iter
+        implements Iterable<Attribute>
+            {
+            private AttributeBean[] array ;
+            public Iter(AttributeBean[] array)
+                {
+                this.array = array;
+                }
+            @Override
+            public Iterator<Attribute> iterator()
+                {
+                return new Iterator<Attribute>()
+                    {
+                    private Iterator<AttributeBean> inner = Arrays.asList(Iter.this.array).iterator();
+                    @Override
+                    public boolean hasNext()
+                        {
+                        return this.inner.hasNext();
+                        }
+
+                    @Override
+                    public Attribute next()
+                        {
+                        return new BeanWrapper(
+                            this.inner.next()
+                            );
+                        }
+
+                    @Override
+                    public void remove()
+                        {
+                        this.inner.remove();
+                        }
+                    };
+                }
+            }
+
         /**
          * Protected constructor.
          *
          */
-        protected AttributeBeanWrapper(AttributeBean bean)
+        protected BeanWrapper(AttributeBean bean)
             {
             super(
                 bean.getName(),

@@ -28,6 +28,12 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
         
     popd
 
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/metadata/client"
+
+        mvn clean install
+        
+    popd
+
 # ------------------------------------------------------------
 # Build and run the firethorn webapp 
 #
@@ -192,7 +198,7 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 
         #
         # Check the column mapping service.
-        GET "/meta/table/JDBC_5/attrib/ra" | ./pp
+        GET "/meta/table/JDBC_5/column/ra" | ./pp
 
             {
                "source" : "JDBC_5",
@@ -201,7 +207,23 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
                "key" : false
             }
 
+        GET "/meta/table/JDBC_5/columns" | ./pp
 
+            [
+               {
+                  "source" : "JDBC_5",
+                  "name" : "coadd",
+                  "type" : 0,
+                  "key" : false
+               },
+               ....
+               {
+                  "source" : "JDBC_5",
+                  "name" : "cx",
+                  "type" : 0,
+                  "key" : false
+               }
+            ]
 
 #
 # Create our ADQL query.
@@ -447,9 +469,15 @@ EOF
 # Works if we replace 'CROSS JOIN' with ','
 #
 
-# ------------------------------------------------------------
-# Metadata service test ...
 
+# ----------------------------------------------------------------------------------------
+#
+
+        // I HATE GENERICS
+        @SuppressWarnings("unchecked")
+        Iterable<BaseColumn<?>> cols = (Iterable<BaseColumn<?>>) factories().base().tables().resolve(
+            alias
+            ).root().columns().select();
 
 
 

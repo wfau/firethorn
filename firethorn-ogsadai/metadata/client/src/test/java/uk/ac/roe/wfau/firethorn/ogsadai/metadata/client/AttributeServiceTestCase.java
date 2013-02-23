@@ -7,6 +7,8 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
 import uk.org.ogsadai.dqp.lqp.Attribute;
@@ -17,17 +19,22 @@ import uk.org.ogsadai.dqp.lqp.Attribute;
  */
 public class AttributeServiceTestCase
     {
+    /**
+     * Debug logger.
+     *
+     */
+    private static Log log = LogFactory.getLog(AttributeServiceTestCase.class);
 
     @Test
     public void test000()
         {
         AttributeServiceImpl service = new AttributeServiceImpl(
-            "http://data.metagrid.co.uk/wfau/firethorn/test",
+            "http://data.metagrid.co.uk/wfau/firethorn/test/",
             null
             ); 
         Attribute attrib = service.getAttribute(
             "table-000",
-            "attrib-000.json"
+            "column-000.json"
             );
         assertNotNull(
             attrib
@@ -73,4 +80,23 @@ public class AttributeServiceTestCase
             );
         }
 
+    @Test
+    public void test002()
+        {
+        AttributeServiceImpl service = new AttributeServiceImpl(
+            "http://localhost:8080/firethorn/",
+            null
+            ); 
+        Iterable<Attribute> iter = service.getAttributes(
+            "JDBC_5"
+            );
+        for (Attribute attrib : iter)
+            {
+            log.debug("Attribute ----");
+            log.debug("  Name   [" + attrib.getName()   + "]");
+            log.debug("  Source [" + attrib.getSource() + "]");
+            log.debug("  Type   [" + attrib.getType()   + "]");
+            log.debug("----");
+            }
+        }
     }
