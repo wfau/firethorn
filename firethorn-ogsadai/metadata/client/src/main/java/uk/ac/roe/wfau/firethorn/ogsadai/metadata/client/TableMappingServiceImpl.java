@@ -39,10 +39,10 @@ implements TableMappingService
     private static Log log = LogFactory.getLog(TableMappingServiceImpl.class);
 
     /**
-     * Web service path.
+     * Webservice path.
      *
      */
-    public static final String TABLE_PATH = "/meta/table/{table}" ;
+    public static final String SERVICE_PATH = "/meta/table/{table}" ;
     
     /**
      * Protected constructor.
@@ -63,7 +63,9 @@ implements TableMappingService
         log.debug("  Table  [" + table  + "]");
 
         TableMappingBean bean = rest().getForObject(
-            endpoint(TABLE_PATH),
+            endpoint(
+                SERVICE_PATH
+                ),
             TableMappingBean.class,
             table
             );        

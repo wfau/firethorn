@@ -180,6 +180,29 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
         # Check the ADQL tables.
         GET "/adql/schema/3/tables/select" | ./pp
 
+        #
+        # Check the table mapping service.
+        GET "/meta/table/JDBC_5" | ./pp
+
+            {
+               "resource" : null,
+               "name" : "TWOMASS.dbo.twomass_psc",
+               "alias" : "JDBC_5"
+            }
+
+        #
+        # Check the column mapping service.
+        GET "/meta/table/JDBC_5/attrib/ra" | ./pp
+
+            {
+               "source" : "JDBC_5",
+               "name" : "ra",
+               "type" : 0,
+               "key" : false
+            }
+
+
+
 #
 # Create our ADQL query.
 
@@ -275,10 +298,10 @@ EOF
                 " SELECT" +
                 "     twomass.ra AS tmra," +
                 "     ukidss.ra AS ukra," +
-                "     twomass.ra-ukidss.ra AS difra," +
+                "     twomass.ra - ukidss.ra AS difra," +
                 "     twomass.dec AS tmdec," +
                 "     ukidss.dec AS ukdec," +
-                "     twomass.ra-ukidss.ra AS difdec," +
+                "     twomass.ra - ukidss.ra AS difdec," +
                 "     neighbour.distanceMins AS dist" +
                 " FROM" +
                 "     JDBC_5 AS twomass" +
@@ -410,6 +433,22 @@ EOF
 # ------------------------------------------------------------
 # Run the OGSA-DAI query tests ..
  
+
+    2013-02-22 16:50:16,541 WARN  event.LoggingActivityListener [pool-1-thread-2,warnExceptionAndChildren:343] #1361551816540:115# A user problem has occured during activity processing.
+    2013-02-22 16:50:16,541 WARN  event.LoggingActivityListener [pool-1-thread-2,warnExceptionAndChildren:343] #1361551816540:115# A user problem has occured during activity processing.
+    2013-02-22 16:50:16,542 WARN  event.LoggingActivityListener [pool-1-thread-2,warnExceptionAndChildren:343] #1361551816540:115# uk.org.ogsadai.SQL_PARSER_EXCEPTION
+    2013-02-22 16:50:16,544 WARN  event.LoggingActivityListener [pool-1-thread-2,warnExceptionAndChildren:343] #1361551816540:115# uk.org.ogsadai.MISMATCHED_TOKEN_EXCEPTION : 1, 239, CROSS
+
+
+    SELECT     twomass.ra AS tmra,     ukidss.ra AS ukra,     twomass.ra-ukidss.ra AS difra,     twomass.dec AS tmdec,     ukidss.dec AS ukdec,     twomass.ra-ukidss.ra AS difdec,     neighbour.distanceMins AS dist FROM     JDBC_5 AS twomass CROSS JOIN     JDBC_120 AS ukidss CROSS JOIN     JDBC_41 AS neighbour WHERE     twomass.ra >= '55.0' AND     twomass.ra <= '55.9' AND     twomass.dec >= '20.0' AND     twomass.dec <= '22.9' AND     ukidss.ra >= '55.0' AND     ukidss.ra <= '55.9' AND     ukidss.dec >= '20.0' AND     ukidss.dec <= '22.9' AND     neighbour.masterObjID = ukidss.sourceID AND     neighbour.slaveObjID = twomass.pts_key AND     neighbour.distanceMins < 1E-3
+    line 1:239 mismatched input 'CROSS' expecting EOF
+
+#
+# Works if we replace 'CROSS JOIN' with ','
+#
+
+# ------------------------------------------------------------
+# Metadata service test ...
 
 
 

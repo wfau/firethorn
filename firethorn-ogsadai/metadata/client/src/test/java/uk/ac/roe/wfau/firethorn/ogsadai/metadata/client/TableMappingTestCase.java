@@ -71,4 +71,29 @@ public class TableMappingTestCase
             );
         }
 
+    @Test
+    public void test002()
+        {
+        TableMappingServiceImpl service = new TableMappingServiceImpl(
+            "http://localhost:8080/firethorn",
+            null
+            ); 
+        TableMapping bean = service.getTableMapping(
+            "JDBC_5"
+            );
+        assertNotNull(
+            bean
+            );
+        assertEquals(
+            "TWOMASS.dbo.twomass_psc",
+            bean.tableName()
+            );
+        assertEquals(
+            "JDBC_5",
+            bean.tableAlias()
+            );
+        assertNull(
+            bean.resourceIdent()
+            );
+        }
     }

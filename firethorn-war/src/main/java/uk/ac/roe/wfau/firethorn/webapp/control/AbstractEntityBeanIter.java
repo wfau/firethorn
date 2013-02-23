@@ -26,7 +26,7 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
  *
  */
 public abstract class AbstractEntityBeanIter<EntityType extends Entity>
-implements EntityBeanIter<EntityType>
+implements EntityBean.Iter<EntityType>
     {
 
     /**

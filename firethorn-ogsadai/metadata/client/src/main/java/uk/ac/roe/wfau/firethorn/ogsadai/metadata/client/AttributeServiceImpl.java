@@ -17,20 +17,13 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.AttributeService;
+import uk.org.ogsadai.dqp.common.RequestDetails;
 import uk.org.ogsadai.dqp.lqp.Attribute;
 import uk.org.ogsadai.dqp.lqp.AttributeImpl;
-
-import uk.org.ogsadai.dqp.common.RequestDetails;
-
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.AttributeService;
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.StatisticsService;
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMappingService;
 
 /**
  *
@@ -40,10 +33,20 @@ public class AttributeServiceImpl
 extends MetadataServiceBase
 implements AttributeService
     {
+    /**
+     * Debug logger.
+     *
+     */
     private static Log log = LogFactory.getLog(AttributeServiceImpl.class);
 
-    /*
+    /**
+     * Webservice path.
      *
+     */
+    public static final String SERVICE_PATH = "/meta/table/{table}/attrib/{attrib}" ;
+
+    /**
+     * Protected constructor.
      *
      */
     public AttributeServiceImpl(String endpoint, RequestDetails request)
@@ -56,12 +59,30 @@ implements AttributeService
         }
 
     @Override
-    public Attribute getAttribute(String table, String column)
+    public Attribute getAttribute(String source, String attrib)
         {
         log.debug("getAttribute(String, String)");
-        log.debug("  Table  [" + table  + "]");
-        log.debug("  Column [" + column + "]");
-        return null ;
+        log.debug("  Source [" + source + "]");
+        log.debug("  Attrib [" + attrib + "]");
+
+        AttributeBean bean = rest().getForObject(
+            endpoint(
+                SERVICE_PATH
+                ),
+            AttributeBean.class,
+            source,
+            attrib
+            );        
+
+        log.debug("Got bean ----");
+        log.debug("  Name   [" + bean.getName()   + "]");
+        log.debug("  Source [" + bean.getSource() + "]");
+        log.debug("  Type   [" + bean.getType()   + "]");
+        log.debug("----");
+
+        return new AttributeBeanWrapper(
+            bean
+            );
         }
 
     @Override
@@ -70,6 +91,75 @@ implements AttributeService
         log.debug("getAttributes(String)");
         log.debug("  Table [" + table  + "]");
         return null ;
+        }
+
+    /**
+     * AttributeImpl based wrapper for the Bean class.
+     * 
+     */
+    public static class AttributeBeanWrapper
+    extends AttributeImpl
+    implements Attribute
+        {
+        /**
+         * Protected constructor.
+         *
+         */
+        protected AttributeBeanWrapper(AttributeBean bean)
+            {
+            super(
+                bean.getName(),
+                bean.getType(),
+                bean.getSource(),
+                bean.isKey()
+                );
+            }
+        }
+
+    /**
+     * Bean used by the JSON handler.
+     * 
+     */
+    public static class AttributeBean
+        {
+        public AttributeBean()
+            {
+            }
+        
+        private String name;
+        public String getName()
+            {
+            return this.name;
+            }
+
+        private String source;
+        public String getSource()
+            {
+            return this.source;
+            }
+
+        private int type;
+        public int getType()
+            {
+            return this.type;
+            }
+
+        /*
+         * 
+uk.org.ogsadai.tuple.
+TupleTypes
+TupleTypeUtility
+TupleUtilities
+TupleTypesConverter
+
+         *
+         */
+        
+        private boolean key;
+        public boolean isKey()
+            {
+            return this.key;
+            }
         }
     }
 

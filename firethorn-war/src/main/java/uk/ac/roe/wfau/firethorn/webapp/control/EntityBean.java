@@ -27,6 +27,12 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
  */
 public interface EntityBean<EntityType extends Entity>
     {
+
+    public static interface Iter<EntityType extends Entity>
+    extends Iterable<EntityBean<EntityType>>
+        {
+        }
+
     /**
      * The wrapped Entity.
      *

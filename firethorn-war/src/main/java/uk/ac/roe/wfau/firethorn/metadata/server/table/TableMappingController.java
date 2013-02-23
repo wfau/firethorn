@@ -33,36 +33,39 @@ import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
- * Spring MVC controller for <code>JdbcTables</code>.
+ * Spring MVC controller for our TableMapping service.
  *
  */
 @Slf4j
 @Controller
-@RequestMapping(TableMappingController.TABLE_PATH)
+@RequestMapping(TableMappingController.CONTROLLER_PATH)
 public class TableMappingController
     extends AbstractController
     {
-    public static final String ALIAS_FIELD = "alias" ;
-    public static final String ALIAS_TOKEN = "{alias}" ;
-    public static final String ALIAS_REGEX = "\\{alias\\}" ;
-
     /**
-     * The URI path for the service.
+     * The URI path field for the table alias.
      *
      */
-    public static final String SERVICE_PATH = "/meta/table";
+    public static final String TABLE_ALIAS_FIELD = "table" ;
 
     /**
-     * The URI path for a table.
+     * The URI path for the controller.
      *
      */
-    public static final String TABLE_PATH = SERVICE_PATH + "/" + ALIAS_TOKEN ;
-    
+    public static final String CONTROLLER_PATH = "/meta/table/{" + TABLE_ALIAS_FIELD + "}" ;
+
+    /**
+     * MVC property for the table entity.
+     *
+    public static final String TABLE_ENTITY = "urn:meta.table.entity" ;
+     */
+
+
     @Override
     public Path path()
         {
         return path(
-            TableMappingController.TABLE_PATH
+            TableMappingController.CONTROLLER_PATH
             );
         }
 
@@ -76,52 +79,76 @@ public class TableMappingController
         }
 
     /**
-     * MVC property for the target entity.
-     *
-     */
-    public static final String TABLE_ENTITY = "urn:jdbc.table.entity" ;
-
-    /**
-     * Wrap an entity as a bean.
-     *
-     */
-    public TableMappingBean bean(
-        final BaseTable<?,?> entity
-        ){
-        return new TableMappingBean(
-            entity
-            );
-        }
-
-    /**
-     * Get the target entity based on the alias in the path.
-     * @throws NotFoundException
-     *
-     */
-    @ModelAttribute(TableMappingController.TABLE_ENTITY)
-    public BaseTable<?,?> entity(
-        @PathVariable(TableMappingController.ALIAS_FIELD)
-        final String alias
-        ) throws NotFoundException {
-        log.debug("table() [{}]", alias);
-        return factories().base().tables().resolve(
-            alias
-            ).root();
-        }
-
-    /**
      * JSON GET request.
      *
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public TableMappingBean jsonSelect(
-        @ModelAttribute(TABLE_ENTITY)
-        final BaseTable<?,?> entity
-        ){
+        @PathVariable(TableMappingController.TABLE_ALIAS_FIELD)
+        final String alias
+        ) throws NotFoundException {
         log.debug("jsonSelect()");
-        return bean(
-            entity
+        return new TableMappingBean(
+            factories().base().tables().resolve(
+                alias
+                ).root()
             );
+        }
+
+    /**
+     * Bean wrapper for a table.
+     *
+     */
+    public static class TableMappingBean
+        {
+
+        /**
+         * Public constructor.
+         *
+         */
+        public TableMappingBean(final BaseTable<?,?> table)
+            {
+            this.table = table;
+            }
+
+        private final BaseTable<?,?> table ;
+        protected BaseTable<?,?> table()
+            {
+            return this.table;
+            }
+
+        /**
+         * The table alias.
+         * <br/>
+         * This is the table alias used in SQL queries passed into OGSA-DAI,
+         * before the mapping from table alias to fully qualified resource table name.
+         * @return The table alias.
+         *
+         */
+        public String getAlias()
+            {
+            return this.table.alias();
+            }
+
+        /**
+         * Get the fully qualified table name (catalog.schema.table) in the target resource.
+         * @return The fully qualified table name.
+         *
+         */
+        public String getName()
+            {
+            return this.table.fullname().toString();
+            }
+
+        /**
+         * Get the target resource identifier.
+         * @return The target resource identifier.
+         *
+         */
+        public String getResource()
+            {
+            return this.table.resource().ogsaid();
+            }
         }
     }
