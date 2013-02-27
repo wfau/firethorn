@@ -28,7 +28,7 @@ public class AttributeServiceTestCase
     @Test
     public void test000()
         {
-        AttributeServiceImpl service = new AttributeServiceImpl(
+        SimpleAttributeServiceImpl service = new SimpleAttributeServiceImpl(
             "http://data.metagrid.co.uk/wfau/firethorn/test/",
             null
             ); 
@@ -52,7 +52,7 @@ public class AttributeServiceTestCase
     @Test
     public void test001()
         {
-        AttributeServiceImpl service = new AttributeServiceImpl(
+        SimpleAttributeServiceImpl service = new SimpleAttributeServiceImpl(
             "http://localhost:8080/firethorn/",
             null
             ); 
@@ -72,7 +72,7 @@ public class AttributeServiceTestCase
             attrib.getName()
             );
         assertEquals(
-            0,
+            8,
             attrib.getType()
             );
         assertFalse(
@@ -83,7 +83,7 @@ public class AttributeServiceTestCase
     @Test
     public void test002()
         {
-        AttributeServiceImpl service = new AttributeServiceImpl(
+        SimpleAttributeServiceImpl service = new SimpleAttributeServiceImpl(
             "http://localhost:8080/firethorn/",
             null
             ); 

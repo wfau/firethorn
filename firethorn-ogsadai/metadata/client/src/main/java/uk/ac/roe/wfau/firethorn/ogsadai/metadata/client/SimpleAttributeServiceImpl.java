@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,7 +32,7 @@ import uk.org.ogsadai.dqp.lqp.AttributeImpl;
  *
  *
  */
-public class AttributeServiceImpl
+public class SimpleAttributeServiceImpl
 extends MetadataServiceBase
 implements AttributeService
     {
@@ -41,7 +40,7 @@ implements AttributeService
      * Debug logger.
      *
      */
-    private static Log log = LogFactory.getLog(AttributeServiceImpl.class);
+    private static Log log = LogFactory.getLog(SimpleAttributeServiceImpl.class);
 
     /**
      * Webservice path for an indiviual column.
@@ -59,7 +58,7 @@ implements AttributeService
      * Protected constructor.
      *
      */
-    public AttributeServiceImpl(String endpoint, RequestDetails request)
+    public SimpleAttributeServiceImpl(String endpoint, RequestDetails request)
         {
         super(
             endpoint,
@@ -68,49 +67,57 @@ implements AttributeService
         log.debug("AttributeServiceImpl()");
         }
 
-    @Override
-    public Attribute getAttribute(String source, String attrib)
+    protected AttributeBean bean(String source, String attrib)
         {
-        log.debug("getAttribute(String, String)");
+        log.debug("bean(String, String)");
         log.debug("  Source [" + source + "]");
         log.debug("  Attrib [" + attrib + "]");
-
-        AttributeBean bean = rest().getForObject(
+        return rest().getForObject(
             endpoint(
                 COLUMN_NAME_PATH
                 ),
             AttributeBean.class,
             source,
             attrib
-            );        
-
-        log.debug("Got bean ----");
-        log.debug("  Name   [" + bean.getName()   + "]");
-        log.debug("  Source [" + bean.getSource() + "]");
-        log.debug("  Type   [" + bean.getType()   + "]");
-        log.debug("----");
-
-        return new BeanWrapper(
-            bean
-            );
+            ); 
         }
 
-    @Override
-    public Iterable<Attribute> getAttributes(String source)
+    protected AttributeBean[] array(String source)
         {
-        log.debug("getAttributes(String)");
+        log.debug("array(String)");
         log.debug("  Source [" + source + "]");
-
-        AttributeBean[] array = rest().getForObject(
+        return rest().getForObject(
             endpoint(
                 COLUMN_LIST_PATH
                 ),
                 AttributeBean[].class,
             source
             );        
-        
-        return new BeanWrapper.Iter(
-            array
+        }
+
+    @Override
+    public Attribute getAttribute(String source, String attrib)
+        {
+        log.debug("getAttribute(String, String)");
+        log.debug("  Source [" + source + "]");
+        log.debug("  Attrib [" + attrib + "]");
+        return BeanWrapper.wrap(
+            bean(
+                source,
+                attrib
+                )
+            );
+        }
+    
+    @Override
+    public Iterable<Attribute> getAttributes(String source)
+        {
+        log.debug("getAttributes(String)");
+        log.debug("  Source [" + source + "]");
+        return BeanWrapper.wrap(
+            array(
+                source
+                )
             );
         }
 
@@ -141,15 +148,13 @@ implements AttributeService
                         {
                         return this.inner.hasNext();
                         }
-
                     @Override
                     public Attribute next()
                         {
-                        return new BeanWrapper(
+                        return wrap(
                             this.inner.next()
                             );
                         }
-
                     @Override
                     public void remove()
                         {
@@ -159,6 +164,28 @@ implements AttributeService
                 }
             }
 
+        /**
+         * Public wrapping method.
+         * 
+         */
+        public static Iterable<Attribute> wrap(AttributeBean[] array)
+            {
+            return new BeanWrapper.Iter(
+                array
+                );
+            }
+
+        /**
+         * Public wrapping method.
+         * 
+         */
+        public static Attribute wrap(AttributeBean bean)
+            {
+            return new BeanWrapper(
+                bean
+                );
+            }
+        
         /**
          * Protected constructor.
          *
@@ -202,17 +229,6 @@ implements AttributeService
             return this.type;
             }
 
-        /*
-         * 
-uk.org.ogsadai.tuple.
-TupleTypes
-TupleTypeUtility
-TupleUtilities
-TupleTypesConverter
-
-         *
-         */
-        
         private boolean key;
         public boolean isKey()
             {

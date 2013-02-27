@@ -64,8 +64,8 @@ implements MetadataServiceFactory
         {
         log.debug("getAttributeService(RequestDetails)");
         log.debug("  Request [" + request + "]");
-        return new AttributeServiceImpl(
-            endpoint,
+        return new CachingAttributeServiceImpl(
+            this.endpoint,
             request
             );
         }
@@ -75,8 +75,8 @@ implements MetadataServiceFactory
         {
         log.debug("getTableMappingService(RequestDetails)");
         log.debug("  Request [" + request + "]");
-        return new TableMappingServiceImpl(
-            endpoint,
+        return new CachingTableMappingServiceImpl(
+            this.endpoint,
             request
             );
         }
@@ -87,7 +87,7 @@ implements MetadataServiceFactory
         log.debug("getStatisticsService(RequestDetails)");
         log.debug("  Request [" + request + "]");
         return new StatisticsServiceImpl(
-            endpoint,
+            this.endpoint,
             request
             );
         }

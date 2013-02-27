@@ -19,7 +19,7 @@ public class TableMappingTestCase
     @Test
     public void test000()
         {
-        TableMappingServiceImpl service = new TableMappingServiceImpl(
+        SimpleTableMappingServiceImpl service = new SimpleTableMappingServiceImpl(
             "http://data.metagrid.co.uk/wfau/firethorn/test",
             null
             ); 
@@ -47,7 +47,7 @@ public class TableMappingTestCase
     @Test
     public void test001()
         {
-        TableMappingServiceImpl service = new TableMappingServiceImpl(
+        SimpleTableMappingServiceImpl service = new SimpleTableMappingServiceImpl(
             "http://data.metagrid.co.uk/wfau/firethorn/test",
             null
             ); 
@@ -66,7 +66,8 @@ public class TableMappingTestCase
             "JDBC_120",
             bean.tableAlias()
             );
-        assertNull(
+        assertEquals(
+            "ukidss",
             bean.resourceIdent()
             );
         }
@@ -74,7 +75,7 @@ public class TableMappingTestCase
     @Test
     public void test002()
         {
-        TableMappingServiceImpl service = new TableMappingServiceImpl(
+        SimpleTableMappingServiceImpl service = new SimpleTableMappingServiceImpl(
             "http://localhost:8080/firethorn",
             null
             ); 
@@ -92,7 +93,8 @@ public class TableMappingTestCase
             "JDBC_5",
             bean.tableAlias()
             );
-        assertNull(
+        assertEquals(
+            "twomass",
             bean.resourceIdent()
             );
         }

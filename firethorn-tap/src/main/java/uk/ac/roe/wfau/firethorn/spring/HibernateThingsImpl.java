@@ -29,6 +29,8 @@ import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateEntityMethod;
 
 /**
@@ -92,6 +94,7 @@ public class HibernateThingsImpl
         }
 
     @Override
+    @CreateEntityMethod
     public Entity insert(final Entity entity)
         {
         try {
@@ -125,6 +128,7 @@ public class HibernateThingsImpl
         }
 
     @Override
+    @SelectEntityMethod
     public Entity select(final Class<?> type, final Identifier ident)
         {
         try {

@@ -28,7 +28,7 @@ import uk.org.ogsadai.dqp.common.RequestDetails;
  *
  *
  */
-public class TableMappingServiceImpl
+public class SimpleTableMappingServiceImpl
 extends MetadataServiceBase
 implements TableMappingService
     {
@@ -36,7 +36,7 @@ implements TableMappingService
      * Debug logger.
      *
      */
-    private static Log log = LogFactory.getLog(TableMappingServiceImpl.class);
+    private static Log log = LogFactory.getLog(SimpleTableMappingServiceImpl.class);
 
     /**
      * Webservice path.
@@ -48,7 +48,7 @@ implements TableMappingService
      * Protected constructor.
      *
      */
-    protected TableMappingServiceImpl(final String endpoint, final RequestDetails request)
+    protected SimpleTableMappingServiceImpl(final String endpoint, final RequestDetails request)
         {
         super(
             endpoint,
@@ -57,26 +57,17 @@ implements TableMappingService
         }
 
     @Override
-    public TableMapping getTableMapping(final String table)
+    public TableMapping getTableMapping(final String source)
         {
         log.debug("getTableMapping(String)");
-        log.debug("  Table  [" + table  + "]");
-
-        TableMappingBean bean = rest().getForObject(
+        log.debug("  Source [" + source  + "]");
+        return rest().getForObject(
             endpoint(
                 SERVICE_PATH
                 ),
             TableMappingBean.class,
-            table
+            source
             );        
-
-        log.debug("Got bean ----");
-        log.debug("  Name  [" + bean.tableName()  + "]");
-        log.debug("  Alias [" + bean.tableAlias() + "]");
-        log.debug("  Resource [" + bean.resourceIdent() + "]");
-        log.debug("----");
-
-        return bean ;
         }
 
     /**
@@ -86,7 +77,6 @@ implements TableMappingService
     public static class TableMappingBean
     implements TableMapping
         {
-
         public TableMappingBean()
             {
             }
