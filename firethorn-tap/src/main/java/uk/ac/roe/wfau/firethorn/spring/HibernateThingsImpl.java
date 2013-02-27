@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateEntityMethod;
 
 /**
  * HibernateThings implementation.
@@ -147,6 +148,7 @@ public class HibernateThingsImpl
         }
 
     @Override
+    @UpdateEntityMethod
     public Entity update(final Entity entity)
         {
         try {
@@ -180,6 +182,7 @@ public class HibernateThingsImpl
         }
 
     @Override
+    @UpdateEntityMethod
     public void delete(final Entity entity)
         {
         try {

@@ -22,6 +22,7 @@ import java.util.Iterator;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import adql.db.DBColumn;
@@ -277,9 +278,15 @@ implements AdqlParserTable
         // If 'name' is an ADQL name, then search the AdqlTable.
         if (adql)
             {
-            adqlColumn = this.table.columns().select(
-                name
-                );
+            try {
+                adqlColumn = this.table.columns().select(
+                    name
+                    );
+                }
+            catch (NotFoundException ouch)
+                {
+                adqlColumn = null ;
+                }
             }
         //
         // If 'name' is a SQL name, then search the BaseTable.
@@ -332,9 +339,7 @@ implements AdqlParserTable
             @Override
             public void remove()
                 {
-                throw new UnsupportedOperationException(
-                    "Iterator.remove() is not supported"
-                    );
+                this.iter.remove();
                 }
             };
         }

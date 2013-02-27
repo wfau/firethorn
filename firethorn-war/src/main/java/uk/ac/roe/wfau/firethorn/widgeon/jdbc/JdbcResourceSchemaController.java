@@ -74,12 +74,6 @@ extends AbstractController
     public static final String SEARCH_PATH = "search" ;
 
     /**
-     * URL path for the create method.
-     *
-    public static final String CREATE_PATH = "create" ;
-     */
-
-    /**
      * MVC property for the Resource name.
      *
      */
@@ -104,13 +98,7 @@ extends AbstractController
     public static final String SEARCH_RESULT = "jdbc.resource.schema.search.result" ;
 
     /**
-     * MVC property for the create name.
-     *
-    public static final String CREATE_NAME = "jdbc.resource.schema.create.name" ;
-     */
-
-    /**
-     * Get the parent entity based on the request ident.
+     * Get the parent resource based on the identifier in the request.
      * @throws NotFoundException
      *
      */
@@ -139,52 +127,6 @@ extends AbstractController
         return new JdbcSchemaBean.Iter(
             resource.schemas().select()
             );
-        }
-
-    /**
-     * Default HTML GET request (select all).
-     *
-     */
-    @RequestMapping(value="", method=RequestMethod.GET)
-    public ModelAndView htmlIndex(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
-        final ModelAndView model
-        ){
-        log.debug("htmlIndex()");
-        model.addObject(
-            JdbcResourceSchemaController.SELECT_RESULT,
-            select(
-                resource
-                )
-            );
-        model.setViewName(
-            "jdbc/resource/select"
-            );
-        return model ;
-        }
-
-    /**
-     * HTML GET request to select all.
-     *
-     */
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
-    public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
-        final ModelAndView model
-        ){
-        log.debug("htmlSelect()");
-        model.addObject(
-            JdbcResourceSchemaController.SELECT_RESULT,
-            select(
-                resource
-                )
-            );
-        model.setViewName(
-            "jdbc/catalog/select"
-            );
-        return model ;
         }
 
     /**
@@ -219,36 +161,6 @@ extends AbstractController
                 name
                 )
             );
-        }
-
-    /**
-     * HTML request to select by name.
-     *
-     */
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
-    public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
-        @RequestParam(SELECT_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        log.debug("htmlSelect(String) [{}]", name);
-        model.addObject(
-            SELECT_NAME,
-            name
-            );
-        model.addObject(
-            SELECT_RESULT,
-            select(
-                resource,
-                name
-                )
-            );
-        model.setViewName(
-            "jdbc/catalog/select"
-            );
-        return model ;
         }
 
     /**
@@ -289,53 +201,6 @@ extends AbstractController
         }
 
     /**
-     * HTML GET request for the search form.
-     *
-     */
-    @RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
-    public ModelAndView htmlSearch(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
-        final ModelAndView model
-        ){
-        log.debug("htmlSearch");
-        model.setViewName(
-            "jdbc/catalog/search"
-            );
-        return model ;
-        }
-
-    /**
-     * HTML request to search by text.
-     *
-     */
-    @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
-    public ModelAndView htmlSearch(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
-        @RequestParam(SEARCH_TEXT)
-        final String text,
-        final ModelAndView model
-        ){
-        log.debug("htmlSearch(String) [{}]", text);
-        model.addObject(
-            SEARCH_TEXT,
-            text
-            );
-        model.addObject(
-            SEARCH_RESULT,
-            search(
-                resource,
-                text
-                )
-            );
-        model.setViewName(
-            "jdbc/catalog/search"
-            );
-        return model ;
-        }
-
-    /**
      * JSON request to search by text.
      *
      */
@@ -354,47 +219,4 @@ extends AbstractController
             text
             );
         }
-
-    /**
-     * Create a new schema.
-     *
-    public JdbcSchemaBean create(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
-        final String name
-        ){
-        log.debug("create(String) [{}]", name);
-        return new JdbcSchemaBean(
-            resource.schemas().create(
-                name
-                )
-            );
-        }
-     */
-
-    /**
-     * JSON POST request to create a new schema.
-     *
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<JdbcSchemaBean> jsonCreate(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
-        final JdbcResource resource,
-        @RequestParam(CREATE_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        log.debug("jsonCreate(String) [{}]", name);
-        final JdbcSchemaBean schema = create(
-            resource,
-            name
-            );
-        return new ResponseEntity<JdbcSchemaBean>(
-            schema,
-            new RedirectHeader(
-                schema
-                ),
-            HttpStatus.CREATED
-            );
-        }
-     */
     }

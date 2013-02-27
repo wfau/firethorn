@@ -99,7 +99,7 @@ extends AbstractController
     public static final String SEARCH_RESULT = "jdbc.schema.table.search.result" ;
 
     /**
-     * Get the parent entity based on the request ident.
+     * Get the parent schema based on the identifier in the request.
      * @throws NotFoundException
      *
      */

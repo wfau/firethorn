@@ -199,7 +199,9 @@ implements Entity
      * The Entity name.
      *
      */
-    @Basic(fetch = FetchType.EAGER)
+    @Basic(
+        fetch = FetchType.EAGER
+        )
     @Column(
         name = DB_NAME_COL,
         unique = false,
@@ -279,7 +281,9 @@ implements Entity
      * The Entity description.
      *
      */
-    @Basic(fetch = FetchType.LAZY)
+    @Basic(
+        fetch = FetchType.LAZY
+        )
     @Column(
         name = DB_TEXT_COL,
         unique = false,

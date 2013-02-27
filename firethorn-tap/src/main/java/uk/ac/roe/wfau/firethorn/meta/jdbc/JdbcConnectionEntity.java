@@ -142,7 +142,9 @@ public class JdbcConnectionEntity
         this.parent = parent;
         }
 
-    @Basic(fetch = FetchType.EAGER)
+    @Basic(
+        fetch = FetchType.EAGER
+        )
     @Column(
         name = DB_JDBC_URL_COL,
         unique = false,
@@ -162,7 +164,9 @@ public class JdbcConnectionEntity
         this.reset();
         }
 
-    @Basic(fetch = FetchType.EAGER)
+    @Basic(
+        fetch = FetchType.EAGER
+        )
     @Column(
         name = DB_JDBC_USER_COL,
         unique = false,
@@ -182,7 +186,9 @@ public class JdbcConnectionEntity
         this.reset();
         }
 
-    @Basic(fetch = FetchType.EAGER)
+    @Basic(
+        fetch = FetchType.EAGER
+        )
     @Column(
         name = DB_JDBC_PASS_COL,
         unique = false,
@@ -202,7 +208,9 @@ public class JdbcConnectionEntity
         this.reset();
         }
 
-    @Basic(fetch = FetchType.EAGER)
+    @Basic(
+        fetch = FetchType.EAGER
+        )
     @Column(
         name = DB_JDBC_DRIVER_COL,
         unique = false,

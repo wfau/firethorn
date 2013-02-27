@@ -42,6 +42,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaTable;
@@ -311,6 +312,7 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
                 }
             @Override
             public JdbcColumn select(final String name)
+            throws NotFoundException
                 {
                 return factories().jdbc().columns().select(
                     JdbcTableEntity.this,
@@ -421,20 +423,20 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
                             colname
                             }
                         );
-                    JdbcColumn column = columnsimpl().select(
-                        colname
-                        );
-                    if (column != null)
-                        {
-                        column.sqlsize(
+                    try {
+                        JdbcColumn column = columnsimpl().select(
+                            colname
+                            );
+                        column.info().jdbc().size(
                             colsize
                             );
-                        column.sqltype(
+                        column.info().jdbc().type(
                             coltype
                             );
                         }
-                    else {
-                        column = columnsimpl().create(
+                    catch (NotFoundException ouch)
+                        {
+                        columnsimpl().create(
                             colname,
                             coltype,
                             colsize

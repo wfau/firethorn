@@ -86,6 +86,16 @@
             <type>pom</type>
         </dependency>
 
+        <!--+
+            | The OGSA-DAI components used by our code.
+            +-->
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-clientserver</artifactId>
+            <version>${ogsadai.version}</version>
+            <type>jar</type>
+        </dependency>
+
     </dependencies>
 
     <build>

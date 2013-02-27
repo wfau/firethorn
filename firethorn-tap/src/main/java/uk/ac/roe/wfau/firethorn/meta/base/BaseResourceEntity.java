@@ -75,7 +75,8 @@ public abstract class BaseResourceEntity<SchemaType extends BaseSchema<SchemaTyp
 
     /**
      * The the OGSA-DAI resource ID.
-     * @todo Move to a common base class.
+     * @todo Move this to Jdbc and Ivoa classes - replace with error/warn on base class.
+     * @todo Create a new entity for OGSA-DAI resources.
      *
      */
     protected static final String DB_OGSA_ID_COL = "ogsa_id";

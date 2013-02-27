@@ -84,4 +84,9 @@ implements EntityBean<JdbcResource>
         {
         return new ConnectionBean();
         }
+
+    public String getOgsadai()
+        {
+        return entity().ogsaid();
+        }
     }

@@ -21,6 +21,7 @@ import java.util.Iterator;
 
 import lombok.extern.slf4j.Slf4j;
 
+import uk.org.ogsadai.tuple.TupleTypes;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,14 +29,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnType;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
-import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.widgeon.jdbc.JdbcColumnBean;
 
 /**
  * Spring MVC controller for our Attribute mapping service.
@@ -102,17 +100,32 @@ public class AttribServiceController
     @RequestMapping(value=COLUMN_NAME_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
     public ColumnBean jsonSelect(
         @PathVariable(AttribServiceController.TABLE_ALIAS_FIELD)
-        final String alias,
+        final String table,
         @PathVariable(AttribServiceController.COLUMN_NAME_FIELD)
-        final String name
+        final String column
         ) throws NotFoundException {
-        return new ColumnBean(
+log.debug("json get [{}][{}]", table, column);
+
+BaseTable<?,?> tab = factories().base().tables().resolve(
+    table
+    ); 
+
+BaseColumn<?> col = tab.columns().select(
+    column
+    ).root();
+
+log.debug("Found [{}][{}]", tab.fullname(), col.fullname());
+
+    return new ColumnBean(
+        col
+        );
+        /*
             factories().base().tables().resolve(
-                alias
+                table
                 ).root().columns().select(
-                    name
+                    column
                     )
-            );
+        */
         }
 
     /**
@@ -187,7 +200,7 @@ public class AttribServiceController
         private BaseColumn<?> column ;
         
         /**
-         * The parent table alias.
+         * The source table alias.
          * <br/>
          * This is the table alias used in SQL queries passed into OGSA-DAI,
          * before the mapping from table alias to fully qualified resource table name.
@@ -210,13 +223,16 @@ public class AttribServiceController
             }
         
         /**
-         * Get the column type.
+         * Get the column type as an OGSA-DAI TupleTypes value.
          * @return The column type.
+         * @see TupleTypes
          *
          */
         public int getType()
             {
-            return 0;
+            return convert(
+                this.column.info().adql().type()
+                );
             }
 
         /**
@@ -226,6 +242,56 @@ public class AttribServiceController
         public boolean isKey()
             {
             return false ;
+            }
+        }
+
+    /**
+     * Convert an AdqlColumnType into the corresponding TupleTypes value.
+     * @todo Solve the unusual ones ...  
+     * @see TupleTypes
+     *
+     */
+    public static int convert(AdqlColumnType type)
+        {
+        if (type == null)
+            {
+            return -1 ;
+            }
+        else {
+            switch(type)
+                {
+                case BIT :
+                case BOOLEAN :
+                    return TupleTypes._BOOLEAN ; 
+    
+                case BYTE :
+                    return TupleTypes._INT; 
+    
+                case CHAR :
+                    return TupleTypes._CHAR; 
+    
+                case SHORT :
+                    return TupleTypes._SHORT; 
+    
+                case INTEGER :
+                    return TupleTypes._INT; 
+    
+                case LONG :
+                    return TupleTypes._LONG; 
+    
+                case FLOAT :
+                    return TupleTypes._FLOAT; 
+    
+                case DOUBLE :
+                    return TupleTypes._DOUBLE; 
+    
+                case FLOATCOMPLEX :
+                case DOUBLECOMPLEX :
+                case UNICODE :
+                case UNKNOWN :
+                default :
+                    return -1 ;
+                }
             }
         }
     }

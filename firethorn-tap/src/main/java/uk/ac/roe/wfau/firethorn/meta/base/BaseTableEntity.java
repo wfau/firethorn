@@ -147,63 +147,6 @@ extends BaseComponentEntity
         this.parent = parent;
         }
 
-    @Basic(fetch = FetchType.EAGER)
-    @Column(
-        name = DB_TYPE_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String type ;
-    @Override
-    public String type()
-        {
-        return this.type;
-        }
-    @Override
-    public void type(final String type)
-        {
-        this.type = type;
-        }
-
-    @Basic(fetch = FetchType.EAGER)
-    @Column(
-        name = DB_SIZE_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private Integer size ;
-    @Override
-    public Integer size()
-        {
-        return this.size;
-        }
-    @Override
-    public void size(final Integer size)
-        {
-        this.size = size;
-        }
-
-    @Basic(fetch = FetchType.EAGER)
-    @Column(
-        name = DB_UCD_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String ucd;
-    @Override
-    public String ucd()
-        {
-        return this.ucd;
-        }
-    @Override
-    public void ucd(final String ucd)
-        {
-        this.ucd = ucd;
-        }
-
     @Override
     public StringBuilder fullname()
         {

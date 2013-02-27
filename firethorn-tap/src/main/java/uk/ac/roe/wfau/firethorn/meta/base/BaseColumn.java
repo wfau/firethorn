@@ -18,7 +18,9 @@
 package uk.ac.roe.wfau.firethorn.meta.base;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnInfo;
 
 /**
  *
@@ -53,7 +55,8 @@ extends BaseComponent
          * Select a named table from a schema.
          *
          */
-        public ColumnType select(final TableType parent, final String name);
+        public ColumnType select(final TableType parent, final String name)
+        throws NotFoundException;
 
         /**
          * Text search for tables (name starts with).
@@ -70,15 +73,6 @@ extends BaseComponent
     public BaseSchema<?,?> schema();
     public BaseResource<?> resource();
 
-    public String type();
-    public void type(final String type);
-
-    public Integer size();
-    public void size(final Integer size);
-
-    public String ucd();
-    public void ucd(final String ucd);
-
     public String alias();    //"column_ident"
     public StringBuilder fullname(); //"catalog.schema.table.column"
 
@@ -88,4 +82,25 @@ extends BaseComponent
         }
     public Linked linked();
 
+    /**
+     * Access to the column metadata.
+     * 
+     */
+    public interface Info
+        {
+
+        /**
+         * The ADQL column metadata.
+         * 
+         */
+        public AdqlColumnInfo adql();
+
+        }
+    
+    /**
+     * Access to the column metadata.
+     * 
+     */
+    public Info info();
+    
     }

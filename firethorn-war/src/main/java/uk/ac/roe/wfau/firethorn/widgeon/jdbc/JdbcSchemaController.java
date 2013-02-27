@@ -87,7 +87,7 @@ public class JdbcSchemaController
         }
 
     /**
-     * Get the target entity based on the ident in the path.
+     * Get the target schema based on the identifier in the request.
      * @throws NotFoundException
      *
      */

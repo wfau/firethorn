@@ -32,6 +32,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaTable;
@@ -266,6 +267,7 @@ public class IvoaTableEntity
 
             @Override
             public IvoaColumn select(final String name)
+            throws NotFoundException
                 {
                 return factories().ivoa().columns().select(
                     IvoaTableEntity.this,

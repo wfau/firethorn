@@ -20,10 +20,13 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnType;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumnBean.Info;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumnBean.Info.Adql;
 
 /**
  * Bean wrapper for <code>JdbcColumn</code>.
@@ -86,5 +89,62 @@ implements EntityBean<JdbcColumn>
     public String getFullname()
         {
         return entity().fullname().toString();
+        }
+
+    public interface Info
+        {
+        public interface Adql
+            {
+            public AdqlColumnType getType();
+            public Integer getSize();
+            }
+        public Adql getAdql();
+        public interface Jdbc
+            {
+            public int getType();
+            public int getSize();
+            }
+        public Jdbc getJdbc();
+        }
+
+    public Info getInfo()
+        {
+        return new Info()
+            {
+            @Override
+            public Adql getAdql()
+                {
+                return new Adql()
+                    { 
+                    @Override
+                    public AdqlColumnType getType()
+                        {
+                        return entity().info().adql().type();
+                        }
+                    @Override
+                    public Integer getSize()
+                        {
+                        return entity().info().adql().size();
+                        }
+                    };
+                }
+            @Override
+            public Jdbc getJdbc()
+                {
+                return new Jdbc()
+                    {
+                    @Override
+                    public int getType()
+                        {
+                        return entity().info().jdbc().type();
+                        }
+                    @Override
+                    public int getSize()
+                        {
+                        return entity().info().jdbc().size();
+                        }
+                    }; 
+                }
+            };
         }
     }

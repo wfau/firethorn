@@ -67,7 +67,7 @@ public class JdbcResourceController
         }
 
     /**
-     * MVC property for the target entity.
+     * MVC property for the target resource.
      *
      */
     public static final String RESOURCE_ENTITY = "urn:jdbc.resource.entity" ;
@@ -77,6 +77,12 @@ public class JdbcResourceController
      *
      */
     public static final String UPDATE_NAME = "jdbc.resource.update.name" ;
+
+    /**
+     * MVC property for updating the OGSA-DAI resource.
+     *
+     */
+    public static final String UPDATE_OGSADAI = "jdbc.resource.update.ogsadai" ;
 
     /**
      * MVC property for updating the status.
@@ -109,22 +115,7 @@ public class JdbcResourceController
     public static final String UPDATE_CONN_STATUS = "jdbc.resource.connection.status" ;
 
     /**
-     * Wrap an entity as a bean.
-     *
-     */
-    public JdbcResourceBean bean(
-        final JdbcResource entity
-        ){
-        log.debug("bean() [{}]", entity);
-        final JdbcResourceBean bean = new JdbcResourceBean(
-            entity
-            );
-        log.debug("bean() [{}]", bean);
-        return bean;
-        }
-
-    /**
-     * Get the target entity based on the ident in the path.
+     * Get the target resource based on the identifier in the request.
      *
      */
     @ModelAttribute(RESOURCE_ENTITY)
@@ -143,20 +134,6 @@ public class JdbcResourceController
         }
 
     /**
-     * HTML GET request.
-     *
-     */
-    @RequestMapping(method=RequestMethod.GET)
-    public ModelAndView htmlSelect(
-        final ModelAndView model
-        ){
-        model.setViewName(
-            "jdbc/resource/display"
-            );
-        return model ;
-        }
-
-    /**
      * JSON GET request.
      *
      */
@@ -169,7 +146,7 @@ public class JdbcResourceController
         log.debug("JSON GET request");
         try
             {
-            return bean(
+            return new JdbcResourceBean(
                 entity
                 );
             }
@@ -192,6 +169,8 @@ public class JdbcResourceController
         String name,
         @RequestParam(value=UPDATE_STATUS, required=false) final
         String status,
+        @RequestParam(value=UPDATE_OGSADAI, required=false) final
+        String ogsadai,
 
         @RequestParam(value=UPDATE_CONN_URL, required=false) final
         String url,
@@ -212,6 +191,16 @@ public class JdbcResourceController
                 {
                 entity.name(
                     name
+                    );
+                }
+            }
+
+        if (ogsadai != null)
+            {
+            if (ogsadai.length() > 0)
+                {
+                entity.ogsaid(
+                    ogsadai
                     );
                 }
             }
@@ -279,7 +268,7 @@ public class JdbcResourceController
                 );
             }
 
-        return bean(
+        return new JdbcResourceBean(
             entity
             );
         }

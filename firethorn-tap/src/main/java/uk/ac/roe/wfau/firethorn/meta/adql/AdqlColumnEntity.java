@@ -209,39 +209,6 @@ public class AdqlColumnEntity
             return super.text();
             }
         }
-    @Override
-    public String type()
-        {
-        if (super.type() == null)
-            {
-            return base().type();
-            }
-        else {
-            return super.type();
-            }
-        }
-    @Override
-    public Integer size()
-        {
-        if (super.size() == null)
-            {
-            return base().size();
-            }
-        else {
-            return super.size();
-            }
-        }
-    @Override
-    public String ucd()
-        {
-        if (super.ucd() == null)
-            {
-            return base().ucd();
-            }
-        else {
-            return super.ucd();
-            }
-        }
 
     @Index(
         name=DB_TABLE_NAME + "IndexByParent"

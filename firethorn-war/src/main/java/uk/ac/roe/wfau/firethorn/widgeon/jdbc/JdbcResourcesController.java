@@ -105,69 +105,40 @@ extends AbstractController
     public static final String SEARCH_RESULT = "jdbc.resource.search.result" ;
 
     /**
-     * MVC property for the create name.
+     * MVC property for the initial name.
      *
      */
     public static final String CREATE_NAME = "jdbc.resource.create.name" ;
 
     /**
-     * MVC property for the create name.
+     * MVC property for the initial OGSA-DAI resource.
+     *
+     */
+    public static final String CREATE_OGSADAI = "jdbc.resource.create.ogsadai" ;
+
+    /**
+     * MVC property for the initial catalog name.
      *
      */
     public static final String CREATE_CATALOG = "jdbc.resource.create.catalog" ;
 
     /**
-     * MVC property for setting the connection URL.
+     * MVC property for the initial connection URL.
      *
      */
     public static final String CREATE_URL = "jdbc.resource.create.url" ;
 
     /**
-     * MVC property for setting the connection user name.
+     * MVC property for the initial connection user name.
      *
      */
     public static final String CREATE_USER = "jdbc.resource.create.user" ;
 
     /**
-     * MVC property for setting the connection password.
+     * MVC property for the initial connection password.
      *
      */
     public static final String CREATE_PASS = "jdbc.resource.create.pass" ;
-
-    /**
-     * HTML GET request to display the index page.
-     *
-     */
-    @RequestMapping(value="", method=RequestMethod.GET)
-    public ModelAndView htmlIndex(
-        final ModelAndView model
-        ){
-        model.setViewName(
-            "jdbc/resource/index"
-            );
-        return model ;
-        }
-
-    /**
-     * HTML GET request to select all.
-     * @todo Wrap the entities as beans (with URI)
-     *
-     */
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
-    public ModelAndView htmlSelect(
-        final ModelAndView model
-        ){
-        model.addObject(
-            SELECT_RESULT,
-            new JdbcResourceBean.Iter(
-                factories().jdbc().resources().select()
-                )
-            );
-        model.setViewName(
-            "jdbc/resource/select"
-            );
-        return model ;
-        }
 
     /**
      * JSON GET request to select all.
@@ -181,49 +152,6 @@ extends AbstractController
         return new JdbcResourceBean.Iter(
             factories().jdbc().resources().select()
             );
-        }
-
-    /**
-     * HTML GET request to display the search form.
-     *
-     */
-    @RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
-    public ModelAndView htmlSearch(
-        final ModelAndView model
-        ){
-        model.setViewName(
-            "jdbc/resource/search"
-            );
-        return model ;
-        }
-
-    /**
-     * HTML GET or POST request to search by text.
-     * @todo Wrap the entities as beans (with URI)
-     *
-     */
-    @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
-    public ModelAndView htmlSearch(
-        @RequestParam(SEARCH_TEXT)
-        final String text,
-        final ModelAndView model
-        ){
-        model.addObject(
-            SEARCH_TEXT,
-            text
-            );
-        model.addObject(
-            SEARCH_RESULT,
-            new JdbcResourceBean.Iter(
-                factories().jdbc().resources().search(
-                    text
-                    )
-                )
-            );
-        model.setViewName(
-            "jdbc/resource/search"
-            );
-        return model ;
         }
 
     /**
@@ -245,49 +173,6 @@ extends AbstractController
         }
 
     /**
-     * HTML GET request to display the create form.
-     *
-     */
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.GET)
-    public ModelAndView htmlCreate(
-        final ModelAndView model
-        ){
-        model.setViewName(
-            "jdbc/resource/create"
-            );
-        return model ;
-        }
-
-    /**
-     * HTML POST request to create a new resource.
-     *
-     */
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST)
-    public ResponseEntity<String>  htmlCreate(
-        @RequestParam(CREATE_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        try {
-            final JdbcResourceBean bean = new JdbcResourceBean(
-                factories().jdbc().resources().create(
-                    name
-                    )
-                );
-            return new ResponseEntity<String>(
-                new RedirectHeader(
-                    bean
-                    ),
-                HttpStatus.SEE_OTHER
-                );
-            }
-        catch (final Exception ouch)
-            {
-            return null ;
-            }
-        }
-
-    /**
      * JSON POST request to create a new resource.
      *
      */
@@ -303,6 +188,8 @@ extends AbstractController
         final String pass,
         @RequestParam(value=CREATE_CATALOG, required=false)
         final String catalog,
+        @RequestParam(value=CREATE_OGSADAI, required=false)
+        final String ogsadai,
 
         final ModelAndView model
         ){
@@ -322,6 +209,16 @@ extends AbstractController
             bean.entity().catalog(
                 catalog
                 );
+            bean.entity().update();
+            }
+        //
+        // TODO - set the initial resource
+        if (ogsadai != null)
+            {
+            bean.entity().ogsaid(
+                ogsadai
+                );
+            bean.entity().update();
             }
         return new ResponseEntity<JdbcResourceBean>(
             bean,
@@ -332,4 +229,3 @@ extends AbstractController
             );
         }
     }
-

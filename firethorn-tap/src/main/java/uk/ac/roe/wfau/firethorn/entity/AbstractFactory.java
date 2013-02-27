@@ -188,7 +188,7 @@ implements Entity.Factory<EntityType>
         }
 
     /**
-     * Select a single object from a query.
+     * Select a single object from the results of a query, or throws NotFoundException if the results are empty.
      *
      */
     @SelectEntityMethod

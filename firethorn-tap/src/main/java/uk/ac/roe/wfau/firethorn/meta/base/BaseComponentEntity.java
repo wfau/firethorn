@@ -59,9 +59,6 @@ extends AbstractEntity
     protected static final String DB_PARENT_COL = "parent";
     protected static final String DB_STATUS_COL = "status";
     protected static final String DB_ALIAS_COL  = "alias";
-    protected static final String DB_TYPE_COL   = "datatype" ;
-    protected static final String DB_SIZE_COL   = "datasize" ;
-    protected static final String DB_UCD_COL    = "ucd"  ;
 
     protected static final String DB_NAME_IDX        = "IndexByName";
     protected static final String DB_PARENT_IDX      = "IndexByParent";
@@ -75,6 +72,7 @@ extends AbstractEntity
     protected static final String DB_SCAN_DATE_COL = "scandate";
     protected static final String DB_SCAN_FLAG_COL = "scanflag";
 
+    
     /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html

@@ -40,15 +40,12 @@
 	<logger name="uk.ac.roe.wfau.firethorn">
 		<level value="DEBUG"/>
 	</logger>
-	<logger name="uk.ac.roe.wfau.firethorn.womble">
-		<level value="INFO"/>
-	</logger>
 
 	<!--+
 	    | Spring loggers.
 	    +-->
 	<logger name="org.springframework.core">
-		<level value="INFO" />
+		<level value="DEBUG" />
 	</logger>
 	<logger name="org.springframework.beans">
 		<level value="INFO" />
@@ -71,7 +68,7 @@
         | http://stackoverflow.com/questions/1965454/spring-transaction-show-in-log
 	    +-->
 	<logger name="org.springframework.transaction">
-		<level value="INFO" />
+		<level value="DEBUG" />
 	</logger>
 	<logger name="org.springframework.orm">
 		<level value="INFO" />
@@ -81,10 +78,10 @@
 	    | Hibernate loggers.
 	    +-->
 	<logger name="org.hibernate">
-		<level value="INFO" />
+		<level value="DEBUG" />
 	</logger>
 	<logger name="org.hibernate.SQL">
-		<level value="INFO" />
+		<level value="DEBUG" />
 	</logger>
 
 	<!--+

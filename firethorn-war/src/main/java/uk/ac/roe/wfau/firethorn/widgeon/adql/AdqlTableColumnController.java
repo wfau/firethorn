@@ -105,7 +105,7 @@ extends AbstractController
     public AdqlTable table(
         @PathVariable("ident")
         final String ident
-        ) throws NotFoundException{
+        ) throws NotFoundException {
         log.debug("table() [{}]", ident);
         return factories().adql().tables().select(
             factories().adql().tables().idents().ident(
@@ -150,7 +150,7 @@ extends AbstractController
         final AdqlTable table,
         @RequestParam(SELECT_NAME)
         final String name
-        ){
+        ) throws NotFoundException {
         log.debug("jsonSelect(String) [{}]", name);
         return new AdqlColumnBean(
             table.columns().select(

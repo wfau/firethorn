@@ -28,11 +28,11 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
         
     popd
 
-    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/metadata/client"
-
-        mvn clean install
-        
-    popd
+#    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/metadata/client"
+#
+#        mvn clean install
+#        
+#    popd
 
 # ------------------------------------------------------------
 # Build and run the firethorn webapp 
@@ -44,6 +44,11 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
         
     popd
 
+    #
+    # Update the tap libraries.
+    pushd "${FIRETHORN_CODE?}/firethorn-tap" ; mvn clean install ; popd
+
+
 # ------------------------------------------------------------
 # Initialise our test metadata 
 #
@@ -54,12 +59,12 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
         #
         # Install the 'resty' wrapper for curl.
         curl -# -L http://github.com/micha/resty/raw/master/resty > resty
-        source ./resty
+        source resty
 
         #
         # Install the 'pp' pretty print script.
         curl -# -L http://github.com/micha/resty/raw/master/pp > pp
-        chmod a+x ./pp
+        chmod a+x pp
 
         #
         # Set the base URL and options.
@@ -94,15 +99,24 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
         POST "/jdbc/resource/create" \
             -d "jdbc.resource.create.url=spring:RoeTWOMASS" \
             -d "jdbc.resource.create.name=jdbc-twomass" \
+            -d "jdbc.resource.create.ogsadai=twomass" \
             | ./pp
 
+        #
+        # Check the resouce properties.
+        GET "/jdbc/resource/1" | ./pp
 
         #
         # Create our JDBC UKIDSS resource.
         POST "/jdbc/resource/create" \
             -d "jdbc.resource.create.url=spring:RoeUKIDSS" \
-            -d "jdbc.resource.create.name=jdbc-ukidssdr5" \
+            -d "jdbc.resource.create.name=jdbc-ukidss" \
+            -d "jdbc.resource.create.ogsadai=ukidss" \
             | ./pp
+
+        #
+        # Check the resouce properties.
+        GET "/jdbc/resource/2" | ./pp
 
         #
         # List the JDBC TWOMASS schema.
@@ -122,28 +136,36 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 
         #
         # Get the details for the twomass_psc table.
+        # http://localhost:8080/firethorn/jdbc/table/5
         GET "/jdbc/schema/1/tables/select" \
             -q "jdbc.schema.table.select.name=twomass_psc" \
             | ./pp
 
-# http://localhost:8080/firethorn/jdbc/table/5
-
         #
         # Get the details for the gcsPointSource table.
+        # http://localhost:8080/firethorn/jdbc/table/120
         GET "/jdbc/schema/2/tables/select" \
             -q "jdbc.schema.table.select.name=gcsPointSource" \
             | ./pp
 
-# http://localhost:8080/firethorn/jdbc/table/120
-
         #
         # Get the details for the gcsSourceXtwomass_psc table.
+        # http://localhost:8080/firethorn/jdbc/table/41
         GET "/jdbc/schema/2/tables/select" \
             -q "jdbc.schema.table.select.name=gcsSourceXtwomass_psc" \
             | ./pp
 
-# http://localhost:8080/firethorn/jdbc/table/41
+        #
+        # Get the details for the twomass_psc ra column.
+        GET "/jdbc/table/5/columns/select" \
+            -q "jdbc.table.column.select.name=ra" \
+            | ./pp
 
+        #
+        # Get the details for the gcsPointSource ra column.
+        GET "/jdbc/table/120/columns/select" \
+            -q "jdbc.table.column.select.name=ra" \
+            | ./pp
 
         # -------- --------
         # ADQL ....
@@ -162,25 +184,22 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 
         #
         # Import the twomass table into the ADQL schema.
+        # http://localhost:8080/firethorn/adql/table/140
         POST "/adql/schema/3/tables/import" \
             --data "adql.schema.table.import.base=${metabasename?}/jdbc/table/5" \
             | ./pp
 
-# http://localhost:8080/firethorn/adql/table/140
-
         #
         # Import the ukidss tables into the ADQL schema.
+        # http://localhost:8080/firethorn/adql/table/141
         POST "/adql/schema/3/tables/import" \
             --data "adql.schema.table.import.base=${metabasename?}/jdbc/table/41" \
             | ./pp
 
-# http://localhost:8080/firethorn/adql/table/141
-
+        # http://localhost:8080/firethorn/adql/table/142
         POST "/adql/schema/3/tables/import" \
             --data "adql.schema.table.import.base=${metabasename?}/jdbc/table/120" \
             | ./pp
-
-# http://localhost:8080/firethorn/adql/table/142
 
         #
         # Check the ADQL tables.
@@ -197,33 +216,22 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
             }
 
         #
-        # Check the column mapping service.
+        # Get the attribute list for the twomass table.
+        GET "/meta/table/JDBC_5/columns"   | ./pp
+
+        #
+        # Get a named attribute for the twomass table.
         GET "/meta/table/JDBC_5/column/ra" | ./pp
 
-            {
-               "source" : "JDBC_5",
-               "name" : "ra",
-               "type" : 0,
-               "key" : false
-            }
+        #
+        # Get the attribute list for the ukidss table(s).
+        GET "/meta/table/JDBC_141/columns"   | ./pp
 
-        GET "/meta/table/JDBC_5/columns" | ./pp
+        GET "/meta/table/JDBC_142/columns"   | ./pp
 
-            [
-               {
-                  "source" : "JDBC_5",
-                  "name" : "coadd",
-                  "type" : 0,
-                  "key" : false
-               },
-               ....
-               {
-                  "source" : "JDBC_5",
-                  "name" : "cx",
-                  "type" : 0,
-                  "key" : false
-               }
-            ]
+
+
+
 
 #
 # Create our ADQL query.
@@ -274,112 +282,29 @@ EOF
             | ./pp
 
 
+
 # ------------------------------------------------------------
 # Build our OGSA-DAI activity components.
 #
 
     pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/common"
 
-        mvn install
-        mvn eclipse:eclipse
+        mvn clean install
         
     popd
 
     pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/server"
 
-        mvn install
-        mvn eclipse:eclipse
+        mvn clean install
         
     popd
 
-    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/client"
-
-        mvn install
-        mvn eclipse:eclipse
-        
-    popd
-
-# ------------------------------------------------------------
-# Create a Junit test to send query to OGSA-DAI
+#    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/client"
 #
+#        mvn clean install
+#        
+#    popd
 
-    public class TestDqpQueryTestCase
-    extends SimpleQueryTestBase
-        {
-        /**
-         * TWOMASS and UKIDSSDR1, using DQP, using GT and LT on both tables.
-         *
-         */
-        @Test
-        public void test100()
-        throws Exception
-            {
-            execute(
-                endpoint,
-                "mydqp",
-                " SELECT" +
-                "     twomass.ra AS tmra," +
-                "     ukidss.ra AS ukra," +
-                "     twomass.ra - ukidss.ra AS difra," +
-                "     twomass.dec AS tmdec," +
-                "     ukidss.dec AS ukdec," +
-                "     twomass.ra - ukidss.ra AS difdec," +
-                "     neighbour.distanceMins AS dist" +
-                " FROM" +
-                "     JDBC_5 AS twomass" +
-                " CROSS JOIN" +
-                "     JDBC_120 AS ukidss" +
-                " CROSS JOIN" +
-                "     JDBC_41 AS neighbour" +
-                " WHERE" +
-                "     twomass.ra >= '55.0'" +
-                " AND" +
-                "     twomass.ra <= '55.9'" +
-                " AND" +
-                "     twomass.dec >= '20.0'" +
-                " AND" +
-                "     twomass.dec <= '22.9'" +
-                " AND" +
-                "     ukidss.ra >= '55.0'" +
-                " AND" +
-                "     ukidss.ra <= '55.9'" +
-                " AND" +
-                "     ukidss.dec >= '20.0'" +
-                " AND" +
-                "     ukidss.dec <= '22.9'" +
-                " AND" +
-                "     neighbour.masterObjID = ukidss.sourceID" +
-                " AND" +
-                "     neighbour.slaveObjID = twomass.pts_key" +
-                " AND" +
-                "     neighbour.distanceMins < 1E-3"
-                );
-            }
-        }
-
-# ------------------------------------------------------------
-# Create a new DQP contet using our MetadataServiceFactoryImpl  ...
-#
-
-    <bean id="federation" 
-        class="uk.org.ogsadai.dqp.firethorn.MetadataServiceDQPFederation">
-
-        <property name="metadataServiceFactory">
-
-            <bean class="uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.MetadataServiceFactoryImpl">
-                <constructor-arg name="endpoint" value="http://localhost:8080/firethorn/"/>
-            </bean>
-
-        </property>
-
-
-# ------------------------------------------------------------
-# Build and run the OGSA-DAI webapp.
-
-    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/webapp"
-
-        mvn clean
-        mvn install
 
 #---------------------------------------------------
 # Deploy the ogsadai webapp in Tomcat ...
@@ -452,79 +377,14 @@ EOF
         
     popd
 
-# ------------------------------------------------------------
-# Run the OGSA-DAI query tests ..
- 
-
-    2013-02-22 16:50:16,541 WARN  event.LoggingActivityListener [pool-1-thread-2,warnExceptionAndChildren:343] #1361551816540:115# A user problem has occured during activity processing.
-    2013-02-22 16:50:16,541 WARN  event.LoggingActivityListener [pool-1-thread-2,warnExceptionAndChildren:343] #1361551816540:115# A user problem has occured during activity processing.
-    2013-02-22 16:50:16,542 WARN  event.LoggingActivityListener [pool-1-thread-2,warnExceptionAndChildren:343] #1361551816540:115# uk.org.ogsadai.SQL_PARSER_EXCEPTION
-    2013-02-22 16:50:16,544 WARN  event.LoggingActivityListener [pool-1-thread-2,warnExceptionAndChildren:343] #1361551816540:115# uk.org.ogsadai.MISMATCHED_TOKEN_EXCEPTION : 1, 239, CROSS
-
-
-    SELECT     twomass.ra AS tmra,     ukidss.ra AS ukra,     twomass.ra-ukidss.ra AS difra,     twomass.dec AS tmdec,     ukidss.dec AS ukdec,     twomass.ra-ukidss.ra AS difdec,     neighbour.distanceMins AS dist FROM     JDBC_5 AS twomass CROSS JOIN     JDBC_120 AS ukidss CROSS JOIN     JDBC_41 AS neighbour WHERE     twomass.ra >= '55.0' AND     twomass.ra <= '55.9' AND     twomass.dec >= '20.0' AND     twomass.dec <= '22.9' AND     ukidss.ra >= '55.0' AND     ukidss.ra <= '55.9' AND     ukidss.dec >= '20.0' AND     ukidss.dec <= '22.9' AND     neighbour.masterObjID = ukidss.sourceID AND     neighbour.slaveObjID = twomass.pts_key AND     neighbour.distanceMins < 1E-3
-    line 1:239 mismatched input 'CROSS' expecting EOF
-
-#
-# Works if we replace 'CROSS JOIN' with ','
+#---------------------------------------------------
+# Run the ogsadai client test ...
 #
 
-# ----------------------------------------------------------------------------------------
-#
+    pushd ${FIRETHORN_CODE?}/firethorn-ogsadai/activity/client/
 
-        // I HATE GENERICS
-        @SuppressWarnings("unchecked")
-        Iterable<BaseColumn<?>> cols = (Iterable<BaseColumn<?>>) factories().base().tables().resolve(
-            alias
-            ).root().columns().select();
-
-# ------------------------------------------------------------
-# TODO
-
-    Need to fix the CDS ADQL parser output to handle that.
-    ** blocker **
-    Add our own translator - more testing.
-
-    Need a list of what ADQL isn't supported, and what the alternatives are.
-    REGION ...
-    
-    Need a list of what SQL isn't supported, and what the alternatives are.
-    CROSS JOIN, BETWEEN
-
-    Simple fix - replace 'CROSS JOIN' with ','
-
-# ------------------------------------------------------------
-# TODO
-
-    Need column types.
-    - default read from JDBC type
-    - mapping from JDBC type to OGSA type
-
-    Need OGSA resource ID in base resource.
-
-# ------------------------------------------------------------
-# TODO
-
-    TAP service
-    UWS async job control
-
-# ------------------------------------------------------------
-# TODO
-
-    OGSA-DAI activities
-    DQP query
-    Write results to user space
-
-# ------------------------------------------------------------
-# TODO
-
-    Login / auth database tables
-    Session cookies and webservice API ...
-
-
-
-
-
-
+        mvn -D test=TestDqpQueryTestCase clean test
+        
+    popd
 
 

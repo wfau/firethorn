@@ -22,6 +22,8 @@ import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -30,17 +32,23 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnInfo;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnType;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn.Info;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaColumn;
 
 /**
  *
  *
  */
+@Slf4j
 @Entity()
 @Access(
     AccessType.FIELD
@@ -67,8 +75,25 @@ public abstract class BaseColumnEntity<ColumnType extends BaseColumn<ColumnType>
 extends BaseComponentEntity
     implements BaseColumn<ColumnType>
     {
+    /**
+     * Hibernate table mapping.
+     * 
+     */
     protected static final String DB_TABLE_NAME = "BaseColumnEntity";
 
+    /**
+     * Hibernate column mapping.
+     * 
+     */
+    protected static final String DB_ADQL_TYPE_COL = "adqltype" ;
+    protected static final String DB_ADQL_SIZE_COL = "adqlsize" ;
+    protected static final String DB_ADQL_UCD1_COL = "adqlucd1"  ;
+
+    protected static final String DB_USER_TYPE_COL = "usertype" ;
+    protected static final String DB_USER_SIZE_COL = "usersize" ;
+    protected static final String DB_USER_UCD1_COL = "userucd1"  ;
+    
+    
     protected BaseColumnEntity()
         {
         super();
@@ -80,64 +105,52 @@ extends BaseComponentEntity
         this.parent = parent;
         }
 
-    @Basic(fetch = FetchType.EAGER)
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
     @Column(
-        name = DB_TYPE_COL,
+        name = DB_ADQL_TYPE_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    private String type ;
-    @Override
-    public String type()
-        {
-        return this.type;
-        }
-    @Override
-    public void type(final String type)
-        {
-        this.type = type;
-        }
+    protected AdqlColumnType adqltype ;
 
-    @Basic(fetch = FetchType.EAGER)
+    @Basic(
+        fetch = FetchType.EAGER
+        )
     @Column(
-        name = DB_SIZE_COL,
+        name = DB_USER_TYPE_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    private Integer size ;
-    @Override
-    public Integer size()
-        {
-        return this.size;
-        }
+    protected AdqlColumnType usertype ;
 
-    @Override
-    public void size(final Integer size)
-        {
-        this.size = size;
-        }
-
-    @Basic(fetch = FetchType.EAGER)
+    @Basic(
+        fetch = FetchType.EAGER
+        )
     @Column(
-        name = DB_UCD_COL,
+        name = DB_ADQL_SIZE_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    private String ucd;
-    @Override
-    public String ucd()
-        {
-        return this.ucd;
-        }
+    protected Integer adqlsize ;
 
-    @Override
-    public void ucd(final String ucd)
-        {
-        this.ucd = ucd;
-        }
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_USER_SIZE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    protected Integer usersize ;
 
     @Override
     public String alias()
@@ -201,4 +214,71 @@ extends BaseComponentEntity
     @Override
     public abstract BaseColumn<?> root();
 
+    /**
+     * 
+     * @todo Move this to Jdbc, Ivoa ad Adql classes, replace with warn/error on base class.
+     */
+    @Override
+    public Info info()
+        {
+        return new Info()
+            {
+            @Override
+            public AdqlColumnInfo adql()
+                {
+                return new AdqlColumnInfo()
+                    {
+                    @Override
+                    public Integer size()
+                        {
+                        if (BaseColumnEntity.this.usersize != null)
+                            {
+                            return BaseColumnEntity.this.usersize;
+                            }
+                        else {
+                            return BaseColumnEntity.this.adqlsize;
+                            }
+                        }
+
+                    @Override
+                    public void size(final Integer size)
+                        {
+                        BaseColumnEntity.this.usersize = size ;
+                        if (size != null)
+                            {
+                            BaseColumnEntity.this.adqlsize = size ;
+                            }
+                        else {
+                            BaseColumnEntity.this.adqlsize = base().info().adql().size();
+                            }
+                        }
+
+                    @Override
+                    public AdqlColumnType type()
+                        {
+                        if (BaseColumnEntity.this.usertype != null)
+                            {
+                            return BaseColumnEntity.this.usertype;
+                            }
+                        else {
+                            return BaseColumnEntity.this.adqltype;
+                            }
+                        }
+
+                    @Override
+                    public void type(AdqlColumnType type)
+                        {
+                        BaseColumnEntity.this.usertype = type ;
+                        if (type != null)
+                            {
+                            BaseColumnEntity.this.adqltype = type ;
+                            }
+                        else {
+                            BaseColumnEntity.this.adqltype = base().info().adql().type();
+                            }
+                        }
+                    };
+                }
+            };
+        }
     }

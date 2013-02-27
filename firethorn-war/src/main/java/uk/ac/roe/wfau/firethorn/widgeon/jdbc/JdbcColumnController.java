@@ -88,7 +88,7 @@ public class JdbcColumnController
         }
 
     /**
-     * Get the target entity based on the ident in the path.
+     * Get the target column based on the identifier in the request.
      * @throws NotFoundException
      *
      */
@@ -103,21 +103,6 @@ public class JdbcColumnController
                 ident
                 )
             );
-        }
-
-    /**
-     * HTML GET request.
-     *
-     */
-    @RequestMapping(method=RequestMethod.GET)
-    public ModelAndView htmlSelect(
-        final ModelAndView model
-        ){
-        log.debug("htmlSelect()");
-        model.setViewName(
-            "jdbc/catalog/display"
-            );
-        return model ;
         }
 
     /**

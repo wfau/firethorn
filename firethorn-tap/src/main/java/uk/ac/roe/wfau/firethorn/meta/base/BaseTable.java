@@ -109,6 +109,7 @@ extends BaseComponent
 
         }
 
+    /*
     public String type();
     public void type(final String type);
 
@@ -117,7 +118,8 @@ extends BaseComponent
 
     public String ucd();
     public void ucd(final String ucd);
-
+     */
+    
     /**
      * The OGSA-DAI DQP table alias.
      *
@@ -148,16 +150,20 @@ extends BaseComponent
          *
          */
         public Iterable<ColumnType> select();
+
         /**
          * Search for columns (name starts with).
          *
          */
         public Iterable<ColumnType> search(final String text);
+
         /**
          * Select a specific column by name.
          *
          */
-        public ColumnType select(final String name);
+        public ColumnType select(final String name)
+        throws NotFoundException;
+
         }
 
     /**

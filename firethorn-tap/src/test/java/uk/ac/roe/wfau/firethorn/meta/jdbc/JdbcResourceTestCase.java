@@ -21,6 +21,8 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+
 /**
  *
  */
@@ -122,7 +124,7 @@ extends JdbcResourceTestBase
             );
         }
 
-    @Test
+    @Test(expected=NotFoundException.class)
     public void test008()
     throws Exception
         {
@@ -134,16 +136,14 @@ extends JdbcResourceTestBase
                     "table-A"
                     )
             );
-        assertIsNull(
-            jdbc().resource().schemas().select(
-                "catalog-A",
-                "schema-A"
-                ).tables().select(
-                    "table-A"
-                    ).columns().select(
-                        "column-A"
-                        )
-            );
+        jdbc().resource().schemas().select(
+            "catalog-A",
+            "schema-A"
+            ).tables().select(
+                "table-A"
+                ).columns().select(
+                    "column-A"
+                    );
         }
 
     @Test
@@ -173,7 +173,7 @@ extends JdbcResourceTestBase
             );
         }
 
-    @Test
+    @Test(expected=NotFoundException.class)
     public void test010()
     throws Exception
         {
@@ -188,19 +188,17 @@ extends JdbcResourceTestBase
                         )
             );
 
-        assertIsNull(
-            jdbc().resource().schemas().select(
-                "catalog-A",
-                "schema-A"
-                ).tables().select(
-                    "table-A"
-                    ).columns().select(
-                        "column-a"
-                        )
-            );
+        jdbc().resource().schemas().select(
+            "catalog-A",
+            "schema-A"
+            ).tables().select(
+                "table-A"
+                ).columns().select(
+                    "column-a"
+                    );
         }
 
-    @Test
+    @Test(expected=NotFoundException.class)
     public void test011()
     throws Exception
         {
@@ -215,16 +213,6 @@ extends JdbcResourceTestBase
                         )
             );
 
-        assertIsNull(
-            jdbc().resource().schemas().select(
-                "catalog-A",
-                "schema-A"
-                ).tables().select(
-                    "table-A"
-                    ).columns().select(
-                        "column-a"
-                        )
-            );
 
         jdbc().resource().schemas().select(
             "catalog-A",
@@ -248,16 +236,14 @@ extends JdbcResourceTestBase
                         )
             );
 
-        assertIsNull(
-            jdbc().resource().schemas().select(
-                "catalog-A",
-                "schema-A"
-                ).tables().select(
-                    "table-A"
-                    ).columns().select(
-                        "column-A"
-                        )
-            );
+        jdbc().resource().schemas().select(
+            "catalog-A",
+            "schema-A"
+            ).tables().select(
+                "table-A"
+                ).columns().select(
+                    "column-A"
+                    );
         }
     }
 

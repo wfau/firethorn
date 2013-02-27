@@ -96,7 +96,7 @@
         </dependency>
 
         <!--+
-            | The OGSA-DAI components used in our client.
+            | The OGSA-DAI components used by our code.
             +-->
         <dependency>
             <groupId>uk.org.ogsadai</groupId>

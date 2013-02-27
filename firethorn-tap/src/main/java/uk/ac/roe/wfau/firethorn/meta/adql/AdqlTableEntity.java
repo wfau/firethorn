@@ -34,6 +34,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
@@ -269,39 +270,6 @@ public class AdqlTableEntity
             return super.text();
             }
         }
-    @Override
-    public String type()
-        {
-        if (super.type() == null)
-            {
-            return base().type();
-            }
-        else {
-            return super.type();
-            }
-        }
-    @Override
-    public Integer size()
-        {
-        if (super.size() == null)
-            {
-            return base().size();
-            }
-        else {
-            return super.size();
-            }
-        }
-    @Override
-    public String ucd()
-        {
-        if (super.ucd() == null)
-            {
-            return base().ucd();
-            }
-        else {
-            return super.ucd();
-            }
-        }
 
     @Index(
         name=DB_TABLE_NAME + "IndexByParent"
@@ -373,6 +341,7 @@ public class AdqlTableEntity
                 }
             @Override
             public AdqlColumn select(final String name)
+            throws NotFoundException
                 {
                 return factories().adql().columns().select(
                     AdqlTableEntity.this,

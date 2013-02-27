@@ -98,7 +98,7 @@ extends AbstractController
     public static final String SEARCH_RESULT = "jdbc.table.column.search.result" ;
 
     /**
-     * Get the parent entity based on the request ident.
+     * Get the parent table based on the identifier in the request.
      * @throws NotFoundException
      *
      */
@@ -106,7 +106,7 @@ extends AbstractController
     public JdbcTable table(
         @PathVariable("ident")
         final String ident
-        ) throws NotFoundException{
+        ) throws NotFoundException {
         log.debug("schema() [{}]", ident);
         return factories().jdbc().tables().select(
             factories().jdbc().tables().idents().ident(
@@ -127,52 +127,6 @@ extends AbstractController
         return new JdbcColumnBean.Iter(
             table.columns().select()
             );
-        }
-
-    /**
-     * Default HTML GET request (select all).
-     *
-     */
-    @RequestMapping(value="", method=RequestMethod.GET)
-    public ModelAndView htmlIndex(
-        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table,
-        final ModelAndView model
-        ){
-        log.debug("htmlIndex()");
-        model.addObject(
-            JdbcTableColumnController.SELECT_RESULT,
-            select(
-                table
-                )
-            );
-        model.setViewName(
-            "jdbc/schema/select"
-            );
-        return model ;
-        }
-
-    /**
-     * HTML GET request to select all.
-     *
-     */
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET)
-    public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table,
-        final ModelAndView model
-        ){
-        log.debug("htmlSelect()");
-        model.addObject(
-            JdbcTableColumnController.SELECT_RESULT,
-            select(
-                table
-                )
-            );
-        model.setViewName(
-            "jdbc/catalog/select"
-            );
-        return model ;
         }
 
     /**
@@ -200,43 +154,13 @@ extends AbstractController
         @ModelAttribute(JdbcTableController.TABLE_ENTITY)
         final JdbcTable table,
         final String name
-        ){
+        ) throws NotFoundException {
         log.debug("select(String) [{}]", name);
         return new JdbcColumnBean(
             table.columns().select(
                 name
                 )
             );
-        }
-
-    /**
-     * HTML request to select by name.
-     *
-     */
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME)
-    public ModelAndView htmlSelect(
-        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table,
-        @RequestParam(SELECT_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        log.debug("htmlSelect(String) [{}]", name);
-        model.addObject(
-            SELECT_NAME,
-            name
-            );
-        model.addObject(
-            SELECT_RESULT,
-            select(
-                table,
-                name
-                )
-            );
-        model.setViewName(
-            "jdbc/catalog/select"
-            );
-        return model ;
         }
 
     /**
@@ -251,7 +175,7 @@ extends AbstractController
         @RequestParam(SELECT_NAME)
         final String name,
         final ModelAndView model
-        ){
+        ) throws NotFoundException {
         log.debug("jsonSelect(String) [{}]", name);
         return select(
             table,
@@ -274,53 +198,6 @@ extends AbstractController
                 text
                 )
             );
-        }
-
-    /**
-     * HTML GET request for the search form.
-     *
-     */
-    @RequestMapping(value=SEARCH_PATH, method=RequestMethod.GET)
-    public ModelAndView htmlSearch(
-        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table,
-        final ModelAndView model
-        ){
-        log.debug("htmlSearch");
-        model.setViewName(
-            "jdbc/catalog/search"
-            );
-        return model ;
-        }
-
-    /**
-     * HTML request to search by text.
-     *
-     */
-    @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT)
-    public ModelAndView htmlSearch(
-        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
-        final JdbcTable table,
-        @RequestParam(SEARCH_TEXT)
-        final String text,
-        final ModelAndView model
-        ){
-        log.debug("htmlSearch(String) [{}]", text);
-        model.addObject(
-            SEARCH_TEXT,
-            text
-            );
-        model.addObject(
-            SEARCH_RESULT,
-            search(
-                table,
-                text
-                )
-            );
-        model.setViewName(
-            "jdbc/catalog/search"
-            );
-        return model ;
         }
 
     /**

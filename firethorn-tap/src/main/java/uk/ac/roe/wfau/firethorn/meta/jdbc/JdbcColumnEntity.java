@@ -38,8 +38,12 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnInfo;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnType;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn.Info;
 import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaColumn;
 
 /**
@@ -90,8 +94,8 @@ public class JdbcColumnEntity
      * Hibernate column mapping.
      *
      */
-    protected static final String SQL_TYPE_COL = "sqltype" ;
-    protected static final String SQL_SIZE_COL = "sqlsize" ;
+    protected static final String DB_JDBC_TYPE_COL = "jdbctype" ;
+    protected static final String DB_JDBC_SIZE_COL = "jdbcsize" ;
 
     /**
      * Column factory implementation.
@@ -110,6 +114,7 @@ public class JdbcColumnEntity
             }
 
         @Override
+        @Deprecated
         @CreateEntityMethod
         public JdbcColumn create(final JdbcTable parent, final String name)
             {
@@ -152,8 +157,9 @@ public class JdbcColumnEntity
         @Override
         @SelectEntityMethod
         public JdbcColumn select(final JdbcTable parent, final String name)
+        throws NotFoundException
             {
-            return super.first(
+            return super.single(
                 super.query(
                     "JdbcColumn-select-parent.name"
                     ).setEntity(
@@ -207,6 +213,7 @@ public class JdbcColumnEntity
         super();
         }
 
+    @Deprecated
     protected JdbcColumnEntity(final JdbcTable table, final String name)
         {
         super(table, name);
@@ -217,8 +224,8 @@ public class JdbcColumnEntity
         {
         super(table, name);
         this.table = table;
-        this.sqltype = type;
-        this.sqlsize = size;
+        this.info().jdbc().type(type);
+        this.info().jdbc().size(size);
         }
 
     @Override
@@ -268,43 +275,27 @@ public class JdbcColumnEntity
         return this.name();
         }
 
-    @Basic(fetch = FetchType.EAGER)
+    @Basic(
+        fetch = FetchType.EAGER
+        )
     @Column(
-        name = SQL_TYPE_COL,
+        name = DB_JDBC_TYPE_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    private int sqltype ;
-    @Override
-    public int sqltype()
-        {
-        return this.sqltype;
-        }
-    @Override
-    public void sqltype(final int type)
-        {
-        this.sqltype = type;
-        }
-
-    @Basic(fetch = FetchType.EAGER)
+    private int jdbctype ;
+   
+    @Basic(
+        fetch = FetchType.EAGER
+        )
     @Column(
-        name = SQL_SIZE_COL,
+        name = DB_JDBC_SIZE_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    private int sqlsize;
-    @Override
-    public int sqlsize()
-        {
-        return this.sqlsize;
-        }
-    @Override
-    public void sqlsize(final int size)
-        {
-        this.sqlsize = size;
-        }
+    private int jdbcsize;
 
     @Override
     public String link()
@@ -318,5 +309,114 @@ public class JdbcColumnEntity
     public void scanimpl()
         {
         log.debug("scanimpl()");
+        }
+
+    @Override
+    public JdbcColumn.Info info()
+        {
+        return new JdbcColumn.Info()
+            {
+            @Override
+            public AdqlColumnInfo adql()
+                {
+                return new AdqlColumnInfo()
+                    {
+                    @Override
+                    public Integer size()
+                        {
+                        if (JdbcColumnEntity.this.usersize != null)
+                            {
+                            return JdbcColumnEntity.this.usersize;
+                            }
+                        else {
+                            return JdbcColumnEntity.this.adqlsize;
+                            }
+                        }
+
+                    @Override
+                    public void size(final Integer size)
+                        {
+                        JdbcColumnEntity.this.usersize = size ;
+                        if (size != null)
+                            {
+                            JdbcColumnEntity.this.adqlsize = size ;
+                            }
+                        else {
+                            JdbcColumnEntity.this.adqlsize = new Integer(
+                                JdbcColumnEntity.this.jdbcsize
+                                );
+                            }
+                        }
+
+                    @Override
+                    public AdqlColumnType type()
+                        {
+                        if (JdbcColumnEntity.this.usertype != null)
+                            {
+                            return JdbcColumnEntity.this.usertype;
+                            }
+                        else {
+                            return JdbcColumnEntity.this.adqltype;
+                            }
+                        }
+
+                    @Override
+                    public void type(AdqlColumnType type)
+                        {
+                        JdbcColumnEntity.this.usertype = type ;
+                        if (type != null)
+                            {
+                            JdbcColumnEntity.this.adqltype = type ;
+                            }
+                        else {
+                            JdbcColumnEntity.this.adqltype = AdqlColumnType.jdbc(
+                                JdbcColumnEntity.this.jdbctype
+                                ); 
+                            }
+                        }
+                    };
+                }
+
+            @Override
+            public JdbcColumnInfo jdbc()
+                {
+                return new JdbcColumnInfo()
+                    {
+                    @Override
+                    public int size()
+                        {
+                        return JdbcColumnEntity.this.jdbcsize;
+                        }
+
+                    @Override
+                    public void size(final int size)
+                        {
+                        JdbcColumnEntity.this.jdbcsize = size ;
+                        if (JdbcColumnEntity.this.usersize == null)
+                            {
+                            JdbcColumnEntity.this.adqlsize = new Integer(size);
+                            }
+                        }
+
+                    @Override
+                    public int type()
+                        {
+                        return JdbcColumnEntity.this.jdbctype;
+                        }
+
+                    @Override
+                    public void type(final int type)
+                        {
+                        JdbcColumnEntity.this.jdbctype = type ;
+                        if (JdbcColumnEntity.this.usertype == null)
+                            {
+                            JdbcColumnEntity.this.adqltype = AdqlColumnType.jdbc(
+                                type
+                                ); 
+                            }
+                        }
+                    };
+                }
+            };
         }
     }
