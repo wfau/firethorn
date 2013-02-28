@@ -91,7 +91,7 @@
         </dependency>
 
         <!--+
-            | FireThorn TAP components.
+            | FireThorn core components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -103,6 +103,12 @@
         <!--+
             | FireThorn OGSA-DAI metadata components.
             +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-metadata-common</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-metadata-server</artifactId>

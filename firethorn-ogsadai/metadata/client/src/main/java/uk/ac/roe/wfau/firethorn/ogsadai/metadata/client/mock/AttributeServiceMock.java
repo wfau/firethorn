@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.metadata;
+package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.mock;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +26,10 @@ import org.apache.commons.logging.LogFactory;
 import uk.org.ogsadai.dqp.lqp.Attribute;
 import uk.org.ogsadai.dqp.lqp.AttributeImpl;
 import uk.org.ogsadai.dqp.common.RequestDetails;
+
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.AttributeService;
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.StatisticsService;
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMappingService;
 
 /**
  *

@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client;
+package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,7 +42,7 @@ implements TableMappingService
      * Webservice path.
      *
      */
-    public static final String SERVICE_PATH = "/meta/table/{table}" ;
+    public static final String SOURCE_NAME_PATH = "/meta/table/{source}" ;
     
     /**
      * Protected constructor.
@@ -63,7 +63,7 @@ implements TableMappingService
         log.debug("  Source [" + source  + "]");
         return rest().getForObject(
             endpoint(
-                SERVICE_PATH
+                SOURCE_NAME_PATH
                 ),
             TableMappingBean.class,
             source
@@ -71,7 +71,7 @@ implements TableMappingService
         }
 
     /**
-     * Bean implementation.
+     * Bean class used by the JSON handler.
      * 
      */
     public static class TableMappingBean
@@ -80,37 +80,32 @@ implements TableMappingService
         public TableMappingBean()
             {
             }
-
         private String alias;
         public  void setAlias(final String value)
             {
             this.alias= value ;
             }
-
         private String name;
         public  void setName(final String value)
             {
             this.name = value ;
             }
-        
+       
         private String resource;
         public  void setResource(final String value)
             {
             this.resource = value ;
             }
-
         @Override
         public String resourceIdent()
             {
             return this.resource;
             }
-
         @Override
         public String tableAlias()
             {
             return this.alias;
             }
-
         @Override
         public String tableName()
             {

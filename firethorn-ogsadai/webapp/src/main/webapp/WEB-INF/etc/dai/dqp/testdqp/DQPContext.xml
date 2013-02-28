@@ -68,7 +68,7 @@
         class="uk.org.ogsadai.dqp.firethorn.MetadataServiceDQPFederation">
 
         <property name="metadataServiceFactory">
-            <bean class="uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.MetadataServiceFactoryImpl">
+            <bean class="uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest.MetadataServiceFactoryImpl">
                 <constructor-arg name="endpoint" value="http://localhost:8080/firethorn/"/>
             </bean>
         </property>

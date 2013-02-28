@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.metadata.server;
+package uk.ac.roe.wfau.firethorn.ogsadai.metadata.server.rest;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,13 +53,6 @@ public class TableMappingController
      *
      */
     public static final String CONTROLLER_PATH = "/meta/table/{" + TABLE_ALIAS_FIELD + "}" ;
-
-    /**
-     * MVC property for the table entity.
-     *
-    public static final String TABLE_ENTITY = "urn:meta.table.entity" ;
-     */
-
 
     @Override
     public Path path()

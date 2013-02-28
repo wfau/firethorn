@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.metadata ;
+package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.mock ;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client;
+package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.AttributeService;
+
 import uk.org.ogsadai.dqp.common.RequestDetails;
 import uk.org.ogsadai.dqp.lqp.Attribute;
 import uk.org.ogsadai.dqp.lqp.AttributeImpl;
@@ -51,7 +52,7 @@ implements AttributeService
     private SimpleAttributeServiceImpl service;
 
     /**
-     * Internal map of Attributes indexed by source and attribute name.
+     * Nexted map of Attributes, indexed by source and attribute name.
      * 
      */
     private Map<String, Map<String, Attribute>> outer = new HashMap<String, Map<String, Attribute>>();
@@ -68,6 +69,10 @@ implements AttributeService
             );
         }
     
+    /**
+     * Synchronised access our nested map of attributes.
+     *
+     */
     protected synchronized Map<String, Attribute> inner(String source)
         {
         Map<String, Attribute> inner = this.outer.get(

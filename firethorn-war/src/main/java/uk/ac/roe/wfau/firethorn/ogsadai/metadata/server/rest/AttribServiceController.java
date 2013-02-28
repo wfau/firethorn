@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.metadata.server;
+package uk.ac.roe.wfau.firethorn.ogsadai.metadata.server.rest;
 
 import java.util.Iterator;
 
@@ -104,28 +104,14 @@ public class AttribServiceController
         @PathVariable(AttribServiceController.COLUMN_NAME_FIELD)
         final String column
         ) throws NotFoundException {
-log.debug("json get [{}][{}]", table, column);
-
-BaseTable<?,?> tab = factories().base().tables().resolve(
-    table
-    ); 
-
-BaseColumn<?> col = tab.columns().select(
-    column
-    ).root();
-
-log.debug("Found [{}][{}]", tab.fullname(), col.fullname());
-
-    return new ColumnBean(
-        col
-        );
-        /*
+        log.debug("json get [{}][{}]", table, column);
+        return new ColumnBean(
             factories().base().tables().resolve(
                 table
-                ).root().columns().select(
+                ).columns().select(
                     column
-                    )
-        */
+                    ).root()
+            );
         }
 
     /**
@@ -138,7 +124,6 @@ log.debug("Found [{}][{}]", tab.fullname(), col.fullname());
         @PathVariable(AttribServiceController.TABLE_ALIAS_FIELD)
         final String alias
         ) throws NotFoundException {
-
         // I HATE GENERICS
         return new ColumnBean.Iter(
             (Iterable<BaseColumn<?>>) factories().base().tables().resolve(
@@ -148,7 +133,7 @@ log.debug("Found [{}][{}]", tab.fullname(), col.fullname());
         }
 
     /**
-     * 
+     * Bean classe used by the JSON handler.
      * 
      */
     public static class ColumnBean
@@ -295,3 +280,4 @@ log.debug("Found [{}][{}]", tab.fullname(), col.fullname());
             }
         }
     }
+

@@ -28,11 +28,13 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
         
     popd
 
-#    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/metadata/client"
 #
-#        mvn clean install
+# Client tests need a live service.
+#   pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/metadata/client"
+#
+#       mvn clean install
 #        
-#    popd
+#   popd
 
 # ------------------------------------------------------------
 # Build and run the firethorn webapp 
@@ -290,11 +292,13 @@ EOF
         
     popd
 
-#    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/client"
 #
-#        mvn clean install
+# Client tests need a live service. 
+#   pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/client"
+#
+#       mvn clean install
 #        
-#    popd
+#   popd
 
 
 #---------------------------------------------------

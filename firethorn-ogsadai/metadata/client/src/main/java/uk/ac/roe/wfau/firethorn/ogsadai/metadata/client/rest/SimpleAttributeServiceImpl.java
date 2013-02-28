@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client;
+package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -43,16 +43,16 @@ implements AttributeService
     private static Log log = LogFactory.getLog(SimpleAttributeServiceImpl.class);
 
     /**
-     * Webservice path for an indiviual column.
+     * Webservice path for an indiviual attribute.
      *
      */
-    public static final String COLUMN_NAME_PATH = "/meta/table/{table}/column/{column}" ;
+    public static final String ATTRIBUTE_NAME_PATH = "/meta/table/{source}/column/{attrib}" ;
 
     /**
-     * Webservice path for a lst of columns.
+     * Webservice path for a list of attributes.
      *
      */
-    public static final String COLUMN_LIST_PATH = "/meta/table/{table}/columns" ;
+    public static final String ATTRIBUTE_LIST_PATH = "/meta/table/{source}/columns" ;
 
     /**
      * Protected constructor.
@@ -74,7 +74,7 @@ implements AttributeService
         log.debug("  Attrib [" + attrib + "]");
         return rest().getForObject(
             endpoint(
-                COLUMN_NAME_PATH
+                ATTRIBUTE_NAME_PATH
                 ),
             AttributeBean.class,
             source,
@@ -88,7 +88,7 @@ implements AttributeService
         log.debug("  Source [" + source + "]");
         return rest().getForObject(
             endpoint(
-                COLUMN_LIST_PATH
+                ATTRIBUTE_LIST_PATH
                 ),
                 AttributeBean[].class,
             source
@@ -202,7 +202,7 @@ implements AttributeService
         }
 
     /**
-     * Bean used by the JSON handler.
+     * Bean class used by the JSON handler.
      * 
      */
     public static class AttributeBean
@@ -236,5 +236,4 @@ implements AttributeService
             }
         }
     }
-
 

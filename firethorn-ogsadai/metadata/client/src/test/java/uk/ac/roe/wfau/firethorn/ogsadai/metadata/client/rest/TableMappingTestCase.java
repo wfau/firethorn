@@ -1,7 +1,7 @@
 /**
  * 
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client;
+package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest;
 
 import static org.junit.Assert.*;
 

@@ -57,7 +57,17 @@
     <dependencies>
 
         <!--+
-            | Our common metadata classes.
+            | FireThorn core components.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-tap</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+
+        <!--+
+            | FireThorn metadata components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
