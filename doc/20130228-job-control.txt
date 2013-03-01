@@ -1,5 +1,79 @@
-# ------------------------------------------------
-#
+
+
+
+    interface Job
+        {
+
+        enum Status
+            {
+
+            EDITING
+            PENDING
+            RUNNING
+            COMPLETED
+            CANCELLED
+            FAILED
+            }
+
+
+
+
+
+        }
+
+    class JobEntity
+    implements Job
+        {
+
+
+        @Override
+        public void status(Status value)
+            {
+            this.status = value ;
+            switch(value)
+                {
+                case PROCESSING :
+                    if (this.started == null)
+                        {
+                        this.started = new Date();
+                        }
+                    break ;
+
+                case COMPLETED :
+                case CANCELLED :
+                case FAILED :
+                    if (this.started == null)
+                        {
+                        this.started = new Date();
+                        }
+                    if (this.finished == null)
+                        {
+                        this.finished = new Date();
+                        }
+                    break ;
+
+                default :
+                    break ;
+                }
+            }
+
+
+
+        
+        }
+
+
+    interface Query
+        {
+
+        }            
+    
+
+    class JobRunner
+    implements Runnable
+        {
+        }
+
 
 
 

@@ -47,8 +47,8 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
     locations = {
         "classpath:database-config.xml",
         "classpath:hibernate-config.xml",
-        "classpath:scheduler-config.xml",
-        "classpath:component-config.xml"
+        "classpath:component-config.xml",
+        "classpath:scheduler-config.xml"
         }
     )
 @Transactional(

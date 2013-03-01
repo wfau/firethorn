@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013 Royal Observatory, University of Edinburgh, UK
+ *  Copyright (C) 2012 Royal Observatory, University of Edinburgh, UK
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,30 +15,20 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.job;
+package uk.ac.roe.wfau.firethorn.test;
+
+import org.springframework.stereotype.Component;
+
+import uk.ac.roe.wfau.firethorn.entity.EntityIdentFactory;
+import uk.ac.roe.wfau.firethorn.job.Job;
 
 /**
- *
+ * JUnit test implementation.
  *
  */
-public interface Query
-    extends Job
+@Component
+public class JobIdentFactory
+extends EntityIdentFactory
+implements Job.IdentFactory
     {
-
-    /**
-     * The input text.
-     *
-     */
-    public String input();
-
-    /**
-     * Set the input text.
-     *
-     */
-    public void input(final String input);
-
-    //
-    // Result stuff ....
-    //
-    
     }

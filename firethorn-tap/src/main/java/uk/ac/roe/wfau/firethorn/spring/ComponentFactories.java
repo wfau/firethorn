@@ -19,11 +19,12 @@ package uk.ac.roe.wfau.firethorn.spring;
 
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.job.Job;
+import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlFactories;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseFactories;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaFactories;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcFactories;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaFactories;
 
 
 /**
@@ -53,8 +54,8 @@ public interface ComponentFactories
     /**
      * Our ogsa component factories.
      *
-     */
     public OgsaFactories ogsa();
+     */
 
     /**
      * Our ADQL component factories.
@@ -91,5 +92,23 @@ public interface ComponentFactories
      *
      */
     public ConfigProperty.Factory config();
+
+    /**
+     * Our generic Job<?> factories.
+     * 
+     */
+    public Job.Services jobs();
+
+    /**
+     * Our TestJob factories.
+     * 
+     */
+    public TestJob.Services tests();
+    
+    /**
+     * Our Query factories.
+     * 
+    public QueryFactories queries();
+     */
 
     }

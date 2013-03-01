@@ -20,20 +20,21 @@ package uk.ac.roe.wfau.firethorn.adql.query;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.CascadeType;
-import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -53,18 +54,14 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
-import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
+import uk.ac.roe.wfau.firethorn.job.JobEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaResource;
 
 /**
  *
@@ -95,7 +92,7 @@ import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaResource;
         }
      )       
 public class AdqlQueryEntity
-extends AbstractEntity
+extends JobEntity
 implements AdqlQuery, AdqlParserQuery
     {
     /**
@@ -213,6 +210,13 @@ implements AdqlQuery, AdqlParserQuery
                         )
                 );
             }
+
+        //@Override
+        public Future<Status> execute(AdqlQuery query)
+            {
+            // TODO Auto-generated method stub
+            return null;
+            }
         }
 
     /**
@@ -251,7 +255,6 @@ implements AdqlQuery, AdqlParserQuery
      * The job status.
      * @todo Move to a common base class.
      *
-     */
     @Column(
         name = DB_STATUS_COL,
         unique = false,
@@ -271,6 +274,7 @@ implements AdqlQuery, AdqlParserQuery
         {
         this.status = status;
         }
+     */
     
     @Index(
         name=DB_TABLE_NAME + "IndexByResource"
@@ -612,5 +616,26 @@ implements AdqlQuery, AdqlParserQuery
         this.targets.add(
             resource
             );
+        }
+
+    @Override
+    public Status prepare()
+        {
+        // TODO Auto-generated method stub
+        return null;
+        }
+
+    @Override
+    public Future<Status> execute()
+        {
+        // TODO Auto-generated method stub
+        return null;
+        }
+
+    @Override
+    public Status update(Status status)
+        {
+        // TODO Auto-generated method stub
+        return null;
         }
     }

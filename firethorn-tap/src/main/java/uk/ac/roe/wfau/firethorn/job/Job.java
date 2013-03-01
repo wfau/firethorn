@@ -17,13 +17,106 @@
  */
 package uk.ac.roe.wfau.firethorn.job;
 
+import java.util.concurrent.Future;
+
+import uk.ac.roe.wfau.firethorn.entity.Entity;
+
 /**
  * Abstract representation of a Job.
  *
  */
 public interface Job
+extends Entity
     {
+    /**
+     * Our local service implementations.
+     *
+     */
+    public interface Services
+        {
+        /**
+         * Our LinkFactory.
+         * 
+         */
+        public LinkFactory links();
 
+        /**
+         * Our IdentFactory.
+         * 
+         */
+        public IdentFactory idents();
+
+        /**
+         * Our Job resolver.
+         * 
+        public Resolver resolver();
+         */
+
+        }
+
+    /**
+     * Link factory interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<Job>
+        {
+        }
+
+    /**
+     * Identifier factory interface.
+     *
+     */
+    public static interface IdentFactory
+    extends Entity.IdentFactory
+        {
+        }
+
+    /**
+     * Job resolver interface.
+     *
+     */
+    public static interface Resolver
+    extends Entity.Factory<Job>
+        {
+        }
+
+    /**
+     * Job factory interface.
+     *
+     */
+    public static interface Factory<JobType extends Job>
+    extends Entity.Factory<JobType>
+        {
+        }
+
+    /**
+     * Job executor interface.
+     * This wraps the Job.status(), Job.prepare() and Job.execute() methods with Spring managed Transaction handling and Concurrency.
+     *
+     */
+    public static interface Executor<JobType extends Job>
+        {
+        /**
+         * Update a Job status.
+         *
+         */
+        public Status update(JobType job, Status status);
+
+        /**
+         * Prepare a Job for execution.
+         *
+         */
+        public Status prepare(JobType job);
+
+        /**
+         * Execute a Job asynchronously.
+         *
+         */
+        public Future<Status> execute(JobType job);
+        
+        }
+    
     /**
      * Job status indicator.
      *
@@ -35,6 +128,12 @@ public interface Job
          *
          */
         EDITING(),
+
+        /**
+         * The Job is ready to be run.
+         *
+         */
+        READY(),
 
         /**
          * The Job is waiting to run.
@@ -64,14 +163,46 @@ public interface Job
          * The Job failed to execute.
          *
          */
-        FAILED();
+        FAILED(),
+
+        /**
+         * An error occurred updating the Job status.
+         * The actual Job status is undefined. 
+         *
+         */
+        ERROR();
 
         }
 
     /**
-     * The Job status.
+     * Get the Job status.
      *
      */
     public Status status();
 
+    /**
+     * Set the Job status.
+     *
+     */
+    public Status status(Status status);
+
+    /**
+     * Update the Job status.
+     * This uses a call to the Job Executor to add transaction handling.
+     *
+     */
+    public Status update(Status status);
+
+    /**
+     * Prepare the Job for execution.
+     *
+     */
+    public Status prepare();
+
+    /**
+     * Execute the Job asynchronously.
+     *
+     */
+    public Future<Status> execute();
+    
     }

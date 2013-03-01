@@ -45,12 +45,15 @@
         | Define our task executor and scheduler.
         +-->
     <task:executor  id="FireThornTaskExecutor"  pool-size="10"/>
-    <!--task:scheduler id="FireThornTaskScheduler" pool-size="10"/-->
+    <task:scheduler id="FireThornTaskScheduler" pool-size="10"/>
 
     <!--+
         | Enable support for the @Scheduled and @Async annotations.
         +-->
-    <!--task:annotation-driven executor="FireThornTaskExecutor" scheduler="FireThornTaskScheduler"/-->
+    <task:annotation-driven
+    	executor="FireThornTaskExecutor"
+    	scheduler="FireThornTaskScheduler"
+    	/>
 
 </beans>
 

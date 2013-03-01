@@ -81,6 +81,7 @@ public interface Entity
 
     /**
      * Common interface for an Entity factory.
+     * @todo Separate Entity Resolver and Factory interfaces.
      *
      */
     public interface Factory<EntityType extends Entity>

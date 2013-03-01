@@ -19,19 +19,17 @@ package uk.ac.roe.wfau.firethorn.adql.query;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.job.Job;
-import uk.ac.roe.wfau.firethorn.job.Query;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaResource;
 
 /**
  *
  *
  */
 public interface AdqlQuery
-extends Entity, Query
+extends Entity, Job
     {
     /**
      * Name factory interface.
@@ -99,6 +97,17 @@ extends Entity, Query
 
         }
 
+    /**
+     * Get the input text.
+     *
+     */
+    public String input();
+
+    /**
+     * Set the input text.
+     *
+     */
+    public void input(final String input);
 
     /**
      * The ADQL syntax validation status.

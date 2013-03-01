@@ -1,0 +1,61 @@
+FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
+FIRETHORN_NAME=devel
+FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
+
+
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/metadata/common"
+
+        mvn eclipse:eclipse
+        
+    popd
+
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/metadata/server"
+
+        mvn eclipse:eclipse
+        
+    popd
+
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/metadata/client"
+
+        mvn eclipse:eclipse
+        
+    popd
+
+
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/common"
+
+        mvn eclipse:eclipse
+        
+    popd
+
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/server"
+
+        mvn eclipse:eclipse
+        
+    popd
+
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/client"
+
+        mvn eclipse:eclipse
+        
+    popd
+
+
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/webapp"
+
+        mvn eclipse:eclipse
+        
+    popd
+
+    pushd "${FIRETHORN_CODE?}/firethorn-tap"
+
+        mvn eclipse:eclipse
+        
+    popd
+
+    pushd "${FIRETHORN_CODE?}/firethorn-war"
+
+        mvn eclipse:eclipse
+        
+    popd
+
