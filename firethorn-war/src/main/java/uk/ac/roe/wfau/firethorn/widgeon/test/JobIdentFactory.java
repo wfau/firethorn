@@ -15,33 +15,30 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.adql;
+package uk.ac.roe.wfau.firethorn.widgeon.test;
+
+import java.net.URI;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- * Ident factory for <code>AdqlQuery</code>.
+ * Ident factory for <code>AdqlColumn</code>.
  *
  */
 @Component
-public class AdqlQueryNameFactory
+public class JobIdentFactory
 extends WebappIdentFactory
-implements AdqlQuery.NameFactory
+implements Job.IdentFactory
     {
-    @Override
-    public String name()
-        {
-        // TODO ....
-        return "test-query";
-        }
-
-    @Override
-    public String name(String name)
-        {
-        // TODO ...
-        return name;
-        }
+    /**
+     * The type URI for this type.
+     * TODO - Move to AdqlColumn interface.
+     *
+     */
+    public static final URI TYPE_URI = URI.create(
+        "http://data.metagrid.co.uk/wfau/firethorn/types/core-job-1.0.json"
+        );
     }

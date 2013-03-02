@@ -24,24 +24,38 @@ import java.util.Iterator;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 
 /**
- * Bean wrapper for <code>AdqlSchema</code>.
+ * Bean wrapper for <code>AdqlQuery</code>.
  *
  */
 public class AdqlQueryBean
 extends AbstractEntityBeanImpl<AdqlQuery>
 implements EntityBean<AdqlQuery>
     {
+    /**
+     * Factory wrapper method.
+     *
+     */
+    public static Iter wrap(final Iterable<AdqlQuery> iterable)
+        {
+        return new Iter(
+            iterable
+            );
+        }
+    
+    /**
+     * Iterable wrapper.
+     *
+     */
     public static class Iter
     extends AbstractEntityBeanIter<AdqlQuery>
         {
         /**
-         * Public constructor.
+         * Protected constructor.
          *
          */
         public Iter(final Iterable<AdqlQuery> iterable)
@@ -53,25 +67,36 @@ implements EntityBean<AdqlQuery>
         @Override
         public EntityBean<AdqlQuery> bean(final AdqlQuery entity)
             {
-            return new AdqlQueryBean(
+            return wrap(
                 entity
                 );
             }
         }
 
     /**
-     * Public constructor.
+     * Factory wrapper method.
      *
      */
-    public AdqlQueryBean(final AdqlQuery entity)
+    public static AdqlQueryBean wrap(final AdqlQuery entity)
+        {
+        return new AdqlQueryBean(
+            entity
+            );
+        }
+
+    /**
+     * Protected constructor.
+     *
+     */
+    protected AdqlQueryBean(final AdqlQuery entity)
         {
         super(
             AdqlQueryIdentFactory.TYPE_URI,
             entity
             );
         }
-
-    public URI getResource()
+    
+    public URI getWorkspace()
         {
         try {
             return new URI(
@@ -91,7 +116,7 @@ implements EntityBean<AdqlQuery>
         return entity().input();
         }
 
-    public Mode getMode()
+    public AdqlQuery.Mode getMode()
         {
         return entity().mode();
         }
@@ -144,8 +169,37 @@ implements EntityBean<AdqlQuery>
                     @Override
                     public void remove()
                         {
+                        this.iter.remove();
                         }
                     };
+                }
+            };
+        }
+
+    public interface Syntax
+        {
+        public AdqlQuery.Syntax.Status getStatus();
+        public String getMessage();
+        public String getFriendly();
+        }
+    public Syntax getSyntax()
+        {
+        return new Syntax()
+            {
+            @Override
+            public AdqlQuery.Syntax.Status getStatus()
+                {
+                return entity().syntax().status();
+                }
+            @Override
+            public String getMessage()
+                {
+                return entity().syntax().message();
+                }
+            @Override
+            public String getFriendly()
+                {
+                return entity().syntax().friendly();
                 }
             };
         }

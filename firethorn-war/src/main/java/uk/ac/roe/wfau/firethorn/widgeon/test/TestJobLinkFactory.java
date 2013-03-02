@@ -15,33 +15,48 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.adql;
+package uk.ac.roe.wfau.firethorn.widgeon.test;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
+import uk.ac.roe.wfau.firethorn.job.test.TestJob;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- * Ident factory for <code>AdqlQuery</code>.
+ * Link factory for <code>AdqlColumn</code>.
+ * TODO
  *
  */
 @Component
-public class AdqlQueryNameFactory
-extends WebappIdentFactory
-implements AdqlQuery.NameFactory
+public class TestJobLinkFactory
+extends WebappLinkFactory<TestJob>
+implements TestJob.LinkFactory
     {
-    @Override
-    public String name()
+    protected TestJobLinkFactory()
         {
-        // TODO ....
-        return "test-query";
+        super(
+            BASE_PATH
+            );
         }
 
+    /**
+     * The URI path for the service.
+     *
+     */
+    protected static final String BASE_PATH = "/test" ;
+
+    /**
+     * The URI path for individual columns.
+     *
+     */
+    public static final String JOB_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
+
     @Override
-    public String name(String name)
+    public String link(final TestJob entity)
         {
-        // TODO ...
-        return name;
+        return link(
+            JOB_PATH,
+            entity
+            );
         }
     }

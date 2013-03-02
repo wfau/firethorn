@@ -122,6 +122,13 @@ implements AdqlQuery, AdqlParserQuery
     protected static final String DB_RESOURCE_COL = "resource";
 
     /**
+     * Hibernate column mapping.
+     * 
+     */
+    protected static final String DB_SYNTAX_STATUS_COL  = "syntaxstatus";
+    protected static final String DB_SYNTAX_MESSAGE_COL = "syntaxmessage";
+
+    /**
      * Local factory implementations.
      * 
      */
@@ -339,7 +346,7 @@ implements AdqlQuery, AdqlParserQuery
             name
             );
         this.resource = resource;
-        this.input(
+        parse(
             input
             );
         }
@@ -404,26 +411,12 @@ implements AdqlQuery, AdqlParserQuery
        return this.input;
        }
    @Override
-   public void input(final String input)
+   public void input(String input)
        {
-       this.input = input;
-       reset(
-           Mode.DIRECT
+       parse(
+           input
            );
-       /*
-       final String prev = this.input ; 
-       this.input = next;
-       //
-       // Process the query if it has changed.
-       if (next != null)
-           {
-           if ((prev == null) || (prev.compareTo(next) > 0))
-               {
-               parse();
-               }
-           }
-       */
-      }
+       }
 
    /**
     * The query mode (DIRECT|DISTRIBUTED).
@@ -495,10 +488,67 @@ implements AdqlQuery, AdqlParserQuery
         this.osql = ogsa;
         }
 
+    @Column(
+        name = DB_SYNTAX_STATUS_COL,
+        unique = false,
+        nullable = false,
+        updatable = true
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    private Syntax.Status syntax = Syntax.Status.UNKNOWN ;
+
+    @Column(
+        name = DB_SYNTAX_MESSAGE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String message;
+
+    @Override
+    public Syntax syntax()
+        {
+        return new Syntax()
+            {
+            @Override
+            public Status status()
+                {
+                return AdqlQueryEntity.this.syntax;
+                }
+            @Override
+            public String message()
+                {
+                return AdqlQueryEntity.this.message;
+                }
+            @Override
+            public String friendly()
+                {
+                return AdqlQueryEntity.this.message;
+                }
+            };
+        }
+
+    @Override
+    public void syntax(Syntax.Status syntax)
+        {
+        syntax(
+            syntax,
+            null
+            );
+        }
+
+    @Override
+    public void syntax(Syntax.Status syntax, String message)
+        {
+        this.syntax  = syntax;
+        this.message = message;
+        }
+
     /**
      * The AQDL processing status.
      *     
-     */
     @Embedded
     private AdqlQuerySyntax syntax;
     @Override
@@ -521,6 +571,7 @@ implements AdqlQuery, AdqlParserQuery
             message
             );
         }
+     */
     
     /**
      * The set of AdqlColumns used by the query.
@@ -606,46 +657,83 @@ implements AdqlQuery, AdqlParserQuery
             return this.resource;
             }
         }
-    
+
     /**
      * Parse the query and update our properties.
      *
      */
-    public void parse()
+    public Status parse()
         {
-        //
-        // Create the two query parsers.
-        // TODO - The parsers should be part of the workspace.
-        // TODO - In theory, we could re-use the same parser by using a ThreadLocal for the mode ...
-        final AdqlParser direct = this.factories().adql().parsers().create(
-            Mode.DIRECT,
-            this.resource
+        return parse(
+            null
             );
-        final AdqlParser distrib = this.factories().adql().parsers().create(
-            Mode.DISTRIBUTED,
-            this.resource
-            );
-        //
-        // Process as a direct query.
-        direct.process(
-            this
-            );
-        //
-        // If the query uses multiple resources, re-process as a distributed query.
-        if (this.targets.size() > 1)
+        }
+
+    /**
+     * Parse a new query and update our properties.
+     *
+     */
+    public Status parse(String input)
+        {
+        if (input != null)
             {
-            log.debug("Query uses multiple resources");
-            log.debug("----");
-            for (BaseResource<?> target : this.targets())
-                {
-                log.debug("Resource [{}]", target);
-                }
-            log.debug("----");
+            this.input = input;
+            }
+        if (this.input == null)
+            {
+            return status(
+                Status.EDITING
+                );
+            }
+        else {
+        
             //
-            // Process as a distributed query.
-            distrib.process(
+            // Create the two query parsers.
+            // TODO - The parsers should be part of the workspace.
+            // TODO - In theory, we could re-use the same parser by using a ThreadLocal for the mode ...
+            final AdqlParser direct = this.factories().adql().parsers().create(
+                Mode.DIRECT,
+                this.resource
+                );
+            final AdqlParser distrib = this.factories().adql().parsers().create(
+                Mode.DISTRIBUTED,
+                this.resource
+                );
+            //
+            // Process as a direct query.
+            direct.process(
                 this
                 );
+            //
+            // If the query uses multiple resources, re-process as a distributed query.
+            if (this.targets.size() > 1)
+                {
+                log.debug("Query uses multiple resources");
+                log.debug("----");
+                for (BaseResource<?> target : this.targets())
+                    {
+                    log.debug("Resource [{}]", target);
+                    }
+                log.debug("----");
+                //
+                // Process as a distributed query.
+                distrib.process(
+                    this
+                    );
+                }
+            //
+            // Update the status.
+            if (syntax().status() == Syntax.Status.VALID)
+                {
+                return status(
+                    Status.READY
+                    );
+                }
+            else {
+                return status(
+                    Status.EDITING
+                    );
+                }
             }
         }
 
@@ -655,8 +743,8 @@ implements AdqlQuery, AdqlParserQuery
         this.adql = null ;
         this.osql = null ;
         this.mode = mode ;
-        this.syntax = new AdqlQuerySyntaxEntity(
-            AdqlQuerySyntax.Status.UNKNOWN
+        this.syntax(
+            Syntax.Status.UNKNOWN
             );
         this.columns.clear();
         this.tables.clear();
@@ -733,23 +821,29 @@ implements AdqlQuery, AdqlParserQuery
                 @Override
                 public Status execute()
                     {
-                    parse();
-                    if (syntax().status() == AdqlQuerySyntax.Status.VALID)
-                        {
-                        return update(
-                            Status.READY
-                            );
-                        }
-                    else {
-                        return update(
-                            Status.EDITING
-                            );
-                        }
+                    return parse();
                     }
                 }
             );
         }
 
+    @Override
+    public Status prepare(final String input)
+        {
+        return this.services().executor().prepare(
+            new Executable()
+                {
+                @Override
+                public Status execute()
+                    {
+                    return parse(
+                        input
+                        );
+                    }
+                }
+            );
+       }
+    
     @Override
     public Future<Status> execute()
         {

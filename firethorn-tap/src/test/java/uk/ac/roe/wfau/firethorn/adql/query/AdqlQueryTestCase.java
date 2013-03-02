@@ -162,11 +162,11 @@ extends TestBase
             query.mode()
             );
         assertEquals(
-            AdqlQuerySyntax.Status.VALID,
+            AdqlQuery.Syntax.Status.VALID,
             query.syntax().status()
             );
         assertIsNull(
-            query.syntax().error()
+            query.syntax().message()
             );
         }
 
@@ -235,11 +235,11 @@ extends TestBase
             query.mode()
             );
         assertEquals(
-            AdqlQuerySyntax.Status.VALID,
+            AdqlQuery.Syntax.Status.VALID,
             query.syntax().status()
             );
         assertIsNull(
-            query.syntax().error()
+            query.syntax().message()
             );
         }
 
@@ -335,18 +335,18 @@ extends TestBase
             query.mode()
             );
         assertEquals(
-            AdqlQuerySyntax.Status.VALID,
+            AdqlQuery.Syntax.Status.VALID,
             query.syntax().status()
             );
         assertIsNull(
-            query.syntax().error()
+            query.syntax().message()
             );
         assertEquals(
-            AdqlQuerySyntax.Status.VALID,
+            AdqlQuery.Syntax.Status.VALID,
             query.syntax().status()
             );
         assertIsNull(
-            query.syntax().error()
+            query.syntax().message()
             );
         }
 
@@ -417,11 +417,11 @@ extends TestBase
             query.mode()
             );
         assertEquals(
-            AdqlQuerySyntax.Status.VALID,
+            AdqlQuery.Syntax.Status.VALID,
             query.syntax().status()
             );
         assertIsNull(
-            query.syntax().error()
+            query.syntax().message()
             );
         }
     }

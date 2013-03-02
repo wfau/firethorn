@@ -44,6 +44,9 @@
 	<logger name="uk.ac.roe.wfau.firethorn.womble">
 		<level value="WARN"/>
 	</logger>
+	<logger name="uk.ac.roe.wfau.firethorn.adql.parser">
+		<level value="WARN"/>
+	</logger>
 
 	<!--+
 	    | Spring loggers.

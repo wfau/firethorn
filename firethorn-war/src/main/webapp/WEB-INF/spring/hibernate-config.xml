@@ -56,6 +56,8 @@
         <property name="annotatedClasses">
             <list>
 
+                <value>uk.ac.roe.wfau.firethorn.job.test.TestJobEntity</value>
+
                 <value>uk.ac.roe.wfau.firethorn.config.ConfigPropertyEntity</value>
 
                 <value>uk.ac.roe.wfau.firethorn.identity.IdentityEntity</value>

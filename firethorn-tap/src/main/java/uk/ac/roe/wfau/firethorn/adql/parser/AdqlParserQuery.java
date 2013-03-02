@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.adql.parser;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuerySyntax;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 
@@ -69,12 +68,12 @@ public interface AdqlParserQuery
      * Set the ADQL syntax status.
      * 
      */
-    public void syntax(AdqlQuerySyntax.Status status);
+    public void syntax(AdqlQuery.Syntax.Status status);
 
     /**
      * Set the ADQL syntax status.
      * 
      */
-    public void syntax(AdqlQuerySyntax.Status status, String message);
+    public void syntax(AdqlQuery.Syntax.Status status, String message);
 
     }

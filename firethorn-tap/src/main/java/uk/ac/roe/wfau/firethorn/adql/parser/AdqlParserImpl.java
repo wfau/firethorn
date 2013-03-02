@@ -28,7 +28,6 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuerySyntax;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -105,6 +104,7 @@ implements AdqlParser
         //
         // Create our ADQL parser:
         this.parser = new ADQLParser();
+        this.parser.disable_tracing();
         //
         // Add a DBChecker using the DBTables.
         this.parser.setQueryChecker(
@@ -161,13 +161,13 @@ implements AdqlParser
             //
             // If we got this far, then the query is valid.
             subject.syntax(
-                AdqlQuerySyntax.Status.VALID
+                AdqlQuery.Syntax.Status.VALID
                 );
             }
         catch (final ParseException ouch)
             {
             subject.syntax(
-                AdqlQuerySyntax.Status.PARSE_ERROR,
+                AdqlQuery.Syntax.Status.PARSE_ERROR,
                 ouch.getMessage()
                 );
             log.warn("Error parsing query [{}]", ouch.getMessage());
@@ -175,7 +175,7 @@ implements AdqlParser
         catch (final TranslationException ouch)
             {
             subject.syntax(
-                AdqlQuerySyntax.Status.TRANS_ERROR,
+                AdqlQuery.Syntax.Status.TRANS_ERROR,
                 ouch.getMessage()
                 );
             log.warn("Error translating query [{}]", ouch.getMessage());

@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.adql.query;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.job.Job;
+import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
@@ -173,11 +174,74 @@ extends Entity, Job
     public void input(final String input);
 
     /**
-     * The ADQL syntax validation status.
+     * Prepare the Job for execution.
      *
      */
-    public AdqlQuerySyntax syntax();
+    public Status prepare(String input);
+
+    /**
+     * Query syntax validation status.
+     *
+     */
+    public interface Syntax
+        {
+        /**
+         * The validation status.
+         * 
+         */
+        public enum Status
+            {
+            /**
+             * The query has been parsed and is valid ADQL.
+             * 
+             */
+            VALID(),
+            
+            /**
+             * A parser error in the ADQL query.
+             * 
+             */
+            PARSE_ERROR(),
+
+            /**
+             * A translation error processing the query.
+             * 
+             */
+            TRANS_ERROR(),
+
+            /**
+             * Unknown state - the query hasn't been parsed yet.
+             * 
+             */
+            UNKNOWN();
+            }
+
+        /**
+         * The validation status.
+         * 
+         */
+        public Status status();
+
+        /**
+         * The original parser error message.
+         * 
+         */
+        public String message();
+
+        /**
+         * A user friendly message.
+         * 
+         */
+        public String friendly();
+        
+        }
     
+    /**
+     * Get the syntax validation status.
+     *
+     */
+    public Syntax syntax();
+
     /**
      * OGSA-DAI query mode.
      *
