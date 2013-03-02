@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.job;
 
+import java.util.concurrent.Future;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -33,12 +35,19 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
+import uk.ac.roe.wfau.firethorn.job.Job.Status;
+import uk.ac.roe.wfau.firethorn.job.Job.Executor.Executable;
+import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 
 /**
  *
@@ -161,6 +170,35 @@ extends AbstractEntity
     public static abstract class Executor<JobType extends Job>
     implements Job.Executor<JobType>
         {
+        @Override
+        @UpdateAtomicMethod
+        public Status update(JobType job, Status status)
+            {
+            log.debug("Job.Executor.update(Job, Status)");
+            log.debug("  Job    [{}]", job.name());
+            log.debug("  Status [{}]", status);
+            return job.status(
+                status
+                );
+            }
+
+        @Override
+        @UpdateEntityMethod
+        public Status prepare(Executable executable)
+            {
+            log.debug("Job.Executor.prepare(Executable)");
+            return executable.execute();
+            }
+
+        @Async
+        @Override
+        public Future<Status> execute(Executable executable)
+            {
+            log.debug("Job.Executor.execute(Executable)");
+            return new AsyncResult<Status>(
+                executable.execute()
+                );
+            }
         }
 
     /**

@@ -45,8 +45,6 @@ extends TestBase
     private JdbcResource bestdr7  ;
     private JdbcResource combined ;
 
-    private String prefix = unique();
-    
     /**
      * Create our resources.
      *  
@@ -152,8 +150,11 @@ extends TestBase
         final AdqlQuery query = workspace.queries().create(
             IMPORTED_000
             );
+        query.prepare();
+        debug(query);
+        
         assertEquals(
-            AdqlQuery.Status.EDITING,
+            AdqlQuery.Status.READY,
             query.status()
             );
         assertEquals(
@@ -222,8 +223,11 @@ extends TestBase
         final AdqlQuery query = workspace.queries().create(
             IMPORTED_001
             );
+        query.prepare();
+        debug(query);
+
         assertEquals(
-            AdqlQuery.Status.EDITING,
+            AdqlQuery.Status.READY,
             query.status()
             );
         assertEquals(
@@ -319,8 +323,11 @@ extends TestBase
         final AdqlQuery query = workspace.queries().create(
             IMPORTED_002
             );
+        query.prepare();
+        debug(query);
+
         assertEquals(
-            AdqlQuery.Status.EDITING,
+            AdqlQuery.Status.READY,
             query.status()
             );
         assertEquals(
@@ -398,8 +405,11 @@ extends TestBase
         final AdqlQuery query = workspace.queries().create(
             IMPORTED_002
             );
+        query.prepare();
+        debug(query);
+
         assertEquals(
-            AdqlQuery.Status.EDITING,
+            AdqlQuery.Status.READY,
             query.status()
             );
         assertEquals(

@@ -52,6 +52,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
+import uk.ac.roe.wfau.firethorn.job.Job.Executor.Executable;
 
 /**
  *
@@ -219,77 +220,9 @@ implements TestJob
      */
     @Component
     public static class Executor
+    extends JobEntity.Executor<TestJob>
     implements TestJob.Executor
         {
-        @Override
-        @UpdateAtomicMethod
-        public Status update(TestJob job, Status status)
-            {
-            log.debug("TestJob.Executor.update(TestJob, Status)");
-            log.debug("  Job    [{}]", job.name());
-            log.debug("  Status [{}]", status);
-            return job.status(
-                status
-                );
-            }
-
-        @Override
-        public Status prepare(TestJob job)
-            {
-            log.debug("TestJob.Executor.prepare(TestJob)");
-            log.debug("  Job [{}]", job.name());
-            return job.update(
-                Status.READY
-                );
-            }
-
-        @Async
-        @Override
-        public Future<Status> execute(TestJob job)
-            {
-            log.debug("TestJob.Executor.execute(TestJob)");
-            log.debug("  Job [{}]", job.name());
-
-            log.debug("-- TestJob starting [{}]");
-            if (job.update(Status.RUNNING) == Status.ERROR)
-                {
-                return new AsyncResult<Status>(
-                    Status.ERROR
-                    );
-                }
-           
-            log.debug("-- TestJob running [{}]");
-            try {
-                for (int i = 0 ; i < job.length() ; i++)
-                    {
-                    log.debug("-- TestJob sleeping [{}]", new Integer(i));
-                    Thread.sleep(
-                        1000
-                        );
-                    }
-                log.debug("-- TestJob finishing [{}]", job.status());
-                if (job.update(Status.COMPLETED) == Status.ERROR)
-                    {
-                    return new AsyncResult<Status>(
-                        Status.ERROR
-                        );
-                    }
-                }
-            catch (InterruptedException ouch)
-                {
-                log.debug("-- TestJob interrupted [{}]", ouch.getMessage());
-                if (job.update(Status.CANCELLED) == Status.ERROR)
-                    {
-                    return new AsyncResult<Status>(
-                        Status.ERROR
-                        );
-                    }
-                }
-
-            return new AsyncResult<Status>(
-                job.status()
-                );
-            }
         }
     
     /**
@@ -370,7 +303,18 @@ implements TestJob
     public Status prepare()
         {
         return services().executor().prepare(
-            this
+            new Executable()
+                {
+                @Override
+                public Status execute()
+                    {
+                    log.debug("prepare.Executable.execute()");
+                    log.debug("  Job [{}]", name());
+                    return update(
+                        Status.READY
+                        );
+                    }
+                }
             );
         }
 
@@ -378,7 +322,46 @@ implements TestJob
     public Future<Status> execute()
         {
         return services().executor().execute(
-            this
+            new Executable()
+                {
+                @Override
+                public Status execute()
+                    {
+                    log.debug("execute.Executable.execute()");
+                    log.debug("  Job [{}]", name());
+
+                    log.debug("-- TestJob starting [{}]");
+                    if (update(Status.RUNNING) == Status.ERROR)
+                        {
+                        return Status.ERROR;
+                        }
+                   
+                    log.debug("-- TestJob running [{}]");
+                    try {
+                        for (int i = 0 ; i < length() ; i++)
+                            {
+                            log.debug("-- TestJob sleeping [{}]", new Integer(i));
+                            Thread.sleep(
+                                1000
+                                );
+                            }
+                        log.debug("-- TestJob finishing [{}]", status());
+                        if (update(Status.COMPLETED) == Status.ERROR)
+                            {
+                            return Status.ERROR;
+                            }
+                        }
+                    catch (InterruptedException ouch)
+                        {
+                        log.debug("-- TestJob interrupted [{}]", ouch.getMessage());
+                        if (update(Status.CANCELLED) == Status.ERROR)
+                            {
+                            return Status.ERROR;
+                            }
+                        }
+                    return status();
+                    }
+                }
             );
         }
     }

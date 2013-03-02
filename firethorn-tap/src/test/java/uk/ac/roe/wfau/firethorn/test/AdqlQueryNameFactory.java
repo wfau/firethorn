@@ -35,4 +35,10 @@ implements AdqlQuery.NameFactory
         // TODO Auto-generated method stub
         return "test-name";
         }
+
+    @Override
+    public String name(String name)
+        {
+        return name;
+        }
     }

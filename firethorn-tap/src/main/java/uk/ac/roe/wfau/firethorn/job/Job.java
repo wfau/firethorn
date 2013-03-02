@@ -104,16 +104,25 @@ extends Entity
         public Status update(JobType job, Status status);
 
         /**
+         * Functor interface used by prepare() and execute().
+         * 
+         */
+        public static interface Executable
+            {
+            public Status execute();
+            }
+        
+        /**
          * Prepare a Job for execution.
          *
          */
-        public Status prepare(JobType job);
+        public Status prepare(Executable executable);
 
         /**
          * Execute a Job asynchronously.
          *
          */
-        public Future<Status> execute(JobType job);
+        public Future<Status> execute(Executable executable);
         
         }
     

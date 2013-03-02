@@ -63,9 +63,7 @@ public class TestJobTestCase
         log.debug("  Status [{}]", job.status());
 
         log.debug("Executing test job");
-        Future<Status> future = services().executor().execute(
-            job
-            );
+        Future<Status> future = job.execute();
         log.debug("  Status [{}]", job.status());
 
         Status result = job.status();

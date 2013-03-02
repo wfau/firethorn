@@ -59,6 +59,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.job.Job;
+import uk.ac.roe.wfau.firethorn.job.Job.Executor.Executable;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
@@ -314,35 +315,9 @@ implements AdqlQuery, AdqlParserQuery
      */
     @Component
     public static class Executor
+    extends JobEntity.Executor<AdqlQuery>
     implements AdqlQuery.Executor
         {
-        @Override
-        @UpdateAtomicMethod
-        public Status update(AdqlQuery query, Status status)
-            {
-            return query.status(
-                status
-                );
-            }
-
-        @Override
-        public Status prepare(AdqlQuery query)
-            {
-            // TODO Auto-generated method stub
-            return query.update(
-                Status.READY
-                );
-            }
-
-        @Async
-        @Override
-        public Future<Status> execute(AdqlQuery query)
-            {
-            // TODO Auto-generated method stub
-            return new AsyncResult<Status>(
-                query.status()
-                );
-            }
         }
     
     /**
@@ -377,31 +352,6 @@ implements AdqlQuery, AdqlParserQuery
             );
         }
 
-    /**
-     * The job status.
-     * @todo Move to a common base class.
-     *
-    @Column(
-        name = DB_STATUS_COL,
-        unique = false,
-        nullable = false,
-        updatable = true
-        )
-    @Enumerated(
-        EnumType.STRING
-        )
-    private Status status = Status.EDITING;
-    @Override
-    public Status status()
-        {
-        return this.status;
-        }
-    public void status(final Status status)
-        {
-        this.status = status;
-        }
-     */
-    
     @Index(
         name=DB_TABLE_NAME + "IndexByResource"
         )
@@ -454,8 +404,13 @@ implements AdqlQuery, AdqlParserQuery
        return this.input;
        }
    @Override
-   public void input(final String next)
+   public void input(final String input)
        {
+       this.input = input;
+       reset(
+           Mode.DIRECT
+           );
+       /*
        final String prev = this.input ; 
        this.input = next;
        //
@@ -467,6 +422,7 @@ implements AdqlQuery, AdqlParserQuery
                parse();
                }
            }
+       */
       }
 
    /**
@@ -772,7 +728,25 @@ implements AdqlQuery, AdqlParserQuery
     public Status prepare()
         {
         return this.services().executor().prepare(
-            this
+            new Executable()
+                {
+                @Override
+                public Status execute()
+                    {
+                    parse();
+                    if (syntax().status() == AdqlQuerySyntax.Status.VALID)
+                        {
+                        return update(
+                            Status.READY
+                            );
+                        }
+                    else {
+                        return update(
+                            Status.EDITING
+                            );
+                        }
+                    }
+                }
             );
         }
 
@@ -780,7 +754,17 @@ implements AdqlQuery, AdqlParserQuery
     public Future<Status> execute()
         {
         return services().executor().execute(
-            this
+            new Executable()
+                {
+                @Override
+                public Status execute()
+                    {
+                    // TODO ... lots 
+                    return update(
+                        Status.COMPLETED
+                        );
+                    }
+                }
             );
         }
     }

@@ -148,11 +148,15 @@ implements AdqlParser
 
             //
             // Translate the query into SQL.
+            // ** PATCH FIX FOR CROSS JOIN BUG **
             final ADQLTranslator translator = new PostgreSQLTranslator(false);
             subject.osql(
                 translator.translate(
                     object
-                    )
+                    ).replace(
+                        "CROSS JOIN",
+                        ","
+                        )
                 );
             //
             // If we got this far, then the query is valid.
