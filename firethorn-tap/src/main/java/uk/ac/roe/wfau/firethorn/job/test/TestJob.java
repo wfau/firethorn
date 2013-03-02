@@ -89,7 +89,7 @@ public interface TestJob
      *
      */
     public static interface Resolver
-    extends Job.Resolver
+    extends Entity.Factory<TestJob>
         {
         }
 

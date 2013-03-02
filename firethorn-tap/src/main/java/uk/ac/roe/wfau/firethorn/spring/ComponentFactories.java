@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.spring;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.job.Job;
@@ -108,7 +109,7 @@ public interface ComponentFactories
     /**
      * Our Query factories.
      * 
-    public QueryFactories queries();
      */
+    public AdqlQuery.Services queries();
 
     }

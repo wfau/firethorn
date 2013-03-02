@@ -44,9 +44,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
@@ -141,9 +143,30 @@ implements TestJob
      */
     @Repository
     public static class Resolver
-    extends JobEntity.Resolver
+    extends AbstractFactory<TestJob>
     implements TestJob.Resolver
         {
+        @Override
+        public Class<?> etype()
+            {
+            return TestJobEntity.class ;
+            }
+
+        @Autowired
+        protected TestJob.LinkFactory links;
+        @Override
+        public TestJob.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        protected TestJob.IdentFactory idents;
+        @Override
+        public TestJob.IdentFactory idents()
+            {
+            return this.idents;
+            }
         }
 
     /**
@@ -314,7 +337,7 @@ implements TestJob
         {
         return factories().tests();
         }
-    
+
     @Override
     public String link()
         {
@@ -322,7 +345,7 @@ implements TestJob
             this
             );
         }
-
+    
     @Override
     public Status update(Status status)
         {

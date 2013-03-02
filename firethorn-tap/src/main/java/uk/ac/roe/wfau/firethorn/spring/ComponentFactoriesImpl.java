@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 //import com.sun.org.apache.regexp.internal.recompile;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Identity.Context;
@@ -224,4 +225,15 @@ public class ComponentFactoriesImpl
         return this.tests;
         }
 
+    /**
+     * Our Autowired query factory.
+     *
+     */
+    @Autowired
+    protected AdqlQuery.Services queries;
+    @Override
+    public AdqlQuery.Services queries()
+        {
+        return this.queries;
+        }
     }

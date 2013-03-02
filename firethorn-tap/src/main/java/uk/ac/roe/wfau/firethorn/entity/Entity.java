@@ -43,6 +43,12 @@ public interface Entity
          */
         public String name();
 
+        /**
+         * Generate a new name.
+         * 
+         */
+        public String name(String name);
+
         }
 
     /**

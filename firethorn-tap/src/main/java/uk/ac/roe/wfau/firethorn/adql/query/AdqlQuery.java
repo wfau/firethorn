@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.adql.query;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.job.Job;
+import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -31,6 +32,50 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 public interface AdqlQuery
 extends Entity, Job
     {
+    /**
+     * Our local factory implementations.
+     * 
+     */
+    public static interface Services
+        {
+        /**
+         * Our Name factory.
+         * 
+         */
+        public NameFactory names();
+
+        /**
+         * Our Link factory.
+         * 
+         */
+        public LinkFactory links();
+
+        /**
+         * Our Ident factory.
+         * 
+         */
+        public IdentFactory idents();
+
+        /**
+         * Our Query resolver.
+         * 
+         */
+        public Resolver resolver();
+
+        /**
+         * Our Query Factory.
+         * 
+         */
+        public Factory factory();
+
+        /**
+         * Our Query executor.
+         * 
+         */
+        public Executor executor();
+
+        }
+
     /**
      * Name factory interface.
      *
@@ -59,11 +104,20 @@ extends Entity, Job
         }
 
     /**
+     * Resolver interface.
+     *
+     */
+    public static interface Resolver
+    extends Entity.Factory<AdqlQuery>
+        {
+        }
+
+    /**
      * Factory interface.
      *
      */
     public static interface Factory
-    extends Entity.Factory<AdqlQuery>
+    extends Job.Factory<AdqlQuery>
         {
         /**
          * Create a new query.
@@ -88,14 +142,23 @@ extends Entity, Job
          *
          */
         public Iterable<AdqlQuery> search(final AdqlResource resource, final String text);
-        
-        /**
-         * Access to our name factory.
-         *
-         */
-        public AdqlQuery.NameFactory names();
 
         }
+
+    /**
+     * Job executor interface.
+     * 
+     */
+    public static interface Executor
+    extends Job.Executor<AdqlQuery>
+        {
+        }
+
+    /**
+     * Links to our local service implementations.
+     *
+     */
+    public Services services();
 
     /**
      * Get the input text.

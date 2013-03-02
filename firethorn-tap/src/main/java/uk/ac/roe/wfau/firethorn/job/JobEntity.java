@@ -101,7 +101,6 @@ extends AbstractEntity
             return this.idents;
             }
 
-        /*
         @Autowired
         public Job.Resolver resolver;
         @Override
@@ -109,7 +108,6 @@ extends AbstractEntity
             {
             return this.resolver;
             }
-        */
         }
     
     /**

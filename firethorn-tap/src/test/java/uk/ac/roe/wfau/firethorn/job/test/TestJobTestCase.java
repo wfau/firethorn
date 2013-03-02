@@ -96,5 +96,4 @@ public class TestJobTestCase
             }
         log.debug("-- Test completed [{}][{}]", result, job.status());
         }
-
     }

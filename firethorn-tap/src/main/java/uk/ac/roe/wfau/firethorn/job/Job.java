@@ -49,8 +49,8 @@ extends Entity
         /**
          * Our Job resolver.
          * 
-        public Resolver resolver();
          */
+        public Resolver resolver();
 
         }
 

@@ -45,6 +45,9 @@ import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
@@ -53,8 +56,12 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
+import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
+import uk.ac.roe.wfau.firethorn.job.Job.Status;
+import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
@@ -114,6 +121,94 @@ implements AdqlQuery, AdqlParserQuery
     protected static final String DB_RESOURCE_COL = "resource";
 
     /**
+     * Local factory implementations.
+     * 
+     */
+    @Component
+    public static class Services
+    implements AdqlQuery.Services
+        {
+        @Autowired
+        public AdqlQuery.NameFactory names;
+        @Override
+        public AdqlQuery.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
+        private AdqlQuery.LinkFactory links;
+        @Override
+        public AdqlQuery.LinkFactory links()
+            {
+            return this.links;
+            }
+
+        @Autowired
+        private AdqlQuery.IdentFactory idents;
+        @Override
+        public AdqlQuery.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        private AdqlQuery.Resolver resolver;
+        @Override
+        public AdqlQuery.Resolver resolver()
+            {
+            return this.resolver;
+            }
+
+        @Autowired
+        private AdqlQuery.Factory factory;
+        @Override
+        public AdqlQuery.Factory factory()
+            {
+            return this.factory;
+            }
+
+        @Autowired
+        private AdqlQuery.Executor executor;
+        @Override
+        public AdqlQuery.Executor executor()
+            {
+            return this.executor;
+            }
+        }
+
+    /**
+     * Resolver implementation.
+     * 
+     */
+    @Repository
+    public static class Resolver
+    extends AbstractFactory<AdqlQuery>
+    implements AdqlQuery.Resolver
+        {
+        @Override
+        public Class<?> etype()
+            {
+            return AdqlQueryEntity.class ;
+            }
+
+        @Autowired
+        private AdqlQuery.IdentFactory idents;
+        @Override
+        public AdqlQuery.IdentFactory idents()
+            {
+            return this.idents;
+            }
+        @Autowired
+        private AdqlQuery.LinkFactory links;
+        @Override
+        public AdqlQuery.LinkFactory links()
+            {
+            return this.links;
+            }
+        }
+    
+    /**
      * Factory implementation.
      *
      */
@@ -135,7 +230,7 @@ implements AdqlQuery, AdqlParserQuery
             return this.insert(
                 new AdqlQueryEntity(
                     resource,
-                    this.names.name(),
+                    names().name(),
                     input
                     )
                 );
@@ -148,15 +243,16 @@ implements AdqlQuery, AdqlParserQuery
             return this.insert(
                 new AdqlQueryEntity(
                     resource,
-                    name,
+                    names().name(
+                        name
+                        ),
                     input
                     )
                 );
             }
 
         @Autowired
-        private AdqlQuery.NameFactory names;
-        @Override
+        public AdqlQuery.NameFactory names;
         public AdqlQuery.NameFactory names()
             {
             return this.names;
@@ -210,15 +306,45 @@ implements AdqlQuery, AdqlParserQuery
                         )
                 );
             }
+        }
 
-        //@Override
+    /**
+     * Executor implementation.
+     * 
+     */
+    @Component
+    public static class Executor
+    implements AdqlQuery.Executor
+        {
+        @Override
+        @UpdateAtomicMethod
+        public Status update(AdqlQuery query, Status status)
+            {
+            return query.status(
+                status
+                );
+            }
+
+        @Override
+        public Status prepare(AdqlQuery query)
+            {
+            // TODO Auto-generated method stub
+            return query.update(
+                Status.READY
+                );
+            }
+
+        @Async
+        @Override
         public Future<Status> execute(AdqlQuery query)
             {
             // TODO Auto-generated method stub
-            return null;
+            return new AsyncResult<Status>(
+                query.status()
+                );
             }
         }
-
+    
     /**
      * Protected constructor, used by Hibernate.
      *
@@ -619,23 +745,42 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Override
-    public Status prepare()
+    public AdqlQuery.Services services()
         {
-        // TODO Auto-generated method stub
-        return null;
-        }
-
-    @Override
-    public Future<Status> execute()
-        {
-        // TODO Auto-generated method stub
-        return null;
+        return factories().queries();
         }
 
     @Override
     public Status update(Status status)
         {
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            return services().executor().update(
+                this,
+                status
+                );
+            }
+        catch (Exception ouch)
+            {
+            log.error("Error while updating Job Status [{}]", ouch.getMessage());
+            return this.status(
+                Status.ERROR
+                );
+            }
+        }
+
+    @Override
+    public Status prepare()
+        {
+        return this.services().executor().prepare(
+            this
+            );
+        }
+
+    @Override
+    public Future<Status> execute()
+        {
+        return services().executor().execute(
+            this
+            );
         }
     }
