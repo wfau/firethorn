@@ -49,13 +49,13 @@ implements TestJob.LinkFactory
      * The URI path for individual columns.
      *
      */
-    public static final String JOB_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
+    public static final String TEST_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
 
     @Override
     public String link(final TestJob entity)
         {
         return link(
-            JOB_PATH,
+            TEST_PATH,
             entity
             );
         }

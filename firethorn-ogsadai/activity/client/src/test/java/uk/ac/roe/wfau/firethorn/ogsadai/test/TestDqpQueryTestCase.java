@@ -64,10 +64,12 @@ extends SimpleQueryTestBase
             "     twomass.ra-ukidss.ra AS difdec," +
             "     neighbour.distanceMins AS dist" +
             " FROM" +
-            "     JDBC_5 AS twomass," +
-//            " CROSS JOIN" +
+            "     JDBC_5 AS twomass" +
+//          " CROSS JOIN" +
+            " , " +
             "     JDBC_120 AS ukidss," +
-//            " CROSS JOIN" +
+//          " CROSS JOIN" +
+            " , " +
             "     JDBC_41 AS neighbour" +
             " WHERE" +
             "     twomass.ra >= '55.0'" +

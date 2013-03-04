@@ -124,7 +124,7 @@ extends AbstractController
      * @throws NotFoundException
      *
      */
-    @ModelAttribute(AdqlSchemaController.SCHEMA_ENTITY)
+    @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
     public AdqlSchema schema(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
@@ -144,7 +144,7 @@ extends AbstractController
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
     public AdqlTableBean.Iter jsonSelect(
-        @ModelAttribute(AdqlSchemaController.SCHEMA_ENTITY)
+        @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema
         ){
         log.debug("jsonSelect()");
@@ -160,7 +160,7 @@ extends AbstractController
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
     public AdqlTableBean jsonSelect(
-        @ModelAttribute(AdqlSchemaController.SCHEMA_ENTITY)
+        @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(SELECT_NAME)
         final String name
@@ -180,7 +180,7 @@ extends AbstractController
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
     public AdqlTableBean.Iter jsonSearch(
-        @ModelAttribute(AdqlSchemaController.SCHEMA_ENTITY)
+        @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(SEARCH_TEXT)
         final String text
@@ -201,7 +201,7 @@ extends AbstractController
     @ResponseBody
     @RequestMapping(value=IMPORT_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<AdqlTableBean> jsonInport(
-        @ModelAttribute(AdqlSchemaController.SCHEMA_ENTITY)
+        @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(value=IMPORT_BASE, required=true)
         final String base,

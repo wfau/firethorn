@@ -67,7 +67,7 @@ public class AdqlResourceController
      * MVC property for the target entity.
      *
      */
-    public static final String RESOURCE_ENTITY = "urn:adql.resource.entity" ;
+    public static final String TARGET_ENTITY = "urn:adql.resource.entity" ;
 
     /**
      * MVC property for updating the name.
@@ -98,7 +98,7 @@ public class AdqlResourceController
      * Get the target entity based on the ident in the path.
      *
      */
-    @ModelAttribute(RESOURCE_ENTITY)
+    @ModelAttribute(TARGET_ENTITY)
     public AdqlResource entity(
         @PathVariable("ident")
         final String ident
@@ -120,7 +120,7 @@ public class AdqlResourceController
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public AdqlResourceBean jsonSelect(
-        @ModelAttribute(RESOURCE_ENTITY)
+        @ModelAttribute(TARGET_ENTITY)
         final AdqlResource entity
         ){
         return bean(
@@ -140,7 +140,7 @@ public class AdqlResourceController
         String name,
         @RequestParam(value=UPDATE_STATUS, required=false) final
         String status,
-        @ModelAttribute(RESOURCE_ENTITY)
+        @ModelAttribute(TARGET_ENTITY)
         final AdqlResource entity
         ){
 

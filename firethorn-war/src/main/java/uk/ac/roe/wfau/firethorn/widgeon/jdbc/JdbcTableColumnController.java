@@ -102,7 +102,7 @@ extends AbstractController
      * @throws NotFoundException
      *
      */
-    @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+    @ModelAttribute(JdbcTableController.TARGET_ENTITY)
     public JdbcTable table(
         @PathVariable("ident")
         final String ident
@@ -120,7 +120,7 @@ extends AbstractController
      *
      */
     public JdbcColumnBean.Iter select(
-        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        @ModelAttribute(JdbcTableController.TARGET_ENTITY)
         final JdbcTable table
         ){
         log.debug("select()");
@@ -136,7 +136,7 @@ extends AbstractController
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcColumnBean.Iter jsonSelect(
-        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        @ModelAttribute(JdbcTableController.TARGET_ENTITY)
         final JdbcTable table,
         final ModelAndView model
         ){
@@ -151,7 +151,7 @@ extends AbstractController
      *
      */
     public JdbcColumnBean select(
-        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        @ModelAttribute(JdbcTableController.TARGET_ENTITY)
         final JdbcTable table,
         final String name
         ) throws NotFoundException {
@@ -170,7 +170,7 @@ extends AbstractController
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
     public JdbcColumnBean jsonSelect(
-        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        @ModelAttribute(JdbcTableController.TARGET_ENTITY)
         final JdbcTable table,
         @RequestParam(SELECT_NAME)
         final String name,
@@ -188,7 +188,7 @@ extends AbstractController
      *
      */
     public JdbcColumnBean.Iter search(
-        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        @ModelAttribute(JdbcTableController.TARGET_ENTITY)
         final JdbcTable table,
         final String text
         ){
@@ -207,7 +207,7 @@ extends AbstractController
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
     public JdbcColumnBean.Iter jsonSearch(
-        @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+        @ModelAttribute(JdbcTableController.TARGET_ENTITY)
         final JdbcTable table,
         @RequestParam(SEARCH_TEXT)
         final String text,

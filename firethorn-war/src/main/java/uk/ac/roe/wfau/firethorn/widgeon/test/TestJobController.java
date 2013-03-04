@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
+package uk.ac.roe.wfau.firethorn.widgeon.test;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,8 +29,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.job.test.TestJob;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
@@ -40,8 +43,8 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
  */
 @Slf4j
 @Controller
-@RequestMapping(JdbcTableLinkFactory.TABLE_PATH)
-public class JdbcTableController
+@RequestMapping(TestJobLinkFactory.TEST_PATH)
+public class TestJobController
     extends AbstractController
     {
 
@@ -49,7 +52,7 @@ public class JdbcTableController
     public Path path()
         {
         return path(
-            JdbcTableLinkFactory.TABLE_PATH
+            TestJobLinkFactory.TEST_PATH
             );
         }
 
@@ -57,7 +60,7 @@ public class JdbcTableController
      * Public constructor.
      *
      */
-    public JdbcTableController()
+    public TestJobController()
         {
         super();
         }
@@ -66,39 +69,51 @@ public class JdbcTableController
      * MVC property for the target entity.
      *
      */
-    public static final String TARGET_ENTITY = "urn:jdbc.table.entity" ;
+    public static final String TARGET_ENTITY = "urn:test.job.entity" ;
 
     /**
      * MVC property for updating the name.
      *
      */
-    public static final String UPDATE_NAME = "jdbc.table.update.name" ;
+    public static final String UPDATE_NAME = "test.job.update.name" ;
 
+    /**
+     * Bean interface for a TestJob.
+     *  
+     */
+    public static interface TestJobBean
+    extends EntityBean<TestJob>
+        {
+        
+        }
+    
     /**
      * Wrap an entity as a bean.
      *
      */
-    public JdbcTableBean bean(
-        final JdbcTable entity
+    public TestJobBean bean(
+        final TestJob entity
         ){
+        return null ;
+/*
         return new JdbcTableBean(
             entity
             );
+ */
         }
 
     /**
-     * Get the target table based on the identifier in the request.
+     * Get the target job based on the identifier in the request.
      * @throws NotFoundException
      *
      */
-    @ModelAttribute(JdbcTableController.TARGET_ENTITY)
-    public JdbcTable entity(
+    @ModelAttribute(TestJobController.TARGET_ENTITY)
+    public TestJob entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         ) throws NotFoundException {
-        log.debug("table() [{}]", ident);
-        return factories().jdbc().tables().select(
-            factories().jdbc().tables().idents().ident(
+        return factories().tests().resolver().select(
+            factories().tests().idents().ident(
                 ident
                 )
             );
@@ -110,11 +125,10 @@ public class JdbcTableController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcTableBean jsonSelect(
+    public TestJobBean jsonSelect(
         @ModelAttribute(TARGET_ENTITY)
-        final JdbcTable entity
+        final TestJob entity
         ){
-        log.debug("jsonSelect()");
         return bean(
             entity
             );
@@ -127,11 +141,11 @@ public class JdbcTableController
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public JdbcTableBean jsonUpdate(
+    public TestJobBean jsonUpdate(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @ModelAttribute(TARGET_ENTITY)
-        final JdbcTable entity
+        final TestJob entity
         ){
 
         if (name != null)

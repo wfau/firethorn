@@ -67,7 +67,7 @@ extends AbstractEntityController<AdqlColumn>
      * MVC property for the target entity.
      *
      */
-    public static final String COLUMN_ENTITY = "urn:adql.column.entity" ;
+    public static final String TARGET_ENTITY = "urn:adql.column.entity" ;
 
     /**
      * MVC property for updating the name.
@@ -96,7 +96,7 @@ extends AbstractEntityController<AdqlColumn>
      * @throws NotFoundException
      *
      */
-    @ModelAttribute(COLUMN_ENTITY)
+    @ModelAttribute(TARGET_ENTITY)
     public AdqlColumn entity(
         @PathVariable("ident")
         final String ident
@@ -116,7 +116,7 @@ extends AbstractEntityController<AdqlColumn>
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public EntityBean<AdqlColumn> jsonSelect(
-        @ModelAttribute(COLUMN_ENTITY)
+        @ModelAttribute(TARGET_ENTITY)
         final AdqlColumn entity
         ){
         return bean(
@@ -134,7 +134,7 @@ extends AbstractEntityController<AdqlColumn>
     public EntityBean<AdqlColumn> jsonUpdate(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
-        @ModelAttribute(COLUMN_ENTITY)
+        @ModelAttribute(TARGET_ENTITY)
         final AdqlColumn entity
         ){
 

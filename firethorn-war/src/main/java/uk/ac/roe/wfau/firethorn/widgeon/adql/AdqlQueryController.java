@@ -70,7 +70,7 @@ extends AbstractEntityController<AdqlQuery>
      * MVC property for the target entity.
      *
      */
-    public static final String QUERY_ENTITY = "urn:adql.query.entity" ;
+    public static final String TARGET_ENTITY = "urn:adql.query.entity" ;
 
     /**
      * MVC property for updating the name.
@@ -111,7 +111,7 @@ extends AbstractEntityController<AdqlQuery>
      * @throws NotFoundException
      *
      */
-    @ModelAttribute(QUERY_ENTITY)
+    @ModelAttribute(TARGET_ENTITY)
     public AdqlQuery entity(
         @PathVariable("ident")
         final String ident
@@ -130,7 +130,7 @@ extends AbstractEntityController<AdqlQuery>
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public EntityBean<AdqlQuery> jsonSelect(
-        @ModelAttribute(QUERY_ENTITY)
+        @ModelAttribute(TARGET_ENTITY)
         final AdqlQuery entity
         ){
         return bean(
@@ -152,7 +152,7 @@ extends AbstractEntityController<AdqlQuery>
         final String input,
         @RequestParam(value=UPDATE_STATUS, required=false)
         final Status status,
-        @ModelAttribute(QUERY_ENTITY)
+        @ModelAttribute(TARGET_ENTITY)
         final AdqlQuery entity
         ){
 

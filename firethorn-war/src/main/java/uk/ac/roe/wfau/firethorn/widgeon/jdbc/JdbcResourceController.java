@@ -70,7 +70,7 @@ public class JdbcResourceController
      * MVC property for the target resource.
      *
      */
-    public static final String RESOURCE_ENTITY = "urn:jdbc.resource.entity" ;
+    public static final String TARGET_ENTITY = "urn:jdbc.resource.entity" ;
 
     /**
      * MVC property for updating the name.
@@ -118,7 +118,7 @@ public class JdbcResourceController
      * Get the target resource based on the identifier in the request.
      *
      */
-    @ModelAttribute(RESOURCE_ENTITY)
+    @ModelAttribute(TARGET_ENTITY)
     public JdbcResource entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
@@ -140,7 +140,7 @@ public class JdbcResourceController
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcResourceBean jsonSelect(
-        @ModelAttribute(RESOURCE_ENTITY)
+        @ModelAttribute(TARGET_ENTITY)
         final JdbcResource entity
         ){
         log.debug("JSON GET request");
@@ -181,7 +181,7 @@ public class JdbcResourceController
         @RequestParam(value=UPDATE_CONN_STATUS, required=false) final
         String action,
 
-        @ModelAttribute(RESOURCE_ENTITY)
+        @ModelAttribute(TARGET_ENTITY)
         final JdbcResource entity
         ){
 
