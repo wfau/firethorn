@@ -1,0 +1,10 @@
+
+
+    pushd /var/local/projects/edinburgh/wfau/firethorn
+
+        hg clone http://wfau.metagrid.co.uk/code/firethorn ro-clone
+        
+        hg clone ssh://{username?}@wfau.metagrid.co.uk:22//var/local/wfau/projects/firethorn/code rw-clone
+
+    popd
+
