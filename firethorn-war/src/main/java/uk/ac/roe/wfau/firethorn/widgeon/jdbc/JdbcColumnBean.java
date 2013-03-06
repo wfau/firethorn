@@ -30,6 +30,7 @@ import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumnBean.Info.Adql;
 
 /**
  * Bean wrapper for <code>JdbcColumn</code>.
+ * @todo Split this into an interface and an implementation.
  *
  */
 public class JdbcColumnBean

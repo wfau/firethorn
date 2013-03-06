@@ -67,7 +67,7 @@ public class AdqlTableController
      * MVC property for the target entity.
      *
      */
-    public static final String TABLE_ENTITY = "urn:adql.table.entity" ;
+    public static final String TARGET_ENTITY = "urn:adql.table.entity" ;
 
     /**
      * MVC property for updating the name.
@@ -92,7 +92,7 @@ public class AdqlTableController
      * @throws NotFoundException
      *
      */
-    @ModelAttribute(TABLE_ENTITY)
+    @ModelAttribute(TARGET_ENTITY)
     public AdqlTable entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
@@ -112,7 +112,7 @@ public class AdqlTableController
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public AdqlTableBean jsonSelect(
-        @ModelAttribute(TABLE_ENTITY)
+        @ModelAttribute(TARGET_ENTITY)
         final AdqlTable entity
         ){
         log.debug("jsonSelect()");
@@ -131,7 +131,7 @@ public class AdqlTableController
     public AdqlTableBean jsonUpdate(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
-        @ModelAttribute(TABLE_ENTITY)
+        @ModelAttribute(TARGET_ENTITY)
         final AdqlTable entity
         ){
 

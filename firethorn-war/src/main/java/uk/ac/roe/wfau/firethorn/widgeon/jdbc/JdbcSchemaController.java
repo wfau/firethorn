@@ -66,7 +66,7 @@ public class JdbcSchemaController
      * MVC property for the target entity.
      *
      */
-    public static final String SCHEMA_ENTITY = "urn:jdbc.schema.entity" ;
+    public static final String TARGET_ENTITY = "urn:jdbc.schema.entity" ;
 
     /**
      * MVC property for updating the name.
@@ -91,7 +91,7 @@ public class JdbcSchemaController
      * @throws NotFoundException
      *
      */
-    @ModelAttribute(SCHEMA_ENTITY)
+    @ModelAttribute(TARGET_ENTITY)
     public JdbcSchema entity(
         @PathVariable("ident")
         final String ident
@@ -111,7 +111,7 @@ public class JdbcSchemaController
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcSchemaBean jsonSelect(
-        @ModelAttribute(SCHEMA_ENTITY)
+        @ModelAttribute(TARGET_ENTITY)
         final JdbcSchema entity
         ){
         log.debug("jsonSelect()");
@@ -130,7 +130,7 @@ public class JdbcSchemaController
     public JdbcSchemaBean jsonUpdate(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
-        @ModelAttribute(SCHEMA_ENTITY)
+        @ModelAttribute(TARGET_ENTITY)
         final JdbcSchema entity
         ){
 

@@ -66,7 +66,7 @@ public class JdbcTableController
      * MVC property for the target entity.
      *
      */
-    public static final String TABLE_ENTITY = "urn:jdbc.table.entity" ;
+    public static final String TARGET_ENTITY = "urn:jdbc.table.entity" ;
 
     /**
      * MVC property for updating the name.
@@ -91,7 +91,7 @@ public class JdbcTableController
      * @throws NotFoundException
      *
      */
-    @ModelAttribute(JdbcTableController.TABLE_ENTITY)
+    @ModelAttribute(JdbcTableController.TARGET_ENTITY)
     public JdbcTable entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
@@ -111,7 +111,7 @@ public class JdbcTableController
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcTableBean jsonSelect(
-        @ModelAttribute(TABLE_ENTITY)
+        @ModelAttribute(TARGET_ENTITY)
         final JdbcTable entity
         ){
         log.debug("jsonSelect()");
@@ -130,7 +130,7 @@ public class JdbcTableController
     public JdbcTableBean jsonUpdate(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
-        @ModelAttribute(TABLE_ENTITY)
+        @ModelAttribute(TARGET_ENTITY)
         final JdbcTable entity
         ){
 

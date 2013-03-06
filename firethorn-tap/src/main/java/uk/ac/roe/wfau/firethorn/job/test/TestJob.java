@@ -104,7 +104,7 @@ public interface TestJob
          * Create a test Job.
          * 
          */
-        public TestJob create(final String name, int length);
+        public TestJob create(final String name, final Integer delay);
 
         }
 
@@ -113,7 +113,7 @@ public interface TestJob
      * 
      */
     public static interface Executor
-    extends Job.Executor<TestJob>
+    extends Job.Executor
         {
         }
 
@@ -121,6 +121,6 @@ public interface TestJob
      * The test duration in seconds.
      * 
      */
-    public int length();
+    public Integer pause();
 
     }

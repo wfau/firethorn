@@ -126,7 +126,7 @@ extends AbstractEntityController<AdqlQuery>
      * @throws NotFoundException
      *
      */
-    @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
+    @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
     public AdqlResource resource(
         @PathVariable("ident")
         final String ident
@@ -145,7 +145,7 @@ extends AbstractEntityController<AdqlQuery>
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
     public Iterable<EntityBean<AdqlQuery>> jsonSelect(
-        @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
+        @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource
         ){
         return bean(
@@ -160,7 +160,7 @@ extends AbstractEntityController<AdqlQuery>
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
     public Iterable<EntityBean<AdqlQuery>> jsonSearch(
-        @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
+        @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(SEARCH_TEXT)
         final String text
@@ -179,7 +179,7 @@ extends AbstractEntityController<AdqlQuery>
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<EntityBean<AdqlQuery>> jsonCreate(
-        @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
+        @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(value=CREATE_QUERY, required=true)
         final String query,

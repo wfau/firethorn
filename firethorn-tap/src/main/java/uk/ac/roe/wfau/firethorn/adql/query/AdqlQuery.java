@@ -34,7 +34,7 @@ public interface AdqlQuery
 extends Entity, Job
     {
     /**
-     * Our local factory implementations.
+     * Our local service implementations.
      * 
      */
     public static interface Services
@@ -76,6 +76,12 @@ extends Entity, Job
         public Executor executor();
 
         }
+
+    /**
+     * Our local service implementations.
+     *
+     */
+    public Services services();
 
     /**
      * Name factory interface.
@@ -151,15 +157,9 @@ extends Entity, Job
      * 
      */
     public static interface Executor
-    extends Job.Executor<AdqlQuery>
+    extends Job.Executor
         {
         }
-
-    /**
-     * Links to our local service implementations.
-     *
-     */
-    public Services services();
 
     /**
      * Get the input text.

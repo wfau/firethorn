@@ -137,7 +137,7 @@ extends AbstractController
      * @throws NotFoundException
      *
      */
-    @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
+    @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
     public AdqlResource resource(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
@@ -156,7 +156,7 @@ extends AbstractController
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
     public AdqlSchemaBean.Iter jsonSelect(
-        @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
+        @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource
         ){
         log.debug("jsonSelect()");
@@ -172,7 +172,7 @@ extends AbstractController
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
     public AdqlSchemaBean jsonSelect(
-        @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
+        @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(SELECT_NAME)
         final String name
@@ -192,7 +192,7 @@ extends AbstractController
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
     public AdqlSchemaBean.Iter jsonSearch(
-        @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
+        @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(SEARCH_TEXT)
         final String text
@@ -245,7 +245,7 @@ extends AbstractController
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<AdqlSchemaBean> jsonCreate(
-        @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
+        @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(CREATE_NAME)
         final String name
@@ -266,7 +266,7 @@ extends AbstractController
      */
     @RequestMapping(value=IMPORT_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<AdqlSchemaBean> jsonInport(
-        @ModelAttribute(AdqlResourceController.RESOURCE_ENTITY)
+        @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(value=IMPORT_BASE, required=true)
         final String base,

@@ -102,7 +102,7 @@ extends AbstractController
      * @throws NotFoundException
      *
      */
-    @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
+    @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
     public JdbcResource resource(
         @PathVariable("ident")
         final String ident
@@ -120,7 +120,7 @@ extends AbstractController
      *
      */
     public JdbcSchemaBean.Iter select(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
+        @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource
         ){
         log.debug("select()");
@@ -136,7 +136,7 @@ extends AbstractController
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcSchemaBean.Iter jsonSelect(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
+        @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
         final ModelAndView model
         ){
@@ -151,7 +151,7 @@ extends AbstractController
      *
      */
     public JdbcSchemaBean select(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
+        @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
         final String name
         ){
@@ -170,7 +170,7 @@ extends AbstractController
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
     public JdbcSchemaBean jsonSelect(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
+        @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
         @RequestParam(SELECT_NAME)
         final String name,
@@ -188,7 +188,7 @@ extends AbstractController
      *
      */
     public JdbcSchemaBean.Iter search(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
+        @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
         final String text
         ){
@@ -207,7 +207,7 @@ extends AbstractController
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
     public JdbcSchemaBean.Iter jsonSearch(
-        @ModelAttribute(JdbcResourceController.RESOURCE_ENTITY)
+        @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
         @RequestParam(SEARCH_TEXT)
         final String text,

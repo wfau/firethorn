@@ -46,20 +46,20 @@ extends BaseComponent
     extends Entity.Factory<ColumnType>
         {
         /**
-         * Select all the tables from a table.
+         * Select all the columns from a table.
          *
          */
         public Iterable<ColumnType> select(final TableType parent);
 
         /**
-         * Select a named table from a schema.
+         * Select a named column table from a table.
          *
          */
         public ColumnType select(final TableType parent, final String name)
         throws NotFoundException;
 
         /**
-         * Text search for tables (name starts with).
+         * Text search for columns within a table (name starts with).
          *
          */
         public Iterable<ColumnType> search(final TableType parent, final String text);

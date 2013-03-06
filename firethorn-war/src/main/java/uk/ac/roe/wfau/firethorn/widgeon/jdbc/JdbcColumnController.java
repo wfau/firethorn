@@ -67,7 +67,7 @@ public class JdbcColumnController
      * MVC property for the target entity.
      *
      */
-    public static final String COLUMN_ENTITY = "urn:jdbc.column.entity" ;
+    public static final String TARGET_ENTITY = "urn:jdbc.column.entity" ;
 
     /**
      * MVC property for updating the name.
@@ -92,7 +92,7 @@ public class JdbcColumnController
      * @throws NotFoundException
      *
      */
-    @ModelAttribute(COLUMN_ENTITY)
+    @ModelAttribute(TARGET_ENTITY)
     public JdbcColumn entity(
         @PathVariable("ident")
         final String ident
@@ -112,7 +112,7 @@ public class JdbcColumnController
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcColumnBean jsonSelect(
-        @ModelAttribute(COLUMN_ENTITY)
+        @ModelAttribute(TARGET_ENTITY)
         final JdbcColumn entity
         ){
         log.debug("jsonSelect()");
@@ -131,7 +131,7 @@ public class JdbcColumnController
     public JdbcColumnBean jsonUpdate(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
-        @ModelAttribute(COLUMN_ENTITY)
+        @ModelAttribute(TARGET_ENTITY)
         final JdbcColumn entity
         ){
 

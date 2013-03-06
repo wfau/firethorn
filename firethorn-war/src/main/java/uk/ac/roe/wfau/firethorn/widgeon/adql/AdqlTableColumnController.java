@@ -101,7 +101,7 @@ extends AbstractController
      * @throws NotFoundException
      *
      */
-    @ModelAttribute(AdqlTableController.TABLE_ENTITY)
+    @ModelAttribute(AdqlTableController.TARGET_ENTITY)
     public AdqlTable table(
         @PathVariable("ident")
         final String ident
@@ -121,7 +121,7 @@ extends AbstractController
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
     public AdqlColumnBean.Iter jsonSelect(
-        @ModelAttribute(AdqlTableController.TABLE_ENTITY)
+        @ModelAttribute(AdqlTableController.TARGET_ENTITY)
         final AdqlTable table
         ){
         log.debug("jsonSelect()");
@@ -146,7 +146,7 @@ extends AbstractController
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
     public AdqlColumnBean jsonSelect(
-        @ModelAttribute(AdqlTableController.TABLE_ENTITY)
+        @ModelAttribute(AdqlTableController.TARGET_ENTITY)
         final AdqlTable table,
         @RequestParam(SELECT_NAME)
         final String name
@@ -166,7 +166,7 @@ extends AbstractController
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
     public AdqlColumnBean.Iter jsonSearch(
-        @ModelAttribute(AdqlTableController.TABLE_ENTITY)
+        @ModelAttribute(AdqlTableController.TARGET_ENTITY)
         final AdqlTable table,
         @RequestParam(SEARCH_TEXT)
         final String text

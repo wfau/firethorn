@@ -35,7 +35,7 @@ implements TestJob.LinkFactory
     protected TestJobLinkFactory()
         {
         super(
-            BASE_PATH
+            SERVICE_PATH
             );
         }
 
@@ -43,19 +43,19 @@ implements TestJob.LinkFactory
      * The URI path for the service.
      *
      */
-    protected static final String BASE_PATH = "/test" ;
+    protected static final String SERVICE_PATH = "/test/job" ;
 
     /**
      * The URI path for individual columns.
      *
      */
-    public static final String JOB_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
+    public static final String TEST_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
 
     @Override
     public String link(final TestJob entity)
         {
         return link(
-            JOB_PATH,
+            TEST_PATH,
             entity
             );
         }

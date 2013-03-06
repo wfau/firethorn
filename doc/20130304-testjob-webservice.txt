@@ -1,0 +1,103 @@
+# ------------------------------------------------------------
+# Project paths
+#
+
+FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
+FIRETHORN_NAME=devel
+FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
+
+
+# ------------------------------------------------------------
+# Build and run the firethorn webapp 
+#
+
+    pushd "${FIRETHORN_CODE?}/firethorn-war"
+
+        #
+        # Update the core library.
+        pushd "${FIRETHORN_CODE?}/firethorn-tap" ; mvn -D test=TestJobTestCase clean install ; popd
+
+        #
+        # Build and run the webap.
+        mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
+        
+    popd
+
+# ------------------------------------------------------------
+# Create and run some test jobs. 
+#
+
+    base=$(mktemp --directory)
+    pushd ${base?}
+
+        #
+        # Install the 'resty' wrapper for curl.
+        curl -# -L http://github.com/micha/resty/raw/master/resty > resty
+        source resty
+
+        #
+        # Install the 'pp' pretty print script.
+        curl -# -L http://github.com/micha/resty/raw/master/pp > pp
+        chmod a+x pp
+
+        #
+        # Set the base URL and options.
+        metahostname=localhost
+        metahostport=8080
+        metabasename="http://${metahostname?}:${metahostport?}/firethorn"
+        
+        #
+        # Unique name generator 
+        unique()
+            {
+            date '+%Y%m%d-%H%M%S%N'
+            }
+
+        #
+        # Create a 'define' function for setting heredoc variables.
+        # http://stackoverflow.com/questions/1167746/how-to-assign-a-heredoc-value-to-a-variable-in-bash
+        define()
+            {
+            IFS='\n' read -r -d '' ${1} || true;
+            }
+
+        #
+        # Initialise our REST client.
+        resty "${metabasename?}" -H 'Accept: application/json'
+
+        # -------- --------
+        # ....
+
+        POST "/test/job/create" \
+            -d "test.job.create.name=xxxx" \
+            -d "test.job.create.pause=30" \
+            | ./pp
+
+        GET "/test/job/1" \
+            | ./pp
+
+        POST "/test/job/1" \
+            -d "test.job.update.name=yyyy" \
+            | ./pp
+
+        GET "/test/job/1" \
+            | ./pp
+
+        POST "/test/job/1" \
+            -d "test.job.update.name=zzzz" \
+            -d "test.job.update.status=RUNNING" \
+            | ./pp
+
+        GET "/test/job/1" \
+            | ./pp
+
+        POST "/test/job/1" \
+            -d "test.job.update.name=frog" \
+            -d "test.job.update.status=FROG" \
+            | ./pp
+
+
+
+
+
+
