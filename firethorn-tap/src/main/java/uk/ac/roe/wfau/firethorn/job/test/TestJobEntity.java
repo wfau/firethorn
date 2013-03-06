@@ -34,6 +34,7 @@ import javax.persistence.Table;
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -46,6 +47,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
@@ -53,6 +55,7 @@ import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.job.Job.Executor.Executable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
  *
@@ -70,7 +73,10 @@ import uk.ac.roe.wfau.firethorn.job.Job.Executor.Executable;
     )
 @NamedQueries(
         {
-        
+        @NamedQuery(
+            name  = "TestJob-select-all",
+            query = "FROM TestJobEntity ORDER BY name asc, ident desc"
+            )
         }
     )
 public class TestJobEntity
@@ -87,14 +93,14 @@ implements TestJob
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_TEST_LENGTH_COL = "length";
+    protected static final String DB_TEST_PAUSE_COL = "pause";
     
     /**
-     * Local factory implementations.
+     * Local service implementations.
      * 
      */
     @Component
-    public static class Factories
+    public static class Services
     implements TestJob.Services
         {
         @Autowired
@@ -140,6 +146,7 @@ implements TestJob
 
     /**
      * Resolver implementation.
+     * @todo Fix this so that it can extend JobEntity.Resolver<TestJob> 
      *
      */
     @Repository
@@ -187,12 +194,23 @@ implements TestJob
 
         @Override
         @CreateEntityMethod
-        public TestJob create(final String name, int length)
+        public TestJob create(final String name, final Integer delay)
             {
             return this.insert(
                 new TestJobEntity(
                     name,
-                    length
+                    delay
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
+        public Iterable<TestJob> select()
+            {
+            return super.iterable(
+                super.query(
+                    "TestJob-select-all"
                     )
                 );
             }
@@ -220,7 +238,7 @@ implements TestJob
      */
     @Component
     public static class Executor
-    extends JobEntity.Executor<TestJob>
+    extends JobEntity.Executor
     implements TestJob.Executor
         {
         }
@@ -238,28 +256,28 @@ implements TestJob
      * Protected constructor.
      * 
      */
-    protected TestJobEntity(final String name, int length)
+    protected TestJobEntity(final String name, final Integer pause)
         {
         super(
             name
             );
-        this.length = length ;
+        this.pause = pause;
         }
 
     @Basic(
         fetch = FetchType.EAGER
         )
     @Column(
-        name = DB_TEST_LENGTH_COL,
+        name = DB_TEST_PAUSE_COL,
         unique = false,
         nullable = false,
         updatable = false
         )
-    private int length;
+    private Integer pause;
     @Override
-    public int length()
+    public Integer pause()
         {
-        return this.length;
+        return this.pause;
         }
 
     /**
@@ -278,44 +296,31 @@ implements TestJob
             this
             );
         }
-    
-    @Override
-    public Status update(Status status)
-        {
-        log.debug("update(Status)");
-        log.debug("  Status [{}]", status);
-        try {
-            return services().executor().update(
-                this,
-                status
-                );
-            }
-        catch (Exception ouch)
-            {
-            log.error("Exception while updating Job Status [{}]", ouch.getMessage());
-            return this.status(
-                Status.ERROR
-                );
-            }
-        }
 
     @Override
     public Status prepare()
         {
-        return services().executor().prepare(
-            new Executable()
-                {
-                @Override
-                public Status execute()
+        try {
+            return services().executor().prepare(
+                new Executable()
                     {
-                    log.debug("prepare.Executable.execute()");
-                    log.debug("  Job [{}]", name());
-                    return update(
-                        Status.READY
-                        );
+                    @Override
+                    public Status execute()
+                        {
+                        log.debug("prepare.Executable.execute()");
+                        log.debug("  Job [{}]", name());
+                        return status(
+                            Status.READY
+                            );
+                        }
                     }
-                }
-            );
+                );
+            }
+        catch (Exception ouch)
+            {
+            log.error("Failed to execute Job.prepare() [{}][{}]", ident(), ouch.getMessage());
+            return Status.ERROR;
+            }
         }
 
     @Override
@@ -338,7 +343,7 @@ implements TestJob
                    
                     log.debug("-- TestJob running [{}]");
                     try {
-                        for (int i = 0 ; i < length() ; i++)
+                        for (int i = 0 ; i < pause().intValue() ; i++)
                             {
                             log.debug("-- TestJob sleeping [{}]", new Integer(i));
                             Thread.sleep(

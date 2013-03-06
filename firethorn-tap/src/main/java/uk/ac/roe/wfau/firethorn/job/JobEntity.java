@@ -46,8 +46,6 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
-import uk.ac.roe.wfau.firethorn.job.Job.Executor.Executable;
-import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 
 /**
  *
@@ -89,7 +87,6 @@ extends AbstractEntity
      * @todo Use this as a template for the other classes.
      * @todo Separate Entity Resolver and Factory interfaces.
      * 
-     */
     @Component
     public static class Services
     implements Job.Services
@@ -117,8 +114,17 @@ extends AbstractEntity
             {
             return this.resolver;
             }
+
+        @Autowired
+        private Job.Executor executor;
+        @Override
+        public Job.Executor executor()
+            {
+            return this.executor;
+            }
         }
-    
+     */
+
     /**
      * Resolver implementation.
      * 
@@ -167,24 +173,20 @@ extends AbstractEntity
      * 
      */
     @Component
-    public static abstract class Executor<JobType extends Job>
-    implements Job.Executor<JobType>
+    public static abstract class Executor
+    implements Job.Executor
         {
         @Override
-        @UpdateAtomicMethod
-        public Status update(JobType job, Status status)
+        @UpdateEntityMethod
+        public Status update(Job.Executor.Update update)
             {
-            log.debug("Job.Executor.update(Job, Status)");
-            log.debug("  Job    [{}]", job.name());
-            log.debug("  Status [{}]", status);
-            return job.status(
-                status
-                );
+            log.debug("Job.Executor.update(Update)");
+            return update.update();
             }
 
         @Override
         @UpdateEntityMethod
-        public Status prepare(Executable executable)
+        public Status prepare(Job.Executor.Executable executable)
             {
             log.debug("Job.Executor.prepare(Executable)");
             return executable.execute();
@@ -192,7 +194,7 @@ extends AbstractEntity
 
         @Async
         @Override
-        public Future<Status> execute(Executable executable)
+        public Future<Status> execute(Job.Executor.Executable executable)
             {
             log.debug("Job.Executor.execute(Executable)");
             return new AsyncResult<Status>(
@@ -239,12 +241,43 @@ extends AbstractEntity
         {
         return this.status;
         }
-    @Override
-    public Status status(Status status)
+
+    protected Status status(Status next)
         {
-        log.debug("status(Status)");
-        log.debug("  Status [{}]", status);
-        this.status = status ;
+        log.debug("status(Status) [{}]", next);
+        this.status = next;
         return this.status;
+        }
+
+    protected Status update(final Status next)
+        {
+        log.debug("update(Status) [{}]", next);
+        try {
+            return factories().jobs().executor().update(
+                new Job.Executor.Update()
+                    {
+                    @Override
+                    public Status update()
+                        {
+                        return status(
+                            next
+                            );
+                        }
+                    }
+                );
+            }
+        catch (Exception ouch)
+            {
+            log.error("Failed to update job status [{}][{}][{}]", ident(), next, ouch.getMessage());
+            return Status.ERROR;
+            }
+        }
+    
+    @Override
+    public Status cancel()
+        {
+        return update(
+            Status.CANCELLED
+            );
         }
     }

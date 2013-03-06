@@ -52,6 +52,12 @@ extends Entity
          */
         public Resolver resolver();
 
+        /**
+         * Our Job executor.
+         * 
+         */
+        public Executor executor();
+
         }
 
     /**
@@ -88,6 +94,12 @@ extends Entity
     public static interface Factory<JobType extends Job>
     extends Entity.Factory<JobType>
         {
+        /**
+         * Select all the available jobs.
+         *
+         */
+        public Iterable<JobType> select();
+        
         }
 
     /**
@@ -95,14 +107,23 @@ extends Entity
      * This wraps the Job.status(), Job.prepare() and Job.execute() methods with Spring managed Transaction handling and Concurrency.
      *
      */
-    public static interface Executor<JobType extends Job>
+    public static interface Executor
         {
         /**
-         * Update a Job status.
-         *
+         * Interface for an update.
+         * 
          */
-        public Status update(JobType job, Status status);
+        public static interface Update
+            {
+            public Status update();
+            }
 
+        /**
+         * Perform an Update inside a transaction.
+         * 
+         */
+        public Status update(Update update);
+        
         /**
          * Functor interface used by prepare() and execute().
          * 
@@ -191,16 +212,17 @@ extends Entity
 
     /**
      * Set the Job status.
+     * @todo This should be protected by a transaction handler.
      *
-     */
     public Status status(Status status);
+     */
 
     /**
-     * Update the Job status.
+     * Set the Job status.
      * This uses a call to the Job Executor to add transaction handling.
      *
-     */
     public Status update(Status status);
+     */
 
     /**
      * Prepare the Job for execution.
@@ -213,5 +235,11 @@ extends Entity
      *
      */
     public Future<Status> execute();
+    
+    /**
+     * Cancel the Job.
+     *
+     */
+    public Status cancel();
     
     }

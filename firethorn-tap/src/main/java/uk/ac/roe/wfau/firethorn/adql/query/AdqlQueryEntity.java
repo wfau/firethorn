@@ -86,6 +86,10 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 @NamedQueries(
         {
         @NamedQuery(
+            name  = "AdqlQuery-select-all",
+            query = "FROM AdqlQueryEntity ORDER BY name asc, ident desc"
+            ),
+        @NamedQuery(
             name  = "AdqlQuery-select-resource",
             query = "FROM AdqlQueryEntity WHERE resource = :resource ORDER BY name asc, ident desc"
             ),
@@ -129,7 +133,7 @@ implements AdqlQuery, AdqlParserQuery
     protected static final String DB_SYNTAX_MESSAGE_COL = "syntaxmessage";
 
     /**
-     * Local factory implementations.
+     * Our local service implementations.
      * 
      */
     @Component
@@ -183,6 +187,12 @@ implements AdqlQuery, AdqlParserQuery
             {
             return this.executor;
             }
+        }
+
+    @Override
+    public AdqlQuery.Services services()
+        {
+        return factories().queries();
         }
 
     /**
@@ -284,6 +294,17 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @SelectEntityMethod
+        public Iterable<AdqlQuery> select()
+            {
+            return super.list(
+                super.query(
+                    "AdqlQuery-select-all"
+                    )
+                );
+            }
+
+        @Override
+        @SelectEntityMethod
         public Iterable<AdqlQuery> select(AdqlResource resource)
             {
             return super.list(
@@ -316,17 +337,6 @@ implements AdqlQuery, AdqlParserQuery
             }
         }
 
-    /**
-     * Executor implementation.
-     * 
-     */
-    @Component
-    public static class Executor
-    extends JobEntity.Executor<AdqlQuery>
-    implements AdqlQuery.Executor
-        {
-        }
-    
     /**
      * Protected constructor, used by Hibernate.
      *
@@ -545,33 +555,6 @@ implements AdqlQuery, AdqlParserQuery
         this.syntax  = syntax;
         this.message = message;
         }
-
-    /**
-     * The AQDL processing status.
-     *     
-    @Embedded
-    private AdqlQuerySyntax syntax;
-    @Override
-    public AdqlQuerySyntax syntax()
-        {
-        return this.syntax;
-        }
-    @Override
-    public void syntax(AdqlQuerySyntax.Status status)
-        {
-        this.syntax = new AdqlQuerySyntaxEntity(
-            status
-            );
-        }
-    @Override
-    public void syntax(AdqlQuerySyntax.Status status, String message)
-        {
-        this.syntax = new AdqlQuerySyntaxEntity(
-            status,
-            message
-            );
-        }
-     */
     
     /**
      * The set of AdqlColumns used by the query.
@@ -662,7 +645,7 @@ implements AdqlQuery, AdqlParserQuery
      * Parse the query and update our properties.
      *
      */
-    public Status parse()
+    protected Status parse()
         {
         return parse(
             null
@@ -673,7 +656,7 @@ implements AdqlQuery, AdqlParserQuery
      * Parse a new query and update our properties.
      *
      */
-    public Status parse(String input)
+    protected Status parse(String input)
         {
         if (input != null)
             {
@@ -689,8 +672,8 @@ implements AdqlQuery, AdqlParserQuery
         
             //
             // Create the two query parsers.
-            // TODO - The parsers should be part of the workspace.
-            // TODO - In theory, we could re-use the same parser by using a ThreadLocal for the mode ...
+            // TODO - The parsers should be part of the resource/workspace.
+            // TODO - We could re-use the same parser by using a ThreadLocal for the mode ...
             final AdqlParser direct = this.factories().adql().parsers().create(
                 Mode.DIRECT,
                 this.resource
@@ -781,35 +764,11 @@ implements AdqlQuery, AdqlParserQuery
             );
         }
 
-    public void add(final BaseResource<?> resource)
+    protected void add(final BaseResource<?> resource)
         {
         this.targets.add(
             resource
             );
-        }
-
-    @Override
-    public AdqlQuery.Services services()
-        {
-        return factories().queries();
-        }
-
-    @Override
-    public Status update(Status status)
-        {
-        try {
-            return services().executor().update(
-                this,
-                status
-                );
-            }
-        catch (Exception ouch)
-            {
-            log.error("Error while updating Job Status [{}]", ouch.getMessage());
-            return this.status(
-                Status.ERROR
-                );
-            }
         }
 
     @Override

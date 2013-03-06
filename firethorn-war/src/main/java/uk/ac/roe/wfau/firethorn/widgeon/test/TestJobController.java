@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.test;
 
+import java.util.Iterator;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Controller;
@@ -29,10 +31,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.job.Job;
+import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -78,30 +83,122 @@ public class TestJobController
     public static final String UPDATE_NAME = "test.job.update.name" ;
 
     /**
-     * Bean interface for a TestJob.
+     * MVC property for updating the status.
+     *
+     */
+    public static final String UPDATE_STATUS = "test.job.update.status" ;
+
+    /**
+     * Bean interface.
      *  
      */
-    public static interface TestJobBean
+    public static interface Bean
     extends EntityBean<TestJob>
         {
-        
+        /**
+         * The test duration in seconds.
+         * 
+         */
+        public Integer getPause();
+
+        /**
+         * The job status.
+         * todo Move this to a JobBean base class ?
+         * 
+         */
+        public Job.Status getStatus(); 
+
         }
-    
+
+    /**
+     * Bean implementation.
+     *  
+     */
+    protected static class BeanImpl
+    extends AbstractEntityBeanImpl<TestJob>
+    implements Bean
+        {
+        /**
+         * Protected constructor.
+         * 
+         */
+        protected BeanImpl(final TestJob job)
+            {
+            super(
+                TestJobIdentFactory.TYPE_URI,
+                job
+                );
+            }
+        @Override
+        public Integer getPause()
+            {
+            return entity().pause();
+            }
+        @Override
+        public Status getStatus()
+            {
+            return entity().status();
+            }
+        }
+
     /**
      * Wrap an entity as a bean.
      *
      */
-    public TestJobBean bean(
-        final TestJob entity
+    public static Bean bean(
+        final TestJob job
         ){
-        return null ;
-/*
-        return new JdbcTableBean(
-            entity
+        return new BeanImpl(
+            job
             );
- */
         }
 
+    /**
+     * Iterable bean interface.
+     *  
+     */
+    public static interface Iter
+    extends Iterable<Bean>
+        {
+        }
+    
+    /**
+     * Iterable bean implementation.
+     *
+     */
+    public static Iter bean(
+        final Iterable<TestJob> inner
+        ){
+        return new Iter()
+            {
+            @Override
+            public Iterator<Bean> iterator()
+                {
+                return new Iterator<Bean>()
+                    {
+                    Iterator<TestJob> iter = inner.iterator(); 
+                    @Override
+                    public boolean hasNext()
+                        {
+                        return this.iter.hasNext();
+                        }
+                    @Override
+                    public Bean next()
+                        {
+                        return bean(
+                            this.iter.next()
+                            );
+                        }
+                    @Override
+                    public void remove()
+                        {
+                        this.iter.remove();
+                        }
+                    };
+                }
+            };
+        }
+    
     /**
      * Get the target job based on the identifier in the request.
      * @throws NotFoundException
@@ -125,7 +222,7 @@ public class TestJobController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public TestJobBean jsonSelect(
+    public Bean jsonSelect(
         @ModelAttribute(TARGET_ENTITY)
         final TestJob entity
         ){
@@ -141,9 +238,11 @@ public class TestJobController
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public TestJobBean jsonUpdate(
+    public Bean jsonModify(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
+        @RequestParam(value=UPDATE_STATUS, required=false)
+        final Job.Status status,
         @ModelAttribute(TARGET_ENTITY)
         final TestJob entity
         ){
@@ -158,6 +257,13 @@ public class TestJobController
                 }
             }
 
+        if (status != null)
+            {
+            entity.update(
+                status
+                );
+            }
+            
         return bean(
             entity
             );

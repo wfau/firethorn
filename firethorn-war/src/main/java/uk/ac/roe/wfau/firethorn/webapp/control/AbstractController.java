@@ -53,7 +53,7 @@ public abstract class AbstractController
 
     /**
      * Protected constructor.
-     * @param path
+     * @todo Refactor this to include the path in the constructor.
      *
      */
     protected AbstractController()
@@ -120,19 +120,5 @@ public abstract class AbstractController
             string
             ); 
         }
-
-    /**
-     * URI builder for this Controller.
-     *
-    public UriBuilder builder(final HttpServletRequest request)
-        {
-        log.debug("builder() [{}][{}]", request.getRequestURL(), this.base());
-        return new HttpUriBuilder(
-            request,
-            this.base(),
-            this.path()
-            );
-        }
-     */
     }
 
