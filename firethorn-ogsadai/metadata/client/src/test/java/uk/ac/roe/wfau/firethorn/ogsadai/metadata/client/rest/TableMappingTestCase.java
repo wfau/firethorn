@@ -72,7 +72,7 @@ public class TableMappingTestCase
             );
         }
 
-    @Test
+    //@Test
     public void test002()
         {
         SimpleTableMappingServiceImpl service = new SimpleTableMappingServiceImpl(

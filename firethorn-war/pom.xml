@@ -117,6 +117,22 @@
         </dependency>
 
         <!--+
+            | FireThorn OGSA-DAI activity components (included in tap).
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-activity-common</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-activity-client</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+            +-->
+
+        <!--+
             | Local build of the CDS tools based on a pre-release version of the CDS TAP library.
             | This may contain some unpublished classes from the other CDS projects (cds-uws-3.1).
             +-->
@@ -237,7 +253,7 @@
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat6-maven-plugin</artifactId>
-                <version>2.0</version>
+                <version>2.1</version>
                 <configuration>
                     <!--+
                         | Enable JNDI nameing service.
@@ -265,7 +281,7 @@
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.0</version>
+                <version>2.1</version>
                 <configuration>
                     <!--+
                         | Enable JNDI nameing service.

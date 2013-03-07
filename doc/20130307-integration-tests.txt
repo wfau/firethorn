@@ -15,26 +15,107 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
     ssh -v -L 1433:ramses3:1433 fenrir.roe.ac.uk
 
 # TTY #2 ------------------------------------------------------------
-# Build and install our core components. 
-#
-
-    pushd "${FIRETHORN_CODE?}"
-
-        mvn clean install
-        
-    popd
-
-# ------------------------------------------------------------
 # Build and run the firethorn webapp 
 #
 
     pushd "${FIRETHORN_CODE?}/firethorn-war"
 
-        mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
+        #
+        # Update the activity client (needs ogsa-dai service running).
+        pushd "../firethorn-ogsadai/activity/common/" ; mvn clean install ; popd
+        pushd "../firethorn-ogsadai/activity/client/" ; mvn clean install ; popd
+
+        #
+        # Update the core library.
+        pushd ../firethorn-tap ; mvn -D test=TestJobTestCase clean install ; popd
+
+        #
+        # Build and run the webap.
+        mvn clean tomcat7:run  | tee /tmp/firethorn-tomcat.log
         
     popd
 
-# TTY #3 ------------------------------------------------------------
+# TTY #2 ------------------------------------------------------------
+# Build and deploy the ogsa-dai webapp 
+#
+
+    #
+    # Shell script function to configure the JDBC resources.
+    dbconfg()
+        {
+        local dbname=${1?}
+        local dbconf=${2?}
+
+        local dbtype="$(sed -n 's/^type=\(.*\)/\1/p' ${dbconf?})"
+        local dbdata="$(sed -n 's/^name=\(.*\)/\1/p' ${dbconf?})"
+        local dbuser="$(sed -n 's/^user=\(.*\)/\1/p' ${dbconf?})"
+        local dbpass="$(sed -n 's/^pass=\(.*\)/\1/p' ${dbconf?})"
+
+        local dbdrv
+        local dburi
+
+        case ${dbtype?} in
+
+            pgsql)
+                echo "Postgresql database"
+                dbdrv=org.postgresql.Driver
+                dburi=jdbc:postgresql://localhost:5432
+                ;;
+
+            mssql)
+                echo "SQLServer database"
+                dbdrv=net.sourceforge.jtds.jdbc.Driver
+                dburi=jdbc:jtds:sqlserver://localhost:1433
+                ;;
+
+            *)  echo "ERROR : unknown database type [${dbtype}]"
+                ;;
+        esac
+
+        #
+        # Set the database driver and url.
+        sed -i '
+            s|^dai.driver.class=.*|dai.driver.class='${dbdrv}'|
+            s|^dai.data.resource.uri=.*|dai.data.resource.uri='${dburi}/${dbdata?}'|
+            ' "target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/resources/${dbname?}"
+
+        #
+        # Set the database password.
+        sed -i '
+            /^id='${dbname?}'/,/^END/ {
+                s|^username=.*|username='${dbuser?}'|
+                s|^password=.*|password='${dbpass?}'|
+                }
+            ' "target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/logins.txt"
+        }
+
+
+    #
+    # Deploy the OGSA-DAI webapp.
+    pushd ${FIRETHORN_CODE?}/firethorn-ogsadai/webapp
+
+        #
+        # Update the metadata client.
+        pushd "../metadata/common" ; mvn clean install ; popd
+        pushd "../metadata/client" ; mvn clean install ; popd
+
+        #
+        # Create a clean war file.
+        mvn clean compile war:war
+
+        #
+        # Set the database passwords.
+        dbconfg twomass /etc/firethorn/livetwomass.conf
+        dbconfg ukidss  /etc/firethorn/liveukidss.conf
+        dbconfg uber    /etc/firethorn/livetwoxmm.conf
+
+        #
+        # Run the webapp in Tomcat
+        mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
+        
+    popd
+
+# TTY #4 ------------------------------------------------------------
 # Initialise our test metadata 
 #
 
@@ -74,10 +155,12 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 
         #
         # Initialise our REST client.
-        resty "${metabasename?}" -H 'Accept: application/json'
+        resty "${metabasename?}" -W -H 'Accept: application/json'
 
         # -------- --------
         # JDBC ....
+
+cat > init-jdbc.sh << EOF
 
         #
         # Create our JDBC TWOMASS resource.
@@ -152,8 +235,12 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
             -q "jdbc.table.column.select.name=ra" \
             | ./pp
 
+EOF
+
         # -------- --------
         # ADQL ....
+
+cat > init-adql.sh << EOF
 
         #
         # Create a new ADQL resource.
@@ -208,9 +295,9 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 
         GET "/meta/table/JDBC_142/columns"   | ./pp
 
-#
-# Create our ADQL query.
-define query << 'EOF'
+EOF
+
+cat > query-000.adql << EOF
 
     SELECT
         twomass.ra AS tmra,
@@ -246,12 +333,31 @@ define query << 'EOF'
         neighbour.slaveObjID = twomass.pts_key
     AND
         neighbour.distanceMins < 1E-3
+
 EOF
+
+cat > init-query.sh << EOF
 
         #
         # Create the ADQL query.
         POST "/adql/resource/3/queries/create" \
             --data-urlencode "adql.resource.query.create.name=test-query" \
-            --data-urlencode "adql.resource.query.create.query=${query?}" \
+            --data-urlencode "adql.resource.query.create.query@query-000.adql" \
             | ./pp
+
+        #
+        # Update the ADQL query.
+        POST "/adql/query/1" \
+            --data-urlencode "adql.query.update.status=RUNNING" \
+            | ./pp
+
+EOF
+
+#
+# Run our initialisation scripts.
+
+    source init-jdbc.sh
+    source init-adql.sh
+    source init-query.sh
+
 

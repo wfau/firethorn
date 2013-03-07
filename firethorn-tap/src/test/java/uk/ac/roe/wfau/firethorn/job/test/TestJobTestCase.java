@@ -54,7 +54,9 @@ public class TestJobTestCase
         
         TestJob job = services().factory().create(
             "fred",
-            20
+            new Integer(
+                20
+                )
             );
         log.debug("  Status [{}]", job.status());
 

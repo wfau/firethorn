@@ -15,11 +15,11 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 
         #
         # Update the core library.
-        pushd "${FIRETHORN_CODE?}/firethorn-tap" ; mvn -D test=TestJobTestCase clean install ; popd
+        pushd ../firethorn-tap ; mvn -D test=TestJobTestCase clean install ; popd
 
         #
         # Build and run the webap.
-        mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
+        mvn clean tomcat7:run  | tee /tmp/firethorn-tomcat.log
         
     popd
 
@@ -69,7 +69,7 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
         # ....
 
         POST "/test/job/create" \
-            -d "test.job.create.name=xxxx" \
+            -d "test.job.create.name=job-one" \
             -d "test.job.create.pause=30" \
             | ./pp
 
@@ -77,25 +77,66 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
             | ./pp
 
         POST "/test/job/1" \
-            -d "test.job.update.name=yyyy" \
-            | ./pp
-
-        GET "/test/job/1" \
-            | ./pp
-
-        POST "/test/job/1" \
-            -d "test.job.update.name=zzzz" \
+            -d "test.job.update.name=run-one" \
             -d "test.job.update.status=RUNNING" \
             | ./pp
 
         GET "/test/job/1" \
             | ./pp
 
-        POST "/test/job/1" \
-            -d "test.job.update.name=frog" \
+
+        # -------- --------
+        # ....
+
+        POST "/test/job/create" \
+            -d "test.job.create.name=job-two" \
+            -d "test.job.create.pause=30" \
+            | ./pp
+
+        GET "/test/job/2" \
+            | ./pp
+
+        POST "/test/job/2" \
+            -d "test.job.update.name=xxxx" \
+            | ./pp
+
+        GET "/test/job/2" \
+            | ./pp
+
+        POST "/test/job/2" \
+            -d "test.job.update.name=yyyy" \
+            -d "test.job.update.status=READY" \
+            | ./pp
+
+        GET "/test/job/2" \
+            | ./pp
+
+        POST "/test/job/2" \
+            -d "test.job.update.name=zzzz" \
             -d "test.job.update.status=FROG" \
             | ./pp
 
+        GET "/test/job/2" \
+            | ./pp
+
+        POST "/test/job/2" \
+            -d "test.job.update.name=zzzz" \
+            -d "test.job.update.status=COMPLETED" \
+            | ./pp
+
+        GET "/test/job/2" \
+            | ./pp
+
+        POST "/test/job/2" \
+            -d "test.job.update.name=run-two" \
+            -d "test.job.update.status=RUNNING" \
+            | ./pp
+
+        GET "/test/job/2" \
+            | ./pp
+
+        GET "/test/job/2" \
+            | ./pp
 
 
 

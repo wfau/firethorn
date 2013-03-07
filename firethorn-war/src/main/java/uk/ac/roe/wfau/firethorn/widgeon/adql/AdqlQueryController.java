@@ -17,8 +17,15 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,16 +34,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-
-import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.job.Job;
+import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
  * Spring MVC controller for <code>AdqlQuery</code>.
@@ -89,6 +95,12 @@ extends AbstractEntityController<AdqlQuery>
      *
      */
     public static final String UPDATE_STATUS = "adql.query.update.status" ;
+
+    /**
+     * MVC property for the timelimit.
+     *
+     */
+    public static final String UPDATE_TIMEOUT = "adql.query.update.timeout" ;
 
     @Override
     public EntityBean<AdqlQuery> bean(final AdqlQuery entity)
@@ -152,39 +164,152 @@ extends AbstractEntityController<AdqlQuery>
         final String input,
         @RequestParam(value=UPDATE_STATUS, required=false)
         final Status status,
+        @RequestParam(value=UPDATE_TIMEOUT, required=false)
+        final Integer timeout,
         @ModelAttribute(TARGET_ENTITY)
         final AdqlQuery entity
         ){
 
-        if (name != null)
+        if ((name != null) || (input != null))
             {
-            if (name.length() > 0)
-                {
-                entity.name(
-                    name
-                    );
-                }
-            }
-
-        if (input != null)
-            {
-            if (input.length() > 0)
-                {
-                entity.input(
-                    input
-                    );
-                }
-            }
-/*
-        if (status != null)
-            {
-            entity.status(
-                status
+            this.helper.update(
+                entity,
+                name,
+                input
                 );
             }
- */
+
+        if (status != null)
+            {
+            this.helper.update(
+                entity,
+                status,
+                timeout
+                );
+            }
+
         return bean(
             entity
             );
+        }
+
+    /**
+     * Transactional helper.
+     * 
+     */
+    public static interface Helper
+        {
+        /**
+         * Transactional update.
+         *
+         */
+        public void update(final AdqlQuery query, final String  name, final String input);
+
+        /**
+         * Transactional update.
+         *
+         */
+        public Status update(final AdqlQuery query, final Job.Status next, final Integer timeout);
+        
+        }
+
+    /**
+     * Transactional helper.
+     * 
+     */
+    @Autowired
+    private Helper helper ;
+
+    /**
+     * Transactional helper.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class HelperImpl
+    implements Helper
+        {
+        @Override
+        @UpdateAtomicMethod
+        public void update(
+            final AdqlQuery query,
+            final String  name,
+            final String  input
+            ){
+            if (name != null)
+                {
+                if (name.length() > 0)
+                    {
+                    query.name(
+                        name
+                        );
+                    }
+                }
+    
+            if (input != null)
+                {
+                if (input.length() > 0)
+                    {
+                    query.input(
+                        input
+                        );
+                    }
+                }
+            }
+
+        @Override
+        @UpdateAtomicMethod
+        public Status update(final AdqlQuery query, final Job.Status next, final Integer timeout)
+            {
+            Status result  = query.status();
+
+            int pause = 2 ;
+            if (timeout != null)
+                {
+                pause = timeout.intValue();
+                }
+            
+            if ((next != null) && ( next != result))
+                {
+                if (next == Status.READY)
+                    {
+                    result = query.prepare();
+                    }
+                else if (next == Status.RUNNING)
+                    {
+                    try {
+                        Future<Status> future = query.execute();
+                        log.debug("Checking future");
+                        result = future.get(
+                            pause,
+                            TimeUnit.SECONDS
+                            );
+                        log.debug("Status [{}]", query.status());
+                        log.debug("Result [{}]", result);
+                        }
+                    catch (TimeoutException ouch)
+                        {
+                        log.debug("Future timeout");
+                        }
+                    catch (InterruptedException ouch)
+                        {
+                        log.debug("Future interrupted [{}]", ouch.getMessage());
+                        }
+                    catch (ExecutionException ouch)
+                        {
+                        log.debug("ExecutionException [{}]", ouch.getMessage());
+                        result = Status.ERROR;
+                        }
+                    }
+                else if (next == Status.CANCELLED)
+                    {
+                    result = query.cancel();
+                    }
+                else {
+                    result = Status.ERROR;
+                    }
+                }
+            return result ;
+            }
         }
     }

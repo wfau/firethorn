@@ -80,8 +80,8 @@ extends Entity, Job
     /**
      * Our local service implementations.
      *
-     */
     public Services services();
+     */
 
     /**
      * Name factory interface.
@@ -153,15 +153,6 @@ extends Entity, Job
         }
 
     /**
-     * Job executor interface.
-     * 
-     */
-    public static interface Executor
-    extends Job.Executor
-        {
-        }
-
-    /**
      * Get the input text.
      *
      */
@@ -176,8 +167,8 @@ extends Entity, Job
     /**
      * Prepare the Job for execution.
      *
-     */
     public Status prepare(String input);
+     */
 
     /**
      * Query syntax validation status.

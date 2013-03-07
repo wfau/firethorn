@@ -150,7 +150,7 @@ extends TestBase
         final AdqlQuery query = workspace.queries().create(
             IMPORTED_000
             );
-        query.prepare();
+        //query.prepare();
         debug(query);
         
         assertEquals(
@@ -223,7 +223,7 @@ extends TestBase
         final AdqlQuery query = workspace.queries().create(
             IMPORTED_001
             );
-        query.prepare();
+        //query.prepare();
         debug(query);
 
         assertEquals(
@@ -323,7 +323,7 @@ extends TestBase
         final AdqlQuery query = workspace.queries().create(
             IMPORTED_002
             );
-        query.prepare();
+        //query.prepare();
         debug(query);
 
         assertEquals(
@@ -405,7 +405,7 @@ extends TestBase
         final AdqlQuery query = workspace.queries().create(
             IMPORTED_002
             );
-        query.prepare();
+        //query.prepare();
         debug(query);
 
         assertEquals(

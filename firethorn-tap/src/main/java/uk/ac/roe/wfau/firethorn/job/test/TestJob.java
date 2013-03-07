@@ -20,13 +20,12 @@ package uk.ac.roe.wfau.firethorn.job.test;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 
-
 /**
  *
  *
  */
 public interface TestJob
-    extends Job
+extends Entity, Job
     {
     /**
      * Our local factory implementations.
@@ -65,6 +64,12 @@ public interface TestJob
         public Executor executor();
 
         }
+
+    /**
+     * Our local service implementations.
+     *
+    public Services services();
+     */
 
     /**
      * Link factory interface.
@@ -111,16 +116,22 @@ public interface TestJob
     /**
      * Job executor interface.
      * 
-     */
     public static interface Executor
     extends Job.Executor
         {
         }
+     */
 
     /**
      * The test duration in seconds.
      * 
      */
     public Integer pause();
+
+    /**
+     * The test duration in seconds.
+     * 
+     */
+    public void pause(Integer pause);
 
     }

@@ -61,6 +61,12 @@ extends Entity
         }
 
     /**
+     * Our local service implementations.
+     *
+    public Services services();
+     */
+
+    /**
      * Link factory interface.
      *
      */

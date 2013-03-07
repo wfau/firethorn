@@ -15,11 +15,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.ogsadai.test;
+package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
 
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,25 +38,31 @@ import uk.org.ogsadai.client.toolkit.presentation.jersey.JerseyServer;
 import uk.org.ogsadai.resource.ResourceID;
 import uk.org.ogsadai.resource.request.RequestStatus;
 
+
 /**
- * Simple test for OGSA-DAI queries.
  *
  *
  */
-public class SimpleQueryTestBase
+@Slf4j
+public class SimpleClient
     {
 
     /**
-     * Our debug logger.
-     * 
+     * Public constructor.
+     *
      */
-    private static Log log = LogFactory.getLog(SimpleQueryTestBase.class);
+    public SimpleClient(String endpoint)
+        {
+        this.endpoint = endpoint ;
+        }
+
+    private String endpoint;
 
     /**
      * Simple test for OGSA-DAI queries.
      *
      */
-    public void execute(String endpoint, String dataset, String query)
+    public ResultSet execute(String dataset, String query)
     throws Exception
         {
         //
@@ -62,7 +70,7 @@ public class SimpleQueryTestBase
         Server server = new JerseyServer();        
         server.setDefaultBaseServicesURL(
             new URL(
-                endpoint
+                this.endpoint
                 )
             );
 
@@ -123,101 +131,25 @@ public class SimpleQueryTestBase
             log.error("Exception executing query");
             while (ouch != null)
                 {
-                log.error("Exception [" + ouch.getClass().getName() + "][" + ouch.getMessage() + "]");
+                log.error("Exception [{}][{}]", ouch.getClass(), ouch.getMessage());
                 ouch = ouch.getCause();
                 }
+            return null ;
             }
 
         //
         // Get request status.
         RequestStatus status = requestResource.getRequestStatus();
-        log.debug(status.getExecutionStatus());
+        log.debug("Status [{}]", status.getExecutionStatus());
 
         //
         // Get our results.
         if (tupleToByteArrays.hasNextResult())
             {
-            // Get ResultSet.
-            ResultSet rs = tupleToByteArrays.nextResultAsResultSet();
-            // Get ResultSet meta data.
-            ResultSetMetaData md = rs.getMetaData();
-
-            // Get column names and initial column widths.
-            int numColumns = md.getColumnCount();
-            log.info("");
-            // Get ResultSet rows.
-            while (rs.next()) 
-                {
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < numColumns; i++)
-                    {
-                    Object field = rs.getObject(i + 1);
-                    if (field == null)
-                        {
-                        builder.append(
-                            pad(
-                                "null"
-                                )
-                            );
-                        }
-                    else {
-                        builder.append(
-                            pad(
-                                field.toString()
-                                )
-                            );
-                        }
-
-                    builder.append(" ");
-                    }
-                log.info(
-                    builder.toString()
-                    );
-                }
-            rs.close();
-            }
-        }
-
-    /**
-     * Pad a string out to a given width with space characters.
-     *
-     */
-    public static String pad(String base)
-        {
-        return pad(
-            base,
-            22
-            );
-        }
-
-    /**
-     * Pad a string out to a given width with space characters.
-     *
-     */
-    public static String pad(String base, int width)
-        {
-        int count = width - base.length();
-        if (count == 0)
-            {
-            return base ;
-            }
-        else if (count < 0)
-            {
-            return base.substring(
-                0,
-                width
-                );
+            return tupleToByteArrays.nextResultAsResultSet();
             }
         else {
-            StringBuffer buffer = new StringBuffer(
-                base
-                );
-            for (int i = 0; i < count; i++)
-                {
-                buffer.append(" ");
-                }
-            return buffer.toString();
+            return null ;
             }
         }
     }
-

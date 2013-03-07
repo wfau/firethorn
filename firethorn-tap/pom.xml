@@ -98,6 +98,22 @@
             <type>jar</type>
         </dependency>
 
+        <!--+
+            | FireThorn OGSA-DAI activity components.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-activity-common</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-activity-client</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+
 	    <!--+
 	        | Servlet libraries.
 	        +-->

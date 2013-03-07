@@ -80,7 +80,7 @@ public class AttributeServiceTestCase
             );
         }
 
-    @Test
+    //@Test
     public void test002()
         {
         SimpleAttributeServiceImpl service = new SimpleAttributeServiceImpl(

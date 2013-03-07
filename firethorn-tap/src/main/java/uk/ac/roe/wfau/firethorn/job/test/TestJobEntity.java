@@ -136,12 +136,21 @@ implements TestJob
             }
 
         @Autowired
-        private TestJob.Executor executor;
+        private Job.Executor executor;
         @Override
-        public TestJob.Executor executor()
+        public Job.Executor executor()
             {
             return this.executor;
             }
+        }
+
+    /**
+     * Our local service implementations.
+     *
+     */
+    protected TestJob.Services services()
+        {
+        return factories().tests();
         }
 
     /**
@@ -235,13 +244,13 @@ implements TestJob
     /**
      * Executor implementation.
      * 
-     */
     @Component
     public static class Executor
     extends JobEntity.Executor
     implements TestJob.Executor
         {
         }
+     */
     
     /**
      * Protected constructor.
@@ -279,14 +288,10 @@ implements TestJob
         {
         return this.pause;
         }
-
-    /**
-     * Our local service implementations.
-     *
-     */
-    protected TestJob.Services services()
+    @Override
+    public void pause(Integer pause)
         {
-        return factories().tests();
+        this.pause = pause ;
         }
 
     @Override
@@ -308,17 +313,31 @@ implements TestJob
                     public Status execute()
                         {
                         log.debug("prepare.Executable.execute()");
-                        log.debug("  Job [{}]", name());
-                        return status(
-                            Status.READY
-                            );
+                        log.debug("  TestJob [{}][{}]", ident(), name());
+                        if ((status() == Status.EDITING) || (status() == Status.READY))
+                            {
+                            if (pause().intValue() >= 10)
+                                {
+                                return update(
+                                    Status.READY
+                                    );
+                                }
+                            else {
+                                return update(
+                                    Status.EDITING
+                                    );
+                                }
+                            }
+                        else {
+                            return Status.ERROR;
+                            }
                         }
                     }
                 );
             }
         catch (Exception ouch)
             {
-            log.error("Failed to execute Job.prepare() [{}][{}]", ident(), ouch.getMessage());
+            log.error("Failed to prepare job [{}][{}]", ident(), ouch.getMessage());
             return Status.ERROR;
             }
         }
@@ -326,47 +345,63 @@ implements TestJob
     @Override
     public Future<Status> execute()
         {
-        return services().executor().execute(
-            new Executable()
-                {
-                @Override
-                public Status execute()
+        try {
+            return services().executor().execute(
+                new Executable()
                     {
-                    log.debug("execute.Executable.execute()");
-                    log.debug("  Job [{}]", name());
-
-                    log.debug("-- TestJob starting [{}]");
-                    if (update(Status.RUNNING) == Status.ERROR)
+                    @Override
+                    public Status execute()
                         {
-                        return Status.ERROR;
-                        }
-                   
-                    log.debug("-- TestJob running [{}]");
-                    try {
-                        for (int i = 0 ; i < pause().intValue() ; i++)
+                        log.debug("execute.Executable.execute()");
+                        log.debug("  TestJob [{}][{}]", ident(), name());
+    
+                        Status result = prepare();
+                        if (result != Status.READY)
                             {
-                            log.debug("-- TestJob sleeping [{}]", new Integer(i));
-                            Thread.sleep(
-                                1000
+                            log.error("-- TestJob not ready [{}][{}]", ident(), status());
+                            }
+                        else {
+                            log.debug("-- TestJob starting [{}]", ident());
+                            result = update(
+                                Status.RUNNING
                                 );
+                            if (result == Status.RUNNING)
+                                {
+                                log.debug("-- TestJob running [{}]", ident());
+                                try {
+                                    for (int i = 0 ; ((i < pause().intValue()) && (result == Status.RUNNING)) ; i++)
+                                        {
+                                        log.debug("-- TestJob sleeping [{}][{}]", ident(), new Integer(i));
+                                        Thread.sleep(
+                                            1000
+                                            );
+                                        result = status();
+                                        }
+                                    log.debug("-- TestJob finishing [{}][{}]", ident(), status());
+                                    result = update(
+                                        Status.COMPLETED
+                                        );
+                                    }
+                                catch (InterruptedException ouch)
+                                    {
+                                    log.debug("-- TestJob interrupted [{}][{}]", ident(), ouch.getMessage());
+                                    result = update(
+                                        Status.CANCELLED
+                                        );
+                                    }
+                                }
                             }
-                        log.debug("-- TestJob finishing [{}]", status());
-                        if (update(Status.COMPLETED) == Status.ERROR)
-                            {
-                            return Status.ERROR;
-                            }
+                        return result ;
                         }
-                    catch (InterruptedException ouch)
-                        {
-                        log.debug("-- TestJob interrupted [{}]", ouch.getMessage());
-                        if (update(Status.CANCELLED) == Status.ERROR)
-                            {
-                            return Status.ERROR;
-                            }
-                        }
-                    return status();
                     }
-                }
-            );
+                );
+            }
+        catch (Exception ouch)
+            {
+            log.error("Failed to execute job [{}][{}]", ident(), ouch.getMessage());
+            return new AsyncResult<Status>(
+                Status.ERROR
+                );
+            }
         }
     }

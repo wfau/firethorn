@@ -215,7 +215,7 @@
                     | It will do that only if it doesn't exist locally. With the configuration, 
                     | SNAPSHOT version will be handled as the stable libraries.
                     +-->
-                <updatePolicy>daily</updatePolicy>
+                <updatePolicy>always</updatePolicy>
             </snapshots>
 
         </repository>
@@ -226,7 +226,7 @@
         <repository>
             <id>firethorn-external</id>
             <name>Local repository for 3rd party components</name>
-            <url>http://data.metagrid.co.uk/wfau/maven/external/</url>
+            <url>http://data.metagrid.co.uk/wfau/maven/external</url>
             <layout>default</layout>
         </repository>
 

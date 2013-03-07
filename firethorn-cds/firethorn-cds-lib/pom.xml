@@ -43,13 +43,13 @@
 
         <!--+
             | FireThorn logging components.
-            +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-logging</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>
+            +-->
 
         <!--+
             | CDS dependencies.

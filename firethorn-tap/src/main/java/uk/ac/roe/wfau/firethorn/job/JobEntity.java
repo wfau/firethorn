@@ -45,6 +45,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 
 /**
@@ -87,6 +88,7 @@ extends AbstractEntity
      * @todo Use this as a template for the other classes.
      * @todo Separate Entity Resolver and Factory interfaces.
      * 
+     */
     @Component
     public static class Services
     implements Job.Services
@@ -123,7 +125,6 @@ extends AbstractEntity
             return this.executor;
             }
         }
-     */
 
     /**
      * Resolver implementation.
@@ -173,11 +174,11 @@ extends AbstractEntity
      * 
      */
     @Component
-    public static abstract class Executor
+    public static class Executor
     implements Job.Executor
         {
         @Override
-        @UpdateEntityMethod
+        @UpdateAtomicMethod
         public Status update(Job.Executor.Update update)
             {
             log.debug("Job.Executor.update(Update)");
@@ -242,16 +243,9 @@ extends AbstractEntity
         return this.status;
         }
 
-    protected Status status(Status next)
-        {
-        log.debug("status(Status) [{}]", next);
-        this.status = next;
-        return this.status;
-        }
-
     protected Status update(final Status next)
         {
-        log.debug("update(Status) [{}]", next);
+        log.debug("update(Status) [{}][{}]", ident(), next);
         try {
             return factories().jobs().executor().update(
                 new Job.Executor.Update()
@@ -259,9 +253,11 @@ extends AbstractEntity
                     @Override
                     public Status update()
                         {
-                        return status(
+                        log.debug("update(Status) [{}][{}]", ident(), next);
+                        Status result = inner(
                             next
                             );
+                        return result ;
                         }
                     }
                 );
@@ -271,6 +267,13 @@ extends AbstractEntity
             log.error("Failed to update job status [{}][{}][{}]", ident(), next, ouch.getMessage());
             return Status.ERROR;
             }
+        }
+
+    protected Status inner(Status next)
+        {
+        log.debug("inner(Status) [{}][{}]", ident(), next);
+        this.status = next;
+        return this.status;
         }
     
     @Override

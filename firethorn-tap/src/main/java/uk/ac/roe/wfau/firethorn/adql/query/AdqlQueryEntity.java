@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query;
 
+import java.sql.ResultSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -70,6 +71,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleClient;
 
 /**
  *
@@ -189,7 +191,7 @@ implements AdqlQuery, AdqlParserQuery
             }
         }
 
-    @Override
+    //@Override
     public AdqlQuery.Services services()
         {
         return factories().queries();
@@ -356,7 +358,7 @@ implements AdqlQuery, AdqlParserQuery
             name
             );
         this.resource = resource;
-        parse(
+        this.input(
             input
             );
         }
@@ -423,9 +425,8 @@ implements AdqlQuery, AdqlParserQuery
    @Override
    public void input(String input)
        {
-       parse(
-           input
-           );
+       this.input = input;
+       parse();
        }
 
    /**
@@ -644,32 +645,27 @@ implements AdqlQuery, AdqlParserQuery
     /**
      * Parse the query and update our properties.
      *
-     */
     protected Status parse()
         {
         return parse(
             null
             );
         }
+     */
 
     /**
-     * Parse a new query and update our properties.
+     * Parse our input and update our properties.
      *
      */
-    protected Status parse(String input)
+    protected Status parse()
         {
-        if (input != null)
-            {
-            this.input = input;
-            }
         if (this.input == null)
             {
-            return status(
+            return inner(
                 Status.EDITING
                 );
             }
         else {
-        
             //
             // Create the two query parsers.
             // TODO - The parsers should be part of the resource/workspace.
@@ -708,12 +704,12 @@ implements AdqlQuery, AdqlParserQuery
             // Update the status.
             if (syntax().status() == Syntax.Status.VALID)
                 {
-                return status(
+                return inner(
                     Status.READY
                     );
                 }
             else {
-                return status(
+                return inner(
                     Status.EDITING
                     );
                 }
@@ -774,19 +770,38 @@ implements AdqlQuery, AdqlParserQuery
     @Override
     public Status prepare()
         {
-        return this.services().executor().prepare(
-            new Executable()
-                {
-                @Override
-                public Status execute()
+        try {
+            return this.services().executor().prepare(
+                new Executable()
                     {
-                    return parse();
+                    @Override
+                    public Status execute()
+                        {
+                        log.debug("prepare.Executable.execute()");
+                        log.debug("  AdqlQuery [{}][{}]", ident(), name());
+                        if ((status() == Status.EDITING) || (status() == Status.READY))
+                            {
+                            return update(
+                                parse()
+                                );
+                            }
+                        else {
+                            return Status.ERROR;
+                            }
+    
+                        }
                     }
-                }
-            );
+                );
+            }
+        catch (Exception ouch)
+            {
+            log.error("Failed to prepare query [{}][{}]", ident(), ouch.getMessage());
+            return Status.ERROR;
+            }
         }
 
-    @Override
+    /*
+    //@Override
     public Status prepare(final String input)
         {
         return this.services().executor().prepare(
@@ -802,22 +817,83 @@ implements AdqlQuery, AdqlParserQuery
                 }
             );
        }
+    */
+
+    public static final String endpoint = "http://localhost:8081/albert/services" ;
+    public static final String dqpname  = "testdqp" ;
     
     @Override
     public Future<Status> execute()
         {
-        return services().executor().execute(
-            new Executable()
-                {
-                @Override
-                public Status execute()
+        try {
+            return services().executor().execute(
+                new Executable()
                     {
-                    // TODO ... lots 
-                    return update(
-                        Status.COMPLETED
-                        );
+                    @Override
+                    public Status execute()
+                        {
+                        log.debug("execute.Executable.execute()");
+                        log.debug("  AdqlQuery [{}][{}]", ident(), name());
+    
+                        Status result = prepare();
+                        if (result != Status.READY)
+                            {
+                            log.error("-- AdqlQuery not ready [{}][{}]", ident(), status());
+                            }
+                        else {
+                            log.debug("-- AdqlQuery starting[{}]", ident());
+                            result = update(
+                                Status.RUNNING
+                                );
+                            if (result == Status.RUNNING)
+                                {
+                                log.debug("-- AdqlQuery running [{}]", ident());
+                                try {
+                                    //
+                                    // Create our server client.
+                                    SimpleClient client = new SimpleClient(
+                                        endpoint
+                                        );
+                                    //
+                                    // Get ResultSet.
+                                    ResultSet results = client.execute(
+                                        dqpname,
+                                        osql()
+                                        );
+
+                                    if (results != null)
+                                        {
+                                        log.debug("-- AdqlQuery results next() [{}][{}]", ident(), results.next());
+                                        }
+                                    else {
+                                        log.debug("-- AdqlQuery NULL results");
+                                        }
+                                    
+                                    log.debug("-- AdqlQuery finishing [{}][{}]", ident(), status());
+                                    result = update(
+                                        Status.COMPLETED
+                                        );
+                                    }
+                                catch (Exception ouch)
+                                    {
+                                    log.debug("-- AdqlQuery failed [{}][{}]", ident(), ouch.getMessage());
+                                    result = update(
+                                        Status.FAILED
+                                        );
+                                    }
+                                }
+                            }
+                        return result ;
+                        }
                     }
-                }
-            );
+                );
+            }
+        catch (Exception ouch)
+            {
+            log.error("Failed to execute job [{}][{}]", ident(), ouch.getMessage());
+            return new AsyncResult<Status>(
+                Status.ERROR
+                );
+            }
         }
     }

@@ -18,9 +18,15 @@
 package uk.ac.roe.wfau.firethorn.widgeon.test;
 
 import java.util.Iterator;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -83,10 +89,22 @@ public class TestJobController
     public static final String UPDATE_NAME = "test.job.update.name" ;
 
     /**
+     * MVC property for updating the pause.
+     *
+     */
+    public static final String UPDATE_PAUSE = "test.job.update.pause" ;
+
+    /**
      * MVC property for updating the status.
      *
      */
     public static final String UPDATE_STATUS = "test.job.update.status" ;
+
+    /**
+     * MVC property for the timelimit.
+     *
+     */
+    public static final String UPDATE_TIMEOUT = "test.job.update.timeout" ;
 
     /**
      * Bean interface.
@@ -236,36 +254,158 @@ public class TestJobController
      *
      */
     @ResponseBody
-    @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
     public Bean jsonModify(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
+        @RequestParam(value=UPDATE_PAUSE, required=false)
+        final Integer pause,
         @RequestParam(value=UPDATE_STATUS, required=false)
         final Job.Status status,
+        @RequestParam(value=UPDATE_TIMEOUT, required=false)
+        final Integer timeout,
         @ModelAttribute(TARGET_ENTITY)
         final TestJob entity
         ){
 
         if (name != null)
             {
-            if (name.length() > 0)
-                {
-                entity.name(
-                    name
-                    );
-                }
+            this.helper.update(
+                entity,
+                name,
+                pause
+                );
             }
 
         if (status != null)
             {
-            entity.update(
-                status
+            this.helper.update(
+                entity,
+                status,
+                timeout
                 );
             }
             
         return bean(
             entity
             );
+        }
+
+
+    /**
+     * Transactional helper.
+     * 
+     */
+    public static interface Helper
+        {
+        /**
+         * Transactional update.
+         *
+         */
+        public void update(final TestJob entity, final String  name, final Integer pause);
+
+        /**
+         * Transactional update.
+         *
+         */
+        public Status update(final TestJob entity, final Job.Status next, final Integer timeout);
+        
+        }
+
+    /**
+     * Transactional helper.
+     * 
+     */
+    @Autowired
+    private Helper helper ;
+
+    /**
+     * Transactional helper.
+     * 
+     */
+    @Slf4j
+    @Component
+    public static class HelperImpl
+    implements Helper
+        {
+        @Override
+        @UpdateAtomicMethod
+        public void update(
+            final TestJob entity,
+            final String  name,
+            final Integer pause
+            ){
+            if (name != null)
+                {
+                if (name.length() > 0)
+                    {
+                    entity.name(
+                        name
+                        );
+                    }
+                }
+    
+            if (pause != null)
+                {
+                entity.pause(
+                    pause
+                    );
+                }
+            }
+
+        @Override
+        //@UpdateAtomicMethod
+        public Status update(final TestJob entity, final Job.Status next, final Integer timeout)
+            {
+            Status result  = entity.status();
+
+            int pause = 2 ;
+            if (timeout != null)
+                {
+                pause = timeout.intValue();
+                }
+            
+            if ((next != null) && ( next != result))
+                {
+                if (next == Status.READY)
+                    {
+                    result = entity.prepare();
+                    }
+                else if (next == Status.RUNNING)
+                    {
+                    try {
+                        Future<Status> future = entity.execute();
+                        log.debug("Checking future");
+                        result = future.get(
+                            pause,
+                            TimeUnit.SECONDS
+                            );
+                        log.debug("Status [{}]", entity.status());
+                        log.debug("Result [{}]", result);
+                        }
+                    catch (TimeoutException ouch)
+                        {
+                        log.debug("Future timeout");
+                        }
+                    catch (InterruptedException ouch)
+                        {
+                        log.debug("Future interrupted [{}]", ouch.getMessage());
+                        }
+                    catch (ExecutionException ouch)
+                        {
+                        log.debug("ExecutionException [{}]", ouch.getMessage());
+                        result = Status.ERROR;
+                        }
+                    }
+                else if (next == Status.CANCELLED)
+                    {
+                    result = entity.cancel();
+                    }
+                else {
+                    result = Status.ERROR;
+                    }
+                }
+            return result ;
+            }
         }
     }
