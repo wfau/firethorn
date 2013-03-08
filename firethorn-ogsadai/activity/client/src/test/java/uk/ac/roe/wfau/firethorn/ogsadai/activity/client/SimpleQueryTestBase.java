@@ -21,6 +21,8 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -41,14 +43,9 @@ import uk.org.ogsadai.resource.request.RequestStatus;
  *
  *
  */
+@Slf4j
 public class SimpleQueryTestBase
     {
-
-    /**
-     * Our debug logger.
-     * 
-     */
-    private static Log log = LogFactory.getLog(SimpleQueryTestBase.class);
 
     /**
      * Simple test for OGSA-DAI queries.

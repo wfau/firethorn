@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
@@ -25,15 +27,10 @@ import org.junit.Test;
  *
  *
  */
+@Slf4j
 public class SimpleQueryTestCase
 extends SimpleQueryTestBase
     {
-
-    /**
-     * Our debug logger.
-     * 
-     */
-    private static Log log = LogFactory.getLog(SimpleQueryTestCase.class);
 
     /**
      * Our test service endpoint.
@@ -68,7 +65,7 @@ extends SimpleQueryTestBase
      * Single catalog, UKIDSSDR1.
      *
      */
-    @Test
+    //@Test
     public void test002()
     throws Exception
         {
@@ -91,7 +88,7 @@ extends SimpleQueryTestBase
      * Multiple catalog, TWOMASS and UKIDSSDR1, using JDBC direct.
      *
      */
-    @Test
+    //@Test
     public void test003()
     throws Exception
         {

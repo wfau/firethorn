@@ -96,8 +96,13 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 
         #
         # Update the metadata client.
-        pushd "../metadata/common" ; mvn clean install ; popd
-        pushd "../metadata/client" ; mvn clean install ; popd
+        pushd "../metadata/common" ; mvn clean eclipse:eclipse install ; popd
+        pushd "../metadata/client" ; mvn clean eclipse:eclipse install ; popd
+
+        #
+        # Update the server activity.
+        pushd "../activity/common" ; mvn clean eclipse:eclipse install ; popd
+        pushd "../activity/server" ; mvn clean eclipse:eclipse install ; popd
 
         #
         # Create a clean war file.
@@ -105,9 +110,20 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 
         #
         # Set the database passwords.
-        dbconfg twomass /etc/firethorn/livetwomass.conf
-        dbconfg ukidss  /etc/firethorn/liveukidss.conf
-        dbconfg uber    /etc/firethorn/livetwoxmm.conf
+        dbconfg twomass  /etc/firethorn/livetwomass.conf
+        dbconfg ukidss   /etc/firethorn/liveukidss.conf
+        dbconfg uber     /etc/firethorn/livetwoxmm.conf
+        dbconfg userdata /etc/firethorn/userdata.conf
+
+#
+# Add our CreateTable activity
+cat >> 'target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/activities.txt' << EOF
+id=uk.ac.roe.wfau.firethorn.ogsadai.CreateTable
+class=uk.ac.roe.wfau.firethorn.ogsadai.activity.server.CreateTableActivity
+description=
+CONFIG
+END
+EOF
 
         #
         # Run the webapp in Tomcat
@@ -336,28 +352,99 @@ cat > query-000.adql << EOF
 
 EOF
 
-cat > init-query.sh << EOF
+cat > init-query.sh << 'EOF'
 
         #
         # Create the ADQL query.
+        query=$(
         POST "/adql/resource/3/queries/create" \
             --data-urlencode "adql.resource.query.create.name=test-query" \
             --data-urlencode "adql.resource.query.create.query@query-000.adql" \
+            | ./pp \
+            | sed -n 's#"ident" : ".*\(/adql/query/[0-9]*\).*#\1#p'
+            )
+        query=$(echo "${query?}" | sed 's/[ ]*//g')
+
+        GET "${query?}" \
             | ./pp
 
         #
         # Update the ADQL query.
-        POST "/adql/query/1" \
+        POST "${query?}" \
             --data-urlencode "adql.query.update.status=RUNNING" \
             | ./pp
 
 EOF
 
 #
-# Run our initialisation scripts.
+# Run our scripts.
 
     source init-jdbc.sh
     source init-adql.sh
     source init-query.sh
 
+
+# Exception in Firethorn ------------------------------------------------------------
+#
+    SEVERE: Servlet.service() for servlet [spring-servlet] in context with path [/firethorn] threw exception
+    [Request processing failed; nested exception is org.springframework.dao.DuplicateKeyException:
+        a different object with the same identifier value was already associated with the session:
+            [uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity#533];
+    nested exception is org.hibernate.NonUniqueObjectException:
+        a different object with the same identifier value was already associated with the session:
+            [uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity#533]]
+
+# -----------------------------------------------------------------------------------
+
+hexdump -C target/database/hsqlone.lck 
+
+    00000000  48 53 51 4c 4c 4f 43 4b  00 00 01 3d 49 ba 7e 09  |HSQLLOCK...=I.~.|
+    00000010
+
+    00000000  48 53 51 4c 4c 4f 43 4b  00 00 01 3d 49 b0 b9 b6  |HSQLLOCK...=I...|
+    00000010
+
+# -----------------------------------------------------------------------------------
+
+#
+# Settings for the 'root' postgres password.
+cat > /etc/firethorn/postgres.conf << EOF
+type=pgsql
+host=localhost
+name=postgres
+user=postgres
+pass=$(pwgen -s 40 1)
+EOF
+
+#
+# Settings for the userdata database.
+cat > /etc/firethorn/userdata.conf << EOF
+type=pgsql
+host=localhost
+name=userdata
+user=$(pwgen -0 10 1)
+pass=$(pwgen -s 40 1)
+EOF
+
+    #
+    # Set the 'root' postgres password.
+    dbpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/postgres.conf)"
+    dbuser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/postgres.conf)"
+    echo "ALTER ROLE ${dbuser?} WITH PASSWORD '${dbpass?}'" | su - postgres -c 'psql postgres'
+
+    #
+    # Create the test users and databases.
+    dbhost="$(sed -n 's/^host=\(.*\)/\1/p' /etc/firethorn/userdata.conf)"
+    dbdata="$(sed -n 's/^name=\(.*\)/\1/p' /etc/firethorn/userdata.conf)"
+    dbuser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/userdata.conf)"
+    dbpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/userdata.conf)"
+    echo "${dbhost?}:*:${dbdata?}:${dbuser?}:${dbpass?}" >> /etc/firethorn/pgpass
+
+    echo "CREATE USER     ${dbuser?} WITH LOGIN PASSWORD '${dbpass?}'" | su - postgres -c 'psql postgres'
+    echo "CREATE DATABASE ${dbdata?} WITH OWNER ${dbuser?}"            | su - postgres -c 'psql postgres'
+
+    unset dbhost
+    unset dbdata
+    unset dbpass
+    unset dbuser
 

@@ -26,7 +26,7 @@ if [ ! -e "${FIRETHORN_CODE?}" ]
 then
     echo "ERROR : can't find FIRETHORN source code at [${FIRETHORN_CODE?}]"
 else
-    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/firethorn"
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/client"
 
         mvn -D test=SimpleQueryTestCase test
         mvn -D test=DqpQueryTestCase    test

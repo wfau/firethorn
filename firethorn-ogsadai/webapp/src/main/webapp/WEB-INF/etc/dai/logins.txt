@@ -16,4 +16,19 @@ username={SQL-USER}
 password={SQL-PASS}
 LOGIN-END
 END
+id=hsqlone
+userID=*
+username=sa
+password=
+LOGIN-END
+END
+id=userdata
+userID=*
+username={SQL-USER}
+password={SQL-PASS}
+LOGIN-END
+END
+
+
+
 

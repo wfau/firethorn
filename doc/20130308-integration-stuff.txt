@@ -1,0 +1,51 @@
+
+#
+# Update activity to write data to user db.
+
+#
+# Register metadata for user data.
+
+#
+# Create new schema per user.
+
+#
+# Servlet for downloading user data as votable.
+
+#
+# Servlet for uploading user data as votable.
+
+#
+# Inline ADQL query controller (TAP).
+
+#
+# IVOA resource.
+
+    org.jiscinvolve.astrodabis.galium.ogsadai.activity.client.CreateTapResource
+    org.jiscinvolve.astrodabis.galium.ogsadai.activity.server.CreateTapResourceActivity
+
+
+-------------------------------------------------------------------------------------
+
+    UserQueyPipeline
+
+
+    StoredResultPipeline
+        write to user data
+
+    InlineResultPipeline
+        data in response
+
+
+
+
+
+
+
+
+
+
+    
+    
+
+
+

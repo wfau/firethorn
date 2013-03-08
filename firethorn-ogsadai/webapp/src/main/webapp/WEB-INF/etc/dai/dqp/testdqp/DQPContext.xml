@@ -62,6 +62,17 @@
     </bean>
 
     <!--+
+        | Local user data node.
+        +-->
+    <bean id="hsqlone" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+        <constructor-arg name="resourceID"     value="hsqlone"/>
+        <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
+        <property name="operatorSupport"       ref="defaultFeatureSupport"/>
+        <property name="expressionSupport"     ref="defaultFeatureSupport"/>
+        <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
+    </bean>
+
+    <!--+
         | DQP federation.
         +-->
     <bean id="federation" 
@@ -83,6 +94,9 @@
                 </entry>
                 <entry key="uber">
                     <ref bean="uber"/>
+                </entry>
+                <entry key="hsqlone">
+                    <ref bean="hsqlone"/>
                 </entry>
             </map>
         </property>

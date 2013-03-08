@@ -114,7 +114,6 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-metadata-client</artifactId>
@@ -123,13 +122,20 @@
         </dependency>
 
         <!--+
-            | Apache commons logging.
+            | Our result processing activity.
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.0.4</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-activity-common</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
         </dependency>
             +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-activity-server</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
 
         <!--+
             | HSQLDB Java database and JDBC driver.
