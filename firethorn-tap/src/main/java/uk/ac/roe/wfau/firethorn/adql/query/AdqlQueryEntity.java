@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query;
 
+import java.net.URL;
 import java.sql.ResultSet;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -71,7 +72,9 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleClient;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.StoredResultPipeline;
 
 /**
  *
@@ -819,8 +822,9 @@ implements AdqlQuery, AdqlParserQuery
        }
     */
 
-    public static final String endpoint = "http://localhost:8081/albert/services" ;
-    public static final String dqpname  = "testdqp" ;
+    public static final String endpoint  = "http://localhost:8081/albert/services" ;
+    public static final String dqpname   = "testdqp" ;
+    public static final String storename = "userdata" ;
     
     @Override
     public Future<Status> execute()
@@ -851,19 +855,26 @@ implements AdqlQuery, AdqlParserQuery
                                 try {
                                     //
                                     // Create our server client.
-                                    SimpleClient client = new SimpleClient(
-                                        endpoint
+                                    StoredResultPipeline pipeline = new StoredResultPipeline(
+                                        new URL(
+                                            endpoint
+                                            )
                                         );
                                     //
-                                    // Get ResultSet.
-                                    ResultSet results = client.execute(
+                                    // Executethe pipleline.
+
+                                    String tablename = "Q" + ident().toString() + "xxxx" ;
+                                    
+                                    PipelineResult frog = pipeline.execute(
                                         dqpname,
+                                        storename,
+                                        tablename,
                                         osql()
                                         );
 
-                                    if (results != null)
+                                    if (frog != null)
                                         {
-                                        log.debug("-- AdqlQuery results next() [{}][{}]", ident(), results.next());
+                                        log.debug("-- AdqlQuery result [{}][{}]", ident(), frog.result());
                                         }
                                     else {
                                         log.debug("-- AdqlQuery NULL results");

@@ -95,8 +95,7 @@ public class StoredResultTestCase
             );
         pipeline.execute(
             "twomass",
-            "hsqlone",
-            //"userdata",
+            "userdata",
             unique("table"),
             " SELECT" +
             "    twomass.ra," +

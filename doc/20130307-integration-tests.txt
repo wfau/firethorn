@@ -384,7 +384,7 @@ EOF
     source init-query.sh
 
 
-# Exception in Firethorn ------------------------------------------------------------
+# BUG -- Exception in Firethorn ------------------------------------------------------------
 #
     SEVERE: Servlet.service() for servlet [spring-servlet] in context with path [/firethorn] threw exception
     [Request processing failed; nested exception is org.springframework.dao.DuplicateKeyException:
@@ -394,37 +394,96 @@ EOF
         a different object with the same identifier value was already associated with the session:
             [uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity#533]]
 
-# -----------------------------------------------------------------------------------
+    Probably cause is more than one Transaction entry point.
+    Need to refactor the service methods.
 
-hexdump -C target/database/hsqlone.lck 
-
-    00000000  48 53 51 4c 4c 4f 43 4b  00 00 01 3d 49 ba 7e 09  |HSQLLOCK...=I.~.|
-    00000010
-
-    00000000  48 53 51 4c 4c 4f 43 4b  00 00 01 3d 49 b0 b9 b6  |HSQLLOCK...=I...|
-    00000010
-
-# -----------------------------------------------------------------------------------
-
+# BUG -- OGSA-DAI database authentication-----------------------------------------------------------------------------------
 #
-# Settings for the 'root' postgres password.
-cat > /etc/firethorn/postgres.conf << EOF
-type=pgsql
-host=localhost
-name=postgres
-user=postgres
-pass=$(pwgen -s 40 1)
-EOF
 
-#
-# Settings for the userdata database.
-cat > /etc/firethorn/userdata.conf << EOF
-type=pgsql
-host=localhost
-name=userdata
-user=$(pwgen -0 10 1)
-pass=$(pwgen -s 40 1)
-EOF
+    Our Activity hangs, preventing OGSA-DAI from running.
+    Tomcat doesn't respond to Ctrl^C or Ctrl^D.
+    The only way to stop it is to find he process ID and use 'kill  -9'
+
+    Initial guess was something to do with a mix up in the dependencies.
+    Spent a while creating a separate pom for with the same versions of logging libraries.
+    Useful, nice, but didn'tfix the problem.
+
+    More debugging ...
+    Our Activity hangs when trying to create a database connection.
+
+        protected void preprocess()
+            {
+            ....
+            connection = resource.getConnection();
+            ....
+            }
+
+    Logs show traces from SimpleFileLogin just before everything hangs.
+
+        2013-03-09 16:45:15,644 DEBUG server.CreateTableActivity [pool-7-thread-2,preprocess:165] starting preprocess ----
+        2013-03-09 16:45:15,644 DEBUG server.CreateTableActivity [pool-7-thread-2,preprocess:167] Creating database connection
+        2013-03-09 16:45:15,644 DEBUG file.SimpleFileLoginProvider [pool-7-thread-2,debug:84] In SimpleFileLogin:getLogin
+        2013-03-09 16:45:15,643 DEBUG file.SimpleFileLoginProvider [pool-7-thread-5,debug:84] In SimpleFileLogin:getLogin
+        2013-03-09 16:45:15,646 DEBUG file.SimpleFileLoginProvider [pool-7-thread-2,debug:84] In getLogin: ResourceID:  User ID: null
+        2013-03-09 16:45:15,646 DEBUG file.SimpleFileLoginProvider [pool-7-thread-4,debug:84] In getLogin: ResourceID:  User ID: null
+        2013-03-09 16:45:15,646 DEBUG file.SimpleFileLoginProvider [pool-7-thread-5,debug:84] In getLogin: ResourceID:  User ID: null
+        2013-03-09 16:45:15,647 DEBUG file.SimpleFileLoginProvider [pool-7-thread-4,debug:84] Found 0 lines that match
+        2013-03-09 16:45:15,646 DEBUG file.SimpleFileLoginProvider [pool-7-thread-2,debug:84] Found 0 lines that match
+        2013-03-09 16:45:15,648 DEBUG file.SimpleFileLoginProvider [pool-7-thread-2,debug:84] Failed to find entry. Looking for wildcard
+        2013-03-09 16:45:15,648 DEBUG file.SimpleFileLoginProvider [pool-7-thread-2,debug:84] Found a login for null
+        2013-03-09 16:45:15,647 DEBUG file.SimpleFileLoginProvider [pool-7-thread-4,debug:84] Failed to find entry. Looking for wildcard
+        2013-03-09 16:45:15,647 DEBUG file.SimpleFileLoginProvider [pool-7-thread-5,debug:84] Found 0 lines that match
+        2013-03-09 16:45:15,653 DEBUG file.SimpleFileLoginProvider [pool-7-thread-5,debug:84] Failed to find entry. Looking for wildcard
+        2013-03-09 16:45:15,652 DEBUG file.SimpleFileLoginProvider [pool-7-thread-4,debug:84] Found a login for null
+        2013-03-09 16:45:15,653 DEBUG file.SimpleFileLoginProvider [pool-7-thread-5,debug:84] Found a login for null
+
+
+# -----------------------------------------------------------------------------------
+# Suspect hang is caused by authentication with HsqlDB 
+
+    Tried tweaking HsqlDB database settings 
+    ......
+
+    vi webapp/WEB-INF/etc/dai/resources/userdata
+
+        id=userdata
+        type=uk.org.ogsadai.DATA_RESOURCE
+        creationTime=null
+        terminationTime=null
+        PROPERTIES
+        END
+        CONFIG
+    -   dai.data.resource.uri=jdbc:hsqldb:file:target/database/hsqlone
+    +   dai.data.resource.uri=jdbc:hsqldb:file:target/database/hsqlone;create=true;hsqldb.lock_file=false
+        dai.login.provider=uk.org.ogsadai.LOGIN_PROVIDER
+        END
+        ACTIVITIES
+        ....
+        END
+        dataResourceClass=uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource
+
+# -----------------------------------------------------------------------------------
+# Try swap to using PostgreSQL 
+
+    #
+    # Settings for the 'root' postgres password.
+    cat > /etc/firethorn/postgres.conf << EOF
+    type=pgsql
+    host=localhost
+    name=postgres
+    user=postgres
+    pass=$(pwgen -s 40 1)
+    EOF
+
+    #
+    # Settings for the userdata database.
+    cat > /etc/firethorn/userdata.conf << EOF
+    type=pgsql
+    host=localhost
+    name=userdata
+    user=$(pwgen -0 10 1)
+    pass=$(pwgen -s 40 1)
+    EOF
 
     #
     # Set the 'root' postgres password.
@@ -447,4 +506,202 @@ EOF
     unset dbdata
     unset dbpass
     unset dbuser
+
+#
+# Changed from in-process hsqldb database to postgresql server.
+
+    vi webapp/WEB-INF/etc/dai/resources/userdata
+
+        id=userdata
+        type=uk.org.ogsadai.DATA_RESOURCE
+        creationTime=null
+        terminationTime=null
+        PROPERTIES
+        END
+        CONFIG
+    -   dai.driver.class=org.hsqldb.jdbcDriver
+    +   dai.driver.class=xxxx
+    -   dai.data.resource.uri=jdbc:hsqldb:file:target/database/hsqlone;create=true;hsqldb.lock_file=false
+    +   dai.data.resource.uri=xxxx
+        dai.login.provider=uk.org.ogsadai.LOGIN_PROVIDER
+        END
+        ACTIVITIES
+        ....
+        END
+        dataResourceClass=uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource
+
+    vi webapp/WEB-INF/etc/dai/logins.txt
+
+        id=userdata
+        userID=*
+    -   username=sa
+    +   username={SQL-USER}
+    -   password=
+    +   password={SQL-PASS}
+        LOGIN-END
+        END
+
+#
+# Added config setp to webapp build.
+
+        #
+        # Set the database passwords.
+        dbconfg twomass  /etc/firethorn/livetwomass.conf
+        dbconfg ukidss   /etc/firethorn/liveukidss.conf
+        dbconfg uber     /etc/firethorn/livetwoxmm.conf
+    +   dbconfg userdata /etc/firethorn/userdata.conf
+
+
+# BUG -- OGSA-DAI database authentication-----------------------------------------------------------------------------------
+#
+
+    More debugging ...
+    Our Activity hangs IF it is used in the *FIRST* pipeline to run.
+
+    Specifically :-
+    
+        (1) StoredResultTestCase <-- causes ogsa-dai to hang
+
+        (1) SimpleQueryTestCase
+        (2) StoredResultTestCase <-- no problem
+        (n) StoredResultTestCase <-- no problem
+
+    There is *something* wrong with either our Activity, or the test pipeline that runs it.
+
+# BUG -- OGSA-DAI database authentication-----------------------------------------------------------------------------------
+#
+
+    Added boolean flag to our pipeline to skip the CreateTable step.
+
+    public class StoredResultPipeline
+        {
+
+        public PipelineResult execute(final String source, final String store, final String table, final String query)
+            {
+
+            ....
+            CreateTable creater = null;
+            if (flag)
+                {
+                creater = new CreateTable();
+                creater.setResourceID(
+                    new ResourceID(
+                        store
+                        )
+                    );
+                creater.setTableName(
+                    table
+                    );
+                creater.connectTuples(
+                    sqlquery.getDataOutput()
+                    );
+                }
+            ....
+            }
+        }
+
+# ----------------------------------------------
+
+    database     : postgresql
+    create table : enabled
+    (1) StoredResultTestCase HANG
+
+        2013-03-09 17:22:57,960 DEBUG file.SimpleFileLoginProvider [pool-7-thread-2,debug:84] In getLogin: ResourceID:  User ID: null
+        2013-03-09 17:22:57,962 DEBUG activity.MatchedIterativeActivity [pool-7-thread-3,debug:84] performing first stage of processing
+        2013-03-09 17:22:57,962 DEBUG activity.MatchedIterativeActivity [pool-7-thread-4,debug:84] performing first stage of processing
+        2013-03-09 17:22:57,963 DEBUG file.SimpleFileLoginProvider [pool-7-thread-2,debug:84] Found 0 lines that match
+        2013-03-09 17:22:57,963 DEBUG server.CreateTableActivity [pool-7-thread-3,preprocess:165] starting preprocess ----
+        2013-03-09 17:22:57,965 DEBUG file.SimpleFileLoginProvider [pool-7-thread-2,debug:84] Failed to find entry. Looking for wildcard
+        2013-03-09 17:22:57,964 DEBUG file.SimpleFileLoginProvider [pool-7-thread-4,debug:84] In SimpleFileLogin:getLogin
+        2013-03-09 17:22:57,965 DEBUG server.CreateTableActivity [pool-7-thread-3,preprocess:167] Creating database connection
+        2013-03-09 17:22:57,966 DEBUG file.SimpleFileLoginProvider [pool-7-thread-2,debug:84] Found a login for null
+        2013-03-09 17:22:57,966 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] In SimpleFileLogin:getLogin
+        2013-03-09 17:22:57,967 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] In getLogin: ResourceID:  User ID: null
+        2013-03-09 17:22:57,967 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] Found 0 lines that match
+        2013-03-09 17:22:57,968 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] Failed to find entry. Looking for wildcard
+        2013-03-09 17:22:57,968 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] Found a login for null
+        2013-03-09 17:22:57,968 DEBUG file.SimpleFileLoginProvider [pool-7-thread-4,debug:84] In getLogin: ResourceID:  User ID: null
+        2013-03-09 17:22:57,969 DEBUG file.SimpleFileLoginProvider [pool-7-thread-4,debug:84] Found 0 lines that match
+        2013-03-09 17:22:57,969 DEBUG file.SimpleFileLoginProvider [pool-7-thread-4,debug:84] Failed to find entry. Looking for wildcard
+        2013-03-09 17:22:57,969 DEBUG file.SimpleFileLoginProvider [pool-7-thread-4,debug:84] Found a login for null
+
+    database     : postgresql
+    create table : disabled
+    (1) StoredResultTestCase HANG
+
+        2013-03-09 17:24:32,330 DEBUG activity.MatchedIterativeActivity [pool-7-thread-2,debug:84] performing first stage of processing
+        2013-03-09 17:24:32,331 DEBUG file.SimpleFileLoginProvider [pool-7-thread-2,debug:84] In SimpleFileLogin:getLogin
+        2013-03-09 17:24:32,331 DEBUG activity.MatchedIterativeActivity [pool-7-thread-3,debug:84] performing first stage of processing
+        2013-03-09 17:24:32,333 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] In SimpleFileLogin:getLogin
+        2013-03-09 17:24:32,334 DEBUG file.SimpleFileLoginProvider [pool-7-thread-2,debug:84] In getLogin: ResourceID:  User ID: null
+        2013-03-09 17:24:32,335 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] In getLogin: ResourceID:  User ID: null
+        2013-03-09 17:24:32,336 DEBUG file.SimpleFileLoginProvider [pool-7-thread-2,debug:84] Found 0 lines that match
+        2013-03-09 17:24:32,336 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] Found 0 lines that match
+        2013-03-09 17:24:32,337 DEBUG file.SimpleFileLoginProvider [pool-7-thread-2,debug:84] Failed to find entry. Looking for wildcard
+        2013-03-09 17:24:32,337 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] Failed to find entry. Looking for wildcard
+        2013-03-09 17:24:32,338 DEBUG file.SimpleFileLoginProvider [pool-7-thread-2,debug:84] Found a login for null
+        2013-03-09 17:24:32,339 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] Found a login for null
+
+    Suggests it is the pipleine, not the activity.
+    Remove (comment out references to our Activity)
+
+    database     : postgresql
+    create table : commented
+    (1) StoredResultTestCase HANG
+
+        2013-03-09 17:30:09,823 DEBUG event.LoggingActivityListener [pool-7-thread-1,debug:84] PENDING: Activity uk.org.ogsadai.SQLQuery (instance name = uk.org.ogsadai.SQLQuery-ogsadai-06405f41-6b3d-47c9-a83d-caaea9280021)
+        2013-03-09 17:30:09,823 DEBUG event.LoggingActivityListener [pool-7-thread-1,debug:84] PENDING: Activity uk.org.ogsadai.SQLBulkLoadTuple (instance name = uk.org.ogsadai.SQLBulkLoadTuple-ogsadai-a549bbea-cf07-43f0-9f8d-9bae47899c4c)
+        2013-03-09 17:30:09,824 DEBUG event.LoggingActivityListener [pool-7-thread-1,debug:84] PENDING: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-94267a71-a280-452a-96b1-cafdc72494a5)
+        2013-03-09 17:30:09,831 DEBUG event.LoggingActivityListener [pool-7-thread-2,debug:84] PROCESSING: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-94267a71-a280-452a-96b1-cafdc72494a5)
+        2013-03-09 17:30:09,832 DEBUG event.LoggingActivityListener [pool-7-thread-4,debug:84] PROCESSING: Activity uk.org.ogsadai.SQLBulkLoadTuple (instance name = uk.org.ogsadai.SQLBulkLoadTuple-ogsadai-a549bbea-cf07-43f0-9f8d-9bae47899c4c)
+        2013-03-09 17:30:09,833 DEBUG event.LoggingActivityListener [pool-7-thread-3,debug:84] PROCESSING: Activity uk.org.ogsadai.SQLQuery (instance name = uk.org.ogsadai.SQLQuery-ogsadai-06405f41-6b3d-47c9-a83d-caaea9280021)
+        2013-03-09 17:30:09,837 DEBUG activity.MatchedIterativeActivity [pool-7-thread-3,debug:84] performing first stage of processing
+        2013-03-09 17:30:09,838 DEBUG activity.MatchedIterativeActivity [pool-7-thread-4,debug:84] performing first stage of processing
+        2013-03-09 17:30:09,839 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] In SimpleFileLogin:getLogin
+        2013-03-09 17:30:09,839 DEBUG file.SimpleFileLoginProvider [pool-7-thread-4,debug:84] In SimpleFileLogin:getLogin
+        2013-03-09 17:30:09,842 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] In getLogin: ResourceID:  User ID: null
+        2013-03-09 17:30:09,842 DEBUG file.SimpleFileLoginProvider [pool-7-thread-4,debug:84] In getLogin: ResourceID:  User ID: null
+        2013-03-09 17:30:09,843 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] Found 0 lines that match
+        2013-03-09 17:30:09,844 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] Failed to find entry. Looking for wildcard
+        2013-03-09 17:30:09,844 DEBUG file.SimpleFileLoginProvider [pool-7-thread-4,debug:84] Found 0 lines that match
+        2013-03-09 17:30:09,845 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] Found a login for null
+        2013-03-09 17:30:09,845 DEBUG file.SimpleFileLoginProvider [pool-7-thread-4,debug:84] Failed to find entry. Looking for wildcard
+        2013-03-09 17:30:09,846 DEBUG file.SimpleFileLoginProvider [pool-7-thread-4,debug:84] Found a login for null
+
+
+    database     : na
+    create table : commented
+    (1) SimpleQueryTestCase PASS
+
+        2013-03-09 17:45:32,842 DEBUG activity.MatchedIterativeActivity [pool-7-thread-2,debug:84] performing first stage of processing
+        2013-03-09 17:45:32,843 DEBUG activity.MatchedIterativeActivity [pool-7-thread-2,debug:84] performing iterative stage of processing
+        2013-03-09 17:45:32,844 DEBUG event.LoggingActivityListener [pool-7-thread-4,debug:84] PROCESSING: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-fddef10b-cd3e-4a71-acd6-33198468b339)
+        2013-03-09 17:45:32,845 DEBUG event.LoggingActivityListener [pool-7-thread-3,debug:84] PROCESSING: Activity uk.org.ogsadai.SQLQuery (instance name = uk.org.ogsadai.SQLQuery-ogsadai-4dd3f6ac-a128-462b-b698-344eb968f10b)
+        2013-03-09 17:45:32,846 DEBUG activity.MatchedIterativeActivity [pool-7-thread-3,debug:84] performing first stage of processing
+        2013-03-09 17:45:32,847 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] In SimpleFileLogin:getLogin
+        2013-03-09 17:45:32,849 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] In getLogin: ResourceID:  User ID: null
+        2013-03-09 17:45:32,850 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] Found 0 lines that match
+        2013-03-09 17:45:32,850 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] Failed to find entry. Looking for wildcard
+        2013-03-09 17:45:32,850 DEBUG file.SimpleFileLoginProvider [pool-7-thread-3,debug:84] Found a login for null
+        2013-03-09 17:45:32,895 DEBUG jdbc.JDBCDataResource [pool-7-thread-3,debug:84] Creating a connection pool for resource twomass at jdbc:jtds:sqlserver://localhost:1433/TWOMASS
+        2013-03-09 17:45:32,896 DEBUG jdbc.JDBCDataResource [pool-7-thread-3,debug:84] DBCP connection pool settings: 
+
+# ----------------------------------------------
+#
+
+    Anyway ..
+    Added StoredResultPipeline to AdqlQuery execute.
+    
+    Hard coded DQP and store names.
+    Simple table name generator.
+
+    WORKS though :-)
+    
+    Bugs and craches along the way ... but it works
+    Query processed, metadata lokked up, table created, results written.
+    Final step is to add the results to the metadata making it available for query.
+
+
+
+
 

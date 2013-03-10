@@ -29,8 +29,6 @@ public class StoredResultPipeline
     
     private URL endpoint ;
 
-    private static final boolean flag = true ;
-    
     public StoredResultPipeline(final URL endpoint)
         {
         this.endpoint = endpoint ;
@@ -53,30 +51,30 @@ public class StoredResultPipeline
             );
         //
         // Create our SQL query.
-        SQLQuery sqlquery = new SQLQuery();
-        sqlquery.setResourceID(
-            source
+        SQLQuery selector = new SQLQuery();
+        selector.setResourceID(
+            new ResourceID(
+                source
+                )
             );
-        sqlquery.addExpression(
+        selector.addExpression(
             query
             );
         //
-        // Create our table.
-        CreateTable creater = new CreateTable();
-        if (flag)
-            {
-            creater.setResourceID(
-                new ResourceID(
-                    store
-                    )
-                );
-            creater.setTableName(
-                table
-                );
-            creater.connectTuples(
-                sqlquery.getDataOutput()
-                );
-            }
+        // Create our output table.
+        CreateTable creator = new CreateTable();
+        creator.setResourceID(
+            new ResourceID(
+                store
+                )
+            );
+        creator.setTableName(
+            table
+            );
+        creator.connectTuples(
+            selector.getDataOutput()
+            );
+
         //
         // Create our results writer.
         SQLBulkLoadTuple writer = new SQLBulkLoadTuple();
@@ -88,18 +86,9 @@ public class StoredResultPipeline
         writer.addTableName(
             table
             );
-
-        if (flag)
-            {
-            writer.connectDataInput(
-                creater.getDataOutput()
-                );
-            }
-        else {
-            writer.connectDataInput(
-                sqlquery.getDataOutput()
-                );
-            }
+        writer.connectDataInput(
+            creator.getDataOutput()
+            );
         //
         // Create our delivery handler.
         DeliverToRequestStatus delivery = new DeliverToRequestStatus();
@@ -110,14 +99,11 @@ public class StoredResultPipeline
         // Create our pipeline.
         PipelineWorkflow pipeline = new PipelineWorkflow();
         pipeline.add(
-            sqlquery
+            selector
             );
-        if (flag)
-            {
-            pipeline.add(
-                creater
-                );
-            }
+        pipeline.add(
+            creator
+            );
         pipeline.add(
             writer
             );
@@ -252,3 +238,4 @@ public class StoredResultPipeline
             }
         }
     }
+

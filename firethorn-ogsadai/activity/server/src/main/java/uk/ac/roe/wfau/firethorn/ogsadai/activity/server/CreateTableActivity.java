@@ -144,6 +144,12 @@ implements ResourceActivity
     private Connection connection;
 
     /**
+     * Flag to indicate if we changed the autocommit statue.
+     *
+     */
+    private boolean changed = false;
+
+    /**
      * Block writer for output.
      *
      */
@@ -156,26 +162,38 @@ implements ResourceActivity
     protected void preprocess()
     throws ActivitySQLException, ActivityProcessingException
         {
-        logger.debug("preprocess()");
+        logger.debug("starting preprocess ----");
         try {
+            logger.debug("Creating database connection");
             connection = resource.getConnection();
+            logger.debug("Checking connection autocommit");
+            if (connection.getAutoCommit() == true)
+                {
+                logger.debug("Disabling connection autocommit");
+                changed = true ;
+                connection.setAutoCommit(
+                    false
+                    );
+                }
+            logger.debug("Got database connection");
             }
         catch (JDBCConnectionUseException ouch)
             {
-            logger.warn("Exception conncting to database", ouch);
+            logger.warn("Exception connecting to database", ouch);
             throw new ActivitySQLException(
                 ouch
                 );
             }
         catch (Throwable ouch)
             {
-            logger.warn("Exception conncting to database", ouch);
+            logger.warn("Exception connecting to database", ouch);
             throw new ActivityProcessingException(
                 ouch
                 );
             }
 
         try {
+            logger.debug("Validating outputs");
             validateOutput("result");
             writer = getOutput("result");
             }
@@ -186,6 +204,7 @@ implements ResourceActivity
                 ouch
                 );
             }
+        logger.debug("---- preprocess done");
         }
 
     /**
@@ -237,7 +256,6 @@ implements ResourceActivity
                 builder.append(column.getName());
                 builder.append(" ");
                 builder.append(sqltype(column.getType()));
-
                 }
  
             builder.append(")");
@@ -251,10 +269,10 @@ implements ResourceActivity
                 builder.toString()
                 );
             logger.debug("SQL statement result [{}]", result);
-            if (connection.getAutoCommit() == false)
-                {
-                connection.commit();
-                }
+            //
+            // Commit the changes.
+            connection.commit();
+
             //
             // Write the LIST_BEGIN marker and metadata
             writer.write(ControlBlock.LIST_BEGIN);
@@ -301,8 +319,24 @@ implements ResourceActivity
      *
      */
     protected void postprocess()
+    throws ActivityProcessingException
         {
         logger.debug("postprocess()");
+        try {
+            if (changed)
+                {
+                connection.setAutoCommit(
+                    true
+                    );
+                }
+            }
+        catch (Throwable ouch)
+            {
+            logger.warn("Exception resetting autocommit", ouch);
+            throw new ActivityProcessingException(
+                ouch
+                );
+            }
         }
 
     /**
