@@ -53,16 +53,12 @@
     <!--+
         | Maven parent/child projects.
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
+        +-->
     <modules>
-        <module>activity/common</module>
-        <module>activity/client</module>
-        <module>activity/server</module>
-        <module>metadata/common</module>
-        <module>metadata/client</module>
-        <module>metadata/server</module>
+        <module>activity</module>
+        <module>metadata</module>
         <module>webapp</module>
     </modules>
-        +-->
     
     <properties>
 

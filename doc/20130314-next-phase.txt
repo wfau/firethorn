@@ -1,0 +1,22 @@
+
+
+
+Support for
+
+research collaboration 
+interested in an area of the sky
+multi-national 'group'
+combine data from existing surveys
+with own data
+to create a multi-wavelength view
+of that area
+
+    curate user-generated multi-wavelength collections
+
+    getting the data
+    share within the group
+    data analysis
+    publish formally <-- registered tap
+    long term curation
+    
+    

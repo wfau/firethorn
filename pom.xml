@@ -173,12 +173,11 @@
         <module>firethorn-logging</module>
         <module>firethorn-testing</module>
         <module>firethorn-spring</module>
-        <module>firethorn-ogsadai</module>
+
         <module>firethorn-cds</module>
         <module>firethorn-tap</module>
 
-        <module>firethorn-ogsadai/metadata/common</module>
-        <module>firethorn-ogsadai/metadata/server</module>
+        <module>firethorn-ogsadai</module>
 
         <module>firethorn-war</module>
     </modules>

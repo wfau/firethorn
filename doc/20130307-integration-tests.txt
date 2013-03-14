@@ -2,10 +2,11 @@
 # Project paths
 #
 
+cat > ${HOME?}/firethorn.settings << 'EOF'
 FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
 FIRETHORN_NAME=devel
 FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
-
+EOF
 
 # TTY #1 ------------------------------------------------------------
 # Create a SSH tunnel to the ROE database server.
@@ -18,22 +19,29 @@ FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
 # Build and run the firethorn webapp 
 #
 
-    pushd "${FIRETHORN_CODE?}/firethorn-war"
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}"
 
-        #
-        # Update the activity client (needs ogsa-dai service running).
-        pushd "../firethorn-ogsadai/activity/common/" ; mvn clean install ; popd
-        pushd "../firethorn-ogsadai/activity/client/" ; mvn clean install ; popd
 
-        #
-        # Update the core library.
-        pushd ../firethorn-tap ; mvn -D test=TestJobTestCase clean install ; popd
+    #
+    # Update the dependencies.
+    pushd "firethorn-spring"  ; mvn clean install ; popd
+    pushd "firethorn-testing" ; mvn clean install ; popd
+    pushd "firethorn-logging" ; mvn clean install ; popd
 
-        #
-        # Build and run the webap.
-        mvn clean tomcat7:run  | tee /tmp/firethorn-tomcat.log
-        
-    popd
+    #
+    # Update the OGSA-DAI components.
+    pushd "firethorn-ogsadai" ; mvn clean install ; popd
+
+    #
+    # Update our core library.
+    pushd "firethorn-tap" ; mvn -D test=TestJobTestCase clean install ; popd
+
+    #
+    # Buiuld and deploy our webapp.
+    pushd "firethorn-war" ; mvn clean tomcat7:run  | tee /tmp/firethorn-tomcat.log ; popd
+
+
 
 # TTY #2 ------------------------------------------------------------
 # Build and deploy the ogsa-dai webapp 

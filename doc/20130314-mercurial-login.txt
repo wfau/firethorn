@@ -1,0 +1,79 @@
+
+#----------------------------------------------------------------------------
+#
+# Create account on the server.
+[root@server]
+
+keyname=ktn.roe.ac.uk.pub
+username=Keith
+
+    if [ ! -e "/home/${username?}" ]
+    then
+        useradd ${username?}
+
+        usermod -a -G 'users' ${username?}
+
+    fi
+
+#
+# Add SSH keys.
+[root@server] 
+
+    if [ ! -e "/home/${username?}/.ssh" ]
+    then
+        mkdir "/home/${username?}/.ssh"
+    fi
+    
+    pushd "/home/${username?}/.ssh"
+
+        if [ ! -e ${keyname?} ]
+        then
+            wget http://data.metagrid.co.uk/sshkeys/${keyname?}
+            cat ${keyname?} >> authorized_keys
+        fi
+
+    popd
+
+    chown -R "${username?}:${username?}"  "/home/${username?}/.ssh"
+    restorecon -R -v  "/home/${username?}/.ssh"
+    chmod g=,o=,u=rwx "/home/${username?}/.ssh"
+
+#----------------------------------------------------------------------------
+#
+# Configure Mercurial on the client.
+[user@laptop]
+
+    #
+    # Enable our extensions.
+    vi "${HOME}/.hgrc"
+
+        [ui]
+
+        [extensions]
+        fetch =
+        hgext.churn =
+        hgext.convert =
+
+#
+# Test clone on the client.
+[user@laptop]
+
+    temp=$(mktemp --directory)
+    pushd ${temp?}
+
+        hg clone ssh://Keith@wfau.metagrid.co.uk:22//var/local/wfau/projects/firethorn/code firethorn
+
+    popd
+    
+#
+# Test commit on the client.
+[user@laptop]
+
+    pushd ${temp?}
+
+        date > attic/test.txt
+        hg commit -m "Added test file"
+        hg push
+
+    popd
+
