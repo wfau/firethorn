@@ -38,7 +38,7 @@
     <artifactId>firethorn-metadata-server</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn metadata server</name>
+    <name>FireThorn OGSA-DAI metadata server</name>
     <description>
         <![CDATA[
         Server side components for the FireThorn OGSA-DAI metadata service.

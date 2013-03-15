@@ -32,7 +32,7 @@
     <artifactId>firethorn-cds-depends</artifactId>
     <packaging>pom</packaging>
 
-    <name>CDS dependencies</name>
+    <name>FireThorn CDS dependencies</name>
     <description>
         <![CDATA[
         Maven POM to handle 3rd party dependencies for the CDS libraries.
@@ -44,22 +44,22 @@
         <!--+
             | com.oreilly.servlet library
             | http://www.servlets.com/cos/
-            +-->
         <dependency>
             <groupId>com.servlets</groupId>
             <artifactId>cos</artifactId>
             <version>26Dec2008</version>
         </dependency>
+            +-->
 
         <!--+
             | kXML XML pull parser.
             | http://sourceforge.net/projects/kxml/
-            +-->
         <dependency>
 	        <groupId>net.sf.kxml</groupId>
 	        <artifactId>kxml2</artifactId>
 	        <version>2.3.0</version>
         </dependency>
+            +-->
 
 	    <!--+
 	        | CDS SAVOT libraries.
@@ -91,12 +91,12 @@
 	    </dependency-->
 	    <!--+
 	        | Temp fix until we get the versions fixed.
-	        +-->
 	    <dependency>
             <groupId>cds</groupId>
             <artifactId>cds-lib</artifactId>
             <version>x.y</version>
 	    </dependency>
+	        +-->
 
 	    <!--+
 	        | Servlet libraries.

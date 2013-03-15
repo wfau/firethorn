@@ -38,7 +38,7 @@
     <artifactId>firethorn-tap</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn webservice</name>
+    <name>FireThorn core</name>
     <description>
         <![CDATA[
         The core FireThorn service implementation.
@@ -89,7 +89,6 @@
 
         <!--+
             | Local build of the CDS ADQL library.
-            | This may contain some unpublished classes from the other CDS projects (cds-uws-3.1).
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>

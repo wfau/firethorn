@@ -178,12 +178,8 @@
         <module>firethorn-ogsadai</module>
 
         <module>firethorn-tap</module>
-
-    <!--+
-        <module>firethorn-cds</module>
-        <module>firethorn-ogsadai</module>
         <module>firethorn-war</module>
-        +-->
+
     </modules>
 
     <properties>

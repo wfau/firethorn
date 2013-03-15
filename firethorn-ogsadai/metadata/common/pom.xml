@@ -38,7 +38,7 @@
     <artifactId>firethorn-metadata-common</artifactId>
     <packaging>jar</packaging>
 
-    <name>FireThorn metadata common</name>
+    <name>FireThorn OGSA-DAI metadata common</name>
     <description>
         <![CDATA[
         Common components for the FireThorn OGSA-DAI metadata service.

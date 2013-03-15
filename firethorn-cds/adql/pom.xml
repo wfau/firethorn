@@ -32,7 +32,7 @@
     <artifactId>firethorn-cds-adql</artifactId>
     <packaging>jar</packaging>
 
-    <name>CDS ADQL library</name>
+    <name>FireThorn CDS ADQL library</name>
     <description>
         <![CDATA[
         Local build of the CDS ADQL library.
