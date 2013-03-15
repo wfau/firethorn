@@ -31,9 +31,8 @@
         +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
-        <artifactId>firethorn-ogsadai</artifactId>
+        <artifactId>firethorn-metadata</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../..</relativePath>
     </parent>
 
     <artifactId>firethorn-metadata-client</artifactId>
@@ -42,14 +41,24 @@
     <name>FireThorn metadata client</name>
     <description>
         <![CDATA[
-        Client side components for the metadata service that get included in the OGSA-DAI server.
+        Client side components for the FireThorn OGSA-DAI metadata service.
         ]]>
     </description>
     
     <dependencies>
 
         <!--+
-            | Our common metadata classes.
+            | Ogsa-dai dependencies.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-ogsadai-depends</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
+            | Common metadata classes.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -70,12 +79,12 @@
 
         <!--+
             | Apache commons-logging.
-            +-->
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>${ogsadai.logging.version}</version>
         </dependency>
+            +-->
 
         <!--+
             | Spring framework HTTP tools.
@@ -97,19 +106,19 @@
 
         <!--+
             | The OGSA-DAI components used by our code.
-            +-->
-        <dependency>
-            <groupId>uk.org.ogsadai</groupId>
-            <artifactId>ogsadai-clientserver</artifactId>
-            <version>${ogsadai.version}</version>
-            <type>jar</type>
-        </dependency>
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-server</artifactId>
             <version>${ogsadai.version}</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>uk.org.ogsadai</groupId>
+            <artifactId>ogsadai-clientserver</artifactId>
+            <version>${ogsadai.version}</version>
+            <type>jar</type>
+        </dependency>
+            +-->
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-dqp-server</artifactId>

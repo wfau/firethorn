@@ -170,19 +170,31 @@
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
         +-->
     <modules>
+        <module>firethorn-spring</module>
         <module>firethorn-logging</module>
         <module>firethorn-testing</module>
-        <module>firethorn-spring</module>
 
         <module>firethorn-cds</module>
-        <module>firethorn-tap</module>
-
         <module>firethorn-ogsadai</module>
 
+        <module>firethorn-tap</module>
+
+    <!--+
+        <module>firethorn-cds</module>
+        <module>firethorn-ogsadai</module>
         <module>firethorn-war</module>
+        +-->
     </modules>
 
     <properties>
+
+        <!--+
+            | Skip tests by default.
+            | https://maven.apache.org/surefire/maven-surefire-plugin/examples/skipping-test.html
+            | Explicitly enable on the command line when we want them.
+            | mvn install -DskipTests=false 
+            +-->
+        <skipTests>true</skipTests>
 
         <project.javaversion>1.6</project.javaversion>
 

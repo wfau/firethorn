@@ -22,12 +22,19 @@ EOF
     source ${HOME?}/firethorn.settings
     pushd "${FIRETHORN_CODE?}"
 
+    #
+    # Build the project.
+    mvn clean install
 
     #
     # Update the dependencies.
     pushd "firethorn-spring"  ; mvn clean install ; popd
     pushd "firethorn-testing" ; mvn clean install ; popd
     pushd "firethorn-logging" ; mvn clean install ; popd
+
+    #
+    # Update the CDS components.
+    pushd "firethorn-cds" ; mvn clean install ; popd
 
     #
     # Update the OGSA-DAI components.

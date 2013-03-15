@@ -26,19 +26,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!--+
-        | IMPORTANT - importing external jars .. 
-        | http://stackoverflow.com/questions/364114/can-i-add-jars-to-maven-2-build-classpath-without-installing-them/764684#764684
-        +-->
-
-    <!--+
         | Maven parent project.
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
         +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
-        <artifactId>firethorn-ogsadai</artifactId>
+        <artifactId>firethorn-metadata</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../..</relativePath>
     </parent>
 
     <artifactId>firethorn-metadata-server</artifactId>
@@ -47,7 +41,7 @@
     <name>FireThorn metadata server</name>
     <description>
         <![CDATA[
-        Server side components for the metadata service that get included in the FireThorn server.
+        Server side components for the FireThorn OGSA-DAI metadata service.
         ]]>
     </description>
     

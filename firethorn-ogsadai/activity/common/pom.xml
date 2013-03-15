@@ -31,18 +31,17 @@
         +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
-        <artifactId>firethorn-ogsadai</artifactId>
+        <artifactId>firethorn-activity</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <!--relativePath>../..</relativePath-->
     </parent>
 
     <artifactId>firethorn-activity-common</artifactId>
     <packaging>pom</packaging>
 
-    <name>OGSA-DAI activity (common)</name>
+    <name>FireThorn OGSA-DAI activity common</name>
     <description>
         <![CDATA[
-        Common OGSA-DAI activity components that get are used by both the server and client.
+        Common components for the FireThorn OGSA-DAI pipeline activity.
         ]]>
     </description>
     

@@ -26,17 +26,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!--+
-        | IMPORTANT - importing external jars .. 
-        | http://stackoverflow.com/questions/364114/can-i-add-jars-to-maven-2-build-classpath-without-installing-them/764684#764684
-        +-->
-
-    <!--+
         | Maven parent project.
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
         +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
-        <artifactId>firethorn-ogsadai</artifactId>
+        <artifactId>firethorn-activity</artifactId>
         <version>1.0-SNAPSHOT</version>
         <!--relativePath>..</relativePath-->
     </parent>
@@ -44,10 +39,10 @@
     <artifactId>firethorn-activity-client</artifactId>
     <packaging>jar</packaging>
 
-    <name>OGSA-DAI activity (FireThorn server)</name>
+    <name>FireThorn OGSA-DAI activity client</name>
     <description>
         <![CDATA[
-        Client side components for the firethorn OGSA-DAI activities that get included in the FireThorn server.
+        Client side components for the FireThorn OGSA-DAI pipeline activity.
         ]]>
     </description>
     

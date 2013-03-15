@@ -47,8 +47,9 @@
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
         +-->
     <modules>
-        <module>firethorn-cds-pom</module>
-        <module>firethorn-cds-lib</module>
+        <module>depends</module>
+        <module>adql</module>
+        <!--module>firethorn-cds-lib</module-->
         <!--module>firethorn-cds-tap</module-->
     </modules>
 

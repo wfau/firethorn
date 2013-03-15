@@ -26,31 +26,25 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!--+
-        | IMPORTANT - importing external jars .. 
-        | http://stackoverflow.com/questions/364114/can-i-add-jars-to-maven-2-build-classpath-without-installing-them/764684#764684
-        +-->
-
-    <!--+
         | Maven parent project.
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
         +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
-        <artifactId>firethorn-ogsadai</artifactId>
+        <artifactId>firethorn-activity</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../..</relativePath>
     </parent>
 
     <artifactId>firethorn-activity-server</artifactId>
     <packaging>jar</packaging>
 
-    <name>OGSA-DAI activity (OGSA-DAI server)</name>
+    <name>FireThorn OGSA-DAI activity server</name>
     <description>
         <![CDATA[
-        Server side components for the firethorn OGSA-DAI activities that are included in the modified OGSA-DAI server.
+        Server side components for the FireThorn OGSA-DAI pipeline activity.
         ]]>
     </description>
-    
+
     <properties>
 
         <commons.version>1.0.4</commons.version>
@@ -62,18 +56,16 @@
     <dependencies>
 
         <!--+
-            | Ogsa-dai logging components.
+            | Ogsa-dai dependencies.
+            +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ogsadai-logging</artifactId>
+            <artifactId>firethorn-ogsadai-depends</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
-            <scope>runtime</scope>
         </dependency>
-            +-->
 
         <!--+
-            +-->
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
@@ -94,19 +86,10 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>${org.slf4j.version}</version>
         </dependency>
-
-        <!--+
-            | FireThorn testing components.
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-testing</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
             +-->
 
         <!--+
-            | Our common activity classes.
+            | Common activity classes.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -118,7 +101,6 @@
         <!--+
             | The OGSA-DAI components used by our activity.
             | http://data.metagrid.co.uk/wfau/maven/external/uk/org/ogsadai/
-            +-->
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-common</artifactId>
@@ -134,6 +116,7 @@
             <artifactId>ogsadai-clientserver</artifactId>
             <version>${ogsadai.version}</version>
         </dependency>
+            +-->
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-relational-client</artifactId>

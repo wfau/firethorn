@@ -55,6 +55,7 @@
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
         +-->
     <modules>
+        <module>depends</module>
         <module>activity</module>
         <module>metadata</module>
         <module>webapp</module>
