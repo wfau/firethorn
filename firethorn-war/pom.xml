@@ -101,14 +101,8 @@
         </dependency>
 
         <!--+
-            | FireThorn OGSA-DAI metadata components.
+            | FireThorn OGSA-DAI metadata server.
             +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-metadata-common</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-metadata-server</artifactId>
@@ -117,13 +111,7 @@
         </dependency>
 
         <!--+
-            | FireThorn OGSA-DAI activity components (included in tap).
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-activity-common</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-        </dependency>
+            | FireThorn OGSA-DAI activity client (included in tap).
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-activity-client</artifactId>
@@ -131,17 +119,6 @@
             <type>jar</type>
         </dependency>
             +-->
-
-        <!--+
-            | Local build of the CDS tools based on a pre-release version of the CDS TAP library.
-            | This may contain some unpublished classes from the other CDS projects (cds-uws-3.1).
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-cds-lib</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-        </dependency>
 
 	    <!--+
 	        | Servlet libraries.

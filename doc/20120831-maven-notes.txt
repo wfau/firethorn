@@ -12,6 +12,23 @@
     # mvn -D eclipse.workspace=/home/Zarquan/workspace eclipse:add-maven-repo
 
 
+    #
+    # Create checksums.
+    # https://maven.apache.org/plugins/maven-install-plugin/examples/installing-checksums.html
+    mvn install -DcreateChecksum=true
+
+    #
+    # Create checksums.
+    # https://maven.apache.org/plugins/maven-install-plugin/examples/installing-checksums.html
+    mvn install:install-file  \
+        -Dfile=path-to-your-artifact-jar \
+        -DgroupId=your.groupId \
+        -DartifactId=your-artifactId \
+        -Dversion=version \
+        -Dpackaging=jar \
+        -DcreateChecksum=true
+
+
 #
 # Valuable Maven Commands
 

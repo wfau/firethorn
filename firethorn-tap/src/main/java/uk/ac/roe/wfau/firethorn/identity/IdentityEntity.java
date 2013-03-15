@@ -66,7 +66,7 @@ implements Identity
      * Our database table name.
      *
      */
-    public static final String DB_TABLE_NAME = "identity_entity";
+    public static final String DB_TABLE_NAME = "IdentityEntity";
 
     /**
      * Our Entity Factory implementation.
