@@ -184,8 +184,6 @@ cat > init-jdbc.sh << 'EOF'
                 GET "${schema?}/tables/select" | ./pp
             done
 
-
-
         #
         # Create our WFAU resource.
         wfau=$(
@@ -217,11 +215,6 @@ cat > init-jdbc.sh << 'EOF'
                 GET "${schema?}/tables/select" | ./pp
             done
 
-
-
-
-
-
 EOF
 
         # -------- --------
@@ -229,7 +222,7 @@ EOF
 
 cat > init-adql.sh << 'EOF'
 
-# TODO ...
+TODO ...
 
         #
         # Create a new ADQL resource.
