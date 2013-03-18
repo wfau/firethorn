@@ -122,98 +122,125 @@ EOF
         # -------- --------
         # JDBC ....
 
-cat > init-jdbc.sh << EOF
+cat > init-jdbc.sh << 'EOF'
 
         #
-        # Create our JDBC TWOMASS resource.
-        POST "/jdbc/resource/create" \
-            -d "jdbc.resource.create.url=spring:RoeTWOMASS" \
-            -d "jdbc.resource.create.name=jdbc-twomass" \
-            -d "jdbc.resource.create.ogsadai=twomass" \
-            | ./pp
+        # Create our TWOMASS resource.
+        twomass=$(
+            POST "/jdbc/resource/create" \
+                -d "jdbc.resource.create.url=spring:RoeTWOMASS" \
+                -d "jdbc.resource.create.name=twomass-$(unique)" \
+                -d "jdbc.resource.create.ogsadai=twomass" \
+                | ./pp \
+                | sed -n 's| *"ident" : "'${metabasename?}'\(.*\)"[^"]*|\1|p'
+                )
 
         #
-        # Check the resouce properties.
-        GET "/jdbc/resource/1" | ./pp
+        # Check the TWOMASS resource.
+        GET "${twomass?}" | ./pp
 
         #
-        # Create our JDBC UKIDSS resource.
-        POST "/jdbc/resource/create" \
-            -d "jdbc.resource.create.url=spring:RoeUKIDSS" \
-            -d "jdbc.resource.create.name=jdbc-ukidss" \
-            -d "jdbc.resource.create.ogsadai=ukidss" \
-            | ./pp
+        # List the TWOMASS schema.
+        GET "${twomass?}/schemas/select" | ./pp
 
         #
-        # Check the resouce properties.
-        GET "/jdbc/resource/2" | ./pp
+        # List the TWOMASS tables.
+        for schema in $(
+            GET "${twomass?}/schemas/select"  \
+                | ./pp \
+                | sed -n 's| *"ident" : "'${metabasename?}'\(.*\)"[^"]*|\1|p'
+            )
+            do
+                GET "${schema?}/tables/select" | ./pp
+            done
 
         #
-        # List the JDBC TWOMASS schema.
-        GET "/jdbc/resource/1/schemas/select" | ./pp
+        # Create our UKIDSS resource.
+        ukidss=$(
+            POST "/jdbc/resource/create" \
+                -d "jdbc.resource.create.url=spring:RoeUKIDSS" \
+                -d "jdbc.resource.create.name=ukidss-$(unique)" \
+                -d "jdbc.resource.create.ogsadai=ukidss" \
+                | ./pp \
+                | sed -n 's| *"ident" : "'${metabasename?}'\(.*\)"[^"]*|\1|p'
+                )
 
         #
-        # List the JDBC UKIDSS schema.
-        GET "/jdbc/resource/2/schemas/select" | ./pp
+        # Check the UKIDSS resource.
+        GET "${ukidss?}"  | ./pp
 
         #
-        # List the JDBC TWOMASS tables.
-        GET "/jdbc/schema/1/tables/select" | ./pp
+        # List the UKIDSS schema.
+        GET "${ukidss?}/schemas/select" | ./pp
 
         #
-        # List the JDBC UKIDSS tables.
-        GET "/jdbc/schema/2/tables/select" | ./pp
+        # List the UKIDSS tables.
+        for schema in $(
+            GET "${ukidss?}/schemas/select"  \
+                | ./pp \
+                | sed -n 's| *"ident" : "'${metabasename?}'\(.*\)"[^"]*|\1|p'
+            )
+            do
+                GET "${schema?}/tables/select" | ./pp
+            done
+
+
 
         #
-        # Get the details for the twomass_psc table.
-        # http://localhost:8080/firethorn/jdbc/table/5
-        GET "/jdbc/schema/1/tables/select" \
-            -q "jdbc.schema.table.select.name=twomass_psc" \
-            | ./pp
+        # Create our WFAU resource.
+        wfau=$(
+            POST "/jdbc/resource/create" \
+                -d "jdbc.resource.create.url=spring:RoeWFAU" \
+                -d "jdbc.resource.create.name=wfau-$(unique)" \
+                -d "jdbc.resource.create.ogsadai=wfau" \
+                -d "jdbc.resource.create.catalog=*" \
+                | ./pp \
+                | sed -n 's| *"ident" : "'${metabasename?}'\(.*\)"[^"]*|\1|p'
+                )
 
         #
-        # Get the details for the gcsPointSource table.
-        # http://localhost:8080/firethorn/jdbc/table/120
-        GET "/jdbc/schema/2/tables/select" \
-            -q "jdbc.schema.table.select.name=gcsPointSource" \
-            | ./pp
+        # Check the WFAU resource.
+        GET "${wfau?}"  | ./pp
 
         #
-        # Get the details for the gcsSourceXtwomass_psc table.
-        # http://localhost:8080/firethorn/jdbc/table/41
-        GET "/jdbc/schema/2/tables/select" \
-            -q "jdbc.schema.table.select.name=gcsSourceXtwomass_psc" \
-            | ./pp
+        # List the WFAU schema.
+        GET "${wfau?}/schemas/select" | ./pp
 
         #
-        # Get the details for the twomass_psc ra column.
-        GET "/jdbc/table/5/columns/select" \
-            -q "jdbc.table.column.select.name=ra" \
-            | ./pp
+        # List the WFAU tables.
+        for schema in $(
+            GET "${wfau?}/schemas/select"  \
+                | ./pp \
+                | sed -n 's| *"ident" : "'${metabasename?}'\(.*\)"[^"]*|\1|p'
+            )
+            do
+                GET "${schema?}/tables/select" | ./pp
+            done
 
-        #
-        # Get the details for the gcsPointSource ra column.
-        GET "/jdbc/table/120/columns/select" \
-            -q "jdbc.table.column.select.name=ra" \
-            | ./pp
+
+
+
+
 
 EOF
 
         # -------- --------
         # ADQL ....
 
-cat > init-adql.sh << EOF
+cat > init-adql.sh << 'EOF'
+
+# TODO ...
 
         #
         # Create a new ADQL resource.
         POST "/adql/resource/create" \
-            --data "adql.resource.create.name=adql-workspace" \
+            --data "adql.resource.create.name=workspace-$(unique)" \
             | ./pp
 
         #
         # Create a new ADQL schema.
         POST "/adql/resource/3/schemas/create" \
-            --data "adql.resource.schema.create.name=adql_schema" \
+            --data "adql.resource.schema.create.name=schema-$(unique)" \
             | ./pp
 
         #
@@ -259,7 +286,7 @@ cat > init-adql.sh << EOF
 
 EOF
 
-cat > query-000.adql << EOF
+cat > query-000.adql << 'EOF'
 
     SELECT
         twomass.ra AS tmra,
@@ -304,7 +331,7 @@ cat > init-query.sh << 'EOF'
         # Create the ADQL query.
         query=$(
         POST "/adql/resource/3/queries/create" \
-            --data-urlencode "adql.resource.query.create.name=test-query" \
+            --data-urlencode "adql.resource.query.create.name=query-$(unique)" \
             --data-urlencode "adql.resource.query.create.query@query-000.adql" \
             | ./pp \
             | sed -n 's#"ident" : ".*\(/adql/query/[0-9]*\).*#\1#p'
