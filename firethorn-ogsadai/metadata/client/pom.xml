@@ -48,7 +48,7 @@
     <dependencies>
 
         <!--+
-            | Ogsa-dai dependencies.
+            | OGSA-DAI dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -78,15 +78,6 @@
     	</dependency>
 
         <!--+
-            | Apache commons-logging.
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>${ogsadai.logging.version}</version>
-        </dependency>
-            +-->
-
-        <!--+
             | Spring framework HTTP tools.
             +-->
         <dependency>
@@ -106,6 +97,7 @@
 
         <!--+
             | The OGSA-DAI components used by our code.
+            +-->
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-server</artifactId>
@@ -118,7 +110,6 @@
             <version>${ogsadai.version}</version>
             <type>jar</type>
         </dependency>
-            +-->
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-dqp-server</artifactId>

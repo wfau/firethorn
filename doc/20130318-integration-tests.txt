@@ -1,0 +1,39 @@
+# ------------------------------------------------------------
+# Project paths
+#
+
+cat > ${HOME?}/firethorn.settings << 'EOF'
+FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
+FIRETHORN_NAME=devel
+FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
+EOF
+
+# TTY #1 ------------------------------------------------------------
+# Create a SSH tunnel to the ROE database server.
+# ** leave this running for the duration of the tests **
+#
+
+    ssh -v -L 1433:ramses3:1433 fenrir.roe.ac.uk
+
+# TTY #2 ------------------------------------------------------------
+# Build and deploy the firethorn webapp 
+#
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}"
+
+        #
+        # Build everything 
+        mvn clean install
+        
+        #
+        # Deploy the FireThorn webapp.
+        pushd "firethorn-war" ; mvn tomcat7:run  | tee /tmp/firethorn-tomcat.log ; popd
+        
+    popd
+
+# TTY #2 ------------------------------------------------------------
+# Build and deploy the ogsa-dai webapp 
+#
+
+

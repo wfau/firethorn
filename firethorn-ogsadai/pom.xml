@@ -78,11 +78,29 @@
 
         <!--+
             | SpringSource repository.
-            +-->
         <repository>
             <id>springsource-repo</id>
             <name>SpringSource Repository</name>
             <url>http://repo.springsource.org/release</url>
+        </repository>
+            +-->
+
+        <!--+
+            | Local repository for our OGSA-DAI libraries.
+            +-->
+        <repository>
+            <id>firethorn-ogsadai</id>
+            <name>Local repository for our OGSA-DAI libraries</name>
+            <url>http://data.metagrid.co.uk/wfau/maven/ogsadai</url>
+            <layout>default</layout>
+            <!--+
+                | SNAPSHOT cacheing policy.
+                | http://stackoverflow.com/questions/5901378/what-exactly-is-a-maven-snapshot-and-why-do-we-need-it
+                +-->
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
         </repository>
 
     </repositories>

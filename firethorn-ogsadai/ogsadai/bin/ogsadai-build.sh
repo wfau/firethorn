@@ -17,6 +17,7 @@
 #
 #
 
+
 #
 # Set our main path environment variables.
 OGSADAI_BASE=${OGSADAI_BASE:-/var/local/projects/edinburgh/ogsa-dai}
@@ -60,12 +61,6 @@ else
             fi
         popd
         }
-
-    #'ogsa-dai/trunk/core'
-    #'ogsa-dai/trunk/release-scripts'
-    #'ogsa-dai/trunk/extensions/dqp'
-    #'ogsa-dai/trunk/extensions/astro'
-    #'ogsa-dai/trunk/extensions/relational'
 
     checksource 'ogsa-dai/trunk'
     checksource 'sandbox/dqp/server'
@@ -346,6 +341,7 @@ else
                 -D artifactId=ogsadai-jersey-webapp \
                 -D version=4.2 \
                 -D packaging=war \
+                -D createChecksum=true \
                 -D file="build/ogsadai-4.2-jersey-1.10-bin/dai.war"
 
             mvn install:install-file  \
@@ -353,20 +349,23 @@ else
                 -D artifactId=ogsadai-jersey-client \
                 -D version=4.2 \
                 -D packaging=jar \
-                -D file="src/extensions/astro/server/build/lib/ogsadai-jersey-client-4.2.jar"
+                -D createChecksum=true \
+                -D file="src/presentation/jersey/client/build/lib/ogsadai-jersey-client-4.2.jar"
 
             mvn install:install-file  \
                 -D groupId=uk.org.ogsadai  \
                 -D artifactId=ogsadai-jersey-common \
                 -D version=4.2 \
                 -D packaging=jar \
-                -D file="src/extensions/astro/server/build/lib/ogsadai-jersey-common-4.2.jar"
+                -D createChecksum=true \
+                -D file="src/presentation/jersey/common/build/lib/ogsadai-jersey-common-4.2.jar"
 
             mvn install:install-file  \
                 -D groupId=uk.org.ogsadai  \
                 -D artifactId=ogsadai-server \
                 -D version=4.2 \
                 -D packaging=jar \
+                -D createChecksum=true \
                 -D file="src/core/server/build/lib/ogsadai-server-4.2.jar"
 
             mvn install:install-file  \
@@ -374,13 +373,15 @@ else
                 -D artifactId=ogsadai-client \
                 -D version=4.2 \
                 -D packaging=jar \
-                -D file="src/core/clientserver/build/lib/ogsadai-client-4.2.jar"
+                -D createChecksum=true \
+                -D file="src/core/client/build/lib/ogsadai-client-4.2.jar"
 
             mvn install:install-file  \
                 -D groupId=uk.org.ogsadai  \
                 -D artifactId=ogsadai-clientserver \
                 -D version=4.2 \
                 -D packaging=jar \
+                -D createChecksum=true \
                 -D file="src/core/clientserver/build/lib/ogsadai-clientserver-4.2.jar"
 
             mvn install:install-file  \
@@ -388,13 +389,15 @@ else
                 -D artifactId=ogsadai-common \
                 -D version=4.2 \
                 -D packaging=jar \
-                -D file="src/core/clientserver/build/lib/ogsadai-common-4.2.jar"
+                -D createChecksum=true \
+                -D file="src/core/common/build/lib/ogsadai-common-4.2.jar"
 
             mvn install:install-file  \
                 -D groupId=uk.org.ogsadai  \
                 -D artifactId=ogsadai-dqp-server \
                 -D version=4.2 \
                 -D packaging=jar \
+                -D createChecksum=true \
                 -D file="src/extensions/dqp/server/build/lib/ogsadai-dqp-server-4.2.jar"
 
             mvn install:install-file  \
@@ -402,13 +405,15 @@ else
                 -D artifactId=ogsadai-basic-client \
                 -D version=4.2 \
                 -D packaging=jar \
-                -D file="src/extensions/astro/client/build/lib/ogsadai-basic-client-4.2.jar"
+                -D createChecksum=true \
+                -D file="src/extensions/basic/client/build/lib/ogsadai-basic-client-4.2.jar"
 
             mvn install:install-file  \
                 -D groupId=uk.org.ogsadai  \
                 -D artifactId=ogsadai-astro-client \
                 -D version=4.2 \
                 -D packaging=jar \
+                -D createChecksum=true \
                 -D file="src/extensions/astro/client/build/lib/ogsadai-astro-client-4.2.jar"
 
             mvn install:install-file  \
@@ -416,6 +421,7 @@ else
                 -D artifactId=ogsadai-astro-server \
                 -D version=4.2 \
                 -D packaging=jar \
+                -D createChecksum=true \
                 -D file="src/extensions/astro/server/build/lib/ogsadai-astro-server-4.2.jar"
 
             mvn install:install-file  \
@@ -423,7 +429,16 @@ else
                 -D artifactId=ogsadai-relational-client \
                 -D version=4.2 \
                 -D packaging=jar \
-                -D file="src/extensions/astro/server/build/lib/ogsadai-relational-client-4.2.jar"
+                -D createChecksum=true \
+                -D file="src/extensions/relational/client/build/lib/ogsadai-relational-client-4.2.jar"
+
+            mvn install:install-file  \
+                -D groupId=uk.org.ogsadai  \
+                -D artifactId=ogsadai-relational-server \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D createChecksum=true \
+                -D file="src/extensions/relational/server/build/lib/ogsadai-relational-server-4.2.jar"
 
         popd
     popd

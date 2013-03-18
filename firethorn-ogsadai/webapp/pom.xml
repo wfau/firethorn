@@ -110,12 +110,6 @@
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-metadata-common</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-metadata-client</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
@@ -123,12 +117,6 @@
 
         <!--+
             | Our result processing activity.
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-activity-common</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-        </dependency>
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>

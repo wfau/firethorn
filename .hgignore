@@ -30,3 +30,6 @@ target
 .settings
 .factorypath
 
+# Java core dumps
+hs_err_*.log
+

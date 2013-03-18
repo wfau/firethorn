@@ -71,7 +71,7 @@
         </dependency>
 
         <!--+
-            | Our logging components.
+            | FireThorn logging components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -81,7 +81,7 @@
         </dependency>
 
         <!--+
-            | Our testing components.
+            | FireThorn testing components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -92,13 +92,13 @@
 
         <!--+
             | The OGSA-DAI components used by our code.
-            +-->
         <dependency>
             <groupId>uk.org.ogsadai</groupId>
             <artifactId>ogsadai-clientserver</artifactId>
             <version>${ogsadai.version}</version>
             <type>jar</type>
         </dependency>
+            +-->
 
     </dependencies>
 
