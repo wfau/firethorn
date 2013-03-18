@@ -51,10 +51,10 @@
     </bean>
 
     <!--+
-        | Uber spanning data node.
+        | WFAU spanning data node.
         +-->
-    <bean id="uber" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
-        <constructor-arg name="resourceID"     value="uber"/>
+    <bean id="wfau" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+        <constructor-arg name="resourceID"     value="wfau"/>
         <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
         <property name="operatorSupport"       ref="defaultFeatureSupport"/>
         <property name="expressionSupport"     ref="defaultFeatureSupport"/>
@@ -64,8 +64,8 @@
     <!--+
         | Local user data node.
         +-->
-    <bean id="hsqlone" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
-        <constructor-arg name="resourceID"     value="hsqlone"/>
+    <bean id="user" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+        <constructor-arg name="resourceID"     value="user"/>
         <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
         <property name="operatorSupport"       ref="defaultFeatureSupport"/>
         <property name="expressionSupport"     ref="defaultFeatureSupport"/>
@@ -92,11 +92,11 @@
                 <entry key="ukidss">
                     <ref bean="ukidss"/>
                 </entry>
-                <entry key="uber">
-                    <ref bean="uber"/>
+                <entry key="wfau">
+                    <ref bean="wfau"/>
                 </entry>
-                <entry key="hsqlone">
-                    <ref bean="hsqlone"/>
+                <entry key="user">
+                    <ref bean="user"/>
                 </entry>
             </map>
         </property>
@@ -108,5 +108,5 @@
         </property>
 
     </bean>
-
 </beans>
+

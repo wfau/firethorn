@@ -16,13 +16,13 @@ username={SQL-USER}
 password={SQL-PASS}
 LOGIN-END
 END
-id=hsqlone
+id=wfau
 userID=*
-username=sa
-password=
+username={SQL-USER}
+password={SQL-PASS}
 LOGIN-END
 END
-id=userdata
+id=user
 userID=*
 username={SQL-USER}
 password={SQL-PASS}

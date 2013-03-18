@@ -824,7 +824,7 @@ implements AdqlQuery, AdqlParserQuery
 
     public static final String endpoint  = "http://localhost:8081/albert/services" ;
     public static final String dqpname   = "testdqp" ;
-    public static final String storename = "userdata" ;
+    public static final String storename = "user" ;
     
     @Override
     public Future<Status> execute()

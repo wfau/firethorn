@@ -4,8 +4,7 @@
 
 cat > ${HOME?}/firethorn.settings << 'EOF'
 FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
-FIRETHORN_NAME=devel
-FIRETHORN_CODE=${FIRETHORN_BASE?}/${FIRETHORN_NAME?}
+FIRETHORN_CODE=${FIRETHORN_CODE:-${FIRETHORN_BASE?}/devel}
 EOF
 
 # TTY #1 ------------------------------------------------------------
@@ -27,13 +26,306 @@ EOF
         mvn clean install
         
         #
-        # Deploy the FireThorn webapp.
-        pushd "firethorn-war" ; mvn tomcat7:run  | tee /tmp/firethorn-tomcat.log ; popd
+        # Deploy the webapp in Tomcat.
+        pushd "firethorn-war"
+
+
+            mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+            #
+            # re-build core
+            pushd "../firethorn-tap" ; mvn clean install ; popd
+
+        popd
         
     popd
 
-# TTY #2 ------------------------------------------------------------
+
+# TTY #3 ------------------------------------------------------------
 # Build and deploy the ogsa-dai webapp 
 #
 
+    #
+    # Use config from server etc directory.
+    #FIRETHORN_CONF=${FIRETHORN_CONF:-/etc/firethorn}
+    #
+    # Use config from our home directory.
+    FIRETHORN_CONF=${FIRETHORN_CONF:-${HOME?}/firethorn}
+
+    #
+    # Deploy the OGSA-DAI webapp.
+    source ${HOME?}/firethorn.settings
+    pushd ${FIRETHORN_CODE?}/firethorn-ogsadai/webapp
+
+        #
+        # Load the JDBC config functions.
+        source src/test/bin/jdbc-functions.sh
+
+        #
+        # Create a clean war file.
+        mvn clean compile war:war
+
+        #
+        # Configure our JDBC resources.
+        jdbcconfig twomass  ${FIRETHORN_CONF?}/livetwomass.conf
+        jdbcconfig ukidss   ${FIRETHORN_CONF?}/liveukidss.conf
+        jdbcconfig wfau     ${FIRETHORN_CONF?}/wfau-ogsadai.conf
+        jdbcconfig user     ${FIRETHORN_CONF?}/user-ogsadai.conf
+
+        #
+        # Deploy the webapp in Tomcat.
+        mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
+        
+    popd
+
+# TTY #4 ------------------------------------------------------------
+# Initialise our metadata 
+#
+
+    pushd $(mktemp --directory)
+
+        #
+        # Download the 'resty' wrapper for curl.
+        curl -# -L http://github.com/micha/resty/raw/master/resty > resty
+        source resty
+
+        #
+        # Download the 'pp' pretty print script.
+        curl -# -L http://github.com/micha/resty/raw/master/pp > pp
+        chmod a+x pp
+
+        #
+        # Set the base URL and options.
+        metahostname=localhost
+        metahostport=8080
+        metabasename="http://${metahostname?}:${metahostport?}/firethorn"
+        
+        #
+        # Unique name generator 
+        unique()
+            {
+            date '+%Y%m%d-%H%M%S%N'
+            }
+
+        #
+        # Create a 'define' function for setting heredoc variables.
+        # http://stackoverflow.com/questions/1167746/how-to-assign-a-heredoc-value-to-a-variable-in-bash
+        define()
+            {
+            IFS='\n' read -r -d '' ${1} || true;
+            }
+
+        #
+        # Initialise our REST client.
+        resty "${metabasename?}" -W -H 'Accept: application/json'
+
+        # -------- --------
+        # JDBC ....
+
+cat > init-jdbc.sh << EOF
+
+        #
+        # Create our JDBC TWOMASS resource.
+        POST "/jdbc/resource/create" \
+            -d "jdbc.resource.create.url=spring:RoeTWOMASS" \
+            -d "jdbc.resource.create.name=jdbc-twomass" \
+            -d "jdbc.resource.create.ogsadai=twomass" \
+            | ./pp
+
+        #
+        # Check the resouce properties.
+        GET "/jdbc/resource/1" | ./pp
+
+        #
+        # Create our JDBC UKIDSS resource.
+        POST "/jdbc/resource/create" \
+            -d "jdbc.resource.create.url=spring:RoeUKIDSS" \
+            -d "jdbc.resource.create.name=jdbc-ukidss" \
+            -d "jdbc.resource.create.ogsadai=ukidss" \
+            | ./pp
+
+        #
+        # Check the resouce properties.
+        GET "/jdbc/resource/2" | ./pp
+
+        #
+        # List the JDBC TWOMASS schema.
+        GET "/jdbc/resource/1/schemas/select" | ./pp
+
+        #
+        # List the JDBC UKIDSS schema.
+        GET "/jdbc/resource/2/schemas/select" | ./pp
+
+        #
+        # List the JDBC TWOMASS tables.
+        GET "/jdbc/schema/1/tables/select" | ./pp
+
+        #
+        # List the JDBC UKIDSS tables.
+        GET "/jdbc/schema/2/tables/select" | ./pp
+
+        #
+        # Get the details for the twomass_psc table.
+        # http://localhost:8080/firethorn/jdbc/table/5
+        GET "/jdbc/schema/1/tables/select" \
+            -q "jdbc.schema.table.select.name=twomass_psc" \
+            | ./pp
+
+        #
+        # Get the details for the gcsPointSource table.
+        # http://localhost:8080/firethorn/jdbc/table/120
+        GET "/jdbc/schema/2/tables/select" \
+            -q "jdbc.schema.table.select.name=gcsPointSource" \
+            | ./pp
+
+        #
+        # Get the details for the gcsSourceXtwomass_psc table.
+        # http://localhost:8080/firethorn/jdbc/table/41
+        GET "/jdbc/schema/2/tables/select" \
+            -q "jdbc.schema.table.select.name=gcsSourceXtwomass_psc" \
+            | ./pp
+
+        #
+        # Get the details for the twomass_psc ra column.
+        GET "/jdbc/table/5/columns/select" \
+            -q "jdbc.table.column.select.name=ra" \
+            | ./pp
+
+        #
+        # Get the details for the gcsPointSource ra column.
+        GET "/jdbc/table/120/columns/select" \
+            -q "jdbc.table.column.select.name=ra" \
+            | ./pp
+
+EOF
+
+        # -------- --------
+        # ADQL ....
+
+cat > init-adql.sh << EOF
+
+        #
+        # Create a new ADQL resource.
+        POST "/adql/resource/create" \
+            --data "adql.resource.create.name=adql-workspace" \
+            | ./pp
+
+        #
+        # Create a new ADQL schema.
+        POST "/adql/resource/3/schemas/create" \
+            --data "adql.resource.schema.create.name=adql_schema" \
+            | ./pp
+
+        #
+        # Import the twomass table into the ADQL schema.
+        # http://localhost:8080/firethorn/adql/table/140
+        POST "/adql/schema/3/tables/import" \
+            --data "adql.schema.table.import.base=${metabasename?}/jdbc/table/5" \
+            | ./pp
+
+        #
+        # Import the ukidss tables into the ADQL schema.
+        # http://localhost:8080/firethorn/adql/table/141
+        POST "/adql/schema/3/tables/import" \
+            --data "adql.schema.table.import.base=${metabasename?}/jdbc/table/41" \
+            | ./pp
+
+        # http://localhost:8080/firethorn/adql/table/142
+        POST "/adql/schema/3/tables/import" \
+            --data "adql.schema.table.import.base=${metabasename?}/jdbc/table/120" \
+            | ./pp
+
+        #
+        # Check the ADQL tables.
+        GET "/adql/schema/3/tables/select" | ./pp
+
+        #
+        # Check the table mapping service.
+        GET "/meta/table/JDBC_5" | ./pp
+
+        #
+        # Get the attribute list for the twomass table.
+        GET "/meta/table/JDBC_5/columns"   | ./pp
+
+        #
+        # Get a named attribute for the twomass table.
+        GET "/meta/table/JDBC_5/column/ra" | ./pp
+
+        #
+        # Get the attribute list for the ukidss table(s).
+        GET "/meta/table/JDBC_141/columns"   | ./pp
+
+        GET "/meta/table/JDBC_142/columns"   | ./pp
+
+EOF
+
+cat > query-000.adql << EOF
+
+    SELECT
+        twomass.ra AS tmra,
+        ukidss.ra  AS ukra,
+        (twomass.ra - ukidss.ra) AS difra,
+        twomass.dec AS tmdec,
+        ukidss.dec  AS ukdec,
+        (twomass.ra - ukidss.ra) AS difdec,
+        neighbour.distanceMins AS dist
+    FROM
+        adql_schema.twomass_psc AS twomass,
+        adql_schema.gcsPointSource AS ukidss,
+        adql_schema.gcsSourceXtwomass_psc AS neighbour
+    WHERE
+        twomass.ra  >= '55.0'
+    AND
+        twomass.ra  <= '55.9'
+    AND
+        twomass.dec >= '20.0'
+    AND
+        twomass.dec <= '22.9'
+    AND
+        ukidss.ra  >= '55.0'
+    AND
+        ukidss.ra  <= '55.9'
+    AND
+        ukidss.dec >= '20.0'
+    AND
+        ukidss.dec <= '22.9'
+    AND
+        neighbour.masterObjID = ukidss.sourceID
+    AND
+        neighbour.slaveObjID = twomass.pts_key
+    AND
+        neighbour.distanceMins < 1E-3
+
+EOF
+
+cat > init-query.sh << 'EOF'
+
+        #
+        # Create the ADQL query.
+        query=$(
+        POST "/adql/resource/3/queries/create" \
+            --data-urlencode "adql.resource.query.create.name=test-query" \
+            --data-urlencode "adql.resource.query.create.query@query-000.adql" \
+            | ./pp \
+            | sed -n 's#"ident" : ".*\(/adql/query/[0-9]*\).*#\1#p'
+            )
+        query=$(echo "${query?}" | sed 's/[ ]*//g')
+
+        GET "${query?}" \
+            | ./pp
+
+        #
+        # Run ADQL query.
+        POST "${query?}" \
+            --data-urlencode "adql.query.update.status=RUNNING" \
+            | ./pp
+
+EOF
+
+#
+# Run our scripts.
+
+    source init-jdbc.sh
+    source init-adql.sh
+    source init-query.sh
 

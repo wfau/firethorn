@@ -51,10 +51,21 @@
     </bean>
 
     <!--+
-        | Uber spanning data node.
+        | WFAU data node.
         +-->
     <bean id="uber" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
-        <constructor-arg name="resourceID"     value="uber"/>
+        <constructor-arg name="resourceID"     value="wfau"/>
+        <constructor-arg name="evaluationNode" ref="MockDqpEval"/>
+        <property name="operatorSupport"       ref="defaultFeatureSupport"/>
+        <property name="expressionSupport"     ref="defaultFeatureSupport"/>
+        <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
+    </bean>
+
+    <!--+
+        | User data node.
+        +-->
+    <bean id="user" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+        <constructor-arg name="resourceID"     value="user"/>
         <constructor-arg name="evaluationNode" ref="MockDqpEval"/>
         <property name="operatorSupport"       ref="defaultFeatureSupport"/>
         <property name="expressionSupport"     ref="defaultFeatureSupport"/>
@@ -81,8 +92,11 @@
                 <entry key="ukidss">
                     <ref bean="ukidss"/>
                 </entry>
-                <entry key="uber">
-                    <ref bean="uber"/>
+                <entry key="wfau">
+                    <ref bean="wfau"/>
+                </entry>
+                <entry key="user">
+                    <ref bean="user"/>
                 </entry>
             </map>
         </property>

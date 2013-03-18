@@ -209,7 +209,7 @@
             <url>http://data.metagrid.co.uk/wfau/maven/publish</url>
             <layout>default</layout>
             <!--+
-                | SNAPSHOT cacheing policy.
+                | SNAPSHOT policy.
                 | http://stackoverflow.com/questions/5901378/what-exactly-is-a-maven-snapshot-and-why-do-we-need-it
                 +-->
             <snapshots>
@@ -238,6 +238,19 @@
         </repository>
 
     </repositories>
+
+    <pluginRepositories>
+
+        <!--+
+            | Apache Tomcat plugin repository.
+            +-->
+        <pluginRepository>
+            <id>apache-snapshot</id>
+            <name>Apache snapshot</name>
+            <url>https://repository.apache.org/content/groups/snapshots/</url>
+        </pluginRepository>
+
+    </pluginRepositories>
 
     <dependencyManagement>
 
@@ -480,78 +493,6 @@
                 <artifactId>stil-votable</artifactId>
                 <version>3.0.2</version>
             </dependency>
-
-            <!--+
-                | Our logging components.
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>firethorn-logging</artifactId>
-                <version>${project.version}</version>
-                <type>pom</type>
-            </dependency>
-                +-->
-
-            <!--+
-                | Our testing components.
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>firethorn-testing</artifactId>
-                <version>${project.version}</version>
-                <scope>test</scope>
-                <type>pom</type>
-            </dependency>
-                +-->
-
-            <!--+
-                | Our Spring components.
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>firethorn-spring</artifactId>
-                <version>${project.version}</version>
-                <type>pom</type>
-            </dependency>
-                +-->
-
-            <!--+
-                | Our OGSA-DAI components.
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>firethorn-ogsadai</artifactId>
-                <version>${project.version}</version>
-                <type>pom</type>
-            </dependency>
-                +-->
-
-            <!--+
-                | Local build of the CDS tools based on a pre-release version of the CDS TAP library.
-                | This may contain some unpublished classes from the other CDS projects (cds-uws-3.1).
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>firethorn-cds-lib</artifactId>
-                <version>${project.version}</version>
-                <type>jar</type>
-            </dependency>
-                +-->
-
-            <!--+
-                | The FireThorn webservice.
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>firethorn-tap</artifactId>
-                <version>${project.version}</version>
-                <type>pom</type>
-            </dependency>
-                +-->
-
-            <!--+
-                | The FireThorn webapp.
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>firethorn-war</artifactId>
-                <version>${project.version}</version>
-                <type>pom</type>
-            </dependency>
-                +-->
 
         </dependencies>
     </dependencyManagement>

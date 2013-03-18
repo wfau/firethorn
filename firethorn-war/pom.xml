@@ -55,19 +55,6 @@
     <properties>
     </properties>
 
-    <pluginRepositories>
-
-        <!--+
-            | Apache snapshot repository.
-            +-->
-        <pluginRepository>
-            <id>apache-snapshot</id>
-            <name>Apache snapshot</name>
-            <url>https://repository.apache.org/content/groups/snapshots/</url>
-        </pluginRepository>
-
-    </pluginRepositories>
-
     <dependencies>
 
         <!--+

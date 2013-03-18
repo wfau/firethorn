@@ -148,16 +148,15 @@ EOF
 # Initialise our test metadata 
 #
 
-    base=$(mktemp --directory)
-    pushd ${base?}
+    pushd $(mktemp --directory)
 
         #
-        # Install the 'resty' wrapper for curl.
+        # Download the 'resty' wrapper for curl.
         curl -# -L http://github.com/micha/resty/raw/master/resty > resty
         source resty
 
         #
-        # Install the 'pp' pretty print script.
+        # Download the 'pp' pretty print script.
         curl -# -L http://github.com/micha/resty/raw/master/pp > pp
         chmod a+x pp
 
@@ -382,7 +381,7 @@ cat > init-query.sh << 'EOF'
             | ./pp
 
         #
-        # Update the ADQL query.
+        # Run ADQL query.
         POST "${query?}" \
             --data-urlencode "adql.query.update.status=RUNNING" \
             | ./pp
