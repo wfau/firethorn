@@ -110,13 +110,13 @@ extends Entity
 
     /**
      * Job executor interface.
-     * This wraps the Job.status(), Job.prepare() and Job.execute() methods with Spring managed Transaction handling and Concurrency.
+     * This wraps the Job.status(), Job.prepare() and Job.execute() methods with Spring managed Transaction handling.
      *
      */
     public static interface Executor
         {
         /**
-         * Interface for an update.
+         * Functor interface for an update.
          * 
          */
         public static interface Update
@@ -136,6 +136,10 @@ extends Entity
          */
         public static interface Executable
             {
+            /**
+             * Execute the function.
+             *
+             */
             public Status execute();
             }
         

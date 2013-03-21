@@ -188,7 +188,7 @@
             | Skip tests by default.
             | https://maven.apache.org/surefire/maven-surefire-plugin/examples/skipping-test.html
             | Explicitly enable on the command line when we want them.
-            | mvn install -DskipTests=false 
+            | mvn install -D skipTests=false 
             +-->
         <skipTests>true</skipTests>
 

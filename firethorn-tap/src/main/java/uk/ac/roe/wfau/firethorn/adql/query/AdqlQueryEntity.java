@@ -649,17 +649,6 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     /**
-     * Parse the query and update our properties.
-     *
-    protected Status parse()
-        {
-        return parse(
-            null
-            );
-        }
-     */
-
-    /**
      * Parse our input and update our properties.
      *
      */
@@ -864,7 +853,7 @@ implements AdqlQuery, AdqlParserQuery
                                             )
                                         );
                                     //
-                                    // Executethe pipleline.
+                                    // Execute the pipleline.
 
 // if direct, use query resource
 // else use dqp
