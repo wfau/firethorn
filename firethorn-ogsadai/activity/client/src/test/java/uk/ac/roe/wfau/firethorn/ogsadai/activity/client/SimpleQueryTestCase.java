@@ -65,7 +65,7 @@ extends SimpleQueryTestBase
      * Single catalog, UKIDSSDR1.
      *
      */
-    //@Test
+    @Test
     public void test002()
     throws Exception
         {
@@ -88,13 +88,13 @@ extends SimpleQueryTestBase
      * Multiple catalog, TWOMASS and UKIDSSDR1, using JDBC direct.
      *
      */
-    //@Test
+    @Test
     public void test003()
     throws Exception
         {
         execute(
             endpoint,
-            "uber",
+            "wfau",
             " SELECT" +
             "    twomass.ra AS tmra," +
             "    ukidss.ra  AS ukra,"  +

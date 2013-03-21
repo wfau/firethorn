@@ -94,11 +94,16 @@ EOF
         curl -# -L http://github.com/micha/resty/raw/master/pp > pp
         chmod a+x pp
 
+
         #
         # Set the base URL and options.
         metahostname=localhost
         metahostport=8080
         metabasename="http://${metahostname?}:${metahostport?}/firethorn"
+
+        #
+        # Initialise our REST client.
+        resty "${metabasename?}" -W -H 'Accept: application/json'
         
         #
         # Unique name generator 
@@ -116,8 +121,12 @@ EOF
             }
 
         #
-        # Initialise our REST client.
-        resty "${metabasename?}" -W -H 'Accept: application/json'
+        # Create an 'ident' function to get the short ident from a json response.
+        ident()
+            {
+            ./pp | sed -n 's|^ *"ident" : "'${metabasename?}'\(.*\)"[^"]*|\1|p'
+            }
+
 
         # -------- --------
         # JDBC ....
@@ -126,93 +135,88 @@ cat > init-jdbc.sh << 'EOF'
 
         #
         # Create our TWOMASS resource.
-        twomass=$(
+        jdbctwomass=$(
             POST "/jdbc/resource/create" \
                 -d "jdbc.resource.create.url=spring:RoeTWOMASS" \
                 -d "jdbc.resource.create.name=twomass-$(unique)" \
                 -d "jdbc.resource.create.ogsadai=twomass" \
-                | ./pp \
-                | sed -n 's| *"ident" : "'${metabasename?}'\(.*\)"[^"]*|\1|p'
+                | ident
                 )
 
         #
         # Check the TWOMASS resource.
-        GET "${twomass?}" | ./pp
+        GET "${jdbctwomass?}" | ./pp
 
         #
         # List the TWOMASS schema.
-        GET "${twomass?}/schemas/select" | ./pp
+        GET "${jdbctwomass?}/schemas/select" | ./pp
 
         #
         # List the TWOMASS tables.
-        for schema in $(
-            GET "${twomass?}/schemas/select"  \
-                | ./pp \
-                | sed -n 's| *"ident" : "'${metabasename?}'\(.*\)"[^"]*|\1|p'
+        for jdbcschema in $(
+            GET "${jdbctwomass?}/schemas/select"  \
+                | ident
             )
             do
-                GET "${schema?}/tables/select" | ./pp
+                GET "${jdbcschema?}/tables/select" | ./pp
             done
 
         #
         # Create our UKIDSS resource.
-        ukidss=$(
+        jdbcukidss=$(
             POST "/jdbc/resource/create" \
                 -d "jdbc.resource.create.url=spring:RoeUKIDSS" \
                 -d "jdbc.resource.create.name=ukidss-$(unique)" \
                 -d "jdbc.resource.create.ogsadai=ukidss" \
-                | ./pp \
-                | sed -n 's| *"ident" : "'${metabasename?}'\(.*\)"[^"]*|\1|p'
+                | ident
                 )
 
         #
         # Check the UKIDSS resource.
-        GET "${ukidss?}"  | ./pp
+        GET "${jdbcukidss?}"  | ./pp
 
         #
         # List the UKIDSS schema.
-        GET "${ukidss?}/schemas/select" | ./pp
+        GET "${jdbcukidss?}/schemas/select" | ./pp
 
         #
         # List the UKIDSS tables.
-        for schema in $(
-            GET "${ukidss?}/schemas/select"  \
-                | ./pp \
-                | sed -n 's| *"ident" : "'${metabasename?}'\(.*\)"[^"]*|\1|p'
+        for jdbcschema in $(
+            GET "${jdbcukidss?}/schemas/select"  \
+                | ident
             )
             do
-                GET "${schema?}/tables/select" | ./pp
+                GET "${jdbcschema?}/tables/select" | ./pp
             done
 
         #
         # Create our WFAU resource.
-        wfau=$(
+        jdbcwfau=$(
             POST "/jdbc/resource/create" \
                 -d "jdbc.resource.create.url=spring:RoeWFAU" \
                 -d "jdbc.resource.create.name=wfau-$(unique)" \
                 -d "jdbc.resource.create.ogsadai=wfau" \
                 -d "jdbc.resource.create.catalog=*" \
-                | ./pp \
-                | sed -n 's| *"ident" : "'${metabasename?}'\(.*\)"[^"]*|\1|p'
+                | ident
                 )
 
         #
         # Check the WFAU resource.
-        GET "${wfau?}"  | ./pp
+        GET "${jdbcwfau?}" \
+            | ./pp
 
         #
         # List the WFAU schema.
-        GET "${wfau?}/schemas/select" | ./pp
+        GET "${jdbcwfau?}/schemas/select" | ./pp
 
         #
         # List the WFAU tables.
-        for schema in $(
-            GET "${wfau?}/schemas/select"  \
-                | ./pp \
-                | sed -n 's| *"ident" : "'${metabasename?}'\(.*\)"[^"]*|\1|p'
+        for jdbcschema in $(
+            GET "${jdbcwfau?}/schemas/select"  \
+                | ident
             )
             do
-                GET "${schema?}/tables/select" | ./pp
+                GET "${jdbcschema?}/tables/select" | ./pp
             done
 
 EOF
@@ -222,60 +226,101 @@ EOF
 
 cat > init-adql.sh << 'EOF'
 
-TODO ...
-
         #
-        # Create a new ADQL resource.
-        POST "/adql/resource/create" \
-            --data "adql.resource.create.name=workspace-$(unique)" \
-            | ./pp
+        # Create a new ADQL workspace.
+        adqlspace=$(
+            POST "/adql/resource/create" \
+                --data "adql.resource.create.name=workspace-$(unique)" \
+                | ident
+                )
 
         #
         # Create a new ADQL schema.
-        POST "/adql/resource/3/schemas/create" \
-            --data "adql.resource.schema.create.name=schema-$(unique)" \
+        adqlschema=$(
+            POST "${adqlspace?}/schemas/create" \
+                --data "adql.resource.schema.create.name=adql_schema" \
+                | ident
+                )
+
+        #
+        # Import the TWOMASS 'twomass_psc' table.
+        jdbcschema=$(
+            POST "${jdbctwomass?}/schemas/select" \
+                -d "jdbc.resource.schema.select.name=TWOMASS.dbo" \
+                | ident
+                )
+        GET "${jdbcschema?}" \
+            | ./pp
+
+        jdbctable=$(
+            POST "${jdbcschema?}/tables/select" \
+                -d "jdbc.schema.table.select.name=twomass_psc" \
+                | ident
+                )
+        GET "${jdbctable?}" \
+            | ./pp
+
+        POST "${adqlschema?}/tables/import" \
+            --data "adql.schema.table.import.base=${metabasename?}/${jdbctable?}" \
+            | ./pp
+
+
+        #
+        # Import the UKIDSS 'gcsPointSource' table.
+        jdbcschema=$(
+            POST "${jdbcukidss?}/schemas/select" \
+                -d "jdbc.resource.schema.select.name=UKIDSSDR5PLUS.dbo" \
+                | ident
+                )
+        jdbctable=$(
+            POST "${jdbcschema?}/tables/select" \
+                -d "jdbc.schema.table.select.name=gcsPointSource" \
+                | ident
+                )
+        POST "${adqlschema?}/tables/import" \
+            --data "adql.schema.table.import.base=${metabasename?}/${jdbctable?}" \
             | ./pp
 
         #
-        # Import the twomass table into the ADQL schema.
-        # http://localhost:8080/firethorn/adql/table/140
-        POST "/adql/schema/3/tables/import" \
-            --data "adql.schema.table.import.base=${metabasename?}/jdbc/table/5" \
-            | ./pp
-
-        #
-        # Import the ukidss tables into the ADQL schema.
-        # http://localhost:8080/firethorn/adql/table/141
-        POST "/adql/schema/3/tables/import" \
-            --data "adql.schema.table.import.base=${metabasename?}/jdbc/table/41" \
-            | ./pp
-
-        # http://localhost:8080/firethorn/adql/table/142
-        POST "/adql/schema/3/tables/import" \
-            --data "adql.schema.table.import.base=${metabasename?}/jdbc/table/120" \
+        # Import the UKIDSS 'gcsSourceXtwomass_psc' table.
+        jdbcschema=$(
+            POST "${jdbcukidss?}/schemas/select" \
+                -d "jdbc.resource.schema.select.name=UKIDSSDR5PLUS.dbo" \
+                | ident
+                )
+        jdbctable=$(
+            POST "${jdbcschema?}/tables/select" \
+                -d "jdbc.schema.table.select.name=gcsSourceXtwomass_psc" \
+                | ident
+                )
+        POST "${adqlschema?}/tables/import" \
+            --data "adql.schema.table.import.base=${metabasename?}/${jdbctable?}" \
             | ./pp
 
         #
         # Check the ADQL tables.
-        GET "/adql/schema/3/tables/select" | ./pp
+        GET "/${adqlschema?}/tables/select" | ./pp
 
         #
-        # Check the table mapping service.
-        GET "/meta/table/JDBC_5" | ./pp
+        # Check the OGSA-DAI metadata for the gcsPointSource table.
+        adqlalias=$(
+            POST "${adqlschema?}/tables/select" \
+                -d "adql.schema.table.select.name=gcsPointSource" \
+                | ./pp \
+                | sed -n 's/^ *"alias" : "\([^"]*\)"[^"]*/\1/p' \
+                )                
 
         #
-        # Get the attribute list for the twomass table.
-        GET "/meta/table/JDBC_5/columns"   | ./pp
+        # Check the table mapping.
+        GET "/meta/table/${adqlalias?}" | ./pp
 
         #
-        # Get a named attribute for the twomass table.
-        GET "/meta/table/JDBC_5/column/ra" | ./pp
+        # Get the attribute list.
+        GET "/meta/table/${adqlalias?}/columns" | ./pp
 
         #
-        # Get the attribute list for the ukidss table(s).
-        GET "/meta/table/JDBC_141/columns"   | ./pp
-
-        GET "/meta/table/JDBC_142/columns"   | ./pp
+        # Get a named attribute.
+        GET "/meta/table/${adqlalias?}/column/ra" | ./pp
 
 EOF
 
@@ -318,29 +363,205 @@ cat > query-000.adql << 'EOF'
 
 EOF
 
-cat > init-query.sh << 'EOF'
+cat > adql-query.sh << 'EOF'
 
         #
         # Create the ADQL query.
-        query=$(
-        POST "/adql/resource/3/queries/create" \
+        adqlquery=$(
+        POST "${adqlspace?}/queries/create" \
             --data-urlencode "adql.resource.query.create.name=query-$(unique)" \
             --data-urlencode "adql.resource.query.create.query@query-000.adql" \
-            | ./pp \
-            | sed -n 's#"ident" : ".*\(/adql/query/[0-9]*\).*#\1#p'
+            | ident
             )
-        query=$(echo "${query?}" | sed 's/[ ]*//g')
 
-        GET "${query?}" \
+        GET "${adqlquery?}" \
             | ./pp
 
         #
         # Run ADQL query.
-        POST "${query?}" \
+        POST "${adqlquery?}" \
             --data-urlencode "adql.query.update.status=RUNNING" \
             | ./pp
 
 EOF
+
+        # -------- --------
+        # WFAU ....
+
+cat > init-wfau.sh << 'EOF'
+
+        #
+        # Create a new ADQL workspace.
+        wfauspace=$(
+            POST "/adql/resource/create" \
+                --data "adql.resource.create.name=workspace-$(unique)" \
+                | ident
+                )
+
+        #
+        # Create a new ADQL schema.
+        wfauschema=$(
+            POST "${wfauspace?}/schemas/create" \
+                --data "adql.resource.schema.create.name=wfau_schema" \
+                | ident
+                )
+
+        #
+        # Import the WFAU/TWOMASS 'twomass_psc' table.
+        jdbcschema=$(
+            POST "${jdbcwfau?}/schemas/select" \
+                -d "jdbc.resource.schema.select.name=TWOMASS.dbo" \
+                | ident
+                )
+        jdbctable=$(
+            POST "${jdbcschema?}/tables/select" \
+                -d "jdbc.schema.table.select.name=twomass_psc" \
+                | ident
+                )
+        POST "${wfauschema?}/tables/import" \
+            --data "adql.schema.table.import.base=${metabasename?}/${jdbctable?}" \
+            | ./pp
+
+
+        #
+        # Import the WFAU/UKIDSS 'gcsPointSource' table.
+        jdbcschema=$(
+            POST "${jdbcwfau?}/schemas/select" \
+                -d "jdbc.resource.schema.select.name=UKIDSSDR5PLUS.dbo" \
+                | ident
+                )
+        jdbctable=$(
+            POST "${jdbcschema?}/tables/select" \
+                -d "jdbc.schema.table.select.name=gcsPointSource" \
+                | ident
+                )
+        POST "${wfauschema?}/tables/import" \
+            --data "adql.schema.table.import.base=${metabasename?}/${jdbctable?}" \
+            | ./pp
+
+        #
+        # Import the WFAU/UKIDSS 'gcsSourceXtwomass_psc' table.
+        jdbcschema=$(
+            POST "${jdbcwfau?}/schemas/select" \
+                -d "jdbc.resource.schema.select.name=UKIDSSDR5PLUS.dbo" \
+                | ident
+                )
+        jdbctable=$(
+            POST "${jdbcschema?}/tables/select" \
+                -d "jdbc.schema.table.select.name=gcsSourceXtwomass_psc" \
+                | ident
+                )
+        POST "${wfauschema?}/tables/import" \
+            --data "adql.schema.table.import.base=${metabasename?}/${jdbctable?}" \
+            | ./pp
+
+        #
+        # Check the OGSA-DAI metadata for the gcsPointSource table.
+        wfaualias=$(
+            POST "${wfauschema?}/tables/select" \
+                -d "adql.schema.table.select.name=gcsPointSource" \
+                | ./pp \
+                | sed -n 's/^ *"alias" : "\([^"]*\)"[^"]*/\1/p' \
+                )                
+
+        #
+        # Check the table mapping.
+        GET "/meta/table/${wfaualias?}" | ./pp
+
+        #
+        # Get the attribute list.
+        GET "/meta/table/${wfaualias?}/columns" | ./pp
+
+        #
+        # Get a named attribute.
+        GET "/meta/table/${wfaualias?}/column/ra" | ./pp
+
+EOF
+
+cat > query-001.adql << 'EOF'
+
+    SELECT
+        twomass.ra AS tmra,
+        ukidss.ra  AS ukra,
+        (twomass.ra - ukidss.ra) AS difra,
+        twomass.dec AS tmdec,
+        ukidss.dec  AS ukdec,
+        (twomass.ra - ukidss.ra) AS difdec,
+        neighbour.distanceMins AS dist
+    FROM
+        wfau_schema.twomass_psc AS twomass,
+        wfau_schema.gcsPointSource AS ukidss,
+        wfau_schema.gcsSourceXtwomass_psc AS neighbour
+    WHERE
+        twomass.ra  >= '55.0'
+    AND
+        twomass.ra  <= '55.9'
+    AND
+        twomass.dec >= '20.0'
+    AND
+        twomass.dec <= '22.9'
+    AND
+        ukidss.ra  >= '55.0'
+    AND
+        ukidss.ra  <= '55.9'
+    AND
+        ukidss.dec >= '20.0'
+    AND
+        ukidss.dec <= '22.9'
+    AND
+        neighbour.masterObjID = ukidss.sourceID
+    AND
+        neighbour.slaveObjID = twomass.pts_key
+    AND
+        neighbour.distanceMins < 1E-3
+
+EOF
+
+cat > wfau-query.sh << 'EOF'
+
+        #
+        # Create the ADQL query.
+        wfauquery=$(
+        POST "${wfauspace?}/queries/create" \
+            --data-urlencode "adql.resource.query.create.name=query-$(unique)" \
+            --data-urlencode "adql.resource.query.create.query@query-001.adql" \
+            | ident
+            )
+
+        GET "${wfauquery?}" \
+            | ./pp
+
+        #
+        # Run ADQL query.
+        POST "${wfauquery?}" \
+            --data-urlencode "adql.query.update.status=RUNNING" \
+            | ./pp
+
+EOF
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #
 # Run our scripts.

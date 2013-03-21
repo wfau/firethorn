@@ -513,6 +513,9 @@ implements AdqlQuery, AdqlParserQuery
         )
     private Syntax.Status syntax = Syntax.Status.UNKNOWN ;
 
+    @Type(
+        type="org.hibernate.type.TextType"
+        )        
     @Column(
         name = DB_SYNTAX_MESSAGE_COL,
         unique = false,
@@ -862,6 +865,9 @@ implements AdqlQuery, AdqlParserQuery
                                         );
                                     //
                                     // Executethe pipleline.
+
+// if direct, use query resource
+// else use dqp
 
                                     String tablename = "Q" + ident().toString() + "xxxx" ;
                                     

@@ -74,7 +74,7 @@ extends AbstractController
     public static final String SEARCH_PATH = "search" ;
 
     /**
-     * MVC property for the Resource name.
+     * MVC property for the select name.
      *
      */
     public static final String SELECT_NAME = "jdbc.resource.schema.select.name" ;
