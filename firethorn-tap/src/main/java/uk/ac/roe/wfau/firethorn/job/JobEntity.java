@@ -40,13 +40,14 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.job.Job.Status;
 
 /**
  *
@@ -117,6 +118,7 @@ extends AbstractEntity
             return this.resolver;
             }
 
+        /*
         @Autowired
         private Job.Executor executor;
         @Override
@@ -124,6 +126,7 @@ extends AbstractEntity
             {
             return this.executor;
             }
+        */
         }
 
     /**
@@ -159,34 +162,50 @@ extends AbstractEntity
         }
 
     /**
-     * Factory implementation.
-     * 
-     */
-    @Repository
-    public static abstract class Factory<JobType extends Job>
-    extends AbstractFactory<JobType>
-    implements Job.Factory<JobType>
-        {
-        }
-
-    /**
      * Executor implementation.
      * 
      */
     @Component
     public static class Executor
+    extends AbstractComponent
     implements Job.Executor
         {
         @Override
-        @UpdateAtomicMethod
-        public Status update(Job.Executor.Update update)
+        @SelectEntityMethod
+        public Status status(Identifier ident)
             {
-            log.debug("Job.Executor.update(Update)");
-            return update.update();
+            try {
+                return factories().jobs().resolver().select(
+                    ident
+                    ).status();
+                }
+            catch (NotFoundException ouch)
+                {
+                log.error("Failed to get job status [{}][{}]", ident, ouch.getMessage());
+                return Status.ERROR;
+                }
             }
 
         @Override
-        @UpdateEntityMethod
+        @UpdateAtomicMethod
+        public Status status(Identifier ident, Status status)
+            {
+            try {
+                return factories().jobs().resolver().select(
+                    ident
+                    ).status(
+                        status
+                        );
+                }
+            catch (NotFoundException ouch)
+                {
+                log.error("Failed to set job status [{}][{}]", ident, ouch.getMessage());
+                return Status.ERROR;
+                }
+            }
+
+        @Override
+        @UpdateAtomicMethod
         public Status prepare(Job.Executor.Executable executable)
             {
             log.debug("Job.Executor.prepare(Executable)");
@@ -243,44 +262,11 @@ extends AbstractEntity
         return this.status;
         }
 
-    protected Status update(final Status next)
+    @Override
+    public Status status(final Status next)
         {
-        log.debug("update(Status) [{}][{}]", ident(), next);
-        try {
-            return factories().jobs().executor().update(
-                new Job.Executor.Update()
-                    {
-                    @Override
-                    public Status update()
-                        {
-                        log.debug("update(Status) [{}][{}]", ident(), next);
-                        Status result = inner(
-                            next
-                            );
-                        return result ;
-                        }
-                    }
-                );
-            }
-        catch (Exception ouch)
-            {
-            log.error("Failed to update job status [{}][{}][{}]", ident(), next, ouch.getMessage());
-            return Status.ERROR;
-            }
-        }
-
-    protected Status inner(Status next)
-        {
-        log.debug("inner(Status) [{}][{}]", ident(), next);
+        log.debug("inner(Status) [{}][{}][{}]", ident(), this.status, next);
         this.status = next;
         return this.status;
-        }
-    
-    @Override
-    public Status cancel()
-        {
-        return update(
-            Status.CANCELLED
-            );
         }
     }

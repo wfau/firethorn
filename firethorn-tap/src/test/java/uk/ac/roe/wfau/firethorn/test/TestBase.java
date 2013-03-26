@@ -51,7 +51,7 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
         "classpath:scheduler-config.xml"
         }
     )
-@Transactional(
+/*@Transactional(
     readOnly=false,
     propagation=Propagation.REQUIRES_NEW
     )
@@ -59,6 +59,7 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
     transactionManager="FireThornTransactionManager",
     defaultRollback = false
     )
+    */
 public abstract class TestBase
     {
 

@@ -48,8 +48,8 @@ implements MetadataServiceFactory
         this.tables.put(
             "twomass",
             "table20",
-            "twomass_psc"
-            //"TWOMASS.dbo.twomass_psc"
+            //"twomass_psc"
+            "TWOMASS.dbo.twomass_psc"
             );
         this.tables.put(
             "ukidss",
@@ -60,8 +60,8 @@ implements MetadataServiceFactory
         this.tables.put(
             "ukidss",
             "table22",
-            "gcsSourceXtwomass_psc"
-            //"UKIDSSDR5PLUS.dbo.gcsSourceXtwomass_psc"
+            //"gcsSourceXtwomass_psc"
+            "UKIDSSDR5PLUS.dbo.gcsSourceXtwomass_psc"
             );
 
         this.attrib = new AttributeServiceMock();

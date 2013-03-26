@@ -17,8 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.job.test;
 
+import java.util.concurrent.Future;
+
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.job.Job;
+import uk.ac.roe.wfau.firethorn.job.Job.Status;
 
 /**
  *
@@ -116,11 +120,30 @@ extends Entity, Job
     /**
      * Job executor interface.
      * 
+     */
     public static interface Executor
     extends Job.Executor
         {
+
+        /**
+         * Prepare a job.
+         * 
+         */
+        public Status prepare(Identifier iadent);
+
+        /**
+         * Execute a job.
+         * 
+         */
+        public Future<Status> execute(Identifier ident);
+
+        /**
+         * Set the status to RUNNING.
+         * 
+         */
+        public Status run(Identifier ident);
+
         }
-     */
 
     /**
      * The test duration in seconds.

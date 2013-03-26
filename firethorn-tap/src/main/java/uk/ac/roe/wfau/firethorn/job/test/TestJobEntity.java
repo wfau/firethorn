@@ -136,9 +136,9 @@ implements TestJob
             }
 
         @Autowired
-        private Job.Executor executor;
+        private TestJob.Executor executor;
         @Override
-        public Job.Executor executor()
+        public TestJob.Executor executor()
             {
             return this.executor;
             }
@@ -192,7 +192,7 @@ implements TestJob
      */
     @Repository
     public static class Factory
-    extends JobEntity.Factory<TestJob>
+    extends AbstractFactory<TestJob>
     implements TestJob.Factory
         {
         @Override
@@ -244,13 +244,141 @@ implements TestJob
     /**
      * Executor implementation.
      * 
+     */
     @Component
     public static class Executor
     extends JobEntity.Executor
     implements TestJob.Executor
         {
+
+        @Override
+        @UpdateEntityMethod
+        public Status prepare(Identifier ident)
+            {
+            log.debug("prepare(Identifier)");
+            log.debug("  TestJob [{}]", ident);
+            try {
+                TestJob job = factories().tests().resolver().select(
+                    ident
+                    );
+                if ((job.status() == Status.EDITING) || (job.status() == Status.READY))
+                    {
+                    if (job.pause().intValue() >= 10)
+                        {
+                        return job.status(
+                            Status.READY
+                            );
+                        }
+                    else {
+                        return job.status(
+                            Status.EDITING
+                            );
+                        }
+                    }
+                else {
+                    return Status.ERROR;
+                    }
+
+                }
+            catch (NotFoundException ouch)
+                {
+                log.error("Failed to prepare job [{}][{}]", ident, ouch.getMessage());
+                return Status.ERROR;
+                }
+            }
+
+        @Override
+        @UpdateEntityMethod
+        public Status run(Identifier ident)
+            {
+            log.debug("run(Identifier)");
+            log.debug("  TestJob [{}]", ident);
+            try {
+                TestJob job = factories().tests().resolver().select(
+                    ident
+                    );
+                if (job.status() != Status.READY)
+                    {
+                    log.error("-- TestJob not ready [{}][{}]", job.ident(), job.status());
+                    return Status.ERROR;
+                    }
+                else {
+                    log.debug("-- TestJob starting [{}]", job.ident());
+                    return job.status(
+                        Status.RUNNING
+                        );
+                    }
+                }
+            catch (NotFoundException ouch)
+                {
+                log.error("Failed to set job status [{}][{}]", ident, ouch.getMessage());
+                return Status.ERROR;
+                }
+            }
+
+        @Async
+        @Override
+        public Future<Status> execute(Identifier ident)
+            {
+            log.debug("----------------------------");
+            log.debug("execute()");
+            log.debug("  TestJob [{}][{}]", ident);
+
+            Status result = factories().tests().executor().prepare(
+                ident
+                );
+
+            if (result == Status.READY)
+                {
+                result = factories().tests().executor().run(
+                    ident
+                    );
+                }
+
+            if (result == Status.RUNNING)
+                {
+                log.debug("-- TestJob running [{}]", ident);
+                try {
+
+                    int pause = factories().tests().resolver().select(
+                        ident
+                        ).pause().intValue();
+
+                    for (int i = 0 ; ((i < pause) && (result == Status.RUNNING)) ; i++)
+                        {
+                        log.debug("-- TestJob sleeping [{}][{}]", ident, new Integer(i));
+                        Thread.sleep(
+                            1000
+                            );
+                        result = status(
+                            ident
+                            );
+                        }
+                    log.debug("-- TestJob finishing [{}][{}]", ident, result);
+                    result = status(
+                        ident,
+                        Status.COMPLETED
+                        );
+                    }
+                catch (InterruptedException ouch)
+                    {
+                    log.debug("-- TestJob interrupted [{}][{}]", ident, ouch.getMessage());
+                    result = status(
+                        ident,
+                        Status.CANCELLED
+                        );
+                    }
+                catch (NotFoundException ouch)
+                    {
+                    log.error("Failed to execute job [{}][{}]", ident, ouch.getMessage());
+                    result = Status.ERROR;
+                    }
+                }
+            return new AsyncResult<Status>(
+                result
+                );
+            }
         }
-     */
     
     /**
      * Protected constructor.
@@ -300,108 +428,5 @@ implements TestJob
         return services().links().link(
             this
             );
-        }
-
-    @Override
-    public Status prepare()
-        {
-        try {
-            return services().executor().prepare(
-                new Executable()
-                    {
-                    @Override
-                    public Status execute()
-                        {
-                        log.debug("prepare.Executable.execute()");
-                        log.debug("  TestJob [{}][{}]", ident(), name());
-                        if ((status() == Status.EDITING) || (status() == Status.READY))
-                            {
-                            if (pause().intValue() >= 10)
-                                {
-                                return update(
-                                    Status.READY
-                                    );
-                                }
-                            else {
-                                return update(
-                                    Status.EDITING
-                                    );
-                                }
-                            }
-                        else {
-                            return Status.ERROR;
-                            }
-                        }
-                    }
-                );
-            }
-        catch (Exception ouch)
-            {
-            log.error("Failed to prepare job [{}][{}]", ident(), ouch.getMessage());
-            return Status.ERROR;
-            }
-        }
-
-    @Override
-    public Future<Status> execute()
-        {
-        try {
-            return services().executor().execute(
-                new Executable()
-                    {
-                    @Override
-                    public Status execute()
-                        {
-                        log.debug("execute.Executable.execute()");
-                        log.debug("  TestJob [{}][{}]", ident(), name());
-    
-                        Status result = prepare();
-                        if (result != Status.READY)
-                            {
-                            log.error("-- TestJob not ready [{}][{}]", ident(), status());
-                            }
-                        else {
-                            log.debug("-- TestJob starting [{}]", ident());
-                            result = update(
-                                Status.RUNNING
-                                );
-                            if (result == Status.RUNNING)
-                                {
-                                log.debug("-- TestJob running [{}]", ident());
-                                try {
-                                    for (int i = 0 ; ((i < pause().intValue()) && (result == Status.RUNNING)) ; i++)
-                                        {
-                                        log.debug("-- TestJob sleeping [{}][{}]", ident(), new Integer(i));
-                                        Thread.sleep(
-                                            1000
-                                            );
-                                        result = status();
-                                        }
-                                    log.debug("-- TestJob finishing [{}][{}]", ident(), status());
-                                    result = update(
-                                        Status.COMPLETED
-                                        );
-                                    }
-                                catch (InterruptedException ouch)
-                                    {
-                                    log.debug("-- TestJob interrupted [{}][{}]", ident(), ouch.getMessage());
-                                    result = update(
-                                        Status.CANCELLED
-                                        );
-                                    }
-                                }
-                            }
-                        return result ;
-                        }
-                    }
-                );
-            }
-        catch (Exception ouch)
-            {
-            log.error("Failed to execute job [{}][{}]", ident(), ouch.getMessage());
-            return new AsyncResult<Status>(
-                Status.ERROR
-                );
-            }
         }
     }

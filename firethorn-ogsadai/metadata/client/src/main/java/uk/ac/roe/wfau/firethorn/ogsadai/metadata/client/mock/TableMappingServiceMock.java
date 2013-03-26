@@ -36,7 +36,6 @@ public class TableMappingServiceMock
     implements TableMappingService
     {
     private static Log log = LogFactory.getLog(TableMappingServiceMock.class);
-
     private Map<String, TableMapping> map = new HashMap<String, TableMapping>();
 
     public class TableMappingMock
@@ -48,6 +47,8 @@ public class TableMappingServiceMock
 
         public TableMappingMock(final String resource, final String alias, final String name)
             {
+            //log.debug("TableMappingMock()");
+            //log.debug(" Mapping [" + resource + "][" + name + "][" + alias+ "]");
             this.resource = resource;
             this.alias = alias;
             this.name = name ;
@@ -74,6 +75,7 @@ public class TableMappingServiceMock
 
     public void put(final String resource, final String alias, final String name)
         {
+
         this.put(
             new TableMappingMock(
                 resource,
@@ -85,6 +87,7 @@ public class TableMappingServiceMock
     
     public void put(final TableMapping mapping)
         {
+        log.debug("TableMappingServiceMock.put() [" + mapping.resourceIdent() + "][" + mapping.tableName() + "][" + mapping.tableAlias() + "]");
         this.map.put(
             mapping.tableAlias(),
             mapping
@@ -93,7 +96,7 @@ public class TableMappingServiceMock
     
     public TableMapping get(String source)
         {
-        log.debug("get(String) [" + source + "]");        
+        log.debug("TableMappingServiceMock.get(String) [" + source + "]");        
         return this.map.get(
             source
             );
@@ -102,7 +105,8 @@ public class TableMappingServiceMock
     @Override
     public TableMapping getTableMapping(String source)
         {
-        return this.get(
+        log.debug("TableMappingServiceMock.getTableMapping(String) [" + source + "]");        
+        return this.map.get(
             source
             );
         }

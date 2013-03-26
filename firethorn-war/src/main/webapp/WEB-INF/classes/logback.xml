@@ -74,7 +74,7 @@
 		<level value="DEBUG" />
 	</logger>
 	<logger name="org.springframework.orm">
-		<level value="INFO" />
+		<level value="DEBUG" />
 	</logger>
 
 	<!--+
@@ -84,7 +84,7 @@
 		<level value="DEBUG" />
 	</logger>
 	<logger name="org.hibernate.SQL">
-		<level value="INFO" />
+		<level value="DEBUG" />
 	</logger>
 
 	<!--+

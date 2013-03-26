@@ -35,11 +35,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
+import uk.ac.roe.wfau.firethorn.job.test.TestJob;
+import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -122,7 +125,6 @@ extends AbstractEntityController<AdqlQuery>
      * Get the target entity based on the ident in the path.
      * @throws NotFoundException
      *
-     */
     @ModelAttribute(TARGET_ENTITY)
     public AdqlQuery entity(
         @PathVariable("ident")
@@ -134,6 +136,7 @@ extends AbstractEntityController<AdqlQuery>
                 )
             );
         }
+     */
 
     /**
      * JSON GET request.
@@ -141,12 +144,16 @@ extends AbstractEntityController<AdqlQuery>
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public EntityBean<AdqlQuery> jsonSelect(
-        @ModelAttribute(TARGET_ENTITY)
-        final AdqlQuery entity
-        ){
+    public EntityBean<AdqlQuery> select(
+        @PathVariable("ident")
+        final String ident
+        ) throws NotFoundException {
         return bean(
-            entity
+            factories().adql().queries().select(
+                factories().adql().queries().idents().ident(
+                    ident
+                    )
+                )
             );
         }
 
@@ -155,41 +162,48 @@ extends AbstractEntityController<AdqlQuery>
      *
      */
     @ResponseBody
-    @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public EntityBean<AdqlQuery> jsonUpdate(
+    public EntityBean<AdqlQuery> update(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @RequestParam(value=UPDATE_QUERY, required=false)
         final String input,
-        @RequestParam(value=UPDATE_STATUS, required=false)
+        @PathVariable("ident")
+        final String ident
+        ) throws NotFoundException {
+        return bean(
+            this.helper.update(
+                factories().adql().queries().idents().ident(
+                    ident
+                    ),
+                name,
+                input
+                )
+            );
+        }
+
+    /**
+     * JSON POST update.
+     *
+     */
+    @ResponseBody
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING, params=UPDATE_STATUS)
+    public EntityBean<AdqlQuery> update(
+        @RequestParam(value=UPDATE_STATUS, required=true)
         final Status status,
         @RequestParam(value=UPDATE_TIMEOUT, required=false)
         final Integer timeout,
-        @ModelAttribute(TARGET_ENTITY)
-        final AdqlQuery entity
-        ){
-
-        if ((name != null) || (input != null))
-            {
+        @PathVariable("ident")
+        final String ident
+        ) throws NotFoundException {
+        return bean(
             this.helper.update(
-                entity,
-                name,
-                input
-                );
-            }
-
-        if (status != null)
-            {
-            this.helper.update(
-                entity,
+                factories().adql().queries().idents().ident(
+                    ident
+                    ),
                 status,
                 timeout
-                );
-            }
-
-        return bean(
-            entity
+                )
             );
         }
 
@@ -203,14 +217,16 @@ extends AbstractEntityController<AdqlQuery>
          * Transactional update.
          *
          */
-        public void update(final AdqlQuery query, final String  name, final String input);
+        public AdqlQuery update(final Identifier ident, final String  name, final String input)
+        throws NotFoundException ;
 
         /**
          * Transactional update.
          *
          */
-        public Status update(final AdqlQuery query, final Job.Status next, final Integer timeout);
-        
+        public AdqlQuery update(final Identifier ident, final Job.Status next, final Integer timeout)
+        throws NotFoundException ;
+
         }
 
     /**
@@ -229,13 +245,30 @@ extends AbstractEntityController<AdqlQuery>
     public static class HelperImpl
     implements Helper
         {
+        /**
+         * Autowired system services.
+         *
+         */
+        @Autowired
+        private ComponentFactories factories;
+
+        /**
+         * Our system services.
+         *
+         */
+        public ComponentFactories factories()
+            {
+            return this.factories;
+            }
+
         @Override
         @UpdateAtomicMethod
-        public void update(
-            final AdqlQuery query,
-            final String  name,
-            final String  input
-            ){
+        public AdqlQuery update(final Identifier ident, final String name, final String input)
+            throws NotFoundException
+            {
+            final AdqlQuery query = factories().queries().resolver().select(
+                ident
+                );
             if (name != null)
                 {
                 if (name.length() > 0)
@@ -245,7 +278,7 @@ extends AbstractEntityController<AdqlQuery>
                         );
                     }
                 }
-    
+   
             if (input != null)
                 {
                 if (input.length() > 0)
@@ -255,20 +288,20 @@ extends AbstractEntityController<AdqlQuery>
                         );
                     }
                 }
+            return query;
             }
 
         @Override
-        @UpdateAtomicMethod
-        public Status update(final AdqlQuery query, final Job.Status next, final Integer timeout)
+        public AdqlQuery update(final Identifier ident, final Job.Status next, final Integer timeout)
+            throws NotFoundException
             {
-            Status result  = query.status();
-
-            int pause = 2 ;
-            if (timeout != null)
-                {
-                pause = timeout.intValue();
-                }
+            final AdqlQuery query = factories().queries().resolver().select(
+                ident
+                );
             
+            Status result = query.status();
+            Integer pause = ((timeout != null) ? timeout : Integer.valueOf(2));
+
             if ((next != null) && ( next != result))
                 {
                 if (next == Status.READY)
@@ -278,28 +311,34 @@ extends AbstractEntityController<AdqlQuery>
                 else if (next == Status.RUNNING)
                     {
                     try {
+
                         Future<Status> future = query.execute();
                         log.debug("Checking future");
                         result = future.get(
-                            pause,
+                            pause.intValue(),
                             TimeUnit.SECONDS
                             );
                         log.debug("Status [{}]", query.status());
                         log.debug("Result [{}]", result);
+
                         }
                     catch (TimeoutException ouch)
                         {
-                        log.debug("Future timeout");
+                        log.debug("TimeoutException");
                         }
                     catch (InterruptedException ouch)
                         {
-                        log.debug("Future interrupted [{}]", ouch.getMessage());
+                        log.debug("InterruptedException [{}]", ouch.getMessage());
                         }
                     catch (ExecutionException ouch)
                         {
                         log.debug("ExecutionException [{}]", ouch.getMessage());
-                        result = Status.ERROR;
                         }
+                    //
+                    // Return the updated state from the *other* thread.
+                    return factories().queries().resolver().select(
+                        ident
+                        );
                     }
                 else if (next == Status.CANCELLED)
                     {
@@ -309,7 +348,7 @@ extends AbstractEntityController<AdqlQuery>
                     result = Status.ERROR;
                     }
                 }
-            return result ;
+            return query;
             }
         }
     }

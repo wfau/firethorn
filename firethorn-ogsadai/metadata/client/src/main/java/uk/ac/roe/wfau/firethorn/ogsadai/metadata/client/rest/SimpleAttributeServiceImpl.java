@@ -137,12 +137,16 @@ implements AttributeService
                 {
                 this.array = array;
                 }
+            protected AttributeBean[] array()
+                {
+                return this.array;
+                }
             @Override
             public Iterator<Attribute> iterator()
                 {
                 return new Iterator<Attribute>()
                     {
-                    private Iterator<AttributeBean> inner = Arrays.asList(Iter.this.array).iterator();
+                    private Iterator<AttributeBean> inner = Arrays.asList(array()).iterator();
                     @Override
                     public boolean hasNext()
                         {
