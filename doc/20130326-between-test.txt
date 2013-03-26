@@ -1,75 +1,75 @@
 # ------------------------------------------------------------
 # Install Maven
 
-# ------------------
-# Ubuntu 12
+    # ------------------
+    # Ubuntu 12
 
-    apt-get -y update
-    apt-get -y upgrade
+        apt-get -y update
+        apt-get -y upgrade
 
-    apt-get -y install mercurial
+        apt-get -y install mercurial
 
-    apt-get -y install openjdk-6-jdk
-    apt-get -y install maven2
+        apt-get -y install openjdk-6-jdk
+        apt-get -y install maven2
 
-# ------------------
-# Fedora 
+    # ------------------
+    # Fedora 
 
-    yum -y update
+        yum -y update
 
-    yum -y install mercurial
+        yum -y install mercurial
 
-    yum -y install java-1.7.0-openjdk
-    yum -y install java-1.7.0-openjdk-devel
-    yum -y install maven
+        yum -y install java-1.7.0-openjdk
+        yum -y install java-1.7.0-openjdk-devel
+        yum -y install maven
 
-# ------------------
-# RedHat EL
+    # ------------------
+    # RedHat EL
 
-    yum -y update
+        yum -y update
 
-    yum -y install mercurial
+        yum -y install mercurial
 
-    yum -y install java-1.6.0-openjdk
-    yum -y install java-1.6.0-openjdk-devel
+        yum -y install java-1.6.0-openjdk
+        yum -y install java-1.6.0-openjdk-devel
 
-    # Manual install of Apache Maven.
-    # http://maven.apache.org/download.html
+        # Manual install of Apache Maven.
+        # http://maven.apache.org/download.html
 
-    if [ ! -e '/var/local/toolkits' ]
-    then
-        mkdir '/var/local/toolkits'
-    fi
+        if [ ! -e '/var/local/toolkits' ]
+        then
+            mkdir '/var/local/toolkits'
+        fi
 
-    if [ ! -e '/var/local/toolkits/maven' ]
-    then
-        mkdir '/var/local/toolkits/maven'
-        pushd '/var/local/toolkits/maven'
+        if [ ! -e '/var/local/toolkits/maven' ]
+        then
+            mkdir '/var/local/toolkits/maven'
+            pushd '/var/local/toolkits/maven'
 
-            if [ ! -e 'downloads' ]
-            then 
-                mkdir 'downloads'
-            fi
-            pushd downloads
+                if [ ! -e 'downloads' ]
+                then 
+                    mkdir 'downloads'
+                fi
+                pushd downloads
 
-                wget http://www.mirrorservice.org/sites/ftp.apache.org/maven/maven-3/3.0.4/binaries/apache-maven-3.0.4-bin.tar.gz
+                    wget http://www.mirrorservice.org/sites/ftp.apache.org/maven/maven-3/3.0.4/binaries/apache-maven-3.0.4-bin.tar.gz
+
+                popd
+
+                tar xvf downloads/apache-maven-3.0.4-bin.tar.gz 
+                ln -s apache-maven-3.0.4 current
 
             popd
-
-            tar xvf downloads/apache-maven-3.0.4-bin.tar.gz 
-            ln -s apache-maven-3.0.4 current
-
-        popd
-    fi
-        
-    cat > /etc/profile.d/maven.sh << 'EOF'
-    # /etc/profile.d/maven.sh
-    #
-    # Manual install of Apache Maven.
-    # http://maven.apache.org/download.html
-    export M2_HOME=${M2_HOME:-/var/local/toolkits/maven/current}
-    export PATH=${M2_HOME}/bin:${PATH} 
-    EOF
+        fi
+            
+        cat > /etc/profile.d/maven.sh << 'EOF'
+        # /etc/profile.d/maven.sh
+        #
+        # Manual install of Apache Maven.
+        # http://maven.apache.org/download.html
+        export M2_HOME=${M2_HOME:-/var/local/toolkits/maven/current}
+        export PATH=${M2_HOME}/bin:${PATH} 
+        EOF
 
 # ------------------------------------------------------------
 # Test user
@@ -77,49 +77,34 @@
     useradd --create-home --shell /bin/bash Fabulous
     su - Fabulous
 
-
 # ------------------------------------------------------------
 # Configuration settings.
 #
 
-cat > ${HOME?}/firethorn.settings << 'EOF'
-FIRETHORN_BASE=${FIRETHORN_BASE:-${HOME?}/firethorn}
-FIRETHORN_NAME=code
-FIRETHORN_CODE=${FIRETHORN_CODE:-${FIRETHORN_BASE?}/${FIRETHORN_NAME?}}
-EOF
+    cat > ${HOME?}/firethorn.settings << 'EOF'
+    FIRETHORN_BASE=${FIRETHORN_BASE:-${HOME?}/firethorn}
+    FIRETHORN_NAME=code
+    FIRETHORN_CODE=${FIRETHORN_CODE:-${FIRETHORN_BASE?}/${FIRETHORN_NAME?}}
+    EOF
 
 # ------------------------------------------------------------
-# Mercurial settings.
-#
-
-cat > ${HOME?}/.hgrc << 'EOF'
-[extensions]
-fetch=
-hgext.churn=
-hgext.convert =
-EOF
-
-# ------------------------------------------------------------
-# Clone the source code.
+# Clone revision 447 of the source code.
 #
 
     source ${HOME?}/firethorn.settings
     if [ ! -e "${FIRETHORN_BASE?}" ]
     then
         mkdir --parents "${FIRETHORN_BASE?}"
-        #chgrp users "${FIRETHORN_BASE?}"
-        #chmod g+rws "${FIRETHORN_BASE?}"
     fi
 
     pushd "${FIRETHORN_BASE?}"
 
-        hg clone http://wfau.metagrid.co.uk/code/firethorn/ ${FIRETHORN_NAME?}
+        hg clone --rev 477 http://wfau.metagrid.co.uk/code/firethorn/ ${FIRETHORN_NAME?}
 
     popd
 
-
 # TTY #1 ------------------------------------------------------------
-# Build the firethorn codebase 
+# Build and deploy the service webapp. 
 #
 
     source ${HOME?}/firethorn.settings
@@ -146,7 +131,7 @@ EOF
     popd
 
 # TTY #2 ------------------------------------------------------------
-# Run JUnit tests.
+# Run JUnit test.
 #
 
     source ${HOME?}/firethorn.settings
@@ -155,4 +140,24 @@ EOF
         mvn -D skipTests=false -D test=MockDqpQueryTestCase test
 
     popd
+
+# ------------------------------------------------------------
+# Symptoms.
+#
+
+    test002() should fail with JDBC error, because database passwords are not set.
+    However, it never gets that far.
+
+    Using the mock TableMappingService, we see several requests using the aliases, table20, table21 and table22, and then a fail when a TableMapping request
+    is sent using one of the real table names, gcsPointSource, rather than one of the aliases.
+
+    2013-03-26 06:05:34,620 DEBUG mock.TableMappingServiceMock [pool-28-thread-2,getTableMapping:108] TableMappingServiceMock.getTableMapping(String) [table21]
+    2013-03-26 06:05:34,623 DEBUG mock.TableMappingServiceMock [pool-28-thread-2,getTableMapping:108] TableMappingServiceMock.getTableMapping(String) [table22]
+    2013-03-26 06:05:34,627 DEBUG mock.TableMappingServiceMock [pool-28-thread-2,getTableMapping:108] TableMappingServiceMock.getTableMapping(String) [table21]
+    2013-03-26 06:05:34,628 DEBUG mock.TableMappingServiceMock [pool-28-thread-2,getTableMapping:108] TableMappingServiceMock.getTableMapping(String) [gcsPointSource]
+    java.lang.RuntimeException: uk.org.ogsadai.dqp.lqp.exceptions.TableNotFoundException: Table not found gcsPointSource
+
+    This suggests DQP is re-using an alias that has already beeen resolved through the TableMappingService.
+
+
 
