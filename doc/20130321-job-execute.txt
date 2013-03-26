@@ -1,0 +1,82 @@
+
+#
+#
+    
+    pushd $(mktemp --directory)
+
+        #
+        # Download the 'resty' wrapper for curl.
+        curl -# -L http://github.com/micha/resty/raw/master/resty > resty
+        source resty
+
+        #
+        # Download the 'pp' pretty print script.
+        curl -# -L http://github.com/micha/resty/raw/master/pp > pp
+        chmod a+x pp
+
+
+        #
+        # Set the base URL and options.
+        metahostname=localhost
+        metahostport=8080
+        metabasename="http://${metahostname?}:${metahostport?}/firethorn"
+
+        #
+        # Initialise our REST client.
+        resty "${metabasename?}" -W -H 'Accept: application/json'
+        
+        #
+        # Unique name generator 
+        unique()
+            {
+            date '+%Y%m%d-%H%M%S%N'
+            }
+
+        #
+        # Create a 'define' function for setting heredoc variables.
+        # http://stackoverflow.com/questions/1167746/how-to-assign-a-heredoc-value-to-a-variable-in-bash
+        define()
+            {
+            IFS='\n' read -r -d '' ${1} || true;
+            }
+
+        #
+        # Create an 'ident' function to get the short ident from a json response.
+        ident()
+            {
+            ./pp | sed -n 's|^ *"ident" : "'${metabasename?}'\(.*\)"[^"]*|\1|p'
+            }
+
+
+
+
+
+        testjob=$(
+        POST "/test/job/create" \
+            --data-urlencode "test.job.create.name=test-$(unique)" \
+            --data-urlencode "test.job.create.pause=20" \
+            | ident
+            )
+
+        GET "${testjob?}" \
+            | ./pp
+
+        #
+        # Run ADQL query.
+        POST "${testjob?}" \
+            --data-urlencode "test.job.update.status=RUNNING" \
+            | ./pp
+
+
+        POST "${testjob?}" \
+            --data-urlencode "test.job.update.name=albert" \
+            | ./pp
+
+        GET "${testjob?}" \
+            | ./pp
+
+
+    
+        
+
+

@@ -773,6 +773,7 @@ implements AdqlQuery, AdqlParserQuery
             );
         }
 
+    @Override
     public Status prepare()
         {
         try {
@@ -809,6 +810,7 @@ implements AdqlQuery, AdqlParserQuery
     public static final String dqpname   = "testdqp" ;
     public static final String storename = "user" ;
     
+    @Override
     public Future<Status> execute()
         {
         try {
@@ -892,4 +894,13 @@ implements AdqlQuery, AdqlParserQuery
                 );
             }
         }
+
+    @Override
+    public Status cancel()
+        {
+        return status(
+            Status.CANCELLED
+            );
+        }
+
     }

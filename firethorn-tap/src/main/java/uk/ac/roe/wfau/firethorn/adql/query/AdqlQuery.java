@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query;
 
+import java.util.concurrent.Future;
+
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
@@ -175,12 +177,6 @@ extends Entity, Job
     public void input(final String input);
 
     /**
-     * Prepare the Job for execution.
-     *
-    public Status prepare(String input);
-     */
-
-    /**
      * Query syntax validation status.
      *
      */
@@ -310,5 +306,23 @@ extends Entity, Job
      *
      */
     public BaseResource<?> target();
-    
+
+    /**
+     * Prepare the Query for execution.
+     *
+     */
+    public Status prepare();
+
+    /**
+     * Execute the Query.
+     *
+     */
+    public Future<Status> execute();
+
+    /**
+     * Cancel the Query.
+     *
+     */
+    public Status cancel();
+
     }

@@ -1,0 +1,158 @@
+# ------------------------------------------------------------
+# Install Maven
+
+# ------------------
+# Ubuntu 12
+
+    apt-get -y update
+    apt-get -y upgrade
+
+    apt-get -y install mercurial
+
+    apt-get -y install openjdk-6-jdk
+    apt-get -y install maven2
+
+# ------------------
+# Fedora 
+
+    yum -y update
+
+    yum -y install mercurial
+
+    yum -y install java-1.7.0-openjdk
+    yum -y install java-1.7.0-openjdk-devel
+    yum -y install maven
+
+# ------------------
+# RedHat EL
+
+    yum -y update
+
+    yum -y install mercurial
+
+    yum -y install java-1.6.0-openjdk
+    yum -y install java-1.6.0-openjdk-devel
+
+    # Manual install of Apache Maven.
+    # http://maven.apache.org/download.html
+
+    if [ ! -e '/var/local/toolkits' ]
+    then
+        mkdir '/var/local/toolkits'
+    fi
+
+    if [ ! -e '/var/local/toolkits/maven' ]
+    then
+        mkdir '/var/local/toolkits/maven'
+        pushd '/var/local/toolkits/maven'
+
+            if [ ! -e 'downloads' ]
+            then 
+                mkdir 'downloads'
+            fi
+            pushd downloads
+
+                wget http://www.mirrorservice.org/sites/ftp.apache.org/maven/maven-3/3.0.4/binaries/apache-maven-3.0.4-bin.tar.gz
+
+            popd
+
+            tar xvf downloads/apache-maven-3.0.4-bin.tar.gz 
+            ln -s apache-maven-3.0.4 current
+
+        popd
+    fi
+        
+    cat > /etc/profile.d/maven.sh << 'EOF'
+    # /etc/profile.d/maven.sh
+    #
+    # Manual install of Apache Maven.
+    # http://maven.apache.org/download.html
+    export M2_HOME=${M2_HOME:-/var/local/toolkits/maven/current}
+    export PATH=${M2_HOME}/bin:${PATH} 
+    EOF
+
+# ------------------------------------------------------------
+# Test user
+
+    useradd --create-home --shell /bin/bash Fabulous
+    su - Fabulous
+
+
+# ------------------------------------------------------------
+# Configuration settings.
+#
+
+cat > ${HOME?}/firethorn.settings << 'EOF'
+FIRETHORN_BASE=${FIRETHORN_BASE:-${HOME?}/firethorn}
+FIRETHORN_NAME=code
+FIRETHORN_CODE=${FIRETHORN_CODE:-${FIRETHORN_BASE?}/${FIRETHORN_NAME?}}
+EOF
+
+# ------------------------------------------------------------
+# Mercurial settings.
+#
+
+cat > ${HOME?}/.hgrc << 'EOF'
+[extensions]
+fetch=
+hgext.churn=
+hgext.convert =
+EOF
+
+# ------------------------------------------------------------
+# Clone the source code.
+#
+
+    source ${HOME?}/firethorn.settings
+    if [ ! -e "${FIRETHORN_BASE?}" ]
+    then
+        mkdir --parents "${FIRETHORN_BASE?}"
+        #chgrp users "${FIRETHORN_BASE?}"
+        #chmod g+rws "${FIRETHORN_BASE?}"
+    fi
+
+    pushd "${FIRETHORN_BASE?}"
+
+        hg clone http://wfau.metagrid.co.uk/code/firethorn/ ${FIRETHORN_NAME?}
+
+    popd
+
+
+# TTY #1 ------------------------------------------------------------
+# Build the firethorn codebase 
+#
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}"
+
+        #
+        # Build everything 
+        mvn clean install
+        
+    popd
+
+    #
+    # Deploy the modified OGSA-DAI webapp.
+    pushd ${FIRETHORN_CODE?}/firethorn-ogsadai/webapp
+
+        #
+        # Create a clean build.
+        mvn clean compile war:war
+
+        #
+        # Deploy the webapp in Tomcat.
+        mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
+        
+    popd
+
+# TTY #2 ------------------------------------------------------------
+# Run JUnit tests.
+#
+
+    source ${HOME?}/firethorn.settings
+    pushd ${FIRETHORN_CODE?}/firethorn-ogsadai/activity/client
+    
+        mvn -D skipTests=false -D test=MockDqpQueryTestCase test
+
+    popd
+
