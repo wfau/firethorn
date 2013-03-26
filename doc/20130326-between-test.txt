@@ -1,5 +1,5 @@
 # ------------------------------------------------------------
-# Install Maven
+# Install Java, Mercurial and Maven
 
     # ------------------
     # Ubuntu 12
@@ -88,21 +88,25 @@
     EOF
 
 # ------------------------------------------------------------
-# Clone revision 447 of the source code.
+# Clone revision 447 of the FireThorn source code.
 #
 
     source ${HOME?}/firethorn.settings
-    if [ ! -e "${FIRETHORN_BASE?}" ]
+
+    if [ ! -e "$(dirname ${FIRETHORN_CODE?})" ]
     then
-        mkdir --parents "${FIRETHORN_BASE?}"
+        mkdir --parents "$(dirname ${FIRETHORN_CODE?})"
     fi
 
-    pushd "${FIRETHORN_BASE?}"
-
-        hg clone --rev 477 http://wfau.metagrid.co.uk/code/firethorn/ ${FIRETHORN_NAME?}
-
-    popd
-
+    if [ ! -e "${FIRETHORN_CODE?}" ]
+    then
+        hg clone --rev 477 'http://wfau.metagrid.co.uk/code/firethorn/' "${FIRETHORN_CODE?}"
+    else
+        pushd "${FIRETHORN_CODE?}"
+            hg update --rev 477
+        popd
+    fi
+    
 # TTY #1 ------------------------------------------------------------
 # Build and deploy the service webapp. 
 #

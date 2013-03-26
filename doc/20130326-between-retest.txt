@@ -1,0 +1,481 @@
+
+# ------------------------------------------------------------
+# Install Java, Subversion, Mercurial, Ant and Maven
+
+    # ------------------
+    # Ubuntu 12
+
+        apt-get -y update
+        apt-get -y upgrade
+
+        apt-get -y install subversion
+        apt-get -y install mercurial
+
+        apt-get -y install openjdk-6-jdk
+        apt-get -y install maven2
+        apt-get -y install ant
+
+    # ------------------
+    # Fedora 
+
+        yum -y update
+
+        yum -y install subversion
+        yum -y install mercurial
+
+        yum -y install java-1.7.0-openjdk
+        yum -y install java-1.7.0-openjdk-devel
+        yum -y install maven
+        yum -y install ant
+
+    # ------------------
+    # RedHat EL
+
+        yum -y update
+
+        yum -y install subversion
+        yum -y install mercurial
+
+        yum -y install java-1.6.0-openjdk
+        yum -y install java-1.6.0-openjdk-devel
+
+        yum -y install ant
+
+        # Manual install of Apache Maven.
+        # http://maven.apache.org/download.html
+
+        if [ ! -e '/var/local/toolkits' ]
+        then
+            mkdir '/var/local/toolkits'
+        fi
+
+        if [ ! -e '/var/local/toolkits/maven' ]
+        then
+            mkdir '/var/local/toolkits/maven'
+            pushd '/var/local/toolkits/maven'
+
+                if [ ! -e 'downloads' ]
+                then 
+                    mkdir 'downloads'
+                fi
+                pushd downloads
+
+                    wget http://www.mirrorservice.org/sites/ftp.apache.org/maven/maven-3/3.0.4/binaries/apache-maven-3.0.4-bin.tar.gz
+
+                popd
+
+                tar xvf downloads/apache-maven-3.0.4-bin.tar.gz 
+                ln -s apache-maven-3.0.4 current
+
+            popd
+        fi
+            
+        cat > /etc/profile.d/maven.sh << 'EOF'
+        # /etc/profile.d/maven.sh
+        #
+        # Manual install of Apache Maven.
+        # http://maven.apache.org/download.html
+        export M2_HOME=${M2_HOME:-/var/local/toolkits/maven/current}
+        export PATH=${M2_HOME}/bin:${PATH} 
+        EOF
+
+# ------------------------------------------------------------
+# Login as test user
+
+    su - Fabulous
+
+# ------------------------------------------------------------
+# Configuration settings.
+#
+
+cat > ${HOME?}/firethorn.settings << 'EOF'
+FIRETHORN_BASE=${FIRETHORN_BASE:-${HOME?}/firethorn}
+FIRETHORN_NAME=code
+FIRETHORN_CODE=${FIRETHORN_CODE:-${FIRETHORN_BASE?}/${FIRETHORN_NAME?}}
+
+OGSADAI_BASE=${OGSADAI_BASE:-${HOME?}/ogsa-dai}
+OGSADAI_NAME=code
+OGSADAI_CODE=${OGSADAI_CODE:-${OGSADAI_BASE?}/${OGSADAI_NAME}}
+
+EOF
+
+# ------------------------------------------------------------
+# Update local copy of the OGSA-DAI code.
+#
+
+#GSADAI_REV=2182
+OGSADAI_REV=2184
+
+    source ${HOME?}/firethorn.settings
+
+    if [ ! -e "${OGSADAI_CODE?}" ]
+    then
+        mkdir --parents "${OGSADAI_CODE?}"
+    fi
+
+    pushd "${OGSADAI_CODE?}"
+    
+        if [ ! -e 'ogsa-dai/trunk' ]
+        then
+            svn checkout -r "${OGSADAI_REV?}" 'http://svn.code.sf.net/p/ogsa-dai/code/ogsa-dai/trunk' 'ogsa-dai/trunk'
+        else
+            svn update -r "${OGSADAI_REV?}" 'ogsa-dai/trunk'
+        fi
+
+        if [ ! -e 'sandbox/dqp/server' ]
+        then
+            svn checkout -r "${OGSADAI_REV?}" 'http://svn.code.sf.net/p/ogsa-dai/code/sandbox/dqp/server' 'sandbox/dqp/server'
+        else
+            svn update -r "${OGSADAI_REV?}" 'sandbox/dqp/server'
+        fi
+
+        if [ ! -e 'third-party' ]
+        then
+            svn checkout -r "${OGSADAI_REV?}" 'http://svn.code.sf.net/p/ogsa-dai/code/third-party' 'third-party'
+        else
+            svn update -r "${OGSADAI_REV?}" 'third-party'
+        fi
+
+        svn info 'ogsa-dai/trunk'
+        svn info 'sandbox/dqp/server'
+        svn info 'third-party'
+
+    popd
+
+# ------------------------------------------------------------
+# Build the OGSA-DAI binary release.
+#
+
+    pushd "${OGSADAI_CODE?}/ogsa-dai/trunk/release-scripts/ogsa-dai/jersey"
+
+        #
+        # Populate the source release.
+        ant -Ddependencies.dir=${OGSADAI_CODE?}/third-party/dependencies clean buildSourceRelease
+
+        #
+        # Add our customisations to the source code.
+        pushd build/ogsadai-4.2-jersey-1.10-src/
+
+            #
+            # Replace the DQP server code with the sandbox version.
+            pushd src/extensions/dqp
+
+                #
+                # Replace dqp/server with the sandbox version.
+                # Note - don't use a link, the Ant build assumes this directory as writeable. 
+                # 'ant clean' will recursively delete everything from the original.
+                rm -r server
+                cp -r ${OGSADAI_CODE?}/sandbox/dqp/server .
+
+                #
+                # Remove references to 'ogsa-dai/trunk' from 'server/ant.properties'
+                sed -i '
+                    s|/ogsa-dai/trunk/|/|g
+                    ' server/ant.properties
+
+            popd
+
+            #
+            # Create a build.xml file for the astro client extensions.
+            pushd src/extensions/astro/client
+
+                cp ../../basic/client/build.xml .
+                cp ../../basic/client/ant.properties .
+
+                sed -i '
+                    s/OGSA-DAI basic extensions/OGSA-DAI astro extensions/
+                    ' ant.properties
+
+                sed -i '
+                    s/name="basic-client"/name="astro-client"/
+                    ' build.xml
+
+                sed -i '
+                    s/OGSA-DAI basic extensions/OGSA-DAI astro extensions/
+                    ' build.xml
+
+cat >> ant.properties << EOF
+# ZRQ 20130201
+apachehc.lib.dir=\${dependencies.dir}/org/apache/hc/4.0.1
+starlink.lib.dir=\${dependencies.dir}/stil/2.8/
+EOF
+
+                sed -i '
+                /<path id="module.build.classpath">/,/<\/path>/ {
+                    /<\/path>/i \
+                        <!--+ ZRQ 20130201 +--> \
+                        <fileset dir="${apachehc.lib.dir}"> \
+                          <include name="**/*.jar"/> \
+                        </fileset> \
+                        <fileset dir="${starlink.lib.dir}"> \
+                          <include name="**/*.jar"/> \
+                        </fileset> \
+                        <!--+ ZRQ 20130201 +--> \
+                        
+                    }
+                ' build.xml
+
+            popd
+
+            #
+            # Create a build.xml file for the astro server extensions.
+            pushd src/extensions/astro/server
+
+                cp ../../basic/server/build.xml .
+                cp ../../basic/server/ant.properties .
+
+                sed -i '
+                    s/OGSA-DAI basic extensions/OGSA-DAI astro extensions/
+                    ' ant.properties
+
+                sed -i '
+                    s/name="basic-server"/name="astro-server"/
+                    ' build.xml
+
+                sed -i '
+                    s/OGSA-DAI basic extensions/OGSA-DAI astro extensions/
+                    ' build.xml
+
+cat >> ant.properties << EOF
+# ZRQ 20130201
+apachehc.lib.dir=\${dependencies.dir}/org/apache/hc/4.0.1
+starlink.lib.dir=\${dependencies.dir}/stil/2.8/
+EOF
+
+                sed -i '
+                /<path id="module.build.classpath">/,/<\/path>/ {
+                    /<\/path>/i \
+                        <!--+ ZRQ 20130201 +--> \
+                        <fileset dir="${apachehc.lib.dir}"> \
+                          <include name="**/*.jar"/> \
+                        </fileset> \
+                        <fileset dir="${starlink.lib.dir}"> \
+                          <include name="**/*.jar"/> \
+                        </fileset> \
+                        <!--+ ZRQ 20130201 +--> \
+                        
+                        }
+                    ' build.xml
+
+            popd
+
+            #
+            # Build the binary release using the modified source.
+            ant -Ddependencies.dir=${OGSADAI_CODE?}/third-party/dependencies clean buildBinaryRelease
+
+            #
+            # Transfer the resulting war and jar files into our local Maven repository.
+            mvn install:install-file \
+                -D groupId=uk.org.ogsadai \
+                -D artifactId=ogsadai-jersey-webapp \
+                -D version=4.2 \
+                -D packaging=war \
+                -D createChecksum=true \
+                -D file=build/ogsadai-4.2-jersey-1.10-bin/dai.war
+
+            mvn install:install-file \
+                -D groupId=uk.org.ogsadai \
+                -D artifactId=ogsadai-common \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D createChecksum=true \
+                -D file=src/core/common/build/lib/ogsadai-common-4.2.jar
+
+            mvn install:install-file \
+                -D groupId=uk.org.ogsadai \
+                -D artifactId=ogsadai-client \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D createChecksum=true \
+                -D file=src/core/client/build/lib/ogsadai-client-4.2.jar
+
+            mvn install:install-file \
+                -D groupId=uk.org.ogsadai \
+                -D artifactId=ogsadai-server \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D createChecksum=true \
+                -D file=src/core/server/build/lib/ogsadai-server-4.2.jar
+
+            mvn install:install-file \
+                -D groupId=uk.org.ogsadai \
+                -D artifactId=ogsadai-clientserver \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D createChecksum=true \
+                -D file=src/core/clientserver/build/lib/ogsadai-clientserver-4.2.jar
+
+            mvn install:install-file \
+                -D groupId=uk.org.ogsadai \
+                -D artifactId=ogsadai-basic-client \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D createChecksum=true \
+                -D file=src/extensions/basic/client/build/lib/ogsadai-basic-client-4.2.jar
+
+            mvn install:install-file \
+                -D groupId=uk.org.ogsadai \
+                -D artifactId=ogsadai-dqp-server \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D createChecksum=true \
+                -D file=src/extensions/dqp/server/build/lib/ogsadai-dqp-server-4.2.jar
+
+            mvn install:install-file \
+                -D groupId=uk.org.ogsadai \
+                -D artifactId=ogsadai-astro-client \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D createChecksum=true \
+                -D file=src/extensions/astro/client/build/lib/ogsadai-astro-client-4.2.jar
+
+            mvn install:install-file \
+                -D groupId=uk.org.ogsadai \
+                -D artifactId=ogsadai-astro-server \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D createChecksum=true \
+                -D file=src/extensions/astro/server/build/lib/ogsadai-astro-server-4.2.jar
+
+            mvn install:install-file \
+                -D groupId=uk.org.ogsadai \
+                -D artifactId=ogsadai-jersey-client \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D createChecksum=true \
+                -D file=src/presentation/jersey/client/build/lib/ogsadai-jersey-client-4.2.jar
+
+            mvn install:install-file \
+                -D groupId=uk.org.ogsadai \
+                -D artifactId=ogsadai-jersey-common \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D createChecksum=true \
+                -D file=src/presentation/jersey/common/build/lib/ogsadai-jersey-common-4.2.jar
+
+            mvn install:install-file \
+                -D groupId=uk.org.ogsadai \
+                -D artifactId=ogsadai-relational-client \
+                -D version=4.2 \
+                -D packaging=jar \
+                -D createChecksum=true \
+                -D file=src/extensions/relational/client/build/lib/ogsadai-relational-client-4.2.jar
+
+        popd
+    popd
+
+# ------------------------------------------------------------
+# Clone revision 447 of the FireThorn source code.
+#
+
+    FIRETHORN_REV=477
+
+    source ${HOME?}/firethorn.settings
+
+    if [ ! -e "$(dirname ${FIRETHORN_CODE?})" ]
+    then
+        mkdir --parents "$(dirname ${FIRETHORN_CODE?})"
+    fi
+
+    if [ ! -e "${FIRETHORN_CODE?}" ]
+    then
+        hg clone --rev "${FIRETHORN_REV?}" 'http://wfau.metagrid.co.uk/code/firethorn/' "${FIRETHORN_CODE?}"
+    else
+        pushd "${FIRETHORN_CODE?}"
+            hg update --rev "${FIRETHORN_REV?}"
+        popd
+    fi
+
+    pushd "${FIRETHORN_CODE?}"
+        hg summary
+    popd
+
+    
+# TTY #1 ------------------------------------------------------------
+# Build and deploy the service webapp. 
+#
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}"
+
+        #
+        # Build everything 
+        mvn clean install
+        
+    popd
+
+    #
+    # Deploy the modified OGSA-DAI webapp.
+    pushd ${FIRETHORN_CODE?}/firethorn-ogsadai/webapp
+
+        #
+        # Create a clean build.
+        mvn clean compile war:war
+
+        #
+        # Deploy the webapp in Tomcat.
+        mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
+        
+    popd
+
+# TTY #2 ------------------------------------------------------------
+# Run JUnit test.
+#
+
+    source ${HOME?}/firethorn.settings
+    pushd ${FIRETHORN_CODE?}/firethorn-ogsadai/activity/client
+    
+        mvn -D skipTests=false -D test=MockDqpQueryTestCase test
+
+    popd
+
+# ------------------------------------------------------------
+# Results.
+#
+
+        #
+        # Built with OGSADAI_REV=2182
+        2013-03-26 16:41:24,146 DEBUG mock.TableMappingServiceMock [pool-1-thread-2,getTableMapping:108] TableMappingServiceMock.getTableMapping(String) [table21]
+        2013-03-26 16:41:24,149 DEBUG mock.TableMappingServiceMock [pool-1-thread-2,getTableMapping:108] TableMappingServiceMock.getTableMapping(String) [table22]
+        2013-03-26 16:41:24,149 DEBUG mock.TableMappingServiceMock [pool-1-thread-2,getTableMapping:108] TableMappingServiceMock.getTableMapping(String) [table21]
+        2013-03-26 16:41:24,150 DEBUG mock.TableMappingServiceMock [pool-1-thread-2,getTableMapping:108] TableMappingServiceMock.getTableMapping(String) [gcsPointSource]
+FAIL >> java.lang.RuntimeException: uk.org.ogsadai.dqp.lqp.exceptions.TableNotFoundException: Table not found gcsPointSource
+
+
+        #
+        # Built with OGSADAI_REV=2184
+        2013-03-26 17:01:31,711 DEBUG mock.TableMappingServiceMock [pool-1-thread-3,getTableMapping:108] TableMappingServiceMock.getTableMapping(String) [table21]
+        2013-03-26 17:01:31,712 DEBUG mock.TableMappingServiceMock [pool-1-thread-3,getTableMapping:108] TableMappingServiceMock.getTableMapping(String) [table22]
+        2013-03-26 17:01:31,712 DEBUG mock.TableMappingServiceMock [pool-1-thread-3,getTableMapping:108] TableMappingServiceMock.getTableMapping(String) [table21]
+PASS >> 2013-03-26 17:01:31,714 DEBUG mock.TableMappingServiceMock [pool-1-thread-3,getTableMapping:108] TableMappingServiceMock.getTableMapping(String) [table20]
+        2013-03-26 17:01:31,714 DEBUG mock.AttributeServiceMock [pool-1-thread-3,get:104] get(String) [table20]
+        2013-03-26 17:01:31,731 DEBUG partition.LocalPartition [pool-1-thread-3,debug:84] PipelineWorkflow {
+        ....
+
+        #
+        # The query still fails with a database login error, which is expected.
+
+        ....
+        2013-03-26 17:01:31,874 DEBUG jdbc.JDBCDataResource [pool-1-thread-13,debug:84] Using JDBC URL : jdbc:apache:commons:dbcp:ogsadai-jdbcpool-ukidss
+        2013-03-26 17:01:31,914 DEBUG activity.MatchedIterativeActivity [pool-1-thread-13,debug:84] performing clean-up
+        2013-03-26 17:01:31,914 WARN  activity.MatchedIterativeActivity [pool-1-thread-13,warnExceptionAndChildren:343] #1364317291914:64# There was a problem cleaning up the activity instance (activity name uk.org.ogsadai.SQLQuery, instance name uk.org.ogsadai.SQLQuery-ogsadai-5c659404-2890-492a-aca6-281b29e920a6).
+        2013-03-26 17:01:31,915 WARN  activity.MatchedIterativeActivity [pool-1-thread-13,warnExceptionAndChildren:343] #1364317291914:64# java.lang.NullPointerException: null
+        2013-03-26 17:01:31,916 DEBUG event.LoggingActivityListener [pool-1-thread-13,debug:84] uk.org.ogsadai.activity.sql.ActivitySQLException: The activity encountered a problem while interacting with a relational database.
+	        at uk.org.ogsadai.activity.sql.SQLQueryActivity.preprocess(SQLQueryActivity.java:237)
+	        at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:85)
+	        at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+        ....
+	        at java.sql.DriverManager.getConnection(DriverManager.java:620)
+	        at java.sql.DriverManager.getConnection(DriverManager.java:169)
+	        at uk.org.ogsadai.resource.dataresource.jdbc.JDBCDataResource.getConnection(JDBCDataResource.java:199)
+	        ... 13 more
+        Caused by: java.net.ConnectException: Connection refused
+	        at java.net.PlainSocketImpl.socketConnect(Native Method)
+	        at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:327)
+        ....
+	        at net.sourceforge.jtds.jdbc.SharedSocket.<init>(SharedSocket.java:247)
+	        at net.sourceforge.jtds.jdbc.ConnectionJDBC2.<init>(ConnectionJDBC2.java:322)
+	        ... 24 more
+
+
+
