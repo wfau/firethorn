@@ -41,6 +41,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
+import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -186,9 +187,9 @@ extends AbstractEntityController<AdqlQuery>
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING, params=UPDATE_STATUS)
     public EntityBean<AdqlQuery> update(
-        @RequestParam(value=UPDATE_STATUS, required=false)
+        @RequestParam(value=UPDATE_STATUS, required=true)
         final Status status,
         @RequestParam(value=UPDATE_TIMEOUT, required=false)
         final Integer timeout,
@@ -262,65 +263,12 @@ extends AbstractEntityController<AdqlQuery>
 
         @Override
         @UpdateAtomicMethod
-        public Status update(final AdqlQuery query, final Job.Status next, final Integer timeout)
+        public AdqlQuery update(final Identifier ident, final String name, final String input)
+            throws NotFoundException
             {
-            Status result  = query.status();
-
-            int pause = 2 ;
-            if (timeout != null)
-                {
-                pause = timeout.intValue();
-                }
-            
-            if ((next != null) && ( next != result))
-                {
-                if (next == Status.READY)
-                    {
-                    result = query.prepare();
-                    }
-                else if (next == Status.RUNNING)
-                    {
-                    try {
-                        Future<Status> future = query.execute();
-                        log.debug("Checking future");
-                        result = future.get(
-                            pause,
-                            TimeUnit.SECONDS
-                            );
-                        log.debug("Status [{}]", query.status());
-                        log.debug("Result [{}]", result);
-                        }
-                    catch (TimeoutException ouch)
-                        {
-                        log.debug("Future timeout");
-                        }
-                    catch (InterruptedException ouch)
-                        {
-                        log.debug("Future interrupted [{}]", ouch.getMessage());
-                        }
-                    catch (ExecutionException ouch)
-                        {
-                        log.debug("ExecutionException [{}]", ouch.getMessage());
-                        result = Status.ERROR;
-                        }
-                    }
-                else if (next == Status.CANCELLED)
-                    {
-                    result = query.cancel();
-                    }
-                else {
-                    result = Status.ERROR;
-                    }
-                }
-            return result ;
-            }
-
-        @Override
-        @UpdateAtomicMethod
-        public AdqlQuery update(Identifier ident, String name, String input)
-        throws NotFoundException 
-            {
-            AdqlQuery query = factories().adql().queries().select(ident);
+            final AdqlQuery query = factories().queries().resolver().select(
+                ident
+                );
             if (name != null)
                 {
                 if (name.length() > 0)
@@ -344,17 +292,16 @@ extends AbstractEntityController<AdqlQuery>
             }
 
         @Override
-        public AdqlQuery update(Identifier ident, Status next, Integer timeout)
-        throws NotFoundException 
+        public AdqlQuery update(final Identifier ident, final Job.Status next, final Integer timeout)
+            throws NotFoundException
             {
-            Status result  = query.status();
-
-            int pause = 2 ;
-            if (timeout != null)
-                {
-                pause = timeout.intValue();
-                }
+            final AdqlQuery query = factories().queries().resolver().select(
+                ident
+                );
             
+            Status result = query.status();
+            Integer pause = ((timeout != null) ? timeout : Integer.valueOf(2));
+
             if ((next != null) && ( next != result))
                 {
                 if (next == Status.READY)
@@ -364,28 +311,34 @@ extends AbstractEntityController<AdqlQuery>
                 else if (next == Status.RUNNING)
                     {
                     try {
+
                         Future<Status> future = query.execute();
                         log.debug("Checking future");
                         result = future.get(
-                            pause,
+                            pause.intValue(),
                             TimeUnit.SECONDS
                             );
                         log.debug("Status [{}]", query.status());
                         log.debug("Result [{}]", result);
+
                         }
                     catch (TimeoutException ouch)
                         {
-                        log.debug("Future timeout");
+                        log.debug("TimeoutException");
                         }
                     catch (InterruptedException ouch)
                         {
-                        log.debug("Future interrupted [{}]", ouch.getMessage());
+                        log.debug("InterruptedException [{}]", ouch.getMessage());
                         }
                     catch (ExecutionException ouch)
                         {
                         log.debug("ExecutionException [{}]", ouch.getMessage());
-                        result = Status.ERROR;
                         }
+                    //
+                    // Return the updated state from the *other* thread.
+                    return factories().queries().resolver().select(
+                        ident
+                        );
                     }
                 else if (next == Status.CANCELLED)
                     {
@@ -395,7 +348,7 @@ extends AbstractEntityController<AdqlQuery>
                     result = Status.ERROR;
                     }
                 }
-            return result ;
+            return query;
             }
         }
     }

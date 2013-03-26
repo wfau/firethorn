@@ -130,7 +130,7 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public TestJobController.Iter jsonSelect(
+    public TestJobController.Iter select(
         ){
         return TestJobController.bean(
             factories().tests().factory().select()
@@ -142,7 +142,7 @@ extends AbstractController
      *
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<TestJobController.Bean> jsonCreate(
+    public ResponseEntity<TestJobController.Bean> create(
         @RequestParam(value=CREATE_NAME, required=true)
         final String name,
         @RequestParam(value=CREATE_PAUSE, required=false)

@@ -201,6 +201,17 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     /**
+     * Executor implementation.
+     * 
+     */
+    @Component
+    public static class Executor
+    extends JobEntity.Executor 
+    implements AdqlQuery.Executor 
+        {
+        }
+
+    /**
      * Resolver implementation.
      * 
      */
@@ -656,7 +667,7 @@ implements AdqlQuery, AdqlParserQuery
         {
         if (this.input == null)
             {
-            return inner(
+            return status(
                 Status.EDITING
                 );
             }
@@ -699,12 +710,12 @@ implements AdqlQuery, AdqlParserQuery
             // Update the status.
             if (syntax().status() == Syntax.Status.VALID)
                 {
-                return inner(
+                return status(
                     Status.READY
                     );
                 }
             else {
-                return inner(
+                return status(
                     Status.EDITING
                     );
                 }
@@ -762,7 +773,6 @@ implements AdqlQuery, AdqlParserQuery
             );
         }
 
-    @Override
     public Status prepare()
         {
         try {
@@ -776,7 +786,7 @@ implements AdqlQuery, AdqlParserQuery
                         log.debug("  AdqlQuery [{}][{}]", ident(), name());
                         if ((status() == Status.EDITING) || (status() == Status.READY))
                             {
-                            return update(
+                            return status(
                                 parse()
                                 );
                             }
@@ -795,30 +805,10 @@ implements AdqlQuery, AdqlParserQuery
             }
         }
 
-    /*
-    //@Override
-    public Status prepare(final String input)
-        {
-        return this.services().executor().prepare(
-            new Executable()
-                {
-                @Override
-                public Status execute()
-                    {
-                    return parse(
-                        input
-                        );
-                    }
-                }
-            );
-       }
-    */
-
     public static final String endpoint  = "http://localhost:8081/albert/services" ;
     public static final String dqpname   = "testdqp" ;
     public static final String storename = "user" ;
     
-    @Override
     public Future<Status> execute()
         {
         try {
@@ -838,7 +828,7 @@ implements AdqlQuery, AdqlParserQuery
                             }
                         else {
                             log.debug("-- AdqlQuery starting[{}]", ident());
-                            result = update(
+                            result = status(
                                 Status.RUNNING
                                 );
                             if (result == Status.RUNNING)
@@ -876,14 +866,14 @@ implements AdqlQuery, AdqlParserQuery
                                         }
                                     
                                     log.debug("-- AdqlQuery finishing [{}][{}]", ident(), status());
-                                    result = update(
+                                    result = status(
                                         Status.COMPLETED
                                         );
                                     }
                                 catch (Exception ouch)
                                     {
                                     log.debug("-- AdqlQuery failed [{}][{}]", ident(), ouch.getMessage());
-                                    result = update(
+                                    result = status(
                                         Status.FAILED
                                         );
                                     }

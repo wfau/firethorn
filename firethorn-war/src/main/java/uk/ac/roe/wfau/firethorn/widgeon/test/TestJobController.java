@@ -26,6 +26,7 @@ import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -35,13 +36,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
+import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -218,34 +224,21 @@ public class TestJobController
         }
     
     /**
-     * Get the target job based on the identifier in the request.
-     * @throws NotFoundException
-     *
-     */
-    @ModelAttribute(TestJobController.TARGET_ENTITY)
-    public TestJob entity(
-        @PathVariable(WebappLinkFactory.IDENT_FIELD)
-        final String ident
-        ) throws NotFoundException {
-        return factories().tests().resolver().select(
-            factories().tests().idents().ident(
-                ident
-                )
-            );
-        }
-
-    /**
      * JSON GET request.
      *
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public Bean jsonSelect(
-        @ModelAttribute(TARGET_ENTITY)
-        final TestJob entity
-        ){
+    public Bean select(
+        @PathVariable(WebappLinkFactory.IDENT_FIELD)
+        final String ident
+        ) throws NotFoundException {
         return bean(
-            entity
+            factories().tests().resolver().select(
+                factories().tests().idents().ident(
+                    ident
+                    )
+                )
             );
         }
 
@@ -255,43 +248,50 @@ public class TestJobController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public Bean jsonModify(
+    public Bean update(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @RequestParam(value=UPDATE_PAUSE, required=false)
         final Integer pause,
-        @RequestParam(value=UPDATE_STATUS, required=false)
+        @PathVariable(WebappLinkFactory.IDENT_FIELD)
+        final String ident
+        ) throws NotFoundException {
+        return bean(
+            this.helper.update(
+                factories().tests().idents().ident(
+                    ident
+                    ),
+                name,
+                pause
+                )
+            );
+        }
+    
+    /**
+     * JSON POST update.
+     *
+     */
+    @ResponseBody
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING, params=UPDATE_STATUS)
+    public Bean update(
+        @RequestParam(value=UPDATE_STATUS, required=true)
         final Job.Status status,
         @RequestParam(value=UPDATE_TIMEOUT, required=false)
         final Integer timeout,
-        @ModelAttribute(TARGET_ENTITY)
-        final TestJob entity
-        ){
-
-        if (name != null)
-            {
+        @PathVariable(WebappLinkFactory.IDENT_FIELD)
+        final String ident
+        ) throws NotFoundException {
+        return bean(
             this.helper.update(
-                entity,
-                name,
-                pause
-                );
-            }
-
-        if (status != null)
-            {
-            this.helper.update(
-                entity,
+                factories().tests().idents().ident(
+                    ident
+                    ),
                 status,
                 timeout
-                );
-            }
-            
-        return bean(
-            entity
+                )
             );
         }
-
-
+    
     /**
      * Transactional helper.
      * 
@@ -302,14 +302,16 @@ public class TestJobController
          * Transactional update.
          *
          */
-        public void update(final TestJob entity, final String  name, final Integer pause);
+        public TestJob update(final Identifier ident, final String  name, final Integer pause)
+        throws NotFoundException;
 
         /**
          * Transactional update.
          *
          */
-        public Status update(final TestJob entity, final Job.Status next, final Integer timeout);
-        
+        public TestJob update(final Identifier ident, final Job.Status next, final Integer timeout)
+        throws NotFoundException;
+
         }
 
     /**
@@ -326,15 +328,23 @@ public class TestJobController
     @Slf4j
     @Component
     public static class HelperImpl
+    extends AbstractComponent
     implements Helper
         {
         @Override
         @UpdateAtomicMethod
-        public void update(
-            final TestJob entity,
+        public TestJob update(
+            final Identifier ident,
             final String  name,
             final Integer pause
-            ){
+            )
+        throws NotFoundException
+            {
+            log.debug("-----------------------------------");
+            log.debug("update(Identifier, String, Integer)");
+            final TestJob entity = factories().tests().resolver().select(
+                ident
+                );
             if (name != null)
                 {
                 if (name.length() > 0)
@@ -344,68 +354,80 @@ public class TestJobController
                         );
                     }
                 }
-    
             if (pause != null)
                 {
                 entity.pause(
                     pause
                     );
                 }
+            return entity;
             }
 
         @Override
-        //@UpdateAtomicMethod
-        public Status update(final TestJob entity, final Job.Status next, final Integer timeout)
+        @SelectEntityMethod
+        public TestJob update(
+            final Identifier ident,
+            final Job.Status next,
+            final Integer timeout
+            )
+        throws NotFoundException
             {
-            Status result  = entity.status();
+            log.debug("-----------------------------------");
+            log.debug("update(Identifier, Status, Integer)");
 
-            int pause = 2 ;
-            if (timeout != null)
-                {
-                pause = timeout.intValue();
-                }
-            
+            Integer pause  = ((timeout != null) ? timeout : Integer.valueOf(2));
+            Status  result = factories().tests().executor().status(
+                ident
+                );
+
             if ((next != null) && ( next != result))
                 {
                 if (next == Status.READY)
                     {
-                    result = entity.prepare();
+                    result = factories().tests().executor().prepare(
+                        ident
+                        );
                     }
                 else if (next == Status.RUNNING)
                     {
                     try {
-                        Future<Status> future = entity.execute();
+                        Future<Status> future = factories().tests().executor().execute(ident);
                         log.debug("Checking future");
                         result = future.get(
-                            pause,
+                            pause.intValue(),
                             TimeUnit.SECONDS
                             );
-                        log.debug("Status [{}]", entity.status());
                         log.debug("Result [{}]", result);
                         }
                     catch (TimeoutException ouch)
                         {
-                        log.debug("Future timeout");
+                        log.debug("TimeoutException");
                         }
                     catch (InterruptedException ouch)
                         {
-                        log.debug("Future interrupted [{}]", ouch.getMessage());
+                        log.debug("InterruptedException [{}]", ouch.getMessage());
                         }
                     catch (ExecutionException ouch)
                         {
                         log.debug("ExecutionException [{}]", ouch.getMessage());
-                        result = Status.ERROR;
                         }
                     }
                 else if (next == Status.CANCELLED)
                     {
-                    result = entity.cancel();
+                    result = factories().tests().executor().status(
+                        ident,
+                        Status.CANCELLED
+                        );
                     }
                 else {
                     result = Status.ERROR;
                     }
                 }
-            return result ;
+            //
+            // Return the updated state.
+            return factories().tests().resolver().select(
+                ident
+                );
             }
         }
     }

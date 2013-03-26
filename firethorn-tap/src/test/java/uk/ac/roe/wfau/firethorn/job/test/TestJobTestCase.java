@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
@@ -49,36 +50,41 @@ public class TestJobTestCase
     
     @Test
     public void test000()
+    throws Exception
         {
-        log.debug("Creating test job");
-        
-        TestJob job = services().factory().create(
+        log.debug("-- Creating test --");
+        Identifier ident  = services().factory().create(
             "fred",
             new Integer(
                 20
                 )
+            ).ident();
+
+        log.debug("Status [{}]", services().executor().status(ident));
+        
+        TestJob job = services().resolver().select(
+            ident
             );
-        log.debug("  Status [{}]", job.status());
+        log.debug("Status [{}]", job.status());
+        
+        log.debug("-- Preparing test --");
+        log.debug("Result [{}]", services().executor().prepare(ident));
 
-        log.debug("Preparing test job");
-        job.prepare();
-        log.debug("  Status [{}]", job.status());
+        log.debug("-- Executing test --");
+        Future<Status> future = services().executor().execute(ident);
+        log.debug("  Status [{}]", services().executor().status(ident));
 
-        log.debug("Executing test job");
-        Future<Status> future = job.execute();
-        log.debug("  Status [{}]", job.status());
-
-        Status result = job.status();
+        Status result = services().executor().status(ident);
         while ((result != Status.ERROR) && (future.isDone() == false))
             {
             try {
-                log.debug("Checking future");
+                log.debug("-- Checking future --");
                 result = future.get(
                     2,
                     TimeUnit.SECONDS
                     );
                 log.debug("Result [{}]", result);
-                log.debug("Status [{}]", job.status());
+                log.debug("Status [{}]", services().executor().status(ident));
                 }
             catch (TimeoutException ouch)
                 {
@@ -94,6 +100,7 @@ public class TestJobTestCase
                 result = Status.ERROR;
                 }
             }
-        log.debug("-- Test completed [{}][{}]", result, job.status());
+        log.debug("-- Test completed --");
+        log.debug("Status [{}]", services().executor().status(ident));
         }
     }

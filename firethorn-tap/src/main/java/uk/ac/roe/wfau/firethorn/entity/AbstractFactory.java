@@ -42,6 +42,7 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 @Slf4j
 @Repository
 public abstract class AbstractFactory<EntityType extends Entity>
+extends AbstractComponent
 implements Entity.Factory<EntityType>
     {
 
@@ -56,17 +57,6 @@ implements Entity.Factory<EntityType>
      *
      */
     public abstract Class<?> etype();
-
-    /**
-     * Our autowired reference to the factories instance.
-     *
-     */
-    @Autowired
-    private ComponentFactories factories;
-    public ComponentFactories factories()
-        {
-        return this.factories;
-        }
 
     /**
      * Get a named query.

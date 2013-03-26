@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.job;
 import java.util.concurrent.Future;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 
 /**
  * Abstract representation of a Job.
@@ -55,8 +57,8 @@ extends Entity
         /**
          * Our Job executor.
          * 
-         */
         public Executor executor();
+         */
 
         }
 
@@ -110,26 +112,23 @@ extends Entity
 
     /**
      * Job executor interface.
-     * This wraps the Job.status(), Job.prepare() and Job.execute() methods with Spring managed Transaction handling.
+     * Wraps the Job.status(), Job.prepare() and Job.execute() methods with Spring managed Transaction handling.
      *
      */
     public static interface Executor
         {
         /**
-         * Functor interface for an update.
+         * Check a job status.
          * 
          */
-        public static interface Update
-            {
-            public Status update();
-            }
+        public Status status(Identifier ident);
 
         /**
-         * Perform an Update inside a transaction.
+         * Update a job status.
          * 
          */
-        public Status update(Update update);
-        
+        public Status status(Identifier ident, Status status);
+
         /**
          * Functor interface used by prepare() and execute().
          * 
@@ -137,7 +136,7 @@ extends Entity
         public static interface Executable
             {
             /**
-             * Execute the function.
+             * Execute the functor.
              *
              */
             public Status execute();
@@ -150,7 +149,7 @@ extends Entity
         public Status prepare(Executable executable);
 
         /**
-         * Execute a Job asynchronously.
+         * Execute a Job (asynchronous).
          *
          */
         public Future<Status> execute(Executable executable);
@@ -222,34 +221,8 @@ extends Entity
 
     /**
      * Set the Job status.
-     * @todo This should be protected by a transaction handler.
      *
-    public Status status(Status status);
      */
+    public Status status(final Status status);
 
-    /**
-     * Set the Job status.
-     * This uses a call to the Job Executor to add transaction handling.
-     *
-    public Status update(Status status);
-     */
-
-    /**
-     * Prepare the Job for execution.
-     *
-     */
-    public Status prepare();
-
-    /**
-     * Execute the Job asynchronously.
-     *
-     */
-    public Future<Status> execute();
-    
-    /**
-     * Cancel the Job.
-     *
-     */
-    public Status cancel();
-    
     }

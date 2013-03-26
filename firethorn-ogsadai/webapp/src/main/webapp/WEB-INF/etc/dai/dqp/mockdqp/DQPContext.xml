@@ -53,7 +53,7 @@
     <!--+
         | WFAU data node.
         +-->
-    <bean id="uber" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+    <bean id="wfau" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
         <constructor-arg name="resourceID"     value="wfau"/>
         <constructor-arg name="evaluationNode" ref="MockDqpEval"/>
         <property name="operatorSupport"       ref="defaultFeatureSupport"/>

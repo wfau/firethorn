@@ -1,6 +1,4 @@
 /*
-
- *  
  *  
  *  Copyright (C) 2012 Royal Observatory, University of Edinburgh, UK
  *
@@ -43,15 +41,15 @@ extends SimpleQueryTestBase
 
     /**
      * TWOMASS and UKIDSSDR1, using single JDBC connection.
-    @Test
      *
      */
+    //@Test
     public void test001()
     throws Exception
         {
         execute(
             endpoint,
-            "uber",
+            "wfau",
             " SELECT" +
             "    twomass.ra AS tmra," +
             "    ukidss.ra  AS ukra,"  +
@@ -117,7 +115,7 @@ extends SimpleQueryTestBase
      * TWOMASS and UKIDSSDR1, using DQP, using GT and LT on both tables.
      *
      */
-    @Test
+    //@Test
     public void test003()
     throws Exception
         {

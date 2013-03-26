@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.adql.query;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.job.Job;
+import uk.ac.roe.wfau.firethorn.job.JobEntity;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -116,6 +117,15 @@ extends Entity, Job
      */
     public static interface Resolver
     extends Entity.Factory<AdqlQuery>
+        {
+        }
+
+    /**
+     * Executor interface.
+     *
+     */
+    public static interface Executor 
+    extends Job.Executor
         {
         }
 
