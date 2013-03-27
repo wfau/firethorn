@@ -170,7 +170,7 @@ EOF
     source ${HOME?}/firethorn.settings
     pushd "${FIRETHORN_CODE?}/firethorn-war"
 
-        mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+        mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
         
     popd
 
