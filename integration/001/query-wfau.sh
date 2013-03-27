@@ -42,12 +42,11 @@ EOF
 #
 # Create the ADQL query.
 wfauquery=$(
-POST "${wfauspace?}/queries/create" \
-    --data-urlencode "adql.resource.query.create.name=query-$(unique)" \
-    --data-urlencode "adql.resource.query.create.query@wfau-query-001.adql" \
-    | ident
-    )
-
+    POST "${wfauspace?}/queries/create" \
+        --data-urlencode "adql.resource.query.create.name=query-$(unique)" \
+        --data-urlencode "adql.resource.query.create.query@wfau-query-001.adql" \
+        | ident
+        )
 GET "${wfauquery?}" \
     | ./pp
 

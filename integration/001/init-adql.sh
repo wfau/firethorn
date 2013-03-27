@@ -26,6 +26,8 @@ adqlspace=$(
         --data "adql.resource.create.name=workspace-$(unique)" \
         | ident
         )
+GET "${adqlspace?}" \
+    | ./pp
 
 #
 # Create a new ADQL schema.
@@ -34,6 +36,8 @@ adqlschema=$(
         --data "adql.resource.schema.create.name=adql_schema" \
         | ident
         )
+GET "${adqlschema?}" \
+    | ./pp
 
 #
 # Import the TWOMASS 'twomass_psc' table.
@@ -42,17 +46,11 @@ jdbcschema=$(
         -d "jdbc.resource.schema.select.name=TWOMASS.dbo" \
         | ident
         )
-GET "${jdbcschema?}" \
-    | ./pp
-
 jdbctable=$(
     POST "${jdbcschema?}/tables/select" \
         -d "jdbc.schema.table.select.name=twomass_psc" \
         | ident
         )
-GET "${jdbctable?}" \
-    | ./pp
-
 POST "${adqlschema?}/tables/import" \
     --data "adql.schema.table.import.base=${metabasename?}/${jdbctable?}" \
     | ./pp
@@ -96,22 +94,13 @@ GET "/${adqlschema?}/tables/select" | ./pp
 
 #
 # Check the OGSA-DAI metadata for the gcsPointSource table.
-adqlalias=$(
-    POST "${adqlschema?}/tables/select" \
-        -d "adql.schema.table.select.name=gcsPointSource" \
-        | ./pp \
-        | sed -n 's/^ *"alias" : "\([^"]*\)"[^"]*/\1/p' \
-        )                
-
-#
-# Check the table mapping.
-GET "/meta/table/${adqlalias?}" | ./pp
-
-#
-# Get the attribute list.
-GET "/meta/table/${adqlalias?}/columns" | ./pp
-
-#
-# Get a named attribute.
-GET "/meta/table/${adqlalias?}/column/ra" | ./pp
+#adqlalias=$(
+#    POST "${adqlschema?}/tables/select" \
+#        -d "adql.schema.table.select.name=gcsPointSource" \
+#        | ./pp \
+#        | sed -n 's/^ *"alias" : "\([^"]*\)"[^"]*/\1/p' \
+#        )                
+#GET "/meta/table/${adqlalias?}" | ./pp
+#GET "/meta/table/${adqlalias?}/columns" | ./pp
+#GET "/meta/table/${adqlalias?}/column/ra" | ./pp
 

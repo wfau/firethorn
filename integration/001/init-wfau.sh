@@ -26,6 +26,8 @@ wfauspace=$(
         --data "adql.resource.create.name=workspace-$(unique)" \
         | ident
         )
+GET "${wfauspace?}" \
+    | ./pp
 
 #
 # Create a new ADQL schema.
@@ -34,6 +36,8 @@ wfauschema=$(
         --data "adql.resource.schema.create.name=wfau_schema" \
         | ident
         )
+GET "${wfauschema?}" \
+    | ./pp
 
 #
 # Import the WFAU/TWOMASS 'twomass_psc' table.
@@ -86,22 +90,14 @@ POST "${wfauschema?}/tables/import" \
 
 #
 # Check the OGSA-DAI metadata for the gcsPointSource table.
-wfaualias=$(
-    POST "${wfauschema?}/tables/select" \
-        -d "adql.schema.table.select.name=gcsPointSource" \
-        | ./pp \
-        | sed -n 's/^ *"alias" : "\([^"]*\)"[^"]*/\1/p' \
-        )                
-
+#wfaualias=$(
+#    POST "${wfauschema?}/tables/select" \
+#        -d "adql.schema.table.select.name=gcsPointSource" \
+#        | ./pp \
+#        | sed -n 's/^ *"alias" : "\([^"]*\)"[^"]*/\1/p' \
+#        )                
 #
-# Check the table mapping.
-GET "/meta/table/${wfaualias?}" | ./pp
-
-#
-# Get the attribute list.
-GET "/meta/table/${wfaualias?}/columns" | ./pp
-
-#
-# Get a named attribute.
-GET "/meta/table/${wfaualias?}/column/ra" | ./pp
+#GET "/meta/table/${wfaualias?}" | ./pp
+#GET "/meta/table/${wfaualias?}/columns" | ./pp
+#GET "/meta/table/${wfaualias?}/column/ra" | ./pp
 

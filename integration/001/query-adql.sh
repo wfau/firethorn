@@ -61,12 +61,11 @@ EOF
 #
 # Create the ADQL query.
 adqlquery=$(
-POST "${adqlspace?}/queries/create" \
-    --data-urlencode "adql.resource.query.create.name=query-$(unique)" \
-    --data-urlencode "adql.resource.query.create.query@adql-query-001.adql" \
-    | ident
-    )
-
+    POST "${adqlspace?}/queries/create" \
+        --data-urlencode "adql.resource.query.create.name=query-$(unique)" \
+        --data-urlencode "adql.resource.query.create.query@adql-query-001.adql" \
+        | ident
+        )
 GET "${adqlquery?}" \
     | ./pp
 

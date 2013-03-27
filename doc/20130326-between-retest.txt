@@ -12,7 +12,7 @@
         apt-get -y install mercurial
 
         apt-get -y install openjdk-6-jdk
-        apt-get -y install maven2
+        apt-get -y install maven
         apt-get -y install ant
 
     # ------------------
