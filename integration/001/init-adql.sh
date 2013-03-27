@@ -90,7 +90,7 @@ POST "${adqlschema?}/tables/import" \
 
 #
 # Check the ADQL tables.
-GET "/${adqlschema?}/tables/select" | ./pp
+#GET "/${adqlschema?}/tables/select" | ./pp
 
 #
 # Check the OGSA-DAI metadata for the gcsPointSource table.

@@ -216,9 +216,9 @@ EOF
         source "${FIRETHORN_TEST?}/init-rest.sh"
         source "${FIRETHORN_TEST?}/init-jdbc.sh"
         source "${FIRETHORN_TEST?}/init-adql.sh"
-        source "${FIRETHORN_TEST?}/query-adql.sh"
-
         source "${FIRETHORN_TEST?}/init-wfau.sh"
+
+        source "${FIRETHORN_TEST?}/query-adql.sh"
         source "${FIRETHORN_TEST?}/query-wfau.sh"
 
     popd

@@ -89,6 +89,10 @@ POST "${wfauschema?}/tables/import" \
     | ./pp
 
 #
+# Check the WFAU tables.
+#GET "/${wfauschema?}/tables/select" | ./pp
+
+#
 # Check the OGSA-DAI metadata for the gcsPointSource table.
 #wfaualias=$(
 #    POST "${wfauschema?}/tables/select" \
