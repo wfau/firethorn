@@ -14,6 +14,7 @@
         local databasepass="$(sed -n 's/^pass=\(.*\)/\1/p' ${databaseconf?})"
         local databasehost="$(sed -n 's/^host=\(.*\)/\1/p' ${databaseconf?})"
         local databaseport="$(sed -n 's/^port=\(.*\)/\1/p' ${databaseconf?})"
+        local databasefile="$(sed -n 's/^file=\(.*\)/\1/p' ${databaseconf?})"
 
         local jdbcdriver
         local jdbcstring
@@ -22,7 +23,7 @@
 
             pgsql)
                 echo "Postgresql database"
-                echo " Name [${databasename}]"
+                echo " Name [${databasename?}]"
                 echo " Host [${databasehost:-localhost}]"
                 echo " Port [${databaseport:-5432}]"
 
@@ -32,7 +33,7 @@
 
             mssql)
                 echo "SQLServer database"
-                echo " Name [${databasename}]"
+                echo " Name [${databasename?}]"
                 echo " Host [${databasehost:-localhost}]"
                 echo " Port [${databaseport:-1433}]"
 
@@ -40,6 +41,16 @@
                 jdbcstring=jdbc:jtds:sqlserver://${databasehost:-localhost}:${databaseport:-1433}/${databasename?}
                 ;;
 
+            hsqldb)
+                echo "HSQLDB database"
+                echo " Name [${databasename?}]"
+                echo " File [${databasefile?}]"
+
+                jdbcdriver=org.hsqldb.jdbcDriver
+                jdbcstring=jdbc:hsqldb:file:${databasefile?}
+                ;;
+
+            
             *)  echo "ERROR : unknown database type [${databasetype}]"
                 ;;
         esac

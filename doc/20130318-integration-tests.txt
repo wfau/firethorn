@@ -12,7 +12,7 @@ EOF
 # ** leave this running for the duration of the tests **
 #
 
-    ssh -v -L 1433:ramses3:1433 fenrir.roe.ac.uk
+    ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
 
 # TTY #2 ------------------------------------------------------------
 # Build and deploy the firethorn webapp 
@@ -84,6 +84,8 @@ EOF
 
     pushd $(mktemp --directory)
 
+cat > init-rest.sh << 'EOF'
+
         #
         # Download the 'resty' wrapper for curl.
         curl -# -L http://github.com/micha/resty/raw/master/resty > resty
@@ -127,6 +129,7 @@ EOF
             ./pp | sed -n 's|^ *"ident" : "'${metabasename?}'\(.*\)"[^"]*|\1|p'
             }
 
+EOF
 
         # -------- --------
         # JDBC ....
@@ -540,33 +543,13 @@ cat > wfau-query.sh << 'EOF'
 EOF
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #
 # Run our scripts.
 
     source init-jdbc.sh
     source init-adql.sh
     source init-query.sh
+
+    source wfau-query.sh
+    source init-wfau.sh
 
