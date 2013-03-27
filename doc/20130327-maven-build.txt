@@ -1,5 +1,6 @@
 # ------------------------------------------------------------
 # Install Java, Subversion, Mercurial, Ant and Maven
+[root@psi]
 
     # ------------------
     # Ubuntu 12
@@ -16,17 +17,12 @@
 
     apt-get -y install libjson-perl
 
-# ------------------------------------------------------------
-# Create test user
-
-    useradd --create-home --shell /bin/bash Fabulous
-    su - Fabulous
 
 # ------------------------------------------------------------
 # Configuration settings.
 # ONCE ONLY - then modify to fit local env.
 #
-[Fabulous@psi]
+[User@psi]
 
 cat > ${HOME?}/firethorn.settings << 'EOF'
 FIRETHORN_BASE=${FIRETHORN_BASE:-${HOME?}/firethorn}
@@ -123,7 +119,7 @@ EOF
 # ------------------------------------------------------------
 # Clone the FireThorn source code.
 #
-[Fabulous@psi]
+[User@psi]
 
     source "${HOME?}/firethorn.settings"
 
@@ -150,14 +146,15 @@ EOF
 # Create a SSH tunnel to the ROE database server.
 # ** leave this running for the duration of the tests **
 #
-[Fabulous@psi]
+[User@psi]
 
+    # **** changed from ramses3 to ramses5 ****
     ssh -L 1433:ramses5:1433 fenrir.roe.ac.uk
 
 # TTY #2 ------------------------------------------------------------
 # Build and deploy the FireThorn webapp. 
 #
-[Fabulous@psi]
+[User@psi]
 
     #
     # Build everything 
@@ -180,7 +177,7 @@ EOF
 # TTY #3 ------------------------------------------------------------
 # Build and deploy the OGSA-DAI webapp 
 #
-[Fabulous@psi]
+[User@psi]
 
     source "${HOME?}/firethorn.settings"
     pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/webapp"
