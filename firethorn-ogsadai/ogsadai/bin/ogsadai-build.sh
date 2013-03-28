@@ -25,7 +25,7 @@
 
 #cat > ${HOME?}/ogsadai.settings << 'EOF'
 #OGSADAI_REV=${OGSADAI_REV:-HEAD}
-#OGSADAI_SVN=${OGSADAI_SVN:-http://svn.code.sf.net/p/ogsa-dai/code}
+#OGSADAI_REPO=${OGSADAI_REPO:-http://svn.code.sf.net/p/ogsa-dai/code}
 #OGSADAI_BASE=${OGSADAI_BASE:-/var/local/projects/edinburgh/ogsa-dai}
 #OGSADAI_NAME=${OGSADAI_NAME:-code}
 #OGSADAI_CODE=${OGSADAI_CODE:-${OGSADAI_BASE?}/${OGSADAI_NAME}}
@@ -65,7 +65,7 @@ else
             if [ ! -e "${codepath?}" ]
             then
                 echo "Checkout [${codepath?}]"
-                svn checkout -r "${OGSADAI_REV?}" "${OGSADAI_SVN?}/${codepath?}" "${codepath?}"
+                svn checkout -r "${OGSADAI_REV?}" "${OGSADAI_REPO?}/${codepath?}" "${codepath?}"
             else
                 echo "Updating [${codepath?}]"
                 svn update -r "${OGSADAI_REV?}" "${codepath?}"
