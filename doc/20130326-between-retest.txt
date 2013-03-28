@@ -28,61 +28,9 @@
         yum -y install maven
         yum -y install ant
 
-    # ------------------
-    # RedHat EL
-
-        yum -y update
-
-        yum -y install subversion
-        yum -y install mercurial
-
-        yum -y install java-1.6.0-openjdk
-        yum -y install java-1.6.0-openjdk-devel
-
-        yum -y install ant
-
-        # Manual install of Apache Maven.
-        # http://maven.apache.org/download.html
-
-        if [ ! -e '/var/local/toolkits' ]
-        then
-            mkdir '/var/local/toolkits'
-        fi
-
-        if [ ! -e '/var/local/toolkits/maven' ]
-        then
-            mkdir '/var/local/toolkits/maven'
-            pushd '/var/local/toolkits/maven'
-
-                if [ ! -e 'downloads' ]
-                then 
-                    mkdir 'downloads'
-                fi
-                pushd downloads
-
-                    wget http://www.mirrorservice.org/sites/ftp.apache.org/maven/maven-3/3.0.4/binaries/apache-maven-3.0.4-bin.tar.gz
-
-                popd
-
-                tar xvf downloads/apache-maven-3.0.4-bin.tar.gz 
-                ln -s apache-maven-3.0.4 current
-
-            popd
-        fi
-            
-        cat > /etc/profile.d/maven.sh << 'EOF'
-        # /etc/profile.d/maven.sh
-        #
-        # Manual install of Apache Maven.
-        # http://maven.apache.org/download.html
-        export M2_HOME=${M2_HOME:-/var/local/toolkits/maven/current}
-        export PATH=${M2_HOME}/bin:${PATH} 
-        EOF
-
 # ------------------------------------------------------------
 # Login as test user
 
-    su - Fabulous
 
 # ------------------------------------------------------------
 # Configuration settings.
@@ -130,7 +78,7 @@ EOF
     popd
 
 # ------------------------------------------------------------
-# Build the OGSA-DAI binary release.
+# Build specific version of the OGSA-DAI source code.
 #
 
     #OGSADAI_REV=HEAD
