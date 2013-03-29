@@ -374,11 +374,23 @@ implements Entity
         }
 
     /**
+     * Refresh (fetch) this Entity from the database.
+     *
+     */
+    @Override
+    public void refresh()
+        {
+        factories().hibernate().refresh(
+            this
+            );
+        }
+
+    /**
      * Update (store) this Entity in the database.
      *
      */
     @Override
-    @UpdateEntityMethod
+    @Deprecated
     public void update()
         {
         factories().hibernate().update(
@@ -391,7 +403,6 @@ implements Entity
      *
      */
     @Override
-    @DeleteEntityMethod
     public void delete()
         {
         factories().hibernate().delete(

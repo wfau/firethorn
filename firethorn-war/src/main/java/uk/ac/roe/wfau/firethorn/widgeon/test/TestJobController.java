@@ -298,6 +298,7 @@ public class TestJobController
      */
     public static interface Helper
         {
+
         /**
          * Transactional update.
          *
@@ -364,7 +365,6 @@ public class TestJobController
             }
 
         @Override
-        @SelectEntityMethod
         public TestJob update(
             final Identifier ident,
             final Job.Status next,
@@ -424,10 +424,15 @@ public class TestJobController
                     }
                 }
             //
-            // Return the updated state.
-            return factories().tests().resolver().select(
+            // Return the current state.
+            log.debug("Selecting job [{}]", ident);
+            TestJob job = factories().tests().executor().select(
                 ident
                 );
+            log.debug("Refreshing job [{}][{}]", job.ident(), job.modified());
+            factories().hibernate().session().refresh(job);
+            log.debug("Returning job [{}][{}]", job.ident(), job.modified());
+            return job ;
             }
         }
     }

@@ -69,9 +69,17 @@ public interface HibernateThings
     public Entity select(final Class<?> type, final Identifier ident);
 
     /**
-     * Update an existing Entity.
+     * Refresh (fetch) an Entity from the database.
      *
      */
+
+    public Entity refresh(final Entity entity);
+
+    /**
+     * Update (store) an Entity in the database.
+     *
+     */
+    @Deprecated
     public Entity update(final Entity entity);
 
     /**

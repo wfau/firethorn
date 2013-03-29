@@ -21,6 +21,7 @@ import java.util.concurrent.Future;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 
@@ -138,10 +139,11 @@ extends Entity, Job
         public Future<Status> execute(Identifier ident);
 
         /**
-         * Set the status to RUNNING.
-         * 
+         * Transactional select.
+         *
          */
-        public Status run(Identifier ident);
+        public TestJob select(final Identifier ident)
+        throws NotFoundException;
 
         }
 

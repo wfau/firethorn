@@ -209,7 +209,7 @@ extends AbstractController
             bean.entity().catalog(
                 catalog
                 );
-            bean.entity().update();
+            //bean.entity().update();
             }
         //
         // TODO - set the initial resource
@@ -218,7 +218,7 @@ extends AbstractController
             bean.entity().ogsaid(
                 ogsadai
                 );
-            bean.entity().update();
+            //bean.entity().update();
             }
         return new ResponseEntity<JdbcResourceBean>(
             bean,

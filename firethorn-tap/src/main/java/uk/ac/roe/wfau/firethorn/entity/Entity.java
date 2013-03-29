@@ -169,9 +169,16 @@ public interface Entity
     public DateTime modified();
 
     /**
+     * Refresh (fetch) this Entity from the database.
+     *
+     */
+    public void refresh();
+
+    /**
      * Update (store) this Entity in the database.
      *
      */
+    @Deprecated
     public void update();
 
     /**

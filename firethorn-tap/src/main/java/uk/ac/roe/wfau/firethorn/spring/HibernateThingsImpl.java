@@ -29,9 +29,6 @@ import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateEntityMethod;
 
 /**
  * HibernateThings implementation.
@@ -94,7 +91,7 @@ public class HibernateThingsImpl
         }
 
     @Override
-    @CreateEntityMethod
+    //@CreateEntityMethod
     public Entity insert(final Entity entity)
         {
         try {
@@ -128,7 +125,7 @@ public class HibernateThingsImpl
         }
 
     @Override
-    @SelectEntityMethod
+    //@SelectEntityMethod
     public Entity select(final Class<?> type, final Identifier ident)
         {
         try {
@@ -152,7 +149,42 @@ public class HibernateThingsImpl
         }
 
     @Override
-    @UpdateEntityMethod
+    //@SelectEntityMethod
+    public Entity refresh(final Entity entity)
+        {
+        try {
+            if (entity == null)
+                {
+                log.error("Attempting to refresh a null entity");
+                throw new IllegalArgumentException(
+                    "Attempting to refresh null entity"
+                    );
+                }
+            else if (entity.ident() == null)
+                {
+                log.error("Attempting to refresh an entity with a null ident");
+                throw new IllegalArgumentException(
+                    "Attempting to refresh an entity with a null ident"
+                    );
+                }
+            else {
+                session().refresh(
+                    entity
+                    );
+                }
+            }
+        catch (final HibernateException ouch)
+            {
+            throw convert(
+                ouch
+                );
+            }
+        return entity ;
+        }
+
+    @Override
+    @Deprecated
+    //@UpdateEntityMethod
     public Entity update(final Entity entity)
         {
         try {
@@ -186,7 +218,7 @@ public class HibernateThingsImpl
         }
 
     @Override
-    @UpdateEntityMethod
+    //@UpdateEntityMethod
     public void delete(final Entity entity)
         {
         try {
@@ -266,18 +298,6 @@ public class HibernateThingsImpl
             }
         try {
             return (Entity) query.uniqueResult();
-            /*
-            final ScrollableResults results = query.scroll(
-                ScrollMode.FORWARD_ONLY
-                );
-            if (results.next())
-                {
-                return (Entity) results.get(0);
-                }
-            else {
-                return null ;
-                }
-            */
             }
         catch (final HibernateException ouch)
             {

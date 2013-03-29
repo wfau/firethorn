@@ -47,6 +47,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateEntityMethod;
@@ -252,6 +253,23 @@ implements TestJob
         {
 
         @Override
+        @SelectAtomicMethod
+        public TestJob select(
+            final Identifier ident
+            )
+        throws NotFoundException
+            {
+            log.debug("-----------------------------------");
+            log.debug("select(Identifier)");
+            TestJob  job = factories().tests().resolver().select(
+                ident
+                );
+            log.debug(" Status [{}]", job.status());
+            log.debug("-----------------------------------");
+            return job ;
+            }
+
+        @Override
         @UpdateEntityMethod
         public Status prepare(Identifier ident)
             {
@@ -263,7 +281,7 @@ implements TestJob
                     );
                 if ((job.status() == Status.EDITING) || (job.status() == Status.READY))
                     {
-                    if (job.pause().intValue() >= 10)
+                    if (job.pause().intValue() >= 0)
                         {
                         return job.status(
                             Status.READY
@@ -287,35 +305,6 @@ implements TestJob
                 }
             }
 
-        @Override
-        @UpdateEntityMethod
-        public Status run(Identifier ident)
-            {
-            log.debug("run(Identifier)");
-            log.debug("  TestJob [{}]", ident);
-            try {
-                TestJob job = factories().tests().resolver().select(
-                    ident
-                    );
-                if (job.status() != Status.READY)
-                    {
-                    log.error("-- TestJob not ready [{}][{}]", job.ident(), job.status());
-                    return Status.ERROR;
-                    }
-                else {
-                    log.debug("-- TestJob starting [{}]", job.ident());
-                    return job.status(
-                        Status.RUNNING
-                        );
-                    }
-                }
-            catch (NotFoundException ouch)
-                {
-                log.error("Failed to set job status [{}][{}]", ident, ouch.getMessage());
-                return Status.ERROR;
-                }
-            }
-
         @Async
         @Override
         public Future<Status> execute(Identifier ident)
@@ -330,8 +319,9 @@ implements TestJob
 
             if (result == Status.READY)
                 {
-                result = factories().tests().executor().run(
-                    ident
+                result = factories().tests().executor().status(
+                    ident,
+                    Status.RUNNING
                     );
                 }
 
@@ -355,7 +345,7 @@ implements TestJob
                             );
                         }
                     log.debug("-- TestJob finishing [{}][{}]", ident, result);
-                    result = status(
+                    result = factories().tests().executor().status(
                         ident,
                         Status.COMPLETED
                         );
