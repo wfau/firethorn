@@ -138,13 +138,6 @@ extends Entity, Job
          */
         public Future<Status> execute(Identifier ident);
 
-        /**
-         * Transactional select.
-         *
-         */
-        public TestJob select(final Identifier ident)
-        throws NotFoundException;
-
         }
 
     /**
@@ -158,5 +151,17 @@ extends Entity, Job
      * 
      */
     public void pause(Integer pause);
+
+    /**
+     * The test limit in seconds.
+     * 
+     */
+    public Integer limit();
+
+    /**
+     * The test limit in seconds.
+     * 
+     */
+    public void limit(Integer limit);
 
     }

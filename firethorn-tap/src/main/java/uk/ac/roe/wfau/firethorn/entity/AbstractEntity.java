@@ -29,6 +29,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.annotations.GenericGenerator;
 import org.joda.time.DateTime;
 
@@ -50,6 +52,7 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
  *   http://javaprogrammingtips4u.blogspot.co.uk/2010/04/field-versus-property-access-in.html
  *
  */
+@Slf4j
 @MappedSuperclass
 @Access(
     AccessType.FIELD
@@ -380,23 +383,13 @@ implements Entity
     @Override
     public void refresh()
         {
+        log.debug("---- ---- ---- ----");
+        log.debug("refresh()");
         factories().hibernate().refresh(
             this
             );
+        log.debug("---- ----");
         }
-
-    /**
-     * Update (store) this Entity in the database.
-     *
-    @Override
-    @Deprecated
-    public void update()
-        {
-        factories().hibernate().update(
-            this
-            );
-        }
-     */
 
     /**
      * Delete this Entity from the database.

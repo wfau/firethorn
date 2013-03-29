@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.job;
 
 import java.util.concurrent.Future;
 
+import org.joda.time.DateTime;
+
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
@@ -220,9 +222,34 @@ extends Entity
     public Status status();
 
     /**
+     * Get the Job status (with refresh).
+     *
+     */
+    public Status status(boolean refresh);
+
+    /**
      * Set the Job status.
      *
      */
     public Status status(final Status status);
 
+    /**
+     * The date/time the Job was queued.
+     *
+     */
+    public DateTime queued();
+
+    /**
+     * The date/time the Job was started.
+     *
+     */
+    public DateTime started();
+
+    /**
+     * The date/time the Job was finished.
+     *
+     */
+    public DateTime finished();
+    
+    
     }

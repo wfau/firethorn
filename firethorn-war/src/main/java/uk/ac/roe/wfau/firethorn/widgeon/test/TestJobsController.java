@@ -24,13 +24,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
  * Spring MVC controller for <code>JdbcResource</code>.
@@ -84,34 +81,6 @@ extends AbstractController
     public static final String CREATE_PATH = "create" ;
 
     /**
-     * MVC property for the select name.
-     * @todo These are fairly standard - created from a base in a shared base class.  
-     *
-     */
-    public static final String SELECT_NAME = "test.job.select.name" ;
-
-    /**
-     * MVC property for the select results.
-     * @todo These are fairly standard - created from a base in a shared base class.  
-     *
-     */
-    public static final String SELECT_RESULT = "test.job.select.result" ;
-
-    /**
-     * MVC property for the search text.
-     * @todo These are fairly standard - created from a base in a shared base class.  
-     *
-     */
-    public static final String SEARCH_TEXT = "test.job.search.text" ;
-
-    /**
-     * MVC property for the search results.
-     * @todo These are fairly standard - created from a base in a shared base class.  
-     *
-     */
-    public static final String SEARCH_RESULT = "test.job.search.result" ;
-
-    /**
      * MVC property for the initial name.
      * @todo These are fairly standard - created from a base in a shared base class.  
      *
@@ -130,7 +99,7 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public TestJobController.Iter select(
+    public Iterable<TestJobController.Bean> select(
         ){
         return TestJobController.bean(
             factories().tests().factory().select()

@@ -76,13 +76,6 @@ public interface HibernateThings
     public Entity refresh(final Entity entity);
 
     /**
-     * Update (store) an Entity in the database.
-     *
-    @Deprecated
-    public Entity update(final Entity entity);
-     */
-
-    /**
      * Delete an existing Entity.
      *
      */

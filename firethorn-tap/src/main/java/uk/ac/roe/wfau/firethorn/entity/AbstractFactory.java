@@ -24,16 +24,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
  * Generic base class for a persistent Entity Factory.
@@ -77,7 +74,7 @@ implements Entity.Factory<EntityType>
     @SuppressWarnings("unchecked")
     public EntityType insert(final EntityType entity)
         {
-        //log.debug("insert [{}]", entity);
+        log.debug("insert [{}]", entity);
         return (EntityType) factories().hibernate().insert(
             entity
             );
@@ -92,13 +89,15 @@ implements Entity.Factory<EntityType>
     public EntityType select(final Identifier ident)
     throws NotFoundException
         {
-        //log.debug("select [{}]", (ident != null) ? ident.value() : null);
+        log.debug("---- ---- ---- ----");
+        log.debug("select() [{}]", (ident != null) ? ident.value() : null);
         @SuppressWarnings("unchecked")
         final
         EntityType result = (EntityType) factories().hibernate().select(
             etype(),
             ident
             );
+        log.debug("---- ----");
         if (result != null)
             {
             return result ;
@@ -109,31 +108,6 @@ implements Entity.Factory<EntityType>
                 );
             }
         }
-
-    /**
-     * Update an Entity.
-     *
-    @UpdateEntityMethod
-    @SuppressWarnings("unchecked")
-    public EntityType update(final EntityType entity)
-        {
-        //log.debug("update [{}]", entity);
-        if (etype().isInstance(entity))
-            {
-            return (EntityType) factories().hibernate().update(
-                entity
-                );
-            }
-        else {
-            log.error(
-                "Update not supported for [" + entity.getClass().getName() + "]"
-                );
-            throw new IllegalArgumentException(
-                "Update not supported for [" + entity.getClass().getName() + "]"
-                );
-            }
-        }
-     */
 
     /**
      * Delete an Entity.
@@ -202,8 +176,8 @@ implements Entity.Factory<EntityType>
      * Return the first result of a query, or null if the results are empty.
      *
      */
-    @SuppressWarnings("unchecked")
     @SelectEntityMethod
+    @SuppressWarnings("unchecked")
     public EntityType first(final Query query)
         {
         return (EntityType) factories().hibernate().first(

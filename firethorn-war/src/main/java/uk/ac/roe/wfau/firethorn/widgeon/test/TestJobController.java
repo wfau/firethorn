@@ -101,6 +101,12 @@ public class TestJobController
     public static final String UPDATE_PAUSE = "test.job.update.pause" ;
 
     /**
+     * MVC property for updating the limit.
+     *
+     */
+    public static final String UPDATE_LIMIT = "test.job.update.limit" ;
+
+    /**
      * MVC property for updating the status.
      *
      */
@@ -178,22 +184,13 @@ public class TestJobController
         }
 
     /**
-     * Iterable bean interface.
-     *  
-     */
-    public static interface Iter
-    extends Iterable<Bean>
-        {
-        }
-    
-    /**
-     * Iterable bean implementation.
+     * Iterable bean.
      *
      */
-    public static Iter bean(
+    public static Iterable<Bean> bean(
         final Iterable<TestJob> inner
         ){
-        return new Iter()
+        return new Iterable<Bean>()
             {
             @Override
             public Iterator<Bean> iterator()
@@ -249,48 +246,56 @@ public class TestJobController
     @ResponseBody
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
     public Bean update(
+        @PathVariable(WebappLinkFactory.IDENT_FIELD)
+        final String ident,
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @RequestParam(value=UPDATE_PAUSE, required=false)
         final Integer pause,
-        @PathVariable(WebappLinkFactory.IDENT_FIELD)
-        final String ident
-        ) throws NotFoundException {
-        return bean(
-            this.helper.update(
-                factories().tests().idents().ident(
-                    ident
-                    ),
-                name,
-                pause
-                )
-            );
-        }
-    
-    /**
-     * JSON POST update.
-     *
-     */
-    @ResponseBody
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING, params=UPDATE_STATUS)
-    public Bean update(
-        @RequestParam(value=UPDATE_STATUS, required=true)
+        @RequestParam(value=UPDATE_LIMIT, required=false)
+        final Integer limit,
+        @RequestParam(value=UPDATE_STATUS, required=false)
         final Job.Status status,
         @RequestParam(value=UPDATE_TIMEOUT, required=false)
-        final Integer timeout,
-        @PathVariable(WebappLinkFactory.IDENT_FIELD)
-        final String ident
+        final Integer timeout
         ) throws NotFoundException {
-        return bean(
-            this.helper.update(
-                factories().tests().idents().ident(
-                    ident
-                    ),
-                status,
-                timeout
+        try {
+        log.debug("---- ---- ---- ----");
+        log.debug("JSON update(String, Integer, Status, Integer)");
+        
+        TestJob job = factories().tests().resolver().select(
+            factories().tests().idents().ident(
+                ident
                 )
             );
+
+        if ((UPDATE_NAME != null) || (UPDATE_PAUSE != null) || (UPDATE_LIMIT != null) )
+            {
+            this.helper.update(
+                job,
+                name,
+                pause,
+                limit
+                );
+            }
+
+        if (status != null)
+            {
+            this.helper.update(
+                job,
+                status,
+                timeout
+                );
+            }
+
+        return bean(
+            job
+            ) ;
         }
+    finally {
+        log.debug("---- ----");
+        }
+    }
     
     /**
      * Transactional helper.
@@ -300,17 +305,17 @@ public class TestJobController
         {
 
         /**
-         * Transactional update.
+         * Update the properties in a new transaction.
          *
          */
-        public TestJob update(final Identifier ident, final String  name, final Integer pause)
+        public void update(final TestJob  job, final String  name, final Integer pause, final Integer limit)
         throws NotFoundException;
 
         /**
-         * Transactional update.
+         * Update the status.
          *
          */
-        public TestJob update(final Identifier ident, final Job.Status next, final Integer timeout)
+        public Status update(final TestJob  job, final Job.Status next, final Integer timeout)
         throws NotFoundException;
 
         }
@@ -334,105 +339,148 @@ public class TestJobController
         {
         @Override
         @UpdateAtomicMethod
-        public TestJob update(
-            final Identifier ident,
+        public void update(
+            final TestJob  job,
             final String  name,
-            final Integer pause
+            final Integer pause,
+            final Integer limit
             )
         throws NotFoundException
             {
-            log.debug("-----------------------------------");
+            log.debug("---- ---- ---- ----");
             log.debug("update(Identifier, String, Integer)");
-            final TestJob entity = factories().tests().resolver().select(
-                ident
-                );
+            log.debug("  Name  [{}]", name);
+            log.debug("  Pause [{}]", pause);
+            log.debug("  Limit [{}]", limit);
             if (name != null)
                 {
+                log.debug("Setting name");
                 if (name.length() > 0)
                     {
-                    entity.name(
+                    job.name(
                         name
                         );
                     }
                 }
             if (pause != null)
                 {
-                entity.pause(
+                log.debug("Setting pause");
+                job.pause(
                     pause
                     );
                 }
-            return entity;
+            if (limit != null)
+                {
+                log.debug("Setting limit");
+                job.limit(
+                    limit
+                    );
+                }
+            log.debug("---- ----");
             }
 
         @Override
-        public TestJob update(
-            final Identifier ident,
+        public Status update(
+            final TestJob  job,
             final Job.Status next,
             final Integer timeout
             )
         throws NotFoundException
             {
-            log.debug("-----------------------------------");
+            log.debug("---- ---- ---- ----");
             log.debug("update(Identifier, Status, Integer)");
-
-            Integer pause  = ((timeout != null) ? timeout : Integer.valueOf(2));
-            Status  result = factories().tests().executor().status(
-                ident
-                );
-
-            if ((next != null) && ( next != result))
-                {
-                if (next == Status.READY)
-                    {
-                    result = factories().tests().executor().prepare(
-                        ident
-                        );
-                    }
-                else if (next == Status.RUNNING)
-                    {
-                    try {
-                        Future<Status> future = factories().tests().executor().execute(ident);
-                        log.debug("Checking future");
-                        result = future.get(
-                            pause.intValue(),
-                            TimeUnit.SECONDS
-                            );
-                        log.debug("Result [{}]", result);
-                        }
-                    catch (TimeoutException ouch)
-                        {
-                        log.debug("TimeoutException");
-                        }
-                    catch (InterruptedException ouch)
-                        {
-                        log.debug("InterruptedException [{}]", ouch.getMessage());
-                        }
-                    catch (ExecutionException ouch)
-                        {
-                        log.debug("ExecutionException [{}]", ouch.getMessage());
-                        }
-                    }
-                else if (next == Status.CANCELLED)
-                    {
-                    result = factories().tests().executor().status(
-                        ident,
-                        Status.CANCELLED
-                        );
-                    }
-                else {
-                    result = Status.ERROR;
-                    }
-                }
-            //
-            // Return the current state.
+/*            
             log.debug("Selecting job [{}]", ident);
-            TestJob job = factories().tests().executor().select(
+            // Small transaction 
+            // Result is a cached object
+            TestJob job = factories().tests().resolver().select(
                 ident
                 );
+ */                
+            //log.debug("Refreshing job [{}][{}]", job.ident(), job.modified());
+            // Main transaction 
+            // Refresh queries database.
+            // Result is updated object
+            // job.refresh();
+/*
+            // New transaction << - do we need this ?
+            // Result is a cached object
+            Status result = factories().tests().executor().status(
+                ident
+                );
+ */
+            Status result = job.status(true);
+
+            Integer pause  = ((timeout != null) ? timeout : Integer.valueOf(1));
+
+            if (next == null)
+                {
+                }
+
+            else if (next == Status.READY)
+                {
+                log.debug("Preparing job");
+                result = factories().tests().executor().prepare(
+                    job.ident()
+                    );
+                }
+
+            else if (next == Status.RUNNING)
+                {
+                try {
+                    log.debug("Executing job");
+                    // Structures created, nothing executed yet
+                    Future<Status> future = factories().tests().executor().execute(
+                        job.ident()
+                        );
+
+                    log.debug("Checking future");
+                    // New Thread started, execute()
+                    result = future.get(
+                        pause.intValue(),
+                        TimeUnit.SECONDS
+                        );
+                    log.debug("Result [{}]", result);
+                    }
+                catch (TimeoutException ouch)
+                    {
+                    log.debug("TimeoutException");
+                    }
+                catch (InterruptedException ouch)
+                    {
+                    log.debug("InterruptedException [{}]", ouch.getMessage());
+                    }
+                catch (ExecutionException ouch)
+                    {
+                    log.debug("ExecutionException [{}]", ouch.getMessage());
+                    }
+
+                //job.refresh();
+                result = job.status(true);
+
+                }
+
+            else if (next == Status.CANCELLED)
+                {
+                result = factories().tests().executor().status(
+                    job.ident(),
+                    Status.CANCELLED
+                    );
+                }
+
+            else {
+                result = Status.ERROR;
+                }
+/*
+            //
+            // Return the refreshed state.
             log.debug("Refreshing job [{}][{}]", job.ident(), job.modified());
-            factories().hibernate().session().refresh(job);
-            log.debug("Returning job [{}][{}]", job.ident(), job.modified());
-            return job ;
+            // refresh() happens in main transaction.
+            // Entity loaded from database.
+            job.refresh();
+ */
+            log.debug("---- ----");
+            return result ;
             }
         }
     }

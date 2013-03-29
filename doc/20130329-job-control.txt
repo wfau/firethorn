@@ -36,24 +36,28 @@
         testjob=$(
         POST "/test/job/create" \
             --data-urlencode "test.job.create.name=test-$(unique)" \
-            --data-urlencode "test.job.create.pause=20" \
+            --data-urlencode "test.job.create.pause=30" \
             | ident
             )
 
-        sleep 1
+        sleep 2
         POST "${testjob?}" \
             --data-urlencode "test.job.update.status=RUNNING" \
-            --data-urlencode "test.job.update.timeout=4" \
+            --data-urlencode "test.job.update.timeout=2" \
             | ./pp
 
-        sleep 1
-        GET "${testjob?}" \
-            | ./pp
-
-        sleep 1
+        sleep 2
         POST "${testjob?}" \
             --data-urlencode "test.job.update.status=CANCELLED" \
             | ./pp
+
+        sleep 2
+        GET "${testjob?}" \
+            | ./pp
+
+
+
+
 
         sleep 1
         GET "${testjob?}" \
@@ -61,4 +65,22 @@
 
 
     popd
+
+
+
+# TTY #3 ------------------------------------------------------------
+# Check the Tomcat log for transactions.
+#
+
+delim='#### ----'
+prefix='#### '
+
+sed '
+    /\[AbstractTransactionImpl\] begin/, /\[AbstractTransactionImpl\] committing/ {
+        /\[AbstractTransactionImpl\] begin/ i '"${delim?}"'
+        /\[AbstractTransactionImpl\] committing/ a '"${delim?}"'
+        s/^\(.*\)/'"${prefix?}"'\1/
+        }
+    ' /tmp/firethorn-tomcat.log
+
 

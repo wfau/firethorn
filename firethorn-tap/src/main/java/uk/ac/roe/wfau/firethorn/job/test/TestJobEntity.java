@@ -44,6 +44,8 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import com.sun.swing.internal.plaf.synth.resources.synth;
+
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
@@ -95,6 +97,7 @@ implements TestJob
      *
      */
     protected static final String DB_TEST_PAUSE_COL = "pause";
+    protected static final String DB_TEST_LIMIT_COL = "limit";
     
     /**
      * Local service implementations.
@@ -251,37 +254,65 @@ implements TestJob
     extends JobEntity.Executor
     implements TestJob.Executor
         {
+        /**
+         * Our local service implementation.
+         *
+         */
+        private TestJob.Executor executor;
 
-        @Override
-        @SelectAtomicMethod
-        public TestJob select(
-            final Identifier ident
-            )
-        throws NotFoundException
+        /**
+         * Our local service implementation.
+         *
+         */
+        private TestJob.Executor executor()
             {
-            log.debug("-----------------------------------");
-            log.debug("select(Identifier)");
-            TestJob  job = factories().tests().resolver().select(
-                ident
-                );
-            log.debug(" Status [{}]", job.status());
-            log.debug("-----------------------------------");
-            return job ;
+            if (this.executor == null)
+                {
+                this.executor = factories().tests().executor();
+                }
+            return this.executor ;
             }
 
+        /**
+         * Our local service implementation.
+         *
+         */
+        private TestJob.Resolver resolver;
+
+        /**
+         * Our local service implementation.
+         *
+         */
+        private TestJob.Resolver resolver()
+            {
+            if (this.resolver == null)
+                {
+                this.resolver = factories().tests().resolver();
+                }
+            return this.resolver ;
+            }
+        
         @Override
-        @UpdateEntityMethod
+        @UpdateAtomicMethod
         public Status prepare(Identifier ident)
             {
+            log.debug("---- ---- ---- ----");
             log.debug("prepare(Identifier)");
             log.debug("  TestJob [{}]", ident);
             try {
-                TestJob job = factories().tests().resolver().select(
+                TestJob job = resolver().select(
                     ident
                     );
                 if ((job.status() == Status.EDITING) || (job.status() == Status.READY))
                     {
-                    if (job.pause().intValue() >= 0)
+                    int pause = job.pause().intValue();
+                    if (pause >= 100)
+                        {
+                        return job.status(
+                            Status.ERROR
+                            );
+                        }
+                    else if ((pause >= 0) && (pause < 100))
                         {
                         return job.status(
                             Status.READY
@@ -296,12 +327,14 @@ implements TestJob
                 else {
                     return Status.ERROR;
                     }
-
                 }
             catch (NotFoundException ouch)
                 {
                 log.error("Failed to prepare job [{}][{}]", ident, ouch.getMessage());
                 return Status.ERROR;
+                }
+            finally {
+                log.debug("---- ----");
                 }
             }
 
@@ -309,62 +342,82 @@ implements TestJob
         @Override
         public Future<Status> execute(Identifier ident)
             {
-            log.debug("----------------------------");
+            log.debug("---- ---- ---- ----");
             log.debug("execute()");
             log.debug("  TestJob [{}][{}]", ident);
-
-            Status result = factories().tests().executor().prepare(
+            // Prepare is UpdateAtomic
+            // Executed in new Transaction.
+            // Entity loaded from database.
+            Status result = executor().prepare(
                 ident
                 );
 
             if (result == Status.READY)
                 {
-                result = factories().tests().executor().status(
+                // Executed in new Transaction.
+                // Entity loaded from database.
+                result = executor().status(
                     ident,
                     Status.RUNNING
                     );
-                }
 
-            if (result == Status.RUNNING)
-                {
-                log.debug("-- TestJob running [{}]", ident);
-                try {
-
-                    int pause = factories().tests().resolver().select(
-                        ident
-                        ).pause().intValue();
-
-                    for (int i = 0 ; ((i < pause) && (result == Status.RUNNING)) ; i++)
-                        {
-                        log.debug("-- TestJob sleeping [{}][{}]", ident, new Integer(i));
-                        Thread.sleep(
-                            1000
-                            );
-                        result = status(
+                if (result == Status.RUNNING)
+                    {
+                    log.debug("-- TestJob running [{}]", ident);
+                    try {
+                        // Executed in new Transaction.
+                        // Entity loaded from database.
+                        TestJob job = resolver().select(
                             ident
                             );
+
+                        for (int i = 0 ; ((i < job.pause().intValue()) && (result == Status.RUNNING)) ; i++)
+                            {
+                            log.debug("-- TestJob sleeping [{}][{}]", ident, new Integer(i));
+                            Thread.sleep(
+                                1000
+                                );
+
+                            if ((job.limit() != null) && (i >= job.limit().intValue()))
+                                {
+                                // Executed in new Transaction.
+                                // Entity loaded from database.
+                                result = executor().status(
+                                    ident,
+                                    Status.FAILED
+                                    );
+                                }
+
+                            else {
+                                // Executed in new Transaction.
+                                // Entity loaded from database.
+                                result = executor().status(
+                                    ident
+                                    );
+                                }
+                            }
+                        log.debug("-- TestJob finishing [{}][{}]", ident, result);
+                        if (result == Status.RUNNING)
+                            {
+                            result = executor().status(
+                                ident,
+                                Status.COMPLETED
+                                );
+                            }
                         }
-                    log.debug("-- TestJob finishing [{}][{}]", ident, result);
-                    if (result == Status.RUNNING)
+                    catch (InterruptedException ouch)
                         {
-                        result = factories().tests().executor().status(
+                        log.debug("-- TestJob interrupted [{}][{}]", ident, ouch.getMessage());
+                        result = executor().status(
                             ident,
-                            Status.COMPLETED
+                            Status.CANCELLED
                             );
                         }
-                    }
-                catch (InterruptedException ouch)
-                    {
-                    log.debug("-- TestJob interrupted [{}][{}]", ident, ouch.getMessage());
-                    result = status(
-                        ident,
-                        Status.CANCELLED
-                        );
-                    }
-                catch (NotFoundException ouch)
-                    {
-                    log.error("Failed to execute job [{}][{}]", ident, ouch.getMessage());
-                    result = Status.ERROR;
+                    catch (NotFoundException ouch)
+                        {
+                        log.error("Failed to execute job [{}][{}]", ident, ouch.getMessage());
+                        result = Status.ERROR;
+                        }
                     }
                 }
             return new AsyncResult<Status>(
@@ -401,7 +454,7 @@ implements TestJob
         name = DB_TEST_PAUSE_COL,
         unique = false,
         nullable = false,
-        updatable = false
+        updatable = true
         )
     private Integer pause;
     @Override
@@ -414,7 +467,28 @@ implements TestJob
         {
         this.pause = pause ;
         }
-
+    
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_TEST_LIMIT_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private Integer limit;
+    @Override
+    public Integer limit()
+        {
+        return this.limit;
+        }
+    @Override
+    public void limit(Integer limit)
+        {
+        this.limit = limit ;
+        }
+    
     @Override
     public String link()
         {

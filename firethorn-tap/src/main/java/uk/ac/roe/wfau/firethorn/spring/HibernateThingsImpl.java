@@ -91,7 +91,6 @@ public class HibernateThingsImpl
         }
 
     @Override
-    //@CreateEntityMethod
     public Entity insert(final Entity entity)
         {
         try {
@@ -125,7 +124,6 @@ public class HibernateThingsImpl
         }
 
     @Override
-    //@SelectEntityMethod
     public Entity select(final Class<?> type, final Identifier ident)
         {
         try {
@@ -149,7 +147,6 @@ public class HibernateThingsImpl
         }
 
     @Override
-    //@SelectEntityMethod
     public Entity refresh(final Entity entity)
         {
         try {
@@ -182,43 +179,7 @@ public class HibernateThingsImpl
         return entity ;
         }
 
-    /*
     @Override
-    @Deprecated
-    public Entity update(final Entity entity)
-        {
-        try {
-            if (entity == null)
-                {
-                log.error("Attempting to update a null entity");
-                throw new IllegalArgumentException(
-                    "Attempting to update null entity"
-                    );
-                }
-            else if (entity.ident() == null)
-                {
-                log.error("Attempting to update an entity with a null ident");
-                throw new IllegalArgumentException(
-                    "Attempting to update an entity with a null ident"
-                    );
-                }
-            else {
-                session().merge(
-                    entity
-                    );
-                }
-            }
-        catch (final HibernateException ouch)
-            {
-            throw convert(
-                ouch
-                );
-            }
-        return entity ;
-        }
-    */
-    @Override
-    //@UpdateEntityMethod
     public void delete(final Entity entity)
         {
         try {

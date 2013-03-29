@@ -34,6 +34,7 @@ import javax.persistence.Table;
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
@@ -44,10 +45,12 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.job.Job.Status;
 
 /**
  *
@@ -83,6 +86,10 @@ extends AbstractEntity
      * 
      */
     protected static final String DB_JOB_STATUS_COL = "jobstatus" ;
+
+    protected static final String DB_QUEUED_COL   = "queued"  ;
+    protected static final String DB_STARTED_COL  = "started" ;
+    protected static final String DB_FINISHED_COL = "finshed" ;
 
     /**
      * Local service implementations.
@@ -171,13 +178,15 @@ extends AbstractEntity
     implements Job.Executor
         {
         @Override
-        @SelectEntityMethod
+        @SelectAtomicMethod
         public Status status(Identifier ident)
             {
             try {
-                return factories().jobs().resolver().select(
+                Job job = factories().jobs().resolver().select(
                     ident
-                    ).status();
+                    );
+                //job.refresh();
+                return job.status();
                 }
             catch (NotFoundException ouch)
                 {
@@ -263,10 +272,182 @@ extends AbstractEntity
         }
 
     @Override
+    public Status status(boolean refresh)
+        {
+        log.debug("status(boolean) [{}][{}]", ident(), refresh);
+        if (refresh)
+            {
+            refresh();
+            }
+        return status();
+        }
+
+    @Override
     public Status status(final Status next)
         {
-        log.debug("inner(Status) [{}][{}][{}]", ident(), this.status, next);
-        this.status = next;
+        log.debug("status(Status) [{}][{}][{}]", ident(), this.status, next);
+
+        if (next == null)
+            {
+            log.error("Unexpected status value [{}]", next);
+            return Status.ERROR;
+            }
+
+        else if (next == this.status)
+            {
+            return this.status;
+            }
+        
+        else if (next == Status.EDITING)
+            {
+            if (this.status == Status.READY)
+                {
+                this.status = Status.EDITING;
+                }
+            else {
+                log.debug("Unexpected status value [{}]", next);
+                return Status.ERROR;
+                }
+            }
+        
+        else if (next == Status.READY)
+            {
+            if (this.status == Status.EDITING)
+                {
+                this.status = Status.READY;
+                }
+            else {
+                log.debug("Unexpected status value [{}]", next);
+                return Status.ERROR;
+                }
+            }
+        
+        else if (next == Status.PENDING)
+            {
+            if (this.status == Status.READY)
+                {
+                this.status = Status.PENDING;
+                this.queued = new DateTime();
+                }
+            else {
+                log.debug("Unexpected status value [{}]", next);
+                return Status.ERROR;
+                }
+            }
+
+        else if (next == Status.RUNNING)
+            {
+            if ((this.status == Status.READY) || (this.status == Status.PENDING))
+                {
+                this.status  = Status.RUNNING;
+                this.started = new DateTime();
+                }
+            else {
+                log.debug("Unexpected status value [{}]", next);
+                return Status.ERROR;
+                }
+            }
+
+        else if (next == Status.COMPLETED)
+            {
+            if ((this.status == Status.EDITING) || (this.status == Status.READY) || (this.status == Status.PENDING) || (this.status == Status.RUNNING))
+                {
+                this.status   = Status.COMPLETED;
+                this.finished = new DateTime();
+                }
+            else {
+                log.debug("Unexpected status value [{}]", next);
+                return Status.ERROR;
+                }
+            }
+        
+        else if (next == Status.CANCELLED)
+            {
+            if ((this.status == Status.EDITING) || (this.status == Status.READY) || (this.status == Status.PENDING) || (this.status == Status.RUNNING))
+                {
+                this.status   = Status.CANCELLED;
+                this.finished = new DateTime();
+                }
+            else {
+                log.debug("Unexpected status value [{}]", next);
+                return Status.ERROR;
+                }
+            }
+        
+        else if (next == Status.FAILED)
+            {
+            if ((this.status == Status.EDITING) || (this.status == Status.READY) || (this.status == Status.PENDING) || (this.status == Status.RUNNING))
+                {
+                this.status   = Status.FAILED;
+                this.finished = new DateTime();
+                }
+            else {
+                log.debug("Unexpected status value [{}]", next);
+                return Status.ERROR;
+                }
+            }
+        
+        else if (next == Status.ERROR)
+            {
+            this.status = Status.ERROR;
+            }
+
+        else {
+            log.error("Unexpected status value [{}]", next);
+            this.status = Status.ERROR;
+            }
+
         return this.status;
+        }
+
+    /**
+     * The date/time the Job was queued.
+     *
+     */
+    @Column(
+        name = DB_QUEUED_COL,
+        unique = false,
+        nullable = true,
+        updatable = false
+        )
+    private DateTime queued ;
+    @Override
+    public DateTime queued()
+        {
+        return this.queued ;
+        }
+
+    /**
+     * The date/time the Job was started.
+     *
+     */
+    @Column(
+        name = DB_STARTED_COL,
+        unique = false,
+        nullable = true,
+        updatable = false
+        )
+    private DateTime started ;
+    @Override
+    public DateTime started()
+        {
+        return this.started ;
+        }
+
+    /**
+     * The date/time the Job was finished.
+     *
+     */
+    @Column(
+        name = DB_FINISHED_COL,
+        unique = false,
+        nullable = true,
+        updatable = false
+        )
+    private DateTime finished ;
+    @Override
+    public DateTime finished()
+        {
+        return this.finished ;
         }
     }
