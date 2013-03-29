@@ -23,7 +23,6 @@ import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 
 /**
  * Abstract representation of a Job.
@@ -131,6 +130,10 @@ extends Entity
          */
         public Status status(Identifier ident, Status status);
 
+//      
+// Not used ...
+//             
+
         /**
          * Functor interface used by prepare() and execute().
          * 
@@ -145,16 +148,32 @@ extends Entity
             }
         
         /**
-         * Prepare a Job for execution.
+         * Prepare a Job.
          *
          */
         public Status prepare(Executable executable);
 
         /**
-         * Execute a Job (asynchronous).
+         * Execute a Job.
          *
          */
         public Future<Status> execute(Executable executable);
+
+//        
+// Simplified form from TestJob.
+//        
+        
+        /**
+         * Prepare a job.
+         * 
+         */
+        public Status prepare(Identifier iadent);
+
+        /**
+         * Execute a job.
+         * 
+         */
+        public Future<Status> execute(Identifier ident);
         
         }
     
@@ -250,6 +269,11 @@ extends Entity
      *
      */
     public DateTime finished();
-    
+
+    /**
+     * Our Job executor.
+     * 
+    public Executor executor();
+     */
     
     }

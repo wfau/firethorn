@@ -56,6 +56,7 @@ import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
@@ -209,6 +210,20 @@ implements AdqlQuery, AdqlParserQuery
     extends JobEntity.Executor 
     implements AdqlQuery.Executor 
         {
+
+        @Override
+        public Status prepare(Identifier iadent)
+            {
+            // TODO Auto-generated method stub
+            return null;
+            }
+
+        @Override
+        public Future<Status> execute(Identifier ident)
+            {
+            // TODO Auto-generated method stub
+            return null;
+            }
         }
 
     /**

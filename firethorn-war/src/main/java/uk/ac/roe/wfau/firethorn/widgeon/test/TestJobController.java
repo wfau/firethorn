@@ -26,10 +26,8 @@ import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,17 +35,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
-import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
-import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -172,19 +164,19 @@ public class TestJobController
         }
 
     /**
-     * Wrap an entity as a bean.
+     * Wrap an entity as a Bean.
      *
      */
     public static Bean bean(
-        final TestJob job
+        final TestJob inner
         ){
         return new BeanImpl(
-            job
+            inner
             );
         }
 
     /**
-     * Iterable bean.
+     * Wrap an Iterable as an Iterable of Beans.
      *
      */
     public static Iterable<Bean> bean(
@@ -259,7 +251,7 @@ public class TestJobController
         @RequestParam(value=UPDATE_TIMEOUT, required=false)
         final Integer timeout
         ) throws NotFoundException {
-        try {
+
         log.debug("---- ---- ---- ----");
         log.debug("JSON update(String, Integer, Status, Integer)");
         
@@ -269,7 +261,7 @@ public class TestJobController
                 )
             );
 
-        if ((UPDATE_NAME != null) || (UPDATE_PAUSE != null) || (UPDATE_LIMIT != null) )
+        if ((name != null) || (pause != null) || (limit != null) )
             {
             this.helper.update(
                 job,
@@ -292,10 +284,6 @@ public class TestJobController
             job
             ) ;
         }
-    finally {
-        log.debug("---- ----");
-        }
-    }
     
     /**
      * Transactional helper.
@@ -379,6 +367,9 @@ public class TestJobController
             log.debug("---- ----");
             }
 
+        public static final int MINIMUM_PAUSE =  5 ;
+        public static final int DEFAULT_PAUSE = 10 ;
+
         @Override
         public Status update(
             final TestJob  job,
@@ -389,35 +380,26 @@ public class TestJobController
             {
             log.debug("---- ---- ---- ----");
             log.debug("update(Identifier, Status, Integer)");
-/*            
-            log.debug("Selecting job [{}]", ident);
-            // Small transaction 
-            // Result is a cached object
-            TestJob job = factories().tests().resolver().select(
-                ident
-                );
- */                
-            //log.debug("Refreshing job [{}][{}]", job.ident(), job.modified());
-            // Main transaction 
-            // Refresh queries database.
-            // Result is updated object
-            // job.refresh();
-/*
-            // New transaction << - do we need this ?
-            // Result is a cached object
-            Status result = factories().tests().executor().status(
-                ident
-                );
- */
+
             Status result = job.status(true);
 
-            Integer pause  = ((timeout != null) ? timeout : Integer.valueOf(1));
-
-            if (next == null)
+// Race condition.
+// If timeout is too low, then controller updates before execute() has started.             
+            
+            int timelim ;
+            if (timeout == null)
                 {
+                timelim = DEFAULT_PAUSE;
                 }
-
-            else if (next == Status.READY)
+            else if (timeout.intValue() < MINIMUM_PAUSE)
+                {
+                timelim = MINIMUM_PAUSE;
+                }
+            else {
+                timelim = timeout.intValue() ;
+                }
+            
+            if (next == Status.READY)
                 {
                 log.debug("Preparing job");
                 result = factories().tests().executor().prepare(
@@ -427,18 +409,21 @@ public class TestJobController
 
             else if (next == Status.RUNNING)
                 {
+                log.debug("Preparing job");
+                result = factories().tests().executor().prepare(
+                    job.ident()
+                    );
+
                 try {
                     log.debug("Executing job");
-                    // Structures created, nothing executed yet
                     Future<Status> future = factories().tests().executor().execute(
                         job.ident()
                         );
 
                     log.debug("Checking future");
-                    // New Thread started, execute()
                     result = future.get(
-                        pause.intValue(),
-                        TimeUnit.SECONDS
+                        timelim,
+                        TimeUnit.MILLISECONDS
                         );
                     log.debug("Result [{}]", result);
                     }
@@ -455,8 +440,9 @@ public class TestJobController
                     log.debug("ExecutionException [{}]", ouch.getMessage());
                     }
 
-                //job.refresh();
-                result = job.status(true);
+                result = job.status(
+                    true
+                    );
 
                 }
 
@@ -471,14 +457,6 @@ public class TestJobController
             else {
                 result = Status.ERROR;
                 }
-/*
-            //
-            // Return the refreshed state.
-            log.debug("Refreshing job [{}][{}]", job.ident(), job.modified());
-            // refresh() happens in main transaction.
-            // Entity loaded from database.
-            job.refresh();
- */
             log.debug("---- ----");
             return result ;
             }

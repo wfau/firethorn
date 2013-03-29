@@ -63,7 +63,7 @@
 		<level value="INFO" />
 	</logger>
 	<logger name="org.springframework.aop">
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</logger>
 
 	<!--+

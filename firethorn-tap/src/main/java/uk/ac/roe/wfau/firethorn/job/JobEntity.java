@@ -46,11 +46,9 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.job.Job.Status;
 
 /**
  *
@@ -85,11 +83,10 @@ extends AbstractEntity
      * Hibernate column mapping.
      * 
      */
-    protected static final String DB_JOB_STATUS_COL = "jobstatus" ;
-
-    protected static final String DB_QUEUED_COL   = "queued"  ;
-    protected static final String DB_STARTED_COL  = "started" ;
-    protected static final String DB_FINISHED_COL = "finshed" ;
+    protected static final String DB_JOBSTATUS_COL = "jobstatus" ;
+    protected static final String DB_QUEUED_COL    = "queued"  ;
+    protected static final String DB_STARTED_COL   = "started" ;
+    protected static final String DB_FINISHED_COL  = "finshed" ;
 
     /**
      * Local service implementations.
@@ -173,7 +170,7 @@ extends AbstractEntity
      * 
      */
     @Component
-    public static class Executor
+    public abstract static class Executor
     extends AbstractComponent
     implements Job.Executor
         {
@@ -259,7 +256,7 @@ extends AbstractEntity
         EnumType.STRING
         )
     @Column(
-        name = DB_JOB_STATUS_COL,
+        name = DB_JOBSTATUS_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -274,7 +271,7 @@ extends AbstractEntity
     @Override
     public Status status(boolean refresh)
         {
-        log.debug("status(boolean) [{}][{}]", ident(), refresh);
+        log.debug("status(boolean) [{}][{}]", ident(), new Boolean(refresh));
         if (refresh)
             {
             refresh();

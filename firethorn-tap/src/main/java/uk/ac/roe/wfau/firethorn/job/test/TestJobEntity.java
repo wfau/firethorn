@@ -17,17 +17,13 @@
  */
 package uk.ac.roe.wfau.firethorn.job.test;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Table;
 
@@ -35,30 +31,19 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
-
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
-
-import com.sun.swing.internal.plaf.synth.resources.synth;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
-import uk.ac.roe.wfau.firethorn.job.Job.Status;
-import uk.ac.roe.wfau.firethorn.job.Job.Executor.Executable;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
  *
@@ -296,7 +281,6 @@ implements TestJob
         @UpdateAtomicMethod
         public Status prepare(Identifier ident)
             {
-            log.debug("---- ---- ---- ----");
             log.debug("prepare(Identifier)");
             log.debug("  TestJob [{}]", ident);
             try {
@@ -333,96 +317,106 @@ implements TestJob
                 log.error("Failed to prepare job [{}][{}]", ident, ouch.getMessage());
                 return Status.ERROR;
                 }
-            finally {
-                log.debug("---- ----");
+            }
+
+        /*
+        public Future<Status> outer(Identifier ident)
+            {
+            log.debug("execute()");
+            log.debug("  TestJob [{}][{}]", ident);
+            Status result = executor().status(
+                ident,
+                Status.RUNNING
+                );
+            if (result != Status.RUNNING)
+                {
+                return new AsyncResult<Status>(
+                    result
+                    );
+                }
+            else {
+                return executor().inner(
+                    ident
+                    );
                 }
             }
+         */
+
+        /*
+         * The instance you pass in will not be managed (any changes you make will not be part of the transaction - unless you call merge again).
+         */
 
         @Async
         @Override
         public Future<Status> execute(Identifier ident)
             {
-            log.debug("---- ---- ---- ----");
             log.debug("execute()");
             log.debug("  TestJob [{}][{}]", ident);
-            // Prepare is UpdateAtomic
-            // Executed in new Transaction.
-            // Entity loaded from database.
-            Status result = executor().prepare(
-                ident
+
+            Status result = executor().status(
+                ident,
+                Status.RUNNING
                 );
 
-            if (result == Status.READY)
-                {
-                // Executed in new Transaction.
-                // Entity loaded from database.
-                result = executor().status(
-                    ident,
-                    Status.RUNNING
+            log.debug("-- TestJob running [{}]", ident);
+            try {
+
+                TestJob job = resolver().select(
+                    ident
                     );
 
-                if (result == Status.RUNNING)
+                for (int i = 0 ; ((i < job.pause().intValue()) && (result == Status.RUNNING)) ; i++)
                     {
-                    log.debug("-- TestJob running [{}]", ident);
-                    try {
+                    log.debug("-- TestJob sleeping [{}][{}]", ident, new Integer(i));
+                    Thread.sleep(
+                        1000
+                        );
+
+                    if ((job.limit() != null) && (i >= job.limit().intValue()))
+                        {
                         // Executed in new Transaction.
                         // Entity loaded from database.
-                        TestJob job = resolver().select(
-                            ident
-                            );
-
-                        for (int i = 0 ; ((i < job.pause().intValue()) && (result == Status.RUNNING)) ; i++)
-                            {
-                            log.debug("-- TestJob sleeping [{}][{}]", ident, new Integer(i));
-                            Thread.sleep(
-                                1000
-                                );
-
-                            if ((job.limit() != null) && (i >= job.limit().intValue()))
-                                {
-                                // Executed in new Transaction.
-                                // Entity loaded from database.
-                                result = executor().status(
-                                    ident,
-                                    Status.FAILED
-                                    );
-                                }
-
-                            else {
-                                // Executed in new Transaction.
-                                // Entity loaded from database.
-                                result = executor().status(
-                                    ident
-                                    );
-                                }
-                            }
-                        log.debug("-- TestJob finishing [{}][{}]", ident, result);
-                        if (result == Status.RUNNING)
-                            {
-                            result = executor().status(
-                                ident,
-                                Status.COMPLETED
-                                );
-                            }
-                        }
-                    catch (InterruptedException ouch)
-                        {
-                        log.debug("-- TestJob interrupted [{}][{}]", ident, ouch.getMessage());
                         result = executor().status(
                             ident,
-                            Status.CANCELLED
+                            Status.FAILED
                             );
                         }
-                    catch (NotFoundException ouch)
-                        {
-                        log.error("Failed to execute job [{}][{}]", ident, ouch.getMessage());
-                        result = Status.ERROR;
+
+                    else {
+                        // Executed in new Transaction.
+                        // Entity loaded from database.
+                        result = executor().status(
+                            ident
+                            );
                         }
                     }
+                log.debug("-- TestJob finishing [{}][{}]", ident, result);
+                if (result == Status.RUNNING)
+                    {
+                    result = executor().status(
+                        ident,
+                        Status.COMPLETED
+                        );
+                    }
                 }
+            catch (InterruptedException ouch)
+                {
+                log.debug("-- TestJob interrupted [{}][{}]", ident, ouch.getMessage());
+                result = executor().status(
+                    ident,
+                    Status.CANCELLED
+                    );
+                }
+            catch (NotFoundException ouch)
+                {
+                log.debug("Unable to find job [{}]", ident);
+                result = Status.ERROR;
+                }
+
             return new AsyncResult<Status>(
                 result
                 );
+
             }
         }
     

@@ -33,23 +33,104 @@
 
         source "${FIRETHORN_TEST?}/init-rest.sh"
 
+
         testjob=$(
         POST "/test/job/create" \
             --data-urlencode "test.job.create.name=test-$(unique)" \
-            --data-urlencode "test.job.create.pause=30" \
+            --data-urlencode "test.job.create.pause=4" \
             | ident
             )
-
-        sleep 2
         POST "${testjob?}" \
             --data-urlencode "test.job.update.status=RUNNING" \
-            --data-urlencode "test.job.update.timeout=2" \
             | ./pp
 
-        sleep 2
+
+
+
+        testjob=$(
+        POST "/test/job/create" \
+            --data-urlencode "test.job.create.name=test-$(unique)" \
+            --data-urlencode "test.job.create.pause=4" \
+            | ident
+            )
+# WRONG RESULT .. EDITING NOT RUNNING
+# temp fix, timeout is always > 1
         POST "${testjob?}" \
-            --data-urlencode "test.job.update.status=CANCELLED" \
+            --data-urlencode "test.job.update.status=RUNNING" \  
+            --data-urlencode "test.job.update.timeout=0" \
             | ./pp
+
+
+        testjob=$(
+        POST "/test/job/create" \
+            --data-urlencode "test.job.create.name=test-$(unique)" \
+            --data-urlencode "test.job.create.pause=4" \
+            | ident
+            )
+        POST "${testjob?}" \
+            --data-urlencode "test.job.update.status=RUNNING" \
+            --data-urlencode "test.job.update.timeout=1000" \
+            | ./pp
+
+
+
+
+        testjob=$(
+        POST "/test/job/create" \
+            --data-urlencode "test.job.create.name=test-$(unique)" \
+            --data-urlencode "test.job.create.pause=4" \
+            | ident
+            )
+        POST "${testjob?}" \
+            --data-urlencode "test.job.update.status=RUNNING" \
+            --data-urlencode "test.job.update.timeout=8000" \
+            | ./pp
+
+
+
+        testjob=$(
+        POST "/test/job/create" \
+            --data-urlencode "test.job.create.name=test-$(unique)" \
+            --data-urlencode "test.job.create.pause=4" \
+            | ident
+            )
+        POST "${testjob?}" \
+            --data-urlencode "test.job.update.status=RUNNING" \
+            --data-urlencode "test.job.update.timeout=8000" \
+            --data-urlencode "test.job.update.limit=2" \
+            | ./pp
+
+
+
+
+
+        testjob=$(
+        POST "/test/job/create" \
+            --data-urlencode "test.job.create.name=test-$(unique)" \
+            --data-urlencode "test.job.create.pause=104" \
+            | ident
+            )
+        POST "${testjob?}" \
+            --data-urlencode "test.job.update.status=RUNNING" \
+            | ./pp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         sleep 2
         GET "${testjob?}" \
