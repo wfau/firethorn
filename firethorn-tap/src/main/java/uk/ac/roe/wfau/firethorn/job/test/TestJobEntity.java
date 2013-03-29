@@ -345,10 +345,13 @@ implements TestJob
                             );
                         }
                     log.debug("-- TestJob finishing [{}][{}]", ident, result);
-                    result = factories().tests().executor().status(
-                        ident,
-                        Status.COMPLETED
-                        );
+                    if (result == Status.RUNNING)
+                        {
+                        result = factories().tests().executor().status(
+                            ident,
+                            Status.COMPLETED
+                            );
+                        }
                     }
                 catch (InterruptedException ouch)
                     {

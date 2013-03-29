@@ -36,18 +36,26 @@
         testjob=$(
         POST "/test/job/create" \
             --data-urlencode "test.job.create.name=test-$(unique)" \
-            --data-urlencode "test.job.create.pause=10" \
+            --data-urlencode "test.job.create.pause=20" \
             | ident
             )
+
+        sleep 1
+        POST "${testjob?}" \
+            --data-urlencode "test.job.update.status=RUNNING" \
+            --data-urlencode "test.job.update.timeout=4" \
+            | ./pp
+
+        sleep 1
         GET "${testjob?}" \
             | ./pp
 
-        #
-        # Run the job.
+        sleep 1
         POST "${testjob?}" \
-            --data-urlencode "test.job.update.status=RUNNING" \
-            --data-urlencode "test.job.update.timeout=2" \
+            --data-urlencode "test.job.update.status=CANCELLED" \
             | ./pp
+
+        sleep 1
         GET "${testjob?}" \
             | ./pp
 
