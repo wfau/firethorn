@@ -182,9 +182,9 @@ public class HibernateThingsImpl
         return entity ;
         }
 
+    /*
     @Override
     @Deprecated
-    //@UpdateEntityMethod
     public Entity update(final Entity entity)
         {
         try {
@@ -216,7 +216,7 @@ public class HibernateThingsImpl
             }
         return entity ;
         }
-
+    */
     @Override
     //@UpdateEntityMethod
     public void delete(final Entity entity)

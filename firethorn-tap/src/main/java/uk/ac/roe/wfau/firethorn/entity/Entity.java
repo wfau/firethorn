@@ -177,9 +177,9 @@ public interface Entity
     /**
      * Update (store) this Entity in the database.
      *
-     */
     @Deprecated
     public void update();
+     */
 
     /**
      * Delete this Entity from the database.

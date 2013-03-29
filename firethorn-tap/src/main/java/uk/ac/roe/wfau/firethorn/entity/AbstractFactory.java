@@ -113,7 +113,6 @@ implements Entity.Factory<EntityType>
     /**
      * Update an Entity.
      *
-     */
     @UpdateEntityMethod
     @SuppressWarnings("unchecked")
     public EntityType update(final EntityType entity)
@@ -134,6 +133,7 @@ implements Entity.Factory<EntityType>
                 );
             }
         }
+     */
 
     /**
      * Delete an Entity.

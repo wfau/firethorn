@@ -388,7 +388,6 @@ implements Entity
     /**
      * Update (store) this Entity in the database.
      *
-     */
     @Override
     @Deprecated
     public void update()
@@ -397,6 +396,7 @@ implements Entity
             this
             );
         }
+     */
 
     /**
      * Delete this Entity from the database.
