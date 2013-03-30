@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -40,8 +41,17 @@ implements EntityBean<EntityType>
      * @todo Move this much further back.
      *
      */
-    private final DateTimeFormatter formatter = ISODateTimeFormat.dateHourMinuteSecondFraction().withZoneUTC()  ;
+    private static final DateTimeFormatter dateformat = ISODateTimeFormat.dateHourMinuteSecondFraction().withZoneUTC()  ;
+    protected DateTimeFormatter dateformat()
+        {
+        return dateformat ;
+        }
+    protected String dateformat(final DateTime datetime)
+        {
+        return dateformat.print(datetime) ;
+        }
 
+    
     private final EntityType entity ;
     private final URI type ;
 
@@ -95,7 +105,7 @@ implements EntityBean<EntityType>
     @Override
     public String getCreated()
         {
-        return this.formatter.print(
+        return dateformat(
             this.entity.created()
             );
         }
@@ -103,7 +113,7 @@ implements EntityBean<EntityType>
     @Override
     public String getModified()
         {
-        return this.formatter.print(
+        return dateformat(
             this.entity.modified()
             );
         }

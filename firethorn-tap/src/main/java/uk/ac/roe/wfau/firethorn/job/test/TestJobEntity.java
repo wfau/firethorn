@@ -81,8 +81,8 @@ implements TestJob
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_TEST_PAUSE_COL = "pause";
-    protected static final String DB_TEST_LIMIT_COL = "limit";
+    protected static final String DB_TEST_LENGTH_COL = "length";
+    protected static final String DB_TEST_LIMIT_COL  = "limit";
     
     /**
      * Local service implementations.
@@ -289,14 +289,14 @@ implements TestJob
                     );
                 if ((job.status() == Status.EDITING) || (job.status() == Status.READY))
                     {
-                    int pause = job.pause().intValue();
-                    if (pause >= 100)
+                    int length = job.length().intValue();
+                    if (length >= 100)
                         {
                         return job.status(
                             Status.ERROR
                             );
                         }
-                    else if ((pause >= 0) && (pause < 100))
+                    else if ((length >= 0) && (length < 100))
                         {
                         return job.status(
                             Status.READY
@@ -319,33 +319,6 @@ implements TestJob
                 }
             }
 
-        /*
-        public Future<Status> outer(Identifier ident)
-            {
-            log.debug("execute()");
-            log.debug("  TestJob [{}][{}]", ident);
-            Status result = executor().status(
-                ident,
-                Status.RUNNING
-                );
-            if (result != Status.RUNNING)
-                {
-                return new AsyncResult<Status>(
-                    result
-                    );
-                }
-            else {
-                return executor().inner(
-                    ident
-                    );
-                }
-            }
-         */
-
-        /*
-         * The instance you pass in will not be managed (any changes you make will not be part of the transaction - unless you call merge again).
-         */
-
         @Async
         @Override
         public Future<Status> execute(Identifier ident)
@@ -365,7 +338,7 @@ implements TestJob
                     ident
                     );
 
-                for (int i = 0 ; ((i < job.pause().intValue()) && (result == Status.RUNNING)) ; i++)
+                for (int i = 0 ; ((i < job.length().intValue()) && (result == Status.RUNNING)) ; i++)
                     {
                     log.debug("-- TestJob sleeping [{}][{}]", ident, new Integer(i));
                     Thread.sleep(
@@ -438,28 +411,28 @@ implements TestJob
         super(
             name
             );
-        this.pause = pause;
+        this.length = pause;
         }
 
     @Basic(
         fetch = FetchType.EAGER
         )
     @Column(
-        name = DB_TEST_PAUSE_COL,
+        name = DB_TEST_LENGTH_COL,
         unique = false,
         nullable = false,
         updatable = true
         )
-    private Integer pause;
+    private Integer length;
     @Override
-    public Integer pause()
+    public Integer length()
         {
-        return this.pause;
+        return this.length;
         }
     @Override
-    public void pause(Integer pause)
+    public void length(Integer pause)
         {
-        this.pause = pause ;
+        this.length = pause ;
         }
     
     @Basic(

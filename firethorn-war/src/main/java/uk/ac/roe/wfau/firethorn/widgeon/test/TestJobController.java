@@ -25,6 +25,7 @@ import java.util.concurrent.TimeoutException;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -87,10 +88,10 @@ public class TestJobController
     public static final String UPDATE_NAME = "test.job.update.name" ;
 
     /**
-     * MVC property for updating the pause.
+     * MVC property for updating the length.
      *
      */
-    public static final String UPDATE_PAUSE = "test.job.update.pause" ;
+    public static final String UPDATE_LENGTH = "test.job.update.length" ;
 
     /**
      * MVC property for updating the limit.
@@ -121,15 +122,36 @@ public class TestJobController
          * The test duration in seconds.
          * 
          */
-        public Integer getPause();
+        public Integer getLength();
 
         /**
          * The job status.
-         * todo Move this to a JobBean base class ?
+         * @todo Move this to a JobBean base class
          * 
          */
         public Job.Status getStatus(); 
 
+        /**
+         * The date/time the Job was queued.
+         * @todo Move this to a JobBean base class
+         *
+         */
+        public String getQueued();
+
+        /**
+         * The date/time the Job was started.
+         * @todo Move this to a JobBean base class
+         *
+         */
+        public String getStarted();
+
+        /**
+         * The date/time the Job was finished.
+         * @todo Move this to a JobBean base class
+         *
+         */
+        public String getFinished();
+        
         }
 
     /**
@@ -152,14 +174,53 @@ public class TestJobController
                 );
             }
         @Override
-        public Integer getPause()
+        public Integer getLength()
             {
-            return entity().pause();
+            return entity().length();
             }
         @Override
         public Status getStatus()
             {
             return entity().status();
+            }
+        @Override
+        public String getQueued()
+            {
+            if (entity().queued() != null)
+                {
+                return dateformat(
+                    entity().queued()
+                    );
+                }
+            else {
+                return null ;
+                }
+            }
+        @Override
+        public String getStarted()
+            {
+            if (entity().started() != null)
+                {
+                return dateformat(
+                    entity().started()
+                    );
+                }
+            else {
+                return null ;
+                }
+            }
+        @Override
+        public String getFinished()
+            {
+            if (entity().finished() != null)
+                {
+                return dateformat(
+                    entity().finished()
+                    );
+                }
+            else {
+                return null ;
+                }
             }
         }
 
@@ -242,8 +303,8 @@ public class TestJobController
         final String ident,
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
-        @RequestParam(value=UPDATE_PAUSE, required=false)
-        final Integer pause,
+        @RequestParam(value=UPDATE_LENGTH, required=false)
+        final Integer length,
         @RequestParam(value=UPDATE_LIMIT, required=false)
         final Integer limit,
         @RequestParam(value=UPDATE_STATUS, required=false)
@@ -261,12 +322,12 @@ public class TestJobController
                 )
             );
 
-        if ((name != null) || (pause != null) || (limit != null) )
+        if ((name != null) || (length != null) || (limit != null) )
             {
             this.helper.update(
                 job,
                 name,
-                pause,
+                length,
                 limit
                 );
             }
@@ -296,7 +357,7 @@ public class TestJobController
          * Update the properties in a new transaction.
          *
          */
-        public void update(final TestJob  job, final String  name, final Integer pause, final Integer limit)
+        public void update(final TestJob  job, final String  name, final Integer length, final Integer limit)
         throws NotFoundException;
 
         /**
@@ -330,16 +391,16 @@ public class TestJobController
         public void update(
             final TestJob  job,
             final String  name,
-            final Integer pause,
+            final Integer length,
             final Integer limit
             )
         throws NotFoundException
             {
             log.debug("---- ---- ---- ----");
             log.debug("update(Identifier, String, Integer)");
-            log.debug("  Name  [{}]", name);
-            log.debug("  Pause [{}]", pause);
-            log.debug("  Limit [{}]", limit);
+            log.debug("  Name   [{}]", name);
+            log.debug("  Length [{}]", length);
+            log.debug("  Limit  [{}]", limit);
             if (name != null)
                 {
                 log.debug("Setting name");
@@ -350,11 +411,11 @@ public class TestJobController
                         );
                     }
                 }
-            if (pause != null)
+            if (length != null)
                 {
-                log.debug("Setting pause");
-                job.pause(
-                    pause
+                log.debug("Setting length");
+                job.length(
+                    length
                     );
                 }
             if (limit != null)
@@ -367,8 +428,8 @@ public class TestJobController
             log.debug("---- ----");
             }
 
-        public static final int MINIMUM_PAUSE =  5 ;
-        public static final int DEFAULT_PAUSE = 10 ;
+        public static final int MINIMUM_TIMEOUT =  5 ;
+        public static final int DEFAULT_TIMEOUT = 10 ;
 
         @Override
         public Status update(
@@ -383,21 +444,6 @@ public class TestJobController
 
             Status result = job.status(true);
 
-// Race condition.
-// If timeout is too low, then controller updates before execute() has started.             
-            
-            int timelim ;
-            if (timeout == null)
-                {
-                timelim = DEFAULT_PAUSE;
-                }
-            else if (timeout.intValue() < MINIMUM_PAUSE)
-                {
-                timelim = MINIMUM_PAUSE;
-                }
-            else {
-                timelim = timeout.intValue() ;
-                }
             
             if (next == Status.READY)
                 {
@@ -414,36 +460,56 @@ public class TestJobController
                     job.ident()
                     );
 
-                try {
-                    log.debug("Executing job");
-                    Future<Status> future = factories().tests().executor().execute(
-                        job.ident()
-                        );
-
-                    log.debug("Checking future");
-                    result = future.get(
-                        timelim,
-                        TimeUnit.MILLISECONDS
-                        );
-                    log.debug("Result [{}]", result);
-                    }
-                catch (TimeoutException ouch)
+                if (result == Status.READY)
                     {
-                    log.debug("TimeoutException");
-                    }
-                catch (InterruptedException ouch)
-                    {
-                    log.debug("InterruptedException [{}]", ouch.getMessage());
-                    }
-                catch (ExecutionException ouch)
-                    {
-                    log.debug("ExecutionException [{}]", ouch.getMessage());
-                    }
+                    log.debug("Queuing job");
+                    result = factories().tests().executor().status(job.ident(), Status.PENDING);
+                    
+                    if (result == Status.PENDING)
+                        {
+                        try {
+                            log.debug("Executing job");
+                            Future<Status> future = factories().tests().executor().execute(
+                                job.ident()
+                                );
 
-                result = job.status(
-                    true
-                    );
+                            int waitlimit = DEFAULT_TIMEOUT;
+                            if (timeout != null)
+                                {
+                                if (timeout.intValue() < MINIMUM_TIMEOUT)
+                                    {
+                                    waitlimit = MINIMUM_TIMEOUT;
+                                    }
+                                else {
+                                    waitlimit = timeout.intValue() ;
+                                    }
+                                }
 
+                            log.debug("Checking future");
+                            result = future.get(
+                                waitlimit,
+                                TimeUnit.MILLISECONDS
+                                );
+                            log.debug("Result [{}]", result);
+                            }
+                        catch (TimeoutException ouch)
+                            {
+                            log.debug("TimeoutException");
+                            }
+                        catch (InterruptedException ouch)
+                            {
+                            log.debug("InterruptedException [{}]", ouch.getMessage());
+                            }
+                        catch (ExecutionException ouch)
+                            {
+                            log.debug("ExecutionException [{}]", ouch.getMessage());
+                            }
+        
+                        result = job.status(
+                            true
+                            );
+                        }
+                    }
                 }
 
             else if (next == Status.CANCELLED)

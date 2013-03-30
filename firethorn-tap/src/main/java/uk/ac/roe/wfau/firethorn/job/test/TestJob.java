@@ -131,13 +131,13 @@ extends Entity, Job
      * The test duration in seconds.
      * 
      */
-    public Integer pause();
+    public Integer length();
 
     /**
      * The test duration in seconds.
      * 
      */
-    public void pause(Integer pause);
+    public void length(Integer pause);
 
     /**
      * The test limit in seconds.

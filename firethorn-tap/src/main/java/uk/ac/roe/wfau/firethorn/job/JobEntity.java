@@ -405,7 +405,7 @@ extends AbstractEntity
         name = DB_QUEUED_COL,
         unique = false,
         nullable = true,
-        updatable = false
+        updatable = true
         )
     private DateTime queued ;
     @Override
@@ -422,7 +422,7 @@ extends AbstractEntity
         name = DB_STARTED_COL,
         unique = false,
         nullable = true,
-        updatable = false
+        updatable = true
         )
     private DateTime started ;
     @Override
@@ -439,7 +439,7 @@ extends AbstractEntity
         name = DB_FINISHED_COL,
         unique = false,
         nullable = true,
-        updatable = false
+        updatable = true
         )
     private DateTime finished ;
     @Override
