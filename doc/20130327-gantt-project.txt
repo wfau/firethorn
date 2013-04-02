@@ -1,0 +1,63 @@
+#
+# Install GanttProject on CentOS.
+[root@desktop]
+
+    if [ ! -e '/var/local/toolkits' ]
+    then
+        mkdir '/var/local/toolkits'
+    fi
+    if [ ! -e '/var/local/toolkits/gantt' ]
+    then
+        mkdir '/var/local/toolkits/gantt'
+    fi
+
+    pushd '/var/local/toolkits/gantt'
+
+        version=ganttproject-2.6.1-r1499
+        zipfile=ganttproject-2.6.1-r1499.zip
+
+        if [ ! -e "${version?}" ]
+        then
+            if [ ! -e "downloads/${zipfile?}" ]
+            then
+                if [ ! -e 'downloads' ]
+                then 
+                    mkdir 'downloads'
+                fi
+                pushd downloads
+
+                    wget "https://ganttproject.googlecode.com/files/${zipfile?}"
+                    md5sum "${zipfile?}" 
+                    # d9eee5a37da059e28f56a860eb71b035  ganttproject-2.6.1-r1499.zip
+
+                popd
+            fi
+            
+            unzip "downloads/${zipfile?}" 
+
+            if [ -L current ]
+            then
+                rm current
+            fi
+            ln -s "${version?}" current
+
+        fi
+    popd
+
+
+#
+# Create desktop launcher
+[user@desktop]
+
+cat > ${HOME?}/Desktop/GanttProject.desktop << 'EOF'
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Exec=/var/local/toolkits/gantt/current/ganttproject
+Name=Gantt Project
+Icon=/var/local/toolkits/gantt/current/ganttproject_32_2.ico
+EOF
+chmod a+x ${HOME?}/Desktop/GanttProject.desktop
+
