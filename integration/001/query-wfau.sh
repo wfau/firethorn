@@ -15,21 +15,13 @@ cat > wfau-query-001.adql << 'EOF'
         wfau_schema.gcsPointSource AS ukidss,
         wfau_schema.gcsSourceXtwomass_psc AS neighbour
     WHERE
-        twomass.ra  >= '55.0'
+        twomass.ra  BETWEEN '55.0' AND '55.9'
     AND
-        twomass.ra  <= '55.9'
+        twomass.dec BETWEEN '20.0' AND '22.9'
     AND
-        twomass.dec >= '20.0'
+        ukidss.ra   BETWEEN '55.0' AND '55.9'
     AND
-        twomass.dec <= '22.9'
-    AND
-        ukidss.ra  >= '55.0'
-    AND
-        ukidss.ra  <= '55.9'
-    AND
-        ukidss.dec >= '20.0'
-    AND
-        ukidss.dec <= '22.9'
+        ukidss.dec  BETWEEN '20.0' AND '22.9'
     AND
         neighbour.masterObjID = ukidss.sourceID
     AND
@@ -55,6 +47,8 @@ GET "${wfauquery?}" \
 POST "${wfauquery?}" \
     --data-urlencode "adql.query.update.status=RUNNING" \
     | ./pp
+
+sleep 30
 
 GET "${wfauquery?}" \
     | ./pp
