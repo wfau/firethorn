@@ -218,7 +218,6 @@ EOF
         hg summary
     popd
 
-
 # TTY #1 ------------------------------------------------------------
 # Create a SSH tunnel to the ROE database server.
 # ** leave this running for the duration of the tests **
@@ -300,6 +299,8 @@ EOF
         source "${FIRETHORN_TEST?}/init-jdbc.sh"
         source "${FIRETHORN_TEST?}/init-adql.sh"
         source "${FIRETHORN_TEST?}/init-wfau.sh"
+
+# Need a single resource query here ....
 
         source "${FIRETHORN_TEST?}/query-adql.sh"
         source "${FIRETHORN_TEST?}/query-wfau.sh"
