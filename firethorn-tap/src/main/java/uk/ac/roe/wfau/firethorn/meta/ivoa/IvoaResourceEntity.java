@@ -112,7 +112,7 @@ public class IvoaResourceEntity
 
         @Override
         @CreateEntityMethod
-        public IvoaResource  create(final String name)
+        public IvoaResource create(final String name)
             {
             return super.insert(
                 new IvoaResourceEntity(

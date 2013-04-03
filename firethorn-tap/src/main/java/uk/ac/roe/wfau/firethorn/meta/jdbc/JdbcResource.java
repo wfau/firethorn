@@ -67,20 +67,19 @@ extends BaseResource<JdbcSchema>
          * Create a new resource.
          *
          */
-        @Override
-        public JdbcResource create(final String name);
+        public JdbcResource create(final String ogsaid, final String name);
 
         /**
          * Create a new resource.
          *
          */
-        public JdbcResource create(final String name, final String url);
+        public JdbcResource create(final String ogsaid, final String name, final String url);
 
         /**
          * Create a new resource.
          *
          */
-        public JdbcResource create(final String name, final String url, final String user, final String pass);
+        public JdbcResource create(final String ogsaid, final String name, final String url, final String user, final String pass);
 
         /**
          * Our schema factory.

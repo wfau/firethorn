@@ -123,8 +123,6 @@ extends Entity, Job
     public static interface Executor
     extends Job.Executor
         {
-
-
         }
 
     /**

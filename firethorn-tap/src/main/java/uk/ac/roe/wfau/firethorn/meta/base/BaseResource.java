@@ -46,8 +46,8 @@ extends BaseComponent
         /**
          * Create a new resource.
          *
-         */
         public ResourceType create(final String name);
+         */
 
         /**
          * Select all the available resources.

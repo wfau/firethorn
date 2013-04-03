@@ -43,7 +43,7 @@ extends SimpleQueryTestBase
      * TWOMASS and UKIDSSDR1, using single JDBC connection.
      *
      */
-    //@Test
+    @Test
     public void test001()
     throws Exception
         {
@@ -99,6 +99,10 @@ extends SimpleQueryTestBase
             "    table21 AS ukidss," +
             "    table22 AS neighbour" +
             " WHERE" +
+            "    twomass.ra  BETWEEN '55.0' AND '55.9'" +
+            " AND" +
+            "    twomass.dec BETWEEN '20.0' AND '22.9'" +
+            " AND" +
             "    ukidss.ra  BETWEEN '55.0' AND '55.9'" +
             " AND" +
             "    ukidss.dec BETWEEN '20.0' AND '22.9'" +
@@ -115,7 +119,7 @@ extends SimpleQueryTestBase
      * TWOMASS and UKIDSSDR1, using DQP, using GT and LT on both tables.
      *
      */
-    //@Test
+    @Test
     public void test003()
     throws Exception
         {

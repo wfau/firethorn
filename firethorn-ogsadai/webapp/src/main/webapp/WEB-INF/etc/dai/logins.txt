@@ -1,10 +1,10 @@
-id=uber
+id=twomass
 userID=*
 username={SQL-USER}
 password={SQL-PASS}
 LOGIN-END
 END
-id=twomass
+id=twoxmm
 userID=*
 username={SQL-USER}
 password={SQL-PASS}

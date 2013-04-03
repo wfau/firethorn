@@ -56,3 +56,6 @@ POST "${wfauquery?}" \
     --data-urlencode "adql.query.update.status=RUNNING" \
     | ./pp
 
+GET "${wfauquery?}" \
+    | ./pp
+

@@ -54,6 +54,12 @@ extends OgsaResource<IvoaSchema>
     extends BaseResource.Factory<IvoaResource>
         {
         /**
+         * Create a new Resource.
+         *
+         */
+        public IvoaResource create(final String name);
+        
+        /**
          * The resource schema factory.
          *
          */

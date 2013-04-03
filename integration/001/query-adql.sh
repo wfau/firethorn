@@ -74,4 +74,6 @@ GET "${adqlquery?}" \
 POST "${adqlquery?}" \
     --data-urlencode "adql.query.update.status=RUNNING" \
     | ./pp
+GET "${adqlquery?}" \
+    | ./pp
 

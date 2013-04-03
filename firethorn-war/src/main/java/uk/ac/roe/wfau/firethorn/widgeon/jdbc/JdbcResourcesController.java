@@ -196,6 +196,7 @@ extends AbstractController
 
         final JdbcResourceBean bean = new JdbcResourceBean(
             factories().jdbc().resources().create(
+                ogsadai,
                 name,
                 url,
                 user,
@@ -208,15 +209,6 @@ extends AbstractController
             {
             bean.entity().catalog(
                 catalog
-                );
-            //bean.entity().update();
-            }
-        //
-        // TODO - set the initial resource
-        if (ogsadai != null)
-            {
-            bean.entity().ogsaid(
-                ogsadai
                 );
             //bean.entity().update();
             }

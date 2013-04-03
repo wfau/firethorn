@@ -78,8 +78,7 @@ public abstract class BaseResourceEntity<SchemaType extends BaseSchema<SchemaTyp
      * @todo Move this to Jdbc and Ivoa classes - replace with error/warn on base class.
      * @todo Create a new entity for OGSA-DAI resources.
      *
-     */
-    protected static final String DB_OGSA_ID_COL = "ogsa_id";
+    protected static final String DB_OGSA_ID_COL = "ogsaid";
     @Column(
         name = DB_OGSA_ID_COL,
         unique = false,
@@ -96,6 +95,16 @@ public abstract class BaseResourceEntity<SchemaType extends BaseSchema<SchemaTyp
     public void ogsaid(final String ogsaid)
         {
         this.ogsaid = ogsaid;
+        }
+     */
+    @Override
+    public String ogsaid()
+        {
+        return null;
+        }
+    @Override
+    public void ogsaid(final String ogsaid)
+        {
         }
     
     }

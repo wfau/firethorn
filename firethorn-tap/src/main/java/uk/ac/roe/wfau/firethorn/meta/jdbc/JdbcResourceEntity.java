@@ -94,7 +94,7 @@ public class JdbcResourceEntity
      * 
      */
     protected static final String DB_JDBC_CATALOG_COL = "jdbccatalog";
-
+    protected static final String DB_JDBC_OGSAID_COL  = "jdbcogsaid";
     /**
      * Resource factory implementation.
      *
@@ -140,10 +140,11 @@ public class JdbcResourceEntity
 
         @Override
         @CreateEntityMethod
-        public JdbcResource create(final String name)
+        public JdbcResource create(final String ogsaid, final String name)
             {
             return super.insert(
                 new JdbcResourceEntity(
+                    ogsaid,
                     name
                     )
                 );
@@ -151,10 +152,11 @@ public class JdbcResourceEntity
 
         @Override
         @CreateEntityMethod
-        public JdbcResource create(final String name, final String url)
+        public JdbcResource create(final String ogsaid, final String name, final String url)
             {
             return super.insert(
                 new JdbcResourceEntity(
+                    ogsaid,
                     name,
                     url
                     )
@@ -162,9 +164,10 @@ public class JdbcResourceEntity
             }
 
 		@Override
-		public JdbcResource create(final String name, final String url, final String user, final String pass) {
+		public JdbcResource create(final String ogsaid, final String name, final String url, final String user, final String pass) {
             return super.insert(
                 new JdbcResourceEntity(
+                    ogsaid,
                     name,
                     url,
                     user,
@@ -203,26 +206,29 @@ public class JdbcResourceEntity
         super();
         }
 
-    protected JdbcResourceEntity(final String name)
+    protected JdbcResourceEntity(final String ogsaid, final String name)
         {
         super(name);
+        this.ogsaid = ogsaid ;
         this.connection = new JdbcConnectionEntity(
             this
             );
         }
 
-    protected JdbcResourceEntity(final String name, final  String url)
+    protected JdbcResourceEntity(final String ogsaid, final String name, final  String url)
         {
         super(name);
+        this.ogsaid = ogsaid ;
         this.connection = new JdbcConnectionEntity(
             this,
             url
             );
         }
 
-    protected JdbcResourceEntity(final String name, final String url, final String user, final String pass)
+    protected JdbcResourceEntity(final String ogsaid, final String name, final String url, final String user, final String pass)
 	    {
 	    super(name);
+        this.ogsaid = ogsaid ;
 	    this.connection = new JdbcConnectionEntity(
 	        this,
 	        url,
@@ -299,7 +305,34 @@ public class JdbcResourceEntity
         return this.connection;
         }
 
-    @Basic(fetch = FetchType.EAGER)
+    /**
+     * The the OGSA-DAI resource ID.
+     *
+     */
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_JDBC_OGSAID_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String ogsaid;
+    @Override
+    public String ogsaid()
+        {
+        return this.ogsaid;
+        }
+    @Override
+    public void ogsaid(final String ogsaid)
+        {
+        this.ogsaid = ogsaid;
+        }
+    
+    @Basic(
+        fetch = FetchType.EAGER
+        )
     @Column(
         name = DB_JDBC_CATALOG_COL,
         unique = false,

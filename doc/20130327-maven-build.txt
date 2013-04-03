@@ -238,7 +238,7 @@ EOF
     source "${HOME?}/firethorn.settings"
     pushd  "${FIRETHORN_CODE?}"
 
-        mvn clean install
+            mvn clean install
         
     popd
 
@@ -257,6 +257,7 @@ EOF
 [User@psi]
 
     source "${HOME?}/firethorn.settings"
+
     pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/webapp"
 
         #
@@ -291,12 +292,13 @@ EOF
     pushd $(mktemp --directory)
 
         source "${FIRETHORN_TEST?}/init-rest.sh"
+
         source "${FIRETHORN_TEST?}/init-jdbc.sh"
         source "${FIRETHORN_TEST?}/init-adql.sh"
         source "${FIRETHORN_TEST?}/init-wfau.sh"
 
-        #source "${FIRETHORN_TEST?}/query-adql.sh"
-        #source "${FIRETHORN_TEST?}/query-wfau.sh"
+        source "${FIRETHORN_TEST?}/query-adql.sh"
+        source "${FIRETHORN_TEST?}/query-wfau.sh"
 
     popd
 

@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateEntityMethod;
@@ -46,6 +47,8 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.widgeon.test.TestJobController.Helper;
+import uk.ac.roe.wfau.firethorn.widgeon.test.TestJobController.HelperImpl;
 
 /**
  * Spring MVC controller for <code>AdqlQuery</code>.
@@ -168,24 +171,46 @@ extends AbstractEntityController<AdqlQuery>
         final String name,
         @RequestParam(value=UPDATE_QUERY, required=false)
         final String input,
+        @RequestParam(value=UPDATE_STATUS, required=false)
+        final Status status,
+        @RequestParam(value=UPDATE_TIMEOUT, required=false)
+        final Integer timeout,
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException {
-        return bean(
-            this.helper.update(
-                factories().adql().queries().idents().ident(
-                    ident
-                    ),
-                name,
-                input
+
+        final AdqlQuery query = factories().queries().resolver().select(
+            factories().queries().idents().ident(
+                ident
                 )
             );
+
+        if ((name != null) || (input != null))
+            {
+            this.helper.update(
+                query,
+                name,
+                input
+                );
+            }
+
+        if (status != null)
+            {
+            this.helper.update(
+                query,
+                status,
+                timeout
+                );
+            }
+
+        return bean(
+            query
+            ) ;
         }
 
     /**
      * JSON POST update.
      *
-     */
     @ResponseBody
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING, params=UPDATE_STATUS)
     public EntityBean<AdqlQuery> update(
@@ -206,6 +231,7 @@ extends AbstractEntityController<AdqlQuery>
                 )
             );
         }
+     */
 
     /**
      * Transactional helper.
@@ -213,20 +239,21 @@ extends AbstractEntityController<AdqlQuery>
      */
     public static interface Helper
         {
+        
         /**
-         * Transactional update.
+         * Update the properties.
          *
          */
-        public AdqlQuery update(final Identifier ident, final String  name, final String input)
-        throws NotFoundException ;
+        public void update(final AdqlQuery query, final String  name, final String input)
+        throws NotFoundException;
 
         /**
-         * Transactional update.
+         * Update the status.
          *
          */
-        public AdqlQuery update(final Identifier ident, final Job.Status next, final Integer timeout)
-        throws NotFoundException ;
-
+        public Status update(final AdqlQuery query, final Job.Status next, final Integer timeout)
+        throws NotFoundException;
+        
         }
 
     /**
@@ -243,34 +270,25 @@ extends AbstractEntityController<AdqlQuery>
     @Slf4j
     @Component
     public static class HelperImpl
+    extends AbstractComponent
     implements Helper
         {
-        /**
-         * Autowired system services.
-         *
-         */
-        @Autowired
-        private ComponentFactories factories;
-
-        /**
-         * Our system services.
-         *
-         */
-        public ComponentFactories factories()
-            {
-            return this.factories;
-            }
-
         @Override
         @UpdateAtomicMethod
-        public AdqlQuery update(final Identifier ident, final String name, final String input)
-            throws NotFoundException
+        public void update(
+            final AdqlQuery query,
+            final String  name,
+            final String input
+            )
+        throws NotFoundException
             {
-            final AdqlQuery query = factories().queries().resolver().select(
-                ident
-                );
+            log.debug("---- ---- ---- ----");
+            log.debug("update(AdqlQuery, String, String)");
+            log.debug("  Name  [{}]", name);
+            log.debug("  Input [{}]", input);
             if (name != null)
                 {
+                log.debug("Setting name");
                 if (name.length() > 0)
                     {
                     query.name(
@@ -278,77 +296,116 @@ extends AbstractEntityController<AdqlQuery>
                         );
                     }
                 }
-   
             if (input != null)
                 {
-                if (input.length() > 0)
-                    {
-                    query.input(
-                        input
-                        );
-                    }
+                log.debug("Setting input");
+                query.input(
+                    input
+                    );
                 }
-            return query;
+            log.debug("---- ----");
             }
 
+        public static final int MINIMUM_TIMEOUT =  5 ;
+        public static final int DEFAULT_TIMEOUT = 10 ;
+
         @Override
-        public AdqlQuery update(final Identifier ident, final Job.Status next, final Integer timeout)
-            throws NotFoundException
+        public Status update(
+            final AdqlQuery query,
+            final Job.Status next,
+            final Integer timeout
+            )
+        throws NotFoundException
             {
-            final AdqlQuery query = factories().queries().resolver().select(
-                ident
-                );
+            log.debug("---- ---- ---- ----");
+            log.debug("update(AdqlQuery, Status, Integer)");
+
+            Status result = query.status(true);
+
             
-            Status result = query.status();
-            Integer pause = ((timeout != null) ? timeout : Integer.valueOf(2));
-
-            if ((next != null) && ( next != result))
+            if (next == Status.READY)
                 {
-                if (next == Status.READY)
-                    {
-                    result = query.prepare();
-                    }
-                else if (next == Status.RUNNING)
-                    {
-                    try {
+                log.debug("Preparing query");
+                result = factories().queries().executor().prepare(
+                    query.ident()
+                    );
+                }
 
-                        Future<Status> future = query.execute();
-                        log.debug("Checking future");
-                        result = future.get(
-                            pause.intValue(),
-                            TimeUnit.SECONDS
-                            );
-                        log.debug("Status [{}]", query.status());
-                        log.debug("Result [{}]", result);
+            else if (next == Status.RUNNING)
+                {
+                log.debug("Preparing job");
+                result = factories().queries().executor().prepare(
+                    query.ident()
+                    );
 
-                        }
-                    catch (TimeoutException ouch)
-                        {
-                        log.debug("TimeoutException");
-                        }
-                    catch (InterruptedException ouch)
-                        {
-                        log.debug("InterruptedException [{}]", ouch.getMessage());
-                        }
-                    catch (ExecutionException ouch)
-                        {
-                        log.debug("ExecutionException [{}]", ouch.getMessage());
-                        }
-                    //
-                    // Return the updated state from the *other* thread.
-                    return factories().queries().resolver().select(
-                        ident
+                if (result == Status.READY)
+                    {
+                    log.debug("Queuing job");
+                    result = factories().queries().executor().status(
+                        query.ident(),
+                        Status.PENDING
                         );
-                    }
-                else if (next == Status.CANCELLED)
-                    {
-                    result = query.cancel();
-                    }
-                else {
-                    result = Status.ERROR;
+                    
+                    if (result == Status.PENDING)
+                        {
+                        try {
+                            log.debug("Executing query");
+                            Future<Status> future = factories().queries().executor().execute(
+                                query.ident()
+                                );
+
+                            int waitlimit = DEFAULT_TIMEOUT;
+                            if (timeout != null)
+                                {
+                                if (timeout.intValue() < MINIMUM_TIMEOUT)
+                                    {
+                                    waitlimit = MINIMUM_TIMEOUT;
+                                    }
+                                else {
+                                    waitlimit = timeout.intValue() ;
+                                    }
+                                }
+
+                            log.debug("Checking future");
+                            result = future.get(
+                                waitlimit,
+                                TimeUnit.MILLISECONDS
+                                );
+                            log.debug("Result [{}]", result);
+                            }
+                        catch (TimeoutException ouch)
+                            {
+                            log.debug("TimeoutException");
+                            }
+                        catch (InterruptedException ouch)
+                            {
+                            log.debug("InterruptedException [{}]", ouch.getMessage());
+                            }
+                        catch (ExecutionException ouch)
+                            {
+                            log.debug("ExecutionException [{}]", ouch.getMessage());
+                            }
+        
+                        result = query.status(
+                            true
+                            );
+                        }
                     }
                 }
-            return query;
+
+            else if (next == Status.CANCELLED)
+                {
+                result = factories().tests().executor().status(
+                    query.ident(),
+                    Status.CANCELLED
+                    );
+                }
+
+            else {
+                result = Status.ERROR;
+                }
+            log.debug("---- ----");
+            return result ;
             }
         }
     }

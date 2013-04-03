@@ -316,13 +316,13 @@ extends Entity, Job
     /**
      * Execute the Query.
      *
-     */
     public Future<Status> execute();
+     */
 
     /**
      * Cancel the Query.
      *
-     */
     public Status cancel();
+     */
 
     }

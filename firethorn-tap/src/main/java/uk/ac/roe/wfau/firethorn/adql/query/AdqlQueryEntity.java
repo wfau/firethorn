@@ -61,6 +61,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.Job.Executor.Executable;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
@@ -210,19 +211,167 @@ implements AdqlQuery, AdqlParserQuery
     extends JobEntity.Executor 
     implements AdqlQuery.Executor 
         {
+        /**
+         * Our local service implementation.
+         *
+         */
+        private AdqlQuery.Executor executor;
 
-        @Override
-        public Status prepare(Identifier iadent)
+        /**
+         * Our local service implementation.
+         *
+         */
+        protected AdqlQuery.Executor executor()
             {
-            // TODO Auto-generated method stub
-            return null;
+            if (this.executor == null)
+                {
+                this.executor = factories().queries().executor();
+                }
+            return this.executor ;
             }
 
+        /**
+         * Our local service implementation.
+         *
+         */
+        private AdqlQuery.Resolver resolver;
+
+        /**
+         * Our local service implementation.
+         *
+         */
+        protected AdqlQuery.Resolver resolver()
+            {
+            if (this.resolver == null)
+                {
+                this.resolver = factories().queries().resolver();
+                }
+            return this.resolver ;
+            }
+        
+
         @Override
+        @UpdateAtomicMethod
+        public Status prepare(final Identifier ident)
+            {
+            log.debug("prepare(Identifier)");
+            log.debug("  TestJob [{}]", ident);
+            try {
+                AdqlQuery query = resolver().select(
+                    ident
+                    );
+                return query.prepare();
+                }
+            catch (NotFoundException ouch)
+                {
+                log.error("Failed to prepare query [{}][{}]", ident, ouch.getMessage());
+                return Status.ERROR;
+                }
+            }
+
+        public static final String endpoint  = "http://localhost:8081/albert/services" ;
+        public static final String dqpname   = "testdqp" ;
+        public static final String storename = "user" ;
+        
+        @Async
+        @Override
+        @SelectEntityMethod
         public Future<Status> execute(Identifier ident)
             {
-            // TODO Auto-generated method stub
-            return null;
+            log.debug("execute()");
+            log.debug("  AdqlQuery [{}]", ident);
+
+            Status result = executor().status(
+                ident,
+                Status.RUNNING
+                );
+
+            if (result == Status.RUNNING)
+                {
+                log.debug("-- AdqlQuery running [{}]", ident);
+                try {
+                    log.debug("-- AdqlQuery resolving [{}]", ident);
+                    AdqlQuery query = resolver().select(
+                            ident
+                            );
+        
+                    //
+                    // Create our server client.
+                    log.debug("-- Pipeline endpoint [{}]", endpoint);
+                    StoredResultPipeline pipeline = new StoredResultPipeline(
+                        new URL(
+                            endpoint
+                            )
+                        );
+                    log.debug("-- Pipeline [{}]", pipeline);
+
+                    //
+                    // Execute the pipleline.
+
+//if direct, use query resource
+//else use dqp
+
+                    // Check for valid resource ident in prepare().
+                    //final String target = ((query.mode() == Mode.DIRECT) ? query.target().ogsaid() : dqpname);  
+                    final String target = ((query.mode() == Mode.DIRECT) ? "wfau" : dqpname);  
+                    final String tablename = "Q" + ident.toString() + "xxxx" ;
+
+                    log.debug("-- AdqlQuery executing [{}]", ident);
+                    log.debug("-- Mode   [{}]", query.mode());
+                    log.debug("-- Target [{}]", target);
+
+                    PipelineResult frog = pipeline.execute(
+                        target,
+                        storename,
+                        tablename,
+                        query.osql()
+                        );
+
+                    if (frog != null)
+                        {
+                        log.debug("-- AdqlQuery result [{}][{}]", ident, frog.result());
+
+                        if (frog.result() == PipelineResult.Result.COMPLETED)
+                            {
+                            result = executor().status(
+                                ident,
+                                Status.COMPLETED
+                                );
+                            }
+                        else {
+                            result = executor().status(
+                                ident,
+                                Status.FAILED
+                                );
+                            }
+                        }
+                    else {
+                        log.debug("-- AdqlQuery [{}] NULL results", ident);
+                        result = executor().status(
+                            ident,
+                            Status.FAILED
+                            );
+                        }
+
+                    }
+                catch (NotFoundException ouch)
+                    {
+                    log.debug("Unable to find query [{}][{}]", ident, ouch.getMessage());
+                    result = Status.ERROR;
+                    }
+                catch (Exception ouch)
+                    {
+                    log.debug("Unable to execute query [{}][{}]", ident, ouch.getMessage());
+                    result = executor().status(
+                        ident,
+                        Status.FAILED
+                        );
+                    }
+                }
+
+            return new AsyncResult<Status>(
+                result
+                );
             }
         }
 
@@ -455,7 +604,7 @@ implements AdqlQuery, AdqlParserQuery
    public void input(String input)
        {
        this.input = input;
-       parse();
+       prepare();
        }
 
    /**
@@ -675,65 +824,72 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     /**
-     * Parse our input and update our properties.
+     * Prepare our query for execution..
      *
      */
-    protected Status parse()
+    @Override
+    public Status prepare()
         {
-        if (this.input == null)
+        if ((status() == Status.EDITING) || (status() == Status.READY))
             {
-            return status(
-                Status.EDITING
-                );
-            }
-        else {
-            //
-            // Create the two query parsers.
-            // TODO - The parsers should be part of the resource/workspace.
-            // TODO - We could re-use the same parser by using a ThreadLocal for the mode ...
-            final AdqlParser direct = this.factories().adql().parsers().create(
-                Mode.DIRECT,
-                this.resource
-                );
-            final AdqlParser distrib = this.factories().adql().parsers().create(
-                Mode.DISTRIBUTED,
-                this.resource
-                );
-            //
-            // Process as a direct query.
-            direct.process(
-                this
-                );
-            //
-            // If the query uses multiple resources, re-process as a distributed query.
-            if (this.targets.size() > 1)
+            if (this.input == null)
                 {
-                log.debug("Query uses multiple resources");
-                log.debug("----");
-                for (BaseResource<?> target : this.targets())
-                    {
-                    log.debug("Resource [{}]", target);
-                    }
-                log.debug("----");
-                //
-                // Process as a distributed query.
-                distrib.process(
-                    this
-                    );
-                }
-            //
-            // Update the status.
-            if (syntax().status() == Syntax.Status.VALID)
-                {
-                return status(
-                    Status.READY
-                    );
-                }
-            else {
                 return status(
                     Status.EDITING
                     );
                 }
+            else {
+                //
+                // Create the two query parsers.
+                // TODO - The parsers should be part of the resource/workspace.
+                // TODO - We could re-use the same parser by using a ThreadLocal for the mode ...
+                final AdqlParser direct = this.factories().adql().parsers().create(
+                    Mode.DIRECT,
+                    this.resource
+                    );
+                final AdqlParser distrib = this.factories().adql().parsers().create(
+                    Mode.DISTRIBUTED,
+                    this.resource
+                    );
+                //
+                // Process as a direct query.
+                direct.process(
+                    this
+                    );
+                //
+                // If the query uses multiple resources, re-process as a distributed query.
+                if (this.targets.size() > 1)
+                    {
+                    log.debug("Query uses multiple resources");
+                    log.debug("----");
+                    for (BaseResource<?> target : this.targets())
+                        {
+                        log.debug("Resource [{}]", target);
+                        }
+                    log.debug("----");
+                    //
+                    // Process as a distributed query.
+                    distrib.process(
+                        this
+                        );
+                    }
+                //
+                // Update the status.
+                if (syntax().status() == Syntax.Status.VALID)
+                    {
+                    return status(
+                        Status.READY
+                        );
+                    }
+                else {
+                    return status(
+                        Status.EDITING
+                        );
+                    }
+                }
+            }
+        else {
+            return Status.ERROR;
             }
         }
 
@@ -788,8 +944,9 @@ implements AdqlQuery, AdqlParserQuery
             );
         }
 
-    @Override
-    public Status prepare()
+    /*
+    @Deprecated
+    private Status frog()
         {
         try {
             return this.services().executor().prepare(
@@ -820,13 +977,11 @@ implements AdqlQuery, AdqlParserQuery
             return Status.ERROR;
             }
         }
-
-    public static final String endpoint  = "http://localhost:8081/albert/services" ;
-    public static final String dqpname   = "testdqp" ;
-    public static final String storename = "user" ;
+    */
     
-    @Override
-    public Future<Status> execute()
+    /*    
+    @Deprecated
+    private Future<Status> execute()
         {
         try {
             return services().executor().execute(
@@ -909,7 +1064,9 @@ implements AdqlQuery, AdqlParserQuery
                 );
             }
         }
+     */
 
+    /*
     @Override
     public Status cancel()
         {
@@ -917,5 +1074,5 @@ implements AdqlQuery, AdqlParserQuery
             Status.CANCELLED
             );
         }
-
+     */
     }

@@ -316,13 +316,13 @@ public class TestJobController
         log.debug("---- ---- ---- ----");
         log.debug("JSON update(String, Integer, Status, Integer)");
         
-        TestJob job = factories().tests().resolver().select(
+        final TestJob job = factories().tests().resolver().select(
             factories().tests().idents().ident(
                 ident
                 )
             );
 
-        if ((name != null) || (length != null) || (limit != null) )
+        if ((name != null) || (length != null) || (limit != null))
             {
             this.helper.update(
                 job,
@@ -397,7 +397,7 @@ public class TestJobController
         throws NotFoundException
             {
             log.debug("---- ---- ---- ----");
-            log.debug("update(Identifier, String, Integer)");
+            log.debug("update(TestJob, String, Integer)");
             log.debug("  Name   [{}]", name);
             log.debug("  Length [{}]", length);
             log.debug("  Limit  [{}]", limit);

@@ -57,6 +57,12 @@ extends BaseResource<AdqlSchema>
     extends BaseResource.Factory<AdqlResource>
         {
         /**
+         * Create a new Resource.
+         *
+         */
+        public AdqlResource create(final String name);
+
+        /**
          * The resource schema factory.
          *
          */
