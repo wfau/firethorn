@@ -66,19 +66,14 @@ implements EntityBean<JdbcTable>
             );
         }
 
-    public URI getParent()
+    public String getParent()
         {
-        try {
-            return new URI(
-                entity().schema().link()
-                );
-            }
-        catch (final URISyntaxException ouch)
-            {
-            throw new RuntimeException(
-                ouch
-                );
-            }
+        return entity().schema().link();
+        }
+
+    public String getColumns()
+        {
+        return entity().link().concat("/columns/select");
         }
 
     public String getFullname()

@@ -48,7 +48,6 @@ implements EntityBean<AdqlColumn>
             super(
                 iterable
                 );
-            log.debug("Iter(Iterable)");
             }
         @Override
         public EntityBean<AdqlColumn> bean(final AdqlColumn entity)
@@ -70,49 +69,19 @@ implements EntityBean<AdqlColumn>
             );
         }
 
-    public URI getParent()
+    public String getParent()
         {
-        try {
-            return new URI(
-                entity().table().link()
-                );
-            }
-        catch (final URISyntaxException ouch)
-            {
-            throw new RuntimeException(
-                ouch
-                );
-            }
+        return entity().table().link();
         }
 
-    public URI getBase()
+    public String getBase()
         {
-        try {
-            return new URI(
-                entity().base().link()
-                );
-            }
-        catch (final URISyntaxException ouch)
-            {
-            throw new RuntimeException(
-                ouch
-                );
-            }
+        return entity().base().link();
         }
 
-    public URI getRoot()
+    public String getRoot()
         {
-        try {
-            return new URI(
-                entity().root().link()
-                );
-            }
-        catch (final URISyntaxException ouch)
-            {
-            throw new RuntimeException(
-                ouch
-                );
-            }
+        return entity().root().link();
         }
 
     public String getAlias()

@@ -70,21 +70,11 @@ implements EntityBean<JdbcColumn>
             );
         }
 
-    public URI getParent()
+    public String getParent()
         {
-        try {
-            return new URI(
-                entity().table().link()
-                );
-            }
-        catch (final URISyntaxException ouch)
-            {
-            throw new RuntimeException(
-                ouch
-                );
-            }
+        return entity().table().link();
         }
-
+   
     public String getFullname()
         {
         return entity().fullname().toString();

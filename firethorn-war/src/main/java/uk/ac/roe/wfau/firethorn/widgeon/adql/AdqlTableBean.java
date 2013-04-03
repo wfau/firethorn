@@ -67,49 +67,24 @@ implements EntityBean<AdqlTable>
             );
         }
 
-    public URI getParent()
+    public String getParent()
         {
-        try {
-            return new URI(
-                entity().schema().link()
-                );
-            }
-        catch (final URISyntaxException ouch)
-            {
-            throw new RuntimeException(
-                ouch
-                );
-            }
+        return entity().schema().link();
         }
 
-    public URI getBase()
+    public String getColumns()
         {
-        try {
-            return new URI(
-                entity().base().link()
-                );
-            }
-        catch (final URISyntaxException ouch)
-            {
-            throw new RuntimeException(
-                ouch
-                );
-            }
+        return entity().link().concat("/columns/select");
         }
 
-    public URI getRoot()
+    public String getBase()
         {
-        try {
-            return new URI(
-                entity().root().link()
-                );
-            }
-        catch (final URISyntaxException ouch)
-            {
-            throw new RuntimeException(
-                ouch
-                );
-            }
+        return entity().base().link();
+        }
+
+    public String getRoot()
+        {
+        return entity().root().link();
         }
 
     public String getAlias()

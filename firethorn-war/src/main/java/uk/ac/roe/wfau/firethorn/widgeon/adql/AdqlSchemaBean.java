@@ -67,19 +67,14 @@ implements EntityBean<AdqlSchema>
             );
         }
 
-    public URI getParent()
+    public String getParent()
         {
-        try {
-            return new URI(
-                entity().resource().link()
-                );
-            }
-        catch (final URISyntaxException ouch)
-            {
-            throw new RuntimeException(
-                ouch
-                );
-            }
+        return entity().resource().link();
+        }
+
+    public String getTables()
+        {
+        return entity().link().concat("/tables/select");
         }
 
     public String getFullname()

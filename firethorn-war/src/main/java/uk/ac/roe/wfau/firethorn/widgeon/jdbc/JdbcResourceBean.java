@@ -17,6 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
@@ -88,5 +91,10 @@ implements EntityBean<JdbcResource>
     public String getOgsadai()
         {
         return entity().ogsaid();
+        }
+
+    public String getSchema()
+        {
+        return entity().link().concat("/schemas/select");
         }
     }
