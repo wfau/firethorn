@@ -96,19 +96,19 @@ public interface ComponentFactories
 
     /**
      * Our generic Job<?> factories.
-     * 
+     *
      */
     public Job.Services jobs();
 
     /**
      * Our TestJob factories.
-     * 
+     *
      */
     public TestJob.Services tests();
-    
+
     /**
      * Our Query factories.
-     * 
+     *
      */
     public AdqlQuery.Services queries();
 

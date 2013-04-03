@@ -18,10 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnInfo;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn.Info;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaColumn;
 
 /**
  *
@@ -79,26 +76,26 @@ extends BaseColumn<JdbcColumn>
 
     /**
      * Update the column metadata.
-     * 
+     *
      */
     public void scan();
 
     /**
      * Access to the column metadata.
-     * 
+     *
      */
     public interface Info
-    extends BaseColumn.Info 
+    extends BaseColumn.Info
         {
 
         /**
          * The JDBC column metadata.
-         * 
+         *
          */
         public JdbcColumnInfo jdbc();
 
         }
-    
+
     @Override
     public Info info();
 

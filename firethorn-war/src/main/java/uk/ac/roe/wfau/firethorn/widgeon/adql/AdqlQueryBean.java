@@ -21,9 +21,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -46,7 +46,7 @@ implements EntityBean<AdqlQuery>
             iterable
             );
         }
-    
+
     /**
      * Iterable wrapper.
      *
@@ -95,7 +95,7 @@ implements EntityBean<AdqlQuery>
             entity
             );
         }
-    
+
     public URI getWorkspace()
         {
         try {

@@ -37,7 +37,6 @@ import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
  * Spring MVC controller for <code>AdqlResource</code> schema.
@@ -226,7 +225,7 @@ extends AbstractController
 
     /**
      * Create a response entity.
-     * 
+     *
      */
     public ResponseEntity<AdqlSchemaBean> response(final AdqlSchemaBean bean)
         {

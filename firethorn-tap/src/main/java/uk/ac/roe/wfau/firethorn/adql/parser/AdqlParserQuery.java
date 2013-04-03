@@ -22,7 +22,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 
 /**
- * Internal interface used by the AdqlParser during processing. 
+ * Internal interface used by the AdqlParser during processing.
  *
  */
 public interface AdqlParserQuery
@@ -38,7 +38,7 @@ public interface AdqlParserQuery
      * Reset the query state.
      *
      */
-    public void reset(AdqlQuery.Mode mode);
+    public void reset(final AdqlQuery.Mode mode);
 
     /**
      * Set the processed ADQL query.
@@ -66,14 +66,14 @@ public interface AdqlParserQuery
 
     /**
      * Set the ADQL syntax status.
-     * 
+     *
      */
-    public void syntax(AdqlQuery.Syntax.Status status);
+    public void syntax(final AdqlQuery.Syntax.Status status);
 
     /**
      * Set the ADQL syntax status.
-     * 
+     *
      */
-    public void syntax(AdqlQuery.Syntax.Status status, String message);
+    public void syntax(final AdqlQuery.Syntax.Status status, final String message);
 
     }

@@ -71,7 +71,7 @@ implements AdqlSchema
     {
     /**
      * Hibernate table mapping.
-     * 
+     *
      */
     protected static final String DB_TABLE_NAME = "AdqlSchemaEntity";
 
@@ -104,7 +104,7 @@ implements AdqlSchema
             }
 
         @Override
-        public AdqlSchema create(AdqlResourceEntity parent, String name, BaseTable<?, ?> base)
+        public AdqlSchema create(final AdqlResourceEntity parent, final String name, final BaseTable<?, ?> base)
             {
             final AdqlSchema schema = this.create(
                 parent,
@@ -115,7 +115,7 @@ implements AdqlSchema
                 );
             return schema;
             }
-        
+
         @Override
 		public AdqlSchema create(final AdqlResourceEntity parent, final String name, final BaseSchema<?, ?> base)
 			{

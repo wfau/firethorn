@@ -54,7 +54,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
         {
         /**
          * Create a schema name.
-         * 
+         *
          */
         public String name(final String catalog, final String schema);
 
@@ -66,10 +66,10 @@ extends BaseSchema<JdbcSchema, JdbcTable>
 
         /**
          * Search for a schema.
-         * 
+         *
          */
         public JdbcSchema select(final JdbcResource parent, final String catalog, final String schema);
-        
+
         /**
          * The schema table factory.
          *
@@ -100,7 +100,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
 
         /**
          * Update the tables.
-         * 
+         *
          */
         public void scan();
 
@@ -110,19 +110,19 @@ extends BaseSchema<JdbcSchema, JdbcTable>
 
     /**
      * The catalog name.
-     * 
+     *
      */
     public String catalog();
 
     /**
      * The schema name.
-     * 
+     *
      */
     public String schema();
 
     /**
      * Update the schema.
-     * 
+     *
      */
     public void scan();
 

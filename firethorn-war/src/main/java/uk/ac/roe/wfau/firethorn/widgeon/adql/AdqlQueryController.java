@@ -17,17 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,19 +30,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
-import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
-import uk.ac.roe.wfau.firethorn.job.test.TestJob;
-import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.widgeon.test.TestJobController.Helper;
-import uk.ac.roe.wfau.firethorn.widgeon.test.TestJobController.HelperImpl;
 
 /**
  * Spring MVC controller for <code>AdqlQuery</code>.
@@ -117,7 +104,7 @@ extends AbstractEntityController<AdqlQuery>
         }
 
     @Override
-    public Iterable<EntityBean<AdqlQuery>> bean(Iterable<AdqlQuery> iter)
+    public Iterable<EntityBean<AdqlQuery>> bean(final Iterable<AdqlQuery> iter)
         {
         return new AdqlQueryBean.Iter(
             iter
@@ -193,11 +180,11 @@ extends AbstractEntityController<AdqlQuery>
 
     /**
      * Transactional helper.
-     * 
+     *
      */
     public static interface Helper
         {
-        
+
         /**
          * Update the properties.
          *
@@ -209,14 +196,14 @@ extends AbstractEntityController<AdqlQuery>
 
     /**
      * Transactional helper.
-     * 
+     *
      */
     @Autowired
     private Helper helper ;
 
     /**
      * Transactional helper.
-     * 
+     *
      */
     @Slf4j
     @Component

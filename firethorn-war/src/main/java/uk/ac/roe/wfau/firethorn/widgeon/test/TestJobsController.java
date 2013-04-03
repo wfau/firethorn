@@ -61,28 +61,28 @@ extends AbstractController
 
     /**
      * URL path for the select method.
-     * @todo These are fairly standard - should be in a shared base class.  
+     * @todo These are fairly standard - should be in a shared base class.
      *
      */
     public static final String SELECT_PATH = "select" ;
 
     /**
      * URL path for the search method.
-     * @todo These are fairly standard - should be in a shared base class.  
+     * @todo These are fairly standard - should be in a shared base class.
      *
      */
     public static final String SEARCH_PATH = "search" ;
 
     /**
      * URL path for the create method.
-     * @todo These are fairly standard - should be in a shared base class.  
+     * @todo These are fairly standard - should be in a shared base class.
      *
      */
     public static final String CREATE_PATH = "create" ;
 
     /**
      * MVC property for the initial name.
-     * @todo These are fairly standard - created from a base in a shared base class.  
+     * @todo These are fairly standard - created from a base in a shared base class.
      *
      */
     public static final String CREATE_NAME = "test.job.create.name" ;
@@ -92,7 +92,7 @@ extends AbstractController
      *
      */
     public static final String CREATE_PAUSE = "test.job.create.pause" ;
-    
+
     /**
      * JSON GET request to select all.
      *

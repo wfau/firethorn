@@ -17,16 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.joda.time.DateTime;
-
-import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 
@@ -103,16 +93,16 @@ extends BaseResource<JdbcSchema>
 
         /**
          * Select a schema.
-         * 
+         *
          */
         public JdbcSchema select(final String catalog, final String schema);
 
         /**
          * Update the schemas.
-         * 
+         *
          */
         public void scan();
-        
+
         }
 
     @Override
@@ -126,25 +116,25 @@ extends BaseResource<JdbcSchema>
 
     /**
      * The 'wildcard' catalog name.
-     * 
+     *
      */
     public static final String ALL_CATALOGS = "*" ;
 
     /**
      * The resource catalog name.
-     * 
+     *
      */
     public String catalog();
 
     /**
      * The resource catalog name.
-     * 
+     *
      */
-    public void catalog(String catalog);
+    public void catalog(final String catalog);
 
     /**
      * Update the resource.
-     * 
+     *
      */
     public void scan();
 

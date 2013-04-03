@@ -70,16 +70,16 @@ public enum AdqlColumnType
      * @see java.sql.Types
      *
      */
-    public static AdqlColumnType jdbc(int type)
+    public static AdqlColumnType jdbc(final int type)
         {
         switch(type)
             {
             case Types.BIGINT :
-                return LONG ; 
-                
+                return LONG ;
+
             case Types.BIT :
             case Types.BOOLEAN :
-                return BOOLEAN ; 
+                return BOOLEAN ;
 
             case Types.LONGNVARCHAR :
             case Types.LONGVARCHAR :
@@ -87,14 +87,14 @@ public enum AdqlColumnType
             case Types.VARCHAR :
             case Types.NCHAR :
             case Types.CHAR :
-                return CHAR ; 
+                return CHAR ;
 
             case Types.DOUBLE :
-                return DOUBLE ; 
+                return DOUBLE ;
 
             case Types.REAL  :
             case Types.FLOAT :
-                return FLOAT ; 
+                return FLOAT ;
 
             case Types.INTEGER :
                 return INTEGER ;
@@ -125,7 +125,7 @@ public enum AdqlColumnType
             case Types.TIMESTAMP :
             case Types.VARBINARY :
             default :
-                return UNKNOWN ; 
+                return UNKNOWN ;
             }
         }
     }

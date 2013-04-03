@@ -36,7 +36,7 @@ public interface PipelineResult
         public PipelineResult create(final Result result, final String message);
         public PipelineResult create(final Result result, final String message, final Throwable cause);
         }
-    
+
     public enum Result {
         EDITING(),
         RUNNING(),

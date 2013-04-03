@@ -19,13 +19,8 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
 
 import java.net.URL;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 
 import lombok.extern.slf4j.Slf4j;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.org.ogsadai.client.toolkit.DataRequestExecutionResource;
 import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
 import uk.org.ogsadai.client.toolkit.RequestExecutionType;
@@ -51,23 +46,23 @@ public class SimpleClient
      * Public constructor.
      *
      */
-    public SimpleClient(String endpoint)
+    public SimpleClient(final String endpoint)
         {
         this.endpoint = endpoint ;
         }
 
-    private String endpoint;
+    private final String endpoint;
 
     /**
      * Simple test for OGSA-DAI queries.
      *
      */
-    public ResultSet execute(String dataset, String query)
+    public ResultSet execute(final String dataset, final String query)
     throws Exception
         {
         //
         // Create our server client.
-        Server server = new JerseyServer();        
+        final Server server = new JerseyServer();
         server.setDefaultBaseServicesURL(
             new URL(
                 this.endpoint
@@ -76,7 +71,7 @@ public class SimpleClient
 
         //
         // DRER.
-        DataRequestExecutionResource drer = server.getDataRequestExecutionResource(
+        final DataRequestExecutionResource drer = server.getDataRequestExecutionResource(
             new ResourceID(
                 "DataRequestExecutionResource"
                 )
@@ -84,7 +79,7 @@ public class SimpleClient
 
         //
         // SQL query.
-        SQLQuery sqlquery = new SQLQuery();
+        final SQLQuery sqlquery = new SQLQuery();
         sqlquery.setResourceID(
             dataset
             );
@@ -93,8 +88,8 @@ public class SimpleClient
             );
 
         //
-        // Transform.        
-        TupleToByteArrays tupleToByteArrays = new TupleToByteArrays();
+        // Transform.
+        final TupleToByteArrays tupleToByteArrays = new TupleToByteArrays();
         tupleToByteArrays.connectDataInput(
             sqlquery.getDataOutput()
             );
@@ -104,14 +99,14 @@ public class SimpleClient
 
         //
         // Delivery.
-        DeliverToRequestStatus deliverToRequestStatus = new DeliverToRequestStatus();
+        final DeliverToRequestStatus deliverToRequestStatus = new DeliverToRequestStatus();
         deliverToRequestStatus.connectInput(
             tupleToByteArrays.getResultOutput()
             );
 
         //
         // Pipeline workflow.
-        PipelineWorkflow pipeline = new PipelineWorkflow();
+        final PipelineWorkflow pipeline = new PipelineWorkflow();
         pipeline.add(sqlquery);
         pipeline.add(tupleToByteArrays);
         pipeline.add(deliverToRequestStatus);
@@ -139,7 +134,7 @@ public class SimpleClient
 
         //
         // Get request status.
-        RequestStatus status = requestResource.getRequestStatus();
+        final RequestStatus status = requestResource.getRequestStatus();
         log.debug("Status [{}]", status.getExecutionStatus());
 
         //

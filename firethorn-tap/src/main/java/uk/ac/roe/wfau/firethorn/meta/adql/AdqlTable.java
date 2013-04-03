@@ -114,6 +114,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
      * The table this table is based on.
      *
      */
+    @Override
     public BaseTable<?,?> base();
 
 

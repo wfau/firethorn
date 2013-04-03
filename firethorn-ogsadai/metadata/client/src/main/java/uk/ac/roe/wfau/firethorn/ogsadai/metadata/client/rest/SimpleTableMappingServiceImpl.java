@@ -43,7 +43,7 @@ implements TableMappingService
      *
      */
     public static final String SOURCE_NAME_PATH = "/meta/table/{source}" ;
-    
+
     /**
      * Protected constructor.
      *
@@ -67,12 +67,12 @@ implements TableMappingService
                 ),
             TableMappingBean.class,
             source
-            );        
+            );
         }
 
     /**
      * Bean class used by the JSON handler.
-     * 
+     *
      */
     public static class TableMappingBean
     implements TableMapping
@@ -90,7 +90,7 @@ implements TableMappingService
             {
             this.name = value ;
             }
-       
+
         private String resource;
         public  void setResource(final String value)
             {

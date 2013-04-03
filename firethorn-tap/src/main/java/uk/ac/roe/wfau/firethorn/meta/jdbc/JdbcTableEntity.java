@@ -43,9 +43,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaTable;
 
 /**
  *
@@ -396,7 +394,7 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
         final JdbcProductType  product  = JdbcProductType.match(
             metadata
             );
-        // TODO - fix connection errors 
+        // TODO - fix connection errors
         if (metadata != null)
             {
             try {
@@ -424,7 +422,7 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
                             }
                         );
                     try {
-                        JdbcColumn column = columnsimpl().select(
+                        final JdbcColumn column = columnsimpl().select(
                             colname
                             );
                         column.info().jdbc().size(
@@ -434,7 +432,7 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
                             coltype
                             );
                         }
-                    catch (NotFoundException ouch)
+                    catch (final NotFoundException ouch)
                         {
                         columnsimpl().create(
                             colname,
@@ -446,7 +444,7 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
     //
     // TODO
     // Reprocess the list disable missing ones ...
-    //                                  
+    //
                 scandate(
                     new DateTime()
                     );

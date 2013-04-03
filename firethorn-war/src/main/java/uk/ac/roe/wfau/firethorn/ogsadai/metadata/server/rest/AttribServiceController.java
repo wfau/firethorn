@@ -21,7 +21,6 @@ import java.util.Iterator;
 
 import lombok.extern.slf4j.Slf4j;
 
-import uk.org.ogsadai.tuple.TupleTypes;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,9 +30,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnType;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.org.ogsadai.tuple.TupleTypes;
 
 /**
  * Spring MVC controller for our Attribute mapping service.
@@ -79,7 +78,7 @@ public class AttribServiceController
     public Path path()
         {
         return path(
-            AttribServiceController.CONTROLLER_PATH 
+            AttribServiceController.CONTROLLER_PATH
             );
         }
 
@@ -134,14 +133,14 @@ public class AttribServiceController
 
     /**
      * Bean classe used by the JSON handler.
-     * 
+     *
      */
     public static class ColumnBean
         {
         public static class Iter
         implements Iterable<ColumnBean>
             {
-            private Iterable<BaseColumn<?>> iterable ;
+            private final Iterable<BaseColumn<?>> iterable ;
             protected Iterable<BaseColumn<?>> iterable()
                 {
                 return this.iterable;
@@ -176,14 +175,14 @@ public class AttribServiceController
                     };
                 }
             }
-        
-        public ColumnBean(BaseColumn<?> column)
+
+        public ColumnBean(final BaseColumn<?> column)
             {
             this.column = column ;
             }
 
-        private BaseColumn<?> column ;
-        
+        private final BaseColumn<?> column ;
+
         /**
          * The source table alias.
          * <br/>
@@ -206,7 +205,7 @@ public class AttribServiceController
             {
             return this.column.name();
             }
-        
+
         /**
          * Get the column type as an OGSA-DAI TupleTypes value.
          * @return The column type.
@@ -232,11 +231,11 @@ public class AttribServiceController
 
     /**
      * Convert an AdqlColumnType into the corresponding TupleTypes value.
-     * @todo Solve the unusual ones ...  
+     * @todo Solve the unusual ones ...
      * @see TupleTypes
      *
      */
-    public static int convert(AdqlColumnType type)
+    public static int convert(final AdqlColumnType type)
         {
         if (type == null)
             {
@@ -247,29 +246,29 @@ public class AttribServiceController
                 {
                 case BIT :
                 case BOOLEAN :
-                    return TupleTypes._BOOLEAN ; 
-    
+                    return TupleTypes._BOOLEAN ;
+
                 case BYTE :
-                    return TupleTypes._INT; 
-    
+                    return TupleTypes._INT;
+
                 case CHAR :
-                    return TupleTypes._CHAR; 
-    
+                    return TupleTypes._CHAR;
+
                 case SHORT :
-                    return TupleTypes._SHORT; 
-    
+                    return TupleTypes._SHORT;
+
                 case INTEGER :
-                    return TupleTypes._INT; 
-    
+                    return TupleTypes._INT;
+
                 case LONG :
-                    return TupleTypes._LONG; 
-    
+                    return TupleTypes._LONG;
+
                 case FLOAT :
-                    return TupleTypes._FLOAT; 
-    
+                    return TupleTypes._FLOAT;
+
                 case DOUBLE :
-                    return TupleTypes._DOUBLE; 
-    
+                    return TupleTypes._DOUBLE;
+
                 case FLOATCOMPLEX :
                 case DOUBLECOMPLEX :
                 case UNICODE :

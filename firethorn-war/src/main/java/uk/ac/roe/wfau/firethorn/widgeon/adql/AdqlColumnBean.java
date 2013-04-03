@@ -143,7 +143,7 @@ implements EntityBean<AdqlColumn>
             public Adql getAdql()
                 {
                 return new Adql()
-                    { 
+                    {
                     @Override
                     public AdqlColumnType getType()
                         {

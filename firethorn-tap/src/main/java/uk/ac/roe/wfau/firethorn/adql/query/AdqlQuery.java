@@ -17,13 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query;
 
-import java.util.concurrent.Future;
-
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.job.Job;
-import uk.ac.roe.wfau.firethorn.job.JobEntity;
-import uk.ac.roe.wfau.firethorn.job.Job.Status;
-import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -38,43 +33,43 @@ extends Entity, Job
     {
     /**
      * Our local service implementations.
-     * 
+     *
      */
     public static interface Services
         {
         /**
          * Our Name factory.
-         * 
+         *
          */
         public NameFactory names();
 
         /**
          * Our Link factory.
-         * 
+         *
          */
         public LinkFactory links();
 
         /**
          * Our Ident factory.
-         * 
+         *
          */
         public IdentFactory idents();
 
         /**
          * Our Query resolver.
-         * 
+         *
          */
         public Resolver resolver();
 
         /**
          * Our Query Factory.
-         * 
+         *
          */
         public Factory factory();
 
         /**
          * Our Query executor.
-         * 
+         *
          */
         public Job.Executor executor();
 
@@ -175,55 +170,55 @@ extends Entity, Job
         {
         /**
          * The validation status.
-         * 
+         *
          */
         public enum Status
             {
             /**
              * The query has been parsed and is valid ADQL.
-             * 
+             *
              */
             VALID(),
-            
+
             /**
              * A parser error in the ADQL query.
-             * 
+             *
              */
             PARSE_ERROR(),
 
             /**
              * A translation error processing the query.
-             * 
+             *
              */
             TRANS_ERROR(),
 
             /**
              * Unknown state - the query hasn't been parsed yet.
-             * 
+             *
              */
             UNKNOWN();
             }
 
         /**
          * The validation status.
-         * 
+         *
          */
         public Status status();
 
         /**
          * The original parser error message.
-         * 
+         *
          */
         public String message();
 
         /**
          * A user friendly message.
-         * 
+         *
          */
         public String friendly();
-        
+
         }
-    
+
     /**
      * Get the syntax validation status.
      *
@@ -261,7 +256,7 @@ extends Entity, Job
      *
      */
     public AdqlResource resource();
-    
+
     /**
      * The processed ADQL query.
      *

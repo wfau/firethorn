@@ -33,7 +33,6 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
  * Spring MVC controller for <code>JdbcSchema</code> tables.
@@ -150,7 +149,7 @@ extends AbstractController
     /**
      * Select by name.
      * @todo select should not return null.
-     * 
+     *
      */
     public JdbcTableBean select(
         @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)

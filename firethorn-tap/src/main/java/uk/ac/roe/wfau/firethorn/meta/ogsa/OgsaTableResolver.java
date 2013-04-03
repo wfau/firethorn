@@ -17,11 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
 /**
  *
@@ -35,7 +31,7 @@ implements OgsaTable.AliasResolver
 /*
     @Autowired
     private BaseTable.Resolver resolver ;
-    
+
     @Override
     public OgsaTable<?,?> resolve(final String alias)
         throws NotFoundException

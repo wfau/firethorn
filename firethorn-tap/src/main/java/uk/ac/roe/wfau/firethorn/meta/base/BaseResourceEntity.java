@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -106,5 +105,5 @@ public abstract class BaseResourceEntity<SchemaType extends BaseSchema<SchemaTyp
     public void ogsaid(final String ogsaid)
         {
         }
-    
+
     }

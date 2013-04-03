@@ -158,7 +158,7 @@ extends Entity
 
     /**
      * Update the metadata for this component.
-     * 
+     *
     public void inport();
      */
 

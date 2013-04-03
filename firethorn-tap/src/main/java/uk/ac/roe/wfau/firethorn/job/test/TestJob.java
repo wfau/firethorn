@@ -17,10 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.job.test;
 
-import java.util.concurrent.Future;
-
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.job.Job;
 
 /**
@@ -32,37 +29,37 @@ extends Entity, Job
     {
     /**
      * Our local factory implementations.
-     * 
+     *
      */
     public static interface Services
         {
         /**
          * Our LinkFactory.
-         * 
+         *
          */
         public LinkFactory links();
 
         /**
          * Our IdentFactory.
-         * 
+         *
          */
         public IdentFactory idents();
 
         /**
          * Our TestJob resolver.
-         * 
+         *
          */
         public Resolver resolver();
 
         /**
          * Our TestJob Factory.
-         * 
+         *
          */
         public Factory factory();
 
         /**
          * Our TestJob executor.
-         * 
+         *
          */
         public Job.Executor executor();
 
@@ -110,7 +107,7 @@ extends Entity, Job
         {
         /**
          * Create a test Job.
-         * 
+         *
          */
         public TestJob create(final String name, final Integer delay);
 
@@ -118,26 +115,26 @@ extends Entity, Job
 
     /**
      * The test duration in seconds.
-     * 
+     *
      */
     public Integer length();
 
     /**
      * The test duration in seconds.
-     * 
+     *
      */
-    public void length(Integer pause);
+    public void length(final Integer pause);
 
     /**
      * The test limit in seconds.
-     * 
+     *
      */
     public Integer limit();
 
     /**
      * The test limit in seconds.
-     * 
+     *
      */
-    public void limit(Integer limit);
+    public void limit(final Integer limit);
 
     }

@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.job.test;
 
-import java.util.concurrent.Future;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -32,17 +30,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
-import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
 
@@ -84,10 +77,10 @@ implements TestJob
      */
     protected static final String DB_TEST_LENGTH_COL = "length";
     protected static final String DB_TEST_LIMIT_COL  = "limit";
-    
+
     /**
      * Local service implementations.
-     * 
+     *
      */
     @Component
     public static class Services
@@ -142,7 +135,7 @@ implements TestJob
 
     /**
      * Resolver implementation.
-     * @todo Fix this so that it can extend JobEntity.Resolver<TestJob> 
+     * @todo Fix this so that it can extend JobEntity.Resolver<TestJob>
      *
      */
     @Repository
@@ -227,10 +220,10 @@ implements TestJob
             return this.idents;
             }
         }
-    
+
     /**
      * Protected constructor.
-     * 
+     *
      */
     protected TestJobEntity()
         {
@@ -239,7 +232,7 @@ implements TestJob
 
     /**
      * Protected constructor.
-     * 
+     *
      */
     protected TestJobEntity(final String name, final Integer pause)
         {
@@ -265,11 +258,11 @@ implements TestJob
         return this.length;
         }
     @Override
-    public void length(Integer pause)
+    public void length(final Integer pause)
         {
         this.length = pause ;
         }
-    
+
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -286,11 +279,11 @@ implements TestJob
         return this.limit;
         }
     @Override
-    public void limit(Integer limit)
+    public void limit(final Integer limit)
         {
         this.limit = limit ;
         }
-    
+
     @Override
     public String link()
         {
@@ -306,7 +299,7 @@ implements TestJob
         log.debug("  TestJob [{}]", ident());
         if ((status() == Status.EDITING) || (status() == Status.READY))
             {
-            int length = length().intValue();
+            final int length = length().intValue();
             if (length >= 100)
                 {
                 return status(
@@ -380,7 +373,7 @@ implements TestJob
                     );
                 }
             }
-        catch (InterruptedException ouch)
+        catch (final InterruptedException ouch)
             {
             log.debug("-- TestJob interrupted [{}][{}]", ident(), ouch.getMessage());
             result = services().executor().status(

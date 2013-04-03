@@ -23,9 +23,9 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
  */
 public interface JdbcColumnInfo
     {
-    
+
     public int  size();
-    
+
     public void size(final int size);
 
     public int  type();

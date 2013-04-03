@@ -20,12 +20,11 @@ package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.org.ogsadai.dqp.common.RequestDetails;
-import uk.org.ogsadai.dqp.firethorn.MetadataServiceFactory;
-
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.AttributeService;
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.StatisticsService;
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMappingService;
+import uk.org.ogsadai.dqp.common.RequestDetails;
+import uk.org.ogsadai.dqp.firethorn.MetadataServiceFactory;
 
 
 class MetadataServiceFactoryImpl
@@ -37,7 +36,7 @@ implements MetadataServiceFactory
      *
      *
      */
-    private String endpoint ;
+    private final String endpoint ;
 
     /*
      *
@@ -47,12 +46,12 @@ implements MetadataServiceFactory
         {
         return this.endpoint ;
         }
-    
+
     /**
      * Public constructor.
      *
      */
-    public MetadataServiceFactoryImpl(String endpoint)
+    public MetadataServiceFactoryImpl(final String endpoint)
         {
         log.debug("MetadataServiceFactoryImpl(String)");
         log.debug("  Endpoint [" + endpoint + "]");
@@ -60,7 +59,7 @@ implements MetadataServiceFactory
         }
 
     @Override
-    public AttributeService getAttributeService(RequestDetails request)
+    public AttributeService getAttributeService(final RequestDetails request)
         {
         log.debug("getAttributeService(RequestDetails)");
         log.debug("  Request [" + request + "]");
@@ -69,9 +68,9 @@ implements MetadataServiceFactory
             request
             );
         }
-    
+
     @Override
-    public TableMappingService getTableMappingService(RequestDetails request)
+    public TableMappingService getTableMappingService(final RequestDetails request)
         {
         log.debug("getTableMappingService(RequestDetails)");
         log.debug("  Request [" + request + "]");
@@ -80,9 +79,9 @@ implements MetadataServiceFactory
             request
             );
         }
-    
+
     @Override
-    public StatisticsService getStatisticsService(RequestDetails request)
+    public StatisticsService getStatisticsService(final RequestDetails request)
         {
         log.debug("getStatisticsService(RequestDetails)");
         log.debug("  Request [" + request + "]");

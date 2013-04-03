@@ -17,26 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
 
-import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 
 import lombok.extern.slf4j.Slf4j;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import uk.org.ogsadai.client.toolkit.DataRequestExecutionResource;
-import uk.org.ogsadai.client.toolkit.PipelineWorkflow;
-import uk.org.ogsadai.client.toolkit.RequestExecutionType;
-import uk.org.ogsadai.client.toolkit.RequestResource;
-import uk.org.ogsadai.client.toolkit.Server;
-import uk.org.ogsadai.client.toolkit.activities.delivery.DeliverToRequestStatus;
-import uk.org.ogsadai.client.toolkit.activities.sql.SQLQuery;
-import uk.org.ogsadai.client.toolkit.activities.transform.TupleToByteArrays;
-import uk.org.ogsadai.client.toolkit.presentation.jersey.JerseyServer;
-import uk.org.ogsadai.resource.ResourceID;
-import uk.org.ogsadai.resource.request.RequestStatus;
 
 /**
  * Simple test for OGSA-DAI queries.
@@ -51,34 +35,34 @@ public class SimpleQueryTestBase
      * Simple test for OGSA-DAI queries.
      *
      */
-    public void execute(String endpoint, String dataset, String query)
+    public void execute(final String endpoint, final String dataset, final String query)
     throws Exception
         {
         //
         // Create our server client.
-        SimpleClient client = new SimpleClient(
+        final SimpleClient client = new SimpleClient(
             endpoint
             );
         //
         // Get ResultSet.
-        ResultSet results = client.execute(
+        final ResultSet results = client.execute(
             dataset,
             query
             );
         if (results != null)
             {
             // Get the result set metadata.
-            ResultSetMetaData md = results.getMetaData();
+            final ResultSetMetaData md = results.getMetaData();
             // Get column names and initial column widths.
-            int numColumns = md.getColumnCount();
+            final int numColumns = md.getColumnCount();
             log.info("");
             // Get ResultSet rows.
-            while (results.next()) 
+            while (results.next())
                 {
-                StringBuilder builder = new StringBuilder();
+                final StringBuilder builder = new StringBuilder();
                 for (int i = 0; i < numColumns; i++)
                     {
-                    Object field = results.getObject(i + 1);
+                    final Object field = results.getObject(i + 1);
                     if (field == null)
                         {
                         builder.append(
@@ -109,7 +93,7 @@ public class SimpleQueryTestBase
      * Pad a string out to a given width with space characters.
      *
      */
-    public static String pad(String base)
+    public static String pad(final String base)
         {
         return pad(
             base,
@@ -121,9 +105,9 @@ public class SimpleQueryTestBase
      * Pad a string out to a given width with space characters.
      *
      */
-    public static String pad(String base, int width)
+    public static String pad(final String base, final int width)
         {
-        int count = width - base.length();
+        final int count = width - base.length();
         if (count == 0)
             {
             return base ;
@@ -136,7 +120,7 @@ public class SimpleQueryTestBase
                 );
             }
         else {
-            StringBuffer buffer = new StringBuffer(
+            final StringBuffer buffer = new StringBuffer(
                 base
                 );
             for (int i = 0; i < count; i++)

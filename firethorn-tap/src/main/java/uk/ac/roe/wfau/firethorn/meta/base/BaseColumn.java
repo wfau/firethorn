@@ -84,23 +84,23 @@ extends BaseComponent
 
     /**
      * Access to the column metadata.
-     * 
+     *
      */
     public interface Info
         {
 
         /**
          * The ADQL column metadata.
-         * 
+         *
          */
         public AdqlColumnInfo adql();
 
         }
-    
+
     /**
      * Access to the column metadata.
-     * 
+     *
      */
     public Info info();
-    
+
     }

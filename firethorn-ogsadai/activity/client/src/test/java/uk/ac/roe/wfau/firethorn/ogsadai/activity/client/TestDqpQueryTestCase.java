@@ -1,7 +1,7 @@
 /*
 
- *  
- *  
+ *
+ *
  *  Copyright (C) 2012 Royal Observatory, University of Edinburgh, UK
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -22,8 +22,6 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
 /**
@@ -37,7 +35,7 @@ extends SimpleQueryTestBase
 
     /**
      * Our test service endpoint.
-     * 
+     *
      */
     public static final String endpoint = "http://localhost:8081/albert/services" ;
 

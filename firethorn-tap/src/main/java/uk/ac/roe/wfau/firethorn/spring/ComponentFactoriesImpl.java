@@ -22,22 +22,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-//import com.sun.org.apache.regexp.internal.recompile;
-
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Identity.Context;
 import uk.ac.roe.wfau.firethorn.identity.Identity.Factory;
 import uk.ac.roe.wfau.firethorn.job.Job;
-import uk.ac.roe.wfau.firethorn.job.Job.Services;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
-import uk.ac.roe.wfau.firethorn.job.test.TestJobEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlFactories;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseFactories;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaFactories;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcFactories;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaFactories;
 
 /**
  * Our component factories.
@@ -200,7 +195,7 @@ public class ComponentFactoriesImpl
         {
         return this.config ;
         }
-    
+
     /**
      * Our Autowired Job factory.
      *

@@ -46,14 +46,14 @@ public class TestJobTestCase
         {
         return factories().tests();
         }
-    
-    
+
+
     @Test
     public void test000()
     throws Exception
         {
         log.debug("-- Creating test --");
-        Identifier ident  = services().factory().create(
+        final Identifier ident  = services().factory().create(
             "fred",
             new Integer(
                 20
@@ -61,17 +61,17 @@ public class TestJobTestCase
             ).ident();
 
         log.debug("Status [{}]", services().executor().status(ident));
-        
-        TestJob job = services().resolver().select(
+
+        final TestJob job = services().resolver().select(
             ident
             );
         log.debug("Status [{}]", job.status());
-        
+
         log.debug("-- Preparing test --");
         log.debug("Result [{}]", services().executor().prepare(ident));
 
         log.debug("-- Executing test --");
-        Future<Status> future = services().executor().execute(ident);
+        final Future<Status> future = services().executor().execute(ident);
         log.debug("  Status [{}]", services().executor().status(ident));
 
         Status result = services().executor().status(ident);
@@ -86,15 +86,15 @@ public class TestJobTestCase
                 log.debug("Result [{}]", result);
                 log.debug("Status [{}]", services().executor().status(ident));
                 }
-            catch (TimeoutException ouch)
+            catch (final TimeoutException ouch)
                 {
                 log.debug("Future timeout");
                 }
-            catch (InterruptedException ouch)
+            catch (final InterruptedException ouch)
                 {
                 log.debug("Future interrupted [{}]", ouch.getMessage());
                 }
-            catch (ExecutionException ouch)
+            catch (final ExecutionException ouch)
                 {
                 log.debug("ExecutionException [{}]", ouch.getMessage());
                 result = Status.ERROR;

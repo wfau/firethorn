@@ -97,21 +97,21 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.StoredResultPipeline;
             query = "FROM AdqlQueryEntity WHERE ((resource = :resource) AND (name LIKE :text)) ORDER BY name asc, ident desc"
             )
         }
-     )       
+     )
 public class AdqlQueryEntity
 extends JobEntity
 implements AdqlQuery, AdqlParserQuery
     {
     /**
      * Hibernate table mapping.
-     * 
+     *
      */
     protected static final String DB_JOIN_NAME  = "AdqlQueryJoin";
     protected static final String DB_TABLE_NAME = "AdqlQueryEntity";
 
     /**
      * Hibernate column mapping.
-     * 
+     *
      */
     protected static final String DB_MODE_COL     = "mode";
     protected static final String DB_ADQL_COL     = "adql";
@@ -122,14 +122,14 @@ implements AdqlQuery, AdqlParserQuery
 
     /**
      * Hibernate column mapping.
-     * 
+     *
      */
     protected static final String DB_SYNTAX_STATUS_COL  = "syntaxstatus";
     protected static final String DB_SYNTAX_MESSAGE_COL = "syntaxmessage";
 
     /**
      * Our local service implementations.
-     * 
+     *
      */
     @Component
     public static class Services
@@ -192,7 +192,7 @@ implements AdqlQuery, AdqlParserQuery
 
     /**
      * Resolver implementation.
-     * 
+     *
      */
     @Repository
     public static class Resolver
@@ -220,7 +220,7 @@ implements AdqlQuery, AdqlParserQuery
             return this.links;
             }
         }
-    
+
     /**
      * Factory implementation.
      *
@@ -300,7 +300,7 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @SelectEntityMethod
-        public Iterable<AdqlQuery> select(AdqlResource resource)
+        public Iterable<AdqlQuery> select(final AdqlResource resource)
             {
             return super.list(
                 super.query(
@@ -314,7 +314,7 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @SelectEntityMethod
-        public Iterable<AdqlQuery> search(AdqlResource resource, String text)
+        public Iterable<AdqlQuery> search(final AdqlResource resource, final String text)
             {
             return super.iterable(
                 super.query(
@@ -383,26 +383,26 @@ implements AdqlQuery, AdqlParserQuery
         {
         return this.resource;
         }
-    
+
     /*
     *
     * org.hsqldb.HsqlException: data exception: string data, right truncation
-    *    
+    *
     *    length=DB_INPUT_LEN,
     *    => query varchar(1000)
     *
     *    @org.hibernate.annotations.Type(
     *        type="org.hibernate.type.TextType"
-    *        )        
+    *        )
     *    => query longvarchar
-    *    
+    *
     *    @Lob
     *    => query clob
     *
     */
    @Type(
        type="org.hibernate.type.TextType"
-       )        
+       )
    @Column(
        name = DB_INPUT_COL,
        unique = false,
@@ -416,7 +416,7 @@ implements AdqlQuery, AdqlParserQuery
        return this.input;
        }
    @Override
-   public void input(String input)
+   public void input(final String input)
        {
        this.input = input;
        prepare();
@@ -424,7 +424,7 @@ implements AdqlQuery, AdqlParserQuery
 
    /**
     * The query mode (DIRECT|DISTRIBUTED).
-    *  
+    *
     */
    @Column(
         name = DB_MODE_COL,
@@ -444,11 +444,11 @@ implements AdqlQuery, AdqlParserQuery
 
     /**
      * The processed ADQL query.
-     * 
+     *
      */
     @Type(
         type="org.hibernate.type.TextType"
-        )        
+        )
     @Column(
         name = DB_ADQL_COL,
         unique = false,
@@ -469,11 +469,11 @@ implements AdqlQuery, AdqlParserQuery
 
     /**
      * The processed SQL query.
-     * 
+     *
      */
     @Type(
         type="org.hibernate.type.TextType"
-        )        
+        )
     @Column(
         name = DB_OSQL_COL,
         unique = false,
@@ -505,7 +505,7 @@ implements AdqlQuery, AdqlParserQuery
 
     @Type(
         type="org.hibernate.type.TextType"
-        )        
+        )
     @Column(
         name = DB_SYNTAX_MESSAGE_COL,
         unique = false,
@@ -538,7 +538,7 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Override
-    public void syntax(Syntax.Status syntax)
+    public void syntax(final Syntax.Status syntax)
         {
         syntax(
             syntax,
@@ -547,15 +547,15 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Override
-    public void syntax(Syntax.Status syntax, String message)
+    public void syntax(final Syntax.Status syntax, final String message)
         {
         this.syntax  = syntax;
         this.message = message;
         }
-    
+
     /**
      * The set of AdqlColumns used by the query.
-     * 
+     *
      */
     @ManyToMany(
         fetch   = FetchType.LAZY,
@@ -564,16 +564,16 @@ implements AdqlQuery, AdqlParserQuery
         )
     @JoinTable(
         name=DB_JOIN_NAME + "AdqlColumn",
-        joinColumns = { 
+        joinColumns = {
             @JoinColumn(
                 name = "adqlquery",
                 nullable = false,
                 updatable = false
                 )
-            }, 
+            },
         inverseJoinColumns = {
             @JoinColumn(
-                name = "adqlcolumn", 
+                name = "adqlcolumn",
                 nullable = false,
                 updatable = false
                 )
@@ -588,7 +588,7 @@ implements AdqlQuery, AdqlParserQuery
 
     /**
      * The set of BaseResources used by the query.
-     * 
+     *
      */
     @ManyToMany(
         fetch   = FetchType.LAZY,
@@ -597,16 +597,16 @@ implements AdqlQuery, AdqlParserQuery
         )
     @JoinTable(
         name=DB_JOIN_NAME + "BaseResource",
-        joinColumns = { 
+        joinColumns = {
             @JoinColumn(
                 name = "adqlquery",
                 nullable = false,
                 updatable = false
                 )
-            }, 
+            },
         inverseJoinColumns = {
             @JoinColumn(
-                name = "baseresource", 
+                name = "baseresource",
                 nullable = false,
                 updatable = false
                 )
@@ -624,7 +624,7 @@ implements AdqlQuery, AdqlParserQuery
         {
         if (this.mode == Mode.DIRECT)
             {
-            Iterator<BaseResource<?>> iter = this.targets.iterator();
+            final Iterator<BaseResource<?>> iter = this.targets.iterator();
             if (iter.hasNext())
                 {
                 return iter.next();
@@ -673,7 +673,7 @@ implements AdqlQuery, AdqlParserQuery
                     {
                     log.debug("Query uses multiple resources");
                     log.debug("----");
-                    for (BaseResource<?> target : this.targets())
+                    for (final BaseResource<?> target : this.targets())
                         {
                         log.debug("Resource [{}]", target);
                         }
@@ -705,7 +705,7 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Override
-    public void reset(Mode mode)
+    public void reset(final Mode mode)
         {
         this.adql = null ;
         this.osql = null ;
@@ -758,7 +758,7 @@ implements AdqlQuery, AdqlParserQuery
     public static final String endpoint  = "http://localhost:8081/albert/services" ;
     public static final String dqpname   = "testdqp" ;
     public static final String storename = "user" ;
-    
+
     @Override
     public Status execute()
         {
@@ -775,14 +775,14 @@ implements AdqlQuery, AdqlParserQuery
             log.debug("-- AdqlQuery running [{}]", ident());
             try {
                 log.debug("-- AdqlQuery resolving [{}]", ident());
-                AdqlQuery query = services().resolver().select(
+                final AdqlQuery query = services().resolver().select(
                         ident()
                         );
-    
+
                 //
                 // Create our server client.
                 log.debug("-- Pipeline endpoint [{}]", endpoint);
-                StoredResultPipeline pipeline = new StoredResultPipeline(
+                final StoredResultPipeline pipeline = new StoredResultPipeline(
                     new URL(
                         endpoint
                         )
@@ -796,15 +796,15 @@ implements AdqlQuery, AdqlParserQuery
 //else use dqp
 
                 // Check for valid resource ident in prepare().
-                //final String target = ((query.mode() == Mode.DIRECT) ? query.target().ogsaid() : dqpname);  
-                final String target = ((mode() == Mode.DIRECT) ? target().ogsaid() : dqpname);  
+                //final String target = ((query.mode() == Mode.DIRECT) ? query.target().ogsaid() : dqpname);
+                final String target = ((mode() == Mode.DIRECT) ? target().ogsaid() : dqpname);
                 final String tablename = "Q" + ident().toString() + "xxxx" ;
 
                 log.debug("-- AdqlQuery executing [{}]", ident());
                 log.debug("-- Mode   [{}]", query.mode());
                 log.debug("-- Target [{}]", target);
 
-                PipelineResult frog = pipeline.execute(
+                final PipelineResult frog = pipeline.execute(
                     target,
                     storename,
                     tablename,
@@ -838,12 +838,12 @@ implements AdqlQuery, AdqlParserQuery
                     }
 
                 }
-            catch (NotFoundException ouch)
+            catch (final NotFoundException ouch)
                 {
                 log.debug("Unable to find query [{}][{}]", ident(), ouch.getMessage());
                 result = Status.ERROR;
                 }
-            catch (Exception ouch)
+            catch (final Exception ouch)
                 {
                 log.debug("Unable to execute query [{}][{}]", ident(), ouch.getMessage());
                 result = services().executor().status(

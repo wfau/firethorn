@@ -20,7 +20,6 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaTable;
 
 /**
  *
@@ -119,7 +118,7 @@ extends BaseComponent
     public String ucd();
     public void ucd(final String ucd);
      */
-    
+
     /**
      * The OGSA-DAI DQP table alias.
      *

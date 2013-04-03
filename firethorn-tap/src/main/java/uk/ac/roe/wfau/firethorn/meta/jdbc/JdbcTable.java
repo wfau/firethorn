@@ -22,7 +22,6 @@ import java.util.Map;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaTable;
 
 /**
  *
@@ -82,7 +81,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          *
          */
         public JdbcColumn.Factory columns();
-        
+
         }
 
     @Override
@@ -110,7 +109,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
 
         /**
          * Update the columns.
-         * 
+         *
          */
         public void scan();
 
@@ -120,10 +119,10 @@ extends BaseTable<JdbcTable, JdbcColumn>
 
     /**
      * Update the table.
-     * 
+     *
      */
     public void scan();
-    
+
     /**
      * JDBC table types.
      *
@@ -171,7 +170,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
     /**
      * Get the database table type.
      * @todo Move these to a sub-interface
-     * 
+     *
      */
     public JdbcTableType jdbctype();
 

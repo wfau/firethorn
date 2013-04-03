@@ -83,13 +83,13 @@ public class JdbcSchemaEntity
     {
     /**
      * Hibernate table mapping.
-     * 
+     *
      */
     protected static final String DB_TABLE_NAME = "JdbcSchemaEntity";
 
     /**
      * Hibernate column mapping.
-     * 
+     *
      */
     protected static final String DB_JDBC_SCHEMA_COL = "jdbcschema";
     protected static final String DB_JDBC_COLUMN_COL = "jdbccolumn";
@@ -187,7 +187,7 @@ public class JdbcSchemaEntity
                     )
                 );
             }
-        
+
         @Override
         @SelectEntityMethod
         public JdbcSchema select(final JdbcResource parent, final String name)
@@ -261,7 +261,7 @@ public class JdbcSchemaEntity
         this.schema   = schema  ;
         this.resource = resource;
         }
-    
+
     @Index(
         name=DB_TABLE_NAME + "IndexByParent"
         )
@@ -295,7 +295,7 @@ public class JdbcSchemaEntity
         {
         return this.catalog;
         }
-    
+
     @Basic(fetch = FetchType.EAGER)
     @Column(
         name = DB_JDBC_SCHEMA_COL,
@@ -303,13 +303,13 @@ public class JdbcSchemaEntity
         nullable = false,
         updatable = false
         )
-    private String schema; 
+    private String schema;
     @Override
     public  String schema()
         {
         return this.schema;
         }
-    
+
     @Override
     public JdbcSchema.Tables tables()
         {
@@ -376,7 +376,7 @@ public class JdbcSchemaEntity
             this
             );
         }
-    
+
     @Override
     protected void scanimpl()
         {
@@ -385,7 +385,7 @@ public class JdbcSchemaEntity
         final JdbcProductType  product  = JdbcProductType.match(
             metadata
             );
-        // TODO - fix connection errors 
+        // TODO - fix connection errors
         if (metadata != null)
             {
             try {
@@ -399,7 +399,7 @@ public class JdbcSchemaEntity
                         JdbcMetadata.JDBC_META_TABLE_TYPE_VIEW
                         }
                     );
-    
+
                 while (tables.next())
                     {
                     final String tcname = tables.getString(JdbcMetadata.JDBC_META_TABLE_CAT);
@@ -407,7 +407,7 @@ public class JdbcSchemaEntity
                     final String ttname = tables.getString(JdbcMetadata.JDBC_META_TABLE_NAME);
                     final String tttype = tables.getString(JdbcMetadata.JDBC_META_TABLE_TYPE);
                     log.debug("Found table [{}.{}.{}]", new Object[]{tcname, tsname, ttname});
-    
+
                     JdbcTable table = tablesimpl().select(
                         ttname
                         );
@@ -431,7 +431,7 @@ public class JdbcSchemaEntity
     //
     // TODO
     // Reprocess the list disable missing ones ...
-    //                         
+    //
                 scandate(
                     new DateTime()
                     );

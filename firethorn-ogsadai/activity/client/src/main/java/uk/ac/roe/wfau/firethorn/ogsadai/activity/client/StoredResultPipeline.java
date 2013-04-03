@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
 
@@ -25,33 +25,33 @@ import uk.org.ogsadai.resource.request.RequestExecutionStatus;
 @Slf4j
 public class StoredResultPipeline
     {
-    public static final String DRER_IDENT = "DataRequestExecutionResource" ; 
-    
-    private URL endpoint ;
+    public static final String DRER_IDENT = "DataRequestExecutionResource" ;
+
+    private final URL endpoint ;
 
     public StoredResultPipeline(final URL endpoint)
         {
         this.endpoint = endpoint ;
         }
-    
+
     public PipelineResult execute(final String source, final String store, final String table, final String query)
         {
         //
         // Create our ogsadai client.
-        Server server = new JerseyServer();        
+        final Server server = new JerseyServer();
         server.setDefaultBaseServicesURL(
             this.endpoint
             );
         //
         // Create our DRER.
-        DataRequestExecutionResource drer = server.getDataRequestExecutionResource(
+        final DataRequestExecutionResource drer = server.getDataRequestExecutionResource(
             new ResourceID(
                 DRER_IDENT
                 )
             );
         //
         // Create our SQL query.
-        SQLQuery selector = new SQLQuery();
+        final SQLQuery selector = new SQLQuery();
         selector.setResourceID(
             new ResourceID(
                 source
@@ -62,7 +62,7 @@ public class StoredResultPipeline
             );
         //
         // Create our output table.
-        CreateTable creator = new CreateTable();
+        final CreateTable creator = new CreateTable();
         creator.setResourceID(
             new ResourceID(
                 store
@@ -77,7 +77,7 @@ public class StoredResultPipeline
 
         //
         // Create our results writer.
-        SQLBulkLoadTuple writer = new SQLBulkLoadTuple();
+        final SQLBulkLoadTuple writer = new SQLBulkLoadTuple();
         writer.setResourceID(
             new ResourceID(
                 store
@@ -91,13 +91,13 @@ public class StoredResultPipeline
             );
         //
         // Create our delivery handler.
-        DeliverToRequestStatus delivery = new DeliverToRequestStatus();
+        final DeliverToRequestStatus delivery = new DeliverToRequestStatus();
         delivery.connectInput(
             writer.getDataOutput()
             );
         //
         // Create our pipeline.
-        PipelineWorkflow pipeline = new PipelineWorkflow();
+        final PipelineWorkflow pipeline = new PipelineWorkflow();
         pipeline.add(
             selector
             );
@@ -113,7 +113,7 @@ public class StoredResultPipeline
         //
         // Execute our pipeline.
         try {
-            RequestResource request = drer.execute(
+            final RequestResource request = drer.execute(
                 pipeline,
                 RequestExecutionType.SYNCHRONOUS
                 );
@@ -121,7 +121,7 @@ public class StoredResultPipeline
                 request.getRequestExecutionStatus()
                 );
             }
-        catch (Exception ouch)
+        catch (final Exception ouch)
             {
             log.debug("Exception during request processing [{}]", ouch);
             result(
@@ -181,7 +181,7 @@ public class StoredResultPipeline
     private static class PipelineResultImpl
     implements PipelineResult
         {
-        
+
         protected PipelineResultImpl(final Result result)
             {
             this(
@@ -216,21 +216,21 @@ public class StoredResultPipeline
             this.message = message ;
             }
 
-        private String message;
+        private final String message;
         @Override
         public String message()
             {
             return this.message;
             }
 
-        private Throwable cause;
+        private final Throwable cause;
         @Override
         public Throwable cause()
             {
             return this.cause;
             }
 
-        private Result result;
+        private final Result result;
         @Override
         public Result result()
             {

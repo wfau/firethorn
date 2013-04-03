@@ -114,11 +114,11 @@ public abstract class AbstractController
      * Create a URI path from a String.
      *
      */
-    public Path path(String string)
+    public Path path(final String string)
         {
         return new PathImpl(
             string
-            ); 
+            );
         }
     }
 

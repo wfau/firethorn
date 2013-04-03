@@ -20,16 +20,10 @@ package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.mock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.org.ogsadai.dqp.common.RequestDetails;
-
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.StatisticsService;
 import uk.org.ogsadai.dqp.lqp.Attribute;
-import uk.org.ogsadai.dqp.lqp.cardinality.ArithmeticOperator;
 import uk.org.ogsadai.dqp.lqp.cardinality.AttributeStatistics;
 import uk.org.ogsadai.dqp.lqp.cardinality.HistogramBasedAttributeStatistics;
-
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.AttributeService;
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.StatisticsService;
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMappingService;
 
 /**
  *
@@ -42,19 +36,19 @@ public class StatisticsServiceMock
 
     /*
     public class AttributeStatisticsMock
-        implements AttributeStatistics 
+        implements AttributeStatistics
         {
         private double nulls ;
         private double values ;
         private double rows ;
-        
+
         public AttributeStatisticsMock(double nulls, double values, double rows)
             {
             this.nulls  = nulls;
             this.values = values;
             this.rows   = rows;
             }
-        
+
         @Override
         public double getNumNulls()
             {
@@ -104,7 +98,7 @@ public class StatisticsServiceMock
     */
 
     @Override
-    public AttributeStatistics getStatistics(Attribute attrib)
+    public AttributeStatistics getStatistics(final Attribute attrib)
         {
         return getStatistics(
             attrib.getSource(),
@@ -113,10 +107,10 @@ public class StatisticsServiceMock
         }
 
     @Override
-    public AttributeStatistics getStatistics(String table, String column)
+    public AttributeStatistics getStatistics(final String table, final String column)
         {
         log.debug("getStatistics(String, String) [" + table + "][" + column + "]");
-        return new HistogramBasedAttributeStatistics(); 
+        return new HistogramBasedAttributeStatistics();
         }
     }
 

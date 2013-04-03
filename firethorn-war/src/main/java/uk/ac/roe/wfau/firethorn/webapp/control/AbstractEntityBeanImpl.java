@@ -51,7 +51,7 @@ implements EntityBean<EntityType>
         return dateformat.print(datetime) ;
         }
 
-    
+
     private final EntityType entity ;
     private final URI type ;
 

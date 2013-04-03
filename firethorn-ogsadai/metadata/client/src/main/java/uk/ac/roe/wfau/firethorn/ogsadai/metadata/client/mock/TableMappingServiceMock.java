@@ -23,8 +23,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.AttributeService;
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.StatisticsService;
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMapping;
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMappingService;
 
@@ -36,14 +34,14 @@ public class TableMappingServiceMock
     implements TableMappingService
     {
     private static Log log = LogFactory.getLog(TableMappingServiceMock.class);
-    private Map<String, TableMapping> map = new HashMap<String, TableMapping>();
+    private final Map<String, TableMapping> map = new HashMap<String, TableMapping>();
 
     public class TableMappingMock
     implements TableMapping
         {
-        private String resource;
-        private String alias;
-        private String name;
+        private final String resource;
+        private final String alias;
+        private final String name;
 
         public TableMappingMock(final String resource, final String alias, final String name)
             {
@@ -53,7 +51,7 @@ public class TableMappingServiceMock
             this.alias = alias;
             this.name = name ;
             }
-        
+
         @Override
         public String resourceIdent()
             {
@@ -84,7 +82,7 @@ public class TableMappingServiceMock
                 )
             );
         }
-    
+
     public void put(final TableMapping mapping)
         {
         log.debug("TableMappingServiceMock.put() [" + mapping.resourceIdent() + "][" + mapping.tableName() + "][" + mapping.tableAlias() + "]");
@@ -93,19 +91,19 @@ public class TableMappingServiceMock
             mapping
             );
         }
-    
-    public TableMapping get(String source)
+
+    public TableMapping get(final String source)
         {
-        log.debug("TableMappingServiceMock.get(String) [" + source + "]");        
+        log.debug("TableMappingServiceMock.get(String) [" + source + "]");
         return this.map.get(
             source
             );
         }
 
     @Override
-    public TableMapping getTableMapping(String source)
+    public TableMapping getTableMapping(final String source)
         {
-        log.debug("TableMappingServiceMock.getTableMapping(String) [" + source + "]");        
+        log.debug("TableMappingServiceMock.getTableMapping(String) [" + source + "]");
         return this.map.get(
             source
             );

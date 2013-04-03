@@ -1,10 +1,10 @@
 /**
- * 
+ *
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import org.apache.commons.logging.Log;
@@ -28,11 +28,11 @@ public class AttributeServiceTestCase
     @Test
     public void test000()
         {
-        SimpleAttributeServiceImpl service = new SimpleAttributeServiceImpl(
+        final SimpleAttributeServiceImpl service = new SimpleAttributeServiceImpl(
             "http://data.metagrid.co.uk/wfau/firethorn/test/",
             null
-            ); 
-        Attribute attrib = service.getAttribute(
+            );
+        final Attribute attrib = service.getAttribute(
             "table-000",
             "column-000.json"
             );
@@ -52,11 +52,11 @@ public class AttributeServiceTestCase
     @Test
     public void test001()
         {
-        SimpleAttributeServiceImpl service = new SimpleAttributeServiceImpl(
+        final SimpleAttributeServiceImpl service = new SimpleAttributeServiceImpl(
             "http://localhost:8080/firethorn/",
             null
-            ); 
-        Attribute attrib = service.getAttribute(
+            );
+        final Attribute attrib = service.getAttribute(
             "JDBC_5",
             "ra"
             );
@@ -83,14 +83,14 @@ public class AttributeServiceTestCase
     //@Test
     public void test002()
         {
-        SimpleAttributeServiceImpl service = new SimpleAttributeServiceImpl(
+        final SimpleAttributeServiceImpl service = new SimpleAttributeServiceImpl(
             "http://localhost:8080/firethorn/",
             null
-            ); 
-        Iterable<Attribute> iter = service.getAttributes(
+            );
+        final Iterable<Attribute> iter = service.getAttributes(
             "JDBC_5"
             );
-        for (Attribute attrib : iter)
+        for (final Attribute attrib : iter)
             {
             log.debug("Attribute ----");
             log.debug("  Name   [" + attrib.getName()   + "]");

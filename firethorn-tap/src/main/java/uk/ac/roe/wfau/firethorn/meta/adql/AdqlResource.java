@@ -135,5 +135,5 @@ extends BaseResource<AdqlSchema>
      *
      */
     public Queries queries();
-    
+
     }

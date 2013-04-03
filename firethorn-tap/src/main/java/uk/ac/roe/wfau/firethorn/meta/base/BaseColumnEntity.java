@@ -41,8 +41,6 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnInfo;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnType;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn.Info;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaColumn;
 
 /**
  *
@@ -77,13 +75,13 @@ extends BaseComponentEntity
     {
     /**
      * Hibernate table mapping.
-     * 
+     *
      */
     protected static final String DB_TABLE_NAME = "BaseColumnEntity";
 
     /**
      * Hibernate column mapping.
-     * 
+     *
      */
     protected static final String DB_ADQL_TYPE_COL = "adqltype" ;
     protected static final String DB_ADQL_SIZE_COL = "adqlsize" ;
@@ -92,8 +90,8 @@ extends BaseComponentEntity
     protected static final String DB_USER_TYPE_COL = "usertype" ;
     protected static final String DB_USER_SIZE_COL = "usersize" ;
     protected static final String DB_USER_UCD1_COL = "userucd1"  ;
-    
-    
+
+
     protected BaseColumnEntity()
         {
         super();
@@ -215,7 +213,7 @@ extends BaseComponentEntity
     public abstract BaseColumn<?> root();
 
     /**
-     * 
+     *
      * @todo Move this to Jdbc, Ivoa ad Adql classes, replace with warn/error on base class.
      */
     @Override
@@ -266,7 +264,7 @@ extends BaseComponentEntity
                         }
 
                     @Override
-                    public void type(AdqlColumnType type)
+                    public void type(final AdqlColumnType type)
                         {
                         BaseColumnEntity.this.usertype = type ;
                         if (type != null)

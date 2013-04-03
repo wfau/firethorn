@@ -283,7 +283,7 @@ implements AdqlParserTable
                     name
                     );
                 }
-            catch (NotFoundException ouch)
+            catch (final NotFoundException ouch)
                 {
                 adqlColumn = null ;
                 }

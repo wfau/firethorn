@@ -17,7 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.job;
 
-import java.net.URL;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -45,8 +44,6 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
@@ -56,9 +53,6 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.job.Job.Status;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineResult;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.StoredResultPipeline;
 
 /**
  *
@@ -85,13 +79,13 @@ extends AbstractEntity
     {
     /**
      * Hibernate table mapping.
-     * 
+     *
      */
     protected static final String DB_TABLE_NAME = "JobEntity";
 
     /**
      * Hibernate column mapping.
-     * 
+     *
      */
     protected static final String DB_JOBSTATUS_COL = "jobstatus" ;
     protected static final String DB_QUEUED_COL    = "queued"  ;
@@ -102,7 +96,7 @@ extends AbstractEntity
      * Local service implementations.
      * @todo Use this as a template for the other classes.
      * @todo Separate Entity Resolver and Factory interfaces.
-     * 
+     *
      */
     @Component
     public static class Services
@@ -143,7 +137,7 @@ extends AbstractEntity
 
     /**
      * Resolver implementation.
-     * 
+     *
      */
     @Repository
     public static class Resolver
@@ -175,7 +169,7 @@ extends AbstractEntity
 
     /**
      * Executor implementation.
-     * 
+     *
      */
     @Component
     public static class Executor
@@ -219,8 +213,8 @@ extends AbstractEntity
                 }
             return this.resolver ;
             }
-        
-        
+
+
         @Override
         @SelectAtomicMethod
         public Status status(final Identifier ident)
@@ -230,7 +224,7 @@ extends AbstractEntity
                     ident
                     ).status();
                 }
-            catch (NotFoundException ouch)
+            catch (final NotFoundException ouch)
                 {
                 log.error("Failed to get job status [{}][{}]", ident, ouch.getMessage());
                 return Status.ERROR;
@@ -248,7 +242,7 @@ extends AbstractEntity
                         status
                         );
                 }
-            catch (NotFoundException ouch)
+            catch (final NotFoundException ouch)
                 {
                 log.error("Failed to set job status [{}][{}]", ident, ouch.getMessage());
                 return Status.ERROR;
@@ -265,7 +259,7 @@ extends AbstractEntity
             Status result = executor().status(
                 ident
                 );
-            
+
             if (next == Status.READY)
                 {
                 log.debug("Preparing job");
@@ -288,12 +282,12 @@ extends AbstractEntity
                         ident,
                         Status.PENDING
                         );
-                    
+
                     if (result == Status.PENDING)
                         {
                         try {
                             log.debug("Executing query");
-                            Future<Status> future = executor().execute(
+                            final Future<Status> future = executor().execute(
                                 ident
                                 );
 
@@ -316,19 +310,19 @@ extends AbstractEntity
                                 );
                             log.debug("Result [{}]", result);
                             }
-                        catch (TimeoutException ouch)
+                        catch (final TimeoutException ouch)
                             {
                             log.debug("TimeoutException");
                             }
-                        catch (InterruptedException ouch)
+                        catch (final InterruptedException ouch)
                             {
                             log.debug("InterruptedException [{}]", ouch.getMessage());
                             }
-                        catch (ExecutionException ouch)
+                        catch (final ExecutionException ouch)
                             {
                             log.debug("ExecutionException [{}]", ouch.getMessage());
                             }
-        
+
                         result = factories().jobs().executor().status(
                             ident
                             );
@@ -363,7 +357,7 @@ extends AbstractEntity
                     ident
                     ).prepare();
                 }
-            catch (NotFoundException ouch)
+            catch (final NotFoundException ouch)
                 {
                 log.error("Failed to prepare job [{}][{}]", ident, ouch.getMessage());
                 return Status.ERROR;
@@ -373,7 +367,7 @@ extends AbstractEntity
         @Async
         @Override
         @SelectEntityMethod
-        public Future<Status> execute(Identifier ident)
+        public Future<Status> execute(final Identifier ident)
             {
             log.debug("execute()");
             log.debug("  Ident [{}]", ident);
@@ -384,7 +378,7 @@ extends AbstractEntity
                         ).execute()
                     );
                 }
-            catch (NotFoundException ouch)
+            catch (final NotFoundException ouch)
                 {
                 log.error("Failed to execute job [{}][{}]", ident, ouch.getMessage());
                 return new AsyncResult<Status>(
@@ -407,7 +401,7 @@ extends AbstractEntity
      * Protected constructor.
      *
      */
-    protected JobEntity(String name)
+    protected JobEntity(final String name)
     throws NameFormatException
         {
         super(
@@ -435,7 +429,7 @@ extends AbstractEntity
         }
 
     @Override
-    public Status status(boolean refresh)
+    public Status status(final boolean refresh)
         {
         log.debug("status(boolean) [{}][{}]", ident(), new Boolean(refresh));
         if (refresh)
@@ -460,7 +454,7 @@ extends AbstractEntity
             {
             return this.status;
             }
-        
+
         else if (next == Status.EDITING)
             {
             if (this.status == Status.READY)
@@ -472,7 +466,7 @@ extends AbstractEntity
                 return Status.ERROR;
                 }
             }
-        
+
         else if (next == Status.READY)
             {
             if (this.status == Status.EDITING)
@@ -484,7 +478,7 @@ extends AbstractEntity
                 return Status.ERROR;
                 }
             }
-        
+
         else if (next == Status.PENDING)
             {
             if (this.status == Status.READY)
@@ -523,7 +517,7 @@ extends AbstractEntity
                 return Status.ERROR;
                 }
             }
-        
+
         else if (next == Status.CANCELLED)
             {
             if ((this.status == Status.EDITING) || (this.status == Status.READY) || (this.status == Status.PENDING) || (this.status == Status.RUNNING))
@@ -536,7 +530,7 @@ extends AbstractEntity
                 return Status.ERROR;
                 }
             }
-        
+
         else if (next == Status.FAILED)
             {
             if ((this.status == Status.EDITING) || (this.status == Status.READY) || (this.status == Status.PENDING) || (this.status == Status.RUNNING))
@@ -549,7 +543,7 @@ extends AbstractEntity
                 return Status.ERROR;
                 }
             }
-        
+
         else if (next == Status.ERROR)
             {
             this.status = Status.ERROR;

@@ -23,13 +23,9 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.AttributeService;
 import uk.org.ogsadai.dqp.lqp.Attribute;
 import uk.org.ogsadai.dqp.lqp.AttributeImpl;
-import uk.org.ogsadai.dqp.common.RequestDetails;
-
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.AttributeService;
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.StatisticsService;
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMappingService;
 
 /**
  *
@@ -45,14 +41,14 @@ public class AttributeServiceMock
     implements Attribute
         {
 
-        public AttributeMock(String name)
+        public AttributeMock(final String name)
             {
             super(
                 name
                 );
             }
 
-        public AttributeMock(String name, int type, String source, boolean isKey)
+        public AttributeMock(final String name, final int type, final String source, final boolean isKey)
             {
             super(
                 name,
@@ -63,11 +59,11 @@ public class AttributeServiceMock
             }
         }
 
-    private Map<String, Map<String, Attribute>> map = new HashMap<String, Map<String, Attribute>>();
+    private final Map<String, Map<String, Attribute>> map = new HashMap<String, Map<String, Attribute>>();
 
-    public void add(String name, int type, String source, boolean isKey)
+    public void add(final String name, final int type, final String source, final boolean isKey)
         {
-        Map<String, Attribute> inner = inner(
+        final Map<String, Attribute> inner = inner(
             source
             );
         inner.put(
@@ -81,17 +77,17 @@ public class AttributeServiceMock
             );
         }
 
-    public Map<String, Attribute> inner(String table)
+    public Map<String, Attribute> inner(final String table)
         {
-        if (map.containsKey(table))
+        if (this.map.containsKey(table))
             {
             return this.map.get(
                 table
                 );
             }
         else {
-            Map<String, Attribute> inner = new HashMap<String, Attribute>();
-            map.put(
+            final Map<String, Attribute> inner = new HashMap<String, Attribute>();
+            this.map.put(
                 table,
                 inner
                 );
@@ -99,17 +95,17 @@ public class AttributeServiceMock
             }
         }
 
-    public Iterable<Attribute> get(String table)
+    public Iterable<Attribute> get(final String table)
         {
-        log.debug("get(String) [" + table + "]");        
+        log.debug("get(String) [" + table + "]");
         return this.map.get(
             table
             ).values();
         }
 
-    public Attribute get(String table, String column)
+    public Attribute get(final String table, final String column)
         {
-        log.debug("get(String, String) [" + table + "][" + column + "]");        
+        log.debug("get(String, String) [" + table + "][" + column + "]");
         return this.map.get(
             table
             ).get(
@@ -118,7 +114,7 @@ public class AttributeServiceMock
         }
 
     @Override
-    public Attribute getAttribute(String table, String column)
+    public Attribute getAttribute(final String table, final String column)
         {
         return this.get(
             table,
@@ -127,7 +123,7 @@ public class AttributeServiceMock
         }
 
     @Override
-    public Iterable<Attribute> getAttributes(String table)
+    public Iterable<Attribute> getAttributes(final String table)
         {
         return this.get(
             table

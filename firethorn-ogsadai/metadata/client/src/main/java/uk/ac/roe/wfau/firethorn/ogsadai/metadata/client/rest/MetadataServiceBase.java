@@ -17,15 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -46,7 +41,7 @@ class MetadataServiceBase
 
     /**
      * The shared REST service client.
-     * 
+     *
      */
     private static final RestTemplate rest = new RestTemplate() ;
     static {
@@ -64,9 +59,9 @@ class MetadataServiceBase
         {
         return rest;
         }
-    
+
     /**
-     * Protected constructor. 
+     * Protected constructor.
      *
      */
     protected MetadataServiceBase(final String endpoint, final RequestDetails request)
@@ -78,14 +73,14 @@ class MetadataServiceBase
         this.endpoint = endpoint ;
 
         }
-    
-    private RequestDetails request ;
+
+    private final RequestDetails request ;
     public  RequestDetails request()
         {
         return this.request ;
         }
 
-    private String endpoint ;
+    private final String endpoint ;
     public  String endpoint()
         {
         return this.endpoint ;
@@ -95,7 +90,7 @@ class MetadataServiceBase
         {
         final StringBuilder builder = new StringBuilder(
             this.endpoint
-            ); 
+            );
         if (this.endpoint.endsWith("/"))
             {
             if (path.startsWith("/"))
@@ -133,8 +128,8 @@ class MetadataServiceBase
         }
 
     /**
-     *  
-     * 
+     *
+     *
      */
     public void debug(final RequestDetails request)
         {

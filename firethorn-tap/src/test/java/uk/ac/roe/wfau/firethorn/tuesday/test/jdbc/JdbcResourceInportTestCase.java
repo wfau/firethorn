@@ -112,9 +112,9 @@ public class JdbcResourceInportTestCase
                     resource
                     );
                 }
-            catch(Exception ouch)
+            catch(final Exception ouch)
                 {
-                
+
                 }
             }
         }

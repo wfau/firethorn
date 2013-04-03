@@ -22,16 +22,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.org.ogsadai.activity.ActivityName;
-import uk.org.ogsadai.client.toolkit.Activity;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
 import uk.org.ogsadai.client.toolkit.ResourceActivity;
 import uk.org.ogsadai.client.toolkit.SingleActivityOutput;
 import uk.org.ogsadai.client.toolkit.activity.ActivityInput;
-import uk.org.ogsadai.client.toolkit.activity.BaseActivity;
 import uk.org.ogsadai.client.toolkit.activity.BaseResourceActivity;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityInput;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityOutput;
-
 import uk.org.ogsadai.client.toolkit.exception.ActivityIOIllegalStateException;
 import uk.org.ogsadai.data.StringData;
 
@@ -43,13 +40,13 @@ import uk.org.ogsadai.data.StringData;
  *
  */
 public class CreateTable
-extends BaseResourceActivity 
+extends BaseResourceActivity
 implements ResourceActivity
     {
 
     /**
      * Our debug logger.
-     * 
+     *
      */
     private static Logger logger = LoggerFactory.getLogger(
         CreateTable.class
@@ -59,7 +56,7 @@ implements ResourceActivity
      * Our default activity name.
      *
      */
-    private final static ActivityName DEFAULT_ACTIVITY_NAME = 
+    private final static ActivityName DEFAULT_ACTIVITY_NAME =
         new ActivityName(
             "uk.ac.roe.wfau.firethorn.ogsadai.CreateTable"
             );
@@ -68,19 +65,19 @@ implements ResourceActivity
      * Activity input - table name.
      *
      */
-    private ActivityInput table;
+    private final ActivityInput table;
 
     /**
      * Activity input - tuples.
      *
      */
-    private ActivityInput tuples;
+    private final ActivityInput tuples;
 
     /**
      * Activity output - tuples.
      *
      */
-    private ActivityOutput output;
+    private final ActivityOutput output;
 
     /**
      * Public constructor.
@@ -106,9 +103,9 @@ implements ResourceActivity
     /**
      * Add the table name.
      * @param value The table name.
-     * 
+     *
      */
-    public void setTableName(String value)
+    public void setTableName(final String value)
         {
         table.add(
             new StringData(
@@ -122,7 +119,7 @@ implements ResourceActivity
      * @param output The tuples source.
      *
      */
-    public void connectTuples(SingleActivityOutput source)
+    public void connectTuples(final SingleActivityOutput source)
         {
         tuples.connect(
             source
@@ -131,7 +128,7 @@ implements ResourceActivity
 
     /**
      * Get the tuples output.
-     * 
+     *
      */
     public SingleActivityOutput getDataOutput()
         {
@@ -142,6 +139,7 @@ implements ResourceActivity
      * Gets the activity inputs.
      *
      */
+    @Override
     protected ActivityInput[] getInputs()
         {
         return new ActivityInput[]{
@@ -154,6 +152,7 @@ implements ResourceActivity
      * Gets the activity outputs.
      *
      */
+    @Override
     protected ActivityOutput[] getOutputs()
         {
         return new ActivityOutput[]{
@@ -165,6 +164,7 @@ implements ResourceActivity
      * Validate the inputs and outputs.
      *
      */
+    @Override
     protected void validateIOState()
     throws ActivityIOIllegalStateException
         {

@@ -42,10 +42,10 @@ implements TableMappingService
 
     /**
      * Internal tableMapping service.
-     * 
+     *
      */
-    private SimpleTableMappingServiceImpl service ;
-    
+    private final SimpleTableMappingServiceImpl service ;
+
     /**
      * Protected constructor.
      *
@@ -60,10 +60,10 @@ implements TableMappingService
 
     /**
      * Internal map of tables indexed by source alias.
-     * 
+     *
      */
-    private Map<String, TableMapping> map = new HashMap<String, TableMapping>();
-    
+    private final Map<String, TableMapping> map = new HashMap<String, TableMapping>();
+
     @Override
     public TableMapping getTableMapping(final String source)
         {

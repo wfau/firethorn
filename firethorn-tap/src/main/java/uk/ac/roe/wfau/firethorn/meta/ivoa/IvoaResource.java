@@ -58,7 +58,7 @@ extends OgsaResource<IvoaSchema>
          *
          */
         public IvoaResource create(final String name);
-        
+
         /**
          * The resource schema factory.
          *

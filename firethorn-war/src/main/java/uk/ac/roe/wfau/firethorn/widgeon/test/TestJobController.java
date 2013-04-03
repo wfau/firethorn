@@ -108,23 +108,23 @@ public class TestJobController
 
     /**
      * Bean interface.
-     *  
+     *
      */
     public static interface Bean
     extends EntityBean<TestJob>
         {
         /**
          * The test duration in seconds.
-         * 
+         *
          */
         public Integer getLength();
 
         /**
          * The job status.
          * @todo Move this to a JobBean base class
-         * 
+         *
          */
-        public Job.Status getStatus(); 
+        public Job.Status getStatus();
 
         /**
          * The date/time the Job was queued.
@@ -146,12 +146,12 @@ public class TestJobController
          *
          */
         public String getFinished();
-        
+
         }
 
     /**
      * Bean implementation.
-     *  
+     *
      */
     protected static class BeanImpl
     extends AbstractEntityBeanImpl<TestJob>
@@ -159,7 +159,7 @@ public class TestJobController
         {
         /**
          * Protected constructor.
-         * 
+         *
          */
         protected BeanImpl(final TestJob job)
             {
@@ -245,7 +245,7 @@ public class TestJobController
                 {
                 return new Iterator<Bean>()
                     {
-                    Iterator<TestJob> iter = inner.iterator(); 
+                    Iterator<TestJob> iter = inner.iterator();
                     @Override
                     public boolean hasNext()
                         {
@@ -267,7 +267,7 @@ public class TestJobController
                 }
             };
         }
-    
+
     /**
      * JSON GET request.
      *
@@ -310,7 +310,7 @@ public class TestJobController
 
         log.debug("---- ---- ---- ----");
         log.debug("JSON update(String, Integer, Status, Integer)");
-        
+
         final TestJob job = factories().tests().resolver().select(
             factories().tests().idents().ident(
                 ident
@@ -340,10 +340,10 @@ public class TestJobController
             job
             ) ;
         }
-    
+
     /**
      * Transactional helper.
-     * 
+     *
      */
     public static interface Helper
         {
@@ -359,14 +359,14 @@ public class TestJobController
 
     /**
      * Transactional helper.
-     * 
+     *
      */
     @Autowired
     private Helper helper ;
 
     /**
      * Transactional helper.
-     * 
+     *
      */
     @Slf4j
     @Component

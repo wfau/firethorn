@@ -65,7 +65,7 @@ public class JdbcConnectionEntity
     {
     /**
      * Hibernate column mapping.
-     * 
+     *
      */
     protected static final String DB_JDBC_URL_COL    = "jdbcurl";
     protected static final String DB_JDBC_USER_COL   = "jdbcuser";
@@ -96,7 +96,7 @@ public class JdbcConnectionEntity
         {
         return converter ;
         }
-    
+
     public JdbcConnectionEntity()
         {
         }
@@ -269,11 +269,11 @@ public class JdbcConnectionEntity
         {
         return this.source;
         }
-    
+
     /**
      * Initialise our JDBC DataSource and create a Connection.
      * @todo Messed up and not thread safe at all.
-     * 
+     *
      */
     private synchronized Connection connect()
         {
@@ -404,7 +404,7 @@ public class JdbcConnectionEntity
                     );
                 }
             }
-        
+
         if (this.state == State.READY)
             {
             log.debug("State is READY, initialising Connection");
@@ -417,7 +417,7 @@ public class JdbcConnectionEntity
                 if (this.user != null)
                     {
                     try {
-                        Connection connection = this.source.getConnection(
+                        final Connection connection = this.source.getConnection(
                             this.user,
                             this.pass
                             );
@@ -434,7 +434,7 @@ public class JdbcConnectionEntity
                     }
                 else {
                     try {
-                        Connection connection = this.source.getConnection();
+                        final Connection connection = this.source.getConnection();
                         state(State.CONNECTED);
                         return connection ;
                         }
@@ -487,7 +487,7 @@ public class JdbcConnectionEntity
         {
         log.debug("reset()");
         this.source = null ;
-        this.state = State.EMPTY; 
+        this.state = State.EMPTY;
         this.local.remove();
         }
 
@@ -510,7 +510,7 @@ public class JdbcConnectionEntity
             try {
                 if (this.state == State.CONNECTED)
                     {
-                    Connection connection = this.local.get();
+                    final Connection connection = this.local.get();
                     if (connection != null)
                         {
                         connection.close();
@@ -532,7 +532,7 @@ public class JdbcConnectionEntity
     @Override
     public DatabaseMetaData metadata()
         {
-        Connection connection = open();
+        final Connection connection = open();
         if (connection != null)
             {
             try {
@@ -552,7 +552,7 @@ public class JdbcConnectionEntity
     @Override
     public String catalog()
         {
-        Connection connection = open();
+        final Connection connection = open();
         if (connection != null)
             {
             try {
@@ -646,7 +646,7 @@ public class JdbcConnectionEntity
 
     /**
      * This connection state.
-     * 
+     *
      */
     public enum State
         {
@@ -662,14 +662,14 @@ public class JdbcConnectionEntity
 
     /**
      * The connection state.
-     * 
+     *
      */
     @Transient
     private State state = State.EMPTY ;
 
     /**
      * The connection state.
-     * 
+     *
      */
     public State state()
         {
@@ -678,9 +678,9 @@ public class JdbcConnectionEntity
 
     /**
      * The connection state.
-     * 
+     *
      */
-    public void state(State state)
+    public void state(final State state)
         {
         this.state = state ;
         }

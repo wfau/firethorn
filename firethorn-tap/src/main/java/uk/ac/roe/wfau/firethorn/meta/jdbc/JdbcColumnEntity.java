@@ -41,10 +41,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnInfo;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnType;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn.Info;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaColumn;
 
 /**
  *
@@ -285,7 +282,7 @@ public class JdbcColumnEntity
         updatable = true
         )
     private int jdbctype ;
-   
+
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -361,7 +358,7 @@ public class JdbcColumnEntity
                         }
 
                     @Override
-                    public void type(AdqlColumnType type)
+                    public void type(final AdqlColumnType type)
                         {
                         JdbcColumnEntity.this.usertype = type ;
                         if (type != null)
@@ -371,7 +368,7 @@ public class JdbcColumnEntity
                         else {
                             JdbcColumnEntity.this.adqltype = AdqlColumnType.jdbc(
                                 JdbcColumnEntity.this.jdbctype
-                                ); 
+                                );
                             }
                         }
                     };
@@ -412,7 +409,7 @@ public class JdbcColumnEntity
                             {
                             JdbcColumnEntity.this.adqltype = AdqlColumnType.jdbc(
                                 type
-                                ); 
+                                );
                             }
                         }
                     };

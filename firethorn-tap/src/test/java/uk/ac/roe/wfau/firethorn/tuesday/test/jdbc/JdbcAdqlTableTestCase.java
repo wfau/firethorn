@@ -85,10 +85,10 @@ public class JdbcAdqlTableTestCase
         //
         // Import the JdbcSchema metadata.
         //resource.inport();
-        Object a = resource.schemas();
-        Object b = resource.schemas().select("TWOMASS","dbo");
-        Object c = resource.schemas().select("TWOMASS","dbo").tables();
-        Object d = resource.schemas().select("TWOMASS","dbo").tables().select("twomass_psc");
+        final Object a = resource.schemas();
+        final Object b = resource.schemas().select("TWOMASS","dbo");
+        final Object c = resource.schemas().select("TWOMASS","dbo").tables();
+        final Object d = resource.schemas().select("TWOMASS","dbo").tables().select("twomass_psc");
         //
         // Import a JdbcTable into an AdqlSchema
         workspace.schemas().create(

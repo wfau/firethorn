@@ -18,13 +18,6 @@
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
 import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  *

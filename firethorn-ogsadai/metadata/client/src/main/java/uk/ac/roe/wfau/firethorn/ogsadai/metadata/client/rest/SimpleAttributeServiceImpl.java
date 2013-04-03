@@ -58,7 +58,7 @@ implements AttributeService
      * Protected constructor.
      *
      */
-    public SimpleAttributeServiceImpl(String endpoint, RequestDetails request)
+    public SimpleAttributeServiceImpl(final String endpoint, final RequestDetails request)
         {
         super(
             endpoint,
@@ -67,7 +67,7 @@ implements AttributeService
         log.debug("AttributeServiceImpl()");
         }
 
-    protected AttributeBean bean(String source, String attrib)
+    protected AttributeBean bean(final String source, final String attrib)
         {
         log.debug("bean(String, String)");
         log.debug("  Source [" + source + "]");
@@ -79,10 +79,10 @@ implements AttributeService
             AttributeBean.class,
             source,
             attrib
-            ); 
+            );
         }
 
-    protected AttributeBean[] array(String source)
+    protected AttributeBean[] array(final String source)
         {
         log.debug("array(String)");
         log.debug("  Source [" + source + "]");
@@ -92,11 +92,11 @@ implements AttributeService
                 ),
                 AttributeBean[].class,
             source
-            );        
+            );
         }
 
     @Override
-    public Attribute getAttribute(String source, String attrib)
+    public Attribute getAttribute(final String source, final String attrib)
         {
         log.debug("getAttribute(String, String)");
         log.debug("  Source [" + source + "]");
@@ -108,9 +108,9 @@ implements AttributeService
                 )
             );
         }
-    
+
     @Override
-    public Iterable<Attribute> getAttributes(String source)
+    public Iterable<Attribute> getAttributes(final String source)
         {
         log.debug("getAttributes(String)");
         log.debug("  Source [" + source + "]");
@@ -123,7 +123,7 @@ implements AttributeService
 
     /**
      * AttributeImpl based wrapper for the Bean class.
-     * 
+     *
      */
     public static class BeanWrapper
     extends AttributeImpl
@@ -132,8 +132,8 @@ implements AttributeService
         public static class Iter
         implements Iterable<Attribute>
             {
-            private AttributeBean[] array ;
-            public Iter(AttributeBean[] array)
+            private final AttributeBean[] array ;
+            public Iter(final AttributeBean[] array)
                 {
                 this.array = array;
                 }
@@ -146,7 +146,7 @@ implements AttributeService
                 {
                 return new Iterator<Attribute>()
                     {
-                    private Iterator<AttributeBean> inner = Arrays.asList(array()).iterator();
+                    private final Iterator<AttributeBean> inner = Arrays.asList(array()).iterator();
                     @Override
                     public boolean hasNext()
                         {
@@ -170,9 +170,9 @@ implements AttributeService
 
         /**
          * Public wrapping method.
-         * 
+         *
          */
-        public static Iterable<Attribute> wrap(AttributeBean[] array)
+        public static Iterable<Attribute> wrap(final AttributeBean[] array)
             {
             return new BeanWrapper.Iter(
                 array
@@ -181,20 +181,20 @@ implements AttributeService
 
         /**
          * Public wrapping method.
-         * 
+         *
          */
-        public static Attribute wrap(AttributeBean bean)
+        public static Attribute wrap(final AttributeBean bean)
             {
             return new BeanWrapper(
                 bean
                 );
             }
-        
+
         /**
          * Protected constructor.
          *
          */
-        protected BeanWrapper(AttributeBean bean)
+        protected BeanWrapper(final AttributeBean bean)
             {
             super(
                 bean.getName(),
@@ -207,14 +207,14 @@ implements AttributeService
 
     /**
      * Bean class used by the JSON handler.
-     * 
+     *
      */
     public static class AttributeBean
         {
         public AttributeBean()
             {
             }
-        
+
         private String name;
         public String getName()
             {

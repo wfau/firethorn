@@ -17,20 +17,15 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.AttributeService;
-
 import uk.org.ogsadai.dqp.common.RequestDetails;
 import uk.org.ogsadai.dqp.lqp.Attribute;
-import uk.org.ogsadai.dqp.lqp.AttributeImpl;
 
 /**
  *
@@ -47,33 +42,33 @@ implements AttributeService
 
     /**
      * Internal AttributeService.
-     * 
+     *
      */
-    private SimpleAttributeServiceImpl service;
+    private final SimpleAttributeServiceImpl service;
 
     /**
      * Nexted map of Attributes, indexed by source and attribute name.
-     * 
+     *
      */
-    private Map<String, Map<String, Attribute>> outer = new HashMap<String, Map<String, Attribute>>();
-    
+    private final Map<String, Map<String, Attribute>> outer = new HashMap<String, Map<String, Attribute>>();
+
     /**
      * Protected constructor.
      *
      */
-    public CachingAttributeServiceImpl(String endpoint, RequestDetails request)
+    public CachingAttributeServiceImpl(final String endpoint, final RequestDetails request)
         {
         this.service = new SimpleAttributeServiceImpl(
             endpoint,
             request
             );
         }
-    
+
     /**
      * Synchronised access our nested map of attributes.
      *
      */
-    protected synchronized Map<String, Attribute> inner(String source)
+    protected synchronized Map<String, Attribute> inner(final String source)
         {
         Map<String, Attribute> inner = this.outer.get(
             source
@@ -85,7 +80,7 @@ implements AttributeService
                 source,
                 inner
                 );
-            for (Attribute attrib : this.service.getAttributes(source))
+            for (final Attribute attrib : this.service.getAttributes(source))
                 {
                 inner.put(
                     attrib.getName(),
@@ -97,7 +92,7 @@ implements AttributeService
         }
 
     @Override
-    public Attribute getAttribute(String source, String attrib)
+    public Attribute getAttribute(final String source, final String attrib)
         {
         log.debug("getAttribute(String, String)");
         log.debug("  Source [" + source + "]");
@@ -110,7 +105,7 @@ implements AttributeService
         }
 
     @Override
-    public Iterable<Attribute> getAttributes(String source)
+    public Iterable<Attribute> getAttributes(final String source)
         {
         log.debug("getAttributes(String)");
         log.debug("  Source [" + source + "]");

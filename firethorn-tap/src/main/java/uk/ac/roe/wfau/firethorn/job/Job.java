@@ -23,7 +23,6 @@ import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 
 /**
  * Abstract representation of a Job.
@@ -40,25 +39,25 @@ extends Entity
         {
         /**
          * Our LinkFactory.
-         * 
+         *
          */
         public LinkFactory links();
 
         /**
          * Our IdentFactory.
-         * 
+         *
          */
         public IdentFactory idents();
 
         /**
          * Our Job resolver.
-         * 
+         *
          */
         public Resolver resolver();
 
         /**
          * Our Job executor.
-         * 
+         *
          */
         public Executor executor();
 
@@ -109,7 +108,7 @@ extends Entity
          *
          */
         public Iterable<JobType> select();
-        
+
         }
 
     /**
@@ -124,13 +123,13 @@ extends Entity
 
         /**
          * Check a job status.
-         * 
+         *
          */
         public Status status(final Identifier ident);
 
         /**
          * Update a job status.
-         * 
+         *
          */
         public Status status(final Identifier ident, final Status status);
 
@@ -142,18 +141,18 @@ extends Entity
 
         /**
          * Prepare a job.
-         * 
+         *
          */
         public Status prepare(final Identifier iadent);
 
         /**
          * Execute a job.
-         * 
+         *
          */
         public Future<Status> execute(final Identifier ident);
-        
+
         }
-    
+
     /**
      * Job status indicator.
      *
@@ -204,7 +203,7 @@ extends Entity
 
         /**
          * An error occurred updating the Job status.
-         * The actual Job status is undefined. 
+         * The actual Job status is undefined.
          *
          */
         ERROR();
@@ -221,7 +220,7 @@ extends Entity
      * Get the Job status (with refresh).
      *
      */
-    public Status status(boolean refresh);
+    public Status status(final boolean refresh);
 
     /**
      * Set the Job status.
@@ -258,5 +257,5 @@ extends Entity
      *
      */
     public Status execute();
-    
+
     }

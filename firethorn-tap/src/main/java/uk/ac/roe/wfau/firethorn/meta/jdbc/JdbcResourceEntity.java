@@ -21,11 +21,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLInvalidAuthorizationSpecException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -40,17 +35,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.support.SQLExceptionSubclassTranslator;
-import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.stereotype.Repository;
 
-import org.joda.time.DateTime;
-import org.joda.time.Hours;
-import org.joda.time.ReadablePeriod;
-
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
-import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
@@ -91,7 +80,7 @@ public class JdbcResourceEntity
 
     /**
      * Hibernate column mapping.
-     * 
+     *
      */
     protected static final String DB_JDBC_CATALOG_COL = "jdbccatalog";
     protected static final String DB_JDBC_OGSAID_COL  = "jdbcogsaid";
@@ -329,7 +318,7 @@ public class JdbcResourceEntity
         {
         this.ogsaid = ogsaid;
         }
-    
+
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -346,7 +335,7 @@ public class JdbcResourceEntity
         return this.catalog ;
         }
     @Override
-    public void catalog(String catalog)
+    public void catalog(final String catalog)
         {
         this.catalog = catalog ;
         this.scan(true);
@@ -375,14 +364,14 @@ public class JdbcResourceEntity
         // Scan all the catalogs.
         if (ALL_CATALOGS.equals(this.catalog))
             {
-            for (String cname : connection().catalogs())
+            for (final String cname : connection().catalogs())
                 {
                 try {
                     scanimpl(
-                        cname 
+                        cname
                         );
                     }
-                catch (Exception ouch)
+                catch (final Exception ouch)
                     {
                     log.debug("Exception in catalog processing loop");
                     log.debug("Exception text   [{}]", ouch.getMessage());
@@ -390,7 +379,7 @@ public class JdbcResourceEntity
                     log.debug("Exception class  [{}]", ouch.getClass().toString());
                     //
                     // Continue with the rest of the catalogs ...
-                    // 
+                    //
                     }
                 }
             }
@@ -404,13 +393,13 @@ public class JdbcResourceEntity
 //
 // TODO
 // Reprocess the list disable missing ones ...
-//                     
+//
         scandate(new DateTime());
         scanflag(false);
 
         }
 
-    protected void scanimpl(String catalog)
+    protected void scanimpl(final String catalog)
         {
         log.debug("scanimpl(String)");
         log.debug("  Catalog [{}]", catalog);
@@ -420,7 +409,7 @@ public class JdbcResourceEntity
         final JdbcProductType  product  = JdbcProductType.match(
             metadata
             );
-        // TODO - fix connection errors 
+        // TODO - fix connection errors
         if (metadata != null)
             {
             try {
@@ -434,7 +423,7 @@ public class JdbcResourceEntity
                         JdbcMetadata.JDBC_META_TABLE_TYPE_VIEW
                         }
                     );
-        
+
                 String cprev = null ;
                 String sprev = null ;
                 while (tables.next())
@@ -466,12 +455,12 @@ public class JdbcResourceEntity
                         continue;
                         }
                     else {
-                        cprev = cname; 
-                        sprev = sname; 
+                        cprev = cname;
+                        sprev = sname;
                         }
-        
+
                     log.debug("Found schema [{}.{}]", new Object[]{cname, sname});
-        
+
                     //
                     // Check for an existing schema.
                     JdbcSchema schema = this.schemasimpl().select(

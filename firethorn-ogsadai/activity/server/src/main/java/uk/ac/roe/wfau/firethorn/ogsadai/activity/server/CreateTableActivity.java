@@ -18,55 +18,33 @@
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.server;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.ArrayList;
-
 import java.sql.Connection;
 import java.sql.Statement;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
-import uk.org.ogsadai.exception.ErrorID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uk.org.ogsadai.activity.ActivityProcessingException;
 import uk.org.ogsadai.activity.ActivityTerminatedException;
 import uk.org.ogsadai.activity.ActivityUserException;
-import uk.org.ogsadai.activity.IterativeActivity;
 import uk.org.ogsadai.activity.MatchedIterativeActivity;
-
+import uk.org.ogsadai.activity.extension.ResourceActivity;
 import uk.org.ogsadai.activity.io.ActivityInput;
-import uk.org.ogsadai.activity.io.ActivityPipeProcessingException;
 import uk.org.ogsadai.activity.io.BlockWriter;
 import uk.org.ogsadai.activity.io.ControlBlock;
-import uk.org.ogsadai.activity.io.PipeClosedException;
-import uk.org.ogsadai.activity.io.PipeIOException;
-import uk.org.ogsadai.activity.io.PipeTerminatedException;
 import uk.org.ogsadai.activity.io.TupleListActivityInput;
 import uk.org.ogsadai.activity.io.TupleListIterator;
 import uk.org.ogsadai.activity.io.TypedActivityInput;
-
 import uk.org.ogsadai.activity.sql.ActivitySQLException;
-import uk.org.ogsadai.activity.sql.ActivitySQLUserException;
-
-import uk.org.ogsadai.activity.extension.ResourceActivity;
-
-import uk.org.ogsadai.tuple.Tuple;
-import uk.org.ogsadai.tuple.TupleTypes;
-import uk.org.ogsadai.tuple.TupleMetadata;
-import uk.org.ogsadai.tuple.SimpleTuple;
-import uk.org.ogsadai.tuple.SimpleTupleMetadata;
-import uk.org.ogsadai.tuple.ColumnMetadata;
-import uk.org.ogsadai.tuple.SimpleColumnMetadata;
-import uk.org.ogsadai.tuple.ColumnNotFoundException;
-
+import uk.org.ogsadai.exception.ErrorID;
+import uk.org.ogsadai.metadata.MetadataWrapper;
 import uk.org.ogsadai.resource.ResourceAccessor;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCConnectionProvider;
 import uk.org.ogsadai.resource.dataresource.jdbc.JDBCConnectionUseException;
-
-import uk.org.ogsadai.metadata.MetadataWrapper;
+import uk.org.ogsadai.tuple.ColumnMetadata;
+import uk.org.ogsadai.tuple.Tuple;
+import uk.org.ogsadai.tuple.TupleMetadata;
+import uk.org.ogsadai.tuple.TupleTypes;
 
 /**
  *
@@ -79,7 +57,7 @@ implements ResourceActivity
 
     /**
      * Our debug logger.
-     * 
+     *
      */
     private static Logger logger = LoggerFactory.getLogger(
         CreateTableActivity.class
@@ -99,6 +77,7 @@ implements ResourceActivity
      * Get a list of the ActivityInputs.
      *
      */
+    @Override
     public ActivityInput[] getIterationInputs()
         {
         logger.debug("getIterationInputs()");
@@ -122,7 +101,8 @@ implements ResourceActivity
     /**
      *
      *
-     */ 
+     */
+    @Override
     public Class getTargetResourceAccessorClass()
         {
         return JDBCConnectionProvider.class;
@@ -131,7 +111,8 @@ implements ResourceActivity
     /**
      *
      *
-     */ 
+     */
+    @Override
     public void setTargetResourceAccessor(final ResourceAccessor resource)
         {
         this.resource = (JDBCConnectionProvider) resource;
@@ -159,6 +140,7 @@ implements ResourceActivity
      * Pre-processing.
      *
      */
+    @Override
     protected void preprocess()
     throws ActivitySQLException, ActivityProcessingException
         {
@@ -177,14 +159,14 @@ implements ResourceActivity
                 }
             logger.debug("Got database connection");
             }
-        catch (JDBCConnectionUseException ouch)
+        catch (final JDBCConnectionUseException ouch)
             {
             logger.warn("Exception connecting to database", ouch);
             throw new ActivitySQLException(
                 ouch
                 );
             }
-        catch (Throwable ouch)
+        catch (final Throwable ouch)
             {
             logger.warn("Exception connecting to database", ouch);
             throw new ActivityProcessingException(
@@ -197,7 +179,7 @@ implements ResourceActivity
             validateOutput("result");
             writer = getOutput("result");
             }
-        catch (Exception ouch)
+        catch (final Exception ouch)
             {
             logger.warn("Exception validating outputs", ouch);
             throw new ActivityProcessingException(
@@ -211,7 +193,8 @@ implements ResourceActivity
      * Process an iteration.
      *
      */
-    protected void processIteration(Object[] iteration)
+    @Override
+    protected void processIteration(final Object[] iteration)
     throws ActivityProcessingException,
            ActivityTerminatedException,
            ActivityUserException
@@ -220,18 +203,18 @@ implements ResourceActivity
         try {
             //
             // Get the table name.
-            String name = (String) iteration[0];
+            final String name = (String) iteration[0];
             logger.debug("Table name [{}]", name);
 
             //
             // Get the tuple iterator.
-            TupleListIterator tuples = (TupleListIterator) iteration[1];
+            final TupleListIterator tuples = (TupleListIterator) iteration[1];
             //
             // Get the data metadata.
-            MetadataWrapper wrapper  = tuples.getMetadataWrapper();
-            TupleMetadata   metadata = (TupleMetadata) wrapper.getMetadata();
- 
-            StringBuilder builder = new StringBuilder();
+            final MetadataWrapper wrapper  = tuples.getMetadataWrapper();
+            final TupleMetadata   metadata = (TupleMetadata) wrapper.getMetadata();
+
+            final StringBuilder builder = new StringBuilder();
             builder.append("CREATE TABLE");
             builder.append(" ");
             builder.append(name);
@@ -242,7 +225,7 @@ implements ResourceActivity
             // Iterate the data metadata.
             for (int index = 0 ; index < metadata.getColumnCount() ; index++)
                 {
-                ColumnMetadata column = metadata.getColumnMetadata(index);
+                final ColumnMetadata column = metadata.getColumnMetadata(index);
                 logger.debug("ColumnMetadata");
                 logger.debug("Name  [{}]", column.getName());
                 logger.debug("Type  [{}]", column.getType());
@@ -257,15 +240,15 @@ implements ResourceActivity
                 builder.append(" ");
                 builder.append(sqltype(column.getType()));
                 }
- 
+
             builder.append(")");
-            logger.debug("SQL [{}]", builder.toString()); 
+            logger.debug("SQL [{}]", builder.toString());
 
             //
             // Create the database table.
             logger.debug("Creating table");
-            Statement statement = connection.createStatement();
-            int result = statement.executeUpdate(
+            final Statement statement = connection.createStatement();
+            final int result = statement.executeUpdate(
                 builder.toString()
                 );
             logger.debug("SQL statement result [{}]", result);
@@ -304,7 +287,7 @@ implements ResourceActivity
                 );
             }
  */
-        catch (Throwable ouch)
+        catch (final Throwable ouch)
             {
             logger.warn("Exception during processing", ouch);
             rollback();
@@ -318,6 +301,7 @@ implements ResourceActivity
      * Post-processing.
      *
      */
+    @Override
     protected void postprocess()
     throws ActivityProcessingException
         {
@@ -330,7 +314,7 @@ implements ResourceActivity
                     );
                 }
             }
-        catch (Throwable ouch)
+        catch (final Throwable ouch)
             {
             logger.warn("Exception resetting autocommit", ouch);
             throw new ActivityProcessingException(
@@ -348,8 +332,8 @@ implements ResourceActivity
         logger.debug("rollback()");
         try {
             connection.rollback();
-            } 
-        catch (Exception ouch)
+            }
+        catch (final Exception ouch)
             {
             logger.warn("Exception during rollback", ouch);
             }
@@ -376,46 +360,46 @@ implements ResourceActivity
      * Translate a tuple type into a SQL data type.
      *
      */
-    public String sqltype(int type)
+    public String sqltype(final int type)
     throws ActivityProcessingException
         {
-        switch (type) 
+        switch (type)
             {
-            case TupleTypes._BOOLEAN:   
-                return "boolean"; 
-            case TupleTypes._FLOAT:     
-                return "real"; 
-            case TupleTypes._INT:       
-                return "integer"; 
-            case TupleTypes._LONG:      
-                return "bigint"; 
-            case TupleTypes._STRING:    
-                return "text"; 
-            case TupleTypes._CHAR:      
-                return "char(1)"; 
-            case TupleTypes._DOUBLE:    
-                return "double precision"; 
-            case TupleTypes._SHORT:     
-                return "smallint"; 
-            case TupleTypes._DATE:      
-                return "date"; 
-            case TupleTypes._TIME:      
-                return "time"; 
-            case TupleTypes._TIMESTAMP: 
-                return "timestamp"; 
+            case TupleTypes._BOOLEAN:
+                return "boolean";
+            case TupleTypes._FLOAT:
+                return "real";
+            case TupleTypes._INT:
+                return "integer";
+            case TupleTypes._LONG:
+                return "bigint";
+            case TupleTypes._STRING:
+                return "text";
+            case TupleTypes._CHAR:
+                return "char(1)";
+            case TupleTypes._DOUBLE:
+                return "double precision";
+            case TupleTypes._SHORT:
+                return "smallint";
+            case TupleTypes._DATE:
+                return "date";
+            case TupleTypes._TIME:
+                return "time";
+            case TupleTypes._TIMESTAMP:
+                return "timestamp";
 
-            case TupleTypes._BYTEARRAY: 
-            case TupleTypes._ODBLOB:    
-                return "bytea"; 
-            case TupleTypes._ODCLOB:    
-                return "bytea"; 
+            case TupleTypes._BYTEARRAY:
+            case TupleTypes._ODBLOB:
+                return "bytea";
+            case TupleTypes._ODCLOB:
+                return "bytea";
 
             case TupleTypes._BIGDECIMAL:
-                return "decimal"; 
+                return "decimal";
 
-            case TupleTypes._FILE:      
-            case TupleTypes._ODNULL:    
-            default: 
+            case TupleTypes._FILE:
+            case TupleTypes._ODNULL:
+            default:
                 logger.warn("Unexpected tuple type [{}]", TupleTypes.getTypeName(type));
                 throw new ActivityProcessingException(
                     ErrorID.INVALID_INPUT_TYPE_EXCEPTION

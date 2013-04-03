@@ -104,7 +104,7 @@ extends BaseComponent
     /**
      * Get the OGSA-DAI resource ID.
      * @too Move this to an OGSA-DAI specific resource.
-     * 
+     *
      */
     public String ogsaid();
 

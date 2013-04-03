@@ -25,8 +25,6 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumnBean.Info;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumnBean.Info.Adql;
 
 /**
  * Bean wrapper for <code>JdbcColumn</code>.
@@ -116,7 +114,7 @@ implements EntityBean<JdbcColumn>
             public Adql getAdql()
                 {
                 return new Adql()
-                    { 
+                    {
                     @Override
                     public AdqlColumnType getType()
                         {
@@ -144,7 +142,7 @@ implements EntityBean<JdbcColumn>
                         {
                         return entity().info().jdbc().size();
                         }
-                    }; 
+                    };
                 }
             };
         }

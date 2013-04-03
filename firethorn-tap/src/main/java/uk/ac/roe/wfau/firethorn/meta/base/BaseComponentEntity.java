@@ -36,7 +36,6 @@ import org.joda.time.ReadablePeriod;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
 
 /**
  *
@@ -53,7 +52,7 @@ extends AbstractEntity
     {
     /**
      * Hibernate column mapping.
-     * 
+     *
      */
     protected static final String DB_BASE_COL   = "base";
     protected static final String DB_PARENT_COL = "parent";
@@ -72,7 +71,7 @@ extends AbstractEntity
     protected static final String DB_SCAN_DATE_COL = "scandate";
     protected static final String DB_SCAN_FLAG_COL = "scanflag";
 
-    
+
     /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
@@ -132,7 +131,7 @@ extends AbstractEntity
         {
         return this.scandate;
         }
-    public void scandate(DateTime date)
+    public void scandate(final DateTime date)
         {
         this.scandate = date;
         }
@@ -148,7 +147,7 @@ extends AbstractEntity
         {
         return this.scanflag;
         }
-    public void scanflag(boolean flag)
+    public void scanflag(final boolean flag)
         {
         this.scanflag = flag;
         }
@@ -169,7 +168,7 @@ extends AbstractEntity
      * Test if we need to scan our metadata.
      *
      */
-    public void scan(boolean force)
+    public void scan(final boolean force)
         {
         log.debug("scan({})", force);
         this.scanflag |= force ;
@@ -190,7 +189,7 @@ extends AbstractEntity
 
     /**
      * Synchronised set of Identifiers for active scans.
-     * 
+     *
      */
     private static Set<Identifier> scanset = Collections.synchronizedSet(
         new HashSet<Identifier>()
@@ -204,7 +203,7 @@ extends AbstractEntity
         {
         log.debug("scansync()");
         boolean    todo  = false ;
-        Identifier ident = this.ident();
+        final Identifier ident = this.ident();
         synchronized (scanset)
             {
             //
@@ -218,7 +217,7 @@ extends AbstractEntity
                         scanset.wait(1000);
                         log.debug("Scan wait woken [{}]", ident);
                         }
-                    catch (Exception ouch)
+                    catch (final Exception ouch)
                         {
                         log.warn("Scan wait interrupted [{}][{}]", ident, ouch.getMessage());
                         }
@@ -237,7 +236,7 @@ extends AbstractEntity
                 }
             }
         //
-        // If we are due to run a scan. 
+        // If we are due to run a scan.
         if (todo)
             {
             //
@@ -248,7 +247,7 @@ extends AbstractEntity
                 scanimpl();
                 }
             //
-            // Remove ourselves from the Set and notify anyone else waiting. 
+            // Remove ourselves from the Set and notify anyone else waiting.
             finally {
                 log.debug("Completed scan [{}]", ident);
                 synchronized (scanset)

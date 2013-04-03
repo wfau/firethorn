@@ -39,15 +39,15 @@ public interface Entity
         {
         /**
          * Generate a new name.
-         * 
+         *
          */
         public String name();
 
         /**
          * Generate a new name.
-         * 
+         *
          */
-        public String name(String name);
+        public String name(final String name);
 
         }
 

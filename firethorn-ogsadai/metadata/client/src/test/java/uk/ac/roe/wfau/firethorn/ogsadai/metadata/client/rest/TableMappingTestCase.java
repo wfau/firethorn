@@ -1,9 +1,10 @@
 /**
- * 
+ *
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
@@ -19,12 +20,12 @@ public class TableMappingTestCase
     @Test
     public void test000()
         {
-        SimpleTableMappingServiceImpl service = new SimpleTableMappingServiceImpl(
+        final SimpleTableMappingServiceImpl service = new SimpleTableMappingServiceImpl(
             "http://data.metagrid.co.uk/wfau/firethorn/test",
             null
-            ); 
+            );
 
-        TableMapping bean = service.getTableMapping(
+        final TableMapping bean = service.getTableMapping(
             "TEST_000.json"
             );
         assertNotNull(
@@ -47,12 +48,12 @@ public class TableMappingTestCase
     @Test
     public void test001()
         {
-        SimpleTableMappingServiceImpl service = new SimpleTableMappingServiceImpl(
+        final SimpleTableMappingServiceImpl service = new SimpleTableMappingServiceImpl(
             "http://data.metagrid.co.uk/wfau/firethorn/test",
             null
-            ); 
+            );
 
-        TableMapping bean = service.getTableMapping(
+        final TableMapping bean = service.getTableMapping(
             "JDBC_120.json"
             );
         assertNotNull(
@@ -75,11 +76,11 @@ public class TableMappingTestCase
     //@Test
     public void test002()
         {
-        SimpleTableMappingServiceImpl service = new SimpleTableMappingServiceImpl(
+        final SimpleTableMappingServiceImpl service = new SimpleTableMappingServiceImpl(
             "http://localhost:8080/firethorn",
             null
-            ); 
-        TableMapping bean = service.getTableMapping(
+            );
+        final TableMapping bean = service.getTableMapping(
             "JDBC_5"
             );
         assertNotNull(

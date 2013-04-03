@@ -37,7 +37,7 @@ implements AdqlQuery.NameFactory
         }
 
     @Override
-    public String name(String name)
+    public String name(final String name)
         {
         return name;
         }

@@ -25,11 +25,11 @@ public interface IvoaColumnInfo
     {
 
     public int  size();
-    
+
     public void size(final int size);
 
     public int  type();
-    
+
     public void type(final String type);
 
     }

@@ -17,7 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ogsa;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**

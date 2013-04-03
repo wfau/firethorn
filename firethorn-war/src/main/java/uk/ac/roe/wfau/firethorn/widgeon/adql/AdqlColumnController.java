@@ -33,7 +33,6 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
-import uk.ac.roe.wfau.firethorn.webapp.paths.PathImpl;
 
 /**
  * Spring MVC controller for <code>AdqlColumn</code>.
@@ -76,7 +75,7 @@ extends AbstractEntityController<AdqlColumn>
     public static final String UPDATE_NAME = "adql.column.update.name" ;
 
     @Override
-    public EntityBean<AdqlColumn> bean(AdqlColumn entity)
+    public EntityBean<AdqlColumn> bean(final AdqlColumn entity)
         {
         return new AdqlColumnBean(
             entity
@@ -84,7 +83,7 @@ extends AbstractEntityController<AdqlColumn>
         }
 
     @Override
-    public Iterable<EntityBean<AdqlColumn>> bean(Iterable<AdqlColumn> iter)
+    public Iterable<EntityBean<AdqlColumn>> bean(final Iterable<AdqlColumn> iter)
         {
         return new AdqlColumnBean.Iter(
             iter

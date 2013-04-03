@@ -23,10 +23,9 @@ import org.apache.commons.logging.LogFactory;
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.AttributeService;
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.StatisticsService;
 import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMappingService;
-
-import uk.org.ogsadai.tuple.TupleTypes;
 import uk.org.ogsadai.dqp.common.RequestDetails;
 import uk.org.ogsadai.dqp.firethorn.MetadataServiceFactory;
+import uk.org.ogsadai.tuple.TupleTypes;
 
 
 class MetadataServiceFactoryMock
@@ -34,16 +33,13 @@ implements MetadataServiceFactory
     {
     private static Log log = LogFactory.getLog(MetadataServiceFactoryMock.class);
 
-    private String name ;
-    
     /**
      * Public constructor.
      *
      */
-    public MetadataServiceFactoryMock(String name)
+    public MetadataServiceFactoryMock(final String name)
         {
         log.debug("MetadataServiceFactoryMock() [" + name + "]");
-        this.name = name ;
         this.tables = new TableMappingServiceMock();
         this.tables.put(
             "twomass",
@@ -70,84 +66,84 @@ implements MetadataServiceFactory
             TupleTypes._DOUBLE,
             "table20",
             false
-            );        
+            );
         this.attrib.add(
             "dec",
             TupleTypes._DOUBLE,
             "table20",
             false
-            );        
+            );
         this.attrib.add(
             "pts_key",
             TupleTypes._LONG,
             "table20",
             true
-            );        
+            );
 
         this.attrib.add(
             "ra",
             TupleTypes._DOUBLE,
             "table21",
             false
-            );        
+            );
         this.attrib.add(
             "dec",
             TupleTypes._DOUBLE,
             "table21",
             false
-            );        
+            );
         this.attrib.add(
             "sourceID",
             TupleTypes._LONG,
             "table21",
             true
-            );        
+            );
 
         this.attrib.add(
             "masterObjID",
             TupleTypes._LONG,
             "table22",
             true
-            );        
+            );
         this.attrib.add(
             "slaveObjID",
             TupleTypes._LONG,
             "table22",
             true
-            );        
+            );
         this.attrib.add(
             "distanceMins",
             TupleTypes._DOUBLE,
             "table22",
             false
-            );        
+            );
 
         this.stats = new StatisticsServiceMock();
 
         }
 
-    private TableMappingServiceMock tables ;
-    private AttributeServiceMock    attrib ;
-    private StatisticsServiceMock   stats ;
+    private final TableMappingServiceMock tables ;
+    private final AttributeServiceMock    attrib ;
+    private final StatisticsServiceMock   stats ;
 
     @Override
-    public AttributeService getAttributeService(RequestDetails details)
+    public AttributeService getAttributeService(final RequestDetails details)
         {
         log.debug("getAttributeService() [" + details + "]");
         log(details);
         return this.attrib;
         }
-    
+
     @Override
-    public TableMappingService getTableMappingService(RequestDetails details)
+    public TableMappingService getTableMappingService(final RequestDetails details)
         {
         log.debug("getTableMappingService() [" + details + "]");
         log(details);
         return this.tables;
         }
-    
+
     @Override
-    public StatisticsService getStatisticsService(RequestDetails details)
+    public StatisticsService getStatisticsService(final RequestDetails details)
         {
         log.debug("getStatisticsService() [" + details + "]");
         log(details);
@@ -155,10 +151,10 @@ implements MetadataServiceFactory
         }
 
    /**
-    *  
-    * 
+    *
+    *
     */
-    public void log(RequestDetails details)
+    public void log(final RequestDetails details)
         {
         log.debug("RequestDetails ----");
         log.debug("  Resource ID [" + details.getResourceID() + "]");

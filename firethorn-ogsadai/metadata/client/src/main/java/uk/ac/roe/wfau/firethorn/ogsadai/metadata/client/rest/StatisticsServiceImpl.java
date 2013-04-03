@@ -20,16 +20,11 @@ package uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.ac.roe.wfau.firethorn.ogsadai.metadata.StatisticsService;
 import uk.org.ogsadai.dqp.common.RequestDetails;
-
 import uk.org.ogsadai.dqp.lqp.Attribute;
-import uk.org.ogsadai.dqp.lqp.cardinality.ArithmeticOperator;
 import uk.org.ogsadai.dqp.lqp.cardinality.AttributeStatistics;
 import uk.org.ogsadai.dqp.lqp.cardinality.HistogramBasedAttributeStatistics;
-
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.AttributeService;
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.StatisticsService;
-import uk.ac.roe.wfau.firethorn.ogsadai.metadata.TableMappingService;
 
 /**
  *
@@ -46,7 +41,7 @@ implements StatisticsService
      *
      *
      */
-    public StatisticsServiceImpl(String endpoint, RequestDetails request)
+    public StatisticsServiceImpl(final String endpoint, final RequestDetails request)
         {
         super(
             endpoint,
@@ -56,7 +51,7 @@ implements StatisticsService
         }
 
     @Override
-    public AttributeStatistics getStatistics(Attribute attrib)
+    public AttributeStatistics getStatistics(final Attribute attrib)
         {
         log.debug("getStatistics(Attribute)");
         log.debug("  Attrib [" + attrib.getSource()  + "][" + attrib.getName() + "]");
@@ -67,12 +62,12 @@ implements StatisticsService
         }
 
     @Override
-    public AttributeStatistics getStatistics(String table, String column)
+    public AttributeStatistics getStatistics(final String table, final String column)
         {
         log.debug("getStatistics(String, String)");
         log.debug("  Table  [" + table  + "]");
         log.debug("  Column [" + column + "]");
-        return new HistogramBasedAttributeStatistics(); 
+        return new HistogramBasedAttributeStatistics();
         }
     }
 

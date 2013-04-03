@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
 
@@ -76,7 +76,7 @@ public class StoredResultTestCase
 
     /**
      * Our test service endpoint.
-     * 
+     *
      */
     public static final String endpoint = "http://localhost:8081/albert/services/" ;
 
@@ -88,7 +88,7 @@ public class StoredResultTestCase
     public void test001()
     throws Exception
         {
-        StoredResultPipeline pipeline = new StoredResultPipeline(
+        final StoredResultPipeline pipeline = new StoredResultPipeline(
             new URL(
                 endpoint
                 )

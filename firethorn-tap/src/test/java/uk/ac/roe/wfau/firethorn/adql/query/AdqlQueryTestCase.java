@@ -27,8 +27,8 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 
@@ -47,7 +47,7 @@ extends TestBase
 
     /**
      * Create our resources.
-     *  
+     *
      */
     @Before
     public void init()
@@ -74,7 +74,7 @@ extends TestBase
             JdbcResource.ALL_CATALOGS
             );
         }
-    
+
     /**
      * Debug display of a query.
      *
@@ -129,12 +129,12 @@ extends TestBase
         {
         //
         // Create our ADQL workspace.
-        AdqlResource workspace = factories().adql().resources().create(
+        final AdqlResource workspace = factories().adql().resources().create(
             "adql-workspace"
             );
         //
         // Import the JDBC tables into our workspace.
-        AdqlSchema schema = workspace.schemas().create(
+        final AdqlSchema schema = workspace.schemas().create(
             "adql_twomass"
             );
         schema.tables().create(
@@ -152,7 +152,7 @@ extends TestBase
             );
         //query.prepare();
         debug(query);
-        
+
         assertEquals(
             AdqlQuery.Status.READY,
             query.status()
@@ -194,12 +194,12 @@ extends TestBase
         {
         //
         // Create our ADQL workspace.
-        AdqlResource workspace = factories().adql().resources().create(
+        final AdqlResource workspace = factories().adql().resources().create(
             "adql-workspace"
             );
         //
         // Import the JDBC tables into our workspace.
-        AdqlSchema a = workspace.schemas().create(
+        final AdqlSchema a = workspace.schemas().create(
             "adql_twomass"
             );
         a.tables().create(
@@ -274,12 +274,12 @@ extends TestBase
         {
         //
         // Create our ADQL workspace.
-        AdqlResource workspace = factories().adql().resources().create(
+        final AdqlResource workspace = factories().adql().resources().create(
             "adql-workspace"
             );
         //
         // Import the JDBC tables into our workspace.
-        AdqlSchema a = workspace.schemas().create(
+        final AdqlSchema a = workspace.schemas().create(
             "adql_twomass"
             );
         a.tables().create(
@@ -306,8 +306,8 @@ extends TestBase
                     "twomass_pscXBestDR7PhotoObjAll"
                     )
             );
-                
-        AdqlSchema b = workspace.schemas().create(
+
+        final AdqlSchema b = workspace.schemas().create(
             "adql_bestdr7"
             );
         b.tables().create(
@@ -356,12 +356,12 @@ extends TestBase
         {
         //
         // Create our ADQL workspace.
-        AdqlResource workspace = factories().adql().resources().create(
+        final AdqlResource workspace = factories().adql().resources().create(
             "adql-workspace"
             );
         //
         // Import the JDBC tables into our workspace.
-        AdqlSchema a = workspace.schemas().create(
+        final AdqlSchema a = workspace.schemas().create(
             "adql_twomass"
             );
         a.tables().create(
@@ -388,8 +388,8 @@ extends TestBase
                     "twomass_pscXBestDR7PhotoObjAll"
                     )
             );
-                
-        AdqlSchema b = workspace.schemas().create(
+
+        final AdqlSchema b = workspace.schemas().create(
             "adql_bestdr7"
             );
         b.tables().create(
