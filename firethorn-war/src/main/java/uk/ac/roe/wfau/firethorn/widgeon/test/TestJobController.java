@@ -355,13 +355,6 @@ public class TestJobController
         public void update(final TestJob  job, final String  name, final Integer length, final Integer limit)
         throws NotFoundException;
 
-        /**
-         * Update the status.
-         *
-        public Status update(final Job  job, final Job.Status next, final Integer timeout)
-        throws NotFoundException;
-         */
-
         }
 
     /**
@@ -423,104 +416,5 @@ public class TestJobController
             log.debug("---- ----");
             }
 
-        /*
-        public static final int MINIMUM_TIMEOUT =  5 ;
-        public static final int DEFAULT_TIMEOUT = 10 ;
-
-        @Override
-        public Status update(
-            final Job  job,
-            final Job.Status next,
-            final Integer timeout
-            )
-        throws NotFoundException
-            {
-            log.debug("---- ---- ---- ----");
-            log.debug("update(Identifier, Status, Integer)");
-
-            Status result = job.status(true);
-            
-            if (next == Status.READY)
-                {
-                log.debug("Preparing job");
-                result = factories().tests().executor().prepare(
-                    job.ident()
-                    );
-                }
-
-            else if (next == Status.RUNNING)
-                {
-                log.debug("Preparing job");
-                result = factories().tests().executor().prepare(
-                    job.ident()
-                    );
-
-                if (result == Status.READY)
-                    {
-                    log.debug("Queuing job");
-                    result = factories().tests().executor().status(job.ident(), Status.PENDING);
-                    
-                    if (result == Status.PENDING)
-                        {
-                        try {
-                            log.debug("Executing job");
-                            Future<Status> future = factories().tests().executor().execute(
-                                job.ident()
-                                );
-
-                            int waitlimit = DEFAULT_TIMEOUT;
-                            if (timeout != null)
-                                {
-                                if (timeout.intValue() < MINIMUM_TIMEOUT)
-                                    {
-                                    waitlimit = MINIMUM_TIMEOUT;
-                                    }
-                                else {
-                                    waitlimit = timeout.intValue() ;
-                                    }
-                                }
-
-                            log.debug("Checking future");
-                            result = future.get(
-                                waitlimit,
-                                TimeUnit.MILLISECONDS
-                                );
-                            log.debug("Result [{}]", result);
-                            }
-                        catch (TimeoutException ouch)
-                            {
-                            log.debug("TimeoutException");
-                            }
-                        catch (InterruptedException ouch)
-                            {
-                            log.debug("InterruptedException [{}]", ouch.getMessage());
-                            }
-                        catch (ExecutionException ouch)
-                            {
-                            log.debug("ExecutionException [{}]", ouch.getMessage());
-                            }
-        
-                        result = job.status(
-                            true
-                            );
-                        }
-                    }
-                }
-
-            else if (next == Status.CANCELLED)
-                {
-                result = factories().tests().executor().status(
-                    job.ident(),
-                    Status.CANCELLED
-                    );
-                }
-
-            else {
-                result = Status.ERROR;
-                }
-            log.debug("---- ----");
-            return result ;
-            }
-        */
         }
     }

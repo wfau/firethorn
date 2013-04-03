@@ -125,23 +125,6 @@ extends AbstractEntityController<AdqlQuery>
         }
 
     /**
-     * Get the target entity based on the ident in the path.
-     * @throws NotFoundException
-     *
-    @ModelAttribute(TARGET_ENTITY)
-    public AdqlQuery entity(
-        @PathVariable("ident")
-        final String ident
-        ) throws NotFoundException {
-        return factories().adql().queries().select(
-            factories().adql().queries().idents().ident(
-                ident
-                )
-            );
-        }
-     */
-
-    /**
      * JSON GET request.
      *
      */
@@ -222,13 +205,6 @@ extends AbstractEntityController<AdqlQuery>
         public void update(final AdqlQuery query, final String  name, final String input)
         throws NotFoundException;
 
-        /**
-         * Update the status.
-         *
-        public Status update(final Job job, final Job.Status next, final Integer timeout)
-        throws NotFoundException;
-         */
-        
         }
 
     /**
@@ -280,108 +256,5 @@ extends AbstractEntityController<AdqlQuery>
                 }
             log.debug("---- ----");
             }
-
-        /*
-        public static final int MINIMUM_TIMEOUT =  5 ;
-        public static final int DEFAULT_TIMEOUT = 10 ;
-
-        @Override
-        public Status update(
-            final Job job,
-            final Job.Status next,
-            final Integer timeout
-            )
-        throws NotFoundException
-            {
-            log.debug("---- ---- ---- ----");
-            log.debug("update(AdqlQuery, Status, Integer)");
-
-            Status result = job.status(true);
-            
-            if (next == Status.READY)
-                {
-                log.debug("Preparing query");
-                result = factories().queries().executor().prepare(
-                    job.ident()
-                    );
-                }
-
-            else if (next == Status.RUNNING)
-                {
-                log.debug("Preparing job");
-                result = factories().queries().executor().prepare(
-                    job.ident()
-                    );
-
-                if (result == Status.READY)
-                    {
-                    log.debug("Queuing job");
-                    result = factories().queries().executor().status(
-                        job.ident(),
-                        Status.PENDING
-                        );
-                    
-                    if (result == Status.PENDING)
-                        {
-                        try {
-                            log.debug("Executing query");
-                            Future<Status> future = factories().queries().executor().execute(
-                                job.ident()
-                                );
-
-                            int waitlimit = DEFAULT_TIMEOUT;
-                            if (timeout != null)
-                                {
-                                if (timeout.intValue() < MINIMUM_TIMEOUT)
-                                    {
-                                    waitlimit = MINIMUM_TIMEOUT;
-                                    }
-                                else {
-                                    waitlimit = timeout.intValue() ;
-                                    }
-                                }
-
-                            log.debug("Checking future");
-                            result = future.get(
-                                waitlimit,
-                                TimeUnit.MILLISECONDS
-                                );
-                            log.debug("Result [{}]", result);
-                            }
-                        catch (TimeoutException ouch)
-                            {
-                            log.debug("TimeoutException");
-                            }
-                        catch (InterruptedException ouch)
-                            {
-                            log.debug("InterruptedException [{}]", ouch.getMessage());
-                            }
-                        catch (ExecutionException ouch)
-                            {
-                            log.debug("ExecutionException [{}]", ouch.getMessage());
-                            }
-        
-                        result = job.status(
-                            true
-                            );
-                        }
-                    }
-                }
-
-            else if (next == Status.CANCELLED)
-                {
-                result = factories().tests().executor().status(
-                    job.ident(),
-                    Status.CANCELLED
-                    );
-                }
-
-            else {
-                result = Status.ERROR;
-                }
-            log.debug("---- ----");
-            return result ;
-            }
-         */
         }
     }
