@@ -276,6 +276,10 @@ EOF
         jdbcconfig user     ${FIRETHORN_CONF?}/user-hsqldb.conf
 
         #
+        # Delete existing database.
+        rm -rf target/database
+
+        #
         # Deploy the webapp in Tomcat.
         mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
         
