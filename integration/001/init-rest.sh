@@ -63,3 +63,13 @@ ident()
     ./pp | sed -n 's|^ *"ident" : "'${metabasename?}'\(.*\)"[^"]*|\1|p'
     }
 
+#
+# Create a 'status' function to get the job status from a json response.
+status()
+    {
+    ./pp | sed -n '
+        /^ *"syntax" : {/, /^ *}/ d
+        s|^ *"status" : "\([^"]*\)".*|\1|p
+        '
+    }
+

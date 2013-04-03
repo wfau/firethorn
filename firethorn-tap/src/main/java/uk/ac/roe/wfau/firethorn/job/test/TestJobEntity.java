@@ -43,6 +43,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
 
 /**
@@ -125,19 +126,16 @@ implements TestJob
             }
 
         @Autowired
-        private TestJob.Executor executor;
+        private Job.Executor executor;
         @Override
-        public TestJob.Executor executor()
+        public Job.Executor executor()
             {
             return this.executor;
             }
         }
 
-    /**
-     * Our local service implementations.
-     *
-     */
-    protected TestJob.Services services()
+    @Override
+    public TestJob.Services services()
         {
         return factories().tests();
         }
@@ -229,169 +227,6 @@ implements TestJob
             return this.idents;
             }
         }
-
-    /**
-     * Executor implementation.
-     * 
-     */
-    @Component
-    public static class Executor
-    extends JobEntity.Executor
-    implements TestJob.Executor
-        {
-        /**
-         * Our local service implementation.
-         *
-         */
-        private TestJob.Executor executor;
-
-        /**
-         * Our local service implementation.
-         *
-         */
-        private TestJob.Executor executor()
-            {
-            if (this.executor == null)
-                {
-                this.executor = factories().tests().executor();
-                }
-            return this.executor ;
-            }
-
-        /**
-         * Our local service implementation.
-         *
-         */
-        private TestJob.Resolver resolver;
-
-        /**
-         * Our local service implementation.
-         *
-         */
-        private TestJob.Resolver resolver()
-            {
-            if (this.resolver == null)
-                {
-                this.resolver = factories().tests().resolver();
-                }
-            return this.resolver ;
-            }
-        
-        @Override
-        @UpdateAtomicMethod
-        public Status prepare(Identifier ident)
-            {
-            log.debug("prepare(Identifier)");
-            log.debug("  TestJob [{}]", ident);
-            try {
-                TestJob job = resolver().select(
-                    ident
-                    );
-                if ((job.status() == Status.EDITING) || (job.status() == Status.READY))
-                    {
-                    int length = job.length().intValue();
-                    if (length >= 100)
-                        {
-                        return job.status(
-                            Status.ERROR
-                            );
-                        }
-                    else if ((length >= 0) && (length < 100))
-                        {
-                        return job.status(
-                            Status.READY
-                            );
-                        }
-                    else {
-                        return job.status(
-                            Status.EDITING
-                            );
-                        }
-                    }
-                else {
-                    return Status.ERROR;
-                    }
-                }
-            catch (NotFoundException ouch)
-                {
-                log.error("Failed to prepare job [{}][{}]", ident, ouch.getMessage());
-                return Status.ERROR;
-                }
-            }
-
-        @Async
-        @Override
-        public Future<Status> execute(Identifier ident)
-            {
-            log.debug("execute()");
-            log.debug("  TestJob [{}][{}]", ident);
-
-            Status result = executor().status(
-                ident,
-                Status.RUNNING
-                );
-
-            log.debug("-- TestJob running [{}]", ident);
-            try {
-
-                TestJob job = resolver().select(
-                    ident
-                    );
-
-                for (int i = 0 ; ((i < job.length().intValue()) && (result == Status.RUNNING)) ; i++)
-                    {
-                    log.debug("-- TestJob sleeping [{}][{}]", ident, new Integer(i));
-                    Thread.sleep(
-                        1000
-                        );
-
-                    if ((job.limit() != null) && (i >= job.limit().intValue()))
-                        {
-                        // Executed in new Transaction.
-                        // Entity loaded from database.
-                        result = executor().status(
-                            ident,
-                            Status.FAILED
-                            );
-                        }
-
-                    else {
-                        // Executed in new Transaction.
-                        // Entity loaded from database.
-                        result = executor().status(
-                            ident
-                            );
-                        }
-                    }
-                log.debug("-- TestJob finishing [{}][{}]", ident, result);
-                if (result == Status.RUNNING)
-                    {
-                    result = executor().status(
-                        ident,
-                        Status.COMPLETED
-                        );
-                    }
-                }
-            catch (InterruptedException ouch)
-                {
-                log.debug("-- TestJob interrupted [{}][{}]", ident, ouch.getMessage());
-                result = executor().status(
-                    ident,
-                    Status.CANCELLED
-                    );
-                }
-            catch (NotFoundException ouch)
-                {
-                log.debug("Unable to find job [{}]", ident);
-                result = Status.ERROR;
-                }
-
-            return new AsyncResult<Status>(
-                result
-                );
-
-            }
-        }
     
     /**
      * Protected constructor.
@@ -462,5 +297,98 @@ implements TestJob
         return services().links().link(
             this
             );
+        }
+
+    @Override
+    public Status prepare()
+        {
+        log.debug("prepare(Identifier)");
+        log.debug("  TestJob [{}]", ident());
+        if ((status() == Status.EDITING) || (status() == Status.READY))
+            {
+            int length = length().intValue();
+            if (length >= 100)
+                {
+                return status(
+                    Status.ERROR
+                    );
+                }
+            else if ((length >= 0) && (length < 100))
+                {
+                return status(
+                    Status.READY
+                    );
+                }
+            else {
+                return status(
+                    Status.EDITING
+                    );
+                }
+            }
+        else {
+            return Status.ERROR;
+            }
+        }
+
+    @Override
+    public Status execute()
+        {
+        log.debug("execute()");
+        log.debug("  TestJob [{}][{}]", ident());
+
+        Status result = services().executor().status(
+            ident(),
+            Status.RUNNING
+            );
+
+        log.debug("-- TestJob running [{}]", ident());
+        try {
+
+            for (int i = 0 ; ((i < length().intValue()) && (result == Status.RUNNING)) ; i++)
+                {
+                log.debug("-- TestJob sleeping [{}][{}]", ident(), new Integer(i));
+                Thread.sleep(
+                    1000
+                    );
+
+                refresh();
+
+                if ((limit() != null) && (i >= limit().intValue()))
+                    {
+                    // Executed in new Transaction.
+                    // Entity loaded from database.
+                    result = services().executor().status(
+                        ident(),
+                        Status.FAILED
+                        );
+                    }
+
+                else {
+                    // Executed in new Transaction.
+                    // Entity loaded from database.
+                    result = services().executor().status(
+                        ident()
+                        );
+                    }
+                }
+            log.debug("-- TestJob finishing [{}][{}]", ident(), result);
+            if (result == Status.RUNNING)
+                {
+                result = services().executor().status(
+                    ident(),
+                    Status.COMPLETED
+                    );
+                }
+            }
+        catch (InterruptedException ouch)
+            {
+            log.debug("-- TestJob interrupted [{}][{}]", ident(), ouch.getMessage());
+            result = services().executor().status(
+                ident(),
+                Status.CANCELLED
+                );
+            }
+
+        return result;
         }
     }

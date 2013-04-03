@@ -23,6 +23,7 @@ import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 
 /**
  * Abstract representation of a Job.
@@ -58,8 +59,8 @@ extends Entity
         /**
          * Our Job executor.
          * 
-        public Executor executor();
          */
+        public Executor executor();
 
         }
 
@@ -118,62 +119,38 @@ extends Entity
      */
     public static interface Executor
         {
+        public static final int MINIMUM_TIMEOUT =  5 ;
+        public static final int DEFAULT_TIMEOUT = 10 ;
+
         /**
          * Check a job status.
          * 
          */
-        public Status status(Identifier ident);
+        public Status status(final Identifier ident);
 
         /**
          * Update a job status.
          * 
          */
-        public Status status(Identifier ident, Status status);
-
-//      
-// Not used ...
-//             
+        public Status status(final Identifier ident, final Status status);
 
         /**
-         * Functor interface used by prepare() and execute().
-         * 
-         */
-        public static interface Executable
-            {
-            /**
-             * Execute the functor.
-             *
-             */
-            public Status execute();
-            }
-        
-        /**
-         * Prepare a Job.
+         * Update the status, with a timeout in milliseconds.
          *
          */
-        public Status prepare(Executable executable);
+        public Status update(final Identifier ident, final Job.Status next, final Integer timeout);
 
-        /**
-         * Execute a Job.
-         *
-         */
-        public Future<Status> execute(Executable executable);
-
-//        
-// Simplified form from TestJob.
-//        
-        
         /**
          * Prepare a job.
          * 
          */
-        public Status prepare(Identifier iadent);
+        public Status prepare(final Identifier iadent);
 
         /**
          * Execute a job.
          * 
          */
-        public Future<Status> execute(Identifier ident);
+        public Future<Status> execute(final Identifier ident);
         
         }
     
@@ -271,9 +248,15 @@ extends Entity
     public DateTime finished();
 
     /**
-     * Our Job executor.
-     * 
-    public Executor executor();
+     * Prepare the Job.
+     *
      */
+    public Status prepare();
+
+    /**
+     * Execute the Job.
+     *
+     */
+    public Status execute();
     
     }

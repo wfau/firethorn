@@ -196,8 +196,8 @@ extends AbstractEntityController<AdqlQuery>
 
         if (status != null)
             {
-            this.helper.update(
-                query,
+            factories().queries().executor().update(
+                query.ident(),
                 status,
                 timeout
                 );
@@ -207,31 +207,6 @@ extends AbstractEntityController<AdqlQuery>
             query
             ) ;
         }
-
-    /**
-     * JSON POST update.
-     *
-    @ResponseBody
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING, params=UPDATE_STATUS)
-    public EntityBean<AdqlQuery> update(
-        @RequestParam(value=UPDATE_STATUS, required=true)
-        final Status status,
-        @RequestParam(value=UPDATE_TIMEOUT, required=false)
-        final Integer timeout,
-        @PathVariable("ident")
-        final String ident
-        ) throws NotFoundException {
-        return bean(
-            this.helper.update(
-                factories().adql().queries().idents().ident(
-                    ident
-                    ),
-                status,
-                timeout
-                )
-            );
-        }
-     */
 
     /**
      * Transactional helper.
@@ -250,9 +225,9 @@ extends AbstractEntityController<AdqlQuery>
         /**
          * Update the status.
          *
-         */
-        public Status update(final AdqlQuery query, final Job.Status next, final Integer timeout)
+        public Status update(final Job job, final Job.Status next, final Integer timeout)
         throws NotFoundException;
+         */
         
         }
 
@@ -306,12 +281,13 @@ extends AbstractEntityController<AdqlQuery>
             log.debug("---- ----");
             }
 
+        /*
         public static final int MINIMUM_TIMEOUT =  5 ;
         public static final int DEFAULT_TIMEOUT = 10 ;
 
         @Override
         public Status update(
-            final AdqlQuery query,
+            final Job job,
             final Job.Status next,
             final Integer timeout
             )
@@ -320,14 +296,13 @@ extends AbstractEntityController<AdqlQuery>
             log.debug("---- ---- ---- ----");
             log.debug("update(AdqlQuery, Status, Integer)");
 
-            Status result = query.status(true);
-
+            Status result = job.status(true);
             
             if (next == Status.READY)
                 {
                 log.debug("Preparing query");
                 result = factories().queries().executor().prepare(
-                    query.ident()
+                    job.ident()
                     );
                 }
 
@@ -335,14 +310,14 @@ extends AbstractEntityController<AdqlQuery>
                 {
                 log.debug("Preparing job");
                 result = factories().queries().executor().prepare(
-                    query.ident()
+                    job.ident()
                     );
 
                 if (result == Status.READY)
                     {
                     log.debug("Queuing job");
                     result = factories().queries().executor().status(
-                        query.ident(),
+                        job.ident(),
                         Status.PENDING
                         );
                     
@@ -351,7 +326,7 @@ extends AbstractEntityController<AdqlQuery>
                         try {
                             log.debug("Executing query");
                             Future<Status> future = factories().queries().executor().execute(
-                                query.ident()
+                                job.ident()
                                 );
 
                             int waitlimit = DEFAULT_TIMEOUT;
@@ -386,7 +361,7 @@ extends AbstractEntityController<AdqlQuery>
                             log.debug("ExecutionException [{}]", ouch.getMessage());
                             }
         
-                        result = query.status(
+                        result = job.status(
                             true
                             );
                         }
@@ -396,7 +371,7 @@ extends AbstractEntityController<AdqlQuery>
             else if (next == Status.CANCELLED)
                 {
                 result = factories().tests().executor().status(
-                    query.ident(),
+                    job.ident(),
                     Status.CANCELLED
                     );
                 }
@@ -407,5 +382,6 @@ extends AbstractEntityController<AdqlQuery>
             log.debug("---- ----");
             return result ;
             }
+         */
         }
     }

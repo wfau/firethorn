@@ -76,15 +76,15 @@ extends Entity, Job
          * Our Query executor.
          * 
          */
-        public Executor executor();
+        public Job.Executor executor();
 
         }
 
     /**
      * Our local service implementations.
      *
-    public Services services();
      */
+    public Services services();
 
     /**
      * Name factory interface.
@@ -119,15 +119,6 @@ extends Entity, Job
      */
     public static interface Resolver
     extends Entity.Factory<AdqlQuery>
-        {
-        }
-
-    /**
-     * Executor interface.
-     *
-     */
-    public static interface Executor 
-    extends Job.Executor
         {
         }
 
@@ -306,23 +297,5 @@ extends Entity, Job
      *
      */
     public BaseResource<?> target();
-
-    /**
-     * Prepare the Query for execution.
-     *
-     */
-    public Status prepare();
-
-    /**
-     * Execute the Query.
-     *
-    public Future<Status> execute();
-     */
-
-    /**
-     * Cancel the Query.
-     *
-    public Status cancel();
-     */
 
     }

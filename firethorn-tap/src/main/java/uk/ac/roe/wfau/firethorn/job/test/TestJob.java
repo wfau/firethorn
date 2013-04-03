@@ -64,15 +64,15 @@ extends Entity, Job
          * Our TestJob executor.
          * 
          */
-        public Executor executor();
+        public Job.Executor executor();
 
         }
 
     /**
      * Our local service implementations.
      *
-    public Services services();
      */
+    public Services services();
 
     /**
      * Link factory interface.
@@ -114,15 +114,6 @@ extends Entity, Job
          */
         public TestJob create(final String name, final Integer delay);
 
-        }
-
-    /**
-     * Job executor interface.
-     * 
-     */
-    public static interface Executor
-    extends Job.Executor
-        {
         }
 
     /**

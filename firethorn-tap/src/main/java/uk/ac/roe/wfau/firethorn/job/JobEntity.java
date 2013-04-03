@@ -17,7 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.job;
 
+import java.net.URL;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -41,14 +45,20 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.job.Job.Status;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineResult;
+import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.StoredResultPipeline;
 
 /**
  *
@@ -122,7 +132,6 @@ extends AbstractEntity
             return this.resolver;
             }
 
-        /*
         @Autowired
         private Job.Executor executor;
         @Override
@@ -130,7 +139,6 @@ extends AbstractEntity
             {
             return this.executor;
             }
-        */
         }
 
     /**
@@ -170,20 +178,57 @@ extends AbstractEntity
      * 
      */
     @Component
-    public abstract static class Executor
+    public static class Executor
     extends AbstractComponent
     implements Job.Executor
         {
+        /**
+         * Our local service implementation.
+         *
+         */
+        private Job.Executor executor;
+
+        /**
+         * Our local service implementation.
+         *
+         */
+        protected Job.Executor executor()
+            {
+            if (this.executor == null)
+                {
+                this.executor = factories().jobs().executor();
+                }
+            return this.executor ;
+            }
+
+        /**
+         * Our local service implementation.
+         *
+         */
+        private Job.Resolver resolver;
+
+        /**
+         * Our local service implementation.
+         *
+         */
+        protected Job.Resolver resolver()
+            {
+            if (this.resolver == null)
+                {
+                this.resolver = factories().jobs().resolver();
+                }
+            return this.resolver ;
+            }
+        
+        
         @Override
         @SelectAtomicMethod
-        public Status status(Identifier ident)
+        public Status status(final Identifier ident)
             {
             try {
-                Job job = factories().jobs().resolver().select(
+                return resolver().select(
                     ident
-                    );
-                //job.refresh();
-                return job.status();
+                    ).status();
                 }
             catch (NotFoundException ouch)
                 {
@@ -194,10 +239,10 @@ extends AbstractEntity
 
         @Override
         @UpdateAtomicMethod
-        public Status status(Identifier ident, Status status)
+        public Status status(final Identifier ident, final Status status)
             {
             try {
-                return factories().jobs().resolver().select(
+                return resolver().select(
                     ident
                     ).status(
                         status
@@ -210,23 +255,144 @@ extends AbstractEntity
                 }
             }
 
+
+        @Override
+        public Status update(final Identifier ident, final Job.Status next, final Integer timeout)
+            {
+            log.debug("---- ---- ---- ----");
+            log.debug("update(Identifier, Status, Integer)");
+
+            Status result = executor().status(
+                ident
+                );
+            
+            if (next == Status.READY)
+                {
+                log.debug("Preparing job");
+                result = executor().prepare(
+                    ident
+                    );
+                }
+
+            else if (next == Status.RUNNING)
+                {
+                log.debug("Preparing job");
+                result = executor().prepare(
+                    ident
+                    );
+
+                if (result == Status.READY)
+                    {
+                    log.debug("Queuing job");
+                    result = executor().status(
+                        ident,
+                        Status.PENDING
+                        );
+                    
+                    if (result == Status.PENDING)
+                        {
+                        try {
+                            log.debug("Executing query");
+                            Future<Status> future = executor().execute(
+                                ident
+                                );
+
+                            int waitlimit = DEFAULT_TIMEOUT;
+                            if (timeout != null)
+                                {
+                                if (timeout.intValue() < MINIMUM_TIMEOUT)
+                                    {
+                                    waitlimit = MINIMUM_TIMEOUT;
+                                    }
+                                else {
+                                    waitlimit = timeout.intValue() ;
+                                    }
+                                }
+
+                            log.debug("Checking future");
+                            result = future.get(
+                                waitlimit,
+                                TimeUnit.MILLISECONDS
+                                );
+                            log.debug("Result [{}]", result);
+                            }
+                        catch (TimeoutException ouch)
+                            {
+                            log.debug("TimeoutException");
+                            }
+                        catch (InterruptedException ouch)
+                            {
+                            log.debug("InterruptedException [{}]", ouch.getMessage());
+                            }
+                        catch (ExecutionException ouch)
+                            {
+                            log.debug("ExecutionException [{}]", ouch.getMessage());
+                            }
+        
+                        result = factories().jobs().executor().status(
+                            ident
+                            );
+
+                        }
+                    }
+                }
+
+            else if (next == Status.CANCELLED)
+                {
+                result = executor().status(
+                    ident,
+                    Status.CANCELLED
+                    );
+                }
+
+            else {
+                result = Status.ERROR;
+                }
+            log.debug("---- ----");
+            return result ;
+            }
+
         @Override
         @UpdateAtomicMethod
-        public Status prepare(Job.Executor.Executable executable)
+        public Status prepare(final Identifier ident)
             {
-            log.debug("Job.Executor.prepare(Executable)");
-            return executable.execute();
+            log.debug("prepare(Identifier)");
+            log.debug("  TestJob [{}]", ident);
+            try {
+                return resolver().select(
+                    ident
+                    ).prepare();
+                }
+            catch (NotFoundException ouch)
+                {
+                log.error("Failed to prepare job [{}][{}]", ident, ouch.getMessage());
+                return Status.ERROR;
+                }
             }
 
         @Async
         @Override
-        public Future<Status> execute(Job.Executor.Executable executable)
+        @SelectEntityMethod
+        public Future<Status> execute(Identifier ident)
             {
-            log.debug("Job.Executor.execute(Executable)");
-            return new AsyncResult<Status>(
-                executable.execute()
-                );
+            log.debug("execute()");
+            log.debug("  Ident [{}]", ident);
+            try {
+                return new AsyncResult<Status>(
+                    resolver().select(
+                        ident
+                        ).execute()
+                    );
+                }
+            catch (NotFoundException ouch)
+                {
+                log.error("Failed to execute job [{}][{}]", ident, ouch.getMessage());
+                return new AsyncResult<Status>(
+                    Status.ERROR
+                    );
+                }
             }
+
         }
 
     /**

@@ -61,15 +61,22 @@ adqlquery=$(
 GET "${adqlquery?}" \
     | ./pp
 
+
 #
-# Run ADQL query.
-POST "${adqlquery?}" \
-    --data-urlencode "adql.query.update.status=RUNNING" \
-    | ./pp
+# Run the ADQL query.
+adqlstatus=$(
+    POST "${adqlquery?}" \
+        --data-urlencode "adql.query.update.status=RUNNING" \
+        | status
+        )
 
-sleep 30
-
-GET "${adqlquery?}" \
-    | ./pp
-
+while [ "${adqlstatus?}" == 'PENDING' -o "${adqlstatus?}" == 'RUNNING' ]
+do
+    sleep 1
+    adqlstatus=$(
+        GET "${adqlquery?}" \
+            | status
+            )
+    echo "${adqlstatus?}"
+done
 

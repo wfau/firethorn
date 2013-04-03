@@ -43,13 +43,21 @@ GET "${wfauquery?}" \
     | ./pp
 
 #
-# Run ADQL query.
-POST "${wfauquery?}" \
-    --data-urlencode "adql.query.update.status=RUNNING" \
-    | ./pp
+# Run the ADQL query.
+wfaustatus=$(
+    POST "${wfauquery?}" \
+        --data-urlencode "adql.query.update.status=RUNNING" \
+        | status
+        )
 
-sleep 30
+while [ "${wfaustatus?}" == 'PENDING' -o "${wfaustatus?}" == 'RUNNING' ]
+do
+    sleep 1
+    wfaustatus=$(
+        GET "${wfauquery?}" \
+            | status
+            )
+    echo "${wfaustatus?}"
+done
 
-GET "${wfauquery?}" \
-    | ./pp
 

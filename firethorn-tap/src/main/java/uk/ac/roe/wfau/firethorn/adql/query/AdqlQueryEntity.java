@@ -18,17 +18,14 @@
 package uk.ac.roe.wfau.firethorn.adql.query;
 
 import java.net.URL;
-import java.sql.ResultSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.concurrent.Future;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -47,26 +44,18 @@ import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
-import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
-import uk.ac.roe.wfau.firethorn.job.Job.Executor.Executable;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
-import uk.ac.roe.wfau.firethorn.job.Job.Status;
-import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
@@ -75,7 +64,6 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineResult;
-import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.SimpleClient;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.StoredResultPipeline;
 
 /**
@@ -188,191 +176,18 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Autowired
-        private AdqlQuery.Executor executor;
+        private Job.Executor executor;
         @Override
-        public AdqlQuery.Executor executor()
+        public Job.Executor executor()
             {
             return this.executor;
             }
         }
 
-    //@Override
+    @Override
     public AdqlQuery.Services services()
         {
         return factories().queries();
-        }
-
-    /**
-     * Executor implementation.
-     * 
-     */
-    @Component
-    public static class Executor
-    extends JobEntity.Executor 
-    implements AdqlQuery.Executor 
-        {
-        /**
-         * Our local service implementation.
-         *
-         */
-        private AdqlQuery.Executor executor;
-
-        /**
-         * Our local service implementation.
-         *
-         */
-        protected AdqlQuery.Executor executor()
-            {
-            if (this.executor == null)
-                {
-                this.executor = factories().queries().executor();
-                }
-            return this.executor ;
-            }
-
-        /**
-         * Our local service implementation.
-         *
-         */
-        private AdqlQuery.Resolver resolver;
-
-        /**
-         * Our local service implementation.
-         *
-         */
-        protected AdqlQuery.Resolver resolver()
-            {
-            if (this.resolver == null)
-                {
-                this.resolver = factories().queries().resolver();
-                }
-            return this.resolver ;
-            }
-        
-
-        @Override
-        @UpdateAtomicMethod
-        public Status prepare(final Identifier ident)
-            {
-            log.debug("prepare(Identifier)");
-            log.debug("  TestJob [{}]", ident);
-            try {
-                AdqlQuery query = resolver().select(
-                    ident
-                    );
-                return query.prepare();
-                }
-            catch (NotFoundException ouch)
-                {
-                log.error("Failed to prepare query [{}][{}]", ident, ouch.getMessage());
-                return Status.ERROR;
-                }
-            }
-
-        public static final String endpoint  = "http://localhost:8081/albert/services" ;
-        public static final String dqpname   = "testdqp" ;
-        public static final String storename = "user" ;
-        
-        @Async
-        @Override
-        @SelectEntityMethod
-        public Future<Status> execute(Identifier ident)
-            {
-            log.debug("execute()");
-            log.debug("  AdqlQuery [{}]", ident);
-
-            Status result = executor().status(
-                ident,
-                Status.RUNNING
-                );
-
-            if (result == Status.RUNNING)
-                {
-                log.debug("-- AdqlQuery running [{}]", ident);
-                try {
-                    log.debug("-- AdqlQuery resolving [{}]", ident);
-                    AdqlQuery query = resolver().select(
-                            ident
-                            );
-        
-                    //
-                    // Create our server client.
-                    log.debug("-- Pipeline endpoint [{}]", endpoint);
-                    StoredResultPipeline pipeline = new StoredResultPipeline(
-                        new URL(
-                            endpoint
-                            )
-                        );
-                    log.debug("-- Pipeline [{}]", pipeline);
-
-                    //
-                    // Execute the pipleline.
-
-//if direct, use query resource
-//else use dqp
-
-                    // Check for valid resource ident in prepare().
-                    //final String target = ((query.mode() == Mode.DIRECT) ? query.target().ogsaid() : dqpname);  
-                    final String target = ((query.mode() == Mode.DIRECT) ? "wfau" : dqpname);  
-                    final String tablename = "Q" + ident.toString() + "xxxx" ;
-
-                    log.debug("-- AdqlQuery executing [{}]", ident);
-                    log.debug("-- Mode   [{}]", query.mode());
-                    log.debug("-- Target [{}]", target);
-
-                    PipelineResult frog = pipeline.execute(
-                        target,
-                        storename,
-                        tablename,
-                        query.osql()
-                        );
-
-                    if (frog != null)
-                        {
-                        log.debug("-- AdqlQuery result [{}][{}]", ident, frog.result());
-
-                        if (frog.result() == PipelineResult.Result.COMPLETED)
-                            {
-                            result = executor().status(
-                                ident,
-                                Status.COMPLETED
-                                );
-                            }
-                        else {
-                            result = executor().status(
-                                ident,
-                                Status.FAILED
-                                );
-                            }
-                        }
-                    else {
-                        log.debug("-- AdqlQuery [{}] NULL results", ident);
-                        result = executor().status(
-                            ident,
-                            Status.FAILED
-                            );
-                        }
-
-                    }
-                catch (NotFoundException ouch)
-                    {
-                    log.debug("Unable to find query [{}][{}]", ident, ouch.getMessage());
-                    result = Status.ERROR;
-                    }
-                catch (Exception ouch)
-                    {
-                    log.debug("Unable to execute query [{}][{}]", ident, ouch.getMessage());
-                    result = executor().status(
-                        ident,
-                        Status.FAILED
-                        );
-                    }
-                }
-
-            return new AsyncResult<Status>(
-                result
-                );
-            }
         }
 
     /**
@@ -823,10 +638,6 @@ implements AdqlQuery, AdqlParserQuery
             }
         }
 
-    /**
-     * Prepare our query for execution..
-     *
-     */
     @Override
     public Status prepare()
         {
@@ -944,135 +755,103 @@ implements AdqlQuery, AdqlParserQuery
             );
         }
 
-    /*
-    @Deprecated
-    private Status frog()
-        {
-        try {
-            return this.services().executor().prepare(
-                new Executable()
-                    {
-                    @Override
-                    public Status execute()
-                        {
-                        log.debug("prepare.Executable.execute()");
-                        log.debug("  AdqlQuery [{}][{}]", ident(), name());
-                        if ((status() == Status.EDITING) || (status() == Status.READY))
-                            {
-                            return status(
-                                parse()
-                                );
-                            }
-                        else {
-                            return Status.ERROR;
-                            }
+    public static final String endpoint  = "http://localhost:8081/albert/services" ;
+    public static final String dqpname   = "testdqp" ;
+    public static final String storename = "user" ;
     
-                        }
-                    }
-                );
-            }
-        catch (Exception ouch)
-            {
-            log.error("Failed to prepare query [{}][{}]", ident(), ouch.getMessage());
-            return Status.ERROR;
-            }
-        }
-    */
-    
-    /*    
-    @Deprecated
-    private Future<Status> execute()
-        {
-        try {
-            return services().executor().execute(
-                new Executable()
-                    {
-                    @Override
-                    public Status execute()
-                        {
-                        log.debug("execute.Executable.execute()");
-                        log.debug("  AdqlQuery [{}][{}]", ident(), name());
-    
-                        Status result = prepare();
-                        if (result != Status.READY)
-                            {
-                            log.error("-- AdqlQuery not ready [{}][{}]", ident(), status());
-                            }
-                        else {
-                            log.debug("-- AdqlQuery starting[{}]", ident());
-                            result = status(
-                                Status.RUNNING
-                                );
-                            if (result == Status.RUNNING)
-                                {
-                                log.debug("-- AdqlQuery running [{}]", ident());
-                                try {
-                                    //
-                                    // Create our server client.
-                                    StoredResultPipeline pipeline = new StoredResultPipeline(
-                                        new URL(
-                                            endpoint
-                                            )
-                                        );
-                                    //
-                                    // Execute the pipleline.
-
-// if direct, use query resource
-// else use dqp
-
-                                    String tablename = "Q" + ident().toString() + "xxxx" ;
-                                    
-                                    PipelineResult frog = pipeline.execute(
-                                        dqpname,
-                                        storename,
-                                        tablename,
-                                        osql()
-                                        );
-
-                                    if (frog != null)
-                                        {
-                                        log.debug("-- AdqlQuery result [{}][{}]", ident(), frog.result());
-                                        }
-                                    else {
-                                        log.debug("-- AdqlQuery NULL results");
-                                        }
-                                    
-                                    log.debug("-- AdqlQuery finishing [{}][{}]", ident(), status());
-                                    result = status(
-                                        Status.COMPLETED
-                                        );
-                                    }
-                                catch (Exception ouch)
-                                    {
-                                    log.debug("-- AdqlQuery failed [{}][{}]", ident(), ouch.getMessage());
-                                    result = status(
-                                        Status.FAILED
-                                        );
-                                    }
-                                }
-                            }
-                        return result ;
-                        }
-                    }
-                );
-            }
-        catch (Exception ouch)
-            {
-            log.error("Failed to execute job [{}][{}]", ident(), ouch.getMessage());
-            return new AsyncResult<Status>(
-                Status.ERROR
-                );
-            }
-        }
-     */
-
-    /*
     @Override
-    public Status cancel()
+    public Status execute()
         {
-        return status(
-            Status.CANCELLED
+        log.debug("execute()");
+        log.debug("  AdqlQuery [{}]", ident());
+
+        Status result = services().executor().status(
+            ident(),
+            Status.RUNNING
             );
+
+        if (result == Status.RUNNING)
+            {
+            log.debug("-- AdqlQuery running [{}]", ident());
+            try {
+                log.debug("-- AdqlQuery resolving [{}]", ident());
+                AdqlQuery query = services().resolver().select(
+                        ident()
+                        );
+    
+                //
+                // Create our server client.
+                log.debug("-- Pipeline endpoint [{}]", endpoint);
+                StoredResultPipeline pipeline = new StoredResultPipeline(
+                    new URL(
+                        endpoint
+                        )
+                    );
+                log.debug("-- Pipeline [{}]", pipeline);
+
+                //
+                // Execute the pipleline.
+
+//if direct, use query resource
+//else use dqp
+
+                // Check for valid resource ident in prepare().
+                //final String target = ((query.mode() == Mode.DIRECT) ? query.target().ogsaid() : dqpname);  
+                final String target = ((mode() == Mode.DIRECT) ? target().ogsaid() : dqpname);  
+                final String tablename = "Q" + ident().toString() + "xxxx" ;
+
+                log.debug("-- AdqlQuery executing [{}]", ident());
+                log.debug("-- Mode   [{}]", query.mode());
+                log.debug("-- Target [{}]", target);
+
+                PipelineResult frog = pipeline.execute(
+                    target,
+                    storename,
+                    tablename,
+                    query.osql()
+                    );
+
+                if (frog != null)
+                    {
+                    log.debug("-- AdqlQuery result [{}][{}]", ident(), frog.result());
+
+                    if (frog.result() == PipelineResult.Result.COMPLETED)
+                        {
+                        result = services().executor().status(
+                            ident(),
+                            Status.COMPLETED
+                            );
+                        }
+                    else {
+                        result = services().executor().status(
+                            ident(),
+                            Status.FAILED
+                            );
+                        }
+                    }
+                else {
+                    log.debug("-- AdqlQuery [{}] NULL results", ident());
+                    result = services().executor().status(
+                        ident(),
+                        Status.FAILED
+                        );
+                    }
+
+                }
+            catch (NotFoundException ouch)
+                {
+                log.debug("Unable to find query [{}][{}]", ident(), ouch.getMessage());
+                result = Status.ERROR;
+                }
+            catch (Exception ouch)
+                {
+                log.debug("Unable to execute query [{}][{}]", ident(), ouch.getMessage());
+                result = services().executor().status(
+                    ident(),
+                    Status.FAILED
+                    );
+                }
+            }
+        return result ;
         }
-     */
     }

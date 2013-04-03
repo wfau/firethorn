@@ -18,14 +18,9 @@
 package uk.ac.roe.wfau.firethorn.widgeon.test;
 
 import java.util.Iterator;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -334,8 +329,8 @@ public class TestJobController
 
         if (status != null)
             {
-            this.helper.update(
-                job,
+            factories().tests().executor().update(
+                job.ident(),
                 status,
                 timeout
                 );
@@ -363,9 +358,9 @@ public class TestJobController
         /**
          * Update the status.
          *
-         */
-        public Status update(final TestJob  job, final Job.Status next, final Integer timeout)
+        public Status update(final Job  job, final Job.Status next, final Integer timeout)
         throws NotFoundException;
+         */
 
         }
 
@@ -428,12 +423,13 @@ public class TestJobController
             log.debug("---- ----");
             }
 
+        /*
         public static final int MINIMUM_TIMEOUT =  5 ;
         public static final int DEFAULT_TIMEOUT = 10 ;
 
         @Override
         public Status update(
-            final TestJob  job,
+            final Job  job,
             final Job.Status next,
             final Integer timeout
             )
@@ -443,7 +439,6 @@ public class TestJobController
             log.debug("update(Identifier, Status, Integer)");
 
             Status result = job.status(true);
-
             
             if (next == Status.READY)
                 {
@@ -526,5 +521,6 @@ public class TestJobController
             log.debug("---- ----");
             return result ;
             }
+        */
         }
     }

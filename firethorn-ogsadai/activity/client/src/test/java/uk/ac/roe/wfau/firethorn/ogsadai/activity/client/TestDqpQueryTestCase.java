@@ -44,9 +44,6 @@ extends SimpleQueryTestBase
     /**
      * TWOMASS and UKIDSSDR1, using test DQP, using GT and LT on both tables.
      *
-SELECT twomass.ra AS tmra , ukidss.ra AS ukra , twomass.ra-ukidss.ra AS difra , twomass.dec AS tmdec , ukidss.dec AS ukdec , twomass.ra-ukidss.ra AS difdec , neighbour.distanceMins AS dist
-FROM JDBC_5 AS twomass , JDBC_120 AS ukidss  , JDBC_41 AS neighbour 
-WHERE twomass.ra >= '55.0' AND twomass.ra <= '55.9' AND twomass.dec >= '20.0' AND twomass.dec <= '22.9' AND ukidss.ra >= '55.0' AND ukidss.ra <= '55.9' AND ukidss.dec >= '20.0' AND ukidss.dec <= '22.9' AND neighbour.masterObjID = ukidss.sourceID AND neighbour.slaveObjID = twomass.pts_key AND neighbour.distanceMins < 1E-3
      *
      */
     @Test
@@ -73,9 +70,9 @@ WHERE twomass.ra >= '55.0' AND twomass.ra <= '55.9' AND twomass.dec >= '20.0' AN
             " AND" +
             "    twomass.dec BETWEEN '20.0' AND '22.9'" +
             " AND" +
-            "    ukidss.ra  BETWEEN '55.0' AND '55.9'" +
+            "    ukidss.ra   BETWEEN '55.0' AND '55.9'" +
             " AND" +
-            "    ukidss.dec BETWEEN '20.0' AND '22.9'" +
+            "    ukidss.dec  BETWEEN '20.0' AND '22.9'" +
             " AND" +
             "    neighbour.masterObjID = ukidss.sourceID" +
             " AND" +
