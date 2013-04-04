@@ -93,7 +93,7 @@ implements EntityBean<JdbcResource>
         return entity().ogsaid();
         }
 
-    public String getSchema()
+    public String getSchemas()
         {
         return entity().link().concat("/schemas/select");
         }

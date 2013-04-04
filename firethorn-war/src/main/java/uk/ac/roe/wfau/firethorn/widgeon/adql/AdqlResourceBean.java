@@ -64,7 +64,7 @@ implements EntityBean<AdqlResource>
             );
         }
 
-    public String getSchema()
+    public String getSchemas()
         {
         return entity().link().concat("/schemas/select");
         }
