@@ -309,5 +309,10 @@ popd
         source "${FIRETHORN_TEST?}/query-adql.sh"
         source "${FIRETHORN_TEST?}/query-wfau.sh"
 
+#
+# User results are stored in local HSQLDB database
+cat "${FIRETHORN_CODE?}/firethorn-ogsadai/webapp/target/database/userdata.log
+
+
     popd
 
