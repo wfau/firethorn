@@ -300,7 +300,11 @@ EOF
         source "${FIRETHORN_TEST?}/init-adql.sh"
         source "${FIRETHORN_TEST?}/init-wfau.sh"
 
+#
 # Need a single resource query here ....
+pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/client"
+    mvn -D skipTests=false -D test=SingleQueryTestCase test 
+popd
 
         source "${FIRETHORN_TEST?}/query-adql.sh"
         source "${FIRETHORN_TEST?}/query-wfau.sh"
