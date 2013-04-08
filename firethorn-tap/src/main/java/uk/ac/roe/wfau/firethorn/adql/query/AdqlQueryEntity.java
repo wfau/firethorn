@@ -612,19 +612,19 @@ implements AdqlQuery, AdqlParserQuery
                 )
             }
         )
-    private final Set<BaseResource<?>> targets = new HashSet<BaseResource<?>>();
+    private final Set<BaseResource<?>> resources = new HashSet<BaseResource<?>>();
     @Override
-    public Iterable<BaseResource<?>> targets()
+    public Iterable<BaseResource<?>> resources()
         {
-        return this.targets;
+        return this.resources;
         }
 
     @Override
-    public BaseResource<?> target()
+    public BaseResource<?> primary()
         {
         if (this.mode == Mode.DIRECT)
             {
-            final Iterator<BaseResource<?>> iter = this.targets.iterator();
+            final Iterator<BaseResource<?>> iter = this.resources.iterator();
             if (iter.hasNext())
                 {
                 return iter.next();
@@ -669,13 +669,13 @@ implements AdqlQuery, AdqlParserQuery
                     );
                 //
                 // If the query uses multiple resources, re-process as a distributed query.
-                if (this.targets.size() > 1)
+                if (this.resources.size() > 1)
                     {
                     log.debug("Query uses multiple resources");
                     log.debug("----");
-                    for (final BaseResource<?> target : this.targets())
+                    for (final BaseResource<?> resource : this.resources())
                         {
-                        log.debug("Resource [{}]", target);
+                        log.debug("Resource [{}]", resource);
                         }
                     log.debug("----");
                     //
@@ -715,7 +715,7 @@ implements AdqlQuery, AdqlParserQuery
             );
         this.columns.clear();
         this.tables.clear();
-        this.targets.clear();
+        this.resources.clear();
         }
 
     @Transient
@@ -750,7 +750,7 @@ implements AdqlQuery, AdqlParserQuery
 
     protected void add(final BaseResource<?> resource)
         {
-        this.targets.add(
+        this.resources.add(
             resource
             );
         }
@@ -792,12 +792,8 @@ implements AdqlQuery, AdqlParserQuery
                 //
                 // Execute the pipleline.
 
-//if direct, use query resource
-//else use dqp
-
-                // Check for valid resource ident in prepare().
-                //final String target = ((query.mode() == Mode.DIRECT) ? query.target().ogsaid() : dqpname);
-                final String target = ((mode() == Mode.DIRECT) ? target().ogsaid() : dqpname);
+                // TODO - Check for valid resource ident in prepare().
+                final String target = ((mode() == Mode.DIRECT) ? primary().ogsaid() : dqpname);
                 final String tablename = "Q" + ident().toString() + "xxxx" ;
 
                 log.debug("-- AdqlQuery executing [{}]", ident());

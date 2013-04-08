@@ -92,7 +92,7 @@ extends TestBase
             log.debug("Table [{}]", table.fullname());
             }
         log.debug("Resources -- ");
-        for (final BaseResource<?> target : query.targets())
+        for (final BaseResource<?> target : query.resources())
             {
             log.debug("Resource [{}]", target.fullname());
             }
@@ -101,7 +101,7 @@ extends TestBase
         log.debug("Status [{}]", query.status());
         log.debug("ADQL   [{}]", query.adql());
         log.debug("OSQL   [{}]", query.osql());
-        log.debug("Target [{}]", query.target().ident());
+        log.debug("Target [{}]", query.primary().ident());
         }
 
     /**

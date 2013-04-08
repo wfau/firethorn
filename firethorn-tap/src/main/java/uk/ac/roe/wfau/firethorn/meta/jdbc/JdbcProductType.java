@@ -52,7 +52,7 @@ public enum JdbcProductType
             }
         ),
     HSQLDB(
-        "hsqldb",
+        "HSQL Database Engine",
         new String[]{}
         );
 

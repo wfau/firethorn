@@ -19,6 +19,7 @@
     |
     +-->
 <configuration>
+
 	<!--+
 	    | Default console appender (e.g. tomcat/logs/catalina.out).
 	    | http://logback.qos.ch/manual/configuration.html
@@ -40,8 +41,11 @@
 	<logger name="uk.ac.roe.wfau.firethorn">
 		<level value="DEBUG"/>
 	</logger>
+	<logger name="uk.ac.roe.wfau.firethorn.womble">
+		<level value="WARN"/>
+	</logger>
 	<logger name="uk.ac.roe.wfau.firethorn.adql.parser">
-		<level value="DEBUG"/>
+		<level value="WARN"/>
 	</logger>
 
 	<!--+
@@ -65,6 +69,9 @@
 	<logger name="org.springframework.aop">
 		<level value="INFO" />
 	</logger>
+	<logger name="org.springframework.scheduling">
+		<level value="DEBUG" />
+	</logger>
 
 	<!--+
 	    | Hibernate transactions.
@@ -81,11 +88,26 @@
 	    | Hibernate loggers.
 	    +-->
 	<logger name="org.hibernate">
-		<level value="INFO" />
+		<level value="DEBUG" />
 	</logger>
 	<logger name="org.hibernate.SQL">
+		<level value="DEBUG" />
+	</logger>
+
+	<!--+
+	    | StarLink VOTable parser.
+	    +-->
+	<logger name="uk.ac.starlink">
 		<level value="INFO" />
 	</logger>
+
+	<!--+
+	    | Liquibase.
+	    +-->
+	<logger name="liquibase">
+		<level value="DEBUG" />
+	</logger>
+
 
 	<!--+
 	    | Root logger.

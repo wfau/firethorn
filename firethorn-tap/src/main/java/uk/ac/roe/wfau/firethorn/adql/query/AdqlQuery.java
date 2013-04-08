@@ -285,12 +285,12 @@ extends Entity, Job
      * A list of BaseResources used by the query.
      *
      */
-    public Iterable<BaseResource<?>> targets();
+    public Iterable<BaseResource<?>> resources();
 
     /**
      * The primary BaseResource used by the query.
      *
      */
-    public BaseResource<?> target();
+    public BaseResource<?> primary();
 
     }

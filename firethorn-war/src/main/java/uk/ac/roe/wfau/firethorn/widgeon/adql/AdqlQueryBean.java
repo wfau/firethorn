@@ -23,7 +23,10 @@ import java.util.Iterator;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -96,19 +99,9 @@ implements EntityBean<AdqlQuery>
             );
         }
 
-    public URI getWorkspace()
+    public String getWorkspace()
         {
-        try {
-            return new URI(
-                entity().resource().link()
-                );
-            }
-        catch (final URISyntaxException ouch)
-            {
-            throw new RuntimeException(
-                ouch
-                );
-            }
+        return entity().resource().link();
         }
 
     public String getInput()
@@ -136,35 +129,25 @@ implements EntityBean<AdqlQuery>
         return entity().osql();
         }
 
-    public Iterable<URI> getTargets()
+    public Iterable<String> getResources()
         {
-        return new Iterable<URI>()
+        return new Iterable<String>()
             {
             @Override
-            public Iterator<URI> iterator()
+            public Iterator<String> iterator()
                 {
-                return new Iterator<URI>()
+                return new Iterator<String>()
                     {
-                    Iterator<BaseResource<?>> iter = entity().targets().iterator();
+                    Iterator<BaseResource<?>> iter = entity().resources().iterator();
                     @Override
                     public boolean hasNext()
                         {
                         return this.iter.hasNext();
                         }
                     @Override
-                    public URI next()
+                    public String next()
                         {
-                        try {
-                            return new URI(
-                                this.iter.next().link()
-                                );
-                            }
-                        catch (final URISyntaxException ouch)
-                            {
-                            throw new RuntimeException(
-                                ouch
-                                );
-                            }
+                        return this.iter.next().link();
                         }
                     @Override
                     public void remove()
@@ -176,12 +159,73 @@ implements EntityBean<AdqlQuery>
             };
         }
 
+    public Iterable<String> getTables()
+        {
+        return new Iterable<String>()
+            {
+            @Override
+            public Iterator<String> iterator()
+                {
+                return new Iterator<String>()
+                    {
+                    Iterator<AdqlTable> iter = entity().tables().iterator();
+                    @Override
+                    public boolean hasNext()
+                        {
+                        return this.iter.hasNext();
+                        }
+                    @Override
+                    public String next()
+                        {
+                        return this.iter.next().link();
+                        }
+                    @Override
+                    public void remove()
+                        {
+                        this.iter.remove();
+                        }
+                    };
+                }
+            };
+        }
+
+    public Iterable<String> getColumns()
+        {
+        return new Iterable<String>()
+            {
+            @Override
+            public Iterator<String> iterator()
+                {
+                return new Iterator<String>()
+                    {
+                    Iterator<AdqlColumn> iter = entity().columns().iterator();
+                    @Override
+                    public boolean hasNext()
+                        {
+                        return this.iter.hasNext();
+                        }
+                    @Override
+                    public String next()
+                        {
+                        return this.iter.next().link();
+                        }
+                    @Override
+                    public void remove()
+                        {
+                        this.iter.remove();
+                        }
+                    };
+                }
+            };
+        }
+    
     public interface Syntax
         {
         public AdqlQuery.Syntax.Status getStatus();
         public String getMessage();
         public String getFriendly();
         }
+
     public Syntax getSyntax()
         {
         return new Syntax()

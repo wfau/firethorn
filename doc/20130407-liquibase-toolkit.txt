@@ -1,0 +1,72 @@
+
+
+    #
+    # HSQLDB server
+    # http://stackoverflow.com/questions/3018066/starting-and-stopping-hsqldb-from-unit-tests?rq=1
+
+    org.hsqldb.Server.main(new String[]{});
+
+    #
+    # Liquibase database change control
+    # http://www.liquibase.org/
+
+    #
+    # Liquibase Maven integration
+    # http://www.liquibase.org/manual/maven
+    # https://tillias.wordpress.com/2012/11/10/unit-testing-and-integration-testing-using-junit-liquibase-hsqldb-hibernate-maven-and-spring-framework/
+
+--------------------------------------------
+
+    shared space for user data ... postgresql
+
+    we know the names and types of the columns ... adql parser
+    create the adql table when the query is created
+    empty table, no columns and *no base*
+    *ADQL table with no base*
+    fill in adql columns from the CDS parser data
+    *ADQL column with no base*
+    
+    run ogsadai
+    create the JDBC table, base don ogsadai tuple metadata
+    link the JDBC table to the ADQL table
+    link the JDBC columns to the ADQL columns
+    
+    base can be null
+    base can be changed
+
+    interesting ....
+    
+    how much metadata do we have from the ADQL parser ?
+
+    ideally .. the query should BE a table
+    AdqlQuery extends AdqlTable ....
+    but that would mean a lot of re-design
+
+
+    looks like enough metadata to be able to predict the JDBC table
+    functions (user functions) may be a problem
+    we should be able to create the table and columns when the query is parsed
+    then we update/correct the columns when the data comes back
+    if there are correstions, then subsequent steps may see an error
+
+
+#
+# Query testing 
+
+cat > init.sh << 'EOF'
+source "${FIRETHORN_TEST?}/init-jdbc.sh"
+source "${FIRETHORN_TEST?}/init-adql.sh"
+source "${FIRETHORN_TEST?}/init-wfau.sh"
+EOF
+
+cat > query.sh << 'EOF'
+wfauquery=$(
+    POST "${wfauspace?}/queries/create" \
+        --data-urlencode "adql.resource.query.create.name=query-$(unique)" \
+        --data-urlencode "adql.resource.query.create.query@wfau-query-001.adql" \
+        | ident
+        )
+EOF
+    
+
+

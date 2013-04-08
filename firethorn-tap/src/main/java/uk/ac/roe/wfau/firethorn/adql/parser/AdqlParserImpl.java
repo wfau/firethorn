@@ -29,17 +29,25 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnInfo;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnType;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import adql.db.DBChecker;
 import adql.db.DBTable;
 import adql.parser.ADQLParser;
 import adql.parser.ParseException;
 import adql.query.ADQLObject;
 import adql.query.ADQLQuery;
+import adql.query.ClauseSelect;
+import adql.query.SelectItem;
 import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
+import adql.query.operand.ADQLOperand;
+import adql.query.operand.Operation;
+import adql.query.operand.function.ADQLFunction;
 import adql.translator.ADQLTranslator;
 import adql.translator.PostgreSQLTranslator;
 import adql.translator.TranslationException;
@@ -212,6 +220,243 @@ implements AdqlParser
             );
         }
 
+    
+    protected static class EvalResult
+        {
+        public EvalResult(String name)
+            {
+            this.name = name ;
+            }
+        public EvalResult(String name, EvalResult eval)
+            {
+            this.name = name ;
+            if (eval != null)
+                {
+                this.info = eval.info();
+                }
+            }
+        public EvalResult(String name, BaseColumn.Info info)
+            {
+            this.name = name ;
+            this.info = info ;
+            }
+        private String name;
+        public  String name()
+            {
+            return this.name;
+            }
+        private BaseColumn.Info info ;
+        public  BaseColumn.Info info()
+            {
+            return this.info;
+            }
+        }
+    
+    /**
+     * Evaluate the type of a select item.
+     * 
+     */
+    protected EvalResult eval(SelectItem item)
+        {
+        log.debug("eval(SelectItem)");
+        log.debug("  alias [{}]", item.getAlias());
+        log.debug("  name  [{}]", item.getName());
+        log.debug("  class [{}]", item.getClass().getName());
+        return new EvalResult(
+            item.getAlias(),
+            eval(
+                item.getOperand()
+                )
+            );
+        }
+        
+    protected EvalResult eval(ADQLOperand oper)
+        {
+        log.debug("eval(ADQLOperand)");
+        log.debug("  name   [{}]", oper.getName());
+        log.debug("  class  [{}]", oper.getClass().getName());
+        log.debug("  number [{}]", oper.isNumeric());
+        log.debug("  string [{}]", oper.isString());
+        if (oper instanceof ADQLColumn)
+            {
+            return eval(
+                (ADQLColumn) oper
+                );
+            }
+        else if (oper instanceof ADQLFunction)
+            {
+            return eval(
+                (ADQLFunction) oper
+                );
+            }
+        else if (oper instanceof Operation)
+            {
+            return eval(
+                (Operation) oper
+                );
+            }
+        else {
+            return new EvalResult(
+                "oops"
+                );
+            }
+        }
+    
+    /**
+     * Simple eval for a column.
+     * This is proof of concept only.
+     *
+     */
+    protected EvalResult eval(ADQLColumn column)
+        {
+        log.debug("eval(ADQLColumn)");
+        if (((ADQLColumn) column).getDBLink() instanceof AdqlDBColumn)
+            {
+            final AdqlColumn adql = ((AdqlDBColumn) ((ADQLColumn) column).getDBLink()).column();
+            log.debug("  ----");
+            log.debug("  adql [{}]", adql.fullname());
+            log.debug("  base [{}]", adql.base().fullname());
+            return new EvalResult(
+                adql.name(),
+                adql.base().info()
+                );
+            }
+        else {
+            return new EvalResult(
+                "oops"
+                );
+            }
+        }
+
+    public int size(BaseColumn.Info info)
+        {
+        if (info == null)
+            {
+            return 0 ;
+            }
+        else {
+            if (info.adql() == null)
+                {
+                return 0 ;
+                }
+            else {
+                if (info.adql().size() == null)
+                    {
+                    return 0 ;
+                    }
+                else {
+                    return info.adql().size().intValue();
+                    }
+                }
+            }
+        }
+
+    public AdqlColumnType type(BaseColumn.Info info)
+        {
+        if (info == null)
+            {
+            return AdqlColumnType.UNKNOWN;
+            }
+        else {
+            if (info.adql() == null)
+                {
+                return AdqlColumnType.UNKNOWN;
+                }
+            else {
+                return info.adql().type();
+                }
+            }
+        }
+
+    /**
+     * Simple eval for an operation, picks the largest param.
+     * This is proof of concept only.
+     * Needs a lot more work to get it right.
+     *
+     */
+    protected EvalResult eval(Operation oper)
+        {
+        log.debug("eval(Operation)");
+        log.debug("  name   [{}]", oper.getName());
+        log.debug("  number [{}]", oper.isNumeric());
+        log.debug("  string [{}]", oper.isString());
+
+        BaseColumn.Info left = eval(
+            oper.getLeftOperand()
+            ).info(); 
+
+        BaseColumn.Info right = eval(
+            oper.getRightOperand()
+            ).info(); 
+
+        if (left == null)
+            {
+            return new EvalResult(
+                oper.getName(),
+                right
+                );
+            }
+        else if (right == null)
+            {
+            return new EvalResult(
+                oper.getName(),
+                left
+                );
+            }
+        else {
+            if (size(left) > size(right))
+                {
+                return new EvalResult(
+                    oper.getName(),
+                    left
+                    );
+                }
+            else {
+                return new EvalResult(
+                    oper.getName(),
+                    right
+                    );
+                }
+            }
+        }
+
+    /**
+     * Simple eval for a function, picks the largest param.
+     * This is proof of concept only.
+     * Needs a lot more work to get it right.
+     *
+     */
+    protected EvalResult eval(ADQLFunction funct)
+        {
+        log.debug("eval(ADQLFunction)");
+        log.debug("  name   [{}]", funct.getName());
+        log.debug("  number [{}]", funct.isNumeric());
+        log.debug("  string [{}]", funct.isString());
+
+        BaseColumn.Info info = null ;
+        
+        for (ADQLOperand param : funct.getParameters())
+            {
+            BaseColumn.Info temp = eval(
+                param
+                ).info(); 
+            if (info == null)
+                {
+                info = temp;
+                }
+            else {
+                if (temp.adql().size() > info.adql().size())
+                    {
+                    info = temp ;
+                    }
+                }
+            }
+        return new EvalResult(
+            funct.getName(),
+            info
+            );
+        }
+    
     /**
      * Process a set of ADQL objects.
      *
@@ -223,6 +468,23 @@ implements AdqlParser
             log.debug("----");
             log.debug("ADQLObject [{}]", object.getClass().getName());
 
+            if (object instanceof ClauseSelect)
+                {
+                log.debug("  ----");
+                log.debug("  ClauseSelect");
+                for (SelectItem item : ((ClauseSelect) object))
+                    {
+                    log.debug("-- Select item ----");
+                    log.debug(" alias  [{}]", item.getAlias());
+                    EvalResult eval = eval(
+                        item
+                        );
+                    log.debug(" name [{}]", eval.name());
+                    log.debug(" type [{}]", type(eval.info()));
+                    log.debug(" size [{}]", size(eval.info()));
+                    }
+                }
+            
             if (object instanceof ADQLColumn)
                 {
                 log.debug("  ----");

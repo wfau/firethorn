@@ -30,10 +30,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
@@ -52,16 +48,15 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
         "classpath:scheduler-config.xml"
         }
     )
-/*    
-@Transactional(
-    readOnly=true,
+/*@Transactional(
+    readOnly=false,
     propagation=Propagation.REQUIRES_NEW
     )
 @TransactionConfiguration(
     transactionManager="FireThornTransactionManager",
     defaultRollback = false
     )
- */
+    */
 public abstract class TestBase
     {
 
