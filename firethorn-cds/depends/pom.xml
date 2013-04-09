@@ -63,8 +63,7 @@
 
 	    <!--+
 	        | CDS SAVOT libraries.
-	        +-->
-	    <!--dependency>
+	    <dependency>
             <groupId>cds.savot</groupId>
             <artifactId>cds.savot.common</artifactId>
             <version>3.0</version>
@@ -88,13 +87,6 @@
             <groupId>cds.savot</groupId>
             <artifactId>cds.savot.writer</artifactId>
             <version>3.x</version>
-	    </dependency-->
-	    <!--+
-	        | Temp fix until we get the versions fixed.
-	    <dependency>
-            <groupId>cds</groupId>
-            <artifactId>cds-lib</artifactId>
-            <version>x.y</version>
 	    </dependency>
 	        +-->
 

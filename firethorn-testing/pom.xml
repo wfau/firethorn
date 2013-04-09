@@ -54,7 +54,7 @@
     <dependencies>
 
         <!--+
-            | Our logging components.
+            | FireThorn logging dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>

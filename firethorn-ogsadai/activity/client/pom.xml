@@ -62,7 +62,7 @@
         </dependency>
 
         <!--+
-            | Our logging components.
+            | FireThorn logging dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -72,7 +72,7 @@
         </dependency>
 
         <!--+
-            | Our testing components.
+            | FireThorn testing dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>

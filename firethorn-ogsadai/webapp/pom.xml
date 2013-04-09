@@ -117,37 +117,47 @@
         <!--+
             | HSQLDB Java database and JDBC driver.
             | http://hsqldb.org/
-            +-->
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
         </dependency>
+            +-->
 
         <!--+
             | Postgresql JDBC driver.
             | http://jdbc.postgresql.org/
-            +-->
     	<dependency>
     		<groupId>postgresql</groupId>
     		<artifactId>postgresql</artifactId>
     	</dependency>
+            +-->
 
         <!--+
             | Mysql JDBC driver.
             | https://dev.mysql.com/usingmysql/java/
-            +-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
+            +-->
 
         <!--+
             | jTDS SQLServer JDBC driver.
             | http://jtds.sourceforge.net/
-            +-->
         <dependency>
             <groupId>net.sourceforge.jtds</groupId>
             <artifactId>jtds</artifactId>
+        </dependency>
+            +-->
+
+        <!--+
+            | FireThorn database dependencies.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-database</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
         </dependency>
 
     </dependencies>

@@ -92,7 +92,7 @@
         </dependency> 
 
         <!--+
-            | Our Spring components.
+            | FireThorn Spring dependencies.
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-spring</artifactId>

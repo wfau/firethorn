@@ -58,7 +58,7 @@
     <dependencies>
 
         <!--+
-            | FireThorn logging components.
+            | FireThorn logging dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -68,11 +68,32 @@
         </dependency>
 
         <!--+
-            | FireThorn Spring components.
+            | FireThorn testing dependencies.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-testing</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
+            | FireThorn Spring dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-spring</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
+            | FireThorn database dependencies.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-database</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>
@@ -151,41 +172,41 @@
         <!--+
             | HSQLDB Java database and JDBC driver.
             | http://hsqldb.org/
-            +-->
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
         </dependency>
+            +-->
 
         <!--+
             | Postgresql JDBC driver.
             | http://jdbc.postgresql.org/
-            +-->
     	<dependency>
     		<groupId>postgresql</groupId>
     		<artifactId>postgresql</artifactId>
             <scope>test</scope>
     	</dependency>
+            +-->
 
         <!--+
             | Mysql JDBC driver.
             | https://dev.mysql.com/usingmysql/java/
-            +-->
         <dependency>
 	        <groupId>mysql</groupId>
 	        <artifactId>mysql-connector-java</artifactId>
             <scope>test</scope>
         </dependency>
+            +-->
 
         <!--+
             | jTDS SQLServer JDBC driver.
             | http://jtds.sourceforge.net/
-            +-->
         <dependency>
             <groupId>net.sourceforge.jtds</groupId>
             <artifactId>jtds</artifactId>
             <scope>test</scope>
         </dependency>
+            +-->
 
         <!--+
             | Joda Time Libraries.
