@@ -932,8 +932,8 @@ implements AdqlQuery, AdqlParserQuery
                 }
             };
         }
+
     // The user schema.
-    
     public void init()
         {
 

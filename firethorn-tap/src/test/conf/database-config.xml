@@ -51,7 +51,7 @@
     <!--+
         | Memory based HSQLDB test data.
         +-->
-    <bean id="HsqlMemTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <bean id="HsqldbMemTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
         <property name="url" value="jdbc:hsqldb:mem:memtest"/>
         <property name="username" value="sa"/>
@@ -61,7 +61,7 @@
     <!--+
         | File based HSQLDB test data.
         +-->
-    <bean id="HsqlFileTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <bean id="HsqldbFileTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
         <property name="url" value="jdbc:hsqldb:file:target/database/filetest"/>
         <property name="username" value="sa"/>
@@ -128,6 +128,17 @@
     <bean id="RoeBestDR7" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
         <property name="url"      value="${firethorn.wfau.base}/BestDR7"/>
+        <property name="username" value="${firethorn.wfau.user}"/>
+        <property name="password" value="${firethorn.wfau.pass}"/>
+    </bean>
+
+    <!--+
+        | SSH tunnel to ROE database server.
+        | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
+        +-->
+    <bean id="RoeWFAU" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
+        <property name="url"      value="${firethorn.wfau.base}/WFAU"/>
         <property name="username" value="${firethorn.wfau.user}"/>
         <property name="password" value="${firethorn.wfau.pass}"/>
     </bean>

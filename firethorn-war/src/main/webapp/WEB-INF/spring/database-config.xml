@@ -75,7 +75,7 @@
     <!--+
         | Memory based HSQLDB test data.
         +-->
-    <bean id="HsqlMemTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <bean id="HsqldbMemTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
         <property name="url" value="jdbc:hsqldb:mem:memtest"/>
         <property name="username" value="sa"/>
@@ -85,7 +85,7 @@
     <!--+
         | File based HSQLDB test data.
         +-->
-    <bean id="HsqlFileTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <bean id="HsqldbFileTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
         <property name="url" value="jdbc:hsqldb:file:target/database/filetest"/>
         <property name="username" value="sa"/>
@@ -166,7 +166,6 @@
         <property name="username" value="${firethorn.wfau.user}"/>
         <property name="password" value="${firethorn.wfau.pass}"/>
     </bean>
-
 
 </beans>
 

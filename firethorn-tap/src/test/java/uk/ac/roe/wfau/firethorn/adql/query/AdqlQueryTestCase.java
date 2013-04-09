@@ -55,20 +55,24 @@ extends TestBase
         //
         // Create our JDBC resources.
         this.twomass = factories().jdbc().resources().create(
+            "twomass",
             "twomass-resource",
             "spring:RoeTWOMASS"
             );
         this.twoxmm = factories().jdbc().resources().create(
+            "twoxmm",
             "twoxmm-resource",
             "spring:RoeTWOXMM"
             );
         this.bestdr7 = factories().jdbc().resources().create(
+            "bestdr7",
             "bestdr7-resource",
             "spring:RoeBestDR7"
             );
         this.combined = factories().jdbc().resources().create(
-            "combined-resource",
-            "spring:RoeTWOXMM"
+            "wfau",
+            "wfau-resource",
+            "spring:RoeWFAU"
             );
         this.combined.catalog(
             JdbcResource.ALL_CATALOGS
@@ -117,9 +121,9 @@ extends TestBase
         + " FROM"
         + "    adql_twomass.twomass_psc"
         + " WHERE"
-        + "    ra  Between '56.0' AND '57.9'"
+        + "    ra  BETWEEN '56.0' AND '57.9'"
         + " AND"
-        + "    dec Between '24.0' AND '24.2'"
+        + "    dec BETWEEN '24.0' AND '24.2'"
         + ""
         ;
 
