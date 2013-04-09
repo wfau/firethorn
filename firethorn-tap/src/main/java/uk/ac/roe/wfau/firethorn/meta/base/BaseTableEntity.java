@@ -205,4 +205,20 @@ extends BaseComponentEntity
         {
         return base().query();
         }
+
+    @Override
+    public AdqlTable.Info info()
+        {
+        return new AdqlTable.Info()
+            {
+            @Override
+            public AdqlTable.Info.AdqlMeta adql()
+                {
+                return new AdqlTable.Info.AdqlMeta()
+                    {
+                    
+                    };
+                }
+            };
+        }
     }

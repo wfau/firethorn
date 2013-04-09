@@ -193,4 +193,18 @@ extends BaseComponent
      */
     public AdqlQuery query();
 
+    /**
+     * Base table metadata.
+     *
+     */
+    public interface Info
+        {
+        }
+
+    /**
+     * Access to the table metadata.
+     *
+     */
+    public AdqlTable.Info info();
+
     }

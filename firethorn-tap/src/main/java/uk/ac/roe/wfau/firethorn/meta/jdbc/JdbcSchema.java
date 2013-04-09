@@ -97,7 +97,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          *  Create a new table.
          *
          */
-        public JdbcTable create(final String name, final JdbcTable.JdbcTableType type);
+        public JdbcTable create(final String name, final JdbcTable.TableType type);
 
         /**
          *  Create a new table.

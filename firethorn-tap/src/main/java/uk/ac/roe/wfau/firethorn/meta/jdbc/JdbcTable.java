@@ -22,7 +22,9 @@ import java.util.Map;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseTable.Info;
 
 /**
  *
@@ -75,14 +77,14 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * Create a new table.
          *
          */
-        public JdbcTable create(final JdbcSchema parent, final String name, final JdbcTableType type);
+        public JdbcTable create(final JdbcSchema parent, final String name, final TableType type);
 
         /**
          * Create a new query table.
          *
          */
         public JdbcTable create(final JdbcSchema parent, final AdqlQuery query, final String name);
-
+        
         /**
          * The table column factory.
          *
@@ -115,7 +117,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
         public JdbcColumn create(final String name, final int type, final int size);
 
         /**
-         * Update the columns.
+         * Scan the JDBC metadata.
          *
          */
         public void scan();
@@ -125,7 +127,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
     public Columns columns();
 
     /**
-     * Update the table.
+     * Scan the JDBC metadata.
      *
      */
     public void scan();
@@ -134,7 +136,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
      * JDBC table types.
      *
      */
-    public static enum JdbcTableType
+    public static enum TableType
         {
         TABLE("TABLE"),
         VIEW("VIEW"),
@@ -150,14 +152,14 @@ extends BaseTable<JdbcTable, JdbcColumn>
             return this.jdbc;
             }
 
-        private JdbcTableType(final String jdbc)
+        private TableType(final String jdbc)
             {
             this.jdbc = jdbc;
             }
 
-        static protected Map<String, JdbcTableType> mapping = new HashMap<String, JdbcTableType>();
+        static protected Map<String, TableType> mapping = new HashMap<String, TableType>();
         static {
-            for (final JdbcTableType type : JdbcTableType.values())
+            for (final TableType type : TableType.values())
                 {
                 mapping.put(
                     type.jdbc,
@@ -166,7 +168,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
                 }
             }
 
-        static public JdbcTableType match(final String string)
+        static public TableType match(final String string)
             {
             return mapping.get(
                 string
@@ -175,17 +177,57 @@ extends BaseTable<JdbcTable, JdbcColumn>
         }
 
     /**
+     * JDBC table metadata.
+     *
+     */
+    public interface Info
+    extends AdqlTable.Info
+        {
+        /**
+         * The JDBC table metadata.
+         *
+         */
+        public interface JdbcMeta {
+
+            /**
+             * Get the database table type.
+             *
+             */
+            public TableType type();
+    
+            /**
+             * Set the database table type.
+             *
+             */
+            public void type(final TableType type);
+
+            }
+        
+        /**
+         * The JDBC table metadata.
+         *
+         */
+        public JdbcMeta jdbc();
+        
+        }
+    
+    @Override
+    public JdbcTable.Info info();
+    
+    /**
      * Get the database table type.
      * @todo Move these to a sub-interface
      *
+    @Deprecated
+    public TableType jdbctype();
      */
-    public JdbcTableType jdbctype();
 
     /**
      * Set the database table type.
      * @todo Move these to a sub-interface
      *
+    @Deprecated
+    public void jdbctype(final TableType type);
      */
-    public void jdbctype(final JdbcTableType type);
-
+    
     }

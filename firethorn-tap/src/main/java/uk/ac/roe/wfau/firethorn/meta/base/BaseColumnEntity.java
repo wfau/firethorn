@@ -212,19 +212,15 @@ extends BaseComponentEntity
     @Override
     public abstract BaseColumn<?> root();
 
-    /**
-     *
-     * @todo Move this to Jdbc, Ivoa ad Adql classes, replace with warn/error on base class.
-     */
     @Override
-    public Info info()
+    public AdqlColumn.Info info()
         {
-        return new Info()
+        return new AdqlColumn.Info()
             {
             @Override
-            public AdqlColumn.Info adql()
+            public AdqlColumn.Info.Meta adql()
                 {
-                return new AdqlColumn.Info()
+                return new AdqlColumn.Info.Meta()
                     {
                     @Override
                     public Integer size()

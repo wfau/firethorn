@@ -315,9 +315,9 @@ public class JdbcColumnEntity
         return new JdbcColumn.Info()
             {
             @Override
-            public AdqlColumn.Info adql()
+            public AdqlColumn.Info.Meta adql()
                 {
-                return new AdqlColumn.Info()
+                return new AdqlColumn.Info.Meta()
                     {
                     @Override
                     public Integer size()
@@ -376,9 +376,9 @@ public class JdbcColumnEntity
                 }
 
             @Override
-            public JdbcColumnInfo jdbc()
+            public JdbcColumn.Info.Meta jdbc()
                 {
-                return new JdbcColumnInfo()
+                return new JdbcColumn.Info.Meta()
                     {
                     @Override
                     public int size()

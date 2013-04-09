@@ -17,32 +17,15 @@
  */
 package uk.ac.roe.wfau.firethorn.test ;
 
-import static org.junit.Assert.assertEquals;
-
-import java.net.URI;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-
-import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
  * Transactional base class for tests.
  * Using Propagation.REQUIRES_NEW create a new transaction for each test.
  *
  */
-@Slf4j
 @Transactional(
     readOnly=false,
     propagation=Propagation.REQUIRES_NEW

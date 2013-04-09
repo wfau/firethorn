@@ -336,7 +336,7 @@ extends Entity, Job
     public Iterable<ColumnMeta > items();
 
     /**
-     * The results tables.
+     * Our result tables.
      * 
      */
     public interface Results
@@ -355,7 +355,7 @@ extends Entity, Job
         }
 
     /**
-     * The results tables.
+     * Our result tables.
      * 
      */
     public Results results();

@@ -105,12 +105,19 @@ Ignoring user defined functions - the rest we know at query time.
 
 --------------------------------------------
 
+            JdbcTable jtable = JdbcSchema.tables.create(
+                AdqlQuery query,
+                String name
+                )
+
             JdbcTable jtable = JdbcTable.Factory.create(
-                AdqlQuery query
+                JdbcSchema parent,
+                AdqlQuery query,
+                String name
                 )
 
 
-            AdqlQuery query() <-- ref to query source.
+            AdqlQuery JdbcTable.query() <-- ref to query source.
             
             
             //

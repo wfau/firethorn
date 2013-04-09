@@ -29,12 +29,9 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnInfo;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnType;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import adql.db.DBChecker;
 import adql.db.DBTable;
 import adql.parser.ADQLParser;
@@ -242,12 +239,12 @@ implements AdqlParser
          * Private constructor.
          *
          */
-        private ColumnMetaImpl(final String name, final AdqlQuery.ColumnMeta eval)
+        private ColumnMetaImpl(final String name, final AdqlQuery.ColumnMeta meta)
             {
             this.name = name ;
-            if (eval != null)
+            if (meta != null)
                 {
-                this.info = eval.info();
+                this.info = meta.info();
                 }
             }
 
@@ -312,12 +309,12 @@ implements AdqlParser
                 return 0 ;
                 }
             else {
-                if (info.size() == null)
+                if (info.adql().size() == null)
                     {
                     return 0 ;
                     }
                 else {
-                    return info.size().intValue();
+                    return info.adql().size().intValue();
                     }
                 }
             }
@@ -333,7 +330,7 @@ implements AdqlParser
                 return AdqlColumn.Type.UNKNOWN;
                 }
             else {
-                return info.type();
+                return info.adql().type();
                 }
             }
 
@@ -406,7 +403,7 @@ implements AdqlParser
                 log.debug("  base [{}]", adql.base().fullname());
                 return new ColumnMetaImpl(
                     adql.name(),
-                    adql.base().info().adql()
+                    adql.base().info()
                     );
                 }
             else {
@@ -491,7 +488,7 @@ implements AdqlParser
                     info = temp;
                     }
                 else {
-                    if (temp.size() > info.size())
+                    if (temp.adql().size() > info.adql().size())
                         {
                         info = temp ;
                         }

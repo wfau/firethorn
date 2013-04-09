@@ -92,8 +92,8 @@ public class JdbcSchemaEntity
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_JDBC_SCHEMA_COL = "jdbcschema";
-    protected static final String DB_JDBC_COLUMN_COL = "jdbccolumn";
+    protected static final String DB_JDBC_SCHEMA_COL  = "jdbcschema";
+    protected static final String DB_JDBC_CATALOG_COL = "jdbccatalog";
 
     /**
      * Schema factory implementation.
@@ -285,7 +285,7 @@ public class JdbcSchemaEntity
 
     @Basic(fetch = FetchType.EAGER)
     @Column(
-        name = DB_JDBC_COLUMN_COL,
+        name = DB_JDBC_CATALOG_COL,
         unique = false,
         nullable = true,
         updatable = false
@@ -346,7 +346,7 @@ public class JdbcSchemaEntity
                     );
                 }
             @Override
-            public JdbcTable create(final String name, final JdbcTable.JdbcTableType type)
+            public JdbcTable create(final String name, final JdbcTable.TableType type)
                 {
                 return factories().jdbc().tables().create(
                     JdbcSchemaEntity.this,
@@ -423,8 +423,8 @@ public class JdbcSchemaEntity
                         );
                     if (table != null)
                         {
-                        table.jdbctype(
-                            JdbcTable.JdbcTableType.match(
+                        table.info().jdbc().type(
+                            JdbcTable.TableType.match(
                                 tttype
                                 )
                             );
@@ -432,7 +432,7 @@ public class JdbcSchemaEntity
                     else {
                         table = tablesimpl().create(
                             ttname,
-                            JdbcTable.JdbcTableType.match(
+                            JdbcTable.TableType.match(
                                 tttype
                                 )
                             );

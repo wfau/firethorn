@@ -152,7 +152,7 @@ implements JdbcTable
 
         @Override
         @CreateEntityMethod
-        public JdbcTable create(final JdbcSchema schema, final String name, final JdbcTableType type)
+        public JdbcTable create(final JdbcSchema schema, final String name, final TableType type)
             {
             return this.insert(
                 new JdbcTableEntity(
@@ -270,11 +270,11 @@ implements JdbcTable
             schema,
             null,
             name,
-            JdbcTableType.TABLE
+            TableType.TABLE
             );
         }
 
-    public JdbcTableEntity(final JdbcSchema schema, final String name, final JdbcTableType type)
+    public JdbcTableEntity(final JdbcSchema schema, final String name, final TableType type)
         {
         this(
             schema,
@@ -290,11 +290,11 @@ implements JdbcTable
             schema,
             query,
             name,
-            JdbcTableType.TABLE
+            TableType.TABLE
             );
         }
 
-    public JdbcTableEntity(final JdbcSchema schema, final AdqlQuery query, final String name, final JdbcTableType type)
+    public JdbcTableEntity(final JdbcSchema schema, final AdqlQuery query, final String name, final TableType type)
         {
         super(schema, name);
         this.query  = query;
@@ -406,18 +406,56 @@ implements JdbcTable
         nullable = true,
         updatable = true
         )
-    private JdbcTableType jdbctype ;
+    private TableType jdbctype ;
+    /*
     @Override
-    public JdbcTableType jdbctype()
+    public TableType jdbctype()
         {
         return this.jdbctype;
         }
     @Override
-    public void jdbctype(final JdbcTableType type)
+    public void jdbctype(final TableType type)
         {
         this.jdbctype = type;
         }
+     */
 
+    @Override
+    public JdbcTable.Info info()
+        {
+        return new JdbcTable.Info()
+            {
+            @Override
+            public JdbcMeta jdbc()
+                {
+                return new JdbcMeta()
+                    {
+                    @Override
+                    public TableType type()
+                        {
+                        return JdbcTableEntity.this.jdbctype ;
+                        }
+
+                    @Override
+                    public void type(TableType type)
+                        {
+                        JdbcTableEntity.this.jdbctype = type ;
+                        }
+                    };
+                }
+
+            @Override
+            public AdqlMeta adql()
+                {
+                return new AdqlMeta()
+                    {
+                    
+                    };
+                }
+            };
+        }
+    
+    
     @Override
     public String link()
         {
@@ -513,8 +551,7 @@ implements JdbcTable
         }
 
     // TODO
-    // Refactor this as a query ... ?
-    // Or identity mapped ..
+    // Refactor this as mapped identity ?
     // http://www.codereye.com/2009/04/hibernate-bi-directional-one-to-one.html
     
     @Index(

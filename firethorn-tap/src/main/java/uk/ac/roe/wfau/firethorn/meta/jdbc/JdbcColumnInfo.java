@@ -21,6 +21,7 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
  *
  *
  */
+@Deprecated
 public interface JdbcColumnInfo
     {
 

@@ -888,8 +888,8 @@ implements AdqlQuery, AdqlParserQuery
     @JoinColumn(
         name = DB_JDBC_TABLE_COL,
         unique = true,
-        nullable = false,
-        updatable = false
+        nullable = true,
+        updatable = true
         )
     private JdbcTable jdbctable;
 
@@ -907,8 +907,8 @@ implements AdqlQuery, AdqlParserQuery
     @JoinColumn(
         name = DB_ADQL_TABLE_COL,
         unique = true,
-        nullable = false,
-        updatable = false
+        nullable = true,
+        updatable = true
         )
     private AdqlTable adqltable;
     

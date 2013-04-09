@@ -21,6 +21,7 @@ import java.sql.Types;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
 /**
  *
@@ -188,21 +189,39 @@ extends BaseColumn<AdqlColumn>
                 }
             }
         }
-    
-   /**
-    * ADQL column metadata.
-    * @todo Add UCD, utype etc ...
-    *
-    */
-   public interface Info
-       {
-       public Integer size();
 
-       public void size(final Integer size);
+    /**
+     * Access to the column metadata.
+     *
+     */
+    public interface Info
+        {
+        /**
+         * ADQL column metadata.
+         * @todo Add UCD, utype etc ...
+         *
+         */
+        public interface Meta
+            {
+            public Integer size();
 
-       public Type type();
+            public void size(final Integer size);
 
-       public void type(final Type type);
+            public Type type();
 
-       }
+            public void type(final Type type);
+
+            }
+
+        /**
+         * The ADQL column metadata.
+         *
+         */
+        public Meta adql();
+
+        }
+
+    @Override
+    public AdqlColumn.Info info();
+
     }
