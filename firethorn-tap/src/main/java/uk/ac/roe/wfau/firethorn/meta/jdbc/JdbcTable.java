@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 import java.util.HashMap;
 import java.util.Map;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
@@ -75,6 +76,12 @@ extends BaseTable<JdbcTable, JdbcColumn>
          *
          */
         public JdbcTable create(final JdbcSchema parent, final String name, final JdbcTableType type);
+
+        /**
+         * Create a new query table.
+         *
+         */
+        public JdbcTable create(final JdbcSchema parent, final AdqlQuery query, final String name);
 
         /**
          * The table column factory.

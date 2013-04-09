@@ -40,6 +40,7 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
@@ -351,6 +352,15 @@ public class JdbcSchemaEntity
                     JdbcSchemaEntity.this,
                     name,
                     type
+                    );
+                }
+            @Override
+            public JdbcTable create(AdqlQuery query, String name)
+                {
+                return factories().jdbc().tables().create(
+                    JdbcSchemaEntity.this,
+                    query,
+                    name
                     );
                 }
             @Override

@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import java.sql.Types;
+
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 
@@ -76,4 +78,131 @@ extends BaseColumn<AdqlColumn>
     @Override
     public BaseColumn<?> base();
 
+    /**
+     * An enumeration of the VOTable data types, as defined in section 2.1 of the VOTable-1.2 specification.
+     * @see <a href='http://www.ivoa.net/Documents/VOTable/20091130/'/>
+     *
+     *
+     */
+    public enum Type
+        {
+        BOOLEAN("boolean"),
+        BIT("bit"),
+        BYTE("unsignedByte"),
+        CHAR("char"),
+        UNICODE("unicodeChar"),
+        SHORT("short"),
+        INTEGER("int"),
+        LONG("long"),
+        FLOAT("float"),
+        DOUBLE("double"),
+        FLOATCOMPLEX("floatComplex"),
+        DOUBLECOMPLEX("doubleComplex"),
+        UNKNOWN("");
+
+        /**
+         * Private constructor.
+         *
+         */
+        private Type(final String datatype)
+            {
+            this.datatype = datatype ;
+            }
+
+        /**
+         * The VOTable dataype name.
+         *
+         */
+        private String datatype;
+
+        /**
+         * The VOTable dataype name.
+         *
+         */
+        public String datatype()
+            {
+            return this.datatype;
+            }
+
+        /**
+         * Mapping from java.sql.Types to AdqlColumnType.
+         * @see java.sql.Types
+         *
+         */
+        public static Type jdbc(final int type)
+            {
+            switch(type)
+                {
+                case Types.BIGINT :
+                    return LONG ;
+
+                case Types.BIT :
+                case Types.BOOLEAN :
+                    return BOOLEAN ;
+
+                case Types.LONGNVARCHAR :
+                case Types.LONGVARCHAR :
+                case Types.NVARCHAR :
+                case Types.VARCHAR :
+                case Types.NCHAR :
+                case Types.CHAR :
+                    return CHAR ;
+
+                case Types.DOUBLE :
+                    return DOUBLE ;
+
+                case Types.REAL  :
+                case Types.FLOAT :
+                    return FLOAT ;
+
+                case Types.INTEGER :
+                    return INTEGER ;
+
+                case Types.SMALLINT :
+                case Types.TINYINT :
+                    return SHORT ;
+
+                case Types.ARRAY :
+                case Types.BINARY :
+                case Types.BLOB :
+                case Types.CLOB :
+                case Types.DATALINK :
+                case Types.DATE :
+                case Types.DECIMAL :
+                case Types.DISTINCT :
+                case Types.JAVA_OBJECT :
+                case Types.LONGVARBINARY :
+                case Types.NCLOB :
+                case Types.NULL :
+                case Types.NUMERIC :
+                case Types.OTHER :
+                case Types.REF :
+                case Types.ROWID :
+                case Types.SQLXML :
+                case Types.STRUCT :
+                case Types.TIME :
+                case Types.TIMESTAMP :
+                case Types.VARBINARY :
+                default :
+                    return UNKNOWN ;
+                }
+            }
+        }
+    
+   /**
+    * ADQL column metadata.
+    * @todo Add UCD, utype etc ...
+    *
+    */
+   public interface Info
+       {
+       public Integer size();
+
+       public void size(final Integer size);
+
+       public Type type();
+
+       public void type(final Type type);
+
+       }
     }

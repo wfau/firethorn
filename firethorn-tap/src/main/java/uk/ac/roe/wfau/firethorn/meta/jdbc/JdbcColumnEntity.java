@@ -39,6 +39,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnInfo;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnType;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
@@ -314,9 +315,9 @@ public class JdbcColumnEntity
         return new JdbcColumn.Info()
             {
             @Override
-            public AdqlColumnInfo adql()
+            public AdqlColumn.Info adql()
                 {
-                return new AdqlColumnInfo()
+                return new AdqlColumn.Info()
                     {
                     @Override
                     public Integer size()
@@ -346,7 +347,7 @@ public class JdbcColumnEntity
                         }
 
                     @Override
-                    public AdqlColumnType type()
+                    public AdqlColumn.Type type()
                         {
                         if (JdbcColumnEntity.this.usertype != null)
                             {
@@ -358,7 +359,7 @@ public class JdbcColumnEntity
                         }
 
                     @Override
-                    public void type(final AdqlColumnType type)
+                    public void type(final AdqlColumn.Type type)
                         {
                         JdbcColumnEntity.this.usertype = type ;
                         if (type != null)
@@ -366,7 +367,7 @@ public class JdbcColumnEntity
                             JdbcColumnEntity.this.adqltype = type ;
                             }
                         else {
-                            JdbcColumnEntity.this.adqltype = AdqlColumnType.jdbc(
+                            JdbcColumnEntity.this.adqltype = AdqlColumn.Type.jdbc(
                                 JdbcColumnEntity.this.jdbctype
                                 );
                             }
@@ -407,7 +408,7 @@ public class JdbcColumnEntity
                         JdbcColumnEntity.this.jdbctype = type ;
                         if (JdbcColumnEntity.this.usertype == null)
                             {
-                            JdbcColumnEntity.this.adqltype = AdqlColumnType.jdbc(
+                            JdbcColumnEntity.this.adqltype = AdqlColumn.Type.jdbc(
                                 type
                                 );
                             }

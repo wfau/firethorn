@@ -21,6 +21,7 @@ package uk.ac.roe.wfau.firethorn.meta.adql;
  *
  *
  */
+@Deprecated
 public interface AdqlColumnInfo
     {
     public Integer size();

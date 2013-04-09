@@ -23,6 +23,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 /**
  *
@@ -292,5 +293,69 @@ extends Entity, Job
      *
      */
     public BaseResource<?> primary();
+
+    /**
+     * Column metadata for a SELECT item.
+     *
+     */
+    public interface ColumnMeta
+        {
+    
+        /**
+         * The item name or alias.
+         *
+         */
+        public abstract String name();
+    
+        /**
+         * The item metadata.
+         *
+         */
+        public abstract AdqlColumn.Info info();
+    
+        /**
+         * Get the item size.
+         *
+         */
+        public abstract int size();
+    
+        /**
+         * Get the item type.
+         *
+         */
+        public abstract AdqlColumn.Type type();
+    
+        }
+
+    /**
+     * A list of metadata for the SELECT items.
+     *
+     */
+    public Iterable<ColumnMeta > items();
+
+    /**
+     * The results tables.
+     * 
+     */
+    public interface Results
+        {
+        /**
+         * The physical JDBC database table.
+         * 
+         */
+        public JdbcTable jdbc();
+
+        /**
+         * The abstract ADQL table.
+         * 
+         */
+        public AdqlTable adql();
+        }
+
+    /**
+     * The results tables.
+     * 
+     */
+    public Results results();
 
     }

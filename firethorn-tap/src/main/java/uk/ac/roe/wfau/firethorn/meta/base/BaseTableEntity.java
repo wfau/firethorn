@@ -33,6 +33,7 @@ import org.hibernate.annotations.NamedQueries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -199,4 +200,9 @@ extends BaseComponentEntity
     @Override
     public abstract String alias();
 
+    @Override
+    public AdqlQuery query()
+        {
+        return base().query();
+        }
     }

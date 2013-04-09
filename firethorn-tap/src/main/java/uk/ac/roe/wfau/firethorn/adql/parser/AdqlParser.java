@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.adql.parser;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 
 /**

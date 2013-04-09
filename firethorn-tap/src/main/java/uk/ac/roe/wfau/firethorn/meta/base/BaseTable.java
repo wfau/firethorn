@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 
 /**
@@ -172,7 +173,7 @@ extends BaseComponent
     public Columns<ColumnType> columns();
 
     /**
-     * The tables linked to this table.
+     * The AdqlTables linked to this table.
      *
      */
     interface Linked
@@ -181,9 +182,15 @@ extends BaseComponent
         }
 
     /**
-     * The tables linked to this table.
+     * The AdqlTables linked to this table.
      *
      */
     public Linked linked();
+
+    /**
+     * The AdqlQuery that generated this table.
+     *
+     */
+    public AdqlQuery query();
 
     }

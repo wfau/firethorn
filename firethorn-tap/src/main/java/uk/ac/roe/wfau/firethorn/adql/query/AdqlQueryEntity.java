@@ -34,6 +34,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -61,8 +62,11 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineResult;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.StoredResultPipeline;
 
@@ -120,11 +124,14 @@ implements AdqlQuery, AdqlParserQuery
     protected static final String DB_STATUS_COL   = "status";
     protected static final String DB_RESOURCE_COL = "resource";
 
+    protected static final String DB_JDBC_TABLE_COL = "jdbctable";
+    protected static final String DB_ADQL_TABLE_COL = "adqltable";
+    
     /**
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_SYNTAX_STATUS_COL  = "syntaxstatus";
+    protected static final String DB_SYNTAX_STATE_COL   = "syntaxstate";
     protected static final String DB_SYNTAX_MESSAGE_COL = "syntaxmessage";
 
     /**
@@ -493,7 +500,7 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Column(
-        name = DB_SYNTAX_STATUS_COL,
+        name = DB_SYNTAX_STATE_COL,
         unique = false,
         nullable = false,
         updatable = true
@@ -713,6 +720,7 @@ implements AdqlQuery, AdqlParserQuery
         this.syntax(
             Syntax.Status.UNKNOWN
             );
+        this.items.clear();
         this.columns.clear();
         this.tables.clear();
         this.resources.clear();
@@ -832,7 +840,6 @@ implements AdqlQuery, AdqlParserQuery
                         Status.FAILED
                         );
                     }
-
                 }
             catch (final NotFoundException ouch)
                 {
@@ -850,4 +857,98 @@ implements AdqlQuery, AdqlParserQuery
             }
         return result ;
         }
+
+    @Transient
+    private final Set<ColumnMeta > items = new HashSet<ColumnMeta >();
+    @Override
+    public Iterable<ColumnMeta > items()
+        {
+        return this.items;
+        }
+    
+    @Override
+    public void add(ColumnMeta meta)
+        {
+        this.items.add(
+            meta
+            );
+        }
+    
+    /**
+     * Our JDBC table.
+     * 
+     */
+    @Index(
+        name=DB_TABLE_NAME + "IndexByJdbcTable"
+        )
+    @OneToOne(
+        fetch = FetchType.LAZY,
+        targetEntity = JdbcTableEntity.class
+        )
+    @JoinColumn(
+        name = DB_JDBC_TABLE_COL,
+        unique = true,
+        nullable = false,
+        updatable = false
+        )
+    private JdbcTable jdbctable;
+
+    /**
+     * Our ADQL table.
+     * 
+     */
+    @Index(
+        name=DB_TABLE_NAME + "IndexByAdqlTable"
+        )
+    @OneToOne(
+        fetch = FetchType.LAZY,
+        targetEntity = AdqlTableEntity.class
+        )
+    @JoinColumn(
+        name = DB_ADQL_TABLE_COL,
+        unique = true,
+        nullable = false,
+        updatable = false
+        )
+    private AdqlTable adqltable;
+    
+    /**
+     * Our results tables.
+     * 
+     */
+    @Override
+    public Results results()
+        {
+        return new Results(){
+            @Override
+            public JdbcTable jdbc()
+                {
+                return AdqlQueryEntity.this.jdbctable ;
+                }
+            @Override
+            public AdqlTable adql()
+                {
+                return AdqlQueryEntity.this.adqltable;
+                }
+            };
+        }
+    // The user schema.
+    
+    public void init()
+        {
+
+        // Create our jdbc table.
+
+        // Create our adql table.
+
+        // Iterate the query columns.
+        // Create or update the corresponding jdbc column.
+        // Create or update the corresponding adql column.
+
+        // Remove extra jdbc columns.
+
+        
+        }
+
+
     }

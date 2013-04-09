@@ -65,6 +65,12 @@ public interface AdqlParserQuery
     public void add(final AdqlTable table);
 
     /**
+     * Add the metadata for a SELECT item.
+     *
+     */
+    public void add(final AdqlQuery.ColumnMeta meta);    
+    
+    /**
      * Set the ADQL syntax status.
      *
      */

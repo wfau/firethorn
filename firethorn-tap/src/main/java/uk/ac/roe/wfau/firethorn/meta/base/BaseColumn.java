@@ -93,7 +93,7 @@ extends BaseComponent
          * The ADQL column metadata.
          *
          */
-        public AdqlColumnInfo adql();
+        public AdqlColumn.Info adql();
 
         }
 
