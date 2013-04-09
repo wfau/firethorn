@@ -31,22 +31,51 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
 public abstract class EntityLinkFactory<EntityType extends Entity>
 implements Entity.LinkFactory<EntityType>
     {
+    public static final String DELIM = "/";
+    public static final String REGEX = "(\\p{Alnum}+).*";
 
     protected EntityLinkFactory(final String path)
         {
-        this.pattern = Pattern.compile(
-            ".*" + path + "/(\\p{Alnum}+).*"
+        this(
+            DELIM,
+            path
             );
         }
 
-    protected final Entity.IdentFactory idents = new EntityIdentFactory();
+    protected EntityLinkFactory(final String delim, final String path)
+        {
+        this.path  = path  ;
+        this.delim = delim ;
+        this.pattern = Pattern.compile(
+            ".*" + this.path + this.delim + REGEX
+            );
+        }
+
+    protected final String path  ;
+    protected final String delim ;
     protected final Pattern pattern ;
+    protected final Entity.IdentFactory idents = new EntityIdentFactory();
+
+    @Override
+    public String link(final EntityType entity)
+        {
+        StringBuilder builder = new StringBuilder(
+            this.path
+            );
+        builder.append(
+            DELIM
+            );
+        builder.append(
+            entity.ident().toString()
+            );
+        return builder.toString();
+        }
 
     @Override
     public Identifier parse(final String string)
         {
         log.debug("parse(String)");
-        log.debug("  string [{}]", string);
+        log.debug("  string  [{}]", string);
         log.debug("  pattern [{}]", this.pattern.pattern());
 
         final Matcher matcher = this.pattern.matcher(

@@ -68,5 +68,9 @@ wfauquery=$(
         )
 EOF
     
+--------------------------------------------
+
+Ignoring user defined functions - the rest we know at query time.
+
 
 
