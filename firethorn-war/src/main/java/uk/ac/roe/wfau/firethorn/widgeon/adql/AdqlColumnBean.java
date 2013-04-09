@@ -22,7 +22,6 @@ import java.net.URISyntaxException;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnType;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -98,7 +97,7 @@ implements EntityBean<AdqlColumn>
         {
         public interface Adql
             {
-            public AdqlColumnType getType();
+            public AdqlColumn.Type getType();
             public Integer getSize();
             }
         public Adql getAdql();
@@ -114,7 +113,7 @@ implements EntityBean<AdqlColumn>
                 return new Adql()
                     {
                     @Override
-                    public AdqlColumnType getType()
+                    public AdqlColumn.Type getType()
                         {
                         return entity().info().adql().type();
                         }

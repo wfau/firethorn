@@ -101,7 +101,7 @@ implements EntityBean<AdqlQuery>
 
     public String getWorkspace()
         {
-        return entity().resource().link();
+        return entity().schema().resource().link();
         }
 
     public String getInput()

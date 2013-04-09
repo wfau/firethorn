@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnType;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -230,12 +230,12 @@ public class AttribServiceController
         }
 
     /**
-     * Convert an AdqlColumnType into the corresponding TupleTypes value.
+     * Convert an AdqlColumn.Type into the corresponding TupleTypes value.
      * @todo Solve the unusual ones ...
      * @see TupleTypes
      *
      */
-    public static int convert(final AdqlColumnType type)
+    public static int convert(final AdqlColumn.Type type)
         {
         if (type == null)
             {
