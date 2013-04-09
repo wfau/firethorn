@@ -53,6 +53,7 @@ extends TestBase
     throws Exception
         {
         this.jdbcResource = factories().jdbc().resources().create(
+            "test",
             this.unique(
                 "base"
                 ),

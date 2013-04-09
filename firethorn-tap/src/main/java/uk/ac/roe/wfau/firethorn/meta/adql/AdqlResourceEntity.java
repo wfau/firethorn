@@ -217,6 +217,12 @@ extends BaseResourceEntity<AdqlSchema>
     @Override
     public Queries queries()
         {
+        return null ;
+        }
+    /*
+    @Override
+    public Queries queries()
+        {
         return new Queries()
             {
             @Override
@@ -256,4 +262,5 @@ extends BaseResourceEntity<AdqlSchema>
                 }
             };
         }
+    */
     }

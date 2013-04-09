@@ -31,9 +31,11 @@ import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource.Queries;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -292,5 +294,48 @@ implements AdqlSchema
         return factories().adql().schemas().links().link(
             this
             );
+        }
+
+    @Override
+    public Queries queries()
+        {
+        return new Queries()
+            {
+            @Override
+            public AdqlQuery create(final String query)
+                {
+                return factories().adql().queries().create(
+                    AdqlSchemaEntity.this,
+                    query
+                    );
+                }
+
+            @Override
+            public AdqlQuery create(final String name, final String query)
+                {
+                return factories().adql().queries().create(
+                    AdqlSchemaEntity.this,
+                    name,
+                    query
+                    );
+                }
+
+            @Override
+            public Iterable<AdqlQuery> select()
+                {
+                return factories().adql().queries().select(
+                    AdqlSchemaEntity.this
+                    );
+                }
+
+            @Override
+            public Iterable<AdqlQuery> search(final String text)
+                {
+                return factories().adql().queries().search(
+                    AdqlSchemaEntity.this,
+                    text
+                    );
+                }
+            };
         }
     }

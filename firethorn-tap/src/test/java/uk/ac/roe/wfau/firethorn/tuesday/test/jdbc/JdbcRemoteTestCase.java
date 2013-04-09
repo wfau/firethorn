@@ -84,14 +84,16 @@ extends TestBase
             "twomass",
             this.unique(
                 "base"
-                )
+                ),
+            "spring:RoeTWOMASS"
             );
 
-        //
+        /*
         // Set the database connection properties.
         jdbcResource.connection().url(
             "spring:RoeTWOMASS"
             );
+         */
         //
         // Verify we got what we expected.
         display(

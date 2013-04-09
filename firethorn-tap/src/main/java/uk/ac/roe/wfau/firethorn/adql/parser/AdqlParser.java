@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.adql.parser;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 
 /**
  *
@@ -36,8 +37,15 @@ public interface AdqlParser
         /**
          * Create a parser for a workspace.
          *
-         */
+        @Deprecated
         public AdqlParser create(final AdqlQuery.Mode mode, final AdqlResource workspace);
+         */
+
+        /**
+         * Create a parser for a schema.
+         *
+         */
+        public AdqlParser create(final AdqlQuery.Mode mode, final AdqlSchema schema);
 
         }
 

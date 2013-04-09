@@ -21,6 +21,7 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
@@ -129,25 +130,25 @@ extends Entity, Job
          * Create a new query.
          *
          */
-        public AdqlQuery create(final AdqlResource resource, final String input);
+        public AdqlQuery create(final AdqlSchema schema, final String input);
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final AdqlResource resource, final String name, final String input);
+        public AdqlQuery create(final AdqlSchema schema, final String name, final String input);
 
         /**
          * Select all the queries from a resource.
          *
          */
-        public Iterable<AdqlQuery> select(final AdqlResource resource);
+        public Iterable<AdqlQuery> select(final AdqlSchema schema);
 
         /**
          * Text search for queries (name starts with).
          *
          */
-        public Iterable<AdqlQuery> search(final AdqlResource resource, final String text);
+        public Iterable<AdqlQuery> search(final AdqlSchema schema, final String text);
 
         }
 
@@ -253,10 +254,10 @@ extends Entity, Job
     public Mode mode();
 
     /**
-     * The ADQL resource this query applies to.
+     * The ADQL schema this query applies to.
      *
      */
-    public AdqlResource resource();
+    public AdqlSchema schema();
 
     /**
      * The processed ADQL query.
@@ -290,7 +291,8 @@ extends Entity, Job
 
     /**
      * The primary BaseResource used by the query.
-     *
+     * @todo rename to resource()
+     * 
      */
     public BaseResource<?> primary();
 

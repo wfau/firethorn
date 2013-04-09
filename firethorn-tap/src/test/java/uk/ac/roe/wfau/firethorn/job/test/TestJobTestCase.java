@@ -29,6 +29,7 @@ import org.junit.Test;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
+import uk.ac.roe.wfau.firethorn.test.TestRoot;
 
 /**
  *
@@ -36,7 +37,7 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
  */
 @Slf4j
 public class TestJobTestCase
-    extends TestBase
+extends TestRoot
     {
     /**
      * Our local service implementations.

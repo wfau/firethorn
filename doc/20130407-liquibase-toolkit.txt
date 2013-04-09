@@ -74,3 +74,111 @@ Ignoring user defined functions - the rest we know at query time.
 
 
 
+--------------------------------------------
+
+
+
+
+
+                    AdqlQuery
+                    
+                        AdqlTable  table();  --> not null
+                        AdqlSchema schema(); --> not null
+
+                        QueryTable base() <-- this is where to put our results
+                                              if null, create a new one
+
+
+                    BaseTable
+
+                        AdqlQuery query() --> create(AdqlQuery query, ....)
+                        columns().create(cols)
+                        columns().update(cols)
+
+                    AdqlTable
+
+                        AdqlQuery query() = base().query()
+
+                        BaseTable base()
+                        BaseTable root()
+
+
+--------------------------------------------
+
+            JdbcTable jtable = JdbcTable.Factory.create(
+                AdqlQuery query
+                )
+
+
+            AdqlQuery query() <-- ref to query source.
+            
+            
+            //
+            // Create an empty table.
+            jtable.create();
+            //
+            // Create our columns.
+            jtable.columns().create(
+                Iter<ColMtea> query.cols()
+                );
+
+            //
+            // Update our columns
+            jtable.columns().update(
+                Iter<ColMtea> cols
+                );
+
+            
+            AdqlQuery query = schema.create(
+                name,
+                alias
+                )
+
+            AdqlQuery(AdqlSchema schema, String name)
+                {
+                this.name   = name;
+                this.alias  = alias;
+                this.schema = schema;
+                }
+
+            void table(JdbcTable jtable)
+                {
+                this.jtable = jtable;
+                this.jtable.columns().create(
+                    this.cols()
+                    );
+                this.atable = schema.tables().create(
+                    this.jtable,
+                    this.alias
+                    );
+                } 
+
+            AdqlQuery {
+                String name()
+                Table table()
+                    {
+                    JdbcTable jdbc()
+                    void jdbc(JdbcTable table)
+                    AdqlTable adql()
+                    }
+                AdqlSchema   schema()
+                AdqlResource resource()
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

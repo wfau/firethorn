@@ -512,6 +512,11 @@ implements JdbcTable
             }
         }
 
+    // TODO
+    // Refactor this as a query ... ?
+    // Or identity mapped ..
+    // http://www.codereye.com/2009/04/hibernate-bi-directional-one-to-one.html
+    
     @Index(
         name=DB_TABLE_NAME + "IndexByAdqlQuery"
         )
@@ -522,7 +527,7 @@ implements JdbcTable
     @JoinColumn(
         name = DB_ADQL_QUERY_COL,
         unique = true,
-        nullable = false,
+        nullable = true,
         updatable = false
         )
     private AdqlQuery query;

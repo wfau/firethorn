@@ -151,7 +151,7 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final AdqlQuery query = workspace.queries().create(
+        final AdqlQuery query = schema.queries().create(
             IMPORTED_000
             );
         //query.prepare();

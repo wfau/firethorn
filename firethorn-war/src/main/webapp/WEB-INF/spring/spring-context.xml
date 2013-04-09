@@ -40,8 +40,9 @@
     >
     <!--+
         | Import our database connection settings.
-        +-->
     <import resource="database-config.xml"/>
+        +-->
+    <import resource="testdata-config.xml"/>
 
     <!--+
         | Import our Hibernate data access beans.

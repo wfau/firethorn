@@ -61,6 +61,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
@@ -89,16 +90,16 @@ import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.StoredResultPipeline;
             query = "FROM AdqlQueryEntity ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
-            name  = "AdqlQuery-select-resource",
-            query = "FROM AdqlQueryEntity WHERE resource = :resource ORDER BY name asc, ident desc"
+            name  = "AdqlQuery-select-schema",
+            query = "FROM AdqlQueryEntity WHERE schema= :schema ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
-            name  = "AdqlQuery-select-resource.name",
-            query = "FROM AdqlQueryEntity WHERE ((resource = :resource) AND (name = :name)) ORDER BY name asc, ident desc"
+            name  = "AdqlQuery-select-schema.name",
+            query = "FROM AdqlQueryEntity WHERE ((schema = :schema) AND (name = :name)) ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
             name  = "AdqlQuery-search-resource.text",
-            query = "FROM AdqlQueryEntity WHERE ((resource = :resource) AND (name LIKE :text)) ORDER BY name asc, ident desc"
+            query = "FROM AdqlQueryEntity WHERE ((schema = :schema) AND (name LIKE :text)) ORDER BY name asc, ident desc"
             )
         }
      )
@@ -117,15 +118,14 @@ implements AdqlQuery, AdqlParserQuery
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_MODE_COL     = "mode";
-    protected static final String DB_ADQL_COL     = "adql";
-    protected static final String DB_OSQL_COL     = "osql";
-    protected static final String DB_INPUT_COL    = "input";
-    protected static final String DB_STATUS_COL   = "status";
-    protected static final String DB_RESOURCE_COL = "resource";
-
-    protected static final String DB_JDBC_TABLE_COL = "jdbctable";
-    protected static final String DB_ADQL_TABLE_COL = "adqltable";
+    protected static final String DB_MODE_COL   = "mode";
+    protected static final String DB_ADQL_COL   = "adql";
+    protected static final String DB_OSQL_COL   = "osql";
+    protected static final String DB_INPUT_COL  = "input";
+    protected static final String DB_STATUS_COL = "status";
+    protected static final String DB_JDBC_TABLE_COL  = "jdbctable";
+    protected static final String DB_ADQL_TABLE_COL  = "adqltable";
+    protected static final String DB_ADQL_SCHEMA_COL = "adqlschema";
     
     /**
      * Hibernate column mapping.
@@ -245,11 +245,11 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @CreateEntityMethod
-        public AdqlQuery create(final AdqlResource resource, final String input)
+        public AdqlQuery create(final AdqlSchema schema, final String input)
             {
             return this.insert(
                 new AdqlQueryEntity(
-                    resource,
+                    schema,
                     names().name(),
                     input
                     )
@@ -258,11 +258,11 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @CreateEntityMethod
-        public AdqlQuery create(final AdqlResource resource, final String name, final String input)
+        public AdqlQuery create(final AdqlSchema schema, final String name, final String input)
             {
             return this.insert(
                 new AdqlQueryEntity(
-                    resource,
+                    schema,
                     names().name(
                         name
                         ),
@@ -307,28 +307,28 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @SelectEntityMethod
-        public Iterable<AdqlQuery> select(final AdqlResource resource)
+        public Iterable<AdqlQuery> select(final AdqlSchema schema)
             {
             return super.list(
                 super.query(
-                    "AdqlQuery-select-resource"
+                    "AdqlQuery-select-schema"
                     ).setEntity(
-                        "resource",
-                        resource
+                        "schema",
+                        schema
                         )
                 );
             }
 
         @Override
         @SelectEntityMethod
-        public Iterable<AdqlQuery> search(final AdqlResource resource, final String text)
+        public Iterable<AdqlQuery> search(final AdqlSchema schema, final String text)
             {
             return super.iterable(
                 super.query(
-                    "AdqlQuery-search-resource.text"
+                    "AdqlQuery-search-schema.text"
                     ).setEntity(
-                        "resource",
-                        resource
+                        "schema",
+                        schema
                     ).setString(
                         "text",
                         searchParam(
@@ -351,13 +351,13 @@ implements AdqlQuery, AdqlParserQuery
      * Protected constructor, used by factory.
      *
      */
-    protected AdqlQueryEntity(final AdqlResource resource, final String name, final String input)
+    protected AdqlQueryEntity(final AdqlSchema schema, final String name, final String input)
     throws NameFormatException
         {
         super(
             name
             );
-        this.resource = resource;
+        this.schema = schema;
         this.input(
             input
             );
@@ -372,23 +372,23 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Index(
-        name=DB_TABLE_NAME + "IndexByResource"
+        name=DB_TABLE_NAME + "IndexBySchema"
         )
     @ManyToOne(
         fetch = FetchType.EAGER,
         targetEntity = AdqlResourceEntity.class
         )
     @JoinColumn(
-        name = DB_RESOURCE_COL,
+        name = DB_ADQL_SCHEMA_COL,
         unique = false,
         nullable = false,
         updatable = false
         )
-    private AdqlResource resource;
+    private AdqlSchema schema;
     @Override
-    public AdqlResource resource()
+    public AdqlSchema schema()
         {
-        return this.resource;
+        return this.schema;
         }
 
     /*
@@ -641,7 +641,7 @@ implements AdqlQuery, AdqlParserQuery
                 }
             }
         else {
-            return this.resource;
+            return this.schema.resource();
             }
         }
 
@@ -663,11 +663,11 @@ implements AdqlQuery, AdqlParserQuery
                 // TODO - We could re-use the same parser by using a ThreadLocal for the mode ...
                 final AdqlParser direct = this.factories().adql().parsers().create(
                     Mode.DIRECT,
-                    this.resource
+                    this.schema
                     );
                 final AdqlParser distrib = this.factories().adql().parsers().create(
                     Mode.DISTRIBUTED,
-                    this.resource
+                    this.schema
                     );
                 //
                 // Process as a direct query.

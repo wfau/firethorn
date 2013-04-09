@@ -35,16 +35,18 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>firethorn-testing</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>firethorn-testdata</artifactId>
+    <packaging>jar</packaging>
 
-    <name>FireThorn testing</name>
+    <name>FireThorn test data</name>
     <description>
         <![CDATA[
-        This is a placeholder POM to include all of the test related dependencies in one place.
+        FireThorn test data.
         ]]>
     </description>
 
+    <url>http://redmine.roe.ac.uk/projects/wva</url>
+    
     <properties>
     </properties>
 
@@ -64,16 +66,56 @@
         </dependency>
 
         <!--+
-            | JUnit test framework.
-            | http://www.junit.org/
+            | FireThorn testing dependencies.
             +-->
-    	<dependency>
-    		<groupId>junit</groupId>
-    		<artifactId>junit</artifactId>
-            <type>jar</type>
-    	</dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-testing</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
+            | FireThorn database dependencies.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-database</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
 
     </dependencies>
+
+    <build>
+
+        <plugins>
+        </plugins>
+
+        <resources>
+
+            <!--+
+                | Test data configuration files.
+                +-->
+    		<resource>
+    			<directory>${basedir}/src/test/conf</directory>
+                <includes>
+                    <include>testdata-config.xml</include>
+                </includes>
+    		</resource>
+
+        </resources>
+
+        <testResources>
+        </testResources>
+
+    </build>
+
+    <reporting>
+        <plugins>
+
+        </plugins>
+    </reporting>
 
 </project>
 

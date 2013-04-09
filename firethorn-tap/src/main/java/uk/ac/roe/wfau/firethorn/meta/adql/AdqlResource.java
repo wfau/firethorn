@@ -102,6 +102,7 @@ extends BaseResource<AdqlSchema>
      * Access to the resource queries.
      *
      */
+    @Deprecated
     public interface Queries
         {
         /**
@@ -134,6 +135,7 @@ extends BaseResource<AdqlSchema>
      * Access to the resource queries.
      *
      */
+    @Deprecated
     public Queries queries();
 
     }

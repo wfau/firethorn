@@ -70,15 +70,15 @@ implements AdqlParser
     implements AdqlParser.Factory
         {
         @Override
-        public AdqlParser create(final AdqlQuery.Mode mode, final AdqlResource workspace)
+        public AdqlParser create(final AdqlQuery.Mode mode, final AdqlSchema schema)
             {
             return new AdqlParserImpl(
                 this.tables,
                 mode,
-                workspace
+                schema
                 );
             }
-
+        
         /**
          * Autowired reference to the local table factory.
          *
@@ -92,14 +92,16 @@ implements AdqlParser
      * Protected constructor.
      *
      */
-    protected AdqlParserImpl(final AdqlParserTable.Factory factory, final AdqlQuery.Mode mode, final AdqlResource workspace)
+    protected AdqlParserImpl(final AdqlParserTable.Factory factory, final AdqlQuery.Mode mode, final AdqlSchema schema)
         {
         this.mode = mode ;
 
+        final AdqlResource workspace = schema.resource();
+        
         final Set<DBTable> tables = new HashSet<DBTable>();
-        for (final AdqlSchema schema : workspace.schemas().select())
+        for (final AdqlSchema temp : workspace.schemas().select())
             {
-            for (final AdqlTable table : schema.tables().select())
+            for (final AdqlTable table : temp.tables().select())
                 {
                 tables.add(
                     factory.create(

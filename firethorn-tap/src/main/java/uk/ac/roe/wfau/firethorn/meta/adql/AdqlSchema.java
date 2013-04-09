@@ -17,7 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource.Queries;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
@@ -96,5 +98,43 @@ extends BaseSchema<AdqlSchema, AdqlTable>
         }
     @Override
     public Tables tables();
+
+    /**
+     * Access to the schema queries.
+     *
+     */
+    public interface Queries
+        {
+        /**
+         * Create a new query.
+         *
+         */
+        public AdqlQuery create(final String query);
+
+        /**
+         * Create a new query.
+         *
+         */
+        public AdqlQuery create(final String name, final String query);
+
+        /**
+         * Select all the queries for this schema.
+         *
+         */
+        public Iterable<AdqlQuery> select();
+
+        /**
+         * Text search for queries (name starts with).
+         *
+         */
+        public Iterable<AdqlQuery> search(final String text);
+
+        }
+
+    /**
+     * Access to the schema queries.
+     *
+     */
+    public Queries queries();
 
     }
