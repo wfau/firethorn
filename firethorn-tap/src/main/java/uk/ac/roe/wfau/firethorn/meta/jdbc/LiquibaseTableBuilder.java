@@ -126,9 +126,21 @@ implements AdqlQuery.Builder
         change.setSchemaName(
             table.schema().name()
             );
+
+        for (JdbcColumn column : table.columns().select())
+            {
+            change.addColumn(
+                new ColumnConfig().setName(
+                    column.name()
+                    ).setType(
+                        column.info().jdbc().type().name()
+                        )
+                );
+            }
         return change;
         }
 
+    /*
     protected ChangeSet create(final ChangeSet changeset, final JdbcTable table)
         {
         log.debug("create(ChangeSet, JdbcTable)");
@@ -148,7 +160,9 @@ implements AdqlQuery.Builder
             }
         return changeset;
         }
+     */
 
+    /*
     protected ChangeSet create(final ChangeSet changeset, final JdbcColumn column)
         {
         log.debug("create(ChangeSet, JdbcColumn)");
@@ -160,7 +174,9 @@ implements AdqlQuery.Builder
             );
         return changeset;
         }
+     */
 
+    /*
     protected Change create(final JdbcColumn column)
         {
         log.debug("create(JdbcColumn)");
@@ -175,15 +191,33 @@ implements AdqlQuery.Builder
             );
         return change;
         }
-    
+     */
+
     @Override
     public JdbcTable create(final AdqlQuery query)
         {
         log.debug("create(AdqlQuery)");
         log.debug("  Query [{}][{}]", query.ident(), query.name());
-        ChangeSet changeset = changeset();
         //
-        // Delete the existing table.
+        // Create the new JdbcTable .
+        JdbcTable table = this.schema.tables().create(
+            "RESULT_0004"
+            );
+        //
+        // Add the JdbcColumns.
+        for (AdqlQuery.ColumnMeta meta : query.items())
+            {
+// Size is confused .... ?
+// Create column direct from ColumnMeta
+            table.columns().create(
+                meta.name(),
+                meta.type().jdbc().code(),
+                meta.size()
+                );
+            }
+        //
+        // Create our ChangeSet.
+        ChangeSet changeset = changeset();
         if (query.results().jdbc() != null)
             {
             changeset.addChange(
@@ -192,36 +226,11 @@ implements AdqlQuery.Builder
                     )
                 );
             }
-        //
-        // Create the new JdbcTable .
-        JdbcTable table = this.schema.tables().create(
-            name(
-                query,
-                changeset
-                )
-            );
         changeset.addChange(
             create(
                 table
                 )
             );
-        //
-        // Add the JdbcColumns.
-        for (AdqlQuery.ColumnMeta meta : query.items())
-            {
-// Size is confused .... ?
-// Create column direct from ColumnMeta
-            JdbcColumn column = table.columns().create(
-                meta.name(),
-                meta.type().jdbc().code(),
-                meta.size()
-                );
-            changeset.addChange(
-                create(
-                    column
-                    )
-                );
-            }
         //
         // Execute the changeset.
         execute(
@@ -231,7 +240,7 @@ implements AdqlQuery.Builder
         return table;
         }
 
-    protected String name(final AdqlQuery query, final ChangeSet changeset)
+    protected String name(final ChangeSet changeset)
         {
         StringBuilder name = new StringBuilder(
             "query"

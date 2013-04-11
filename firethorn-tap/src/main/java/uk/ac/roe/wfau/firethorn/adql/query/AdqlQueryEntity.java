@@ -907,6 +907,7 @@ implements AdqlQuery, AdqlParserQuery
         )
     @OneToOne(
         fetch = FetchType.LAZY,
+        cascade = CascadeType.ALL,
         targetEntity = JdbcTableEntity.class
         )
     @JoinColumn(
@@ -926,6 +927,7 @@ implements AdqlQuery, AdqlParserQuery
         )
     @OneToOne(
         fetch = FetchType.LAZY,
+        cascade = CascadeType.ALL,
         targetEntity = AdqlTableEntity.class
         )
     @JoinColumn(
