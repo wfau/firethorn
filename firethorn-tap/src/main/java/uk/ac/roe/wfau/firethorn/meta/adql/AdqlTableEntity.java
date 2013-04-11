@@ -297,7 +297,7 @@ public class AdqlTableEntity
         {
         super(schema, ((name != null) ? name : base.name()));
         this.base   = base;
-        //this.query  = query;
+        this.query  = query;
         this.schema = schema;
         }
 

@@ -201,7 +201,7 @@ implements AdqlQuery.Builder
         //
         // Create the new JdbcTable .
         JdbcTable table = this.schema.tables().create(
-            "RESULT_0006"
+            "RESULT_" + query.ident().toString()
             );
         //
         // Add the JdbcColumns.
@@ -316,10 +316,14 @@ implements AdqlQuery.Builder
                 database
                 );
             log.debug("ChangeSet result [{}]", result);
-            //database.commit();
+            database.commit();
             //database.close();
             }
         catch (MigrationFailedException ouch)
+            {
+            log.error("Failed to execute ChangeSet [{}]", ouch.getMessage());
+            }
+        catch (DatabaseException ouch)
             {
             log.error("Failed to execute ChangeSet [{}]", ouch.getMessage());
             }

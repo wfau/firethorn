@@ -62,6 +62,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
@@ -256,13 +257,24 @@ implements AdqlQuery, AdqlParserQuery
         @CreateEntityMethod
         public AdqlQuery create(final AdqlSchema schema, final String input)
             {
-            return this.insert(
-                new AdqlQueryEntity(
-                    schema,
-                    names().name(),
-                    input
-                    )
+            //
+            // Create the query entity.
+            AdqlQueryEntity entity = new AdqlQueryEntity(
+                schema,
+                names().name(),
+                input
                 );
+            //
+            // Make the query persistent.
+            AdqlQuery query = this.insert(
+                entity
+                );
+            //
+            // Create the query tables.
+            entity.init();
+            //
+            // Return the entity.
+            return query;
             }
 
         @Override
@@ -385,7 +397,7 @@ implements AdqlQuery, AdqlParserQuery
         )
     @ManyToOne(
         fetch = FetchType.EAGER,
-        targetEntity = AdqlResourceEntity.class
+        targetEntity = AdqlSchemaEntity.class
         )
     @JoinColumn(
         name = DB_ADQL_SCHEMA_COL,
@@ -703,6 +715,7 @@ implements AdqlQuery, AdqlParserQuery
                 // Update the status.
                 if (syntax().state() == Syntax.State.VALID)
                     {
+/*
                     //
                     // Create our JDBC table.
                     this.jdbctable = services().builder().create(
@@ -713,6 +726,7 @@ implements AdqlQuery, AdqlParserQuery
                     this.adqltable = this.schema().tables().create(
                         this
                         );
+ */
                     //
                     // Update our status.
                     return status(
@@ -729,6 +743,24 @@ implements AdqlQuery, AdqlParserQuery
         else {
             return Status.ERROR;
             }
+        }
+
+    /**
+     *  Create our result tables.
+     *
+     */
+    protected void init()
+        {
+        //
+        // Create our JDBC table.
+        this.jdbctable = services().builder().create(
+            this
+            );
+        //
+        // Create our ADQL table.
+        this.adqltable = this.schema().tables().create(
+            this
+            );
         }
 
     @Override
@@ -907,7 +939,7 @@ implements AdqlQuery, AdqlParserQuery
         )
     @OneToOne(
         fetch = FetchType.LAZY,
-        cascade = CascadeType.ALL,
+        //cascade = CascadeType.ALL,
         targetEntity = JdbcTableEntity.class
         )
     @JoinColumn(
@@ -927,7 +959,7 @@ implements AdqlQuery, AdqlParserQuery
         )
     @OneToOne(
         fetch = FetchType.LAZY,
-        cascade = CascadeType.ALL,
+        //cascade = CascadeType.ALL,
         targetEntity = AdqlTableEntity.class
         )
     @JoinColumn(
