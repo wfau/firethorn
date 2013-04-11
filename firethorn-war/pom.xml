@@ -100,12 +100,12 @@
 
         <!--+
             | FireThorn testdata.
+            <scope>test</scope>
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-testdata</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
             <type>jar</type>
         </dependency>
 

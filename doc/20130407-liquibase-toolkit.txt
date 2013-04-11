@@ -192,11 +192,27 @@ Ignoring user defined functions - the rest we know at query time.
 
 --------------------------------------------
 
+    BUG
+    
+    source "${FIRETHORN_TEST?}/query-adql.sh"
+
+    java.lang.NullPointerException
+	    uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResourceQueryController.jsonCreate(AdqlResourceQueryController.java:189)
+
+--------------------------------------------
+
     TODO
     Remove the CreateTableAction
     Update the Controllers
     Fix the size problems
+        size   (byte)
+        length (unit)
+        total  (unit x byte)
 
+    AdqlColumnBean has no metadata
+
+    Shared user data ...
+    
     REST testing
     Table metadata .. count, nulls etc ..
 
@@ -216,14 +232,6 @@ Ignoring user defined functions - the rest we know at query time.
     User identity
 
 --------------------------------------------
-
-
-
-
-
-
-
-
 
 
 

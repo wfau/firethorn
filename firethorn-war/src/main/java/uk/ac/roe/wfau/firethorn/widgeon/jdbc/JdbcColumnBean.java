@@ -90,8 +90,8 @@ implements EntityBean<JdbcColumn>
         public Adql getAdql();
         public interface Jdbc
             {
-            public int getType();
-            public int getSize();
+            public JdbcColumn.Type getType();
+            public Integer getSize();
             }
         public Jdbc getJdbc();
         }
@@ -123,12 +123,12 @@ implements EntityBean<JdbcColumn>
                 return new Jdbc()
                     {
                     @Override
-                    public int getType()
+                    public JdbcColumn.Type getType()
                         {
                         return entity().info().jdbc().type();
                         }
                     @Override
-                    public int getSize()
+                    public Integer getSize()
                         {
                         return entity().info().jdbc().size();
                         }

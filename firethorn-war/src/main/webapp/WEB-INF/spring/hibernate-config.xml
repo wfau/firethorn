@@ -45,8 +45,9 @@
 
         <!--+
             | Database connection.
+        <property name="dataSource" ref="HsqldbMetaData"/>
             +-->
-        <property name="dataSource" ref="HsqldbDataFile"/>
+        <property name="dataSource" ref="${firethorn.metadata.src}"/>
 
         <!--+
             | List our annotated entity beans.

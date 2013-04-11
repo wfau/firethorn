@@ -1,0 +1,97 @@
+# TTY #1 ------------------------------------------------------------
+# SSH tunnel to the ROE database server.
+#
+
+    #
+    # SSH tunnel to ROE
+    ssh -L 1433:ramses5:1433 fenrir.roe.ac.uk
+
+# TTY #2 ------------------------------------------------------------
+# Build and deploy the firethorn webapp 
+#
+
+    #
+    # Build everything 
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}" ; mvn clean install ; popd
+
+    #
+    # Deploy the webapp in Tomcat.
+    pushd "${FIRETHORN_CODE?}/firethorn-war"
+        mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
+    popd
+
+# TTY #3 ------------------------------------------------------------
+# Build and deploy the OGSA-DAI webapp 
+#
+
+    source "${HOME?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/webapp"
+
+        #
+        # Load the JDBC config functions.
+        source src/test/bin/jdbc-functions.sh
+
+        #
+        # Create a clean war file.
+        mvn clean compile war:war
+
+        #
+        # Configure our JDBC resources.
+        jdbcconfig twomass  ${FIRETHORN_CONF?}/livetwomass.conf
+        jdbcconfig ukidss   ${FIRETHORN_CONF?}/liveukidss.conf
+        jdbcconfig wfau     ${FIRETHORN_CONF?}/wfau-ogsadai.conf
+        jdbcconfig user     ${FIRETHORN_CONF?}/user-hsqldb.conf
+
+        #
+        # Delete existing database.
+        rm -rf target/database
+
+        #
+        # Deploy the webapp in Tomcat.
+        mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
+        
+    popd
+
+# TTY #4 ------------------------------------------------------------
+# Run the REST test scripts.
+#
+
+    source ${HOME?}/firethorn.settings
+
+    FIRETHORN_TEST=${FIRETHORN_TEST:-${FIRETHORN_CODE?}/integration/001}
+
+    pushd $(mktemp --directory)
+
+        source "${FIRETHORN_TEST?}/init-rest.sh"
+
+        source "${FIRETHORN_TEST?}/init-jdbc.sh"
+        source "${FIRETHORN_TEST?}/init-adql.sh"
+        source "${FIRETHORN_TEST?}/init-wfau.sh"
+
+#
+# Need a single resource query here ....
+pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/client"
+    mvn -D skipTests=false -D test=SingleQueryTestCase test 
+popd
+
+        source "${FIRETHORN_TEST?}/query-adql.sh"
+        source "${FIRETHORN_TEST?}/query-wfau.sh"
+
+#
+# User results are stored in local HSQLDB database
+cat "${FIRETHORN_CODE?}/firethorn-ogsadai/webapp/target/database/userdata.log
+
+
+    popd
+
+
+--------------------------------------------
+
+    BUG
+    
+    source "${FIRETHORN_TEST?}/query-adql.sh"
+
+    java.lang.NullPointerException
+	    uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResourceQueryController.jsonCreate(AdqlResourceQueryController.java:189)
+
