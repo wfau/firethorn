@@ -86,6 +86,6 @@ extends BaseComponent
      * Access to the column metadata.
      *
      */
-    public AdqlColumn.Info info();
+    public AdqlColumn.Metadata info();
 
     }

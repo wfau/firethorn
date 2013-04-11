@@ -168,13 +168,13 @@ implements AdqlParser
             //
             // If we got this far, then the query is valid.
             subject.syntax(
-                AdqlQuery.Syntax.Status.VALID
+                AdqlQuery.Syntax.State.VALID
                 );
             }
         catch (final ParseException ouch)
             {
             subject.syntax(
-                AdqlQuery.Syntax.Status.PARSE_ERROR,
+                AdqlQuery.Syntax.State.PARSE_ERROR,
                 ouch.getMessage()
                 );
             log.warn("Error parsing query [{}]", ouch.getMessage());
@@ -182,7 +182,7 @@ implements AdqlParser
         catch (final TranslationException ouch)
             {
             subject.syntax(
-                AdqlQuery.Syntax.Status.TRANS_ERROR,
+                AdqlQuery.Syntax.State.TRANS_ERROR,
                 ouch.getMessage()
                 );
             log.warn("Error translating query [{}]", ouch.getMessage());
@@ -232,7 +232,11 @@ implements AdqlParser
          */
         private ColumnMetaImpl(final String name)
             {
-            this.name = name ;
+            this(
+                name,
+                name,
+                (AdqlColumn.Metadata)null 
+                );
             }
 
         /**
@@ -241,20 +245,52 @@ implements AdqlParser
          */
         private ColumnMetaImpl(final String name, final AdqlQuery.ColumnMeta meta)
             {
-            this.name = name ;
-            if (meta != null)
-                {
-                this.info = meta.info();
-                }
+            this(
+                name,
+                null,
+                meta.info()
+                );
             }
 
         /**
          * Private constructor.
          *
          */
-        private ColumnMetaImpl(final String name, final AdqlColumn.Info info)
+        private ColumnMetaImpl(final String name, final String alias, final AdqlQuery.ColumnMeta meta)
             {
-            this.name = name ;
+            this(
+                name,
+                alias,
+                meta.info()
+                );
+            }
+
+        /**
+         * Private constructor.
+         *
+         */
+        private ColumnMetaImpl(final String name, final AdqlColumn.Metadata info)
+            {
+            this(
+                name,
+                null,
+                info
+                );
+            }
+
+        /**
+         * Private constructor.
+         *
+         */
+        private ColumnMetaImpl(final String name, final String alias, final AdqlColumn.Metadata info)
+            {
+            if (alias != null)
+                {
+                this.name = alias ;
+                }
+            else {
+                this.name = name ;
+                }
             this.info = info ;
             }
 
@@ -274,10 +310,10 @@ implements AdqlParser
          * The item metadata.
          *
          */
-        private AdqlColumn.Info info ;
+        private AdqlColumn.Metadata info ;
 
         @Override
-        public AdqlColumn.Info info()
+        public AdqlColumn.Metadata info()
             {
             return this.info;
             }
@@ -302,7 +338,7 @@ implements AdqlParser
          * Get the size from an AdqlColumn Info.
          *
          */
-        public static int size(final AdqlColumn.Info info)
+        public static int size(final AdqlColumn.Metadata info)
             {
             if (info == null)
                 {
@@ -323,7 +359,7 @@ implements AdqlParser
          * Get the type from an AdqlColumn Info.
          *
          */
-        public static AdqlColumn.Type type(final AdqlColumn.Info info)
+        public static AdqlColumn.Type type(final AdqlColumn.Metadata info)
             {
             if (info == null)
                 {
@@ -345,6 +381,7 @@ implements AdqlParser
             log.debug("  name  [{}]", item.getName());
             log.debug("  class [{}]", item.getClass().getName());
             return new ColumnMetaImpl(
+                item.getName(),
                 item.getAlias(),
                 eval(
                     item.getOperand()
@@ -425,11 +462,11 @@ implements AdqlParser
             log.debug("  number [{}]", oper.isNumeric());
             log.debug("  string [{}]", oper.isString());
     
-            AdqlColumn.Info left = eval(
+            AdqlColumn.Metadata left = eval(
                 oper.getLeftOperand()
                 ).info(); 
     
-            AdqlColumn.Info right = eval(
+            AdqlColumn.Metadata right = eval(
                 oper.getRightOperand()
                 ).info(); 
     
@@ -476,11 +513,11 @@ implements AdqlParser
             log.debug("  number [{}]", funct.isNumeric());
             log.debug("  string [{}]", funct.isString());
     
-            AdqlColumn.Info info = null ;
+            AdqlColumn.Metadata info = null ;
             
             for (ADQLOperand param : funct.getParameters())
                 {
-                AdqlColumn.Info temp = eval(
+                AdqlColumn.Metadata temp = eval(
                     param
                     ).info(); 
                 if (info == null)

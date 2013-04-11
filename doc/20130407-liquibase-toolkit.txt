@@ -116,8 +116,29 @@ Ignoring user defined functions - the rest we know at query time.
                 String name
                 )
 
+            AdqlTable atable = AdqlSchema.tables.create(
+                AdqlQuery query,
+                BaseTable base,
+                String name
+                )
 
-            AdqlQuery JdbcTable.query() <-- ref to query source.
+            AdqlTable atable = AdqlTable.Factory.create(
+                JdbcSchema parent,
+                AdqlQuery 
+                query,
+                BaseTable base,
+                String name
+                )
+
+
+
+            AdqlQuery.results().adql()
+            AdqlQuery.results().base()
+            AdqlQuery.results().jdbc()
+            
+
+
+
             
             
             //
@@ -134,6 +155,10 @@ Ignoring user defined functions - the rest we know at query time.
             jtable.columns().update(
                 Iter<ColMtea> cols
                 );
+
+
+
+
 
             
             AdqlQuery query = schema.create(

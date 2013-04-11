@@ -133,7 +133,7 @@ implements AdqlSchema
 				}
 			return schema;
 			}
-
+        
         @Override
         @SelectEntityMethod
         public Iterable<AdqlSchema> select(final AdqlResource parent)
@@ -275,6 +275,13 @@ implements AdqlSchema
                     AdqlSchemaEntity.this,
                     base,
                     name
+                    );
+                }
+            @Override
+            public AdqlTable create(final AdqlQuery query)
+                {
+                return factories().adql().tables().create(
+                    query
                     );
                 }
             @Override

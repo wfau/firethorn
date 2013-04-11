@@ -221,7 +221,7 @@ implements EntityBean<AdqlQuery>
     
     public interface Syntax
         {
-        public AdqlQuery.Syntax.Status getStatus();
+        public AdqlQuery.Syntax.State getStatus();
         public String getMessage();
         public String getFriendly();
         }
@@ -231,9 +231,9 @@ implements EntityBean<AdqlQuery>
         return new Syntax()
             {
             @Override
-            public AdqlQuery.Syntax.Status getStatus()
+            public AdqlQuery.Syntax.State getStatus()
                 {
-                return entity().syntax().status();
+                return entity().syntax().state();
                 }
             @Override
             public String getMessage()

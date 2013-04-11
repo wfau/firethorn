@@ -42,10 +42,10 @@
 		<level value="DEBUG"/>
 	</logger>
 	<logger name="uk.ac.roe.wfau.firethorn.womble">
-		<level value="WARN"/>
+		<level value="DEBUG"/>
 	</logger>
 	<logger name="uk.ac.roe.wfau.firethorn.adql.parser">
-		<level value="WARN"/>
+		<level value="DEBUG"/>
 	</logger>
 
 	<!--+

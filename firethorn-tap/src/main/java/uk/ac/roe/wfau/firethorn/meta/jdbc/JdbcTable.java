@@ -127,6 +127,12 @@ extends BaseTable<JdbcTable, JdbcColumn>
     public Columns columns();
 
     /**
+     * Flag to indicate that the physical table exists.
+     * 
+     */
+    public boolean exists(); 
+    
+    /**
      * Scan the JDBC metadata.
      *
      */
@@ -213,21 +219,5 @@ extends BaseTable<JdbcTable, JdbcColumn>
     
     @Override
     public JdbcTable.Info info();
-    
-    /**
-     * Get the database table type.
-     * @todo Move these to a sub-interface
-     *
-    @Deprecated
-    public TableType jdbctype();
-     */
 
-    /**
-     * Set the database table type.
-     * @todo Move these to a sub-interface
-     *
-    @Deprecated
-    public void jdbctype(final TableType type);
-     */
-    
     }

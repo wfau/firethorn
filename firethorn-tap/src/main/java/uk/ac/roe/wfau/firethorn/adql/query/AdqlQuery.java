@@ -24,6 +24,9 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 /**
@@ -74,6 +77,12 @@ extends Entity, Job
          *
          */
         public Job.Executor executor();
+
+        /**
+         * Our table builder.
+         *
+         */
+        public Builder builder();
 
         }
 
@@ -153,6 +162,27 @@ extends Entity, Job
         }
 
     /**
+     * Table builder interface.
+     *
+     */
+    public static interface Builder
+        {
+        /**
+         * Build a physical table.
+         *
+         */
+        public JdbcTable create(final AdqlQuery query);
+
+        //
+        // Test config methods ..
+        public JdbcSchema schema();
+        public void schema(JdbcSchema schema);
+        public JdbcResource resource();
+        public void resource(JdbcResource resource);
+
+        }
+
+    /**
      * Get the input text.
      *
      */
@@ -174,7 +204,7 @@ extends Entity, Job
          * The validation status.
          *
          */
-        public enum Status
+        public enum State
             {
             /**
              * The query has been parsed and is valid ADQL.
@@ -205,7 +235,7 @@ extends Entity, Job
          * The validation status.
          *
          */
-        public Status status();
+        public State state();
 
         /**
          * The original parser error message.
@@ -313,7 +343,7 @@ extends Entity, Job
          * The item metadata.
          *
          */
-        public abstract AdqlColumn.Info info();
+        public abstract AdqlColumn.Metadata info();
     
         /**
          * Get the item size.
@@ -346,6 +376,12 @@ extends Entity, Job
          * 
          */
         public JdbcTable jdbc();
+
+        /**
+         * The physical base table.
+         * 
+         */
+        public BaseTable<?,?> base();
 
         /**
          * The abstract ADQL table.

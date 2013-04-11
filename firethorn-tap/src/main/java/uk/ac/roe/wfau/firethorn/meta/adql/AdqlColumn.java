@@ -83,46 +83,58 @@ extends BaseColumn<AdqlColumn>
      * An enumeration of the VOTable data types, as defined in section 2.1 of the VOTable-1.2 specification.
      * @see <a href='http://www.ivoa.net/Documents/VOTable/20091130/'/>
      *
-     *
      */
     public enum Type
         {
-        BOOLEAN("boolean"),
-        BIT("bit"),
-        BYTE("unsignedByte"),
-        CHAR("char"),
-        UNICODE("unicodeChar"),
-        SHORT("short"),
-        INTEGER("int"),
-        LONG("long"),
-        FLOAT("float"),
-        DOUBLE("double"),
-        FLOATCOMPLEX("floatComplex"),
-        DOUBLECOMPLEX("doubleComplex"),
-        UNKNOWN("");
+        BOOLEAN(        1, "boolean",       JdbcColumn.Type.BOOLEAN),
+        BIT(            1, "bit",           JdbcColumn.Type.BLOB),
+        BYTE(           1, "unsignedByte",  JdbcColumn.Type.TINYINT),
+        CHAR(           2, "char",          JdbcColumn.Type.CHAR),
+        UNICODE(        2, "unicodeChar",   JdbcColumn.Type.CHAR),
+        SHORT(          2, "short",         JdbcColumn.Type.SMALLINT),
+        INTEGER(        4, "int",           JdbcColumn.Type.INTEGER),
+        LONG(           8, "long",          JdbcColumn.Type.BIGINT),
+        FLOAT(          4, "float",         JdbcColumn.Type.FLOAT),
+        DOUBLE(         8, "double",        JdbcColumn.Type.DOUBLE),
+        FLOATCOMPLEX(   8, "floatComplex",  JdbcColumn.Type.UNKNOWN),
+        DOUBLECOMPLEX( 16, "doubleComplex", JdbcColumn.Type.UNKNOWN),
+        UNKNOWN(        0, "unknown",       JdbcColumn.Type.UNKNOWN);
 
-        /**
-         * Private constructor.
-         *
-         */
-        private Type(final String datatype)
+        private int size ;
+        public  int size()
             {
-            this.datatype = datatype ;
+            return this.size;
+            }
+
+        private String code ;
+        public  String code()
+            {
+            return this.code;
+            }
+
+        private JdbcColumn.Type jdbc ;
+        public  JdbcColumn.Type jdbc()
+            {
+            return this.jdbc;
+            }
+
+        Type(final int size, final String code, final JdbcColumn.Type jdbc)
+            {
+            this.size = size ;
+            this.code = code ;
+            this.jdbc = jdbc ;
             }
 
         /**
-         * The VOTable dataype name.
+         * Mapping from JdbcColumn.Type to AdqlColumn.Type.
+         * @see JdbcColumn.Type
          *
          */
-        private String datatype;
-
-        /**
-         * The VOTable dataype name.
-         *
-         */
-        public String datatype()
+        public static AdqlColumn.Type adql(final JdbcColumn.Type jdbc)
             {
-            return this.datatype;
+            return adql(
+                jdbc.code()
+                );
             }
 
         /**
@@ -130,9 +142,9 @@ extends BaseColumn<AdqlColumn>
          * @see java.sql.Types
          *
          */
-        public static Type jdbc(final int type)
+        public static AdqlColumn.Type adql(final int sql)
             {
-            switch(type)
+            switch(sql)
                 {
                 case Types.BIGINT :
                     return LONG ;
@@ -159,8 +171,10 @@ extends BaseColumn<AdqlColumn>
                 case Types.INTEGER :
                     return INTEGER ;
 
-                case Types.SMALLINT :
                 case Types.TINYINT :
+                    return BYTE ;
+
+                case Types.SMALLINT :
                     return SHORT ;
 
                 case Types.ARRAY :
@@ -194,14 +208,14 @@ extends BaseColumn<AdqlColumn>
      * Access to the column metadata.
      *
      */
-    public interface Info
+    public interface Metadata
         {
         /**
          * ADQL column metadata.
          * @todo Add UCD, utype etc ...
          *
          */
-        public interface Meta
+        public interface AdqlMeta
             {
             public Integer size();
 
@@ -210,18 +224,17 @@ extends BaseColumn<AdqlColumn>
             public Type type();
 
             public void type(final Type type);
-
             }
 
         /**
          * The ADQL column metadata.
          *
          */
-        public Meta adql();
+        public AdqlMeta adql();
 
         }
 
     @Override
-    public AdqlColumn.Info info();
+    public AdqlColumn.Metadata info();
 
     }

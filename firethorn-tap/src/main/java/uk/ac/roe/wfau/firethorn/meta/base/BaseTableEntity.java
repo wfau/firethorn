@@ -203,7 +203,7 @@ extends BaseComponentEntity
     @Override
     public AdqlQuery query()
         {
-        return base().query();
+        return root().query();
         }
 
     @Override

@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -75,6 +76,12 @@ extends BaseTable<AdqlTable, AdqlColumn>
          */
         public AdqlTable create(final AdqlSchema parent, final BaseTable<?, ?> base, final String name);
 
+        /**
+         * Create a new table.
+         *
+         */
+        public AdqlTable create(final AdqlQuery query);
+        
         /**
          * The table column factory.
          *

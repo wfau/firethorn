@@ -74,12 +74,12 @@ public interface AdqlParserQuery
      * Set the ADQL syntax status.
      *
      */
-    public void syntax(final AdqlQuery.Syntax.Status status);
+    public void syntax(final AdqlQuery.Syntax.State status);
 
     /**
      * Set the ADQL syntax status.
      *
      */
-    public void syntax(final AdqlQuery.Syntax.Status status, final String message);
+    public void syntax(final AdqlQuery.Syntax.State status, final String message);
 
     }

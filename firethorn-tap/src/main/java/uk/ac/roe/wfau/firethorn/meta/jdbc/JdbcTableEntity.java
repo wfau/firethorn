@@ -41,6 +41,7 @@ import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
@@ -98,9 +99,8 @@ implements JdbcTable
      *
      */
     protected static final String JDBC_TYPE_COL = "jdbctype" ;
-
     protected static final String DB_ADQL_QUERY_COL = "adqlquery" ;
-    
+
     /**
      * Alias factory implementation.
      *
@@ -483,7 +483,12 @@ implements JdbcTable
         // TODO - fix connection errors
         if (metadata != null)
             {
+            //
+            // TODO - Check the table actually exists !! 
+            
             try {
+                //
+                // Check the table columns.
                 final ResultSet columns = metadata.getColumns(
                     this.schema().catalog(),
                     this.schema().schema(),
@@ -553,7 +558,6 @@ implements JdbcTable
     // TODO
     // Refactor this as mapped identity ?
     // http://www.codereye.com/2009/04/hibernate-bi-directional-one-to-one.html
-    
     @Index(
         name=DB_TABLE_NAME + "IndexByAdqlQuery"
         )
@@ -573,4 +577,11 @@ implements JdbcTable
         {
         return this.query;
         }
+
+    @Override
+    public boolean exists()
+        {
+        return true ;
+        }
+    
     }

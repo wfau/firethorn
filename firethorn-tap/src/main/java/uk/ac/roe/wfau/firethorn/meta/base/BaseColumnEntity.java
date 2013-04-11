@@ -120,6 +120,9 @@ extends BaseComponentEntity
     @Basic(
         fetch = FetchType.EAGER
         )
+    @Enumerated(
+        EnumType.STRING
+        )
     @Column(
         name = DB_USER_TYPE_COL,
         unique = false,
@@ -213,14 +216,14 @@ extends BaseComponentEntity
     public abstract BaseColumn<?> root();
 
     @Override
-    public AdqlColumn.Info info()
+    public AdqlColumn.Metadata info()
         {
-        return new AdqlColumn.Info()
+        return new AdqlColumn.Metadata()
             {
             @Override
-            public AdqlColumn.Info.Meta adql()
+            public AdqlColumn.Metadata.AdqlMeta adql()
                 {
-                return new AdqlColumn.Info.Meta()
+                return new AdqlColumn.Metadata.AdqlMeta()
                     {
                     @Override
                     public Integer size()

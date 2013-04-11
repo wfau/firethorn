@@ -66,6 +66,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineResult;
@@ -188,6 +189,14 @@ implements AdqlQuery, AdqlParserQuery
         public Job.Executor executor()
             {
             return this.executor;
+            }
+
+        @Autowired
+        private AdqlQuery.Builder builder;
+        @Override
+        public AdqlQuery.Builder builder()
+            {
+            return this.builder;
             }
         }
 
@@ -508,7 +517,7 @@ implements AdqlQuery, AdqlParserQuery
     @Enumerated(
         EnumType.STRING
         )
-    private Syntax.Status syntax = Syntax.Status.UNKNOWN ;
+    private Syntax.State syntax = Syntax.State.UNKNOWN ;
 
     @Type(
         type="org.hibernate.type.TextType"
@@ -527,7 +536,7 @@ implements AdqlQuery, AdqlParserQuery
         return new Syntax()
             {
             @Override
-            public Status status()
+            public State state()
                 {
                 return AdqlQueryEntity.this.syntax;
                 }
@@ -545,7 +554,7 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Override
-    public void syntax(final Syntax.Status syntax)
+    public void syntax(final Syntax.State syntax)
         {
         syntax(
             syntax,
@@ -554,7 +563,7 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Override
-    public void syntax(final Syntax.Status syntax, final String message)
+    public void syntax(final Syntax.State syntax, final String message)
         {
         this.syntax  = syntax;
         this.message = message;
@@ -659,8 +668,7 @@ implements AdqlQuery, AdqlParserQuery
             else {
                 //
                 // Create the two query parsers.
-                // TODO - The parsers should be part of the resource/workspace.
-                // TODO - We could re-use the same parser by using a ThreadLocal for the mode ...
+                // TODO - The parsers should be part of the resource/schema.
                 final AdqlParser direct = this.factories().adql().parsers().create(
                     Mode.DIRECT,
                     this.schema
@@ -693,8 +701,20 @@ implements AdqlQuery, AdqlParserQuery
                     }
                 //
                 // Update the status.
-                if (syntax().status() == Syntax.Status.VALID)
+                if (syntax().state() == Syntax.State.VALID)
                     {
+                    //
+                    // Create our JDBC table.
+                    this.jdbctable = services().builder().create(
+                        this
+                        );
+                    //
+                    // Create our ADQL table.
+                    this.adqltable = this.schema().tables().create(
+                        this
+                        );
+                    //
+                    // Update our status.
                     return status(
                         Status.READY
                         );
@@ -718,7 +738,7 @@ implements AdqlQuery, AdqlParserQuery
         this.osql = null ;
         this.mode = mode ;
         this.syntax(
-            Syntax.Status.UNKNOWN
+            Syntax.State.UNKNOWN
             );
         this.items.clear();
         this.columns.clear();
@@ -859,7 +879,7 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Transient
-    private final Set<ColumnMeta > items = new HashSet<ColumnMeta >();
+    private final Set<ColumnMeta > items = new HashSet<ColumnMeta>();
     @Override
     public Iterable<ColumnMeta > items()
         {
@@ -869,6 +889,10 @@ implements AdqlQuery, AdqlParserQuery
     @Override
     public void add(ColumnMeta meta)
         {
+        log.debug("add(ColumnMeta)");
+        log.debug("  Name [{}]", meta.name());
+        log.debug("  Size [{}]", meta.size());
+        log.debug("  Type [{}]", meta.type());
         this.items.add(
             meta
             );
@@ -926,6 +950,11 @@ implements AdqlQuery, AdqlParserQuery
                 return AdqlQueryEntity.this.jdbctable ;
                 }
             @Override
+            public BaseTable<?,?> base()
+                {
+                return AdqlQueryEntity.this.jdbctable ;
+                }
+            @Override
             public AdqlTable adql()
                 {
                 return AdqlQueryEntity.this.adqltable;
@@ -933,22 +962,14 @@ implements AdqlQuery, AdqlParserQuery
             };
         }
 
-    // The user schema.
-    public void init()
+    /**
+     * Update our table.
+     * @todo name and place .... 
+     *
+     */
+    public Status tableize()
         {
-
-        // Create our jdbc table.
-
-        // Create our adql table.
-
-        // Iterate the query columns.
-        // Create or update the corresponding jdbc column.
-        // Create or update the corresponding adql column.
-
-        // Remove extra jdbc columns.
-
-        
+    
+        return Status.READY;
         }
-
-
     }

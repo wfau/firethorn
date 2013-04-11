@@ -52,7 +52,7 @@ extends Entity
             }
 
         /**
-         * Private enabled flag.
+         * Flag to indicate the component is enabled.
          *
          */
         private final boolean enabled ;
@@ -61,6 +61,7 @@ extends Entity
          * Check if this status means the component is enabled.
          *
          */
+        @Deprecated
         public boolean enabled()
             {
             return this.enabled ;
