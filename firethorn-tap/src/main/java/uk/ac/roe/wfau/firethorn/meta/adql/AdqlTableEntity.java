@@ -125,7 +125,7 @@ public class AdqlTableEntity
             }
 
         @Override
-        @CascadeEntityMethod
+        @CreateEntityMethod
         public AdqlTable insert(final AdqlTable entity)
             {
             super.insert(
@@ -175,8 +175,6 @@ public class AdqlTableEntity
                     )
                 );
             }
-
-                
         
         @Override
         @SelectEntityMethod
@@ -299,7 +297,7 @@ public class AdqlTableEntity
         {
         super(schema, ((name != null) ? name : base.name()));
         this.base   = base;
-        this.query  = query;
+        //this.query  = query;
         this.schema = schema;
         }
 

@@ -116,18 +116,14 @@ Ignoring user defined functions - the rest we know at query time.
                 String name
                 )
 
+
+
             AdqlTable atable = AdqlSchema.tables.create(
-                AdqlQuery query,
-                BaseTable base,
-                String name
+                AdqlQuery query
                 )
 
             AdqlTable atable = AdqlTable.Factory.create(
-                JdbcSchema parent,
                 AdqlQuery 
-                query,
-                BaseTable base,
-                String name
                 )
 
 

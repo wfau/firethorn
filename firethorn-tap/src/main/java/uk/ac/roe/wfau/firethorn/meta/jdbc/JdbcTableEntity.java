@@ -297,7 +297,7 @@ implements JdbcTable
     public JdbcTableEntity(final JdbcSchema schema, final AdqlQuery query, final String name, final TableType type)
         {
         super(schema, name);
-        this.query  = query;
+        //this.query  = query;
         this.schema = schema;
         this.jdbctype = type;
         }

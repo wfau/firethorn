@@ -201,7 +201,7 @@ implements AdqlQuery.Builder
         //
         // Create the new JdbcTable .
         JdbcTable table = this.schema.tables().create(
-            "RESULT_0004"
+            "RESULT_0006"
             );
         //
         // Add the JdbcColumns.
