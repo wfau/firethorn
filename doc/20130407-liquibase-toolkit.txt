@@ -116,8 +116,6 @@ Ignoring user defined functions - the rest we know at query time.
                 String name
                 )
 
-
-
             AdqlTable atable = AdqlSchema.tables.create(
                 AdqlQuery query
                 )
@@ -126,16 +124,9 @@ Ignoring user defined functions - the rest we know at query time.
                 AdqlQuery 
                 )
 
-
-
             AdqlQuery.results().adql()
             AdqlQuery.results().base()
             AdqlQuery.results().jdbc()
-            
-
-
-
-            
             
             //
             // Create an empty table.
@@ -151,11 +142,6 @@ Ignoring user defined functions - the rest we know at query time.
             jtable.columns().update(
                 Iter<ColMtea> cols
                 );
-
-
-
-
-
             
             AdqlQuery query = schema.create(
                 name,
@@ -193,11 +179,43 @@ Ignoring user defined functions - the rest we know at query time.
                 AdqlResource resource()
                 }
 
+--------------------------------------------
 
+    Creating a Query creates the corresponding Jdbc and Adql tables.
+    Execute the OGSA-DAI action - no need to create the table.
+    Probably (later) re-instate the action to verify/modify the TupleMeta.
+    For now, just insert the data direct.    
 
+    User functions ?
+    Would need to guess (VARCHAR), and then update the type based on the actual result.
+    TAP 'header' method - don't get the data, just the VOTable header.
 
+--------------------------------------------
 
+    TODO
+    Remove the CreateTableAction
+    Update the Controllers
+    Fix the size problems
 
+    REST testing
+    Table metadata .. count, nulls etc ..
+
+--------------------------------------------
+
+    TODO
+    Ivoa Resource, Schema, Table, Column ...
+    
+--------------------------------------------
+
+    TODO
+    OGSA-DAI resources
+
+--------------------------------------------
+
+    TODO
+    User identity
+
+--------------------------------------------
 
 
 

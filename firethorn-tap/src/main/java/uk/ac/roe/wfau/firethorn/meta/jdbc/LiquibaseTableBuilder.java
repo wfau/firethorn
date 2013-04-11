@@ -208,6 +208,7 @@ implements AdqlQuery.Builder
         for (AdqlQuery.ColumnMeta meta : query.items())
             {
 // Size is confused .... ?
+// Include alias for unsafe names ?
 // Create column direct from ColumnMeta
             table.columns().create(
                 meta.name(),
