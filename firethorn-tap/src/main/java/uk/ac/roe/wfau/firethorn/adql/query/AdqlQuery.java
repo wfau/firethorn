@@ -139,13 +139,13 @@ extends Entity, Job
          * Create a new query.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final String input);
+        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema store, final String input);
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final String name, final String input);
+        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema store, final String input, final String name);
 
         /**
          * Select all the queries from a resource.
@@ -171,14 +171,14 @@ extends Entity, Job
          * Build a physical table.
          *
          */
-        public JdbcTable create(final AdqlQuery query);
+        public JdbcTable create(final JdbcSchema store, final AdqlQuery query);
 
         //
         // Test config methods ..
-        public JdbcSchema schema();
-        public void schema(JdbcSchema schema);
-        public JdbcResource resource();
-        public void resource(JdbcResource resource);
+        //public JdbcSchema schema();
+        //public void schema(JdbcSchema schema);
+        //public JdbcResource resource();
+        //public void resource(JdbcResource resource);
 
         }
 
@@ -302,57 +302,60 @@ extends Entity, Job
     public String osql();
 
     /**
-     * A list of AdqlColumns used by the query.
+     * A list of the AdqlColumns used by the query.
      *
      */
     public Iterable<AdqlColumn> columns();
 
     /**
-     * A list of AdqlTables used by the query.
+     * A list of the AdqlTables used by the query.
+     * The list is only generated in response to a POST request that updates the ADQL query.
+     * The list is generated when an input query is parsed and is not saved in the database.
+     * On subsequent GET requests the list will be empty. 
      *
      */
     public Iterable<AdqlTable> tables();
 
     /**
-     * A list of BaseResources used by the query.
+     * A list of the resources used by the query.
      *
      */
     public Iterable<BaseResource<?>> resources();
 
     /**
-     * The primary BaseResource used by the query.
+     * The primary resource used by the query.
      * @todo rename to resource()
      * 
      */
     public BaseResource<?> primary();
 
     /**
-     * Column metadata for a SELECT item.
+     * Metadata for a SELECT field.
      *
      */
-    public interface ColumnMeta
+    public interface SelectField
         {
     
         /**
-         * The item name or alias.
+         * The field name or alias.
          *
          */
         public abstract String name();
     
         /**
-         * The item metadata.
+         * The column metadata.
          *
          */
         public abstract AdqlColumn.Metadata info();
     
         /**
-         * Get the item size.
+         * The field size.
          *
          */
-        public abstract int size();
+        public abstract int length();
     
         /**
-         * Get the item type.
+         * The field type.
          *
          */
         public abstract AdqlColumn.Type type();
@@ -360,10 +363,13 @@ extends Entity, Job
         }
 
     /**
-     * A list of metadata for the SELECT items.
+     * A list of the SELECT fields.
+     * The list is only generated in response to a POST request that updates the ADQL query.
+     * The list is generated when an input query is parsed and is not saved in the database.
+     * On subsequent GET requests the list will be empty. 
      *
      */
-    public Iterable<ColumnMeta > items();
+    public Iterable<SelectField> fields();
 
     /**
      * Our result tables.

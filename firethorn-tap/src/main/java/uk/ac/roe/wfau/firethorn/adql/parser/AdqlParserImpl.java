@@ -223,7 +223,7 @@ implements AdqlParser
      * Helper class to get the metadata for a query SELECT item.
      *
      */
-    public static class ColumnMetaImpl implements AdqlQuery.ColumnMeta
+    public static class ColumnMetaImpl implements AdqlQuery.SelectField
         {
 
         /**
@@ -243,7 +243,7 @@ implements AdqlParser
          * Private constructor.
          *
          */
-        private ColumnMetaImpl(final String name, final AdqlQuery.ColumnMeta meta)
+        private ColumnMetaImpl(final String name, final AdqlQuery.SelectField meta)
             {
             this(
                 name,
@@ -256,7 +256,7 @@ implements AdqlParser
          * Private constructor.
          *
          */
-        private ColumnMetaImpl(final String name, final String alias, final AdqlQuery.ColumnMeta meta)
+        private ColumnMetaImpl(final String name, final String alias, final AdqlQuery.SelectField meta)
             {
             this(
                 name,
@@ -319,7 +319,7 @@ implements AdqlParser
             }
 
         @Override
-        public int size()
+        public int length()
             {
             return size(
                 this.info
@@ -374,7 +374,7 @@ implements AdqlParser
          * Evaluate the column metadata for a SelectItem.
          * 
          */
-        public static AdqlQuery.ColumnMeta eval(final SelectItem item)
+        public static AdqlQuery.SelectField eval(final SelectItem item)
             {
             log.debug("eval(SelectItem)");
             log.debug("  alias [{}]", item.getAlias());
@@ -393,7 +393,7 @@ implements AdqlParser
          * Evaluate the column metadata for an ADQLOperand.
          *
          */
-        public static AdqlQuery.ColumnMeta eval(final ADQLOperand oper)
+        public static AdqlQuery.SelectField eval(final ADQLOperand oper)
             {
             log.debug("eval(ADQLOperand)");
             log.debug("  name   [{}]", oper.getName());
@@ -429,7 +429,7 @@ implements AdqlParser
          * Evaluate the column metadata for an ADQLColumn.
          *
          */
-        public static AdqlQuery.ColumnMeta eval(final ADQLColumn column)
+        public static AdqlQuery.SelectField eval(final ADQLColumn column)
             {
             log.debug("eval(ADQLColumn)");
             if (((ADQLColumn) column).getDBLink() instanceof AdqlDBColumn)
@@ -455,7 +455,7 @@ implements AdqlParser
          * This is proof of concept only, it just picks the largest size param.
          *
          */
-        public static AdqlQuery.ColumnMeta eval(final Operation oper)
+        public static AdqlQuery.SelectField eval(final Operation oper)
             {
             log.debug("eval(Operation)");
             log.debug("  name   [{}]", oper.getName());
@@ -506,7 +506,7 @@ implements AdqlParser
          * This is proof of concept only, it just picks the largest size param.
          *
          */
-        public static AdqlQuery.ColumnMeta eval(final ADQLFunction funct)
+        public static AdqlQuery.SelectField eval(final ADQLFunction funct)
             {
             log.debug("eval(ADQLFunction)");
             log.debug("  name   [{}]", funct.getName());
@@ -558,12 +558,12 @@ implements AdqlParser
                     {
                     log.debug("-- Select item ----");
                     log.debug(" alias  [{}]", item.getAlias());
-                    AdqlQuery.ColumnMeta meta = ColumnMetaImpl.eval(
+                    AdqlQuery.SelectField meta = ColumnMetaImpl.eval(
                         item
                         );
                     log.debug(" name [{}]", meta.name());
                     log.debug(" type [{}]", meta.type());
-                    log.debug(" size [{}]", meta.size());
+                    log.debug(" size [{}]", meta.length());
                     subject.add(
                         meta
                         );

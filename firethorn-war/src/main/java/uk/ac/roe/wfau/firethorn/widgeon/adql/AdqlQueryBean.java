@@ -22,11 +22,13 @@ import java.net.URISyntaxException;
 import java.util.Iterator;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Results;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -97,6 +99,11 @@ implements EntityBean<AdqlQuery>
             AdqlQueryIdentFactory.TYPE_URI,
             entity
             );
+        }
+
+    public String getSchema()
+        {
+        return entity().schema().link();
         }
 
     public String getWorkspace()
@@ -244,6 +251,108 @@ implements EntityBean<AdqlQuery>
             public String getFriendly()
                 {
                 return entity().syntax().friendly();
+                }
+            };
+        }
+
+    /**
+     * Our result tables.
+     * 
+     */
+    public interface Results
+        {
+        /**
+         * The abstract (ADQL) table
+         *
+         */
+        public String getAdql();
+        /**
+         * The physical (JDBC) table
+         *
+         */
+        public String getJdbc();
+        }
+
+    /**
+     * Our result tables.
+     * 
+     */
+    public Results getResults()
+        {
+        return new Results()
+            {
+            @Override
+            public String getAdql()
+                {
+                return entity().results().adql().link();
+                }
+            @Override
+            public String getJdbc()
+                {
+                return entity().results().jdbc().link();
+                }
+            };
+        }
+
+    /**
+     * A select field bean.
+     * 
+     */
+    public interface FieldBean
+        {
+        public String  getName();
+        public Integer getLength();
+        public String  getType();
+        }
+
+    /**
+     * Our select fields.
+     * 
+     */
+    public Iterable<FieldBean> getFields()
+        {
+        return new Iterable<FieldBean>()
+            {
+            @Override
+            public Iterator<FieldBean> iterator()
+                {
+                return new Iterator<FieldBean>()
+                    {
+                    final Iterator<AdqlQuery.SelectField> iter = entity().fields().iterator();
+                    @Override
+                    public boolean hasNext()
+                        {
+                        return this.iter.hasNext();
+                        }
+                    @Override
+                    public FieldBean next()
+                        {
+                        return new FieldBean(){
+                            final AdqlQuery.SelectField field = iter.next();
+                            @Override
+                            public String getName()
+                                {
+                                return this.field.name();
+                                }
+                            @Override
+                            public Integer getLength()
+                                {
+                                return this.field.length();
+                                }
+
+                            @Override
+                            public String getType()
+                                {
+                                return this.field.type().name();
+                                } 
+                            };
+                        }
+                    @Override
+                    public void remove()
+                        {
+                        this.iter.remove();
+                        }
+                    };
                 }
             };
         }

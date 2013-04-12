@@ -29,6 +29,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 
@@ -44,6 +45,9 @@ extends TestBase
     private JdbcResource twoxmm   ;
     private JdbcResource bestdr7  ;
     private JdbcResource combined ;
+
+    private JdbcResource resource ;
+    private JdbcSchema   schema   ;
 
     /**
      * Create our resources.
@@ -76,6 +80,16 @@ extends TestBase
             );
         this.combined.catalog(
             JdbcResource.ALL_CATALOGS
+            );
+
+        this.resource = factories().jdbc().resources().create(
+            "user",
+            "user-resource",
+            "spring:HsqldbUserData"
+            );
+        this.schema = this.resource.schemas().create(
+            null,
+            "PUBLIC"
             );
         }
 
@@ -152,6 +166,7 @@ extends TestBase
         //
         // Create the query and check the results.
         final AdqlQuery query = schema.queries().create(
+            this.schema,
             IMPORTED_000
             );
         //query.prepare();
@@ -203,10 +218,10 @@ extends TestBase
             );
         //
         // Import the JDBC tables into our workspace.
-        final AdqlSchema a = workspace.schemas().create(
+        final AdqlSchema schema = workspace.schemas().create(
             "adql_twomass"
             );
-        a.tables().create(
+        schema.tables().create(
             this.twomass.schemas().select(
                 "TWOMASS",
                 "dbo"
@@ -214,7 +229,7 @@ extends TestBase
                     "twomass_psc"
                     )
             );
-        a.tables().create(
+        schema.tables().create(
             this.twomass.schemas().select(
                 "TWOMASS",
                 "dbo"
@@ -224,7 +239,8 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final AdqlQuery query = workspace.queries().create(
+        final AdqlQuery query = schema.queries().create(
+            this.schema,
             IMPORTED_001
             );
         //query.prepare();
@@ -283,10 +299,10 @@ extends TestBase
             );
         //
         // Import the JDBC tables into our workspace.
-        final AdqlSchema a = workspace.schemas().create(
+        final AdqlSchema schema = workspace.schemas().create(
             "adql_twomass"
             );
-        a.tables().create(
+        schema.tables().create(
             this.twomass.schemas().select(
                 "TWOMASS",
                 "dbo"
@@ -294,7 +310,7 @@ extends TestBase
                     "twomass_psc"
                     )
             );
-        a.tables().create(
+        schema.tables().create(
             this.twomass.schemas().select(
                 "TWOMASS",
                 "dbo"
@@ -302,7 +318,7 @@ extends TestBase
                     "twomass_scn"
                     )
             );
-        a.tables().create(
+        schema.tables().create(
             this.twomass.schemas().select(
                 "TWOMASS",
                 "dbo"
@@ -311,10 +327,10 @@ extends TestBase
                     )
             );
 
-        final AdqlSchema b = workspace.schemas().create(
+        final AdqlSchema other = workspace.schemas().create(
             "adql_bestdr7"
             );
-        b.tables().create(
+        other.tables().create(
             this.bestdr7.schemas().select(
                 "BestDR7",
                 "dbo"
@@ -324,7 +340,8 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final AdqlQuery query = workspace.queries().create(
+        final AdqlQuery query = schema.queries().create(
+            this.schema,
             IMPORTED_002
             );
         //query.prepare();
@@ -365,10 +382,10 @@ extends TestBase
             );
         //
         // Import the JDBC tables into our workspace.
-        final AdqlSchema a = workspace.schemas().create(
+        final AdqlSchema schema = workspace.schemas().create(
             "adql_twomass"
             );
-        a.tables().create(
+        schema.tables().create(
             this.combined.schemas().select(
                 "TWOMASS",
                 "dbo"
@@ -376,7 +393,7 @@ extends TestBase
                     "twomass_psc"
                     )
             );
-        a.tables().create(
+        schema.tables().create(
             this.combined.schemas().select(
                 "TWOMASS",
                 "dbo"
@@ -384,7 +401,7 @@ extends TestBase
                     "twomass_scn"
                     )
             );
-        a.tables().create(
+        schema.tables().create(
             this.combined.schemas().select(
                 "TWOMASS",
                 "dbo"
@@ -393,10 +410,10 @@ extends TestBase
                     )
             );
 
-        final AdqlSchema b = workspace.schemas().create(
+        final AdqlSchema other = workspace.schemas().create(
             "adql_bestdr7"
             );
-        b.tables().create(
+        other.tables().create(
             this.combined.schemas().select(
                 "BestDR7",
                 "dbo"
@@ -406,7 +423,8 @@ extends TestBase
             );
         //
         // Create the query and check the results.
-        final AdqlQuery query = workspace.queries().create(
+        final AdqlQuery query = schema.queries().create(
+            this.schema,
             IMPORTED_002
             );
         //query.prepare();

@@ -81,4 +81,14 @@ implements EntityBean<JdbcTable>
         return entity().fullname().toString();
         }
 
+    public String getQuery()
+        {
+        if (entity().query() != null)
+            {
+            return entity().query().link();
+            }
+        else {
+            return null ;
+            }
+        }
     }

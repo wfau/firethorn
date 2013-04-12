@@ -29,6 +29,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 
@@ -41,7 +42,8 @@ extends TestBase
     {
 
     private JdbcResource twomass  ;
-    private JdbcResource userdata ;
+    private JdbcResource resource ;
+    private JdbcSchema   schema   ;
 
     /**
      * Create our resources.
@@ -57,20 +59,14 @@ extends TestBase
             "twomass-resource",
             "spring:RoeTWOMASS"
             );
-        this.userdata = factories().jdbc().resources().create(
+        this.resource = factories().jdbc().resources().create(
             "user",
             "user-resource",
             "spring:HsqldbUserData"
             );
-
-        factories().queries().builder().resource(
-            this.userdata
-            );
-        factories().queries().builder().schema(
-            this.userdata.schemas().create(
-                null,
-                "PUBLIC"
-                )
+        this.schema = this.resource.schemas().create(
+            null,
+            "PUBLIC"
             );
         }
 
@@ -107,7 +103,7 @@ extends TestBase
      * Simple ADQL query for the imported table.
      *
      */
-    private static final String IMPORTED_000 =
+    private static final String QUERY_001 =
 
           "SELECT"
         + "    ra,"
@@ -144,10 +140,12 @@ extends TestBase
                     "twomass_psc"
                     )
             );
+
         //
         // Create the query and check the results.
         final AdqlQuery query = schema.queries().create(
-            IMPORTED_000
+            this.schema,
+            QUERY_001
             );
         debug(query);
 

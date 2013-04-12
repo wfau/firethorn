@@ -90,6 +90,15 @@
     <build>
 
         <plugins>
+
+            <!--+
+                | Run HSQLDB as a service ....
+                | http://mojo.codehaus.org/exec-maven-plugin/
+                | http://stackoverflow.com/questions/7767615/start-hsqldb-server-through-maven-exec-plugin-failed
+                | http://javaclarity.blogspot.co.uk/p/run-hsqldb-using-maven.html
+                | 
+                +-->
+
         </plugins>
 
         <resources>

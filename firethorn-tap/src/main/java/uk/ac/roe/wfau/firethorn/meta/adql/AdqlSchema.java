@@ -19,9 +19,9 @@ package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource.Queries;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**
  *
@@ -117,13 +117,13 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          * Create a new query.
          *
          */
-        public AdqlQuery create(final String query);
+        public AdqlQuery create(final JdbcSchema store, final String query);
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final String name, final String query);
+        public AdqlQuery create(final JdbcSchema store, final String query, final String name);
 
         /**
          * Select all the queries for this schema.

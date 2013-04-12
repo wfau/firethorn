@@ -68,6 +68,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineResult;
@@ -255,13 +256,32 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @CreateEntityMethod
-        public AdqlQuery create(final AdqlSchema schema, final String input)
+        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema store, final String input)
             {
+            return create(
+                schema,
+                store,
+                input,
+                null
+                );
+            }
+
+        @Override
+        @CreateEntityMethod
+        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema store, final String input, final String name)
+            {
+            log.debug("AdqlQuery create(AdqlSchema, JdbcSchema, String, String)");
+            log.debug("  Schema [{}][{}]", schema.ident(), schema.name());
+            log.debug("  Store  [{}][{}]", store.ident(),  store.name());
+            log.debug("  Name   [{}][{}]", name);
+
             //
             // Create the query entity.
             AdqlQueryEntity entity = new AdqlQueryEntity(
                 schema,
-                names().name(),
+                names().name(
+                    name
+                    ),
                 input
                 );
             //
@@ -271,25 +291,12 @@ implements AdqlQuery, AdqlParserQuery
                 );
             //
             // Create the query tables.
-            entity.init();
+            entity.create(
+                store
+                );
             //
             // Return the entity.
             return query;
-            }
-
-        @Override
-        @CreateEntityMethod
-        public AdqlQuery create(final AdqlSchema schema, final String name, final String input)
-            {
-            return this.insert(
-                new AdqlQueryEntity(
-                    schema,
-                    names().name(
-                        name
-                        ),
-                    input
-                    )
-                );
             }
 
         @Autowired
@@ -715,20 +722,6 @@ implements AdqlQuery, AdqlParserQuery
                 // Update the status.
                 if (syntax().state() == Syntax.State.VALID)
                     {
-/*
-                    //
-                    // Create our JDBC table.
-                    this.jdbctable = services().builder().create(
-                        this
-                        );
-                    //
-                    // Create our ADQL table.
-                    this.adqltable = this.schema().tables().create(
-                        this
-                        );
- */
-                    //
-                    // Update our status.
                     return status(
                         Status.READY
                         );
@@ -749,11 +742,12 @@ implements AdqlQuery, AdqlParserQuery
      *  Create our result tables.
      *
      */
-    protected void init()
+    protected void create(final JdbcSchema store)
         {
         //
         // Create our JDBC table.
         this.jdbctable = services().builder().create(
+            store,
             this
             );
         //
@@ -772,7 +766,7 @@ implements AdqlQuery, AdqlParserQuery
         this.syntax(
             Syntax.State.UNKNOWN
             );
-        this.items.clear();
+        this.fields.clear();
         this.columns.clear();
         this.tables.clear();
         this.resources.clear();
@@ -911,22 +905,22 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Transient
-    private final Set<ColumnMeta > items = new HashSet<ColumnMeta>();
+    private final Set<SelectField > fields = new HashSet<SelectField>();
     @Override
-    public Iterable<ColumnMeta > items()
+    public Iterable<SelectField > fields()
         {
-        return this.items;
+        return this.fields;
         }
     
     @Override
-    public void add(ColumnMeta meta)
+    public void add(SelectField field)
         {
-        log.debug("add(ColumnMeta)");
-        log.debug("  Name [{}]", meta.name());
-        log.debug("  Size [{}]", meta.size());
-        log.debug("  Type [{}]", meta.type());
-        this.items.add(
-            meta
+        log.debug("add(SelectField)");
+        log.debug("  Name [{}]", field.name());
+        log.debug("  Size [{}]", field.length());
+        log.debug("  Type [{}]", field.type());
+        this.fields.add(
+            field
             );
         }
     
@@ -994,16 +988,5 @@ implements AdqlQuery, AdqlParserQuery
                 return AdqlQueryEntity.this.adqltable;
                 }
             };
-        }
-
-    /**
-     * Update our table.
-     * @todo name and place .... 
-     *
-     */
-    public Status tableize()
-        {
-    
-        return Status.READY;
         }
     }

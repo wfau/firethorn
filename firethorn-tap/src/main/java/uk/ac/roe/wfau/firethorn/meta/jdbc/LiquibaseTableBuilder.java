@@ -59,6 +59,8 @@ implements AdqlQuery.Builder
 
     //
     // Our default schema.
+/*
+ *
     private JdbcSchema schema ;
     @Override
     public JdbcSchema schema()
@@ -70,9 +72,13 @@ implements AdqlQuery.Builder
         {
         this.schema = schema ;
         }
+ *
+ */
     
     //
     // Our parent resource.
+/*
+ *
     private JdbcResource resource ;
     @Override
     public JdbcResource resource()
@@ -84,6 +90,8 @@ implements AdqlQuery.Builder
         {
         this.resource = resource;
         }
+ *
+ */
 
     public LiquibaseTableBuilder()
         {
@@ -140,72 +148,23 @@ implements AdqlQuery.Builder
         return change;
         }
 
-    /*
-    protected ChangeSet create(final ChangeSet changeset, final JdbcTable table)
-        {
-        log.debug("create(ChangeSet, JdbcTable)");
-        log.debug("  Table [{}][{}]", table.ident(), table.name());
-        changeset.addChange(
-            create(
-                table
-                )
-            );
-        for (JdbcColumn column : table.columns().select())
-            {
-            changeset.addChange(
-                create(
-                    column
-                    )
-                );
-            }
-        return changeset;
-        }
-     */
-
-    /*
-    protected ChangeSet create(final ChangeSet changeset, final JdbcColumn column)
-        {
-        log.debug("create(ChangeSet, JdbcColumn)");
-        log.debug("  Column [{}][{}]", column.ident(), column.name());
-        changeset.addChange(
-            create(
-                column
-                )
-            );
-        return changeset;
-        }
-     */
-
-    /*
-    protected Change create(final JdbcColumn column)
-        {
-        log.debug("create(JdbcColumn)");
-        log.debug("  Column [{}][{}]", column.ident(), column.name());
-        AddColumnChange change = new AddColumnChange();
-        change.addColumn(
-            new ColumnConfig().setName(
-                column.name()
-                ).setType(
-                    column.info().jdbc().toString()
-                    )
-            );
-        return change;
-        }
-     */
-
     @Override
-    public JdbcTable create(final AdqlQuery query)
+    public JdbcTable create(final JdbcSchema store, final AdqlQuery query)
         {
         log.debug("create(AdqlQuery)");
         log.debug("  Query [{}][{}]", query.ident(), query.name());
         //
         // Create the new JdbcTable .
-        JdbcTable table = this.schema.tables().create(
-            "RESULT_" + query.ident().toString()
+        // TODO - unique name generator ...
+        JdbcTable table = store.tables().create(
+            safe(
+                "RESULT_" + query.ident().toString()
+                ),
+            query
             );
         //
         // Add the JdbcColumns.
-        for (AdqlQuery.ColumnMeta meta : query.items())
+        for (AdqlQuery.SelectField meta : query.fields())
             {
 // Size is confused .... ?
 // Include alias for unsafe names ?
@@ -213,7 +172,7 @@ implements AdqlQuery.Builder
             table.columns().create(
                 meta.name(),
                 meta.type().jdbc().code(),
-                meta.size()
+                meta.length()
                 );
             }
         //
@@ -235,6 +194,7 @@ implements AdqlQuery.Builder
         //
         // Execute the changeset.
         execute(
+            store,
             changeset
             );        
 
@@ -255,13 +215,13 @@ implements AdqlQuery.Builder
         return name.toString();
         }
 
-    protected Database database()
+    protected Database database(final JdbcSchema store)
         {
         try {
             DatabaseFactory factory = DatabaseFactory.getInstance();
             
             JdbcConnection connection = new JdbcConnection(
-                this.resource.connection().open()
+                store.resource().connection().open()
                 ); 
 
             return factory.findCorrectDatabaseImplementation(
@@ -294,7 +254,7 @@ implements AdqlQuery.Builder
             ); 
         }
 
-    protected void execute(Change change)
+    protected void execute(final JdbcSchema store, final Change change)
         {
         log.debug("Executing Change [{}]", change);
         ChangeSet changeset = changeset();
@@ -302,14 +262,17 @@ implements AdqlQuery.Builder
             change
             );
         execute(
+            store,
             changeset
             );
         }
 
-    protected void execute(ChangeSet changeset)
+    protected void execute(final JdbcSchema store, final ChangeSet changeset)
         {
         log.debug("Executing ChangeSet [{}]", changeset.getId());
-        Database database = database();
+        Database database = database(
+            store
+            );
         DatabaseChangeLog changelog = changelog();
         try {
             ChangeSet.ExecType result = changeset.execute(
@@ -318,7 +281,6 @@ implements AdqlQuery.Builder
                 );
             log.debug("ChangeSet result [{}]", result);
             database.commit();
-            //database.close();
             }
         catch (MigrationFailedException ouch)
             {

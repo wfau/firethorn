@@ -56,12 +56,6 @@ implements AdqlResource.LinkFactory
      */
     public static final String RESOURCE_SCHEMA_PATH = RESOURCE_PATH + "/schemas" ;
 
-    /**
-     * The URI path for resource queries.
-     *
-     */
-    public static final String RESOURCE_QUERY_PATH = RESOURCE_PATH + "/queries" ;
-
     @Override
     public String link(final AdqlResource entity)
         {

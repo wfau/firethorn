@@ -51,16 +51,37 @@ cat > adql-query-001.adql << 'EOF'
 EOF
 
 #
-# Create the ADQL query.
-adqlquery=$(
-    POST "${adqlspace?}/queries/create" \
-        --data-urlencode "adql.resource.query.create.name=query-$(unique)" \
-        --data-urlencode "adql.resource.query.create.query@adql-query-001.adql" \
-        | ident
-        )
-GET "${adqlquery?}" \
-    | ./pp
+# Create our user data store.
+POST "/jdbc/resource/create" \
+    -d "jdbc.resource.create.url=spring:HsqldbUserData" \
+    -d "jdbc.resource.create.name=userdate-$(unique)" \
+    -d "jdbc.resource.create.ogsadai=userdata" \
+    | tee jdbc-user-resource.json | ./pp
+jdbcresource=$(cat jdbc-user-resource.json | ident)
 
+POST "${jdbcresource?}/schemas/select" \
+    -d "jdbc.resource.schema.select.name=PUBLIC.PUBLIC" \
+    | tee jdbc-schema.json | ./pp
+jdbcschema=$(cat jdbc-schema.json | ident)
+
+#
+# Locate the ADQL schema.
+POST "${adqlspace?}/schemas/select" \
+    -d "adql.resource.schema.select.name=adql_schema" \
+    | tee adql-schema.json | ./pp
+adqlschema=$(cat adql-schema.json | ident)
+
+GET "${adqlschema?}" | ./pp
+GET "${jdbcschema?}" | ./pp
+
+#
+# Create the ADQL query.
+POST "${adqlschema?}/queries/create" \
+    --data-urlencode "adql.schema.query.create.name=query-$(unique)" \
+    --data-urlencode "adql.schema.query.create.store=${metabasename?}/${jdbcschema?}" \
+    --data-urlencode "adql.schema.query.create.query@adql-query-001.adql" \
+    | tee adql-query.json | ./pp
+adqlquery=$(cat adql-query.json | ident)
 
 #
 # Run the ADQL query.

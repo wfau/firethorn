@@ -35,10 +35,10 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource.Queries;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**
  *
@@ -309,21 +309,23 @@ implements AdqlSchema
         return new Queries()
             {
             @Override
-            public AdqlQuery create(final String query)
+            public AdqlQuery create(final JdbcSchema store, final String query)
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
+                    store,
                     query
                     );
                 }
 
             @Override
-            public AdqlQuery create(final String name, final String query)
+            public AdqlQuery create(final JdbcSchema store, final String query, final String name)
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
-                    name,
-                    query
+                    store,
+                    query,
+                    name
                     );
                 }
 
