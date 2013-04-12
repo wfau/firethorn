@@ -11,7 +11,7 @@ import urllib2
 import urllib
 import traceback
 from app import session
-from helper_functions import session_helpers
+from helper_functions import workspace_helpers
 from datetime import datetime
 from helper_functions import string_functions
 from helper_functions import type_helpers
@@ -51,7 +51,7 @@ class jdbc_resources:
             return_html = "<div id='sub_item'>There was an error creating your JDBC connection</div>"
         else :
             if type_helpers.isSchema(data["type"]) or type_helpers.isTable(data["type"]):
-                available_action = "Add to:" + session_helpers(session).generate_workspace_selection("") + config.available_object_actions["add"] 
+                available_action = "Add to:" + workspace_helpers(session).generate_workspace_selection("") + config.available_object_actions["add"] 
             elif type_helpers.isRootType(data["type"]):
                 available_action = "<div id='open_new'> <a target='_blank' href='"  + config.local_hostname[data["type"]] + '?' + config.get_param + '='  + string_functions.encode(data["ident"]) +  "'>Open in new window</a></div>" 
             else:
@@ -78,7 +78,7 @@ class jdbc_resources:
                 json_data = dict([(str(k), v) for k, v in json_data.items()])
                 if self.__validate_type(json_data["type"]):
                     if request_type == "GET":
-                        return_value = render.jdbc_connections( str(render.header(session_helpers(session).get_log_notification())), str(render.side_menu(session_helpers(session).get_menu_items_by_permissions())), str(render.footer()), str(self.__generate_html_content(json_data)))
+                        return_value = render.jdbc_connections( str(render.header(workspace_helpers(session).get_log_notification())), str(render.side_menu(workspace_helpers(session).get_menu_items_by_permissions())), str(render.footer()), str(self.__generate_html_content(json_data)))
                     else :
                         return_value = self.__generate_html_content(json_data) 
                         

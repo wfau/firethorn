@@ -15,7 +15,7 @@ jQuery(document).ready(function() {
 	 * 
 	 */
 	jQuery('.input_form').submit(function(){
-		
+		jQuery("#load").fadeIn('slow');
         	json_data = jQuery(this).serialize();
         	json_data += '&db_type=' + jQuery('#db_type').val();
         	var success = function(data) {  
@@ -29,10 +29,10 @@ jQuery(document).ready(function() {
 			    	    
 					}
 			    }
-				
+				jQuery("#load").hide();
 			}
         	
-	      	xhr = helper_functions.ajaxCall(json_data, "POST",properties.getPath() +  "/", 1000000, function(e) { helper_functions.displayError("#error", e);} , success);
+	      	xhr = helper_functions.ajaxCall(json_data, "POST",properties.getPath() +  "/", 1000000, function(e) { helper_functions.displayError("#error", e);jQuery("#load").hide();} , success);
 
         	
         	return false;
@@ -62,35 +62,39 @@ jQuery(document).ready(function() {
 		  
 		 } else { 
 				e.preventDefault();
-				var id_url = encodeURIComponent(jQuery(_this).parent().find("#id_url")[0].href.trim());
-				var db_type = encodeURIComponent(jQuery(_this).parent().find("#db_type")[0].innerHTML.trim());
-				var action = 'expand';
-				jQuery("#load").fadeIn('slow');
-
-				var success =  function(data) {
-					jQuery("#load").hide();
-					if (data.Code!=null){
-						if (data.Code==-1){
-							 helper_functions.displayErrorFromParent(jQuery(_this).parent(), "#expand_error", data.Content);
-						} else {
-							
-							if (jQuery(_this).parent().find("#children").length<=0){
-								var children = jQuery("<div id='children'>" + data.Content + "</div>").hide();
-								children.appendTo(jQuery(_this).parent()).slideDown();
+				if (jQuery(_this).parent().find("#id_url").length>0){
+					var id_url = encodeURIComponent(jQuery(_this).parent().find("#id_url")[0].href.trim());
+					var db_type = encodeURIComponent(jQuery(_this).parent().find("#db_type")[0].innerHTML.trim());
+					var action = 'expand';
+					jQuery("#load").fadeIn('slow');
+					
+					var success =  function(data) {
+						jQuery("#load").hide();
+						if (data.Code!=null){
+							if (data.Code==-1){
+								 helper_functions.displayErrorFromParent(jQuery(_this).parent(), "#expand_error", data.Content);
 							} else {
-								jQuery(_this).parent().children("#children").slideToggle("slow");
+								
+								if (jQuery(_this).parent().find("#children").length<=0){
+									var children = jQuery("<div id='children'>" + data.Content + "</div>").hide();
+									children.appendTo(jQuery(_this).parent()).slideDown();
+								} else {
+									jQuery(_this).parent().children("#children").slideToggle("slow");
+								}
+	
+								jQuery(_this).addClass('tree-expanded');
+								jQuery(_this).removeClass('tree-collapsed');
+	
 							}
-
-							jQuery(_this).addClass('tree-expanded');
-							jQuery(_this).removeClass('tree-collapsed');
-
 						}
-					}
-		         }
+			         }
+					
+					e.preventDefault();
+					helper_functions.ajaxCall( {ident : id_url, _type : db_type, action : action}, "POST", properties.getPath() + "resource_actions", 1000000, function(e) {helper_functions.displayError("#error", data.Content);	jQuery("#load").hide();} , success);
+				}
 				
-				e.preventDefault();
-				helper_functions.ajaxCall( {ident : id_url, _type : db_type, action : action}, "POST", properties.getPath() + "resource_actions", 1000000, function(e) {helper_functions.displayError("#error", data.Content);} , success);
-				jQuery("#load").hide();
+
+			
 
 			}
 		 
@@ -121,7 +125,8 @@ jQuery(document).ready(function() {
         if  (this.id == id_prevented){
 			e.preventDefault();
 		} else if  (this.id == id_add_to){
-			
+			jQuery("#load").fadeIn('slow');
+
 			var id_url = encodeURIComponent(jQuery(this).parent().parent().find("#id_url")[0].href.trim());
 			var db_type = encodeURIComponent(jQuery(this).parent().parent().find("#db_type")[0].innerHTML.trim());
 			var name = encodeURIComponent(jQuery(this).parent().parent().find("#id_url")[0].innerHTML.trim());
@@ -142,10 +147,11 @@ jQuery(document).ready(function() {
 						
 					}
 				}
+				jQuery("#load").hide();
 	         }
 			
 			e.preventDefault();
-			helper_functions.ajaxCall( {id_url : id_url, db_type : db_type, name : name, workspace : workspace, action : action}, "POST", properties.getPath() + "workspace_actions", 1000000, function(e) {console.log(e);} , success);
+			helper_functions.ajaxCall( {id_url : id_url, db_type : db_type, name : name, workspace : workspace, action : action}, "POST", properties.getPath() + "workspace_actions", 1000000, function(e) {jQuery("#load").hide();} , success);
 
 	    
 		} 

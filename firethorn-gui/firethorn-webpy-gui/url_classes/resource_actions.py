@@ -17,7 +17,7 @@ import urllib2
 import urllib
 import traceback
 from app import session
-from helper_functions import session_helpers
+from helper_functions import workspace_helpers
 from helper_functions import type_helpers
 from datetime import datetime
 from urlparse import urlparse
@@ -57,10 +57,13 @@ class resource_actions:
        
             
             if ident!="" and _type!="" and (not type_helpers.isColumn(_type)):
+               
                 ident = ident + config.resource_uris[_type]
+                
                 request = urllib2.Request(ident, headers={"Accept" : "application/json"})
                 f = urllib2.urlopen(request)
                 json_data = json.loads(f.read())
+                    
                 if json_data == [] or json_data== None:
                     return_val = "No data found"
                     code = -1
@@ -68,7 +71,7 @@ class resource_actions:
                     for entry in json_data:
                         converted_dict = dict([(str(k), v) for k, v in entry.items()])
                         if type_helpers.isSchema(converted_dict["type"]) or type_helpers.isTable(converted_dict["type"]):
-                            available_action = "Add to:" + session_helpers(session).generate_workspace_selection(workspace) + config.available_object_actions["add"] 
+                            available_action = "Add to:" + workspace_helpers(session).generate_workspace_selection(workspace) + config.available_object_actions["add"] 
                         elif type_helpers.isRootType(converted_dict["type"]):
                             available_action = "<div id='open_new'> <a target='_blank' href='"  + config.local_hostname[converted_dict["type"]] + '?' + config.get_param + '='  + string_functions.encode(converted_dict["ident"]) +  "'>Open in new window</a></div>" 
                         else:

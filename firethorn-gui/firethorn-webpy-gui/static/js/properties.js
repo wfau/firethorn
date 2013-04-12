@@ -9,6 +9,9 @@ var properties = new function() {
 	this.webpy_gui_port = '8090';
 
 	this.path = '';
+	
+	this.static_folder = "/home/stelios/Desktop/workspace/firethorn-webpy-gui/static/";
+		
 	// The base url for this app
 	this.base_url = 'http://' +  this.webpy_gui_host + ':' + this.webpy_gui_port;
 	

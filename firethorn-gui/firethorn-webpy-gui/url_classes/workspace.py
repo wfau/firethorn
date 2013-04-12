@@ -10,7 +10,7 @@ import config
 import urllib2
 import urllib
 import traceback
-from helper_functions import session_helpers
+from helper_functions import workspace_helpers
 from datetime import datetime
 from helper_functions.string_functions import string_functions
 string_functions = string_functions()
@@ -33,9 +33,11 @@ class workspace:
         
         return_html = ''
         workspace_list = ''
-                            
-        if data == [] or data== None:
-            return_html = "<div id='sub_item'>There was an error creating your JDBC connection</div>"
+                             
+        if data== None:
+            return_html = "<div id='sub_item'><p style='color:red'>There was an error fetching your workspaces</p></div>"
+        elif data == [] :
+            return_html = "<div id='sub_item'><p style='color:red'>You do not have any workspaces set up.</p><p style='font-style:italic;font-size:11px'> Use the  menu on the left if you wish to create a new workspace</p></div>"
         else :
             counter = 0
             for i in data:
@@ -62,13 +64,13 @@ class workspace:
         """
         return_value = ''
         f= ""
-        json_data = session_helpers().get_workspaces()
-
+        json_data = workspace_helpers().get_workspaces()
+       
         try:
          
             if request_type == "GET":
                 if getattr(data, '_id',"") == "":
-                    return_value = render.workspace( str(render.header(session_helpers().get_log_notification())), str(render.side_menu(session_helpers().get_menu_items_by_permissions())), str(render.footer()), str(self.__generate_html_content(json_data)), "",  str(render.index_input_area()))
+                    return_value = render.workspace( str(render.header(workspace_helpers().get_log_notification())), str(render.side_menu(workspace_helpers().get_menu_items_by_permissions())), str(render.footer()), str(self.__generate_html_content(json_data)), "")
                 else:
                     from vospace import vospace
                     vospace_instance = vospace()
@@ -80,9 +82,11 @@ class workspace:
                     setattr( encoded_args, '_id', string_functions.decode(getattr(data, '_id',"")) )
                     setattr( encoded_args, 'parent_folder', string_functions.decode(getattr(data, 'parent_folder',"")) )
                     setattr( encoded_args, 'workspace' , string_functions.decode(getattr(data, 'workspace',"")) )
+                    setattr( encoded_args, 'import_input_area' , str(render.index_input_area() ))
+
                     req_result = vospace_instance.handle_vospace_template_request(encoded_args)
                     req_result_json = json.loads(req_result)["Content"]
-                    return_value = render.workspace( str(render.header(session_helpers().get_log_notification())), str(render.side_menu(session_helpers().get_menu_items_by_permissions())), str(render.footer()), str(self.__generate_html_content(json_data)), req_result_json, str(render.index_input_area()))
+                    return_value = render.workspace( str(render.header(workspace_helpers().get_log_notification())), str(render.side_menu(workspace_helpers().get_menu_items_by_permissions())), str(render.footer()), str(self.__generate_html_content(json_data)), req_result_json)
             else :
                 return_value = self.__generate_html_content(json_data) 
 
@@ -108,7 +112,7 @@ class workspace:
             data = web.input(_id="", parent_folder="", workspace="")
             return  self.__workspace_handler(data, 'GET')
         except Exception as e:
-            print e
+            traceback.print_exc()
      
     
     

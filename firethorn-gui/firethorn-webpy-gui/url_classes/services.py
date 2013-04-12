@@ -11,7 +11,7 @@ import urllib2
 import urllib
 import traceback
 from app import session
-from helper_functions import session_helpers
+from helper_functions import workspace_helpers
 from datetime import datetime
 from helper_functions import string_functions
 from helper_functions import type_helpers
@@ -49,13 +49,14 @@ class services:
         if data == [] or data== None:
             return_html = "<div id='sub_item'>There was an error creating your service</div>"
         else :
+           
             if type_helpers.isSchema(data["type"]) or type_helpers.isTable(data["type"]):
-                available_action = "Add to:" + session_helpers(session).generate_workspace_selection("") + config.available_object_actions["add"] 
+                available_action = "Add to:" + workspace_helpers(session).generate_workspace_selection("") + config.available_object_actions["add"] 
             elif type_helpers.isRootType(data["type"]):
                 available_action = "<div id='open_new'> <a target='_blank' href='"  + config.local_hostname[data["type"]] + '?' + config.get_param + '='  + string_functions.encode(data["ident"]) +  "'>Open in new window</a></div>" 
             else:
                 available_action = config.available_object_actions["none"]
-            return_html = str(render.select_service_response('<a id="id_url" href=' + config.local_hostname['services'] + '?'+ config.get_param + '='  +  string_functions.decode(data["ident"]) + '>' + data["name"] + '</a>',datetime.strptime(data["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(data["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), config.types["service"], available_action, type_helpers.get_img_from_type(data["type"])))
+            return_html = str(render.select_service_response('<a id="id_url" href=' + config.local_hostname['services'] + '?'+ config.get_param + '='  +  string_functions.decode(data["ident"]) + '>' + data["name"] + '</a>',datetime.strptime(data["created"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), datetime.strptime(data["modified"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d %B %Y at %H:%M:%S"), data["type"], available_action, type_helpers.get_img_from_type(data["type"])))
         
         return return_html
     
@@ -75,9 +76,10 @@ class services:
                 f = urllib2.urlopen(request)
                 json_data = json.loads(f.read())
                 json_data = dict([(str(k), v) for k, v in json_data.items()])
+                
                 if self.__validate_type(json_data["type"]):
                     if request_type == "GET":
-                        return_value = render.services( str(render.header(session_helpers(session).get_log_notification())), str(render.side_menu(session_helpers(session).get_menu_items_by_permissions())), str(render.footer()), str(self.__generate_html_content(json_data)))
+                        return_value = render.services( str(render.header(workspace_helpers(session).get_log_notification())), str(render.side_menu(workspace_helpers(session).get_menu_items_by_permissions())), str(render.footer()), str(self.__generate_html_content(json_data)))
                     else :
                         return_value = self.__generate_html_content(json_data) 
                         

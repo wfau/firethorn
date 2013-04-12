@@ -27,12 +27,17 @@
 .sf-menu li {
 	float:			left;
 	position:		relative;
-	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
 	margin-right:15px;
 	height:31px;
 	background:white;
+	
 
 }
+
+.head_link{
+	box-shadow: 0 0px 4px rgba(0, 0, 0, 0.25);
+}
+
 .sf-menu a {
 	display:		block;
 	position:		relative;
@@ -74,7 +79,7 @@ ul.sf-menu li li li.sfHover ul {
 	color:			#3E3E3E;
 }
 .sf-menu li a:hover{
-		cursor:pointer;
+	cursor:pointer;
 	}
 
 
@@ -86,8 +91,9 @@ ul.sf-menu li li li.sfHover ul {
 }
 .sf-menu li:hover, .sf-menu li.sfHover,
 .sf-menu a:focus, .sf-menu a:hover, .sf-menu a:active {
-	background:		#CFDEFF;
+	background:		#9FF781;
 	outline:		0;
+	
 }
 
 /*** arrows **/

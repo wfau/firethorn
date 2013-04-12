@@ -114,35 +114,6 @@ jQuery(document).ready(function() {
 	 		if  (this.id == id_prevented){
 				e.preventDefault();
 				
-			} else if  (this.id == id_add_to){
-				
-				var id_url = encodeURIComponent(jQuery(this).parent().parent().find("#id_url")[0].href.trim());
-				var db_type = encodeURIComponent(jQuery(this).parent().parent().find("#db_type")[0].innerHTML.trim());
-				var name = encodeURIComponent(jQuery(this).parent().parent().find("#id_url")[0].innerHTML.trim());
-				var workspace = encodeURIComponent(jQuery(this).parent().parent().find("#workspace_selection :selected").val());
-			
-				var action = 'add';
-				
-				var success =  function(data) {
-					if (data.Code!=null){
-						if (data.Code==-1){
-							jQuery(jQuery(_this).parent().find("#add_error")[0]).html("Error adding to workspace");
-							jQuery(jQuery(_this).parent().find("#add_error")[0]).fadeIn('normal');
-							jQuery(jQuery(_this).parent().find("#add_error")[0]).delay(3800).fadeOut('slow');
-							
-						} else {
-							jQuery(jQuery(_this).parent().find("#add_notification")[0]).html("Added to workspace");
-							jQuery(jQuery(_this).parent().find("#add_notification")[0]).fadeIn('normal');
-							jQuery(jQuery(_this).parent().find("#add_notification")[0]).delay(3800).fadeOut('slow');
-							
-						}
-					}
-		         }
-				
-				e.preventDefault();
-				helper_functions.ajaxCall( {id_url : id_url, db_type : db_type, name : name, workspace : workspace, action : action}, "POST", properties.getPath() + "workspace_actions", 1000000, function(e) {console.log(e);} , success);
-			    
-			
 			} 
  	 
 	 });

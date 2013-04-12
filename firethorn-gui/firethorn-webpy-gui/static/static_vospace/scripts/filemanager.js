@@ -20,15 +20,15 @@ $.urlParam = function(name){
 		return 0;
 }
 
-
+var isLoaded;
 var oTable;
-var pathname = "/home/stelios/Desktop/workspace/firethorn-webpy-gui/static/temp/tmp72maP2";
-
+var pathname = properties.static_folder + "temp/tmp72maP2";
+var editor = null;
 
 /* TableTools library custom button declaration */
 
 TableTools.BUTTONS.csv_button  = {
-				"sAction": "text",
+			"sAction": "text",
 			"sFieldBoundary": "",
 			"sFieldSeperator": "\t",
 			"sAjaxUrl": "save_as_html",
@@ -139,7 +139,7 @@ TableTools.BUTTONS.copy_to_fits  = {
 // Sets paths to connectors based on language selection.
 var fileConnector = properties.vospace_fileConnector; 
 
-var capabilities = new Array('select', 'download', 'rename', 'move_up', 'delete', 'view');
+var capabilities = new Array('select', 'download', 'rename', 'move_up', 'delete', 'view', 'get_metadata');
 
 // Get localized messages from file 
 // through culture var or from URL
@@ -271,6 +271,7 @@ var nameFormat = function(input) {
 }
 
 
+
 // Handle Error. Freeze interactive buttons and display
 // error message. Also called when auth() function return false (Code == "-1")
 var handleError = function(errMsg) {
@@ -316,6 +317,35 @@ var getFilename = function(filename) {
 }
 
 
+var setName = function(path="", parent_directory=""){
+	
+	var full_path ="";
+
+	
+	if (path==properties.vospace_dir){
+		full_path = path;	
+	} else if (properties.isResource(type_param)){
+		if (path !="" && path!=null) {
+			full_path = '/' + path + '/';
+		} else {
+			full_path = '/';
+		}
+	} else if (properties.isSchema(type_param)){
+		full_path = '/' + parent_directory + '/' + path + '/';
+	} else if (properties.isTable(type_param)){
+		if (parent_directory!="" && parent_directory!=null){
+			full_path = '/' + parent_directory + '/' + path ;
+		} else {
+			ull_path = '/' + path ;
+		}
+	}  else {
+		full_path = '/' + parent_directory + '/';
+
+	}
+	
+	
+	$('#uploader h1').text(full_path);
+}
 
 // Sets the folder status, upload, and new folder functions 
 // to the path specified. Called on initial page load and 
@@ -325,8 +355,6 @@ var setUploader = function(path){
 	var full_path ="";
 	var parent_name = $('#cur_parent_name').val();
 	$('#currentpath').val(path);
-
-	
 	if (path==properties.vospace_dir){
 		$('#cur_workspace').val(workspace);
 		$('#cur_parent_folder').val(parent_folder);
@@ -368,8 +396,6 @@ var setUploader = function(path){
 	
 	
 
-	$('#uploader h1').text(full_path);
-    
 	$("ul.sf-menu").superfish(); 
     
 	$('#import').unbind().click(function(){
@@ -398,7 +424,162 @@ var setUploader = function(path){
 		    });
 		});	
 	
+	function load_add_handler(){
+		 if(isLoaded != true) {
+			 $('#add_to').live('click', function(e){
+					e.preventDefault();
+			 		var id_prevented = 'ignore';
+			 		var workspace = 'workspace'
+			 		var id_add_to = 'add_to';
+			 		var expand = 'expand';
+			 		var minimize = 'minimize';
+			 		var _this = this;
+					
+					var id_url = encodeURIComponent(jQuery(_this).parent().parent().find("#id_url")[0].href.trim());
+					var db_type = encodeURIComponent(jQuery(_this).parent().parent().find("#db_type")[0].innerHTML.trim());
+					var name = encodeURIComponent(jQuery(_this).parent().parent().find("#id_url")[0].innerHTML.trim());
+					var workspace = encodeURIComponent(jQuery(_this).parent().parent().find("#workspace_selection :selected").val());
+				
+					var action = 'add';
+					
+					var success =  function(data) {
+						if (data.Code!=null){
+							if (data.Code==-1){
+								jQuery(jQuery(_this).parent().find("#add_error")[0]).html("Error adding to workspace");
+								jQuery(jQuery(_this).parent().find("#add_error")[0]).fadeIn('normal');
+								jQuery(jQuery(_this).parent().find("#add_error")[0]).delay(3800).fadeOut('slow');
+								
+							} else {
+								jQuery(jQuery(_this).parent().find("#add_notification")[0]).html("Added to workspace");
+								jQuery(jQuery(_this).parent().find("#add_notification")[0]).fadeIn('normal');
+								jQuery(jQuery(_this).parent().find("#add_notification")[0]).delay(3800).fadeOut('slow');
+								
+							}
+						}
+			         }
+					var rt_path = $('#currentpath').val();
+					var rt_type = properties.root_type;
+					
+					if (selectors.length>0){
+						rt_type = selectors[0].innerHTML;
+					}
+					
+					helper_functions.ajaxCall( {id_url : id_url, db_type : db_type, name : name, workspace : workspace, action : action}, "POST", properties.getPath() + "workspace_actions", 1000000, function(e) {console.log(e);} , success);
+					
+					getFolderInfo(rt_path, root_type);
 
+				 
+				
+					return false;
+			});
+			 
+		 }
+		 isLoaded = true;
+
+	}
+	load_add_handler();
+	
+	 
+
+	
+	$('#upload').unbind().click(function(){
+        
+		$(function() {
+			$("#uploadresponse" ).html("");
+	        $( "#upload_dialog" ).dialog({ 
+	                show: "clip",
+	                hide: "clip", 
+                    height: 170,
+                    width:500,
+                    resizable: false,
+                    title:"Upload objects into current workspace:",
+                    modal: true,
+                    buttons: {
+                        Cancel: function() {
+                            $( this ).dialog( "close" );
+                        }
+                    },
+                    close: function() {
+                    }
+	         });
+	    });
+	});	
+	
+	$('#runquery').unbind().click(function(){
+
+		$(function() {
+			$("#runquery_response" ).html("");
+	        $( "#runquery_dialog" ).dialog({ 
+	                show: "clip",
+	                hide: "clip", 
+	                height: 380,
+	                width:700,
+	                resizable: false,
+	                title:"Run query:",
+	                modal: true,
+	                buttons: {
+	                	'Run query': function() {
+	                		var query = editor.getValue();
+	                		var query_name = $("#query_name").val();
+	                	
+	                		var connectString = fileConnector + '?mode=run_query&query=' + encodeURIComponent(query) + '&query_name=' + encodeURIComponent(query_name) + "&workspace=" + $('#cur_workspace').val() ;
+
+	                		$.ajax({
+	                			type: 'GET',
+	                			url: connectString,
+	                			dataType: 'json',
+	                			error: function(){
+	                				jQuery('#error').html("There was a server error processing your data");
+		        					jQuery('#error').fadeIn('normal');
+		        					jQuery('#error').delay(3800).fadeOut('slow');   
+
+	                			},
+	                			success: function(result){
+	                				if (result["Code"]<0){
+		                				jQuery('#error').html(result["Error"]);
+			        					jQuery('#error').fadeIn('normal');
+			        					jQuery('#error').delay(3800).fadeOut('slow');   
+		                			} else {
+		                				
+		                			}
+	    	                        return true;
+
+	                			}
+	                		});	
+	                		$( this ).dialog( "close" );
+	                        
+	                    },
+	                    Cancel: function() {
+	                        $( this ).dialog( "close" );
+	                    }
+	                    
+	                },
+	                close: function() {
+	                }
+	         });
+	    });
+		
+		if (editor==null){
+			//Code Mirror Stuff
+			CodeMirror.commands.autocomplete = function(cm) {
+			    CodeMirror.simpleHint(cm, CodeMirror.adqlHint);
+			}
+	
+	
+			editor = CodeMirror.fromTextArea(document.getElementById('runquery_input'), {
+			    mode: "text/x-adql",
+			    tabMode: "indent",
+			    matchBrackets: true,
+			    lineWrapping: true,
+			    textWrapping: true,
+			    extraKeys: {"Ctrl-Space": "autocomplete"}
+	
+	
+			  });
+		}
+	});
+
+	
 	$('#newfolder').unbind().click(function(){
 		
 		var foldername =  lg.default_foldername;
@@ -420,7 +601,7 @@ var setUploader = function(path){
 
 				var d = new Date(); // to prevent IE cache issues
 				$.getJSON(fileConnector + '?mode=addfolder&name=' + foldername + '&time=' + d.getMilliseconds() + '&workspace=' + workspace + '&parent_folder=' + parent_folder , function(result){
-					if(result['Code'] == 0){
+					if(result['Code'] > 0){
 						refresh_to = result['Workspace']!="" ? result['Workspace'] : '/' 
 						addFolder(refresh_to , result['Name']);
 						getFolderInfo(refresh_to ,properties.root_type );
@@ -499,11 +680,29 @@ var bindToolbar = function(data){
 		}).show();
 	}
 	
+	if (!has_capability(data, 'get_metadata')) {
+		$('#fileinfo').find('button#get_metadata').hide();
+	} else {
+		$('#fileinfo').find('button#get_metadata').click(function(){
+			get_metadata(data);
+		}).show();
+	}
+	
 	if (!has_capability(data, 'view')) {
 		$('#fileinfo').find('button#view').hide();
 	} else {
 		$('#fileinfo').find('button#view').click(function(){
 			view_table( encodeURIComponent(data['Path']));
+		}).show();
+	}
+	
+	
+
+	if (!has_capability(data, 'view_columns')) {
+		$('#fileinfo').find('button#view_columns').hide();
+	} else {
+		$('#fileinfo').find('button#view_columns').click(function(){
+			view_columns( data);
 		}).show();
 	}
 	
@@ -589,10 +788,109 @@ $('#view_table_div #hide').unbind().live('click',function(e){
 	$('#view_table_div').slideUp('slow');
 });
 
-var view_table = function(table_path){
-	if (jQuery('#votable').length<=0){
-		$('#vospace_area').append('<div id="view_table_div"><br /><br /><div style="float:left"><button id="hide" name="hide" value="Hide">Hide</button></div><table cellpadding="0" cellspacing="0" border="0" class="datatables" id="votable"></table></div>' );                            	
+
+$('#view_columns_div #hide').unbind().live('click',function(e){ 
+	$('#view_columns_div').slideUp('slow');
+});
+
+
+
+var view_columns = function(data){
+
+
+	$("#load").fadeIn('slow');
+	if (!$('#view_columns_div').length){
+		
+		var connectString = fileConnector + '?path=' + encodeURIComponent(data["Path"]) + '&mode=getfolder' + '&type=' + encodeURIComponent(data['File Type']) + '&parent_folder=' + parent_folder +  '&workspace=' + workspace;
+		$("#load").fadeIn('slow');
+		$.ajax({
+			type: 'GET',
+			url: connectString,
+			dataType: 'json',
+			
+			success: function(result){
+				if (result!=null){
+					if (result["result"]!=null || result["result"].length>0){
+						
+							
+						jQuery('#view_table_div').slideUp();
+							$('#vospace_area').append('<div id="view_columns_div"><br /><br /><div style="float:left"><button id="hide" name="hide" value="Hide">Hide</button></div><br/><br/><table cellpadding="0" cellspacing="0" border="0" class="datatables" id="votable_columns"></table></div>' );                            	
+						
+							var data_array = result["result"];
+							var aaData =[];
+							
+							for (i in data_array) {
+								
+								var name = data_array[i]["Filename"] != null ? data_array[i]["Filename"] : "";
+								var created =  data_array[i]["Properties"]["Date Created"]!= null  ? data_array[i]["Properties"]["Date Created"] : "";
+								var modified =  data_array[i]["Properties"]["Date Modified"]!=  null ? data_array[i]["Properties"]["Date Modified"] : "";
+								var size =  data_array[i]["Properties"]["ADQL_Size"]!=  null ?  data_array[i]["Properties"]["ADQL_Size"] : "";
+								var type =  data_array[i]["Properties"]["ADQL_Type"]!=  null ? data_array[i]["Properties"]["ADQL_Type"] : "";
+								aaData.push([name,type, size, created, modified]);
+						    }
+						        
+							
+						    // Initialize dataTable object
+						    oTable_columns = jQuery('#votable_columns').dataTable( {
+						        	
+						    		"sPaginationType": "full_numbers",
+						        	"bJQueryUI" : true,
+						        	"iDisplayLength" : '25',
+						    		"aaData" : aaData,
+						    		"bFilter": true,
+						           
+						            "aoColumns": [
+						                          { "sTitle": "Name" },
+						                          { "sTitle": "Type" },
+						                          { "sTitle": "Size" },
+						                          { "sTitle": "Created On" },
+						                          { "sTitle": "Modified On" }
+						                      ],			                        		
+						    		"bAutoWidth": false,
+						    		"sScrollX": "100%",
+						    		"sSwfPath" : "static/media/swf/copy_cvs_xls.swf",
+						    		
+									} ); //end oTable
+						
+						         
+							        oTable_columns.fnAdjustColumnSizing(true);                       
+							    	$("#load").hide();
+					
+						
+						
+					} else if (result["result"].length==0){ 
+						helper_functions.displayError("#error","No columns available for this table");
+						$("#load").hide();
+					} else {
+						helper_functions.displayError("#error","There was an error processing your request");
+						$("#load").hide();
+					}
+					 
+				} else {
+					helper_functions.displayError("#error", "There was an error processing your request");
+					$("#load").hide();
+				}
+				
+			}
+		});	
+		
+		} else {
+			jQuery('#view_table_div').slideUp();
+			jQuery('#view_columns_div').slideDown();
+			$("#load").hide();
+		}
 	
+}
+
+
+var view_table = function(table_path){
+	$("#load").fadeIn('slow');
+	if (!$('#view_table_div').length){
+		
+		jQuery('#view_columns_div').slideUp();
+		$('#vospace_area').append('<div id="view_table_div"><br /><br /><div style="float:left"><button id="hide" name="hide" value="Hide">Hide</button></div><table cellpadding="0" cellspacing="0" border="0" class="datatables" id="votable_data"></table></div>' );                            	
+		
+		
 		var col_array = ["sourceID", "cuEventID", "frameSetID", "ra", "dec", "sigRa", "sigDec", "epoch", "muRa", "muDec", "sigMuRa", "sigMuDec", "chi2", "nFrames", "cx", "cy", "cz", "htmID", "l", "b", "lambda", "eta", "priOrSec", "ymj_1Pnt", "ymj_1PntErr", "j_1mhPnt", "j_1mhPntErr", "hmkPnt", "hmkPntErr", "ymj_1Ext", "ymj_1ExtErr", "j_1mhExt", "j_1mhExtErr", "hmkExt", "hmkExtErr", "mergedClassStat", "mergedClass", "pStar", "pGalaxy", "pNoise", "pSaturated", "eBV", "aY", "aJ", "aH", "aK", "yHallMag", "yHallMagErr", "yPetroMag", "yPetroMagErr", "yPsfMag", "yPsfMagErr", "ySerMag2D", "ySerMag2DErr", "yAperMag3", "yAperMag3Err", "yAperMag4", "yAperMag4Err", "yAperMag6", "yAperMag6Err", "yGausig", "yEll", "yPA", "yErrBits", "yDeblend", "yClass", "yClassStat", "yppErrBits", "ySeqNum", "yObjID", "yXi", "yEta", "j_1HallMag", "j_1HallMagErr", "j_1PetroMag", "j_1PetroMagErr", "j_1PsfMag", "j_1PsfMagErr", "j_1SerMag2D", "j_1SerMag2DErr", "j_1AperMag3", "j_1AperMag3Err", "j_1AperMag4", "j_1AperMag4Err", "j_1AperMag6", "j_1AperMag6Err", "j_1Gausig", "j_1Ell", "j_1PA", "j_1ErrBits", "j_1Deblend", "j_1Class", "j_1ClassStat", "j_1ppErrBits", "j_1SeqNum", "j_1ObjID", "j_1Xi", "j_1Eta", "j_2HallMag", "j_2HallMagErr", "j_2PetroMag", "j_2PetroMagErr", "j_2PsfMag", "j_2PsfMagErr", "j_2SerMag2D", "j_2SerMag2DErr", "j_2AperMag3", "j_2AperMag3Err", "j_2AperMag4", "j_2AperMag4Err", "j_2AperMag6", "j_2AperMag6Err", "j_2Gausig", "j_2Ell", "j_2PA", "j_2ErrBits", "j_2Deblend", "j_2Class", "j_2ClassStat", "j_2ppErrBits", "j_2SeqNum", "j_2ObjID", "j_2Xi", "j_2Eta", "hHallMag", "hHallMagErr", "hPetroMag", "hPetroMagErr", "hPsfMag", "hPsfMagErr", "hSerMag2D", "hSerMag2DErr", "hAperMag3", "hAperMag3Err", "hAperMag4", "hAperMag4Err", "hAperMag6", "hAperMag6Err", "hGausig", "hEll", "hPA", "hErrBits", "hDeblend", "hClass", "hClassStat", "hppErrBits", "hSeqNum", "hObjID", "hXi", "hEta", "kHallMag", "kHallMagErr", "kPetroMag", "kPetroMagErr", "kPsfMag", "kPsfMagErr", "kSerMag2D", "kSerMag2DErr", "kAperMag3", "kAperMag3Err", "kAperMag4", "kAperMag4Err", "kAperMag6", "kAperMag6Err", "kGausig", "kEll", "kPA", "kErrBits", "kDeblend", "kClass", "kClassStat", "kppErrBits", "kSeqNum", "kObjID", "kXi", "kEta"];
 		var col = [];
 		var error_bool =false;
@@ -602,7 +900,7 @@ var view_table = function(table_path){
 	    }
 	        
 	    // Initialize dataTable object
-	    oTable = jQuery('#votable').dataTable( {
+	    oTable_data = jQuery('#votable_data').dataTable( {
 	        	"bJQueryUI" : true,
 	    		"sPaginationType": "full_numbers",
 	    		"sDom" : 'T<"clear">R<"H"Clfr>t<"F"ip>',
@@ -660,13 +958,17 @@ var view_table = function(table_path){
 		            } ); //end oTable
 	
 	         
-		        oTable.fnAdjustColumnSizing(true);                       
-		
+		        oTable_data.fnAdjustColumnSizing(true);                       
+		        $("#load").hide();
 	} else {
+		jQuery('#view_columns_div').slideUp();
 		jQuery('#view_table_div').slideDown();
+		$("#load").hide();
 	}
 	
 }
+
+
 
 
 //Move item up one folder
@@ -869,6 +1171,55 @@ var deleteItem = function(data){
 }
 
 
+var get_metadata = function(data){
+	/*
+	 * Get the metadata for an object via an AJAX call to the server
+	 */
+	
+	var connectString = fileConnector + '?mode=get_metadata&ident=' + encodeURIComponent(data['Path']) + "&workspace=" + encodeURIComponent(data['Workspace']) + "&_type=" + encodeURIComponent(data['File Type']) + + "&parent_folder=" + +  encodeURIComponent(data['Parent_folder']);
+	
+	$.ajax({
+		type: 'GET',
+		url: connectString,
+		dataType: 'json',
+		
+		success: function(result){
+			if (result!=null){
+				if (result["Code"]!=null){
+					if (result["Code"]<0){
+						helper_functions.displayError("#error", result["Error"]);
+
+					} else {
+						if (result["Content"]!=null){
+							
+							$('#preview').html(result["Content"]);
+							$.fancybox({
+						        href : '#preview',
+						        transitionIn : 'fade',
+						        transitionOut : 'fade', 
+						        autoSize : false,
+						        width    : "600",
+						        height   : "380",
+						        helpers: {
+						               
+					                overlay : false
+					            },
+						        //check the fancybox api for additonal config to add here   
+						        onClosed: function() { $('#preview').html(''); }, //empty the preview div
+						    	
+						      
+							});
+						} 
+					}
+					
+				}
+			}
+			
+		}
+	});	
+}
+
+
 /*---------------------------------------------------------
   Functions to Update the File Tree
 ---------------------------------------------------------*/
@@ -1009,6 +1360,7 @@ function getContextMenuOptions(elem) {
 		if (!elem.hasClass('cap_download')) $('.download', newOptions).remove();
 		if (!elem.hasClass('cap_rename')) $('.rename', newOptions).remove();
 		if (!elem.hasClass('cap_move_up')) $('.move_up', newOptions).remove();
+		if (!elem.hasClass('cap_get_metadata')) $('.get_metadata', newOptions).remove();
 		if (!elem.hasClass('cap_delete')) $('.delete', newOptions).remove();
 		$('#itemOptions').after(newOptions);
 	}
@@ -1050,6 +1402,10 @@ var setMenus = function(action, path, type){
 				
 				break;
 				
+			case 'get_metadata':
+				get_metadata(data);
+				break;
+				
 			case 'rename':
 				var newName = renameItem(data);
 				break;
@@ -1078,6 +1434,8 @@ var getFileInfo = function(file, type, parent_obj){
 	if(browseOnly != true) template += '<button id="rename" name="rename" type="button" value="Rename">' + lg.rename + '</button>';
 	if(browseOnly != true) template += '<button id="delete" name="delete" type="button" value="Delete">' + lg.del + '</button>';
 	if(browseOnly != true) template += '<button id="view" name="view" type="button" value="View">' + lg.view + '</button>';
+	if(browseOnly != true) template += '<button id="view_columns" name="view_columns" type="button" value="View_Columns">' + lg.view_columns + '</button>';
+	
 	template += '<button id="parentfolder">' + lg.parentfolder + '</button>';
 	template += '</form>';
 	
@@ -1143,12 +1501,12 @@ var getFileInfo = function(file, type, parent_obj){
 				root_type = properties.schema_type;
 			}
 			
-
-			
 			$('#fileinfo').append('<span class="meta root_type">' + root_type + '</span>');
 			
-		
-		
+			if (data["Parent_directory"]!=null && data["Parent_directory"]!=""){
+				setName(data['Filename'],data["Parent_directory"])
+
+			}
 			// Bind toolbar functions.
 			bindToolbar(data);
 		} else {
@@ -1182,8 +1540,10 @@ var getFolderInfo = function(path, type){
 	var d = new Date(); // to prevent IE cache issues
 
 	var url = fileConnector + '?path=' + encodeURIComponent(path) + '&mode=getfolder&showThumbs=' + showThumbs + '&time=' + d.getMilliseconds() + '&type=' + type + '&parent_folder=' + parent_folder +  '&workspace=' + workspace;
-
+	
 	$.getJSON(url, function(data){
+		
+		setName(data['name'],data['parent_name']);
 		var result = '';
 		var root_type = '';
 		
@@ -1480,7 +1840,7 @@ var populateFileTree = function(path, callback){
 ---------------------------------------------------------*/
 
 $(function(){
-	
+
 	if($.urlParam('_id') != 0) {
 		expandedFolder = decodeURIComponent($.urlParam('_id'));
 		fullexpandedFolder = null;
@@ -1494,15 +1854,15 @@ $(function(){
 		type_param=  decodeURIComponent($.urlParam('type'));
 	} else {
 		type_param = properties.root_type;
-		
 	}
 
-	
-	
 	if($.urlParam('workspace') != 0) {
 		workspace = decodeURIComponent($.urlParam('workspace'));
+		cur_parent_folder =  decodeURIComponent($.urlParam('_id'));
 	} else {
-		workspace = "";
+		workspace = decodeURIComponent($.urlParam('_id'));
+		cur_parent_folder =  '';
+
 
 	}
 
@@ -1510,7 +1870,6 @@ $(function(){
 		parent_folder =  decodeURIComponent($.urlParam('parent_folder'))
 		parent_name = decodeURIComponent($.urlParam('parent_folder'));
 		jQuery("#cur_parent_name").val(parent_name);
-		
 	} else {
 		parent_folder = "";
 		parent_name = "";
@@ -1520,7 +1879,6 @@ $(function(){
 		parent_object =  parent_folder;
 	} else if(workspace != "" && workspace!=null) {
 		parent_object = workspace;
-		
 	} else {
 		parent_object = properties.vospace_dir;
 	}
@@ -1532,8 +1890,6 @@ $(function(){
 	// we finalize the FileManager UI initialization 
 	// with localized text if necessary
 	if(autoload == true) {
-		$('#upload').append(lg.upload);
-		$('#newfolder').append(lg.new_folder);
 		$('#grid').attr('title', lg.grid_view);
 		$('#list').attr('title', lg.list_view);
 		$('#fileinfo h1').append(lg.select_from_left);
@@ -1542,6 +1898,8 @@ $(function(){
 		$('#itemOptions a[href$="#rename"]').append(lg.rename);
 		$('#itemOptions a[href$="#move_up"]').append(lg.move_up);
 		$('#itemOptions a[href$="#delete"]').append(lg.del);
+		$('#itemOptions a[href$="#get_metadata"]').append(lg.get_metadata);
+
 	}
 
 	// Provides support for adjustible columns.
@@ -1567,6 +1925,57 @@ $(function(){
 		getFolderInfo(fileRoot,properties.root_type);
 	
 	});
+	
+	$('#vospace_content #prev').click(function(){
+		_parent_obj = $('#cur_parent_folder').val();
+		_file_root = "";
+		_cur_workspace = $('#cur_workspace').val();
+		_cur_path = $('#currentpath').val();
+
+		var selectors = $('.root_type');
+		if (selectors.length>0){
+			_file_root = selectors[0].innerHTML;
+		}
+		
+		if (_parent_obj == ""){
+			if (_cur_workspace==_cur_path){
+				parent_folder="";
+				$('#cur_workspace').val('');
+				workspace = $('#cur_workspace').val();
+				$('#cur_parent_folder').val('');
+				type_param = properties.root_type ;
+				console.log(fileRoot);
+				getFolderInfo(fileRoot, properties.root_type);
+
+			} else {
+				parent_folder="";
+				$('#cur_parent_folder').val('');
+				type_param = properties.root_type ;
+				getFolderInfo(_cur_workspace, properties.root_type);
+
+			}
+		} else {
+			if (_parent_obj != $("#currentpath").val()){
+				type_param = _file_root;
+				parent_folder="";
+				$('#cur_parent_folder').val('');
+				getFolderInfo(_parent_obj, _file_root);
+			} else {
+				type_param =  properties.root_type;
+				parent_folder="";
+				$('#cur_parent_folder').val('');
+				$('#cur_workspace').val('');
+				workspace = $('#cur_workspace').val();
+				getFolderInfo(_cur_workspace, properties.root_type);
+			
+			}
+		}
+	
+		
+	
+	});
+
+
 
 	// Set buttons to switch between grid and list views.
 	$('#grid').click(function(){
@@ -1622,45 +2031,34 @@ $(function(){
 
 	// Provide initial values for upload form, status, etc.
 	setUploader(fileRoot);
-
+	//setName(fileRoot,"");
 	$('#uploader').attr('action', fileConnector);
 
-	$('#uploader').ajaxForm({
-		target: '#uploadresponse',
+	$('#file_uploader').ajaxForm({
+		url: properties.base_url + '/' + "workspace_actions",
+		type:"POST",
+		dataType: "json",
+		contentType: "multipart/form-data",
+		data: { action : 'uploadfile', workspace : workspace, container : cur_parent_folder},
 		beforeSubmit: function(arr, form, options) {
 			$('#upload_name').val($('#newfile').val());
-			$('#upload').attr('disabled', true);
-			$('#upload span').addClass('loading').text(lg.loading_data);
-			if ($.urlParam('type').toString().toLowerCase() == 'images') {
-				// Test if uploaded file extension is in valid image extensions
-				var newfileSplitted = $('#newfile', form).val().toLowerCase().split('.');
-				for (key in imagesExt) {
-					if (imagesExt[key] == newfileSplitted[newfileSplitted.length-1]) {
-						return true;
-					}
-				}
-				$.prompt(lg.UPLOAD_IMAGES_ONLY);
-				return false;
-			}
-
 		},
 		success: function(result){
-			
-			var data = jQuery.parseJSON($('#uploadresponse').find('textarea').text());
-			
-			if(data['Code'] == 0){
-				addNode(data['Path'], data['Name']);
-
+			var response = "";
+			if(result['Content']>0){
+				
+				addNode(result['Path'], result['Name']);
                 // seems to be necessary when dealing w/ files located on s3 (need to look into a cleaner solution going forward)
-                $('#filetree').find('a[rel="' + data['Path'] +'/"]').click().click();
+                //$('#filetree').find('a[rel="' + result['Path'] +'/"]').click().click();
 			} else {
-				$.prompt(data['Error']);
+				$.prompt(result['Content']);
 			}
-			$('#upload').removeAttr('disabled');
-			$('#upload span').removeClass('loading').text(lg.upload);
-			
-			// clear data in browse input
-      $("#newfile").replaceWith('<input id="newfile" type="file" name="newfile">');
+			$("#upload_dialog").dialog( "close" );
+			$('#uploadresponse').html(response);
+			 
+		},
+		error: function (result){
+			$("#upload_dialog").dialog( "close" );
 		}
 	});
 	

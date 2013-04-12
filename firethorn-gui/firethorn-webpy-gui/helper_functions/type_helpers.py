@@ -40,7 +40,14 @@ def isRootType(value):
     """
     Check whether value is of type adql service or jdbc resource
     """
-    return (value==config.types['service'] or value==config.types['resource'])
+    return (value==config.types['service'] or value==config.types['resource'] or value==config.types['Workspace'])
+
+
+def isWorkspace(value):
+    """
+    Check whether value is of type adql service or jdbc resource
+    """
+    return (value==config.types['Workspace'])
 
 
 def get_img_from_type (value):

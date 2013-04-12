@@ -54,7 +54,14 @@ ul {
 		background-repeat: repeat-x;
 	}	
 	
-
+#load {
+		background:url('../images/loading.gif') no-repeat 0px 0px;
+		width:33px;
+		height:33px;
+		display:none;
+		margin:0 auto;
+		text-align:center;
+}
 
 #viewer_table_div {
 		display:none;

@@ -4,7 +4,7 @@ Created on Sep 18, 2012
 @author: stelios
 '''
 from app import render, session
-from helper_functions import session_helpers
+from helper_functions import workspace_helpers
 import config
 import json
 import traceback
@@ -93,7 +93,7 @@ class create_new:
         data = web.input(obj_type='')
         try:
             obj_type = string_functions.decode(data.obj_type)
-            return render.create_new( str(render.header(session_helpers(session).get_log_notification())), str(render.side_menu(session_helpers(session).get_menu_items_by_permissions())), str(render.create_input_area(obj_type)), str(render.footer()))
+            return render.create_new( str(render.header(workspace_helpers(session).get_log_notification())), str(render.side_menu(workspace_helpers(session).get_menu_items_by_permissions())), str(render.create_input_area(obj_type)), str(render.footer()))
         except Exception as e:
             return config.errors["INVALID_NETWORK_REQUEST"]
     
@@ -119,7 +119,7 @@ class create_new:
             if obj_type==config.types['Workspace']:
                 date_today = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
                 new_workspace = {'ident' : obj_name, 'name' : obj_name ,'created':date_today , 'modified': date_today, 'type': config.types["resource"]}
-                session_helpers(session).new_workspace(obj_name, new_workspace)
+                workspace_helpers(session).new_workspace(obj_name, new_workspace)
 
                 return json.dumps({
                             'Code' : 1,

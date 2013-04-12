@@ -1,4 +1,4 @@
-$def with (header, side_menu, footer,  content, vospace_content, input_area)
+$def with (header, side_menu, footer,  content, vospace_content)
 <!DOCTYPE html PUBLIC"-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
@@ -35,16 +35,10 @@ $def with (header, side_menu, footer,  content, vospace_content, input_area)
 	</div>
 	
 	<div id="error"></div>
-	<div id="import_dialog" style="display:none">
-		<br />
-		$:input_area
-		<br /><br />
-		<div id="import_error" style="display:none;color:red;text-align:center;margin:0 auto;"></div>
-		<br /><br />
-	</div>
+
 		
 	<div id="vospace_area">$:vospace_content</div>
-	
+	<div id="load" style="display:none"></div>
 	$:footer
 
 	

@@ -12,7 +12,7 @@ import urllib2
 import urllib
 from datetime import datetime
 from app import session
-from helper_functions import session_helpers
+from helper_functions import workspace_helpers
 from helper_functions.string_functions import string_functions
 from helper_functions import type_helpers
 string_functions = string_functions()
@@ -44,7 +44,7 @@ class index:
                   
                     converted_dict = dict([(str(k), v) for k, v in entry.items()])
                     if type_helpers.isSchema(converted_dict["type"]) or type_helpers.isTable(converted_dict["type"]):
-                        available_action = "<div id='open_new'> <a target='_blank' href='"  + config.local_hostname[converted_dict["type"]] + '?' + config.get_param + '='  + string_functions.encode(converted_dict["ident"])  + "'>Open in new window</a></div>" + "Add to:" + session_helpers(session).generate_workspace_selection() + config.available_object_actions["add"] 
+                        available_action = "<div id='open_new'> <a target='_blank' href='"  + config.local_hostname[converted_dict["type"]] + '?' + config.get_param + '='  + string_functions.encode(converted_dict["ident"])  + "'>Open in new window</a></div>" + "Add to:" + workspace_helpers(session).generate_workspace_selection() + config.available_object_actions["add"] 
                     elif type_helpers.isColumn(converted_dict["type"]):
                         available_action = config.available_object_actions["none"]
                     else :           
@@ -96,7 +96,7 @@ class index:
         Handle an HTTP GET request, by rendering the index template and returning the HTML content
         """
       
-        return render.index( str(render.header(session_helpers(session).get_log_notification())), str(render.side_menu(session_helpers(session).get_menu_items_by_permissions())), str(render.index_input_area()), str(render.footer()), "")
+        return render.index( str(render.header(workspace_helpers(session).get_log_notification())), str(render.side_menu(workspace_helpers(session).get_menu_items_by_permissions())), str(render.index_input_area()), str(render.footer()), "")
          
          
     def POST(self):

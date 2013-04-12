@@ -4,7 +4,7 @@ Created on Sep 18, 2012
 @author: stelios
 '''
 from app import render, session
-from helper_functions import session_helpers
+from helper_functions import workspace_helpers
 import config
 import json
 import traceback

@@ -4,8 +4,7 @@ Created on Sep 20, 2012
 @author: stelios
 '''
 from app import session
-from config import mode_global, from_email, getImageURL, multiGetImageURL, \
-    crossIDURL
+from config import mode_global, from_email
 import StringIO
 import freeform_sql
 import json
@@ -53,81 +52,6 @@ class send_email:
             return ""   
         else:
             return ""        
-
-
-
-
-class getImageHandler:
-    """
-    Proxy URL class that takes requests for a given Image URL, fetches the image or other content from that URL and returns it
-    """
-    def POST(self):
-        """ 
-        POST function
-        
-        Main Class functionality    
-        """
-        from helper_functions import MultipartPostHandler
-        web.header('Content-Type', 'text/html')
-        data = web.input(href="", params="", action="", uploadFile="")
-        return_str = ''
-        f = ''
-        temp_URL = ''
-        url_to_read = ''
-        log_info = session.get('logged_in')
-        if log_info == 'False' or log_info == False:
-            return 'NOT_LOGGED_IN'
-        else: 
-            if data.href!="":
-                url_to_read = data.href
-            elif data.action == "getImage" and data.params!="":
-                temp_URL = getImageURL
-                url_to_read = temp_URL + '?' + data.params
-            elif data.action == "multiGetImage":
-                url_to_read = multiGetImageURL
-            elif data.action == "crossID":
-                url_to_read = crossIDURL
-        
-            try:
-              
-                if data.params!="" and data.action == "getImage" and url_to_read!="":
-                    f = urllib.urlopen(url_to_read)
-                    return_str = f.read()
-                    f.close()
-                elif data.action == "multiGetImage" or data.action == "crossID":
-                    form = MultipartPostHandler.MultiPartForm()
-                    for i in data:
-                        if i!='href' and i!='params' and i!='action' and i!='uploadFile': 
-                            form.add_field(i, data[i])
-                    
-                    if data.uploadFile!="":
-                        form.add_file('uploadFile', 'uploadFile',fileHandle=StringIO.StringIO(data.uploadFile))
-                    
-                 
-                    # Build the request
-                    request = urllib2.Request(url_to_read)
-                 
-                    body = str(form)
-                    request.add_header('Content-type', form.get_content_type())
-                    request.add_header('Content-length', len(body))
-                    request.add_data(body)
-                 
-                    f = urllib2.urlopen(request)
-                    return_str = f.read()
-                  
-                    f.close()
-                                    
-                elif data.href !="":
-                    f = urllib.urlopen(url_to_read)
-                    return_str = f.read()
-                    f.close()
-            except Exception as e:
-                if f!='':
-                    f.close()
-                print e
-                traceback.print_exc()
-                return_str =  ""      
-            return return_str
 
 
 
@@ -213,9 +137,8 @@ class writeHTMLtoFile :
                 file_handle.close_handle()    
                 file_path = file_handle.pathname
                 return file_path
-        except IOError as e:
-            print "A network connection error occurred"  
-            print e        
+        except Exception as e:
+            traceback.print_exc()        
 
 
 

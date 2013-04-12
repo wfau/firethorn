@@ -14,10 +14,10 @@ class vospace:
     """
     
     def handle_vospace_template_request(self, data):
-       
+        
         return json.dumps({
           'Code' : 1,
-          'Content' : str(render.vospace(data._id))
+          'Content' : str(render.vospace(data._id, data.import_input_area))
           })
        
         
@@ -28,9 +28,8 @@ class vospace:
         
         Handle an HTTP GET request
         """
-        data = web.input(method="GET",mode="", showThumbs="", time="", _id="", workspace="", parent_folder="")
+        data = web.input(method="GET", mode="", showThumbs="", time="", _id="", workspace="", parent_folder="", import_input_area='')
         from helper_functions.filemanager import handler
-
         if data.mode=="":
             web.header('Content-Type', 'application/json')
             return self.handle_vospace_template_request(data)
@@ -54,7 +53,7 @@ class vospace:
         Handle an HTTP POST request
         """
         
-        data = web.input(method="POST",mode="", showThumbs="", time="", _id="", workspace="", parent_folder="")
+        data = web.input(method="POST",mode="", showThumbs="", time="", _id="", workspace="", parent_folder="", import_input_area ='')
         from helper_functions.filemanager import handler
      
         if data.mode == "add":

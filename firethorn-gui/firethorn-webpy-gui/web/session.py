@@ -267,7 +267,7 @@ class DiskStore(Store):
         for f in os.listdir(self.root):
             path = self._get_path(f)
             atime = os.stat(path).st_atime
-            if now - atime > timeout :
+            if now - atime > timeout and not os.path.isdir(path):
                 os.remove(path)
 
 class DBStore(Store):

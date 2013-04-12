@@ -58,7 +58,7 @@ jQuery(document).ready(function() {
 
 	         	}
 
-		       	xhr = helper_functions.ajaxCall(json_data , "POST",properties.getPath() +  "create_new", 1000000, function(e) { helper_functions.displayError("#error", e);} , success);
+		       	xhr = helper_functions.ajaxCall(json_data , "POST",properties.getPath() +  "create_new", 1000000, function(xhr, status, error) { helper_functions.displayError("#error", xhr.responseText);} , success);
 		       
 			} else if (value=="Save"){
 
@@ -83,7 +83,7 @@ jQuery(document).ready(function() {
 
 	         	}
 
-		       	xhr = helper_functions.ajaxCall(json_data , "POST",properties.getPath() +  "create_new", 1000000, function(e) { helper_functions.displayError("#error", e);} , success);
+		       	xhr = helper_functions.ajaxCall(json_data , "POST",properties.getPath() +  "create_new", 1000000, function(xhr, status, error) { helper_functions.displayError("#error", xhr.responseText);jQuery('#load').hide();} , success);
 		     
 
 			} else  if (value=="Submit"){
@@ -101,7 +101,7 @@ jQuery(document).ready(function() {
 
 	         	}
 
-		       	xhr = helper_functions.ajaxCall(json_data , "POST",properties.getPath() +  "create_new", 1000000, function(e) { helper_functions.displayError("#error", e);} , success);
+		       	xhr = helper_functions.ajaxCall(json_data , "POST",properties.getPath() +  "create_new", 1000000, function(xhr, status, error) { helper_functions.displayError("#error",xhr.responseText);jQuery('#load').hide();} , success);
 		       
 				
 				

@@ -31,7 +31,7 @@ jQuery(document).ready(function() {
 				var id_url = encodeURIComponent(jQuery(_this).parent().find("#id_url")[0].href.trim());
 				var db_type = encodeURIComponent(jQuery(_this).parent().find("#db_type")[0].innerHTML.trim());
 				var action = 'expand';
-				
+				jQuery("#load").fadeIn('slow');
 				var success =  function(data) {
 					if (data.Code!=null){
 						if (data.Code==-1){
@@ -50,10 +50,11 @@ jQuery(document).ready(function() {
 
 						}
 					}
+					jQuery("#load").hide();
 		         }
 				
 				e.preventDefault();
-				helper_functions.ajaxCall( {ident : id_url, _type : db_type, action : action}, "POST", properties.getPath() + "resource_actions", 1000000, function(e) {helper_functions.displayError("#error", data.Content);} , success);
+				helper_functions.ajaxCall( {ident : id_url, _type : db_type, action : action}, "POST", properties.getPath() + "resource_actions", 1000000, function(e) {helper_functions.displayError("#error", data.Content);jQuery("#load").hide();} , success);
 
 			}
 		 
@@ -89,7 +90,7 @@ jQuery(document).ready(function() {
 			var name = encodeURIComponent(jQuery(this).parent().parent().find("#id_url")[0].innerHTML.trim());
 			var workspace = encodeURIComponent(jQuery("#workspace_selection").find(":selected").val());
 			var action = 'add';
-
+			jQuery("#load").fadeIn('slow');
 			var success =  function(data) {
 				if (data.Code!=null){
 					if (data.Code==-1){
@@ -104,10 +105,11 @@ jQuery(document).ready(function() {
 						
 					}
 				}
+				jQuery("#load").hide();
 	         }
 			
 			e.preventDefault();
-			helper_functions.ajaxCall( {id_url : id_url, db_type : db_type, name : name, workspace : workspace, action : action}, "POST", properties.getPath() + "workspace_actions", 1000000, function(e) {console.log(e);} , success);
+			helper_functions.ajaxCall( {id_url : id_url, db_type : db_type, name : name, workspace : workspace, action : action}, "POST", properties.getPath() + "workspace_actions", 1000000, function(e) {jQuery("#load").hide();} , success);
 
 	    }
 		

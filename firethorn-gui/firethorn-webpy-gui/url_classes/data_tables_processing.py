@@ -804,7 +804,7 @@ class data_tables_processing:
                     f.close()
            
         except Exception as e:
-            print traceback.print_exc()
+            traceback.print_exc()
             if f!='':
                 f.close()
             return_val = "" 
@@ -934,7 +934,7 @@ class data_tables_processing:
             traceback.print_exc()
             if f!='':
                 f.close()
-            print e
+            
             return_val = "" 
         
        

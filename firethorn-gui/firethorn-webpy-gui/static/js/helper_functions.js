@@ -8,6 +8,7 @@ var helper_functions = new function() {
 	 * Display an error message
 	 */
 	this.displayError = function(error_div_id, error_text){
+	
 		jQuery(error_div_id).html(error_text);
 		jQuery(error_div_id).fadeIn('normal');
 		jQuery(error_div_id).delay(3800).fadeOut('slow');

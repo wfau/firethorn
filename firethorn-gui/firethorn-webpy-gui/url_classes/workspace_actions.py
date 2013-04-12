@@ -4,6 +4,7 @@ Created on Nov 2, 2012
 @author: stelios
 '''
 from cgi import parse_qs
+import StringIO
 '''
 Created on Sep 18, 2012
 
@@ -17,7 +18,7 @@ import urllib2
 import urllib
 import traceback
 from app import session
-from helper_functions import session_helpers
+from helper_functions import workspace_helpers
 from helper_functions import type_helpers
 from datetime import datetime
 from urlparse import urlparse
@@ -33,7 +34,17 @@ class workspace_actions:
   
     """
     
+    def __custom_error(self, msg):
+        return json.dumps({
+            'Code' : -1,
+            'Content' : msg
+            })
+    
+    
     def __add(self, data):
+        """
+        Add file to workspace
+        """
         
         error = json.dumps({
             'Code' : -1,
@@ -49,28 +60,11 @@ class workspace_actions:
             
             time = str(datetime.today())
             id_url =  parse_qs(urlparse(string_functions.decode(data.id_url)).query)['id'][0]
-           
             db_type = string_functions.decode(data.db_type) 
             name = string_functions.decode(data.name)
             workspace =  string_functions.decode(data.workspace)
-            if type_helpers.isTable(db_type):
-                new_object = {'ident': id_url, 'type': db_type, 'name': name, 'modified': time, 'created': time}
-            else :
-                new_object = {'ident': id_url, 'type': db_type, 'name': name, 'modified': time, 'created': time, 'children' : []}
-                
-            getattr(session, workspace).append(new_object)
-
-            ### temp
-            ident = id_url + config.resource_uris[db_type]
-            request = urllib2.Request(ident, headers={"Accept" : "application/json"})
-            f = urllib2.urlopen(request)
-            json_data = json.loads(f.read())
-            
-            for i in getattr(session, workspace):
-                if i["ident"] == id_url:
-                    i["children"] = json_data
-            
-            ###
+            workspace_helpers(session).add_new_to_path( workspace,  name, db_type, id_url)
+           
             
             return ok  
         except Exception:
@@ -80,6 +74,50 @@ class workspace_actions:
         return ok  
      
      
+     
+    def __uploadfile(self, data):
+        """ 
+        Upload file to workspace
+        """
+        upload_name = string_functions.decode(data.upload_name)
+        workspace = string_functions.decode(data.workspace)
+        container = string_functions.decode(data.container)
+        upload_file = string_functions.decode(data.newfile)
+        time = str(datetime.today())
+        obj= {}
+        fileHandle = ''
+        
+        error = json.dumps({
+            'Code' : -1,
+            'Content' : 'Unable to upload selected file'
+            })
+        
+        ok = json.dumps({
+            'Code' : 1,
+            'Content' : "File succesfully uploaded"
+            })        
+        
+        try :
+            if data.newfile!="":
+                fileHandle=StringIO.StringIO(upload_file)
+                obj = {'ident': upload_name, 'type': config.types["jdbc_table"], 'name': upload_name, 'modified': time, 'created': time}
+                workspace_helpers(session).add_new_to_path( workspace, upload_name, config.types["adql_table"], upload_name)
+            else:
+                return self.__custom_error("Error: No file uploaded")
+        except Exception as e:
+            traceback.print_exc()
+            fileHandle.close()
+            return error
+        
+        if fileHandle!='':
+            fileHandle.close()
+        
+        return ok
+
+
+    
+    
+    
     def __move(self, data):
         
         drag_path =   string_functions.decode(data.drag_path)
@@ -87,8 +125,7 @@ class workspace_actions:
         parent_folder =  string_functions.decode(data.parent_folder)
         workspace =  string_functions.decode(data.workspace)
         drop_path =  string_functions.decode(data.drop_path)
-        workspace_data = session_helpers(session).get_session_value(workspace)
-      
+       
         error = json.dumps({
             'Code' : -1,
             'Content' : 'Unable to move selected object'
@@ -98,67 +135,13 @@ class workspace_actions:
             'Code' : 1,
             'Content' : "OK"
             })
-        temp_item_holder = ""
-        temp_container_holder = []
+        
+  
         
         try:
-           
-            if workspace_data!="":
-                
-                if parent_folder=="":
-                    counter = 0
-                    
-                    for i in workspace_data:
-                        if i["ident"] == drag_path and i["name"] ==drag_name:
-                            temp_item_holder = i
-                            index_to_delete = counter
-                        if i["ident"] == drop_path:
-                            temp_container_holder = i
-                        counter += 1
-                    if temp_item_holder!="" and temp_container_holder!=[]:
-                        temp_container_holder["children"].append(temp_item_holder)   
-                        del workspace_data[index_to_delete]
-                        return ok  
-                    else:
-                        workspace_data.append(temp_item_holder)
-                        return error
-              
-                else:
-                    for i in workspace_data:
-                        if i["ident"] == parent_folder:
-                            children_data= i["children"]
-                            second_counter =0
-                            for x in  children_data:
-                                if x["ident"]== drag_path and x["name"] ==drag_name:
-                                    temp_item_holder = x
-                                    index_to_delete = second_counter
-                                second_counter += 1
-                                
-                    if temp_item_holder!="":
-                        workspace_data.append(temp_item_holder)   
-                        del children_data[index_to_delete]
-                        return ok
-                    else:
-                        workspace_data.children_data(temp_item_holder)
-                        return error
-              
-                
-                return ok
-                    
-                """
-                else:
-                    workspace_data = self.get_session_value(workspace)
-                    for i in workspace_data:
-                        if i["ident"] == parent_folder:
-                            children_nodes = i["children"]
-                            for x in children_nodes:
-                                if x["ident"] == ident and  x["name"] == old:
-                                    x["name"] = new
-                    self.session[workspace] = workspace_data
-                    return ok
-                """
-            else:
-                return error
+            # workspace_helpers(session).add_new_to_path( workspace,  drag_name, drag_path)
+            workspace_helpers(session).add_new_to_schema( drop_path,  drag_name, drag_path)
+
         except Exception:
             traceback.print_exc()
             return error
@@ -169,7 +152,8 @@ class workspace_actions:
         """
         Handle requests for a workspace action
         """
-        
+        web.header('Content-Type', 'application/json')
+
         return_value = json.dumps({
             'Code' : 1,
             'Content' : 'OK'
@@ -183,6 +167,8 @@ class workspace_actions:
                 return_value = self.__add(data)
             elif action=='move':
                 return_value = self.__move(data)
+            elif action=='uploadfile':
+                return_value = self.__uploadfile(data)
                 
         except Exception as e:
             traceback.print_exc()
@@ -214,6 +200,6 @@ class workspace_actions:
         
         """
         
-        data = web.input(workspace="", id_url = "", db_type = "", name="", action="") 
+        data = web.input(workspace="", id_url = "", db_type = "", name="", action="", container="",upload_name="") 
         web.header('Content-Type', 'application/json')        
         return  self.__workspace_actions_handler(data, 'POST')

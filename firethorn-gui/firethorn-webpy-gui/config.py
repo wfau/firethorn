@@ -26,7 +26,13 @@ base_location = os.getcwd()
 vospace_dir = base_location + '/static/static_vospace'
 host_temp_directory = webpy_gui_url + 'static/static_vo_tool/temp/'
 vospace_root = "/"
+base_url = webpy_gui_url 
 
+
+### General globals
+mode_global = 'async'
+web.config.smtp_server = 'mail.roe.ac.uk'
+from_email = 'osa-support@roe.ac.uk'
 
 
 ### URL, Type and Parameter associations and Information
@@ -51,6 +57,21 @@ get_adql_resources_url = "/firethorn/adql/resource/select"
 
 get_param = 'id'
 
+workspace_import_schema_name = "adql.resource.schema.import.name"
+workspace_import_schema_base = "adql.resource.schema.import.base"
+workspace_import_uri = "/schemas/import"
+
+schema_import_schema_name = "adql.schema.table.import.name"
+schema_import_schema_base = "adql.schema.table.import.base"
+schema_import_uri = "/tables/import"
+
+query_create_uri = "/queries/create"
+query_name_param = "adql.resource.query.create.name"
+query_param = "adql.resource.query.create.query"
+query_status_update = "adql.query.update.status"
+
+schema_create_uri = '/schemas/create'
+table_create_uri = '/tables/create'
 
 create_menu_items = {'admin' : ['TAP Connection','JDBC connection', 'Workspace'] , 'user' : ['TAP Connection', 'Workspace']}
 
@@ -58,8 +79,8 @@ create_menu_items = {'admin' : ['TAP Connection','JDBC connection', 'Workspace']
 resource_create_name_params = {
                                'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' : 'jdbc.resource.create.name', 
                                'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json' : 'adql.resource.create.name',
-                               'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' : 'adql.resource.create.name'
-
+                               'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json' : 'adql.resource.create.name',
+                               'http://data.metagrid.co.uk/wfau/firethorn/types/adql-schema-1.0.json' : 'adql.resource.schema.create.name'
                                }
 
 
@@ -111,7 +132,12 @@ db_select_with_text_urls = {
                             'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json' :  web_services_url + '/firethorn/adql/resource/search?',
                             'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json' :  web_services_url + ' /firethorn/jdbc/resource/search?'
                             }
-                   
+
+type_select_uris = {'schemas' : '/schemas/select',
+                    'tables' : '/tables/select',
+                    'columns' : '/columns/select',
+                    'workspaces' :'firethorn/adql/resources/select'
+                    }                   
                        
 resource_uris = {
                  'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-resource-1.0.json': '/schemas/select',
@@ -154,6 +180,7 @@ db_select_by_name_params = {
                             'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json': 'adql.resource.select.name'
                             }
 
+
 types = {
          'service' : 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json', 
          'Service' : 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-service-1.0.json',
@@ -168,7 +195,9 @@ types = {
          'adql_schema' : 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-schema-1.0.json',
          'jdbc_column' : 'http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-column-1.0.json',
          'adql_column' : 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-column-1.0.json',
-         'Workspace' : 'Workspace'
+         'Workspace' : 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json',
+         'workspace' : 'http://data.metagrid.co.uk/wfau/firethorn/types/adql-resource-1.0.json'
+
         }
 
 

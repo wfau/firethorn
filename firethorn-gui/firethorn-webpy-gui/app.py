@@ -33,9 +33,10 @@ urls = ('/', 'index','/index', 'index', '/services', 'services', '/create_new',
 
 
 ### For apache production env
-app = web.application(urls, globals())
-application = app.wsgifunc()
-      
+app = web.application(urls, globals(), autoreload=False)
+#application = app.wsgifunc()
+
+
 if web.config.get('_session') is None:
     session = web.session.Session(app, web.session.DiskStore(os.path.join(base_location,'sessions')),initializer={'logged_in': 'True','user':'stelios', 'role' :'admin',
                                                                                                                   
@@ -67,13 +68,24 @@ app.add_processor(web.loadhook(session_hook))
 
 from helper_functions import type_helpers
 from config import types
+
 ### Render templates
 render = web.template.render('templates/', globals={'context': session, 'type_helpers' : type_helpers, 'types' : types})  
 
 from url_classes import *
 
-        
-if __name__ == "__main__": app.run()
+def is_test():
+    """
+    is_test() function
+    
+    Test whether the run is part of a test suite
+    Run if not
+    """
+    if 'WEBPY_ENV' in os.environ:
+        print "Initializing test"
+        return os.environ['WEBPY_ENV'] == 'test'
 
+
+if (not is_test()) and __name__ == "__main__": app.run()
 
 
