@@ -199,6 +199,7 @@ extends AbstractEntity
          * Our local service implementation.
          *
          */
+        @Autowired
         private Job.Resolver resolver;
 
         /**
@@ -207,10 +208,10 @@ extends AbstractEntity
          */
         protected Job.Resolver resolver()
             {
-            if (this.resolver == null)
-                {
-                this.resolver = factories().jobs().resolver();
-                }
+//            if (this.resolver == null)
+//                {
+//                this.resolver = factories().jobs().resolver();
+//                }
             return this.resolver ;
             }
 
@@ -235,10 +236,13 @@ extends AbstractEntity
         @UpdateAtomicMethod
         public Status status(final Identifier ident, final Status status)
             {
+            log.debug("status(Identifier, Status)");
             try {
-                return resolver().select(
+                Job job = resolver().select(
                     ident
-                    ).status(
+                    );
+                log.debug("Found [{}]", ((job != null ? job.ident() : null)));
+                return job.status(
                         status
                         );
                 }
@@ -247,14 +251,21 @@ extends AbstractEntity
                 log.error("Failed to set job status [{}][{}]", ident, ouch.getMessage());
                 return Status.ERROR;
                 }
+            catch (final Exception ouch)
+                {
+                log.error("Failed to set job status [{}][{}]", ident, ouch.getMessage());
+                return Status.ERROR;
+                }
             }
 
 
         @Override
-        public Status update(final Identifier ident, final Job.Status next, final Integer timeout)
+        public Status update(final Identifier ident, final Status next, final Integer timeout)
             {
-            log.debug("---- ---- ---- ----");
             log.debug("update(Identifier, Status, Integer)");
+            log.debug("  ident  [{}]", ident);
+            log.debug("  status [{}]", next);
+            log.debug("  wait   [{}]", timeout);
 
             Status result = executor().status(
                 ident
@@ -351,13 +362,27 @@ extends AbstractEntity
         public Status prepare(final Identifier ident)
             {
             log.debug("prepare(Identifier)");
-            log.debug("  TestJob [{}]", ident);
+            log.debug("  Ident [{}]", ident);
             try {
-                return resolver().select(
+                Job job = resolver().select(
                     ident
-                    ).prepare();
+                    );
+if (job != null)
+    {
+    log.debug("Found [{}][{}]", job.ident(), job.getClass().getName());
+    return job.prepare();
+    }
+else {
+    log.debug("NOT FOUND");
+    return Status.ERROR;
+    }
                 }
             catch (final NotFoundException ouch)
+                {
+                log.error("Failed to prepare job [{}][{}]", ident, ouch.getMessage());
+                return Status.ERROR;
+                }
+            catch (final Exception ouch)
                 {
                 log.error("Failed to prepare job [{}][{}]", ident, ouch.getMessage());
                 return Status.ERROR;
@@ -369,7 +394,7 @@ extends AbstractEntity
         @SelectEntityMethod
         public Future<Status> execute(final Identifier ident)
             {
-            log.debug("execute()");
+            log.debug("execute(Identifier)");
             log.debug("  Ident [{}]", ident);
             try {
                 return new AsyncResult<Status>(

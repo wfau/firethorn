@@ -676,6 +676,9 @@ implements AdqlQuery, AdqlParserQuery
     @Override
     public Status prepare()
         {
+        log.debug("prepare()");
+        log.debug(" ident [{}]", ident());
+
         if ((status() == Status.EDITING) || (status() == Status.READY))
             {
             if (this.input == null)
@@ -848,12 +851,13 @@ implements AdqlQuery, AdqlParserQuery
 
                 // TODO - Check for valid resource ident in prepare().
                 final String target = ((mode() == Mode.DIRECT) ? primary().ogsaid() : dqpname);
-                final String tablename = "Q" + ident().toString() + "xxxx" ;
+                //final String tablename = "Q" + ident().toString() + "xxxx" ;
+                final String tablename = query.results().jdbc().fullname().toString() ;
 
                 log.debug("-- AdqlQuery executing [{}]", ident());
                 log.debug("-- Mode   [{}]", query.mode());
                 log.debug("-- Target [{}]", target);
-
+                
                 final PipelineResult frog = pipeline.execute(
                     target,
                     storename,

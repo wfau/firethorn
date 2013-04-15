@@ -60,6 +60,7 @@ public class StoredResultPipeline
         selector.addExpression(
             query
             );
+/*
         //
         // Create our output table.
         final CreateTable creator = new CreateTable();
@@ -74,7 +75,7 @@ public class StoredResultPipeline
         creator.connectTuples(
             selector.getDataOutput()
             );
-
+ */
         //
         // Create our results writer.
         final SQLBulkLoadTuple writer = new SQLBulkLoadTuple();
@@ -87,7 +88,8 @@ public class StoredResultPipeline
             table
             );
         writer.connectDataInput(
-            creator.getDataOutput()
+//          creator.getDataOutput()
+            selector.getDataOutput()
             );
         //
         // Create our delivery handler.
@@ -101,9 +103,11 @@ public class StoredResultPipeline
         pipeline.add(
             selector
             );
+/*
         pipeline.add(
             creator
             );
+ */            
         pipeline.add(
             writer
             );

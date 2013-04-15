@@ -41,7 +41,9 @@
         jdbcconfig twomass  ${FIRETHORN_CONF?}/livetwomass.conf
         jdbcconfig ukidss   ${FIRETHORN_CONF?}/liveukidss.conf
         jdbcconfig wfau     ${FIRETHORN_CONF?}/wfau-ogsadai.conf
-        jdbcconfig user     ${FIRETHORN_CONF?}/user-hsqldb.conf
+       #jdbcconfig user     ${FIRETHORN_CONF?}/user-hsqldb.conf
+        jdbcconfig user     /etc/firethorn/userdata.conf
+
 
         #
         # Delete existing database.
@@ -58,7 +60,6 @@
 #
 
     source ${HOME?}/firethorn.settings
-
     FIRETHORN_TEST=${FIRETHORN_TEST:-${FIRETHORN_CODE?}/integration/001}
 
     pushd $(mktemp --directory)
@@ -90,10 +91,7 @@ cat "${FIRETHORN_CODE?}/firethorn-ogsadai/webapp/target/database/userdata.log
 
     BUG
     
-    need to have at least one table in userdata
-    need to make table names 'safe'
-
-
+    
 
 
 

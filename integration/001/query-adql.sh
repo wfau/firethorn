@@ -51,16 +51,28 @@ cat > adql-query-001.adql << 'EOF'
 EOF
 
 #
+# Get the current user data target.
+userdataurl=$(sed -n '
+    s#^firethorn\.userdata\.src=\([^[:space:]]*\)[[:space:]]*#\1#p
+    ' "${HOME?}/firethorn.properties"
+    )
+
+#
 # Create our user data store.
 POST "/jdbc/resource/create" \
-    -d "jdbc.resource.create.url=spring:HsqldbUserData" \
+    -d "jdbc.resource.create.url=spring:${userdataurl?}" \
     -d "jdbc.resource.create.name=userdate-$(unique)" \
     -d "jdbc.resource.create.ogsadai=userdata" \
     | tee jdbc-user-resource.json | ./pp
 jdbcresource=$(cat jdbc-user-resource.json | ident)
 
+#
+# Schema name is platform dependant.
+# Should come from the user accout or config anyway ....
+#    -d "jdbc.resource.schema.select.name=public" \
+#    -d "jdbc.resource.schema.select.name=PUBLIC.PUBLIC" \
 POST "${jdbcresource?}/schemas/select" \
-    -d "jdbc.resource.schema.select.name=PUBLIC.PUBLIC" \
+    -d "jdbc.resource.schema.select.name=public" \
     | tee jdbc-schema.json | ./pp
 jdbcschema=$(cat jdbc-schema.json | ident)
 

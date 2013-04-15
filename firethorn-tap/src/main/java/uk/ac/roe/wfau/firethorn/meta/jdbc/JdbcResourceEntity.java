@@ -153,6 +153,7 @@ public class JdbcResourceEntity
             }
 
 		@Override
+        @CreateEntityMethod
 		public JdbcResource create(final String ogsaid, final String name, final String url, final String user, final String pass) {
             return super.insert(
                 new JdbcResourceEntity(
@@ -456,7 +457,8 @@ public class JdbcResourceEntity
                         }
                     //
                     // Check if we have already done this one.
-                    if (((cname == null) ? cprev == null : cname.equals(cprev))
+                    if (
+                        ((cname == null) ? cprev == null : cname.equals(cprev))
                         &&
                         ((sname == null) ? sprev == null : sname.equals(sprev))
                         ){
@@ -476,6 +478,7 @@ public class JdbcResourceEntity
                         cname,
                         sname
                         );
+                    log.debug("Found schema [{}]", schema);
                     //
                     // If none found, create a new one.
                     if (schema == null)
