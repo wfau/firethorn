@@ -39,16 +39,15 @@
     >
 
     <!--+
-        | Spring factory for Hibernate SessionFactory.
-    <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-    <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        | Hibernate SessionFactory.
         +-->
     <bean id="FireThornHibernateSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 
         <!--+
             | Database connection.
+        <property name="dataSource" ref="HsqldbMetaData"/>
             +-->
-        <property name="dataSource" ref="HsqldbFileData"/>
+        <property name="dataSource" ref="${firethorn.metadata.src}"/>
 
         <!--+
             | List our annotated entity beans.

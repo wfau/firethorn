@@ -17,8 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import java.sql.Types;
+
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
 /**
  *
@@ -75,5 +78,163 @@ extends BaseColumn<AdqlColumn>
 
     @Override
     public BaseColumn<?> base();
+
+    /**
+     * An enumeration of the VOTable data types, as defined in section 2.1 of the VOTable-1.2 specification.
+     * @see <a href='http://www.ivoa.net/Documents/VOTable/20091130/'/>
+     *
+     */
+    public enum Type
+        {
+        BOOLEAN(        1, "boolean",       JdbcColumn.Type.BOOLEAN),
+        BIT(            1, "bit",           JdbcColumn.Type.BLOB),
+        BYTE(           1, "unsignedByte",  JdbcColumn.Type.TINYINT),
+        CHAR(           2, "char",          JdbcColumn.Type.CHAR),
+        UNICODE(        2, "unicodeChar",   JdbcColumn.Type.CHAR),
+        SHORT(          2, "short",         JdbcColumn.Type.SMALLINT),
+        INTEGER(        4, "int",           JdbcColumn.Type.INTEGER),
+        LONG(           8, "long",          JdbcColumn.Type.BIGINT),
+        FLOAT(          4, "float",         JdbcColumn.Type.FLOAT),
+        DOUBLE(         8, "double",        JdbcColumn.Type.DOUBLE),
+        FLOATCOMPLEX(   8, "floatComplex",  JdbcColumn.Type.UNKNOWN),
+        DOUBLECOMPLEX( 16, "doubleComplex", JdbcColumn.Type.UNKNOWN),
+        UNKNOWN(        0, "unknown",       JdbcColumn.Type.UNKNOWN);
+
+        private int size ;
+        public  int size()
+            {
+            return this.size;
+            }
+
+        private String code ;
+        public  String code()
+            {
+            return this.code;
+            }
+
+        private JdbcColumn.Type jdbc ;
+        public  JdbcColumn.Type jdbc()
+            {
+            return this.jdbc;
+            }
+
+        Type(final int size, final String code, final JdbcColumn.Type jdbc)
+            {
+            this.size = size ;
+            this.code = code ;
+            this.jdbc = jdbc ;
+            }
+
+        /**
+         * Mapping from JdbcColumn.Type to AdqlColumn.Type.
+         * @see JdbcColumn.Type
+         *
+         */
+        public static AdqlColumn.Type adql(final JdbcColumn.Type jdbc)
+            {
+            return adql(
+                jdbc.code()
+                );
+            }
+
+        /**
+         * Mapping from java.sql.Types to AdqlColumnType.
+         * @see java.sql.Types
+         *
+         */
+        public static AdqlColumn.Type adql(final int sql)
+            {
+            switch(sql)
+                {
+                case Types.BIGINT :
+                    return LONG ;
+
+                case Types.BIT :
+                case Types.BOOLEAN :
+                    return BOOLEAN ;
+
+                case Types.LONGNVARCHAR :
+                case Types.LONGVARCHAR :
+                case Types.NVARCHAR :
+                case Types.VARCHAR :
+                case Types.NCHAR :
+                case Types.CHAR :
+                    return CHAR ;
+
+                case Types.DOUBLE :
+                    return DOUBLE ;
+
+                case Types.REAL  :
+                case Types.FLOAT :
+                    return FLOAT ;
+
+                case Types.INTEGER :
+                    return INTEGER ;
+
+                case Types.TINYINT :
+                    return BYTE ;
+
+                case Types.SMALLINT :
+                    return SHORT ;
+
+                case Types.ARRAY :
+                case Types.BINARY :
+                case Types.BLOB :
+                case Types.CLOB :
+                case Types.DATALINK :
+                case Types.DATE :
+                case Types.DECIMAL :
+                case Types.DISTINCT :
+                case Types.JAVA_OBJECT :
+                case Types.LONGVARBINARY :
+                case Types.NCLOB :
+                case Types.NULL :
+                case Types.NUMERIC :
+                case Types.OTHER :
+                case Types.REF :
+                case Types.ROWID :
+                case Types.SQLXML :
+                case Types.STRUCT :
+                case Types.TIME :
+                case Types.TIMESTAMP :
+                case Types.VARBINARY :
+                default :
+                    return UNKNOWN ;
+                }
+            }
+        }
+
+    /**
+     * Access to the column metadata.
+     *
+     */
+    public interface Metadata
+        {
+        /**
+         * ADQL column metadata.
+         * @todo Add UCD, utype etc ...
+         *
+         */
+        public interface AdqlMeta
+            {
+            public Integer size();
+
+            public void size(final Integer size);
+
+            public Type type();
+
+            public void type(final Type type);
+            }
+
+        /**
+         * The ADQL column metadata.
+         *
+         */
+        public AdqlMeta adql();
+
+        }
+
+    @Override
+    public AdqlColumn.Metadata info();
 
     }

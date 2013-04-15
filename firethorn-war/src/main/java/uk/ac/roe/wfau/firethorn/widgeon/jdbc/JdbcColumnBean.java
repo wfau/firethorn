@@ -20,7 +20,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnType;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
@@ -84,14 +84,14 @@ implements EntityBean<JdbcColumn>
         {
         public interface Adql
             {
-            public AdqlColumnType getType();
+            public AdqlColumn.Type getType();
             public Integer getSize();
             }
         public Adql getAdql();
         public interface Jdbc
             {
-            public int getType();
-            public int getSize();
+            public JdbcColumn.Type getType();
+            public Integer getSize();
             }
         public Jdbc getJdbc();
         }
@@ -106,7 +106,7 @@ implements EntityBean<JdbcColumn>
                 return new Adql()
                     {
                     @Override
-                    public AdqlColumnType getType()
+                    public AdqlColumn.Type getType()
                         {
                         return entity().info().adql().type();
                         }
@@ -123,12 +123,12 @@ implements EntityBean<JdbcColumn>
                 return new Jdbc()
                     {
                     @Override
-                    public int getType()
+                    public JdbcColumn.Type getType()
                         {
                         return entity().info().jdbc().type();
                         }
                     @Override
-                    public int getSize()
+                    public Integer getSize()
                         {
                         return entity().info().jdbc().size();
                         }

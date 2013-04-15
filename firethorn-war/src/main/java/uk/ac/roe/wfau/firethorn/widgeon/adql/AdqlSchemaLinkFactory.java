@@ -51,10 +51,16 @@ implements AdqlSchema.LinkFactory
     public static final String SCHEMA_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
 
     /**
-     * The URI path for schema tables.
+     * The URI path for tables.
      *
      */
     public static final String SCHEMA_TABLE_PATH = SCHEMA_PATH + "/tables" ;
+
+    /**
+     * The URI path for queries.
+     *
+     */
+    public static final String SCHEMA_QUERY_PATH = SCHEMA_PATH + "/queries" ;
 
     @Override
     public String link(final AdqlSchema entity)

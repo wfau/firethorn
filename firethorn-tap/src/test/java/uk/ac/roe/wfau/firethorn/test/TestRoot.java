@@ -31,11 +31,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
  * Base class for tests.
  * Using SpringJUnit4ClassRunner to support @Autowired annotations.
+ * This class does not handle transactions.
  *
  */
 @Slf4j
@@ -48,16 +50,7 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
         "classpath:scheduler-config.xml"
         }
     )
-/*@Transactional(
-    readOnly=false,
-    propagation=Propagation.REQUIRES_NEW
-    )
-@TransactionConfiguration(
-    transactionManager="FireThornTransactionManager",
-    defaultRollback = false
-    )
-    */
-public abstract class TestBase
+public abstract class TestRoot
     {
 
     /**

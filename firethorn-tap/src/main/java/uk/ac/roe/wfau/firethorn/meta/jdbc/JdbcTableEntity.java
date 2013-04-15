@@ -27,8 +27,11 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,8 +41,11 @@ import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
@@ -59,6 +65,9 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
     uniqueConstraints={
         }
     )
+@Inheritance(
+    strategy = InheritanceType.JOINED
+    )
 @NamedQueries(
         {
         @NamedQuery(
@@ -77,7 +86,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
     )
 public class JdbcTableEntity
 extends BaseTableEntity<JdbcTable, JdbcColumn>
-    implements JdbcTable
+implements JdbcTable
     {
     /**
      * Hibernate table mapping.
@@ -90,6 +99,7 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
      *
      */
     protected static final String JDBC_TYPE_COL = "jdbctype" ;
+    protected static final String DB_ADQL_QUERY_COL = "adqlquery" ;
 
     /**
      * Alias factory implementation.
@@ -130,11 +140,11 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
 
         @Override
         @CreateEntityMethod
-        public JdbcTable create(final JdbcSchema parent, final String name)
+        public JdbcTable create(final JdbcSchema schema, final String name)
             {
             return this.insert(
                 new JdbcTableEntity(
-                    parent,
+                    schema,
                     name
                     )
                 );
@@ -142,13 +152,26 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
 
         @Override
         @CreateEntityMethod
-        public JdbcTable create(final JdbcSchema parent, final String name, final JdbcTableType type)
+        public JdbcTable create(final JdbcSchema schema, final String name, final TableType type)
             {
             return this.insert(
                 new JdbcTableEntity(
-                    parent,
+                    schema,
                     name,
                     type
+                    )
+                );
+            }
+
+        @Override
+        @CreateEntityMethod
+        public JdbcTable create(final JdbcSchema schema, final AdqlQuery query, final String name)
+            {
+            return this.insert(
+                new JdbcTableEntity(
+                    schema,
+                    query,
+                    name
                     )
                 );
             }
@@ -243,17 +266,42 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
 
     protected JdbcTableEntity(final JdbcSchema schema, final String name)
         {
-        super(schema, name);
-        this.schema = schema;
+        this(
+            schema,
+            null,
+            name,
+            TableType.TABLE
+            );
         }
 
-    public JdbcTableEntity(final JdbcSchema schema, final String name, final JdbcTableType type)
+    public JdbcTableEntity(final JdbcSchema schema, final String name, final TableType type)
+        {
+        this(
+            schema,
+            null,
+            name,
+            type
+            );
+        }
+
+    public JdbcTableEntity(final JdbcSchema schema, final AdqlQuery query, final String name)
+        {
+        this(
+            schema,
+            query,
+            name,
+            TableType.TABLE
+            );
+        }
+
+    public JdbcTableEntity(final JdbcSchema schema, final AdqlQuery query, final String name, final TableType type)
         {
         super(schema, name);
+        this.query  = query;
         this.schema = schema;
         this.jdbctype = type;
         }
-
+    
     @Index(
         name=DB_TABLE_NAME + "IndexByParent"
         )
@@ -358,18 +406,56 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
         nullable = true,
         updatable = true
         )
-    private JdbcTableType jdbctype ;
+    private TableType jdbctype ;
+    /*
     @Override
-    public JdbcTableType jdbctype()
+    public TableType jdbctype()
         {
         return this.jdbctype;
         }
     @Override
-    public void jdbctype(final JdbcTableType type)
+    public void jdbctype(final TableType type)
         {
         this.jdbctype = type;
         }
+     */
 
+    @Override
+    public JdbcTable.Info info()
+        {
+        return new JdbcTable.Info()
+            {
+            @Override
+            public JdbcMeta jdbc()
+                {
+                return new JdbcMeta()
+                    {
+                    @Override
+                    public TableType type()
+                        {
+                        return JdbcTableEntity.this.jdbctype ;
+                        }
+
+                    @Override
+                    public void type(TableType type)
+                        {
+                        JdbcTableEntity.this.jdbctype = type ;
+                        }
+                    };
+                }
+
+            @Override
+            public AdqlMeta adql()
+                {
+                return new AdqlMeta()
+                    {
+                    
+                    };
+                }
+            };
+        }
+    
+    
     @Override
     public String link()
         {
@@ -397,7 +483,12 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
         // TODO - fix connection errors
         if (metadata != null)
             {
+            //
+            // TODO - Check the table actually exists !! 
+            
             try {
+                //
+                // Check the table columns.
                 final ResultSet columns = metadata.getColumns(
                     this.schema().catalog(),
                     this.schema().schema(),
@@ -406,9 +497,9 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
                     );
                 while (columns.next())
                     {
-                    final String ccname = columns.getString(JdbcMetadata.JDBC_META_TABLE_CAT);
-                    final String csname = columns.getString(JdbcMetadata.JDBC_META_TABLE_SCHEM);
-                    final String ctname = columns.getString(JdbcMetadata.JDBC_META_TABLE_NAME);
+                    final String ccname  = columns.getString(JdbcMetadata.JDBC_META_TABLE_CAT);
+                    final String csname  = columns.getString(JdbcMetadata.JDBC_META_TABLE_SCHEM);
+                    final String ctname  = columns.getString(JdbcMetadata.JDBC_META_TABLE_NAME);
                     final String colname = columns.getString(JdbcMetadata.JDBC_META_COLUMN_NAME);
                     final int    coltype = columns.getInt(JdbcMetadata.JDBC_META_COLUMN_TYPE_TYPE);
                     final int    colsize = columns.getInt(JdbcMetadata.JDBC_META_COLUMN_SIZE);
@@ -463,4 +554,34 @@ extends BaseTableEntity<JdbcTable, JdbcColumn>
                 }
             }
         }
+
+    // TODO
+    // Refactor this as mapped identity ?
+    // http://www.codereye.com/2009/04/hibernate-bi-directional-one-to-one.html
+    @Index(
+        name=DB_TABLE_NAME + "IndexByAdqlQuery"
+        )
+    @OneToOne(
+        fetch = FetchType.LAZY,
+        targetEntity = AdqlQueryEntity.class
+        )
+    @JoinColumn(
+        name = DB_ADQL_QUERY_COL,
+        unique = true,
+        nullable = true,
+        updatable = false
+        )
+    private AdqlQuery query;
+    @Override
+    public AdqlQuery query()
+        {
+        return this.query;
+        }
+
+    @Override
+    public boolean exists()
+        {
+        return true ;
+        }
+    
     }

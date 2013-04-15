@@ -36,10 +36,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
+import org.hibernate.type.Type;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
@@ -67,6 +69,20 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
             name  = "JdbcSchema-select-parent.catalog.schema",
             query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (catalog = :catalog) AND (schema = :schema)) ORDER BY name asc, ident desc"
             ),
+
+        @NamedQuery(
+            name  = "JdbcSchema-select-parent.null-catalog.null-schema",
+            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (catalog IS NULL) AND (schema IS NULL)) ORDER BY name asc, ident desc"
+            ),
+        @NamedQuery(
+            name  = "JdbcSchema-select-parent.catalog.null-schema",
+            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (catalog = :catalog) AND (schema IS NULL)) ORDER BY name asc, ident desc"
+            ),
+        @NamedQuery(
+            name  = "JdbcSchema-select-parent.null-catalog.schema",
+            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (catalog IS NULL) AND (schema = :schema)) ORDER BY name asc, ident desc"
+            ),
+            
         @NamedQuery(
             name  = "JdbcSchema-select-parent.name",
             query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY name asc, ident desc"
@@ -91,8 +107,8 @@ public class JdbcSchemaEntity
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_JDBC_SCHEMA_COL = "jdbcschema";
-    protected static final String DB_JDBC_COLUMN_COL = "jdbccolumn";
+    protected static final String DB_JDBC_SCHEMA_COL  = "jdbcschema";
+    protected static final String DB_JDBC_CATALOG_COL = "jdbccatalog";
 
     /**
      * Schema factory implementation.
@@ -172,20 +188,73 @@ public class JdbcSchemaEntity
         @SelectEntityMethod
         public JdbcSchema select(final JdbcResource parent, final String catalog, final String schema)
             {
-            return super.first(
-                super.query(
-                    "JdbcSchema-select-parent.catalog.schema"
-                    ).setEntity(
-                        "parent",
-                        parent
-                    ).setString(
-                        "catalog",
-                        catalog
-                    ).setString(
-                        "schema",
-                        schema
-                    )
-                );
+            log.debug("JdbcSchema select(JdbcResource, String, String)");
+            log.debug("  Parent  [{}]", parent.ident());
+            log.debug("  Catalog [{}]", catalog);
+            log.debug("  Schema  [{}]", schema);
+
+            // Select where could be null ...
+            // http://youtrack.jetbrains.com/issue/IDEA-86389
+            // http://www.icesoft.org/JForum/posts/list/15439.page
+            // http://stackoverflow.com/a/2123461
+            // http://stackoverflow.com/questions/2123438/hibernate-how-to-set-null-query-parameter-value-with-hql
+            // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4312435
+
+            if ((catalog == null) && (schema == null))
+                {
+                return super.first(
+                    super.query(
+                        "JdbcSchema-select-parent.null-catalog.null-schema"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        )
+                    );
+                }
+            else if (catalog == null)
+                {
+                return super.first(
+                    super.query(
+                        "JdbcSchema-select-parent.null-catalog.schema"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        ).setString(
+                            "schema",
+                            schema
+                        )
+                    );
+                }
+            else if (schema == null)
+                {
+                return super.first(
+                    super.query(
+                        "JdbcSchema-select-parent.catalog.null-schema"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        ).setString(
+                            "catalog",
+                            catalog
+                        )
+                    );
+                }
+            else {
+                return super.first(
+                    super.query(
+                        "JdbcSchema-select-parent.catalog.schema"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        ).setString(
+                            "catalog",
+                            catalog
+                        ).setString(
+                            "schema",
+                            schema
+                        )
+                    );
+                }
             }
 
         @Override
@@ -266,7 +335,7 @@ public class JdbcSchemaEntity
         name=DB_TABLE_NAME + "IndexByParent"
         )
     @ManyToOne(
-        fetch = FetchType.EAGER,
+        fetch = FetchType.LAZY,
         targetEntity = JdbcResourceEntity.class
         )
     @JoinColumn(
@@ -282,9 +351,11 @@ public class JdbcSchemaEntity
         return this.resource;
         }
 
-    @Basic(fetch = FetchType.EAGER)
+    @Basic(
+        fetch = FetchType.EAGER
+        )
     @Column(
-        name = DB_JDBC_COLUMN_COL,
+        name = DB_JDBC_CATALOG_COL,
         unique = false,
         nullable = true,
         updatable = false
@@ -296,7 +367,9 @@ public class JdbcSchemaEntity
         return this.catalog;
         }
 
-    @Basic(fetch = FetchType.EAGER)
+    @Basic(
+        fetch = FetchType.EAGER
+        )
     @Column(
         name = DB_JDBC_SCHEMA_COL,
         unique = false,
@@ -345,12 +418,21 @@ public class JdbcSchemaEntity
                     );
                 }
             @Override
-            public JdbcTable create(final String name, final JdbcTable.JdbcTableType type)
+            public JdbcTable create(final String name, final JdbcTable.TableType type)
                 {
                 return factories().jdbc().tables().create(
                     JdbcSchemaEntity.this,
                     name,
                     type
+                    );
+                }
+            @Override
+            public JdbcTable create(String name, AdqlQuery query)
+                {
+                return factories().jdbc().tables().create(
+                    JdbcSchemaEntity.this,
+                    query,
+                    name
                     );
                 }
             @Override
@@ -413,8 +495,8 @@ public class JdbcSchemaEntity
                         );
                     if (table != null)
                         {
-                        table.jdbctype(
-                            JdbcTable.JdbcTableType.match(
+                        table.info().jdbc().type(
+                            JdbcTable.TableType.match(
                                 tttype
                                 )
                             );
@@ -422,7 +504,7 @@ public class JdbcSchemaEntity
                     else {
                         table = tablesimpl().create(
                             ttname,
-                            JdbcTable.JdbcTableType.match(
+                            JdbcTable.TableType.match(
                                 tttype
                                 )
                             );

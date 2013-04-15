@@ -98,42 +98,4 @@ extends BaseResource<AdqlSchema>
     @Override
     public Schemas schemas();
 
-    /**
-     * Access to the resource queries.
-     *
-     */
-    public interface Queries
-        {
-        /**
-         * Create a new query.
-         *
-         */
-        public AdqlQuery create(final String query);
-
-        /**
-         * Create a new query.
-         *
-         */
-        public AdqlQuery create(final String name, final String query);
-
-        /**
-         * Select all the queries for this resource.
-         *
-         */
-        public Iterable<AdqlQuery> select();
-
-        /**
-         * Text search for queries (name starts with).
-         *
-         */
-        public Iterable<AdqlQuery> search(final String text);
-
-        }
-
-    /**
-     * Access to the resource queries.
-     *
-     */
-    public Queries queries();
-
     }

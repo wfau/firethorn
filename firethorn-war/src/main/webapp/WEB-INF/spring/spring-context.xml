@@ -40,8 +40,10 @@
     >
     <!--+
         | Import our database connection settings.
-        +-->
+        | http://stackoverflow.com/questions/5113579/how-to-import-spring-config-xml-of-one-project-into-spring-config-xml-of-another
     <import resource="database-config.xml"/>
+        +-->
+    <import resource="classpath:testdata-config.xml"/>
 
     <!--+
         | Import our Hibernate data access beans.
@@ -81,14 +83,6 @@
         | Scan for annotated components.
         +-->
     <cxt:component-scan base-package="uk.ac.roe.wfau.firethorn"/>
-
-    <!--+
-        | java.lang.IllegalStateException: 
-        | ClassLoader [org.apache.catalina.loader.WebappClassLoader] does NOT provide an 'addTransformer(ClassFileTransformer)' method.
-        | Specify a custom LoadTimeWeaver or start your Java virtual machine with Spring's agent: -javaagent:org.springframework.instrument.jar
-    <cxt:load-time-weaver/>
-	<cxt:load-time-weaver aspectj-weaving="on"/>
-        +-->
 
     <!--+
         | Use a local properties file.

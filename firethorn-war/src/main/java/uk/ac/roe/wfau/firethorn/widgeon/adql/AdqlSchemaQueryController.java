@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
@@ -41,15 +43,15 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
  */
 @Slf4j
 @Controller
-@RequestMapping(AdqlResourceLinkFactory.RESOURCE_QUERY_PATH)
-public class AdqlResourceQueryController
+@RequestMapping(AdqlSchemaLinkFactory.SCHEMA_QUERY_PATH)
+public class AdqlSchemaQueryController
 extends AbstractEntityController<AdqlQuery>
     {
     @Override
     public Path path()
         {
         return path(
-            AdqlResourceLinkFactory.RESOURCE_QUERY_PATH
+            AdqlSchemaLinkFactory.SCHEMA_QUERY_PATH
             );
         }
 
@@ -57,7 +59,7 @@ extends AbstractEntityController<AdqlQuery>
      * Public constructor.
      *
      */
-    public AdqlResourceQueryController()
+    public AdqlSchemaQueryController()
         {
         super();
         }
@@ -84,25 +86,31 @@ extends AbstractEntityController<AdqlQuery>
      * MVC property for the search text.
      *
      */
-    public static final String SEARCH_TEXT = "adql.resource.query.search.text" ;
+    public static final String SEARCH_TEXT = "adql.schema.query.search.text" ;
 
     /**
      * MVC property for the search results.
      *
      */
-    public static final String SEARCH_RESULT = "adql.resource.query.search.result" ;
+    public static final String SEARCH_RESULT = "adql.schema.query.search.result" ;
 
     /**
      * MVC property for the create name.
      *
      */
-    public static final String CREATE_NAME = "adql.resource.query.create.name" ;
+    public static final String CREATE_NAME = "adql.schema.query.create.name" ;
 
     /**
      * MVC property for the create query.
      *
      */
-    public static final String CREATE_QUERY = "adql.resource.query.create.query" ;
+    public static final String CREATE_QUERY = "adql.schema.query.create.query" ;
+
+    /**
+     * MVC property for the create store.
+     *
+     */
+    public static final String CREATE_STORE = "adql.schema.query.create.store" ;
 
     @Override
     public EntityBean<AdqlQuery> bean(final AdqlQuery entity)
@@ -121,17 +129,17 @@ extends AbstractEntityController<AdqlQuery>
         }
 
     /**
-     * Get the parent resource based on the request ident.
+     * Get the parent schema based on the request ident.
      * @throws NotFoundException
      *
      */
-    @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
-    public AdqlResource resource(
+    @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
+    public AdqlSchema schema(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException {
-        return factories().adql().resources().select(
-            factories().adql().resources().idents().ident(
+        return factories().adql().schemas().select(
+            factories().adql().schemas().idents().ident(
                 ident
                 )
             );
@@ -143,12 +151,12 @@ extends AbstractEntityController<AdqlQuery>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public Iterable<EntityBean<AdqlQuery>> jsonSelect(
-        @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
-        final AdqlResource resource
+    public Iterable<EntityBean<AdqlQuery>> select(
+        @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
+        final AdqlSchema schema
         ){
         return bean(
-            resource.queries().select()
+            schema.queries().select()
             );
         }
 
@@ -158,15 +166,14 @@ extends AbstractEntityController<AdqlQuery>
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public Iterable<EntityBean<AdqlQuery>> jsonSearch(
-        @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
-        final AdqlResource resource,
+    public Iterable<EntityBean<AdqlQuery>> search(
+        @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
+        final AdqlSchema schema,
         @RequestParam(SEARCH_TEXT)
         final String text
         ){
-        log.debug("jsonSearch(String) [{}]", text);
         return bean(
-            resource.queries().search(
+            schema.queries().search(
                 text
                 )
             );
@@ -177,20 +184,27 @@ extends AbstractEntityController<AdqlQuery>
      *
      */
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<EntityBean<AdqlQuery>> jsonCreate(
-        @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
-        final AdqlResource resource,
+    public ResponseEntity<EntityBean<AdqlQuery>> Create(
+        @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
+        final AdqlSchema schema,
         @RequestParam(value=CREATE_QUERY, required=true)
         final String query,
+        @RequestParam(value=CREATE_STORE, required=true)
+        final String store,
         @RequestParam(value=CREATE_NAME, required=false)
         final String name
-        ){
-        log.debug("jsonCreate(String) [{}]", name);
+        ) throws NotFoundException {
+        log.debug("create(String, String, String) [{}][{}]", name, store);
         return response(
             new AdqlQueryBean(
-                resource.queries().create(
-                    name,
-                    query
+                schema.queries().create(
+                    factories().jdbc().schemas().select(
+                        factories().jdbc().schemas().links().parse(
+                            store
+                            )
+                        ),
+                    query,
+                    name
                     )
                 )
             );

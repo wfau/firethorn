@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 
@@ -96,7 +97,13 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          *  Create a new table.
          *
          */
-        public JdbcTable create(final String name, final JdbcTable.JdbcTableType type);
+        public JdbcTable create(final String name, final JdbcTable.TableType type);
+
+        /**
+         *  Create a new table.
+         *
+         */
+        public JdbcTable create(final String name, final AdqlQuery query);
 
         /**
          * Update the tables.

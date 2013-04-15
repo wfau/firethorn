@@ -49,9 +49,7 @@ import uk.ac.roe.wfau.firethorn.job.JobEntity;
     AccessType.FIELD
     )
 @Table(
-    name = TestJobEntity.DB_TABLE_NAME,
-    uniqueConstraints={
-        }
+    name = TestJobEntity.DB_TABLE_NAME
     )
 @NamedQueries(
         {
@@ -76,7 +74,7 @@ implements TestJob
      *
      */
     protected static final String DB_TEST_LENGTH_COL = "length";
-    protected static final String DB_TEST_LIMIT_COL  = "limit";
+    protected static final String DB_TEST_LIMIT_COL  = "timelimit";
 
     /**
      * Local service implementations.

@@ -115,7 +115,7 @@ extends JdbcResourceTestBase
                     );
                 }
 
-            final DataSource source = (DataSource) spring.getBean("HsqlMemTest");
+            final DataSource source = (DataSource) spring.getBean("HsqldbTempData");
             final Connection connection = source.getConnection();
 
             //connection.createStatement().execute("CREATE SCHEMA albert AUTHORIZATION DBA ;");

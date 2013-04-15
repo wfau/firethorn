@@ -19,8 +19,6 @@
         mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
     popd
 
-
-
 # TTY #2 ------------------------------------------------------------
 # Run the REST test scripts.
 #
@@ -32,7 +30,6 @@
     pushd $(mktemp --directory)
 
         source "${FIRETHORN_TEST?}/init-rest.sh"
-
 
         testjob=$(
         POST "/test/job/create" \
@@ -89,7 +86,6 @@
             | ./pp
         GET "${testjob?}" \
             | ./pp
-
 
         testjob=$(
         POST "/test/job/create" \

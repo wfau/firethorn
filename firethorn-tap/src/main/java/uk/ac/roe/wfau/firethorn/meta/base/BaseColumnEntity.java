@@ -115,10 +115,13 @@ extends BaseComponentEntity
         nullable = true,
         updatable = true
         )
-    protected AdqlColumnType adqltype ;
+    protected AdqlColumn.Type adqltype ;
 
     @Basic(
         fetch = FetchType.EAGER
+        )
+    @Enumerated(
+        EnumType.STRING
         )
     @Column(
         name = DB_USER_TYPE_COL,
@@ -126,7 +129,7 @@ extends BaseComponentEntity
         nullable = true,
         updatable = true
         )
-    protected AdqlColumnType usertype ;
+    protected AdqlColumn.Type usertype ;
 
     @Basic(
         fetch = FetchType.EAGER
@@ -212,19 +215,15 @@ extends BaseComponentEntity
     @Override
     public abstract BaseColumn<?> root();
 
-    /**
-     *
-     * @todo Move this to Jdbc, Ivoa ad Adql classes, replace with warn/error on base class.
-     */
     @Override
-    public Info info()
+    public AdqlColumn.Metadata info()
         {
-        return new Info()
+        return new AdqlColumn.Metadata()
             {
             @Override
-            public AdqlColumnInfo adql()
+            public AdqlColumn.Metadata.AdqlMeta adql()
                 {
-                return new AdqlColumnInfo()
+                return new AdqlColumn.Metadata.AdqlMeta()
                     {
                     @Override
                     public Integer size()
@@ -252,7 +251,7 @@ extends BaseComponentEntity
                         }
 
                     @Override
-                    public AdqlColumnType type()
+                    public AdqlColumn.Type type()
                         {
                         if (BaseColumnEntity.this.usertype != null)
                             {
@@ -264,7 +263,7 @@ extends BaseComponentEntity
                         }
 
                     @Override
-                    public void type(final AdqlColumnType type)
+                    public void type(final AdqlColumn.Type type)
                         {
                         BaseColumnEntity.this.usertype = type ;
                         if (type != null)

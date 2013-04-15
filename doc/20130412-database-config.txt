@@ -1,0 +1,221 @@
+
+
+# -------------------------------------------------------------
+# Testing with PostgreSQL databases ....
+#
+
+    #
+    # Settings for the postgres admin account.
+    cat > /etc/firethorn/postgres.conf << EOF
+    type=pgsql
+    host=localhost
+    name=postgres
+    user=postgres
+    pass=$(pwgen -s 40 1)
+    EOF
+
+    #
+    # Settings for the metadata database.
+    cat > /etc/firethorn/metadata.conf << EOF
+    type=pgsql
+    host=localhost
+    name=metadata
+    user=$(pwgen -0 10 1)
+    pass=$(pwgen -s 40 1)
+    EOF
+
+    #
+    # Settings for the userdata database.
+    cat > /etc/firethorn/userdata.conf << EOF
+    type=pgsql
+    host=localhost
+    name=userdata
+    user=$(pwgen -0 10 1)
+    pass=$(pwgen -s 40 1)
+    EOF
+
+    #
+    # Settings for the testdata database.
+    cat > /etc/firethorn/testdata.conf << EOF
+    type=pgsql
+    host=localhost
+    name=testdata
+    user=$(pwgen -0 10 1)
+    pass=$(pwgen -s 40 1)
+    EOF
+
+    #
+    # Set the postgres admin password.
+    dbpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/postgres.conf)"
+    dbuser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/postgres.conf)"
+    echo "ALTER ROLE ${dbuser?} WITH PASSWORD '${dbpass?}'" | su - postgres -c 'psql postgres'
+
+    #
+    # Check we can login as admin.
+    psql postgres postgres --command 'SELECT version()'
+
+    
+# ----------------- -----------------
+
+    #
+    # Create our local pgpass file.
+    rm    ${HOME?}/.pgpass
+    touch ${HOME?}/.pgpass
+    chmod u=rw,g=,o= ${HOME?}/.pgpass
+
+    for conf in $(ls /etc/firethorn/*.conf)
+    do
+
+        databasehost="$(sed -n 's/^host=\(.*\)/\1/p' ${conf?})"
+        databasename="$(sed -n 's/^name=\(.*\)/\1/p' ${conf?})"
+        databaseuser="$(sed -n 's/^user=\(.*\)/\1/p' ${conf?})"
+        databasepass="$(sed -n 's/^pass=\(.*\)/\1/p' ${conf?})"
+
+        echo ""
+        echo "Config [${conf?}]"
+        echo "  name [${databasename?}]"
+        echo "  user [${databaseuser?}]"
+
+        echo "${databasehost?}:*:${databasename?}:${databaseuser?}:${databasepass?}" >> ${HOME?}/.pgpass
+
+    done
+
+    
+    #
+    # Create our userdata accounts and databases.
+    for conf in $(ls /etc/firethorn/*.conf)
+    do
+
+        databasehost="$(sed -n 's/^host=\(.*\)/\1/p' ${conf?})"
+        databasename="$(sed -n 's/^name=\(.*\)/\1/p' ${conf?})"
+        databaseuser="$(sed -n 's/^user=\(.*\)/\1/p' ${conf?})"
+        databasepass="$(sed -n 's/^pass=\(.*\)/\1/p' ${conf?})"
+
+        echo ""
+        echo "Config [${conf?}]"
+        echo "  name [${databasename?}]"
+        echo "  user [${databaseuser?}]"
+
+        if [ "${databasename?}" != 'postgres' ]
+        then
+    
+            psql postgres postgres --command "DROP DATABASE IF EXISTS ${databasename?}"
+            psql postgres postgres --command "DROP ROLE     IF EXISTS ${databaseuser?}"
+
+            psql postgres postgres --command "CREATE USER     ${databaseuser?} WITH LOGIN PASSWORD '${databasepass?}'"
+            psql postgres postgres --command "CREATE DATABASE ${databasename?} WITH OWNER ${databaseuser?}"
+
+        fi
+    done
+
+    #
+    # Update our firethorn settings.
+    # TODO - change to using our own Spring config class
+    for conf in $(ls /etc/firethorn/*.conf)
+    do
+
+        databasehost="$(sed -n 's/^host=\(.*\)/\1/p' ${conf?})"
+        databasename="$(sed -n 's/^name=\(.*\)/\1/p' ${conf?})"
+        databaseuser="$(sed -n 's/^user=\(.*\)/\1/p' ${conf?})"
+        databasepass="$(sed -n 's/^pass=\(.*\)/\1/p' ${conf?})"
+        databaseprop="$(sed -n 's/^prop=\(.*\)/\1/p' ${conf?})"
+        databasejdbc="jdbc:postgresql://${databasehost?}/${databasename?}"
+
+        echo ""
+        echo "Config [${conf?}]"
+        echo "  prop [${databaseprop?}]"
+        echo "  name [${databasename?}]"
+        echo "  user [${databaseuser?}]"
+        echo "  jdbc [${databasejdbc?}]"
+
+        if [ "${databasename?}" != 'postgres' ]
+        then
+
+            sed -i '
+                s|^'${prop?}'\.url.*|'${prop?}'.url='${databasejdbc?}'|
+                s|^'${prop?}'\.user.*|'${prop?}'.user='${databaseuser?}'|
+                s|^'${prop?}'\.pass.*|'${prop?}'.pass='${databasepass?}'|
+                '  "${HOME?}/firethorn.properties"
+
+            grep "${databaseprop?}" "${HOME?}/firethorn.properties"
+
+        fi
+    done
+
+# ----------------- -----------------
+#
+
+    #
+    # Swap to using the postgres databases.
+    vi "${HOME?}/firethorn.properties"
+
+        #
+        # FireThorn service config.
+        firethorn.metadata.src=PgsqlMetaData
+        firethorn.userdata.src=PgsqlUserData
+        firethorn.testdata.src=PgsqlTestData
+
+# ----------------- -----------------
+
+
+    #
+    # Drop script ...
+
+    DROP TABLE adqlcolumnentity          CASCADE ;
+    DROP TABLE adqlqueryentity           CASCADE ;
+    DROP TABLE adqlqueryjoinadqlcolumn   CASCADE ;
+    DROP TABLE adqlqueryjoinbaseresource CASCADE ;
+    DROP TABLE adqlresourceentity        CASCADE ;
+    DROP TABLE adqlschemaentity          CASCADE ;
+    DROP TABLE adqltableentity           CASCADE ;
+    DROP TABLE basecolumnentity          CASCADE ;
+    DROP TABLE baseresourceentity        CASCADE ;
+    DROP TABLE baseschemaentity          CASCADE ;
+    DROP TABLE basetableentity           CASCADE ;
+    DROP TABLE config_property           CASCADE ;
+    DROP TABLE identityentity            CASCADE ;
+    DROP TABLE ivoacolumnentity          CASCADE ;
+    DROP TABLE ivoaresourceentity        CASCADE ;
+    DROP TABLE ivoaschemaentity          CASCADE ;
+    DROP TABLE ivoatableentity           CASCADE ;
+    DROP TABLE jdbccolumnentity          CASCADE ;
+    DROP TABLE jdbcresourceentity        CASCADE ;
+    DROP TABLE jdbcschemaentity          CASCADE ;
+    DROP TABLE jdbctableentity           CASCADE ;
+    DROP TABLE jobentity                 CASCADE ;
+
+    DROP SEQUENCE hibernate_sequence     CASCADE ;
+
+
+
+    #
+    # Can't have a field called 'limit'
+    2013-04-12 19:34:23,719 DEBUG [localhost-startStop-1] [SchemaUpdate] create table TestJobEntity (length int4 not null, limit int4, ident int8 not null, primary key (ident)) 
+    2013-04-12 19:34:23,724 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: create table TestJobEntity (length int4 not null, limit int4, ident int8 not null, primary key (ident)) 
+    2013-04-12 19:34:23,724 ERROR [localhost-startStop-1] [SchemaUpdate] ERROR: syntax error at or near "limit"
+
+    #
+    # Need to have at least one table in userdata.
+    # Liquibase config ... ?
+
+    #
+    # Maven hosted HsqlDB..
+    
+    #
+    # Need to make table names 'safe'.
+
+    #
+    # Name of the default schema name is platform dependant.
+
+    #
+    # Config settings for user data catalog and schema.
+
+    #
+    # Need to changed CreateTableAction into CheckTableAction.
+    # Compare actual TupleMeta with guess generated from query.
+    # Fail query or modify table .... 
+
+
+
+
+

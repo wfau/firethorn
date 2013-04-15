@@ -31,12 +31,14 @@ import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**
  *
@@ -131,7 +133,7 @@ implements AdqlSchema
 				}
 			return schema;
 			}
-
+        
         @Override
         @SelectEntityMethod
         public Iterable<AdqlSchema> select(final AdqlResource parent)
@@ -276,6 +278,13 @@ implements AdqlSchema
                     );
                 }
             @Override
+            public AdqlTable create(final AdqlQuery query)
+                {
+                return factories().adql().tables().create(
+                    query
+                    );
+                }
+            @Override
             public Iterable<AdqlTable> search(final String text)
                 {
                 return factories().adql().tables().search(
@@ -292,5 +301,50 @@ implements AdqlSchema
         return factories().adql().schemas().links().link(
             this
             );
+        }
+
+    @Override
+    public Queries queries()
+        {
+        return new Queries()
+            {
+            @Override
+            public AdqlQuery create(final JdbcSchema store, final String query)
+                {
+                return factories().adql().queries().create(
+                    AdqlSchemaEntity.this,
+                    store,
+                    query
+                    );
+                }
+
+            @Override
+            public AdqlQuery create(final JdbcSchema store, final String query, final String name)
+                {
+                return factories().adql().queries().create(
+                    AdqlSchemaEntity.this,
+                    store,
+                    query,
+                    name
+                    );
+                }
+
+            @Override
+            public Iterable<AdqlQuery> select()
+                {
+                return factories().adql().queries().select(
+                    AdqlSchemaEntity.this
+                    );
+                }
+
+            @Override
+            public Iterable<AdqlQuery> search(final String text)
+                {
+                return factories().adql().queries().search(
+                    AdqlSchemaEntity.this,
+                    text
+                    );
+                }
+            };
         }
     }

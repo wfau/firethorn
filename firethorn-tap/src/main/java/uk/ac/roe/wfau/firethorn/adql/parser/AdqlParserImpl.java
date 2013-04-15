@@ -29,12 +29,9 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnInfo;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnType;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import adql.db.DBChecker;
 import adql.db.DBTable;
 import adql.parser.ADQLParser;
@@ -70,15 +67,15 @@ implements AdqlParser
     implements AdqlParser.Factory
         {
         @Override
-        public AdqlParser create(final AdqlQuery.Mode mode, final AdqlResource workspace)
+        public AdqlParser create(final AdqlQuery.Mode mode, final AdqlSchema schema)
             {
             return new AdqlParserImpl(
                 this.tables,
                 mode,
-                workspace
+                schema
                 );
             }
-
+        
         /**
          * Autowired reference to the local table factory.
          *
@@ -92,14 +89,16 @@ implements AdqlParser
      * Protected constructor.
      *
      */
-    protected AdqlParserImpl(final AdqlParserTable.Factory factory, final AdqlQuery.Mode mode, final AdqlResource workspace)
+    protected AdqlParserImpl(final AdqlParserTable.Factory factory, final AdqlQuery.Mode mode, final AdqlSchema schema)
         {
         this.mode = mode ;
 
+        final AdqlResource workspace = schema.resource();
+        
         final Set<DBTable> tables = new HashSet<DBTable>();
-        for (final AdqlSchema schema : workspace.schemas().select())
+        for (final AdqlSchema temp : workspace.schemas().select())
             {
-            for (final AdqlTable table : schema.tables().select())
+            for (final AdqlTable table : temp.tables().select())
                 {
                 tables.add(
                     factory.create(
@@ -169,13 +168,13 @@ implements AdqlParser
             //
             // If we got this far, then the query is valid.
             subject.syntax(
-                AdqlQuery.Syntax.Status.VALID
+                AdqlQuery.Syntax.State.VALID
                 );
             }
         catch (final ParseException ouch)
             {
             subject.syntax(
-                AdqlQuery.Syntax.Status.PARSE_ERROR,
+                AdqlQuery.Syntax.State.PARSE_ERROR,
                 ouch.getMessage()
                 );
             log.warn("Error parsing query [{}]", ouch.getMessage());
@@ -183,7 +182,7 @@ implements AdqlParser
         catch (final TranslationException ouch)
             {
             subject.syntax(
-                AdqlQuery.Syntax.Status.TRANS_ERROR,
+                AdqlQuery.Syntax.State.TRANS_ERROR,
                 ouch.getMessage()
                 );
             log.warn("Error translating query [{}]", ouch.getMessage());
@@ -219,123 +218,129 @@ implements AdqlParser
                 )
             );
         }
-
     
-    protected static class EvalResult
+    /**
+     * Helper class to get the metadata for a query SELECT item.
+     *
+     */
+    public static class ColumnMetaImpl implements AdqlQuery.SelectField
         {
-        public EvalResult(String name)
+
+        /**
+         * Private constructor.
+         *
+         */
+        private ColumnMetaImpl(final String name)
             {
-            this.name = name ;
+            this(
+                name,
+                name,
+                (AdqlColumn.Metadata)null 
+                );
             }
-        public EvalResult(String name, EvalResult eval)
+
+        /**
+         * Private constructor.
+         *
+         */
+        private ColumnMetaImpl(final String name, final AdqlQuery.SelectField meta)
             {
-            this.name = name ;
-            if (eval != null)
+            this(
+                name,
+                null,
+                meta.info()
+                );
+            }
+
+        /**
+         * Private constructor.
+         *
+         */
+        private ColumnMetaImpl(final String name, final String alias, final AdqlQuery.SelectField meta)
+            {
+            this(
+                name,
+                alias,
+                meta.info()
+                );
+            }
+
+        /**
+         * Private constructor.
+         *
+         */
+        private ColumnMetaImpl(final String name, final AdqlColumn.Metadata info)
+            {
+            this(
+                name,
+                null,
+                info
+                );
+            }
+
+        /**
+         * Private constructor.
+         *
+         */
+        private ColumnMetaImpl(final String name, final String alias, final AdqlColumn.Metadata info)
+            {
+            if (alias != null)
                 {
-                this.info = eval.info();
+                this.name = alias ;
                 }
-            }
-        public EvalResult(String name, BaseColumn.Info info)
-            {
-            this.name = name ;
+            else {
+                this.name = name ;
+                }
             this.info = info ;
             }
+
+        /**
+         * The item name or alias.
+         *
+         */
         private String name;
-        public  String name()
+
+        @Override
+        public String name()
             {
             return this.name;
             }
-        private BaseColumn.Info info ;
-        public  BaseColumn.Info info()
+
+        /**
+         * The item metadata.
+         *
+         */
+        private AdqlColumn.Metadata info ;
+
+        @Override
+        public AdqlColumn.Metadata info()
             {
             return this.info;
             }
-        }
-    
-    /**
-     * Evaluate the type of a select item.
-     * 
-     */
-    protected EvalResult eval(SelectItem item)
-        {
-        log.debug("eval(SelectItem)");
-        log.debug("  alias [{}]", item.getAlias());
-        log.debug("  name  [{}]", item.getName());
-        log.debug("  class [{}]", item.getClass().getName());
-        return new EvalResult(
-            item.getAlias(),
-            eval(
-                item.getOperand()
-                )
-            );
-        }
-        
-    protected EvalResult eval(ADQLOperand oper)
-        {
-        log.debug("eval(ADQLOperand)");
-        log.debug("  name   [{}]", oper.getName());
-        log.debug("  class  [{}]", oper.getClass().getName());
-        log.debug("  number [{}]", oper.isNumeric());
-        log.debug("  string [{}]", oper.isString());
-        if (oper instanceof ADQLColumn)
-            {
-            return eval(
-                (ADQLColumn) oper
-                );
-            }
-        else if (oper instanceof ADQLFunction)
-            {
-            return eval(
-                (ADQLFunction) oper
-                );
-            }
-        else if (oper instanceof Operation)
-            {
-            return eval(
-                (Operation) oper
-                );
-            }
-        else {
-            return new EvalResult(
-                "oops"
-                );
-            }
-        }
-    
-    /**
-     * Simple eval for a column.
-     * This is proof of concept only.
-     *
-     */
-    protected EvalResult eval(ADQLColumn column)
-        {
-        log.debug("eval(ADQLColumn)");
-        if (((ADQLColumn) column).getDBLink() instanceof AdqlDBColumn)
-            {
-            final AdqlColumn adql = ((AdqlDBColumn) ((ADQLColumn) column).getDBLink()).column();
-            log.debug("  ----");
-            log.debug("  adql [{}]", adql.fullname());
-            log.debug("  base [{}]", adql.base().fullname());
-            return new EvalResult(
-                adql.name(),
-                adql.base().info()
-                );
-            }
-        else {
-            return new EvalResult(
-                "oops"
-                );
-            }
-        }
 
-    public int size(BaseColumn.Info info)
-        {
-        if (info == null)
+        @Override
+        public int length()
             {
-            return 0 ;
+            return size(
+                this.info
+                );
             }
-        else {
-            if (info.adql() == null)
+
+        @Override
+        public AdqlColumn.Type type()
+            {
+            return type(
+                this.info
+                );
+            }
+
+        /**
+         * Get the size from an AdqlColumn Info.
+         *
+         */
+        public static int size(final AdqlColumn.Metadata info)
+            {
+            if (info == null)
                 {
                 return 0 ;
                 }
@@ -349,114 +354,191 @@ implements AdqlParser
                     }
                 }
             }
-        }
 
-    public AdqlColumnType type(BaseColumn.Info info)
-        {
-        if (info == null)
+        /**
+         * Get the type from an AdqlColumn Info.
+         *
+         */
+        public static AdqlColumn.Type type(final AdqlColumn.Metadata info)
             {
-            return AdqlColumnType.UNKNOWN;
-            }
-        else {
-            if (info.adql() == null)
+            if (info == null)
                 {
-                return AdqlColumnType.UNKNOWN;
+                return AdqlColumn.Type.UNKNOWN;
                 }
             else {
                 return info.adql().type();
                 }
             }
-        }
 
-    /**
-     * Simple eval for an operation, picks the largest param.
-     * This is proof of concept only.
-     * Needs a lot more work to get it right.
-     *
-     */
-    protected EvalResult eval(Operation oper)
-        {
-        log.debug("eval(Operation)");
-        log.debug("  name   [{}]", oper.getName());
-        log.debug("  number [{}]", oper.isNumeric());
-        log.debug("  string [{}]", oper.isString());
-
-        BaseColumn.Info left = eval(
-            oper.getLeftOperand()
-            ).info(); 
-
-        BaseColumn.Info right = eval(
-            oper.getRightOperand()
-            ).info(); 
-
-        if (left == null)
+        /**
+         * Evaluate the column metadata for a SelectItem.
+         * 
+         */
+        public static AdqlQuery.SelectField eval(final SelectItem item)
             {
-            return new EvalResult(
-                oper.getName(),
-                right
+            log.debug("eval(SelectItem)");
+            log.debug("  alias [{}]", item.getAlias());
+            log.debug("  name  [{}]", item.getName());
+            log.debug("  class [{}]", item.getClass().getName());
+            return new ColumnMetaImpl(
+                item.getName(),
+                item.getAlias(),
+                eval(
+                    item.getOperand()
+                    )
                 );
             }
-        else if (right == null)
+            
+        /**
+         * Evaluate the column metadata for an ADQLOperand.
+         *
+         */
+        public static AdqlQuery.SelectField eval(final ADQLOperand oper)
             {
-            return new EvalResult(
-                oper.getName(),
-                left
-                );
-            }
-        else {
-            if (size(left) > size(right))
+            log.debug("eval(ADQLOperand)");
+            log.debug("  name   [{}]", oper.getName());
+            log.debug("  class  [{}]", oper.getClass().getName());
+            log.debug("  number [{}]", oper.isNumeric());
+            log.debug("  string [{}]", oper.isString());
+            if (oper instanceof ADQLColumn)
                 {
-                return new EvalResult(
+                return eval(
+                    (ADQLColumn) oper
+                    );
+                }
+            else if (oper instanceof ADQLFunction)
+                {
+                return eval(
+                    (ADQLFunction) oper
+                    );
+                }
+            else if (oper instanceof Operation)
+                {
+                return eval(
+                    (Operation) oper
+                    );
+                }
+            else {
+                return new ColumnMetaImpl(
+                    "unknown-oper"
+                    );
+                }
+            }
+    
+        /**
+         * Evaluate the column metadata for an ADQLColumn.
+         *
+         */
+        public static AdqlQuery.SelectField eval(final ADQLColumn column)
+            {
+            log.debug("eval(ADQLColumn)");
+            if (((ADQLColumn) column).getDBLink() instanceof AdqlDBColumn)
+                {
+                final AdqlColumn adql = ((AdqlDBColumn) ((ADQLColumn) column).getDBLink()).column();
+                log.debug("  ----");
+                log.debug("  adql [{}]", adql.fullname());
+                log.debug("  base [{}]", adql.base().fullname());
+                return new ColumnMetaImpl(
+                    adql.name(),
+                    adql.base().info()
+                    );
+                }
+            else {
+                return new ColumnMetaImpl(
+                    "unknown-column"
+                    );
+                }
+            }
+
+        /**
+         * Evaluate the column metadata for an Operation.
+         * This is proof of concept only, it just picks the largest size param.
+         *
+         */
+        public static AdqlQuery.SelectField eval(final Operation oper)
+            {
+            log.debug("eval(Operation)");
+            log.debug("  name   [{}]", oper.getName());
+            log.debug("  number [{}]", oper.isNumeric());
+            log.debug("  string [{}]", oper.isString());
+    
+            AdqlColumn.Metadata left = eval(
+                oper.getLeftOperand()
+                ).info(); 
+    
+            AdqlColumn.Metadata right = eval(
+                oper.getRightOperand()
+                ).info(); 
+    
+            if (left == null)
+                {
+                return new ColumnMetaImpl(
+                    oper.getName(),
+                    right
+                    );
+                }
+            else if (right == null)
+                {
+                return new ColumnMetaImpl(
                     oper.getName(),
                     left
                     );
                 }
             else {
-                return new EvalResult(
-                    oper.getName(),
-                    right
-                    );
-                }
-            }
-        }
-
-    /**
-     * Simple eval for a function, picks the largest param.
-     * This is proof of concept only.
-     * Needs a lot more work to get it right.
-     *
-     */
-    protected EvalResult eval(ADQLFunction funct)
-        {
-        log.debug("eval(ADQLFunction)");
-        log.debug("  name   [{}]", funct.getName());
-        log.debug("  number [{}]", funct.isNumeric());
-        log.debug("  string [{}]", funct.isString());
-
-        BaseColumn.Info info = null ;
-        
-        for (ADQLOperand param : funct.getParameters())
-            {
-            BaseColumn.Info temp = eval(
-                param
-                ).info(); 
-            if (info == null)
-                {
-                info = temp;
-                }
-            else {
-                if (temp.adql().size() > info.adql().size())
+                if (size(left) > size(right))
                     {
-                    info = temp ;
+                    return new ColumnMetaImpl(
+                        oper.getName(),
+                        left
+                        );
+                    }
+                else {
+                    return new ColumnMetaImpl(
+                        oper.getName(),
+                        right
+                        );
                     }
                 }
             }
-        return new EvalResult(
-            funct.getName(),
-            info
-            );
-        }
+
+        /**
+         * Evaluate the column metadata for an ADQLFunction.
+         * This is proof of concept only, it just picks the largest size param.
+         *
+         */
+        public static AdqlQuery.SelectField eval(final ADQLFunction funct)
+            {
+            log.debug("eval(ADQLFunction)");
+            log.debug("  name   [{}]", funct.getName());
+            log.debug("  number [{}]", funct.isNumeric());
+            log.debug("  string [{}]", funct.isString());
     
+            AdqlColumn.Metadata info = null ;
+            
+            for (ADQLOperand param : funct.getParameters())
+                {
+                AdqlColumn.Metadata temp = eval(
+                    param
+                    ).info(); 
+                if (info == null)
+                    {
+                    info = temp;
+                    }
+                else {
+                    if (temp.adql().size() > info.adql().size())
+                        {
+                        info = temp ;
+                        }
+                    }
+                }
+            return new ColumnMetaImpl(
+                funct.getName(),
+                info
+                );
+            }
+
+        }
+
     /**
      * Process a set of ADQL objects.
      *
@@ -476,12 +558,15 @@ implements AdqlParser
                     {
                     log.debug("-- Select item ----");
                     log.debug(" alias  [{}]", item.getAlias());
-                    EvalResult eval = eval(
+                    AdqlQuery.SelectField meta = ColumnMetaImpl.eval(
                         item
                         );
-                    log.debug(" name [{}]", eval.name());
-                    log.debug(" type [{}]", type(eval.info()));
-                    log.debug(" size [{}]", size(eval.info()));
+                    log.debug(" name [{}]", meta.name());
+                    log.debug(" type [{}]", meta.type());
+                    log.debug(" size [{}]", meta.length());
+                    subject.add(
+                        meta
+                        );
                     }
                 }
             

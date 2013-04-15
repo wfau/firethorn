@@ -153,6 +153,7 @@ public class JdbcResourceEntity
             }
 
 		@Override
+        @CreateEntityMethod
 		public JdbcResource create(final String ogsaid, final String name, final String url, final String user, final String pass) {
             return super.insert(
                 new JdbcResourceEntity(
@@ -430,7 +431,7 @@ public class JdbcResourceEntity
                     {
                     String cname = tables.getString(JdbcMetadata.JDBC_META_TABLE_CAT);
                     String sname = tables.getString(JdbcMetadata.JDBC_META_TABLE_SCHEM);
-                    //log.debug("Found schema [{}.{}]", new Object[]{cname, sname});
+                    log.debug("Found schema [{}][{}]", new Object[]{cname, sname});
                     //
                     // In MySQL the schema name is always null, use the catalog name instead.
                     if (product == JdbcProductType.MYSQL)
@@ -438,6 +439,15 @@ public class JdbcResourceEntity
                         sname = cname ;
                         cname = null ;
                         }
+                    //
+                    // In HSQLDB the schema and catalogs overlap, use the catalog name as the schema.
+                    if (product == JdbcProductType.HSQLDB)
+                        {
+                        //log.debug("JdbcProductType.HSQLDB, swapping names");
+                        //sname = cname ;
+                        //cname = null ;
+                        }
+
                     //
                     // Skip if the schema is on our ignore list.
                     if (product.ignores().contains(sname))
@@ -447,11 +457,12 @@ public class JdbcResourceEntity
                         }
                     //
                     // Check if we have already done this one.
-                    if (((cname == null) ? cprev == null : cname.equals(cprev))
+                    if (
+                        ((cname == null) ? cprev == null : cname.equals(cprev))
                         &&
                         ((sname == null) ? sprev == null : sname.equals(sprev))
                         ){
-                        //log.debug("Already done [{}][{}], skipping", cname, sname);
+                        log.debug("Already done [{}][{}], skipping", cname, sname);
                         continue;
                         }
                     else {
@@ -459,7 +470,7 @@ public class JdbcResourceEntity
                         sprev = sname;
                         }
 
-                    log.debug("Found schema [{}.{}]", new Object[]{cname, sname});
+                    log.debug("Processing schema [{}][{}]", new Object[]{cname, sname});
 
                     //
                     // Check for an existing schema.
@@ -467,6 +478,7 @@ public class JdbcResourceEntity
                         cname,
                         sname
                         );
+                    log.debug("Found schema [{}]", schema);
                     //
                     // If none found, create a new one.
                     if (schema == null)

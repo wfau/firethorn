@@ -58,11 +58,31 @@
     <dependencies>
 
         <!--+
+            | FireThorn Spring dependencies.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-spring</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
             | FireThorn logging dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-logging</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
+            | FireThorn database dependencies.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-database</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>
@@ -79,23 +99,14 @@
         </dependency>
 
         <!--+
-            | FireThorn Spring dependencies.
+            | FireThorn testdata.
+            <scope>test</scope>
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-spring</artifactId>
+            <artifactId>firethorn-testdata</artifactId>
             <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-
-        <!--+
-            | FireThorn database dependencies.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-database</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
+            <type>jar</type>
         </dependency>
 
         <!--+

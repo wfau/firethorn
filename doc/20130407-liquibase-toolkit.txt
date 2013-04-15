@@ -74,3 +74,165 @@ Ignoring user defined functions - the rest we know at query time.
 
 
 
+--------------------------------------------
+
+
+
+
+
+                    AdqlQuery
+                    
+                        AdqlTable  table();  --> not null
+                        AdqlSchema schema(); --> not null
+
+                        QueryTable base() <-- this is where to put our results
+                                              if null, create a new one
+
+
+                    BaseTable
+
+                        AdqlQuery query() --> create(AdqlQuery query, ....)
+                        columns().create(cols)
+                        columns().update(cols)
+
+                    AdqlTable
+
+                        AdqlQuery query() = base().query()
+
+                        BaseTable base()
+                        BaseTable root()
+
+
+--------------------------------------------
+
+            JdbcTable jtable = JdbcSchema.tables.create(
+                AdqlQuery query,
+                String name
+                )
+
+            JdbcTable jtable = JdbcTable.Factory.create(
+                JdbcSchema parent,
+                AdqlQuery query,
+                String name
+                )
+
+            AdqlTable atable = AdqlSchema.tables.create(
+                AdqlQuery query
+                )
+
+            AdqlTable atable = AdqlTable.Factory.create(
+                AdqlQuery 
+                )
+
+            AdqlQuery.results().adql()
+            AdqlQuery.results().base()
+            AdqlQuery.results().jdbc()
+            
+            //
+            // Create an empty table.
+            jtable.create();
+            //
+            // Create our columns.
+            jtable.columns().create(
+                Iter<ColMtea> query.cols()
+                );
+
+            //
+            // Update our columns
+            jtable.columns().update(
+                Iter<ColMtea> cols
+                );
+            
+            AdqlQuery query = schema.create(
+                name,
+                alias
+                )
+
+            AdqlQuery(AdqlSchema schema, String name)
+                {
+                this.name   = name;
+                this.alias  = alias;
+                this.schema = schema;
+                }
+
+            void table(JdbcTable jtable)
+                {
+                this.jtable = jtable;
+                this.jtable.columns().create(
+                    this.cols()
+                    );
+                this.atable = schema.tables().create(
+                    this.jtable,
+                    this.alias
+                    );
+                } 
+
+            AdqlQuery {
+                String name()
+                Table table()
+                    {
+                    JdbcTable jdbc()
+                    void jdbc(JdbcTable table)
+                    AdqlTable adql()
+                    }
+                AdqlSchema   schema()
+                AdqlResource resource()
+                }
+
+--------------------------------------------
+
+    Creating a Query creates the corresponding Jdbc and Adql tables.
+    Execute the OGSA-DAI action - no need to create the table.
+    Probably (later) re-instate the action to verify/modify the TupleMeta.
+    For now, just insert the data direct.    
+
+    User functions ?
+    Would need to guess (VARCHAR), and then update the type based on the actual result.
+    TAP 'header' method - don't get the data, just the VOTable header.
+
+--------------------------------------------
+
+    BUG
+    
+    source "${FIRETHORN_TEST?}/query-adql.sh"
+
+    java.lang.NullPointerException
+	    uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlResourceQueryController.jsonCreate(AdqlResourceQueryController.java:189)
+
+--------------------------------------------
+
+    TODO
+    Remove the CreateTableAction
+    Update the Controllers
+    Fix the size problems
+        size   (byte)
+        length (unit)
+        total  (unit x byte)
+
+    AdqlColumnBean has no metadata
+
+    Shared user data ...
+    
+    REST testing
+    Table metadata .. count, nulls etc ..
+
+--------------------------------------------
+
+    TODO
+    Ivoa Resource, Schema, Table, Column ...
+    
+--------------------------------------------
+
+    TODO
+    OGSA-DAI resources
+
+--------------------------------------------
+
+    TODO
+    User identity
+
+--------------------------------------------
+
+
+
+

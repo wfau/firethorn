@@ -58,31 +58,21 @@
     <dependencies>
 
         <!--+
-            | FireThorn logging dependencies.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-logging</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-
-        <!--+
-            | FireThorn testing dependencies.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-testing</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-
-        <!--+
             | FireThorn Spring dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-spring</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
+            | FireThorn logging dependencies.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-logging</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>
@@ -95,6 +85,28 @@
             <artifactId>firethorn-database</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
+        </dependency>
+
+        <!--+
+            | FireThorn testing dependencies.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-testing</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
+            | FireThorn testdata.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-testdata</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+            <type>jar</type>
         </dependency>
 
         <!--+

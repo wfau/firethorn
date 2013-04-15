@@ -23,6 +23,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Index;
@@ -31,6 +32,8 @@ import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
@@ -79,6 +82,12 @@ public class AdqlTableEntity
     protected static final String DB_TABLE_NAME = "AdqlTableEntity";
 
     /**
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String DB_ADQL_QUERY_COL = "adqlquery" ;
+    
+    /**
      * Alias factory implementation.
      *
      */
@@ -116,7 +125,7 @@ public class AdqlTableEntity
             }
 
         @Override
-        @CascadeEntityMethod
+        @CreateEntityMethod
         public AdqlTable insert(final AdqlTable entity)
             {
             super.insert(
@@ -156,6 +165,17 @@ public class AdqlTableEntity
                 );
             }
 
+        @Override
+        @CreateEntityMethod
+        public AdqlTable create(final AdqlQuery query)
+            {
+            return this.insert(
+                new AdqlTableEntity(
+                    query
+                    )
+                );
+            }
+        
         @Override
         @SelectEntityMethod
         public Iterable<AdqlTable> select(final AdqlSchema parent)
@@ -246,15 +266,38 @@ public class AdqlTableEntity
 
     protected AdqlTableEntity(final AdqlSchema schema, final BaseTable<?, ?> base)
         {
-        super(schema, base.name());
-        this.base   = base;
-        this.schema = schema;
+        this(
+            null,
+            schema,
+            base,
+            null
+            );
+        }
+    protected AdqlTableEntity(final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
+        {
+        this(
+            null,
+            schema,
+            base,
+            name
+            );
         }
 
-    protected AdqlTableEntity(final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
+    protected AdqlTableEntity(final AdqlQuery query)
+        {
+        this(
+            query,
+            query.schema(),
+            query.results().base(),
+            query.name()
+            );
+        }
+
+    protected AdqlTableEntity(final AdqlQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
         super(schema, ((name != null) ? name : base.name()));
         this.base   = base;
+        this.query  = query;
         this.schema = schema;
         }
 
@@ -380,5 +423,28 @@ public class AdqlTableEntity
         return factories().adql().tables().aliases().alias(
             this
             );
+        }
+
+    // TODO
+    // Refactor this as mapped identity ?
+    // http://www.codereye.com/2009/04/hibernate-bi-directional-one-to-one.html
+    @Index(
+        name=DB_TABLE_NAME + "IndexByAdqlQuery"
+        )
+    @OneToOne(
+        fetch = FetchType.LAZY,
+        targetEntity = AdqlQueryEntity.class
+        )
+    @JoinColumn(
+        name = DB_ADQL_QUERY_COL,
+        unique = true,
+        nullable = true,
+        updatable = false
+        )
+    private AdqlQuery query;
+    @Override
+    public AdqlQuery query()
+        {
+        return this.query;
         }
     }

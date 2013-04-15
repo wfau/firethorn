@@ -17,9 +17,11 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.TableType;
 
 /**
  *
@@ -75,6 +77,12 @@ extends BaseTable<AdqlTable, AdqlColumn>
         public AdqlTable create(final AdqlSchema parent, final BaseTable<?, ?> base, final String name);
 
         /**
+         * Create a new table.
+         *
+         */
+        public AdqlTable create(final AdqlQuery query);
+        
+        /**
          * The table column factory.
          *
          */
@@ -110,12 +118,32 @@ extends BaseTable<AdqlTable, AdqlColumn>
     @Override
     public Columns columns();
 
-    /**
-     * The table this table is based on.
-     *
-     */
     @Override
     public BaseTable<?,?> base();
 
+    /**
+     * ADQL table metadata.
+     *
+     */
+    public interface Info
+    extends BaseTable.Info
+        {
+        /**
+         * The ADQL table metadata.
+         *
+         */
+        public interface AdqlMeta
+            {
+            }
+
+        /**
+         * The ADQL table metadata.
+         *
+         */
+        public AdqlMeta adql();
+        }
+
+    @Override
+    public AdqlTable.Info info();
 
     }

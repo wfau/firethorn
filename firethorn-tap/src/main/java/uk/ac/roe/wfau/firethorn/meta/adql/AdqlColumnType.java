@@ -25,6 +25,7 @@ import java.sql.Types;
  *
  *
  */
+@Deprecated
 public enum AdqlColumnType
     {
     BOOLEAN("boolean"),

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:cxt="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        "
+    >
+
+    <!-- ======== Metadata database ======== -->
+
+    <!--+
+        | Postgresql metadata.
+        +-->
+    <bean id="PgsqlMetaData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url"      value="${firethorn.pgsql.meta.url}"/>
+        <property name="username" value="${firethorn.pgsql.meta.user}"/>
+        <property name="password" value="${firethorn.pgsql.meta.pass}"/>
+    </bean>
+
+    <!--+
+        | HSQLDB metadata.
+        +-->
+    <bean id="HsqldbMetaData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+        <property name="url"      value="${firethorn.hsqldb.meta.url}"/>
+        <property name="username" value="${firethorn.hsqldb.meta.user}"/>
+        <property name="password" value="${firethorn.hsqldb.meta.pass}"/>
+    </bean>
+
+    <!-- ======== UserData database ======== -->
+
+    <!--+
+        | Postgresql userdata.
+        +-->
+    <bean id="PgsqlUserData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url"      value="${firethorn.pgsql.user.url}"/>
+        <property name="username" value="${firethorn.pgsql.user.user}"/>
+        <property name="password" value="${firethorn.pgsql.user.pass}"/>
+    </bean>
+
+    <!--+
+        | HSQLDB userdata.
+        +-->
+    <bean id="HsqldbUserData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+        <property name="url"      value="${firethorn.hsqldb.user.url}"/>
+        <property name="username" value="${firethorn.hsqldb.user.user}"/>
+        <property name="password" value="${firethorn.hsqldb.user.pass}"/>
+    </bean>
+
+    <!-- ======== TestData database ======== -->
+
+    <!--+
+        | Postgresql testdata.
+        +-->
+    <bean id="PgsqlTestData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url"      value="${firethorn.pgsql.test.url}"/>
+        <property name="username" value="${firethorn.pgsql.test.user}"/>
+        <property name="password" value="${firethorn.pgsql.test.pass}"/>
+    </bean>
+
+    <!--+
+        | MySQL testdata.
+        +-->
+    <bean id="MysqlTestData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url"      value="${firethorn.mysql.test.url}"/>
+        <property name="username" value="${firethorn.mysql.test.user}"/>
+        <property name="password" value="${firethorn.mysql.test.pass}"/>
+    </bean>
+
+    <!--+
+        | HSQLDB testdata.
+        +-->
+    <bean id="HsqldbTestData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+        <property name="url"      value="${firethorn.hsqldb.test.url}"/>
+        <property name="username" value="${firethorn.hsqldb.test.user}"/>
+        <property name="password" value="${firethorn.hsqldb.test.pass}"/>
+    </bean>
+
+
+    <!-- ======== temp data ======== -->
+
+    <!--+
+        | HSQLDB tempdata.
+        +-->
+    <bean id="HsqldbTempData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+        <property name="url"      value="${firethorn.hsqldb.temp.url}"/>
+        <property name="username" value="${firethorn.hsqldb.temp.user}"/>
+        <property name="password" value="${firethorn.hsqldb.temp.pass}"/>
+    </bean>
+
+    <!-- ======== Live ROE database ======== -->
+
+    <!--+
+        | SSH tunnel to ROE database server.
+        | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
+        +-->
+    <bean id="RoeTWOMASS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
+        <property name="url"      value="${firethorn.wfau.base}/TWOMASS"/>
+        <property name="username" value="${firethorn.wfau.user}"/>
+        <property name="password" value="${firethorn.wfau.pass}"/>
+    </bean>
+
+    <!--+
+        | SSH tunnel to ROE database server.
+        | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
+        +-->
+    <bean id="RoeTWOXMM" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
+        <property name="url"      value="${firethorn.wfau.base}/TWOXMM"/>
+        <property name="username" value="${firethorn.wfau.user}"/>
+        <property name="password" value="${firethorn.wfau.pass}"/>
+    </bean>
+
+    <!--+
+        | SSH tunnel to ROE database server.
+        | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
+        +-->
+    <bean id="RoeUKIDSS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
+        <property name="url"      value="${firethorn.wfau.base}/UKIDSSDR5PLUS"/>
+        <property name="username" value="${firethorn.wfau.user}"/>
+        <property name="password" value="${firethorn.wfau.pass}"/>
+    </bean>
+
+
+    <!--+
+        | SSH tunnel to ROE database server.
+        | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
+        +-->
+    <bean id="RoeBestDR7" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
+        <property name="url"      value="${firethorn.wfau.base}/BestDR7"/>
+        <property name="username" value="${firethorn.wfau.user}"/>
+        <property name="password" value="${firethorn.wfau.pass}"/>
+    </bean>
+
+    <!--+
+        | SSH tunnel to ROE database server.
+        | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
+        +-->
+    <bean id="RoeWFAU" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
+        <property name="url"      value="${firethorn.wfau.base}/WFAU"/>
+        <property name="username" value="${firethorn.wfau.user}"/>
+        <property name="password" value="${firethorn.wfau.pass}"/>
+    </bean>
+
+</beans>
+

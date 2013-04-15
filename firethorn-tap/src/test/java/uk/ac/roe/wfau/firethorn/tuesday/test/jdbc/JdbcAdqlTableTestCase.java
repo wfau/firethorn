@@ -43,6 +43,7 @@ public class JdbcAdqlTableTestCase
 	public JdbcResource resource()
 		{
         return factories().jdbc().resources().create(
+            "test",
             "test-resource",
             "spring:RoeTWOMASS"
             );

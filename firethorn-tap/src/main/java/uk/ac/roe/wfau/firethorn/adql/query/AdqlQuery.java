@@ -21,8 +21,13 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 /**
  *
@@ -72,6 +77,12 @@ extends Entity, Job
          *
          */
         public Job.Executor executor();
+
+        /**
+         * Our table builder.
+         *
+         */
+        public Builder builder();
 
         }
 
@@ -128,25 +139,46 @@ extends Entity, Job
          * Create a new query.
          *
          */
-        public AdqlQuery create(final AdqlResource resource, final String input);
+        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema store, final String input);
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final AdqlResource resource, final String name, final String input);
+        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema store, final String input, final String name);
 
         /**
          * Select all the queries from a resource.
          *
          */
-        public Iterable<AdqlQuery> select(final AdqlResource resource);
+        public Iterable<AdqlQuery> select(final AdqlSchema schema);
 
         /**
          * Text search for queries (name starts with).
          *
          */
-        public Iterable<AdqlQuery> search(final AdqlResource resource, final String text);
+        public Iterable<AdqlQuery> search(final AdqlSchema schema, final String text);
+
+        }
+
+    /**
+     * Table builder interface.
+     *
+     */
+    public static interface Builder
+        {
+        /**
+         * Build a physical table.
+         *
+         */
+        public JdbcTable create(final JdbcSchema store, final AdqlQuery query);
+
+        //
+        // Test config methods ..
+        //public JdbcSchema schema();
+        //public void schema(JdbcSchema schema);
+        //public JdbcResource resource();
+        //public void resource(JdbcResource resource);
 
         }
 
@@ -172,7 +204,7 @@ extends Entity, Job
          * The validation status.
          *
          */
-        public enum Status
+        public enum State
             {
             /**
              * The query has been parsed and is valid ADQL.
@@ -203,7 +235,7 @@ extends Entity, Job
          * The validation status.
          *
          */
-        public Status status();
+        public State state();
 
         /**
          * The original parser error message.
@@ -252,10 +284,10 @@ extends Entity, Job
     public Mode mode();
 
     /**
-     * The ADQL resource this query applies to.
+     * The ADQL schema this query applies to.
      *
      */
-    public AdqlResource resource();
+    public AdqlSchema schema();
 
     /**
      * The processed ADQL query.
@@ -270,27 +302,104 @@ extends Entity, Job
     public String osql();
 
     /**
-     * A list of AdqlColumns used by the query.
+     * A list of the AdqlColumns used by the query.
      *
      */
     public Iterable<AdqlColumn> columns();
 
     /**
-     * A list of AdqlTables used by the query.
+     * A list of the AdqlTables used by the query.
+     * The list is only generated in response to a POST request that updates the ADQL query.
+     * The list is generated when an input query is parsed and is not saved in the database.
+     * On subsequent GET requests the list will be empty. 
      *
      */
     public Iterable<AdqlTable> tables();
 
     /**
-     * A list of BaseResources used by the query.
+     * A list of the resources used by the query.
      *
      */
     public Iterable<BaseResource<?>> resources();
 
     /**
-     * The primary BaseResource used by the query.
-     *
+     * The primary resource used by the query.
+     * @todo rename to resource()
+     * 
      */
     public BaseResource<?> primary();
+
+    /**
+     * Metadata for a SELECT field.
+     *
+     */
+    public interface SelectField
+        {
+    
+        /**
+         * The field name or alias.
+         *
+         */
+        public abstract String name();
+    
+        /**
+         * The column metadata.
+         *
+         */
+        public abstract AdqlColumn.Metadata info();
+    
+        /**
+         * The field size.
+         *
+         */
+        public abstract int length();
+    
+        /**
+         * The field type.
+         *
+         */
+        public abstract AdqlColumn.Type type();
+    
+        }
+
+    /**
+     * A list of the SELECT fields.
+     * The list is only generated in response to a POST request that updates the ADQL query.
+     * The list is generated when an input query is parsed and is not saved in the database.
+     * On subsequent GET requests the list will be empty. 
+     *
+     */
+    public Iterable<SelectField> fields();
+
+    /**
+     * Our result tables.
+     * 
+     */
+    public interface Results
+        {
+        /**
+         * The physical JDBC database table.
+         * 
+         */
+        public JdbcTable jdbc();
+
+        /**
+         * The physical base table.
+         * 
+         */
+        public BaseTable<?,?> base();
+
+        /**
+         * The abstract ADQL table.
+         * 
+         */
+        public AdqlTable adql();
+        }
+
+    /**
+     * Our result tables.
+     * 
+     */
+    public Results results();
 
     }
