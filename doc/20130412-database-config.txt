@@ -5,6 +5,10 @@
 #
 
     #
+    # 
+    mkdir /etc/firethorn
+
+    #
     # Settings for the postgres admin account.
     cat > /etc/firethorn/postgres.conf << EOF
     type=pgsql
@@ -46,9 +50,12 @@
 
     #
     # Set the postgres admin password.
-    dbpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/postgres.conf)"
-    dbuser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/postgres.conf)"
-    echo "ALTER ROLE ${dbuser?} WITH PASSWORD '${dbpass?}'" | su - postgres -c 'psql postgres'
+    pgadminpass="$(sed -n 's/^pass=\(.*\)/\1/p' /etc/firethorn/postgres.conf)"
+    pgadminuser="$(sed -n 's/^user=\(.*\)/\1/p' /etc/firethorn/postgres.conf)"
+    echo "ALTER ROLE ${pgadminuser?} WITH PASSWORD '${pgadminpass?}'" | su - postgres -c 'psql postgres'
+
+    echo "localhost:*:postgres:${pgadminuser?}:${pgadminpass?}" > ${HOME?}/.pgpass
+    chmod u=rw,o=,g= ${HOME?}/.pgpass
 
     #
     # Check we can login as admin.
@@ -80,7 +87,6 @@
 
     done
 
-    
     #
     # Create our userdata accounts and databases.
     for conf in $(ls /etc/firethorn/*.conf)
@@ -132,9 +138,9 @@
         then
 
             sed -i '
-                s|^'${prop?}'\.url.*|'${prop?}'.url='${databasejdbc?}'|
-                s|^'${prop?}'\.user.*|'${prop?}'.user='${databaseuser?}'|
-                s|^'${prop?}'\.pass.*|'${prop?}'.pass='${databasepass?}'|
+                s|^'${databaseprop?}'\.url.*|'${databaseprop?}'.url='${databasejdbc?}'|
+                s|^'${databaseprop?}'\.user.*|'${databaseprop?}'.user='${databaseuser?}'|
+                s|^'${databaseprop?}'\.pass.*|'${databaseprop?}'.pass='${databasepass?}'|
                 '  "${HOME?}/firethorn.properties"
 
             grep "${databaseprop?}" "${HOME?}/firethorn.properties"
@@ -145,15 +151,50 @@
 # ----------------- -----------------
 #
 
+cat > "${FIRETHORN_CONF?}/livetwomass.conf" << 'EOF'
+type=mssql
+host=localhost
+name=TWOMASS
+user=xxxx
+pass=xxxx
+EOF
+
+cat > "${FIRETHORN_CONF?}/livetwoxmm.conf" << 'EOF'
+type=mssql
+host=localhost
+name=TWOXMM
+user=xxxx
+pass=xxxx
+EOF
+
+cat > "${FIRETHORN_CONF?}/liveukidss.conf" << 'EOF'
+type=mssql
+host=localhost
+name=UKIDSSDR5PLUS
+user=xxxx
+pass=xxxx
+EOF
+
+cat > "${FIRETHORN_CONF?}/liveuwfau.conf" << 'EOF'
+type=mssql
+host=localhost
+name=WFAU
+user=xxxx
+pass=xxxx
+EOF
+
+# ----------------- -----------------
+#
+
     #
     # Swap to using the postgres databases.
     vi "${HOME?}/firethorn.properties"
 
         #
         # FireThorn service config.
-        firethorn.metadata.src=PgsqlMetaData
-        firethorn.userdata.src=PgsqlUserData
-        firethorn.testdata.src=PgsqlTestData
+        firethorn.metadata.src=spring:PgsqlMetaData
+        firethorn.userdata.src=spring:PgsqlUserData
+        firethorn.testdata.src=spring:PgsqlTestData
 
 # ----------------- -----------------
 

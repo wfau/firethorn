@@ -38,11 +38,6 @@
 
         #
         # Configure our JDBC resources.
-       #jdbcconfig twomass  ${FIRETHORN_CONF?}/livetwomass.conf
-       #jdbcconfig ukidss   ${FIRETHORN_CONF?}/liveukidss.conf
-       #jdbcconfig wfau     ${FIRETHORN_CONF?}/wfau-ogsadai.conf
-       #jdbcconfig user     ${FIRETHORN_CONF?}/user-hsqldb.conf
-
         jdbcconfig twomass  "${FIRETHORN_CONF?}/livetwomass.conf"
         jdbcconfig ukidss   "${FIRETHORN_CONF?}/liveukidss.conf"
         jdbcconfig wfau     "${FIRETHORN_CONF?}/liveuwfau.conf"
@@ -58,7 +53,16 @@
         
     popd
 
-# TTY #4 ------------------------------------------------------------
+# TTY #5 ------------------------------------------------------------
+# OGSA-DAI login fix.
+#
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/client"
+        mvn -D skipTests=false -D test=SingleQueryTestCase test 
+    popd
+
+# TTY #5 ------------------------------------------------------------
 # Run the REST test scripts.
 #
 
@@ -72,15 +76,11 @@
         source "${FIRETHORN_TEST?}/init-jdbc.sh"
         source "${FIRETHORN_TEST?}/init-adql.sh"
         source "${FIRETHORN_TEST?}/init-wfau.sh"
-
-#
-# Need a single resource query here ....
-pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/client"
-    mvn -D skipTests=false -D test=SingleQueryTestCase test 
-popd
+        source "${FIRETHORN_TEST?}/init-user.sh"
+        source "${FIRETHORN_TEST?}/init-query.sh"
 
         source "${FIRETHORN_TEST?}/query-adql.sh"
-        #source "${FIRETHORN_TEST?}/query-wfau.sh"
+        source "${FIRETHORN_TEST?}/query-wfau.sh"
 
 #
 # User results are stored in local HSQLDB database
@@ -88,16 +88,5 @@ cat "${FIRETHORN_CODE?}/firethorn-ogsadai/webapp/target/database/userdata.log
 
 
     popd
-
-
---------------------------------------------
-
-    BUG
-    
-    
-
-
-
-
 
 

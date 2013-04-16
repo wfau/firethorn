@@ -64,6 +64,13 @@ ident()
     }
 
 #
+# Create an 'name' function to get the name from a json response.
+name()
+    {
+    ./pp | sed -n 's|^ *"name" : "\([^"]*\)".*|\1|p'
+    }
+
+#
 # Create a 'status' function to get the job status from a json response.
 status()
     {
@@ -72,4 +79,27 @@ status()
         s|^ *"status" : "\([^"]*\)".*|\1|p
         '
     }
+
+#
+# Run a query and poll the result.
+runquery()
+    {
+    local query=${1?}
+    local status=$(
+        POST "${query?}" \
+            --data-urlencode "adql.query.update.status=RUNNING" \
+            | status
+            )
+
+    while [ "${status?}" == 'PENDING' -o "${status?}" == 'RUNNING' ]
+    do
+        sleep 1
+        status=$(
+            GET "${query?}" \
+                | status
+                )
+        echo "${status?}"
+    done
+    }
+
 
