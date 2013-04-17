@@ -256,6 +256,10 @@ EOF
     # Compare actual TupleMeta with guess generated from query.
     # Fail query or modify table .... 
 
+# -------------------------------------------------------------
+# Testing with HSQLDB databases ....
+#
+
 
 
 

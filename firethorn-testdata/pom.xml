@@ -85,6 +85,15 @@
             <type>pom</type>
         </dependency>
 
+        <!--+
+            | This should be already inclided by the firethorn-database pom.
+            +-->
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.2.9</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -98,16 +107,61 @@
                 | http://javaclarity.blogspot.co.uk/p/run-hsqldb-using-maven.html
                 | 
                 +-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>org.hsqldb.server.Server</mainClass>
+                    <arguments>
+                        <argument>--database.0</argument>
+                        <argument>file:target/database/metadata</argument>
 
+                        <argument>--dbname.0</argument>
+                        <argument>metadata</argument>
+
+                        <argument>--database.1</argument>
+                        <argument>file:target/database/userdata</argument>
+
+                        <argument>--dbname.1</argument>
+                        <argument>userdata</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+
+            <!--+
+                | Initialise our test data ....
+                | 
+                +-->
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>2.0.5</version>
+                <configuration>
+                    <changeLogFile>src/test/conf/create-userdata.xml</changeLogFile>
+                    <driver>org.hsqldb.jdbc.JDBCDriver</driver>
+                    <url>jdbc:hsqldb:file:target/database/userdata</url>
+                    <username>sa</username>
+                    <password></password>
+                    <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+                </configuration>
+            </plugin>
         </plugins>
 
         <resources>
 
             <!--+
-                | Test data configuration files.
+                | Spring database configuration.
                 +-->
     		<resource>
-    			<directory>${basedir}/src/test/conf</directory>
+    			<directory>${basedir}/src/main/conf</directory>
                 <includes>
                     <include>testdata-config.xml</include>
                 </includes>
@@ -122,7 +176,6 @@
 
     <reporting>
         <plugins>
-
         </plugins>
     </reporting>
 
