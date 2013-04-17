@@ -38,11 +38,11 @@
 
         #
         # Configure our JDBC resources.
-        jdbcconfig twomass  "${FIRETHORN_CONF?}/livetwomass.conf"
-        jdbcconfig ukidss   "${FIRETHORN_CONF?}/liveukidss.conf"
-        jdbcconfig atlas    "${FIRETHORN_CONF?}/liveatlas.conf"
-        jdbcconfig wfau     "${FIRETHORN_CONF?}/livewfau.conf"
-        jdbcconfig user     "${FIRETHORN_CONF?}/userdata.conf"
+        jdbcconfig twomass firethorn.twomass "${HOME?}/firethorn.properties"
+        jdbcconfig ukidss  firethorn.ukidss  "${HOME?}/firethorn.properties"
+        jdbcconfig atlas   firethorn.atlas   "${HOME?}/firethorn.properties"
+        jdbcconfig wfau    firethorn.wfau    "${HOME?}/firethorn.properties"
+        jdbcconfig user    firethorn.user    "${HOME?}/firethorn.properties"
 
         #
         # Deploy the webapp in Tomcat.
@@ -70,11 +70,12 @@
 
         source "${FIRETHORN_TEST?}/init-rest.sh"
 
+        source "${FIRETHORN_TEST?}/init-user.sh"
+
         source "${FIRETHORN_TEST?}/init-jdbc.sh"
         source "${FIRETHORN_TEST?}/init-adql.sh"
         source "${FIRETHORN_TEST?}/init-wfau.sh"
         source "${FIRETHORN_TEST?}/init-atlas.sh"
-        source "${FIRETHORN_TEST?}/init-user.sh"
 
         source "${FIRETHORN_TEST?}/query-adql.sh"
         source "${FIRETHORN_TEST?}/query-wfau.sh"

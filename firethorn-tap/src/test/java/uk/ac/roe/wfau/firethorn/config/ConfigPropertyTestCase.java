@@ -26,7 +26,6 @@ import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
-
 /**
  *
  *

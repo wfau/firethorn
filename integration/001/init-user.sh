@@ -20,16 +20,9 @@
 #
 
 #
-# Get the current user data target.
-userdataurl=$(sed -n '
-    s#^firethorn\.userdata\.src=\([^[:space:]]*\)[[:space:]]*#\1#p
-    ' "${HOME?}/firethorn.properties"
-    )
-
-#
 # Create our user data store.
 POST "/jdbc/resource/create" \
-    -d "jdbc.resource.create.url=spring:${userdataurl?}" \
+    -d "jdbc.resource.create.url=spring:FireThornUserData" \
     -d "jdbc.resource.create.name=userdate-$(unique)" \
     -d "jdbc.resource.create.ogsadai=user" \
     | tee jdbc-user-resource.json | ./pp
