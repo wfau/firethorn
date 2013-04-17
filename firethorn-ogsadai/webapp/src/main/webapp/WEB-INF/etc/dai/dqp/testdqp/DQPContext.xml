@@ -51,6 +51,17 @@
     </bean>
 
     <!--+
+        | ATLAS spanning data node.
+        +-->
+    <bean id="atlas" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+        <constructor-arg name="resourceID"     value="atlas"/>
+        <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
+        <property name="operatorSupport"       ref="defaultFeatureSupport"/>
+        <property name="expressionSupport"     ref="defaultFeatureSupport"/>
+        <property name="arithmeticExpressionSupport" ref="defaultFeatureSupport"/>
+    </bean>
+
+    <!--+
         | WFAU spanning data node.
         +-->
     <bean id="wfau" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
@@ -91,6 +102,9 @@
                 </entry>
                 <entry key="ukidss">
                     <ref bean="ukidss"/>
+                </entry>
+                <entry key="atlas">
+                    <ref bean="atlas"/>
                 </entry>
                 <entry key="wfau">
                     <ref bean="wfau"/>

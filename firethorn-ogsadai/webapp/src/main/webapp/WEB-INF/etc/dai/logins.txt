@@ -16,6 +16,12 @@ username={SQL-USER}
 password={SQL-PASS}
 LOGIN-END
 END
+id=atlas
+userID=*
+username={SQL-USER}
+password={SQL-PASS}
+LOGIN-END
+END
 id=wfau
 userID=*
 username={SQL-USER}

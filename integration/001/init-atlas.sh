@@ -20,29 +20,29 @@
 #
 
 #
-# Create our WFAU resource.
-jdbcwfau=$(
+# Create our ATLAS resource.
+jdbcatlas=$(
     POST "/jdbc/resource/create" \
-        -d "jdbc.resource.create.url=spring:RoeWFAU" \
-        -d "jdbc.resource.create.name=wfau-$(unique)" \
-        -d "jdbc.resource.create.ogsadai=wfau" \
+        -d "jdbc.resource.create.url=spring:RoeATLAS" \
+        -d "jdbc.resource.create.name=atlas-$(unique)" \
+        -d "jdbc.resource.create.ogsadai=atlas" \
         -d "jdbc.resource.create.catalog=*" \
         | ident
         )
 
 #
-# Check the WFAU resource.
-GET "${jdbcwfau?}" \
+# Check the ATLAS resource.
+GET "${jdbcatlas?}" \
     | ./pp
 
 #
-# List the WFAU schema.
-GET "${jdbcwfau?}/schemas/select" | ./pp
+# List the ATLAS schema.
+GET "${jdbcatlas?}/schemas/select" | ./pp
 
 #
-# List the WFAU tables.
+# List the ATLAS tables.
 for jdbcschema in $(
-    GET "${jdbcwfau?}/schemas/select"  \
+    GET "${jdbcatlas?}/schemas/select"  \
         | ident
     )
     do
@@ -51,28 +51,28 @@ for jdbcschema in $(
 
 #
 # Create a new ADQL workspace.
-wfauspace=$(
+atlasspace=$(
     POST "/adql/resource/create" \
         --data "adql.resource.create.name=workspace-$(unique)" \
         | ident
         )
-GET "${wfauspace?}" \
+GET "${atlasspace?}" \
     | ./pp
 
 #
 # Create a new ADQL schema.
-wfauschema=$(
-    POST "${wfauspace?}/schemas/create" \
-        --data "adql.resource.schema.create.name=wfau_schema" \
+atlasschema=$(
+    POST "${atlasspace?}/schemas/create" \
+        --data "adql.resource.schema.create.name=atlas_schema" \
         | ident
         )
-GET "${wfauschema?}" \
+GET "${atlasschema?}" \
     | ./pp
 
 #
-# Import the WFAU/TWOMASS 'twomass_psc' table.
+# Import the TWOMASS 'twomass_psc' table.
 jdbcschema=$(
-    POST "${jdbcwfau?}/schemas/select" \
+    POST "${jdbcatlas?}/schemas/select" \
         -d "jdbc.resource.schema.select.name=TWOMASS.dbo" \
         | ident
         )
@@ -81,15 +81,15 @@ jdbctable=$(
         -d "jdbc.schema.table.select.name=twomass_psc" \
         | ident
         )
-POST "${wfauschema?}/tables/import" \
+POST "${atlasschema?}/tables/import" \
     --data "adql.schema.table.import.base=${metabasename?}/${jdbctable?}" \
     | ./pp
 
 
 #
-# Import the WFAU/UKIDSS 'gcsPointSource' table.
+# Import the UKIDSS 'gcsPointSource' table.
 jdbcschema=$(
-    POST "${jdbcwfau?}/schemas/select" \
+    POST "${jdbcatlas?}/schemas/select" \
         -d "jdbc.resource.schema.select.name=UKIDSSDR5PLUS.dbo" \
         | ident
         )
@@ -98,14 +98,14 @@ jdbctable=$(
         -d "jdbc.schema.table.select.name=gcsPointSource" \
         | ident
         )
-POST "${wfauschema?}/tables/import" \
+POST "${atlasschema?}/tables/import" \
     --data "adql.schema.table.import.base=${metabasename?}/${jdbctable?}" \
     | ./pp
 
 #
-# Import the WFAU/UKIDSS 'gcsSourceXtwomass_psc' table.
+# Import the UKIDSS 'gcsSourceXtwomass_psc' table.
 jdbcschema=$(
-    POST "${jdbcwfau?}/schemas/select" \
+    POST "${jdbcatlas?}/schemas/select" \
         -d "jdbc.resource.schema.select.name=UKIDSSDR5PLUS.dbo" \
         | ident
         )
@@ -114,24 +114,42 @@ jdbctable=$(
         -d "jdbc.schema.table.select.name=gcsSourceXtwomass_psc" \
         | ident
         )
-POST "${wfauschema?}/tables/import" \
+POST "${atlasschema?}/tables/import" \
     --data "adql.schema.table.import.base=${metabasename?}/${jdbctable?}" \
     | ./pp
 
 #
-# Check the WFAU tables.
-#GET "/${wfauschema?}/tables/select" | ./pp
+# Import the ATLAS 'atlasSource' table.
+jdbcschema=$(
+    POST "${jdbcatlas?}/schemas/select" \
+        -d "jdbc.resource.schema.select.name=ATLASv20130304.dbo" \
+        | ident
+        )
+jdbctable=$(
+    POST "${jdbcschema?}/tables/select" \
+        -d "jdbc.schema.table.select.name=atlasSource" \
+        | ident
+        )
+POST "${atlasschema?}/tables/import" \
+    --data "adql.schema.table.import.base=${metabasename?}/${jdbctable?}" \
+    | ./pp
 
 #
-# Check the OGSA-DAI metadata for the gcsPointSource table.
-#wfaualias=$(
-#    POST "${wfauschema?}/tables/select" \
-#        -d "adql.schema.table.select.name=gcsPointSource" \
-#        | ./pp \
-#        | sed -n 's/^ *"alias" : "\([^"]*\)"[^"]*/\1/p' \
-#        )                
-#
-#GET "/meta/table/${wfaualias?}" | ./pp
-#GET "/meta/table/${wfaualias?}/columns" | ./pp
-#GET "/meta/table/${wfaualias?}/column/ra" | ./pp
+# Import the ATLAS/TWOMASS 'atlasSourceXtwomass_psc' table.
+jdbcschema=$(
+    POST "${jdbcatlas?}/schemas/select" \
+        -d "jdbc.resource.schema.select.name=ATLASv20130304.dbo" \
+        | ident
+        )
+jdbctable=$(
+    POST "${jdbcschema?}/tables/select" \
+        -d "jdbc.schema.table.select.name=atlasSourceXtwomass_psc" \
+        | ident
+        )
+POST "${atlasschema?}/tables/import" \
+    --data "adql.schema.table.import.base=${metabasename?}/${jdbctable?}" \
+    | ./pp
+
+
+
 

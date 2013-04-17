@@ -29,7 +29,7 @@ userdataurl=$(sed -n '
 #
 # Create our user data store.
 POST "/jdbc/resource/create" \
-    -d "jdbc.resource.create.url=${userdataurl?}" \
+    -d "jdbc.resource.create.url=spring:${userdataurl?}" \
     -d "jdbc.resource.create.name=userdate-$(unique)" \
     -d "jdbc.resource.create.ogsadai=user" \
     | tee jdbc-user-resource.json | ./pp

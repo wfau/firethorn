@@ -75,34 +75,5 @@ for jdbcschema in $(
         GET "${jdbcschema?}/tables/select" | ./pp
     done
 
-#
-# Create our WFAU resource.
-jdbcwfau=$(
-    POST "/jdbc/resource/create" \
-        -d "jdbc.resource.create.url=spring:RoeWFAU" \
-        -d "jdbc.resource.create.name=wfau-$(unique)" \
-        -d "jdbc.resource.create.ogsadai=wfau" \
-        -d "jdbc.resource.create.catalog=*" \
-        | ident
-        )
-
-#
-# Check the WFAU resource.
-GET "${jdbcwfau?}" \
-    | ./pp
-
-#
-# List the WFAU schema.
-GET "${jdbcwfau?}/schemas/select" | ./pp
-
-#
-# List the WFAU tables.
-for jdbcschema in $(
-    GET "${jdbcwfau?}/schemas/select"  \
-        | ident
-    )
-    do
-        GET "${jdbcschema?}/tables/select" | ./pp
-    done
 
 

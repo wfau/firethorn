@@ -40,12 +40,9 @@
         # Configure our JDBC resources.
         jdbcconfig twomass  "${FIRETHORN_CONF?}/livetwomass.conf"
         jdbcconfig ukidss   "${FIRETHORN_CONF?}/liveukidss.conf"
-        jdbcconfig wfau     "${FIRETHORN_CONF?}/liveuwfau.conf"
+        jdbcconfig atlas    "${FIRETHORN_CONF?}/liveatlas.conf"
+        jdbcconfig wfau     "${FIRETHORN_CONF?}/livewfau.conf"
         jdbcconfig user     "${FIRETHORN_CONF?}/userdata.conf"
-
-        #
-        # Delete existing database.
-        rm -rf target/database
 
         #
         # Deploy the webapp in Tomcat.
@@ -76,16 +73,13 @@
         source "${FIRETHORN_TEST?}/init-jdbc.sh"
         source "${FIRETHORN_TEST?}/init-adql.sh"
         source "${FIRETHORN_TEST?}/init-wfau.sh"
+        source "${FIRETHORN_TEST?}/init-atlas.sh"
         source "${FIRETHORN_TEST?}/init-user.sh"
-        source "${FIRETHORN_TEST?}/init-query.sh"
 
         source "${FIRETHORN_TEST?}/query-adql.sh"
         source "${FIRETHORN_TEST?}/query-wfau.sh"
 
-#
-# User results are stored in local HSQLDB database
-cat "${FIRETHORN_CODE?}/firethorn-ogsadai/webapp/target/database/userdata.log
-
+        source "${FIRETHORN_TEST?}/query-atlas.sh"
 
     popd
 

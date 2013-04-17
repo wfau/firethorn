@@ -159,5 +159,16 @@
         <property name="password" value="${firethorn.wfau.pass}"/>
     </bean>
 
+    <!--+
+        | SSH tunnel to ROE database server.
+        | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
+        +-->
+    <bean id="RoeATLAS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
+        <property name="url"      value="${firethorn.atlas.base}/ATLASv20130304"/>
+        <property name="username" value="${firethorn.atlas.user}"/>
+        <property name="password" value="${firethorn.atlas.pass}"/>
+    </bean>
+
 </beans>
 

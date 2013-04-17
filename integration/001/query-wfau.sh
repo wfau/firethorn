@@ -45,25 +45,4 @@ wfauquery=$(cat wfau-query.json | ident)
 runquery "${wfauquery?}"
 
 
-cat > wfau-query-002.adql << EOF
-
-    SELECT
-        count(tmra),
-        max(tmra),
-        min(ukra)
-    FROM
-        wfau_schema."query-20130416-080323889639492" results
-
-EOF
-
-POST "${wfauschema?}/queries/create" \
-    --data-urlencode "adql.schema.query.create.name=query-$(unique)" \
-    --data-urlencode "adql.schema.query.create.store=${metabasename?}/${userschema?}" \
-    --data-urlencode "adql.schema.query.create.query@wfau-query-002.adql" \
-    | tee wfau-query.json | ./pp
-wfauquery=$(cat wfau-query.json | ident)
-
-#
-# Run the ADQL query.
-runquery "${wfauquery?}"
 
