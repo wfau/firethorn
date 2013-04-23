@@ -1,0 +1,1739 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?xml-stylesheet type='text/xsl' href='tables.xsl'?>
+<tab:tables
+   xmlns:vr='http://www.ivoa.net/xml/VOResource/v1.0'
+   xmlns:vs='http://www.ivoa.net/xml/VODataService/v1.0'
+   xmlns:tab='urn:astrogrid:schema:TableMetadata'
+   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+   xsi:schemaLocation='      http://www.ivoa.net/xml/VOResource/v1.0 http://software.astrogrid.org/schema/vo-resource-types/VOResource/v1.0/VOResource.xsd
+      http://www.ivoa.net/xml/VODataService/v1.0 http://software.astrogrid.org/schema/vo-resource-types/VODataService/v1.0/VODataService.xsd
+      urn:astrogrid:schema:TableMetadata Tables.xsd'>
+<table>
+<name>spectra</name>
+<description> The SPECTRA table holds all the observational and redshift related data</description>
+<column>
+<name>SPECID</name>
+<description>unique ID no., used to generate GIF image of spectrum</description>
+<unit></unit>
+<dataType>int</dataType>
+</column>
+<column>
+<name>TARGETID</name>
+<description>ID no. in Target table</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>TARGETNAME</name>
+<description>matching name in &amp;lt;em&amp;gt;target&amp;lt;/em&amp;gt; table, used to name FITS files and generate thumbnail images</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>OBSRA</name>
+<description>observed ra (J2000 degrees)</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>OBSDEC</name>
+<description>observed dec (J2000 degrees)</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>MATCH_DR</name>
+<description>position match error (arcsec)</description>
+<unit>arcsec</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>HTMID</name>
+<description>Hierarchical Triangular Mesh (20-deep), mainly useful internally for indexing on position</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>CX</name>
+<description>Cartesian x of unit vector on celestial sphere</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>CY</name>
+<description>Cartesian y of unit vector on celestial sphere</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>CZ</name>
+<description>Cartesian z of unit vector on celestial sphere</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>Z_ORIGIN</name>
+<description>redshift from C=combined V or R frame</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='1'>char</dataType>
+</column>
+<column>
+<name>Z</name>
+<description>raw measured redshift</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>Z_HELIO</name>
+<description>heliocentric redshift</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>QUALITY</name>
+<description>redshift measurement quality: 4=good 1=bad (6=star)</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>ABEMMA</name>
+<description>redshift type: abs=1,emi=2,man=3</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>NMBEST</name>
+<description>emission lines for emission z</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>NGOOD</name>
+<description>number of good emission lines</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>Z_EMI</name>
+<description>emission redshift</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>Q_Z_EMI</name>
+<description>emission redshift quality</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>KBESTR</name>
+<description>cross-correlation template</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>R_CRCOR</name>
+<description>cross-correlation peak</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>Z_ABS</name>
+<description>cross-correlation redshift</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>Q_Z_ABS</name>
+<description>cross-correlation quality</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>Q_FINAL</name>
+<description>suggested quality for redshift</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>IALTER</name>
+<description>IALTER=1 if automatic z altered</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>Z_COMM</name>
+<description>observer's comment</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>ZEMIBESTERR</name>
+<description>error on the selected emission line redshift, 0.0 if not measured</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>ZABSBESTERR</name>
+<description>error on the selected absorption line redshift, 0.0 if not measured</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>ZFINALERR</name>
+<description>error on final quoted redshift, 0.0 if not measured</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>TITLE_V</name>
+<description>eg 1325m243p2.sds observation title</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>CENRA_V</name>
+<description>RA of field centre</description>
+<unit>rad</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>CENDEC_V</name>
+<description>DEC of field centre</description>
+<unit>rad</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>APPRA_V</name>
+<description>apparent RA of field centre</description>
+<unit>rad</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>APPDEC_V</name>
+<description>apparent DEC of field centre</description>
+<unit>rad</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>ACTMJD_V</name>
+<description>the time the field was actually configured</description>
+<unit>Julian days</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>CONMJD_V</name>
+<description>time which was specified when configure was run</description>
+<unit>Julian days</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>PROGID_V</name>
+<description>programme ID in V frame</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>LABEL_V</name>
+<description>label in V frame</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>OBSID_V</name>
+<description>obsid in V frame</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>RUN_V</name>
+<description>V run number</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>EXP_V</name>
+<description>V reference frame exposure time seconds</description>
+<unit>seconds</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>NCOMB_V</name>
+<description>number of V frames combined</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>GRATID_V</name>
+<description>grating ID in V frame</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>GRATSET_V</name>
+<description>V grating micrometer setting</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>GRATSLOT_V</name>
+<description>V grating slot ID</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='1'>char</dataType>
+</column>
+<column>
+<name>GRATBLAZ_V</name>
+<description>V blaze direction</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>SOURCE_V</name>
+<description>V source plate</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>FOCUS_V</name>
+<description>V frame spectrograph focus value</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>TFOCUS_V</name>
+<description>V frame telescope focus value</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>GAIN_V</name>
+<description>V gain</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>NOISE_v</name>
+<description>V readout noise</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>CCD_V</name>
+<description>V CCD name</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>UTDATE_V</name>
+<description>UT date in V frame</description>
+<unit>MM-DD-YYYY</unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>UTSTRT_V</name>
+<description>UT start time of V reference frame</description>
+<unit>HH-MM-SS</unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>MJDOBS_V</name>
+<description>MJD of observation</description>
+<unit>Julian days</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>NAME_V</name>
+<description>name of object in V frame</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>THPUT_V</name>
+<description>V thruput of fibre</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>RA_V</name>
+<description>observed ra (J2000 degrees)</description>
+<unit>deg</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>DEC_V</name>
+<description>observed dec (J2000 degrees)</description>
+<unit>deg</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>X_V</name>
+<description>x position of object from V frame</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>Y_V</name>
+<description>y position of object from V frame</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>XERR_V</name>
+<description>error on X_V position</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>YERR_V</name>
+<description>error on Y_V position</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>THETA_V</name>
+<description>fibre angle V frame</description>
+<unit>deg</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>FIBRE_V</name>
+<description>fibre number (row on CCD)</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>PIVOT_V</name>
+<description>V pivot number</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>RECMAG_V</name>
+<description>magnitude read from V frame</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>PID_V</name>
+<description>PID number read from V frame</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>TITLE_R</name>
+<description>eg 1325m243p2.sds observation title</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>CENRA_R</name>
+<description>RA of field centre</description>
+<unit>rad</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>CENDEC_R</name>
+<description>DEC of field centre</description>
+<unit>rad</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>APPRA_R</name>
+<description>apparent RA of field centre</description>
+<unit>rad</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>APPDEC_R</name>
+<description>apparent DEC of field centre</description>
+<unit>rad</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>ACTMJD_R</name>
+<description>the time the field was actually configured</description>
+<unit>Julian days</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>CONMJD_R</name>
+<description>time which was specified when configure was run</description>
+<unit>Julian days</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>PROGID_R</name>
+<description>programme ID in R frame</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>LABEL_R</name>
+<description>label in R frame</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>OBSID_R</name>
+<description>obsid in R frame</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>RUN_R</name>
+<description>R run number</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>EXP_R</name>
+<description>R reference frame exposure time seconds</description>
+<unit>seconds</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>NCOMB_R</name>
+<description>number of R frames combined</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>GRATID_R</name>
+<description>grating ID in R frame</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>GRATSET_R</name>
+<description>R grating micrometer setting</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>GRATSLOT_R</name>
+<description>R grating slot ID</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='1'>char</dataType>
+</column>
+<column>
+<name>GRATBLAZ_R</name>
+<description>R blaze direction</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>SOURCE_R</name>
+<description>R source plate</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>FOCUS_R</name>
+<description>R frame spectrograph focus value</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>GAIN_R</name>
+<description>R gain</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>NOISE_R</name>
+<description>R readout noise</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>CCD_R</name>
+<description>R CCD name</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>UTDATE_R</name>
+<description>UT date in R frame</description>
+<unit>MM-DD-YYYY</unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>UTSTRT_R</name>
+<description>UT start time of R reference frame</description>
+<unit>HH-MM-SS</unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>MJDOBS_R</name>
+<description>MJD of observation</description>
+<unit>Julian days</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>NAME_R</name>
+<description>name of object in R frame</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>THPUT_R</name>
+<description>R thruput of fibre</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>RA_R</name>
+<description>observed ra (J2000 degrees)</description>
+<unit>deg</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>DEC_R</name>
+<description>observed dec (J2000 degrees)</description>
+<unit>deg</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>X_R</name>
+<description>x position of object from R frame</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>Y_R</name>
+<description>y position of object from R frame</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>XERR_R</name>
+<description>error on X_R position</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>YERR_R</name>
+<description>error on Y_R position</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>THETA_R</name>
+<description>fibre angle R frame</description>
+<unit>deg</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>FIBRE_R</name>
+<description>fibre number (row on CCD)</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>PIVOT_R</name>
+<description>R pivot number</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>RECMAG_R</name>
+<description>magnitude read from R frame</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>PID_R</name>
+<description>PID number read from R frame</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>gifSpectrumURL</name>
+<description>URL of GIF image of spectrum</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>fitsFileURL</name>
+<description>URL of object FITS file (thumbnail and spectra images)</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>displayURL</name>
+<description>URL to display spectra and thumbnail images</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>fits1DURL</name>
+<description>URL of 1D FITS spectrum</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+</table>
+<table>
+<name>target</name>
+<description> The TARGET table represents the master target list used to configure 6dFGS observations</description>
+<column>
+<name>TARGETID</name>
+<description>unique ID no., used to link tables</description>
+<unit></unit>
+<dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETNAME</name>
+<description>name in config file, used to name FITS file and generate thumbnail images</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>HTMID</name>
+<description>Hierarchical Triangular Mesh (20-deep) number, mainly useful internally for indexing on position</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>RA</name>
+<description>master RA J2000 (decimal degrees)</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>DEC</name>
+<description>master Dec J2000 (decimal degrees)</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>CX</name>
+<description>Cartesian x of unit (ra,dec) vector on celestial sphere</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>CY</name>
+<description>Cartesian y of unit (ra,dec) vector on celestial sphere</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>CZ</name>
+<description>Cartesian z of unit (ra,dec) vector on celestial sphere</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>GL</name>
+<description>galactic longitude</description>
+<unit>deg</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>GB</name>
+<description>galactic latitude</description>
+<unit>deg</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>A_V</name>
+<description>Schlegel V extinction</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>PROGID</name>
+<description>highest priority programme ID</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>BMAG</name>
+<description>Bj galaxy magnitude from recalibrated SuperCOSMOS data (0.00 is null)</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>RMAG</name>
+<description>Rf galaxy magnitude from recalibrated SuperCOSMOS data (0.00 is null)</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>SG</name>
+<description>SSS star/galaxy flag 1=galaxy 2=star 3=unclass 4=noise</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>ZCATVEL</name>
+<description>velocity in ZCAT</description>
+<unit>km/s</unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>ZCATERR</name>
+<description>error on velocity in ZCAT</description>
+<unit>km/s</unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>ZCATREF</name>
+<description>ZCAT reference</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>BMAGSEL</name>
+<description>Bj magnitude from online SuperCOSMOS Sky Surveys (99.99 and 23.0 are nulls), appeared as BMAG in the EDR and DR1</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>RMAGSEL</name>
+<description>Rf magnitude from online SuperCOSMOS Sky Surveys (99.99 and 22.0 are nulls), appeared as BMAG in the EDR and DR1</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+</table>
+<table>
+<name>twomass</name>
+<description> The TWOMASS table contains holds the K, J and H selected samples originating from the 2MASS extended source catalogue</description>
+<column>
+<name>OBJID</name>
+<description>unique ID number</description>
+<unit></unit>
+<dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>CATNAME</name>
+<description>supplied catalogue name</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETNAME</name>
+<description>matching name in target table, used to name FITS files and generate thumbnail images</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETID</name>
+<description>matching ID number in target</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>RA</name>
+<description>RA J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>DEC</name>
+<description>Dec J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>PRIORITY</name>
+<description>survey weight</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_1</name>
+<description>supplied magnitude</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>PROGID</name>
+<description>programme ID</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_2</name>
+<description>supplied magnitude</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>J_M_K20FE</name>
+<description>J 20mag/sq.&amp;quot; isophotal fiducial ell. ap. magnitude</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>H_M_K20FE</name>
+<description>H 20mag/sq.&amp;quot; isophotal fiducial ell. ap. magnitude</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>K_M_K20FE</name>
+<description>K 20mag/sq.&amp;quot; isophotal fiducial ell. ap. magnitude</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>RADIUS</name>
+<description>20mag/sq.&amp;quot; isophotal K fiducial ell. ap. semi-major axis</description>
+<unit>arcsec</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>A_B</name>
+<description>minor/major axis ratio fit to 3-sig. super-coadd isophote</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>MUK20FE</name>
+<description>average surface brightness within the mu_K = 20mag/sq arcsec elliptical isophote (derived from K_M_K20FE, RADIUS and A_B)</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>CORR</name>
+<description>correction, based on MUK20FE, made to the isophotal magnitude K_M_K20FE to get a pseudo-total magnitude K</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>J</name>
+<description>J magnitude (JEXT) used for J selection</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>H</name>
+<description>H magnitude (HEXT) used for H selection</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>KEXT</name>
+<description>KEXT magnitude</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>K</name>
+<description>K magnitude (corrected) used for K selection</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>KEXT_K</name>
+<description>KEXT minus K (corrected)</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+</table>
+<table>
+<name>denisj</name>
+<description> The DENISJ table contains sources from the DENIS survey with J &lt; 13.85</description>
+<column>
+<name>OBJID</name>
+<description>unique ID number</description>
+<unit></unit>
+<dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>CATNAME</name>
+<description>supplied catalogue name</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETNAME</name>
+<description>matching name in target table, used to name FITS files and generate thumbnail images</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETID</name>
+<description>matching ID number in target</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>RA</name>
+<description>RA J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>DEC</name>
+<description>Dec J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>PRIORITY</name>
+<description>survey weight</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_1</name>
+<description>supplied magnitude 1</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>PROGID</name>
+<description>programme ID</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_2</name>
+<description>supplied magnitude 2</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>COMMENT</name>
+<description>supplied comments</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+</table>
+<table>
+<name>agn2mass</name>
+<description> The AGN2MASS table contains candidate AGN from 2MASS red AGN survey</description>
+<column>
+<name>OBJID</name>
+<description>unique ID number</description>
+<unit></unit>
+<dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>CATNAME</name>
+<description>supplied catalogue name</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETNAME</name>
+<description>matching name in target table, used to name FITS files and generate thumbnail images</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETID</name>
+<description>matching ID number in target</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>RA</name>
+<description>RA J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>DEC</name>
+<description>Dec J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>PRIORITY</name>
+<description>survey weight</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_1</name>
+<description>supplied magnitude 1</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>PROGID</name>
+<description>programme ID</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_2</name>
+<description>supplied magnitude 2</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>MAG_3</name>
+<description>supplied magnitude 3</description>
+<unit></unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+</table>
+<table>
+<name>denisi</name>
+<description> The DENISI table contains sources from the DENIS survey with I &lt; 14.85</description>
+<column>
+<name>OBJID</name>
+<description>unique ID number</description>
+<unit></unit>
+<dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>CATNAME</name>
+<description>supplied catalogue name</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETNAME</name>
+<description>matching name in target table, used to name FITS files and generate thumbnail images</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETID</name>
+<description>matching ID number in target</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>RA</name>
+<description>RA J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>DEC</name>
+<description>Dec J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>PRIORITY</name>
+<description>survey weight</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_1</name>
+<description>supplied magnitude 1</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>PROGID</name>
+<description>programme ID</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_2</name>
+<description>supplied magnitude 2</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>COMMENT</name>
+<description>supplied comments</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+</table>
+<table>
+<name>nvss</name>
+<description> The NVSS table contains candidate QSOs from NVSS</description>
+<column>
+<name>OBJID</name>
+<description>unique ID number</description>
+<unit></unit>
+<dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>CATNAME</name>
+<description>supplied catalogue name</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETNAME</name>
+<description>matching name in target table, used to name FITS files and generate thumbnail images</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETID</name>
+<description>matching ID number in target</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>RA</name>
+<description>RA J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>DEC</name>
+<description>Dec J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>PRIORITY</name>
+<description>survey weight</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_1</name>
+<description>supplied magnitude 1</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>PROGID</name>
+<description>programme ID</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_2</name>
+<description>supplied magnitude 2</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+</table>
+<table>
+<name>supercos</name>
+<description> The SUPERCOS table contains galaxies selected from SuperCOSMOS scans of UKST plates</description>
+<column>
+<name>OBJID</name>
+<description>unique ID number</description>
+<unit></unit>
+<dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>CATNAME</name>
+<description>supplied catalogue name</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETNAME</name>
+<description>matching name in target table, used to name FITS files and generate thumbnail images</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETID</name>
+<description>matching ID number in target</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>RA</name>
+<description>RA J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>DEC</name>
+<description>Dec J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>PRIORITY</name>
+<description>survey weight</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_1</name>
+<description>Bj mag, SuperCOSMOS magnitudes generated from a revised calibration , done at the time of input catalogue preparation, tuned to the mag range of interest.</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>PROGID</name>
+<description>programme ID</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_2</name>
+<description>R mag, SuperCOSMOS magnitudes generated from a revised calibration, done at the time of input catalogue preparation, tuned to the mag range of interest.</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>COMMENT</name>
+<description>SuperCOSMOS reference (field no. + B_index + R_index)</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='1'>char</dataType>
+</column>
+</table>
+<table>
+<name>rass</name>
+<description> The RASS table contains candidate QSO/AGN from the ROSAT All-Sky Survey</description>
+<column>
+<name>OBJID</name>
+<description>unique ID number</description>
+<unit></unit>
+<dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>CATNAME</name>
+<description>supplied catalogue name</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETNAME</name>
+<description>matching name in target table, used to name FITS files and generate thumbnail images</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETID</name>
+<description>matching ID number in target</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>RA</name>
+<description>RA J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>DEC</name>
+<description>Dec J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>PRIORITY</name>
+<description>survey weight</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_1</name>
+<description>supplied magnitude 1</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>PROGID</name>
+<description>programme ID</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_2</name>
+<description>supplied magnitude 2</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>COMMENT</name>
+<description>supplied comments</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+</table>
+<table>
+<name>hipass</name>
+<description> The HIPASS table contains candidate galaxies from the HIPASS survey in HI</description>
+<column>
+<name>OBJID</name>
+<description>unique ID number</description>
+<unit></unit>
+<dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>CATNAME</name>
+<description>supplied catalogue name</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETNAME</name>
+<description>matching name in target table, used to name FITS files and generate thumbnail images</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETID</name>
+<description>matching ID number in target</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>RA</name>
+<description>RA J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>DEC</name>
+<description>Dec J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>PRIORITY</name>
+<description>survey weight</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_1</name>
+<description>supplied magnitude 1</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>PROGID</name>
+<description>programme ID</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_2</name>
+<description>supplied magnitude 2</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+</table>
+<table>
+<name>shapley</name>
+<description> The SHAPLEY table contains galaxies from the Shapely supercluster region</description>
+<column>
+<name>OBJID</name>
+<description>unique ID number</description>
+<unit></unit>
+<dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>CATNAME</name>
+<description>supplied catalogue name</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETNAME</name>
+<description>matching name in target table, used to name FITS files and generate thumbnail images</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETID</name>
+<description>matching ID number in target</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>RA</name>
+<description>RA J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>DEC</name>
+<description>Dec J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>PRIORITY</name>
+<description>survey weight</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_1</name>
+<description>supplied magnitude 1</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>PROGID</name>
+<description>programme ID</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_2</name>
+<description>supplied magnitude 2</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+</table>
+<table>
+<name>hes</name>
+<description> The HES table contains candidate QSOs from the Hamburg/ESO Survey</description>
+<column>
+<name>OBJID</name>
+<description>unique ID number</description>
+<unit></unit>
+<dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>CATNAME</name>
+<description>supplied catalogue name</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETNAME</name>
+<description>matching name in target table, used to name FITS files and generate thumbnail images</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETID</name>
+<description>matching ID number in target</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>RA</name>
+<description>RA J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>DEC</name>
+<description>Dec J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>PRIORITY</name>
+<description>survey weight</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_1</name>
+<description>supplied magnitude 1</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>PROGID</name>
+<description>programme ID</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_2</name>
+<description>supplied magnitude 2</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+</table>
+<table>
+<name>sumss</name>
+<description> The SUMSS table contains bright radio sources from SUMSS</description>
+<column>
+<name>OBJID</name>
+<description>unique ID number</description>
+<unit></unit>
+<dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>CATNAME</name>
+<description>supplied catalogue name</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETNAME</name>
+<description>matching name in target table, used to name FITS files and generate thumbnail images</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETID</name>
+<description>matching ID number in target</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>RA</name>
+<description>RA J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>DEC</name>
+<description>Dec J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>PRIORITY</name>
+<description>survey weight</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_1</name>
+<description>supplied magnitude 1</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>PROGID</name>
+<description>programme ID</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_2</name>
+<description>supplied magnitude 2</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+</table>
+<table>
+<name>fsc</name>
+<description> The FSC table contains galaxies from the IRAS faint source catalogue</description>
+<column>
+<name>OBJID</name>
+<description>unique ID number</description>
+<unit></unit>
+<dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>CATNAME</name>
+<description>supplied catalogue name</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETNAME</name>
+<description>matching name in target table, used to name FITS files and generate thumbnail images</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETID</name>
+<description>matching ID number in target</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>RA</name>
+<description>RA J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>DEC</name>
+<description>Dec J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>PRIORITY</name>
+<description>survey weight</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_1</name>
+<description>supplied magnitude 1</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>PROGID</name>
+<description>programme ID</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_2</name>
+<description>supplied magnitude 2</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>COMMENT</name>
+<description>supplied comments</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='1'>char</dataType>
+</column>
+</table>
+<table>
+<name>durukst</name>
+<description> The DURUKST table contains galaxies from the extension to the Durham/UKST galaxy survey</description>
+<column>
+<name>OBJID</name>
+<description>unique ID number</description>
+<unit></unit>
+<dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>CATNAME</name>
+<description>supplied catalogue name</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETNAME</name>
+<description>matching name in target table, used to name FITS files and generate thumbnail images</description>
+<unit></unit>
+<ucd></ucd><dataType arraysize='*'>char</dataType>
+</column>
+<column>
+<name>TARGETID</name>
+<description>matching ID number in target</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>RA</name>
+<description>RA J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>DEC</name>
+<description>Dec J2000</description>
+<unit>deg</unit>
+<dataType>double</dataType>
+</column>
+<column>
+<name>PRIORITY</name>
+<description>survey weight</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_1</name>
+<description>supplied magnitude 1</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+<column>
+<name>PROGID</name>
+<description>programme ID</description>
+<unit></unit>
+<ucd></ucd><dataType>int</dataType>
+</column>
+<column>
+<name>MAG_2</name>
+<description>supplied magnitude 2</description>
+<unit>mag</unit>
+<ucd></ucd><dataType>float</dataType>
+</column>
+</table>
+</tab:tables>

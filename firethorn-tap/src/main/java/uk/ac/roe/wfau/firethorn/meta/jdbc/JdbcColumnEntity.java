@@ -326,121 +326,71 @@ public class JdbcColumnEntity
             @Override
             public AdqlColumn.Metadata.AdqlMeta adql()
                 {
-                return new AdqlColumn.Metadata.AdqlMeta()
-                    {
-                    @Override
-                    public Integer size()
-                        {
-                        if (JdbcColumnEntity.this.usersize != null)
-                            {
-                            return JdbcColumnEntity.this.usersize;
-                            }
-                        else {
-                            return JdbcColumnEntity.this.adqlsize;
-                            }
-                        }
-
-                    @Override
-                    public void size(final Integer size)
-                        {
-                        if (size != null)
-                            {
-                            JdbcColumnEntity.this.usersize = size ;
-                            JdbcColumnEntity.this.adqlsize = size ;
-                            }
-                        else {
-                            JdbcColumnEntity.this.usersize = null ;
-                            JdbcColumnEntity.this.adqlsize = JdbcColumnEntity.this.jdbcsize;
-                            }
-                        }
-
-                    @Override
-                    public AdqlColumn.Type type()
-                        {
-                        if (JdbcColumnEntity.this.usertype != null)
-                            {
-                            return JdbcColumnEntity.this.usertype;
-                            }
-                        else {
-                            return JdbcColumnEntity.this.adqltype;
-                            }
-                        }
-
-                    @Override
-                    public void type(final AdqlColumn.Type type)
-                        {
-                        if (type != null)
-                            {
-                            JdbcColumnEntity.this.usertype = type ;
-                            JdbcColumnEntity.this.adqltype = type ;
-                            }
-                        else {
-                            JdbcColumnEntity.this.usertype = null ;
-                            JdbcColumnEntity.this.adqltype = AdqlColumn.Type.adql(
-                                JdbcColumnEntity.this.jdbctype
-                                );
-                            }
-                        }
-                    };
-                }
+                return adqlmeta();
+                }            
 
             @Override
             public JdbcColumn.Metadata .JdbcMeta jdbc()
                 {
-                return new JdbcColumn.Metadata.JdbcMeta()
+                return jdbcmeta();
+                }            
+            };
+        }
+
+    protected JdbcColumn.Metadata .JdbcMeta jdbcmeta()
+        {
+        return new JdbcColumn.Metadata.JdbcMeta()
+            {
+            @Override
+            public Integer size()
+                {
+                return JdbcColumnEntity.this.jdbcsize;
+                }
+
+            @Override
+            public void size(final Integer size)
+                {
+                if (JdbcColumnEntity.this.usersize == null)
                     {
-                    @Override
-                    public Integer size()
-                        {
-                        return JdbcColumnEntity.this.jdbcsize;
-                        }
+                    JdbcColumnEntity.this.jdbcsize = size ;
+                    JdbcColumnEntity.this.adqlsize = size;
+                    }
+                else {
+                    JdbcColumnEntity.this.jdbcsize = size ;
+                    JdbcColumnEntity.this.adqlsize = JdbcColumnEntity.this.jdbcsize ; 
+                    }
+                }
 
-                    @Override
-                    public void size(final Integer size)
-                        {
-                        if (JdbcColumnEntity.this.usersize == null)
-                            {
-                            JdbcColumnEntity.this.jdbcsize = size ;
-                            JdbcColumnEntity.this.adqlsize = size;
-                            }
-                        else {
-                            JdbcColumnEntity.this.jdbcsize = size ;
-                            JdbcColumnEntity.this.adqlsize = JdbcColumnEntity.this.jdbcsize ; 
-                            }
-                        }
+            @Override
+            public JdbcColumn.Type type()
+                {
+                return JdbcColumnEntity.this.jdbctype;
+                }
 
-                    @Override
-                    public JdbcColumn.Type type()
-                        {
-                        return JdbcColumnEntity.this.jdbctype;
-                        }
+            @Override
+            public void type(final JdbcColumn.Type type)
+                {
+                if (JdbcColumnEntity.this.usertype == null)
+                    {
+                    JdbcColumnEntity.this.jdbctype = type ;
+                    JdbcColumnEntity.this.adqltype = AdqlColumn.Type.adql(
+                        type
+                        );
+                    }
+                else {
+                    JdbcColumnEntity.this.jdbctype = type ;
+                    JdbcColumnEntity.this.adqltype = JdbcColumnEntity.this.usertype ;
+                    }
+                }
 
-                    @Override
-                    public void type(final JdbcColumn.Type type)
-                        {
-                        if (JdbcColumnEntity.this.usertype == null)
-                            {
-                            JdbcColumnEntity.this.jdbctype = type ;
-                            JdbcColumnEntity.this.adqltype = AdqlColumn.Type.adql(
-                                type
-                                );
-                            }
-                        else {
-                            JdbcColumnEntity.this.jdbctype = type ;
-                            JdbcColumnEntity.this.adqltype = JdbcColumnEntity.this.usertype ;
-                            }
-                        }
-
-                    @Override
-                    public void type(final int type)
-                        {
-                        this.type(
-                            JdbcColumn.Type.jdbc(
-                                type
-                                )
-                            );
-                        }
-                    };
+            @Override
+            public void type(final int type)
+                {
+                this.type(
+                    JdbcColumn.Type.jdbc(
+                        type
+                        )
+                    );
                 }
             };
         }

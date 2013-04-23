@@ -63,6 +63,18 @@ public class AdqlResourceController
         }
 
     /**
+     * VOSI URL path.
+     *
+     */
+    public static final String VOSI_PATH = "vosi" ;
+
+    /**
+     * The VOSI view generator.
+     * 
+     */
+    public static final String VOSI_XML_VIEW = "adql/vosi-xml" ;
+
+    /**
      * MVC property for the target entity.
      *
      */
@@ -168,5 +180,17 @@ public class AdqlResourceController
         return bean(
             entity
             );
+        }
+
+    /**
+     * VOSI GET request.
+     *
+     */
+    @RequestMapping(value=VOSI_PATH, method=RequestMethod.GET)
+    public String vosi(
+        @ModelAttribute(TARGET_ENTITY)
+        final AdqlResource entity
+        ){
+        return VOSI_XML_VIEW ;
         }
     }

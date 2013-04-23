@@ -223,58 +223,93 @@ extends BaseComponentEntity
             @Override
             public AdqlColumn.Metadata.AdqlMeta adql()
                 {
-                return new AdqlColumn.Metadata.AdqlMeta()
+                return adqlmeta();
+                }            
+            };
+        }
+
+    protected AdqlColumn.Metadata.AdqlMeta adqlmeta()
+        {
+        return new AdqlColumn.Metadata.AdqlMeta()
+            {
+            @Override
+            public Integer size()
+                {
+                if (BaseColumnEntity.this.usersize != null)
                     {
-                    @Override
-                    public Integer size()
-                        {
-                        if (BaseColumnEntity.this.usersize != null)
-                            {
-                            return BaseColumnEntity.this.usersize;
-                            }
-                        else {
-                            return BaseColumnEntity.this.adqlsize;
-                            }
-                        }
+                    return BaseColumnEntity.this.usersize;
+                    }
+                else {
+                    return BaseColumnEntity.this.adqlsize;
+                    }
+                }
 
-                    @Override
-                    public void size(final Integer size)
-                        {
-                        BaseColumnEntity.this.usersize = size ;
-                        if (size != null)
-                            {
-                            BaseColumnEntity.this.adqlsize = size ;
-                            }
-                        else {
-                            BaseColumnEntity.this.adqlsize = base().info().adql().size();
-                            }
-                        }
+            @Override
+            public void size(final Integer size)
+                {
+                BaseColumnEntity.this.usersize = size ;
+                if (size != null)
+                    {
+                    BaseColumnEntity.this.adqlsize = size ;
+                    }
+                else {
+                    BaseColumnEntity.this.adqlsize = base().info().adql().size();
+                    }
+                }
 
-                    @Override
-                    public AdqlColumn.Type type()
-                        {
-                        if (BaseColumnEntity.this.usertype != null)
-                            {
-                            return BaseColumnEntity.this.usertype;
-                            }
-                        else {
-                            return BaseColumnEntity.this.adqltype;
-                            }
-                        }
+            @Override
+            public AdqlColumn.Type type()
+                {
+                if (BaseColumnEntity.this.usertype != null)
+                    {
+                    return BaseColumnEntity.this.usertype;
+                    }
+                else {
+                    return BaseColumnEntity.this.adqltype;
+                    }
+                }
 
-                    @Override
-                    public void type(final AdqlColumn.Type type)
-                        {
-                        BaseColumnEntity.this.usertype = type ;
-                        if (type != null)
-                            {
-                            BaseColumnEntity.this.adqltype = type ;
-                            }
-                        else {
-                            BaseColumnEntity.this.adqltype = base().info().adql().type();
-                            }
-                        }
-                    };
+            @Override
+            public void type(final AdqlColumn.Type type)
+                {
+                BaseColumnEntity.this.usertype = type ;
+                if (type != null)
+                    {
+                    BaseColumnEntity.this.adqltype = type ;
+                    }
+                else {
+                    BaseColumnEntity.this.adqltype = base().info().adql().type();
+                    }
+                }
+
+            @Override
+            public String unit()
+                {
+                return "my-unit";
+                }
+            @Override
+            public void unit(final String unit)
+                {
+                }
+
+            @Override
+            public String utype()
+                {
+                return "my-utype";
+                }
+            @Override
+            public void utype(final String utype)
+                {
+                }
+
+            @Override
+            public String ucd()
+                {
+                return "my-ucd";
+                }
+            @Override
+            public void ucd(final String ucd)
+                {
                 }
             };
         }

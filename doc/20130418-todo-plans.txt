@@ -1,0 +1,225 @@
+
+mini dnla
+
+#
+# Omega Cam
+# http://www.astro-wise.org/~omegacam/index.shtml
+
+#
+# Omega Cam Science Archive
+# 
+
+#
+# Atlas survey 
+#
+
+#
+# OSA integration
+
+
+    Create a list of catalogs (schema)
+
+    Create a new workspace
+
+    Select (catalog) from list
+    Add (one or all) tables from that schema into our workspace (default or named schema)
+
+    Request VOSI for the current workspace
+    
+    Create a  query on that workspace
+    Run the query
+    Return a URL to get the results as votable
+
+    Workspace and results have a limited lifetime, automatic garbage collection.    
+
+
+    V1.1    OSA FreeForm query  - local catalogs
+
+        1) things we have neigbour tables for
+        2) everything else (group by publisher, ROE at the top)
+
+        default schema is the selected archive
+        +-- Related data (neigbour tables)
+        +-- Other data
+            +-- WFAU
+            +-- CDS
+            +-- CADC
+
+
+        Astronomer view :
+            1) Working on _this_ archive (free form SQL)
+            2) Combining _this_ archive with other data from the VO
+
+
+
+        +--------------------+--------------------------------------------------------
+        | Navigation         |
+        |                    |
+        | Archive specific   | 
+        | +-- Query tools    |
+        | +-- Cross ID       |
+        | +-- Free form ADQL |
+        |                    |
+        |                    |
+        |                    |
+        +--------------------+--------------------------------------------------------
+        | My WFAU            |
+        | +-- All VO Query   |
+        | +--                |
+        | +--                |
+        | +--                |
+        +--------------------+--------------------------------------------------------
+        | Help               |
+        |                    |
+        +--------------------+--------------------------------------------------------
+
+
+
+
+    Discover *A* table and query it
+    Containment to replicate survey structure
+    Persist the output as a table
+    Share that result with a group of identities
+    Share that result with everyone
+
+    Choose multiple tables and make a collection
+    Apply a query accross that collection
+    Persist that collection of tables
+    Share that collection with a group
+    Share that collection with everyone
+
+    Create a query without executing it
+    on individual table or a collection
+    persist that query
+    share that query with a group
+    share that query with a everyone
+
+    collect tables and queries
+    into a persisten collection
+
+    share that collection with a group    
+    share that collection with everyone
+
+    upload a table into a collection
+    
+    -----------------------------
+    
+    able to make a named release of a collection of tables
+    either to a group of identities
+    or to everyone
+
+    -----------------------------
+
+import tables
+import schema
+create query
+
+edit something (table etc)
+prevent breaking of other things that depend on it
+possibly by creatiung a new version of query/workspace
+
+a)
+run query - query becomes read only
+
+b)
+run query - workspace becomes read only
+
+c)
+version control over the query workspace set ...
+
+
+------------------------------------------------------------------------------
+
+
+If we always use the parent value, then database load will be high.
+If we always use the parent value, then faceted search will not work.
+
+interface Value<ValueType>
+    {
+    public ValueType value();
+    public void base(ValueType value);
+    public void user(ValueType value);
+    }
+
+class ValueImpl<ValueType>
+implements Value<ValueType>
+    {
+    private ValueType uservalue ;
+    private ValueType basevalue ;
+    private ValueType datavalue ;
+
+    public ValueType value()
+        {
+        return datavalue ;
+        }
+
+    public void base(ValueType value)
+        {
+        basevalue = value ;
+        update();
+        }
+    
+    public void user(ValueType value)
+        {
+        uservalue = value ;
+        update();
+        }
+        
+    public void update()
+        {
+        if (uservalue != null)
+            {
+            datavalue = uservalue ;
+            }
+        else {
+            datavalue = basevalue ;
+            }
+        }
+    }
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+     
+    
+
+
+
+
+
+
+        Stelios/Mark to present in Apps
+        Move Dave's talk from Aapps to Dal
+
+
+
+    V1.2    VO query            - local and external TAP
+
+Based on data from registry
+Grouping of external TAP services
+
+
+    V1.3    Single sign on
+
+
+------------
+
+    OSA signon
+    Web py sessions
+    Check with user database from Mike
+    Separate table of users for each survey
+
+
+
+
+
+

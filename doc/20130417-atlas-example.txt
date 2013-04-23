@@ -19,7 +19,7 @@
 
     source ${HOME?}/firethorn.settings
     pushd "${FIRETHORN_CODE?}/firethorn-testdata"
-        mvn clean liquibase:update exec:java
+        mvn clean liquibase:update
         mvn exec:java
     popd
 

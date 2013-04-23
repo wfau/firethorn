@@ -222,8 +222,17 @@ extends BaseColumn<AdqlColumn>
             public void size(final Integer size);
 
             public Type type();
-
             public void type(final Type type);
+
+            public String unit();
+            public void unit(final String unit);
+
+            public String utype();
+            public void utype(final String utype);
+
+            public String ucd();
+            public void ucd(final String ucd);
+
             }
 
         /**
