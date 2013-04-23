@@ -28,13 +28,4 @@ import org.springframework.stereotype.Component;
 public class OgsaTableFactoriesImpl
     implements OgsaTableFactories
     {
-    /*
-    @Autowired
-    protected OgsaTable.AliasResolver resolver;
-    @Override
-    public OgsaTable.AliasResolver resolver()
-        {
-        return this.resolver;
-        }
-    */
     }

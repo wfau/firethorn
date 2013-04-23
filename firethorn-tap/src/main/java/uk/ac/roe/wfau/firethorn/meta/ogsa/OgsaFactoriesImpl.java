@@ -28,13 +28,4 @@ import org.springframework.stereotype.Component;
 public class OgsaFactoriesImpl
     implements OgsaFactories
     {
-    /*
-    @Autowired
-    private OgsaTableFactories tables;
-    @Override
-    public OgsaTableFactories tables()
-        {
-        return this.tables;
-        }
-     */
     }

@@ -146,11 +146,11 @@ implements Value<ValueType>
     {
     private ValueType uservalue ;
     private ValueType basevalue ;
-    private ValueType datavalue ;
+    private ValueType currvalue ;
 
     public ValueType value()
         {
-        return datavalue ;
+        return currvalue ;
         }
 
     public void base(ValueType value)
@@ -169,13 +169,14 @@ implements Value<ValueType>
         {
         if (uservalue != null)
             {
-            datavalue = uservalue ;
+            currvalue = uservalue ;
             }
         else {
-            datavalue = basevalue ;
+            currvalue = basevalue ;
             }
         }
     }
+
 
 
 

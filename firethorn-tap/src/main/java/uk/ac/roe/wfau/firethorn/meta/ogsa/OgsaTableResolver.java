@@ -28,26 +28,4 @@ import org.springframework.stereotype.Repository;
 public class OgsaTableResolver
 implements OgsaTable.AliasResolver
     {
-/*
-    @Autowired
-    private BaseTable.Resolver resolver ;
-
-    @Override
-    public OgsaTable<?,?> resolve(final String alias)
-        throws NotFoundException
-        {
-        final BaseTable<?,?> base = this.resolver.resolve(
-            alias
-            );
-        if (base != null)
-            {
-            return base.ogsa();
-            }
-        else {
-            throw new NotFoundException(
-                "Unable to resolve OGSA table [" + alias + "]"
-                );
-            }
-        }
- */
     }

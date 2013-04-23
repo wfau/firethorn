@@ -1,0 +1,10 @@
+#
+# Set up our own Maven repository ....
+
+#
+# http://www.gluster.org/2013/04/maven-repo-management-with-archiva/
+
+#
+# http://jayunit100.blogspot.co.uk/2012/04/deploy-your-own-maven-repos.html
+
+

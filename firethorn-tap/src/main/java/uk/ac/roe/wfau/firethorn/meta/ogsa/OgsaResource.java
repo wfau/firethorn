@@ -28,15 +28,4 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 public interface OgsaResource<SchemaType extends BaseSchema<SchemaType,?>>
 extends BaseResource<SchemaType>
     {
-	/**
-	 * Get the OGSA-DAI resource ID.
-	 *
-	public String ogsaid();
-     */
-
-	/**
-	 * Set the OGSA-DAI resource ID.
-	 *
-	public void ogsaid(final String ogsaid);
-     */
     }

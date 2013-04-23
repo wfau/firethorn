@@ -24,10 +24,4 @@ package uk.ac.roe.wfau.firethorn.meta.ogsa;
 @Deprecated
 public interface OgsaTableFactories
     {
-    /**
-     * Our table alias resolver.
-     *
-    public OgsaTable.AliasResolver resolver();
-     */
-
     }

@@ -33,6 +33,7 @@ extends BaseTable<TableType, ColumnType>
      * Link factory interface.
      *
      */
+    @Deprecated
     public static interface LinkFactory
     extends Entity.LinkFactory<OgsaTable<?,?>>
         {
@@ -42,24 +43,8 @@ extends BaseTable<TableType, ColumnType>
      * Alias resolver interface.
      *
      */
+    @Deprecated
     public static interface AliasResolver
         {
-        /**
-         * Resolve an alias into a table.
-         *
-        public OgsaTable<?,?> resolve(final String alias)
-        throws NotFoundException;
-         */
-
         }
-/*
-    @Override
-    public String alias();
-
-    @Override
-    public StringBuilder fullname();
-
-    @Override
-    public OgsaResource<?> resource();
- */
     }
