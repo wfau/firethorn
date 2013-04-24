@@ -39,6 +39,7 @@ import org.hibernate.annotations.NamedQueries;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnInfo;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnType;
 
@@ -91,7 +92,6 @@ extends BaseComponentEntity
     protected static final String DB_USER_SIZE_COL = "usersize" ;
     protected static final String DB_USER_UCD1_COL = "userucd1"  ;
 
-
     protected BaseColumnEntity()
         {
         super();
@@ -103,25 +103,24 @@ extends BaseComponentEntity
         this.parent = parent;
         }
 
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Enumerated(
-        EnumType.STRING
-        )
-    @Column(
-        name = DB_ADQL_TYPE_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    protected AdqlColumn.Type adqltype ;
+    protected AdqlColumn.Type basetype()
+        {
+        return basetype(
+            false
+            );
+        }
+    protected abstract AdqlColumn.Type basetype(boolean pull);
 
+    protected Integer basesize()
+        {
+        return basesize(
+            false
+            );
+        }
+    protected abstract Integer basesize(boolean pull);
+    
     @Basic(
         fetch = FetchType.EAGER
-        )
-    @Enumerated(
-        EnumType.STRING
         )
     @Column(
         name = DB_USER_TYPE_COL,
@@ -129,7 +128,75 @@ extends BaseComponentEntity
         nullable = true,
         updatable = true
         )
-    protected AdqlColumn.Type usertype ;
+    @Enumerated(
+        EnumType.STRING
+        )
+    private AdqlColumn.Type usertype ;
+    protected AdqlColumn.Type usertype()
+        {
+        return this.usertype;
+        }
+    protected void usertype(AdqlColumn.Type type)
+        {
+        this.usertype = type;
+        }
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_ADQL_TYPE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    private AdqlColumn.Type adqltype ;
+    protected AdqlColumn.Type adqltype()
+        {
+        return adqltype(
+            false
+            );
+        }
+    protected AdqlColumn.Type adqltype(boolean pull)
+        {
+        if ((this.adqltype == null) || (pull))
+            {
+            this.adqltype = basetype(
+                pull
+                );
+            if (null != this.usertype)
+                {
+                this.adqltype = this.usertype;
+                }
+            }
+        return this.adqltype;
+        }
+    protected void adqltype(AdqlColumn.Type type)
+        {
+        this.adqltype = type;
+        }
+    
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_USER_SIZE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private Integer usersize ;
+    protected Integer usersize()
+        {
+        return this.usersize;
+        }
+    protected void usersize(Integer size)
+        {
+        this.usersize = size;
+        }
 
     @Basic(
         fetch = FetchType.EAGER
@@ -140,23 +207,47 @@ extends BaseComponentEntity
         nullable = true,
         updatable = true
         )
-    protected Integer adqlsize ;
-
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_USER_SIZE_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    protected Integer usersize ;
-
+    private Integer adqlsize ;
+    protected Integer adqlsize()
+        {
+        return adqlsize(
+            false
+            );
+        }
+    protected Integer adqlsize(boolean pull)
+        {
+        if ((this.adqlsize == null) || (pull))
+            {
+            this.adqlsize = basesize(
+                pull
+                );
+            if (null != this.usersize)
+                {
+                this.adqlsize = this.usersize;
+                }
+            }
+        if (pull)
+            {
+/*
+ * 
+ * for (BaseColumn child : children)
+ *     {
+ *     child.adql().type(pull);
+ *     }
+ *            
+ */
+            }
+        return this.adqlsize;
+        }
+    protected void adqlsize(Integer size)
+        {
+        this.adqlsize = size;
+        }
+    
     @Override
     public String alias()
         {
-        return "base_column_" + ident();
+        return "BASE_" + ident();
         }
 
     @Override
@@ -216,72 +307,47 @@ extends BaseComponentEntity
     public abstract BaseColumn<?> root();
 
     @Override
-    public AdqlColumn.Metadata info()
+    public BaseColumn.Metadata meta()
         {
-        return new AdqlColumn.Metadata()
+        return new BaseColumn.Metadata()
             {
             @Override
-            public AdqlColumn.Metadata.AdqlMeta adql()
+            public BaseColumn.Metadata.AdqlMeta adql()
                 {
                 return adqlmeta();
                 }            
             };
         }
 
-    protected AdqlColumn.Metadata.AdqlMeta adqlmeta()
+    protected BaseColumn.Metadata.AdqlMeta adqlmeta()
         {
-        return new AdqlColumn.Metadata.AdqlMeta()
+        return new BaseColumn.Metadata.AdqlMeta()
             {
             @Override
             public Integer size()
                 {
-                if (BaseColumnEntity.this.usersize != null)
-                    {
-                    return BaseColumnEntity.this.usersize;
-                    }
-                else {
-                    return BaseColumnEntity.this.adqlsize;
-                    }
+                return adqlsize();
                 }
-
             @Override
-            public void size(final Integer size)
+            public void size(Integer size)
                 {
-                BaseColumnEntity.this.usersize = size ;
-                if (size != null)
-                    {
-                    BaseColumnEntity.this.adqlsize = size ;
-                    }
-                else {
-                    BaseColumnEntity.this.adqlsize = base().info().adql().size();
-                    }
+                adqlsize(
+                    size
+                    );
                 }
-
             @Override
             public AdqlColumn.Type type()
                 {
-                if (BaseColumnEntity.this.usertype != null)
-                    {
-                    return BaseColumnEntity.this.usertype;
-                    }
-                else {
-                    return BaseColumnEntity.this.adqltype;
-                    }
+                return adqltype();
                 }
-
             @Override
-            public void type(final AdqlColumn.Type type)
+            public void type(Type type)
                 {
-                BaseColumnEntity.this.usertype = type ;
-                if (type != null)
-                    {
-                    BaseColumnEntity.this.adqltype = type ;
-                    }
-                else {
-                    BaseColumnEntity.this.adqltype = base().info().adql().type();
-                    }
+                adqltype(
+                    type
+                    );
                 }
-
+            
             @Override
             public String unit()
                 {

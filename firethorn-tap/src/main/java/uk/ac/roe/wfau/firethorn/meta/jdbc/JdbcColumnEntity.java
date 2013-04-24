@@ -42,9 +42,9 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnInfo;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnType;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseValue;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseValueEntity;
 
 /**
  *
@@ -111,19 +111,6 @@ public class JdbcColumnEntity
         public Class<?> etype()
             {
             return JdbcColumnEntity.class ;
-            }
-
-        @Override
-        @Deprecated
-        @CreateEntityMethod
-        public JdbcColumn create(final JdbcTable parent, final String name)
-            {
-            return this.insert(
-                new JdbcColumnEntity(
-                    parent,
-                    name
-                    )
-                );
             }
 
         @Override
@@ -213,22 +200,15 @@ public class JdbcColumnEntity
         super();
         }
 
-    @Deprecated
-    protected JdbcColumnEntity(final JdbcTable table, final String name)
-        {
-        super(table, name);
-        this.table = table;
-        }
-
     protected JdbcColumnEntity(final JdbcTable table, final String name, final int type, final int size)
         {
         super(table, name);
         this.table = table;
-        this.info().jdbc().type(
+        this.jdbctype = JdbcColumn.Type.jdbc(
             type
             );
-        this.info().jdbc().size(
-            new Integer(size)
+        this.jdbcsize = new Integer(
+            size
             );
         }
 
@@ -292,7 +272,21 @@ public class JdbcColumnEntity
         EnumType.STRING
         )
     private JdbcColumn.Type jdbctype ;
-
+    protected JdbcColumn.Type jdbctype()
+        {
+        return this.jdbctype;
+        }
+    protected void jdbctype(JdbcColumn.Type type)
+        {
+        if (this.jdbctype != type)
+            {
+            this.jdbctype = type;
+            this.adqltype(
+                true
+                );
+            }
+        }
+    
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -303,7 +297,39 @@ public class JdbcColumnEntity
         updatable = true
         )
     private Integer jdbcsize;
+    protected Integer jdbcsize()
+        {
+        return this.jdbcsize;
+        }
+    protected void jdbcsize(Integer size)
+        {
+        if (this.jdbcsize != size)
+            {
+            this.jdbcsize = size;
+            this.adqlsize(
+                true
+                );
+            }
 
+        }
+    
+    @Override
+    protected AdqlColumn.Type basetype(boolean pull)
+        {
+        if (this.jdbctype != null)
+            {
+            return this.jdbctype.adql();
+            }
+        else {
+            return null;
+            }
+        }
+    @Override
+    protected Integer basesize(boolean pull)
+        {
+        return this.jdbcsize ;
+        }
+    
     @Override
     public String link()
         {
@@ -319,7 +345,7 @@ public class JdbcColumnEntity
         }
 
     @Override
-    public JdbcColumn.Metadata info()
+    public JdbcColumn.Metadata meta()
         {
         return new JdbcColumn.Metadata()
             {
@@ -344,52 +370,25 @@ public class JdbcColumnEntity
             @Override
             public Integer size()
                 {
-                return JdbcColumnEntity.this.jdbcsize;
+                return jdbcsize();
                 }
-
-            @Override
-            public void size(final Integer size)
-                {
-                if (JdbcColumnEntity.this.usersize == null)
-                    {
-                    JdbcColumnEntity.this.jdbcsize = size ;
-                    JdbcColumnEntity.this.adqlsize = size;
-                    }
-                else {
-                    JdbcColumnEntity.this.jdbcsize = size ;
-                    JdbcColumnEntity.this.adqlsize = JdbcColumnEntity.this.jdbcsize ; 
-                    }
-                }
-
             @Override
             public JdbcColumn.Type type()
                 {
-                return JdbcColumnEntity.this.jdbctype;
+                return jdbctype();
                 }
-
             @Override
-            public void type(final JdbcColumn.Type type)
+            public void size(Integer size)
                 {
-                if (JdbcColumnEntity.this.usertype == null)
-                    {
-                    JdbcColumnEntity.this.jdbctype = type ;
-                    JdbcColumnEntity.this.adqltype = AdqlColumn.Type.adql(
-                        type
-                        );
-                    }
-                else {
-                    JdbcColumnEntity.this.jdbctype = type ;
-                    JdbcColumnEntity.this.adqltype = JdbcColumnEntity.this.usertype ;
-                    }
+                jdbcsize(
+                    size
+                    );
                 }
-
             @Override
-            public void type(final int type)
+            public void type(Type type)
                 {
-                this.type(
-                    JdbcColumn.Type.jdbc(
-                        type
-                        )
+                jdbctype(
+                    type
                     );
                 }
             };

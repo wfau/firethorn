@@ -69,7 +69,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                     %><description/><%
                     }
 
-                AdqlColumn.Metadata meta = column.info();
+                AdqlColumn.Metadata meta = column.meta();
                 if ((meta != null) && (meta.adql() != null))
                     {
                     if (meta.adql().ucd() != null)

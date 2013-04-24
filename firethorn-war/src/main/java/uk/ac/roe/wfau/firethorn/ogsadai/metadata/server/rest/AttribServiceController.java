@@ -215,7 +215,7 @@ public class AttribServiceController
         public int getType()
             {
             return convert(
-                this.column.info().adql().type()
+                this.column.meta().adql().type()
                 );
             }
 

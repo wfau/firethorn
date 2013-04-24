@@ -440,7 +440,7 @@ implements AdqlParser
                 log.debug("  base [{}]", adql.base().fullname());
                 return new ColumnMetaImpl(
                     adql.name(),
-                    adql.base().info()
+                    adql.base().meta()
                     );
                 }
             else {
@@ -525,7 +525,7 @@ implements AdqlParser
                     info = temp;
                     }
                 else {
-                    if (temp.adql().size() > info.adql().size())
+                    if (temp.adql().size().intValue() > info.adql().size().intValue())
                         {
                         info = temp ;
                         }

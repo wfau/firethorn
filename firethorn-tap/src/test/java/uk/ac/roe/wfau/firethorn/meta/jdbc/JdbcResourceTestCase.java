@@ -157,7 +157,9 @@ extends JdbcResourceTestBase
                 ).tables().create(
                     "table-A"
                     ).columns().create(
-                        "column-A"
+                        "column-A",
+                        JdbcColumn.Type.INTEGER.code(),
+                        1
                         )
             );
 
@@ -184,7 +186,9 @@ extends JdbcResourceTestBase
                 ).tables().create(
                     "table-A"
                     ).columns().create(
-                        "column-A"
+                        "column-A",
+                        JdbcColumn.Type.INTEGER.code(),
+                        1
                         )
             );
 
@@ -209,7 +213,9 @@ extends JdbcResourceTestBase
                 ).tables().create(
                     "table-A"
                     ).columns().create(
-                        "column-A"
+                        "column-A",
+                        JdbcColumn.Type.INTEGER.code(),
+                        1
                         )
             );
 

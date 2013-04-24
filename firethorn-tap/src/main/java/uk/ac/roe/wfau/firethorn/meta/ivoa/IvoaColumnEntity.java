@@ -19,7 +19,11 @@ package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -33,6 +37,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
 
 /**
@@ -68,7 +73,18 @@ public class IvoaColumnEntity
     extends BaseColumnEntity<IvoaColumn>
     implements IvoaColumn
     {
+    /**
+     * Hibernate table mapping.
+     *
+     */
     protected static final String DB_TABLE_NAME = "IvoaColumnEntity";
+
+    /**
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String DB_IVOA_TYPE_COL = "ivoatype" ;
+    protected static final String DB_IVOA_SIZE_COL = "ivoasize" ;
 
     /**
      * Column factory implementation.
@@ -213,6 +229,58 @@ public class IvoaColumnEntity
         return this.table().resource();
         }
 
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_IVOA_TYPE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    private AdqlColumn.Type ivoatype ;
+    protected AdqlColumn.Type ivoatype()
+        {
+        return this.ivoatype;
+        }
+    protected void ivoatype(AdqlColumn.Type type)
+        {
+        this.ivoatype = type;
+        }
+    
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_IVOA_SIZE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private Integer ivoasize;
+    protected Integer ivoasize()
+        {
+        return this.ivoasize;
+        }
+    protected void ivoasize(Integer size)
+        {
+        this.ivoasize = size;
+        }
+    
+    @Override
+    protected AdqlColumn.Type basetype(boolean pull)
+        {
+        return this.ivoatype;
+        }
+    @Override
+    protected Integer basesize(boolean pull)
+        {
+        return this.ivoasize ;
+        }
+    
     @Override
     public String link()
         {

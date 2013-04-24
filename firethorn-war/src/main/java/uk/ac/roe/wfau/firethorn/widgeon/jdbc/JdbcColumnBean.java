@@ -108,12 +108,12 @@ implements EntityBean<JdbcColumn>
                     @Override
                     public AdqlColumn.Type getType()
                         {
-                        return entity().info().adql().type();
+                        return entity().meta().adql().type();
                         }
                     @Override
                     public Integer getSize()
                         {
-                        return entity().info().adql().size();
+                        return entity().meta().adql().size();
                         }
                     };
                 }
@@ -125,12 +125,12 @@ implements EntityBean<JdbcColumn>
                     @Override
                     public JdbcColumn.Type getType()
                         {
-                        return entity().info().jdbc().type();
+                        return entity().meta().jdbc().type();
                         }
                     @Override
                     public Integer getSize()
                         {
-                        return entity().info().jdbc().size();
+                        return entity().meta().jdbc().size();
                         }
                     };
                 }

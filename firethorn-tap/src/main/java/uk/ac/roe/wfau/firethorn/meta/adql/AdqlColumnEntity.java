@@ -19,7 +19,11 @@ package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -68,7 +72,18 @@ public class AdqlColumnEntity
     extends BaseColumnEntity<AdqlColumn>
     implements AdqlColumn
     {
+    /**
+     * Hibernate table mapping.
+     *
+     */
     protected static final String DB_TABLE_NAME = "AdqlColumnEntity";
+
+    /**
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String DB_BASE_TYPE_COL = "basetype" ;
+    protected static final String DB_BASE_SIZE_COL = "basesize" ;
 
     /**
      * Column factory implementation.
@@ -264,10 +279,73 @@ public class AdqlColumnEntity
         return base().root();
         }
 
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_BASE_TYPE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    private AdqlColumn.Type basetype ;
+    @Override
+    protected AdqlColumn.Type basetype()
+        {
+        return basetype(
+            false
+            );
+        }
+    @Override
+    protected AdqlColumn.Type basetype(boolean pull)
+        {
+        if ((this.basetype == null) || (pull))
+            {
+            if (base() != null)
+                {
+                this.basetype = base().meta().adql().type();
+                }
+            }
+        return this.basetype;
+        }
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_BASE_SIZE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private Integer basesize ;
+    @Override
+    protected Integer basesize()
+        {
+        return basesize(
+            false
+            );
+        }
+    @Override
+    protected Integer basesize(boolean pull)
+        {
+        if ((this.basesize == null) || (pull))
+            {
+            if (base() != null)
+                {
+                this.basesize = base().meta().adql().size();
+                }
+            }
+        return this.basesize;
+        }
+
     @Override
     public String alias()
         {
-        return "adql_column_" + ident();
+        return "ADQL_" + ident();
         }
 
     @Override

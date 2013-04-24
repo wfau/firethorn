@@ -88,10 +88,10 @@
         <!--+
             | Set the component naming strategy.
             | https://forum.hibernate.org/viewtopic.php?p=2404537
-            +-->
         <property name="namingStrategy">
             <bean class="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
         </property>
+            +-->
 
         <!--+
             | Replace the Hibernate config with bean properties.
@@ -105,6 +105,12 @@
                     +-->
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
                 <prop key="hibernate.show_sql">false</prop>
+
+                <!--+
+                    | Add a prefix to embedded components.
+                    | http://stackoverflow.com/questions/3046677/automatically-add-a-prefix-to-column-names-for-embeddable-classes
+                    +-->
+                <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.DefaultComponentSafeNamingStrategy</prop>
 
                 <!--+
                     | Jadira usertype registration.

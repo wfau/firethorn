@@ -141,7 +141,7 @@ implements AdqlQuery.Builder
                 new ColumnConfig().setName(
                     column.name()
                     ).setType(
-                        column.info().jdbc().type().name()
+                        column.meta().jdbc().type().name()
                         )
                 );
             }

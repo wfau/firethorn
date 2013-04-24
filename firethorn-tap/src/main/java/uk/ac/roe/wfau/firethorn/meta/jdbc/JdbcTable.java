@@ -107,8 +107,8 @@ extends BaseTable<JdbcTable, JdbcColumn>
         /**
          * Create a new column.
          *
-         */
         public JdbcColumn create(final String name);
+         */
 
         /**
          * Create a new column.

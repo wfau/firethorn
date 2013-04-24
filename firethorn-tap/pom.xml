@@ -225,6 +225,16 @@
         </plugins>
 
         <resources>
+            <!--+
+                | Hibernate and Spring configuration files.
+                +-->
+    		<resource>
+    			<directory>${basedir}/src/main/conf</directory>
+                <includes>
+                    <include>*.properties</include>
+                    <include>*.xml</include>
+                </includes>
+    		</resource>
         </resources>
 
         <testResources>

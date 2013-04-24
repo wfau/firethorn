@@ -48,7 +48,7 @@
     <!--+
         | Import our Hibernate data access beans.
         +-->
-    <import resource="hibernate-config.xml"/>
+    <import resource="classpath:hibernate-config.xml"/>
 
     <!--+
         | Import our task scheduler config.

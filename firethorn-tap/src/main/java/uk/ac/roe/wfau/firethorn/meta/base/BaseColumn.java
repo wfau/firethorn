@@ -20,7 +20,7 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnInfo;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
 
 /**
  *
@@ -86,6 +86,43 @@ extends BaseComponent
      * Access to the column metadata.
      *
      */
-    public AdqlColumn.Metadata info();
+    public interface Metadata
+        {
+        /**
+         * ADQL column metadata.
+         *
+         */
+        public interface AdqlMeta
+            {
+            public Integer size();
+            public void size(Integer size);
+
+            public Type type();
+            public void type(Type type);
+
+            public String unit();
+            public void unit(final String unit);
+
+            public String utype();
+            public void utype(final String utype);
+
+            public String ucd();
+            public void ucd(final String ucd);
+
+            }
+
+        /**
+         * The ADQL column metadata.
+         *
+         */
+        public AdqlMeta adql();
+
+        }
+
+    /**
+     * Access to the column metadata.
+     *
+     */
+    public Metadata meta();
 
     }

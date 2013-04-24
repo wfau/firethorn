@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 import adql.db.DBChecker;
@@ -337,7 +338,9 @@ extends TestBase
             ).tables().select(
                 "jdbc_table"
                 ).columns().create(
-                    "jdbc_ra"
+                    "jdbc_ra",
+                    JdbcColumn.Type.INTEGER.code(),
+                    1
                     );
 
     	jdbcResource.schemas().select(
@@ -346,7 +349,9 @@ extends TestBase
             ).tables().select(
                 "jdbc_table"
                 ).columns().create(
-                    "jdbc_dec"
+                    "jdbc_dec",
+                    JdbcColumn.Type.INTEGER.code(),
+                    1
                     );
 
     	jdbcResource.schemas().select(
@@ -355,7 +360,9 @@ extends TestBase
             ).tables().select(
                 "jdbc_table"
                 ).columns().create(
-                    "jdbc_pts"
+                    "jdbc_pts",
+                    JdbcColumn.Type.INTEGER.code(),
+                    1
                     );
 
         //

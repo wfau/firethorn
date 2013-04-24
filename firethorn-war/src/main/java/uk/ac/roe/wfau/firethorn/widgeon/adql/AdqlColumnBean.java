@@ -115,12 +115,12 @@ implements EntityBean<AdqlColumn>
                     @Override
                     public AdqlColumn.Type getType()
                         {
-                        return entity().info().adql().type();
+                        return entity().meta().adql().type();
                         }
                     @Override
                     public Integer getSize()
                         {
-                        return entity().info().adql().size();
+                        return entity().meta().adql().size();
                         }
                     };
                 }

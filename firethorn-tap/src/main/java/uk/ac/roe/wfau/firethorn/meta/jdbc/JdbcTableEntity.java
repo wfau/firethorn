@@ -365,6 +365,7 @@ implements JdbcTable
                     name
                     );
                 }
+/*
             @Override
             public JdbcColumn create(final String name)
                 {
@@ -373,6 +374,7 @@ implements JdbcTable
                     name
                     );
                 }
+*/
             @Override
             public JdbcColumn create(final String name, final int type, final int size)
                 {
@@ -407,18 +409,14 @@ implements JdbcTable
         updatable = true
         )
     private TableType jdbctype ;
-    /*
-    @Override
-    public TableType jdbctype()
+    protected TableType jdbctype()
         {
         return this.jdbctype;
         }
-    @Override
-    public void jdbctype(final TableType type)
+    protected void jdbctype(final TableType type)
         {
         this.jdbctype = type;
         }
-     */
 
     @Override
     public JdbcTable.Info info()
@@ -433,13 +431,15 @@ implements JdbcTable
                     @Override
                     public TableType type()
                         {
-                        return JdbcTableEntity.this.jdbctype ;
+                        return jdbctype() ;
                         }
 
                     @Override
                     public void type(TableType type)
                         {
-                        JdbcTableEntity.this.jdbctype = type ;
+                        jdbctype(
+                            type
+                            );
                         }
                     };
                 }
@@ -489,6 +489,13 @@ implements JdbcTable
             try {
                 //
                 // Check the table columns.
+
+/*
+ * JDBC metadata ...
+ * http://docs.oracle.com/javase/7/docs/api/java/sql/DatabaseMetaData.html
+ *             
+ */
+                        
                 final ResultSet columns = metadata.getColumns(
                     this.schema().catalog(),
                     this.schema().schema(),
@@ -501,25 +508,38 @@ implements JdbcTable
                     final String csname  = columns.getString(JdbcMetadata.JDBC_META_TABLE_SCHEM);
                     final String ctname  = columns.getString(JdbcMetadata.JDBC_META_TABLE_NAME);
                     final String colname = columns.getString(JdbcMetadata.JDBC_META_COLUMN_NAME);
-                    final int    coltype = columns.getInt(JdbcMetadata.JDBC_META_COLUMN_TYPE_TYPE);
-                    final int    colsize = columns.getInt(JdbcMetadata.JDBC_META_COLUMN_SIZE);
+                    final JdbcColumn.Type coltype = JdbcColumn.Type.jdbc(
+                        columns.getInt(
+                            JdbcMetadata.JDBC_META_COLUMN_TYPE_TYPE
+                            )
+                        );
+                    final Integer colsize = new Integer(
+                        columns.getInt(
+                            JdbcMetadata.JDBC_META_COLUMN_SIZE
+                            )
+                        );
+
                     log.debug(
-                        "Found column [{}][{}][{}][{}]",
+                        "Found column [{}][{}][{}][{}][{}][{}]",
                         new Object[]{
                             ccname,
                             csname,
                             ctname,
-                            colname
+                            colname,
+                            coltype,
+                            colsize
                             }
                         );
                     try {
                         final JdbcColumn column = columnsimpl().select(
                             colname
                             );
-                        column.info().jdbc().size(
+                        //
+                        // Update the column ..
+                        column.meta().jdbc().size(
                             colsize
                             );
-                        column.info().jdbc().type(
+                        column.meta().jdbc().type(
                             coltype
                             );
                         }
@@ -527,8 +547,8 @@ implements JdbcTable
                         {
                         columnsimpl().create(
                             colname,
-                            coltype,
-                            colsize
+                            coltype.code(),
+                            colsize.intValue()
                             );
                         }
                     }

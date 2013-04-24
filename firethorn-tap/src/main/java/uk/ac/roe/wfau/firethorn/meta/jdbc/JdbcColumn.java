@@ -22,6 +22,7 @@ import java.sql.Types;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseValue;
 
 /**
  *
@@ -58,9 +59,9 @@ extends BaseColumn<JdbcColumn>
         /**
          * Create a new column.
          *
-         */
         @Deprecated
         public JdbcColumn create(final JdbcTable parent, final String name);
+         */
 
         /**
          * Create a new column.
@@ -273,22 +274,15 @@ extends BaseColumn<JdbcColumn>
     extends AdqlColumn.Metadata
         {
         /**
-         *
+         * The JDBC column metadata.
          *
          */
         public interface JdbcMeta
             {
-
             public Integer size();
-
-            public void size(final Integer size);
-
+            public void size(Integer size);
             public Type type();
-
-            public void type(final int type);
-
-            public void type(final Type type);
-
+            public void type(Type type);
             }
 
         /**
@@ -300,6 +294,6 @@ extends BaseColumn<JdbcColumn>
         }
 
     @Override
-    public JdbcColumn.Metadata info();
+    public JdbcColumn.Metadata meta();
 
     }
