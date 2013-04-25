@@ -409,18 +409,29 @@
             <dependency>
                 <groupId>uk.ac.starlink</groupId>
                 <artifactId>stil-util</artifactId>
-                <version>3.0.2</version>
+                <version>3.0.4</version>
             </dependency>
             <dependency>
                 <groupId>uk.ac.starlink</groupId>
                 <artifactId>stil-table</artifactId>
-                <version>3.0.2</version>
+                <version>3.0.4</version>
             </dependency>
             <dependency>
                 <groupId>uk.ac.starlink</groupId>
                 <artifactId>stil-votable</artifactId>
-                <version>3.0.2</version>
+                <version>3.0.4</version>
             </dependency>
+            <dependency>
+                <groupId>uk.ac.starlink</groupId>
+                <artifactId>stil-fits</artifactId>
+                <version>3.0.4</version>
+            </dependency>
+            <dependency>
+                <groupId>uk.ac.starlink</groupId>
+                <artifactId>stil-tamfits</artifactId>
+                <version>3.0.4</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>

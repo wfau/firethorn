@@ -103,7 +103,6 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                         </utype>
                         <%
                         }
-
                     if (meta.adql().type() != null)
                         {
                         %>
@@ -115,8 +114,6 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                         <type/>
                         <%
                         }
-
-
                     }
                 else {
                     %>

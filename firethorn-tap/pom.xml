@@ -188,6 +188,14 @@
             +-->
         <dependency>
             <groupId>uk.ac.starlink</groupId>
+            <artifactId>stil-fits</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.starlink</groupId>
+            <artifactId>stil-tamfits</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.starlink</groupId>
             <artifactId>stil-util</artifactId>
         </dependency>
         <dependency>

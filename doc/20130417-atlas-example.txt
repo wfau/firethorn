@@ -83,9 +83,12 @@
         source "${FIRETHORN_TEST?}/init-rest.sh"
 
         source "${FIRETHORN_TEST?}/init-user.sh"
-        source "${FIRETHORN_TEST?}/init-atlas.sh"
 
+        source "${FIRETHORN_TEST?}/init-atlas.sh"
         source "${FIRETHORN_TEST?}/query-atlas.sh"
+
+        source "${FIRETHORN_TEST?}/init-wfau.sh"
+        source "${FIRETHORN_TEST?}/query-wfau.sh"
 
     popd
 
