@@ -1,12 +1,12 @@
 
 
-    pushd /home/Zarquan/Projects/bristol/starlink/zip/stil_jars
+#
+# Install the Stil libraries into our Maven repository.
 
+    pushd /var/local/projects/bristol/starlink/zip/stil_jars
 
         for name in 'fits' 'util' 'table' 'votable' 'tamfits'
         do
-
-            name=tamfits
 
             echo "Name [${name}]"
 
@@ -26,19 +26,3 @@
         done
 
 
-        name=tamfits
-        jarfile=${name?}.jar
-        fullname=stil-${name?}
-        version=3.0.4
-        group=uk.ac.starlink
-
-        mvn install:install-file  \
-            -Dfile=${jarfile?} \
-            -DgroupId=${group?} \
-            -DartifactId=${fullname?} \
-            -Dversion=${version?} \
-            -Dpackaging=jar \
-            -DcreateChecksum=true
-
-
-nom.tam.fits v0.93
