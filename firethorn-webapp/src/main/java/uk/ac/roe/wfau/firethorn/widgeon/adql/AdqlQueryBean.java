@@ -271,6 +271,13 @@ implements EntityBean<AdqlQuery>
          *
          */
         public String getJdbc();
+
+        /**
+         * Access to a VOTable representation of the results.
+         *
+         */
+        public String getVotable();
+
         }
 
     /**
@@ -290,6 +297,11 @@ implements EntityBean<AdqlQuery>
             public String getJdbc()
                 {
                 return entity().results().jdbc().link();
+                }
+            @Override
+            public String getVotable()
+                {
+                return entity().link().concat(AdqlQueryLinkFactory.VOTABLE_NAME);
                 }
             };
         }
@@ -319,6 +331,10 @@ implements EntityBean<AdqlQuery>
                 return new Iterator<FieldBean>()
                     {
                     final Iterator<AdqlQuery.SelectField> iter = entity().fields().iterator();
+                    protected Iterator<AdqlQuery.SelectField> iter()
+                        {
+                        return this.iter;
+                        }
                     @Override
                     public boolean hasNext()
                         {
@@ -328,7 +344,7 @@ implements EntityBean<AdqlQuery>
                     public FieldBean next()
                         {
                         return new FieldBean(){
-                            final AdqlQuery.SelectField field = iter.next();
+                            final AdqlQuery.SelectField field = iter().next();
                             @Override
                             public String getName()
                                 {

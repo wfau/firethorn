@@ -50,6 +50,18 @@ implements AdqlQuery.LinkFactory
      */
     public static final String QUERY_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
 
+    /**
+     * The URI path for the VOTable representation.
+     *
+     */
+    public static final String VOTABLE_NAME = "/votable";
+
+    /**
+     * The URI path for the VOTable representation.
+     *
+     */
+    public static final String VOTABLE_PATH = BASE_PATH + "/" + IDENT_TOKEN + VOTABLE_NAME;
+    
     @Override
     public String link(final AdqlQuery entity)
         {

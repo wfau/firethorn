@@ -43,6 +43,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlQueryLinkFactory;
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.TableFormatException;
@@ -56,8 +57,8 @@ import uk.ac.starlink.votable.VOTableWriter;
  */
 @Slf4j
 @Controller
-@RequestMapping(VOTableLinkFactory.QUERY_PATH)
-public class VOTableController
+@RequestMapping(AdqlQueryLinkFactory.VOTABLE_PATH)
+public class AdqlQueryVOTableController
     extends AbstractController
     {
 
@@ -65,7 +66,7 @@ public class VOTableController
     public Path path()
         {
         return path(
-            VOTableLinkFactory.QUERY_PATH
+            AdqlQueryLinkFactory.VOTABLE_PATH
             );
         }
 
@@ -73,24 +74,9 @@ public class VOTableController
      * Public constructor.
      *
      */
-    public VOTableController()
+    public AdqlQueryVOTableController()
         {
         super();
-        }
-
-    /**
-     * Get the target entity based on the ident in the path.
-     * @throws NotFoundException
-     *
-     */
-    public AdqlQuery query(
-        final String ident
-        ) throws NotFoundException {
-        return factories().adql().queries().select(
-            factories().adql().queries().idents().ident(
-                ident
-                )
-            );
         }
 
     /**
@@ -111,33 +97,35 @@ public class VOTableController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=VOTABLE_MIME)
-    public void select(
+    public void votable(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident,
         final HttpServletResponse response
         ) throws NotFoundException {
 
-        AdqlQuery query = query(ident);
-
+        final AdqlQuery query = factories().adql().queries().select(
+            factories().adql().queries().idents().ident(
+                ident
+                )
+            );
+        
         try {
-
-// AdqlTable
-// JdbcTable
-// JdbcResource
-// JdbcConnection
 
             response.setContentType(
                 VOTABLE_MIME
                 );
 
             log.debug("Query [{}]", query.ident());
-        
-            StringBuilder builder = new StringBuilder();
+
+            //
+            // Create an SQL query to get the columns in a specific order.
+            final StringBuilder builder = new StringBuilder();
             builder.append(
                 "SELECT "
                 );
-    
-            List<AdqlColumn> columns = new ArrayList<AdqlColumn>();
+            //
+            // Add the columns from our ADQL metadata, using the ADQL aliases.
+            final List<AdqlColumn> columns = new ArrayList<AdqlColumn>();
             for (AdqlColumn column : query.results().adql().columns().select())
                 {
                 log.debug("Column [{}][{}]", column.ident(), column.name());
@@ -166,40 +154,50 @@ public class VOTableController
             builder.append(
                 query.results().jdbc().fullname()
                 );
-            String sql = builder.toString();
-            log.debug("Statement [{}]", sql);
+            log.debug("SQL [{}]", builder.toString());
 
-            JdbcResource resource = query.results().jdbc().resource();
-            Connection connection = resource.connection().open();
-            Statement  statement  = connection.createStatement();            
-            ResultSet  results    = statement.executeQuery(
-                sql
+            //
+            // Run the SQL query.
+            final JdbcResource resource = query.results().jdbc().resource();
+            final Connection connection = resource.connection().open();
+            final Statement  statement  = connection.createStatement();            
+            final ResultSet  results    = statement.executeQuery(
+                builder.toString()
                 ); 
-            
-            StarResultSet starset = new StarResultSet(
+            final StarResultSet starset = new StarResultSet(
                 results
                 );
-            
-            StarTable startab = new SequentialResultSetStarTable(
+            final StarTable startab = new SequentialResultSetStarTable(
                 starset
                 );
-
+            //
+            // Update the StarTable column metadata to match the ADQL column names.
             for (int i = 0 ; i < startab.getColumnCount() ; i++)
                 {
-                ColumnInfo info = startab.getColumnInfo(i);            
-                AdqlColumn adql = columns.get(i);
+                final ColumnInfo info = startab.getColumnInfo(i);            
+                final AdqlColumn adql = columns.get(i);
 
                 log.debug("Info [{}]", info.getName());
                 log.debug("Adql [{}]", adql.name());
                 info.setName(
                     adql.name()
                     );
-                info.setUCD(
-                    adql.meta().adql().ucd()
-                    );
-                info.setUnitString(
-                    adql.meta().adql().unit()
-                    );
+
+                final String ucd = adql.meta().adql().ucd();
+                if (ucd != null)
+                    {
+                    info.setUCD(
+                        ucd
+                        );
+                    }
+
+                final String units = adql.meta().adql().unit();
+                if (units != null)
+                    {
+                    info.setUnitString(
+                        units
+                        );
+                    }
                 }
             
             VOTableWriter writer = new VOTableWriter();
