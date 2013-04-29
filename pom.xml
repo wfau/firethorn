@@ -180,7 +180,7 @@
         <module>firethorn-ogsadai</module>
 
         <module>firethorn-core</module>
-        <module>firethorn-war</module>
+        <module>firethorn-webapp</module>
 
     </modules>
 
