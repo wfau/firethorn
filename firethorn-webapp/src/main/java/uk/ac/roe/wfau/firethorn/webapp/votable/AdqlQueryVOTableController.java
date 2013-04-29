@@ -96,7 +96,7 @@ public class AdqlQueryVOTableController
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=VOTABLE_MIME)
+    @RequestMapping(method=RequestMethod.GET, produces=TEXT_XML_MIME)
     public void votable(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident,
@@ -112,7 +112,7 @@ public class AdqlQueryVOTableController
         try {
 
             response.setContentType(
-                VOTABLE_MIME
+                TEXT_XML_MIME
                 );
 
             log.debug("Query [{}]", query.ident());

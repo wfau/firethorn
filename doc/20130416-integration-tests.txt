@@ -6,22 +6,37 @@
     # SSH tunnel to ROE
     ssh -L 1433:ramses5:1433 fenrir.roe.ac.uk
 
+
 # TTY #2 ------------------------------------------------------------
-# Build and deploy the firethorn webapp 
+# Build everything ... 
 #
 
-    #
-    # Build everything 
     source ${HOME?}/firethorn.settings
-    pushd "${FIRETHORN_CODE?}" ; mvn clean install ; popd
-
-    #
-    # Deploy the webapp in Tomcat.
-    pushd "${FIRETHORN_CODE?}/firethorn-war"
-        mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
+    pushd "${FIRETHORN_CODE?}"
+        mvn clean install 
     popd
 
 # TTY #3 ------------------------------------------------------------
+# Deploy the test data database 
+#
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}/firethorn-testdata"
+        mvn clean liquibase:update
+        mvn exec:java
+    popd
+
+
+# TTY #4 ------------------------------------------------------------
+# Deploy the firethorn webapp 
+#
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}/firethorn-webapp"
+        mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
+    popd
+
+# TTY #5 ------------------------------------------------------------
 # Build and deploy the OGSA-DAI webapp 
 #
 
@@ -50,7 +65,7 @@
         
     popd
 
-# TTY #5 ------------------------------------------------------------
+# TTY #6 ------------------------------------------------------------
 # OGSA-DAI login fix.
 #
 
@@ -59,7 +74,7 @@
         mvn -D skipTests=false -D test=SingleQueryTestCase test 
     popd
 
-# TTY #5 ------------------------------------------------------------
+# TTY #7 ------------------------------------------------------------
 # Run the REST test scripts.
 #
 

@@ -28,7 +28,7 @@
 #
 
     source ${HOME?}/firethorn.settings
-    pushd "${FIRETHORN_CODE?}/firethorn-war"
+    pushd "${FIRETHORN_CODE?}/firethorn-webapp"
         mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
     popd
 
