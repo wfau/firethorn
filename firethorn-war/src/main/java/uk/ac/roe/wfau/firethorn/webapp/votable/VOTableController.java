@@ -97,9 +97,14 @@ public class VOTableController
      * VOTable MIME type.
      *
      */
-    //public static final String VOTABLE_MIME = "application/x-votable+xml" ; 
-    public static final String VOTABLE_MIME = "text/xml" ; 
-    
+    public static final String VOTABLE_MIME = "application/x-votable+xml" ; 
+
+    /**
+     * TextXml MIME type.
+     *
+     */
+    public static final String TEXT_XML_MIME = "text/xml" ; 
+
     /**
      * VOTable GET request.
      *
