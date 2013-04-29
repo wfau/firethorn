@@ -179,7 +179,7 @@
         <module>firethorn-cds</module>
         <module>firethorn-ogsadai</module>
 
-        <module>firethorn-tap</module>
+        <module>firethorn-core</module>
         <module>firethorn-war</module>
 
     </modules>

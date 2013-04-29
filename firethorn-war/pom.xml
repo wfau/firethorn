@@ -114,7 +114,7 @@
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-tap</artifactId>
+            <artifactId>firethorn-core</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
