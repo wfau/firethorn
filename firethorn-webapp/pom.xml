@@ -42,7 +42,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>firethorn-war</artifactId>
+    <artifactId>firethorn-webapp</artifactId>
     <packaging>war</packaging>
 
     <name>FireThorn webapp</name>
