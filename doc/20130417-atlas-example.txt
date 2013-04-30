@@ -75,20 +75,28 @@
 # Run the REST test scripts.
 #
 
-    source ${HOME?}/firethorn.settings
-    FIRETHORN_TEST=${FIRETHORN_TEST:-${FIRETHORN_CODE?}/integration/001}
 
-        pushd $(mktemp --directory)
+    pushd $(mktemp --directory)
+
+        source ${HOME?}/firethorn.settings
+        FIRETHORN_TEST=${FIRETHORN_TEST:-${FIRETHORN_CODE?}/integration/002}
 
         source "${FIRETHORN_TEST?}/init-rest.sh"
 
+        #
+        # Set up our JDBC resources.
+        # Slow - scanning all all the JDBC tables.
         source "${FIRETHORN_TEST?}/init-user.sh"
+        source "${FIRETHORN_TEST?}/init-jdbc.sh"
 
+        #
+        # Build our workspace.
+        # Too slow - a bug causes it to re-scan the JDBC resources.
         source "${FIRETHORN_TEST?}/init-atlas.sh"
-        source "${FIRETHORN_TEST?}/query-atlas.sh"
 
-        source "${FIRETHORN_TEST?}/init-wfau.sh"
-        source "${FIRETHORN_TEST?}/query-wfau.sh"
+        #
+        # Run a query - quick.
+        source "${FIRETHORN_TEST?}/query-atlas.sh"
 
     popd
 
