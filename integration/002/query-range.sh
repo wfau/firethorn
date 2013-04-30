@@ -19,9 +19,12 @@ cat > atlas-query-00x.adql << 'EOF'
     AND
         neighbour.slaveObjID = twomass.pts_key
     AND
-        neighbour.distanceMins < 1E-6
+        neighbour.distanceMins < 1E-5
     ORDER BY
-        neighbour.distanceMins
+        twomass.ra,
+        atlas.ra,
+        twomass.dec,
+        atlas.dec
 
 EOF
 
