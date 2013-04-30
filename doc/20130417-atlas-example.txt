@@ -108,7 +108,6 @@
         #
         # Run a query.
         source "${FIRETHORN_TEST?}/query-atlas.sh"
-        source "${FIRETHORN_TEST?}/query-range.sh"
 
     popd
 
