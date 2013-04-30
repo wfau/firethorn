@@ -78,13 +78,12 @@
 # Run the REST test scripts.
 #
 
-    source ${HOME?}/firethorn.settings
-    FIRETHORN_TEST=${FIRETHORN_TEST:-${FIRETHORN_CODE?}/integration/001}
+    pushd $(mktemp --directory)
 
-        pushd $(mktemp --directory)
+        source ${HOME?}/firethorn.settings
+        FIRETHORN_TEST=${FIRETHORN_TEST:-${FIRETHORN_CODE?}/integration/001}
 
         source "${FIRETHORN_TEST?}/init-rest.sh"
-
         source "${FIRETHORN_TEST?}/init-user.sh"
 
         source "${FIRETHORN_TEST?}/init-jdbc.sh"

@@ -118,6 +118,15 @@
                     +-->
                 <prop key="jadira.usertype.autoRegisterUserTypes">true</prop>
 
+                <!--+
+                    | c3p0 connection pool.
+                    | https://docs.jboss.org/hibernate/orm/4.0/devguide/en-US/html/ch01.html#d0e318
+                    +-->
+                <prop key="hibernate.c3p0.min_size">5</prop>
+                <prop key="hibernate.c3p0.max_size">10</prop>
+                <!--prop key="hibernate.c3p0.timeout"></prop-->
+                <!--prop key="hibernate.c3p0.max_statements"></prop-->
+
             </props>
         </property>
 

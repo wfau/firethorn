@@ -141,12 +141,16 @@ public class AdqlQueryVOTableController
                 builder.append(
                     column.root().name()
                     );
+/*
+ *
                 builder.append(
                     " AS "
                     );
                 builder.append(
                     column.alias()
                     );
+ *
+ */
                 }
             builder.append(
                 " FROM "

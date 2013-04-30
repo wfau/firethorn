@@ -30,17 +30,17 @@ jdbcatlas=$(
         | ident
         )
 
+##
+## Check the ATLAS resource.
+#GET "${jdbcatlas?}" \
+#    | ./pp
 #
-# Check the ATLAS resource.
-GET "${jdbcatlas?}" \
-    | ./pp
-
-#
-# List the ATLAS schema.
+##
+## List the ATLAS schema.
 #GET "${jdbcatlas?}/schemas/select" | ./pp
-
 #
-# List the ATLAS tables.
+##
+## List the ATLAS tables.
 #for jdbcschema in $(
 #    GET "${jdbcatlas?}/schemas/select"  \
 #        | ident

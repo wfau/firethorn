@@ -18,8 +18,10 @@
 package uk.ac.roe.wfau.firethorn.adql.query;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Access;
@@ -909,7 +911,7 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Transient
-    private final Set<SelectField > fields = new HashSet<SelectField>();
+    private final List<SelectField > fields = new ArrayList<SelectField>();
     @Override
     public Iterable<SelectField > fields()
         {
