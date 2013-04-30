@@ -126,7 +126,7 @@ implements AdqlParserTable
             {
             if (jdbcName.length() > 0)
                 {
-                if (jdbcName.equals(table.base().name()) == false)
+                if (jdbcName.equals(table.root().name()) == false)
                     {
                     this.jdbcName = jdbcName;
                     }
@@ -215,10 +215,10 @@ implements AdqlParserTable
         else {
             if (this.mode() == AdqlQuery.Mode.DISTRIBUTED)
                 {
-                return this.table.base().alias();
+                return this.table.root().alias();
                 }
             else {
-                return this.table.base().name();
+                return this.table.root().name();
                 }
             }
         }
@@ -241,7 +241,7 @@ implements AdqlParserTable
                 return null ;
                 }
             else {
-                return this.table.base().schema().name();
+                return this.table.root().schema().name();
                 }
             }
         }
@@ -264,7 +264,7 @@ implements AdqlParserTable
                 return null ;
                 }
             else {
-                //return this.table.base().catalog().name();
+                //return this.table.root().catalog().name();
                 return null ;
                 }
             }
@@ -507,7 +507,7 @@ implements AdqlParserTable
                 return this.jdbcName ;
                 }
             else {
-                return this.column.base().alias();
+                return this.column.root().alias();
                 }
             }
 

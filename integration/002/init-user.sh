@@ -26,7 +26,7 @@ POST "/jdbc/resource/create" \
     -d "jdbc.resource.create.name=userdate-$(unique)" \
     -d "jdbc.resource.create.ogsadai=user" \
     | tee jdbc-user-resource.json | ./pp
-jdbcresource=$(cat jdbc-user-resource.json | ident)
+userresource=$(cat jdbc-user-resource.json | ident)
 
 #
 # Locale the user data schema.
@@ -36,7 +36,7 @@ jdbcresource=$(cat jdbc-user-resource.json | ident)
 #    -d "jdbc.resource.schema.select.name=PUBLIC.PUBLIC" \
 #
 # ** Needs at least one table in the schema.
-POST "${jdbcresource?}/schemas/select" \
+POST "${userresource?}/schemas/select" \
     -d "jdbc.resource.schema.select.name=PUBLIC.PUBLIC" \
     | tee user-schema.json | ./pp
 userschema=$(cat user-schema.json | ident)

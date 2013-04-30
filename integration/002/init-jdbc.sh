@@ -37,16 +37,16 @@ GET "${jdbcatlas?}" \
 
 #
 # List the ATLAS schema.
-GET "${jdbcatlas?}/schemas/select" | ./pp
+#GET "${jdbcatlas?}/schemas/select" | ./pp
 
 #
 # List the ATLAS tables.
-for jdbcschema in $(
-    GET "${jdbcatlas?}/schemas/select"  \
-        | ident
-    )
-    do
-        GET "${jdbcschema?}/tables/select" | ./pp
-    done
+#for jdbcschema in $(
+#    GET "${jdbcatlas?}/schemas/select"  \
+#        | ident
+#    )
+#    do
+#        GET "${jdbcschema?}/tables/select" | ./pp
+#    done
 
 

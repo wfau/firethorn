@@ -438,9 +438,10 @@ implements AdqlParser
                 log.debug("  ----");
                 log.debug("  adql [{}]", adql.fullname());
                 log.debug("  base [{}]", adql.base().fullname());
+                log.debug("  root [{}]", adql.root().fullname());
                 return new ColumnMetaImpl(
                     adql.name(),
-                    adql.base().meta()
+                    adql.root().meta()
                     );
                 }
             else {
@@ -580,6 +581,7 @@ implements AdqlParser
                     log.debug("  ----");
                     log.debug("  AdqlColumn [{}]", adql.fullname());
                     log.debug("  BaseColumn [{}]", adql.base().fullname());
+                    log.debug("  RootColumn [{}]", adql.root().fullname());
                     subject.add(
                         adql
                         );
@@ -596,6 +598,7 @@ implements AdqlParser
                     log.debug("  ----");
                     log.debug("  AdqlTable [{}]", adql.fullname());
                     log.debug("  BaseTable [{}]", adql.base().fullname());
+                    log.debug("  RootTable [{}]", adql.root().fullname());
                     subject.add(
                         adql
                         );

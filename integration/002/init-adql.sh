@@ -21,22 +21,22 @@
 
 #
 # Create a new ADQL workspace.
-atlasspace=$(
+adqlspace=$(
     POST "/adql/resource/create" \
         --data "adql.resource.create.name=workspace-$(unique)" \
         | ident
         )
-GET "${atlasspace?}" \
+GET "${adqlspace?}" \
     | ./pp
 
 #
-# Create a new ADQL schema.
-atlasschema=$(
-    POST "${atlasspace?}/schemas/create" \
-        --data "adql.resource.schema.create.name=atlas_schema" \
+# Create a new ADQL schema for the TWOMASS tables.
+twomassschema=$(
+    POST "${adqlspace?}/schemas/create" \
+        --data "adql.resource.schema.create.name=twomass" \
         | ident
         )
-GET "${atlasschema?}" \
+GET "${twomassschema?}" \
     | ./pp
 
 #
@@ -51,13 +51,23 @@ jdbctable=$(
         -d "jdbc.schema.table.select.name=twomass_psc" \
         | ident
         )
-POST "${atlasschema?}/tables/import" \
+POST "${twomassschema?}/tables/import" \
     --data "adql.schema.table.import.base=${metabasename?}/${jdbctable?}" \
     | ./pp
 
 
 #
-# Import the UKIDSS 'gcsPointSource' table.
+# Create a new ADQL schema for the UKIDSS tables.
+ukidssschema=$(
+    POST "${adqlspace?}/schemas/create" \
+        --data "adql.resource.schema.create.name=ukidss" \
+        | ident
+        )
+GET "${ukidssschema?}" \
+    | ./pp
+
+#
+# Import the UKIDSS 'gcsPointSource' and  'gcsSourceXtwomass_psc' tables.
 jdbcschema=$(
     POST "${jdbcatlas?}/schemas/select" \
         -d "jdbc.resource.schema.select.name=UKIDSSDR5PLUS.dbo" \
@@ -68,28 +78,32 @@ jdbctable=$(
         -d "jdbc.schema.table.select.name=gcsPointSource" \
         | ident
         )
-POST "${atlasschema?}/tables/import" \
+POST "${ukidssschema?}/tables/import" \
     --data "adql.schema.table.import.base=${metabasename?}/${jdbctable?}" \
     | ./pp
 
-#
-# Import the UKIDSS 'gcsSourceXtwomass_psc' table.
-jdbcschema=$(
-    POST "${jdbcatlas?}/schemas/select" \
-        -d "jdbc.resource.schema.select.name=UKIDSSDR5PLUS.dbo" \
-        | ident
-        )
 jdbctable=$(
     POST "${jdbcschema?}/tables/select" \
         -d "jdbc.schema.table.select.name=gcsSourceXtwomass_psc" \
         | ident
         )
-POST "${atlasschema?}/tables/import" \
+POST "${ukidssschema?}/tables/import" \
     --data "adql.schema.table.import.base=${metabasename?}/${jdbctable?}" \
     | ./pp
 
+
 #
-# Import the ATLAS 'atlasSource' table.
+# Create a new ADQL schema for the Atlas tables.
+atlasschema=$(
+    POST "${adqlspace?}/schemas/create" \
+        --data "adql.resource.schema.create.name=atlas" \
+        | ident
+        )
+GET "${atlasschema?}" \
+    | ./pp
+
+#
+# Import the ATLAS 'atlasSource' and  'atlasSourceXtwomass_psc' tables.
 jdbcschema=$(
     POST "${jdbcatlas?}/schemas/select" \
         -d "jdbc.resource.schema.select.name=ATLASv20130304.dbo" \
@@ -104,13 +118,6 @@ POST "${atlasschema?}/tables/import" \
     --data "adql.schema.table.import.base=${metabasename?}/${jdbctable?}" \
     | ./pp
 
-#
-# Import the ATLAS/TWOMASS 'atlasSourceXtwomass_psc' table.
-jdbcschema=$(
-    POST "${jdbcatlas?}/schemas/select" \
-        -d "jdbc.resource.schema.select.name=ATLASv20130304.dbo" \
-        | ident
-        )
 jdbctable=$(
     POST "${jdbcschema?}/tables/select" \
         -d "jdbc.schema.table.select.name=atlasSourceXtwomass_psc" \
@@ -119,6 +126,15 @@ jdbctable=$(
 POST "${atlasschema?}/tables/import" \
     --data "adql.schema.table.import.base=${metabasename?}/${jdbctable?}" \
     | ./pp
+
+
+
+
+
+
+
+
+
 
 
 

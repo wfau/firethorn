@@ -1,6 +1,6 @@
 
 
-cat > atlas-query-001.adql << 'EOF'
+cat > atlas-query-002.adql << 'EOF'
 
     SELECT
         twomass.ra AS tmra,
@@ -11,9 +11,9 @@ cat > atlas-query-001.adql << 'EOF'
         (twomass.ra - atlas.ra) AS difdec,
         neighbour.distanceMins AS dist
     FROM
-        atlas_schema.twomass_psc AS twomass,
-        atlas_schema.atlasSource AS atlas,
-        atlas_schema.atlasSourceXtwomass_psc AS neighbour
+        query_schema.twomass_psc AS twomass,
+        query_schema.atlasSource AS atlas,
+        query_schema.atlasSourceXtwomass_psc AS neighbour
     WHERE
         twomass.ra  BETWEEN '55.0' AND '55.9'
     AND
@@ -33,10 +33,10 @@ EOF
 
 #
 # Create the ADQL query.
-POST "${atlasschema?}/queries/create" \
+POST "${queryschema?}/queries/create" \
     --data-urlencode "adql.schema.query.create.name=query-$(unique)" \
     --data-urlencode "adql.schema.query.create.store=${metabasename?}/${userschema?}" \
-    --data-urlencode "adql.schema.query.create.query@atlas-query-001.adql" \
+    --data-urlencode "adql.schema.query.create.query@atlas-query-002.adql" \
     | tee atlas-query.json | ./pp
 atlasquery=$(cat atlas-query.json | ident)
 

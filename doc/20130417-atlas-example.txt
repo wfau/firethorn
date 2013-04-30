@@ -75,7 +75,6 @@
 # Run the REST test scripts.
 #
 
-
     pushd $(mktemp --directory)
 
         source ${HOME?}/firethorn.settings
@@ -83,19 +82,31 @@
 
         source "${FIRETHORN_TEST?}/init-rest.sh"
 
+# System admin configuration
+
         #
-        # Set up our JDBC resources.
-        # Slow - scanning all all the JDBC tables.
+        # Set up our user data space.
+        # (quick)
         source "${FIRETHORN_TEST?}/init-user.sh"
+
+        #
+        # Set up our JDBC resource.
+        # (slow - scans all the JDBC tables)
         source "${FIRETHORN_TEST?}/init-jdbc.sh"
 
         #
-        # Build our workspace.
-        # Too slow - a bug causes it to re-scan the JDBC resources.
-        source "${FIRETHORN_TEST?}/init-atlas.sh"
+        # Set up our ADQL resource.
+        # (slow - bug trigges a re-scan of the the JDBC tables)
+        source "${FIRETHORN_TEST?}/init-adql.sh"
+
+# TAPfactory equivalent
 
         #
-        # Run a query - quick.
+        # Create our query workspace.
+        source "${FIRETHORN_TEST?}/init-query.sh"
+
+        #
+        # Run a query.
         source "${FIRETHORN_TEST?}/query-atlas.sh"
 
     popd
