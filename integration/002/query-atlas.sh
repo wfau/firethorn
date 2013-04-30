@@ -15,19 +15,19 @@ cat > atlas-query-002.adql << 'EOF'
         query_schema.atlasSource AS atlas,
         query_schema.atlasSourceXtwomass_psc AS neighbour
     WHERE
-        twomass.ra  BETWEEN '55.0' AND '55.9'
+        twomass.ra  BETWEEN '324.0' AND '355.0'
     AND
-        twomass.dec BETWEEN '20.0' AND '22.9'
+        twomass.dec BETWEEN '-32.0' AND '-30.0'
     AND
-        atlas.ra   BETWEEN '55.0' AND '55.9'
+        atlas.ra   BETWEEN '324.0' AND '355.0'
     AND
-        atlas.dec  BETWEEN '20.0' AND '22.9'
+        atlas.dec  BETWEEN '-32.0' AND '-30.0'
     AND
         neighbour.masterObjID = atlas.sourceID
     AND
         neighbour.slaveObjID = twomass.pts_key
     AND
-        neighbour.distanceMins < 1E-3
+        neighbour.distanceMins < 1E-4
 
 EOF
 
