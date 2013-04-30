@@ -63,33 +63,33 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
         {
         @NamedQuery(
             name  = "JdbcSchema-select-parent",
-            query = "FROM JdbcSchemaEntity WHERE parent = :parent ORDER BY name asc, ident desc"
+            query = "FROM JdbcSchemaEntity WHERE parent = :parent ORDER BY name asc, ident asc"
             ),
         @NamedQuery(
             name  = "JdbcSchema-select-parent.catalog.schema",
-            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (catalog = :catalog) AND (schema = :schema)) ORDER BY name asc, ident desc"
+            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (catalog = :catalog) AND (schema = :schema)) ORDER BY name asc, ident asc"
             ),
 
         @NamedQuery(
             name  = "JdbcSchema-select-parent.null-catalog.null-schema",
-            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (catalog IS NULL) AND (schema IS NULL)) ORDER BY name asc, ident desc"
+            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (catalog IS NULL) AND (schema IS NULL)) ORDER BY name asc, ident asc"
             ),
         @NamedQuery(
             name  = "JdbcSchema-select-parent.catalog.null-schema",
-            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (catalog = :catalog) AND (schema IS NULL)) ORDER BY name asc, ident desc"
+            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (catalog = :catalog) AND (schema IS NULL)) ORDER BY name asc, ident asc"
             ),
         @NamedQuery(
             name  = "JdbcSchema-select-parent.null-catalog.schema",
-            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (catalog IS NULL) AND (schema = :schema)) ORDER BY name asc, ident desc"
+            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (catalog IS NULL) AND (schema = :schema)) ORDER BY name asc, ident asc"
             ),
             
         @NamedQuery(
             name  = "JdbcSchema-select-parent.name",
-            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY name asc, ident desc"
+            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY name asc, ident asc"
             ),
         @NamedQuery(
             name  = "JdbcSchema-search-parent.text",
-            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY name asc, ident desc"
+            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY name asc, ident asc"
             )
         }
     )

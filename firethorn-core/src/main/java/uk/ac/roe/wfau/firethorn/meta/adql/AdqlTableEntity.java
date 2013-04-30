@@ -59,15 +59,15 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
         {
         @NamedQuery(
             name  = "AdqlTable-select-parent",
-            query = "FROM AdqlTableEntity WHERE parent = :parent ORDER BY ident desc"
+            query = "FROM AdqlTableEntity WHERE parent = :parent ORDER BY ident asc"
             ),
         @NamedQuery(
             name  = "AdqlTable-select-parent.name",
-            query = "FROM AdqlTableEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
+            query = "FROM AdqlTableEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident asc"
             ),
         @NamedQuery(
             name  = "AdqlTable-search-parent.text",
-            query = "FROM AdqlTableEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident desc"
+            query = "FROM AdqlTableEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident asc"
             )
         }
     )

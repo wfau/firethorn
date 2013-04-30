@@ -72,15 +72,15 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
         {
         @NamedQuery(
             name  = "JdbcTable-select-parent",
-            query = "FROM JdbcTableEntity WHERE parent = :parent ORDER BY ident desc"
+            query = "FROM JdbcTableEntity WHERE parent = :parent ORDER BY ident asc"
             ),
         @NamedQuery(
             name  = "JdbcTable-select-parent.name",
-            query = "FROM JdbcTableEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident desc"
+            query = "FROM JdbcTableEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY ident asc"
             ),
         @NamedQuery(
             name  = "JdbcTable-search-parent.text",
-            query = "FROM JdbcTableEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident desc"
+            query = "FROM JdbcTableEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY ident asc"
             )
         }
     )

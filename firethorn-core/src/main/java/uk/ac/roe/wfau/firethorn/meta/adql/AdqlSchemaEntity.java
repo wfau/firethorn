@@ -55,15 +55,15 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
         {
         @NamedQuery(
             name  = "AdqlSchema-select-parent",
-            query = "FROM AdqlSchemaEntity WHERE parent = :parent ORDER BY name asc, ident desc"
+            query = "FROM AdqlSchemaEntity WHERE parent = :parent ORDER BY name asc, ident asc"
             ),
         @NamedQuery(
             name  = "AdqlSchema-select-parent.name",
-            query = "FROM AdqlSchemaEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY name asc, ident desc"
+            query = "FROM AdqlSchemaEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY name asc, ident asc"
             ),
         @NamedQuery(
             name  = "AdqlSchema-search-parent.text",
-            query = "FROM AdqlSchemaEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY name asc, ident desc"
+            query = "FROM AdqlSchemaEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY name asc, ident asc"
             )
         }
     )

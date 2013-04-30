@@ -137,6 +137,7 @@ implements AdqlQuery.Builder
 
         for (JdbcColumn column : table.columns().select())
             {
+log.debug("CHANGE.addColumn() [{}]", column.name());            
             change.addColumn(
                 new ColumnConfig().setName(
                     column.name()
@@ -164,15 +165,16 @@ implements AdqlQuery.Builder
             );
         //
         // Add the JdbcColumns.
-        for (AdqlQuery.SelectField meta : query.fields())
+        for (AdqlQuery.SelectField field : query.fields())
             {
 // Size is confused .... ?
 // Include alias for unsafe names ?
 // Create column direct from ColumnMeta
+log.debug("CREATE SelectField [{}]", field.name());
             table.columns().create(
-                meta.name(),
-                meta.type().jdbc().code(),
-                meta.length()
+                field.name(),
+                field.type().jdbc().code(),
+                field.length()
                 );
             }
         //
