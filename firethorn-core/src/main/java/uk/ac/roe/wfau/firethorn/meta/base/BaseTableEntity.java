@@ -160,7 +160,7 @@ extends BaseComponentEntity
         name=DB_TABLE_NAME + "IndexByParent"
         )
     @ManyToOne(
-        fetch = FetchType.EAGER,
+        fetch = FetchType.LAZY,
         targetEntity = BaseSchemaEntity.class
         )
     @JoinColumn(

@@ -306,7 +306,7 @@ implements JdbcTable
         name=DB_TABLE_NAME + "IndexByParent"
         )
     @ManyToOne(
-        fetch = FetchType.EAGER,
+        fetch = FetchType.LAZY,
         targetEntity = JdbcSchemaEntity.class
         )
     @JoinColumn(

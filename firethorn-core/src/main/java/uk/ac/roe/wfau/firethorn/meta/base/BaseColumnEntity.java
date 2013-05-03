@@ -118,7 +118,7 @@ extends BaseComponentEntity
             );
         }
     protected abstract Integer basesize(boolean pull);
-    
+
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -260,7 +260,7 @@ extends BaseComponentEntity
         name=DB_TABLE_NAME + "IndexByParent"
         )
     @ManyToOne(
-        fetch = FetchType.EAGER,
+        fetch = FetchType.LAZY,
         targetEntity = BaseTableEntity.class
         )
     @JoinColumn(

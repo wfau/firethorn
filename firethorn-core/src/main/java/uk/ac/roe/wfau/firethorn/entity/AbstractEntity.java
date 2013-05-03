@@ -228,6 +228,7 @@ implements Entity
      *
      */
     @ManyToOne(
+        fetch = FetchType.LAZY,
         targetEntity = IdentityEntity.class
         )
     @JoinColumn(

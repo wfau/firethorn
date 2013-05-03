@@ -121,12 +121,21 @@
                 <!--+
                     | c3p0 connection pool.
                     | https://docs.jboss.org/hibernate/orm/4.0/devguide/en-US/html/ch01.html#d0e318
-                    +-->
+
+https://community.jboss.org/wiki/HowToConfigureTheC3P0ConnectionPool
+http://www.mkyong.com/hibernate/how-to-configure-the-c3p0-connection-pool-in-hibernate/
+https://community.jboss.org/wiki/HowToConfigureTheC3P0ConnectionPool
+http://stackoverflow.com/questions/475893/what-are-the-required-c3p0-settings-for-hibernate-in-order-to-avoid-deadlocks
+
+                <prop key="c3p0.min_size">5</prop>
+                <prop key="c3p0.max_size">10</prop>
+
                 <prop key="hibernate.c3p0.min_size">5</prop>
                 <prop key="hibernate.c3p0.max_size">10</prop>
-                <!--prop key="hibernate.c3p0.timeout"></prop-->
-                <!--prop key="hibernate.c3p0.max_statements"></prop-->
+                <prop key="hibernate.c3p0.timeout"></prop>
+                <prop key="hibernate.c3p0.max_statements"></prop>
 
+                    +-->
 
                 <!--+
                     | Optional properties.

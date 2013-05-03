@@ -119,7 +119,7 @@ public abstract class BaseSchemaEntity<SchemaType extends BaseSchema<SchemaType,
         name=DB_TABLE_NAME + "IndexByParent"
         )
     @ManyToOne(
-        fetch = FetchType.EAGER,
+        fetch = FetchType.LAZY,
         targetEntity = BaseResourceEntity.class
         )
     @JoinColumn(

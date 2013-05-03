@@ -405,7 +405,7 @@ implements AdqlQuery, AdqlParserQuery
         name=DB_TABLE_NAME + "IndexBySchema"
         )
     @ManyToOne(
-        fetch = FetchType.EAGER,
+        fetch = FetchType.LAZY,
         targetEntity = AdqlSchemaEntity.class
         )
     @JoinColumn(

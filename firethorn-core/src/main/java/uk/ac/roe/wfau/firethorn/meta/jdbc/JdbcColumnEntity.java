@@ -227,7 +227,7 @@ public class JdbcColumnEntity
         name=DB_TABLE_NAME + "IndexByParent"
         )
     @ManyToOne(
-        fetch = FetchType.EAGER,
+        fetch = FetchType.LAZY,
         targetEntity = JdbcTableEntity.class
         )
     @JoinColumn(

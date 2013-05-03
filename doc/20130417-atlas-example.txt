@@ -71,7 +71,6 @@
         mvn -D skipTests=false -D test=SingleQueryTestCase test 
     popd
 
-
 # TTY #7 ------------------------------------------------------------
 # Run the REST test scripts.
 #
@@ -111,5 +110,4 @@
         source "${FIRETHORN_TEST?}/query-atlas.sh"
 
     popd
-
 

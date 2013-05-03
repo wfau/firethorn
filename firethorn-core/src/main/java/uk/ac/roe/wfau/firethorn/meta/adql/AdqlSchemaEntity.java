@@ -224,7 +224,7 @@ implements AdqlSchema
         name=DB_TABLE_NAME + "IndexByParent"
         )
     @ManyToOne(
-        fetch = FetchType.EAGER,
+        fetch = FetchType.LAZY,
         targetEntity = AdqlResourceEntity.class
         )
     @JoinColumn(

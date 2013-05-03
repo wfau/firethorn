@@ -317,7 +317,7 @@ public class AdqlTableEntity
         name=DB_TABLE_NAME + "IndexByParent"
         )
     @ManyToOne(
-        fetch = FetchType.EAGER,
+        fetch = FetchType.LAZY,
         targetEntity = AdqlSchemaEntity.class
         )
     @JoinColumn(

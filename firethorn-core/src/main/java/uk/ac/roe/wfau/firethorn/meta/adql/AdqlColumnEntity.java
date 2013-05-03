@@ -228,7 +228,7 @@ public class AdqlColumnEntity
         name=DB_TABLE_NAME + "IndexByParent"
         )
     @ManyToOne(
-        fetch = FetchType.EAGER,
+        fetch = FetchType.LAZY,
         targetEntity = AdqlTableEntity.class
         )
     @JoinColumn(
@@ -258,7 +258,7 @@ public class AdqlColumnEntity
         name=DB_TABLE_NAME + "IndexByBase"
         )
     @ManyToOne(
-        fetch = FetchType.EAGER,
+        fetch = FetchType.LAZY,
         targetEntity = BaseColumnEntity.class
         )
     @JoinColumn(
