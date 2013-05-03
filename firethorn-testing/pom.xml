@@ -41,7 +41,7 @@
     <name>FireThorn testing</name>
     <description>
         <![CDATA[
-        This is a placeholder POM to include all of the test related dependencies in one place.
+        FireThorn testing components.
         ]]>
     </description>
 

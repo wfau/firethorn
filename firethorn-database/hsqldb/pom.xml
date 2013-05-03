@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--+
     |
-    | Copyright (c) 2012, ROE (http://www.roe.ac.uk/)
+    | Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
     | All rights reserved.
     |
     | This program is free software: you can redistribute it and/or modify
@@ -25,55 +25,26 @@
     >
     <modelVersion>4.0.0</modelVersion>
 
-    <!--+
-        | Maven parent/child projects.
-        | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
-        +-->
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
-        <artifactId>firethorn</artifactId>
+        <artifactId>firethorn-testing</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>firethorn-testdata</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>firethorn-hsqldb</artifactId>
+    <packaging>pom</packaging>
 
-    <name>FireThorn test data</name>
+    <name>FireThorn HSQLDB database</name>
     <description>
         <![CDATA[
-        FireThorn test data.
+        Local HSQLDB database service for FireThorn.
         ]]>
     </description>
 
-    <url>http://redmine.roe.ac.uk/projects/wva</url>
-    
     <properties>
     </properties>
 
-    <repositories>
-    </repositories>
-
     <dependencies>
-
-        <!--+
-            | FireThorn logging dependencies.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-logging</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-
-        <!--+
-            | FireThorn testing dependencies.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-testing</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
 
         <!--+
             | FireThorn database dependencies.
@@ -86,13 +57,13 @@
         </dependency>
 
         <!--+
-            | This should be already inclided by the firethorn-database pom.
-            +-->
+            | This should be already included by firethorn-database ?
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>2.2.9</version>
         </dependency>
+            +-->
 
     </dependencies>
 
@@ -113,6 +84,7 @@
                 <version>1.2.1</version>
                 <executions>
                     <execution>
+                        <!--phase>install</phase-->
                         <goals>
                             <goal>java</goal>
                         </goals>
@@ -132,52 +104,20 @@
 
                         <argument>--dbname.1</argument>
                         <argument>userdata</argument>
+
+                        <argument>--database.2</argument>
+                        <argument>file:target/database/testdata</argument>
+
+                        <argument>--dbname.2</argument>
+                        <argument>testdata</argument>
+
                     </arguments>
                 </configuration>
             </plugin>
 
-            <!--+
-                | Initialise our test data ....
-                | 
-                +-->
-            <plugin>
-                <groupId>org.liquibase</groupId>
-                <artifactId>liquibase-maven-plugin</artifactId>
-                <version>2.0.5</version>
-                <configuration>
-                    <changeLogFile>src/test/conf/create-userdata.xml</changeLogFile>
-                    <driver>org.hsqldb.jdbc.JDBCDriver</driver>
-                    <url>jdbc:hsqldb:file:target/database/userdata</url>
-                    <username>sa</username>
-                    <password></password>
-                    <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
-                </configuration>
-            </plugin>
         </plugins>
-
-        <resources>
-
-            <!--+
-                | Spring database configuration.
-                +-->
-    		<resource>
-    			<directory>${basedir}/src/main/conf</directory>
-                <includes>
-                    <include>testdata-config.xml</include>
-                </includes>
-    		</resource>
-
-        </resources>
-
-        <testResources>
-        </testResources>
 
     </build>
-
-    <reporting>
-        <plugins>
-        </plugins>
-    </reporting>
 
 </project>
 

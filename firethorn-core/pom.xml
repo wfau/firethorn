@@ -78,7 +78,7 @@
         </dependency>
 
         <!--+
-            | FireThorn database dependencies.
+            | FireThorn database components.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -100,14 +100,14 @@
 
         <!--+
             | FireThorn testdata.
-            +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>firethorn-testdata</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
-            <type>jar</type>
+            <type>pom</type>
         </dependency>
+            +-->
 
         <!--+
             | FireThorn CDS ADQL parser.
@@ -124,7 +124,7 @@
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-activity-client</artifactId>
+            <artifactId>firethorn-ogsadai-activity-client</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>

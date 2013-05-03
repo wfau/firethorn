@@ -5,22 +5,23 @@
     ssh -L 1433:ramses5:1433 fenrir.roe.ac.uk
 
 # TTY #2 ------------------------------------------------------------
+# Deploy the test data database 
+#
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}/firethorn-testing"
+        pushd hsqldb
+            mvn clean exec:java
+        popd
+    popd
+
+# TTY #3 ------------------------------------------------------------
 # Build everything ... 
 #
 
     source ${HOME?}/firethorn.settings
     pushd "${FIRETHORN_CODE?}"
         mvn clean install 
-    popd
-
-# TTY #3 ------------------------------------------------------------
-# Deploy the test data database 
-#
-
-    source ${HOME?}/firethorn.settings
-    pushd "${FIRETHORN_CODE?}/firethorn-testdata"
-        mvn clean liquibase:update
-        mvn exec:java
     popd
 
 # TTY #4 ------------------------------------------------------------

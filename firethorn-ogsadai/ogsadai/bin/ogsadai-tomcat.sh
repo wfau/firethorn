@@ -18,9 +18,8 @@
 #
 
 #
-# Set our main path environment variables.
-FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
-FIRETHORN_CODE=${FIRETHORN_BASE?}/devel
+# Load our settings.
+source "${HOME?}/firethorn.settings"
 
 #
 # Run the ogsa-dai webapp in Tomcat.
@@ -28,21 +27,27 @@ if [ ! -e "${FIRETHORN_CODE?}" ]
 then
     echo "ERROR : can't find FIRETHORN source code at [${FIRETHORN_CODE?}]"
 else
-    pushd ${FIRETHORN_CODE?}/firethorn-ogsadai/webapp
+
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/webapp"
+
+        #
+        # Load the JDBC config functions.
+        source src/test/bin/jdbc-functions.sh
 
         #
         # Create a clean war file.
         mvn clean compile war:war
 
         #
-        # Set the database passwords.
-        sed -i '
-            s/{SQL-USER}/'$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.user=\(.*\)/\1/p')'/
-            s/{SQL-PASS}/'$(cat ~/firethorn.properties | sed -n 's/firethorn.wfau.pass=\(.*\)/\1/p')'/
-            ' target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/logins.txt
+        # Configure our JDBC resources.
+        jdbcconfig twomass firethorn.twomass "${HOME?}/firethorn.properties"
+        jdbcconfig ukidss  firethorn.ukidss  "${HOME?}/firethorn.properties"
+        jdbcconfig atlas   firethorn.atlas   "${HOME?}/firethorn.properties"
+        jdbcconfig wfau    firethorn.wfau    "${HOME?}/firethorn.properties"
+        jdbcconfig user    firethorn.user    "${HOME?}/firethorn.properties"
 
         #
-        # Run the webapp in Tomcat
+        # Deploy the webapp in Tomcat.
         mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
 
     popd

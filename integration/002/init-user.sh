@@ -37,7 +37,7 @@ userresource=$(cat jdbc-user-resource.json | ident)
 #
 # ** Needs at least one table in the schema.
 POST "${userresource?}/schemas/select" \
-    -d "jdbc.resource.schema.select.name=PUBLIC.PUBLIC" \
+    -d "jdbc.resource.schema.select.name=public" \
     | tee user-schema.json | ./pp
 userschema=$(cat user-schema.json | ident)
 

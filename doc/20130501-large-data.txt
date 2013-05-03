@@ -1,0 +1,323 @@
+
+#
+# Replaced InMemoryJoin with EquiJoinBatch as the DQP join optimiser.
+#[User@desktop]
+
+    firethorn-ogsadai/webapp/src/main/webapp/WEB-INF/etc/dai/dqp/DQPCompilerConfiguration.xml
+
+        <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.JoinImplementationOptimiser">
+            <property name="joinImplementations">
+                <list>
+        <!-- 
+                    <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.InMemoryJoin"/>
+                    <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.OrderedSweepJoin"/>
+                    <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.DerbyJoin"/>
+                    <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.DerbyJoin"/>
+
+                    <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.InMemoryJoin"/>
+         -->
+
+                    <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.EquiJoinBatch">
+                        <property name="batchSize" value="10000" />
+                    </bean>
+                </list>
+            </property>
+        </bean>
+
+#
+# Changed the local settings to use a postgresql database for metadata and user data.
+#[User@desktop]
+
+    cat ${HOME}/firethorn/firethorn.pgsql.conf
+
+        #
+        # FireThorn metadata.
+        firethorn.meta.url=jdbc:postgresql://localhost/metadata
+        firethorn.meta.type=pgsql
+        firethorn.meta.user=xxxxxx
+        firethorn.meta.pass=xxxxxx
+        firethorn.meta.driver=org.postgresql.Driver
+
+        ....
+
+    pushd ${HOME}
+    
+        ln -s firethorn/firethorn.pgsql.conf firethorn.properties
+        
+    popd
+
+#
+# Create Liquibase changesets to clean the databases.
+
+
+    -D liquibase.clearCheckSums=true
+    -D liquibase.dropFirst=true
+
+
+    liquibase:dropAll
+
+
+    mvn properties:read-project-properties liquibase:update
+    
+
+    ${HOME?}/firethorn.properties
+
+
+    separate liquibase projects for each database
+    
+    firethorn-liquibase
+        metadata
+        userdata
+        testdata
+        
+# ------------------------------------------------------------
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}/firethorn-testdata"
+        pushd hsqldb
+            mvn clean exec:java
+        popd
+    popd
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}/firethorn-testdata"
+        pushd userdata
+            mvn properties:read-project-properties liquibase:dropAll
+            mvn liquibase:update
+        popd
+    popd
+
+
+    liquibase:dropAll
+    liquibase:update
+
+# ------------------------------------------------------------
+#[User@desktop]
+
+    #
+    # Create our local pgpass file.
+    rm    ${HOME?}/.pgpass
+    touch ${HOME?}/.pgpass
+    chmod u=rw,g=,o= ${HOME?}/.pgpass
+
+    for conf in $(ls /etc/firethorn/pgsql.*.conf)
+    do
+
+        databasehost="$(sed -n 's/^host=\(.*\)/\1/p' ${conf?})"
+        databasename="$(sed -n 's/^name=\(.*\)/\1/p' ${conf?})"
+        databaseuser="$(sed -n 's/^user=\(.*\)/\1/p' ${conf?})"
+        databasepass="$(sed -n 's/^pass=\(.*\)/\1/p' ${conf?})"
+
+        echo ""
+        echo "Config [${conf?}]"
+        echo "  name [${databasename?}]"
+        echo "  user [${databaseuser?}]"
+
+        echo "${databasehost?}:*:${databasename?}:${databaseuser?}:${databasepass?}" >> ${HOME?}/.pgpass
+
+    done
+
+    chmod u=rw,g=,o= ${HOME?}/.pgpass
+    cat ${HOME?}/.pgpass
+
+
+    pgsql()
+        {
+        local database=${1?}
+        local databaseconf="/etc/firethorn/pgsql.${database?}.conf"
+        local databasehost="$(sed -n 's/^host=\(.*\)/\1/p' ${databaseconf?})"
+        local databasename="$(sed -n 's/^name=\(.*\)/\1/p' ${databaseconf?})"
+        local databaseuser="$(sed -n 's/^user=\(.*\)/\1/p' ${databaseconf?})"
+
+        psql --host ${databasehost?} --user ${databaseuser?} --dbname ${databasename?}
+
+        }
+
+    pgsql admin
+
+    pgsql metadata
+    pgsql userdata
+    pgsql testdata
+
+# ------------------------------------------------------------
+
+    #
+    # Run the HSQLDB service.
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}/firethorn-testing"
+        pushd hsqldb
+            mvn clean exec:java
+        popd
+    popd
+
+# ------------------------------------------------------------
+
+    #
+    # Configure a specific database.
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}/firethorn-database"
+        pushd metadata
+            mvn clean install
+        popd
+    popd
+
+    #
+    # Configure all our databases.
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}/firethorn-database"
+        mvn clean install
+    popd
+
+# ------------------------------------------------------------
+# BUG
+
+    Using Postgresql on threonine is slow.
+    Subjectively, it is slower than using HSQLDB. 
+
+# ------------------------------------------------------------
+# BUG
+
+    Using the EquiJoinBatch optimiser fails.
+    Obscure error to do with missing string aggrigation function.
+    
+    <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.EquiJoinBatch">
+        <property name="batchSize" value="10000" />
+    </bean>
+
+# ------------------------------------------------------------
+# BUG
+
+    Using the InMemoryJoin optimiser fails.
+    OutOfMemoryError - not necessarily caused by the place where the exception is thrown.
+
+    <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.InMemoryJoin"/>
+
+
+    Caused by: uk.org.ogsadai.activity.event.InternalActivityProcessingException: An unchecked exception was caught during activity processing.
+	    at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:98)
+	    ... 9 more
+    Caused by: java.lang.OutOfMemoryError: GC overhead limit exceeded
+	    at java.util.Arrays.copyOfRange(Arrays.java:3221)
+	    at java.lang.String.<init>(String.java:233)
+	    at java.lang.StringBuffer.toString(StringBuffer.java:602)
+	    at java.io.StringWriter.toString(StringWriter.java:210)
+	    at org.apache.log4j.spi.LocationInfo.<init>(LocationInfo.java:97)
+	    at org.apache.log4j.spi.LoggingEvent.getLocationInformation(LoggingEvent.java:182)
+	    at org.apache.log4j.helpers.PatternParser$LocationPatternConverter.convert(PatternParser.java:475)
+	    at org.apache.log4j.helpers.PatternConverter.format(PatternConverter.java:56)
+	    at org.apache.log4j.PatternLayout.format(PatternLayout.java:495)
+	    at org.apache.log4j.WriterAppender.subAppend(WriterAppender.java:292)
+	    at org.apache.log4j.WriterAppender.append(WriterAppender.java:150)
+	    at org.apache.log4j.AppenderSkeleton.doAppend(AppenderSkeleton.java:221)
+	    at org.apache.log4j.helpers.AppenderAttachableImpl.appendLoopOnAppenders(AppenderAttachableImpl.java:57)
+	    at org.apache.log4j.Category.callAppenders(Category.java:187)
+	    at org.apache.log4j.Category.forcedLog(Category.java:372)
+	    at org.apache.log4j.Category.debug(Category.java:241)
+	    at uk.org.ogsadai.common.msgs.DAILogger.debug(DAILogger.java:84)
+	    at uk.org.ogsadai.tuple.join.ThetaJoin.storeTuple(ThetaJoin.java:182)
+	    at uk.org.ogsadai.tuple.join.Join.storeTuples(Join.java:125)
+
+# ------------------------------------------------------------
+# BUG
+
+    If OGSA-DAI join fails due to OutOfMemoryError, it can leave the JDBC SQL request active.
+    The failure of the Join activity terminates any downstream activities, but the upstream SQL request activity continues to run.
+    If we have many of these orphans it could take the whole system down.
+    
+
+# ------------------------------------------------------------
+# TODO Deliberately large join requests.
+# TODO Large local test data.
+# TODO Multiple long running queries.
+# TODO Load balancing workers.
+# TODO Cancelling long running queries.
+# TODO Swap SQL dialect depending on target resource.
+# TODO SQLServer dialect ..
+
+
+
+# ------------------------------------------------------------
+# BUG
+
+    The DerbyJoin needs additional configuration.
+
+    <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.DerbyJoin"/>
+
+    Caused by: uk.org.ogsadai.resource.ResourceUnknownException: The resource DerbyResource is unknown.
+
+# ------------------------------------------------------------
+# BUG
+
+    EAGER loading of associated objects in the object tree causes convoluted SQL joins for the metadata database 
+
+    select
+        resources0_.adqlquery as adqlquery0_3_,
+        resources0_.baseresource as basereso2_3_,
+        baseresour1_.ident as ident4_0_,
+        baseresour1_.created as created4_0_,
+        baseresour1_.modified as modified4_0_,
+        baseresour1_.name as name4_0_,
+        baseresour1_.owner as owner4_0_,
+        baseresour1_.text as text4_0_,
+        baseresour1_.scandate as scandate4_0_,
+        baseresour1_.scanflag as scanflag4_0_,
+        baseresour1_.status as status4_0_,
+        baseresour1_2_.ogsa_id as ogsa1_13_0_,
+        baseresour1_2_.uri as uri13_0_,
+        baseresour1_2_.url as url13_0_,
+        baseresour1_3_.jdbccatalog as jdbccata1_17_0_,
+        baseresour1_3_.jdbcdriver as jdbcdriver17_0_,
+        baseresour1_3_.jdbcpass as jdbcpass17_0_,
+        baseresour1_3_.jdbcstatus as jdbcstatus17_0_,
+        baseresour1_3_.jdbcurl as jdbcurl17_0_,
+        baseresour1_3_.jdbcuser as jdbcuser17_0_,
+        baseresour1_3_.jdbcogsaid as jdbcogsaid17_0_,
+        case
+            when baseresour1_1_.ident is not null then 1
+            when baseresour1_2_.ident is not null then 2
+            when baseresour1_3_.ident is not null then 3
+            when baseresour1_.ident is not null then 0
+        end as clazz_0_,
+        identityen2_.ident as ident3_1_,
+        identityen2_.created as created3_1_,
+        identityen2_.modified as modified3_1_,
+        identityen2_.name as name3_1_,
+        identityen2_.owner as owner3_1_,
+        identityen2_.text as text3_1_,
+        identityen3_.ident as ident3_2_,
+        identityen3_.created as created3_2_,
+        identityen3_.modified as modified3_2_,
+        identityen3_.name as name3_2_,
+        identityen3_.owner as owner3_2_,
+        identityen3_.text as text3_2_
+    from
+        AdqlQueryJoinBaseResource resources0_
+    inner join
+        BaseResourceEntity baseresour1_ on resources0_.baseresource=baseresour1_.ident
+    left outer join
+        AdqlResourceEntity baseresour1_1_ on baseresour1_.ident=baseresour1_1_.ident
+    left outer join
+        IvoaResourceEntity baseresour1_2_ on baseresour1_.ident=baseresour1_2_.ident
+    left outer join
+        JdbcResourceEntity baseresour1_3_ on baseresour1_.ident=baseresour1_3_.ident
+    left outer join
+        IdentityEntity identityen2_ on baseresour1_.owner=identityen2_.ident
+    left outer join
+        IdentityEntity identityen3_ on identityen2_.owner=identityen3_.ident
+    where
+        resources0_.adqlquery
+    ....
+    
+
+
+runquery $(
+    POST "${queryschema?}/queries/create" \
+        --data-urlencode "adql.schema.query.create.name=query-$(unique)" \
+        --data-urlencode "adql.schema.query.create.store=${metabasename?}/${userschema?}" \
+        --data-urlencode "adql.schema.query.create.query@adql-query-001.adql" \
+        | ./pp | ident
+    )
+
+
+
+

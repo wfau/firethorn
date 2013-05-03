@@ -115,20 +115,6 @@ extends AbstractController
         }
 
     /**
-     * Select all.
-     *
-     */
-    public JdbcSchemaBean.Iter select(
-        @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
-        final JdbcResource resource
-        ){
-        log.debug("select()");
-        return new JdbcSchemaBean.Iter(
-            resource.schemas().select()
-            );
-        }
-
-    /**
      * JSON GET request to select all.
      *
      */
@@ -139,26 +125,9 @@ extends AbstractController
         final JdbcResource resource,
         final ModelAndView model
         ){
-        log.debug("jsonSelect()");
-        return select(
-            resource
-            );
-        }
-
-    /**
-     * Select by name.
-     *
-     */
-    public JdbcSchemaBean select(
-        @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
-        final JdbcResource resource,
-        final String name
-        ){
-        log.debug("select(String) [{}]", name);
-        return new JdbcSchemaBean(
-            resource.schemas().select(
-                name
-                )
+        log.debug("select()");
+        return new JdbcSchemaBean.Iter(
+            resource.schemas().select()
             );
         }
 
@@ -175,26 +144,10 @@ extends AbstractController
         final String name,
         final ModelAndView model
         ){
-        log.debug("jsonSelect(String) [{}]", name);
-        return select(
-            resource,
-            name
-            );
-        }
-
-    /**
-     * Search by text.
-     *
-     */
-    public JdbcSchemaBean.Iter search(
-        @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
-        final JdbcResource resource,
-        final String text
-        ){
-        log.debug("search(String) [{}]", text);
-        return new JdbcSchemaBean.Iter(
-            resource.schemas().search(
-                text
+        log.debug("select(String) [{}]", name);
+        return new JdbcSchemaBean(
+            resource.schemas().select(
+                name
                 )
             );
         }
@@ -205,7 +158,7 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public JdbcSchemaBean.Iter jsonSearch(
+    public JdbcSchemaBean.Iter search(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
         @RequestParam(SEARCH_TEXT)
@@ -213,9 +166,10 @@ extends AbstractController
         final ModelAndView model
         ){
         log.debug("jsonSearch(String) [{}]", text);
-        return search(
-            resource,
-            text
+        return new JdbcSchemaBean.Iter(
+            resource.schemas().search(
+                text
+                )
             );
         }
     }

@@ -26,16 +26,20 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd"
         >
  
-    <changeSet id="userdata-test" author="dave">
- 
-        <comment>Create at least one table in userdata database</comment>
- 
-        <createTable tableName="test">
+    <!--+
+        | Create at least one table.
+        +-->
+    <changeSet id="userdata-000" author="dave" context="userdata">
+        <preConditions>
+            <not>
+                <tableExists tableName="empty"/>
+            </not>
+        </preConditions> 
+        <createTable tableName="empty">
             <column name="ident" autoIncrement="true" type="int">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
         </createTable>
-
     </changeSet>
 
 </databaseChangeLog>

@@ -63,7 +63,7 @@ implements EntityBean<EntityType>
      */
     public AbstractEntityBeanImpl(final URI type, final EntityType entity)
         {
-        log.debug("AbstractEntityBeanImpl [{}][{}]", type, entity.ident().value());
+        log.debug("AbstractEntityBeanImpl [{}][{}]", type, entity.ident());
         this.type = type ;
         this.entity = entity ;
         }

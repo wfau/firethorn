@@ -18,9 +18,8 @@
 #
 
 #
-# Set our main path environment variables.
-FIRETHORN_BASE=${FIRETHORN_BASE:-/var/local/projects/edinburgh/wfau/firethorn}
-FIRETHORN_CODE=${FIRETHORN_BASE?}/devel
+# Load our settings.
+source "${HOME?}/firethorn.settings"
 
 if [ ! -e "${FIRETHORN_CODE?}" ]
 then
@@ -28,8 +27,9 @@ then
 else
     pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/client"
 
-        mvn -D test=SimpleQueryTestCase test
-        mvn -D test=DqpQueryTestCase    test
+        mvn -D skipTests=false -D test=SingleQueryTestCase test 
+        mvn -D skipTests=false -D test=SimpleQueryTestCase test
+        mvn -D skipTests=false -D test=DqpQueryTestCase    test
 
     popd
 fi

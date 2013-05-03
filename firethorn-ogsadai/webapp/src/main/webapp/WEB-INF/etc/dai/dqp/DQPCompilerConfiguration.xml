@@ -63,12 +63,16 @@
                         <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.InMemoryJoin"/>
                         <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.OrderedSweepJoin"/>
                         <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.DerbyJoin"/>
+                        <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.DerbyJoin"/>
+
                         <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.EquiJoinBatch">
                             <property name="batchSize" value="10000" />
                         </bean>
-                        <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.DerbyJoin"/>
+
              -->
-                        <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.InMemoryJoin"/>
+
+                        <bean class="uk.org.ogsadai.dqp.lqp.optimiser.join.OrderedSweepJoin"/>
+
                     </list>
                 </property>
             </bean>

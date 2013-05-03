@@ -43,7 +43,7 @@
         | http://stackoverflow.com/questions/5113579/how-to-import-spring-config-xml-of-one-project-into-spring-config-xml-of-another
     <import resource="database-config.xml"/>
         +-->
-    <import resource="classpath:testdata-config.xml"/>
+    <import resource="classpath:database-config.xml"/>
 
     <!--+
         | Import our Hibernate data access beans.

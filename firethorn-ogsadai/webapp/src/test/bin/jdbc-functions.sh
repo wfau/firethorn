@@ -9,6 +9,8 @@
         local propertyname=${2?}
         local propertyfile=${3?}
 
+        local webappdir='target/firethorn-ogsadai-webapp-1.0-SNAPSHOT'
+
         local databaseurl="$(sed -n 's|^'${propertyname?}'.url=\(.*\)|\1|p'  ${propertyfile?})"
         local databasetype="$(sed -n 's|^'${propertyname?}'.type=\(.*\)|\1|p' ${propertyfile?})"
         local databasename="$(sed -n 's|^'${propertyname?}'.name=\(.*\)|\1|p' ${propertyfile?})"
@@ -27,7 +29,7 @@
         sed -i '
             s|^dai.driver.class=.*|dai.driver.class='${databasedriver?}'|
             s|^dai.data.resource.uri=.*|dai.data.resource.uri='${databaseurl?}'|
-            ' "target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/resources/${resourcename?}"
+            ' "${webappdir?}/WEB-INF/etc/dai/resources/${resourcename?}"
 
         #
         # Set the login credentials.
@@ -36,7 +38,7 @@
                 s|^username=.*|username='${databaseuser?}'|
                 s|^password=.*|password='${databasepass?}'|
                 }
-            ' "target/ogsadai-webapp-1.0-SNAPSHOT/WEB-INF/etc/dai/logins.txt"
+            ' "${webappdir?}/WEB-INF/etc/dai/logins.txt"
         }
 
 

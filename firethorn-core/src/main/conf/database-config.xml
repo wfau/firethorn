@@ -4,21 +4,17 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:cxt="http://www.springframework.org/schema/context"
     xsi:schemaLocation="
-        http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-
-        http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context-3.0.xsd
-        "
-    >
+        http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        ">
 
     <!--+
         | MetaData database.
         +-->
     <bean id="FireThornMetaData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="url"             value="${firethorn.meta.url}"/>
-        <property name="username"        value="${firethorn.meta.user}"/>
-        <property name="password"        value="${firethorn.meta.pass}"/>
+        <property name="url" value="${firethorn.meta.url}"/>
+        <property name="username" value="${firethorn.meta.user}"/>
+        <property name="password" value="${firethorn.meta.pass}"/>
         <property name="driverClassName" value="${firethorn.meta.driver}"/>
     </bean>
 
@@ -26,9 +22,9 @@
         | UserData database.
         +-->
     <bean id="FireThornUserData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="url"             value="${firethorn.user.url}"/>
-        <property name="username"        value="${firethorn.user.user}"/>
-        <property name="password"        value="${firethorn.user.pass}"/>
+        <property name="url" value="${firethorn.user.url}"/>
+        <property name="username" value="${firethorn.user.user}"/>
+        <property name="password" value="${firethorn.user.pass}"/>
         <property name="driverClassName" value="${firethorn.user.driver}"/>
     </bean>
 
@@ -36,9 +32,9 @@
         | TestData database.
         +-->
     <bean id="FireThornTestData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="url"             value="${firethorn.test.url}"/>
-        <property name="username"        value="${firethorn.test.user}"/>
-        <property name="password"        value="${firethorn.test.pass}"/>
+        <property name="url" value="${firethorn.test.url}"/>
+        <property name="username" value="${firethorn.test.user}"/>
+        <property name="password" value="${firethorn.test.pass}"/>
         <property name="driverClassName" value="${firethorn.test.driver}"/>
     </bean>
 
@@ -49,9 +45,9 @@
         | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
         +-->
     <bean id="RoeTWOMASS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="url"             value="${firethorn.twomass.url}"/>
-        <property name="username"        value="${firethorn.twomass.user}"/>
-        <property name="password"        value="${firethorn.twomass.pass}"/>
+        <property name="url" value="${firethorn.twomass.url}"/>
+        <property name="username" value="${firethorn.twomass.user}"/>
+        <property name="password" value="${firethorn.twomass.pass}"/>
         <property name="driverClassName" value="${firethorn.twomass.driver}"/>
     </bean>
 
@@ -60,9 +56,9 @@
         | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
         +-->
     <bean id="RoeTWOXMM" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="url"             value="${firethorn.twoxmm.url}"/>
-        <property name="username"        value="${firethorn.twoxmm.user}"/>
-        <property name="password"        value="${firethorn.twoxmm.pass}"/>
+        <property name="url" value="${firethorn.twoxmm.url}"/>
+        <property name="username" value="${firethorn.twoxmm.user}"/>
+        <property name="password" value="${firethorn.twoxmm.pass}"/>
         <property name="driverClassName" value="${firethorn.twoxmm.driver}"/>
     </bean>
 
@@ -71,9 +67,9 @@
         | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
         +-->
     <bean id="RoeUKIDSS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="url"             value="${firethorn.ukidss.url}"/>
-        <property name="username"        value="${firethorn.ukidss.user}"/>
-        <property name="password"        value="${firethorn.ukidss.pass}"/>
+        <property name="url" value="${firethorn.ukidss.url}"/>
+        <property name="username" value="${firethorn.ukidss.user}"/>
+        <property name="password" value="${firethorn.ukidss.pass}"/>
         <property name="driverClassName" value="${firethorn.ukidss.driver}"/>
     </bean>
 
@@ -82,9 +78,9 @@
         | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
         +-->
     <bean id="RoeWFAU" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="url"             value="${firethorn.wfau.url}"/>
-        <property name="username"        value="${firethorn.wfau.user}"/>
-        <property name="password"        value="${firethorn.wfau.pass}"/>
+        <property name="url" value="${firethorn.wfau.url}"/>
+        <property name="username" value="${firethorn.wfau.user}"/>
+        <property name="password" value="${firethorn.wfau.pass}"/>
         <property name="driverClassName" value="${firethorn.wfau.driver}"/>
     </bean>
 
@@ -93,11 +89,10 @@
         | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
         +-->
     <bean id="RoeATLAS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="url"             value="${firethorn.atlas.url}"/>
-        <property name="username"        value="${firethorn.atlas.user}"/>
-        <property name="password"        value="${firethorn.atlas.pass}"/>
+        <property name="url" value="${firethorn.atlas.url}"/>
+        <property name="username" value="${firethorn.atlas.user}"/>
+        <property name="password" value="${firethorn.atlas.pass}"/>
         <property name="driverClassName" value="${firethorn.atlas.driver}"/>
     </bean>
 
 </beans>
-
