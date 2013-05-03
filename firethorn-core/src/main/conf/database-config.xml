@@ -10,32 +10,63 @@
 
     <!--+
         | MetaData database.
-        +-->
     <bean id="FireThornMetaData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="url" value="${firethorn.meta.url}"/>
-        <property name="username" value="${firethorn.meta.user}"/>
-        <property name="password" value="${firethorn.meta.pass}"/>
-        <property name="driverClassName" value="${firethorn.meta.driver}"/>
+        +-->
+    <bean id="FireThornMetaData" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!--+
+            | DataSource properties.
+            +-->
+        <property name="jdbcUrl"     value="${firethorn.meta.url}"/>
+        <property name="user"        value="${firethorn.meta.user}"/>
+        <property name="password"    value="${firethorn.meta.pass}"/>
+        <property name="driverClass" value="${firethorn.meta.driver}"/>
+        <!--+
+            | C3P0 connection pool.
+            | http://syntx.co/languages-frameworks/java/configuring-c3p0-connection-pooling-with-spring-and-hibernate/
+            +-->
+        <property name="minPoolSize" value="5" />
+        <property name="maxPoolSize" value="20" />
+        <property name="maxIdleTime" value="2000" />
     </bean>
 
     <!--+
         | UserData database.
         +-->
-    <bean id="FireThornUserData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="url" value="${firethorn.user.url}"/>
-        <property name="username" value="${firethorn.user.user}"/>
-        <property name="password" value="${firethorn.user.pass}"/>
-        <property name="driverClassName" value="${firethorn.user.driver}"/>
+    <bean id="FireThornUserData" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!--+
+            | DataSource properties.
+            +-->
+        <property name="jdbcUrl"     value="${firethorn.user.url}"/>
+        <property name="user"        value="${firethorn.user.user}"/>
+        <property name="password"    value="${firethorn.user.pass}"/>
+        <property name="driverClass" value="${firethorn.user.driver}"/>
+        <!--+
+            | C3P0 connection pool.
+            | http://syntx.co/languages-frameworks/java/configuring-c3p0-connection-pooling-with-spring-and-hibernate/
+            +-->
+        <property name="minPoolSize" value="5" />
+        <property name="maxPoolSize" value="20" />
+        <property name="maxIdleTime" value="2000" />
     </bean>
 
     <!--+
         | TestData database.
         +-->
-    <bean id="FireThornTestData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="url" value="${firethorn.test.url}"/>
-        <property name="username" value="${firethorn.test.user}"/>
-        <property name="password" value="${firethorn.test.pass}"/>
-        <property name="driverClassName" value="${firethorn.test.driver}"/>
+    <bean id="FireThornTestData" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!--+
+            | DataSource properties.
+            +-->
+        <property name="jdbcUrl"     value="${firethorn.test.url}"/>
+        <property name="user"        value="${firethorn.test.user}"/>
+        <property name="password"    value="${firethorn.test.pass}"/>
+        <property name="driverClass" value="${firethorn.test.driver}"/>
+        <!--+
+            | C3P0 connection pool.
+            | http://syntx.co/languages-frameworks/java/configuring-c3p0-connection-pooling-with-spring-and-hibernate/
+            +-->
+        <property name="minPoolSize" value="5" />
+        <property name="maxPoolSize" value="20" />
+        <property name="maxIdleTime" value="2000" />
     </bean>
 
     <!-- ======== Live ROE database ======== -->
@@ -44,55 +75,104 @@
         | SSH tunnel to ROE database server.
         | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
         +-->
-    <bean id="RoeTWOMASS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="url" value="${firethorn.twomass.url}"/>
-        <property name="username" value="${firethorn.twomass.user}"/>
-        <property name="password" value="${firethorn.twomass.pass}"/>
-        <property name="driverClassName" value="${firethorn.twomass.driver}"/>
+    <bean id="RoeTWOMASS" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!--+
+            | DataSource properties.
+            +-->
+        <property name="jdbcUrl"     value="${firethorn.twomass.url}"/>
+        <property name="user"        value="${firethorn.twomass.user}"/>
+        <property name="password"    value="${firethorn.twomass.pass}"/>
+        <property name="driverClass" value="${firethorn.twomass.driver}"/>
+        <!--+
+            | C3P0 connection pool.
+            | http://syntx.co/languages-frameworks/java/configuring-c3p0-connection-pooling-with-spring-and-hibernate/
+            +-->
+        <property name="minPoolSize" value="5" />
+        <property name="maxPoolSize" value="20" />
+        <property name="maxIdleTime" value="2000" />
     </bean>
 
     <!--+
         | SSH tunnel to ROE database server.
         | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
         +-->
-    <bean id="RoeTWOXMM" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="url" value="${firethorn.twoxmm.url}"/>
-        <property name="username" value="${firethorn.twoxmm.user}"/>
-        <property name="password" value="${firethorn.twoxmm.pass}"/>
-        <property name="driverClassName" value="${firethorn.twoxmm.driver}"/>
+    <bean id="RoeTWOXMM" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!--+
+            | DataSource properties.
+            +-->
+        <property name="jdbcUrl"     value="${firethorn.twoxmm.url}"/>
+        <property name="user"        value="${firethorn.twoxmm.user}"/>
+        <property name="password"    value="${firethorn.twoxmm.pass}"/>
+        <property name="driverClass" value="${firethorn.twoxmm.driver}"/>
+        <!--+
+            | C3P0 connection pool.
+            | http://syntx.co/languages-frameworks/java/configuring-c3p0-connection-pooling-with-spring-and-hibernate/
+            +-->
+        <property name="minPoolSize" value="5" />
+        <property name="maxPoolSize" value="20" />
+        <property name="maxIdleTime" value="2000" />
     </bean>
 
     <!--+
         | SSH tunnel to ROE database server.
         | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
         +-->
-    <bean id="RoeUKIDSS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="url" value="${firethorn.ukidss.url}"/>
-        <property name="username" value="${firethorn.ukidss.user}"/>
-        <property name="password" value="${firethorn.ukidss.pass}"/>
-        <property name="driverClassName" value="${firethorn.ukidss.driver}"/>
+    <bean id="RoeUKIDSS" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!--+
+            | DataSource properties.
+            +-->
+        <property name="jdbcUrl"     value="${firethorn.ukidss.url}"/>
+        <property name="user"        value="${firethorn.ukidss.user}"/>
+        <property name="password"    value="${firethorn.ukidss.pass}"/>
+        <property name="driverClass" value="${firethorn.ukidss.driver}"/>
+        <!--+
+            | C3P0 connection pool.
+            | http://syntx.co/languages-frameworks/java/configuring-c3p0-connection-pooling-with-spring-and-hibernate/
+            +-->
+        <property name="minPoolSize" value="5" />
+        <property name="maxPoolSize" value="20" />
+        <property name="maxIdleTime" value="2000" />
     </bean>
 
     <!--+
         | SSH tunnel to ROE database server.
         | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
         +-->
-    <bean id="RoeWFAU" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="url" value="${firethorn.wfau.url}"/>
-        <property name="username" value="${firethorn.wfau.user}"/>
-        <property name="password" value="${firethorn.wfau.pass}"/>
-        <property name="driverClassName" value="${firethorn.wfau.driver}"/>
+    <bean id="RoeWFAU" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!--+
+            | DataSource properties.
+            +-->
+        <property name="jdbcUrl"     value="${firethorn.wfau.url}"/>
+        <property name="user"        value="${firethorn.wfau.user}"/>
+        <property name="password"    value="${firethorn.wfau.pass}"/>
+        <property name="driverClass" value="${firethorn.wfau.driver}"/>
+        <!--+
+            | C3P0 connection pool.
+            | http://syntx.co/languages-frameworks/java/configuring-c3p0-connection-pooling-with-spring-and-hibernate/
+            +-->
+        <property name="minPoolSize" value="5" />
+        <property name="maxPoolSize" value="20" />
+        <property name="maxIdleTime" value="2000" />
     </bean>
 
     <!--+
         | SSH tunnel to ROE database server.
         | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
         +-->
-    <bean id="RoeATLAS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="url" value="${firethorn.atlas.url}"/>
-        <property name="username" value="${firethorn.atlas.user}"/>
-        <property name="password" value="${firethorn.atlas.pass}"/>
-        <property name="driverClassName" value="${firethorn.atlas.driver}"/>
+    <bean id="RoeATLAS" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!--+
+            | DataSource properties.
+            +-->
+        <property name="jdbcUrl"     value="${firethorn.atlas.url}"/>
+        <property name="user"        value="${firethorn.atlas.user}"/>
+        <property name="password"    value="${firethorn.atlas.pass}"/>
+        <property name="driverClass" value="${firethorn.atlas.driver}"/>
+        <!--+
+            | C3P0 connection pool.
+            | http://syntx.co/languages-frameworks/java/configuring-c3p0-connection-pooling-with-spring-and-hibernate/
+            +-->
+        <property name="minPoolSize" value="5" />
+        <property name="maxPoolSize" value="20" />
+        <property name="maxIdleTime" value="2000" />
     </bean>
-
 </beans>
