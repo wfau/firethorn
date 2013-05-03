@@ -406,106 +406,111 @@ public class JdbcResourceEntity
         log.debug("  Catalog [{}]", catalog);
         //
         // Get the database metadata
-        final DatabaseMetaData metadata = connection().metadata();
-        final JdbcProductType  product  = JdbcProductType.match(
-            metadata
-            );
-        // TODO - fix connection errors
-        if (metadata != null)
-            {
-            try {
-                final ResultSet tables = metadata.getTables(
-                    catalog,
-                    null, // sch
-                    null, // tab
-                    new String[]
-                        {
-                        JdbcMetadata.JDBC_META_TABLE_TYPE_TABLE,
-                        JdbcMetadata.JDBC_META_TABLE_TYPE_VIEW
-                        }
-                    );
-
-                String cprev = null ;
-                String sprev = null ;
-                while (tables.next())
-                    {
-                    String cname = tables.getString(JdbcMetadata.JDBC_META_TABLE_CAT);
-                    String sname = tables.getString(JdbcMetadata.JDBC_META_TABLE_SCHEM);
-                    log.debug("Found schema [{}][{}]", new Object[]{cname, sname});
-                    //
-                    // In MySQL the schema name is always null, use the catalog name instead.
-                    if (product == JdbcProductType.MYSQL)
-                        {
-                        sname = cname ;
-                        cname = null ;
-                        }
-                    //
-                    // In HSQLDB the schema and catalogs overlap, use the catalog name as the schema.
-                    if (product == JdbcProductType.HSQLDB)
-                        {
-                        //log.debug("JdbcProductType.HSQLDB, swapping names");
-                        //sname = cname ;
-                        //cname = null ;
-                        }
-
-                    //
-                    // Skip if the schema is on our ignore list.
-                    if (product.ignores().contains(sname))
-                        {
-                        //log.debug("Schema [{}] is on the ignore list for [{}]", sname, product);
-                        continue;
-                        }
-                    //
-                    // Check if we have already done this one.
-                    if (
-                        ((cname == null) ? cprev == null : cname.equals(cprev))
-                        &&
-                        ((sname == null) ? sprev == null : sname.equals(sprev))
-                        ){
-                        log.debug("Already done [{}][{}], skipping", cname, sname);
-                        continue;
-                        }
-                    else {
-                        cprev = cname;
-                        sprev = sname;
-                        }
-
-                    log.debug("Processing schema [{}][{}]", new Object[]{cname, sname});
-
-                    //
-                    // Check for an existing schema.
-                    JdbcSchema schema = this.schemasimpl().select(
-                        cname,
-                        sname
+        try {
+            final DatabaseMetaData metadata = connection().metadata();
+            final JdbcProductType  product  = JdbcProductType.match(
+                metadata
+                );
+            // TODO - fix connection errors
+            if (metadata != null)
+                {
+                try {
+                    final ResultSet tables = metadata.getTables(
+                        catalog,
+                        null, // sch
+                        null, // tab
+                        new String[]
+                            {
+                            JdbcMetadata.JDBC_META_TABLE_TYPE_TABLE,
+                            JdbcMetadata.JDBC_META_TABLE_TYPE_VIEW
+                            }
                         );
-                    log.debug("Found schema [{}]", schema);
-                    //
-                    // If none found, create a new one.
-                    if (schema == null)
+    
+                    String cprev = null ;
+                    String sprev = null ;
+                    while (tables.next())
                         {
-                        schema = this.schemasimpl().create(
+                        String cname = tables.getString(JdbcMetadata.JDBC_META_TABLE_CAT);
+                        String sname = tables.getString(JdbcMetadata.JDBC_META_TABLE_SCHEM);
+                        log.debug("Found schema [{}][{}]", new Object[]{cname, sname});
+                        //
+                        // In MySQL the schema name is always null, use the catalog name instead.
+                        if (product == JdbcProductType.MYSQL)
+                            {
+                            sname = cname ;
+                            cname = null ;
+                            }
+                        //
+                        // In HSQLDB the schema and catalogs overlap, use the catalog name as the schema.
+                        if (product == JdbcProductType.HSQLDB)
+                            {
+                            //log.debug("JdbcProductType.HSQLDB, swapping names");
+                            //sname = cname ;
+                            //cname = null ;
+                            }
+    
+                        //
+                        // Skip if the schema is on our ignore list.
+                        if (product.ignores().contains(sname))
+                            {
+                            //log.debug("Schema [{}] is on the ignore list for [{}]", sname, product);
+                            continue;
+                            }
+                        //
+                        // Check if we have already done this one.
+                        if (
+                            ((cname == null) ? cprev == null : cname.equals(cprev))
+                            &&
+                            ((sname == null) ? sprev == null : sname.equals(sprev))
+                            ){
+                            log.debug("Already done [{}][{}], skipping", cname, sname);
+                            continue;
+                            }
+                        else {
+                            cprev = cname;
+                            sprev = sname;
+                            }
+    
+                        log.debug("Processing schema [{}][{}]", new Object[]{cname, sname});
+    
+                        //
+                        // Check for an existing schema.
+                        JdbcSchema schema = this.schemasimpl().select(
                             cname,
                             sname
                             );
+                        log.debug("Found schema [{}]", schema);
+                        //
+                        // If none found, create a new one.
+                        if (schema == null)
+                            {
+                            schema = this.schemasimpl().create(
+                                cname,
+                                sname
+                                );
+                            }
                         }
                     }
+                catch (final SQLInvalidAuthorizationSpecException ouch)
+                    {
+                    log.debug("Authorization exception reading JDBC metadata for [{}][{}][{}]", connection().uri(), catalog, ouch.getMessage());
+                    }
+                catch (final SQLException ouch)
+                    {
+                    log.error("Exception reading JDBC metadata for [{}][{}][{}]", connection().uri(), catalog, ouch.getMessage());
+                    log.debug("Exception text   [{}]", ouch.getMessage());
+                    log.debug("Exception string [{}]", ouch.toString());
+                    log.debug("Exception class  [{}]", ouch.getClass().toString());
+                    throw connection().translator().translate(
+                        "Reading JDBC catalog schemas",
+                        null,
+                        ouch
+                        );
+                    }
                 }
-            catch (final SQLInvalidAuthorizationSpecException ouch)
-                {
-                log.debug("Authorization exception reading JDBC metadata for [{}][{}][{}]", connection().uri(), catalog, ouch.getMessage());
-                }
-            catch (final SQLException ouch)
-                {
-                log.error("Exception reading JDBC metadata for [{}][{}][{}]", connection().uri(), catalog, ouch.getMessage());
-                log.debug("Exception text   [{}]", ouch.getMessage());
-                log.debug("Exception string [{}]", ouch.toString());
-                log.debug("Exception class  [{}]", ouch.getClass().toString());
-                throw connection().translator().translate(
-                    "Reading JDBC catalog schemas",
-                    null,
-                    ouch
-                    );
-                }
+            }
+        finally {
+            connection().close();
             }
         }
     }

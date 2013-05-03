@@ -12,7 +12,7 @@
         | MetaData database.
     <bean id="FireThornMetaData" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         +-->
-    <bean id="FireThornMetaData" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+    <bean id="FireThornMetaData" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <!--+
             | DataSource properties.
             +-->
@@ -22,17 +22,19 @@
         <property name="driverClass" value="${firethorn.meta.driver}"/>
         <!--+
             | C3P0 connection pool.
+            | http://static.springsource.org/spring/docs/3.0.0.RC3/reference/html/ch12s03.html
+            | http://learningviacode.blogspot.co.uk/2012/08/pooled-data-sources-and-spring-2.html
             | http://syntx.co/languages-frameworks/java/configuring-c3p0-connection-pooling-with-spring-and-hibernate/
             +-->
         <property name="minPoolSize" value="5" />
-        <property name="maxPoolSize" value="20" />
-        <property name="maxIdleTime" value="2000" />
+        <property name="maxPoolSize" value="10" />
+        <property name="maxIdleTime" value="60" />
     </bean>
 
     <!--+
         | UserData database.
         +-->
-    <bean id="FireThornUserData" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+    <bean id="FireThornUserData" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <!--+
             | DataSource properties.
             +-->
@@ -42,17 +44,16 @@
         <property name="driverClass" value="${firethorn.user.driver}"/>
         <!--+
             | C3P0 connection pool.
-            | http://syntx.co/languages-frameworks/java/configuring-c3p0-connection-pooling-with-spring-and-hibernate/
             +-->
         <property name="minPoolSize" value="5" />
-        <property name="maxPoolSize" value="20" />
-        <property name="maxIdleTime" value="2000" />
+        <property name="maxPoolSize" value="10" />
+        <property name="maxIdleTime" value="60" />
     </bean>
 
     <!--+
         | TestData database.
         +-->
-    <bean id="FireThornTestData" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+    <bean id="FireThornTestData" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <!--+
             | DataSource properties.
             +-->
@@ -62,11 +63,10 @@
         <property name="driverClass" value="${firethorn.test.driver}"/>
         <!--+
             | C3P0 connection pool.
-            | http://syntx.co/languages-frameworks/java/configuring-c3p0-connection-pooling-with-spring-and-hibernate/
             +-->
         <property name="minPoolSize" value="5" />
-        <property name="maxPoolSize" value="20" />
-        <property name="maxIdleTime" value="2000" />
+        <property name="maxPoolSize" value="10" />
+        <property name="maxIdleTime" value="60" />
     </bean>
 
     <!-- ======== Live ROE database ======== -->
@@ -75,7 +75,7 @@
         | SSH tunnel to ROE database server.
         | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
         +-->
-    <bean id="RoeTWOMASS" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+    <bean id="RoeTWOMASS" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <!--+
             | DataSource properties.
             +-->
@@ -85,18 +85,17 @@
         <property name="driverClass" value="${firethorn.twomass.driver}"/>
         <!--+
             | C3P0 connection pool.
-            | http://syntx.co/languages-frameworks/java/configuring-c3p0-connection-pooling-with-spring-and-hibernate/
             +-->
         <property name="minPoolSize" value="5" />
-        <property name="maxPoolSize" value="20" />
-        <property name="maxIdleTime" value="2000" />
+        <property name="maxPoolSize" value="10" />
+        <property name="maxIdleTime" value="60" />
     </bean>
 
     <!--+
         | SSH tunnel to ROE database server.
         | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
         +-->
-    <bean id="RoeTWOXMM" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+    <bean id="RoeTWOXMM" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <!--+
             | DataSource properties.
             +-->
@@ -106,18 +105,17 @@
         <property name="driverClass" value="${firethorn.twoxmm.driver}"/>
         <!--+
             | C3P0 connection pool.
-            | http://syntx.co/languages-frameworks/java/configuring-c3p0-connection-pooling-with-spring-and-hibernate/
             +-->
         <property name="minPoolSize" value="5" />
-        <property name="maxPoolSize" value="20" />
-        <property name="maxIdleTime" value="2000" />
+        <property name="maxPoolSize" value="10" />
+        <property name="maxIdleTime" value="60" />
     </bean>
 
     <!--+
         | SSH tunnel to ROE database server.
         | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
         +-->
-    <bean id="RoeUKIDSS" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+    <bean id="RoeUKIDSS" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <!--+
             | DataSource properties.
             +-->
@@ -127,18 +125,17 @@
         <property name="driverClass" value="${firethorn.ukidss.driver}"/>
         <!--+
             | C3P0 connection pool.
-            | http://syntx.co/languages-frameworks/java/configuring-c3p0-connection-pooling-with-spring-and-hibernate/
             +-->
         <property name="minPoolSize" value="5" />
-        <property name="maxPoolSize" value="20" />
-        <property name="maxIdleTime" value="2000" />
+        <property name="maxPoolSize" value="10" />
+        <property name="maxIdleTime" value="60" />
     </bean>
 
     <!--+
         | SSH tunnel to ROE database server.
         | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
         +-->
-    <bean id="RoeWFAU" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+    <bean id="RoeWFAU" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <!--+
             | DataSource properties.
             +-->
@@ -148,18 +145,17 @@
         <property name="driverClass" value="${firethorn.wfau.driver}"/>
         <!--+
             | C3P0 connection pool.
-            | http://syntx.co/languages-frameworks/java/configuring-c3p0-connection-pooling-with-spring-and-hibernate/
             +-->
         <property name="minPoolSize" value="5" />
-        <property name="maxPoolSize" value="20" />
-        <property name="maxIdleTime" value="2000" />
+        <property name="maxPoolSize" value="10" />
+        <property name="maxIdleTime" value="60" />
     </bean>
 
     <!--+
         | SSH tunnel to ROE database server.
         | ssh -L 1433:ramses3:1433 fenrir.roe.ac.uk
         +-->
-    <bean id="RoeATLAS" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+    <bean id="RoeATLAS" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <!--+
             | DataSource properties.
             +-->
@@ -169,10 +165,9 @@
         <property name="driverClass" value="${firethorn.atlas.driver}"/>
         <!--+
             | C3P0 connection pool.
-            | http://syntx.co/languages-frameworks/java/configuring-c3p0-connection-pooling-with-spring-and-hibernate/
             +-->
         <property name="minPoolSize" value="5" />
-        <property name="maxPoolSize" value="20" />
-        <property name="maxIdleTime" value="2000" />
+        <property name="maxPoolSize" value="10" />
+        <property name="maxIdleTime" value="60" />
     </bean>
 </beans>

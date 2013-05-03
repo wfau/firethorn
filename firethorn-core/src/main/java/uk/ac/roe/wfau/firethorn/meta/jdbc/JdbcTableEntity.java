@@ -476,19 +476,20 @@ implements JdbcTable
     public void scanimpl()
         {
         log.debug("scanimpl()");
-        final DatabaseMetaData metadata = resource().connection().metadata();
-        final JdbcProductType  product  = JdbcProductType.match(
-            metadata
-            );
-        // TODO - fix connection errors
-        if (metadata != null)
-            {
-            //
-            // TODO - Check the table actually exists !! 
-            
-            try {
+        try {
+            final DatabaseMetaData metadata = resource().connection().metadata();
+            final JdbcProductType  product  = JdbcProductType.match(
+                metadata
+                );
+            // TODO - fix connection errors
+            if (metadata != null)
+                {
                 //
-                // Check the table columns.
+                // TODO - Check the table actually exists !! 
+                
+                try {
+                    //
+                    // Check the table columns.
 
 /*
  * JDBC metadata ...
@@ -496,82 +497,86 @@ implements JdbcTable
  *             
  */
                         
-                final ResultSet columns = metadata.getColumns(
-                    this.schema().catalog(),
-                    this.schema().schema(),
-                    this.name(),
-                    null
-                    );
-                while (columns.next())
-                    {
-                    final String ccname  = columns.getString(JdbcMetadata.JDBC_META_TABLE_CAT);
-                    final String csname  = columns.getString(JdbcMetadata.JDBC_META_TABLE_SCHEM);
-                    final String ctname  = columns.getString(JdbcMetadata.JDBC_META_TABLE_NAME);
-                    final String colname = columns.getString(JdbcMetadata.JDBC_META_COLUMN_NAME);
-                    final JdbcColumn.Type coltype = JdbcColumn.Type.jdbc(
-                        columns.getInt(
-                            JdbcMetadata.JDBC_META_COLUMN_TYPE_TYPE
-                            )
+                    final ResultSet columns = metadata.getColumns(
+                        this.schema().catalog(),
+                        this.schema().schema(),
+                        this.name(),
+                        null
                         );
-                    final Integer colsize = new Integer(
-                        columns.getInt(
-                            JdbcMetadata.JDBC_META_COLUMN_SIZE
-                            )
-                        );
-
-                    log.debug(
-                        "Found column [{}][{}][{}][{}][{}][{}]",
-                        new Object[]{
-                            ccname,
-                            csname,
-                            ctname,
-                            colname,
-                            coltype,
-                            colsize
-                            }
-                        );
-                    try {
-                        final JdbcColumn column = columnsimpl().select(
-                            colname
-                            );
-                        //
-                        // Update the column ..
-                        column.meta().jdbc().size(
-                            colsize
-                            );
-                        column.meta().jdbc().type(
-                            coltype
-                            );
-                        }
-                    catch (final NotFoundException ouch)
+                    while (columns.next())
                         {
-                        columnsimpl().create(
-                            colname,
-                            coltype.code(),
-                            colsize.intValue()
+                        final String ccname  = columns.getString(JdbcMetadata.JDBC_META_TABLE_CAT);
+                        final String csname  = columns.getString(JdbcMetadata.JDBC_META_TABLE_SCHEM);
+                        final String ctname  = columns.getString(JdbcMetadata.JDBC_META_TABLE_NAME);
+                        final String colname = columns.getString(JdbcMetadata.JDBC_META_COLUMN_NAME);
+                        final JdbcColumn.Type coltype = JdbcColumn.Type.jdbc(
+                            columns.getInt(
+                                JdbcMetadata.JDBC_META_COLUMN_TYPE_TYPE
+                                )
                             );
+                        final Integer colsize = new Integer(
+                            columns.getInt(
+                                JdbcMetadata.JDBC_META_COLUMN_SIZE
+                                )
+                            );
+    
+                        log.debug(
+                            "Found column [{}][{}][{}][{}][{}][{}]",
+                            new Object[]{
+                                ccname,
+                                csname,
+                                ctname,
+                                colname,
+                                coltype,
+                                colsize
+                                }
+                            );
+                        try {
+                            final JdbcColumn column = columnsimpl().select(
+                                colname
+                                );
+                            //
+                            // Update the column ..
+                            column.meta().jdbc().size(
+                                colsize
+                                );
+                            column.meta().jdbc().type(
+                                coltype
+                                );
+                            }
+                        catch (final NotFoundException ouch)
+                            {
+                            columnsimpl().create(
+                                colname,
+                                coltype.code(),
+                                colsize.intValue()
+                                );
+                            }
                         }
+        //
+        // TODO
+        // Reprocess the list disable missing ones ...
+        //
+                    scandate(
+                        new DateTime()
+                        );
+                    scanflag(
+                        false
+                        );
                     }
-    //
-    // TODO
-    // Reprocess the list disable missing ones ...
-    //
-                scandate(
-                    new DateTime()
-                    );
-                scanflag(
-                    false
-                    );
+                catch (final SQLException ouch)
+                    {
+                    log.error("Exception reading JDBC table metadata [{}]", ouch.getMessage());
+                    throw resource().connection().translator().translate(
+                        "Reading JDBC table metadata",
+                        null,
+                        ouch
+                        );
+                    }
                 }
-            catch (final SQLException ouch)
-                {
-                log.error("Exception reading JDBC table metadata [{}]", ouch.getMessage());
-                throw resource().connection().translator().translate(
-                    "Reading JDBC table metadata",
-                    null,
-                    ouch
-                    );
-                }
+            }
+        finally {
+            resource().connection().close();
             }
         }
 

@@ -292,5 +292,15 @@ log.debug("CREATE SelectField [{}]", field.name());
             {
             log.error("Failed to execute ChangeSet [{}]", ouch.getMessage());
             }
+        finally
+            {
+            try {
+                database.close();
+                }
+            catch (DatabaseException ouch)
+                {
+                log.error("Failed to execute close database [{}]", ouch.getMessage());
+                }
+            }
         }
     }

@@ -463,73 +463,78 @@ public class JdbcSchemaEntity
     protected void scanimpl()
         {
         log.debug("scanimpl()");
-        final DatabaseMetaData metadata = resource().connection().metadata();
-        final JdbcProductType  product  = JdbcProductType.match(
-            metadata
-            );
-        // TODO - fix connection errors
-        if (metadata != null)
-            {
-            try {
-                final ResultSet tables = metadata.getTables(
-                    this.catalog(),
-                    this.schema(),
-                    null, // tab
-                    new String[]
-                        {
-                        JdbcMetadata.JDBC_META_TABLE_TYPE_TABLE,
-                        JdbcMetadata.JDBC_META_TABLE_TYPE_VIEW
-                        }
-                    );
-
-                while (tables.next())
-                    {
-                    final String tcname = tables.getString(JdbcMetadata.JDBC_META_TABLE_CAT);
-                    final String tsname = tables.getString(JdbcMetadata.JDBC_META_TABLE_SCHEM);
-                    final String ttname = tables.getString(JdbcMetadata.JDBC_META_TABLE_NAME);
-                    final String tttype = tables.getString(JdbcMetadata.JDBC_META_TABLE_TYPE);
-                    log.debug("Found table [{}.{}.{}]", new Object[]{tcname, tsname, ttname});
-
-                    JdbcTable table = tablesimpl().select(
-                        ttname
-                        );
-                    if (table != null)
-                        {
-                        table.info().jdbc().type(
-                            JdbcTable.TableType.match(
-                                tttype
-                                )
-                            );
-                        }
-                    else {
-                        table = tablesimpl().create(
-                            ttname,
-                            JdbcTable.TableType.match(
-                                tttype
-                                )
-                            );
-                        }
-                    }
-    //
-    // TODO
-    // Reprocess the list disable missing ones ...
-    //
-                scandate(
-                    new DateTime()
-                    );
-                scanflag(
-                    false
-                    );
-                }
-            catch (final SQLException ouch)
+        try {
+            final DatabaseMetaData metadata = resource().connection().metadata();
+            final JdbcProductType  product  = JdbcProductType.match(
+                metadata
+                );
+            // TODO - fix connection errors
+            if (metadata != null)
                 {
-                log.error("Exception reading JDBC schema metadata [{}]", ouch.getMessage());
-                throw resource().connection().translator().translate(
-                    "Reading JDBC resource metadata",
-                    null,
-                    ouch
-                    );
+                try {
+                    final ResultSet tables = metadata.getTables(
+                        this.catalog(),
+                        this.schema(),
+                        null, // tab
+                        new String[]
+                            {
+                            JdbcMetadata.JDBC_META_TABLE_TYPE_TABLE,
+                            JdbcMetadata.JDBC_META_TABLE_TYPE_VIEW
+                            }
+                        );
+    
+                    while (tables.next())
+                        {
+                        final String tcname = tables.getString(JdbcMetadata.JDBC_META_TABLE_CAT);
+                        final String tsname = tables.getString(JdbcMetadata.JDBC_META_TABLE_SCHEM);
+                        final String ttname = tables.getString(JdbcMetadata.JDBC_META_TABLE_NAME);
+                        final String tttype = tables.getString(JdbcMetadata.JDBC_META_TABLE_TYPE);
+                        log.debug("Found table [{}.{}.{}]", new Object[]{tcname, tsname, ttname});
+    
+                        JdbcTable table = tablesimpl().select(
+                            ttname
+                            );
+                        if (table != null)
+                            {
+                            table.info().jdbc().type(
+                                JdbcTable.TableType.match(
+                                    tttype
+                                    )
+                                );
+                            }
+                        else {
+                            table = tablesimpl().create(
+                                ttname,
+                                JdbcTable.TableType.match(
+                                    tttype
+                                    )
+                                );
+                            }
+                        }
+        //
+        // TODO
+        // Reprocess the list disable missing ones ...
+        //
+                    scandate(
+                        new DateTime()
+                        );
+                    scanflag(
+                        false
+                        );
+                    }
+                catch (final SQLException ouch)
+                    {
+                    log.error("Exception reading JDBC schema metadata [{}]", ouch.getMessage());
+                    throw resource().connection().translator().translate(
+                        "Reading JDBC resource metadata",
+                        null,
+                        ouch
+                        );
+                    }
                 }
+            }
+        finally {
+            resource().connection().close();
             }
         }
     }
