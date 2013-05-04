@@ -1,0 +1,696 @@
+#
+# Optimising Hibernate object graph.
+
+
+#
+# Using postgresql database for metadata and user data.
+#[User@desktop]
+
+    cat ${HOME}/firethorn/firethorn.pgsql.conf
+
+        #
+        # FireThorn metadata.
+        firethorn.meta.url=jdbc:postgresql://localhost/metadata
+        firethorn.meta.type=pgsql
+        firethorn.meta.user=xxxxxx
+        firethorn.meta.pass=xxxxxx
+        firethorn.meta.driver=org.postgresql.Driver
+
+        ....
+
+    pushd ${HOME}
+    
+        ln -s firethorn/firethorn.pgsql.conf firethorn.properties
+        
+    popd
+
+#
+# Using instructions from 20130417-atlas-example.
+
+# TTY #7 ------------------------------------------------------------
+# Run the REST test scripts.
+#
+
+
+    pushd $(mktemp --directory)
+
+        source ${HOME?}/firethorn.settings
+        FIRETHORN_TEST=${FIRETHORN_TEST:-${FIRETHORN_CODE?}/integration/002}
+
+        source "${FIRETHORN_TEST?}/init-rest.sh"
+
+# System admin configuration
+
+        #
+        # Set up our user data space.
+        # (quick)
+        time source "${FIRETHORN_TEST?}/init-user.sh"
+
+real	0m1.665s
+user	0m0.310s
+sys	0m0.282s
+
+        #
+        # Set up our JDBC resource.
+        # (slow - scans all the JDBC tables)
+        time source "${FIRETHORN_TEST?}/init-jdbc.sh"
+
+real	1m10.405s
+user	0m0.148s
+sys	0m0.152s
+
+        #
+        # Set up our ADQL resource.
+        # (slow - bug trigges a re-scan of the the JDBC tables)
+        time source "${FIRETHORN_TEST?}/init-adql.sh"
+
+real	1m5.444s
+user	0m2.344s
+sys	0m2.207s
+
+# TAPfactory equivalent
+
+        #
+        # Create our query workspace.
+        time source "${FIRETHORN_TEST?}/init-query.sh"
+
+real	0m25.700s
+user	0m1.947s
+sys	0m1.893s
+
+
+#-----------------------------------------
+# Baseline
+
+time source "${FIRETHORN_TEST?}/init-query.sh"
+
+real	0m25.700s
+user	0m1.947s
+sys	0m1.893s
+
+real	0m26.431s
+user	0m1.963s
+sys	0m1.888s
+
+real	0m24.651s
+user	0m1.904s
+sys	0m1.918s
+
+real	0m24.496s
+user	0m1.947s
+sys	0m1.903s
+
+real	0m24.514s
+user	0m2.020s
+sys	0m1.829s
+
+#-----------------------------------------
+# Just restart.
+
+time source "${FIRETHORN_TEST?}/init-query.sh"
+
+real	0m28.797s
+user	0m1.884s
+sys	0m1.776s
+
+real	0m26.416s
+user	0m1.943s
+sys	0m1.914s
+
+real	0m26.323s
+user	0m1.941s
+sys	0m1.839s
+
+real	0m25.512s
+user	0m1.953s
+sys	0m1.888s
+
+real	0m25.203s
+user	0m1.944s
+sys	0m1.919s
+
+#-----------------------------------------
+
+BaseColumnEntity
+
+    @ManyToOne(
+-       fetch = FetchType.EAGER,
++       fetch = FetchType.LAZY,
+        targetEntity = BaseTableEntity.class
+        )
+
+#-----------------------------------------
+
+pushd ../firethorn-core ; mvn clean install ; popd
+mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+#-----------------------------------------
+
+time source "${FIRETHORN_TEST?}/init-query.sh"
+
+real	0m28.308s
+user	0m1.891s
+sys	0m1.818s
+
+real	0m26.069s
+user	0m2.021s
+sys	0m1.853s
+
+real	0m25.713s
+user	0m2.000s
+sys	0m1.819s
+
+real	0m25.363s
+user	0m1.920s
+sys	0m1.780s
+
+real	0m25.302s
+user	0m1.893s
+sys	0m1.814s
+
+#-----------------------------------------
+
+BaseTableEntity
+
+    @ManyToOne(
+-       fetch = FetchType.EAGER,
++       fetch = FetchType.LAZY,
+        targetEntity = BaseSchemaEntity.class
+        )
+
+#-----------------------------------------
+
+pushd ../firethorn-core ; mvn clean install ; popd
+mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+#-----------------------------------------
+
+time source "${FIRETHORN_TEST?}/init-query.sh"
+
+real	0m25.439s
+user	0m1.883s
+sys	0m1.755s
+
+real	0m23.160s
+user	0m1.894s
+sys	0m1.947s
+
+real	0m22.953s
+user	0m1.965s
+sys	0m1.892s
+
+real	0m22.529s
+user	0m1.979s
+sys	0m1.848s
+
+real	0m22.220s
+user	0m2.005s
+sys	0m1.799s
+
+#-----------------------------------------
+
+BaseSchemaEntity
+
+    @ManyToOne(
+-       fetch = FetchType.EAGER,
++       fetch = FetchType.LAZY,
+        targetEntity = BaseResourceEntity.class
+        )
+
+#-----------------------------------------
+
+pushd ../firethorn-core ; mvn clean install ; popd
+mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+#-----------------------------------------
+
+time source "${FIRETHORN_TEST?}/init-query.sh"
+
+real	0m22.258s
+user	0m1.872s
+sys	0m1.824s
+
+real	0m20.152s
+user	0m1.952s
+sys	0m1.826s
+
+real	0m19.573s
+user	0m1.845s
+sys	0m1.873s
+
+real	0m19.496s
+user	0m1.962s
+sys	0m1.886s
+
+real	0m19.076s
+user	0m1.949s
+sys	0m1.928s
+
+real	0m18.715s
+user	0m1.940s
+sys	0m1.777s
+
+real	0m16.354s
+user	0m1.969s
+sys	0m1.885s
+
+real	0m16.003s
+user	0m1.908s
+sys	0m1.912s
+
+real	0m15.674s
+user	0m1.918s
+sys	0m1.796s
+
+real	0m15.520s
+user	0m1.956s
+sys	0m1.933s
+
+real	0m15.381s
+user	0m1.990s
+sys	0m1.824s
+
+#-----------------------------------------
+
+AbstractEntity
+
+    @ManyToOne(
+-       fetch = FetchType.EAGER,
++       fetch = FetchType.LAZY,
+        targetEntity = IdentityEntity.class
+        )
+
+#-----------------------------------------
+
+AdqlColumnEntity
+
+    @ManyToOne(
+-       fetch = FetchType.EAGER,
++       fetch = FetchType.LAZY,
+        targetEntity = AdqlTableEntity.class
+        )
+
+    @ManyToOne(
+-       fetch = FetchType.EAGER,
++       fetch = FetchType.LAZY,
+        targetEntity = BaseColumnEntity.class
+        )
+
+#-----------------------------------------
+
+pushd ../firethorn-core ; mvn clean install ; popd
+mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+#-----------------------------------------
+
+time source "${FIRETHORN_TEST?}/init-query.sh"
+
+real	0m7.931s
+user	0m1.855s
+sys	0m1.744s
+
+real	0m5.961s
+user	0m1.952s
+sys	0m1.843s
+
+real	0m5.845s
+user	0m1.953s
+sys	0m1.925s
+
+real	0m5.692s
+user	0m1.891s
+sys	0m1.894s
+
+real	0m5.524s
+user	0m1.953s
+sys	0m1.881s
+
+real	0m5.474s
+user	0m2.005s
+sys	0m1.870s
+
+real	0m5.557s
+user	0m1.912s
+sys	0m1.817s
+
+#-----------------------------------------
+
+AdqltableEntity
+
+    @ManyToOne(
+-       fetch = FetchType.EAGER,
++       fetch = FetchType.LAZY,
+        targetEntity = AdqlSchemaEntity.class
+        )
+
+#-----------------------------------------
+
+pushd ../firethorn-core ; mvn clean install ; popd
+mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+#-----------------------------------------
+
+time source "${FIRETHORN_TEST?}/init-query.sh"
+
+real	0m8.041s
+user	0m1.875s
+sys	0m1.797s
+
+real	0m6.027s
+user	0m1.951s
+sys	0m1.910s
+
+real	0m5.855s
+user	0m1.965s
+sys	0m1.874s
+
+real	0m5.707s
+user	0m1.938s
+sys	0m1.823s
+
+real	0m5.627s
+user	0m1.956s
+sys	0m1.900s
+
+#-----------------------------------------
+
+AdqlSchemaEntity
+
+    @ManyToOne(
+-       fetch = FetchType.EAGER,
++       fetch = FetchType.LAZY,
+        targetEntity = AdqlResourceEntity.class
+        )
+
+#-----------------------------------------
+
+pushd ../firethorn-core ; mvn clean install ; popd
+mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+#-----------------------------------------
+
+time source "${FIRETHORN_TEST?}/init-query.sh"
+
+real	0m7.994s
+user	0m1.803s
+sys	0m1.743s
+
+real	0m6.012s
+user	0m2.045s
+sys	0m1.816s
+
+real	0m5.783s
+user	0m1.977s
+sys	0m1.932s
+
+real	0m5.820s
+user	0m1.978s
+sys	0m1.868s
+
+real	0m5.424s
+user	0m1.986s
+sys	0m1.935s
+
+#-----------------------------------------
+
+JdbcColumnEntity
+
+    @ManyToOne(
+-       fetch = FetchType.EAGER,
++       fetch = FetchType.LAZY,
+        targetEntity = JdbcTableEntity.class
+        )
+
+#-----------------------------------------
+
+pushd ../firethorn-core ; mvn clean install ; popd
+mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+#-----------------------------------------
+
+time source "${FIRETHORN_TEST?}/init-query.sh"
+
+real	0m7.620s
+user	0m1.462s
+sys	0m1.387s
+
+real	0m5.526s
+user	0m1.524s
+sys	0m1.516s
+
+real	0m5.303s
+user	0m1.504s
+sys	0m1.464s
+
+real	0m5.249s
+user	0m1.474s
+sys	0m1.491s
+
+real	0m4.999s
+user	0m1.503s
+sys	0m1.568s
+
+real	0m4.877s
+user	0m1.518s
+sys	0m1.539s
+
+#-----------------------------------------
+
+for i in {0..4}; do time source "${FIRETHORN_TEST?}/init-query.sh"; done
+
+real	0m4.452s
+user	0m1.491s
+sys	0m1.428s
+
+#-----------------------------------------
+
+JdbcTableEntity
+
+    @ManyToOne(
+-       fetch = FetchType.EAGER,
++       fetch = FetchType.LAZY,
+        targetEntity = JdbcSchemaEntity.class
+        )
+
+#-----------------------------------------
+
+pushd ../firethorn-core ; mvn clean install ; popd
+mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+#-----------------------------------------
+
+for i in {0..4}; do time source "${FIRETHORN_TEST?}/init-query.sh"; done
+
+real	0m7.852s
+user	0m1.526s
+sys	0m1.637s
+
+real	0m4.954s
+user	0m1.534s
+sys	0m1.491s
+
+real	0m4.500s
+user	0m1.508s
+sys	0m1.460s
+
+real	0m4.226s
+user	0m1.521s
+sys	0m1.508s
+
+real	0m4.124s
+user	0m1.471s
+sys	0m1.415s
+
+#-----------------------------------------
+
+JdbcSchemaEntity
+
+    @ManyToOne(
+        fetch = FetchType.LAZY,
+        targetEntity = JdbcResourceEntity.class
+        )
+
+#-----------------------------------------
+
+pushd ../firethorn-core ; mvn clean install ; popd
+mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+#-----------------------------------------
+
+for i in {0..99}; do time source "${FIRETHORN_TEST?}/init-query.sh"; done
+
+real	0m4.960s
+user	0m1.528s
+sys	0m1.539s
+
+real	0m3.637s
+user	0m1.572s
+sys	0m1.396s
+
+real	0m3.481s
+user	0m1.498s
+sys	0m1.366s
+
+# TTY #7 ------------------------------------------------------------
+# Reset our databases.
+#
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}/firethorn-database"
+        mvn clean install
+    popd
+
+
+# TTY #7 ------------------------------------------------------------
+# Run the REST test scripts.
+#
+
+    pushd $(mktemp --directory)
+
+        source ${HOME?}/firethorn.settings
+        FIRETHORN_TEST=${FIRETHORN_TEST:-${FIRETHORN_CODE?}/integration/002}
+
+        time source "${FIRETHORN_TEST?}/init-rest.sh"
+
+# System admin configuration
+
+        #
+        # Set up our user data space.
+        # (quick)
+        time source "${FIRETHORN_TEST?}/init-user.sh"
+
+real	0m1.640s
+user	0m0.237s
+sys	0m0.227s
+
+        #
+        # Set up our JDBC resource.
+        # (slow - scans all the JDBC tables)
+        time source "${FIRETHORN_TEST?}/init-jdbc.sh"
+
+real	0m13.785s
+user	0m0.095s
+sys	0m0.108s
+
+        #
+        # Set up our ADQL resource.
+        # (slow - bug trigges a re-scan of the the JDBC tables)
+        time source "${FIRETHORN_TEST?}/init-adql.sh"
+
+real	0m59.741s
+user	0m1.853s
+sys	0m1.789s
+
+# TAPfactory equivalent
+
+        #
+        # Create our query workspace.
+        time source "${FIRETHORN_TEST?}/init-query.sh"
+
+real	0m4.765s
+user	0m1.606s
+sys	0m1.693s
+
+        #
+        # Run a query.
+        time source "${FIRETHORN_TEST?}/query-atlas.sh"
+
+real	0m9.488s
+user	0m0.837s
+sys	0m0.581s
+
+    popd
+
+#-----------------------------------------
+
+time source "${FIRETHORN_TEST?}/init-query.sh"
+time source "${FIRETHORN_TEST?}/query-atlas.sh"
+
+real	0m5.012s
+real	0m2.427s
+
+real	0m4.010s
+real	0m2.228s
+
+#-----------------------------------------
+
+test()
+    {
+    source "${FIRETHORN_TEST?}/init-query.sh"
+    source "${FIRETHORN_TEST?}/query-atlas.sh"
+    }
+    
+time test
+
+real	0m6.212s
+real	0m6.190s
+
+real	0m5.901s
+real	0m5.839s
+
+#-----------------------------------------
+
+real	0m7.823s
+real	0m7.311s
+
+#----------------------------------------------------------------------------------
+# C3PO config ..
+#----------------------------------------------------------------------------------
+
+    pushd $(mktemp --directory)
+
+        source ${HOME?}/firethorn.settings
+        FIRETHORN_TEST=${FIRETHORN_TEST:-${FIRETHORN_CODE?}/integration/002}
+
+        time source "${FIRETHORN_TEST?}/init-rest.sh"
+
+        time source "${FIRETHORN_TEST?}/init-user.sh"
+
+        time source "${FIRETHORN_TEST?}/init-jdbc.sh"
+
+        time source "${FIRETHORN_TEST?}/init-adql.sh"
+
+#real	0m59.741s
+#real	1m25.791s
+
+# TAPfactory equivalent
+
+        #
+        # Create our query workspace.
+        time source "${FIRETHORN_TEST?}/init-query.sh"
+
+#real	0m4.765s
+#real	0m3.971s
+#real	0m3.867s
+
+        #
+        # Run a query.
+        time source "${FIRETHORN_TEST?}/query-atlas.sh"
+
+#real	0m9.488s
+#real	0m4.579s
+#real	0m2.213s
+#real	0m2.246s
+
+test()
+    {
+    source "${FIRETHORN_TEST?}/init-query.sh"
+    source "${FIRETHORN_TEST?}/query-atlas.sh"
+    }
+    
+time test
+
+real	0m5.996s
+real	0m5.797s
+real	0m5.693s
+real	0m5.686s
+
+#-----------------------------------------
+
+for i in {0..9}; do time test ; done
+
+real	0m5.489s
+
+
+
+
