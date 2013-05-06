@@ -9,7 +9,7 @@
 #
 
     source ${HOME?}/firethorn.settings
-    pushd "${FIRETHORN_CODE?}/firethorn-testing"
+    pushd "${FIRETHORN_CODE?}/firethorn-database"
         pushd hsqldb
             mvn clean exec:java
         popd
@@ -41,13 +41,12 @@
     pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/webapp"
 
         #
-        # Load the JDBC config functions.
-        source src/test/bin/jdbc-functions.sh
-
-        #
         # Create a clean war file.
         mvn clean compile war:war
 
+        #
+        # Load the JDBC config functions.
+        source src/test/bin/jdbc-functions.sh
         #
         # Configure our JDBC resources.
         jdbcconfig twomass firethorn.twomass "${HOME?}/firethorn.properties"
