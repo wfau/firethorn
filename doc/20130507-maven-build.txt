@@ -47,7 +47,19 @@
 
     source ${HOME?}/firethorn.settings
     pushd "${FIRETHORN_CODE?}/firethorn-webapp"
-        mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+        #
+        # Create a clean war file.
+        mvn clean compile war:war
+
+        #
+        # Set the memory limit.
+        export MAVEN_OPTS=-Xmx128m
+
+        #
+        # Deploy the webapp in Tomcat 7.
+        mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
     popd
 
 # TTY #5 ------------------------------------------------------------
@@ -73,7 +85,11 @@
         jdbcconfig user    firethorn.user    "${HOME?}/firethorn.properties"
 
         #
-        # Deploy the webapp in Tomcat.
+        # Set the memory limit.
+        export MAVEN_OPTS=-Xmx128m
+
+        #
+        # Deploy the webapp in Tomcat 6.
         mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
         
     popd

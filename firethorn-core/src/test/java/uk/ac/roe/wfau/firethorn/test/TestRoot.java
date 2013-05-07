@@ -44,7 +44,7 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
     locations = {
-        "classpath:testdata-config.xml",
+        "classpath:database-config.xml",
         "classpath:hibernate-config.xml",
         "classpath:component-config.xml",
         "classpath:scheduler-config.xml"

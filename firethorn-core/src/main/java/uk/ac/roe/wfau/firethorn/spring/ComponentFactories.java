@@ -53,12 +53,6 @@ public interface ComponentFactories
     public BaseFactories base();
 
     /**
-     * Our ogsa component factories.
-     *
-    public OgsaFactories ogsa();
-     */
-
-    /**
      * Our ADQL component factories.
      *
      */

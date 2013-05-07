@@ -158,56 +158,77 @@ public class AdqlQueryVOTableController
                 query.results().jdbc().fullname()
                 );
             log.debug("SQL [{}]", builder.toString());
-
             //
             // Run the SQL query.
+            // http://stackoverflow.com/questions/858836/does-a-resultset-load-all-data-into-memory-or-only-when-requested
             final JdbcResource resource = query.results().jdbc().resource();
             final Connection connection = resource.connection().open();
-            final Statement  statement  = connection.createStatement();
-            final ResultSet  results    = statement.executeQuery(
-                builder.toString()
+            final Statement statement = connection.createStatement(
+                ResultSet.TYPE_FORWARD_ONLY,
+                ResultSet.CONCUR_READ_ONLY,
+                ResultSet.CLOSE_CURSORS_AT_COMMIT
                 );
-            final StarResultSet starset = new StarResultSet(
-                results
-                );
-            final StarTable startab = new SequentialResultSetStarTable(
-                starset
-                );
-            //
-            // Update the StarTable column metadata to match the ADQL column names.
-            for (int i = 0 ; i < startab.getColumnCount() ; i++)
-                {
-                final ColumnInfo info = startab.getColumnInfo(i);
-                final AdqlColumn adql = columns.get(i);
 
-                log.debug("Info [{}]", info.getName());
-                log.debug("Adql [{}]", adql.name());
-                info.setName(
-                    adql.name()
+            statement.setFetchSize(
+                1000
+                );
+            try {
+                final ResultSet results = statement.executeQuery(
+                    builder.toString()
                     );
-
-                final String ucd = adql.meta().adql().ucd();
-                if (ucd != null)
+                final StarResultSet starset = new StarResultSet(
+                    results
+                    );
+                final StarTable startab = new SequentialResultSetStarTable(
+                    starset
+                    );
+                //
+                // Update the StarTable column metadata to match the ADQL column names.
+                for (int i = 0 ; i < startab.getColumnCount() ; i++)
                     {
+                    final ColumnInfo info = startab.getColumnInfo(i);
+                    final AdqlColumn adql = columns.get(i);
+    
+                    log.debug("Info [{}]", info.getName());
+                    log.debug("Adql [{}]", adql.name());
+                    info.setName(
+                        adql.name()
+                        );
+    
+    /*                
+                    final String ucd = adql.meta().adql().ucd();
+                    if (ucd != null)
+                        {
+                        info.setUCD(
+                            ucd
+                            );
+                        }
+                    final String units = adql.meta().adql().unit();
+                    if (units != null)
+                        {
+                        info.setUnitString(
+                            units
+                            );
+                        }
+    */
                     info.setUCD(
-                        ucd
+                        adql.meta().adql().ucd()
                         );
-                    }
-
-                final String units = adql.meta().adql().unit();
-                if (units != null)
-                    {
                     info.setUnitString(
-                        units
+                        adql.meta().adql().unit()
                         );
+    
                     }
+    
+                final VOTableWriter writer = new VOTableWriter();
+                writer.writeStarTable(
+                    startab,
+                    response.getOutputStream()
+                    );
                 }
-
-            final VOTableWriter writer = new VOTableWriter();
-            writer.writeStarTable(
-                startab,
-                response.getOutputStream()
-                );
+            finally {
+                resource.connection().close();
+                }
             }
         catch (final SQLException ouch)
             {

@@ -30,6 +30,15 @@ public interface AdqlTable
 extends BaseTable<AdqlTable, AdqlColumn>
     {
     /**
+     * Name factory interface.
+     *
+     */
+    public static interface NameFactory
+    extends Entity.NameFactory
+        {
+        }
+
+    /**
      * Alias factory interface.
      *
      */

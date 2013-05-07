@@ -42,3 +42,21 @@
 
     popd
 
+
+# EXTRA ------------------------------------------------------------
+# Extra tests.
+#
+
+        combined()
+            {
+            source "${FIRETHORN_TEST?}/init-query.sh"
+            source "${FIRETHORN_TEST?}/query-atlas.sh"
+            }
+
+        time combined
+            
+        for i in {0..9}; do time combined ; done
+        for i in {0..99}; do time combined ; done
+        for i in {0..999}; do time combined ; done
+
+
