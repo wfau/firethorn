@@ -17,18 +17,13 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Iterator;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Results;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
@@ -225,7 +220,7 @@ implements EntityBean<AdqlQuery>
                 }
             };
         }
-    
+
     public interface Syntax
         {
         public AdqlQuery.Syntax.State getStatus();
@@ -257,7 +252,7 @@ implements EntityBean<AdqlQuery>
 
     /**
      * Our result tables.
-     * 
+     *
      */
     public interface Results
         {
@@ -282,7 +277,7 @@ implements EntityBean<AdqlQuery>
 
     /**
      * Our result tables.
-     * 
+     *
      */
     public Results getResults()
         {
@@ -308,7 +303,7 @@ implements EntityBean<AdqlQuery>
 
     /**
      * A select field bean.
-     * 
+     *
      */
     public interface FieldBean
         {
@@ -319,7 +314,7 @@ implements EntityBean<AdqlQuery>
 
     /**
      * Our select fields.
-     * 
+     *
      */
     public Iterable<FieldBean> getFields()
         {
@@ -360,7 +355,7 @@ implements EntityBean<AdqlQuery>
                             public String getType()
                                 {
                                 return this.field.type().name();
-                                } 
+                                }
                             };
                         }
                     @Override

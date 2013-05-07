@@ -70,7 +70,7 @@ public class AdqlResourceController
 
     /**
      * The VOSI view generator.
-     * 
+     *
      */
     public static final String VOSI_XML_VIEW = "adql/vosi-xml" ;
 

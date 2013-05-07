@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--+
     |
-    | Copyright (c) 2012, ROE (http://www.roe.ac.uk/)
+    | Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
     | All rights reserved.
     |
     | This program is free software: you can redistribute it and/or modify
@@ -92,14 +92,15 @@
         </dependency> 
 
         <!--+
-            | FireThorn Spring dependencies.
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-spring</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
+            | JUnit test framework.
+            | http://www.junit.org/
             +-->
+    	<dependency>
+    		<groupId>junit</groupId>
+    		<artifactId>junit</artifactId>
+            <type>jar</type>
+            <scope>test</scope>
+    	</dependency>
 
     </dependencies>
 

@@ -10,6 +10,7 @@
     # (only required once per maven workspace)
     # mvn -D eclipse.workspace=/var/local/projects/eclipse eclipse:add-maven-repo
     # mvn -D eclipse.workspace=/home/Zarquan/workspace eclipse:add-maven-repo
+    mvn -D eclipse.workspace=/home/Zarquan/eclipse/workspace eclipse:add-maven-repo
 
 
     #

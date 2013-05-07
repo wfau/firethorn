@@ -88,6 +88,20 @@
 	</logger>
 
 	<!--+
+	    | C3PO loggers
+	    | Including wierd DEBUG via Exception logging.
+	    | http://stackoverflow.com/questions/8403227/weird-error-close-by-client-stack-trace
+	    | http://forum.springsource.org/archive/index.php/t-47689.html 
+	    | https://forum.hibernate.org/viewtopic.php?f=1&t=982410
+	    +-->
+	<logger name="com.mchange">
+		<level value="INFO" />
+	</logger>
+	<logger name="com.mchange.v2.async">
+		<level value="INFO" />
+	</logger>
+
+	<!--+
 	    | Root logger.
 	    +-->
 	<root>

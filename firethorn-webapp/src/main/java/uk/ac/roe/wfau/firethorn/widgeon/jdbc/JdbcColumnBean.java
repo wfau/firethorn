@@ -17,9 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
@@ -74,7 +71,7 @@ implements EntityBean<JdbcColumn>
         {
         return entity().table().link();
         }
-   
+
     public String getFullname()
         {
         return entity().fullname().toString();

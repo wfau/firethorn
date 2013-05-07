@@ -238,7 +238,7 @@ extends AbstractEntity
             {
             log.debug("status(Identifier, Status)");
             try {
-                Job job = resolver().select(
+                final Job job = resolver().select(
                     ident
                     );
                 log.debug("Found [{}]", ((job != null ? job.ident() : null)));
@@ -364,7 +364,7 @@ extends AbstractEntity
             log.debug("prepare(Identifier)");
             log.debug("  Ident [{}]", ident);
             try {
-                Job job = resolver().select(
+                final Job job = resolver().select(
                     ident
                     );
 if (job != null)

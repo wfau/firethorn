@@ -21,7 +21,6 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable.TableType;
 
 /**
  *
@@ -81,7 +80,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
          *
          */
         public AdqlTable create(final AdqlQuery query);
-        
+
         /**
          * The table column factory.
          *

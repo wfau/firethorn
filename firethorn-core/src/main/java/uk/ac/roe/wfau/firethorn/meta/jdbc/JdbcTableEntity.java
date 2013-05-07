@@ -41,7 +41,6 @@ import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
@@ -301,7 +300,7 @@ implements JdbcTable
         this.schema = schema;
         this.jdbctype = type;
         }
-    
+
     @Index(
         name=DB_TABLE_NAME + "IndexByParent"
         )
@@ -435,7 +434,7 @@ implements JdbcTable
                         }
 
                     @Override
-                    public void type(TableType type)
+                    public void type(final TableType type)
                         {
                         jdbctype(
                             type
@@ -449,13 +448,13 @@ implements JdbcTable
                 {
                 return new AdqlMeta()
                     {
-                    
+
                     };
                 }
             };
         }
-    
-    
+
+
     @Override
     public String link()
         {
@@ -481,12 +480,13 @@ implements JdbcTable
             final JdbcProductType  product  = JdbcProductType.match(
                 metadata
                 );
+            log.debug("JdbcProductType [{}]", product);
             // TODO - fix connection errors
             if (metadata != null)
                 {
                 //
-                // TODO - Check the table actually exists !! 
-                
+                // TODO - Check the table actually exists !!
+
                 try {
                     //
                     // Check the table columns.
@@ -494,9 +494,9 @@ implements JdbcTable
 /*
  * JDBC metadata ...
  * http://docs.oracle.com/javase/7/docs/api/java/sql/DatabaseMetaData.html
- *             
+ *
  */
-                        
+
                     final ResultSet columns = metadata.getColumns(
                         this.schema().catalog(),
                         this.schema().schema(),
@@ -519,7 +519,7 @@ implements JdbcTable
                                 JdbcMetadata.JDBC_META_COLUMN_SIZE
                                 )
                             );
-    
+
                         log.debug(
                             "Found column [{}][{}][{}][{}][{}][{}]",
                             new Object[]{
@@ -608,5 +608,5 @@ implements JdbcTable
         {
         return true ;
         }
-    
+
     }

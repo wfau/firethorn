@@ -98,11 +98,11 @@ extends BaseSchema<AdqlSchema, AdqlTable>
         /**
          * The create a new table, importing the details a query.
          * @todo - is this needed here ?
-         * 
+         *
          */
         public AdqlTable create(final AdqlQuery query);
 
-        
+
         }
     @Override
     public Tables tables();

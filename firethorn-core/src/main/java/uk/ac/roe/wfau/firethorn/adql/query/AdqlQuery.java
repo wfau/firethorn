@@ -20,12 +20,10 @@ package uk.ac.roe.wfau.firethorn.adql.query;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
@@ -311,7 +309,7 @@ extends Entity, Job
      * A list of the AdqlTables used by the query.
      * The list is only generated in response to a POST request that updates the ADQL query.
      * The list is generated when an input query is parsed and is not saved in the database.
-     * On subsequent GET requests the list will be empty. 
+     * On subsequent GET requests the list will be empty.
      *
      */
     public Iterable<AdqlTable> tables();
@@ -325,7 +323,7 @@ extends Entity, Job
     /**
      * The primary resource used by the query.
      * @todo rename to resource()
-     * 
+     *
      */
     public BaseResource<?> primary();
 
@@ -335,70 +333,70 @@ extends Entity, Job
      */
     public interface SelectField
         {
-    
+
         /**
          * The field name or alias.
          *
          */
         public abstract String name();
-    
+
         /**
          * The column metadata.
          *
          */
         public abstract AdqlColumn.Metadata info();
-    
+
         /**
          * The field size.
          *
          */
         public abstract int length();
-    
+
         /**
          * The field type.
          *
          */
         public abstract AdqlColumn.Type type();
-    
+
         }
 
     /**
      * A list of the SELECT fields.
      * The list is only generated in response to a POST request that updates the ADQL query.
      * The list is generated when an input query is parsed and is not saved in the database.
-     * On subsequent GET requests the list will be empty. 
+     * On subsequent GET requests the list will be empty.
      *
      */
     public Iterable<SelectField> fields();
 
     /**
      * Our result tables.
-     * 
+     *
      */
     public interface Results
         {
         /**
          * The physical JDBC database table.
-         * 
+         *
          */
         public JdbcTable jdbc();
 
         /**
          * The physical base table.
-         * 
+         *
          */
         public BaseTable<?,?> base();
 
         /**
          * The abstract ADQL table.
-         * 
+         *
          */
         public AdqlTable adql();
         }
 
     /**
      * Our result tables.
-     * 
+     *
      */
     public Results results();
 

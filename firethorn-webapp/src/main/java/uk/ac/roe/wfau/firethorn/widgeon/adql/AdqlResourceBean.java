@@ -78,4 +78,4 @@ implements EntityBean<AdqlResource>
             );
         }
     }
-    
+

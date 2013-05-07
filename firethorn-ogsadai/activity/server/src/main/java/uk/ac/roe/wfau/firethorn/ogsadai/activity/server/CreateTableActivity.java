@@ -103,6 +103,10 @@ implements ResourceActivity
      *
      */
     @Override
+    @SuppressWarnings({
+        "rawtypes",
+        "unchecked"
+        })
     public Class getTargetResourceAccessorClass()
         {
         return JDBCConnectionProvider.class;

@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
 import liquibase.change.Change;
 import liquibase.change.ColumnConfig;
-import liquibase.change.core.AddColumnChange;
 import liquibase.change.core.CreateTableChange;
 import liquibase.change.core.DropTableChange;
 import liquibase.changelog.ChangeSet;
@@ -47,7 +46,7 @@ implements AdqlQuery.Builder
 
     /**
      * Generate a SQL safe name.
-     * 
+     *
      */
     public String safe(final String input)
         {
@@ -74,7 +73,7 @@ implements AdqlQuery.Builder
         }
  *
  */
-    
+
     //
     // Our parent resource.
 /*
@@ -101,7 +100,7 @@ implements AdqlQuery.Builder
         {
         log.debug("delete(JdbcTable)");
         log.debug("  Table [{}]", table.name());
-        DropTableChange change = new DropTableChange();
+        final DropTableChange change = new DropTableChange();
         change.setTableName(
             table.name()
             );
@@ -122,12 +121,12 @@ implements AdqlQuery.Builder
             );
         return changeset;
         }
-    
+
     protected Change create(final JdbcTable table)
         {
         log.debug("create(JdbcTable)");
         log.debug("  Table [{}][{}]", table.ident(), table.name());
-        CreateTableChange change = new CreateTableChange();
+        final CreateTableChange change = new CreateTableChange();
         change.setTableName(
             table.name()
             );
@@ -135,9 +134,9 @@ implements AdqlQuery.Builder
             table.schema().name()
             );
 
-        for (JdbcColumn column : table.columns().select())
+        for (final JdbcColumn column : table.columns().select())
             {
-log.debug("CHANGE.addColumn() [{}]", column.name());            
+log.debug("CHANGE.addColumn() [{}]", column.name());
             change.addColumn(
                 new ColumnConfig().setName(
                     column.name()
@@ -157,7 +156,7 @@ log.debug("CHANGE.addColumn() [{}]", column.name());
         //
         // Create the new JdbcTable .
         // TODO - unique name generator ...
-        JdbcTable table = store.tables().create(
+        final JdbcTable table = store.tables().create(
             safe(
                 "RESULT_" + query.ident().toString()
                 ),
@@ -165,7 +164,7 @@ log.debug("CHANGE.addColumn() [{}]", column.name());
             );
         //
         // Add the JdbcColumns.
-        for (AdqlQuery.SelectField field : query.fields())
+        for (final AdqlQuery.SelectField field : query.fields())
             {
 // Size is confused .... ?
 // Include alias for unsafe names ?
@@ -179,7 +178,7 @@ log.debug("CREATE SelectField [{}]", field.name());
             }
         //
         // Create our ChangeSet.
-        ChangeSet changeset = changeset();
+        final ChangeSet changeset = changeset();
         if (query.results().jdbc() != null)
             {
             changeset.addChange(
@@ -198,16 +197,16 @@ log.debug("CREATE SelectField [{}]", field.name());
         execute(
             store,
             changeset
-            );        
+            );
 
         return table;
         }
 
     protected String name(final ChangeSet changeset)
         {
-        StringBuilder name = new StringBuilder(
+        final StringBuilder name = new StringBuilder(
             "query"
-            ); 
+            );
         name.append(
             "_"
             );
@@ -220,21 +219,21 @@ log.debug("CREATE SelectField [{}]", field.name());
     protected Database database(final JdbcSchema store)
         {
         try {
-            DatabaseFactory factory = DatabaseFactory.getInstance();
-            
-            JdbcConnection connection = new JdbcConnection(
+            final DatabaseFactory factory = DatabaseFactory.getInstance();
+
+            final JdbcConnection connection = new JdbcConnection(
                 store.resource().connection().open()
-                ); 
+                );
 
             return factory.findCorrectDatabaseImplementation(
-                connection 
+                connection
                 );
             }
-        catch (DatabaseException ouch)
+        catch (final DatabaseException ouch)
             {
             log.debug("Exception creating Liquibase Database [{}]", ouch.getMessage());
             return null ;
-            } 
+            }
         }
 
     protected DatabaseChangeLog changelog()
@@ -253,13 +252,13 @@ log.debug("CREATE SelectField [{}]", field.name());
             "file",
             "",
             ""
-            ); 
+            );
         }
 
     protected void execute(final JdbcSchema store, final Change change)
         {
         log.debug("Executing Change [{}]", change);
-        ChangeSet changeset = changeset();
+        final ChangeSet changeset = changeset();
         changeset.addChange(
             change
             );
@@ -272,23 +271,23 @@ log.debug("CREATE SelectField [{}]", field.name());
     protected void execute(final JdbcSchema store, final ChangeSet changeset)
         {
         log.debug("Executing ChangeSet [{}]", changeset.getId());
-        Database database = database(
+        final Database database = database(
             store
             );
-        DatabaseChangeLog changelog = changelog();
+        final DatabaseChangeLog changelog = changelog();
         try {
-            ChangeSet.ExecType result = changeset.execute(
+            final ChangeSet.ExecType result = changeset.execute(
                 changelog,
                 database
                 );
             log.debug("ChangeSet result [{}]", result);
             database.commit();
             }
-        catch (MigrationFailedException ouch)
+        catch (final MigrationFailedException ouch)
             {
             log.error("Failed to execute ChangeSet [{}]", ouch.getMessage());
             }
-        catch (DatabaseException ouch)
+        catch (final DatabaseException ouch)
             {
             log.error("Failed to execute ChangeSet [{}]", ouch.getMessage());
             }
@@ -297,7 +296,7 @@ log.debug("CREATE SelectField [{}]", field.name());
             try {
                 database.close();
                 }
-            catch (DatabaseException ouch)
+            catch (final DatabaseException ouch)
                 {
                 log.error("Failed to execute close database [{}]", ouch.getMessage());
                 }

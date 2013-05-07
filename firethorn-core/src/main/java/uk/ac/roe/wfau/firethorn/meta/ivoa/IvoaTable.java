@@ -19,14 +19,13 @@ package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaTable;
 
 /**
  *
  *
  */
 public interface IvoaTable
-extends OgsaTable<IvoaTable, IvoaColumn>, BaseTable<IvoaTable, IvoaColumn>
+extends BaseTable<IvoaTable, IvoaColumn>
     {
     /**
      * Alias factory interface.

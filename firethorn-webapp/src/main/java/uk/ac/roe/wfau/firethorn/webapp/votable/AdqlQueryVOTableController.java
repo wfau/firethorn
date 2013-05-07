@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -83,13 +82,13 @@ public class AdqlQueryVOTableController
      * VOTable MIME type.
      *
      */
-    public static final String VOTABLE_MIME = "application/x-votable+xml" ; 
+    public static final String VOTABLE_MIME = "application/x-votable+xml" ;
 
     /**
      * TextXml MIME type.
      *
      */
-    public static final String TEXT_XML_MIME = "text/xml" ; 
+    public static final String TEXT_XML_MIME = "text/xml" ;
 
     /**
      * VOTable GET request.
@@ -108,7 +107,7 @@ public class AdqlQueryVOTableController
                 ident
                 )
             );
-        
+
         try {
 
             response.setContentType(
@@ -126,7 +125,7 @@ public class AdqlQueryVOTableController
             //
             // Add the columns from our ADQL metadata, using the ADQL aliases.
             final List<AdqlColumn> columns = new ArrayList<AdqlColumn>();
-            for (AdqlColumn column : query.results().adql().columns().select())
+            for (final AdqlColumn column : query.results().adql().columns().select())
                 {
                 log.debug("Column [{}][{}]", column.ident(), column.name());
                 columns.add(
@@ -164,10 +163,10 @@ public class AdqlQueryVOTableController
             // Run the SQL query.
             final JdbcResource resource = query.results().jdbc().resource();
             final Connection connection = resource.connection().open();
-            final Statement  statement  = connection.createStatement();            
+            final Statement  statement  = connection.createStatement();
             final ResultSet  results    = statement.executeQuery(
                 builder.toString()
-                ); 
+                );
             final StarResultSet starset = new StarResultSet(
                 results
                 );
@@ -178,7 +177,7 @@ public class AdqlQueryVOTableController
             // Update the StarTable column metadata to match the ADQL column names.
             for (int i = 0 ; i < startab.getColumnCount() ; i++)
                 {
-                final ColumnInfo info = startab.getColumnInfo(i);            
+                final ColumnInfo info = startab.getColumnInfo(i);
                 final AdqlColumn adql = columns.get(i);
 
                 log.debug("Info [{}]", info.getName());
@@ -203,22 +202,22 @@ public class AdqlQueryVOTableController
                         );
                     }
                 }
-            
-            VOTableWriter writer = new VOTableWriter();
+
+            final VOTableWriter writer = new VOTableWriter();
             writer.writeStarTable(
                 startab,
                 response.getOutputStream()
-                );        
+                );
             }
-        catch (SQLException ouch)
+        catch (final SQLException ouch)
             {
             log.error("Exception reading SQL results [{}]", ouch.getMessage());
             }
-        catch (TableFormatException ouch)
+        catch (final TableFormatException ouch)
             {
             log.error("Exception writing VOTable output [{}]", ouch.getMessage());
             }
-        catch (IOException ouch)
+        catch (final IOException ouch)
             {
             log.error("Exception writing VOTable output [{}]", ouch.getMessage());
             }

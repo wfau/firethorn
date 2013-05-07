@@ -107,7 +107,7 @@ public class StoredResultPipeline
         pipeline.add(
             creator
             );
- */            
+ */
         pipeline.add(
             writer
             );

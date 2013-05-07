@@ -21,7 +21,6 @@ import java.sql.Types;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseValue;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
 /**
@@ -101,19 +100,19 @@ extends BaseColumn<AdqlColumn>
         DOUBLECOMPLEX( 16, "doubleComplex", JdbcColumn.Type.UNKNOWN),
         UNKNOWN(        0, "unknown",       JdbcColumn.Type.UNKNOWN);
 
-        private int size ;
+        private final int size ;
         public  int size()
             {
             return this.size;
             }
 
-        private String code ;
+        private final String code ;
         public  String code()
             {
             return this.code;
             }
 
-        private JdbcColumn.Type jdbc ;
+        private final JdbcColumn.Type jdbc ;
         public  JdbcColumn.Type jdbc()
             {
             return this.jdbc;

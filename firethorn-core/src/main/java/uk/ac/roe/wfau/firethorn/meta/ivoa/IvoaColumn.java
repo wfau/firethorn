@@ -19,14 +19,13 @@ package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaColumn;
 
 /**
  *
  *
  */
 public interface IvoaColumn
-extends BaseColumn<IvoaColumn>, OgsaColumn<IvoaColumn>
+extends BaseColumn<IvoaColumn>
     {
     /**
      * Link factory interface.

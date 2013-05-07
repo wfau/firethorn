@@ -59,7 +59,7 @@ implements Entity.LinkFactory<EntityType>
     @Override
     public String link(final EntityType entity)
         {
-        StringBuilder builder = new StringBuilder(
+        final StringBuilder builder = new StringBuilder(
             this.path
             );
         builder.append(

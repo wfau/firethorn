@@ -1,0 +1,68 @@
+
+
+    #
+    # Create the Eclipse project files.
+    mvn eclipse:eclipse -D downloadSources=true -D downloadJavadocs=true
+    mvn eclipse:eclipse
+
+    #
+    # Add the Maven repository to the Eclipse workspace.
+    # (only required once per maven workspace)
+    # mvn -D eclipse.workspace=/var/local/projects/eclipse eclipse:add-maven-repo
+    # mvn -D eclipse.workspace=/home/Zarquan/workspace eclipse:add-maven-repo
+    mvn -D eclipse.workspace=/home/Zarquan/eclipse/workspace eclipse:add-maven-repo
+
+
+    #
+    # Create checksums.
+    # https://maven.apache.org/plugins/maven-install-plugin/examples/installing-checksums.html
+    mvn install -DcreateChecksum=true
+
+    #
+    # Create checksums.
+    # https://maven.apache.org/plugins/maven-install-plugin/examples/installing-checksums.html
+    mvn install:install-file  \
+        -Dfile=path-to-your-artifact-jar \
+        -DgroupId=your.groupId \
+        -DartifactId=your-artifactId \
+        -Dversion=version \
+        -Dpackaging=jar \
+        -DcreateChecksum=true
+
+    #
+    # Update dependencies
+    -U
+    
+    #
+    # Display Dependency Updates
+    mvn versions:display-dependency-updates
+
+    #
+    # Display Plugin Updates
+    mvn versions:display-plugin-updates
+
+    #
+    # Display Dependency Tree
+    mvn dependency:tree -D detail
+
+    #
+    # Display Dependency List
+    mvn dependency:list
+
+    #
+    # Display Effective POM
+    mvn help:effective-pom
+
+    #
+    # Display Project Settings
+    mvn help:effective-settings
+
+    #
+    # Display System and Environment Variables
+    mvn help:system
+
+    #
+    # Display Build Class Path
+    mvn dependency:build-classpath
+
+

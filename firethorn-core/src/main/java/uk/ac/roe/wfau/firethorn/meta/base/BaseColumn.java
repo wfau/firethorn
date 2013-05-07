@@ -95,10 +95,10 @@ extends BaseComponent
         public interface AdqlMeta
             {
             public Integer size();
-            public void size(Integer size);
+            public void size(final Integer size);
 
             public Type type();
-            public void type(Type type);
+            public void type(final Type type);
 
             public String unit();
             public void unit(final String unit);

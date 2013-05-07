@@ -61,8 +61,6 @@ import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -131,7 +129,7 @@ implements AdqlQuery, AdqlParserQuery
     protected static final String DB_JDBC_TABLE_COL  = "jdbctable";
     protected static final String DB_ADQL_TABLE_COL  = "adqltable";
     protected static final String DB_ADQL_SCHEMA_COL = "adqlschema";
-    
+
     /**
      * Hibernate column mapping.
      *
@@ -279,7 +277,7 @@ implements AdqlQuery, AdqlParserQuery
 
             //
             // Create the query entity.
-            AdqlQueryEntity entity = new AdqlQueryEntity(
+            final AdqlQueryEntity entity = new AdqlQueryEntity(
                 schema,
                 names().name(
                     name
@@ -288,7 +286,7 @@ implements AdqlQuery, AdqlParserQuery
                 );
             //
             // Make the query persistent.
-            AdqlQuery query = this.insert(
+            final AdqlQuery query = this.insert(
                 entity
                 );
             //
@@ -859,7 +857,7 @@ implements AdqlQuery, AdqlParserQuery
                 log.debug("-- AdqlQuery executing [{}]", ident());
                 log.debug("-- Mode   [{}]", query.mode());
                 log.debug("-- Target [{}]", target);
-                
+
                 final PipelineResult frog = pipeline.execute(
                     target,
                     storename,
@@ -917,9 +915,9 @@ implements AdqlQuery, AdqlParserQuery
         {
         return this.fields;
         }
-    
+
     @Override
-    public void add(SelectField field)
+    public void add(final SelectField field)
         {
         log.debug("add(SelectField)");
         log.debug("  Name [{}]", field.name());
@@ -929,10 +927,10 @@ implements AdqlQuery, AdqlParserQuery
             field
             );
         }
-    
+
     /**
      * Our JDBC table.
-     * 
+     *
      */
     @Index(
         name=DB_TABLE_NAME + "IndexByJdbcTable"
@@ -952,7 +950,7 @@ implements AdqlQuery, AdqlParserQuery
 
     /**
      * Our ADQL table.
-     * 
+     *
      */
     @Index(
         name=DB_TABLE_NAME + "IndexByAdqlTable"
@@ -969,10 +967,10 @@ implements AdqlQuery, AdqlParserQuery
         updatable = true
         )
     private AdqlTable adqltable;
-    
+
     /**
      * Our results tables.
-     * 
+     *
      */
     @Override
     public Results results()

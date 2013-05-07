@@ -39,7 +39,7 @@ public interface BaseValue<ValueType>
      * Set the user value.
      *
      */
-    public void user(ValueType value);
+    public void user(final ValueType value);
 
     /**
      * Get the base value.
@@ -51,6 +51,6 @@ public interface BaseValue<ValueType>
      * Set the base value.
      *
      */
-    public void base(ValueType value);
+    public void base(final ValueType value);
 
     }

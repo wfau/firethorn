@@ -40,8 +40,6 @@ import org.hibernate.annotations.NamedQueries;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnInfo;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnType;
 
 /**
  *
@@ -109,7 +107,7 @@ extends BaseComponentEntity
             false
             );
         }
-    protected abstract AdqlColumn.Type basetype(boolean pull);
+    protected abstract AdqlColumn.Type basetype(final boolean pull);
 
     protected Integer basesize()
         {
@@ -117,7 +115,7 @@ extends BaseComponentEntity
             false
             );
         }
-    protected abstract Integer basesize(boolean pull);
+    protected abstract Integer basesize(final boolean pull);
 
     @Basic(
         fetch = FetchType.EAGER
@@ -136,7 +134,7 @@ extends BaseComponentEntity
         {
         return this.usertype;
         }
-    protected void usertype(AdqlColumn.Type type)
+    protected void usertype(final AdqlColumn.Type type)
         {
         this.usertype = type;
         }
@@ -160,7 +158,7 @@ extends BaseComponentEntity
             false
             );
         }
-    protected AdqlColumn.Type adqltype(boolean pull)
+    protected AdqlColumn.Type adqltype(final boolean pull)
         {
         if ((this.adqltype == null) || (pull))
             {
@@ -174,11 +172,11 @@ extends BaseComponentEntity
             }
         return this.adqltype;
         }
-    protected void adqltype(AdqlColumn.Type type)
+    protected void adqltype(final AdqlColumn.Type type)
         {
         this.adqltype = type;
         }
-    
+
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -193,7 +191,7 @@ extends BaseComponentEntity
         {
         return this.usersize;
         }
-    protected void usersize(Integer size)
+    protected void usersize(final Integer size)
         {
         this.usersize = size;
         }
@@ -214,7 +212,7 @@ extends BaseComponentEntity
             false
             );
         }
-    protected Integer adqlsize(boolean pull)
+    protected Integer adqlsize(final boolean pull)
         {
         if ((this.adqlsize == null) || (pull))
             {
@@ -229,21 +227,21 @@ extends BaseComponentEntity
         if (pull)
             {
 /*
- * 
+ *
  * for (BaseColumn child : children)
  *     {
  *     child.adql().type(pull);
  *     }
- *            
+ *
  */
             }
         return this.adqlsize;
         }
-    protected void adqlsize(Integer size)
+    protected void adqlsize(final Integer size)
         {
         this.adqlsize = size;
         }
-    
+
     @Override
     public String alias()
         {
@@ -315,7 +313,7 @@ extends BaseComponentEntity
             public BaseColumn.Metadata.AdqlMeta adql()
                 {
                 return adqlmeta();
-                }            
+                }
             };
         }
 
@@ -329,7 +327,7 @@ extends BaseComponentEntity
                 return adqlsize();
                 }
             @Override
-            public void size(Integer size)
+            public void size(final Integer size)
                 {
                 adqlsize(
                     size
@@ -341,13 +339,13 @@ extends BaseComponentEntity
                 return adqltype();
                 }
             @Override
-            public void type(Type type)
+            public void type(final Type type)
                 {
                 adqltype(
                     type
                     );
                 }
-            
+
             @Override
             public String unit()
                 {

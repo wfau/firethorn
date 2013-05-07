@@ -36,7 +36,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
-import org.hibernate.type.Type;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -82,7 +81,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
             name  = "JdbcSchema-select-parent.null-catalog.schema",
             query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (catalog IS NULL) AND (schema = :schema)) ORDER BY name asc, ident asc"
             ),
-            
+
         @NamedQuery(
             name  = "JdbcSchema-select-parent.name",
             query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (name = :name)) ORDER BY name asc, ident asc"
@@ -427,7 +426,7 @@ public class JdbcSchemaEntity
                     );
                 }
             @Override
-            public JdbcTable create(String name, AdqlQuery query)
+            public JdbcTable create(final String name, final AdqlQuery query)
                 {
                 return factories().jdbc().tables().create(
                     JdbcSchemaEntity.this,
@@ -468,6 +467,7 @@ public class JdbcSchemaEntity
             final JdbcProductType  product  = JdbcProductType.match(
                 metadata
                 );
+            log.debug("JdbcProductType [{}]", product);
             // TODO - fix connection errors
             if (metadata != null)
                 {
@@ -482,7 +482,7 @@ public class JdbcSchemaEntity
                             JdbcMetadata.JDBC_META_TABLE_TYPE_VIEW
                             }
                         );
-    
+
                     while (tables.next())
                         {
                         final String tcname = tables.getString(JdbcMetadata.JDBC_META_TABLE_CAT);
@@ -490,7 +490,7 @@ public class JdbcSchemaEntity
                         final String ttname = tables.getString(JdbcMetadata.JDBC_META_TABLE_NAME);
                         final String tttype = tables.getString(JdbcMetadata.JDBC_META_TABLE_TYPE);
                         log.debug("Found table [{}.{}.{}]", new Object[]{tcname, tsname, ttname});
-    
+
                         JdbcTable table = tablesimpl().select(
                             ttname
                             );

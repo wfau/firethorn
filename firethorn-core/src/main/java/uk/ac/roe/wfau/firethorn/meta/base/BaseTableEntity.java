@@ -216,7 +216,7 @@ extends BaseComponentEntity
                 {
                 return new AdqlTable.Info.AdqlMeta()
                     {
-                    
+
                     };
                 }
             };

@@ -19,16 +19,16 @@ package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
-import uk.ac.roe.wfau.firethorn.meta.ogsa.OgsaResource;
 
 /**
  *
  *
  */
 public interface IvoaResource
-extends OgsaResource<IvoaSchema>
+extends BaseResource<IvoaSchema>
     {
     /**
+     * 
      * Link factory interface.
      *
      */

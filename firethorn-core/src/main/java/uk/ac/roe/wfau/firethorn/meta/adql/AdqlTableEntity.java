@@ -34,7 +34,6 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
-import uk.ac.roe.wfau.firethorn.entity.annotation.CascadeEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
@@ -86,7 +85,7 @@ public class AdqlTableEntity
      *
      */
     protected static final String DB_ADQL_QUERY_COL = "adqlquery" ;
-    
+
     /**
      * Alias factory implementation.
      *
@@ -175,7 +174,7 @@ public class AdqlTableEntity
                     )
                 );
             }
-        
+
         @Override
         @SelectEntityMethod
         public Iterable<AdqlTable> select(final AdqlSchema parent)

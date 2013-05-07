@@ -246,11 +246,11 @@ public class IvoaColumnEntity
         {
         return this.ivoatype;
         }
-    protected void ivoatype(AdqlColumn.Type type)
+    protected void ivoatype(final AdqlColumn.Type type)
         {
         this.ivoatype = type;
         }
-    
+
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -265,22 +265,22 @@ public class IvoaColumnEntity
         {
         return this.ivoasize;
         }
-    protected void ivoasize(Integer size)
+    protected void ivoasize(final Integer size)
         {
         this.ivoasize = size;
         }
-    
+
     @Override
-    protected AdqlColumn.Type basetype(boolean pull)
+    protected AdqlColumn.Type basetype(final boolean pull)
         {
         return this.ivoatype;
         }
     @Override
-    protected Integer basesize(boolean pull)
+    protected Integer basesize(final boolean pull)
         {
         return this.ivoasize ;
         }
-    
+
     @Override
     public String link()
         {

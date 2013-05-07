@@ -75,7 +75,7 @@ implements AdqlParser
                 schema
                 );
             }
-        
+
         /**
          * Autowired reference to the local table factory.
          *
@@ -94,7 +94,7 @@ implements AdqlParser
         this.mode = mode ;
 
         final AdqlResource workspace = schema.resource();
-        
+
         final Set<DBTable> tables = new HashSet<DBTable>();
         for (final AdqlSchema temp : workspace.schemas().select())
             {
@@ -218,7 +218,7 @@ implements AdqlParser
                 )
             );
         }
-    
+
     /**
      * Helper class to get the metadata for a query SELECT item.
      *
@@ -235,7 +235,7 @@ implements AdqlParser
             this(
                 name,
                 name,
-                (AdqlColumn.Metadata)null 
+                (AdqlColumn.Metadata)null
                 );
             }
 
@@ -310,7 +310,7 @@ implements AdqlParser
          * The item metadata.
          *
          */
-        private AdqlColumn.Metadata info ;
+        private final AdqlColumn.Metadata info ;
 
         @Override
         public AdqlColumn.Metadata info()
@@ -372,7 +372,7 @@ implements AdqlParser
 
         /**
          * Evaluate the column metadata for a SelectItem.
-         * 
+         *
          */
         public static AdqlQuery.SelectField eval(final SelectItem item)
             {
@@ -388,7 +388,7 @@ implements AdqlParser
                     )
                 );
             }
-            
+
         /**
          * Evaluate the column metadata for an ADQLOperand.
          *
@@ -424,7 +424,7 @@ implements AdqlParser
                     );
                 }
             }
-    
+
         /**
          * Evaluate the column metadata for an ADQLColumn.
          *
@@ -432,9 +432,9 @@ implements AdqlParser
         public static AdqlQuery.SelectField eval(final ADQLColumn column)
             {
             log.debug("eval(ADQLColumn)");
-            if (((ADQLColumn) column).getDBLink() instanceof AdqlDBColumn)
+            if ((column).getDBLink() instanceof AdqlDBColumn)
                 {
-                final AdqlColumn adql = ((AdqlDBColumn) ((ADQLColumn) column).getDBLink()).column();
+                final AdqlColumn adql = ((AdqlDBColumn) (column).getDBLink()).column();
                 log.debug("  ----");
                 log.debug("  adql [{}]", adql.fullname());
                 log.debug("  base [{}]", adql.base().fullname());
@@ -462,15 +462,15 @@ implements AdqlParser
             log.debug("  name   [{}]", oper.getName());
             log.debug("  number [{}]", oper.isNumeric());
             log.debug("  string [{}]", oper.isString());
-    
-            AdqlColumn.Metadata left = eval(
+
+            final AdqlColumn.Metadata left = eval(
                 oper.getLeftOperand()
-                ).info(); 
-    
-            AdqlColumn.Metadata right = eval(
+                ).info();
+
+            final AdqlColumn.Metadata right = eval(
                 oper.getRightOperand()
-                ).info(); 
-    
+                ).info();
+
             if (left == null)
                 {
                 return new ColumnMetaImpl(
@@ -513,14 +513,14 @@ implements AdqlParser
             log.debug("  name   [{}]", funct.getName());
             log.debug("  number [{}]", funct.isNumeric());
             log.debug("  string [{}]", funct.isString());
-    
+
             AdqlColumn.Metadata info = null ;
-            
-            for (ADQLOperand param : funct.getParameters())
+
+            for (final ADQLOperand param : funct.getParameters())
                 {
-                AdqlColumn.Metadata temp = eval(
+                final AdqlColumn.Metadata temp = eval(
                     param
-                    ).info(); 
+                    ).info();
                 if (info == null)
                     {
                     info = temp;
@@ -555,11 +555,11 @@ implements AdqlParser
                 {
                 log.debug("  ----");
                 log.debug("  ClauseSelect");
-                for (SelectItem item : ((ClauseSelect) object))
+                for (final SelectItem item : ((ClauseSelect) object))
                     {
                     log.debug("-- Select item ----");
                     log.debug(" alias  [{}]", item.getAlias());
-                    AdqlQuery.SelectField meta = ColumnMetaImpl.eval(
+                    final AdqlQuery.SelectField meta = ColumnMetaImpl.eval(
                         item
                         );
                     log.debug(" name [{}]", meta.name());
@@ -570,7 +570,7 @@ implements AdqlParser
                         );
                     }
                 }
-            
+
             if (object instanceof ADQLColumn)
                 {
                 log.debug("  ----");

@@ -425,7 +425,7 @@ public class JdbcResourceEntity
                             JdbcMetadata.JDBC_META_TABLE_TYPE_VIEW
                             }
                         );
-    
+
                     String cprev = null ;
                     String sprev = null ;
                     while (tables.next())
@@ -448,7 +448,7 @@ public class JdbcResourceEntity
                             //sname = cname ;
                             //cname = null ;
                             }
-    
+
                         //
                         // Skip if the schema is on our ignore list.
                         if (product.ignores().contains(sname))
@@ -470,9 +470,9 @@ public class JdbcResourceEntity
                             cprev = cname;
                             sprev = sname;
                             }
-    
+
                         log.debug("Processing schema [{}][{}]", new Object[]{cname, sname});
-    
+
                         //
                         // Check for an existing schema.
                         JdbcSchema schema = this.schemasimpl().select(

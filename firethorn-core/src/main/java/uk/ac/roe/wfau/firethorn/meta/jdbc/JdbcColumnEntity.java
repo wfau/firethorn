@@ -43,8 +43,6 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseValue;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseValueEntity;
 
 /**
  *
@@ -276,7 +274,7 @@ public class JdbcColumnEntity
         {
         return this.jdbctype;
         }
-    protected void jdbctype(JdbcColumn.Type type)
+    protected void jdbctype(final JdbcColumn.Type type)
         {
         if (this.jdbctype != type)
             {
@@ -286,7 +284,7 @@ public class JdbcColumnEntity
                 );
             }
         }
-    
+
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -301,7 +299,7 @@ public class JdbcColumnEntity
         {
         return this.jdbcsize;
         }
-    protected void jdbcsize(Integer size)
+    protected void jdbcsize(final Integer size)
         {
         if (this.jdbcsize != size)
             {
@@ -312,9 +310,9 @@ public class JdbcColumnEntity
             }
 
         }
-    
+
     @Override
-    protected AdqlColumn.Type basetype(boolean pull)
+    protected AdqlColumn.Type basetype(final boolean pull)
         {
         if (this.jdbctype != null)
             {
@@ -325,11 +323,11 @@ public class JdbcColumnEntity
             }
         }
     @Override
-    protected Integer basesize(boolean pull)
+    protected Integer basesize(final boolean pull)
         {
         return this.jdbcsize ;
         }
-    
+
     @Override
     public String link()
         {
@@ -353,13 +351,13 @@ public class JdbcColumnEntity
             public AdqlColumn.Metadata.AdqlMeta adql()
                 {
                 return adqlmeta();
-                }            
+                }
 
             @Override
             public JdbcColumn.Metadata .JdbcMeta jdbc()
                 {
                 return jdbcmeta();
-                }            
+                }
             };
         }
 
@@ -378,14 +376,14 @@ public class JdbcColumnEntity
                 return jdbctype();
                 }
             @Override
-            public void size(Integer size)
+            public void size(final Integer size)
                 {
                 jdbcsize(
                     size
                     );
                 }
             @Override
-            public void type(Type type)
+            public void type(final Type type)
                 {
                 jdbctype(
                     type

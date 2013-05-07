@@ -300,7 +300,7 @@ public class AdqlColumnEntity
             );
         }
     @Override
-    protected AdqlColumn.Type basetype(boolean pull)
+    protected AdqlColumn.Type basetype(final boolean pull)
         {
         if ((this.basetype == null) || (pull))
             {
@@ -330,7 +330,7 @@ public class AdqlColumnEntity
             );
         }
     @Override
-    protected Integer basesize(boolean pull)
+    protected Integer basesize(final boolean pull)
         {
         if ((this.basesize == null) || (pull))
             {

@@ -46,7 +46,7 @@ public abstract class BaseValueEntity<ValueType>
             value
             );
         }
-    
+
     @Override
     public ValueType value()
         {

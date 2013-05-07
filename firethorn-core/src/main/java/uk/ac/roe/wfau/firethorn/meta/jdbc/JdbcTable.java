@@ -24,7 +24,6 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseTable.Info;
 
 /**
  *
@@ -84,7 +83,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          *
          */
         public JdbcTable create(final JdbcSchema parent, final AdqlQuery query, final String name);
-        
+
         /**
          * The table column factory.
          *
@@ -128,10 +127,10 @@ extends BaseTable<JdbcTable, JdbcColumn>
 
     /**
      * Flag to indicate that the physical table exists.
-     * 
+     *
      */
-    public boolean exists(); 
-    
+    public boolean exists();
+
     /**
      * Scan the JDBC metadata.
      *
@@ -200,7 +199,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
              *
              */
             public TableType type();
-    
+
             /**
              * Set the database table type.
              *
@@ -208,15 +207,15 @@ extends BaseTable<JdbcTable, JdbcColumn>
             public void type(final TableType type);
 
             }
-        
+
         /**
          * The JDBC table metadata.
          *
          */
         public JdbcMeta jdbc();
-        
+
         }
-    
+
     @Override
     public JdbcTable.Info info();
 
