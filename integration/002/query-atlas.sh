@@ -44,4 +44,9 @@ atlasquery=$(cat atlas-query.json | ident)
 # Run the ADQL query.
 runquery "${atlasquery?}"
 
+#
+# Access the VOTable results.
+#echo "$(cat atlas-query.json | votable)"
+#curl "$(cat atlas-query.json | votable)"
+
 

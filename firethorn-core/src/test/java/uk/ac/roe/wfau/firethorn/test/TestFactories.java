@@ -20,8 +20,8 @@ package uk.ac.roe.wfau.firethorn.test;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
-import uk.ac.roe.wfau.firethorn.entity.EntityIdentFactory;
-import uk.ac.roe.wfau.firethorn.entity.EntityLinkFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractIdentFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractLinkFactory;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
@@ -54,7 +54,7 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends EntityIdentFactory
+            extends AbstractIdentFactory
             implements Job.IdentFactory
                 {
                 public IdentFactory()
@@ -64,7 +64,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends EntityLinkFactory<Job>
+            extends AbstractLinkFactory<Job>
             implements Job.LinkFactory
                 {
                 public LinkFactory()
@@ -81,7 +81,7 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends EntityIdentFactory
+            extends AbstractIdentFactory
             implements TestJob.IdentFactory
                 {
                 public IdentFactory()
@@ -91,7 +91,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends EntityLinkFactory<TestJob>
+            extends AbstractLinkFactory<TestJob>
             implements TestJob.LinkFactory
                 {
                 public LinkFactory()
@@ -112,7 +112,7 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends EntityIdentFactory
+            extends AbstractIdentFactory
             implements Identity.IdentFactory
                 {
                 public IdentFactory()
@@ -122,7 +122,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends EntityLinkFactory<Identity>
+            extends AbstractLinkFactory<Identity>
             implements Identity.LinkFactory
                 {
                 public LinkFactory()
@@ -143,7 +143,7 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends EntityIdentFactory
+            extends AbstractIdentFactory
             implements ConfigProperty.IdentFactory
                 {
                 public IdentFactory()
@@ -153,7 +153,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends EntityLinkFactory<ConfigProperty>
+            extends AbstractLinkFactory<ConfigProperty>
             implements ConfigProperty.LinkFactory
                 {
                 public LinkFactory()
@@ -175,7 +175,7 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends EntityIdentFactory
+            extends AbstractIdentFactory
             implements BaseTable.IdentFactory
                 {
                 public IdentFactory()
@@ -185,7 +185,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends EntityLinkFactory<BaseTable<?,?>>
+            extends AbstractLinkFactory<BaseTable<?,?>>
             implements BaseTable.LinkFactory
                 {
                 public LinkFactory()
@@ -202,7 +202,7 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends EntityIdentFactory
+            extends AbstractIdentFactory
             implements BaseSchema.IdentFactory
                 {
                 public IdentFactory()
@@ -212,7 +212,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends EntityLinkFactory<BaseSchema<?,?>>
+            extends AbstractLinkFactory<BaseSchema<?,?>>
             implements BaseSchema.LinkFactory
                 {
                 public LinkFactory()
@@ -255,7 +255,7 @@ public class TestFactories
 
             @Component
             public static class IdentFactory
-            extends EntityIdentFactory
+            extends AbstractIdentFactory
             implements AdqlQuery.IdentFactory
                 {
                 public IdentFactory()
@@ -265,7 +265,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends EntityLinkFactory<AdqlQuery>
+            extends AbstractLinkFactory<AdqlQuery>
             implements AdqlQuery.LinkFactory
                 {
                 public LinkFactory()
@@ -282,7 +282,7 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends EntityIdentFactory
+            extends AbstractIdentFactory
             implements AdqlColumn.IdentFactory
                 {
                 public IdentFactory()
@@ -292,7 +292,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends EntityLinkFactory<AdqlColumn>
+            extends AbstractLinkFactory<AdqlColumn>
             implements AdqlColumn.LinkFactory
                 {
                 public LinkFactory()
@@ -309,7 +309,7 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends EntityIdentFactory
+            extends AbstractIdentFactory
             implements AdqlTable.IdentFactory
                 {
                 public IdentFactory()
@@ -319,7 +319,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends EntityLinkFactory<AdqlTable>
+            extends AbstractLinkFactory<AdqlTable>
             implements AdqlTable.LinkFactory
                 {
                 public LinkFactory()
@@ -336,7 +336,7 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends EntityIdentFactory
+            extends AbstractIdentFactory
             implements AdqlSchema.IdentFactory
                 {
                 public IdentFactory()
@@ -346,7 +346,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends EntityLinkFactory<AdqlSchema>
+            extends AbstractLinkFactory<AdqlSchema>
             implements AdqlSchema.LinkFactory
                 {
                 public LinkFactory()
@@ -363,7 +363,7 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends EntityIdentFactory
+            extends AbstractIdentFactory
             implements AdqlResource.IdentFactory
                 {
                 public IdentFactory()
@@ -373,7 +373,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends EntityLinkFactory<AdqlResource>
+            extends AbstractLinkFactory<AdqlResource>
             implements AdqlResource.LinkFactory
                 {
                 public LinkFactory()
@@ -395,7 +395,7 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends EntityIdentFactory
+            extends AbstractIdentFactory
             implements JdbcColumn.IdentFactory
                 {
                 public IdentFactory()
@@ -405,7 +405,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends EntityLinkFactory<JdbcColumn>
+            extends AbstractLinkFactory<JdbcColumn>
             implements JdbcColumn.LinkFactory
                 {
                 public LinkFactory()
@@ -422,7 +422,7 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends EntityIdentFactory
+            extends AbstractIdentFactory
             implements JdbcTable.IdentFactory
                 {
                 public IdentFactory()
@@ -432,7 +432,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends EntityLinkFactory<JdbcTable>
+            extends AbstractLinkFactory<JdbcTable>
             implements JdbcTable.LinkFactory
                 {
                 public LinkFactory()
@@ -449,7 +449,7 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends EntityIdentFactory
+            extends AbstractIdentFactory
             implements JdbcSchema.IdentFactory
                 {
                 public IdentFactory()
@@ -459,7 +459,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends EntityLinkFactory<JdbcSchema>
+            extends AbstractLinkFactory<JdbcSchema>
             implements JdbcSchema.LinkFactory
                 {
                 public LinkFactory()
@@ -476,7 +476,7 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends EntityIdentFactory
+            extends AbstractIdentFactory
             implements JdbcResource.IdentFactory
                 {
                 public IdentFactory()
@@ -486,7 +486,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends EntityLinkFactory<JdbcResource>
+            extends AbstractLinkFactory<JdbcResource>
             implements JdbcResource.LinkFactory
                 {
                 public LinkFactory()
@@ -508,7 +508,7 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends EntityIdentFactory
+            extends AbstractIdentFactory
             implements IvoaColumn.IdentFactory
                 {
                 public IdentFactory()
@@ -518,7 +518,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends EntityLinkFactory<IvoaColumn>
+            extends AbstractLinkFactory<IvoaColumn>
             implements IvoaColumn.LinkFactory
                 {
                 public LinkFactory()
@@ -535,7 +535,7 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends EntityIdentFactory
+            extends AbstractIdentFactory
             implements IvoaTable.IdentFactory
                 {
                 public IdentFactory()
@@ -545,7 +545,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends EntityLinkFactory<IvoaTable>
+            extends AbstractLinkFactory<IvoaTable>
             implements IvoaTable.LinkFactory
                 {
                 public LinkFactory()
@@ -562,7 +562,7 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends EntityIdentFactory
+            extends AbstractIdentFactory
             implements IvoaSchema.IdentFactory
                 {
                 public IdentFactory()
@@ -572,7 +572,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends EntityLinkFactory<IvoaSchema>
+            extends AbstractLinkFactory<IvoaSchema>
             implements IvoaSchema.LinkFactory
                 {
                 public LinkFactory()
@@ -589,7 +589,7 @@ public class TestFactories
             {
             @Component
             public static class IdentFactory
-            extends EntityIdentFactory
+            extends AbstractIdentFactory
             implements IvoaResource.IdentFactory
                 {
                 public IdentFactory()
@@ -599,7 +599,7 @@ public class TestFactories
 
             @Component
             public static class LinkFactory
-            extends EntityLinkFactory<IvoaResource>
+            extends AbstractLinkFactory<IvoaResource>
             implements IvoaResource.LinkFactory
                 {
                 public LinkFactory()

@@ -245,6 +245,15 @@
                         | The webapp context file.
                         +-->
                     <contextFile>src/test/conf/test-context.xml</contextFile>
+                    <!--+
+                        | Set the maximum allowed memory.
+                        | http://stackoverflow.com/questions/11928689/increase-memory-of-tomcat7-maven-plugin
+                        +-->
+                    <systemProperties>
+                        <!--JAVA_OPTS>-Xms128m -Xmx256m -XX:MaxPermSize=64m</JAVA_OPTS-->
+                        <!--JAVA_OPTS>-Xmx256m</JAVA_OPTS-->
+                        <!--Xmx>256m</Xmx-->
+                    </systemProperties>
                 </configuration>
             </plugin>
         </plugins>

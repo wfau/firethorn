@@ -28,13 +28,13 @@ import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierFormatException;
  *
  */
 @Slf4j
-public abstract class EntityLinkFactory<EntityType extends Entity>
+public abstract class AbstractLinkFactory<EntityType extends Entity>
 implements Entity.LinkFactory<EntityType>
     {
     public static final String DELIM = "/";
     public static final String REGEX = "(\\p{Alnum}+).*";
 
-    protected EntityLinkFactory(final String path)
+    protected AbstractLinkFactory(final String path)
         {
         this(
             DELIM,
@@ -42,7 +42,7 @@ implements Entity.LinkFactory<EntityType>
             );
         }
 
-    protected EntityLinkFactory(final String delim, final String path)
+    protected AbstractLinkFactory(final String delim, final String path)
         {
         this.path  = path  ;
         this.delim = delim ;
@@ -54,7 +54,7 @@ implements Entity.LinkFactory<EntityType>
     protected final String path  ;
     protected final String delim ;
     protected final Pattern pattern ;
-    protected final Entity.IdentFactory idents = new EntityIdentFactory();
+    protected final Entity.IdentFactory idents = new AbstractIdentFactory();
 
     @Override
     public String link(final EntityType entity)

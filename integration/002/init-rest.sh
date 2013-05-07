@@ -81,6 +81,13 @@ status()
     }
 
 #
+# Create a 'votable' function to get the job status from a json response.
+votable()
+    {
+    ./pp | sed -n 's|^ *"votable" : "\([^"]*\)".*|\1|p'
+    }
+
+#
 # Run a query and poll the result.
 runquery()
     {
