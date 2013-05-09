@@ -29,7 +29,7 @@ POST "/jdbc/resource/create" \
 userresource=$(cat jdbc-user-resource.json | ident)
 
 #
-# Locale the user data schema.
+# Locate the user data schema.
 # * Schema name is platform dependant.
 # * Should come from the user accout or config anyway ....
 #    -d "jdbc.resource.schema.select.name=public" \
