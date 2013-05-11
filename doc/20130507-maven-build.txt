@@ -4,6 +4,15 @@
 
     ssh -L 1433:ramses5:1433 fenrir.roe.ac.uk
 
+# TTY #4 ------------------------------------------------------------
+# Build the source code ... 
+#
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}"
+        mvn clean install 
+    popd
+
 # TTY #2 ------------------------------------------------------------
 # Deploy our local HSQLDB databases (skip if using an alternative database provider) 
 #
@@ -30,15 +39,6 @@
         pushd testdata
             mvn clean install
         popd
-    popd
-
-# TTY #4 ------------------------------------------------------------
-# Build the source code ... 
-#
-
-    source ${HOME?}/firethorn.settings
-    pushd "${FIRETHORN_CODE?}"
-        mvn clean install 
     popd
 
 # TTY #5 ------------------------------------------------------------

@@ -46,9 +46,9 @@
     </description>
 
     <modules>
-        <module>metadata</module>
+        <!--module>metadata</module>
         <module>userdata</module>
-        <module>testdata</module>
+        <module>testdata</module-->
     </modules>
 
     <properties>
