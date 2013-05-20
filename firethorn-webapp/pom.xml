@@ -78,11 +78,11 @@
         </dependency>
 
         <!--+
-            | FireThorn database components.
+            | FireThorn JDBC dependencies.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-database</artifactId>
+            <artifactId>firethorn-jdbc</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>
