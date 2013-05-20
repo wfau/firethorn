@@ -1,0 +1,238 @@
+# Test VM ------------------------------------------
+
+rho
+    mac     52:54:00:00:00:12
+    ipv4    10.5.0.18
+    ipv6    2001:08b0:be72:d4ea:5054:00ff:fe00:0012
+    host    tyrosine
+    base    ubuntu-12
+    use     firethorn
+
+#-----------------------------------------------------------------------------------
+# Create new virtual machines ....
+#[root@kvm-server]
+
+    pushd ${HOME?}/kvm
+    
+        dhcpmac()
+            {
+            sed -n '
+                s/^'"${1:?}"' *\([^ ]*\)/\1/ p
+                ' dhcp.dat
+            }
+
+        name=rho
+        base=ubuntu-12
+
+        #
+        # Create a managed volume, backed by the base image.
+        size=8G
+        file=${name:?}.qcow
+        back=$(virsh vol-path --pool 'base' "${base:?}-base.qcow")
+        
+        virsh vol-create-as \
+            'default' \
+            "${name:?}.qcow" \
+            "${size:?}" \
+            --allocation 0 \
+            --format 'qcow2' \
+            --backing-vol "${back}" \
+            --backing-vol-format 'qcow2'
+
+        virsh vol-dumpxml --pool 'default' "${file:?}"
+        virsh vol-info    --pool 'default' "${file:?}"
+
+        #
+        # Create a new domain.
+        path=$(virsh vol-path --pool 'default' "${name:?}.qcow")
+        sed '
+            s|<name>.*</name>|<name>'"${name:?}"'</name>|
+            s|<uuid>.*</uuid>|<uuid>'"$(uuidgen)"'</uuid>|
+            s|<source file='\''.*'\''/>|<source file='\'''"${path}"''\''/>|
+            s|<mac address='\''.*'\''/>|<mac address='\'''"$(dhcpmac ${name:?})"''\''/>|
+            ' simple-vm.xml > "${name:?}.xml"
+
+        #
+        # Define a new (managed) instance
+        virsh define "${name:?}.xml"
+        virsh start  "${name:?}"
+
+    popd
+
+# ------------------------------------------
+# Update our local SSH fingerprint
+#[user@desktop]
+
+    name=rho
+
+    host=${name:?}.virtual.metagrid.co.uk
+    sed -i '/^'${host:?}'/d' ~/.ssh/known_hosts
+    ssh-keyscan ${host:?} >> ~/.ssh/known_hosts
+
+# ------------------------------------------
+# Login as root
+#[user@desktop]
+
+    ssh root@${name:?}.virtual.metagrid.co.uk
+
+# ----------------------------------------------------------
+# Update APT database.
+#[root@test-vm] 
+
+    apt-get update
+
+# ----------------------------------------------------------
+# Install basic tools.
+#[root@test-vm] 
+
+    apt-get -y install pwgen
+    apt-get -y install gzip
+    apt-get -y install unzip
+
+# ----------------------------------------------------------
+# Install security tools.
+#[root@test-vm] 
+
+    #
+    # Install OpenSSH tools.
+    #yum -y install openssh-clients
+    
+    #
+    # Install SELinux tools.
+    #yum -y install policycoreutils-python
+
+
+# ----------------------------------------------------------
+# Install Java 1.7
+#[root@test-vm] 
+
+    apt-get -y install openjdk-7-jre
+    apt-get -y install openjdk-7-jdk
+
+#
+# Install Mercurial 
+#[root@test-vm] 
+
+    apt-get -y install mercurial
+
+#
+# Install Maven
+#[root@test-vm] 
+
+    apt-get -y install maven
+
+    # vi /usr/share/maven/conf/settings.xml 
+    #   <localRepository>/var/local/toolkits/maven/repository</localRepository>
+
+#
+# Install Perl
+#[root@test-vm] 
+
+    apt-get -y install perl
+    apt-get -y install libjson-perl
+
+
+# ------------------------------------------------------------
+# Create test user
+#[root@test-vm] 
+
+    tester=$(pwgen 16 1)
+
+    useradd --create-home --shell /bin/bash --groups users "${tester?}"
+
+# -----------------------------------------------------
+# Create our ssh config.
+#[root@test-vm] 
+
+    if [ ! -e "/home/${tester?}/.ssh" ]
+    then
+        mkdir "/home/${tester?}/.ssh"
+    fi
+
+    pushd "/home/${tester?}/.ssh"
+    
+        if [ ! -e zarquan.metagrid.co.uk.pub ]
+        then    
+            wget http://data.metagrid.co.uk/sshkeys/zarquan.metagrid.co.uk.pub
+            cat zarquan.metagrid.co.uk.pub >> authorized_keys
+        fi
+
+    popd
+
+    chown -R "${tester?}"  "/home/${tester?}/.ssh"
+    chgrp -R "${tester?}"  "/home/${tester?}/.ssh"
+    chmod g=,o=,u=rwx "/home/${tester?}/.ssh"
+
+# ------------------------------------------------------------
+# Print test user
+#[root@test-vm] 
+
+    echo "User name [${tester?}]"
+    echo "Host name [$(hostname -f)]"
+    echo "Login as  [${tester?}@$(hostname -f)]"
+
+# ------------------------------------------------------------
+# Login as our test user
+#[user@desktop]
+
+        ssh coujeipaipumoopa@rho.virtual.metagrid.co.uk
+
+# -----------------------------------------------------
+# Copy our firethorn properties.
+#[user@test-vm] 
+
+    pushd ${HOME?}
+        vi firethorn.hsqldb
+        ln -sf firethorn.hsqldb firethorn.properties
+    popd
+
+# -----------------------------------------------------
+# Create our firethorn settings.
+#[user@test-vm] 
+
+    cat >  "${HOME?}/firethorn.settings" << 'EOF'
+    FIRETHORN_BASE=${FIRETHORN_BASE:-${HOME?}/firethorn}
+    FIRETHORN_CODE=${FIRETHORN_CODE:-${FIRETHORN_BASE?}/clone}
+    EOF
+
+# -----------------------------------------------------
+# Get a read-only clone of the source code.
+#[user@test-vm] 
+
+    source "${HOME?}/firethorn.settings"
+
+    codepath="$(dirname  ${FIRETHORN_CODE?})"
+    codename="$(basename ${FIRETHORN_CODE?})"
+
+    if [ ! -e "${codepath?}" ]
+    then
+        mkdir "${codepath?}"
+    fi
+
+    pushd "${codepath?}"
+        if [ ! -e "${codename?}" ]
+        then
+             hg clone 'http://wfau.metagrid.co.uk/code/firethorn/' "${codename?}"
+        else
+            pushd "${codename?}"
+                hg pull
+            popd
+        fi
+    popd
+
+# ------------------------------------------------------------
+# Login as our test user
+#[user@desktop]
+
+        ssh coujeipaipumoopa@rho.virtual.metagrid.co.uk
+
+# -----------------------------------------------------
+# Copy/paste instructions from 20130507-maven-build.txt
+#[user@test-vm] 
+
+        ssh coujeipaipumoopa@rho.virtual.metagrid.co.uk
+
+
+
+
+

@@ -1,0 +1,43 @@
+#
+# Circular dependencies in the maven build tree
+
+
+The JDBC drivers in the database section are required by three separate sections.
+
+    1) The hsqldb service exec
+    2) The metadata, userdata and testdata database builds.  
+    3) The core firethorn build and tests.
+
+Problem is that the JDBC drivers depends on the top level firethorn project.
+But .. building the top level project will build all the core firethorn components, which will fail their tests if the database isn't running.
+
+Separate profiles .. ?
+
+    Split the jdbc drivers into a separate project.
+    Split the hsqldb server into a separate project.
+
+Top level build.
+
+    <profile>
+        <id>hsqldb</id>
+    </profile>
+
+    <profile>
+        <id>initdb</id>
+    </profile>
+
+    <profile>
+        <id>webapp</id>
+    </profile>
+
+
+#
+# Split the jdbc POM into a separate project.
+
+
+
+
+#
+# Split the hsqldb POM into a separate project.
+
+
