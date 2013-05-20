@@ -1,0 +1,159 @@
+
+
+#
+# The address specific TCP based VPN configuratioin fails.
+
+        May 17 10:23:54 zarquan nm-openvpn[2721]: Attempting to establish TCP connection with 195.194.121.66:1723 [nonblock]
+        May 17 10:23:54 zarquan nm-openvpn[2721]: TCP: connect to 195.194.121.66:1723 failed, will try again in 5 seconds: Permission denied
+        May 17 10:23:59 zarquan nm-openvpn[2721]: TCP: connect to 195.194.121.66:1723 failed, will try again in 5 seconds: Permission denied
+        May 17 10:24:04 zarquan nm-openvpn[2721]: TCP: connect to 195.194.121.66:1723 failed, will try again in 5 seconds: Permission denied
+
+#
+# The address specific TCP based VPN configuratioin is created,
+# and gets a 'IP Config Get' response from the server. 
+  
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> VPN connection 'roe.ac.uk (roe-udp)' (IP Config Get) reply received.
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> VPN Gateway: 195.194.121.66
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> Internal Gateway: 192.168.126.5
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> Tunnel Device: tun0
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> Internal IP4 Address: 192.168.126.6
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> Internal IP4 Prefix: 32
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> Internal IP4 Point-to-Point Address: 192.168.126.5
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> Maximum Segment Size (MSS): 0
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> Static Route: 195.194.120.0/22   Next Hop: 195.194.120.0
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> Static Route: 192.108.120.0/24   Next Hop: 192.108.120.0
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> Static Route: 194.66.176.0/23   Next Hop: 194.66.176.0
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> Static Route: 194.81.224.0/29   Next Hop: 194.81.224.0
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> Static Route: 130.246.0.0/16   Next Hop: 130.246.0.0
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> Static Route: 172.16.133.0/26   Next Hop: 172.16.133.0
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> Static Route: 172.22.0.0/16   Next Hop: 172.22.0.0
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> Static Route: 172.23.0.0/16   Next Hop: 172.23.0.0
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> Static Route: 129.215.0.0/16   Next Hop: 129.215.0.0
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> Static Route: 194.66.179.20/32   Next Hop: 194.66.179.20
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> Static Route: 194.66.178.57/32   Next Hop: 194.66.178.57
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> Static Route: 194.66.178.58/32   Next Hop: 194.66.178.58
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> Static Route: 192.168.124.1/32   Next Hop: 192.168.124.1
+        May 17 10:26:32 zarquan NetworkManager[1474]: <info> DNS Domain: '(none)'
+        May 17 10:26:32 zarquan nm-openvpn[2731]: Initialization Sequence Completed
+        May 17 10:26:33 zarquan NetworkManager[1474]: <info> VPN connection 'roe.ac.uk (roe-udp)' (IP Config Get) complete.
+        May 17 10:26:33 zarquan NetworkManager[1474]: <info> Policy set 'Auto UNI-WEBACCESS' (eth0) as default for IPv4 routing and DNS.
+        May 17 10:26:33 zarquan NetworkManager[1474]: <info> VPN plugin state changed: 4
+        May 17 10:26:34 zarquan ntpd[2352]: Listening on interface #6 tun0, 192.168.126.6#123 Enabled
+
+#
+# However, it does not update the client routing table correctly.
+
+    route
+    
+        Kernel IP routing table
+        Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+        192.168.126.5   *               255.255.255.255 UH    0      0        0 tun0
+        vpngate.roe.ac. br-urz656.lapto 255.255.255.255 UGH   0      0        0 eth0
+        147.142.156.0   *               255.255.255.0   U     2      0        0 eth0
+        default         br-urz656.lapto 0.0.0.0         UG    0      0        0 eth0
+
+#
+# The UDP all configuration VPN configuratioin works.
+
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> VPN connection 'roe.ac.uk (all-udp)' (IP Config Get) reply received.
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> VPN Gateway: 195.194.121.66
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> Internal Gateway: 192.168.126.5
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> Tunnel Device: tun0
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> Internal IP4 Address: 192.168.126.6
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> Internal IP4 Prefix: 32
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> Internal IP4 Point-to-Point Address: 192.168.126.5
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> Maximum Segment Size (MSS): 0
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> Static Route: 195.194.120.0/22   Next Hop: 195.194.120.0
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> Static Route: 192.108.120.0/24   Next Hop: 192.108.120.0
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> Static Route: 194.66.176.0/23   Next Hop: 194.66.176.0
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> Static Route: 194.81.224.0/29   Next Hop: 194.81.224.0
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> Static Route: 130.246.0.0/16   Next Hop: 130.246.0.0
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> Static Route: 172.16.133.0/26   Next Hop: 172.16.133.0
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> Static Route: 172.22.0.0/16   Next Hop: 172.22.0.0
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> Static Route: 172.23.0.0/16   Next Hop: 172.23.0.0
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> Static Route: 129.215.0.0/16   Next Hop: 129.215.0.0
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> Static Route: 194.66.179.20/32   Next Hop: 194.66.179.20
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> Static Route: 194.66.178.57/32   Next Hop: 194.66.178.57
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> Static Route: 194.66.178.58/32   Next Hop: 194.66.178.58
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> Static Route: 192.168.124.1/32   Next Hop: 192.168.124.1
+        May 17 10:31:51 zarquan NetworkManager[1474]: <info> DNS Domain: '(none)'
+        May 17 10:31:51 zarquan nm-openvpn[2789]: Initialization Sequence Completed
+        May 17 10:31:52 zarquan NetworkManager[1474]: <info> VPN connection 'roe.ac.uk (all-udp)' (IP Config Get) complete.
+        May 17 10:31:52 zarquan NetworkManager[1474]: <info> Policy set 'roe.ac.uk (all-udp)' (tun0) as default for IPv4 routing and DNS.
+        May 17 10:31:52 zarquan NetworkManager[1474]: <info> VPN plugin state changed: 4
+        May 17 10:31:52 zarquan ntpd[2352]: Listening on interface #7 tun0, 192.168.126.6#123 Enabled
+
+#
+# and the client routing table is updated
+
+    route
+
+        Kernel IP routing table
+        Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+        194.66.179.20   192.168.126.5   255.255.255.255 UGH   0      0        0 tun0
+        192.168.126.5   *               255.255.255.255 UH    0      0        0 tun0
+        194.66.178.58   192.168.126.5   255.255.255.255 UGH   0      0        0 tun0
+        192.168.124.1   192.168.126.5   255.255.255.255 UGH   0      0        0 tun0
+        194.66.178.57   192.168.126.5   255.255.255.255 UGH   0      0        0 tun0
+        195.194.121.66  br-urz656.lapto 255.255.255.255 UGH   0      0        0 eth0
+        194.81.224.0    192.168.126.5   255.255.255.248 UG    0      0        0 tun0
+        172.16.133.0    192.168.126.5   255.255.255.192 UG    0      0        0 tun0
+        147.142.156.0   *               255.255.255.0   U     2      0        0 eth0
+        192.108.120.0   192.168.126.5   255.255.255.0   UG    0      0        0 tun0
+        194.66.176.0    192.168.126.5   255.255.254.0   UG    0      0        0 tun0
+        195.194.120.0   192.168.126.5   255.255.252.0   UG    0      0        0 tun0
+        130.246.0.0     192.168.126.5   255.255.0.0     UG    0      0        0 tun0
+        129.215.0.0     192.168.126.5   255.255.0.0     UG    0      0        0 tun0
+        172.22.0.0      192.168.126.5   255.255.0.0     UG    0      0        0 tun0
+        172.23.0.0      192.168.126.5   255.255.0.0     UG    0      0        0 tun0
+        default         192.168.126.5   0.0.0.0         UG    0      0        0 tun0
+
+#
+# However, on a mobile laptop computer, the DNS resolver configuration will be configured
+# to use the local nameservers, based on data from the local DHCP response. 
+
+    cat /etc/resolv.conf 
+
+        # Generated by NetworkManager
+        domain urz.uni-heidelberg.de
+        search urz.uni-heidelberg.de
+        nameserver 129.206.100.126
+        nameserver 129.206.210.127
+
+#
+# Unfortunately, the default => 192.168.126.5 route created by the VPN configuration means
+# that requests to the local nameservers will be routed to via the ROE network.
+
+    traceroute 129.206.100.126
+
+        traceroute to 129.206.100.126 (129.206.100.126), 30 hops max, 60 byte packets
+         1  192.168.124.1 (192.168.124.1)  46.929 ms  269.879 ms *
+         2  * 195.194.120.254 (195.194.120.254)  584.062 ms  658.367 ms
+         3  * * *
+         4  * * *
+         5  * * *
+        ..  .....
+        27  * * *
+        28  * * *
+        29  * * *
+        30  * * *
+
+#
+# Temporary fix is to hard code the DNS resolver configuration to use the ROE nameservers.
+
+    cat >> /etc/resolv.conf << 'EOF'
+    nameserver 195.194.120.1
+    nameserver 195.194.120.2
+    EOF
+    
+#
+# This works for public addresses, however, it means that the laptop will not be able
+# to resolve local resources and addresses which are only available via the local nameservers.
+
+
+
+
+
+
+
+

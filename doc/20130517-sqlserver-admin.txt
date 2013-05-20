@@ -1,0 +1,27 @@
+
+#
+# Accessing the system from an 'unlisted' external address.
+
+#
+# Need to use a VPN connection.
+#[root@laptop]
+
+cat >> /etc/resolv.conf << 'EOF'
+nameserver 195.194.120.1
+nameserver 195.194.120.2
+EOF
+
+
+#
+# ssh to fenrir
+#[user@laptop]
+
+    ssh -X fenrir
+
+#
+# Launch remote desktop
+#[user@laptop]
+
+    rdesktop -ken-gb -g1024x768 -x l -u dave 192.168.137.35 &
+
+

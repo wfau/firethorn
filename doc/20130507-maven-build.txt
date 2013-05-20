@@ -4,7 +4,7 @@
 
     ssh -L 1433:ramses5:1433 fenrir.roe.ac.uk
 
-# TTY #4 ------------------------------------------------------------
+# TTY #2 ------------------------------------------------------------
 # Build the source code ... 
 #
 
@@ -13,7 +13,7 @@
         mvn clean install 
     popd
 
-# TTY #2 ------------------------------------------------------------
+# TTY #3 ------------------------------------------------------------
 # Deploy our local HSQLDB databases (skip if using an alternative database provider) 
 #
 
@@ -24,7 +24,7 @@
         popd
     popd
 
-# TTY #3 ------------------------------------------------------------
+# TTY #4 ------------------------------------------------------------
 # Reset our databases (skip specific databases to leave them unchanged)
 #
 
