@@ -1,0 +1,308 @@
+# Test VM ------------------------------------------
+
+tau
+    mac     52:54:00:00:00:13
+    ipv4    10.5.0.19
+    ipv6    2001:08b0:be72:d4ea:5054:00ff:fe00:0013
+    host    tyrosine
+    base    centos-6.3
+    use     firethorn
+
+#-----------------------------------------------------------------------------------
+# Create new virtual machines ....
+#[root@kvm-server]
+
+    pushd ${HOME?}/kvm
+    
+        dhcpmac()
+            {
+            sed -n '
+                s/^'"${1:?}"' *\([^ ]*\)/\1/ p
+                ' dhcp.dat
+            }
+
+        name=tau
+        base=centos-63
+
+        #
+        # Create a managed volume, backed by the base image.
+        size=8G
+        file=${name:?}.qcow
+        back=$(virsh vol-path --pool 'base' "${base:?}-base.qcow")
+        
+        virsh vol-create-as \
+            'default' \
+            "${name:?}.qcow" \
+            "${size:?}" \
+            --allocation 0 \
+            --format 'qcow2' \
+            --backing-vol "${back}" \
+            --backing-vol-format 'qcow2'
+
+        virsh vol-dumpxml --pool 'default' "${file:?}"
+        virsh vol-info    --pool 'default' "${file:?}"
+
+        #
+        # Create a new domain.
+        path=$(virsh vol-path --pool 'default' "${name:?}.qcow")
+        sed '
+            s|<name>.*</name>|<name>'"${name:?}"'</name>|
+            s|<uuid>.*</uuid>|<uuid>'"$(uuidgen)"'</uuid>|
+            s|<source file='\''.*'\''/>|<source file='\'''"${path}"''\''/>|
+            s|<mac address='\''.*'\''/>|<mac address='\'''"$(dhcpmac ${name:?})"''\''/>|
+            ' simple-vm.xml > "${name:?}.xml"
+
+        #
+        # Define a new (managed) instance
+        virsh define "${name:?}.xml"
+        virsh start  "${name:?}"
+
+    popd
+
+# ------------------------------------------
+# Update our local SSH fingerprint
+#[user@desktop]
+
+    name=tau
+
+    host=${name:?}.virtual.metagrid.co.uk
+    sed -i '/^'${host:?}'/d' ~/.ssh/known_hosts
+    ssh-keyscan ${host:?} >> ~/.ssh/known_hosts
+
+# ------------------------------------------
+# Login as root
+#[user@desktop]
+
+    ssh root@${name:?}.virtual.metagrid.co.uk
+
+# ------------------------------------------
+# Configure SSH fingerprint
+# TODO add this to our template VM
+#[root@test-vm] 
+
+    if [ ! -e "${HOME?}/.ssh" ]
+    then
+        mkdir "${HOME?}/.ssh"
+    fi    
+    if [ ! -e "${HOME?}/.ssh/known_hosts" ]
+    then
+        touch "${HOME?}/.ssh/known_hosts"
+    fi    
+
+# ----------------------------------------------------------
+# Install basic tools.
+#[root@test-vm] 
+
+    yum -y install pwgen
+    yum -y install gzip
+    yum -y install unzip
+
+# ----------------------------------------------------------
+# Install security tools.
+#[root@test-vm] 
+
+    #
+    # Install OpenSSH tools.
+    yum -y install openssh-clients
+    
+    #
+    # Install SELinux tools.
+    yum -y install policycoreutils-python
+
+
+# ----------------------------------------------------------
+# Install Java 1.7
+#[root@test-vm] 
+
+    yum -y install java-1.7.0-openjdk
+    yum -y install java-1.7.0-openjdk-devel
+
+#
+# Install Mercurial 
+#[root@test-vm] 
+
+    yum -y install mercurial
+
+#
+# Install Maven
+#[root@test-vm] 
+
+mavenvers=3.0.5
+mavenname=apache-maven-${mavenvers?}
+mavenfile=${mavenname?}-bin.tar.gz
+    
+    if [ ! -e '/var/local/toolkits' ]
+    then
+        mkdir '/var/local/toolkits'
+    fi
+
+    if [ ! -e '/var/local/toolkits/maven' ]
+    then
+        mkdir '/var/local/toolkits/maven'
+    fi
+
+    pushd '/var/local/toolkits/maven'
+
+        if [ ! -e "${mavenname?}" ]
+        then 
+
+            if [ ! -e 'downloads' ]
+            then 
+                mkdir 'downloads'
+            fi
+
+            pushd downloads
+                if [ ! -e "${mavenfile?}" ]
+                then 
+                    wget "http://www.mirrorservice.org/sites/ftp.apache.org/maven/maven-3/${mavenvers?}/binaries/${mavenfile?}"
+                fi
+            popd
+
+            tar xvf "downloads/${mavenfile?}"
+
+            ln -sf "${mavenname?}" 'current'
+
+        fi
+
+        if [ ! -e 'repository' ]
+        then
+            mkdir 'repository'
+            chgrp users 'repository'
+            chmod g+rws 'repository'
+        fi
+
+    popd
+    
+#
+# Add Maven to the shell path.
+#[root@test-vm] 
+
+    cat > /etc/profile.d/maven.sh << 'EOF'
+
+    # /etc/profile.d/maven.sh
+    #
+    # Apache Maven install.
+    # http://maven.apache.org/download.html
+    export M2_HOME=/var/local/toolkits/maven/current
+    export PATH=${M2_HOME}/bin:${PATH} 
+    EOF
+
+#
+# Add local repository to the Maven config.
+#[root@test-vm] 
+
+    vi /var/local/toolkits/maven/current/conf/settings.xml
+
+    +   <localRepository>/var/local/toolkits/maven/repository</localRepository>
+
+
+#
+# Install the Perl components used by the tests.
+#[root@test-vm] 
+
+    yum -y install perl
+    yum -y install perl-JSON
+
+# ------------------------------------------------------------
+# Create test user
+#[root@test-vm] 
+
+    tester=$(pwgen 16 1)
+
+    useradd --create-home --shell /bin/bash --groups users "${tester?}"
+    usermod --append --groups users "${tester?}"
+
+# -----------------------------------------------------
+# Create our ssh config.
+#[root@test-vm] 
+
+    if [ ! -e "/home/${tester?}/.ssh" ]
+    then
+        mkdir "/home/${tester?}/.ssh"
+    fi
+
+    pushd "/home/${tester?}/.ssh"
+    
+        if [ ! -e zarquan.metagrid.co.uk.pub ]
+        then    
+            wget http://data.metagrid.co.uk/sshkeys/zarquan.metagrid.co.uk.pub
+            cat zarquan.metagrid.co.uk.pub >> authorized_keys
+        fi
+
+    popd
+
+    chown -R "${tester?}"  "/home/${tester?}/.ssh"
+    chgrp -R "${tester?}"  "/home/${tester?}/.ssh"
+    restorecon -R -v  "/home/${tester?}/.ssh"
+    chmod g=,o=,u=rwx "/home/${tester?}/.ssh"
+
+# ------------------------------------------------------------
+# Print test user
+#[root@test-vm] 
+
+    echo "User name [${tester?}]"
+    echo "Host name [$(hostname -f)]"
+    echo "Login as  [${tester?}@$(hostname -f)]"
+
+# ------------------------------------------------------------
+# Login as our test user
+#[user@desktop]
+
+        ssh eijeisheeyeeshoh@tau.virtual.metagrid.co.uk
+
+# -----------------------------------------------------
+# Copy our firethorn properties.
+#[user@test-vm] 
+
+    pushd ${HOME?}
+        vi firethorn.hsqldb
+        ln -sf firethorn.hsqldb firethorn.properties
+    popd
+
+# -----------------------------------------------------
+# Create our firethorn settings.
+#[user@test-vm] 
+
+    cat >  "${HOME?}/firethorn.settings" << 'EOF'
+    FIRETHORN_BASE=${FIRETHORN_BASE:-${HOME?}/firethorn}
+    FIRETHORN_CODE=${FIRETHORN_CODE:-${FIRETHORN_BASE?}/clone}
+    EOF
+
+# -----------------------------------------------------
+# Get a read-only clone of the source code.
+#[user@test-vm] 
+
+    source "${HOME?}/firethorn.settings"
+
+    codepath="$(dirname  ${FIRETHORN_CODE?})"
+    codename="$(basename ${FIRETHORN_CODE?})"
+
+    if [ ! -e "${codepath?}" ]
+    then
+        mkdir "${codepath?}"
+    fi
+    pushd "${codepath?}"
+
+        if [ ! -e "${codename?}" ]
+        then
+             hg clone 'http://wfau.metagrid.co.uk/code/firethorn/' "${codename?}"
+        else
+            pushd "${codename?}"
+                hg pull
+            popd
+        fi
+    popd
+
+# -----------------------------------------------------
+# Copy/paste instructions from 20130507-maven-build.txt
+#[user@test-vm] 
+
+        ssh eijeisheeyeeshoh@tau.virtual.metagrid.co.uk
+
+
+
+
+
+
+
+

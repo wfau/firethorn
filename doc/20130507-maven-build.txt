@@ -4,8 +4,52 @@
 
     ssh -L 1433:ramses5:1433 fenrir.roe.ac.uk
 
+
+# TTY #2 ------------------------------------------------------------
+# Build the external dependencies.
+#
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}"
+
+        mvn -P depends clean install
+
+    popd
+
+# TTY #3 ------------------------------------------------------------
+# Deploy our local HSQLDB databases (skip if using an alternative database provider) 
+#
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}/firethorn-hsqldb"
+
+        mvn clean exec:java
+
+    popd
+
 # TTY #4 ------------------------------------------------------------
-# Build the source code ... 
+# Reset our databases (skip specific databases to leave them unchanged)
+#
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}/firethorn-database"
+
+        pushd metadata
+            mvn clean install
+        popd
+
+        pushd userdata
+            mvn clean install
+        popd
+
+        pushd testdata
+            mvn clean install
+        popd
+
+    popd
+
+# TTY #5 ------------------------------------------------------------
+# Build the core firethorn source code ... 
 #
 
     source ${HOME?}/firethorn.settings
@@ -13,35 +57,7 @@
         mvn clean install 
     popd
 
-# TTY #2 ------------------------------------------------------------
-# Deploy our local HSQLDB databases (skip if using an alternative database provider) 
-#
-
-    source ${HOME?}/firethorn.settings
-    pushd "${FIRETHORN_CODE?}/firethorn-database"
-        pushd hsqldb
-            mvn clean exec:java
-        popd
-    popd
-
-# TTY #3 ------------------------------------------------------------
-# Reset our databases (skip specific databases to leave them unchanged)
-#
-
-    source ${HOME?}/firethorn.settings
-    pushd "${FIRETHORN_CODE?}/firethorn-database"
-        pushd metadata
-            mvn clean install
-        popd
-        pushd userdata
-            mvn clean install
-        popd
-        pushd testdata
-            mvn clean install
-        popd
-    popd
-
-# TTY #5 ------------------------------------------------------------
+# TTY #6 ------------------------------------------------------------
 # Deploy the firethorn webapp 
 #
 
@@ -62,7 +78,7 @@
 
     popd
 
-# TTY #5 ------------------------------------------------------------
+# TTY #7 ------------------------------------------------------------
 # Deploy the OGSA-DAI webapp 
 #
 
@@ -94,7 +110,7 @@
         
     popd
 
-# TTY #6 ------------------------------------------------------------
+# TTY #8 ------------------------------------------------------------
 # OGSA-DAI login fix.
 #
 

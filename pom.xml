@@ -23,16 +23,9 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
     >
-
     <!--+
         | Maven POM documentation.
         | https://maven.apache.org/ref/3.0.4/maven-model/maven.html
-        +-->
-
-    <!--+
-        | Access to the latest version of Maven.
-        | http://repos.fedorapeople.org/repos/dchen/apache-maven/
-        | http://repos.fedorapeople.org/repos/dchen/apache-maven/fedora-apache-maven.repo
         +-->
     <modelVersion>4.0.0</modelVersion>
 
@@ -168,12 +161,12 @@
     <!--+
         | Maven parent/child projects.
         | http://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance
-        +-->
     <modules>
+
+        <module>firethorn-jdbc</module>
         <module>firethorn-spring</module>
         <module>firethorn-logging</module>
         <module>firethorn-testing</module>
-        <!--module>firethorn-database</module-->
 
         <module>firethorn-cds</module>
         <module>firethorn-ogsadai</module>
@@ -182,6 +175,7 @@
         <module>firethorn-webapp</module>
 
     </modules>
+        +-->
 
     <properties>
 
@@ -798,6 +792,48 @@
 
         </plugins>
     </reporting>
+
+    <!--+
+        | Project profiles.
+        | https://maven.apache.org/guides/introduction/introduction-to-profiles.html
+        +-->
+    <profiles>
+
+        <!--+
+            | Just build the dependency poms.
+            +-->
+        <profile>
+            <id>depends</id>
+            <modules>
+                <module>firethorn-jdbc</module>
+                <module>firethorn-spring</module>
+                <module>firethorn-logging</module>
+                <module>firethorn-testing</module>
+            </modules>
+        </profile>
+
+        <!--+
+            | Build our codebase.
+            +-->
+        <profile>
+            <id>build</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>firethorn-jdbc</module>
+                <module>firethorn-spring</module>
+                <module>firethorn-logging</module>
+                <module>firethorn-testing</module>
+                <module>firethorn-cds</module>
+                <module>firethorn-ogsadai</module>
+                <module>firethorn-core</module>
+                <module>firethorn-webapp</module>
+            </modules>
+        </profile>
+
+    </profiles>
+
 </project>
 
 

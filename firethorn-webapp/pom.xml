@@ -118,16 +118,6 @@
             <type>jar</type>
         </dependency>
 
-        <!--+
-            | FireThorn OGSA-DAI activity client (included in core).
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-ogsadai-activity-client</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-        </dependency>
-            +-->
-
 	    <!--+
 	        | Servlet libraries.
 	        +-->
@@ -167,24 +157,6 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-        </dependency>
-
-        <!--+
-            | Joda Time Libraries.
-            | http://joda-time.sourceforge.net/
-            +-->	
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-        </dependency>
-
-        <!--+
-            | Jadira Type Libraries.
-            | http://blog.jadira.co.uk/
-            +-->	
-        <dependency>
-            <groupId>org.jadira.usertype</groupId>
-            <artifactId>usertype.core</artifactId>
         </dependency>
 
     </dependencies>

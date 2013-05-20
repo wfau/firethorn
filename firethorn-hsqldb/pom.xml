@@ -27,7 +27,7 @@
 
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
-        <artifactId>firethorn-database</artifactId>
+        <artifactId>firethorn</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
@@ -47,23 +47,14 @@
     <dependencies>
 
         <!--+
-            | FireThorn database dependencies.
+            | FireThorn JDBC drivers.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-database</artifactId>
+            <artifactId>firethorn-jdbc</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>
-
-        <!--+
-            | This should be already included by firethorn-database ?
-        <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>2.2.9</version>
-        </dependency>
-            +-->
 
     </dependencies>
 

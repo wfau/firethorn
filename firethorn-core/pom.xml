@@ -78,11 +78,11 @@
         </dependency>
 
         <!--+
-            | FireThorn database components.
+            | FireThorn JDBC drivers.
             +-->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-database</artifactId>
+            <artifactId>firethorn-jdbc</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>
@@ -97,17 +97,6 @@
             <scope>test</scope>
             <type>pom</type>
         </dependency>
-
-        <!--+
-            | FireThorn testdata.
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-testdata</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-            <type>pom</type>
-        </dependency>
-            +-->
 
         <!--+
             | FireThorn CDS ADQL parser.
@@ -142,46 +131,6 @@
 		    <artifactId>jsp-api</artifactId>
 		    <scope>provided</scope>
 	    </dependency>
-
-        <!--+
-            | Postgresql database driver.
-            | http://jdbc.postgresql.org/
-    	<dependency>
-    		<groupId>postgresql</groupId>
-    		<artifactId>postgresql</artifactId>
-            <scope>test</scope>
-    	</dependency>
-            +-->
-
-        <!--+
-            | HSQLDB database and JDBC driver.
-            | http://hsqldb.org/
-        <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <scope>test</scope>
-        </dependency>
-            +-->
-
-        <!--+
-            | Mysql JDBC driver.
-            | https://dev.mysql.com/usingmysql/java/
-        <dependency>
-	        <groupId>mysql</groupId>
-	        <artifactId>mysql-connector-java</artifactId>
-            <scope>test</scope>
-        </dependency>
-            +-->
-
-        <!--+
-            | jTDS SQLServer JDBC driver.
-            | http://jtds.sourceforge.net/
-        <dependency>
-            <groupId>net.sourceforge.jtds</groupId>
-            <artifactId>jtds</artifactId>
-            <scope>test</scope>
-        </dependency>
-            +-->
 
         <!--+
             | Starlink Tables library.
