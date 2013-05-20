@@ -49,17 +49,6 @@
     </properties>
 
     <dependencies>
-
-        <!--+
-            | FireThorn JDBC drivers.
-            +-->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>firethorn-jdbc</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -171,6 +160,14 @@
                         </goals>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>firethorn-jdbc</artifactId>
+                        <version>${project.version}</version>
+                        <type>pom</type>
+                    </dependency>
+                </dependencies>
             </plugin>
 
         </plugins>
