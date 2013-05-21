@@ -124,19 +124,19 @@ extends AbstractController
      * MVC property for the initial connection URL.
      *
      */
-    public static final String CREATE_URL = "jdbc.resource.create.url" ;
+    public static final String CREATE_CONN_URL = "jdbc.resource.create.url" ;
 
     /**
      * MVC property for the initial connection user name.
      *
      */
-    public static final String CREATE_USER = "jdbc.resource.create.user" ;
+    public static final String CREATE_CONN_USER = "jdbc.resource.create.user" ;
 
     /**
      * MVC property for the initial connection password.
      *
      */
-    public static final String CREATE_PASS = "jdbc.resource.create.pass" ;
+    public static final String CREATE_CONN_PASS = "jdbc.resource.create.pass" ;
 
     /**
      * JSON GET request to select all.
@@ -178,11 +178,11 @@ extends AbstractController
     public ResponseEntity<JdbcResourceBean> jsonCreate(
         @RequestParam(value=CREATE_NAME, required=true)
         final String name,
-        @RequestParam(value=CREATE_URL, required=false)
+        @RequestParam(value=CREATE_CONN_URL, required=false)
         final String url,
-        @RequestParam(value=CREATE_USER, required=false)
+        @RequestParam(value=CREATE_CONN_USER, required=false)
         final String user,
-        @RequestParam(value=CREATE_PASS, required=false)
+        @RequestParam(value=CREATE_CONN_PASS, required=false)
         final String pass,
         @RequestParam(value=CREATE_CATALOG, required=false)
         final String catalog,

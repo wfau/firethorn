@@ -1,0 +1,42 @@
+
+
+#[user@desktop]
+
+    ssh user@wfau.metagrid.co.uk
+
+#[user@wfau]
+ 
+    mkdir ${HOME?}/bin
+
+    cat > "${HOME?}/bin/clearwing-pull.sh" << 'EOF'
+    #!/bin/bash
+    #
+    logger 'INFO : clearwing-pull ----'
+
+    hglocal='/var/local/wfau/projects/clearwing/code/'
+    hgremote='http://wfauhg.roe.ac.uk/clearwing/'
+
+    logger "INFO : Local  repository [${hglocal?}]"
+    logger "INFO : Remote repository [${hgremote?}]"
+
+    if [ ! -e  "${hglocal?}" ]
+    then
+        logger "ERROR : Could not find local repository"
+    else
+        pushd "${hglocal?}"
+
+            hg pull "${hgremote?}"
+
+        popd
+    fi
+    logger 'INFO : clearwing-pull done'
+    EOF
+
+    chmod a+x "${HOME?}/bin/clearwing-pull.sh"
+
+#[user@wfau]
+
+    crontab -e
+
+    */10 * * * * /home/user/bin/clearwing-pull.sh
+

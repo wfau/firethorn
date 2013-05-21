@@ -90,19 +90,6 @@ rho
     apt-get -y install unzip
 
 # ----------------------------------------------------------
-# Install security tools.
-#[root@test-vm] 
-
-    #
-    # Install OpenSSH tools.
-    #yum -y install openssh-clients
-    
-    #
-    # Install SELinux tools.
-    #yum -y install policycoreutils-python
-
-
-# ----------------------------------------------------------
 # Install Java 1.7
 #[root@test-vm] 
 
@@ -121,11 +108,8 @@ rho
 
     apt-get -y install maven
 
-    # vi /usr/share/maven/conf/settings.xml 
-    #   <localRepository>/var/local/toolkits/maven/repository</localRepository>
-
 #
-# Install Perl
+# Install Perl and JSON tools
 #[root@test-vm] 
 
     apt-get -y install perl
@@ -176,6 +160,8 @@ rho
 #[user@desktop]
 
         ssh coujeipaipumoopa@rho.virtual.metagrid.co.uk
+        ssh aingeceegeuduath@rho.virtual.metagrid.co.uk
+
 
 # -----------------------------------------------------
 # Copy our firethorn properties.
@@ -225,12 +211,14 @@ rho
 #[user@desktop]
 
         ssh coujeipaipumoopa@rho.virtual.metagrid.co.uk
+        ssh aingeceegeuduath@rho.virtual.metagrid.co.uk
 
 # -----------------------------------------------------
 # Copy/paste instructions from 20130507-maven-build.txt
 #[user@test-vm] 
 
         ssh coujeipaipumoopa@rho.virtual.metagrid.co.uk
+        ssh aingeceegeuduath@rho.virtual.metagrid.co.uk
 
 
 

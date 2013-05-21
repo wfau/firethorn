@@ -1,0 +1,27 @@
+
+
+
+
+    User identity, passed with every request.
+
+        GET ... ? 
+        POST as a param
+
+        GET  as a param
+        POST as a param
+
+    Unless we start to use HTTP headers ..
+
+    Find identity based on 'unique' (probably email).
+
+        identity/select?unique=xxxxxx
+
+    Subsequent requests suppy identity as a param.
+    
+        GET  ?identity=http://...../xxxx
+        POST ?identity=http://...../xxxx
+
+
+
+
+

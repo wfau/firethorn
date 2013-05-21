@@ -67,71 +67,42 @@
     </servlet-mapping>
 
     <!--+
-        | CDS TAP demo servlets.
-        +-->
-    <!--servlet>
-        <display-name>Demo UWS ASOV</display-name>
-        <servlet-name>DemoUWS_Servlet</servlet-name>
-        <servlet-class>asov.uws.DemoUWS_Servlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>DemoUWS_Servlet</servlet-name>
-        <url-pattern>/cds-uws/*</url-pattern>
-    </servlet-mapping-->
-    <!--servlet>
-        <display-name>Demo TAP ASOV</display-name>
-        <servlet-name>DemoTAP_Servlet</servlet-name>
-        <servlet-class>asov.tap.DemoTAP_Servlet</servlet-class>
-    </servlet-->
-    <!--servlet-mapping>
-        <servlet-name>DemoTAP_Servlet</servlet-name>
-        <url-pattern>/cds-tap/*</url-pattern>
-    </servlet-mapping-->
-
-    <!--+
-        | Logging servlets.
+        | Logging components.
         | http://gordondickens.com/wordpress/2012/07/03/enterprise-spring-best-practices-part-1-project-config/
-        +-->
  	<servlet>
     	<servlet-name>LogbackStatusMessages</servlet-name>
     	<servlet-class>ch.qos.logback.classic.ViewStatusMessagesServlet</servlet-class>
   	</servlet>
-
   	<servlet-mapping>
     	<servlet-name>LogbackStatusMessages</servlet-name>
     	<url-pattern>/logback</url-pattern>
   	</servlet-mapping>
-
 	<filter>
     	<filter-name>LogbackTeeFilter</filter-name>
     	<filter-class>ch.qos.logback.access.servlet.TeeFilter</filter-class>
   	</filter>
-
   	<filter-mapping>
     	<filter-name>LogbackTeeFilter</filter-name>
     	<url-pattern>/*</url-pattern>
   	</filter-mapping>
+        +-->
 
 	<!--+
-	    | Spring transaction filter.
+	    | Spring transaction filter (moved to a request interceptor in spring-context).
 	    | http://blog.smartkey.co.uk/2010/03/open-session-in-view-pattern-spring-jpa/
-	    +-->
     <filter>
         <filter-name>spring-filter</filter-name>
         <filter-class>org.springframework.orm.hibernate4.support.OpenSessionInViewFilter</filter-class>
-        <!--init-param>
-            <param-name>entityManagerFactoryBeanName</param-name>
-            <param-value>reportsEntityManagerFactory</param-value>
-        </init-param-->
         <init-param>
             <param-name>sessionFactoryBeanName</param-name>
             <param-value>FireThornHibernateSessionFactory</param-value>
         </init-param>
     </filter>
- 
     <filter-mapping>
         <filter-name>spring-filter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+	    +-->
 
 </web-app>
+
