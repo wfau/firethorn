@@ -28,7 +28,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-database</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>01.02-SNAPSHOT</version>
     </parent>
 
     <artifactId>firethorn-database-metadata</artifactId>

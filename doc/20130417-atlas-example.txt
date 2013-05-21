@@ -1,8 +1,8 @@
-# TTY #1-n ------------------------------------------------------------
+# TTY #1-8 ------------------------------------------------------------
 # Copy from 20130507-maven-buld.txt
 #
 
-# TTY #7 ------------------------------------------------------------
+# TTY #9 ------------------------------------------------------------
 # Run the REST test scripts.
 #
 
@@ -12,8 +12,6 @@
         FIRETHORN_TEST=${FIRETHORN_TEST:-${FIRETHORN_CODE?}/integration/002}
 
         source "${FIRETHORN_TEST?}/init-rest.sh"
-
-# System admin configuration
 
         #
         # Set up our user data space.
@@ -29,8 +27,6 @@
         # Set up our ADQL resource.
         # (slow - bug trigges a re-scan of the the JDBC tables)
         source "${FIRETHORN_TEST?}/init-adql.sh"
-
-# TAPfactory equivalent
 
         #
         # Create our query workspace.
