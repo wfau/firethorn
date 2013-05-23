@@ -41,10 +41,8 @@ public class AdqlQueryTestCase
 extends TestBase
     {
 
-    private JdbcResource twomass  ;
-    private JdbcResource twoxmm   ;
-    private JdbcResource bestdr7  ;
-    private JdbcResource combined ;
+    private JdbcResource twomass ;
+    private JdbcResource wfau    ;
 
     private JdbcResource resource ;
     private JdbcSchema   schema   ;
@@ -63,29 +61,19 @@ extends TestBase
             "twomass-resource",
             "spring:RoeTWOMASS"
             );
-        this.twoxmm = factories().jdbc().resources().create(
-            "twoxmm",
-            "twoxmm-resource",
-            "spring:RoeTWOXMM"
-            );
-        this.bestdr7 = factories().jdbc().resources().create(
-            "bestdr7",
-            "bestdr7-resource",
-            "spring:RoeBestDR7"
-            );
-        this.combined = factories().jdbc().resources().create(
+        this.wfau = factories().jdbc().resources().create(
             "wfau",
             "wfau-resource",
             "spring:RoeWFAU"
             );
-        this.combined.catalog(
+        this.wfau.catalog(
             JdbcResource.ALL_CATALOGS
             );
 
         this.resource = factories().jdbc().resources().create(
             "user",
             "user-resource",
-            "spring:HsqldbUserData"
+            "spring:FireThornUserData"
             );
         this.schema = this.resource.schemas().create(
             null,
@@ -331,7 +319,7 @@ extends TestBase
             "adql_bestdr7"
             );
         other.tables().create(
-            this.bestdr7.schemas().select(
+            this.wfau.schemas().select(
                 "BestDR7",
                 "dbo"
                 ).tables().select(
@@ -386,7 +374,7 @@ extends TestBase
             "adql_twomass"
             );
         schema.tables().create(
-            this.combined.schemas().select(
+            this.wfau.schemas().select(
                 "TWOMASS",
                 "dbo"
                 ).tables().select(
@@ -394,7 +382,7 @@ extends TestBase
                     )
             );
         schema.tables().create(
-            this.combined.schemas().select(
+            this.wfau.schemas().select(
                 "TWOMASS",
                 "dbo"
                 ).tables().select(
@@ -402,7 +390,7 @@ extends TestBase
                     )
             );
         schema.tables().create(
-            this.combined.schemas().select(
+            this.wfau.schemas().select(
                 "TWOMASS",
                 "dbo"
                 ).tables().select(
@@ -414,7 +402,7 @@ extends TestBase
             "adql_bestdr7"
             );
         other.tables().create(
-            this.combined.schemas().select(
+            this.wfau.schemas().select(
                 "BestDR7",
                 "dbo"
                 ).tables().select(

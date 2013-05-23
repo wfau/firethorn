@@ -59,6 +59,7 @@
                 <value>uk.ac.roe.wfau.firethorn.config.ConfigPropertyEntity</value>
 
                 <value>uk.ac.roe.wfau.firethorn.identity.IdentityEntity</value>
+                <value>uk.ac.roe.wfau.firethorn.identity.CommunityEntity</value>
 
                 <value>uk.ac.roe.wfau.firethorn.meta.adql.AdqlResourceEntity</value>
                 <value>uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity</value>

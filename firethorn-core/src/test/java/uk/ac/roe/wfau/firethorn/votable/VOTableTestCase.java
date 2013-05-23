@@ -115,7 +115,9 @@ extends JdbcResourceTestBase
                     );
                 }
 
-            final DataSource source = (DataSource) spring.getBean("HsqldbTempData");
+            final DataSource source = (DataSource) spring.getBean(
+                "FireThornUserData"
+                );
             final Connection connection = source.getConnection();
 
             //connection.createStatement().execute("CREATE SCHEMA albert AUTHORIZATION DBA ;");

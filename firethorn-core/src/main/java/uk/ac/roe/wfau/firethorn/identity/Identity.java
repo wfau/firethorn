@@ -17,6 +17,7 @@
 package uk.ac.roe.wfau.firethorn.identity;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**
  * Public interface for an identity.
@@ -44,41 +45,7 @@ extends Entity
         }
 
     /**
-     * An Identity context.
-     *
-     */
-    public static interface Context
-        {
-
-        /**
-         * An Identity Context factory.
-         *
-         */
-        public static interface Factory
-            {
-
-            /**
-             * Get the current Identity Context.
-             *
-             * @returns The current Identity Context.
-             *
-             */
-            public Context context();
-
-            }
-
-        /**
-         * Get the current Identity.
-         *
-         * @returns The current Identity in this context.
-         *
-         */
-        public Identity identity();
-
-        }
-
-    /**
-     * An Identity factory.
+     * Factory interface.
      *
      */
     public static interface Factory
@@ -88,23 +55,49 @@ extends Entity
         /**
          * Create a new Identity.
          *
-         * @param name
-         *      The new Identity name.
-         * @returns
-         *      A new Identity.
-         *
          */
-        public Identity create(final String name);
+        public Identity create(final Community community, final String name);
 
         /**
-         * Select all the Identities managed by this Factory.
-         *
-         * @returns
-         *      An Iterable iterator of all the Identities managed by this Factory.
+         * Select an Identity.
          *
          */
-        public Iterable<Identity> select();
+        public Identity select(final Community community, final String name);
 
         }
+
+    /**
+     * The community this Identity belongs to.
+     * 
+     */
+    public Community community();
+
+    /**
+     * The local storage assigned to this Identity.
+     * 
+     */
+    public JdbcSchema store();
+
+    
+    /*
+     * 
+    Spaces spaces()
+    Spaces
+        {
+        AdqlResource       create(String name)
+        Iter<AdqlResource> select()
+        Iter<AdqlResource> search(String text)
+
+        AdqlResource       current()
+
+        }
+
+    Queries queries()
+    Queries {}
+     *
+     */
+    
+    
+    
     }
 

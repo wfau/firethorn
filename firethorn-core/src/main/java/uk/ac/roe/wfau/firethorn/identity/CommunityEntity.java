@@ -1,0 +1,179 @@
+/*
+ *  Copyright (C) 2013 Royal Observatory, University of Edinburgh, UK
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+package uk.ac.roe.wfau.firethorn.identity;
+
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Entity;
+import javax.persistence.NamedQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.Table;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
+import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
+
+/**
+ * Hibernate based entity implementation.
+ *
+ */
+@Slf4j
+@Entity()
+@Access(
+    AccessType.FIELD
+    )
+@Table(
+    name = CommunityEntity.DB_TABLE_NAME
+    )
+@NamedQueries(
+        {
+        @NamedQuery(
+            name = "Comunity-select-all",
+            query = "FROM CommunityEntity ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name = "Comunity-select-uri",
+            query = "FROM CommunityEntity WHERE uri = :uri ORDER BY ident desc"
+            )
+        }
+    )
+public class CommunityEntity
+extends AbstractEntity
+implements Community
+    {
+
+    /**
+     * Our database table name.
+     *
+     */
+    public static final String DB_TABLE_NAME = "CommunityEntity";
+
+    /**
+     * Our Factory implementation.
+     *
+     */
+    @Repository
+    public static class Factory
+    extends AbstractFactory<Community>
+    implements Community.Factory
+        {
+        @Override
+        public Class<?> etype()
+            {
+            return CommunityEntity.class;
+            }
+
+        @Override
+        @CreateEntityMethod
+        public Community create(final String urn, final String name, final String text)
+            {
+            return super.insert(
+                new CommunityEntity(
+                    name
+                    )
+                );
+            }
+
+        @Override
+        public Community select(String urn)
+            {
+            return super.first(
+                super.query(
+                    "Comunity-select-uri"
+                    ).setString(
+                        "urn",
+                        urn
+                    )
+                );
+            }
+
+        @Autowired
+        protected Community.IdentFactory idents;
+        @Override
+        public Community.IdentFactory idents()
+            {
+            return this.idents;
+            }
+
+        @Autowired
+        protected Community.LinkFactory links;
+        @Override
+        public Community.LinkFactory links()
+            {
+            return this.links;
+            }
+        }
+
+    /**
+     * Default constructor needs to be protected not private.
+     * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
+     *
+     */
+    protected CommunityEntity()
+        {
+        super();
+        }
+
+    /**
+     * Create a new Community.
+     *
+     */
+    protected CommunityEntity(final String name)
+        {
+        super(
+            name
+            );
+        }
+
+    @Override
+    public Identities identities()
+        {
+        return new Identities()
+            {
+            @Override
+            public Identity create(final String name)
+                {
+                return factories().identities().create(
+                    CommunityEntity.this,
+                    name
+                    );
+                }
+
+            @Override
+            public Identity select(final String name)
+                {
+                return factories().identities().select(
+                    CommunityEntity.this,
+                    name
+                    );
+                }
+            };
+        }
+    
+    @Override
+    public String link()
+        {
+        return factories().communities().links().link(
+            this
+            );
+        }
+    }

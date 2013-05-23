@@ -61,7 +61,7 @@ extends TestBase
         this.resource = factories().jdbc().resources().create(
             "user",
             "user-resource",
-            "spring:HsqldbUserData"
+            "spring:FireThornUserData"
             );
         this.schema = this.resource.schemas().create(
             null,

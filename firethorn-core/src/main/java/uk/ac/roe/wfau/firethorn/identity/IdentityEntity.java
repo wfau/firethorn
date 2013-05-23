@@ -19,10 +19,14 @@ package uk.ac.roe.wfau.firethorn.identity;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +36,10 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**
- * Hibernate based <code>AdqlCatalog</code> implementation.
+ * Hibernate based entity implementation.
  *
  */
 @Slf4j
@@ -48,12 +53,12 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 @NamedQueries(
         {
         @NamedQuery(
-            name = "identity-select",
+            name = "Identity-select-all",
             query = "FROM IdentityEntity ORDER BY ident desc"
             ),
         @NamedQuery(
-            name = "identity-select-name",
-            query = "FROM IdentityEntity WHERE name = :name ORDER BY ident desc"
+            name = "Identity-select-community.name",
+            query = "FROM IdentityEntity WHERE community = :community AND name = :name ORDER BY ident desc"
             )
         }
     )
@@ -63,13 +68,19 @@ implements Identity
     {
 
     /**
-     * Our database table name.
+     * Hibernate table mapping.
      *
      */
     public static final String DB_TABLE_NAME = "IdentityEntity";
 
     /**
-     * Our Entity Factory implementation.
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String DB_COMMUNITY_COL = "community" ;
+
+    /**
+     * Factory implementation.
      *
      */
     @Repository
@@ -84,27 +95,33 @@ implements Identity
             }
 
         @Override
-        @SelectEntityMethod
-        public Iterable<Identity> select()
+        @CreateEntityMethod
+        public Identity create(final Community community, final String name)
             {
-            return super.iterable(
-                super.query(
-                    "identity-select"
+            return super.insert(
+                new IdentityEntity(
+                    community,
+                    name
                     )
                 );
             }
 
         @Override
-        @CreateEntityMethod
-        public Identity create(final String name)
+        public Identity select(Community community, String name)
             {
-            return super.insert(
-                new IdentityEntity(
-                    name
-                )
+            return super.first(
+                super.query(
+                    "Comunity-select-uri"
+                    ).setEntity(
+                        "community",
+                        community
+                    ).setString(
+                        "name",
+                        name
+                        )
                 );
             }
-
+        
         @Autowired
         protected Identity.IdentFactory idents;
         @Override
@@ -136,15 +153,17 @@ implements Identity
      * Create a new IdentityEntity, setting the owner to null.
      *
      */
-    protected IdentityEntity(final String name)
+    protected IdentityEntity(final Community community, final String name)
         {
         super(
             null,
-            name);
+            name
+            );
+        this.community = community;
         }
 
     /**
-     * Return this Identity as the Entity owner.
+     * Return this Identity as the owner.
      *
      */
     @Override
@@ -160,10 +179,39 @@ implements Identity
             }
         }
 
+    @Index(
+        name=DB_TABLE_NAME + "IndexByCommunity"
+        )
+    @ManyToOne(
+        fetch = FetchType.LAZY,
+        targetEntity = CommunityEntity.class
+        )
+    @JoinColumn(
+        name = DB_COMMUNITY_COL,
+        unique = false,
+        nullable = false,
+        updatable = false
+        )
+    private Community community ;
+    @Override
+    public Community community()
+        {
+        return this.community ;
+        }
+    
     @Override
     public String link()
         {
-        return null ;
+        return factories().identities().links().link(
+            this
+            );
+        }
+
+    @Override
+    public JdbcSchema store()
+        {
+        // TODO Auto-generated method stub
+        return null;
         }
     }
 

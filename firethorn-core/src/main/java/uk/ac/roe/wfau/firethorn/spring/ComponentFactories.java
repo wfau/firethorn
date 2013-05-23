@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.spring;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
+import uk.ac.roe.wfau.firethorn.identity.Community;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
@@ -77,10 +78,10 @@ public interface ComponentFactories
     public Identity.Factory identities();
 
     /**
-     * The current Identity context.
+     * Our local Community factory.
      *
      */
-    public Identity.Context context();
+    public Community.Factory communities();
 
     /**
      * Our local ConfigProperty factory.

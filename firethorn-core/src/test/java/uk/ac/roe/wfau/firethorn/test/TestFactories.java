@@ -24,6 +24,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractIdentFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractLinkFactory;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.identity.Community;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
@@ -133,6 +134,35 @@ public class TestFactories
                     }
                 }
             }
+
+        @Component
+        public static class CommunityFactories
+            {
+            @Component
+            public static class IdentFactory
+            extends AbstractIdentFactory
+            implements Community.IdentFactory
+                {
+                public IdentFactory()
+                    {
+                    }
+                }
+
+            @Component
+            public static class LinkFactory
+            extends AbstractLinkFactory<Community>
+            implements Community.LinkFactory
+                {
+                public LinkFactory()
+                    {
+                    super(
+                        "/auth/community"
+                        );
+                    }
+                }
+            }
+        
+        
         }
 
     @Component
@@ -243,7 +273,7 @@ public class TestFactories
                 @Override
                 public String name()
                     {
-                    return name("name");
+                    return name("query");
                     }
 
                 @Override

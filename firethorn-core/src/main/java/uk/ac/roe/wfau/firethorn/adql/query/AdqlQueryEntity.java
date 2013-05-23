@@ -262,7 +262,7 @@ implements AdqlQuery, AdqlParserQuery
                 schema,
                 store,
                 input,
-                null
+                names().name()
                 );
             }
 

@@ -45,14 +45,12 @@ public class JdbcResourceInportTestCase
 
         final JdbcResource resource = factories().jdbc().resources().create(
             unique(
-                "resource"
+                "resource-ogsa"
                 ),
-            catalog
-            );
-        resource.connection().url(
-            config().getProperty(
-                "firethorn.wfau.base"
-                ) + "/" + catalog
+            unique(
+                "resource-name"
+                ),
+            "spring:RoeWFAU"
             );
         resource.connection().user(
             config().getProperty(
@@ -65,6 +63,7 @@ public class JdbcResourceInportTestCase
                 )
             );
         try {
+            resource.catalog(catalog);
             resource.scan();
             }
         catch(final Exception ouch)
@@ -83,7 +82,7 @@ public class JdbcResourceInportTestCase
         {
         display(
             create(
-                "WORLDR2"
+                "TWOMASS"
                 )
             );
         }
