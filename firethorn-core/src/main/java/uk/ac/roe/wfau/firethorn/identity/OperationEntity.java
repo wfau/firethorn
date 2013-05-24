@@ -39,6 +39,7 @@ import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 
 /**
  *
@@ -89,6 +90,7 @@ implements Operation
             }
 
         @Override
+        @CreateEntityMethod
         public Operation create(final String method, final String source)
             {
             return current(
@@ -197,6 +199,7 @@ implements Operation
      */
     @OneToMany(
         fetch   = FetchType.LAZY,
+        mappedBy = "operation",
         targetEntity = AuthenticationEntity.class
         )
     private final List<Authentication> authentications = new ArrayList<Authentication>();
@@ -214,6 +217,9 @@ implements Operation
             @Override
             public Authentication create(Identity identity, String method)
                 {
+                log.debug("create(Identity, String)");
+                log.debug("  Identity [{}]", identity.name());
+                log.debug("  Method   [{}]", method);
                 Authentication authentication = factories().authentications().create(
                     OperationEntity.this,
                     identity,
@@ -227,6 +233,35 @@ implements Operation
             };
         }
 
+    /*
+    @Override
+    public Authentications authentications()
+        {
+        return new Authentications()
+            {
+            @Override
+            public Iterable<Authentication> select()
+                {
+                return null ;
+                }
+
+            @Override
+            public Authentication create(Identity identity, String method)
+                {
+                log.debug("create(Identity, String)");
+                log.debug("  Identity [{}]", identity.name());
+                log.debug("  Method   [{}]", method);
+                Authentication authentication = factories().authentications().create(
+                    OperationEntity.this,
+                    identity,
+                    method
+                    );
+                return authentication;
+                }
+            };
+        }
+     */
+    
     @Override
     public String link()
         {

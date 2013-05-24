@@ -35,6 +35,7 @@ import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 
 /**
  * Hibernate based entity implementation.
@@ -95,6 +96,7 @@ implements Community
         @CreateEntityMethod
         public Community create(final String uri, final String name)
             {
+            log.debug("create(String, String) [{}][{}]", uri, name);
             final Community community = this.select(
                 uri
                 );
@@ -113,8 +115,10 @@ implements Community
             }
 
         @Override
+        @SelectEntityMethod
         public Community select(String uri)
             {
+            log.debug("select(String) [{}]", uri);
             return super.first(
                 super.query(
                     "Comunity-select-uri"
@@ -161,6 +165,7 @@ implements Community
         super(
             name
             );
+        log.debug("CommunityEntity(String, String) [{}][{}]", uri, name);
         this.uri = uri ;
         }
 

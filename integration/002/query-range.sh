@@ -31,6 +31,8 @@ EOF
 #
 # Create the ADQL query.
 POST "${queryschema?}/queries/create" \
+    --header "firethorn.auth.identity:${identity}" \
+    --header "firethorn.auth.community:${community}" \
     --data-urlencode "adql.schema.query.create.name=query-$(unique)" \
     --data-urlencode "adql.schema.query.create.store=${metabasename?}/${userschema?}" \
     --data-urlencode "adql.schema.query.create.query@atlas-query-00x.adql" \

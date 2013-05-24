@@ -49,7 +49,7 @@ implements HandlerInterceptor
         log.debug("preHandle()");
 
         factories.operations().create(
-            request.getMethod(),
+            request.getRequestURL().toString(),
             request.getRemoteAddr()
             );
         

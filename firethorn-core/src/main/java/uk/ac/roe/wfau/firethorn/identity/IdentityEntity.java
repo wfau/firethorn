@@ -98,20 +98,32 @@ implements Identity
         @CreateEntityMethod
         public Identity create(final Community community, final String name)
             {
-            return super.insert(
-                new IdentityEntity(
-                    community,
-                    name
-                    )
+            log.debug("create(Community, String) [{}][{}]", community.uri(), name);
+            final Identity identity = this.select(
+                community,
+                name
                 );
+            if (identity != null)
+                {
+                return identity ;
+                }
+            else {
+                return super.insert(
+                    new IdentityEntity(
+                        community,
+                        name
+                        )
+                    );
+                }
             }
 
         @Override
+        @SelectEntityMethod
         public Identity select(Community community, String name)
             {
             return super.first(
                 super.query(
-                    "Comunity-select-uri"
+                    "Identity-select-community.name"
                     ).setEntity(
                         "community",
                         community

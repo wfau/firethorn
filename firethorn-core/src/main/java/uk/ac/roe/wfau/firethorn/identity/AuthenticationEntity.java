@@ -39,6 +39,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractIdentFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractLinkFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNameFactory;
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 
 /**
  *
@@ -60,8 +61,8 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractNameFactory;
         }
     )
 public class AuthenticationEntity
-    extends AbstractEntity
-    implements Authentication
+extends AbstractEntity
+implements Authentication
     {
     /**
      * Hibernate table mapping.
@@ -88,9 +89,15 @@ public class AuthenticationEntity
             return AuthenticationEntity.class ;
             }
 
+        @Override
+        @CreateEntityMethod
         public Authentication create(final Operation operation, final Identity identity, final String method)
-            {
-            return this.insert(
+           {
+           log.debug("create(Operation, Identity, String)");
+           log.debug("  Operation [{}]", operation.method());
+           log.debug("  Identity  [{}]", identity.name());
+           log.debug("  Method    [{}]", method);
+           return this.insert(
                 new AuthenticationEntity(
                     operation,
                     identity,
@@ -137,6 +144,12 @@ public class AuthenticationEntity
     protected AuthenticationEntity(final Operation operation, final Identity identity, final String method)
         {
         super(method);
+
+        log.debug("AuthenticationEntity(Operation, Identity, String)");
+        log.debug("  Operation [{}]", operation.method());
+        log.debug("  Identity  [{}]", identity.name());
+        log.debug("  Method    [{}]", method);
+
         this.method    = method    ;
         this.identity  = identity  ;
         this.operation = operation ;

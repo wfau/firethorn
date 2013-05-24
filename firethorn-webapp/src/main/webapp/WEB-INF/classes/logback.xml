@@ -38,15 +38,18 @@
 	    | Firethorn logging.
 	    +-->
 	<logger name="uk.ac.roe.wfau.firethorn">
-		<level value="DEBUG"/>
+		<level value="INFO"/>
 	</logger>
 	<logger name="uk.ac.roe.wfau.firethorn.adql.parser">
-		<level value="DEBUG"/>
+		<level value="INFO"/>
 	</logger>
 
 	<!--+
 	    | Spring loggers.
 	    +-->
+	<logger name="org.springframework">
+		<level value="INFO" />
+	</logger>
 	<logger name="org.springframework.core">
 		<level value="INFO" />
 	</logger>
@@ -65,15 +68,7 @@
 	<logger name="org.springframework.aop">
 		<level value="INFO" />
 	</logger>
-
-	<!--+
-	    | Hibernate transactions.
-        | http://stackoverflow.com/questions/1965454/spring-transaction-show-in-log
-	    +-->
-	<logger name="org.springframework.transaction">
-		<level value="DEBUG" />
-	</logger>
-	<logger name="org.springframework.orm">
+	<logger name="org.springframework.jdbc">
 		<level value="INFO" />
 	</logger>
 
@@ -86,6 +81,27 @@
 	<logger name="org.hibernate.SQL">
 		<level value="INFO" />
 	</logger>
+
+	<!--+
+	    | Hibernate transactions.
+        | http://stackoverflow.com/questions/1965454/spring-transaction-show-in-log
+	    +-->
+	<logger name="org.springframework.transaction">
+		<level value="INFO" />
+	</logger>
+	<logger name="org.springframework.orm">
+		<level value="INFO" />
+	</logger>
+
+	<!--+
+	    | Hibernate proxy narrowing warning.
+	    | https://jira.atlassian.com/browse/CONF-4981
+	    | http://opensource.atlassian.com/projects/hibernate/browse/HHH-1367
+        | https://forum.hibernate.org/viewtopic.php?p=2404391
+	    +-->
+    <logger name="org.hibernate.engine.internal.StatefulPersistenceContext">
+        <level value="ERROR" />
+    </logger>
 
 	<!--+
 	    | C3PO loggers
@@ -102,11 +118,31 @@
 	</logger>
 
 	<!--+
-	    | StarLink VOTable parser.
+	    | StarLink loggers.
 	    +-->
 	<logger name="uk.ac.starlink">
 		<level value="INFO" />
 	</logger>
+
+	<!--+
+	    | OGSA-DAI loggers.
+	    +-->
+	<logger name="uk.org.ogsadai">
+		<level value="INFO" />
+	</logger>
+
+	<!--+
+	    | Liquibase loggers.
+	    +-->
+	<logger name="liquibase">
+		<level value="WARN" />
+	</logger>
+	<!--logger name="liquibase.changelog.ChangeSet">
+		<level value="ERROR" />
+	</logger>
+	<logger name="liquibase.ext.logging">
+		<level value="ERROR" />
+	</logger-->
 
 	<!--+
 	    | Root logger.

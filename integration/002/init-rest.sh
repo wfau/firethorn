@@ -94,6 +94,8 @@ runquery()
     local query=${1?}
     local status=$(
         POST "${query?}" \
+            --header "firethorn.auth.identity:${identity}" \
+            --header "firethorn.auth.community:${community}" \
             --data-urlencode "adql.query.update.status=RUNNING" \
             | status
             )
@@ -103,6 +105,8 @@ runquery()
         sleep 1
         status=$(
             GET "${query?}" \
+                --header "firethorn.auth.identity:${identity}" \
+                --header "firethorn.auth.community:${community}" \
                 | status
                 )
         echo "${status?}"

@@ -111,11 +111,25 @@
         <!--+
             | Add our own custom interceptors.
             +-->
-        <bean id="request-interceptor"
+<!--
+-->
+        <bean id="operation-interceptor"
             class="uk.ac.roe.wfau.firethorn.webapp.identity.OperationInterceptor">
         </bean>
+        <bean id="atlas-authentication"
+            class="uk.ac.roe.wfau.firethorn.webapp.identity.AuthenticationInterceptor">
 
-        <bean id="test-interceptor-two"
+<!--
+            <property name="defaultIdentity"  value="default-identity"/>
+            <property name="defaultCommunity" value="default-community"/>
+-->
+            <property name="defaultCommunity" value="default-community"/>
+
+            <property name="identityAttrib"  value="firethorn.auth.identity"/>
+            <property name="communityAttrib" value="firethorn.auth.community"/>
+
+        </bean>
+        <bean id="test-interceptor"
             class="uk.ac.roe.wfau.firethorn.webapp.identity.TestHandlerInterceptorOne">
             <property name="name" value="rachel"/>
         </bean>

@@ -23,10 +23,12 @@
 # Create our ATLAS resource.
 jdbcatlas=$(
     POST "/jdbc/resource/create" \
-        -d "jdbc.resource.create.url=spring:RoeATLAS" \
-        -d "jdbc.resource.create.name=atlas-$(unique)" \
-        -d "jdbc.resource.create.ogsadai=atlas" \
-        -d "jdbc.resource.create.catalog=*" \
+        --header "firethorn.auth.identity:${identity}" \
+        --header "firethorn.auth.community:${community}" \
+        --data   "jdbc.resource.create.url=spring:RoeATLAS" \
+        --data   "jdbc.resource.create.name=atlas-$(unique)" \
+        --data   "jdbc.resource.create.ogsadai=atlas" \
+        --data   "jdbc.resource.create.catalog=*" \
         | ident
         )
 

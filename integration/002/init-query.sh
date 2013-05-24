@@ -23,17 +23,23 @@
 # Create a new ADQL workspace for the query.
 queryspace=$(
     POST "/adql/resource/create" \
-        --data "adql.resource.create.name=workspace-$(unique)" \
+        --header "firethorn.auth.identity:${identity}" \
+        --header "firethorn.auth.community:${community}" \
+        --data   "adql.resource.create.name=workspace-$(unique)" \
         | ident
         )
 GET "${queryspace?}" \
+    --header "firethorn.auth.identity:${identity}" \
+    --header "firethorn.auth.community:${community}" \
     | ./pp
 
 #
 # Create a new ADQL schema.
 queryschema=$(
     POST "${queryspace?}/schemas/create" \
-        --data "adql.resource.schema.create.name=query_schema" \
+        --header "firethorn.auth.identity:${identity}" \
+        --header "firethorn.auth.community:${community}" \
+        --data   "adql.resource.schema.create.name=query_schema" \
         | ident
         )
 GET "${queryschema?}" \
@@ -44,15 +50,21 @@ GET "${queryschema?}" \
 # Import the TWOMASS 'twomass_psc' table.
 sourceschema=$(
     POST "${adqlspace?}/schemas/select" \
-        -d "adql.resource.schema.select.name=twomass" \
+        --header "firethorn.auth.identity:${identity}" \
+        --header "firethorn.auth.community:${community}" \
+        --data   "adql.resource.schema.select.name=twomass" \
         | ident
         )
 sourcetable=$(
     POST "${sourceschema?}/tables/select" \
-        -d "adql.schema.table.select.name=twomass_psc" \
+        --header "firethorn.auth.identity:${identity}" \
+        --header "firethorn.auth.community:${community}" \
+        --data   "adql.schema.table.select.name=twomass_psc" \
         | ident
         )
 POST "${queryschema?}/tables/import" \
+    --header "firethorn.auth.identity:${identity}" \
+    --header "firethorn.auth.community:${community}" \
     --data "adql.schema.table.import.base=${metabasename?}/${sourcetable?}" \
     | ./pp
 
@@ -61,51 +73,71 @@ POST "${queryschema?}/tables/import" \
 # Import the UKIDSS 'gcsPointSource' and 'gcsSourceXtwomass_psc' tables.
 sourceschema=$(
     POST "${adqlspace?}/schemas/select" \
-        -d "adql.resource.schema.select.name=ukidss" \
+        --header "firethorn.auth.identity:${identity}" \
+        --header "firethorn.auth.community:${community}" \
+        --data   "adql.resource.schema.select.name=ukidss" \
         | ident
         )
 sourcetable=$(
     POST "${sourceschema?}/tables/select" \
-        -d "adql.schema.table.select.name=gcsPointSource" \
+        --header "firethorn.auth.identity:${identity}" \
+        --header "firethorn.auth.community:${community}" \
+        --data   "adql.schema.table.select.name=gcsPointSource" \
         | ident
         )
 POST "${queryschema?}/tables/import" \
-    --data "adql.schema.table.import.base=${metabasename?}/${sourcetable?}" \
+    --header "firethorn.auth.identity:${identity}" \
+    --header "firethorn.auth.community:${community}" \
+    --data   "adql.schema.table.import.base=${metabasename?}/${sourcetable?}" \
     | ./pp
 
 
 sourcetable=$(
     POST "${sourceschema?}/tables/select" \
-        -d "adql.schema.table.select.name=gcsSourceXtwomass_psc" \
+        --header "firethorn.auth.identity:${identity}" \
+        --header "firethorn.auth.community:${community}" \
+        --data   "adql.schema.table.select.name=gcsSourceXtwomass_psc" \
         | ident
         )
 POST "${queryschema?}/tables/import" \
-    --data "adql.schema.table.import.base=${metabasename?}/${sourcetable?}" \
+    --header "firethorn.auth.identity:${identity}" \
+    --header "firethorn.auth.community:${community}" \
+    --data   "adql.schema.table.import.base=${metabasename?}/${sourcetable?}" \
     | ./pp
 
 #
 # Import the ATLAS 'atlasSource' and 'atlasSourceXtwomass_psc' tables.
 sourceschema=$(
     POST "${adqlspace?}/schemas/select" \
-        -d "adql.resource.schema.select.name=atlas" \
+        --header "firethorn.auth.identity:${identity}" \
+        --header "firethorn.auth.community:${community}" \
+        --data   "adql.resource.schema.select.name=atlas" \
         | ident
         )
 sourcetable=$(
     POST "${sourceschema?}/tables/select" \
-        -d "adql.schema.table.select.name=atlasSource" \
+        --header "firethorn.auth.identity:${identity}" \
+        --header "firethorn.auth.community:${community}" \
+        --data   "adql.schema.table.select.name=atlasSource" \
         | ident
         )
 POST "${queryschema?}/tables/import" \
-    --data "adql.schema.table.import.base=${metabasename?}/${sourcetable?}" \
+    --header "firethorn.auth.identity:${identity}" \
+    --header "firethorn.auth.community:${community}" \
+    --data   "adql.schema.table.import.base=${metabasename?}/${sourcetable?}" \
     | ./pp
 
 
 sourcetable=$(
     POST "${sourceschema?}/tables/select" \
-        -d "adql.schema.table.select.name=atlasSourceXtwomass_psc" \
+        --header "firethorn.auth.identity:${identity}" \
+        --header "firethorn.auth.community:${community}" \
+        --data   "adql.schema.table.select.name=atlasSourceXtwomass_psc" \
         | ident
         )
 POST "${queryschema?}/tables/import" \
-    --data "adql.schema.table.import.base=${metabasename?}/${sourcetable?}" \
+    --header "firethorn.auth.identity:${identity}" \
+    --header "firethorn.auth.community:${community}" \
+    --data   "adql.schema.table.import.base=${metabasename?}/${sourcetable?}" \
     | ./pp
 
