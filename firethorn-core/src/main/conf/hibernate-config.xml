@@ -49,11 +49,19 @@
         <property name="dataSource" ref="FireThornMetaData"/>
 
         <!--+
-            | List our annotated entity beans.
+            | List the packages to scan.
+            | http://stackoverflow.com/a/9757033
             +-->
+        <property name="packagesToScan">
+            <list>
+                <value>uk.ac.roe.wfau.firethorn</value>
+            </list>
+        </property>
+
+        <!--+
+            | List our annotated entity beans.
         <property name="annotatedClasses">
             <list>
-
                 <value>uk.ac.roe.wfau.firethorn.job.test.TestJobEntity</value>
 
                 <value>uk.ac.roe.wfau.firethorn.config.ConfigPropertyEntity</value>
@@ -85,6 +93,7 @@
 
             </list>
         </property>
+            +-->
 
         <!--+
             | Set the component naming strategy.

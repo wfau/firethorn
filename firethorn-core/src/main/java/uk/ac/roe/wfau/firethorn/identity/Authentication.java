@@ -27,6 +27,54 @@ public interface Authentication
 extends Entity
     {
     /**
+     * Name factory interface.
+     *
+     */
+    public static interface NameFactory
+    extends Entity.NameFactory
+        {
+        }
+
+    /**
+     * Link factory interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<Authentication>
+        {
+        }
+
+    /**
+     * Identifier factory interface.
+     *
+     */
+    public static interface IdentFactory
+    extends Entity.IdentFactory
+        {
+        }
+    
+    /**
+     * Factory interface.
+     * 
+     */
+    public interface Factory
+    extends Entity.Factory<Authentication>
+        {
+        /**
+         * Get the current active Authentication. 
+         *
+         */
+        public Authentication current();
+
+        /**
+         * Create a new Authentication.
+         *
+         */
+        public Authentication create(final Operation oper, final Identity identity, final String method);
+
+        }
+    
+    /**
      * The URN for the authentication method.
      *
      */
@@ -43,19 +91,5 @@ extends Entity
      *
      */
     public Operation operation();
-    
-    /**
-     * Factory interface.
-     * 
-     */
-    public interface Factory
-    extends Entity.Factory<Authentication>
-        {
-        /**
-         * Get the current active Authentication. 
-         *
-         */
-        public Authentication current();
-        }
-    
+
     }

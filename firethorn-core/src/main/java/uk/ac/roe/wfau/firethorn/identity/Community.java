@@ -52,8 +52,8 @@ extends Entity
     public interface Factory
     extends Entity.Factory<Community>
         {
-        public Community create(final String urn, final String name, final String text);
-        public Community select(final String urn);
+        public Community create(final String uri, final String name);
+        public Community select(final String uri);
         }
     
     /**
@@ -81,5 +81,11 @@ extends Entity
      * 
      */
     public Identities identities();
+
+    /**
+     * The unique identifier.
+     * 
+     */
+    public String uri();
 
     }

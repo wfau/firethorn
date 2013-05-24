@@ -27,28 +27,64 @@ public interface Operation
 extends Entity
     {
     /**
+     * Name factory interface.
+     *
+     */
+    public static interface NameFactory
+    extends Entity.NameFactory
+        {
+        }
+
+    /**
+     * Link factory interface.
+     *
+     */
+    public static interface LinkFactory
+    extends Entity.LinkFactory<Operation>
+        {
+        }
+
+    /**
+     * Identifier factory interface.
+     *
+     */
+    public static interface IdentFactory
+    extends Entity.IdentFactory
+        {
+        }
+
+    /**
      * Factory interface.
      * 
      */
-    public interface factory
+    public interface Factory
+    extends Entity.Factory<Operation>
         {
         /**
          * Access to the current operation.
          * 
          */
         public Operation current();
-        }
-    
-    /**
-     * Get the Authentication for this Operation  
-     *
-     */
-    public Authentication authentication();
 
-    /**
-     * Set the Authentication for this Operation  
-     *
-     */
-    public void authentication(Authentication authentication);
+        /**
+         * Create a new Operation.
+         * 
+         */
+        public Operation create(final String method, final String source);
+        
+        }
+
+    public String method();
+    public String source();
+    
+    interface Authentications
+        {
+
+        public Authentication create(final Identity identity, final String method);
+        public Iterable<Authentication> select();
+
+        }
+
+    public Authentications authentications();
 
     }

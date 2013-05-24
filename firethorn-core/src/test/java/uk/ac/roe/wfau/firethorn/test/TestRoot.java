@@ -41,7 +41,9 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
  *
  */
 @Slf4j
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(
+    SpringJUnit4ClassRunner.class
+    )
 @ContextConfiguration(
     locations = {
         "classpath:database-config.xml",

@@ -180,6 +180,38 @@ public class HibernateThingsImpl
         }
 
     @Override
+    public void evict(final Entity entity)
+        {
+        try {
+            if (entity == null)
+                {
+                log.error("Attempting to evict a null entity");
+                throw new IllegalArgumentException(
+                    "Attempting to evict a null entity"
+                    );
+                }
+            else if (entity.ident() == null)
+                {
+                log.error("Attempting to evict an entity with a null ident");
+                throw new IllegalArgumentException(
+                    "Attempting to evict an entity with a null ident"
+                    );
+                }
+            else {
+                session().evict(
+                    entity
+                    );
+                }
+            }
+        catch (final HibernateException ouch)
+            {
+            throw convert(
+                ouch
+                );
+            }
+        }
+
+    @Override
     public void delete(final Entity entity)
         {
         try {

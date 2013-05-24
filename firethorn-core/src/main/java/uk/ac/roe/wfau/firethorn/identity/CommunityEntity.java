@@ -19,7 +19,10 @@ package uk.ac.roe.wfau.firethorn.identity;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.NamedQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.Table;
@@ -28,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
@@ -60,13 +64,18 @@ public class CommunityEntity
 extends AbstractEntity
 implements Community
     {
-
     /**
-     * Our database table name.
+     * Hibernate table mapping.
      *
      */
     public static final String DB_TABLE_NAME = "CommunityEntity";
 
+    /**
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String DB_URI_COL = "uri" ;
+    
     /**
      * Our Factory implementation.
      *
@@ -84,24 +93,34 @@ implements Community
 
         @Override
         @CreateEntityMethod
-        public Community create(final String urn, final String name, final String text)
+        public Community create(final String uri, final String name)
             {
-            return super.insert(
-                new CommunityEntity(
-                    name
-                    )
+            final Community community = this.select(
+                uri
                 );
+            if (community != null)
+                {
+                return community ;
+                }
+            else {
+                return super.insert(
+                    new CommunityEntity(
+                        uri,
+                        name
+                        )
+                    );
+                }
             }
 
         @Override
-        public Community select(String urn)
+        public Community select(String uri)
             {
             return super.first(
                 super.query(
                     "Comunity-select-uri"
                     ).setString(
-                        "urn",
-                        urn
+                        "uri",
+                        uri
                     )
                 );
             }
@@ -137,13 +156,29 @@ implements Community
      * Create a new Community.
      *
      */
-    protected CommunityEntity(final String name)
+    protected CommunityEntity(final String uri, final String name)
         {
         super(
             name
             );
+        this.uri = uri ;
         }
 
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_URI_COL,
+        unique = true,
+        nullable = false,
+        updatable = false
+        )
+    private String uri;
+    public String uri()
+        {
+        return this.uri;
+        }
+    
     @Override
     public Identities identities()
         {

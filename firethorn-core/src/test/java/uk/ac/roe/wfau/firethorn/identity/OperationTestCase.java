@@ -1,0 +1,61 @@
+/*
+ *  Copyright (C) 2013 Royal Observatory, University of Edinburgh, UK
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+package uk.ac.roe.wfau.firethorn.identity;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+import org.junit.Test;
+
+import uk.ac.roe.wfau.firethorn.test.TestBase;
+
+/**
+ *
+ *
+ */
+@Slf4j
+public class OperationTestCase
+extends TestBase
+    {
+   
+    @Test
+    public void test000()
+        {
+        final int COUNT = 1000; 
+        DateTime start = new DateTime();
+
+        log.debug("------------------");
+        for (int i = 0 ; i < COUNT ; i++)
+            {
+            Operation operation = factories().operations().create(
+                "method",
+                "source"
+                ); 
+            factories().hibernate().flush();
+            factories().hibernate().evict(operation);
+            log.debug("Oper [{}]", operation.ident());
+            }
+        log.debug("------------------");
+
+        DateTime end = new DateTime();
+        Interval interval = new Interval(start, end);        
+        log.debug(" Duration [{}]", (interval.toDurationMillis()/COUNT));
+
+        }
+    }

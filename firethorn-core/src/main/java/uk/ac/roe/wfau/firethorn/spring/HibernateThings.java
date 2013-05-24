@@ -72,8 +72,13 @@ public interface HibernateThings
      * Refresh (fetch) an Entity from the database.
      *
      */
-
     public Entity refresh(final Entity entity);
+
+    /**
+     * Evict an Entity from the cache.
+     *
+     */
+    public void evict(final Entity entity);
 
     /**
      * Delete an existing Entity.

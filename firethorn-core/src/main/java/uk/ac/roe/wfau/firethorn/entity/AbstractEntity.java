@@ -97,7 +97,7 @@ implements Entity
 
     /**
      * Protected constructor, sets the name and create date.
-     * The owner defaults to the current actor.
+     * @todo default owner ?
      *
      */
     protected AbstractEntity(final String name)

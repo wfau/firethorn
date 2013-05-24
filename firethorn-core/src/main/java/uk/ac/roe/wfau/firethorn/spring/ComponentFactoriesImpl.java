@@ -24,8 +24,10 @@ import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
+import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Community;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlFactories;
@@ -220,7 +222,7 @@ public class ComponentFactoriesImpl
         }
 
     /**
-     * Our Autowired query factory.
+     * Our Autowired Query factory.
      *
      */
     @Autowired
@@ -229,5 +231,27 @@ public class ComponentFactoriesImpl
     public AdqlQuery.Services queries()
         {
         return this.queries;
+        }
+
+    /**
+     * Our Autowired operation factory.
+     *
+     */
+    @Autowired
+    protected Operation.Factory operations;
+    public Operation.Factory operations()
+        {
+        return this.operations ;
+        }
+
+    /**
+     * Our Autowired authentication factory.
+     *
+     */
+    @Autowired
+    protected Authentication.Factory authentications;
+    public Authentication.Factory authentications()
+        {
+        return this.authentications;
         }
     }

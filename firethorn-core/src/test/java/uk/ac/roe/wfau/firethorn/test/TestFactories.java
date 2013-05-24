@@ -24,8 +24,10 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractIdentFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractLinkFactory;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Community;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -46,7 +48,8 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 @Component
 public class TestFactories
     {
-
+    
+    
     @Component
     public static class JobFactories
         {
@@ -162,6 +165,59 @@ public class TestFactories
                 }
             }
         
+        @Component
+        public static class OperationFactories
+            {
+            @Component
+            public static class IdentFactory
+            extends AbstractIdentFactory
+            implements Operation.IdentFactory
+                {
+                public IdentFactory()
+                    {
+                    }
+                }
+
+            @Component
+            public static class LinkFactory
+            extends AbstractLinkFactory<Operation>
+            implements Operation.LinkFactory
+                {
+                public LinkFactory()
+                    {
+                    super(
+                        "/operation"
+                        );
+                    }
+                }
+            }
+
+        @Component
+        public static class AuthenticationFactories
+            {
+            @Component
+            public static class IdentFactory
+            extends AbstractIdentFactory
+            implements Authentication.IdentFactory
+                {
+                public IdentFactory()
+                    {
+                    }
+                }
+
+            @Component
+            public static class LinkFactory
+            extends AbstractLinkFactory<Authentication>
+            implements Authentication.LinkFactory
+                {
+                public LinkFactory()
+                    {
+                    super(
+                        "/authentication"
+                        );
+                    }
+                }
+            }
         
         }
 

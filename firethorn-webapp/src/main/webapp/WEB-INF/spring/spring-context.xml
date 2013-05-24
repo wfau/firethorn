@@ -111,14 +111,12 @@
         <!--+
             | Add our own custom interceptors.
             +-->
-        <bean id="test-interceptor-one"
-            class="uk.ac.roe.wfau.firethorn.webapp.intercept.TestHandlerInterceptorOne"
-            >
-            <property name="name" value="helena"/>
+        <bean id="request-interceptor"
+            class="uk.ac.roe.wfau.firethorn.webapp.identity.OperationInterceptor">
         </bean>
 
         <bean id="test-interceptor-two"
-            class="uk.ac.roe.wfau.firethorn.webapp.intercept.TestHandlerInterceptorOne">
+            class="uk.ac.roe.wfau.firethorn.webapp.identity.TestHandlerInterceptorOne">
             <property name="name" value="rachel"/>
         </bean>
 
