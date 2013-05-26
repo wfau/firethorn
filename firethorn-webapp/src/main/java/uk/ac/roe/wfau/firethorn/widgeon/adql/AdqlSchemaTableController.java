@@ -142,11 +142,11 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public AdqlTableBean.Iter jsonSelect(
+    public AdqlTableBean.Iter select(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema
         ){
-        log.debug("jsonSelect()");
+        log.debug("select()");
         return new AdqlTableBean.Iter(
             schema.tables().select()
             );
@@ -158,13 +158,13 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public AdqlTableBean jsonSelect(
+    public AdqlTableBean select(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(SELECT_NAME)
         final String name
         ){
-        log.debug("jsonSelect(String) [{}]", name);
+        log.debug("select(String) [{}]", name);
         return new AdqlTableBean(
             schema.tables().select(
                 name
@@ -173,18 +173,18 @@ extends AbstractController
         }
 
     /**
-     * JSON request to search by text.
+     * JSON request to search by name.
      *
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public AdqlTableBean.Iter jsonSearch(
+    public AdqlTableBean.Iter search(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(SEARCH_TEXT)
         final String text
         ){
-        log.debug("jsonSearch(String) [{}]", text);
+        log.debug("search(String) [{}]", text);
         return new AdqlTableBean.Iter(
             schema.tables().search(
                 text
@@ -193,21 +193,54 @@ extends AbstractController
         }
 
     /**
-     * JSON request to create a new table.
+     * JSON request to import a table.
      * @throws NotFoundException
      *
      */
     @ResponseBody
-    @RequestMapping(value=IMPORT_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<AdqlTableBean> jsonInport(
+    @RequestMapping(value=IMPORT_PATH, params={IMPORT_BASE}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    public ResponseEntity<AdqlTableBean> inport(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
-        @RequestParam(value=IMPORT_BASE, required=true)
+        @RequestParam(IMPORT_BASE)
+        final String base
+        ) throws NotFoundException {
+        log.debug("inport()");
+        log.debug("  base [{}]", base);
+        final AdqlTableBean bean = new AdqlTableBean(
+            schema.tables().create(
+                factories().base().tables().select(
+                    factories().base().tables().links().parse(
+                        base
+                        )
+                    )
+                )
+            );
+        return new ResponseEntity<AdqlTableBean>(
+            bean,
+            new RedirectHeader(
+                bean
+                ),
+            HttpStatus.CREATED
+            );
+        }
+
+    /**
+     * JSON request to import a table.
+     * @throws NotFoundException
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=IMPORT_PATH, params={IMPORT_BASE, IMPORT_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    public ResponseEntity<AdqlTableBean> inport(
+        @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
+        final AdqlSchema schema,
+        @RequestParam(IMPORT_BASE)
         final String base,
-        @RequestParam(value=IMPORT_NAME, required=false)
+        @RequestParam(IMPORT_NAME)
         final String name
         ) throws NotFoundException {
-        log.debug("jsonCreate()");
+        log.debug("inport()");
         log.debug("  base [{}]", base);
         log.debug("  name [{}]", name);
         final AdqlTableBean bean = new AdqlTableBean(

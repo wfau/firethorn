@@ -119,6 +119,16 @@ implements AdqlSchema
             }
 
         @Override
+        public AdqlSchema create(final AdqlResourceEntity parent, final BaseSchema<?, ?> base)
+            {
+            return this.create(
+                parent,
+                base.name(),
+                base
+                );
+            }
+
+        @Override
 		public AdqlSchema create(final AdqlResourceEntity parent, final String name, final BaseSchema<?, ?> base)
 			{
 			final AdqlSchema schema = this.create(

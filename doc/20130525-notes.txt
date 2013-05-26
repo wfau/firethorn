@@ -1,0 +1,28 @@
+
+    Why does importing ukidss take 2m 56s .. ?
+
+"ukidss_dr5" - 2m 56s
+http://localhost:8080/firethorn/adql/schema/392744
+
+    SELECT count(ident) FROM adqltableentity WHERE parent = 392744 ;
+
+        128 tables
+
+    SELECT count(ident) FROM adqlcolumnentity WHERE parent IN (SELECT ident FROM adqltableentity WHERE parent = 392744) ;
+
+        5798 columns
+
+
+"atlas" - 40s
+http://localhost:8080/firethorn/adql/schema/404604
+
+
+    SELECT count(ident) FROM adqltableentity WHERE parent = 404604 ;
+
+        59 tables
+
+    SELECT count(ident) FROM adqlcolumnentity WHERE parent IN (SELECT ident FROM adqltableentity WHERE parent = 404604) ;
+
+        1088 columns
+
+

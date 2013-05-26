@@ -120,17 +120,30 @@ extends AbstractController
     public static final String CREATE_NAME = "adql.resource.schema.create.name" ;
 
     /**
-     * MVC property for the import base.
+     * MVC property for the import table.
      *
      */
-    public static final String IMPORT_BASE = "adql.resource.schema.import.base" ;
+    public static final String IMPORT_TABLE_BASE = "adql.resource.table.import.base" ;
 
     /**
-     * MVC property for the import name.
+     * MVC property for the import table.
      *
      */
-    public static final String IMPORT_NAME = "adql.resource.schema.import.name" ;
+    public static final String IMPORT_TABLE_NAME = "adql.resource.table.import.name" ;
 
+    /**
+     * MVC property for the import schema.
+     *
+     */
+    public static final String IMPORT_SCHEMA_BASE = "adql.resource.schema.import.base" ;
+
+    /**
+     * MVC property for the import named schema.
+     *
+     */
+    public static final String IMPORT_SCHEMA_NAME = "adql.resource.schema.import.name" ;
+    
+    
     /**
      * Get the parent entity based on the request ident.
      * @throws NotFoundException
@@ -154,7 +167,7 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public AdqlSchemaBean.Iter jsonSelect(
+    public AdqlSchemaBean.Iter select(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource
         ){
@@ -170,7 +183,7 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public AdqlSchemaBean jsonSelect(
+    public AdqlSchemaBean select(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(SELECT_NAME)
@@ -190,7 +203,7 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public AdqlSchemaBean.Iter jsonSearch(
+    public AdqlSchemaBean.Iter search(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(SEARCH_TEXT)
@@ -205,29 +218,10 @@ extends AbstractController
         }
 
     /**
-     * Resolve a base schema from an identifier.
-     * @throws NotFoundException
+     * A 'created' response entity.
      *
      */
-    public BaseSchema<?,?> base(final String link)
-    throws NotFoundException
-        {
-        log.debug("base()");
-        log.debug("  link [{}]", link);
-        final Identifier ident = factories().base().schema().links().parse(
-            link
-            );
-        log.debug("  ident [{}]", ident);
-        return factories().base().schema().select(
-            ident
-            );
-        }
-
-    /**
-     * Create a response entity.
-     *
-     */
-    public ResponseEntity<AdqlSchemaBean> response(final AdqlSchemaBean bean)
+    public ResponseEntity<AdqlSchemaBean> created(final AdqlSchemaBean bean)
         {
         return new ResponseEntity<AdqlSchemaBean>(
             bean,
@@ -242,15 +236,15 @@ extends AbstractController
      * JSON POST request to create a new schema.
      *
      */
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<AdqlSchemaBean> jsonCreate(
+    @RequestMapping(value=CREATE_PATH, params={CREATE_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    public ResponseEntity<AdqlSchemaBean> create(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
-        @RequestParam(CREATE_NAME)
+        @RequestParam(value=CREATE_NAME, required=true)
         final String name
         ){
-        log.debug("jsonCreate(String) [{}]", name);
-        return response (
+        log.debug("create(String) [{}]", name);
+        return created (
             new AdqlSchemaBean(
                 resource.schemas().create(
                     name
@@ -260,20 +254,73 @@ extends AbstractController
         }
 
     /**
-     * JSON POST request to import tables from another schema.
+     * JSON POST request to create a schema and import a table.
      *
-     */
-    @RequestMapping(value=IMPORT_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<AdqlSchemaBean> jsonInport(
+    @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_NAME, IMPORT_TABLE_BASE}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    public ResponseEntity<AdqlSchemaBean> inportTable(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
-        @RequestParam(value=IMPORT_BASE, required=true)
+        @RequestParam(IMPORT_TABLE_BASE)
         final String base,
-        @RequestParam(value=IMPORT_NAME, required=false)
+        @RequestParam(IMPORT_SCHEMA_NAME)
         final String name
         ) throws NotFoundException {
-        log.debug("jsonInport(String) [{}]", name);
-        return response(
+        log.debug("inportTable(String) [{}][{}]", base, name);
+        return created(
+            new AdqlSchemaBean(
+                resource.schemas().create(
+                    name,
+                    factories().base().schema().select(
+                        factories().base().tables().links().parse(
+                            base
+                            )
+                        )
+                    )
+                )
+            );
+        }
+     */
+
+    /**
+     * JSON POST request to import all the tables from another schema.
+     *
+     */
+    @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_BASE}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    public ResponseEntity<AdqlSchemaBean> inport(
+        @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
+        final AdqlResource resource,
+        @RequestParam(IMPORT_SCHEMA_BASE)
+        final String base
+        ) throws NotFoundException {
+        log.debug("inport(String) [{}]", base);
+        return created(
+            new AdqlSchemaBean(
+                resource.schemas().create(
+                    factories().base().schema().select(
+                        factories().base().schema().links().parse(
+                            base
+                            )
+                        )
+                    )
+                )
+            );
+        }
+
+    /**
+     * JSON POST request to import all the tables from another schema.
+     *
+     */
+    @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_NAME, IMPORT_SCHEMA_BASE}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    public ResponseEntity<AdqlSchemaBean> inportSchema(
+        @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
+        final AdqlResource resource,
+        @RequestParam(IMPORT_SCHEMA_BASE)
+        final String base,
+        @RequestParam(IMPORT_SCHEMA_NAME)
+        final String name
+        ) throws NotFoundException {
+        log.debug("inport(String, String) [{}][{}]", base, name);
+        return created(
             new AdqlSchemaBean(
                 resource.schemas().create(
                     name,

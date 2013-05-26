@@ -186,15 +186,24 @@ extends BaseResourceEntity<AdqlSchema>
                     );
                 }
 			@Override
-			public AdqlSchema create(final String name, final BaseSchema<?,?> base)
+			public AdqlSchema create(final BaseSchema<?,?> base)
 			    {
+                return factories().adql().schemas().create(
+                    AdqlResourceEntity.this,
+                    base.name(),
+                    base
+                    );
+				}
+            @Override
+            public AdqlSchema create(final String name, final BaseSchema<?,?> base)
+                {
                 return factories().adql().schemas().create(
                     AdqlResourceEntity.this,
                     name,
                     base
                     );
-				}
-            @Override
+                }
+			@Override
             public Iterable<AdqlSchema> search(final String text)
                 {
                 return factories().adql().schemas().search(

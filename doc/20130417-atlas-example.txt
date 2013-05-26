@@ -9,7 +9,7 @@
     pushd $(mktemp --directory)
 
         source ${HOME?}/firethorn.settings
-        FIRETHORN_TEST=${FIRETHORN_TEST:-${FIRETHORN_CODE?}/integration/002}
+        FIRETHORN_TEST=${FIRETHORN_CODE?}/integration/002
 
         source "${FIRETHORN_TEST?}/init-rest.sh"
 

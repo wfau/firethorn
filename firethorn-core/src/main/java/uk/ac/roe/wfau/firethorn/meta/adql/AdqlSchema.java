@@ -80,7 +80,13 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          * Create a schema, importing the tables from a base schema.
          *
          */
-		public AdqlSchema create(final AdqlResourceEntity parent, final String name, final BaseSchema<?,?> base);
+		public AdqlSchema create(final AdqlResourceEntity parent, final BaseSchema<?,?> base);
+
+        /**
+         * Create a schema, importing the tables from a base schema.
+         *
+         */
+        public AdqlSchema create(final AdqlResourceEntity parent, final String name, final BaseSchema<?,?> base);
         }
 
     @Override

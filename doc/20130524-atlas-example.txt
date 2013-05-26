@@ -1,0 +1,81 @@
+# TTY #1-8 ------------------------------------------------------------
+# Copy from 20130507-maven-buld.txt
+#
+
+# TTY #9 ------------------------------------------------------------
+# Run the REST test scripts.
+#
+
+    pushd $(mktemp --directory)
+
+        source ${HOME?}/firethorn.settings
+        FIRETHORN_TEST=${FIRETHORN_CODE?}/integration/003
+
+        source "${FIRETHORN_TEST?}/00-init-rest.sh"
+
+        #
+        # Set up our user data space.
+        time source "${FIRETHORN_TEST?}/01-init-user.sh"
+
+        #
+        # Set up our JDBC resource.
+        time source "${FIRETHORN_TEST?}/02-00-create-jdbc-space.sh" 'spring:RoeATLAS' '*' 'atlas'
+
+        #
+        # Set up our ADQL resource.
+        time source "${FIRETHORN_TEST?}/03-00-create-adql-space.sh"
+
+        time source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'TWOXMM.dbo'         'twoxmm'
+        time source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'TWOMASS.dbo'        'twomass'
+        #time source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'UKIDSSDR2PLUS.dbo'  'ukidssdr2'
+        #time source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'UKIDSSDR4PLUS.dbo'  'ukidssdr4'
+        time source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'UKIDSSDR5PLUS.dbo'  'ukidssdr5'
+        time source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'ATLASv20130304.dbo' 'atlas'
+
+
+        #
+        # Create our workspace and import our target catalogs.
+        time source "${FIRETHORN_TEST?}/04-00-create-query-space.sh"
+        time source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh"  'query'
+
+        time source "${FIRETHORN_TEST?}/04-02-import-query-schema.sh" 'twomass' 'twomass'
+
+
+        time source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh" 'atlasx'
+        time source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'atlas' 'atlasSource'                 'atlasx'
+        time source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'atlas' 'atlasSourceXtwomass_psc'     'atlasx'
+
+        time source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh" 'ukidss'
+        time source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsPointSource'          'ukidss' 'gcsPointSource5'
+        time source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsSourceXtwomass_psc'   'ukidss' 'gcsSourceXtwomass_psc'
+
+        #
+        # Run the query.
+        time source "${FIRETHORN_TEST?}/05-query-atlas.sh"
+
+    popd
+
+
+# EXTRA ------------------------------------------------------------
+# Extra tests.
+#
+
+        combined()
+            {
+            source "${FIRETHORN_TEST?}/04-00-init-query.sh"
+            source "${FIRETHORN_TEST?}/04-01-import-atlas.sh"
+            source "${FIRETHORN_TEST?}/04-02-import-twomass.sh"
+            source "${FIRETHORN_TEST?}/05-query-atlas.sh"
+            }
+
+        time combined
+            
+        for i in {0..9}; do time combined ; done
+        for i in {0..99}; do time combined ; done
+        for i in {0..999}; do time combined ; done
+
+
+
+time source "${FIRETHORN_TEST?}/init-query.sh"
+time source "${FIRETHORN_TEST?}/query-atlas.sh"
+

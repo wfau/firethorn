@@ -97,7 +97,13 @@ extends BaseResource<AdqlSchema>
         public AdqlSchema create(final String name, final BaseTable<?,?> base);
 
         /**
-         * Create a new schema, importing tables from a base schema.
+         * Create a new schema, importing all the tables from a base schema.
+         *
+         */
+        public AdqlSchema create(final BaseSchema<?,?> base);
+
+        /**
+         * Create a new schema, importing all the tables from a base schema.
          *
          */
         public AdqlSchema create(final String name, final BaseSchema<?,?> base);
