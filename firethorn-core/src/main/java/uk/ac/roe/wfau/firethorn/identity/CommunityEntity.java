@@ -36,6 +36,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
  * Hibernate based entity implementation.
@@ -215,5 +216,19 @@ implements Community
         return factories().communities().links().link(
             this
             );
+        }
+
+    @Override
+    public Resources resources()
+        {
+        return new Resources()
+            {
+            @Override
+            public JdbcResource current()
+                {
+                // TODO Auto-generated method stub
+                return null;
+                }
+            };
         }
     }

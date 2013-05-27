@@ -168,6 +168,7 @@ extends Entity, Job
      * QueryTable builder interface.
      *
      */
+    @Deprecated
     public static interface Builder
         {
         /**

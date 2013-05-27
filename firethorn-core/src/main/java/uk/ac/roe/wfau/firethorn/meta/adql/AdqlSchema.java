@@ -71,22 +71,28 @@ extends BaseSchema<AdqlSchema, AdqlTable>
         public AdqlTable.Factory tables();
 
         /**
-         * Create a schema, importing a base table.
+         * Create an empty schema.
          *
          */
-        public AdqlSchema create(final AdqlResourceEntity parent, final String name, final BaseTable<?,?> base);
+        public AdqlSchema create(final AdqlResource parent, final String name);
 
         /**
-         * Create a schema, importing the tables from a base schema.
+         * Create a new schema, importing a base table.
          *
          */
-		public AdqlSchema create(final AdqlResourceEntity parent, final BaseSchema<?,?> base);
+        public AdqlSchema create(final AdqlResource parent, final String name, final BaseTable<?,?> base);
 
         /**
-         * Create a schema, importing the tables from a base schema.
+         * Create a new schema, importing the tables from a base schema.
          *
          */
-        public AdqlSchema create(final AdqlResourceEntity parent, final String name, final BaseSchema<?,?> base);
+		public AdqlSchema create(final AdqlResource parent, final BaseSchema<?,?> base);
+
+        /**
+         * Create a new schema, importing the tables from a base schema.
+         *
+         */
+        public AdqlSchema create(final AdqlResource parent, final String name, final BaseSchema<?,?> base);
         }
 
     @Override

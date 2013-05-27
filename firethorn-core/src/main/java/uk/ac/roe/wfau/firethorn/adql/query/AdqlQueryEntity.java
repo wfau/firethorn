@@ -957,13 +957,13 @@ implements AdqlQuery, AdqlParserQuery
         {
         //
         // Create our JDBC table.
-        if ((this.owner() != null) && (this.owner().store() != null))
+        if ((this.owner() != null) && (this.owner().schemas().current() != null))
             {
-            this.jdbctable = this.owner().store().tables().create(
+            this.jdbctable = this.owner().schemas().current().tables().create(
                 this
                 );
             }
-// Legacy no owner fallback.
+// Legacy no-owner fallback.
         else {
             this.jdbctable = services().builder().create(
                 store,
@@ -975,10 +975,15 @@ implements AdqlQuery, AdqlParserQuery
         this.adqltable = this.schema().tables().create(
             this
             );
+
+//TODO
+//Why does the query need to know where the JdbcTable is ?
+        
         }
     
     /**
-     * Our results tables.
+     * Our result tables.
+     * TODO - Which external components need access to the JdbcTable ? 
      *
      */
     @Override
@@ -986,11 +991,13 @@ implements AdqlQuery, AdqlParserQuery
         {
         return new Results(){
             @Override
+            @Deprecated
             public JdbcTable jdbc()
                 {
                 return AdqlQueryEntity.this.jdbctable ;
                 }
             @Override
+            @Deprecated
             public BaseTable<?,?> base()
                 {
                 return AdqlQueryEntity.this.jdbctable ;

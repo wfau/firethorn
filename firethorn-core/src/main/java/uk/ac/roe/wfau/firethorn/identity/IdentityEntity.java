@@ -37,6 +37,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
 
 /**
  * Hibernate based entity implementation.
@@ -78,7 +79,8 @@ implements Identity
      *
      */
     protected static final String DB_COMMUNITY_COL = "community" ;
-
+    protected static final String DB_CURRENT_SCHEMA_COL = "currentschema" ;
+    
     /**
      * Factory implementation.
      *
@@ -219,15 +221,45 @@ implements Identity
             );
         }
 
-    @Override
-    public JdbcSchema store()
-        {
-        return null;
-        }
-    @Override
-    public void store(JdbcSchema store)
-        {
-        }
+    @ManyToOne(
+        fetch = FetchType.LAZY,
+        targetEntity = JdbcSchemaEntity.class
+        )
+    @JoinColumn(
+        name = DB_CURRENT_SCHEMA_COL,
+        unique = false,
+        nullable = false,
+        updatable = false
+        )
+    private JdbcSchema jdbcschema ;
     
+    @Override
+    public Schemas schemas()
+        {
+        return new Schemas()
+            {
+            @Override
+            public JdbcSchema current()
+                {
+                return jdbcschema ;
+                }
+
+            @Override
+            public JdbcSchema create()
+                {
+                return community().resources().current().schemas().create(
+                    IdentityEntity.this 
+                    );
+                }
+
+            @Override
+            public Iterable<JdbcSchema> select()
+                {
+                return community().resources().current().schemas().select(
+                    IdentityEntity.this 
+                    );
+                }
+            };
+        }
     }
 

@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.identity;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 /**
  * Public interface for a Community of Identities.
@@ -46,7 +47,7 @@ extends Entity
         }
 
     /**
-     * Factory interface for Communities.
+     * Entity factory interface for Communities.
      * 
      */
     public interface Factory
@@ -87,5 +88,35 @@ extends Entity
      * 
      */
     public String uri();
+
+    /**
+     * Access to the Resources for this Community.
+     *
+     */
+    public interface Resources
+        {
+        /**
+         * Get the current active Resource for this Community.
+         * 
+         */
+        public JdbcResource current();
+
+        /**
+         * 
+        public JdbcResource create(String name);
+         */
+
+        /**
+         * 
+        public Iterable<JdbcResource> select();
+         */
+        
+        }
+
+    /**
+     * Access to the Resources for this Community.
+     *
+     */
+    public Resources resources();
 
     }

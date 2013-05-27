@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 
 /**
@@ -64,13 +65,13 @@ extends BaseResource<JdbcSchema>
          * Create a new resource.
          *
          */
-        public JdbcResource create(final String ogsaid, final String name, final String url);
+        public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url);
 
         /**
          * Create a new resource.
          *
          */
-        public JdbcResource create(final String ogsaid, final String name, final String url, final String user, final String pass);
+        public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass);
 
         /**
          * Our schema factory.
@@ -99,7 +100,19 @@ extends BaseResource<JdbcSchema>
         public JdbcSchema select(final String catalog, final String schema);
 
         /**
-         * Update the schemas.
+         * Create a new schema owned by an Identity.
+         *
+         */
+        public JdbcSchema create(final Identity identity);
+        
+        /**
+         * Select the schemas owned by an Identity.
+         *
+         */
+        public Iterable<JdbcSchema> select(final Identity identity);
+        
+        /**
+         * Update the list of schemas from the JDBC metadata.
          *
          */
         public void scan();

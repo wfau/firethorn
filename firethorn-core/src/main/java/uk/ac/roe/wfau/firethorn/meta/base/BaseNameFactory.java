@@ -23,6 +23,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 
 /**
  * A generic JDBC, ADQL, SQL safe NameFactory
@@ -45,14 +46,21 @@ implements Entity.NameFactory<EntityType>
      */
     public static final String REPLACE_REGEX= "[^" + GLUE_CHAR + "\\p{Alnum}]+?" ;
 
+    @Override
+    public String name(String name)
+        {
+        return safe(
+            name
+            );
+        }
+
     /**
      * Generate a JDBC, ADQL, SQL safe name.
      * 
      */
-    @Override
-    public String name(String name)
+    public String safe(String name)
         {
-        return name.replaceAll(
+        return name.trim().replaceAll(
             REPLACE_REGEX,
             GLUE_CHAR
             );
@@ -64,7 +72,7 @@ implements Entity.NameFactory<EntityType>
      * http://stackoverflow.com/a/7837748
      * 
      */
-    public String name(StringBuilder builder)
+    public String safe(StringBuilder builder)
         {
         return name(builder.toString());
         }
@@ -80,21 +88,10 @@ implements Entity.NameFactory<EntityType>
         }
 
     /**
-     * Date based name with prefix
+     * Generate a new date based name.
      *
      */
     protected String datename(final String prefix)
-        {
-        return datename(
-            new DateTime(),
-            prefix
-            );
-        }
-    /**
-     * Date based name with prefix
-     *
-     */
-    protected String datename(final DateTime datetime, final String prefix)
         {
         StringBuilder builder = new StringBuilder(prefix); 
         builder.append(
@@ -102,10 +99,36 @@ implements Entity.NameFactory<EntityType>
             );
         builder.append(
             formatter.print(
-                datetime
+                new DateTime()
                 )
             );
-        return name(
+        return safe(
+            builder
+            );
+        }
+
+    /**
+     * Generate a new date based name.
+     *
+     */
+    protected String datename(final String prefix, final Identifier ident)
+        {
+        StringBuilder builder = new StringBuilder(prefix); 
+        builder.append(
+            GLUE_CHAR
+            );
+        builder.append(
+            ident.toString()
+            );
+        builder.append(
+            GLUE_CHAR
+            );
+        builder.append(
+            formatter.print(
+                new DateTime()
+                )
+            );
+        return safe(
             builder
             );
         }

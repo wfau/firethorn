@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 
 /**
@@ -28,6 +29,27 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 public interface JdbcSchema
 extends BaseSchema<JdbcSchema, JdbcTable>
     {
+    /**
+     * Name factory interface.
+     *
+     */
+    public static interface NameFactory
+    extends Entity.NameFactory<JdbcSchema>
+        {
+        /**
+         * Create a new date based name.
+         * 
+         */
+        public String datename();
+
+        /**
+         * Create a physical schema name from logical catalog and schema names.
+         * 
+         */
+        public String fullname(final String catalog, final String schema);
+
+        }
+
     /**
      * Link factory interface.
      *
@@ -54,12 +76,6 @@ extends BaseSchema<JdbcSchema, JdbcTable>
     extends BaseSchema.Factory<JdbcResource, JdbcSchema>
         {
         /**
-         * Create a schema name.
-         *
-         */
-        public String name(final String catalog, final String schema);
-
-        /**
          * Create a new schema.
          *
          */
@@ -72,12 +88,53 @@ extends BaseSchema<JdbcSchema, JdbcTable>
         public JdbcSchema select(final JdbcResource parent, final String catalog, final String schema);
 
         /**
+         * Create a new schema.
+         *
+         */
+        public JdbcSchema create(final JdbcResource parent);
+        
+        /**
+         * Select the schemas for an Identity.
+         *
+         */
+        public Iterable<JdbcSchema> select(final JdbcResource parent, final Identity identity);
+        
+        /**
          * The schema table factory.
          *
          */
         public JdbcTable.Factory tables();
+
+        /**
+         * NameFactory implementation.
+         *
+         */
+        public JdbcSchema.NameFactory names();
+
+        /**
+         * Builder implementation.
+         *
+         */
+        public JdbcSchema.Builder builder();
+
         }
 
+
+    /**
+     * JdbcSchema Builder interface that creates the physical JDBC schema in the database.
+     *
+     */
+    public static interface Builder
+        {
+        /**
+         * Create a physical JDBC schema.
+         *
+         */
+        public void create(JdbcSchema schema);
+
+        }
+    
+    
     @Override
     public JdbcResource resource();
 

@@ -38,12 +38,15 @@ import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 
 /**
@@ -89,6 +92,11 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
         @NamedQuery(
             name  = "JdbcSchema-search-parent.text",
             query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (name LIKE :text)) ORDER BY name asc, ident asc"
+            ),
+
+        @NamedQuery(
+            name  = "JdbcSchema-search-parent.owner",
+            query = "FROM JdbcSchemaEntity WHERE ((parent = :parent) AND (owner = :owner)) ORDER BY name asc, ident asc"
             )
         }
     )
@@ -110,7 +118,56 @@ public class JdbcSchemaEntity
     protected static final String DB_JDBC_CATALOG_COL = "jdbccatalog";
 
     /**
-     * Schema factory implementation.
+     * Name factory implementation.
+     * @todo Move to a separate package.
+     *
+     */
+    @Component
+    public static class NameFactory
+    extends BaseNameFactory<JdbcSchema>
+    implements JdbcSchema.NameFactory
+        {
+        @Override
+        public String fullname(String catalog, String schema)
+            {
+            if ((catalog == null) && (schema == null))
+                {
+                throw new IllegalArgumentException(
+                    "At least one of [catalog][schema] is required"
+                    );
+                }
+// SQLServer specific '*' catalog.
+            else if ((catalog == null) || (JdbcResource.ALL_CATALOGS.equals(catalog)))
+                {
+                return safe(
+                    schema
+                    );
+                }
+            else if (schema == null)
+                {
+                return safe(
+                    catalog
+                    );
+                }
+// SQLServer specific dot notation.
+// Explicitly avoiding super class 'safe' method. 
+            else {
+                return safe(catalog) + "." + safe(schema) ;
+                }
+            }
+
+        @Override
+        public String datename()
+            {
+            return datename(
+                "SCHEMA_",
+                factories().authentications().current().identity().ident()
+                );
+            }
+        }
+    
+    /**
+     * Entity factory implementation.
      *
      */
     @Repository
@@ -126,45 +183,52 @@ public class JdbcSchemaEntity
             }
 
         @Override
-        public String name(final String catalog, final String schema)
-            {
-            if (catalog == null)
-                {
-                return schema.trim() ;
-                }
-            else if (schema == null)
-                {
-                return catalog.trim() ;
-                }
-            else {
-                return catalog.trim() + "." + schema.trim() ;
-                }
-            }
-
-        @Override
         @CreateEntityMethod
-        public JdbcSchema create(final JdbcResource parent, final String schema)
+        public JdbcSchema create(final JdbcResource parent)
             {
+// TODO Need the resource catalog name ?
+// NameFactory - Generate a unique name from JdbcResource and Identity. 
+// TODO Liquibase SchemaBuilder ?
+
             return this.create(
                 parent,
-                null,
-                schema
+                parent.catalog(),
+                names.datename()
                 );
             }
 
+        //@Override
+        public JdbcSchema create(JdbcResource parent, String name)
+            {
+            // TODO Auto-generated method stub
+            return null;
+            }
+        
         @Override
         @CreateEntityMethod
         public JdbcSchema create(final JdbcResource parent, final String catalog, final String schema)
+            {
+            return this.create(
+                parent,
+                catalog,
+                schema,
+                names.fullname(
+                    catalog,
+                    schema
+                    )
+                );
+            }
+
+        
+        @CreateEntityMethod
+        public JdbcSchema create(final JdbcResource parent, final String catalog, final String schema, final String name)
             {
             return this.insert(
                 new JdbcSchemaEntity(
                     parent,
                     catalog,
                     schema,
-                    name(
-                        catalog,
-                        schema
-                        )
+                    name
                     )
                 );
             }
@@ -292,6 +356,23 @@ public class JdbcSchemaEntity
                 );
             }
 
+        @Override
+        @SelectEntityMethod
+        public Iterable<JdbcSchema> select(final JdbcResource parent, final Identity owner)
+            {
+            return super.iterable(
+                super.query(
+                    "JdbcSchema-search-parent.owner"
+                    ).setEntity(
+                        "parent",
+                        parent
+                    ).setEntity(
+                        "owner",
+                        owner
+                        )
+                );
+            }
+        
         @Autowired
         protected JdbcTable.Factory tables;
         @Override
@@ -315,6 +396,22 @@ public class JdbcSchemaEntity
             {
             return this.links;
             }
+
+        @Autowired
+        protected JdbcSchema.NameFactory names;
+        @Override
+        public JdbcSchema.NameFactory names()
+            {
+            return this.names;
+            }
+
+        @Autowired
+        protected JdbcSchema.Builder builder;
+        @Override
+        public JdbcSchema.Builder builder()
+            {
+            return this.builder;
+            }
         }
 
     protected JdbcSchemaEntity()
@@ -325,9 +422,9 @@ public class JdbcSchemaEntity
     protected JdbcSchemaEntity(final JdbcResource resource, final String catalog, final String schema, final String name)
         {
         super(resource, name);
+        this.resource = resource;
         this.catalog  = catalog ;
         this.schema   = schema  ;
-        this.resource = resource;
         }
 
     @Index(

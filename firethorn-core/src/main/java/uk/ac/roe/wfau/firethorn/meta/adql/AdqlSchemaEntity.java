@@ -106,7 +106,8 @@ implements AdqlSchema
             }
 
         @Override
-        public AdqlSchema create(final AdqlResourceEntity parent, final String name, final BaseTable<?, ?> base)
+        @CreateEntityMethod
+        public AdqlSchema create(final AdqlResource parent, final String name, final BaseTable<?, ?> base)
             {
             final AdqlSchema schema = this.create(
                 parent,
@@ -120,7 +121,8 @@ implements AdqlSchema
             }
 
         @Override
-        public AdqlSchema create(final AdqlResourceEntity parent, final BaseSchema<?, ?> base)
+        @CreateEntityMethod
+        public AdqlSchema create(final AdqlResource parent, final BaseSchema<?, ?> base)
             {
             return this.create(
                 parent,
@@ -130,7 +132,8 @@ implements AdqlSchema
             }
 
         @Override
-		public AdqlSchema create(final AdqlResourceEntity parent, final String name, final BaseSchema<?, ?> base)
+        @CreateEntityMethod
+		public AdqlSchema create(final AdqlResource parent, final String name, final BaseSchema<?, ?> base)
 			{
 			final AdqlSchema schema = this.create(
 					parent,

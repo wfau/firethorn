@@ -169,6 +169,8 @@ implements AdqlQuery.Builder
 
         String safe = safe(query); 
         log.debug("  Safe  [{}]", safe);
+
+//TOD0 - move to JdbcTable Factory Builder
         //
         // Create the new JdbcTable .
         final JdbcTable table = schema.tables().create(
@@ -191,6 +193,8 @@ implements AdqlQuery.Builder
                 field.length()
                 );
             }
+//TOD0 - move to JdbcTable Factory Builder
+
         //
         // Create and execute the ChangeSet.
         final ChangeSet changeset = changeset(
@@ -200,7 +204,8 @@ implements AdqlQuery.Builder
         // Delete old table.
         if (query.results().jdbc() != null)
             {
-// TODO IF this is in the same resource/schema !?            
+         // TODO *IF* this is in the same resource/schema !?            
+         // TODO *IF* the old results don't have any data !?            
             changeset.addChange(
                 delete(
                     query.results().jdbc()

@@ -62,12 +62,6 @@ extends BaseComponent
     extends Entity.Factory<SchemaType>
         {
         /**
-         * Create a new schema.
-         *
-         */
-        public SchemaType create(final ResourceType parent, final String name);
-
-        /**
          * Select all the schemas from a resource.
          *
          */

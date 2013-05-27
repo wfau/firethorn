@@ -42,6 +42,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 
 /**
@@ -128,6 +129,7 @@ public class JdbcResourceEntity
             }
 
         @Override
+        @Deprecated
         @CreateEntityMethod
         public JdbcResource create(final String ogsaid, final String name)
             {
@@ -141,11 +143,12 @@ public class JdbcResourceEntity
 
         @Override
         @CreateEntityMethod
-        public JdbcResource create(final String ogsaid, final String name, final String url)
+        public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url)
             {
             return super.insert(
                 new JdbcResourceEntity(
                     ogsaid,
+                    catalog,
                     name,
                     url
                     )
@@ -154,10 +157,11 @@ public class JdbcResourceEntity
 
 		@Override
         @CreateEntityMethod
-		public JdbcResource create(final String ogsaid, final String name, final String url, final String user, final String pass) {
+		public JdbcResource create(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass) {
             return super.insert(
                 new JdbcResourceEntity(
                     ogsaid,
+                    catalog,
                     name,
                     url,
                     user,
@@ -196,6 +200,7 @@ public class JdbcResourceEntity
         super();
         }
 
+    @Deprecated
     protected JdbcResourceEntity(final String ogsaid, final String name)
         {
         super(name);
@@ -205,20 +210,22 @@ public class JdbcResourceEntity
             );
         }
 
-    protected JdbcResourceEntity(final String ogsaid, final String name, final  String url)
+    protected JdbcResourceEntity(final String ogsaid, final String catalog, final String name, final  String url)
         {
         super(name);
-        this.ogsaid = ogsaid ;
+        this.ogsaid  = ogsaid  ;
+        this.catalog = catalog ;
         this.connection = new JdbcConnectionEntity(
             this,
             url
             );
         }
 
-    protected JdbcResourceEntity(final String ogsaid, final String name, final String url, final String user, final String pass)
+    protected JdbcResourceEntity(final String ogsaid, final String catalog, final String name, final String url, final String user, final String pass)
 	    {
 	    super(name);
-        this.ogsaid = ogsaid ;
+        this.ogsaid  = ogsaid  ;
+        this.catalog = catalog ;
 	    this.connection = new JdbcConnectionEntity(
 	        this,
 	        url,
@@ -237,6 +244,7 @@ public class JdbcResourceEntity
     protected JdbcResource.Schemas schemasimpl()
         {
         return new JdbcResource.Schemas(){
+
             @Override
             public Iterable<JdbcSchema> select()
                 {
@@ -244,6 +252,7 @@ public class JdbcResourceEntity
                     JdbcResourceEntity.this
                     );
                 }
+            
             @Override
             public JdbcSchema create(final String catalog, final String schema)
                 {
@@ -253,6 +262,7 @@ public class JdbcResourceEntity
                     schema
                     );
                 }
+            
             @Override
             public JdbcSchema select(final String catalog, final String schema)
                 {
@@ -262,6 +272,7 @@ public class JdbcResourceEntity
                     schema
                     );
                 }
+            
             @Override
             public JdbcSchema select(final String name)
                 {
@@ -270,6 +281,7 @@ public class JdbcResourceEntity
                     name
                     );
                 }
+            
             @Override
             public Iterable<JdbcSchema> search(final String text)
                 {
@@ -278,6 +290,24 @@ public class JdbcResourceEntity
                     text
                     );
                 }
+
+            @Override
+            public JdbcSchema create(final Identity identity)
+                {
+                return factories().jdbc().schemas().create(
+                    JdbcResourceEntity.this
+                    );
+                }
+
+            @Override
+            public Iterable<JdbcSchema> select(final Identity identity)
+                {
+                return factories().jdbc().schemas().select(
+                    JdbcResourceEntity.this,
+                    identity
+                    );
+                }
+            
             @Override
             public void scan()
                 {

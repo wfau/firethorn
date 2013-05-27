@@ -89,14 +89,14 @@ extends Entity
     /**
      * User storage assigned to this Identity.
      * 
-     */
     public JdbcSchema store();
+     */
 
     /**
      * User storage assigned to this Identity.
      * 
-     */
     public void store(JdbcSchema schema);
+     */
 
 
     /*
@@ -117,7 +117,37 @@ extends Entity
      *
      */
     
+    /**
+     * Access to the Schemas owned by this Identity.
+     * 
+     */
+    public interface Schemas
+        {
+        /**
+         * Get the current active Schema for this Identity.
+         *
+         */
+        public JdbcSchema current();
+
+        /**
+         * Create a new Schema owned by this Identity.
+         *
+         */
+        public JdbcSchema create();
     
+        /**
+         * Get a list of the Schemas owned by this Identity.
+         *
+         */
+        public Iterable<JdbcSchema> select();
+    
+        }
+
+    /**
+     * Access to the Schemas owned by this Identity.
+     * 
+     */
+    public Schemas schemas();
     
     }
 

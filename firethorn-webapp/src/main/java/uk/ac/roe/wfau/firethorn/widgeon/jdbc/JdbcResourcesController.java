@@ -157,7 +157,7 @@ extends AbstractController
      *
      */
     @ResponseBody
-    @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
+    @RequestMapping(value=SEARCH_PATH, params={SEARCH_TEXT}, produces=JSON_MAPPING)
     public JdbcResourceBean.Iter jsonSearch(
         @RequestParam(SEARCH_TEXT)
         final String text,
@@ -187,29 +187,18 @@ extends AbstractController
         @RequestParam(value=CREATE_CATALOG, required=false)
         final String catalog,
         @RequestParam(value=CREATE_OGSADAI, required=false)
-        final String ogsadai,
-
-        final ModelAndView model
+        final String ogsadai
         ){
-
         final JdbcResourceBean bean = new JdbcResourceBean(
             factories().jdbc().resources().create(
                 ogsadai,
+                catalog,
                 name,
                 url,
                 user,
                 pass
                 )
             );
-        //
-        // TODO - set the initial catalog
-        if (catalog != null)
-            {
-            bean.entity().catalog(
-                catalog
-                );
-            //bean.entity().update();
-            }
         return new ResponseEntity<JdbcResourceBean>(
             bean,
             new RedirectHeader(

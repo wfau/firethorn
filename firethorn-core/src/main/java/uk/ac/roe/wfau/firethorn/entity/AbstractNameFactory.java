@@ -22,6 +22,7 @@ package uk.ac.roe.wfau.firethorn.entity;
  *
  */
 public class AbstractNameFactory<EntityType extends Entity>
+extends AbstractComponent
 implements Entity.NameFactory<EntityType> 
     {
     @Override

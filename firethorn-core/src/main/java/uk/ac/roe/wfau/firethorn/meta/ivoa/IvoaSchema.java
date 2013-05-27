@@ -53,6 +53,12 @@ extends BaseSchema<IvoaSchema, IvoaTable>
     extends BaseSchema.Factory<IvoaResource, IvoaSchema>
         {
         /**
+         * Create a new schema ...
+         * 
+         */
+        public IvoaSchema create(final IvoaResource parent, final String name);
+
+        /**
          * The schema table factory.
          *
          */
