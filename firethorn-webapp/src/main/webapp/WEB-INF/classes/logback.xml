@@ -62,15 +62,19 @@
 	<logger name="org.springframework.http">
 		<level value="INFO" />
 	</logger>
-	<logger name="org.springframework.web">
-		<level value="INFO" />
-	</logger>
 	<logger name="org.springframework.aop">
 		<level value="INFO" />
 	</logger>
 	<logger name="org.springframework.jdbc">
 		<level value="INFO" />
 	</logger>
+
+	<logger name="org.springframework.web">
+		<level value="INFO" />
+	</logger>
+	<!--logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+		<level value="WARN" />
+	</logger-->
 
 	<!--+
 	    | Hibernate loggers.
@@ -94,7 +98,7 @@
 	</logger>
 
 	<!--+
-	    | Hibernate proxy narrowing warning.
+	    | Hibernate 'proxy narrowing' warning.
 	    | https://jira.atlassian.com/browse/CONF-4981
 	    | http://opensource.atlassian.com/projects/hibernate/browse/HHH-1367
         | https://forum.hibernate.org/viewtopic.php?p=2404391
@@ -105,7 +109,7 @@
 
 	<!--+
 	    | C3PO loggers
-	    | Including wierd DEBUG via Exception logging.
+	    | Includes strange DEBUG via Exception logging.
 	    | http://stackoverflow.com/questions/8403227/weird-error-close-by-client-stack-trace
 	    | http://forum.springsource.org/archive/index.php/t-47689.html 
 	    | https://forum.hibernate.org/viewtopic.php?f=1&t=982410
@@ -138,10 +142,10 @@
 		<level value="WARN" />
 	</logger>
 	<!--logger name="liquibase.changelog.ChangeSet">
-		<level value="ERROR" />
+		<level value="WARN" />
 	</logger>
 	<logger name="liquibase.ext.logging">
-		<level value="ERROR" />
+		<level value="WARN" />
 	</logger-->
 
 	<!--+
