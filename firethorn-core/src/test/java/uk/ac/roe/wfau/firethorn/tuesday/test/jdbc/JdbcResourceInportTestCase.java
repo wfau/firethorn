@@ -44,12 +44,8 @@ public class JdbcResourceInportTestCase
         log.debug("Catalog [{}]",catalog);
 
         final JdbcResource resource = factories().jdbc().resources().create(
-            unique(
-                "resource-ogsa"
-                ),
-            unique(
-                "resource-name"
-                ),
+            "test:ogsa",
+            "test:resource",
             "spring:RoeWFAU"
             );
         resource.connection().user(

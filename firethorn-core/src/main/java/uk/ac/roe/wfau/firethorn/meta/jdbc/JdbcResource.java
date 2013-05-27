@@ -57,9 +57,15 @@ extends BaseResource<JdbcSchema>
         /**
          * Create a new resource.
          *
-         */
         @Deprecated
         public JdbcResource create(final String ogsaid, final String name);
+         */
+
+        /**
+         * Create a new resource.
+         *
+         */
+        public JdbcResource create(final String ogsaid, final String name, final String url);
 
         /**
          * Create a new resource.

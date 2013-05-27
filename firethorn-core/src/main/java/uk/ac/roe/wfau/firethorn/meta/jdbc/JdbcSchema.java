@@ -130,7 +130,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          * Create a physical JDBC schema.
          *
          */
-        public void create(JdbcSchema schema);
+        public void build(JdbcSchema schema);
 
         }
     

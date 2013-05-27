@@ -165,7 +165,22 @@ public class JdbcSchemaEntity
                 );
             }
         }
-    
+
+    /**
+     * Builder implementation.
+     * @todo Move to a separate class/package.
+     * 
+     */
+    @Component
+    public static class Builder
+    implements JdbcSchema.Builder
+        {
+        @Override
+        public void build(JdbcSchema schema)
+            {
+            // TODO Auto-generated method stub
+            }
+        }
     /**
      * Entity factory implementation.
      *

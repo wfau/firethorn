@@ -131,13 +131,13 @@ public class JdbcResourceEntity
         @Override
         @Deprecated
         @CreateEntityMethod
-        public JdbcResource create(final String ogsaid, final String name)
+        public JdbcResource create(final String ogsaid, final String name, final String url)
             {
-            return super.insert(
-                new JdbcResourceEntity(
-                    ogsaid,
-                    name
-                    )
+            return this.create(
+                ogsaid,
+                null,
+                name,
+                url
                 );
             }
 

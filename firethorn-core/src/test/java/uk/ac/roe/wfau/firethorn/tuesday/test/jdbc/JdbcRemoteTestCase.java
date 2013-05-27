@@ -82,9 +82,7 @@ extends TestBase
         // Create an empty resource tree.
         final JdbcResource jdbcResource = factories().jdbc().resources().create(
             "twomass",
-            this.unique(
-                "base"
-                ),
+            "test:twomass",
             "spring:RoeTWOMASS"
             );
 

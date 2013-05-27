@@ -58,23 +58,22 @@ extends TestBase
         // Create our JDBC resources.
         this.twomass = factories().jdbc().resources().create(
             "twomass",
-            "twomass-resource",
+            "test:twomass",
             "spring:RoeTWOMASS"
             );
         this.wfau = factories().jdbc().resources().create(
             "wfau",
-            "wfau-resource",
+            JdbcResource.ALL_CATALOGS,
+            "test:wfau",
             "spring:RoeWFAU"
-            );
-        this.wfau.catalog(
-            JdbcResource.ALL_CATALOGS
             );
 
         this.resource = factories().jdbc().resources().create(
             "user",
-            "user-resource",
+            "test:userdata",
             "spring:FireThornUserData"
             );
+// TODO do we need this ?
         this.schema = this.resource.schemas().create(
             null,
             "PUBLIC"

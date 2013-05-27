@@ -228,8 +228,8 @@ implements Identity
     @JoinColumn(
         name = DB_CURRENT_SCHEMA_COL,
         unique = false,
-        nullable = false,
-        updatable = false
+        nullable = true,
+        updatable = true
         )
     private JdbcSchema jdbcschema ;
     

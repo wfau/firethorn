@@ -48,8 +48,10 @@ public class JdbcConnectionTestCase
             factories()
             );
         final JdbcResource resource = factories().jdbc().resources().create(
-            "ogsa-resource",
-            unique("resource")
+            "test:ogsa",
+            "test:catalog",
+            "test:resource",
+            "test:uri"
             );
         assertNotNull(
             resource
@@ -91,8 +93,10 @@ public class JdbcConnectionTestCase
             factories()
             );
         final JdbcResource resource = factories().jdbc().resources().create(
-            "ogsa-resource",
-            unique("resource")
+            "test:ogsa",
+            "test:catalog",
+            "test:resource",
+            "test:uri"
             );
         assertNotNull(
             resource
@@ -134,8 +138,10 @@ public class JdbcConnectionTestCase
             factories()
             );
         final JdbcResource resource = factories().jdbc().resources().create(
-            "ogsa-resource",
-            unique("resource")
+            "test:ogsa",
+            "test:catalog",
+            "test:resource",
+            "test:uri"
             );
         assertNotNull(
             resource
