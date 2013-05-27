@@ -23,7 +23,7 @@ baseschemaname=${1?}
 basetablename=${2?}
 
 queryschemaname=${3?}
-querytablename=${4}
+querytablename=${4?}
 
 baseschema=$(
     POST "${adqlspace?}/schemas/select" \
@@ -52,7 +52,7 @@ querytable=$(
         --header "firethorn.auth.identity:${identity}" \
         --header "firethorn.auth.community:${community}" \
         --data   "adql.schema.table.import.base=${basetable?}" \
-        --data   "adql.schema.table.import.name=${querytablename}" \
+        --data   "adql.schema.table.import.name=${querytablename?}" \
         | ident
         )
 GET "${querytable?}" \

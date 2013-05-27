@@ -30,7 +30,7 @@ jdbcschema=$(
         | fullident
         )
 adqlschema=$(
-    POST "${adqlspace?}/schemas/create" \
+    POST "${adqlspace?}/schemas/import" \
         --header "firethorn.auth.identity:${identity}" \
         --header "firethorn.auth.community:${community}" \
         --data   "adql.resource.schema.import.name=${adqlname?}" \

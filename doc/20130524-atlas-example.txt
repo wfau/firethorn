@@ -38,12 +38,8 @@
         time source "${FIRETHORN_TEST?}/04-00-create-query-space.sh"
         time source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh"  'query'
 
+        time source "${FIRETHORN_TEST?}/04-02-import-query-schema.sh" 'atlas'   'atlas'
         time source "${FIRETHORN_TEST?}/04-02-import-query-schema.sh" 'twomass' 'twomass'
-
-
-        time source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh" 'atlasx'
-        time source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'atlas' 'atlasSource'                 'atlasx'
-        time source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'atlas' 'atlasSourceXtwomass_psc'     'atlasx'
 
         time source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh" 'ukidss'
         time source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsPointSource'          'ukidss' 'gcsPointSource5'
@@ -60,22 +56,36 @@
 # Extra tests.
 #
 
-        combined()
+        importschema()
             {
-            source "${FIRETHORN_TEST?}/04-00-init-query.sh"
-            source "${FIRETHORN_TEST?}/04-01-import-atlas.sh"
-            source "${FIRETHORN_TEST?}/04-02-import-twomass.sh"
+            source "${FIRETHORN_TEST?}/04-00-create-query-space.sh"
+            source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh" 'query'
+            source "${FIRETHORN_TEST?}/04-02-import-query-schema.sh" 'atlas'   'atlas'
+            source "${FIRETHORN_TEST?}/04-02-import-query-schema.sh" 'twomass' 'twomass'
             source "${FIRETHORN_TEST?}/05-query-atlas.sh"
             }
 
-        time combined
+        time importschema
+
+        importtables()
+            {
+            source "${FIRETHORN_TEST?}/04-00-create-query-space.sh"
+
+            source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh" 'twomass'
+            source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'twomass' 'twomass_psc' 'twomass' 'twomass_psc'
+
+            source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh" 'atlas'
+            source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'atlas' 'atlasSource' 'atlas'             'atlasSource'
+            source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'atlas' 'atlasSourceXtwomass_psc' 'atlas' 'atlasSourceXtwomass_psc'
+
+            source "${FIRETHORN_TEST?}/05-query-atlas.sh"
+            }
+
+        time importtables
             
-        for i in {0..9}; do time combined ; done
-        for i in {0..99}; do time combined ; done
-        for i in {0..999}; do time combined ; done
+        for i in {0..9}; do time importschema ; done
+        for i in {0..9}; do time importtables ; done
 
 
 
-time source "${FIRETHORN_TEST?}/init-query.sh"
-time source "${FIRETHORN_TEST?}/query-atlas.sh"
 
