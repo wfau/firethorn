@@ -691,10 +691,12 @@ implements AdqlQuery, AdqlParserQuery
                 //
                 // Create the two query parsers.
                 // TODO - The parsers should be part of the resource/schema.
+                // TODO - Either plain ADQL or SQLServer dialect SQL.
                 final AdqlParser direct = this.factories().adql().parsers().create(
                     Mode.DIRECT,
                     this.schema
                     );
+                // TODO - Either plain ADQL or DQP dialect SQL.
                 final AdqlParser distrib = this.factories().adql().parsers().create(
                     Mode.DISTRIBUTED,
                     this.schema
@@ -739,25 +741,6 @@ implements AdqlQuery, AdqlParserQuery
         else {
             return Status.ERROR;
             }
-        }
-
-    /**
-     *  Create our result tables.
-     *
-     */
-    protected void create(final JdbcSchema store)
-        {
-        //
-        // Create our JDBC table.
-        this.jdbctable = services().builder().create(
-            store,
-            this
-            );
-        //
-        // Create our ADQL table.
-        this.adqltable = this.schema().tables().create(
-            this
-            );
         }
 
     @Override
@@ -937,7 +920,6 @@ implements AdqlQuery, AdqlParserQuery
         )
     @OneToOne(
         fetch = FetchType.LAZY,
-        //cascade = CascadeType.ALL,
         targetEntity = JdbcTableEntity.class
         )
     @JoinColumn(
@@ -957,7 +939,6 @@ implements AdqlQuery, AdqlParserQuery
         )
     @OneToOne(
         fetch = FetchType.LAZY,
-        //cascade = CascadeType.ALL,
         targetEntity = AdqlTableEntity.class
         )
     @JoinColumn(
@@ -968,6 +949,34 @@ implements AdqlQuery, AdqlParserQuery
         )
     private AdqlTable adqltable;
 
+    /**
+     *  Create our result tables.
+     *
+     */
+    protected void create(final JdbcSchema store)
+        {
+        //
+        // Create our JDBC table.
+        if ((this.owner() != null) && (this.owner().store() != null))
+            {
+            this.jdbctable = this.owner().store().tables().create(
+                this
+                );
+            }
+// Legacy no owner fallback.
+        else {
+            this.jdbctable = services().builder().create(
+                store,
+                this
+                );
+            }
+        //
+        // Create our ADQL table.
+        this.adqltable = this.schema().tables().create(
+            this
+            );
+        }
+    
     /**
      * Our results tables.
      *

@@ -95,8 +95,13 @@ extends Entity, Job
      *
      */
     public static interface NameFactory
-    extends Entity.NameFactory
+    extends Entity.NameFactory<AdqlQuery>
         {
+        /**
+         * Generate a unique name for a query.
+         * 
+         */
+        public String name();
         }
 
     /**
@@ -160,7 +165,7 @@ extends Entity, Job
         }
 
     /**
-     * Table builder interface.
+     * QueryTable builder interface.
      *
      */
     public static interface Builder
@@ -170,13 +175,6 @@ extends Entity, Job
          *
          */
         public JdbcTable create(final JdbcSchema store, final AdqlQuery query);
-
-        //
-        // Test config methods ..
-        //public JdbcSchema schema();
-        //public void schema(JdbcSchema schema);
-        //public JdbcResource resource();
-        //public void resource(JdbcResource resource);
 
         }
 

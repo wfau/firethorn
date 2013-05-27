@@ -42,6 +42,20 @@ extends BaseTable<JdbcTable, JdbcColumn>
         }
 
     /**
+     * Name factory interface.
+     *
+     */
+    public static interface NameFactory
+    extends BaseTable.NameFactory<JdbcTable>
+        {
+        /**
+         * Create a name for a query results table.
+         * 
+         */
+        public String name(final AdqlQuery query);
+        }
+    
+    /**
      * Link factory interface.
      *
      */
@@ -82,7 +96,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * Create a new query table.
          *
          */
-        public JdbcTable create(final JdbcSchema parent, final AdqlQuery query, final String name);
+        public JdbcTable create(final JdbcSchema parent, final AdqlQuery query);
 
         /**
          * The table column factory.

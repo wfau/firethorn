@@ -31,26 +31,34 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
  */
 public interface Entity
     {
+
     /**
      * Common interface for a name factory.
      *
      */
-    public interface NameFactory
+    public interface NameFactory<EntityType extends Entity>
         {
         /**
          * Generate a new name.
          *
          */
-        public String name();
-
-        /**
-         * Generate a new name.
-         *
-         */
         public String name(final String name);
-
+        
         }
 
+    /**
+     * Common interface for an alias factory.
+     *
+     */
+    public interface AliasFactory<EntityType extends Entity>
+        {
+        /**
+         * Generate an alias.
+         *
+         */
+        public String alias(EntityType entity);
+        }
+    
     /**
      * Common interface for a link factory.
      *

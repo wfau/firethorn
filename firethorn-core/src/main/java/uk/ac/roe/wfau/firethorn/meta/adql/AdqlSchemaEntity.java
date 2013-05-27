@@ -112,6 +112,7 @@ implements AdqlSchema
                 parent,
                 name
                 );
+//TODO shallow copy
             schema.tables().create(
                 base
                 );
@@ -135,6 +136,7 @@ implements AdqlSchema
 					parent,
 					name
 					);
+//TODO shallow copy
 			for (final BaseTable<?,?> table : base.tables().select())
 				{
 				schema.tables().create(
@@ -262,6 +264,7 @@ implements AdqlSchema
                     AdqlSchemaEntity.this
                     );
                 }
+
             @Override
             public AdqlTable select(final String name)
                 {
@@ -270,6 +273,7 @@ implements AdqlSchema
                     name
                     );
                 }
+
             @Override
             public AdqlTable create(final BaseTable<?,?> base)
                 {
@@ -278,6 +282,7 @@ implements AdqlSchema
                     base
                     );
                 }
+
             @Override
             public AdqlTable create(final BaseTable<?,?> base, final String name)
                 {
@@ -287,13 +292,27 @@ implements AdqlSchema
                     name
                     );
                 }
+
+            @Override
+            public AdqlTable create(final AdqlQuery query, final BaseTable<?,?> base, final String name)
+                {
+                return factories().adql().tables().create(
+                    query,
+                    AdqlSchemaEntity.this,
+                    base,
+                    name
+                    );
+                }
+
             @Override
             public AdqlTable create(final AdqlQuery query)
                 {
                 return factories().adql().tables().create(
+                    AdqlSchemaEntity.this,
                     query
                     );
                 }
+            
             @Override
             public Iterable<AdqlTable> search(final String text)
                 {

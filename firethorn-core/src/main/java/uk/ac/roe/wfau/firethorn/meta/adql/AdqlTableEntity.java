@@ -30,6 +30,7 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
@@ -38,6 +39,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 
@@ -88,25 +90,33 @@ public class AdqlTableEntity
 
     /**
      * Alias factory implementation.
-     *
+     * @todo move to a common implementation
+     * 
      */
-    @Repository
+    @Component
     public static class AliasFactory
     implements AdqlTable.AliasFactory
         {
-        /**
-         * The alias prefix for this type.
-         *
-         */
-        protected static final String PREFIX = "ADQL_" ;
-
         @Override
         public String alias(final AdqlTable table)
             {
-            return PREFIX + table.ident();
+            return "ADQL_".concat(
+                table.ident().toString()
+                );
             }
         }
 
+    /**
+     * Name factory implementation.
+     *
+     */
+    @Component
+    public static class NameFactory
+    extends BaseNameFactory<AdqlTable>
+    implements AdqlTable.NameFactory
+        {
+        }
+    
     /**
      * Table factory implementation.
      *
@@ -130,6 +140,7 @@ public class AdqlTableEntity
             super.insert(
                 entity
                 );
+//TODO shallow copy ?
             for (final BaseColumn<?> base : entity.base().columns().select())
                 {
                 entity.columns().create(
@@ -141,11 +152,11 @@ public class AdqlTableEntity
 
         @Override
         @CreateEntityMethod
-        public AdqlTable create(final AdqlSchema parent, final BaseTable<?, ?> base)
+        public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base)
             {
             return this.insert(
                 new AdqlTableEntity(
-                    parent,
+                    schema,
                     base
                     )
                 );
@@ -153,11 +164,11 @@ public class AdqlTableEntity
 
         @Override
         @CreateEntityMethod
-        public AdqlTable create(final AdqlSchema parent, final BaseTable<?, ?> base, final String name)
+        public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
             {
             return this.insert(
                 new AdqlTableEntity(
-                    parent,
+                    schema,
                     base,
                     name
                     )
@@ -166,10 +177,25 @@ public class AdqlTableEntity
 
         @Override
         @CreateEntityMethod
-        public AdqlTable create(final AdqlQuery query)
+        public AdqlTable create(final AdqlQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
             {
             return this.insert(
                 new AdqlTableEntity(
+                    schema,
+                    query,
+                    base,
+                    name
+                    )
+                );
+            }
+        
+        @Override
+        @CreateEntityMethod
+        public AdqlTable create(final AdqlSchema schema, final AdqlQuery query)
+            {
+            return this.insert(
+                new AdqlTableEntity(
+                    schema,
                     query
                     )
                 );
@@ -256,6 +282,14 @@ public class AdqlTableEntity
             {
             return this.aliases;
             }
+
+        @Autowired
+        protected AdqlTable.NameFactory names;
+        @Override
+        public AdqlTable.NameFactory names()
+            {
+            return this.names;
+            }
         }
 
     protected AdqlTableEntity()
@@ -266,37 +300,38 @@ public class AdqlTableEntity
     protected AdqlTableEntity(final AdqlSchema schema, final BaseTable<?, ?> base)
         {
         this(
-            null,
             schema,
+            null,
             base,
-            null
+            base.name()
             );
         }
+
     protected AdqlTableEntity(final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
         this(
-            null,
             schema,
+            null,
             base,
             name
             );
         }
 
-    protected AdqlTableEntity(final AdqlQuery query)
+    protected AdqlTableEntity(final AdqlSchema schema, final AdqlQuery query)
         {
         this(
+            schema,
             query,
-            query.schema(),
             query.results().base(),
             query.name()
             );
         }
 
-    protected AdqlTableEntity(final AdqlQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
+    protected AdqlTableEntity(final AdqlSchema schema, final AdqlQuery query, final BaseTable<?, ?> base, final String name)
         {
-        super(schema, ((name != null) ? name : base.name()));
-        this.base   = base;
+        super(schema, name);
         this.query  = query;
+        this.base   = base;
         this.schema = schema;
         }
 

@@ -21,18 +21,9 @@ package uk.ac.roe.wfau.firethorn.entity;
  *
  *
  */
-public class AbstractNameFactory
-implements Entity.NameFactory
+public class AbstractNameFactory<EntityType extends Entity>
+implements Entity.NameFactory<EntityType> 
     {
-    public static final String DEFAULT_NAME = "no name" ;
-    @Override
-    public String name()
-        {
-        return this.name(
-            DEFAULT_NAME
-            );
-        }
-
     @Override
     public String name(String name)
         {

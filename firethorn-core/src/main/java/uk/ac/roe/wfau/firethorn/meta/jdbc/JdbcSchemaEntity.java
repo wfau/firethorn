@@ -426,12 +426,11 @@ public class JdbcSchemaEntity
                     );
                 }
             @Override
-            public JdbcTable create(final String name, final AdqlQuery query)
+            public JdbcTable create(final AdqlQuery query)
                 {
                 return factories().jdbc().tables().create(
                     JdbcSchemaEntity.this,
-                    query,
-                    name
+                    query
                     );
                 }
             @Override

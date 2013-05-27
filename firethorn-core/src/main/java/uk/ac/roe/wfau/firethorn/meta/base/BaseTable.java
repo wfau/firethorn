@@ -48,10 +48,20 @@ extends BaseComponent
         }
 
     /**
+     * Name factory interface.
+     *
+     */
+    public static interface NameFactory<TableType extends BaseTable<?,?>>
+    extends Entity.NameFactory<TableType>
+        {
+        }
+
+    /**
      * Alias factory interface.
      *
      */
     public static interface AliasFactory<TableType extends BaseTable<?,?>>
+    extends Entity.AliasFactory<TableType>
         {
         /**
          * Create a Table alias.
@@ -59,7 +69,8 @@ extends BaseComponent
          */
         public String alias(final TableType table);
         }
-
+    
+    
     /**
      * Table resolver interface.
      *
@@ -102,10 +113,16 @@ extends BaseComponent
         public Iterable<TableType> search(final SchemaType parent, final String text);
 
         /**
-         * Our local alias factory.
+         * Our AliasFactory implementation.
          *
          */
         public AliasFactory<TableType> aliases();
+
+        /**
+         * Our NameFactory implementation.
+         *
+         */
+        public NameFactory<TableType> names();
 
         }
 

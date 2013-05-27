@@ -73,7 +73,7 @@ extends BaseComponent
     public BaseSchema<?,?> schema();
     public BaseResource<?> resource();
 
-    public String alias();    //"column_ident"
+    public String alias();
     public StringBuilder fullname(); //"catalog.schema.table.column"
 
     interface Linked

@@ -73,12 +73,32 @@ extends Entity
     public Community community();
 
     /**
-     * The local storage assigned to this Identity.
+     * User storage builder interface.
+     *
+     */
+    public static interface Builder
+        {
+        /**
+         * Build a physical schema.
+         *
+         */
+        public JdbcSchema create(final Identity identity);
+
+        }
+
+    /**
+     * User storage assigned to this Identity.
      * 
      */
     public JdbcSchema store();
 
-    
+    /**
+     * User storage assigned to this Identity.
+     * 
+     */
+    public void store(JdbcSchema schema);
+
+
     /*
      * 
     Spaces spaces()

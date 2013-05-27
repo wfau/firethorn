@@ -20,15 +20,22 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.entity.AbstractNameFactory;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 
 /**
- * Ident factory for <code>AdqlQuery</code>.
  *
+ * 
  */
 @Component
 public class AdqlQueryNameFactory
-extends AbstractNameFactory
+extends BaseNameFactory<AdqlQuery>
 implements AdqlQuery.NameFactory
     {
+    @Override
+    public String name()
+        {
+        return datename(
+            "QUERY"
+            );
+        }
     }

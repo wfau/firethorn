@@ -34,10 +34,10 @@ extends BaseTable<AdqlTable, AdqlColumn>
      *
      */
     public static interface NameFactory
-    extends Entity.NameFactory
+    extends BaseTable.NameFactory<AdqlTable>
         {
         }
-
+    
     /**
      * Alias factory interface.
      *
@@ -76,19 +76,26 @@ extends BaseTable<AdqlTable, AdqlColumn>
          * Create a new table.
          *
          */
-        public AdqlTable create(final AdqlSchema parent, final BaseTable<?, ?> base);
+        public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base);
 
         /**
          * Create a new table.
          *
          */
-        public AdqlTable create(final AdqlSchema parent, final BaseTable<?, ?> base, final String name);
+        public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base, final String name);
 
         /**
          * Create a new table.
          *
          */
-        public AdqlTable create(final AdqlQuery query);
+        @Deprecated
+        public AdqlTable create(final AdqlQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name);
+
+        /**
+         * Create a new table.
+         *
+         */
+        public AdqlTable create(final AdqlSchema schema, final AdqlQuery query);
 
         /**
          * The table column factory.

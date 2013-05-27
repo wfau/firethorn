@@ -48,9 +48,20 @@ implements AdqlQuery.Builder
      * Generate a SQL safe name.
      *
      */
-    public String safe(final String input)
+    public String safe(final AdqlQuery query)
         {
-        return input.replaceAll(
+        return safe(
+            "QUERY_" + query.ident().toString()            
+            );
+        }
+
+    /**
+     * Generate a SQL safe name.
+     *
+     */
+    public String safe(final String string)
+        {
+        return string.replaceAll(
             "[^\\p{Alnum}]+?",
             "_"
             );
@@ -126,6 +137,7 @@ implements AdqlQuery.Builder
         {
         log.debug("create(JdbcTable)");
         log.debug("  Table [{}][{}]", table.ident(), table.name());
+
         final CreateTableChange change = new CreateTableChange();
         change.setTableName(
             table.name()
@@ -136,7 +148,7 @@ implements AdqlQuery.Builder
 
         for (final JdbcColumn column : table.columns().select())
             {
-log.debug("CHANGE.addColumn() [{}]", column.name());
+            log.debug("CHANGE.addColumn() [{}]", column.name());
             change.addColumn(
                 new ColumnConfig().setName(
                     column.name()
@@ -149,17 +161,17 @@ log.debug("CHANGE.addColumn() [{}]", column.name());
         }
 
     @Override
-    public JdbcTable create(final JdbcSchema store, final AdqlQuery query)
+    public JdbcTable create(final JdbcSchema schema, final AdqlQuery query)
         {
         log.debug("create(AdqlQuery)");
-        log.debug("  Query [{}][{}]", query.ident(), query.name());
+        log.debug("  Ident [{}]", query.ident());
+        log.debug("  Name  [{}]", query.name());
+
+        String safe = safe(query); 
+        log.debug("  Safe  [{}]", safe);
         //
         // Create the new JdbcTable .
-        // TODO - unique name generator ...
-        final JdbcTable table = store.tables().create(
-            safe(
-                "RESULT_" + query.ident().toString()
-                ),
+        final JdbcTable table = schema.tables().create(
             query
             );
         //
@@ -169,7 +181,10 @@ log.debug("CHANGE.addColumn() [{}]", column.name());
 // Size is confused .... ?
 // Include alias for unsafe names ?
 // Create column direct from ColumnMeta
-log.debug("CREATE SelectField [{}]", field.name());
+            log.debug("create(SelectField)");
+            log.debug("  Name [{}]", field.name());
+            log.debug("  Type [{}]", field.type().jdbc());
+            log.debug("  Size [{}]", field.length());
             table.columns().create(
                 field.name(),
                 field.type().jdbc().code(),
@@ -177,52 +192,43 @@ log.debug("CREATE SelectField [{}]", field.name());
                 );
             }
         //
-        // Create our ChangeSet.
-        final ChangeSet changeset = changeset();
+        // Create and execute the ChangeSet.
+        final ChangeSet changeset = changeset(
+            "create-".concat(safe)
+            );
+        //
+        // Delete old table.
         if (query.results().jdbc() != null)
             {
+// TODO IF this is in the same resource/schema !?            
             changeset.addChange(
                 delete(
                     query.results().jdbc()
                     )
                 );
             }
+        //
+        // Create new table.
         changeset.addChange(
             create(
                 table
                 )
             );
-        //
-        // Execute the changeset.
         execute(
-            store,
+            schema,
             changeset
             );
 
         return table;
         }
 
-    protected String name(final ChangeSet changeset)
-        {
-        final StringBuilder name = new StringBuilder(
-            "query"
-            );
-        name.append(
-            "_"
-            );
-        name.append(
-            changeset.getId()
-            );
-        return name.toString();
-        }
-
-    protected Database database(final JdbcSchema store)
+    protected Database database(final JdbcSchema schema)
         {
         try {
             final DatabaseFactory factory = DatabaseFactory.getInstance();
 
             final JdbcConnection connection = new JdbcConnection(
-                store.resource().connection().open()
+                schema.resource().connection().open()
                 );
 
             return factory.findCorrectDatabaseImplementation(
@@ -241,12 +247,11 @@ log.debug("CREATE SelectField [{}]", field.name());
         return new DatabaseChangeLog();
         }
 
-    private static int changesetcount = 0 ;
-    protected ChangeSet changeset()
+    protected ChangeSet changeset(String name)
         {
         return new ChangeSet(
-            "changeset_".concat(String.valueOf(changesetcount++)),
-            "author",
+            name,
+            this.getClass().getName(),
             false,
             false,
             "file",
@@ -255,24 +260,11 @@ log.debug("CREATE SelectField [{}]", field.name());
             );
         }
 
-    protected void execute(final JdbcSchema store, final Change change)
-        {
-        log.debug("Executing Change [{}]", change);
-        final ChangeSet changeset = changeset();
-        changeset.addChange(
-            change
-            );
-        execute(
-            store,
-            changeset
-            );
-        }
-
-    protected void execute(final JdbcSchema store, final ChangeSet changeset)
+    protected void execute(final JdbcSchema schema, final ChangeSet changeset)
         {
         log.debug("Executing ChangeSet [{}]", changeset.getId());
         final Database database = database(
-            store
+            schema
             );
         final DatabaseChangeLog changelog = changelog();
         try {

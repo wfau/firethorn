@@ -41,6 +41,7 @@ import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
@@ -48,6 +49,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 
 /**
@@ -102,22 +104,40 @@ implements JdbcTable
 
     /**
      * Alias factory implementation.
+     * @todo Move to a separate package.
      *
      */
-    @Repository
+    @Component
     public static class AliasFactory
     implements JdbcTable.AliasFactory
         {
-        /**
-         * The alias prefix for this type.
-         *
-         */
-        protected static final String PREFIX = "JDBC_" ;
-
         @Override
         public String alias(final JdbcTable table)
             {
-            return PREFIX + table.ident();
+            return "JDBC_".concat(
+                table.ident().toString()
+                );
+            }
+        }
+
+    /**
+     * Name factory implementation.
+     * @todo Move to a separate package.
+     *
+     */
+    @Component
+    public static class NameFactory
+    extends BaseNameFactory<JdbcTable>
+    implements JdbcTable.NameFactory
+        {
+        @Override
+        public String name(final AdqlQuery query)
+            {
+            return name(
+                "QUERY_".concat(
+                    query.ident().toString()
+                    )
+                );            
             }
         }
 
@@ -164,13 +184,15 @@ implements JdbcTable
 
         @Override
         @CreateEntityMethod
-        public JdbcTable create(final JdbcSchema schema, final AdqlQuery query, final String name)
+        public JdbcTable create(final JdbcSchema schema, final AdqlQuery query)
             {
             return this.insert(
                 new JdbcTableEntity(
                     schema,
                     query,
-                    name
+                    names.name(
+                        query
+                        )
                     )
                 );
             }
@@ -255,6 +277,14 @@ implements JdbcTable
         public JdbcTable.AliasFactory aliases()
             {
             return this.aliases;
+            }
+
+        @Autowired
+        protected JdbcTable.NameFactory names;
+        @Override
+        public JdbcTable.NameFactory names()
+            {
+            return this.names;
             }
         }
 

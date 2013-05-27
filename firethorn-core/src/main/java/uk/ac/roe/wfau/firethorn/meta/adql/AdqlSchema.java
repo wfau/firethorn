@@ -99,20 +99,26 @@ extends BaseSchema<AdqlSchema, AdqlTable>
     public interface Tables extends BaseSchema.Tables<AdqlTable>
         {
         /**
-         * The create a new table, importing the columns from a base table.
+         * Create a new table, importing the columns from a base table.
          *
          */
         public AdqlTable create(final BaseTable<?,?> base);
 
         /**
-         * The create a new table, importing the columns from a base table.
+         * Create a new table, importing the columns from a base table.
          *
          */
         public AdqlTable create(final BaseTable<?,?> base, final String name);
 
         /**
-         * The create a new table, importing the details a query.
-         * @todo - is this needed here ?
+         * Create a new results table, importing the columns from a base table.
+         *
+         */
+        @Deprecated
+        public AdqlTable create(final AdqlQuery query, final BaseTable<?,?> base, final String name);
+
+        /**
+         * Create a new results table, importing the details from the query.
          *
          */
         public AdqlTable create(final AdqlQuery query);

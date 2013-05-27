@@ -34,6 +34,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
@@ -321,6 +322,7 @@ public class TestFactories
             {
             @Component
             public static class NameFactory
+            extends BaseNameFactory<AdqlQuery>
             implements AdqlQuery.NameFactory
                 {
                 public NameFactory()
@@ -329,13 +331,9 @@ public class TestFactories
                 @Override
                 public String name()
                     {
-                    return name("query");
-                    }
-
-                @Override
-                public String name(final String name)
-                    {
-                    return "test-".concat(name);
+                    return datename(
+                        "QUERY"
+                        );
                     }
                 }
 

@@ -103,7 +103,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          *  Create a new table.
          *
          */
-        public JdbcTable create(final String name, final AdqlQuery query);
+        public JdbcTable create(final AdqlQuery query);
 
         /**
          * Update the tables.

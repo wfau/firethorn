@@ -204,6 +204,13 @@ public class IvoaTableEntity
             {
             return this.aliases;
             }
+
+        @Override
+        public uk.ac.roe.wfau.firethorn.meta.base.BaseTable.NameFactory<IvoaTable> names()
+            {
+            // TODO Auto-generated method stub
+            return null;
+            }
         }
 
     protected IvoaTableEntity()
