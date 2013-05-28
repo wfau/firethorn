@@ -286,6 +286,14 @@ implements JdbcTable
             {
             return this.names;
             }
+
+        @Autowired
+        protected JdbcTable.Builder builder;
+        @Override
+        public JdbcTable.Builder builder()
+            {
+            return this.builder;
+            }
         }
 
     protected JdbcTableEntity()

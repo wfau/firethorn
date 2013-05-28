@@ -247,6 +247,8 @@ implements Identity
             @Override
             public JdbcSchema create()
                 {
+                log.debug("create()");
+                log.debug(" Identity [{}][{}]", IdentityEntity.this.ident(), IdentityEntity.this.name());
                 return community().resources().current().schemas().create(
                     IdentityEntity.this 
                     );

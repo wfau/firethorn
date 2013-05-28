@@ -57,6 +57,12 @@
         mvn clean install 
     popd
 
+    #source ${HOME?}/firethorn.settings
+    #pushd "${FIRETHORN_CODE?}/firethorn-core"
+    #    mvn clean install 
+    #popd
+
+
 # TTY #6 ------------------------------------------------------------
 # Deploy the firethorn webapp 
 #

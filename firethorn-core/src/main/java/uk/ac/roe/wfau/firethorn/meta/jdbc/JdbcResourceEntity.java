@@ -295,7 +295,8 @@ public class JdbcResourceEntity
             public JdbcSchema create(final Identity identity)
                 {
                 return factories().jdbc().schemas().create(
-                    JdbcResourceEntity.this
+                    JdbcResourceEntity.this,
+                    identity
                     );
                 }
 

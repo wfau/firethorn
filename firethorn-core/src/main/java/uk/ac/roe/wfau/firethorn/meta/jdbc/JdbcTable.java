@@ -74,6 +74,26 @@ extends BaseTable<JdbcTable, JdbcColumn>
         }
 
     /**
+     * Builder interface that manipulates the 'real' JDBC tables.
+     *
+     */
+    public static interface Builder
+        {
+        /**
+         * Create a JDBC table.
+         *
+         */
+        public void create(JdbcTable table);
+
+        /**
+         * Delete a JDBC table.
+         *
+         */
+        public void delete(JdbcTable table);
+
+        }
+
+    /**
      * Table factory interface.
      *
      */
@@ -99,11 +119,17 @@ extends BaseTable<JdbcTable, JdbcColumn>
         public JdbcTable create(final JdbcSchema parent, final AdqlQuery query);
 
         /**
-         * The table column factory.
+         * Column factory implementation.
          *
          */
         public JdbcColumn.Factory columns();
 
+        /**
+         * Builder implementation.
+         *
+         */
+        public JdbcTable.Builder builder();
+        
         }
 
     @Override

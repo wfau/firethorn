@@ -16,38 +16,81 @@
         #
         # Set up our user data space.
         time source "${FIRETHORN_TEST?}/01-init-user.sh"
+            #0m2.127s
+            #0m2.119s
 
         #
         # Set up our JDBC resource.
         time source "${FIRETHORN_TEST?}/02-00-create-jdbc-space.sh" 'spring:RoeATLAS' '*' 'atlas'
+            #0m0.461s
+            #0m0.524s
 
         #
         # Set up our ADQL resource.
         time source "${FIRETHORN_TEST?}/03-00-create-adql-space.sh"
+            #0m0.476s
+            #0m0.473s
 
         time source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'TWOXMM.dbo'         'twoxmm'
+            #1m0.134s
+            #1m7.391s
+
         time source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'TWOMASS.dbo'        'twomass'
-        #time source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'UKIDSSDR2PLUS.dbo'  'ukidssdr2'
-        #time source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'UKIDSSDR4PLUS.dbo'  'ukidssdr4'
+            #0m38.308s
+            #0m35.923s
+
         time source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'UKIDSSDR5PLUS.dbo'  'ukidssdr5'
+            #3m10.105s
+            #2m33.235s
+
         time source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'ATLASv20130304.dbo' 'atlas'
+            #0m50.345s
+            #0m38.267s
 
 
         #
         # Create our workspace and import our target catalogs.
         time source "${FIRETHORN_TEST?}/04-00-create-query-space.sh"
+            #0m0.400s
+            #0m0.386s
+            #0m0.357s
+
         time source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh"  'query'
+            #0m0.369s
+            #0m0.378s
+            #0m0.374s
 
         time source "${FIRETHORN_TEST?}/04-02-import-query-schema.sh" 'atlas'   'atlas'
+            #0m5.279s
+            #0m5.564s
+            #0m4.131s
+
         time source "${FIRETHORN_TEST?}/04-02-import-query-schema.sh" 'twomass' 'twomass'
+            #0m3.118s
+            #0m3.393s
+            #0m2.779s
 
         time source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh" 'ukidss'
-        time source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsPointSource'          'ukidss' 'gcsPointSource5'
-        time source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsSourceXtwomass_psc'   'ukidss' 'gcsSourceXtwomass_psc'
+            #0m0.382s
+            #0m0.375s
+            #0m0.392s
+
+        time source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsPointSource' 'ukidss' 'gcsPointSource5'
+            #0m1.756s
+            #0m1.725s
+            #0m1.546s
+
+        time source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsSourceXtwomass_psc' 'ukidss' 'gcsSourceXtwomass_psc'
+            #0m1.118s
+            #0m1.018s
+            #0m1.052s
 
         #
         # Run the query.
         time source "${FIRETHORN_TEST?}/05-query-atlas.sh"
+            #0m15.393s
+            #0m3.345s
+            #0m7.516s
 
     popd
 
@@ -66,6 +109,13 @@
             }
 
         time importschema
+            #0m12.066s
+            #0m11.998s
+            #0m11.584s
+            #0m8.689s
+            #0m8.746s
+            #0m8.435s
+
 
         importtables()
             {
@@ -82,10 +132,58 @@
             }
 
         time importtables
+            #0m7.234s
+            #0m7.159s
+            #0m6.900s
+            #0m6.218s
+            #0m6.347s
+            #0m6.135s
             
         for i in {0..9}; do time importschema ; done
-        for i in {0..9}; do time importtables ; done
+            #0m11.058s
+            #0m10.854s
+            #0m11.418s
+            #0m10.701s
+            #0m10.734s
+            #0m10.717s
+            #0m10.280s
+            #0m10.834s
+            #0m10.655s
+            #0m10.505s
 
+            #0m7.752s
+            #0m7.839s
+            #0m7.789s
+            #0m7.551s
+            #0m7.567s
+            #0m7.595s
+            #0m7.709s
+            #0m8.149s
+            #0m7.510s
+            #0m7.819s
+
+        for i in {0..9}; do time importtables ; done
+            #0m6.855s
+            #0m6.751s
+            #0m6.858s
+            #0m6.708s
+            #0m6.825s
+            #0m6.578s
+            #0m6.837s
+            #0m6.852s
+            #0m6.864s
+            #0m6.830s
+
+            #0m6.058s
+            #0m6.131s
+            #0m6.089s
+            #0m6.084s
+            #0m6.132s
+            #0m6.068s
+            #0m6.133s
+            #0m6.154s
+            #0m6.225s
+            #0m6.050s
 
 
 

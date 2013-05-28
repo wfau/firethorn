@@ -43,6 +43,18 @@ extends BaseSchema<JdbcSchema, JdbcTable>
         public String datename();
 
         /**
+         * Create a new date based name.
+         * 
+         */
+        public String datename(final Identity identity);
+
+        /**
+         * Create a new date based name.
+         * 
+         */
+        public String datename(final String prefix, final Identity identity);
+        
+        /**
          * Create a physical schema name from logical catalog and schema names.
          * 
          */
@@ -91,7 +103,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          * Create a new schema.
          *
          */
-        public JdbcSchema create(final JdbcResource parent);
+        public JdbcSchema create(final JdbcResource parent, final Identity identity);
         
         /**
          * Select the schemas for an Identity.
@@ -119,21 +131,25 @@ extends BaseSchema<JdbcSchema, JdbcTable>
 
         }
 
-
     /**
-     * JdbcSchema Builder interface that creates the physical JDBC schema in the database.
+     * Builder interface that manipulates 'real' JDBC schemas.
      *
      */
     public static interface Builder
         {
         /**
-         * Create a physical JDBC schema.
+         * Create a 'real' JDBC schema.
          *
          */
-        public void build(JdbcSchema schema);
+        public void create(JdbcSchema schema);
+
+        /**
+         * Delete a 'real' JDBC schema.
+         *
+         */
+        public void delete(JdbcSchema schema);
 
         }
-    
     
     @Override
     public JdbcResource resource();

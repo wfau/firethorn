@@ -150,7 +150,7 @@ public class JdbcSchemaEntity
                     );
                 }
 // SQLServer specific dot notation.
-// Explicitly avoiding super class 'safe' method. 
+// Explicitly avoiding super class 'safe' method for the '.' dot. 
             else {
                 return safe(catalog) + "." + safe(schema) ;
                 }
@@ -161,26 +161,29 @@ public class JdbcSchemaEntity
             {
             return datename(
                 "SCHEMA_",
-                factories().authentications().current().identity().ident()
+                factories().authentications().current().identity()
+                );
+            }
+
+        @Override
+        public String datename(final Identity identity)
+            {
+            return datename(
+                "IDENTITY_",
+                identity
+                );
+            }
+
+        @Override
+        public String datename(final String prefix, final Identity identity)
+            {
+            return datename(
+                prefix,
+                identity.ident()
                 );
             }
         }
 
-    /**
-     * Builder implementation.
-     * @todo Move to a separate class/package.
-     * 
-     */
-    @Component
-    public static class Builder
-    implements JdbcSchema.Builder
-        {
-        @Override
-        public void build(JdbcSchema schema)
-            {
-            // TODO Auto-generated method stub
-            }
-        }
     /**
      * Entity factory implementation.
      *
@@ -199,7 +202,7 @@ public class JdbcSchemaEntity
 
         @Override
         @CreateEntityMethod
-        public JdbcSchema create(final JdbcResource parent)
+        public JdbcSchema create(final JdbcResource parent, final Identity identity)
             {
 // TODO Need the resource catalog name ?
 // NameFactory - Generate a unique name from JdbcResource and Identity. 
@@ -208,15 +211,10 @@ public class JdbcSchemaEntity
             return this.create(
                 parent,
                 parent.catalog(),
-                names.datename()
+                names.datename(
+                    identity
+                    )
                 );
-            }
-
-        //@Override
-        public JdbcSchema create(JdbcResource parent, String name)
-            {
-            // TODO Auto-generated method stub
-            return null;
             }
         
         @Override
@@ -234,7 +232,6 @@ public class JdbcSchemaEntity
                 );
             }
 
-        
         @CreateEntityMethod
         public JdbcSchema create(final JdbcResource parent, final String catalog, final String schema, final String name)
             {
