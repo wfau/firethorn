@@ -86,9 +86,9 @@ implements ConfigProperty
      *
      */
     @Repository
-    public static class Factory
+    public static class EntityFactory
     extends AbstractFactory<ConfigProperty>
-    implements ConfigProperty.Factory
+    implements ConfigProperty.EntityFactory
         {
 
         @Override

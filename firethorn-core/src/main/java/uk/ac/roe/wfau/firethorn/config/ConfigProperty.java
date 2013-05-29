@@ -50,7 +50,7 @@ extends Entity
      * A ConfigProperty factory.
      *
      */
-    public static interface Factory
+    public static interface EntityFactory
     extends Entity.EntityFactory<ConfigProperty>
         {
 

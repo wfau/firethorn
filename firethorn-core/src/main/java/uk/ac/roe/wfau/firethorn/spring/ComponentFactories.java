@@ -101,7 +101,7 @@ public interface ComponentFactories
      * Our local ConfigProperty factory.
      *
      */
-    public ConfigProperty.Factory config();
+    public ConfigProperty.EntityFactory config();
 
     /**
      * Our generic Job<?> factories.

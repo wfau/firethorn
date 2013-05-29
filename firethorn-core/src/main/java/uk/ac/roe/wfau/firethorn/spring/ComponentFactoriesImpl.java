@@ -190,9 +190,9 @@ public class ComponentFactoriesImpl
      *
      */
     @Autowired
-    protected ConfigProperty.Factory config ;
+    protected ConfigProperty.EntityFactory config ;
     @Override
-    public ConfigProperty.Factory config()
+    public ConfigProperty.EntityFactory config()
         {
         return this.config ;
         }
