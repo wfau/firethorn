@@ -83,9 +83,9 @@ implements Operation
     protected static final String DB_AUTH_COL    = "auth" ;
     
     @Component
-    public static class Factory
+    public static class EntityFactory
     extends AbstractFactory<Operation>
-    implements Operation.Factory
+    implements Operation.EntityFactory
         {
         @Override
         public Class<?> etype()

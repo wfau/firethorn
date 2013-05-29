@@ -77,7 +77,7 @@ public interface ComponentFactories
      * Our local Identity factory.
      *
      */
-    public Identity.Factory identities();
+    public Identity.EntityFactory identities();
 
     /**
      * Our local Community factory.
@@ -89,7 +89,7 @@ public interface ComponentFactories
      * Our local Operation factory.
      *
      */
-    public Operation.Factory operations();
+    public Operation.EntityFactory operations();
 
     /**
      * Our local Authentication factory.

@@ -166,9 +166,9 @@ public class ComponentFactoriesImpl
      *
      */
     @Autowired
-    protected Identity.Factory identities ;
+    protected Identity.EntityFactory identities ;
     @Override
-    public Identity.Factory identities()
+    public Identity.EntityFactory identities()
         {
         return this.identities;
         }
@@ -238,8 +238,8 @@ public class ComponentFactoriesImpl
      *
      */
     @Autowired
-    protected Operation.Factory operations;
-    public Operation.Factory operations()
+    protected Operation.EntityFactory operations;
+    public Operation.EntityFactory operations()
         {
         return this.operations ;
         }

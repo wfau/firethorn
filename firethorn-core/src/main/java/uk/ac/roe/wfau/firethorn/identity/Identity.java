@@ -48,7 +48,7 @@ extends Entity
      * Factory interface.
      *
      */
-    public static interface Factory
+    public static interface EntityFactory
     extends Entity.EntityFactory<Identity>
         {
         /**

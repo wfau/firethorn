@@ -86,9 +86,9 @@ implements Identity
      *
      */
     @Repository
-    public static class Factory
+    public static class EntityFactory
     extends AbstractFactory<Identity>
-    implements Identity.Factory
+    implements Identity.EntityFactory
         {
         @Override
         public Class<?> etype()
