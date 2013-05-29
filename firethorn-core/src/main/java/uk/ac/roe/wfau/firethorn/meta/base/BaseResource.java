@@ -41,7 +41,7 @@ extends BaseComponent
      *
      */
     public static interface Factory<ResourceType extends BaseResource<?>>
-    extends Entity.Factory<ResourceType>
+    extends Entity.EntityFactory<ResourceType>
         {
         /**
          * Create a new resource.

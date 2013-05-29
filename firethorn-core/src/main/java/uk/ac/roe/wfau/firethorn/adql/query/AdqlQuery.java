@@ -127,7 +127,7 @@ extends Entity, Job
      *
      */
     public static interface Resolver
-    extends Entity.Factory<AdqlQuery>
+    extends Entity.EntityFactory<AdqlQuery>
         {
         }
 

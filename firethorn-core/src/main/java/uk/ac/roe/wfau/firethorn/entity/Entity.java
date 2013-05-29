@@ -98,7 +98,7 @@ public interface Entity
      * @todo Separate Entity Resolver and Factory interfaces.
      *
      */
-    public interface Factory<EntityType extends Entity>
+    public interface EntityFactory<EntityType extends Entity>
         {
         /**
          * Select a specific Entity by Identifier.

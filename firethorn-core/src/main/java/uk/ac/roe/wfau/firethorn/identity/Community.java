@@ -51,7 +51,7 @@ extends Entity
      * 
      */
     public interface Factory
-    extends Entity.Factory<Community>
+    extends Entity.EntityFactory<Community>
         {
         public Community create(final String uri, final String name);
         public Community select(final String uri);

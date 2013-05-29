@@ -40,7 +40,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 @Repository
 public abstract class AbstractFactory<EntityType extends Entity>
 extends AbstractComponent
-implements Entity.Factory<EntityType>
+implements Entity.EntityFactory<EntityType>
     {
 
     @Override

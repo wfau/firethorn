@@ -49,7 +49,7 @@ extends BaseComponent
      *
      */
     public static interface Resolver
-    extends Entity.Factory<BaseSchema<?,?>>
+    extends Entity.EntityFactory<BaseSchema<?,?>>
         {
 
         }
@@ -59,7 +59,7 @@ extends BaseComponent
      *
      */
     public static interface Factory<ResourceType extends BaseResource<SchemaType>, SchemaType extends BaseSchema<SchemaType,?>>
-    extends Entity.Factory<SchemaType>
+    extends Entity.EntityFactory<SchemaType>
         {
         /**
          * Select all the schemas from a resource.

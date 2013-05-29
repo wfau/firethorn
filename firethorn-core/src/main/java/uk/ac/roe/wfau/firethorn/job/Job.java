@@ -92,7 +92,7 @@ extends Entity
      *
      */
     public static interface Resolver
-    extends Entity.Factory<Job>
+    extends Entity.EntityFactory<Job>
         {
         }
 
@@ -101,7 +101,7 @@ extends Entity
      *
      */
     public static interface Factory<JobType extends Job>
-    extends Entity.Factory<JobType>
+    extends Entity.EntityFactory<JobType>
         {
         /**
          * Select all the available jobs.

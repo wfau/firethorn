@@ -76,7 +76,7 @@ extends BaseComponent
      *
      */
     public static interface Resolver
-    extends Entity.Factory<BaseTable<?,?>>
+    extends Entity.EntityFactory<BaseTable<?,?>>
         {
         /**
          * Resolve an alias into a table.
@@ -92,7 +92,7 @@ extends BaseComponent
      *
      */
     public static interface Factory<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType,?>>
-    extends Entity.Factory<TableType>
+    extends Entity.EntityFactory<TableType>
         {
         /**
          * Select all the tables from a schema.

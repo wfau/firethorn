@@ -49,7 +49,7 @@ extends Entity
      *
      */
     public static interface Factory
-    extends Entity.Factory<Identity>
+    extends Entity.EntityFactory<Identity>
         {
         /**
          * Get the current active Identity.

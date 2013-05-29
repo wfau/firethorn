@@ -79,7 +79,7 @@ implements Community
     protected static final String DB_URI_COL = "uri" ;
     
     /**
-     * Our Factory implementation.
+     * EntityFactory implementation.
      *
      */
     @Repository

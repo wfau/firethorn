@@ -94,7 +94,7 @@ extends Entity, Job
      *
      */
     public static interface Resolver
-    extends Entity.Factory<TestJob>
+    extends Entity.EntityFactory<TestJob>
         {
         }
 

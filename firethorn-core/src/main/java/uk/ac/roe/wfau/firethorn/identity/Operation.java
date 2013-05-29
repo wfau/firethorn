@@ -58,7 +58,7 @@ extends Entity
      * 
      */
     public interface Factory
-    extends Entity.Factory<Operation>
+    extends Entity.EntityFactory<Operation>
         {
         /**
          * Access to the current operation.

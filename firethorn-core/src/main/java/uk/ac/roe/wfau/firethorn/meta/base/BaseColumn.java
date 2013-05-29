@@ -43,7 +43,7 @@ extends BaseComponent
      *
      */
     public static interface Factory<TableType extends BaseTable<TableType, ColumnType>, ColumnType extends BaseColumn<ColumnType>>
-    extends Entity.Factory<ColumnType>
+    extends Entity.EntityFactory<ColumnType>
         {
         /**
          * Select all the columns from a table.

@@ -51,7 +51,7 @@ extends Entity
      *
      */
     public static interface Factory
-    extends Entity.Factory<ConfigProperty>
+    extends Entity.EntityFactory<ConfigProperty>
         {
 
         /**

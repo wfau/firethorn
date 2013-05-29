@@ -58,7 +58,7 @@ extends Entity
      * 
      */
     public interface Factory
-    extends Entity.Factory<Authentication>
+    extends Entity.EntityFactory<Authentication>
         {
         /**
          * Get the current active Authentication. 
