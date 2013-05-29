@@ -249,8 +249,8 @@ public class ComponentFactoriesImpl
      *
      */
     @Autowired
-    protected Authentication.Factory authentications;
-    public Authentication.Factory authentications()
+    protected Authentication.EntityFactory authentications;
+    public Authentication.EntityFactory authentications()
         {
         return this.authentications;
         }

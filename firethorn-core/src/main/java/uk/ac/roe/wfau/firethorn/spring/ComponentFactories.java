@@ -95,7 +95,7 @@ public interface ComponentFactories
      * Our local Authentication factory.
      *
      */
-    public Authentication.Factory authentications();
+    public Authentication.EntityFactory authentications();
 
     /**
      * Our local ConfigProperty factory.

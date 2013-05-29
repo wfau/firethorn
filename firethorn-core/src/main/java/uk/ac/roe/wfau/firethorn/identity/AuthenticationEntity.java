@@ -79,9 +79,9 @@ implements Authentication
     protected static final String DB_OPERATION_COL = "operation" ;
 
     @Component
-    public static class Factory
+    public static class EntityFactory
     extends AbstractFactory<Authentication>
-    implements Authentication.Factory
+    implements Authentication.EntityFactory
         {
         @Override
         public Class<?> etype()
