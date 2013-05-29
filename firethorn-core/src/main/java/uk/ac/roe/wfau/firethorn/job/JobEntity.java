@@ -53,6 +53,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  *
@@ -426,10 +427,11 @@ else {
      * Protected constructor.
      *
      */
-    protected JobEntity(final String name)
+    protected JobEntity(final Identity owner, final String name)
     throws NameFormatException
         {
         super(
+            owner,
             name
             );
         }

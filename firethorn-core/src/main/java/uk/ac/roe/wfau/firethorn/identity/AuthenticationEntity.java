@@ -143,7 +143,7 @@ implements Authentication
      */
     protected AuthenticationEntity(final Operation operation, final Identity identity, final String method)
         {
-        super(method);
+        super(identity, method);
 
         log.debug("AuthenticationEntity(Operation, Identity, String)");
         log.debug("  Operation [{}]", operation.method());

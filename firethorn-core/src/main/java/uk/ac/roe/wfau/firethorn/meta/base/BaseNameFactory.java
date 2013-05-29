@@ -74,7 +74,9 @@ implements Entity.NameFactory<EntityType>
      */
     public String safe(StringBuilder builder)
         {
-        return name(builder.toString());
+        return name(
+            builder.toString()
+            );
         }
 
     /**
@@ -84,7 +86,9 @@ implements Entity.NameFactory<EntityType>
     private static final DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd" + GLUE_CHAR + "HHmmssSSS");
     protected String format(final DateTime datetime)
         {
-        return formatter.print(datetime) ;
+        return formatter.print(
+            datetime
+            ) ;
         }
 
     /**

@@ -36,15 +36,22 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 public class JdbcBuilderBase
     {
 
+    protected String unique()
+        {
+        return String.valueOf(
+            System.currentTimeMillis()
+            ) ;
+        }
+
     protected DatabaseChangeLog changelog()
         {
         return new DatabaseChangeLog();
         }
 
-    protected ChangeSet changeset(String name)
+    protected ChangeSet changeset()
         {
         return new ChangeSet(
-            name,   // ID
+            unique(), // ID
             this.getClass().getName(), // Author
             false,  // AlwaysRun
             false,  // RunOnChange

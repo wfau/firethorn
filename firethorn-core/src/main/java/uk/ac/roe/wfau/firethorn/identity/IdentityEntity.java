@@ -97,6 +97,19 @@ implements Identity
             }
 
         @Override
+        public Identity current()
+            {
+            Operation oper = factories().operations().current() ;
+            if (oper != null)
+                {
+                return oper.authentications().primary().identity();
+                }
+            else {
+                return null ;
+                }
+            }
+
+        @Override
         @CreateEntityMethod
         public Identity create(final Community community, final String name)
             {
@@ -135,7 +148,7 @@ implements Identity
                         )
                 );
             }
-        
+
         @Autowired
         protected Identity.IdentFactory idents;
         @Override
@@ -249,6 +262,8 @@ implements Identity
                 {
                 log.debug("create()");
                 log.debug(" Identity [{}][{}]", IdentityEntity.this.ident(), IdentityEntity.this.name());
+// NULL POINTER
+// community().resources().current()
                 return community().resources().current().schemas().create(
                     IdentityEntity.this 
                     );

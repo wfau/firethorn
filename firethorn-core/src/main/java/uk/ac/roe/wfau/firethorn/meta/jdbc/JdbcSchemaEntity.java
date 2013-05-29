@@ -208,11 +208,13 @@ public class JdbcSchemaEntity
 // NameFactory - Generate a unique name from JdbcResource and Identity. 
 // TODO Liquibase SchemaBuilder ?
 
-            return this.create(
-                parent,
-                parent.catalog(),
-                names.datename(
-                    identity
+            return builder().create(
+                this.create(
+                    parent,
+                    parent.catalog(),
+                    names.datename(
+                        identity
+                        )
                     )
                 );
             }

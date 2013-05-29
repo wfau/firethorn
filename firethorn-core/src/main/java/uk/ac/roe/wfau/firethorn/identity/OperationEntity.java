@@ -28,6 +28,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -40,6 +42,7 @@ import org.springframework.stereotype.Component;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
 
 /**
  *
@@ -75,9 +78,10 @@ implements Operation
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_METHOD_COL = "method" ;
-    protected static final String DB_SOURCE_COL = "source" ;
-
+    protected static final String DB_METHOD_COL  = "method"  ;
+    protected static final String DB_SOURCE_COL  = "source"  ;
+    protected static final String DB_AUTH_COL    = "auth" ;
+    
     @Component
     public static class Factory
     extends AbstractFactory<Operation>
@@ -192,7 +196,33 @@ implements Operation
         {
         return this.source ;
         }
-    
+
+    /**
+     * The primary Authentication for this Operation.
+     *
+     */
+    @ManyToOne(
+        fetch = FetchType.LAZY,
+        targetEntity = AuthenticationEntity.class
+        )
+    @JoinColumn(
+        name = DB_AUTH_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private Authentication auth ;
+    @Override
+    public Authentication auth()
+        {
+        return this.auth;
+        }
+    protected void auth(Authentication auth)
+        {
+        this.auth = auth ;
+        this.owner(auth.identity()) ;
+        }
+
     /**
      * The set of Authentications for this Operation.
      *
@@ -209,6 +239,12 @@ implements Operation
         return new Authentications()
             {
             @Override
+            public Authentication primary()
+                {
+                return OperationEntity.this.auth();
+                }
+
+            @Override
             public Iterable<Authentication> select()
                 {
                 return authentications;
@@ -220,48 +256,23 @@ implements Operation
                 log.debug("create(Identity, String)");
                 log.debug("  Identity [{}]", identity.name());
                 log.debug("  Method   [{}]", method);
-                Authentication authentication = factories().authentications().create(
+                Authentication auth = factories().authentications().create(
                     OperationEntity.this,
                     identity,
                     method
                     );
                 authentications.add(
-                    authentication
+                    auth
                     );
-                return authentication;
+                if (OperationEntity.this.auth() == null)
+                    {
+                    OperationEntity.this.auth(auth) ;
+                    }
+                return auth;
                 }
             };
         }
 
-    /*
-    @Override
-    public Authentications authentications()
-        {
-        return new Authentications()
-            {
-            @Override
-            public Iterable<Authentication> select()
-                {
-                return null ;
-                }
-
-            @Override
-            public Authentication create(Identity identity, String method)
-                {
-                log.debug("create(Identity, String)");
-                log.debug("  Identity [{}]", identity.name());
-                log.debug("  Method   [{}]", method);
-                Authentication authentication = factories().authentications().create(
-                    OperationEntity.this,
-                    identity,
-                    method
-                    );
-                return authentication;
-                }
-            };
-        }
-     */
-    
     @Override
     public String link()
         {

@@ -138,13 +138,14 @@ extends BaseSchema<JdbcSchema, JdbcTable>
     public static interface Builder
         {
         /**
-         * Create a 'real' JDBC schema.
+         * Create a JDBC schema.
+         * @return 
          *
          */
-        public void create(JdbcSchema schema);
+        public JdbcSchema create(JdbcSchema schema);
 
         /**
-         * Delete a 'real' JDBC schema.
+         * Delete a JDBC schema.
          *
          */
         public void delete(JdbcSchema schema);

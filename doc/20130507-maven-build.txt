@@ -57,10 +57,10 @@
         mvn clean install 
     popd
 
-    #source ${HOME?}/firethorn.settings
-    #pushd "${FIRETHORN_CODE?}/firethorn-core"
-    #    mvn clean install 
-    #popd
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}/firethorn-core"
+        mvn clean install 
+    popd
 
 
 # TTY #6 ------------------------------------------------------------
@@ -83,6 +83,13 @@
         mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
 
     popd
+
+
+    pushd "${FIRETHORN_CODE?}/firethorn-core"
+        mvn clean install 
+    popd
+    mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
 
 # TTY #7 ------------------------------------------------------------
 # Deploy the OGSA-DAI webapp 

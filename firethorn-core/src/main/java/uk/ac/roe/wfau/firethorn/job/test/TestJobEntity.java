@@ -36,6 +36,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
 
@@ -185,6 +186,7 @@ implements TestJob
             {
             return this.insert(
                 new TestJobEntity(
+                    factories().identities().current(),
                     name,
                     delay
                     )
@@ -232,11 +234,9 @@ implements TestJob
      * Protected constructor.
      *
      */
-    protected TestJobEntity(final String name, final Integer pause)
+    protected TestJobEntity(final Identity owner, final String name, final Integer pause)
         {
-        super(
-            name
-            );
+        super(owner, name);
         this.length = pause;
         }
 

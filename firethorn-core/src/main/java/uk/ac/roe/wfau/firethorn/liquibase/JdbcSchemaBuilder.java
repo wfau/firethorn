@@ -17,6 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.liquibase;
 
+import liquibase.changelog.ChangeSet;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
@@ -25,6 +28,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
  *
  *
  */
+@Slf4j
 @Component
 public class JdbcSchemaBuilder
 extends JdbcBuilderBase
@@ -32,17 +36,35 @@ implements JdbcSchema.Builder
     {
 
     @Override
-    public void create(JdbcSchema schema)
+    public JdbcSchema create(JdbcSchema schema)
         {
-        // TODO Auto-generated method stub
+        log.debug("create(JdbcSchema)");
+        log.debug("  Schema [{}][{}]", schema.ident(), schema.name());
         
+        log.debug("--- 000 ");
+        ChangeSet changeset = changeset(); 
+
+        log.debug("--- 001 ");
+        changeset.addChange(
+            new CreateJdbcSchemaChange(
+                schema
+                )
+            );
+
+        log.debug("--- 002 ");
+        execute(
+            schema.resource(),
+            changeset
+            );
+
+        log.debug("--- 003 ");
+        return schema;
+
         }
 
     @Override
     public void delete(JdbcSchema schema)
         {
         // TODO Auto-generated method stub
-        
         }
-
     }

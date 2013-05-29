@@ -243,6 +243,10 @@ implements Entity
         {
         return this.owner ;
         }
+    protected void owner(Identity owner)
+        {
+        this.owner = owner;
+        }
 
     /**
      * The date/time this Entity was created.

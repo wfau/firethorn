@@ -57,6 +57,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -278,6 +279,7 @@ implements AdqlQuery, AdqlParserQuery
             //
             // Create the query entity.
             final AdqlQueryEntity entity = new AdqlQueryEntity(
+                factories().identities().current(),
                 schema,
                 names().name(
                     name
@@ -379,10 +381,11 @@ implements AdqlQuery, AdqlParserQuery
      * Protected constructor, used by factory.
      *
      */
-    protected AdqlQueryEntity(final AdqlSchema schema, final String name, final String input)
+    protected AdqlQueryEntity(final Identity owner, final AdqlSchema schema, final String name, final String input)
     throws NameFormatException
         {
         super(
+            owner,
             name
             );
         this.schema = schema;
@@ -955,16 +958,35 @@ implements AdqlQuery, AdqlParserQuery
      */
     protected void create(final JdbcSchema store)
         {
+        log.debug("create(JdbcSchema)");
+
+        Identity owner    = this.owner(); 
+        JdbcSchema schema = null ;
+
+        log.debug(" Owner [{}][{}]", owner.ident(), owner.name());
+        
+        //
+        // Create our user datab schema.
+        if (owner != null)
+            {
+            schema = owner.schemas().current() ; 
+            if (schema  == null)
+                {
+                schema = owner.schemas().create();
+                }
+            }
         //
         // Create our JDBC table.
-        if ((this.owner() != null) && (this.owner().schemas().current() != null))
+        if (schema != null)
             {
-            this.jdbctable = this.owner().schemas().current().tables().create(
+            log.debug(" Schema [{}][{}]", schema.ident(), schema.name());
+            this.jdbctable = schema.tables().create(
                 this
                 );
             }
 // Legacy no-owner fallback.
         else {
+            log.debug("-- NO OWNER");
             this.jdbctable = services().builder().create(
                 store,
                 this

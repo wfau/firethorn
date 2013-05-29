@@ -51,6 +51,11 @@ extends Entity
     public static interface Factory
     extends Entity.Factory<Identity>
         {
+        /**
+         * Get the current active Identity.
+         * 
+         */
+        public Identity current();
 
         /**
          * Create a new Identity.
@@ -140,7 +145,7 @@ extends Entity
          *
          */
         public Iterable<JdbcSchema> select();
-    
+
         }
 
     /**

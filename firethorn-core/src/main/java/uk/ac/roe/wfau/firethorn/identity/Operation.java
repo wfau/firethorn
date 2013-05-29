@@ -76,12 +76,14 @@ extends Entity
 
     public String method();
     public String source();
+    public Authentication auth();
     
     interface Authentications
         {
 
         public Authentication create(final Identity identity, final String method);
         public Iterable<Authentication> select();
+        public Authentication primary();
 
         }
 

@@ -30,4 +30,5 @@ implements Entity.NameFactory<EntityType>
         {
         return name;
         }
+    
     }

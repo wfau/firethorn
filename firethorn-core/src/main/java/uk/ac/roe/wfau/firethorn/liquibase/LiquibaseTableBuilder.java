@@ -113,9 +113,7 @@ implements AdqlQuery.Builder
 //
         //
         // Create and execute the ChangeSet.
-        final ChangeSet changeset = changeset(
-            "create-".concat(safe)
-            );
+        final ChangeSet changeset = changeset();
         //
         // Delete old table.
 //
