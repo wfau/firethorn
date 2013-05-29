@@ -83,9 +83,9 @@ implements Community
      *
      */
     @Repository
-    public static class Factory
+    public static class EntityFactory
     extends AbstractFactory<Community>
-    implements Community.Factory
+    implements Community.EntityFactory
         {
         @Override
         public Class<?> etype()

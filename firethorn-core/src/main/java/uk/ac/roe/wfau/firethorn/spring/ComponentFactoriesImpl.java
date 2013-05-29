@@ -178,9 +178,9 @@ public class ComponentFactoriesImpl
      *
      */
     @Autowired
-    protected Community.Factory communities;
+    protected Community.EntityFactory communities;
     @Override
-    public Community.Factory communities()
+    public Community.EntityFactory communities()
         {
         return this.communities;
         }

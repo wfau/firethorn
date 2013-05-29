@@ -50,7 +50,7 @@ extends Entity
      * Entity factory interface for Communities.
      * 
      */
-    public interface Factory
+    public interface EntityFactory
     extends Entity.EntityFactory<Community>
         {
         public Community create(final String uri, final String name);

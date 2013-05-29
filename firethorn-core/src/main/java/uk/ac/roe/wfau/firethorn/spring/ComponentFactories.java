@@ -83,7 +83,7 @@ public interface ComponentFactories
      * Our local Community factory.
      *
      */
-    public Community.Factory communities();
+    public Community.EntityFactory communities();
 
     /**
      * Our local Operation factory.
