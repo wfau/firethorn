@@ -181,21 +181,36 @@ extends AbstractEntityController<AdqlQuery>
      * JSON POST request to create a new query.
      *
      */
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(value=CREATE_PATH, params={CREATE_QUERY, CREATE_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<EntityBean<AdqlQuery>> Create(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
-        @RequestParam(value=CREATE_QUERY, required=true)
+        @RequestParam(CREATE_QUERY)
         final String query,
-        @RequestParam(value=CREATE_NAME, required=false)
+        @RequestParam(CREATE_NAME)
         final String name
         ) throws NotFoundException {
-        log.debug("create(String, String, String) [{}][{}]", name);
         return response(
             new AdqlQueryBean(
                 schema.queries().create(
                     query,
                     name
+                    )
+                )
+            );
+        }
+
+    @RequestMapping(value=CREATE_PATH, params={CREATE_QUERY}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    public ResponseEntity<EntityBean<AdqlQuery>> Create(
+        @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
+        final AdqlSchema schema,
+        @RequestParam(CREATE_QUERY)
+        final String query
+        ) throws NotFoundException {
+        return response(
+            new AdqlQueryBean(
+                schema.queries().create(
+                    query
                     )
                 )
             );

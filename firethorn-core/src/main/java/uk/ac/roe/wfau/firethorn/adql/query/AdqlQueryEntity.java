@@ -276,7 +276,7 @@ implements AdqlQuery, AdqlParserQuery
             {
             log.debug("AdqlQuery create(AdqlSchema, String, String)");
             log.debug("  Schema [{}][{}]", schema.ident(), schema.name());
-            log.debug("  Name   [{}][{}]", name);
+            log.debug("  Name   [{}]", name);
 
             //
             // Create the query entity.
