@@ -54,7 +54,6 @@ EOF
 # Create the ADQL query.
 POST "${adqlschema?}/queries/create" \
     --data-urlencode "adql.schema.query.create.name=query-$(unique)" \
-    --data-urlencode "adql.schema.query.create.store=${metabasename?}/${userschema?}" \
     --data-urlencode "adql.schema.query.create.query@adql-query-001.adql" \
     | tee adql-query.json | ./pp
 adqlquery=$(cat adql-query.json | ident)

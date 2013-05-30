@@ -26,18 +26,5 @@ POST "/jdbc/resource/create" \
     -d "jdbc.resource.create.name=userdate-$(unique)" \
     -d "jdbc.resource.create.ogsadai=user" \
     | tee jdbc-user-resource.json | ./pp
-userresource=$(cat jdbc-user-resource.json | ident)
 
-#
-# Locate the user data schema.
-# * Schema name is platform dependant.
-# * Should come from the user accout or config anyway ....
-#    -d "jdbc.resource.schema.select.name=public" \
-#    -d "jdbc.resource.schema.select.name=PUBLIC.PUBLIC" \
-#
-# ** Needs at least one table in the schema.
-userschema=$(
-    GET "${userresource?}/schemas/select" \
-    | ./pp  | ident
-    )
 

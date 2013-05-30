@@ -32,6 +32,5 @@ POST "/jdbc/resource/create" \
     --data   "jdbc.resource.create.name=userdata-$(unique)" \
     --data   "jdbc.resource.create.ogsadai=user" \
     | tee jdbc-user-resource.json | ./pp
-userspace=$(cat jdbc-user-resource.json | ident)
 
 
