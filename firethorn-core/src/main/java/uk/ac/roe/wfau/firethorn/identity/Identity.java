@@ -78,81 +78,16 @@ extends Entity
     public Community community();
 
     /**
-     * User storage builder interface.
-     *
+     *  The storage space for this Identity.
+     *  
      */
-    public static interface Builder
-        {
-        /**
-         * Build a physical schema.
-         *
-         */
-        public JdbcSchema create(final Identity identity);
-
-        }
+    public JdbcSchema space();
 
     /**
-     * User storage assigned to this Identity.
-     * 
-    public JdbcSchema store();
+     *  The storage space for this Identity.
+     *  
      */
-
-    /**
-     * User storage assigned to this Identity.
-     * 
-    public void store(JdbcSchema schema);
-     */
-
-
-    /*
-     * 
-    Spaces spaces()
-    Spaces
-        {
-        AdqlResource       create(String name)
-        Iter<AdqlResource> select()
-        Iter<AdqlResource> search(String text)
-
-        AdqlResource       current()
-
-        }
-
-    Queries queries()
-    Queries {}
-     *
-     */
-    
-    /**
-     * Access to the Schemas owned by this Identity.
-     * 
-     */
-    public interface Schemas
-        {
-        /**
-         * Get the current active Schema for this Identity.
-         *
-         */
-        public JdbcSchema current();
-
-        /**
-         * Create a new Schema owned by this Identity.
-         *
-         */
-        public JdbcSchema create();
-    
-        /**
-         * Get a list of the Schemas owned by this Identity.
-         *
-         */
-        public Iterable<JdbcSchema> select();
-
-        }
-
-    /**
-     * Access to the Schemas owned by this Identity.
-     * 
-     */
-    public Schemas schemas();
+    public void space(JdbcSchema space);
     
     }
 

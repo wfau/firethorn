@@ -36,6 +36,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
 
@@ -245,8 +246,18 @@ implements Identity
         updatable = true
         )
     private JdbcSchema jdbcschema ;
-    
     @Override
+    public JdbcSchema space()
+        {
+        return this.jdbcschema;
+        }
+    @Override
+    public void space(JdbcSchema space)
+        {
+        this.jdbcschema = space ;
+        }
+
+    /*
     public Schemas schemas()
         {
         return new Schemas()
@@ -263,20 +274,29 @@ implements Identity
                 log.debug("create()");
                 log.debug(" Identity [{}][{}]", IdentityEntity.this.ident(), IdentityEntity.this.name());
 // NULL POINTER
-// community().resources().current()
-                return community().resources().current().schemas().create(
-                    IdentityEntity.this 
-                    );
+// community().resource()
+// Default ?                
+                JdbcResource space = community().space();                 
+                if (space == null)
+                    {
+                    return null ;
+                    }
+                else {
+                    return space.schemas().create(
+                        IdentityEntity.this 
+                        );
+                    }                
                 }
 
             @Override
             public Iterable<JdbcSchema> select()
                 {
-                return community().resources().current().schemas().select(
+                return community().space().schemas().select(
                     IdentityEntity.this 
                     );
                 }
             };
         }
+     */
     }
 

@@ -85,9 +85,7 @@
     popd
 
 
-    pushd "${FIRETHORN_CODE?}/firethorn-core"
-        mvn clean install 
-    popd
+    pushd "${FIRETHORN_CODE?}/firethorn-core" ; mvn clean install ; popd
     mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
 
 

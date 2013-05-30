@@ -70,21 +70,26 @@ extends Entity
          * Create a new Operation.
          * 
          */
-        public Operation create(final String method, final String source);
+        public Operation create(final String target, final String method, final String source);
         
         }
 
+    public String target();
     public String method();
     public String source();
+
+    @Deprecated
     public Authentication auth();
     
     interface Authentications
         {
+        public void resolve();
 
-        public Authentication create(final Identity identity, final String method);
-        public Iterable<Authentication> select();
         public Authentication primary();
 
+        public Authentication create(final Identity identity, final String method);
+
+        public Iterable<Authentication> select();
         }
 
     public Authentications authentications();

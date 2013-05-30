@@ -23,8 +23,7 @@ import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- * Link factory for <code>AdqlColumn</code>.
- * TODO
+ *
  *
  */
 @Component

@@ -50,6 +50,7 @@ implements HandlerInterceptor
 
         factories.operations().create(
             request.getRequestURL().toString(),
+            request.getMethod(),
             request.getRemoteAddr()
             );
         

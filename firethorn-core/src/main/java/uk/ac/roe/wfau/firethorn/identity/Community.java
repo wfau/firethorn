@@ -53,7 +53,28 @@ extends Entity
     public interface EntityFactory
     extends Entity.EntityFactory<Community>
         {
-        public Community create(final String uri, final String name);
+        /**
+         *  Create a new Community.
+         *
+         */
+        public Community create(final String uri);
+
+        /**
+         *  Create a new Community.
+         *
+         */
+        public Community create(final String name, final String uri);
+
+        /**
+         *  Create a new Community.
+         *
+         */
+        public Community create(final JdbcResource space, final String name, final String uri);
+
+        /**
+         *  Select a Community based on URI.
+         *
+         */
         public Community select(final String uri);
         }
     
@@ -84,39 +105,21 @@ extends Entity
     public Identities identities();
 
     /**
-     * The unique identifier.
+     * The unique identifier for this Community.
      * 
      */
     public String uri();
 
     /**
-     * Access to the Resources for this Community.
+     * The JDBC Resource for this Community.
      *
      */
-    public interface Resources
-        {
-        /**
-         * Get the current active Resource for this Community.
-         * 
-         */
-        public JdbcResource current();
-
-        /**
-         * 
-        public JdbcResource create(String name);
-         */
-
-        /**
-         * 
-        public Iterable<JdbcResource> select();
-         */
-        
-        }
+    public JdbcResource space();
 
     /**
-     * Access to the Resources for this Community.
+     * The JDBC Resource for this Community.
      *
      */
-    public Resources resources();
+    public JdbcResource space(final JdbcResource space);
 
     }

@@ -66,6 +66,10 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
         @NamedQuery(
             name  = "JdbcResource-search-text",
             query = "FROM JdbcResourceEntity WHERE (name LIKE :text) ORDER BY ident desc"
+            ),
+        @NamedQuery(
+            name  = "JdbcResource-select-ogsaid",
+            query = "FROM JdbcResourceEntity WHERE (ogsaid = :ogsaid) ORDER BY ident desc"
             )
         }
     )
@@ -113,6 +117,7 @@ public class JdbcResourceEntity
             }
 
         @Override
+        @Deprecated
         @SelectEntityMethod
         public Iterable<JdbcResource> search(final String text)
             {
@@ -129,7 +134,6 @@ public class JdbcResourceEntity
             }
 
         @Override
-        @Deprecated
         @CreateEntityMethod
         public JdbcResource create(final String ogsaid, final String name, final String url)
             {
@@ -193,21 +197,39 @@ public class JdbcResourceEntity
             {
             return this.links;
             }
+
+        /**
+         * Select the default 'userdata' Resource (based on ogsaid).
+         * @todo Make this a configurable property.
+         *
+         */
+        @Override
+        @SelectEntityMethod
+        public JdbcResource userdata()
+            {
+            return ogsaid(
+                "user"
+                );
+            }
+
+        @SelectEntityMethod
+        public JdbcResource ogsaid(final String ogsaid)
+            {
+            return super.first(
+                super.query(
+                    "JdbcResource-select-ogsaid"
+                    ).setString(
+                        "ogsaid",
+                        ogsaid
+                        )
+                );
+            }
+
         }
 
     protected JdbcResourceEntity()
         {
         super();
-        }
-
-    @Deprecated
-    protected JdbcResourceEntity(final String ogsaid, final String name)
-        {
-        super(name);
-        this.ogsaid = ogsaid ;
-        this.connection = new JdbcConnectionEntity(
-            this
-            );
         }
 
     protected JdbcResourceEntity(final String ogsaid, final String catalog, final String name, final  String url)

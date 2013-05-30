@@ -23,6 +23,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.Table;
@@ -37,6 +39,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResourceEntity;
 
 /**
  * Hibernate based entity implementation.
@@ -76,7 +79,8 @@ implements Community
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_URI_COL = "uri" ;
+    protected static final String DB_URI_COL   = "uri" ;
+    protected static final String DB_SPACE_COL = "space" ;
     
     /**
      * EntityFactory implementation.
@@ -95,9 +99,30 @@ implements Community
 
         @Override
         @CreateEntityMethod
-        public Community create(final String uri, final String name)
+        public Community create(final String uri)
             {
-            log.debug("create(String, String) [{}][{}]", uri, name);
+            return create(
+                uri,
+                uri
+                );
+            }
+
+        @Override
+        @CreateEntityMethod
+        public Community create(final String name, final String uri)
+            {
+            return create(
+                factories().jdbc().resources().userdata(),
+                name,
+                uri
+                );
+            }
+
+        @Override
+        @CreateEntityMethod
+        public Community create(final JdbcResource space, final String name, final String uri)
+            {
+            log.debug("create(String, String) [{}][{}]", name, uri);
             final Community community = this.select(
                 uri
                 );
@@ -108,13 +133,14 @@ implements Community
             else {
                 return super.insert(
                     new CommunityEntity(
-                        uri,
-                        name
+                        space,
+                        name,
+                        uri
                         )
                     );
                 }
             }
-
+        
         @Override
         @SelectEntityMethod
         public Community select(String uri)
@@ -161,12 +187,13 @@ implements Community
      * Create a new Community.
      *
      */
-    protected CommunityEntity(final String uri, final String name)
+    protected CommunityEntity(final JdbcResource space, final String name, final String uri)
         {
         super(
             name
             );
-        log.debug("CommunityEntity(String, String) [{}][{}]", uri, name);
+        log.debug("CommunityEntity(JdbcResource, String, String) [{}][{}]", uri, name);
+        this.space = space ;
         this.uri = uri ;
         }
 
@@ -180,6 +207,7 @@ implements Community
         updatable = false
         )
     private String uri;
+    @Override
     public String uri()
         {
         return this.uri;
@@ -218,17 +246,26 @@ implements Community
             );
         }
 
+    @ManyToOne(
+        fetch = FetchType.LAZY,
+        targetEntity = JdbcResourceEntity.class
+        )
+    @JoinColumn(
+        name = DB_SPACE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private JdbcResource space  ;
     @Override
-    public Resources resources()
+    public JdbcResource space()
         {
-        return new Resources()
-            {
-            @Override
-            public JdbcResource current()
-                {
-                // TODO Auto-generated method stub
-                return null;
-                }
-            };
+        return this.space;
+        }
+    @Override
+    public JdbcResource space(JdbcResource space)
+        {
+        this.space = space ;
+        return this.space ;
         }
     }

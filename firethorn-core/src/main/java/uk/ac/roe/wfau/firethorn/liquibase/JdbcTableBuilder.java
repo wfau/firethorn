@@ -37,9 +37,29 @@ implements JdbcTable.Builder
     {
 
     @Override
-    public void create(JdbcTable table)
+    public JdbcTable create(JdbcTable table)
         {
-        // TODO Auto-generated method stub
+        log.debug("create(JdbcTable)");
+        log.debug("  table [{}][{}]", table.ident(), table.name());
+        
+        log.debug("--- 000 ");
+        ChangeSet changeset = changeset(); 
+
+        log.debug("--- 001 ");
+        changeset.addChange(
+            new CreateJdbcTableChange(
+                table
+                )
+            );
+
+        log.debug("--- 002 ");
+        execute(
+            table.resource(),
+            changeset
+            );
+
+        log.debug("--- 003 ");
+        return table;
         }
 
     @Override

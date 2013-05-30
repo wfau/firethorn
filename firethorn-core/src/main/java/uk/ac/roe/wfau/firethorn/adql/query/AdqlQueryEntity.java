@@ -57,6 +57,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Community;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
@@ -69,6 +70,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
@@ -956,31 +958,64 @@ implements AdqlQuery, AdqlParserQuery
      *  Create our result tables.
      *
      */
-    protected void create(final JdbcSchema store)
+    protected void create(final JdbcSchema legacy)
         {
         log.debug("create(JdbcSchema)");
 
-        Identity owner    = this.owner(); 
-        JdbcSchema schema = null ;
+        Identity identity = this.owner(); 
+        log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
 
-        log.debug(" Owner [{}][{}]", owner.ident(), owner.name());
-        
         //
-        // Create our user datab schema.
-        if (owner != null)
+        // Locate our JDBC schema.
+        // TODO Move this to a separate resolver/factory.
+        if (identity.space() == null)
             {
-            schema = owner.schemas().current() ; 
-            if (schema  == null)
+            log.debug(" Identity space [null][null]");
+
+            Community community = identity.community();
+            log.debug(" Community [{}][{}]", community.ident(), community.name());
+
+            if (community.space() == null)
                 {
-                schema = owner.schemas().create();
+                log.debug(" Community space [null][null]");
+                JdbcResource userdata = factories().jdbc().resources().userdata() ;
+                if (userdata  == null)
+                    {
+                    log.debug(" Userdata resource [null][null]");
+                    }
+                else {
+                    log.debug(" Userdata resource [{}][{}]", userdata.ident(), userdata.name());
+                    community.space(
+                        userdata 
+                        );                
+                    }
+                }
+
+            if (community.space() != null)
+                {
+                log.debug(" Community space [{}][{}]", community.space().ident(), community.space().name());
+                log.debug(" Creating new space");
+// Postgresql specific hack.
+                identity.space(
+                    community.space().schemas().select(
+                        "public"
+                        )
+                    );
+/*
+                identity.space(
+                    community.space().schemas().create(
+                        identity
+                        )
+                    );
+ */
                 }
             }
         //
         // Create our JDBC table.
-        if (schema != null)
+        if (identity.space() != null)
             {
-            log.debug(" Schema [{}][{}]", schema.ident(), schema.name());
-            this.jdbctable = schema.tables().create(
+            log.debug(" Identity space [{}][{}]", identity.space().ident(), identity.space().name());
+            this.jdbctable = identity.space().tables().create(
                 this
                 );
             }
@@ -988,10 +1023,11 @@ implements AdqlQuery, AdqlParserQuery
         else {
             log.debug("-- NO OWNER");
             this.jdbctable = services().builder().create(
-                store,
+                legacy,
                 this
                 );
             }
+
         //
         // Create our ADQL table.
         this.adqltable = this.schema().tables().create(

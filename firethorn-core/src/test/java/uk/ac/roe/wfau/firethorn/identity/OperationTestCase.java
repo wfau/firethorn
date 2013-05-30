@@ -44,6 +44,7 @@ extends TestBase
         for (int i = 0 ; i < COUNT ; i++)
             {
             Operation operation = factories().operations().create(
+                "target",
                 "method",
                 "source"
                 ); 

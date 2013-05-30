@@ -137,19 +137,22 @@ public class AdqlQueryVOTableController
                         ", "
                         );
                     }
+// Postgresql name fix
+                builder.append('"');
                 builder.append(
                     column.root().name()
                     );
+                builder.append('"');
 /*
  *
+ *
+ */
                 builder.append(
                     " AS "
                     );
                 builder.append(
-                    column.alias()
+                    column.name()
                     );
- *
- */
                 }
             builder.append(
                 " FROM "

@@ -35,6 +35,7 @@ extends TestBase
     public void test000()
         {
         Operation operation = factories().operations().create(
+            "target",
             "method",
             "source"
             ); 

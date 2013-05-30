@@ -12,8 +12,8 @@ extends AbstractSqlStatement
     public CreateSchemaStatement(final JdbcSchema schema)
         {
         this(
-            schema.name(),
-            schema.catalog()
+            schema.catalog(),
+            schema.name()
             );
         }
     public CreateSchemaStatement(final String catalog, final String schema)

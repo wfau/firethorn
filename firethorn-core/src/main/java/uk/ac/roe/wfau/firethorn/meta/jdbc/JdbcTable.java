@@ -83,7 +83,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * Create a JDBC table.
          *
          */
-        public void create(JdbcTable table);
+        public JdbcTable create(JdbcTable table);
 
         /**
          * Delete a JDBC table.

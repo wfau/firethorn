@@ -44,21 +44,16 @@ extends BaseComponent
     extends Entity.EntityFactory<ResourceType>
         {
         /**
-         * Create a new resource.
-         *
-        public ResourceType create(final String name);
-         */
-
-        /**
          * Select all the available resources.
          *
          */
         public Iterable<ResourceType> select();
 
         /**
-         * Text search for resources (name starts with).
+         * Select Resources ...
          *
          */
+        @Deprecated
         public Iterable<ResourceType> search(final String text);
 
         }

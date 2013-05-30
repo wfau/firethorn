@@ -49,6 +49,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.liquibase.JdbcTableBuilder;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 
@@ -186,7 +187,7 @@ implements JdbcTable
         @CreateEntityMethod
         public JdbcTable create(final JdbcSchema schema, final AdqlQuery query)
             {
-            return this.insert(
+            JdbcTable table = this.insert(
                 new JdbcTableEntity(
                     schema,
                     query,
@@ -194,6 +195,25 @@ implements JdbcTable
                         query
                         )
                     )
+                );
+            for (final AdqlQuery.SelectField field : query.fields())
+                {
+    // Size is confused .... ?
+    // Include alias for unsafe names ?
+    // Create column direct from ColumnMeta
+                log.debug("create(SelectField)");
+                log.debug("  Name [{}]", field.name());
+                log.debug("  Type [{}]", field.type().jdbc());
+                log.debug("  Size [{}]", field.length());
+                table.columns().create(
+                    field.name(),
+                    field.type().jdbc().code(),
+                    field.length()
+                    );
+                }
+
+            return builder().create(
+                table
                 );
             }
 
