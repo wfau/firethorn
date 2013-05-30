@@ -341,21 +341,19 @@ implements AdqlSchema
         return new Queries()
             {
             @Override
-            public AdqlQuery create(final JdbcSchema store, final String query)
+            public AdqlQuery create(final String query)
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
-                    store,
                     query
                     );
                 }
 
             @Override
-            public AdqlQuery create(final JdbcSchema store, final String query, final String name)
+            public AdqlQuery create(final String query, final String name)
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
-                    store,
                     query,
                     name
                     );

@@ -144,13 +144,13 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          * Create a new query.
          *
          */
-        public AdqlQuery create(final JdbcSchema store, final String query);
+        public AdqlQuery create(final String query);
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final JdbcSchema store, final String query, final String name);
+        public AdqlQuery create(final String query, final String name);
 
         /**
          * Select all the queries for this schema.

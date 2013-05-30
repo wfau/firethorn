@@ -32,20 +32,6 @@ POST "/jdbc/resource/create" \
     --data   "jdbc.resource.create.name=userdata-$(unique)" \
     --data   "jdbc.resource.create.ogsadai=user" \
     | tee jdbc-user-resource.json | ./pp
-userresource=$(cat jdbc-user-resource.json | ident)
+userspace=$(cat jdbc-user-resource.json | ident)
 
-#
-# Locate the user data schema.
-# * Schema name is platform dependant.
-# * Should come from the user accout or config anyway ....
-#    -d "jdbc.resource.schema.select.name=public" \
-#    -d "jdbc.resource.schema.select.name=PUBLIC.PUBLIC" \
-#
-# ** Needs at least one table in the schema.
-userschema=$(
-    GET "${userresource?}/schemas/select" \
-    --header "firethorn.auth.identity:${identity}" \
-    --header "firethorn.auth.community:${community}" \
-    | ./pp  | ident
-    )
 

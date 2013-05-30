@@ -79,8 +79,8 @@ extends Entity, Job
         /**
          * Our table builder.
          *
-         */
         public Builder builder();
+         */
 
         }
 
@@ -142,13 +142,13 @@ extends Entity, Job
          * Create a new query.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema store, final String input);
+        public AdqlQuery create(final AdqlSchema schema, final String input);
 
         /**
          * Create a new query.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema store, final String input, final String name);
+        public AdqlQuery create(final AdqlSchema schema, final String input, final String name);
 
         /**
          * Select all the queries from a resource.

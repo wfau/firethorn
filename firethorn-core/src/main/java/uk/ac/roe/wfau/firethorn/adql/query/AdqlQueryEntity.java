@@ -196,6 +196,7 @@ implements AdqlQuery, AdqlParserQuery
             return this.executor;
             }
 
+        /*
         @Autowired
         private AdqlQuery.Builder builder;
         @Override
@@ -203,6 +204,7 @@ implements AdqlQuery, AdqlParserQuery
             {
             return this.builder;
             }
+        */
         }
 
     @Override
@@ -259,11 +261,10 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @CreateEntityMethod
-        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema store, final String input)
+        public AdqlQuery create(final AdqlSchema schema, final String input)
             {
             return create(
                 schema,
-                store,
                 input,
                 names().name()
                 );
@@ -271,11 +272,10 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @CreateEntityMethod
-        public AdqlQuery create(final AdqlSchema schema, final JdbcSchema store, final String input, final String name)
+        public AdqlQuery create(final AdqlSchema schema, final String input, final String name)
             {
-            log.debug("AdqlQuery create(AdqlSchema, JdbcSchema, String, String)");
+            log.debug("AdqlQuery create(AdqlSchema, String, String)");
             log.debug("  Schema [{}][{}]", schema.ident(), schema.name());
-            log.debug("  Store  [{}][{}]", store.ident(),  store.name());
             log.debug("  Name   [{}][{}]", name);
 
             //
@@ -295,9 +295,8 @@ implements AdqlQuery, AdqlParserQuery
                 );
             //
             // Create the query tables.
-            entity.create(
-                store
-                );
+            // TODO make this automatic, triggered by tables().
+            entity.build();
             //
             // Return the entity.
             return query;
@@ -958,7 +957,7 @@ implements AdqlQuery, AdqlParserQuery
      *  Create our result tables.
      *
      */
-    protected void create(final JdbcSchema legacy)
+    protected void build()
         {
         log.debug("create(JdbcSchema)");
 
@@ -1011,28 +1010,28 @@ implements AdqlQuery, AdqlParserQuery
                 }
             }
         //
-        // Create our JDBC table.
-        if (identity.space() != null)
+        // Create our tables.
+        if (this.owner().space() != null)
             {
-            log.debug(" Identity space [{}][{}]", identity.space().ident(), identity.space().name());
-            this.jdbctable = identity.space().tables().create(
+            log.debug(" Owner space [{}][{}]", this.owner().space().ident(), this.owner().space().name());
+            this.jdbctable = this.owner().space().tables().create(
+                this
+                );
+            this.adqltable = this.schema().tables().create(
                 this
                 );
             }
 // Legacy no-owner fallback.
         else {
             log.debug("-- NO OWNER");
+/*
             this.jdbctable = services().builder().create(
                 legacy,
                 this
                 );
+ */                
             }
 
-        //
-        // Create our ADQL table.
-        this.adqltable = this.schema().tables().create(
-            this
-            );
 
 //TODO
 //Why does the query need to know where the JdbcTable is ?

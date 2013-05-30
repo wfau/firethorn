@@ -33,6 +33,7 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 
 /**
+ * @todo - NEED TO SET UP CURRENT IDENTITY WITH A JdbcResource for storage.
  *
  */
 @Slf4j
@@ -146,7 +147,6 @@ extends TestBase
         //
         // Create the query and check the results.
         final AdqlQuery query = schema.queries().create(
-            this.schema,
             QUERY_001
             );
         debug(query);

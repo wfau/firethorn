@@ -187,20 +187,13 @@ extends AbstractEntityController<AdqlQuery>
         final AdqlSchema schema,
         @RequestParam(value=CREATE_QUERY, required=true)
         final String query,
-        @RequestParam(value=CREATE_STORE, required=true)
-        final String store,
         @RequestParam(value=CREATE_NAME, required=false)
         final String name
         ) throws NotFoundException {
-        log.debug("create(String, String, String) [{}][{}]", name, store);
+        log.debug("create(String, String, String) [{}][{}]", name);
         return response(
             new AdqlQueryBean(
                 schema.queries().create(
-                    factories().jdbc().schemas().select(
-                        factories().jdbc().schemas().links().parse(
-                            store
-                            )
-                        ),
                     query,
                     name
                     )
