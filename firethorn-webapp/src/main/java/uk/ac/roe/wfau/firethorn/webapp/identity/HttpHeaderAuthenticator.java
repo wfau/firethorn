@@ -34,7 +34,7 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
  *
  */
 @Slf4j
-public class AuthenticationInterceptor
+public class HttpHeaderAuthenticator
 implements HandlerInterceptor
     {
     /**
@@ -44,13 +44,13 @@ implements HandlerInterceptor
     @Autowired
     private ComponentFactories factories;
 
-    static final String DEFAULT_METHOD = "default.method" ;
+    static final String DEFAULT_METHOD = "http:header" ;
 
-    static final String DEFAULT_IDENTITY  = "default.identity"  ;
-    static final String DEFAULT_COMMUNITY = "default.community" ;
+    static final String DEFAULT_IDENTITY  = "guest.identity"  ;
+    static final String DEFAULT_COMMUNITY = "guest.community" ;
 
-    static final String DEFAULT_IDENTITY_ATTRIB   = "default.identity.attrib"  ;
-    static final String DEFAULT_COMMUNITY_ATTRIB  = "default.community.attrib" ;
+    static final String DEFAULT_IDENTITY_ATTRIB   = "firethorn.auth.identity"  ;
+    static final String DEFAULT_COMMUNITY_ATTRIB  = "firethorn.auth.community" ;
 
     private String method = DEFAULT_METHOD ;
     public String getMethod()

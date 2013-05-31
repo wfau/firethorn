@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.spring;
 
+import java.util.Iterator;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.HibernateException;
@@ -274,9 +276,22 @@ public class HibernateThingsImpl
     @Override
     public Entity single(final Query query)
         {
-        return first(
-            query
-            );
+        if (query == null)
+            {
+            log.error("Attempting to get data from a null query");
+            throw new IllegalArgumentException(
+                "Attempting to get data from a null query"
+                );
+            }
+        try {
+            return (Entity) query.uniqueResult();
+            }
+        catch (final HibernateException ouch)
+            {
+            throw convert(
+                ouch
+                );
+            }
         }
 
     @Override
@@ -290,7 +305,15 @@ public class HibernateThingsImpl
                 );
             }
         try {
-            return (Entity) query.uniqueResult();
+            @SuppressWarnings("unchecked")
+            Iterator<Entity> iter = query.iterate();
+            if (iter.hasNext())
+                {
+                return iter.next(); 
+                }
+            else {
+                return null ;
+                }
             }
         catch (final HibernateException ouch)
             {

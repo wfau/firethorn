@@ -111,27 +111,26 @@
         <!--+
             | Add our own custom interceptors.
             +-->
-<!--
--->
         <bean id="operation-interceptor"
             class="uk.ac.roe.wfau.firethorn.webapp.identity.OperationInterceptor">
         </bean>
         <bean id="atlas-authentication"
-            class="uk.ac.roe.wfau.firethorn.webapp.identity.AuthenticationInterceptor">
-
-<!--
-            <property name="defaultIdentity"  value="default-identity"/>
-            <property name="defaultCommunity" value="default-community"/>
--->
-            <property name="defaultCommunity" value="default-community"/>
-
-            <property name="identityAttrib"  value="firethorn.auth.identity"/>
-            <property name="communityAttrib" value="firethorn.auth.community"/>
-
+            class="uk.ac.roe.wfau.firethorn.webapp.identity.HttpHeaderAuthenticator">
+            <!--+
+                | Default configuration ..
+            <property name="defaultIdentity"  value="guest.identity"/>
+            <property name="defaultCommunity" value="guest.community"/>
+            <property name="identityAttrib"   value="firethorn.auth.identity"/>
+            <property name="communityAttrib"  value="firethorn.auth.community"/>
+                +-->
         </bean>
+        <bean id="anon-authentication"
+            class="uk.ac.roe.wfau.firethorn.webapp.identity.AnonymousAuthenticator">
+        </bean>
+
         <bean id="test-interceptor"
             class="uk.ac.roe.wfau.firethorn.webapp.identity.TestHandlerInterceptorOne">
-            <property name="name" value="rachel"/>
+            <property name="name" value="Rachel"/>
         </bean>
 
     </mvc:interceptors>

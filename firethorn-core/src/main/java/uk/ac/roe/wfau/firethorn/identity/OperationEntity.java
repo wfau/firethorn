@@ -241,7 +241,7 @@ implements Operation
         this.auth = auth ;
         this.owner(auth.identity()) ;
         }
-
+   
     /**
      * The set of Authentications for this Operation.
      *

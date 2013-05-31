@@ -42,6 +42,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 
@@ -207,13 +208,21 @@ public class JdbcResourceEntity
         @SelectEntityMethod
         public JdbcResource userdata()
             {
-            return ogsaid(
-                "user"
-                );
+            try {
+                return ogsaid(
+                    "user"
+                    );
+                }
+            catch (NotFoundException ouch)
+                {
+                log.error("Unable to find default userdata reosurce");
+                return null ;
+                }
             }
 
         @SelectEntityMethod
         public JdbcResource ogsaid(final String ogsaid)
+        throws NotFoundException
             {
             return super.first(
                 super.query(
