@@ -57,12 +57,6 @@
         mvn clean install 
     popd
 
-    source ${HOME?}/firethorn.settings
-    pushd "${FIRETHORN_CODE?}/firethorn-core"
-        mvn clean install 
-    popd
-
-
 # TTY #6 ------------------------------------------------------------
 # Deploy the firethorn webapp 
 #
@@ -84,9 +78,10 @@
 
     popd
 
-
-    pushd "${FIRETHORN_CODE?}/firethorn-core" ; mvn clean install ; popd
-    mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+#
+# Short form.
+#pushd "${FIRETHORN_CODE?}/firethorn-core" ; mvn clean install ; popd
+#mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
 
 
 # TTY #7 ------------------------------------------------------------

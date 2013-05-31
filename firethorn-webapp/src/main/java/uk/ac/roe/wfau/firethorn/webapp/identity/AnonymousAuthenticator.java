@@ -26,6 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import uk.ac.roe.wfau.firethorn.identity.Authentication;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
@@ -58,10 +60,17 @@ implements HandlerInterceptor
 
         if (operation != null)
             {
+            log.debug(" Oper [{}]", operation.ident());
+
             operation.authentications().resolve();
             
-            if (operation.authentications().primary() == null)
+            Authentication primary = operation.authentications().primary();
+            if (primary != null)
                 {
+                log.debug(" Auth [{}][{}][{}]", primary.method(), primary.identity().ident(), primary.identity().name());
+                }
+            else {
+                log.debug(" No primary - anon");
                 operation.authentications().create(
                     factories.identities().create(
                         factories.communities().create(

@@ -1,0 +1,258 @@
+
+
+grep -rcl '01.02-SNAPSHOT' *
+
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-cds/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-cds/adql/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-cds/depends/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-core/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-database/metadata/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-database/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-database/userdata/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-database/testdata/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-hsqldb/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-jdbc/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-logging/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-ogsadai/metadata/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-ogsadai/metadata/common/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-ogsadai/metadata/client/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-ogsadai/metadata/server/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-ogsadai/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-ogsadai/activity/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-ogsadai/activity/common/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-ogsadai/activity/client/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-ogsadai/activity/server/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-ogsadai/depends/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-ogsadai/webapp/src/test/bin/jdbc-functions.sh
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-ogsadai/webapp/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-spring/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-testing/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' firethorn-webapp/pom.xml
+sed -i 's/01.02-SNAPSHOT/01.03-SNAPSHOT/g' pom.xml
+
+#---------------------
+
+    ln -sf firethorn/firethorn.hsqldb.conf firethorn.properties
+    ls -al firethorn.properties
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}"
+
+        mvn clean
+
+    popd
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}"
+
+        mvn -P depends clean install
+
+    popd
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}/firethorn-hsqldb"
+
+        mvn clean exec:java
+
+    popd
+
+#---------------------
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}/firethorn-database"
+
+        pushd metadata
+            mvn clean install
+        popd
+
+        pushd userdata
+            mvn clean install
+        popd
+
+        pushd testdata
+            mvn clean install
+        popd
+
+    popd
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}"
+        mvn clean install 
+    popd
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}/firethorn-webapp"
+
+        #
+        # Create a clean war file.
+        mvn clean compile war:war
+
+        #
+        # Set the memory limit.
+        export MAVEN_OPTS=-Xmx128m
+
+        #
+        # Deploy the webapp in Tomcat 7.
+        mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+    popd
+
+#---------------------
+
+    source "${HOME?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/webapp"
+
+        #
+        # Create a clean war file.
+        mvn clean compile war:war
+
+        #
+        # Load the JDBC config functions.
+        source src/test/bin/jdbc-functions.sh
+        #
+        # Configure our JDBC resources.
+        jdbcconfig twomass firethorn.twomass "${HOME?}/firethorn.properties"
+        jdbcconfig ukidss  firethorn.ukidss  "${HOME?}/firethorn.properties"
+        jdbcconfig atlas   firethorn.atlas   "${HOME?}/firethorn.properties"
+        jdbcconfig wfau    firethorn.wfau    "${HOME?}/firethorn.properties"
+        jdbcconfig user    firethorn.user    "${HOME?}/firethorn.properties"
+
+        #
+        # Set the memory limit.
+        export MAVEN_OPTS=-Xmx128m
+
+        #
+        # Deploy the webapp in Tomcat 6.
+        mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
+        
+    popd
+
+#---------------------
+
+    source ${HOME?}/firethorn.settings
+    pushd "${FIRETHORN_CODE?}/firethorn-ogsadai/activity/client"
+        mvn -D skipTests=false -D test=SingleQueryTestCase test 
+    popd
+
+#---------------------
+
+    pushd $(mktemp --directory)
+
+        source ${HOME?}/firethorn.settings
+        FIRETHORN_TEST=${FIRETHORN_CODE?}/integration/003
+
+        source "${FIRETHORN_TEST?}/00-init-rest.sh"
+
+        source "${FIRETHORN_TEST?}/01-init-user.sh"
+        source "${FIRETHORN_TEST?}/03-00-create-adql-space.sh"
+        source "${FIRETHORN_TEST?}/02-00-create-jdbc-space.sh" 'spring:RoeATLAS' '*' 'atlas'
+        source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'TWOXMM.dbo'         'twoxmm'
+        source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'TWOMASS.dbo'        'twomass'
+        source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'UKIDSSDR5PLUS.dbo'  'ukidssdr5'
+        source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'ATLASv20130304.dbo' 'atlas'
+
+        source "${FIRETHORN_TEST?}/04-00-create-query-space.sh"
+        source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh"  'query'
+        source "${FIRETHORN_TEST?}/04-02-import-query-schema.sh" 'atlas'   'atlas'
+        source "${FIRETHORN_TEST?}/04-02-import-query-schema.sh" 'twomass' 'twomass'
+        source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh" 'ukidss'
+        source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsPointSource' 'ukidss' 'gcsPointSource5'
+        source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsSourceXtwomass_psc' 'ukidss' 'gcsSourceXtwomass_psc'
+
+        source "${FIRETHORN_TEST?}/05-query-atlas.sh"
+
+    popd
+
+
+# EXTRA ------------------------------------------------------------
+# Extra tests.
+#
+
+        importschema()
+            {
+            source "${FIRETHORN_TEST?}/04-00-create-query-space.sh"
+            source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh" 'query'
+            source "${FIRETHORN_TEST?}/04-02-import-query-schema.sh" 'atlas'   'atlas'
+            source "${FIRETHORN_TEST?}/04-02-import-query-schema.sh" 'twomass' 'twomass'
+            source "${FIRETHORN_TEST?}/05-query-atlas.sh"
+            }
+
+        time importschema
+            #0m12.066s
+            #0m11.998s
+            #0m11.584s
+            #0m8.689s
+            #0m8.746s
+            #0m8.435s
+
+
+        importtables()
+            {
+            source "${FIRETHORN_TEST?}/04-00-create-query-space.sh"
+
+            source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh" 'twomass'
+            source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'twomass' 'twomass_psc' 'twomass' 'twomass_psc'
+
+            source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh" 'atlas'
+            source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'atlas' 'atlasSource' 'atlas'             'atlasSource'
+            source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'atlas' 'atlasSourceXtwomass_psc' 'atlas' 'atlasSourceXtwomass_psc'
+
+            source "${FIRETHORN_TEST?}/05-query-atlas.sh"
+            }
+
+        time importtables
+            #0m7.234s
+            #0m7.159s
+            #0m6.900s
+            #0m6.218s
+            #0m6.347s
+            #0m6.135s
+            
+        for i in {0..9}; do time importschema ; done
+            #0m11.058s
+            #0m10.854s
+            #0m11.418s
+            #0m10.701s
+            #0m10.734s
+            #0m10.717s
+            #0m10.280s
+            #0m10.834s
+            #0m10.655s
+            #0m10.505s
+
+            #0m7.752s
+            #0m7.839s
+            #0m7.789s
+            #0m7.551s
+            #0m7.567s
+            #0m7.595s
+            #0m7.709s
+            #0m8.149s
+            #0m7.510s
+            #0m7.819s
+
+        for i in {0..9}; do time importtables ; done
+            #0m6.855s
+            #0m6.751s
+            #0m6.858s
+            #0m6.708s
+            #0m6.825s
+            #0m6.578s
+            #0m6.837s
+            #0m6.852s
+            #0m6.864s
+            #0m6.830s
+
+            #0m6.058s
+            #0m6.131s
+            #0m6.089s
+            #0m6.084s
+            #0m6.132s
+            #0m6.068s
+            #0m6.133s
+            #0m6.154s
+            #0m6.225s
+            #0m6.050s
+
+
+

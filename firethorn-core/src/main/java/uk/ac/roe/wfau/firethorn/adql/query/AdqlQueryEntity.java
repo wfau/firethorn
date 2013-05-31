@@ -994,13 +994,22 @@ implements AdqlQuery, AdqlParserQuery
                 {
                 log.debug(" Community space [{}][{}]", community.space().ident(), community.space().name());
                 log.debug(" Creating new space");
-// Postgresql specific hack.
+                // HsqlBD hack
+                identity.space(
+                    community.space().schemas().select(
+                        "PUBLIC.PUBLIC"
+                        )
+                    );
+/*
+ * 
+                // PostgreSQL hack
                 identity.space(
                     community.space().schemas().select(
                         "public"
                         )
                     );
-/*
+
+                
                 identity.space(
                     community.space().schemas().create(
                         identity
