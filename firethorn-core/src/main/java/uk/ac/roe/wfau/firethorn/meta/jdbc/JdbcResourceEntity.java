@@ -209,13 +209,23 @@ public class JdbcResourceEntity
         public JdbcResource userdata()
             {
             try {
-                return ogsaid(
-                    "user"
+                JdbcResource userdata = ogsaid(
+                    "userdata"
                     );
+//TODO Make this configurable
+                if (userdata == null)
+                    {
+                    userdata = create(
+                        "userdata",
+                        "userdata",
+                        "spring:FireThornUserData"
+                        );
+                    }
+                return userdata ;
                 }
             catch (NotFoundException ouch)
                 {
-                log.error("Unable to find default userdata reosurce");
+                log.error("Unable to find default resource for userdata");
                 return null ;
                 }
             }

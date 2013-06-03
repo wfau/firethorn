@@ -41,7 +41,7 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
  */
 @Slf4j
 public class JdbcResourceTestThing
-    extends TestBase
+extends TestBase
     {
 
     /**

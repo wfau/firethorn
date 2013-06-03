@@ -1,0 +1,173 @@
+
+    V1.1 (OSA now)
+    "ADQL query combining Atlas with the other (public) surveys at ROE"
+
+    V1.2 (OSA soon)
+    "Federated TAP combining Atlas with external TAP services"
+
+    V1.3
+    "Tasks delayed from v1.1"
+
+
+    "Execute query ..."
+    12.1 - move to V1.3
+
+    "View results"
+    2.2.4 - move to V1.3
+
+    "User results"
+    2.3 - 90%
+
+    2.3.1 - done
+    2.3.2 - done
+    2.3.3 - done
+    2.3.4 - done
+    2.3.5 - done
+
+    2.3.6.1 - done
+    2.3.6.2 - 90%
+
+    Two new sub tasks
+    2.3.6.2.1 - Create ADQL table - done
+    2.3.6.2.2 - Create JDBC table - 90%
+
+    2.3.6.3 - not required
+    2.3.6.4 - not required
+
+    2.4 "VOTable GET"
+    2.4.1 - 90% (has OutOfMemory problem)
+    2.4.2 - move to V1.3
+
+    "VOTable PUT"
+    2.5 - move to V1.3
+
+    "External TAP"
+    2.6 - move to V1.2
+
+
+
+
+    New tasks (mostly bug fixes)
+
+    Fix OutOfMemory problems for VOTable from RowSet
+    STILTS, CDS, JSP
+    - 2 day (dm/sv)
+
+    Liquibase 'CREATE SCHEMA'
+    - 1 day (dm/sv)
+
+    SQLServer translator
+    Implement TOP and place for other platform specific details
+    - 1 day (dm/sv)
+
+    ADQL translator
+    Implement TOP and place for other platform specific details
+    - 0 day (dm/sv)
+
+    Fix 'nested query alias' in ADQL parser
+    - 2 day (dm/sv)
+
+    Create test queries
+    - 2 week (dm/sv/mh)
+
+
+    "SELECT *"
+    - 1 day (dm)
+
+    "TOP"
+    - 1 day (dm)
+
+    "Aggregate functions - MIN, MAX, AVG, COUNT ..."
+    - 1 day (dm)
+
+    "Trigonometric functions - SIN, COS, SQRT ..."
+    - 1 day (dm)
+
+
+    Test databases on SQLServer
+    - 2 day (dm)
+
+    Test machines at ROE
+    - 2 day (dm)
+
+
+
+
+    Per user JDBC schema
+    requires 'CREATE SCHEMA'
+    - 1 day (dm)
+
+
+    Skip locked catalogs
+    - 1 day (dm)
+
+    Catalog/Schema/Table scan on demand
+    - 1 day (dm)
+
+    Full metadata for tables and columns
+    - 2 day (dm)
+
+    importing metadoc for ROE catalogs
+    - 2 day (dm)
+
+    IP address authentication
+    - 0 day (dm)
+
+    Garbage collection
+    - 5 day (dm)
+        Entity lifetime
+        Entity life cycle
+        Daemon thread
+
+    Better exception handling
+    - 5 day (dm)
+
+    OGSA-DAI job status
+    - 1 day (dm)
+
+    OGSA-DAI query cancel
+    - 1 day (dm)
+
+    Jenkins testing
+    - 2 week (dm)
+
+
+
+
+    Shallow copy of tables and columns
+    - 5 day (dm)
+
+    Inline VOTable from OGSA-DAI Jersey results
+    - 2 day (dm/sv)
+
+    Metadata management tools
+    - 2 day (dm)
+
+    Userdata management tools
+    - 2 day (dm)
+
+
+
+    Simple ACL based on owner=rwx, other=r
+    - 5 day (dm)
+
+    Multiple auth resolver ?
+    - 1 day (dm)
+
+
+
+    Snapshot imported metadata as Liquibase changeset
+    - 1 day (dm)
+
+    Complex datamodel metadata
+    - 1 day (dm)
+
+
+
+
+    hg log -v --date '2013-05-06 to 2013-05-12'
+
+ 
+
+
+

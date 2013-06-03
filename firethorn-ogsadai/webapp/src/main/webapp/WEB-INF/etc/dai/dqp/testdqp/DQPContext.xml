@@ -75,8 +75,8 @@
     <!--+
         | Local user data node.
         +-->
-    <bean id="user" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
-        <constructor-arg name="resourceID"     value="user"/>
+    <bean id="userdata" class="uk.org.ogsadai.dqp.presentation.common.SimpleDataNode">
+        <constructor-arg name="resourceID"     value="userdata"/>
         <constructor-arg name="evaluationNode" ref="TestDqpEval"/>
         <property name="operatorSupport"       ref="defaultFeatureSupport"/>
         <property name="expressionSupport"     ref="defaultFeatureSupport"/>

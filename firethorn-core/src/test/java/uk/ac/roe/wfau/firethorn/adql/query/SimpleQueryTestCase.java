@@ -41,9 +41,9 @@ public class SimpleQueryTestCase
 extends TestBase
     {
 
-    private JdbcResource twomass  ;
-    private JdbcResource resource ;
-    private JdbcSchema   schema   ;
+    private JdbcResource twomass   ;
+    private JdbcResource userspace ;
+    private JdbcSchema   schema    ;
 
     /**
      * Create our resources.
@@ -59,17 +59,6 @@ extends TestBase
             "TWOMASS",
             "twomass",
             "spring:RoeTWOMASS"
-            );
-        this.resource = factories().jdbc().resources().create(
-            "user",
-            null,
-            "userdata",
-            "spring:FireThornUserData"
-            );
-// TODO do we need this ?
-        this.schema = this.resource.schemas().create(
-            null,
-            "PUBLIC"
             );
         }
 

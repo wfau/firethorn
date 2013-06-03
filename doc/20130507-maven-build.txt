@@ -100,11 +100,11 @@
         source src/test/bin/jdbc-functions.sh
         #
         # Configure our JDBC resources.
-        jdbcconfig twomass firethorn.twomass "${HOME?}/firethorn.properties"
-        jdbcconfig ukidss  firethorn.ukidss  "${HOME?}/firethorn.properties"
-        jdbcconfig atlas   firethorn.atlas   "${HOME?}/firethorn.properties"
-        jdbcconfig wfau    firethorn.wfau    "${HOME?}/firethorn.properties"
-        jdbcconfig user    firethorn.user    "${HOME?}/firethorn.properties"
+        jdbcconfig twomass  firethorn.twomass "${HOME?}/firethorn.properties"
+        jdbcconfig ukidss   firethorn.ukidss  "${HOME?}/firethorn.properties"
+        jdbcconfig atlas    firethorn.atlas   "${HOME?}/firethorn.properties"
+        jdbcconfig wfau     firethorn.wfau    "${HOME?}/firethorn.properties"
+        jdbcconfig userdata firethorn.user    "${HOME?}/firethorn.properties"
 
         #
         # Set the memory limit.
