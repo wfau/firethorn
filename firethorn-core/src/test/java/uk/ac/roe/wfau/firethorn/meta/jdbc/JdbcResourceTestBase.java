@@ -18,12 +18,14 @@
 package uk.ac.roe.wfau.firethorn.meta.jdbc ;
 
 import org.junit.Before;
+import org.junit.Ignore;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
  *
  */
+@Ignore
 public class JdbcResourceTestBase
 extends TestBase
     {

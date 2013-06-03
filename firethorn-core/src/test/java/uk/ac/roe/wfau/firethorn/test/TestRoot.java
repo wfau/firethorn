@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
  *
  */
 @Slf4j
+@Ignore
 @RunWith(
     SpringJUnit4ClassRunner.class
     )

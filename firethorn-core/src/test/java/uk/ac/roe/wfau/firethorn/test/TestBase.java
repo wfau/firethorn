@@ -95,8 +95,8 @@ extends TestRoot
      * Empty test to prevent Eclipse from throwing an initializationError when it runs this as a test.
      * @throws Exception
      *
-     */
     @Test
+     */
     public void empty()
     throws Exception
         {
