@@ -39,6 +39,7 @@ import adql.parser.ParseException;
 import adql.query.ADQLObject;
 import adql.query.ADQLQuery;
 import adql.query.ClauseSelect;
+import adql.query.SelectAllColumns;
 import adql.query.SelectItem;
 import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
@@ -558,16 +559,34 @@ implements AdqlParser
                 for (final SelectItem item : ((ClauseSelect) object))
                     {
                     log.debug("-- Select item ----");
-                    log.debug(" alias  [{}]", item.getAlias());
-                    final AdqlQuery.SelectField meta = ColumnMetaImpl.eval(
-                        item
-                        );
-                    log.debug(" name [{}]", meta.name());
-                    log.debug(" type [{}]", meta.type());
-                    log.debug(" size [{}]", meta.length());
-                    subject.add(
-                        meta
-                        );
+                    log.debug(" alias [{}]", item.getAlias());
+                    log.debug(" class [{}]", item.getClass().getName());
+
+                    if (item instanceof SelectAllColumns)
+                        {
+                        log.debug("-- Select all >>>>");
+                        SelectAllColumns all = (SelectAllColumns) item;
+                        log.debug(" All table [{}]", all.getAdqlTable());
+                        for (ADQLObject inner : iter((SelectAllColumns) item))
+                            {
+                            process(
+                                subject,
+                                inner
+                                );
+                            }
+                        log.debug("-- Select all <<<<");
+                        }
+                    else {
+                        final AdqlQuery.SelectField meta = ColumnMetaImpl.eval(
+                            item
+                            );
+                        log.debug(" name [{}]", meta.name());
+                        log.debug(" type [{}]", meta.type());
+                        log.debug(" size [{}]", meta.length());
+                        subject.add(
+                            meta
+                            );
+                        }
                     }
                 }
 

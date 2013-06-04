@@ -2,12 +2,12 @@
 time source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'ukidssdr5' 'lasSourceXDR7PhotoObj' 'ukidss' 'lasSourceXDR7PhotoObj'
 time source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'ukidssdr5' 'lasSource'             'ukidss' 'lasSource'
 
-queryfile=query-test-001.adql
+adqlfile=query-test-001.adql
 
 #
 # This fails (unknown field SourceId).
 # I think this is something in the ADQL parser ?
-cat > "${queryfile?}" << 'EOF'
+cat > "${adqlfile?}" << 'EOF'
 
     SELECT
         ...
@@ -57,7 +57,7 @@ EOF
 
 #
 # This works (without the alias on s.SourceId)
-cat > "${queryfile?}" << 'EOF'
+cat > "${adqlfile?}" << 'EOF'
 
     SELECT
         DistanceMins
@@ -94,7 +94,7 @@ POST "${queryschema?}/queries/create" \
     --header "firethorn.auth.identity:${identity}" \
     --header "firethorn.auth.community:${community}" \
     --data-urlencode "adql.schema.query.create.name=query-$(unique)" \
-    --data-urlencode "adql.schema.query.create.query@${queryfile?}" \
+    --data-urlencode "adql.schema.query.create.query@${adqlfile?}" \
     | tee atlas-query.json | ./pp
 queryjob=$(cat atlas-query.json | ident)
 

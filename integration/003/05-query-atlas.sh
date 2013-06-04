@@ -1,6 +1,6 @@
+adqlfile=atlas-query-003.adql
 
-
-cat > atlas-query-003.adql << 'EOF'
+cat > "${adqlfile?}" << 'EOF'
 
     SELECT
         twomass.ra AS tmra,
@@ -39,7 +39,7 @@ EOF
 POST "${queryschema?}/queries/create" \
     --header "firethorn.auth.identity:${identity}" \
     --header "firethorn.auth.community:${community}" \
-    --data-urlencode "adql.schema.query.create.query@atlas-query-003.adql" \
+    --data-urlencode "adql.schema.query.create.query@${adqlfile?}" \
     | tee atlas-query.json | ./pp
 queryjob=$(cat atlas-query.json | ident)
 

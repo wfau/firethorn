@@ -41,7 +41,7 @@
 		<level value="DEBUG"/>
 	</logger>
 	<logger name="uk.ac.roe.wfau.firethorn.adql.parser">
-		<level value="INFO"/>
+		<level value="DEBUG"/>
 	</logger>
 
 	<!--+

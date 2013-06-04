@@ -33,16 +33,16 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 
 /**
- * 
+ *
  *
  */
 @Slf4j
-public class SimpleQueryTestCase
+public class SelectAllQueryTestCase
 extends TestBase
     {
 
     private JdbcResource twomass   ;
-
+  
     /**
      * Create our resources.
      *
@@ -96,9 +96,7 @@ extends TestBase
     private static final String QUERY_001 =
 
           "SELECT"
-        + "    ra,"
-        + "    dec,"
-        + "    pts_key"
+        + "    *"
         + " FROM"
         + "    adql_twomass.twomass_psc"
         + " WHERE"
@@ -137,7 +135,6 @@ extends TestBase
             QUERY_001
             );
         debug(query);
-
         }
     }
 
