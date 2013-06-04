@@ -172,25 +172,13 @@ rho
     ssh oiwaithahghozahf@rho.virtual.metagrid.co.uk
 
 # -----------------------------------------------------
-# Copy our firethorn properties.
-#[user@test-vm] 
-
-    pushd ${HOME?}
-        vi firethorn.hsqldb
-
-
-
-        ln -sf firethorn.hsqldb firethorn.properties
-    popd
-
-# -----------------------------------------------------
 # Create our firethorn settings.
 #[user@test-vm] 
 
-    cat >  "${HOME?}/firethorn.settings" << 'EOF'
-    FIRETHORN_BASE=${FIRETHORN_BASE:-${HOME?}/firethorn}
-    FIRETHORN_CODE=${FIRETHORN_CODE:-${FIRETHORN_BASE?}/clone}
-    EOF
+cat >  "${HOME?}/firethorn.settings" << 'EOF'
+FIRETHORN_BASE=${FIRETHORN_BASE:-${HOME?}/firethorn}
+FIRETHORN_CODE=${FIRETHORN_CODE:-${FIRETHORN_BASE?}/clone}
+EOF
 
 # -----------------------------------------------------
 # Get a read-only clone of the source code.
@@ -212,26 +200,144 @@ rho
              hg clone 'http://wfau.metagrid.co.uk/code/firethorn/' "${codename?}"
         else
             pushd "${codename?}"
-                hg pull
+                hg pull 'http://wfau.metagrid.co.uk/code/firethorn/'
             popd
         fi
     popd
 
-# ------------------------------------------------------------
-# Login as our test user
-#[user@desktop]
-
-        ssh coujeipaipumoopa@rho.virtual.metagrid.co.uk
-        ssh aingeceegeuduath@rho.virtual.metagrid.co.uk
-
 # -----------------------------------------------------
-# Copy/paste instructions from 20130507-maven-build.txt
+# Copy our firethorn properties.
 #[user@test-vm] 
 
-        ssh coujeipaipumoopa@rho.virtual.metagrid.co.uk
-        ssh aingeceegeuduath@rho.virtual.metagrid.co.uk
+    cat "${FIRETHORN_CODE?}/firethorn-database/properties/hsqldb.properties"  > "${HOME?}/firethorn.properties"
+    cat "${FIRETHORN_CODE?}/firethorn-database/properties/mssql.properties"  >> "${HOME?}/firethorn.properties"
+
+    vi "${HOME?}/firethorn.properties"
+
+# ****
+# Fill in the passwords for the live data
+# ****
+
+# -----------------------------------------------------
+# Copy/paste instructions from the latest maven-build (20130507-maven-build.txt).
+#[user@test-vm] 
+
+    # TTY #1 ------------------------------------------------------------
+    ssh oiwaithahghozahf@rho.virtual.metagrid.co.uk
+
+        name=xxxx
+        ssh -L '1433:ramses5:1433' "${name}@fenrir.roe.ac.uk"
+
+    # TTY #2,3 -----------------------------------------------------------
+    ssh oiwaithahghozahf@rho.virtual.metagrid.co.uk
+
+        source ${HOME?}/firethorn.settings
+        pushd "${FIRETHORN_CODE?}"
+
+            mvn -P depends clean install
+
+            pushd 'firethorn-hsqldb'
+
+                mvn clean exec:java
 
 
+    # TTY #4,5,6 ----------------------------------------------------------
+    ssh oiwaithahghozahf@rho.virtual.metagrid.co.uk
+
+        source ${HOME?}/firethorn.settings
+        pushd "${FIRETHORN_CODE?}"
+            pushd 'firethorn-database'
+
+                pushd 'metadata'
+                    mvn clean install
+                popd
+
+                pushd 'userdata'
+                    mvn clean install
+                popd
+
+                pushd 'testdata'
+                    mvn clean install
+                popd
+
+            popd
+
+            mvn clean install 
+
+            pushd 'firethorn-webapp'
+
+                export MAVEN_OPTS=-Xmx128m
+
+                mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
 
 
+    # TTY #7 ------------------------------------------------------------
+    ssh oiwaithahghozahf@rho.virtual.metagrid.co.uk
+
+        source "${HOME?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE?}"
+            pushd 'firethorn-ogsadai/webapp'
+
+                mvn clean compile war:war
+
+                source src/test/bin/jdbc-functions.sh
+
+                jdbcconfig twomass  firethorn.twomass "${HOME?}/firethorn.properties"
+                jdbcconfig ukidss   firethorn.ukidss  "${HOME?}/firethorn.properties"
+                jdbcconfig atlas    firethorn.atlas   "${HOME?}/firethorn.properties"
+                jdbcconfig wfau     firethorn.wfau    "${HOME?}/firethorn.properties"
+                jdbcconfig userdata firethorn.user    "${HOME?}/firethorn.properties"
+
+                export MAVEN_OPTS=-Xmx128m
+
+                mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
+        
+
+    # TTY #8 ------------------------------------------------------------
+    ssh oiwaithahghozahf@rho.virtual.metagrid.co.uk
+
+        source ${HOME?}/firethorn.settings
+        pushd "${FIRETHORN_CODE?}"
+            pushd 'firethorn-ogsadai/activity/client'
+                mvn -D skipTests=false -D test=SingleQueryTestCase test 
+            popd
+        popd
+
+# -----------------------------------------------------
+# Copy/paste instructions from the latest atlas-example (20130524-atlas-example.txt).
+#[user@test-vm] 
+
+    # TTY #9 ------------------------------------------------------------
+    ssh oiwaithahghozahf@rho.virtual.metagrid.co.uk
+
+        source ${HOME?}/firethorn.settings
+        FIRETHORN_TEST=${FIRETHORN_CODE?}/integration/003
+
+        pushd $(mktemp --directory)
+
+            source "${FIRETHORN_TEST?}/00-init-rest.sh"
+
+            source "${FIRETHORN_TEST?}/01-init-user.sh"
+            source "${FIRETHORN_TEST?}/02-00-create-jdbc-space.sh" 'spring:RoeATLAS' '*' 'atlas'
+
+            source "${FIRETHORN_TEST?}/03-00-create-adql-space.sh"
+
+            source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'TWOXMM.dbo'         'twoxmm'
+            source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'TWOMASS.dbo'        'twomass'
+            source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'UKIDSSDR5PLUS.dbo'  'ukidssdr5'
+            source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'ATLASv20130304.dbo' 'atlas'
+
+
+            source "${FIRETHORN_TEST?}/04-00-create-query-space.sh"
+            source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh" 'query'
+            source "${FIRETHORN_TEST?}/04-02-import-query-schema.sh" 'atlas'   'atlas'
+            source "${FIRETHORN_TEST?}/04-02-import-query-schema.sh" 'twomass' 'twomass'
+
+            source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh" 'ukidss'
+            source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsPointSource'        'ukidss' 'gcsPointSource5'
+            source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsSourceXtwomass_psc' 'ukidss' 'gcsSourceXtwomass_psc'
+
+            time source "${FIRETHORN_TEST?}/05-query-atlas.sh"
+
+        popd
 

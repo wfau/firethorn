@@ -2,7 +2,8 @@
 # SSH tunnel to the ROE database server.
 #
 
-    ssh -L 1433:ramses5:1433 fenrir.roe.ac.uk
+    name=xxxx
+    ssh -L '1433:ramses5:1433' "${name}@fenrir.roe.ac.uk"
 
 
 # TTY #2 ------------------------------------------------------------
