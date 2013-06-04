@@ -167,9 +167,9 @@ rho
 # Login as our test user
 #[user@desktop]
 
-    ssh coujeipaipumoopa@rho.virtual.metagrid.co.uk
-    ssh aingeceegeuduath@rho.virtual.metagrid.co.uk
-    ssh oiwaithahghozahf@rho.virtual.metagrid.co.uk
+    #ssh coujeipaipumoopa@rho.virtual.metagrid.co.uk
+    #ssh aingeceegeuduath@rho.virtual.metagrid.co.uk
+    #ssh oiwaithahghozahf@rho.virtual.metagrid.co.uk
 
 # -----------------------------------------------------
 # Create our firethorn settings.
@@ -266,8 +266,9 @@ EOF
 
             pushd 'firethorn-webapp'
 
-                export MAVEN_OPTS=-Xmx128m
+                mvn clean compile war:war
 
+                export MAVEN_OPTS=-Xmx128m
                 mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
 
 
@@ -289,7 +290,6 @@ EOF
                 jdbcconfig userdata firethorn.user    "${HOME?}/firethorn.properties"
 
                 export MAVEN_OPTS=-Xmx128m
-
                 mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
         
 
@@ -326,7 +326,6 @@ EOF
             source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'TWOMASS.dbo'        'twomass'
             source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'UKIDSSDR5PLUS.dbo'  'ukidssdr5'
             source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'ATLASv20130304.dbo' 'atlas'
-
 
             source "${FIRETHORN_TEST?}/04-00-create-query-space.sh"
             source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh" 'query'
