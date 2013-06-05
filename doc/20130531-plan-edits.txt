@@ -134,6 +134,19 @@
 
 
 
+
+    Dynamic hostname in ident URL
+    (based on data from Operation.)
+    - 1 day (dm/st)
+
+    Standard virtual machine configuration
+    - 2 day (dm+st+mh)
+
+    Examples of VO array data types
+    - 1 day (dm/st/mh)
+
+
+
     Shallow copy of tables and columns
     - 5 day (dm)
 

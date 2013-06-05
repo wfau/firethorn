@@ -96,6 +96,7 @@ extends TestBase
     private static final String QUERY_001 =
 
           "SELECT"
+        + "    ra as frog,"
         + "    *"
         + " FROM"
         + "    adql_twomass.twomass_psc"

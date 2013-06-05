@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.parser;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -33,6 +34,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import adql.db.DBChecker;
+import adql.db.DBColumn;
 import adql.db.DBTable;
 import adql.parser.ADQLParser;
 import adql.parser.ParseException;
@@ -42,6 +44,7 @@ import adql.query.ClauseSelect;
 import adql.query.SelectAllColumns;
 import adql.query.SelectItem;
 import adql.query.from.ADQLTable;
+import adql.query.from.FromContent;
 import adql.query.operand.ADQLColumn;
 import adql.query.operand.ADQLOperand;
 import adql.query.operand.Operation;
@@ -188,36 +191,6 @@ implements AdqlParser
                 );
             log.warn("Error translating query [{}]", ouch.getMessage());
             }
-        }
-
-    /**
-     * Wrap an ADQLObject as an Iterable.
-     *
-     */
-    public Iterable<ADQLObject> iter(final ADQLObject object)
-        {
-        return new Iterable<ADQLObject>()
-            {
-            @Override
-            public Iterator<ADQLObject> iterator()
-                {
-                return object.adqlIterator();
-                }
-            };
-        }
-
-    /**
-     * Process an ADQL object.
-     *
-     */
-    public void process(final AdqlParserQuery subject, final ADQLObject object)
-        {
-        process(
-            subject,
-            iter(
-                object
-                )
-            );
         }
 
     /**
@@ -372,7 +345,7 @@ implements AdqlParser
             }
 
         /**
-         * Evaluate the column metadata for a SelectItem.
+         * Evaluate a SelectItem.
          *
          */
         public static AdqlQuery.SelectField eval(final SelectItem item)
@@ -391,7 +364,7 @@ implements AdqlParser
             }
 
         /**
-         * Evaluate the column metadata for an ADQLOperand.
+         * Evaluate an ADQLOperand.
          *
          */
         public static AdqlQuery.SelectField eval(final ADQLOperand oper)
@@ -427,7 +400,7 @@ implements AdqlParser
             }
 
         /**
-         * Evaluate the column metadata for an ADQLColumn.
+         * Evaluate an ADQLColumn.
          *
          */
         public static AdqlQuery.SelectField eval(final ADQLColumn column)
@@ -435,14 +408,8 @@ implements AdqlParser
             log.debug("eval(ADQLColumn)");
             if ((column).getDBLink() instanceof AdqlDBColumn)
                 {
-                final AdqlColumn adql = ((AdqlDBColumn) (column).getDBLink()).column();
-                log.debug("  ----");
-                log.debug("  adql [{}]", adql.fullname());
-                log.debug("  base [{}]", adql.base().fullname());
-                log.debug("  root [{}]", adql.root().fullname());
-                return new ColumnMetaImpl(
-                    adql.name(),
-                    adql.root().meta()
+                return ColumnMetaImpl.eval(
+                    ((AdqlDBColumn) (column).getDBLink()).column()
                     );
                 }
             else {
@@ -453,8 +420,24 @@ implements AdqlParser
             }
 
         /**
-         * Evaluate the column metadata for an Operation.
-         * This is proof of concept only, it just picks the largest size param.
+         * Evaluate an AdqlColumn.
+         *
+         */
+        public static AdqlQuery.SelectField eval(final AdqlColumn column)
+            {
+            log.debug("eval(AdqlColumn)");
+            log.debug("  adql [{}]", column.fullname());
+            log.debug("  base [{}]", column.base().fullname());
+            log.debug("  root [{}]", column.root().fullname());
+            return new ColumnMetaImpl(
+                column.name(),
+                column.root().meta()
+                );
+            }
+        
+        /**
+         * Evaluate an Operation.
+         * **This is proof of concept only, it just picks the largest size param.
          *
          */
         public static AdqlQuery.SelectField eval(final Operation oper)
@@ -504,8 +487,8 @@ implements AdqlParser
             }
 
         /**
-         * Evaluate the column metadata for an ADQLFunction.
-         * This is proof of concept only, it just picks the largest size param.
+         * Evaluate an ADQLFunction.
+         * **This is proof of concept only, it just picks the largest size param.
          *
          */
         public static AdqlQuery.SelectField eval(final ADQLFunction funct)
@@ -542,47 +525,149 @@ implements AdqlParser
         }
 
     /**
+     * Wrap an ADQLObject as an Iterable.
+     *
+     */
+    protected Iterable<ADQLObject> iter(final ADQLObject object)
+        {
+        return new Iterable<ADQLObject>()
+            {
+            @Override
+            public Iterator<ADQLObject> iterator()
+                {
+                return object.adqlIterator();
+                }
+            };
+        }
+
+    /**
+     * Process an ADQL query.
+     *
+     */
+    protected void process(final AdqlParserQuery subject, final ADQLQuery query)
+        {
+        String prefix = "" ;
+        log.debug("process(AdqlParserQuery, ADQLQuery)");
+/*
+        log.debug(" SELECT");
+        ClauseSelect select = query.getSelect();
+        for (SelectItem item : select)
+            {
+            log.debug("  ITEM [{}]", item.getClass().getName());
+            }
+        
+        log.debug(" COLUMNS");
+        DBColumn[] columns = query.getResultingColumns();        
+        for (DBColumn column : columns)
+            {
+            log.debug(" COLUMN [{}]", column.getClass().getName());
+            if (column instanceof AdqlDBColumn)
+                {
+                final AdqlColumn adql = ((AdqlDBColumn) column).column();
+                log.debug("{}  AdqlColumn [{}]", prefix, adql.fullname());
+                log.debug("{}  BaseColumn [{}]", prefix, adql.base().fullname());
+                log.debug("{}  RootColumn [{}]", prefix, adql.root().fullname());
+
+                final AdqlQuery.SelectField meta = ColumnMetaImpl.eval(
+                    item
+                    );
+                log.debug("{}  name [{}]", prefix, meta.name());
+                log.debug("{}  type [{}]", prefix, meta.type());
+                log.debug("{}  size [{}]", prefix, meta.length());
+                
+                
+                
+                }
+            }
+        
+        log.debug(" TABLES");
+        FromContent from = query.getFrom();
+        for (ADQLTable table : from.getTables())
+            {
+            log.debug(" TABLE [{}]", table.getClass().getName());
+            }
+  */
+        //
+        // Original
+        process(
+            subject,
+            iter(
+                query
+                )
+            );
+        }
+
+    /**
      * Process a set of ADQL objects.
      *
      */
-    public void process(final AdqlParserQuery subject, final Iterable<ADQLObject> objects)
+    protected void process(final AdqlParserQuery subject, final Iterable<ADQLObject> objects)
+        {
+        process(
+            "..",
+            subject,
+            objects
+            );
+        }
+        
+    protected void process(final String prefix, final AdqlParserQuery subject, final Iterable<ADQLObject> objects)
         {
         for (final ADQLObject object: objects)
             {
-            log.debug("----");
-            log.debug("ADQLObject [{}]", object.getClass().getName());
+            log.debug("{} ----", prefix);
+            log.debug("{} ADQLObject [{}]", prefix, object.getClass().getName());
 
             if (object instanceof ClauseSelect)
                 {
-                log.debug("  ----");
-                log.debug("  ClauseSelect");
+                log.debug("{} ----", prefix);
+                log.debug("{} ClauseSelect", prefix);
                 for (final SelectItem item : ((ClauseSelect) object))
                     {
-                    log.debug("-- Select item ----");
-                    log.debug(" alias [{}]", item.getAlias());
-                    log.debug(" class [{}]", item.getClass().getName());
+                    log.debug("{} Select item ----", prefix);
+                    log.debug("{}  alias [{}]", prefix, item.getAlias());
+                    log.debug("{}  class [{}]", prefix, item.getClass().getName());
 
                     if (item instanceof SelectAllColumns)
                         {
-                        log.debug("-- Select all >>>>");
+                        log.debug("{} Select all >>>>", prefix);
                         SelectAllColumns all = (SelectAllColumns) item;
-                        log.debug(" All table [{}]", all.getAdqlTable());
-                        for (ADQLObject inner : iter((SelectAllColumns) item))
+                        log.debug("{}  All table [{}]", prefix, all.getAdqlTable());
+                        log.debug("{}  All query [{}]", prefix, all.getQuery());
+
+                        if (all.getQuery() != null)
                             {
-                            process(
-                                subject,
-                                inner
-                                );
+                            ADQLQuery query = all.getQuery();
+                            log.debug("{} ADQLQuery [{}]", prefix, query.getName());
+
+                            DBColumn[] columns = query.getResultingColumns();
+                            for (DBColumn column : columns)
+                                {
+                                log.debug("{}  DBColumn [{}][{}]", prefix, column.getADQLName(), column.getClass().getName());
+                                if (column instanceof AdqlDBColumn)
+                                    {
+                                    subject.add(
+                                        ColumnMetaImpl.eval(
+                                            ((AdqlDBColumn) column).column()
+                                            )
+                                        );
+                                    }
+                                }
+                            
                             }
-                        log.debug("-- Select all <<<<");
+                        if (all.getAdqlTable() != null)
+                            {
+                            
+                            }
+
+                        log.debug("{} Select all <<<<", prefix);
                         }
                     else {
                         final AdqlQuery.SelectField meta = ColumnMetaImpl.eval(
                             item
                             );
-                        log.debug(" name [{}]", meta.name());
-                        log.debug(" type [{}]", meta.type());
-                        log.debug(" size [{}]", meta.length());
+                        log.debug("{}  name [{}]", prefix, meta.name());
+                        log.debug("{}  type [{}]", prefix, meta.type());
+                        log.debug("{}  size [{}]", prefix, meta.length());
                         subject.add(
                             meta
                             );
@@ -590,17 +675,17 @@ implements AdqlParser
                     }
                 }
 
-            if (object instanceof ADQLColumn)
+            else if (object instanceof ADQLColumn)
                 {
-                log.debug("  ----");
-                log.debug("  ADQLColumn [{}]", ((ADQLColumn) object).getName());
+                log.debug("{} ----", prefix);
+                log.debug("{} ADQLColumn [{}]", prefix, ((ADQLColumn) object).getName());
                 if (((ADQLColumn) object).getDBLink() instanceof AdqlDBColumn)
                     {
                     final AdqlColumn adql = ((AdqlDBColumn) ((ADQLColumn) object).getDBLink()).column();
-                    log.debug("  ----");
-                    log.debug("  AdqlColumn [{}]", adql.fullname());
-                    log.debug("  BaseColumn [{}]", adql.base().fullname());
-                    log.debug("  RootColumn [{}]", adql.root().fullname());
+                    log.debug("{}  ----", prefix);
+                    log.debug("{}  AdqlColumn [{}]", prefix, adql.fullname());
+                    log.debug("{}  BaseColumn [{}]", prefix, adql.base().fullname());
+                    log.debug("{}  RootColumn [{}]", prefix, adql.root().fullname());
                     subject.add(
                         adql
                         );
@@ -609,15 +694,15 @@ implements AdqlParser
 
             else if (object instanceof ADQLTable)
                 {
-                log.debug("  ----");
-                log.debug("  ADQLTable [{}]", ((ADQLTable) object).getName());
+                log.debug("{} ----", prefix);
+                log.debug("{} ADQLTable [{}]", prefix, ((ADQLTable) object).getName());
                 if (((ADQLTable) object).getDBLink() instanceof AdqlParserTable)
                     {
                     final AdqlTable adql = ((AdqlParserTable) ((ADQLTable) object).getDBLink()).table();
-                    log.debug("  ----");
-                    log.debug("  AdqlTable [{}]", adql.fullname());
-                    log.debug("  BaseTable [{}]", adql.base().fullname());
-                    log.debug("  RootTable [{}]", adql.root().fullname());
+                    log.debug("{}   ----", prefix);
+                    log.debug("{}   AdqlTable [{}]", prefix, adql.fullname());
+                    log.debug("{}   BaseTable [{}]", prefix, adql.base().fullname());
+                    log.debug("{}   RootTable [{}]", prefix, adql.root().fullname());
                     subject.add(
                         adql
                         );
@@ -626,8 +711,11 @@ implements AdqlParser
 
             else {
                 process(
+                    prefix.concat(" .."),
                     subject,
-                    object
+                    iter(
+                        object
+                        )
                     );
                 }
             }
