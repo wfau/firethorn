@@ -1,33 +1,5 @@
-adqlfile=atlas-query-003.adql
 
-cat > "${adqlfile?}" << 'EOF'
-
-    SELECT
-        *
-    FROM
-        twomass.twomass_psc AS twomass
-    CROSS JOIN
-        atlas.atlasSource   AS source
-    CROSS JOIN
-        atlas.atlasSourceXtwomass_psc AS neighbour
-    WHERE
-        twomass.ra  BETWEEN '324.0' AND '355.0'
-    AND
-        twomass.dec BETWEEN '-32.0' AND '-30.0'
-    AND
-        source.ra   BETWEEN '324.0' AND '355.0'
-    AND
-        source.dec  BETWEEN '-32.0' AND '-30.0'
-    AND
-        neighbour.masterObjID = source.sourceID
-    AND
-        neighbour.slaveObjID  = twomass.pts_key
-    AND
-        neighbour.distanceMins < 1E-4
-
-EOF
-
-cat > "${adqlfile?}" << 'EOF'
+cat > query-test-002a.adql << 'EOF'
     SELECT
         twomass.ra AS tmra,
         source.ra AS atra,
@@ -37,10 +9,8 @@ cat > "${adqlfile?}" << 'EOF'
         twomass.dec - source.dec AS difdec,
         neighbour.distanceMins AS dist
     FROM
-        twomass.twomass_psc AS twomass
-    CROSS JOIN
-        atlas.atlasSource AS source
-    CROSS JOIN
+        twomass.twomass_psc AS twomass,
+        atlas.atlasSource AS source,
         atlas.atlasSourceXtwomass_psc AS neighbour
     WHERE
         twomass.ra BETWEEN '324.0' AND '355.0'
@@ -59,7 +29,32 @@ cat > "${adqlfile?}" << 'EOF'
 
 EOF
 
-cat > "${adqlfile?}" << 'EOF'
+cat > query-test-002b.adql << 'EOF'
+
+    SELECT
+        *
+    FROM
+        twomass.twomass_psc AS twomass,
+        atlas.atlasSource AS source,
+        atlas.atlasSourceXtwomass_psc AS neighbour
+    WHERE
+        twomass.ra  BETWEEN '324.0' AND '355.0'
+    AND
+        twomass.dec BETWEEN '-32.0' AND '-30.0'
+    AND
+        source.ra   BETWEEN '324.0' AND '355.0'
+    AND
+        source.dec  BETWEEN '-32.0' AND '-30.0'
+    AND
+        neighbour.masterObjID = source.sourceID
+    AND
+        neighbour.slaveObjID  = twomass.pts_key
+    AND
+        neighbour.distanceMins < 1E-4
+
+EOF
+
+cat > query-test-002c.adql << 'EOF'
     SELECT
         twomass.*
     FROM
@@ -84,14 +79,11 @@ cat > "${adqlfile?}" << 'EOF'
 EOF
 
 #
-# BUG still needs a name for the query.
-
-#
 # Create the query.
 POST "${queryschema?}/queries/create" \
     --header "firethorn.auth.identity:${identity}" \
     --header "firethorn.auth.community:${community}" \
-    --data-urlencode "adql.schema.query.create.query@${adqlfile?}" \
+    --data-urlencode "adql.schema.query.create.query@query-test-002c.adql" \
     | tee atlas-query.json | ./pp
 queryjob=$(cat atlas-query.json | ident)
 
@@ -102,4 +94,6 @@ runquery "${queryjob?}"
 #
 # Access the VOTable results.
 curl "$(cat atlas-query.json | votable)"
+
+
 

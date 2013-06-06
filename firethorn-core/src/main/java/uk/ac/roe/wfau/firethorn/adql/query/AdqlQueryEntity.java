@@ -994,14 +994,16 @@ implements AdqlQuery, AdqlParserQuery
                 {
                 log.debug(" Community space [{}][{}]", community.space().ident(), community.space().name());
                 log.debug(" Creating new space");
+/*
+ *
                 // HsqlBD hack
                 identity.space(
                     community.space().schemas().select(
                         "PUBLIC.PUBLIC"
                         )
                     );
-/*
  * 
+ */
                 // PostgreSQL hack
                 identity.space(
                     community.space().schemas().select(
@@ -1009,21 +1011,23 @@ implements AdqlQuery, AdqlParserQuery
                         )
                     );
 
-                
+/*
+ * 
                 identity.space(
                     community.space().schemas().create(
                         identity
                         )
                     );
+ *
  */
                 }
             }
         //
         // Create our tables.
-        if (this.owner().space() != null)
+        if (identity.space() != null)
             {
-            log.debug(" Owner space [{}][{}]", this.owner().space().ident(), this.owner().space().name());
-            this.jdbctable = this.owner().space().tables().create(
+            log.debug(" Owner space [{}][{}]", identity.space().ident(), identity.space().name());
+            this.jdbctable = identity.space().tables().create(
                 this
                 );
             this.adqltable = this.schema().tables().create(

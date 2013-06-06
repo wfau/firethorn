@@ -1,7 +1,6 @@
 adqlfile=atlas-query-003.adql
 
 cat > "${adqlfile?}" << 'EOF'
-
     SELECT
         twomass.ra AS tmra,
         source.ra  AS atra,
