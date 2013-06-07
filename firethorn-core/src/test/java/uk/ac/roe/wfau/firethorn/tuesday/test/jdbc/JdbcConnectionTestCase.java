@@ -70,7 +70,7 @@ public class JdbcConnectionTestCase
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
-            JdbcProductType.PGSQL.alias(),
+            JdbcProductType.PGSQL.mname(),
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
@@ -115,7 +115,7 @@ public class JdbcConnectionTestCase
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
-            JdbcProductType.MYSQL.alias(),
+            JdbcProductType.MYSQL.mname(),
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
@@ -160,7 +160,7 @@ public class JdbcConnectionTestCase
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(
-            JdbcProductType.MSSQL.alias(),
+            JdbcProductType.MSSQL.mname(),
             resource.connection().metadata().getDatabaseProductName()
             );
         assertEquals(

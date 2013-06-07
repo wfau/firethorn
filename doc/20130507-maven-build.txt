@@ -33,19 +33,9 @@
 #
 
     source ${HOME?}/firethorn.settings
-    pushd "${FIRETHORN_CODE?}/firethorn-database"
+    pushd "${FIRETHORN_CODE?}"
 
-        pushd metadata
-            mvn clean install
-        popd
-
-        pushd userdata
-            mvn clean install
-        popd
-
-        pushd testdata
-            mvn clean install
-        popd
+        mvn -P database clean install
 
     popd
 
@@ -81,9 +71,9 @@
 
 #
 # Short form.
-source ${HOME?}/firethorn.settings
-pushd "${FIRETHORN_CODE?}/firethorn-core"   ; mvn clean install ; popd
-mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
+#source ${HOME?}/firethorn.settings
+#pushd "${FIRETHORN_CODE?}/firethorn-core"   ; mvn clean install ; popd
+#mvn clean tomcat7:run | tee /tmp/firethorn-tomcat.log
 
 
 # TTY #7 ------------------------------------------------------------

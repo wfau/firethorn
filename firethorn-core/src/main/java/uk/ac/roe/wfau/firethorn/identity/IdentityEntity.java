@@ -252,9 +252,11 @@ implements Identity
         return this.jdbcschema;
         }
     @Override
-    public void space(JdbcSchema space)
+    public void space(JdbcSchema schema)
         {
-        this.jdbcschema = space ;
+        log.debug("space(JdbcSchema)");
+        log.debug(" Schema [{}]", schema);
+        this.jdbcschema = schema;
         }
 
     /*

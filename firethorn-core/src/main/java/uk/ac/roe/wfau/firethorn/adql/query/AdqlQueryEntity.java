@@ -838,7 +838,6 @@ implements AdqlQuery, AdqlParserQuery
 
                 // TODO - Check for valid resource ident in prepare().
                 final String target = ((mode() == Mode.DIRECT) ? primary().ogsaid() : dqpname);
-                //final String tablename = "Q" + ident().toString() + "xxxx" ;
                 final String tablename = query.results().jdbc().fullname().toString() ;
 
                 log.debug("-- AdqlQuery executing [{}]", ident());
@@ -974,10 +973,11 @@ implements AdqlQuery, AdqlParserQuery
             Community community = identity.community();
             log.debug(" Community [{}][{}]", community.ident(), community.name());
 
-            if (community.space() == null)
+            JdbcResource userdata = community.space(); 
+            if (userdata == null)
                 {
                 log.debug(" Community space [null][null]");
-                JdbcResource userdata = factories().jdbc().resources().userdata() ;
+                userdata = factories().jdbc().resources().userdata() ;
                 if (userdata  == null)
                     {
                     log.debug(" Userdata resource [null][null]");
@@ -990,33 +990,20 @@ implements AdqlQuery, AdqlParserQuery
                     }
                 }
 
-            if (community.space() != null)
+            if (userdata != null)
                 {
-                log.debug(" Community space [{}][{}]", community.space().ident(), community.space().name());
-                log.debug(" Creating new space");
-                //
-                // HsqlBD hack
+                log.debug(" Community space [{}][{}]", userdata.ident(), userdata.name());
+                log.debug(" Creating new user space");
+
+//
+// TODO Create a new schema for this user.
+// Requires CreateSchema.                
                 identity.space(
-                    community.space().schemas().select(
-                        "PUBLIC.PUBLIC"
+                    userdata.schemas().select(
+                        //"public"
+                        userdata.connection().type().defschema()
                         )
                     );
-/*
- *
-                // PostgreSQL hack
-                identity.space(
-                    community.space().schemas().select(
-                        "public"
-                        )
-                    );
-                // Ideal
-                identity.space(
-                    community.space().schemas().create(
-                        identity
-                        )
-                    );
- *
- */
                 }
             }
         //
@@ -1033,7 +1020,7 @@ implements AdqlQuery, AdqlParserQuery
             }
 // Legacy no-owner fallback.
         else {
-            log.debug("-- NO OWNER");
+            log.error("-- NO OWNER");
 /*
             this.jdbctable = services().builder().create(
                 legacy,

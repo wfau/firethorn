@@ -338,6 +338,9 @@ public class JdbcSchemaEntity
         @SelectEntityMethod
         public JdbcSchema select(final JdbcResource parent, final String name)
             {
+            log.debug("JdbcSchema select(JdbcResource, String)");
+            log.debug("  Parent  [{}]", parent.ident());
+            log.debug("  Schema  [{}]", name);
             return super.first(
                 super.query(
                     "JdbcSchema-select-parent.name"

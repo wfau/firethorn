@@ -523,7 +523,7 @@ public class JdbcResourceEntity
 
                         //
                         // Skip if the schema is on our ignore list.
-                        if (product.ignores().contains(sname))
+                        if (product.ignore().contains(sname))
                             {
                             //log.debug("Schema [{}] is on the ignore list for [{}]", sname, product);
                             continue;

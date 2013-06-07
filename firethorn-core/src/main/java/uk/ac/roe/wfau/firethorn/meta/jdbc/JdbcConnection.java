@@ -143,5 +143,16 @@ public interface JdbcConnection
      */
     public SQLExceptionConverter converter();
 
+    /**
+     * Get the database type.
+     *
+     */
+    public JdbcProductType type();
+
+    /**
+     * Set the database type.
+     *
+     */
+    public void type(JdbcProductType type);
 
     }

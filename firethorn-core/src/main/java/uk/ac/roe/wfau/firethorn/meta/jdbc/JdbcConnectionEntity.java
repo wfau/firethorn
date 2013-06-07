@@ -67,12 +67,13 @@ public class JdbcConnectionEntity
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_JDBC_URL_COL    = "jdbcurl";
-    protected static final String DB_JDBC_USER_COL   = "jdbcuser";
-    protected static final String DB_JDBC_PASS_COL   = "jdbcpass";
-    protected static final String DB_JDBC_STATUS_COL = "jdbcstatus";
-    protected static final String DB_JDBC_DRIVER_COL = "jdbcdriver";
-
+    protected static final String DB_JDBC_URL_COL     = "jdbcurl";
+    protected static final String DB_JDBC_USER_COL    = "jdbcuser";
+    protected static final String DB_JDBC_PASS_COL    = "jdbcpass";
+    protected static final String DB_JDBC_STATUS_COL  = "jdbcstatus";
+    protected static final String DB_JDBC_DRIVER_COL  = "jdbcdriver";
+    protected static final String DB_JDBC_PRODUCT_COL = "jdbcproduct";
+    
     /**
      * Our Spring SQLException translator.
      *
@@ -683,5 +684,35 @@ public class JdbcConnectionEntity
     public void state(final State state)
         {
         this.state = state ;
+        }
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    @Column(
+        name = DB_JDBC_PRODUCT_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private JdbcProductType type;
+    @Override
+    public JdbcProductType type()
+        {
+        if (this.type == null)
+            {
+            this.type = JdbcProductType.match(
+                this.metadata()
+                );
+            }
+        return this.type;
+        }
+    @Override
+    public void type(final JdbcProductType type)
+        {
+        this.type = type ;
         }
     }

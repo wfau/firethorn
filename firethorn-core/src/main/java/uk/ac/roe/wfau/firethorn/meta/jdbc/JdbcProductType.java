@@ -34,18 +34,22 @@ import lombok.extern.slf4j.Slf4j;
 public enum JdbcProductType
     {
     UNKNOWN(
+        "unknown",
         "unknown"
         ),
     PGSQL(
         "PostgreSQL",
+        "public",
         new String[]{}
         ),
     MYSQL(
         "MySQL",
+        "public",
         new String[]{}
         ),
     MSSQL(
         "Microsoft SQL Server",
+        "dbo",
         new String[]{
             "sys",
             "INFORMATION_SCHEMA"
@@ -53,40 +57,77 @@ public enum JdbcProductType
         ),
     HSQLDB(
         "HSQL Database Engine",
+        "PUBLIC.PUBLIC",
         new String[]{}
         );
 
-    private JdbcProductType(final String alias)
+    private JdbcProductType(final String mname, final String schema)
         {
         this(
-            alias,
+            mname,
+            schema,
             null
             );
         }
-    private JdbcProductType(final String alias, final String[] ignores)
+    private JdbcProductType(final String mname, final String schema, final String[] ignores)
         {
-        this.alias = alias;
+        this.mname  = mname;
+        this.schema = schema ;
         if (ignores != null)
             {
             for (final String ignore : ignores)
                 {
-                this.ignores.add(
+                this.ignore.add(
                     ignore
                     );
                 }
             }
         }
 
-    private final String alias ;
-    public String alias()
+    /**
+     * The name reported in DatabaseMetaData.
+     * 
+     */
+    private final String mname ;
+
+    /**
+     * The name reported in DatabaseMetaData.
+     * 
+     */
+    public String mname()
         {
-        return this.alias;
+        return this.mname;
         }
 
-    private final Collection<String> ignores = new ArrayList<String>();
-    public Collection<String>  ignores()
+    /**
+     * The default schema name.
+     * 
+     */
+    private final String schema ;
+
+    /**
+     * The default schema name.
+     * 
+     */
+    public String defschema ()
         {
-        return this.ignores;
+        return this.schema ;
+        }
+
+
+    /**
+     * A list of 'system' schema to ignore.
+     * 
+     */
+    private final Collection<String> ignore = new ArrayList<String>();
+
+    /**
+     * A list of 'system' schema to ignore.
+     * 
+     */
+    public Collection<String> ignore()
+        {
+        return this.ignore;
         }
 
     static protected Map<String, JdbcProductType> mapping = new HashMap<String, JdbcProductType>();
@@ -94,7 +135,7 @@ public enum JdbcProductType
         for (final JdbcProductType type : JdbcProductType.values())
             {
             mapping.put(
-                type.alias(),
+                type.mname(),
                 type
                 );
             }

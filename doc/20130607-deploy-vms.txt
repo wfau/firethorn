@@ -1,0 +1,56 @@
+
+
+
+    Host pyr
+	    User firethorn
+	    #HostName pyracantha
+	    HostName 192.168.122.2
+	    Protocol 2
+	    Compression no
+
+    Host cocc
+	    User firethorn
+	    #HostName coccinea
+	    HostName 192.168.122.3
+	    Protocol 2
+	    Compression no
+
+
+    hostname    pyracantha
+    ipv4        192.168.122.2
+    tomcat      /var/tomcat6
+    java        /usr/java
+
+    hostname    coccinea
+    ipv4        192.168.122.3
+    tomcat      /var/tomcat7
+    java        /usr/java
+
+
+    mkdir "${HOME?}/.ssh"
+    pushd "${HOME?}/.ssh"
+    
+        if [ ! -e zarquan.metagrid.co.uk.pub ]
+        then    
+            wget http://data.metagrid.co.uk/sshkeys/zarquan.metagrid.co.uk.pub
+            cat zarquan.metagrid.co.uk.pub >> authorized_keys
+        fi
+
+        if [ ! -e stelios.roe.ac.uk.pub ]
+        then    
+            wget http://data.metagrid.co.uk/sshkeys/stelios.roe.ac.uk.pub
+            cat stelios.roe.ac.uk.pub >> authorized_keys
+        fi
+
+        if [ ! -e ktn.roe.ac.uk.pub ]
+        then    
+            wget http://data.metagrid.co.uk/sshkeys/ktn.roe.ac.uk.pub
+            cat ktn.roe.ac.uk.pub >> authorized_keys
+        fi
+
+    popd
+
+    chown -R "${tester?}"  "/home/${tester?}/.ssh"
+    chgrp -R "${tester?}"  "/home/${tester?}/.ssh"
+    chmod g=,o=,u=rwx "/home/${tester?}/.ssh"
+
