@@ -83,13 +83,9 @@ EOF
 POST "${queryschema?}/queries/create" \
     --header "firethorn.auth.identity:${identity}" \
     --header "firethorn.auth.community:${community}" \
-    --data-urlencode "adql.schema.query.create.query@query-test-002c.adql" \
+    --data-urlencode "adql.schema.query.create.query@query-test-002a.adql" \
     | tee atlas-query.json | ./pp
-queryjob=$(cat atlas-query.json | ident)
-
-#
-# Run the query.
-runquery "${queryjob?}"
+runquery "$(cat atlas-query.json | ident)"
 
 #
 # Access the VOTable results.
