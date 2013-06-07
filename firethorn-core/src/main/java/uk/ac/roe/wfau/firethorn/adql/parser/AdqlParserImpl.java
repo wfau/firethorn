@@ -29,6 +29,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -155,12 +156,18 @@ implements AdqlParser
                 object
                 );
 
-            // IF we are single resource .. then translate into the resource dialect ?
-
             //
             // Translate the query into SQL.
+            final ADQLTranslator translator ;
+            if (this.mode == Mode.DIRECT)
+                {
+                translator = new SQLServerTranslator();
+                }
+            else {
+                translator = new OgsaDQPTranslator();
+                }
+            
             // ** PATCH FIX FOR CROSS JOIN BUG **
-            final ADQLTranslator translator = new PostgreSQLTranslator(false);
             subject.osql(
                 translator.translate(
                     object
@@ -547,7 +554,6 @@ implements AdqlParser
     protected void process(final AdqlParserQuery subject, final ADQLQuery object)
         {
         process(
-            "..",
             subject,
             object,
             iter(
@@ -556,33 +562,30 @@ implements AdqlParser
             );
         }
 
-    protected void process(final String prefix, final AdqlParserQuery subject, final ADQLQuery aquery, final Iterable<ADQLObject> iter)
+    protected void process(final AdqlParserQuery subject, final ADQLQuery aquery, final Iterable<ADQLObject> iter)
         {
-        for (final ADQLObject object: iter)
+        log.debug("process(final AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>");
+        for (final ADQLObject clause: iter)
             {
-            log.debug("{} ----", prefix);
-            log.debug("{} ADQLObject [{}]", prefix, object.getClass().getName());
+            log.debug(" ----");
+            log.debug(" ADQLObject [{}]", clause.getClass().getName());
 
-            if (object instanceof ClauseSelect)
+            if (clause instanceof ClauseSelect)
                 {
-                log.debug("{} ----", prefix);
-                log.debug("{} ClauseSelect", prefix);
-                for (final SelectItem item : ((ClauseSelect) object))
+                log.debug(" ----");
+                log.debug(" ClauseSelect");
+                for (final SelectItem item : ((ClauseSelect) clause))
                     {
-                    log.debug("{} Select item ----", prefix);
-                    log.debug("{}  alias [{}]", prefix, item.getAlias());
-                    log.debug("{}  class [{}]", prefix, item.getClass().getName());
+                    log.debug(" Select item ----");
+                    log.debug("  alias [{}]", item.getAlias());
+                    log.debug("  class [{}]", item.getClass().getName());
 
                     if (item instanceof SelectAllColumns)
                         {
-                        log.debug("{} Select all >>>>", prefix);
                         SelectAllColumns all = (SelectAllColumns) item;
-                        log.debug("{}  All table [{}]", prefix, all.getAdqlTable());
-                        log.debug("{}  All query [{}]", prefix, all.getQuery());
                         if (all.getQuery() != null)
                             {
                             fields(
-                                prefix,
                                 subject,
                                 all.getQuery()
                                 );                            
@@ -590,7 +593,6 @@ implements AdqlParser
                         else if (all.getAdqlTable() != null)
                             {
                             fields(
-                                prefix,
                                 subject,
                                 aquery,
                                 all.getAdqlTable()
@@ -601,15 +603,14 @@ implements AdqlParser
                             // Neither query nor table ..
                             log.warn("SelectAllColumns with null query and table");
                             }
-                        log.debug("{} Select all <<<<", prefix);
                         }
                     else {
                         final AdqlQuery.SelectField meta = ColumnMetaImpl.eval(
                             item
                             );
-                        log.debug("{}  name [{}]", prefix, meta.name());
-                        log.debug("{}  type [{}]", prefix, meta.type());
-                        log.debug("{}  size [{}]", prefix, meta.length());
+                        log.debug("  name [{}]", meta.name());
+                        log.debug("  type [{}]", meta.type());
+                        log.debug("  size [{}]", meta.length());
                         subject.add(
                             meta
                             );
@@ -617,34 +618,34 @@ implements AdqlParser
                     }
                 }
 
-            else if (object instanceof ADQLColumn)
+            else if (clause instanceof ADQLColumn)
                 {
-                log.debug("{} ----", prefix);
-                log.debug("{} ADQLColumn [{}]", prefix, ((ADQLColumn) object).getName());
-                if (((ADQLColumn) object).getDBLink() instanceof AdqlDBColumn)
+                log.debug(" ----");
+                log.debug(" ADQLColumn [{}]", ((ADQLColumn) clause).getName());
+                if (((ADQLColumn) clause).getDBLink() instanceof AdqlDBColumn)
                     {
-                    final AdqlColumn adql = ((AdqlDBColumn) ((ADQLColumn) object).getDBLink()).column();
-                    log.debug("{}  ----", prefix);
-                    log.debug("{}  AdqlColumn [{}]", prefix, adql.fullname());
-                    log.debug("{}  BaseColumn [{}]", prefix, adql.base().fullname());
-                    log.debug("{}  RootColumn [{}]", prefix, adql.root().fullname());
+                    final AdqlColumn adql = ((AdqlDBColumn) ((ADQLColumn) clause).getDBLink()).column();
+                    log.debug("  ----");
+                    log.debug("  AdqlColumn [{}]", adql.fullname());
+                    log.debug("  BaseColumn [{}]", adql.base().fullname());
+                    log.debug("  RootColumn [{}]", adql.root().fullname());
                     subject.add(
                         adql
                         );
                     }
                 }
 
-            else if (object instanceof ADQLTable)
+            else if (clause instanceof ADQLTable)
                 {
-                log.debug("{} ----", prefix);
-                log.debug("{} ADQLTable [{}]", prefix, ((ADQLTable) object).getName());
-                if (((ADQLTable) object).getDBLink() instanceof AdqlParserTable)
+                log.debug(" ----");
+                log.debug(" ADQLTable [{}]", ((ADQLTable) clause).getName());
+                if (((ADQLTable) clause).getDBLink() instanceof AdqlParserTable)
                     {
-                    final AdqlTable adql = ((AdqlParserTable) ((ADQLTable) object).getDBLink()).table();
-                    log.debug("{}   ----", prefix);
-                    log.debug("{}   AdqlTable [{}]", prefix, adql.fullname());
-                    log.debug("{}   BaseTable [{}]", prefix, adql.base().fullname());
-                    log.debug("{}   RootTable [{}]", prefix, adql.root().fullname());
+                    final AdqlTable adql = ((AdqlParserTable) ((ADQLTable) clause).getDBLink()).table();
+                    log.debug("   ----");
+                    log.debug("   AdqlTable [{}]", adql.fullname());
+                    log.debug("   BaseTable [{}]", adql.base().fullname());
+                    log.debug("   RootTable [{}]", adql.root().fullname());
                     subject.add(
                         adql
                         );
@@ -653,26 +654,24 @@ implements AdqlParser
 
             else {
                 process(
-                    prefix.concat(" .."),
                     subject,
                     aquery,
                     iter(
-                        object
+                        clause
                         )
                     );
                 }
             }
         }
     
-    protected void fields(final String prefix, final AdqlParserQuery subject, final ADQLQuery query, final ADQLTable table)
+    protected void fields(final AdqlParserQuery subject, final ADQLQuery query, final ADQLTable table)
         {
-        log.debug("{} fields(AdqlParserQuery, ADQLQuery, ADQLTable)", prefix);
-        log.debug("{} ADQLTable [{}][{}]", prefix, table.getName(), table.getClass().getName());
+        log.debug("fields(AdqlParserQuery, ADQLQuery, ADQLTable)");
+        log.debug("ADQLTable [{}][{}]", table.getName(), table.getClass().getName());
         if (table.getDBLink() == null)
             {
-            log.debug("{} ADQLTable getDBLink() is NULL", prefix);
+            log.debug("ADQLTable getDBLink() is NULL");
             fields(
-                prefix,
                 subject,
                 query,
                 table,
@@ -681,25 +680,24 @@ implements AdqlParser
             }
         else if (table.getDBLink() instanceof AdqlParserTable)
             {
-            log.debug("{} ADQLTable getDBLink() is AdqlParserTable", prefix);
+            log.debug("ADQLTable getDBLink() is AdqlParserTable");
             fields(
-                prefix,
                 subject,
                 (AdqlParserTable) table.getDBLink()
                 );
             }
         else {
-            log.warn("{} ADQLTable getDBLink() is unexpected class [{}]", prefix, table.getDBLink().getClass().getName());
+            log.warn("ADQLTable getDBLink() is unexpected class [{}]", table.getDBLink().getClass().getName());
             }
         }
  
-    protected void fields(final String prefix, final AdqlParserQuery subject, final ADQLQuery query, ADQLTable table, FromContent from)
+    protected void fields(final AdqlParserQuery subject, final ADQLQuery query, ADQLTable table, FromContent from)
         {
-        log.debug("{} fields(AdqlParserQuery, ADQLQuery, ADQLTable, FromContent)", prefix);
-        log.debug("{}  table [{}][{}]", prefix, table.getName(), table.getAlias());
+        log.debug("fields(AdqlParserQuery, ADQLQuery, ADQLTable, FromContent)");
+        log.debug("  table [{}][{}]", table.getName(), table.getAlias());
         for (ADQLTable temp : from.getTables())
             {
-            log.debug("{}  temp  [{}][{}]", prefix, temp.getName(), temp.getAlias());
+            log.debug("    temp  [{}][{}]", temp.getName(), temp.getAlias());
             if (table.hasAlias())
                 {
                 if (temp.hasAlias())
@@ -708,9 +706,8 @@ implements AdqlParser
                         {
                         if (table.getAlias().equalsIgnoreCase(temp.getAlias()))
                             {
-                            log.debug("{} Found match on alias [{}]", prefix, table.getAlias());
+                            log.debug("Found match on alias [{}]", table.getAlias());
                             fields(
-                                prefix,
                                 subject,
                                 query,
                                 temp
@@ -725,9 +722,8 @@ implements AdqlParser
                     {
                     if (table.getName().equalsIgnoreCase(temp.getName()))
                         {
-                        log.debug("{} Found match on name [{}]", prefix, table.getName());
+                        log.debug("Found match on name [{}]", table.getName());
                         fields(
-                            prefix,
                             subject,
                             query,
                             temp
@@ -740,13 +736,13 @@ implements AdqlParser
         log.warn("Unable to find matching table [{}][{}]", table.getName(), table.getAlias());
         }
 
-    protected void fields(final String prefix, final AdqlParserQuery subject, final ADQLQuery query)
+    protected void fields(final AdqlParserQuery subject, final ADQLQuery query)
         {
-        log.debug("{} fields(AdqlParserQuery, ADQLQuery)", prefix);
-        log.debug("{}  ADQLQuery [{}]", prefix, query.getName());
+        log.debug("fields(AdqlParserQuery, ADQLQuery)");
+        log.debug("  ADQLQuery [{}]", query.getName());
         for (DBColumn column : query.getResultingColumns())
             {
-            log.debug("{}   DBColumn [{}][{}]", prefix, column.getADQLName(), column.getClass().getName());
+            log.debug("    DBColumn [{}][{}]", column.getADQLName(), column.getClass().getName());
             if (column instanceof AdqlDBColumn)
                 {
                 subject.add(
@@ -758,22 +754,21 @@ implements AdqlParser
             }
         }
     
-    protected void fields(final String prefix, final AdqlParserQuery subject, AdqlParserTable table)
+    protected void fields(final AdqlParserQuery subject, AdqlParserTable table)
         {
-        log.debug("{} fields(AdqlParserQuery, AdqlParserTable)", prefix);
+        log.debug("fields(AdqlParserQuery, AdqlParserTable)");
         fields(
-            prefix,
             subject,
             table.table()
             );
         }
 
-    protected void fields(final String prefix, final AdqlParserQuery subject, AdqlTable table)
+    protected void fields(final AdqlParserQuery subject, AdqlTable table)
         {
-        log.debug("{} fields(AdqlParserQuery, AdqlTable)", prefix);
-        log.debug("{}  AdqlTable [{}]", prefix, table.fullname());
-        log.debug("{}  BaseTable [{}]", prefix, table.base().fullname());
-        log.debug("{}  RootTable [{}]", prefix, table.root().fullname());
+        log.debug("fields(AdqlParserQuery, AdqlTable)");
+        log.debug("  AdqlTable [{}]", table.fullname());
+        log.debug("  BaseTable [{}]", table.base().fullname());
+        log.debug("  RootTable [{}]", table.root().fullname());
         for (AdqlColumn column : table.columns().select())
             {
             subject.add(

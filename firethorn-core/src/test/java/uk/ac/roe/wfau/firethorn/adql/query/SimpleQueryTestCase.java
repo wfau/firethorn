@@ -38,106 +38,36 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
  */
 @Slf4j
 public class SimpleQueryTestCase
-extends TestBase
+extends TwomassQueryTestBase
     {
-
-    private JdbcResource twomass   ;
-
-    /**
-     * Create our resources.
-     *
-     */
-    @Before
-    public void init()
-        {
-        //
-        // Create our JDBC resources.
-        this.twomass = factories().jdbc().resources().create(
-            "twomass",
-            "TWOMASS",
-            "twomass",
-            "spring:RoeTWOMASS"
-            );
-        }
-
-    /**
-     * Debug display of a query.
-     *
-     */
-    public void debug(final AdqlQuery query)
-        {
-        log.debug("Columns -- ");
-        for (final AdqlColumn column : query.columns())
-            {
-            log.debug("Column [{}]", column.fullname());
-            }
-        log.debug("Tables -- ");
-        for (final AdqlTable table : query.tables())
-            {
-            log.debug("Table [{}]", table.fullname());
-            }
-        log.debug("Resources -- ");
-        for (final BaseResource<?> target : query.resources())
-            {
-            log.debug("Resource [{}]", target.fullname());
-            }
-        log.debug("Query -- ");
-        log.debug("Mode   [{}]", query.mode());
-        log.debug("Status [{}]", query.status());
-        log.debug("ADQL   [{}]", query.adql());
-        log.debug("OSQL   [{}]", query.osql());
-        log.debug("Target [{}]", query.primary().ident());
-        }
-
     /**
      * Simple ADQL query for the imported table.
      *
      */
     private static final String QUERY_001 =
-
-          "SELECT"
-        + "    ra,"
-        + "    dec,"
-        + "    pts_key"
+        "SELECT"
+            + " ra,"
+            + " dec,"
+            + " pts_key"
         + " FROM"
-        + "    adql_twomass.twomass_psc"
+            + " adql_twomass.twomass_psc"
         + " WHERE"
-        + "    ra  BETWEEN '56.0' AND '57.9'"
+            + " ra BETWEEN '56.0' AND '57.9'"
         + " AND"
-        + "    dec BETWEEN '24.0' AND '24.2'"
+            + " dec BETWEEN '24.0' AND '24.2'"
         + ""
         ;
 
-	@Test
+    @Test
     public void test000()
     throws Exception
         {
-        //
-        // Create our ADQL workspace.
-        final AdqlResource workspace = factories().adql().resources().create(
-            "adql-workspace"
+        debug(
+            this.schema.queries().create(
+                QUERY_001
+                )
             );
-        //
-        // Import the JDBC tables into our workspace.
-        final AdqlSchema schema = workspace.schemas().create(
-            "adql_twomass"
-            );
-        schema.tables().create(
-            this.twomass.schemas().select(
-                "TWOMASS",
-                "dbo"
-                ).tables().select(
-                    "twomass_psc"
-                    )
-            );
-
-        //
-        // Create the query and check the results.
-        final AdqlQuery query = schema.queries().create(
-            QUERY_001
-            );
-        debug(query);
-
-        }
+        // TODO verify the query contents ..
+        } 
     }
 

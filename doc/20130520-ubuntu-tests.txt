@@ -279,21 +279,8 @@ EOF
 
         source ${HOME?}/firethorn.settings
         pushd "${FIRETHORN_CODE?}"
-            pushd 'firethorn-database'
 
-                pushd 'metadata'
-                    mvn clean install
-                popd
-
-                pushd 'userdata'
-                    mvn clean install
-                popd
-
-                pushd 'testdata'
-                    mvn clean install
-                popd
-
-            popd
+            mvn -P database clean install
 
             mvn clean install 
 
@@ -337,6 +324,8 @@ EOF
                 mvn -D skipTests=false -D test=SingleQueryTestCase test 
             popd
         popd
+
+        exit
 
 # -----------------------------------------------------
 # Copy/paste instructions from the latest atlas-example (20130524-atlas-example.txt).
