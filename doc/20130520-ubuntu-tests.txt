@@ -21,15 +21,25 @@ rho
                 ' dhcp.dat
             }
 
+        #
+        # Set the vm params.
         name=rho
         base=ubuntu-12
 
         #
-        # Create a managed volume, backed by the base image.
+        # Set the disc image params.
         size=8G
         file=${name:?}.qcow
         back=$(virsh vol-path --pool 'base' "${base:?}-base.qcow")
-        
+
+        #
+        # Delete existing volume.
+        virsh destroy  "${name:?}"
+        virsh undefine "${name:?}"
+        virsh vol-delete --pool 'default' "${file:?}"
+
+        #
+        # Create a managed volume.
         virsh vol-create-as \
             'default' \
             "${name:?}.qcow" \
@@ -86,7 +96,9 @@ rho
 #[root@test-vm] 
 
     apt-get -y install pwgen
+
     apt-get -y install gzip
+
     apt-get -y install unzip
 
 # ----------------------------------------------------------
@@ -94,6 +106,7 @@ rho
 #[root@test-vm] 
 
     apt-get -y install openjdk-7-jre
+
     apt-get -y install openjdk-7-jdk
 
 #
@@ -113,6 +126,7 @@ rho
 #[root@test-vm] 
 
     apt-get -y install perl
+
     apt-get -y install libjson-perl
 
 
@@ -147,6 +161,12 @@ rho
             cat stelios.roe.ac.uk.pub >> authorized_keys
         fi
 
+        if [ ! -e ktn.roe.ac.uk.pub ]
+        then    
+            wget http://data.metagrid.co.uk/sshkeys/ktn.roe.ac.uk.pub
+            cat ktn.roe.ac.uk.pub >> authorized_keys
+        fi
+
     popd
 
     chown -R "${tester?}"  "/home/${tester?}/.ssh"
@@ -167,9 +187,13 @@ rho
 # Login as our test user
 #[user@desktop]
 
-    #ssh coujeipaipumoopa@rho.virtual.metagrid.co.uk
-    #ssh aingeceegeuduath@rho.virtual.metagrid.co.uk
-    #ssh oiwaithahghozahf@rho.virtual.metagrid.co.uk
+cat > "${HOME?}/test-settings.txt" << 'EOF'
+testuser=lesuchahyohchonu
+testhost=rho.virtual.metagrid.co.uk
+EOF
+
+    source "${HOME?}/test-settings.txt"
+    ssh "${testuser?}@${testhost?}"
 
 # -----------------------------------------------------
 # Create our firethorn settings.
@@ -219,17 +243,25 @@ EOF
 # ****
 
 # -----------------------------------------------------
-# Copy/paste instructions from the latest maven-build (20130507-maven-build.txt).
+# Copy of latest maven-build (20130507-maven-build.txt).
 #[user@test-vm] 
 
     # TTY #1 ------------------------------------------------------------
-    ssh oiwaithahghozahf@rho.virtual.metagrid.co.uk
+    source "${HOME?}/test-settings.txt"
+    ssh "${testuser?}@${testhost?}"
 
-        name=xxxx
-        ssh -L '1433:ramses5:1433' "${name}@fenrir.roe.ac.uk"
+
+        username=xxxx
+        hostname=fenrir.roe.ac.uk
+        
+        sed -i '/^'${hostname:?}'/d' ~/.ssh/known_hosts
+        ssh-keyscan ${hostname:?} >> ~/.ssh/known_hosts
+
+        ssh -L '1433:ramses5:1433' "${username?}@${hostname?}"
 
     # TTY #2,3 -----------------------------------------------------------
-    ssh oiwaithahghozahf@rho.virtual.metagrid.co.uk
+    source "${HOME?}/test-settings.txt"
+    ssh "${testuser?}@${testhost?}"
 
         source ${HOME?}/firethorn.settings
         pushd "${FIRETHORN_CODE?}"
@@ -242,7 +274,8 @@ EOF
 
 
     # TTY #4,5,6 ----------------------------------------------------------
-    ssh oiwaithahghozahf@rho.virtual.metagrid.co.uk
+    source "${HOME?}/test-settings.txt"
+    ssh "${testuser?}@${testhost?}"
 
         source ${HOME?}/firethorn.settings
         pushd "${FIRETHORN_CODE?}"
@@ -273,7 +306,8 @@ EOF
 
 
     # TTY #7 ------------------------------------------------------------
-    ssh oiwaithahghozahf@rho.virtual.metagrid.co.uk
+    source "${HOME?}/test-settings.txt"
+    ssh "${testuser?}@${testhost?}"
 
         source "${HOME?}/firethorn.settings"
         pushd "${FIRETHORN_CODE?}"
@@ -294,7 +328,8 @@ EOF
         
 
     # TTY #8 ------------------------------------------------------------
-    ssh oiwaithahghozahf@rho.virtual.metagrid.co.uk
+    source "${HOME?}/test-settings.txt"
+    ssh "${testuser?}@${testhost?}"
 
         source ${HOME?}/firethorn.settings
         pushd "${FIRETHORN_CODE?}"
@@ -308,7 +343,8 @@ EOF
 #[user@test-vm] 
 
     # TTY #9 ------------------------------------------------------------
-    ssh oiwaithahghozahf@rho.virtual.metagrid.co.uk
+    source "${HOME?}/test-settings.txt"
+    ssh "${testuser?}@${testhost?}"
 
         source ${HOME?}/firethorn.settings
         FIRETHORN_TEST=${FIRETHORN_CODE?}/integration/003

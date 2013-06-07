@@ -83,6 +83,38 @@
     <reporting>
     </reporting>
 
+    <!--+
+        | Project profiles.
+        | https://maven.apache.org/guides/introduction/introduction-to-profiles.html
+        +-->
+    <profiles>
+
+        <!--+
+            | Build the databases.
+            +-->
+        <profile>
+            <id>database</id>
+            <modules>
+                <module>metadata</module>
+                <module>testdata</module>
+                <module>userdata</module>
+            </modules>
+        </profile>
+
+        <!--+
+            | Build our codebase.
+            +-->
+        <profile>
+            <id>build</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+            </modules>
+        </profile>
+
+    </profiles>
+
 </project>
 
 
