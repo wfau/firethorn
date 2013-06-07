@@ -832,6 +832,16 @@
             </modules>
         </profile>
 
+        <!--+
+            | Build the databases.
+            +-->
+        <profile>
+            <id>database</id>
+            <modules>
+                <module>firethorn-database</module>
+            </modules>
+        </profile>
+
     </profiles>
 
 </project>
