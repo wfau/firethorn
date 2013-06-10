@@ -83,7 +83,7 @@ public class OgsaDQPTranslator
         }
 
     /**
-     * Copy of the PostgreSQLTranslator method ... 
+     * Replaces the PostgreSQLTranslator method to not put LIMIT at the end. 
      *
      */
     public String translate(final ADQLQuery query)
@@ -144,7 +144,7 @@ public class OgsaDQPTranslator
 
     
     /**
-     * Copy of the PostgreSQLTranslator method ... 
+     * Replaces the PostgreSQLTranslator method to put TOP at the beginning. 
      *
      */
     public String translate(final ClauseSelect clause)
@@ -196,12 +196,15 @@ public class OgsaDQPTranslator
         {
         log.debug("translate(SelectAllColumns)");
 
-// TODO Replace this with code that uses the Firethorn metadata.
-// Need to make sure this ends up with the same list of fields as the JDBC table in user data. 
-        
-// Check if ADQLTable is a AdqlParserTable
-// cast into AdqlParserTable and call table.table() to get a AdqlTable 
-// process the column list from the AdqlTable. 
+        /*
+         * TODO Replace this with code that uses the Firethorn metadata.
+         *  
+         * Check if the ADQLTable is an AdqlParserTable
+         * Cast the ADQLTable  into an AdqlParserTable 
+         * call table.table() to get an AdqlTable object 
+         * process the column list from the AdqlTable.
+         * 
+         */
         
         HashMap<String, String> mapAlias = new HashMap<String, String>();
         
@@ -223,7 +226,7 @@ public class OgsaDQPTranslator
             else {
 // getDBLink is null - need to fix this
 // Need to find where the ADQLTable is created
-// and add a reference to the BaseTable that this refers to.
+// and add a reference to the AdqlParserTable.
                 log.warn("ADQLTable with no link to the BaseTable [{}]", table.getName());
                 }
             }

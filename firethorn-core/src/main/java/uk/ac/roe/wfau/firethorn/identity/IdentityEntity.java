@@ -259,46 +259,5 @@ implements Identity
         this.jdbcschema = schema;
         }
 
-    /*
-    public Schemas schemas()
-        {
-        return new Schemas()
-            {
-            @Override
-            public JdbcSchema current()
-                {
-                return jdbcschema ;
-                }
-
-            @Override
-            public JdbcSchema create()
-                {
-                log.debug("create()");
-                log.debug(" Identity [{}][{}]", IdentityEntity.this.ident(), IdentityEntity.this.name());
-// NULL POINTER
-// community().resource()
-// Default ?                
-                JdbcResource space = community().space();                 
-                if (space == null)
-                    {
-                    return null ;
-                    }
-                else {
-                    return space.schemas().create(
-                        IdentityEntity.this 
-                        );
-                    }                
-                }
-
-            @Override
-            public Iterable<JdbcSchema> select()
-                {
-                return community().space().schemas().select(
-                    IdentityEntity.this 
-                    );
-                }
-            };
-        }
-     */
     }
 

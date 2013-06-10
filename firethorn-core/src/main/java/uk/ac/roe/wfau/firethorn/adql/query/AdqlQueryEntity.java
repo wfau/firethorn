@@ -1000,7 +1000,6 @@ implements AdqlQuery, AdqlParserQuery
 // Requires CreateSchema.                
                 identity.space(
                     userdata.schemas().select(
-                        //"public"
                         userdata.connection().type().defschema()
                         )
                     );

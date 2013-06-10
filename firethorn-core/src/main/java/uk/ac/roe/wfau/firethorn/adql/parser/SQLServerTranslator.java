@@ -82,7 +82,7 @@ public class SQLServerTranslator
         }
 
     /**
-     * Copy of the PostgreSQLTranslator method ... 
+     * Replaces the PostgreSQLTranslator method to not put LIMIT at the end. 
      *
      */
     public String translate(final ADQLQuery query)
@@ -143,7 +143,7 @@ public class SQLServerTranslator
 
     
     /**
-     * Copy of the PostgreSQLTranslator method ... 
+     * Replaces the PostgreSQLTranslator method to put TOP at the beginning. 
      *
      */
     public String translate(final ClauseSelect clause)

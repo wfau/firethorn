@@ -35,7 +35,7 @@
     source ${HOME?}/firethorn.settings
     pushd "${FIRETHORN_CODE?}"
 
-        mvn -P database clean install
+        mvn -P database install
 
     popd
 
