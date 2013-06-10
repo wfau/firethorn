@@ -12,8 +12,10 @@ rho
 # Create new virtual machines ....
 #[root@kvm-server]
 
-    pushd ${HOME?}/kvm
-    
+    pushd ${HOME:?}/kvm
+
+        #
+        # MAC address lookup table.
         dhcpmac()
             {
             sed -n '
@@ -23,52 +25,57 @@ rho
 
         #
         # Set the vm params.
-        name=rho
-        base=ubuntu-12
+        vmname=rho
+        vmbase=ubuntu-12
+        memunit=MiB
+        memsize=512
 
         #
         # Set the disc image params.
-        size=8G
-        file=${name:?}.qcow
-        back=$(virsh vol-path --pool 'base' "${base:?}-base.qcow")
+        volsize=8G
+        volname=${vmname:?}.qcow
+        volback=$(virsh vol-path --pool 'base' "${vmbase:?}-base.qcow")
 
         #
         # Delete existing volume.
-        virsh destroy  "${name:?}"
-        virsh undefine "${name:?}"
-        virsh vol-delete --pool 'default' "${file:?}"
+        virsh destroy  "${vmname:?}"
+        virsh undefine "${vmname:?}"
+        virsh vol-delete --pool 'default' "${volname:?}"
 
         #
         # Create a managed volume.
         virsh vol-create-as \
             'default' \
-            "${name:?}.qcow" \
-            "${size:?}" \
+            "${volname:?}" \
+            "${volsize:?}" \
             --allocation 0 \
             --format 'qcow2' \
-            --backing-vol "${back}" \
+            --backing-vol "${volback:?}" \
             --backing-vol-format 'qcow2'
 
-        virsh vol-dumpxml --pool 'default' "${file:?}"
-        virsh vol-info    --pool 'default' "${file:?}"
+        virsh vol-dumpxml --pool 'default' "${volname:?}"
+        virsh vol-info    --pool 'default' "${volname:?}"
+
+        volpath=$(virsh vol-path --pool 'default' "${volname:?}")
 
         #
         # Create a new domain.
-        path=$(virsh vol-path --pool 'default' "${name:?}.qcow")
         sed '
-            s|<name>.*</name>|<name>'"${name:?}"'</name>|
+            s|<name>.*</name>|<name>'"${vmname:?}"'</name>|
             s|<uuid>.*</uuid>|<uuid>'"$(uuidgen)"'</uuid>|
-            s|<source file='\''.*'\''/>|<source file='\'''"${path}"''\''/>|
-            s|<mac address='\''.*'\''/>|<mac address='\'''"$(dhcpmac ${name:?})"''\''/>|
-            ' simple-vm.xml > "${name:?}.xml"
+            s|<memory unit='\''.*'\''>.*</memory>|<memory unit='\'''"${memunit:?}"''\''>'"${memsize:?}"'</memory>|
+            s|<source file='\''.*'\''/>|<source file='\'''"${volpath:?}"''\''/>|
+            s|<mac address='\''.*'\''/>|<mac address='\'''"$(dhcpmac ${vmname:?})"''\''/>|
+            ' simple-vm.xml > "${vmname:?}.xml"
 
         #
         # Define a new (managed) instance
-        virsh define "${name:?}.xml"
-        virsh start  "${name:?}"
+        virsh define "${vmname:?}.xml"
+        virsh start  "${vmname:?}"
 
     popd
-
+    exit
+    
 # ------------------------------------------
 # Update our local SSH fingerprint
 #[user@desktop]
@@ -92,7 +99,7 @@ rho
     apt-get update
 
 # ----------------------------------------------------------
-# Install basic tools.
+# Install generic tools.
 #[root@test-vm] 
 
     apt-get -y install pwgen
@@ -100,6 +107,8 @@ rho
     apt-get -y install gzip
 
     apt-get -y install unzip
+
+    apt-get -y install htop
 
 # ----------------------------------------------------------
 # Install Java 1.7
@@ -129,30 +138,29 @@ rho
 
     apt-get -y install libjson-perl
 
-
 # ------------------------------------------------------------
 # Create test user
 #[root@test-vm] 
 
     tester=$(pwgen 16 1)
 
-    useradd --create-home --shell /bin/bash --groups users "${tester?}"
+    useradd --create-home --shell /bin/bash --groups users "${tester:?}"
 
 # -----------------------------------------------------
 # Create our ssh config.
 #[root@test-vm] 
 
-    if [ ! -e "/home/${tester?}/.ssh" ]
+    if [ ! -e "/home/${tester:?}/.ssh" ]
     then
-        mkdir "/home/${tester?}/.ssh"
+        mkdir "/home/${tester:?}/.ssh"
     fi
 
-    pushd "/home/${tester?}/.ssh"
+    pushd "/home/${tester:?}/.ssh"
     
-        if [ ! -e zarquan.metagrid.co.uk.pub ]
+        if [ ! -e dmr.roe.ac.uk.pub ]
         then    
-            wget http://data.metagrid.co.uk/sshkeys/zarquan.metagrid.co.uk.pub
-            cat zarquan.metagrid.co.uk.pub >> authorized_keys
+            wget http://data.metagrid.co.uk/sshkeys/dmr.roe.ac.uk.pub
+            cat dmr.roe.ac.uk.pub >> authorized_keys
         fi
 
         if [ ! -e stelios.roe.ac.uk.pub ]
@@ -169,17 +177,15 @@ rho
 
     popd
 
-    chown -R "${tester?}"  "/home/${tester?}/.ssh"
-    chgrp -R "${tester?}"  "/home/${tester?}/.ssh"
-    chmod g=,o=,u=rwx "/home/${tester?}/.ssh"
+    chown -R "${tester:?}"  "/home/${tester:?}/.ssh"
+    chgrp -R "${tester:?}"  "/home/${tester:?}/.ssh"
+    chmod g=,o=,u=rwx "/home/${tester:?}/.ssh"
 
 # ------------------------------------------------------------
 # Print test user
 #[root@test-vm] 
 
-    echo "User name [${tester?}]"
-    echo "Host name [$(hostname -f)]"
-    echo "Login as  [${tester?}@$(hostname -f)]"
+    echo "User name [${tester:?}]"
 
     exit
     
@@ -187,44 +193,55 @@ rho
 # Login as our test user
 #[user@desktop]
 
-cat > "${HOME?}/test-settings.txt" << 'EOF'
-testuser=lesuchahyohchonu
+cat > "${HOME:?}/test-settings.txt" << 'EOF'
+testuser=aebeicaemaungooc
 testhost=rho.virtual.metagrid.co.uk
 EOF
 
-    source "${HOME?}/test-settings.txt"
-    ssh "${testuser?}@${testhost?}"
+    source "${HOME:?}/test-settings.txt"
+    ssh "${testuser:?}@${testhost:?}"
 
 # -----------------------------------------------------
 # Create our firethorn settings.
 #[user@test-vm] 
 
-cat >  "${HOME?}/firethorn.settings" << 'EOF'
-FIRETHORN_BASE=${FIRETHORN_BASE:-${HOME?}/firethorn}
-FIRETHORN_CODE=${FIRETHORN_CODE:-${FIRETHORN_BASE?}/clone}
+cat >  "${HOME:?}/firethorn.settings" << 'EOF'
+FIRETHORN_BASE=${FIRETHORN_BASE:-${HOME:?}/firethorn}
+FIRETHORN_CODE=${FIRETHORN_CODE:-${FIRETHORN_BASE:?}/clone}
 EOF
 
 # -----------------------------------------------------
 # Get a read-only clone of the source code.
 #[user@test-vm] 
 
-    source "${HOME?}/firethorn.settings"
+    source "${HOME:?}/firethorn.settings"
 
-    codepath="$(dirname  ${FIRETHORN_CODE?})"
-    codename="$(basename ${FIRETHORN_CODE?})"
+    codepath="$(dirname  ${FIRETHORN_CODE:?})"
+    codename="$(basename ${FIRETHORN_CODE:?})"
 
-    if [ ! -e "${codepath?}" ]
+    if [ ! -e "${codepath:?}" ]
     then
-        mkdir "${codepath?}"
+        mkdir "${codepath:?}"
     fi
 
-    pushd "${codepath?}"
-        if [ ! -e "${codename?}" ]
+    pushd "${codepath:?}"
+        if [ ! -e "${codename:?}" ]
         then
-             hg clone 'http://wfau.metagrid.co.uk/code/firethorn/' "${codename?}"
+             hg clone 'http://wfau.metagrid.co.uk/code/firethorn/' "${codename:?}"
+
+#
+# Shortcut for internal use only.
+#hghost=threonine.metagrid.co.uk
+#hgport=22
+#hguser=Zarquan
+#hgpath=/var/local/projects/edinburgh/wfau/firethorn/devel
+#ssh-keyscan ${hghost:?} >> ~/.ssh/known_hosts
+#hg clone "ssh://${hguser:?}@${hghost:?}:${hgport:?}/${hgpath:?}" "${codename:?}"
+
         else
-            pushd "${codename?}"
-                hg pull 'http://wfau.metagrid.co.uk/code/firethorn/'
+            pushd "${codename:?}"
+                hg pull
+                hg update
             popd
         fi
     popd
@@ -233,23 +250,24 @@ EOF
 # Copy our firethorn properties.
 #[user@test-vm] 
 
-    cat "${FIRETHORN_CODE?}/firethorn-database/properties/hsqldb.properties"  > "${HOME?}/firethorn.properties"
-    cat "${FIRETHORN_CODE?}/firethorn-database/properties/mssql.properties"  >> "${HOME?}/firethorn.properties"
+    cat "${FIRETHORN_CODE:?}/firethorn-database/properties/hsqldb.properties"  > "${HOME:?}/firethorn.properties"
+    cat "${FIRETHORN_CODE:?}/firethorn-database/properties/mssql.properties"  >> "${HOME:?}/firethorn.properties"
 
-    vi "${HOME?}/firethorn.properties"
+    vi "${HOME:?}/firethorn.properties"
 
 # ****
 # Fill in the passwords for the live data
 # ****
 
+    exit
+
 # -----------------------------------------------------
 # Copy of latest maven-build (20130507-maven-build.txt).
-#[user@test-vm] 
+#[user@desktop]
 
     # TTY #1 ------------------------------------------------------------
-    source "${HOME?}/test-settings.txt"
-    ssh "${testuser?}@${testhost?}"
-
+    source "${HOME:?}/test-settings.txt"
+    ssh "${testuser:?}@${testhost:?}"
 
         username=xxxx
         hostname=fenrir.roe.ac.uk
@@ -257,30 +275,31 @@ EOF
         sed -i '/^'${hostname:?}'/d' ~/.ssh/known_hosts
         ssh-keyscan ${hostname:?} >> ~/.ssh/known_hosts
 
-        ssh -L '1433:ramses5:1433' "${username?}@${hostname?}"
+        ssh -L '1433:ramses5:1433' "${username:?}@${hostname:?}"
 
     # TTY #2,3 -----------------------------------------------------------
-    source "${HOME?}/test-settings.txt"
-    ssh "${testuser?}@${testhost?}"
+    source "${HOME:?}/test-settings.txt"
+    ssh "${testuser:?}@${testhost:?}"
 
-        source ${HOME?}/firethorn.settings
-        pushd "${FIRETHORN_CODE?}"
+        source ${HOME:?}/firethorn.settings
+        pushd "${FIRETHORN_CODE:?}"
 
             mvn -P depends clean install
 
             pushd 'firethorn-hsqldb'
 
+                export MAVEN_OPTS=-Xmx128m
                 mvn clean exec:java
 
 
     # TTY #4,5,6 ----------------------------------------------------------
-    source "${HOME?}/test-settings.txt"
-    ssh "${testuser?}@${testhost?}"
+    source "${HOME:?}/test-settings.txt"
+    ssh "${testuser:?}@${testhost:?}"
 
-        source ${HOME?}/firethorn.settings
-        pushd "${FIRETHORN_CODE?}"
+        source ${HOME:?}/firethorn.settings
+        pushd "${FIRETHORN_CODE:?}"
 
-            mvn -P database clean install
+            mvn -P database install
 
             mvn clean install 
 
@@ -293,33 +312,33 @@ EOF
 
 
     # TTY #7 ------------------------------------------------------------
-    source "${HOME?}/test-settings.txt"
-    ssh "${testuser?}@${testhost?}"
+    source "${HOME:?}/test-settings.txt"
+    ssh "${testuser:?}@${testhost:?}"
 
-        source "${HOME?}/firethorn.settings"
-        pushd "${FIRETHORN_CODE?}"
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
             pushd 'firethorn-ogsadai/webapp'
 
                 mvn clean compile war:war
 
                 source src/test/bin/jdbc-functions.sh
 
-                jdbcconfig twomass  firethorn.twomass "${HOME?}/firethorn.properties"
-                jdbcconfig ukidss   firethorn.ukidss  "${HOME?}/firethorn.properties"
-                jdbcconfig atlas    firethorn.atlas   "${HOME?}/firethorn.properties"
-                jdbcconfig wfau     firethorn.wfau    "${HOME?}/firethorn.properties"
-                jdbcconfig userdata firethorn.user    "${HOME?}/firethorn.properties"
+                jdbcconfig twomass  firethorn.twomass "${HOME:?}/firethorn.properties"
+                jdbcconfig ukidss   firethorn.ukidss  "${HOME:?}/firethorn.properties"
+                jdbcconfig atlas    firethorn.atlas   "${HOME:?}/firethorn.properties"
+                jdbcconfig wfau     firethorn.wfau    "${HOME:?}/firethorn.properties"
+                jdbcconfig userdata firethorn.user    "${HOME:?}/firethorn.properties"
 
                 export MAVEN_OPTS=-Xmx128m
                 mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
         
 
     # TTY #8 ------------------------------------------------------------
-    source "${HOME?}/test-settings.txt"
-    ssh "${testuser?}@${testhost?}"
+    source "${HOME:?}/test-settings.txt"
+    ssh "${testuser:?}@${testhost:?}"
 
-        source ${HOME?}/firethorn.settings
-        pushd "${FIRETHORN_CODE?}"
+        source ${HOME:?}/firethorn.settings
+        pushd "${FIRETHORN_CODE:?}"
             pushd 'firethorn-ogsadai/activity/client'
                 mvn -D skipTests=false -D test=SingleQueryTestCase test 
             popd
@@ -332,36 +351,36 @@ EOF
 #[user@test-vm] 
 
     # TTY #9 ------------------------------------------------------------
-    source "${HOME?}/test-settings.txt"
-    ssh "${testuser?}@${testhost?}"
+    source "${HOME:?}/test-settings.txt"
+    ssh "${testuser:?}@${testhost:?}"
 
-        source ${HOME?}/firethorn.settings
-        FIRETHORN_TEST=${FIRETHORN_CODE?}/integration/003
+        source ${HOME:?}/firethorn.settings
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/003
 
         pushd $(mktemp --directory)
 
-            source "${FIRETHORN_TEST?}/00-init-rest.sh"
+            source "${FIRETHORN_TEST:?}/00-init-rest.sh"
 
-            source "${FIRETHORN_TEST?}/01-init-user.sh"
-            source "${FIRETHORN_TEST?}/02-00-create-jdbc-space.sh" 'spring:RoeATLAS' '*' 'atlas'
+            source "${FIRETHORN_TEST:?}/01-init-user.sh"
+            source "${FIRETHORN_TEST:?}/02-00-create-jdbc-space.sh" 'spring:RoeATLAS' '*' 'atlas'
 
-            source "${FIRETHORN_TEST?}/03-00-create-adql-space.sh"
+            source "${FIRETHORN_TEST:?}/03-00-create-adql-space.sh"
 
-            source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'TWOXMM.dbo'         'twoxmm'
-            source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'TWOMASS.dbo'        'twomass'
-            source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'UKIDSSDR5PLUS.dbo'  'ukidssdr5'
-            source "${FIRETHORN_TEST?}/03-01-import-jdbc-schema.sh" 'ATLASv20130304.dbo' 'atlas'
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'TWOXMM.dbo'         'twoxmm'
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'TWOMASS.dbo'        'twomass'
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'UKIDSSDR5PLUS.dbo'  'ukidssdr5'
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'ATLASv20130304.dbo' 'atlas'
 
-            source "${FIRETHORN_TEST?}/04-00-create-query-space.sh"
-            source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh" 'query'
-            source "${FIRETHORN_TEST?}/04-02-import-query-schema.sh" 'atlas'   'atlas'
-            source "${FIRETHORN_TEST?}/04-02-import-query-schema.sh" 'twomass' 'twomass'
+            source "${FIRETHORN_TEST:?}/04-00-create-query-space.sh"
+            source "${FIRETHORN_TEST:?}/04-01-create-query-schema.sh" 'query'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'atlas'   'atlas'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'twomass' 'twomass'
 
-            source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh" 'ukidss'
-            source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsPointSource'        'ukidss' 'gcsPointSource5'
-            source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsSourceXtwomass_psc' 'ukidss' 'gcsSourceXtwomass_psc'
+            source "${FIRETHORN_TEST:?}/04-01-create-query-schema.sh" 'ukidss'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsPointSource'        'ukidss' 'gcsPointSource5'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsSourceXtwomass_psc' 'ukidss' 'gcsSourceXtwomass_psc'
 
-            time source "${FIRETHORN_TEST?}/05-query-atlas.sh"
+            time source "${FIRETHORN_TEST:?}/05-query-atlas.sh"
 
         popd
 

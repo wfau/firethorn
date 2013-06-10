@@ -19,27 +19,34 @@
 #
 #
 
-jdbcname=${1?}
-adqlname=${2?}
+jdbcname=${1:?}
+adqlname=${2:?}
 
 jdbcschema=$(
-    POST "${jdbcspace?}/schemas/select" \
-        --header "firethorn.auth.identity:${identity}" \
-        --header "firethorn.auth.community:${community}" \
-        --data   "jdbc.resource.schema.select.name=${jdbcname?}" \
+    POST "${jdbcspace:?}/schemas/select" \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data   "jdbc.resource.schema.select.name=${jdbcname:?}" \
         | fullident
         )
 adqlschema=$(
-    POST "${adqlspace?}/schemas/import" \
-        --header "firethorn.auth.identity:${identity}" \
-        --header "firethorn.auth.community:${community}" \
-        --data   "adql.resource.schema.import.name=${adqlname?}" \
-        --data   "adql.resource.schema.import.base=${jdbcschema?}" \
+    POST "${adqlspace:?}/schemas/import" \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data   "adql.resource.schema.import.name=${adqlname:?}" \
+        --data   "adql.resource.schema.import.base=${jdbcschema:?}" \
         | ident
         )
-GET "${adqlschema?}" \
-    --header "firethorn.auth.identity:${identity}" \
-    --header "firethorn.auth.community:${community}" \
+
+GET "${adqlschema:?}" \
+    --header "firethorn.auth.identity:${identity:?}" \
+    --header "firethorn.auth.community:${community:?}" \
     | ./pp
 
+sleep 1
+
+GET "${adqlschema:?}" \
+    --header "firethorn.auth.identity:${identity:?}" \
+    --header "firethorn.auth.community:${community:?}" \
+    | ./pp
 
