@@ -117,7 +117,7 @@ implements EntityBean<AdqlColumn>
                     @Override
                     public Integer getSize()
                         {
-                        return entity().meta().adql().size();
+                        return entity().meta().adql().array();
                         }
                     };
                 }

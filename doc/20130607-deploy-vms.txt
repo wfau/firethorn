@@ -1,4 +1,4 @@
-#----------------------------------------------------------------------------------------
+# 20130610 ----------------------------------------------------------------------------------------
 # Test vms at ROE.
 #
     hostname    pyracantha
@@ -11,9 +11,8 @@
     tomcat      /var/tomcat7
     java        /usr/java
 
-
 #----------------------------------------------------------------------------------------
-
+# Testing network access.
 #[user@desktop]
 
     ssh firethorn@djer.roe.ac.uk
@@ -40,6 +39,9 @@
         192.168.122.2	pyracantha
         192.168.122.3	coccinea
 
+#
+# Add SSH config for local VMs.
+#[firethorn@djer]
 
     vi /home/firethorn/.ssh/config
 
@@ -58,8 +60,7 @@
                 Compression no
 
 #----------------------------------------------------------------------------------------
-#
-# Add SSH keys manually.
+# No access to external resources, adding SSH key manually.
 #[user@desktop]
 
     ssh firethorn@djer.roe.ac.uk
@@ -70,7 +71,10 @@
 
 #[firethorn@pyracantha]
 
-    mkdir "${HOME?}/.ssh"
+    if [ ! -e "${HOME?}/.ssh" ]
+    then
+        mkdir "${HOME?}/.ssh"
+    fi
     pushd "${HOME?}/.ssh"
 
 tr -d '\n' > 'dmr.roe.ac.uk.dsa.pub' << 'EOF'
@@ -105,7 +109,6 @@ EOF
     chmod g=,o=,u=rwx     "${HOME?}/.ssh"
 
 #----------------------------------------------------------------------------------------
-#
 # Chained SSH connection
 #[user@desktop]
 
@@ -114,11 +117,10 @@ EOF
     ssh -t djer ssh coccinea
 
 #----------------------------------------------------------------------------------------
-#
 # Chained SSH configuration
 #[user@desktop]
 
-    vi ${HOME?}/.ssh.config
+    gedit "${HOME?}/.ssh/config" &
 
         Host pyracantha
             User firethorn
@@ -136,12 +138,466 @@ EOF
             Compression yes
             PasswordAuthentication no
 
+        Host pyrus
+            User firethorn
+            IdentityFile ~/.ssh/xxx.xxx.xxx
+            ProxyCommand ssh -q djer nc -q0 pyrus 22
+            Protocol 2
+            Compression yes
+            PasswordAuthentication no
+
+        Host malus
+            User firethorn
+            IdentityFile ~/.ssh/xxx.xxx.xxx
+            ProxyCommand ssh -q djer nc -q0 malus 22
+            Protocol 2
+            Compression yes
+            PasswordAuthentication no
+
+# 20130611 ----------------------------------------------------------------------------------------
+# External network access enabled :-)
+#
+ 
+#----------------------------------------------------------------------------------------
+# Add SSH keys to user and admin accounts.
 #[user@desktop]
 
-    ssh pyracantha
+    ssh firethorn@malus
 
-    ssh coccinea
+#[firethorn@malus]
 
+    if [ ! -e "${HOME?}/.ssh" ]
+    then
+        mkdir "${HOME?}/.ssh"
+    fi
+    pushd "${HOME?}/.ssh"
+
+if [ ! -e 'dmr.roe.ac.uk.pub' ]
+then
+
+tr -d '\n' > 'dmr.roe.ac.uk.pub' << 'EOF'
+ssh-dss 
+AAAAB3NzaC1kc3MAAACBAP19Kinvyecf
+gC1/x5BnHuF92EqWacZWL+XgrFVwKUNl
+YzpRk3P4T1A1CNVlk3HX901iAJwP1my3
+6il9pDScpFAZLFxAU0Xf0dB0TT/M1/Tz
+Q8siOwKWo4CpRJ6P7ql/3+dWITAV409B
+f/p46imN020zSMkJ0VBO2HGuqm7VJkoz
+AAAAFQDm+G2+hj3bZ/9bhYMNUPCYYSs6
+uwAAAIEA6j+HJA/CbdktywRt4BM4hzd8
+airkUeh38cXTmJ51p2ewux55jGJc/Mbw
+3A69svJpfv42ecu0PH+75Q8lspmIUdxA
++Y0mTd4S4HWrhVcwRPEiRjSaWSfDHKye
+itKyZsRPYy9l3Z8UtRmby2VGar4ap9TH
+jrlHv8ZwZhoc8xk8en4AAACBAIf6FArx
+MecPJnbaEC4u/vWpWhpfGn26x4vbfexe
+stEQpW6G/zK53bMGDX6RDmXojtFh8vmp
+J2vr+bfouIgGt5YLn3PLAS6QS/eOVJ7O
+TNbBaf4bp2h4DcmbYYbosEV9oVu+LQvo
+putJ6od4B/xJ1XuHZ1oSFdWL1ijXY4ip
+FyfD dmr@roe.ac.uk
+EOF
+
+cat 'dmr.roe.ac.uk.pub' >> 'authorized_keys'
+fi
+
+    popd
+    
+    chown -R "$(id -un)"  "${HOME?}/.ssh"
+    chgrp -R "$(id -gn)"  "${HOME?}/.ssh"
+    chmod g=,o=,u=rwx     "${HOME?}/.ssh"
+
+#[firethorn@malus]
+
+    su -
+    
+#[root@malus]
+    
+    if [ ! -e "${HOME?}/.ssh" ]
+    then
+        mkdir "${HOME?}/.ssh"
+    fi
+    pushd "${HOME?}/.ssh"
+
+if [ ! -e 'dmr.roe.ac.uk.pub' ]
+then
+
+tr -d '\n' > 'dmr.roe.ac.uk.pub' << 'EOF'
+ssh-dss 
+AAAAB3NzaC1kc3MAAACBAP19Kinvyecf
+gC1/x5BnHuF92EqWacZWL+XgrFVwKUNl
+YzpRk3P4T1A1CNVlk3HX901iAJwP1my3
+6il9pDScpFAZLFxAU0Xf0dB0TT/M1/Tz
+Q8siOwKWo4CpRJ6P7ql/3+dWITAV409B
+f/p46imN020zSMkJ0VBO2HGuqm7VJkoz
+AAAAFQDm+G2+hj3bZ/9bhYMNUPCYYSs6
+uwAAAIEA6j+HJA/CbdktywRt4BM4hzd8
+airkUeh38cXTmJ51p2ewux55jGJc/Mbw
+3A69svJpfv42ecu0PH+75Q8lspmIUdxA
++Y0mTd4S4HWrhVcwRPEiRjSaWSfDHKye
+itKyZsRPYy9l3Z8UtRmby2VGar4ap9TH
+jrlHv8ZwZhoc8xk8en4AAACBAIf6FArx
+MecPJnbaEC4u/vWpWhpfGn26x4vbfexe
+stEQpW6G/zK53bMGDX6RDmXojtFh8vmp
+J2vr+bfouIgGt5YLn3PLAS6QS/eOVJ7O
+TNbBaf4bp2h4DcmbYYbosEV9oVu+LQvo
+putJ6od4B/xJ1XuHZ1oSFdWL1ijXY4ip
+FyfD dmr@roe.ac.uk
+EOF
+
+cat 'dmr.roe.ac.uk.pub' >> 'authorized_keys'
+
+fi
+
+    popd
+    
+    chown -R "$(id -un)"  "${HOME?}/.ssh"
+    chgrp -R "$(id -gn)"  "${HOME?}/.ssh"
+    chmod g=,o=,u=rwx     "${HOME?}/.ssh"
+
+#----------------------------------------------------------------------------------------
+# Install tools for running the Maven build
+#[user@desktop]
+
+    ssh root@malus
+    ssh root@pyracantha
+    ssh root@coccinea
+    ssh root@pyrus
+
+#[root@test-vm] 
+
+    apt-get -y update
+
+    apt-get -y install htop
+    apt-get -y install gzip
+    apt-get -y install unzip
+    apt-get -y install pwgen
+
+    apt-get -y install maven
+    apt-get -y install mercurial
+
+    apt-get -y install curl
+    apt-get -y install perl
+    apt-get -y install libjson-perl
+
+    #
+    # Skip Java and Tomcat for now
+    # (installing maven automatically adds openjdk-6)
+    #apt-get install openjdk-7-jre
+    #apt-get install openjdk-7-jdk
+
+    #update-alternatives --config java
+    #update-alternatives --config javac
+
+    #apt-get install tomcat6
+    #apt-get install tomcat7
+
+# ------------------------------------------------------------
+# Shutdown existing Tomcat
+#[root@test-vm] 
+
+    /var/tomcat6/bin/shutdown.sh 
+
+        Using CATALINA_BASE:   /var/tomcat6
+        Using CATALINA_HOME:   /var/tomcat6
+        Using CATALINA_TMPDIR: /var/tomcat6/temp
+        Using JRE_HOME:        /usr
+        Using CLASSPATH:       /var/tomcat6/bin/bootstrap.jar
+
+# ------------------------------------------------------------
+# Create test user
+#[root@test-vm] 
+
+    tester=$(pwgen 16 1)
+
+    useradd --create-home --shell /bin/bash --groups users "${tester:?}"
+
+# -----------------------------------------------------
+# Create our ssh config.
+#[root@test-vm] 
+
+    if [ ! -e "/home/${tester:?}/.ssh" ]
+    then
+        mkdir "/home/${tester:?}/.ssh"
+    fi
+
+    pushd "/home/${tester:?}/.ssh"
+    
+        if [ ! -e dmr.roe.ac.uk.pub ]
+        then    
+            wget http://data.metagrid.co.uk/sshkeys/dmr.roe.ac.uk.pub
+            cat dmr.roe.ac.uk.pub >> authorized_keys
+        fi
+
+        if [ ! -e stelios.roe.ac.uk.pub ]
+        then    
+            wget http://data.metagrid.co.uk/sshkeys/stelios.roe.ac.uk.pub
+            cat stelios.roe.ac.uk.pub >> authorized_keys
+        fi
+
+        if [ ! -e ktn.roe.ac.uk.pub ]
+        then    
+            wget http://data.metagrid.co.uk/sshkeys/ktn.roe.ac.uk.pub
+            cat ktn.roe.ac.uk.pub >> authorized_keys
+        fi
+
+    popd
+
+    chown -R "${tester:?}"  "/home/${tester:?}/.ssh"
+    chgrp -R "${tester:?}"  "/home/${tester:?}/.ssh"
+    chmod g=,o=,u=rwx "/home/${tester:?}/.ssh"
+
+# ------------------------------------------------------------
+# Print test user and exit.
+#[root@test-vm] 
+
+    echo "User name [${tester:?}]"
+
+    exit
+
+# ------------------------------------------------------------
+# Login as our test user
+#[user@desktop]
+
+    ssh yaevaiyeevuneach@malus
+    ssh ahzaizeefazahngo@pyracantha
+    ssh ahciequahboorong@coccinea
+    ssh eiroopheeheighie@pyrus
+
+# -----------------------------------------------------
+# Create our firethorn settings.
+#[user@test-vm] 
+
+cat >  "${HOME:?}/firethorn.settings" << 'EOF'
+FIRETHORN_BASE=${FIRETHORN_BASE:-${HOME:?}/firethorn}
+FIRETHORN_CODE=${FIRETHORN_CODE:-${FIRETHORN_BASE:?}/clone}
+
+export MAVEN_OPTS=-Xmx128m
+export JAVA_HOME=/usr/java/jdk1.7.0_05/
+
+EOF
+
+# -----------------------------------------------------
+# Get a clone of the source code.
+#[user@test-vm] 
+
+    source "${HOME:?}/firethorn.settings"
+
+    codepath="$(dirname  ${FIRETHORN_CODE:?})"
+    codename="$(basename ${FIRETHORN_CODE:?})"
+
+    if [ ! -e "${codepath:?}" ]
+    then
+        mkdir "${codepath:?}"
+    fi
+
+    pushd "${codepath:?}"
+        if [ ! -e "${codename:?}" ]
+        then
+             hg clone 'http://wfau.metagrid.co.uk/code/firethorn/' "${codename:?}"
+        else
+            pushd "${codename:?}"
+                hg pull
+                hg update
+            popd
+        fi
+    popd
+
+# -----------------------------------------------------
+# Copy our firethorn properties.
+#[user@test-vm] 
+
+    cat "${FIRETHORN_CODE:?}/firethorn-database/properties/hsqldb.properties"  > "${HOME:?}/firethorn.properties"
+    cat "${FIRETHORN_CODE:?}/firethorn-database/properties/mssql.properties"  >> "${HOME:?}/firethorn.properties"
+
+    vi "${HOME:?}/firethorn.properties"
+
+# ****
+# Fill in the details manually
+# ****
+
+    exit
+
+# -----------------------------------------------------
+# Execute maven-build instructions (20130507-maven-build.txt).
+# Too much for one VM.
+
+    #
+    # Local HSQLDB server is running.
+    #[user@test-vm] 
+
+        mvn clean exec:java
+            ....
+            [Server@71a550f9]: 2013-06-11 13:57:53.027 HSQLDB server 2.2.9 is online on port 9001
+
+    #
+    # Maven build got this far ....
+    #[user@test-vm] 
+
+        mvn -P database install
+            ....
+            [INFO] Executing on Database: jdbc:hsqldb:hsql://localhost/metadata
+            Killed
+
+    #
+    # Ran out of system memory - hard limit of 512M and no swap.
+    #[root@test-vm] 
+
+        tail -f syslog
+
+            Jun 11 14:25:26 malus kernel: [10254.892101] java invoked oom-killer: gfp_mask=0x201da, order=0, oom_adj=0, oom_score_adj=0
+            Jun 11 14:25:26 malus kernel: [10254.892115] java cpuset=/ mems_allowed=0
+            Jun 11 14:25:26 malus kernel: [10254.892126] Pid: 10556, comm: java Not tainted 3.2.0-4-amd64 #1 Debian 3.2.41-2+deb7u2
+
+# -----------------------------------------------------
+# Execute maven-build instructions (20130507-maven-build.txt).
+# Run each service on a separate vm.
+#[user@desktop]
+
+    # pyrus       - tests
+    # malus       - hsqldb
+    # pyracantha  - firethorn
+    # coccinea    - ogsa-dai
+
+    # TTY #2,3 -----------------------------------------------------------
+    ssh yaevaiyeevuneach@malus
+
+        source ${HOME:?}/firethorn.settings
+        pushd "${FIRETHORN_CODE:?}"
+
+            mvn -P depends install
+
+            pushd 'firethorn-hsqldb'
+
+                mvn clean exec:java
+
+    # TTY #4,5,6 ----------------------------------------------------------
+   ssh ahzaizeefazahngo@pyracantha
+
+        source ${HOME:?}/firethorn.settings
+        pushd "${FIRETHORN_CODE:?}"
+
+            mvn -P depends  install
+            mvn -P database install
+
+            mvn install 
+
+            pushd 'firethorn-core'
+
+                vi src/main/java/uk/ac/roe/wfau/firethorn/adql/query/AdqlQueryEntity.java 
+                -   public static final String endpoint  = "http://localhost:8081/albert/services" ;
+                +   public static final String endpoint  = "http://coccinea:8081/albert/services" ;
+
+                mvn clean install 
+
+            popd
+            pushd 'firethorn-webapp'
+
+                vi src/main/java/uk/ac/roe/wfau/firethorn/webapp/control/WebappLinkFactory.java
+                -   public static final String SERVICE_BASE = "http://localhost:8080/" ;
+                +   public static final String SERVICE_BASE = "http://pyracantha:8080/" ;
+
+                mvn clean compile war:war
+                mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+
+    # TTY #7 ------------------------------------------------------------
+    ssh ahciequahboorong@coccinea
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+
+            mvn -P depends install
+            mvn install 
+
+            pushd 'firethorn-ogsadai/webapp'
+
+                mvn clean compile war:war
+
+                source src/test/bin/jdbc-functions.sh
+
+                jdbcconfig twomass  firethorn.twomass "${HOME:?}/firethorn.properties"
+                jdbcconfig ukidss   firethorn.ukidss  "${HOME:?}/firethorn.properties"
+                jdbcconfig atlas    firethorn.atlas   "${HOME:?}/firethorn.properties"
+                jdbcconfig wfau     firethorn.wfau    "${HOME:?}/firethorn.properties"
+                jdbcconfig userdata firethorn.user    "${HOME:?}/firethorn.properties"
+
+                mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
+
+
+    # TTY #8 ------------------------------------------------------------
+    ssh eiroopheeheighie@pyrus
+
+        source ${HOME:?}/firethorn.settings
+        pushd "${FIRETHORN_CODE:?}"
+
+            mvn -P depends install
+            mvn install 
+
+            pushd 'firethorn-ogsadai/activity/client'
+
+                vi src/test/java/uk/ac/roe/wfau/firethorn/ogsadai/activity/client/SingleQueryTestCase.java 
+                -   public static final String endpoint = "http://localhost:8081/albert/services/" ;
+                +   public static final String endpoint = "http://coccinea:8081/albert/services/" ;
+
+                mvn -D skipTests=false -D test=SingleQueryTestCase test 
+
+            popd
+
+        popd
+
+# -----------------------------------------------------
+# Copy/paste instructions from the latest atlas-example (20130524-atlas-example.txt).
+#[user@test-vm] 
+
+    # TTY #9 ------------------------------------------------------------
+    ssh eiroopheeheighie@pyrus
+
+        source ${HOME:?}/firethorn.settings
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/003
+
+        pushd $(mktemp --directory)
+
+            vi "${FIRETHORN_TEST:?}/00-init-rest.sh"
+            -   metahostname=localhost
+            +   metahostname=pyracantha
+
+            source "${FIRETHORN_TEST:?}/00-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/01-init-user.sh"
+            source "${FIRETHORN_TEST:?}/02-00-create-jdbc-space.sh" 'spring:RoeATLAS' '*' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/03-00-create-adql-space.sh"
+
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'TWOXMM.dbo'         'twoxmm'
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'TWOMASS.dbo'        'twomass'
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'UKIDSSDR5PLUS.dbo'  'ukidssdr5'
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'ATLASv20130304.dbo' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/04-00-create-query-space.sh"
+            source "${FIRETHORN_TEST:?}/04-01-create-query-schema.sh" 'query'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'atlas'   'atlas'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'twomass' 'twomass'
+
+            source "${FIRETHORN_TEST:?}/04-01-create-query-schema.sh" 'ukidss'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsPointSource'        'ukidss' 'gcsPointSource5'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsSourceXtwomass_psc' 'ukidss' 'gcsSourceXtwomass_psc'
+
+            time source "${FIRETHORN_TEST:?}/05-query-atlas.sh"
+
+        popd
+
+# -----------------------------------------------------
+# Remote instance of FireFox to view the results.
+#[user@desktop]
+
+    ssh -X firethorn@djer
+
+#[firethorn@djer]
+
+    iceweasel 'https://addons.mozilla.org/en-us/firefox/addon/jsonview/‎' &
+
+    iceweasel 'http://pyracantha:8080/firethorn/adql/query/1' &
 
 
 

@@ -330,12 +330,12 @@ implements AdqlParser
                 return 0 ;
                 }
             else {
-                if (info.adql().size() == null)
+                if (info.adql().array() == null)
                     {
                     return 0 ;
                     }
                 else {
-                    return info.adql().size().intValue();
+                    return info.adql().array().intValue();
                     }
                 }
             }
@@ -870,7 +870,7 @@ implements AdqlParser
                 );
             }
         else {
-            if (left.adql().size() > right.adql().size())
+            if (left.adql().array() > right.adql().array())
                 {
                 return new ColumnMetaImpl(
                     oper.getName(),
@@ -910,7 +910,7 @@ implements AdqlParser
                 info = temp;
                 }
             else {
-                if (temp.adql().size().intValue() > info.adql().size().intValue())
+                if (temp.adql().array().intValue() > info.adql().array().intValue())
                     {
                     info = temp ;
                     }

@@ -137,14 +137,18 @@ public class AdqlQueryVOTableController
                         ", "
                         );
                     }
-// Postgresql name fix
+/*
+ *
+ * Postgresql name fix
                 builder.append('"');
+ *
+ */
                 builder.append(
                     column.root().name()
                     );
-                builder.append('"');
 /*
- *
+ *                 
+                builder.append('"');
  *
  */
                 builder.append(
@@ -215,7 +219,7 @@ public class AdqlQueryVOTableController
                         }
     */
                     info.setUCD(
-                        adql.meta().adql().ucd()
+                        adql.meta().adql().newucd()
                         );
                     info.setUnitString(
                         adql.meta().adql().unit()

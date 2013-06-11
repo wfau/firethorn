@@ -53,15 +53,8 @@ extends BaseColumn<JdbcColumn>
      *
      */
     public static interface Factory
-    extends BaseColumn.Factory<JdbcTable, JdbcColumn>
+    extends BaseColumn.EntityFactory<JdbcTable, JdbcColumn>
         {
-        /**
-         * Create a new column.
-         *
-        @Deprecated
-        public JdbcColumn create(final JdbcTable parent, final String name);
-         */
-
         /**
          * Create a new column.
          *
@@ -83,6 +76,10 @@ extends BaseColumn<JdbcColumn>
      */
     public void scan();
 
+    /**
+     * An enumeration of the JDBC data types.
+     *
+     */
     public enum Type
         {
         ARRAY(          Types.ARRAY),
@@ -278,12 +275,28 @@ extends BaseColumn<JdbcColumn>
          */
         public interface JdbcMeta
             {
+            /**
+             * The JDBC size.
+             *
+             */
             public Integer size();
+            /**
+             * Set the JDBC size.
+             *
+             */
             public void size(final Integer size);
+
+            /**
+             * The JDBC type.
+             *
+             */
             public Type type();
+            /**
+             * Set the JDBC type.
+             *
+             */
             public void type(final Type type);
             }
-
         /**
          * The JDBC column metadata.
          *

@@ -17,6 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.base;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -82,13 +85,19 @@ extends BaseComponentEntity
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_ADQL_TYPE_COL = "adqltype" ;
-    protected static final String DB_ADQL_SIZE_COL = "adqlsize" ;
-    protected static final String DB_ADQL_UCD1_COL = "adqlucd1"  ;
+    protected static final String DB_ADQL_TYPE_COL  = "adqltype"  ;
+    protected static final String DB_ADQL_SIZE_COL  = "adqlsize"  ;
+    protected static final String DB_ADQL_UCD0_COL  = "adqlucd0"  ;
+    protected static final String DB_ADQL_UCD1_COL  = "adqlucd1"  ;
+    protected static final String DB_ADQL_UTYPE_COL = "adqlutype" ;
+    protected static final String DB_ADQL_UNITS_COL = "adqlunits" ;
 
-    protected static final String DB_USER_TYPE_COL = "usertype" ;
-    protected static final String DB_USER_SIZE_COL = "usersize" ;
-    protected static final String DB_USER_UCD1_COL = "userucd1"  ;
+    protected static final String DB_USER_TYPE_COL  = "usertype"  ;
+    protected static final String DB_USER_SIZE_COL  = "usersize"  ;
+    protected static final String DB_USER_UCD0_COL  = "userucd0"  ;
+    protected static final String DB_USER_UCD1_COL  = "userucd1"  ;
+    protected static final String DB_USER_UTYPE_COL = "userutype" ;
+    protected static final String DB_USER_UNITS_COL = "userunits" ;
 
     protected BaseColumnEntity()
         {
@@ -224,17 +233,6 @@ extends BaseComponentEntity
                 this.adqlsize = this.usersize;
                 }
             }
-        if (pull)
-            {
-/*
- *
- * for (BaseColumn child : children)
- *     {
- *     child.adql().type(pull);
- *     }
- *
- */
-            }
         return this.adqlsize;
         }
     protected void adqlsize(final Integer size)
@@ -293,7 +291,7 @@ extends BaseComponentEntity
             public Iterable<AdqlColumn> select()
                 {
                 //"SELECT FROM AdqlColumn WHERE base = :base"
-                return null;
+                return Collections.emptyList();
                 }
             };
         }
@@ -322,12 +320,12 @@ extends BaseComponentEntity
         return new BaseColumn.Metadata.AdqlMeta()
             {
             @Override
-            public Integer size()
+            public Integer array()
                 {
                 return adqlsize();
                 }
             @Override
-            public void size(final Integer size)
+            public void array(final Integer size)
                 {
                 adqlsize(
                     size
@@ -349,7 +347,7 @@ extends BaseComponentEntity
             @Override
             public String unit()
                 {
-                return "my-unit";
+                return "units";
                 }
             @Override
             public void unit(final String unit)
@@ -359,7 +357,7 @@ extends BaseComponentEntity
             @Override
             public String utype()
                 {
-                return "my-utype";
+                return "utype";
                 }
             @Override
             public void utype(final String utype)
@@ -367,12 +365,21 @@ extends BaseComponentEntity
                 }
 
             @Override
-            public String ucd()
+            public String newucd()
                 {
-                return "my-ucd";
+                return "new-ucd";
                 }
             @Override
-            public void ucd(final String ucd)
+            public void newucd(final String ucd)
+                {
+                }
+            @Override
+            public String olducd()
+                {
+                return "old-ucd";
+                }
+            @Override
+            public void olducd(final String ucd)
                 {
                 }
             };

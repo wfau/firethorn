@@ -336,7 +336,7 @@ public class AdqlColumnEntity
             {
             if (base() != null)
                 {
-                this.basesize = base().meta().adql().size();
+                this.basesize = base().meta().adql().array();
                 }
             }
         return this.basesize;

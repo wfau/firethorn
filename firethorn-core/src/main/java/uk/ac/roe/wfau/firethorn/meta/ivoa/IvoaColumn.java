@@ -50,7 +50,7 @@ extends BaseColumn<IvoaColumn>
      *
      */
     public static interface Factory
-    extends BaseColumn.Factory<IvoaTable, IvoaColumn>
+    extends BaseColumn.EntityFactory<IvoaTable, IvoaColumn>
         {
         /**
          * Create a new column.

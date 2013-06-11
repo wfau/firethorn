@@ -23,7 +23,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
 
 /**
- *
+ * Public interface for a table column.
  *
  */
 public interface BaseColumn<ColumnType extends BaseColumn<ColumnType>>
@@ -39,10 +39,10 @@ extends BaseComponent
         }
 
     /**
-     * Column factory interface.
+     * Entity factory interface.
      *
      */
-    public static interface Factory<TableType extends BaseTable<TableType, ColumnType>, ColumnType extends BaseColumn<ColumnType>>
+    public static interface EntityFactory<TableType extends BaseTable<TableType, ColumnType>, ColumnType extends BaseColumn<ColumnType>>
     extends Entity.EntityFactory<ColumnType>
         {
         /**
@@ -52,30 +52,63 @@ extends BaseComponent
         public Iterable<ColumnType> select(final TableType parent);
 
         /**
-         * Select a named column table from a table.
+         * Select a named column from a table.
          *
          */
         public ColumnType select(final TableType parent, final String name)
         throws NotFoundException;
 
         /**
-         * Text search for columns within a table (name starts with).
+         * Search for columns within a table (name starts with).
          *
          */
         public Iterable<ColumnType> search(final TableType parent, final String text);
 
         }
 
+    /**
+     * The base column this is derived from. 
+     * 
+     */
     public BaseColumn<?>   base();
+
+    /**
+     * The root column this is derived from. 
+     * 
+     */
     public BaseColumn<?>   root();
 
+    /**
+     * The parent table. 
+     * 
+     */
     public BaseTable<?,?>  table();
+
+    /**
+     * The parent schema. 
+     * 
+     */
     public BaseSchema<?,?> schema();
+
+    /**
+     * The parent resource. 
+     * 
+     */
     public BaseResource<?> resource();
 
+    /**
+     * The unique column alias, based on the identifier. 
+     * 
+     */
     public String alias();
-    public StringBuilder fullname(); //"catalog.schema.table.column"
 
+    /**
+     * The full name, including parent table, schema and catalog. 
+     * 
+     */
+    public StringBuilder fullname();
+
+    
     interface Linked
         {
         public Iterable<AdqlColumn> select();
@@ -83,36 +116,89 @@ extends BaseComponent
     public Linked linked();
 
     /**
-     * Access to the column metadata.
+     * The column metadata.
      *
      */
     public interface Metadata
         {
+
         /**
-         * ADQL column metadata.
+         * The ADQL metadata.
          *
          */
         public interface AdqlMeta
             {
-            public Integer size();
-            public void size(final Integer size);
 
+            /**
+             * The array size, or null if this is not an array.
+             *
+             */
+            public Integer array();
+            /**
+             * Set the array size.
+             *
+             */
+            public void array(final Integer size);
+
+            /**
+             * The ADQL type.
+             *
+             */
             public Type type();
+            /**
+             * Set the ADQL type.
+             *
+             */
             public void type(final Type type);
 
+            /**
+             * The ADQL units.
+             *
+             */
             public String unit();
+            /**
+             * Set the ADQL units.
+             *
+             */
             public void unit(final String unit);
 
+            /**
+             * The ADQL utype.
+             *
+             */
             public String utype();
+            /**
+             * Set the ADQL utype.
+             *
+             */
             public void utype(final String utype);
 
-            public String ucd();
-            public void ucd(final String ucd);
+            /**
+             * The new ADQL ucd.
+             *
+             */
+            public String newucd();
+            /**
+             * Set the new ADQL ucd.
+             *
+             */
+            public void newucd(final String ucd);
+
+            /**
+             * The old ADQL ucd.
+             *
+             */
+            public String olducd();
+            /**
+             * Set the old ADQL ucd.
+             *
+             */
+            public void olducd(final String ucd);
 
             }
 
         /**
-         * The ADQL column metadata.
+         * The ADQL metadata.
          *
          */
         public AdqlMeta adql();

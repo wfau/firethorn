@@ -62,7 +62,7 @@ extends BaseColumn<AdqlColumn>
      *
      */
     public static interface Factory
-    extends BaseColumn.Factory<AdqlTable, AdqlColumn>
+    extends BaseColumn.EntityFactory<AdqlTable, AdqlColumn>
         {
         /**
          * Create a new column.
@@ -155,6 +155,9 @@ extends BaseColumn<AdqlColumn>
             {
             switch(sql)
                 {
+                case Types.ARRAY :
+                    return UNKNOWN;
+
                 case Types.BIGINT :
                     return LONG ;
 
@@ -186,7 +189,6 @@ extends BaseColumn<AdqlColumn>
                 case Types.SMALLINT :
                     return SHORT ;
 
-                case Types.ARRAY :
                 case Types.BINARY :
                 case Types.BLOB :
                 case Types.CLOB :
@@ -212,6 +214,4 @@ extends BaseColumn<AdqlColumn>
                 }
             }
         }
-
-
     }

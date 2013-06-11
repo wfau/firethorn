@@ -102,13 +102,13 @@ rho
 # Install generic tools.
 #[root@test-vm] 
 
-    apt-get -y install pwgen
+    apt-get -y install htop
 
     apt-get -y install gzip
 
     apt-get -y install unzip
 
-    apt-get -y install htop
+    apt-get -y install pwgen
 
 # ----------------------------------------------------------
 # Install Java 1.7
@@ -194,8 +194,13 @@ rho
 #[user@desktop]
 
 cat > "${HOME:?}/test-settings.txt" << 'EOF'
-testuser=aebeicaemaungooc
+testuser=yaevaiyeevuneach
 testhost=rho.virtual.metagrid.co.uk
+EOF
+
+cat > "${HOME:?}/test-settings.txt" << 'EOF'
+testuser=yaevaiyeevuneach
+testhost=malus
 EOF
 
     source "${HOME:?}/test-settings.txt"
@@ -211,7 +216,7 @@ FIRETHORN_CODE=${FIRETHORN_CODE:-${FIRETHORN_BASE:?}/clone}
 EOF
 
 # -----------------------------------------------------
-# Get a read-only clone of the source code.
+# Get a clone of the source code.
 #[user@test-vm] 
 
     source "${HOME:?}/firethorn.settings"
@@ -256,7 +261,7 @@ EOF
     vi "${HOME:?}/firethorn.properties"
 
 # ****
-# Fill in the passwords for the live data
+# Fill in the details manually
 # ****
 
     exit

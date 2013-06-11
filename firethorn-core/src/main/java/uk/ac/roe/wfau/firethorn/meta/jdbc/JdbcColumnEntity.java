@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
+import java.sql.Types;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -254,7 +256,7 @@ public class JdbcColumnEntity
     @Override
     public String alias()
         {
-        return this.name();
+        return "JDBC_" + ident();
         }
 
     @Basic(
@@ -316,7 +318,13 @@ public class JdbcColumnEntity
         {
         if (this.jdbctype != null)
             {
-            return this.jdbctype.adql();
+            if (this.jdbctype == JdbcColumn.Type.ARRAY)
+                {
+                return AdqlColumn.Type.UNKNOWN;
+                }
+            else {
+                return this.jdbctype.adql();
+                }
             }
         else {
             return null;
@@ -325,7 +333,41 @@ public class JdbcColumnEntity
     @Override
     protected Integer basesize(final boolean pull)
         {
-        return this.jdbcsize ;
+        switch (this.jdbctype)
+            {
+            //
+            // Array type.
+            case ARRAY :
+                return this.jdbcsize ;
+
+            //
+            // Character types.
+            case LONGNVARCHAR :
+            case LONGVARCHAR :
+            case NVARCHAR :
+            case VARCHAR :
+            case NCHAR :
+            case CHAR :
+                return this.jdbcsize ;
+
+            //
+            // Blob types.
+            case BLOB:
+            case CLOB:
+            case NCLOB:
+                return this.jdbcsize ;
+
+            //
+            // Binary types.
+            case BINARY:
+            case VARBINARY:
+                return this.jdbcsize ;
+            
+            //
+            // Single value types.
+            default :
+                return null ;
+            }
         }
 
     @Override
@@ -361,7 +403,7 @@ public class JdbcColumnEntity
             };
         }
 
-    protected JdbcColumn.Metadata .JdbcMeta jdbcmeta()
+    protected JdbcColumn.Metadata.JdbcMeta jdbcmeta()
         {
         return new JdbcColumn.Metadata.JdbcMeta()
             {

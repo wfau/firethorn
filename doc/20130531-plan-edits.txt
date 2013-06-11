@@ -107,7 +107,7 @@
     Full metadata for tables and columns
     - 2 day (dm)
 
-    importing metadoc for ROE catalogs
+    Importing metadoc for ROE catalogs
     - 2 day (dm)
 
     IP address authentication
@@ -119,23 +119,23 @@
         Entity life cycle
         Daemon thread
 
-    Better exception handling
+    Webservice exception handling
     - 5 day (dm)
 
     OGSA-DAI job status
     - 1 day (dm)
 
-    OGSA-DAI query cancel
+    OGSA-DAI cancel
     - 1 day (dm)
+
+
 
     Jenkins testing
     - 2 week (dm)
 
 
 
-
-
-    Dynamic hostname in ident URL
+    Hostname in ident URL
     (based on data from Operation.)
     - 1 day (dm/st)
 

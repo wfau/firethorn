@@ -26,8 +26,8 @@ community=$(date '+%A')
 #
 # Create our user data store.
 POST "/jdbc/resource/create" \
-    --header "firethorn.auth.identity:${identity}" \
-    --header "firethorn.auth.community:${community}" \
+    --header "firethorn.auth.identity:${identity:?}" \
+    --header "firethorn.auth.community:${community:?}" \
     --data   "jdbc.resource.create.url=spring:FireThornUserData" \
     --data   "jdbc.resource.create.name=userdata-$(unique)" \
     --data   "jdbc.resource.create.ogsadai=user" \
