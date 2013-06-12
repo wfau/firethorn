@@ -20,6 +20,11 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -28,8 +33,24 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Slf4j
+@RunWith(
+    SpringJUnit4ClassRunner.class
+    )
+@ContextConfiguration(
+    locations = {
+        "classpath:test-config.xml",
+        }
+    )
 public class SimpleQueryTestBase
     {
+    @Value("${firethon.ogsadai.dqp}")
+    protected String dqp ;
+
+    @Value("${firethon.ogsadai.store}")
+    protected String store ;
+
+    @Value("${firethon.ogsadai.endpoint}")
+    protected String endpoint ;
 
     /**
      * Simple test for OGSA-DAI queries.

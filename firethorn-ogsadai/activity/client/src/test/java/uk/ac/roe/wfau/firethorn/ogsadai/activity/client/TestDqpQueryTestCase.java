@@ -34,15 +34,6 @@ public class TestDqpQueryTestCase
 extends SimpleQueryTestBase
     {
 
-    @Value("${firethon.ogsadai.dqp}")
-    private String dqp ;
-
-    @Value("${firethon.ogsadai.store}")
-    private String store ;
-
-    @Value("${firethon.ogsadai.endpoint}")
-    private String endpoint ;
-
     /**
      * TWOMASS and UKIDSSDR1, using test DQP, using GT and LT on both tables.
      *
