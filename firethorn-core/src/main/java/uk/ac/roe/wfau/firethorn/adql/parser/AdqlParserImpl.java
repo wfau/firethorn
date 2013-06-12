@@ -870,6 +870,7 @@ implements AdqlParser
                 );
             }
         else {
+/*
             if (left.adql().array() > right.adql().array())
                 {
                 return new ColumnMetaImpl(
@@ -883,6 +884,13 @@ implements AdqlParser
                     right
                     );
                 }
+ */
+            //
+            // Temp fix ... array() is null
+            return new ColumnMetaImpl(
+                oper.getName(),
+                left
+                );
             }
         }
 

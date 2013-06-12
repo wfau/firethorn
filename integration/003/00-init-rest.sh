@@ -33,6 +33,8 @@ chmod a+x pp
 
 #
 # The service endpoint URL.
+localhosturl=http://localhost:8080/firethorn
+
 endpointurl=$(
     sed -n '
         s/^firethon\.webapp\.endpoint=\(.*\)$/\1/p
