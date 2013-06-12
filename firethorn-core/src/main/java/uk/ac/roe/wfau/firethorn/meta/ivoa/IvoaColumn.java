@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
 /**
  *
@@ -42,6 +43,15 @@ extends BaseColumn<IvoaColumn>
      */
     public static interface IdentFactory
     extends Entity.IdentFactory
+        {
+        }
+
+    /**
+     * Alias factory interface.
+     *
+     */
+    public static interface AliasFactory
+    extends BaseColumn.AliasFactory<IvoaColumn>
         {
         }
 

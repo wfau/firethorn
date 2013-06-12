@@ -22,6 +22,7 @@ import java.sql.Types;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
 /**
  *
@@ -31,7 +32,7 @@ public interface JdbcColumn
 extends BaseColumn<JdbcColumn>
     {
     /**
-     * Identifier factory interface.
+     * Link factory interface.
      *
      */
     public static interface LinkFactory
@@ -48,6 +49,15 @@ extends BaseColumn<JdbcColumn>
         {
         }
 
+    /**
+     * Alias factory interface.
+     *
+     */
+    public static interface AliasFactory
+    extends BaseColumn.AliasFactory<JdbcColumn>
+        {
+        }
+    
     /**
      * Column factory interface.
      *

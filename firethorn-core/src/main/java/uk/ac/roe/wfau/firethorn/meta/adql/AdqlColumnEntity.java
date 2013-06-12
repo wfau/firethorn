@@ -33,6 +33,7 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
@@ -40,6 +41,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
+import uk.ac.roe.wfau.firethorn.meta.ivoa.IvoaColumn;
 
 /**
  *
@@ -85,6 +87,24 @@ public class AdqlColumnEntity
     protected static final String DB_BASE_TYPE_COL = "basetype" ;
     protected static final String DB_BASE_SIZE_COL = "basesize" ;
 
+    /**
+     * Alias factory implementation.
+     * @todo Move to a separate package.
+     *
+     */
+    @Component
+    public static class AliasFactory
+    implements AdqlColumn.AliasFactory
+        {
+        @Override
+        public String alias(final AdqlColumn column)
+            {
+            return "ADQL_".concat(
+                column.ident().toString()
+                );
+            }
+        }
+    
     /**
      * Column factory implementation.
      *
@@ -190,6 +210,14 @@ public class AdqlColumnEntity
         public AdqlColumn.LinkFactory links()
             {
             return this.links;
+            }
+
+        @Autowired
+        protected AdqlColumn.AliasFactory aliases;
+        @Override
+        public AdqlColumn.AliasFactory aliases()
+            {
+            return this.aliases;
             }
         }
 
@@ -341,13 +369,14 @@ public class AdqlColumnEntity
             }
         return this.basesize;
         }
-
     @Override
     public String alias()
         {
-        return "ADQL_" + ident();
+        //return "ADQL_" + ident();
+        return factories().adql().columns().aliases().alias(
+            this
+            );
         }
-
     @Override
     public String link()
         {

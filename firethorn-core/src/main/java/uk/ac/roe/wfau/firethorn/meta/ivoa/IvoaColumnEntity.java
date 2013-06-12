@@ -32,6 +32,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
@@ -39,6 +40,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
 /**
  *
@@ -85,6 +87,24 @@ public class IvoaColumnEntity
      */
     protected static final String DB_IVOA_TYPE_COL = "ivoatype" ;
     protected static final String DB_IVOA_SIZE_COL = "ivoasize" ;
+
+    /**
+     * Alias factory implementation.
+     * @todo Move to a separate package.
+     *
+     */
+    @Component
+    public static class AliasFactory
+    implements IvoaColumn.AliasFactory
+        {
+        @Override
+        public String alias(final IvoaColumn column)
+            {
+            return "IVOA_".concat(
+                column.ident().toString()
+                );
+            }
+        }
 
     /**
      * Column factory implementation.
@@ -179,7 +199,15 @@ public class IvoaColumnEntity
             {
             return this.links;
             }
-}
+
+        @Autowired
+        protected IvoaColumn.AliasFactory aliases;
+        @Override
+        public IvoaColumn.AliasFactory aliases()
+            {
+            return this.aliases;
+            }
+        }
 
     protected IvoaColumnEntity()
         {
@@ -280,7 +308,13 @@ public class IvoaColumnEntity
         {
         return this.ivoasize ;
         }
-
+    @Override
+    public String alias()
+        {
+        return factories().ivoa().columns().aliases().alias(
+            this
+            );
+        }
     @Override
     public String link()
         {

@@ -507,7 +507,8 @@ implements AdqlParserTable
                 return this.jdbcName ;
                 }
             else {
-                return this.column.root().alias();
+                return this.column.root().name();
+                //return this.column.root().alias();
                 }
             }
 

@@ -21,6 +21,7 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseTable.AliasFactory;
 
 /**
  * Public interface for a table column.
@@ -38,6 +39,20 @@ extends BaseComponent
         {
         }
 
+    /**
+     * Alias factory interface.
+     *
+     */
+    public static interface AliasFactory<ColumnType extends BaseColumn<ColumnType>>
+    extends Entity.AliasFactory<ColumnType>
+        {
+        /**
+         * Create a Column alias.
+         *
+         */
+        public String alias(final ColumnType column);
+        }
+    
     /**
      * Entity factory interface.
      *
@@ -64,6 +79,12 @@ extends BaseComponent
          */
         public Iterable<ColumnType> search(final TableType parent, final String text);
 
+        /**
+         * AliasFactory implementation.
+         *
+         */
+        public AliasFactory<ColumnType> aliases();
+        
         }
 
     /**

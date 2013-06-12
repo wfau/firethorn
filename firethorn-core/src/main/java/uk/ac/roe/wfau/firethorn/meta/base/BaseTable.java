@@ -70,7 +70,6 @@ extends BaseComponent
         public String alias(final TableType table);
         }
     
-    
     /**
      * Table resolver interface.
      *
@@ -113,13 +112,13 @@ extends BaseComponent
         public Iterable<TableType> search(final SchemaType parent, final String text);
 
         /**
-         * Our AliasFactory implementation.
+         * AliasFactory implementation.
          *
          */
         public AliasFactory<TableType> aliases();
 
         /**
-         * Our NameFactory implementation.
+         * NameFactory implementation.
          *
          */
         public NameFactory<TableType> names();

@@ -12,6 +12,8 @@
     # mvn -D eclipse.workspace=/home/Zarquan/workspace eclipse:add-maven-repo
     mvn -D eclipse.workspace=/home/Zarquan/eclipse/workspace eclipse:add-maven-repo
 
+    # "DEPRECATED. Replaced by eclipse:configure-workspace."
+    # https://maven.apache.org/plugins/maven-eclipse-plugin/add-maven-repo-mojo.html
 
     #
     # Create checksums.

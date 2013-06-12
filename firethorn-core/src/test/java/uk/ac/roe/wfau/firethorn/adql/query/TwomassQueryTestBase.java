@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.adql.query ;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
@@ -38,6 +39,7 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
  *
  */
 @Slf4j
+@Ignore
 public class TwomassQueryTestBase
 extends TestBase
     {

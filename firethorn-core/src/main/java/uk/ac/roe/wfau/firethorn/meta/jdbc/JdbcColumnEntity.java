@@ -37,6 +37,7 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
@@ -97,6 +98,24 @@ public class JdbcColumnEntity
     protected static final String DB_JDBC_TYPE_COL = "jdbctype" ;
     protected static final String DB_JDBC_SIZE_COL = "jdbcsize" ;
 
+    /**
+     * Alias factory implementation.
+     * @todo Move to a separate package.
+     *
+     */
+    @Component
+    public static class AliasFactory
+    implements JdbcColumn.AliasFactory
+        {
+        @Override
+        public String alias(final JdbcColumn column)
+            {
+            return "JDBC_".concat(
+                column.ident().toString()
+                );
+            }
+        }
+    
     /**
      * Column factory implementation.
      *
@@ -193,6 +212,14 @@ public class JdbcColumnEntity
             {
             return this.links;
             }
+
+        @Autowired
+        protected JdbcColumn.AliasFactory aliases;
+        @Override
+        public JdbcColumn.AliasFactory aliases()
+            {
+            return this.aliases;
+            }
         }
 
     protected JdbcColumnEntity()
@@ -252,11 +279,12 @@ public class JdbcColumnEntity
         {
         return this.table().resource();
         }
-
     @Override
     public String alias()
         {
-        return "JDBC_" + ident();
+        return factories().jdbc().columns().aliases().alias(
+            this
+            );
         }
 
     @Basic(

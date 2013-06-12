@@ -58,6 +58,15 @@ extends BaseColumn<AdqlColumn>
         }
 
     /**
+     * Alias factory interface.
+     *
+     */
+    public static interface AliasFactory
+    extends BaseColumn.AliasFactory<AdqlColumn>
+        {
+        }
+
+    /**
      * Column factory interface.
      *
      */
