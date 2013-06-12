@@ -19,18 +19,18 @@
 #
 #
 
-schemaname=${1?}
+schemaname=${1:?}
 
 queryschema=$(
     POST "${queryspace?}/schemas/create" \
-        --header "firethorn.auth.identity:${identity}" \
-        --header "firethorn.auth.community:${community}" \
-        --data   "adql.resource.schema.create.name=${schemaname?}" \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data   "adql.resource.schema.create.name=${schemaname:?}" \
         | ident
         )
 GET "${queryschema?}" \
-    --header "firethorn.auth.identity:${identity}" \
-    --header "firethorn.auth.community:${community}" \
+    --header "firethorn.auth.identity:${identity:?}" \
+    --header "firethorn.auth.community:${community:?}" \
     | ./pp
 
 

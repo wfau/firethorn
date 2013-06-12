@@ -19,45 +19,45 @@
 #
 #
 
-baseschemaname=${1?}
-basetablename=${2?}
+baseschemaname=${1:?}
+basetablename=${2:?}
 
-queryschemaname=${3?}
-querytablename=${4?}
+queryschemaname=${3:?}
+querytablename=${4:?}
 
 baseschema=$(
-    POST "${adqlspace?}/schemas/select" \
-        --header "firethorn.auth.identity:${identity}" \
-        --header "firethorn.auth.community:${community}" \
-        --data   "adql.resource.schema.select.name=${baseschemaname?}" \
+    POST "${adqlspace:?}/schemas/select" \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data   "adql.resource.schema.select.name=${baseschemaname:?}" \
         | ident
         )
 basetable=$(
-    POST "${baseschema?}/tables/select" \
-        --header "firethorn.auth.identity:${identity}" \
-        --header "firethorn.auth.community:${community}" \
-        --data   "adql.schema.table.select.name=${basetablename?}" \
+    POST "${baseschema:?}/tables/select" \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data   "adql.schema.table.select.name=${basetablename:?}" \
         | fullident
         )
 
 queryschema=$(
-    POST "${queryspace?}/schemas/select" \
-        --header "firethorn.auth.identity:${identity}" \
-        --header "firethorn.auth.community:${community}" \
-        --data   "adql.resource.schema.select.name=${queryschemaname?}" \
+    POST "${queryspace:?}/schemas/select" \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data   "adql.resource.schema.select.name=${queryschemaname:?}" \
         | ident
         )
 querytable=$(
-    POST "${queryschema?}/tables/import" \
-        --header "firethorn.auth.identity:${identity}" \
-        --header "firethorn.auth.community:${community}" \
-        --data   "adql.schema.table.import.base=${basetable?}" \
-        --data   "adql.schema.table.import.name=${querytablename?}" \
+    POST "${queryschema:?}/tables/import" \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data   "adql.schema.table.import.base=${basetable:?}" \
+        --data   "adql.schema.table.import.name=${querytablename:?}" \
         | ident
         )
-GET "${querytable?}" \
-    --header "firethorn.auth.identity:${identity}" \
-    --header "firethorn.auth.community:${community}" \
+GET "${querytable:?}" \
+    --header "firethorn.auth.identity:${identity:?}" \
+    --header "firethorn.auth.community:${community:?}" \
     | ./pp
 
 

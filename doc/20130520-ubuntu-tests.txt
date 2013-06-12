@@ -303,7 +303,8 @@ hg clone "ssh://${hguser:?}@${hghost:?}:${hgport:?}/${hgpath:?}" "${codename:?}"
 # Copy our firethorn properties.
 #[user@test-vm] 
 
-    cat "${FIRETHORN_CODE:?}/firethorn-core/src/conf/firethorn-ogsadai.properties" > "${HOME:?}/firethorn.properties"
+    cat "${FIRETHORN_CODE:?}/firethorn-core/src/conf/firethorn-webapp.properties"  >> "${HOME:?}/firethorn.properties"
+    cat "${FIRETHORN_CODE:?}/firethorn-core/src/conf/firethorn-ogsadai.properties" >> "${HOME:?}/firethorn.properties"
     cat "${FIRETHORN_CODE:?}/firethorn-database/properties/hsqldb.properties" >> "${HOME:?}/firethorn.properties"
     cat "${FIRETHORN_CODE:?}/firethorn-database/properties/mssql.properties"  >> "${HOME:?}/firethorn.properties"
 

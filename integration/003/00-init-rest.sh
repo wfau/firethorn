@@ -41,7 +41,7 @@ endpointurl=$(
 
 #
 # Initialise our REST client.
-resty "${endpointurl?}" -W -H 'Accept: application/json'
+resty "${endpointurl:?}" -W -H 'Accept: application/json'
 
 #
 # Unique name generator 
@@ -62,7 +62,7 @@ define()
 # Function to get the short ident from a JSON response.
 ident()
     {
-    ./pp | sed -n 's|^ *"ident" : "'${metabasename?}'\(.*\)"[^"]*|\1|p'
+    ./pp | sed -n 's|^ *"ident" : "'${endpointurl:?}'\(.*\)"[^"]*|\1|p'
     }
 
 #
@@ -103,22 +103,22 @@ runquery()
     local query=${1?}
     local status=$(
         POST "${query?}" \
-            --header "firethorn.auth.identity:${identity}" \
-            --header "firethorn.auth.community:${community}" \
+            --header "firethorn.auth.identity:${identity:?}" \
+            --header "firethorn.auth.community:${community:?}" \
             --data-urlencode "adql.query.update.status=RUNNING" \
             | status
             )
 
-    while [ "${status?}" == 'PENDING' -o "${status?}" == 'RUNNING' ]
+    while [ "${status:?}" == 'PENDING' -o "${status:?}" == 'RUNNING' ]
     do
         sleep 1
         status=$(
-            GET "${query?}" \
-                --header "firethorn.auth.identity:${identity}" \
-                --header "firethorn.auth.community:${community}" \
+            GET "${query:?}" \
+                --header "firethorn.auth.identity:${identity:?}" \
+                --header "firethorn.auth.community:${community:?}" \
                 | status
                 )
-        echo "${status?}"
+        echo "${status:?}"
     done
     }
 

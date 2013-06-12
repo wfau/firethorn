@@ -1,6 +1,6 @@
 adqlfile=atlas-query-003.adql
 
-cat > "${adqlfile?}" << 'EOF'
+cat > "${adqlfile:?}" << 'EOF'
     SELECT
         twomass.ra AS tmra,
         source.ra  AS atra,
@@ -35,16 +35,16 @@ EOF
 
 #
 # Create the query.
-POST "${queryschema?}/queries/create" \
-    --header "firethorn.auth.identity:${identity}" \
-    --header "firethorn.auth.community:${community}" \
-    --data-urlencode "adql.schema.query.create.query@${adqlfile?}" \
+POST "${queryschema:?}/queries/create" \
+    --header "firethorn.auth.identity:${identity:?}" \
+    --header "firethorn.auth.community:${community:?}" \
+    --data-urlencode "adql.schema.query.create.query@${adqlfile:?}" \
     | tee atlas-query.json | ./pp
 queryjob=$(cat atlas-query.json | ident)
 
 #
 # Run the query.
-runquery "${queryjob?}"
+runquery "${queryjob:?}"
 
 #
 # Access the VOTable results.

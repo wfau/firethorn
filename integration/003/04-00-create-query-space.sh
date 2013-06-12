@@ -21,14 +21,14 @@
 
 queryspace=$(
     POST "/adql/resource/create" \
-        --header "firethorn.auth.identity:${identity}" \
-        --header "firethorn.auth.community:${community}" \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
         --data "adql.resource.create.name=workspace-$(unique)" \
         | ident
         )
 GET "${queryspace?}" \
-    --header "firethorn.auth.identity:${identity}" \
-    --header "firethorn.auth.community:${community}" \
+    --header "firethorn.auth.identity:${identity:?}" \
+    --header "firethorn.auth.community:${community:?}" \
     | ./pp
 
 

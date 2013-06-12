@@ -20,23 +20,23 @@
 #
 
 
-jdbcuri=${1?}
-catalog=${2?}
-ogsadai=${3?}
+jdbcuri=${1:?}
+catalog=${2:?}
+ogsadai=${3:?}
 
 jdbcspace=$(
     POST "/jdbc/resource/create" \
-        --header "firethorn.auth.identity:${identity}" \
-        --header "firethorn.auth.community:${community}" \
-        --data   "jdbc.resource.create.url=${jdbcuri?}" \
-        --data   "jdbc.resource.create.name=${ogsadai?}-$(unique)" \
-        --data   "jdbc.resource.create.ogsadai=${ogsadai?}" \
-        --data   "jdbc.resource.create.catalog=${catalog?}" \
+        --header "firethorn.auth.identity:${identity:?}" \
+        --header "firethorn.auth.community:${community:?}" \
+        --data   "jdbc.resource.create.url=${jdbcuri:?}" \
+        --data   "jdbc.resource.create.name=${ogsadai:?}-$(unique)" \
+        --data   "jdbc.resource.create.ogsadai=${ogsadai:?}" \
+        --data   "jdbc.resource.create.catalog=${catalog:?}" \
         | ident
         )
-GET "${jdbcspace?}" \
-    --header "firethorn.auth.identity:${identity}" \
-    --header "firethorn.auth.community:${community}" \
+GET "${jdbcspace:?}" \
+    --header "firethorn.auth.identity:${identity:?}" \
+    --header "firethorn.auth.community:${community:?}" \
     | ./pp
 
 

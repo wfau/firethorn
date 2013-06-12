@@ -94,9 +94,9 @@ EOF
 
 #
 # Create the query.
-POST "${queryschema?}/queries/create" \
-    --header "firethorn.auth.identity:${identity}" \
-    --header "firethorn.auth.community:${community}" \
+POST "${queryschema:?}/queries/create" \
+    --header "firethorn.auth.identity:${identity:?}" \
+    --header "firethorn.auth.community:${community:?}" \
     --data-urlencode "adql.schema.query.create.query@query-test-002c.adql" \
     | tee atlas-query.json | ./pp
 runquery "$(cat atlas-query.json | ident)"
