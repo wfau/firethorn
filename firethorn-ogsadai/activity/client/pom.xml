@@ -72,6 +72,16 @@
         </dependency>
 
         <!--+
+            | FireThorn spring dependencies.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-spring</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!--+
             | FireThorn testing dependencies.
             +-->
         <dependency>

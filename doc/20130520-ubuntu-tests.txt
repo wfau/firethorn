@@ -1,5 +1,21 @@
 # Test VM ------------------------------------------
 
+pi
+    mac     52:54:00:00:00:11
+    10.5.0.17
+    ipv6    2001:08b0:be72:d4ea:5054:00ff:fe00:0011
+    host    tyrosine
+    base    ubuntu-12
+    use     firethorn-hsqldb
+
+xi
+    mac     52:54:00:00:00:10
+    ipv4    10.5.0.16
+    ipv6    2001:08b0:be72:d4ea:5054:00ff:fe00:0010
+    host    tyrosine
+    base    ubuntu-12
+    use     firethorn-tester
+
 rho
     mac     52:54:00:00:00:12
     ipv4    10.5.0.18
@@ -37,7 +53,10 @@ tau
 
         #
         # Set the vm params.
+        vmname=xi
+        vmname=pi
         vmname=rho
+        vmname=tau
         vmbase=ubuntu-12
         memunit=MiB
         memsize=512
@@ -92,7 +111,10 @@ tau
 # Update our local SSH fingerprint
 #[user@desktop]
 
+    name=xi
+    name=pi
     name=rho
+    name=tau
 
     host=${name:?}.virtual.metagrid.co.uk
     sed -i '/^'${host:?}'/d' ~/.ssh/known_hosts
@@ -206,17 +228,28 @@ tau
 #[user@desktop]
 
 cat > "${HOME:?}/test-settings.txt" << 'EOF'
-testuser=yaevaiyeevuneach
-testhost=rho.virtual.metagrid.co.uk
-EOF
 
-cat > "${HOME:?}/test-settings.txt" << 'EOF'
-testuser=yaevaiyeevuneach
-testhost=malus
+hsqluser=iezaitohthogaing
+hsqlhost=pi.virtual.metagrid.co.uk
+
+fireuser=ushiluodaduotosh
+firehost=rho.virtual.metagrid.co.uk
+
+ogsauser=ooyohriethohshoh
+ogsahost=tau.virtual.metagrid.co.uk
+
+testuser=coongainohxeiwak
+testhost=xi.virtual.metagrid.co.uk
+
 EOF
 
     source "${HOME:?}/test-settings.txt"
+
+    ssh "${hsqluser:?}@${hsqlhost:?}"
+    ssh "${fireuser:?}@${firehost:?}"
+    ssh "${ogsauser:?}@${ogsahost:?}"
     ssh "${testuser:?}@${testhost:?}"
+
 
 # -----------------------------------------------------
 # Create our firethorn settings.
@@ -242,18 +275,21 @@ EOF
     fi
 
     pushd "${codepath:?}"
+
         if [ ! -e "${codename:?}" ]
         then
-             hg clone 'http://wfau.metagrid.co.uk/code/firethorn/' "${codename:?}"
+#
+# External services.
+#hg clone 'http://wfau.metagrid.co.uk/code/firethorn/' "${codename:?}"
 
 #
 # Shortcut for internal use only.
-#hghost=threonine.metagrid.co.uk
-#hgport=22
-#hguser=Zarquan
-#hgpath=/var/local/projects/edinburgh/wfau/firethorn/devel
-#ssh-keyscan ${hghost:?} >> ~/.ssh/known_hosts
-#hg clone "ssh://${hguser:?}@${hghost:?}:${hgport:?}/${hgpath:?}" "${codename:?}"
+hghost=threonine.metagrid.co.uk
+hgport=22
+hguser=Zarquan
+hgpath=/var/local/projects/edinburgh/wfau/firethorn/devel
+ssh-keyscan ${hghost:?} >> ~/.ssh/known_hosts
+hg clone "ssh://${hguser:?}@${hghost:?}:${hgport:?}/${hgpath:?}" "${codename:?}"
 
         else
             pushd "${codename:?}"
@@ -285,7 +321,8 @@ EOF
 
     # TTY #1 ------------------------------------------------------------
     source "${HOME:?}/test-settings.txt"
-    ssh "${testuser:?}@${testhost:?}"
+    ssh "${fireuser:?}@${firehost:?}"
+    ssh "${ogsauser:?}@${ogsahost:?}"
 
         username=xxxx
         hostname=fenrir.roe.ac.uk
@@ -297,7 +334,7 @@ EOF
 
     # TTY #2,3 -----------------------------------------------------------
     source "${HOME:?}/test-settings.txt"
-    ssh "${testuser:?}@${testhost:?}"
+    ssh "${hsqluser:?}@${hsqlhost:?}"
 
         source ${HOME:?}/firethorn.settings
         pushd "${FIRETHORN_CODE:?}"
@@ -312,7 +349,8 @@ EOF
 
     # TTY #4,5,6 ----------------------------------------------------------
     source "${HOME:?}/test-settings.txt"
-    ssh "${testuser:?}@${testhost:?}"
+    ssh "${fireuser:?}@${firehost:?}"
+
 
         source ${HOME:?}/firethorn.settings
         pushd "${FIRETHORN_CODE:?}"
@@ -323,15 +361,13 @@ EOF
 
             pushd 'firethorn-webapp'
 
-                mvn clean compile war:war
-
                 export MAVEN_OPTS=-Xmx128m
                 mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
 
 
     # TTY #7 ------------------------------------------------------------
     source "${HOME:?}/test-settings.txt"
-    ssh "${testuser:?}@${testhost:?}"
+    ssh "${ogsauser:?}@${ogsahost:?}"
 
         source "${HOME:?}/firethorn.settings"
         pushd "${FIRETHORN_CODE:?}"
