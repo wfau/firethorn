@@ -32,12 +32,6 @@ public class SimpleQueryTestCase
 extends SimpleQueryTestBase
     {
 
-    /**
-     * Our test service endpoint.
-     *
-     */
-    //public static final String endpoint = "http://localhost:8081/albert/services/" ;
-
     @Value("${firethon.ogsadai.dqp}")
     private String dqp ;
 

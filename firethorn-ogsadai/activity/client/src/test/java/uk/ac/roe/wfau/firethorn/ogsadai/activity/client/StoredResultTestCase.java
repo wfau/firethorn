@@ -6,6 +6,7 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
 import java.net.URL;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  *
@@ -13,6 +14,14 @@ import org.junit.Test;
  */
 public class StoredResultTestCase
     {
+    @Value("${firethon.ogsadai.dqp}")
+    private String dqp ;
+
+    @Value("${firethon.ogsadai.store}")
+    private String store ;
+
+    @Value("${firethon.ogsadai.endpoint}")
+    private String endpoint ;
 
     /**
      * The test class load time.
@@ -73,12 +82,6 @@ public class StoredResultTestCase
             );
         return builder.toString();
         }
-
-    /**
-     * Our test service endpoint.
-     *
-     */
-    public static final String endpoint = "http://localhost:8081/albert/services/" ;
 
     /**
      * Single catalog, TWOMASS.

@@ -23,6 +23,7 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  *
@@ -33,11 +34,14 @@ public class TestDqpQueryTestCase
 extends SimpleQueryTestBase
     {
 
-    /**
-     * Our test service endpoint.
-     *
-     */
-    public static final String endpoint = "http://localhost:8081/albert/services" ;
+    @Value("${firethon.ogsadai.dqp}")
+    private String dqp ;
+
+    @Value("${firethon.ogsadai.store}")
+    private String store ;
+
+    @Value("${firethon.ogsadai.endpoint}")
+    private String endpoint ;
 
     /**
      * TWOMASS and UKIDSSDR1, using test DQP, using GT and LT on both tables.

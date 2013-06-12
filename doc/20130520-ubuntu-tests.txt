@@ -324,7 +324,7 @@ hg clone "ssh://${hguser:?}@${hghost:?}:${hgport:?}/${hgpath:?}" "${codename:?}"
     ssh "${fireuser:?}@${firehost:?}"
     ssh "${ogsauser:?}@${ogsahost:?}"
 
-        username=xxxx
+        username=dave
         hostname=fenrir.roe.ac.uk
         
         sed -i '/^'${hostname:?}'/d' ~/.ssh/known_hosts
@@ -339,7 +339,7 @@ hg clone "ssh://${hguser:?}@${hghost:?}:${hgport:?}/${hgpath:?}" "${codename:?}"
         source ${HOME:?}/firethorn.settings
         pushd "${FIRETHORN_CODE:?}"
 
-            mvn -P depends clean install
+            mvn -P depends install
 
             pushd 'firethorn-hsqldb'
 
@@ -351,13 +351,12 @@ hg clone "ssh://${hguser:?}@${hghost:?}:${hgport:?}/${hgpath:?}" "${codename:?}"
     source "${HOME:?}/test-settings.txt"
     ssh "${fireuser:?}@${firehost:?}"
 
-
         source ${HOME:?}/firethorn.settings
         pushd "${FIRETHORN_CODE:?}"
 
+            mvn -P depends  install
             mvn -P database install
-
-            mvn clean install 
+            mvn install 
 
             pushd 'firethorn-webapp'
 
@@ -371,9 +370,13 @@ hg clone "ssh://${hguser:?}@${hghost:?}:${hgport:?}/${hgpath:?}" "${codename:?}"
 
         source "${HOME:?}/firethorn.settings"
         pushd "${FIRETHORN_CODE:?}"
+
+            mvn -P depends install
+            mvn install 
+
             pushd 'firethorn-ogsadai/webapp'
 
-                mvn clean compile war:war
+                mvn compile war:war
 
                 source src/test/bin/jdbc-functions.sh
 
@@ -393,8 +396,14 @@ hg clone "ssh://${hguser:?}@${hghost:?}:${hgport:?}/${hgpath:?}" "${codename:?}"
 
         source ${HOME:?}/firethorn.settings
         pushd "${FIRETHORN_CODE:?}"
+
+            mvn -P depends install
+            mvn install 
+
             pushd 'firethorn-ogsadai/activity/client'
+
                 mvn -D skipTests=false -D test=SingleQueryTestCase test 
+
             popd
         popd
 
