@@ -1,0 +1,16 @@
+
+
+### Subquery in Select - returns 8778 rows
+Select DistanceMins From atlassourcexDR7photoobj as CrossMatch,
+	(Select s.sourceid as id From atlassource as s Where ra > 182 AND ra < 184 
+	AND dec > -3 AND dec < -1 AND mergedclass =1 group by s.sourceid) AS T 
+Where DistanceMins < 2/60.0 AND sdsstype = 3 AND sdssPrimary = 1 AND T.id = CrossMatch.masterObjID
+
+### Subquery in From - returns 2876 rows
+Select DistanceMins From (Select Top 10000 * From atlassourcexDR7photoobj Where sdssPrimary = 1) as Crossmatch,
+	Where DistanceMins < 2/60.0 AND sdsstype = 3
+
+### Subquery in Where - returns 32378 rows
+Select DistanceMins From atlassourcexDR7photoobj as CrossMatch
+Where 
+ (Select s.sourceid From atlassource as s Where ra > 182 AND ra < 184 AND dec > -3 AND dec < -1 AND CrossMatch.masterOjbID = sourceID)>0
