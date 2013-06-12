@@ -407,8 +407,6 @@ hg clone "ssh://${hguser:?}@${hghost:?}:${hgport:?}/${hgpath:?}" "${codename:?}"
             popd
         popd
 
-        exit
-
 # -----------------------------------------------------
 # Copy/paste instructions from the latest atlas-example (20130524-atlas-example.txt).
 #[user@test-vm] 

@@ -32,14 +32,16 @@ chmod a+x pp
 
 
 #
-# Set the base URL and options.
-metahostname=localhost
-metahostport=8080
-metabasename="http://${metahostname?}:${metahostport?}/firethorn"
+# The service endpoint URL.
+endpointurl=$(
+    sed -n '
+        s/^firethon\.webapp\.endpoint=\(.*\)$/\1/p
+        ' "${HOME:?}/firethorn.properties"
+    )
 
 #
 # Initialise our REST client.
-resty "${metabasename?}" -W -H 'Accept: application/json'
+resty "${endpointurl?}" -W -H 'Accept: application/json'
 
 #
 # Unique name generator 
