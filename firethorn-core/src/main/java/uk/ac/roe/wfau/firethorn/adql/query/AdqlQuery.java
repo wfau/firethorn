@@ -34,6 +34,47 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 public interface AdqlQuery
 extends Entity, Job
     {
+
+    /**
+     * Public interface for OGSA-DAI query params.
+     * @todo This should become the basis for an OgsaDaiservice entiry ? 
+     * 
+     */
+    public interface QueryParam
+        {
+        /**
+         * The service endpoint URL.
+         * 
+         */
+        public String endpoint();
+
+        /**
+         * The DQP processor name.
+         * 
+         */
+        public String dqp();
+
+        /**
+         * The user data store name.
+         * 
+         */
+        public String store();
+        }
+
+    /**
+     * OGSA-DAI param factory interface.
+     *
+     */
+    public static interface ParamFactory
+        {
+        /**
+         * The current OGSA-DAI params.
+         *
+         */
+        public QueryParam current();
+
+        }
+    
     /**
      * Our local service implementations.
      *
@@ -82,6 +123,12 @@ extends Entity, Job
         public Builder builder();
          */
 
+        /**
+         * OGSA-DAI param factory.
+         *
+         */
+        public ParamFactory params();
+        
         }
 
     /**
@@ -161,6 +208,12 @@ extends Entity, Job
          *
          */
         public Iterable<AdqlQuery> search(final AdqlSchema schema, final String text);
+
+        /**
+         * OGSA-DAI param factory.
+         *
+         */
+        public ParamFactory params();
 
         }
 
@@ -253,6 +306,12 @@ extends Entity, Job
      *
      */
     public Syntax syntax();
+
+    /**
+     * The OGSA-DAI query params.
+     * 
+     */
+    public QueryParam params();
 
     /**
      * OGSA-DAI query mode.

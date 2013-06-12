@@ -6,10 +6,22 @@ rho
     ipv6    2001:08b0:be72:d4ea:5054:00ff:fe00:0012
     host    tyrosine
     base    ubuntu-12
-    use     firethorn
+    use     firethorn-firethorn
+
+tau
+    mac     52:54:00:00:00:13
+    ipv4    10.5.0.19
+    ipv6    2001:08b0:be72:d4ea:5054:00ff:fe00:0013
+    host    tyrosine
+    base    ubuntu-12
+    use     firethorn-ogsadai
 
 #-----------------------------------------------------------------------------------
 # Create new virtual machines ....
+#[user@desktop]
+
+    ssh root@tyrosine
+
 #[root@kvm-server]
 
     pushd ${HOME:?}/kvm
@@ -255,7 +267,8 @@ EOF
 # Copy our firethorn properties.
 #[user@test-vm] 
 
-    cat "${FIRETHORN_CODE:?}/firethorn-database/properties/hsqldb.properties"  > "${HOME:?}/firethorn.properties"
+    cat "${FIRETHORN_CODE:?}/firethorn-core/src/conf/firethorn-ogsadai.properties" > "${HOME:?}/firethorn.properties"
+    cat "${FIRETHORN_CODE:?}/firethorn-database/properties/hsqldb.properties" >> "${HOME:?}/firethorn.properties"
     cat "${FIRETHORN_CODE:?}/firethorn-database/properties/mssql.properties"  >> "${HOME:?}/firethorn.properties"
 
     vi "${HOME:?}/firethorn.properties"

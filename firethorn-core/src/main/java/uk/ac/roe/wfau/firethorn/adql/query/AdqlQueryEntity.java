@@ -46,6 +46,7 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
+import org.springframework.beans.factory.annotation.Value;         
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -71,7 +72,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineResult;
@@ -141,6 +141,56 @@ implements AdqlQuery, AdqlParserQuery
     protected static final String DB_SYNTAX_MESSAGE_COL = "syntaxmessage";
 
     /**
+     * Hibernate column mapping.
+     *
+     */
+    protected static final String DB_OGSADAI_DQP_COL      = "ogsadaidqp";
+    protected static final String DB_OGSADAI_STORE_COL    = "ogsadaistore";
+    protected static final String DB_OGSADAI_ENDPOINT_COL = "ogsadaiendpoint";
+    
+    /**
+     * Param factory implementation.
+     * @todo Move to a separate class.
+     * 
+     */
+    @Component
+    public static class ParamFactory
+    implements AdqlQuery.ParamFactory
+        {
+       @Value("${firethon.ogsadai.dqp}")
+       private String dqp ;
+
+       @Value("${firethon.ogsadai.store}")
+       private String store ;
+
+       @Value("${firethon.ogsadai.endpoint}")
+       private String endpoint ;
+
+        @Override
+        public AdqlQuery.QueryParam current()
+            {
+            return new AdqlQuery.QueryParam()
+                {
+                @Override
+                public String endpoint()
+                    {
+                    return ParamFactory.this.endpoint;
+                    }
+                @Override
+                public String dqp()
+                    {
+                    return ParamFactory.this.dqp;
+                    }
+                @Override
+                public String store()
+                    {
+                    return ParamFactory.this.store;
+                    }
+                };
+            }
+        }
+    
+    /**
      * Our local service implementations.
      *
      */
@@ -196,15 +246,13 @@ implements AdqlQuery, AdqlParserQuery
             return this.executor;
             }
 
-        /*
         @Autowired
-        private AdqlQuery.Builder builder;
+        private AdqlQuery.ParamFactory params;
         @Override
-        public AdqlQuery.Builder builder()
+        public AdqlQuery.ParamFactory params()
             {
-            return this.builder;
+            return this.params;
             }
-        */
         }
 
     @Override
@@ -282,6 +330,7 @@ implements AdqlQuery, AdqlParserQuery
             // Create the query entity.
             final AdqlQueryEntity entity = new AdqlQueryEntity(
                 factories().identities().current(),
+                params.current(),
                 schema,
                 names().name(
                     name
@@ -325,6 +374,14 @@ implements AdqlQuery, AdqlParserQuery
             return this.idents;
             }
 
+        @Autowired
+        private AdqlQuery.ParamFactory params;
+        @Override
+        public AdqlQuery.ParamFactory params()
+            {
+            return this.params;
+            }
+        
         @Override
         @SelectEntityMethod
         public Iterable<AdqlQuery> select()
@@ -382,7 +439,7 @@ implements AdqlQuery, AdqlParserQuery
      * Protected constructor, used by factory.
      *
      */
-    protected AdqlQueryEntity(final Identity owner, final AdqlSchema schema, final String name, final String input)
+    protected AdqlQueryEntity(final Identity owner, final AdqlQuery.QueryParam params, final AdqlSchema schema, final String name, final String input)
     throws NameFormatException
         {
         super(
@@ -392,6 +449,9 @@ implements AdqlQuery, AdqlParserQuery
         this.schema = schema;
         this.input(
             input
+            );
+        this.params(
+            params
             );
         }
 
@@ -552,6 +612,62 @@ implements AdqlQuery, AdqlParserQuery
         updatable = true
         )
     private String message;
+
+    @Column(
+        name = DB_OGSADAI_DQP_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String dqp ;
+
+    @Column(
+        name = DB_OGSADAI_STORE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String store ;
+
+    @Column(
+        name = DB_OGSADAI_ENDPOINT_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String endpoint ;
+
+    protected void params(AdqlQuery.QueryParam params)
+        {
+        this.dqp      = params.dqp();
+        this.store    = params.store();
+        this.endpoint = params.endpoint();
+        }
+
+    @Override
+    public AdqlQuery.QueryParam params()
+        {
+        return new AdqlQuery.QueryParam()
+            {
+            @Override
+            public String endpoint()
+                {
+                return AdqlQueryEntity.this.endpoint;
+                }
+
+            @Override
+            public String dqp()
+                {
+                return AdqlQueryEntity.this.dqp;
+                }
+
+            @Override
+            public String store()
+                {
+                return AdqlQueryEntity.this.store;
+                }
+            };
+        }
 
     @Override
     public Syntax syntax()
@@ -798,11 +914,8 @@ implements AdqlQuery, AdqlParserQuery
             resource
             );
         }
-
-    public static final String endpoint  = "http://localhost:8081/albert/services" ;
-    public static final String dqpname   = "testdqp" ;
-    public static final String storename = "userdata" ;
-
+    
+    
     @Override
     public Status execute()
         {
@@ -828,7 +941,7 @@ implements AdqlQuery, AdqlParserQuery
                 log.debug("-- Pipeline endpoint [{}]", endpoint);
                 final StoredResultPipeline pipeline = new StoredResultPipeline(
                     new URL(
-                        endpoint
+                        params().endpoint()
                         )
                     );
                 log.debug("-- Pipeline [{}]", pipeline);
@@ -837,16 +950,19 @@ implements AdqlQuery, AdqlParserQuery
                 // Execute the pipleline.
 
                 // TODO - Check for valid resource ident in prepare().
-                final String target = ((mode() == Mode.DIRECT) ? primary().ogsaid() : dqpname);
+                final String target = ((mode() == Mode.DIRECT) ? primary().ogsaid() : params().dqp());
                 final String tablename = query.results().jdbc().fullname().toString() ;
 
                 log.debug("-- AdqlQuery executing [{}]", ident());
-                log.debug("-- Mode   [{}]", query.mode());
-                log.debug("-- Target [{}]", target);
+                log.debug("-- Mode     [{}]", query.mode());
+                log.debug("-- Table    [{}]", tablename);
+                log.debug("-- Store    [{}]", params().store());
+                log.debug("-- Target   [{}]", target);
+                log.debug("-- Endpoint [{}]", params().endpoint());
 
                 final PipelineResult frog = pipeline.execute(
                     target,
-                    storename,
+                    params().store(),
                     tablename,
                     query.osql()
                     );
