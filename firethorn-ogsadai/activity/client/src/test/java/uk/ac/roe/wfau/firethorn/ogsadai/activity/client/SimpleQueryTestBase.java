@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
     )
 @ContextConfiguration(
     locations = {
-        "classpath:test-config.xml",
+        "classpath:component-config.xml",
         }
     )
 public class SimpleQueryTestBase
