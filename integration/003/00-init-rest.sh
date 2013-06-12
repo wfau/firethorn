@@ -67,6 +67,11 @@ ident()
     ./pp | sed -n 's|^ *"ident" : "'${endpointurl:?}'\(.*\)"[^"]*|\1|p'
     }
 
+#ident()
+#    {
+#    ./pp | sed -n 's|^ *"ident" : "'${localhosturl:?}'\(.*\)"[^"]*|\1|p'
+#    }
+
 #
 # Function to get the long ident from a JSON response.
 fullident()

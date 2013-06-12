@@ -401,6 +401,9 @@ hg clone "ssh://${hguser:?}@${hghost:?}:${hgport:?}/${hgpath:?}" "${codename:?}"
             mvn -P depends install
             mvn install 
 
+        popd
+
+        pushd "${FIRETHORN_CODE:?}"
             pushd 'firethorn-ogsadai/activity/client'
 
                 mvn -D skipTests=false -D test=SingleQueryTestCase test 
