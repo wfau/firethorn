@@ -27,7 +27,7 @@ jdbcschema=$(
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
         --data   "jdbc.resource.schema.select.name=${jdbcname:?}" \
-        | fullident
+        | ident
         )
 adqlschema=$(
     POST "${adqlspace:?}/schemas/import" \
@@ -35,7 +35,7 @@ adqlschema=$(
         --header "firethorn.auth.community:${community:?}" \
         --data   "adql.resource.schema.import.name=${adqlname:?}" \
         --data   "adql.resource.schema.import.base=${jdbcschema:?}" \
-        | ident
+        | ident | node
         )
 GET "${adqlschema:?}" \
     --header "firethorn.auth.identity:${identity:?}" \

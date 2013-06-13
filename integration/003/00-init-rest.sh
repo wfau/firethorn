@@ -34,7 +34,6 @@ chmod a+x pp
 #
 # The service endpoint URL.
 localhosturl=http://localhost:8080/firethorn
-
 endpointurl=$(
     sed -n '
         s/^firethon\.webapp\.endpoint=\(.*\)$/\1/p
@@ -61,22 +60,18 @@ define()
     }
 
 #
-# Function to get the short ident from a JSON response.
+# Function to get the htp ident from a JSON response.
 ident()
     {
-    ./pp | sed -n 's|^ *"ident" : "'${endpointurl:?}'\(.*\)"[^"]*|\1|p'
+    ./pp | sed -n 's|^ *"ident" : "\(.*\)"[^"]*|\1|p'
     }
 
-#ident()
-#    {
-#    ./pp | sed -n 's|^ *"ident" : "'${localhosturl:?}'\(.*\)"[^"]*|\1|p'
-#    }
 
 #
-# Function to get the long ident from a JSON response.
-fullident()
+# Function to get the REST node from an http URL.
+node()
     {
-    ./pp | sed -n 's|^ *"ident" : "\(.*\)"[^"]*|\1|p'
+    sed -n 's|\(https\{0,1\}\)://\([^/:]*\):\{0,1\}\([^/]*\)/\([^/]*\)/\(.*\)|/\5|p'
     }
 
 #

@@ -24,7 +24,7 @@ adqlspace=$(
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
         --data "adql.resource.create.name=workspace-$(unique)" \
-        | ident
+        | ident | node
         )
 GET "${adqlspace:?}" \
     --header "firethorn.auth.identity:${identity:?}" \

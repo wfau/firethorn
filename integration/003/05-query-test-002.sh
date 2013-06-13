@@ -99,7 +99,7 @@ POST "${queryschema:?}/queries/create" \
     --header "firethorn.auth.community:${community:?}" \
     --data-urlencode "adql.schema.query.create.query@query-test-002c.adql" \
     | tee atlas-query.json | ./pp
-runquery "$(cat atlas-query.json | ident)"
+runquery "$(cat atlas-query.json | ident | node)"
 
 #
 # Access the VOTable results.

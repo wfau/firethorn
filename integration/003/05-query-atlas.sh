@@ -40,11 +40,10 @@ POST "${queryschema:?}/queries/create" \
     --header "firethorn.auth.community:${community:?}" \
     --data-urlencode "adql.schema.query.create.query@${adqlfile:?}" \
     | tee atlas-query.json | ./pp
-queryjob=$(cat atlas-query.json | ident)
 
 #
 # Run the query.
-runquery "${queryjob:?}"
+runquery "$(cat atlas-query.json | ident | node)"
 
 #
 # Access the VOTable results.

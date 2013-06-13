@@ -32,7 +32,7 @@ jdbcspace=$(
         --data   "jdbc.resource.create.name=${ogsadai:?}-$(unique)" \
         --data   "jdbc.resource.create.ogsadai=${ogsadai:?}" \
         --data   "jdbc.resource.create.catalog=${catalog:?}" \
-        | ident
+        | ident | node
         )
 GET "${jdbcspace:?}" \
     --header "firethorn.auth.identity:${identity:?}" \

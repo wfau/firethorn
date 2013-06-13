@@ -30,14 +30,14 @@ baseschema=$(
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
         --data   "adql.resource.schema.select.name=${baseschemaname:?}" \
-        | ident
+        | ident | node
         )
 basetable=$(
     POST "${baseschema:?}/tables/select" \
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
         --data   "adql.schema.table.select.name=${basetablename:?}" \
-        | fullident
+        | ident
         )
 
 queryschema=$(
@@ -45,7 +45,7 @@ queryschema=$(
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
         --data   "adql.resource.schema.select.name=${queryschemaname:?}" \
-        | ident
+        | ident | node
         )
 querytable=$(
     POST "${queryschema:?}/tables/import" \
@@ -53,7 +53,7 @@ querytable=$(
         --header "firethorn.auth.community:${community:?}" \
         --data   "adql.schema.table.import.base=${basetable:?}" \
         --data   "adql.schema.table.import.name=${querytablename:?}" \
-        | ident
+        | ident | node
         )
 GET "${querytable:?}" \
     --header "firethorn.auth.identity:${identity:?}" \

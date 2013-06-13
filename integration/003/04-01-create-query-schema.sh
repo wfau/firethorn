@@ -26,7 +26,7 @@ queryschema=$(
         --header "firethorn.auth.identity:${identity:?}" \
         --header "firethorn.auth.community:${community:?}" \
         --data   "adql.resource.schema.create.name=${schemaname:?}" \
-        | ident
+        | ident | node
         )
 GET "${queryschema?}" \
     --header "firethorn.auth.identity:${identity:?}" \
