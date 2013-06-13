@@ -72,10 +72,10 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                 AdqlColumn.Metadata meta = column.meta();
                 if ((meta != null) && (meta.adql() != null))
                     {
-                    if (meta.adql().ucd() != null)
+                    if (meta.adql().ucd1() != null)
                         {
                         %>
-                        <ucd><%= meta.adql().ucd() %></ucd>
+                        <ucd><%= meta.adql().ucd1() %></ucd>
                         <%
                         }
                     else {
@@ -105,9 +105,25 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                         }
                     if (meta.adql().type() != null)
                         {
-                        %>
-                        <type <%= (meta.adql().size() != null) ? "size='"  + meta.adql().size() + "'" : "" %>><%= meta.adql().type() %></type>
-                        <%
+                        if (meta.adql().arraysize() != null)
+                            {
+                            if (meta.adql().arraysize() == -1)
+                                {
+                                %>
+                                <type size='*'><%= meta.adql().type() %></type>
+                                <%
+                                }
+                            else {
+                                %>
+                                <type size='<%= meta.adql().arraysize() %>'<%= meta.adql().type() %></type>
+                                <%
+                                }
+                            }
+                        else {
+                            %>
+                            <type><%= meta.adql().type() %></type>
+                            <%
+                            }
                         }
                     else {
                         %>

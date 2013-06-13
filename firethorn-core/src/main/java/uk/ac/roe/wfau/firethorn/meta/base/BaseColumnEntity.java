@@ -320,12 +320,12 @@ extends BaseComponentEntity
         return new BaseColumn.Metadata.AdqlMeta()
             {
             @Override
-            public Integer array()
+            public Integer arraysize()
                 {
                 return adqlsize();
                 }
             @Override
-            public void array(final Integer size)
+            public void arraysize(final Integer size)
                 {
                 adqlsize(
                     size
@@ -365,21 +365,21 @@ extends BaseComponentEntity
                 }
 
             @Override
-            public String newucd()
+            public String ucd1()
                 {
                 return "new-ucd";
                 }
             @Override
-            public void newucd(final String ucd)
+            public void ucd1(final String ucd)
                 {
                 }
             @Override
-            public String olducd()
+            public String ucd0()
                 {
                 return "old-ucd";
                 }
             @Override
-            public void olducd(final String ucd)
+            public void ucd0(final String ucd)
                 {
                 }
             };

@@ -110,7 +110,7 @@ implements EntityBean<JdbcColumn>
                     @Override
                     public Integer getSize()
                         {
-                        return entity().meta().adql().array();
+                        return entity().meta().adql().arraysize();
                         }
                     };
                 }

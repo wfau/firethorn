@@ -1,4 +1,5 @@
 # Test VM ------------------------------------------
+#
 
 pi
     mac     52:54:00:00:00:11
@@ -111,20 +112,20 @@ tau
 # Update our local SSH fingerprint
 #[user@desktop]
 
-    name=xi
-    name=pi
-    name=rho
-    name=tau
+    vmname=xi
+    vmname=pi
+    vmname=rho
+    vmname=tau
 
-    host=${name:?}.virtual.metagrid.co.uk
-    sed -i '/^'${host:?}'/d' ~/.ssh/known_hosts
-    ssh-keyscan ${host:?} >> ~/.ssh/known_hosts
+    fqname=${vmname:?}.virtual.metagrid.co.uk
+    sed -i '/^'${vmname:?}'/d' ~/.ssh/known_hosts
+    ssh-keyscan ${fqname:?} >> ~/.ssh/known_hosts
 
 # ------------------------------------------
 # Login as root
 #[user@desktop]
 
-    ssh root@${name:?}.virtual.metagrid.co.uk
+    ssh root@${fqname:?}
 
 # ----------------------------------------------------------
 # Update APT database.
@@ -342,7 +343,7 @@ hg clone "ssh://${hguser:?}@${hghost:?}:${hgport:?}/${hgpath:?}" "${codename:?}"
 
             mvn -P depends install
 
-            pushd 'firethorn-hsqldb'
+                pushd 'firethorn-hsqldb'
 
                 export MAVEN_OPTS=-Xmx128m
                 mvn clean exec:java
@@ -403,6 +404,7 @@ hg clone "ssh://${hguser:?}@${hghost:?}:${hgport:?}/${hgpath:?}" "${codename:?}"
 
         popd
 
+        source ${HOME:?}/firethorn.settings
         pushd "${FIRETHORN_CODE:?}"
             pushd 'firethorn-ogsadai/activity/client'
 

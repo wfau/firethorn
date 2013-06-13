@@ -330,12 +330,12 @@ implements AdqlParser
                 return 0 ;
                 }
             else {
-                if (info.adql().array() == null)
+                if (info.adql().arraysize() == null)
                     {
                     return 0 ;
                     }
                 else {
-                    return info.adql().array().intValue();
+                    return info.adql().arraysize().intValue();
                     }
                 }
             }
@@ -918,7 +918,7 @@ implements AdqlParser
                 info = temp;
                 }
             else {
-                if (temp.adql().array().intValue() > info.adql().array().intValue())
+                if (temp.adql().arraysize().intValue() > info.adql().arraysize().intValue())
                     {
                     info = temp ;
                     }

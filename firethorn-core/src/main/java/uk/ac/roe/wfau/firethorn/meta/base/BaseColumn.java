@@ -154,12 +154,12 @@ extends BaseComponent
              * The array size, or null if this is not an array.
              *
              */
-            public Integer array();
+            public Integer arraysize();
             /**
              * Set the array size.
              *
              */
-            public void array(final Integer size);
+            public void arraysize(final Integer size);
 
             /**
              * The ADQL type.
@@ -198,23 +198,23 @@ extends BaseComponent
              * The new ADQL ucd.
              *
              */
-            public String newucd();
+            public String ucd1();
             /**
              * Set the new ADQL ucd.
              *
              */
-            public void newucd(final String ucd);
+            public void ucd1(final String ucd);
 
             /**
              * The old ADQL ucd.
              *
              */
-            public String olducd();
+            public String ucd0();
             /**
              * Set the old ADQL ucd.
              *
              */
-            public void olducd(final String ucd);
+            public void ucd0(final String ucd);
 
             }
 

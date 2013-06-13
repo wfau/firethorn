@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractLinkFactory;
 
@@ -35,12 +37,28 @@ implements Entity.LinkFactory<EntityType>
 
     //TODO - Make this configurable/dynamic
     //TODO - Use the data from the current Operation ?
-    public static final String SERVICE_BASE = "http://localhost:8080/" ;
-    public static final String CONTEXT_PATH = "firethorn" ;
-    public static final String SERVLET_PATH = "" ;
+    //public static final String SERVICE_BASE = "http://localhost:8080/" ;
+    //public static final String CONTEXT_PATH = "firethorn" ;
+    //public static final String SERVLET_PATH = "" ;
 
-    public static final String SERVICE_PATH = SERVICE_BASE + CONTEXT_PATH ;
+    //public static final String SERVICE_PATH = SERVICE_BASE + CONTEXT_PATH ;
 
+    public static final String DEFAULT_ENDPOINT = "http://localhost:8080/firethorn" ;
+
+    
+    @Value("${firethon.webapp.endpoint}")
+    private String endpoint ;
+    public String endpoint()
+        {
+        if (endpoint != null)
+            {
+            return endpoint;
+            }
+        else {
+            return DEFAULT_ENDPOINT ;
+            }
+        }
+    
     protected WebappLinkFactory(final String path)
         {
         super(path);
@@ -67,9 +85,13 @@ implements Entity.LinkFactory<EntityType>
 
     protected String link(final String path, final String ident)
         {
-        return SERVICE_PATH + path.replaceFirst(
-            IDENT_REGEX,
-            ident
-            );
+        return new StringBuilder(
+            endpoint()
+            ).append(
+                path.replaceFirst(
+                    IDENT_REGEX,
+                    ident
+                    )
+                ).toString();
         }
     }

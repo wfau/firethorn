@@ -219,7 +219,7 @@ public class AdqlQueryVOTableController
                         }
     */
                     info.setUCD(
-                        adql.meta().adql().newucd()
+                        adql.meta().adql().ucd1()
                         );
                     info.setUnitString(
                         adql.meta().adql().unit()

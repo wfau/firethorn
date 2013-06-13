@@ -22,9 +22,6 @@
 jdbcname=${1:?}
 adqlname=${2:?}
 
-jdbcname=TWOXMM.dbo
-adqlname=twoxmm
-
 jdbcschema=$(
     POST "${jdbcspace:?}/schemas/select" \
         --header "firethorn.auth.identity:${identity:?}" \
@@ -40,14 +37,6 @@ adqlschema=$(
         --data   "adql.resource.schema.import.base=${jdbcschema:?}" \
         | ident
         )
-
-GET "${adqlschema:?}" \
-    --header "firethorn.auth.identity:${identity:?}" \
-    --header "firethorn.auth.community:${community:?}" \
-    | ./pp
-
-sleep 1
-
 GET "${adqlschema:?}" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
