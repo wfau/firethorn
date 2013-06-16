@@ -48,7 +48,7 @@ public interface AdqlFactories
      * Our column factory.
      *
      */
-    public AdqlColumn.Factory columns();
+    public AdqlColumn.EntityFactory columns();
 
     /**
      * Our query factory.

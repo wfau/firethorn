@@ -45,6 +45,6 @@ public interface JdbcFactories
      * Our column factory.
      *
      */
-    public JdbcColumn.Factory  columns();
+    public JdbcColumn.EntityFactory  columns();
 
     }

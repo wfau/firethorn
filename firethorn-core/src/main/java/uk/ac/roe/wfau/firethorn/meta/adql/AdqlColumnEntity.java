@@ -84,8 +84,6 @@ public class AdqlColumnEntity
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_BASE_TYPE_COL = "basetype" ;
-    protected static final String DB_BASE_SIZE_COL = "basesize" ;
 
     /**
      * Alias factory implementation.
@@ -110,9 +108,9 @@ public class AdqlColumnEntity
      *
      */
     @Repository
-    public static class Factory
+    public static class EntityFactory
     extends AbstractFactory<AdqlColumn>
-    implements AdqlColumn.Factory
+    implements AdqlColumn.EntityFactory
         {
 
         @Override
@@ -307,76 +305,14 @@ public class AdqlColumnEntity
         return base().root();
         }
 
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_BASE_TYPE_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    @Enumerated(
-        EnumType.STRING
-        )
-    private AdqlColumn.Type basetype ;
-    @Override
-    protected AdqlColumn.Type basetype()
-        {
-        return basetype(
-            false
-            );
-        }
-    @Override
-    protected AdqlColumn.Type basetype(final boolean pull)
-        {
-        if ((this.basetype == null) || (pull))
-            {
-            if (base() != null)
-                {
-                this.basetype = base().meta().adql().type();
-                }
-            }
-        return this.basetype;
-        }
-
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_BASE_SIZE_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private Integer basesize ;
-    @Override
-    protected Integer basesize()
-        {
-        return basesize(
-            false
-            );
-        }
-    @Override
-    protected Integer basesize(final boolean pull)
-        {
-        if ((this.basesize == null) || (pull))
-            {
-            if (base() != null)
-                {
-                this.basesize = base().meta().adql().arraysize();
-                }
-            }
-        return this.basesize;
-        }
     @Override
     public String alias()
         {
-        //return "ADQL_" + ident();
         return factories().adql().columns().aliases().alias(
             this
             );
         }
+
     @Override
     public String link()
         {

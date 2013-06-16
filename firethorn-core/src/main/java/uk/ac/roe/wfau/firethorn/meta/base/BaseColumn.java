@@ -46,11 +46,6 @@ extends BaseComponent
     public static interface AliasFactory<ColumnType extends BaseColumn<ColumnType>>
     extends Entity.AliasFactory<ColumnType>
         {
-        /**
-         * Create a Column alias.
-         *
-         */
-        public String alias(final ColumnType column);
         }
     
     /**
@@ -129,13 +124,14 @@ extends BaseComponent
      */
     public StringBuilder fullname();
 
-    
+    /*
     interface Linked
         {
         public Iterable<AdqlColumn> select();
         }
     public Linked linked();
-
+     */
+    
     /**
      * The column metadata.
      *

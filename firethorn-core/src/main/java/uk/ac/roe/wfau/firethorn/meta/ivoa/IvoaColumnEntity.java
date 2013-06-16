@@ -278,6 +278,17 @@ public class IvoaColumnEntity
         {
         this.ivoatype = type;
         }
+    @Override
+    protected AdqlColumn.Type adqltype()
+        {
+        if (this.adqltype != null)
+            {
+            return this.adqltype;
+            }
+        else {
+            return this.ivoatype;
+            }
+        }
 
     @Basic(
         fetch = FetchType.EAGER
@@ -297,16 +308,16 @@ public class IvoaColumnEntity
         {
         this.ivoasize = size;
         }
-
     @Override
-    protected AdqlColumn.Type basetype(final boolean pull)
+    protected Integer adqlsize()
         {
-        return this.ivoatype;
-        }
-    @Override
-    protected Integer basesize(final boolean pull)
-        {
-        return this.ivoasize ;
+        if (this.adqlsize != null)
+            {
+            return this.adqlsize ;
+            }
+        else {
+            return this.ivoasize ;
+            }
         }
     @Override
     public String alias()

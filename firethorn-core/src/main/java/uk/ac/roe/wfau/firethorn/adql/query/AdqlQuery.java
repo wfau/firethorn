@@ -24,6 +24,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
@@ -393,22 +394,16 @@ extends Entity, Job
         {
 
         /**
-         * The field name or alias.
+         * The field name.
          *
          */
         public abstract String name();
 
         /**
-         * The column metadata.
-         *
-         */
-        public abstract AdqlColumn.Metadata info();
-
-        /**
          * The field size.
          *
          */
-        public abstract int length();
+        public abstract Integer arraysize();
 
         /**
          * The field type.
@@ -416,6 +411,18 @@ extends Entity, Job
          */
         public abstract AdqlColumn.Type type();
 
+        /**
+         * The ADQL column.
+         *
+         */
+        public abstract AdqlColumn adql();
+
+        /**
+         * The JDBC column.
+         *
+         */
+        public abstract JdbcColumn jdbc();
+        
         }
 
     /**

@@ -54,9 +54,9 @@ public class JdbcFactoriesImpl
         }
 
     @Autowired
-    private JdbcColumn.Factory columns;
+    private JdbcColumn.EntityFactory columns;
     @Override
-    public JdbcColumn.Factory columns()
+    public JdbcColumn.EntityFactory columns()
         {
         return this.columns;
         }

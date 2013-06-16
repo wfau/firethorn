@@ -92,13 +92,6 @@ extends BaseComponentEntity
     protected static final String DB_ADQL_UTYPE_COL = "adqlutype" ;
     protected static final String DB_ADQL_UNITS_COL = "adqlunits" ;
 
-    protected static final String DB_USER_TYPE_COL  = "usertype"  ;
-    protected static final String DB_USER_SIZE_COL  = "usersize"  ;
-    protected static final String DB_USER_UCD0_COL  = "userucd0"  ;
-    protected static final String DB_USER_UCD1_COL  = "userucd1"  ;
-    protected static final String DB_USER_UTYPE_COL = "userutype" ;
-    protected static final String DB_USER_UNITS_COL = "userunits" ;
-
     protected BaseColumnEntity()
         {
         super();
@@ -108,142 +101,6 @@ extends BaseComponentEntity
         {
         super(name);
         this.parent = parent;
-        }
-
-    protected AdqlColumn.Type basetype()
-        {
-        return basetype(
-            false
-            );
-        }
-    protected abstract AdqlColumn.Type basetype(final boolean pull);
-
-    protected Integer basesize()
-        {
-        return basesize(
-            false
-            );
-        }
-    protected abstract Integer basesize(final boolean pull);
-
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_USER_TYPE_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    @Enumerated(
-        EnumType.STRING
-        )
-    private AdqlColumn.Type usertype ;
-    protected AdqlColumn.Type usertype()
-        {
-        return this.usertype;
-        }
-    protected void usertype(final AdqlColumn.Type type)
-        {
-        this.usertype = type;
-        }
-
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_ADQL_TYPE_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    @Enumerated(
-        EnumType.STRING
-        )
-    private AdqlColumn.Type adqltype ;
-    protected AdqlColumn.Type adqltype()
-        {
-        return adqltype(
-            false
-            );
-        }
-    protected AdqlColumn.Type adqltype(final boolean pull)
-        {
-        if ((this.adqltype == null) || (pull))
-            {
-            this.adqltype = basetype(
-                pull
-                );
-            if (null != this.usertype)
-                {
-                this.adqltype = this.usertype;
-                }
-            }
-        return this.adqltype;
-        }
-    protected void adqltype(final AdqlColumn.Type type)
-        {
-        this.adqltype = type;
-        }
-
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_USER_SIZE_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private Integer usersize ;
-    protected Integer usersize()
-        {
-        return this.usersize;
-        }
-    protected void usersize(final Integer size)
-        {
-        this.usersize = size;
-        }
-
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_ADQL_SIZE_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private Integer adqlsize ;
-    protected Integer adqlsize()
-        {
-        return adqlsize(
-            false
-            );
-        }
-    protected Integer adqlsize(final boolean pull)
-        {
-        if ((this.adqlsize == null) || (pull))
-            {
-            this.adqlsize = basesize(
-                pull
-                );
-            if (null != this.usersize)
-                {
-                this.adqlsize = this.usersize;
-                }
-            }
-        return this.adqlsize;
-        }
-    protected void adqlsize(final Integer size)
-        {
-        this.adqlsize = size;
-        }
-
-    @Override
-    public String alias()
-        {
-        return "BASE_" + ident();
         }
 
     @Override
@@ -283,24 +140,63 @@ extends BaseComponentEntity
         }
 
     @Override
-    public Linked linked()
-        {
-        return new Linked()
-            {
-            @Override
-            public Iterable<AdqlColumn> select()
-                {
-                //"SELECT FROM AdqlColumn WHERE base = :base"
-                return Collections.emptyList();
-                }
-            };
-        }
-
-    @Override
     public abstract BaseColumn<?> base();
 
     @Override
     public abstract BaseColumn<?> root();
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_ADQL_TYPE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    protected AdqlColumn.Type adqltype ;
+    protected AdqlColumn.Type adqltype()
+        {
+        if (this.adqltype != null)
+            {
+            return this.adqltype;
+            }
+        else {
+            return base().meta().adql().type();
+            }
+        }
+    protected void adqltype(final AdqlColumn.Type type)
+        {
+        this.adqltype = type;
+        }
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_ADQL_SIZE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    protected Integer adqlsize ;
+    protected Integer adqlsize()
+        {
+        if (this.adqlsize != null)
+            {
+            return this.adqlsize ;
+            }
+        else {
+            return base().meta().adql().arraysize();
+            }
+        }
+    protected void adqlsize(final Integer size)
+        {
+        this.adqlsize = size;
+        }
 
     @Override
     public BaseColumn.Metadata meta()

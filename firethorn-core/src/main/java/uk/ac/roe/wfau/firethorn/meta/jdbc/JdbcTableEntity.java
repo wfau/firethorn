@@ -200,15 +200,12 @@ implements JdbcTable
                 {
     // Size is confused .... ?
     // Include alias for unsafe names ?
-    // Create column direct from ColumnMeta
                 log.debug("create(SelectField)");
                 log.debug("  Name [{}]", field.name());
-                log.debug("  Type [{}]", field.type().jdbc());
-                log.debug("  Size [{}]", field.length());
+                log.debug("  Type [{}]", field.type());
+                log.debug("  Size [{}]", field.arraysize());
                 table.columns().create(
-                    field.name(),
-                    field.type().jdbc().code(),
-                    field.length()
+                    field
                     );
                 }
 
@@ -268,9 +265,9 @@ implements JdbcTable
             }
 
         @Autowired
-        protected JdbcColumn.Factory columns;
+        protected JdbcColumn.EntityFactory columns;
         @Override
-        public JdbcColumn.Factory columns()
+        public JdbcColumn.EntityFactory columns()
             {
             return this.columns;
             }
@@ -422,16 +419,14 @@ implements JdbcTable
                     name
                     );
                 }
-/*
             @Override
-            public JdbcColumn create(final String name)
+            public JdbcColumn create(final AdqlQuery.SelectField field)
                 {
                 return factories().jdbc().columns().create(
                     JdbcTableEntity.this,
-                    name
+                    field
                     );
                 }
-*/
             @Override
             public JdbcColumn create(final String name, final int type, final int size)
                 {

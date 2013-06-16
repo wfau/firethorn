@@ -20,7 +20,11 @@ package uk.ac.roe.wfau.firethorn.adql.parser;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,7 +33,9 @@ import adql.query.ADQLQuery;
 import adql.query.ClauseSelect;
 import adql.query.IdentifierField;
 import adql.query.SelectAllColumns;
+import adql.query.SelectItem;
 import adql.query.from.ADQLTable;
+import adql.query.operand.ADQLColumn;
 import adql.translator.ADQLTranslator;
 import adql.translator.PostgreSQLTranslator;
 import adql.translator.TranslationException;
@@ -184,9 +190,93 @@ public class SQLServerTranslator
             }
         return builder.toString();
         }
-    
+
     /**
      * Copy of the PostgreSQLTranslator method ...
+     * @todo Need to catch date fields and format them as strings.  
+     *
+     */
+    public String translate(SelectItem item)
+    throws TranslationException
+        {
+        log.debug("translate(SelectItem)");
+        log.debug("  item [{}][{}]", item.getName(), item.getClass().getName());
+        if (item instanceof SelectAllColumns)
+            {
+            return translate((SelectAllColumns)item);
+            }
+
+        StringBuffer translation = new StringBuffer(
+            translate(
+                item.getOperand()
+                )
+            );
+        if (item.hasAlias())
+            {
+            translation.append(" AS ");
+            appendIdentifier(translation, item.getAlias(), item.isCaseSensitive());
+            }
+        else {
+            translation.append(" AS ").append(item.getName());
+            }
+
+        return translation.toString();
+        }
+    
+    /**
+     * Override the PostgreSQLTranslator method ...
+     *
+     */
+    public String translate(ADQLColumn column)
+        throws TranslationException
+        {
+        log.debug("translate(ADQLColumn)");
+        log.debug("  column [{}][{}]", column.getName(), column.getClass().getName());
+
+
+        if (column.getDBLink() == null)
+            {
+            log.warn("ADQLColumn getDBLink() is NULL");
+            return super.translate(
+                column
+                );
+            }
+        else if (column.getDBLink() instanceof AdqlDBColumn)
+            {
+            AdqlColumn adql = ((AdqlDBColumn) column.getDBLink()).column();
+            log.debug("  adql [{}][{}]", adql.name(), adql.meta().adql().type());
+
+            return super.translate(
+                column
+                );
+
+            }
+        else {
+            log.warn("ADQLColumn getDBLink() is unexpected class [{}]", column.getDBLink().getClass().getName());
+            return super.translate(
+                column
+                );
+            }
+        }
+
+    /*
+     * 
+    public String translate(AdqlColumn column)
+    throws TranslationException
+        {
+        log.debug("translate(AdqlColumn)");
+        log.debug("  adql [{}][{}]", column.name(), column.getClass().getName());
+        log.debug("  fullname [{}]", column.fullname());
+        log.debug("  basename [{}]", column.base().fullname());
+        log.debug("  rootname [{}]", column.root().fullname());
+        return "";
+        }
+     * 
+     */
+
+    /**
+     * Copy of the PostgreSQLTranslator method ...
+     * @todo Need to use Firethorn metadata to iterate the AdqlTable columns.  
      *  
      *
      */

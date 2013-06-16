@@ -57,9 +57,9 @@ public class AdqlFactoriesImpl
         }
 
     @Autowired
-    private AdqlColumn.Factory columns;
+    private AdqlColumn.EntityFactory columns;
     @Override
-    public AdqlColumn.Factory columns()
+    public AdqlColumn.EntityFactory columns()
         {
         return this.columns;
         }

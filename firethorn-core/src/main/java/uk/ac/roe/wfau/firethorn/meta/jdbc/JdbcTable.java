@@ -122,7 +122,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * Column factory implementation.
          *
          */
-        public JdbcColumn.Factory columns();
+        public JdbcColumn.EntityFactory columns();
 
         /**
          * Builder implementation.
@@ -146,8 +146,8 @@ extends BaseTable<JdbcTable, JdbcColumn>
         /**
          * Create a new column.
          *
-        public JdbcColumn create(final String name);
          */
+        public JdbcColumn create(final AdqlQuery.SelectField field);
 
         /**
          * Create a new column.

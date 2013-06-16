@@ -26,11 +26,32 @@ extends CreateTableChange
             );
         for (final JdbcColumn column : table.columns().select())
             {
+            log.debug("  Column [{}][{}][{}][{}]", column.ident(), column.name(), column.meta().jdbc().type(), column.meta().jdbc().size());
+
+            StringBuilder typename = new StringBuilder(
+                column.meta().jdbc().type().name()
+                );
+
+            if (column.meta().jdbc().size() == JdbcColumn.Metadata.JdbcMeta.VAR_ARRAY_SIZE)
+                {
+                typename.append("(*)");
+                }
+            else if (column.meta().jdbc().size() != JdbcColumn.Metadata.JdbcMeta.NON_ARRAY_SIZE)
+                {
+                typename.append("(");
+                typename.append(
+                    column.meta().jdbc().size()
+                    );
+                typename.append(")");
+                }
+
+            log.debug("  Typename [{}]", typename);
+
             this.addColumn(
                 new ColumnConfig().setName(
                     column.name()
                     ).setType(
-                        column.meta().jdbc().type().name()
+                        typename.toString()
                         )
                 );
             }

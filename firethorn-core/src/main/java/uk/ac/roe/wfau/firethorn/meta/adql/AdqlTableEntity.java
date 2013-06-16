@@ -252,9 +252,9 @@ public class AdqlTableEntity
             }
 
         @Autowired
-        protected AdqlColumn.Factory columns;
+        protected AdqlColumn.EntityFactory columns;
         @Override
-        public AdqlColumn.Factory columns()
+        public AdqlColumn.EntityFactory columns()
             {
             return this.columns;
             }

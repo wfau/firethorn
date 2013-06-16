@@ -1,6 +1,4 @@
-adqlfile=atlas-query-003.adql
 
-cat > "${adqlfile:?}" << 'EOF'
     SELECT
         twomass.ra AS tmra,
         source.ra  AS atra,
@@ -27,27 +25,5 @@ cat > "${adqlfile:?}" << 'EOF'
         neighbour.slaveObjID  = twomass.pts_key
     AND
         neighbour.distanceMins < 1E-4
-
-EOF
-
-#
-# BUG still needs a name for the query.
-
-#
-# Create the query.
-POST "${queryschema:?}/queries/create" \
-    --header "firethorn.auth.identity:${identity:?}" \
-    --header "firethorn.auth.community:${community:?}" \
-    --data-urlencode "adql.schema.query.create.query@${adqlfile:?}" \
-    | tee atlas-query.json | ./pp
-
-#
-# Run the query.
-runquery "$(cat atlas-query.json | ident | node)"
-
-#
-# Access the VOTable results.
-#echo "$(cat atlas-query.json | votable)"
-curl "$(cat atlas-query.json | votable)"
 
 

@@ -101,7 +101,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
          * The table column factory.
          *
          */
-        public AdqlColumn.Factory columns();
+        public AdqlColumn.EntityFactory columns();
 
         @Override
         public AdqlTable.IdentFactory idents();

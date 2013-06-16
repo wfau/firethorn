@@ -34,6 +34,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import adql.db.DBChecker;
 import adql.db.DBColumn;
 import adql.db.DBTable;
@@ -201,158 +202,6 @@ implements AdqlParser
                 ouch.getMessage()
                 );
             log.warn("Error translating query [{}]", ouch.getMessage());
-            }
-        }
-
-    /**
-     * Helper class to get the metadata for a query SELECT item.
-     *
-     */
-    public static class ColumnMetaImpl implements AdqlQuery.SelectField
-        {
-
-        /**
-         * Private constructor.
-         *
-         */
-        private ColumnMetaImpl(final String name)
-            {
-            this(
-                name,
-                name,
-                (AdqlColumn.Metadata)null
-                );
-            }
-
-        /**
-         * Private constructor.
-         *
-         */
-        private ColumnMetaImpl(final String name, final AdqlQuery.SelectField meta)
-            {
-            this(
-                name,
-                null,
-                meta.info()
-                );
-            }
-
-        /**
-         * Private constructor.
-         *
-         */
-        private ColumnMetaImpl(final String name, final String alias, final AdqlQuery.SelectField meta)
-            {
-            this(
-                name,
-                alias,
-                meta.info()
-                );
-            }
-
-        /**
-         * Private constructor.
-         *
-         */
-        private ColumnMetaImpl(final String name, final AdqlColumn.Metadata info)
-            {
-            this(
-                name,
-                null,
-                info
-                );
-            }
-
-        /**
-         * Private constructor.
-         *
-         */
-        private ColumnMetaImpl(final String name, final String alias, final AdqlColumn.Metadata info)
-            {
-            if (alias != null)
-                {
-                this.name = alias ;
-                }
-            else {
-                this.name = name ;
-                }
-            this.info = info ;
-            }
-
-        /**
-         * The item name or alias.
-         *
-         */
-        private String name;
-
-        @Override
-        public String name()
-            {
-            return this.name;
-            }
-
-        /**
-         * The item metadata.
-         *
-         */
-        private final AdqlColumn.Metadata info ;
-
-        @Override
-        public AdqlColumn.Metadata info()
-            {
-            return this.info;
-            }
-
-        @Override
-        public int length()
-            {
-            return size(
-                this.info
-                );
-            }
-
-        @Override
-        public AdqlColumn.Type type()
-            {
-            return type(
-                this.info
-                );
-            }
-
-        /**
-         * Get the size from an AdqlColumn Info.
-         *
-         */
-        public static int size(final AdqlColumn.Metadata info)
-            {
-            if (info == null)
-                {
-                return 0 ;
-                }
-            else {
-                if (info.adql().arraysize() == null)
-                    {
-                    return 0 ;
-                    }
-                else {
-                    return info.adql().arraysize().intValue();
-                    }
-                }
-            }
-
-        /**
-         * Get the type from an AdqlColumn Info.
-         *
-         */
-        public static AdqlColumn.Type type(final AdqlColumn.Metadata info)
-            {
-            if (info == null)
-                {
-                return AdqlColumn.Type.UNKNOWN;
-                }
-            else {
-                return info.adql().type();
-                }
             }
         }
 
@@ -734,19 +583,170 @@ implements AdqlParser
             }
         }
 
+    public static class SelectFieldImpl
+    implements AdqlQuery.SelectField
+        {
+
+        private SelectFieldImpl(final String name, Integer size, AdqlColumn.Type type)
+            {
+            this.name  = name ;
+            this.size  = size ;
+            this.type  = type ;
+            }
+
+        private String name;
+        @Override
+        public String name()
+            {
+            return this.name;
+            }
+
+        @Override
+        public AdqlColumn adql()
+            {
+            return null;
+            }
+
+        @Override
+        public JdbcColumn jdbc()
+            {
+            return null ;
+            }
+        
+        private Integer size;
+        @Override
+        public Integer arraysize()
+            {
+            return this.size;
+            }
+
+        private AdqlColumn.Type type;
+        @Override
+        public AdqlColumn.Type type()
+            {
+            return this.type;
+            }
+        }
+
+    public static class SelectFieldWrapper
+    implements AdqlQuery.SelectField
+        {
+
+        private SelectFieldWrapper(final String name, final AdqlQuery.SelectField field)
+            {
+            this.name  = name  ;
+            this.field = field ;
+            }
+
+        private String name;
+        @Override
+        public String name()
+            {
+            return this.name;
+            }
+
+        private final AdqlQuery.SelectField field;
+        public AdqlQuery.SelectField field()
+            {
+            return this.field;
+            }
+
+        @Override
+        public AdqlColumn adql()
+            {
+            return this.field.adql();
+            }
+
+        @Override
+        public JdbcColumn jdbc()
+            {
+            return this.field.jdbc();
+            }
+        
+        @Override
+        public Integer arraysize()
+            {
+            return this.field.arraysize();
+            }
+
+        @Override
+        public AdqlColumn.Type type()
+            {
+            return this.field.type();
+            }
+        }
+
+    public static class AdqlColumnWrapper
+    implements AdqlQuery.SelectField
+        {
+
+        private AdqlColumnWrapper(final AdqlColumn adql)
+            {
+            this(
+                adql.name(),
+                adql
+                );
+            }
+
+        private AdqlColumnWrapper(final String name, final AdqlColumn adql)
+            {
+            this.name  = name ;
+            this.adql  = adql ;
+            }
+
+        private String name;
+        @Override
+        public String name()
+            {
+            return this.name;
+            }
+
+        private final AdqlColumn adql;
+
+        @Override
+        public AdqlColumn adql()
+            {
+            return this.adql;
+            }
+
+        @Override
+        public JdbcColumn jdbc()
+            {
+            if (this.adql != null)
+                {
+                if (this.adql.base() instanceof JdbcColumn)
+                    {
+                    return ((JdbcColumn) this.adql.base());
+                    }
+                }
+            return null ;
+            }
+        
+        @Override
+        public Integer arraysize()
+            {
+            return this.adql.meta().adql().arraysize();
+            }
+
+        @Override
+        public AdqlColumn.Type type()
+            {
+            return this.adql.meta().adql().type();
+            }
+        }
+
     /**
      * Wrap a SelectItem.
      *
      */
     public AdqlQuery.SelectField wrap(final SelectItem item)
         {
-        log.debug("eval(SelectItem)");
+        log.debug("wrap(SelectItem)");
         log.debug("  alias [{}]", item.getAlias());
         log.debug("  name  [{}]", item.getName());
         log.debug("  class [{}]", item.getClass().getName());
-        return new ColumnMetaImpl(
-            item.getName(),
-            item.getAlias(),
+        return new SelectFieldWrapper(
+            ((item.getAlias() != null) ? item.getAlias() : item.getName()),
             wrap(
                 item.getOperand()
                 )
@@ -759,7 +759,7 @@ implements AdqlParser
      */
     public AdqlQuery.SelectField wrap(final ADQLOperand oper)
         {
-        log.debug("eval(ADQLOperand)");
+        log.debug("wrap(ADQLOperand)");
         log.debug("  name   [{}]", oper.getName());
         log.debug("  class  [{}]", oper.getClass().getName());
         log.debug("  number [{}]", oper.isNumeric());
@@ -783,8 +783,10 @@ implements AdqlParser
                 );
             }
         else {
-            return new ColumnMetaImpl(
-                "unknown-oper"
+            return new SelectFieldImpl(
+                "unknown",
+                new Integer(0),
+                AdqlColumn.Type.UNKNOWN
                 );
             }
         }
@@ -801,8 +803,10 @@ implements AdqlParser
         if (column.getDBLink() == null)
             {
             log.warn("column.getDBLink() == null");
-            return new ColumnMetaImpl(
-                "unknown-column"
+            return new SelectFieldImpl(
+                "unknown",
+                new Integer(0),
+                AdqlColumn.Type.UNKNOWN
                 );
             }
         else if (column.getDBLink() instanceof AdqlDBColumn)
@@ -813,14 +817,17 @@ implements AdqlParser
             }
         else {
             log.warn("Unknown column.getDBLink() class [{}]", column.getDBLink(),getClass().getName());
-            return new ColumnMetaImpl(
-                "unknown-column"
+            return new SelectFieldImpl(
+                "unknown",
+                new Integer(0),
+                AdqlColumn.Type.UNKNOWN
                 );
             }
         }
 
     /**
      * Wrap an AdqlColumn.
+     * @todo Catch DATE_TIME and convert into char[10] 
      *
      */
     public AdqlQuery.SelectField wrap(final AdqlColumn column)
@@ -829,9 +836,8 @@ implements AdqlParser
         log.debug("  adql [{}]", column.fullname());
         log.debug("  base [{}]", column.base().fullname());
         log.debug("  root [{}]", column.root().fullname());
-        return new ColumnMetaImpl(
-            column.name(),
-            column.root().meta()
+        return new AdqlColumnWrapper(
+            column
             );
         }
 
@@ -846,52 +852,14 @@ implements AdqlParser
         log.debug("  name   [{}]", oper.getName());
         log.debug("  number [{}]", oper.isNumeric());
         log.debug("  string [{}]", oper.isString());
-
-        final AdqlColumn.Metadata left = wrap(
-            oper.getLeftOperand()
-            ).info();
-
-        final AdqlColumn.Metadata right = wrap(
-            oper.getRightOperand()
-            ).info();
-
-        if (left == null)
-            {
-            return new ColumnMetaImpl(
-                oper.getName(),
-                right
-                );
-            }
-        else if (right == null)
-            {
-            return new ColumnMetaImpl(
-                oper.getName(),
-                left
-                );
-            }
-        else {
-/*
-            if (left.adql().array() > right.adql().array())
-                {
-                return new ColumnMetaImpl(
-                    oper.getName(),
-                    left
-                    );
-                }
-            else {
-                return new ColumnMetaImpl(
-                    oper.getName(),
-                    right
-                    );
-                }
- */
-            //
-            // Temp fix ... array() is null
-            return new ColumnMetaImpl(
-                oper.getName(),
-                left
-                );
-            }
+        //
+        // Temp fix ... array() is null
+        return new SelectFieldWrapper(
+            oper.getName(),
+            wrap(
+                oper.getLeftOperand()
+                )
+            );
         }
 
     /**
@@ -906,25 +874,25 @@ implements AdqlParser
         log.debug("  number [{}]", funct.isNumeric());
         log.debug("  string [{}]", funct.isString());
 
-        AdqlColumn.Metadata info = null ;
+        AdqlQuery.SelectField info = null ;
 
         for (final ADQLOperand param : funct.getParameters())
             {
-            final AdqlColumn.Metadata temp = wrap(
+            final AdqlQuery.SelectField temp = wrap(
                 param
-                ).info();
+                );
             if (info == null)
                 {
                 info = temp;
                 }
             else {
-                if (temp.adql().arraysize().intValue() > info.adql().arraysize().intValue())
+                if (temp.arraysize().intValue() > info.arraysize().intValue())
                     {
                     info = temp ;
                     }
                 }
             }
-        return new ColumnMetaImpl(
+        return new SelectFieldWrapper(
             funct.getName(),
             info
             );

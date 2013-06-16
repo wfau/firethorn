@@ -71,23 +71,16 @@
             #0m2.779s
 
         time source "${FIRETHORN_TEST?}/04-01-create-query-schema.sh" 'ukidss'
-            #0m0.382s
-            #0m0.375s
-            #0m0.392s
 
-        time source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsPointSource' 'ukidss' 'gcsPointSource5'
-            #0m1.756s
-            #0m1.725s
-            #0m1.546s
-
+        time source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsPointSource'        'ukidss' 'gcsPointSource'
         time source "${FIRETHORN_TEST?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsSourceXtwomass_psc' 'ukidss' 'gcsSourceXtwomass_psc'
-            #0m1.118s
-            #0m1.018s
-            #0m1.052s
+
+        time source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh" 'ukidssdr5' 'lasSource'             'ukidss' 'lasSource' 
+        time source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh" 'ukidssdr5' 'lasSourceXDR7PhotoObj' 'ukidss' 'lasSourceXDR7PhotoObj'
 
         #
         # Run the query.
-        time source "${FIRETHORN_TEST?}/05-query-atlas.sh"
+        time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-000.adql"
             #0m15.393s
             #0m3.345s
             #0m7.516s

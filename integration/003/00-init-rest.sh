@@ -102,9 +102,9 @@ votable()
 # Run a query and poll the result.
 runquery()
     {
-    local query=${1?}
+    local query=${1:?}
     local status=$(
-        POST "${query?}" \
+        POST "${query:?}" \
             --header "firethorn.auth.identity:${identity:?}" \
             --header "firethorn.auth.community:${community:?}" \
             --data-urlencode "adql.query.update.status=RUNNING" \
@@ -122,6 +122,7 @@ runquery()
                 )
         echo "${status:?}"
     done
+
     }
 
 

@@ -113,7 +113,7 @@ extends TestBase
         log.debug("Fields -- ");
         for (final SelectField field : query.fields())
             {
-            log.debug("Field [{}][{}][{}]", field.name(), field.type(), field.length());
+            log.debug("Field [{}][{}][{}]", field.name(), field.type(), field.arraysize());
             }
         }
     }

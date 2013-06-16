@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
 import java.sql.Types;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
@@ -31,6 +32,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 public interface JdbcColumn
 extends BaseColumn<JdbcColumn>
     {
+   
     /**
      * Link factory interface.
      *
@@ -62,9 +64,15 @@ extends BaseColumn<JdbcColumn>
      * Column factory interface.
      *
      */
-    public static interface Factory
+    public static interface EntityFactory
     extends BaseColumn.EntityFactory<JdbcTable, JdbcColumn>
         {
+        /**
+         * Create a new column.
+         *
+         */
+        public JdbcColumn create(final JdbcTable parent, final AdqlQuery.SelectField field);
+        
         /**
          * Create a new column.
          *
@@ -286,10 +294,23 @@ extends BaseColumn<JdbcColumn>
         public interface JdbcMeta
             {
             /**
+             * The size for a non-array field.
+             *
+             */
+            public static final Integer NON_ARRAY_SIZE = new Integer(0);
+
+            /**
+             * The size for a variable size array field.
+             *
+             */
+            public static final Integer VAR_ARRAY_SIZE = new Integer(-1);
+
+            /**
              * The JDBC size.
              *
              */
             public Integer size();
+
             /**
              * Set the JDBC size.
              *
@@ -301,6 +322,7 @@ extends BaseColumn<JdbcColumn>
              *
              */
             public Type type();
+
             /**
              * Set the JDBC type.
              *

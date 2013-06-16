@@ -35,7 +35,7 @@ extends BaseColumn<AdqlColumn>
      *
      */
     public static interface NameFactory
-    extends Entity.NameFactory
+    extends Entity.NameFactory<AdqlColumn>
         {
         }
 
@@ -70,7 +70,7 @@ extends BaseColumn<AdqlColumn>
      * Column factory interface.
      *
      */
-    public static interface Factory
+    public static interface EntityFactory
     extends BaseColumn.EntityFactory<AdqlTable, AdqlColumn>
         {
         /**
@@ -100,10 +100,13 @@ extends BaseColumn<AdqlColumn>
     /**
      * An enumeration of the VOTable data types, as defined in section 2.1 of the VOTable-1.2 specification.
      * @see <a href='http://www.ivoa.net/Documents/VOTable/20091130/'/>
+     * Plus an extra ARRAY value to catch array data.
+     * Plus DATE, TIME and TIMESTAMP.
      *
      */
     public enum Type
         {
+        ARRAY(          0, "array",         JdbcColumn.Type.ARRAY),
         BOOLEAN(        1, "boolean",       JdbcColumn.Type.BOOLEAN),
         BIT(            1, "bit",           JdbcColumn.Type.BLOB),
         BYTE(           1, "unsignedByte",  JdbcColumn.Type.TINYINT),
@@ -116,6 +119,11 @@ extends BaseColumn<AdqlColumn>
         DOUBLE(         8, "double",        JdbcColumn.Type.DOUBLE),
         FLOATCOMPLEX(   8, "floatComplex",  JdbcColumn.Type.UNKNOWN),
         DOUBLECOMPLEX( 16, "doubleComplex", JdbcColumn.Type.UNKNOWN),
+
+        DATE(          10, "char",          JdbcColumn.Type.DATE),      // YYYY-MM-DD
+        TIME(          12, "char",          JdbcColumn.Type.TIME),      // HH:MM:SS.sss
+        TIMESTAMP(     23, "char",          JdbcColumn.Type.TIMESTAMP), // YYYY-MM-DDTHH:MM:SS.sss
+        
         UNKNOWN(        0, "unknown",       JdbcColumn.Type.UNKNOWN);
 
         private final int size ;
@@ -165,7 +173,7 @@ extends BaseColumn<AdqlColumn>
             switch(sql)
                 {
                 case Types.ARRAY :
-                    return UNKNOWN;
+                    return ARRAY;
 
                 case Types.BIGINT :
                     return LONG ;
@@ -198,11 +206,17 @@ extends BaseColumn<AdqlColumn>
                 case Types.SMALLINT :
                     return SHORT ;
 
+                case Types.DATE :
+                    return DATE ;
+                case Types.TIME :
+                    return TIME ;
+                case Types.TIMESTAMP :
+                    return TIMESTAMP ;
+                    
                 case Types.BINARY :
                 case Types.BLOB :
                 case Types.CLOB :
                 case Types.DATALINK :
-                case Types.DATE :
                 case Types.DECIMAL :
                 case Types.DISTINCT :
                 case Types.JAVA_OBJECT :
@@ -215,8 +229,6 @@ extends BaseColumn<AdqlColumn>
                 case Types.ROWID :
                 case Types.SQLXML :
                 case Types.STRUCT :
-                case Types.TIME :
-                case Types.TIMESTAMP :
                 case Types.VARBINARY :
                 default :
                     return UNKNOWN ;

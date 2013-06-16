@@ -1023,7 +1023,7 @@ implements AdqlQuery, AdqlParserQuery
         {
         log.debug("add(SelectField)");
         log.debug("  Name [{}]", field.name());
-        log.debug("  Size [{}]", field.length());
+        log.debug("  Size [{}]", field.arraysize());
         log.debug("  Type [{}]", field.type());
         this.fields.add(
             field

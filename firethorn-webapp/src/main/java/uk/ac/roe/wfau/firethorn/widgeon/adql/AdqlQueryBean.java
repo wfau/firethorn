@@ -348,7 +348,7 @@ implements EntityBean<AdqlQuery>
                             @Override
                             public Integer getLength()
                                 {
-                                return this.field.length();
+                                return this.field.arraysize();
                                 }
 
                             @Override

@@ -444,10 +444,18 @@ hg clone "ssh://${hguser:?}@${hghost:?}:${hgport:?}/${hgpath:?}" "${codename:?}"
             source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'twomass' 'twomass'
 
             source "${FIRETHORN_TEST:?}/04-01-create-query-schema.sh" 'ukidss'
-            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsPointSource'        'ukidss' 'gcsPointSource5'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsPointSource'        'ukidss' 'gcsPointSource'
             source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsSourceXtwomass_psc' 'ukidss' 'gcsSourceXtwomass_psc'
 
-            time source "${FIRETHORN_TEST:?}/05-query-atlas.sh"
+            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'lasSource'             'ukidss' 'lasSource' 
+            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'lasSourceXDR7PhotoObj' 'ukidss' 'lasSourceXDR7PhotoObj'
+
+
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-000.adql"
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-001.adql"
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-002.adql"
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-003.adql"
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-004.adql"
 
         popd
 

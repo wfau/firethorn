@@ -56,7 +56,7 @@ public interface Entity
          * Generate an alias.
          *
          */
-        public String alias(EntityType entity);
+        public String alias(final EntityType entity);
         }
     
     /**
