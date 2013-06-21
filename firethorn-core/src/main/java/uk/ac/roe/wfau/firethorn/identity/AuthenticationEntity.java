@@ -30,15 +30,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.Table;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
-import uk.ac.roe.wfau.firethorn.entity.AbstractIdentFactory;
-import uk.ac.roe.wfau.firethorn.entity.AbstractLinkFactory;
-import uk.ac.roe.wfau.firethorn.entity.AbstractNameFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 
 /**
@@ -143,7 +139,7 @@ implements Authentication
      */
     protected AuthenticationEntity(final Operation operation, final Identity identity, final String method)
         {
-        super(identity, method);
+        super();
 
         log.debug("AuthenticationEntity(Operation, Identity, String)");
         log.debug("  Operation [{}]", operation.method());

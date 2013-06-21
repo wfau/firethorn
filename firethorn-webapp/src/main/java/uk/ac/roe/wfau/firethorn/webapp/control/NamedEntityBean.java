@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012 Royal Observatory, University of Edinburgh, UK
+ *  Copyright (C) 2013 Royal Observatory, University of Edinburgh, UK
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,30 +15,21 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.widgeon.test;
+package uk.ac.roe.wfau.firethorn.webapp.control;
 
-import java.net.URI;
-
-import org.springframework.stereotype.Component;
-
-import uk.ac.roe.wfau.firethorn.job.test.TestJob;
-import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 
 /**
- * Ident factory for <code>AdqlColumn</code>.
+ * Java Bean interface for a <code>NamedEntity</code>.
  *
  */
-@Component
-public class TestJobIdentFactory
-extends WebappIdentFactory
-implements TestJob.IdentFactory
+public interface NamedEntityBean<EntityType extends NamedEntity>
+extends EntityBean<EntityType>
     {
     /**
-     * The type URI for this type.
-     * TODO - Move to AdqlColumn interface.
+     * The Entity name.
      *
      */
-    public static final URI TYPE_URI = URI.create(
-        "http://data.metagrid.co.uk/wfau/firethorn/types/test-job-1.0.json"
-        );
+    public String getName();
+
     }

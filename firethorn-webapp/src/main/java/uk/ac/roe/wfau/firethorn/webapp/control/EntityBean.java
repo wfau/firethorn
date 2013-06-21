@@ -28,6 +28,10 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 public interface EntityBean<EntityType extends Entity>
     {
 
+	/**
+	 * Iterable interface.
+	 * 
+	 */
     public static interface Iter<EntityType extends Entity>
     extends Iterable<EntityBean<EntityType>>
         {
@@ -40,12 +44,6 @@ public interface EntityBean<EntityType extends Entity>
     public EntityType entity();
 
     /**
-     * The Entity ID.
-     *
-    public String id();
-     */
-
-    /**
      * The Entity URI.
      *
      */
@@ -56,12 +54,6 @@ public interface EntityBean<EntityType extends Entity>
      *
      */
     public URI getType();
-
-    /**
-     * The Entity name.
-     *
-     */
-    public String getName();
 
     /**
      * The Entity create date.

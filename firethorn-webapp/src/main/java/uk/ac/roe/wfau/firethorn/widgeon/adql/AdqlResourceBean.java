@@ -18,25 +18,21 @@
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
-import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
 
 /**
  * Bean wrapper for <code>AdqlResource</code>.
  *
  */
 public class AdqlResourceBean
-extends AbstractEntityBeanImpl<AdqlResource>
-implements EntityBean<AdqlResource>
+extends NamedEntityBeanImpl<AdqlResource>
+implements NamedEntityBean<AdqlResource>
     {
     public static class Iter
     extends AbstractEntityBeanIter<AdqlResource>
         {
-        /**
-         * Public constructor.
-         *
-         */
         public Iter(final Iterable<AdqlResource> iterable)
             {
             super(
@@ -44,7 +40,7 @@ implements EntityBean<AdqlResource>
                 );
             }
         @Override
-        public EntityBean<AdqlResource> bean(final AdqlResource entity)
+        public NamedEntityBean<AdqlResource> bean(final AdqlResource entity)
             {
             return new AdqlResourceBean(
                 entity

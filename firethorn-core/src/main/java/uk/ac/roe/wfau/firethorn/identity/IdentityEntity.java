@@ -32,11 +32,10 @@ import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
 
@@ -65,7 +64,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
         }
     )
 public class IdentityEntity
-extends AbstractEntity
+extends AbstractNamedEntity
 implements Identity
     {
 
@@ -183,10 +182,7 @@ implements Identity
      */
     protected IdentityEntity(final Community community, final String name)
         {
-        super(
-            null,
-            name
-            );
+        super(name);
         this.community = community;
         }
 

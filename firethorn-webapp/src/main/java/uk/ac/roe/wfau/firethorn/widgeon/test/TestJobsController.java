@@ -37,7 +37,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
  *
  */
 @Controller
-@RequestMapping(TestJobLinkFactory.SERVICE_PATH)
+@RequestMapping(TestJobController.LinkFactory.SERVICE_PATH)
 public class TestJobsController
 extends AbstractController
     {
@@ -46,7 +46,7 @@ extends AbstractController
     public Path path()
         {
         return path(
-            TestJobLinkFactory.SERVICE_PATH
+            TestJobController.LinkFactory.SERVICE_PATH
             );
         }
 

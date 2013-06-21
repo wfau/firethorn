@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.identity;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
@@ -26,7 +27,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
  *
  */
 public interface Community
-extends Entity
+extends Entity, NamedEntity
     {
 
     /**

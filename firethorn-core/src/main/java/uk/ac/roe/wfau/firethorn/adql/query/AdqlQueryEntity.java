@@ -329,7 +329,6 @@ implements AdqlQuery, AdqlParserQuery
             //
             // Create the query entity.
             final AdqlQueryEntity entity = new AdqlQueryEntity(
-                factories().identities().current(),
                 params.current(),
                 schema,
                 names().name(
@@ -439,11 +438,10 @@ implements AdqlQuery, AdqlParserQuery
      * Protected constructor, used by factory.
      *
      */
-    protected AdqlQueryEntity(final Identity owner, final AdqlQuery.QueryParam params, final AdqlSchema schema, final String name, final String input)
+    protected AdqlQueryEntity(final AdqlQuery.QueryParam params, final AdqlSchema schema, final String name, final String input)
     throws NameFormatException
         {
         super(
-            owner,
             name
             );
         this.schema = schema;

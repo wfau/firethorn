@@ -34,7 +34,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Hours;
 import org.joda.time.ReadablePeriod;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
+import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 
 /**
@@ -47,7 +47,7 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
     AccessType.FIELD
     )
 public abstract class BaseComponentEntity
-extends AbstractEntity
+extends AbstractNamedEntity
     implements BaseComponent
     {
     /**

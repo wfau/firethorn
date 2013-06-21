@@ -23,8 +23,6 @@ import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- * Link factory for <code>AdqlColumn</code>.
- * TODO
  *
  */
 @Component
@@ -46,16 +44,16 @@ implements Job.LinkFactory
     protected static final String BASE_PATH = "/job" ;
 
     /**
-     * The URI path for individual columns.
+     * The URI path for individual jobs.
      *
      */
-    public static final String JOB_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
+    public static final String ENTITY_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
 
     @Override
     public String link(final Job entity)
         {
         return link(
-            JOB_PATH,
+            ENTITY_PATH,
             entity
             );
         }

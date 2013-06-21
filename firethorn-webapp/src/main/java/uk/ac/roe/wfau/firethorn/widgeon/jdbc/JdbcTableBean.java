@@ -18,25 +18,21 @@
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
-import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
 
 /**
  * Bean wrapper for <code>JdbcTable</code>.
  *
  */
 public class JdbcTableBean
-extends AbstractEntityBeanImpl<JdbcTable>
-implements EntityBean<JdbcTable>
+extends NamedEntityBeanImpl<JdbcTable>
+implements NamedEntityBean<JdbcTable>
     {
     public static class Iter
     extends AbstractEntityBeanIter<JdbcTable>
         {
-        /**
-         * Public constructor.
-         *
-         */
         public Iter(final Iterable<JdbcTable> iterable)
             {
             super(
@@ -44,7 +40,7 @@ implements EntityBean<JdbcTable>
                 );
             }
         @Override
-        public EntityBean<JdbcTable> bean(final JdbcTable entity)
+        public NamedEntityBean<JdbcTable> bean(final JdbcTable entity)
             {
             return new JdbcTableBean(
                 entity

@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.adql.query;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -33,7 +34,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
  *
  */
 public interface AdqlQuery
-extends Entity, Job
+extends NamedEntity, Job
     {
 
     /**

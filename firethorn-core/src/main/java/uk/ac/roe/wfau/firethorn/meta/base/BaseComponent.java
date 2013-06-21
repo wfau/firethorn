@@ -20,14 +20,14 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 
 /**
  *
  *
  */
 public interface BaseComponent
-extends Entity
+extends NamedEntity
     {
 
     /**

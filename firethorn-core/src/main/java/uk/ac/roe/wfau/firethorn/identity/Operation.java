@@ -29,11 +29,11 @@ extends Entity
     /**
      * Name factory interface.
      *
-     */
     public static interface NameFactory
     extends Entity.NameFactory
         {
         }
+     */
 
     /**
      * Link factory interface.

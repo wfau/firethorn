@@ -239,7 +239,8 @@ public class ComponentFactoriesImpl
      */
     @Autowired
     protected Operation.EntityFactory operations;
-    public Operation.EntityFactory operations()
+    @Override
+	public Operation.EntityFactory operations()
         {
         return this.operations ;
         }
@@ -250,7 +251,8 @@ public class ComponentFactoriesImpl
      */
     @Autowired
     protected Authentication.EntityFactory authentications;
-    public Authentication.EntityFactory authentications()
+    @Override
+	public Authentication.EntityFactory authentications()
         {
         return this.authentications;
         }

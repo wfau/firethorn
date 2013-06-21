@@ -17,15 +17,29 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
-import uk.ac.roe.wfau.firethorn.entity.Entity;
+import java.net.URI;
+
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 
 /**
- * Java Bean interface for an <code>Iterable</code> set of <code>EntityBean</code>s.
+ * 
  *
  */
-@Deprecated
-public interface EntityBeanIter<EntityType extends Entity>
-extends Iterable<EntityBean<EntityType>>
+public class NamedEntityBeanImpl<EntityType extends NamedEntity>
+extends AbstractEntityBeanImpl<EntityType>
+implements NamedEntityBean<EntityType>
     {
+    public NamedEntityBeanImpl(final URI type, final EntityType entity)
+        {
+    	super(
+			type,
+			entity
+			);
+        }
 
+    @Override
+    public String getName()
+        {
+        return entity().name();
+        }
     }

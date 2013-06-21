@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.test;
 
+import java.net.URI;
 import java.util.Iterator;
 
 import lombok.extern.slf4j.Slf4j;
@@ -37,27 +38,71 @@ import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.job.test.TestJob;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
-import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
+import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
- * Spring MVC controller for <code>JdbcTables</code>.
+ * Spring MVC controller for <code>TestJob</code>.
  *
  */
 @Slf4j
 @Controller
-@RequestMapping(TestJobLinkFactory.TEST_PATH)
+@RequestMapping(TestJobController.LinkFactory.TEST_PATH)
 public class TestJobController
     extends AbstractController
     {
+	@Component
+	public static class IdentFactory
+	extends WebappIdentFactory
+	implements TestJob.IdentFactory
+	    {
+	    public static final URI TYPE_URI = URI.create(
+	        "http://data.metagrid.co.uk/wfau/firethorn/types/test-job-1.0.json"
+	        );
+	    }
+
+	@Component
+	public class LinkFactory
+	extends WebappLinkFactory<TestJob>
+	implements TestJob.LinkFactory
+	    {
+	    protected LinkFactory()
+	        {
+	        super(
+	            SERVICE_PATH
+	            );
+	        }
+
+	    /**
+	     * The URI path for the service.
+	     *
+	     */
+	    protected static final String SERVICE_PATH = "/test/job" ;
+
+	    /**
+	     * The URI path for individual columns.
+	     *
+	     */
+	    public static final String TEST_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
+
+	    @Override
+	    public String link(final TestJob entity)
+	        {
+	        return link(
+	            TEST_PATH,
+	            entity
+	            );
+	        }
+	    }
 
     @Override
     public Path path()
         {
         return path(
-            TestJobLinkFactory.TEST_PATH
+            LinkFactory.TEST_PATH
             );
         }
 
@@ -111,7 +156,7 @@ public class TestJobController
      *
      */
     public static interface Bean
-    extends EntityBean<TestJob>
+    extends NamedEntityBean<TestJob>
         {
         /**
          * The test duration in seconds.
@@ -154,17 +199,13 @@ public class TestJobController
      *
      */
     protected static class BeanImpl
-    extends AbstractEntityBeanImpl<TestJob>
+    extends NamedEntityBeanImpl<TestJob>
     implements Bean
         {
-        /**
-         * Protected constructor.
-         *
-         */
         protected BeanImpl(final TestJob job)
             {
             super(
-                TestJobIdentFactory.TYPE_URI,
+                IdentFactory.TYPE_URI,
                 job
                 );
             }

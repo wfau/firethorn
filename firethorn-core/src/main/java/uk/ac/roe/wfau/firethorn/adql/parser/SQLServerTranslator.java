@@ -22,10 +22,6 @@ import java.util.HashMap;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
-
 import lombok.extern.slf4j.Slf4j;
 
 import adql.db.DBColumn;
@@ -91,7 +87,8 @@ public class SQLServerTranslator
      * Replaces the PostgreSQLTranslator method to not put LIMIT at the end. 
      *
      */
-    public String translate(final ADQLQuery query)
+    @Override
+	public String translate(final ADQLQuery query)
         throws TranslationException
         {
         log.debug("translate(ADQLQuery)");
@@ -152,7 +149,8 @@ public class SQLServerTranslator
      * Replaces the PostgreSQLTranslator method to put TOP at the beginning. 
      *
      */
-    public String translate(final ClauseSelect clause)
+    @Override
+	public String translate(final ClauseSelect clause)
     throws TranslationException
         {
         log.debug("translate(ClauseSelect)");
@@ -196,7 +194,8 @@ public class SQLServerTranslator
      * @todo Need to catch date fields and format them as strings.  
      *
      */
-    public String translate(SelectItem item)
+    @Override
+	public String translate(SelectItem item)
     throws TranslationException
         {
         log.debug("translate(SelectItem)");
@@ -227,7 +226,8 @@ public class SQLServerTranslator
      * Override the PostgreSQLTranslator method ...
      *
      */
-    public String translate(ADQLColumn column)
+    @Override
+	public String translate(ADQLColumn column)
         throws TranslationException
         {
         log.debug("translate(ADQLColumn)");
@@ -280,7 +280,8 @@ public class SQLServerTranslator
      *  
      *
      */
-    public String translate(final SelectAllColumns all)
+    @Override
+	public String translate(final SelectAllColumns all)
     throws TranslationException
         {
         log.debug("translate(SelectAllColumns)");

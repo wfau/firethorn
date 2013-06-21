@@ -19,26 +19,21 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
-import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
 
 /**
  * Bean wrapper for <code>JdbcColumn</code>.
- * @todo Split this into an interface and an implementation.
  *
  */
 public class JdbcColumnBean
-extends AbstractEntityBeanImpl<JdbcColumn>
-implements EntityBean<JdbcColumn>
+extends NamedEntityBeanImpl<JdbcColumn>
+implements NamedEntityBean<JdbcColumn>
     {
     public static class Iter
     extends AbstractEntityBeanIter<JdbcColumn>
         {
-        /**
-         * Public constructor.
-         *
-         */
         public Iter(final Iterable<JdbcColumn> iterable)
             {
             super(
@@ -47,7 +42,7 @@ implements EntityBean<JdbcColumn>
             }
 
         @Override
-        public EntityBean<JdbcColumn> bean(final JdbcColumn entity)
+        public NamedEntityBean<JdbcColumn> bean(final JdbcColumn entity)
             {
             return new JdbcColumnBean(
                 entity

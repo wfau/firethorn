@@ -42,7 +42,6 @@ import org.springframework.stereotype.Component;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
 
 /**
  *
@@ -162,7 +161,7 @@ implements Operation
      */
     protected OperationEntity(final String target, final String method, final String source)
         {
-        super("");
+        super();
         this.target = target ;
         this.method = method ;
         this.source = source ;

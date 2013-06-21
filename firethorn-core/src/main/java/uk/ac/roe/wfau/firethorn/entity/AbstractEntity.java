@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.entity ;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -27,6 +26,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.GenericGenerator;
 import org.joda.time.DateTime;
 
-import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.IdentityEntity;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
@@ -59,15 +58,13 @@ public abstract class AbstractEntity
 implements Entity
     {
 
-    /*
-     * Our database mapping values.
+    /**
+     * Hibernate column mapping.
      *
      */
     protected static final String DB_GEN_NAME    = "entity-ident" ;
     protected static final String DB_GEN_METHOD  = "identity" ;
 
-    public    static final String DB_NAME_COL    = "name"  ;
-    protected static final String DB_TEXT_COL    = "text";
     protected static final String DB_IDENT_COL   = "ident" ;
     protected static final String DB_OWNER_COL   = "owner" ;
 
@@ -76,15 +73,20 @@ implements Entity
 
     /**
      * Access to our ComponentFactories singleton instance.
-     * @todo Replace this with something, anything, else.
-     * @todo re-enable compiler warnings for indirect access to static members
-     *
+     * TODO Improve this
      */
-    public ComponentFactories factories()
-        {
-        return ComponentFactoriesImpl.instance();
-        }
+    @Transient
+    protected ComponentFactories factories = ComponentFactoriesImpl.instance();
 
+    /**
+     * Access to our ComponentFactories singleton instance.
+     * TODO Improve this
+     */
+    protected ComponentFactories factories()
+    	{
+    	return this.factories;
+    	}
+   
     /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
@@ -96,68 +98,45 @@ implements Entity
         }
 
     /**
-     * Protected constructor, sets the name and create date.
-     * @todo default owner ?
+     * Protected constructor, sets the owner and create date.
+     * @param init A flag to distinguish this from the default constructor.
      *
      */
-    protected AbstractEntity(final String name)
-    throws NameFormatException
+    protected AbstractEntity(final boolean init)
         {
-        this(
-            //womble().context().identity(),
-            null,
-            name
-            );
+        super();
+        this.owner = factories.identities().current();
+        this.created = new DateTime();
+
+        /*
+        *
+        * [UnresolvedEntityInsertActions] HHH000437: Attempting to save one or more entities that have a non-nullable association with an unsaved transient entity. The unsaved transient entity must be saved in an operation prior to saving these dependent entities.
+        * Unsaved transient entity: ([uk.ac.roe.wfau.firethorn.identity.IdentityEntity#<null>])
+        * Dependent entities: ([[uk.ac.roe.wfau.firethorn.identity.IdentityEntity#<null>]])
+        * Non-nullable association(s): ([uk.ac.roe.wfau.firethorn.identity.IdentityEntity.owner])
+        * [WombleImpl] Error executing Hibernate query [org.hibernate.TransientPropertyValueException][Not-null property references a transient value - transient instance must be saved before current operation: uk.ac.roe.wfau.firethorn.identity.IdentityEntity.owner -> uk.ac.roe.wfau.firethorn.identity.IdentityEntity]
+        *
+       if (this.owner == null)
+           {
+           if (this instanceof Identity)
+               {
+               this.owner = (Identity) this ;
+               }
+           }
+        *
+        */
         }
 
     /**
-     * Protected constructor, sets the owner, name and create date.
-     * @todo Better default for the name.
+     * Protected constructor, sets the owner and create date.
      *
-     */
     protected AbstractEntity(final Identity owner)
-    throws NameFormatException
-        {
-        this(
-            owner,
-            null
-            );
-        }
-
-    /**
-     * Protected constructor, sets the owner, name and create date.
-     * @todo Better default for the name.
-     *
-     */
-    protected AbstractEntity(final Identity owner, final String name)
-    throws NameFormatException
         {
         super();
         this.owner = owner;
         this.created = new DateTime();
-        this.name(
-            name
-            );
-
-        /*
-         *
-         * [UnresolvedEntityInsertActions] HHH000437: Attempting to save one or more entities that have a non-nullable association with an unsaved transient entity. The unsaved transient entity must be saved in an operation prior to saving these dependent entities.
-         * Unsaved transient entity: ([uk.ac.roe.wfau.firethorn.identity.IdentityEntity#<null>])
-         * Dependent entities: ([[uk.ac.roe.wfau.firethorn.identity.IdentityEntity#<null>]])
-         * Non-nullable association(s): ([uk.ac.roe.wfau.firethorn.identity.IdentityEntity.owner])
-         * [WombleImpl] Error executing Hibernate query [org.hibernate.TransientPropertyValueException][Not-null property references a transient value - transient instance must be saved before current operation: uk.ac.roe.wfau.firethorn.identity.IdentityEntity.owner -> uk.ac.roe.wfau.firethorn.identity.IdentityEntity]
-         *
-        if (this.owner == null)
-            {
-            if (this instanceof Identity)
-                {
-                this.owner = (Identity) this ;
-                }
-            }
-         *
-         */
-
         }
+     */
 
     /**
      * The Entity Identifier.
@@ -194,33 +173,6 @@ implements Entity
         else {
             return null ;
             }
-        }
-
-    /**
-     * The Entity name.
-     *
-     */
-    @Basic(
-        fetch = FetchType.EAGER
-        )
-    @Column(
-        name = DB_NAME_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    protected String name ;
-
-    @Override
-    public String name()
-        {
-        return this.name ;
-        }
-
-    @Override
-    public void name(final String name)
-        {
-        this.name = name ;
         }
 
     /**
@@ -284,31 +236,6 @@ implements Entity
         }
 
     /**
-     * The Entity description.
-     *
-     */
-    @Basic(
-        fetch = FetchType.LAZY
-        )
-    @Column(
-        name = DB_TEXT_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String text ;
-    @Override
-    public String text()
-        {
-        return this.text;
-        }
-    @Override
-    public void text(final String text)
-        {
-        this.text = text;
-        }
-
-    /**
      * Object toString() method.
      *
      */
@@ -327,12 +254,6 @@ implements Entity
             builder.append(" ident[");
             builder.append(
                 this.ident()
-                );
-            builder.append("]");
-
-            builder.append(" name[");
-            builder.append(
-                this.name()
                 );
             builder.append("]");
 

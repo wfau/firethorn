@@ -17,9 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.base;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -40,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
+import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
 
@@ -58,7 +55,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
     uniqueConstraints={
         @UniqueConstraint(
             columnNames = {
-                AbstractEntity.DB_NAME_COL,
+                AbstractNamedEntity.DB_NAME_COL,
                 BaseComponentEntity.DB_PARENT_COL,
                 }
             )

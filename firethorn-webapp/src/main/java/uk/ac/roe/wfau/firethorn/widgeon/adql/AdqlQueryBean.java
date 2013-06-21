@@ -24,40 +24,32 @@ import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanImpl;
+import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
-import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
 
 /**
  * Bean wrapper for <code>AdqlQuery</code>.
  *
  */
 public class AdqlQueryBean
-extends AbstractEntityBeanImpl<AdqlQuery>
-implements EntityBean<AdqlQuery>
+extends NamedEntityBeanImpl<AdqlQuery>
+implements NamedEntityBean<AdqlQuery>
     {
     /**
      * Factory wrapper method.
      *
-     */
     public static Iter wrap(final Iterable<AdqlQuery> iterable)
         {
         return new Iter(
             iterable
             );
         }
-
-    /**
-     * Iterable wrapper.
-     *
      */
+
     public static class Iter
     extends AbstractEntityBeanIter<AdqlQuery>
         {
-        /**
-         * Protected constructor.
-         *
-         */
         public Iter(final Iterable<AdqlQuery> iterable)
             {
             super(
@@ -65,9 +57,9 @@ implements EntityBean<AdqlQuery>
                 );
             }
         @Override
-        public EntityBean<AdqlQuery> bean(final AdqlQuery entity)
+        public NamedEntityBean<AdqlQuery> bean(final AdqlQuery entity)
             {
-            return wrap(
+            return new AdqlQueryBean(
                 entity
                 );
             }
@@ -76,13 +68,13 @@ implements EntityBean<AdqlQuery>
     /**
      * Factory wrapper method.
      *
-     */
     public static AdqlQueryBean wrap(final AdqlQuery entity)
         {
         return new AdqlQueryBean(
             entity
             );
         }
+     */
 
     /**
      * Protected constructor.

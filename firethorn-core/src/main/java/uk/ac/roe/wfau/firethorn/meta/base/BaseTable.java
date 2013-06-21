@@ -67,7 +67,8 @@ extends BaseComponent
          * Create a Table alias.
          *
          */
-        public String alias(final TableType table);
+        @Override
+		public String alias(final TableType table);
         }
     
     /**

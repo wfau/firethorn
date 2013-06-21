@@ -35,14 +35,6 @@ implements Entity.LinkFactory<EntityType>
     public static final String IDENT_TOKEN = "{ident}" ;
     public static final String IDENT_REGEX = "\\{ident\\}" ;
 
-    //TODO - Make this configurable/dynamic
-    //TODO - Use the data from the current Operation ?
-    //public static final String SERVICE_BASE = "http://localhost:8080/" ;
-    //public static final String CONTEXT_PATH = "firethorn" ;
-    //public static final String SERVLET_PATH = "" ;
-
-    //public static final String SERVICE_PATH = SERVICE_BASE + CONTEXT_PATH ;
-
     public static final String DEFAULT_ENDPOINT = "http://localhost:8080/firethorn" ;
 
     

@@ -17,7 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.parser;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -41,12 +40,8 @@ import adql.db.DBTable;
 import adql.parser.ADQLParser;
 import adql.parser.ParseException;
 import adql.query.ADQLObject;
-import adql.query.ADQLOrder;
 import adql.query.ADQLQuery;
-import adql.query.ClauseADQL;
-import adql.query.ClauseConstraints;
 import adql.query.ClauseSelect;
-import adql.query.ColumnReference;
 import adql.query.SelectAllColumns;
 import adql.query.SelectItem;
 import adql.query.from.ADQLTable;
@@ -56,7 +51,6 @@ import adql.query.operand.ADQLOperand;
 import adql.query.operand.Operation;
 import adql.query.operand.function.ADQLFunction;
 import adql.translator.ADQLTranslator;
-import adql.translator.PostgreSQLTranslator;
 import adql.translator.TranslationException;
 
 /**

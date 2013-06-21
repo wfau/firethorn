@@ -20,8 +20,6 @@ package uk.ac.roe.wfau.firethorn.adql.parser;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-
 import lombok.extern.slf4j.Slf4j;
 
 import adql.db.DBColumn;
@@ -86,7 +84,8 @@ public class OgsaDQPTranslator
      * Replaces the PostgreSQLTranslator method to not put LIMIT at the end. 
      *
      */
-    public String translate(final ADQLQuery query)
+    @Override
+	public String translate(final ADQLQuery query)
         throws TranslationException
         {
         log.debug("translate(ADQLQuery)");
@@ -147,7 +146,8 @@ public class OgsaDQPTranslator
      * Replaces the PostgreSQLTranslator method to put TOP at the beginning. 
      *
      */
-    public String translate(final ClauseSelect clause)
+    @Override
+	public String translate(final ClauseSelect clause)
     throws TranslationException
         {
         log.debug("translate(ClauseSelect)");
@@ -191,7 +191,8 @@ public class OgsaDQPTranslator
      *  
      *
      */
-    public String translate(final SelectAllColumns all)
+    @Override
+	public String translate(final SelectAllColumns all)
     throws TranslationException
         {
         log.debug("translate(SelectAllColumns)");

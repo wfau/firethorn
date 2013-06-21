@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.entity ;
 
 import org.joda.time.DateTime;
 
-import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
@@ -136,27 +135,8 @@ public interface Entity
     /**
      * Get the Entity name.
      *
-     */
     public String name();
-
-    /**
-     * Set the Entity name.
-     *
      */
-    public void name(final String name)
-    throws NameFormatException;
-
-    /**
-     * Get the Entity description.
-     *
-     */
-    public String text();
-
-    /**
-     * Set the Entity description.
-     *
-     */
-    public void text(final String text);
 
     /**
      * Get the Entity owner.
@@ -181,13 +161,6 @@ public interface Entity
      *
      */
     public void refresh();
-
-    /**
-     * Update (store) this Entity in the database.
-     *
-    @Deprecated
-    public void update();
-     */
 
     /**
      * Delete this Entity from the database.

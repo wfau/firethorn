@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.job.test;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 
 /**
@@ -25,7 +26,7 @@ import uk.ac.roe.wfau.firethorn.job.Job;
  *
  */
 public interface TestJob
-extends Entity, Job
+extends Job, NamedEntity
     {
     /**
      * Our local factory implementations.
@@ -109,7 +110,7 @@ extends Entity, Job
          * Create a test Job.
          *
          */
-        public TestJob create(final String name, final Integer delay);
+        public TestJob create(final String name, final Integer length);
 
         }
 

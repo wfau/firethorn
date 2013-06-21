@@ -20,13 +20,14 @@ package uk.ac.roe.wfau.firethorn.config;
 import java.net.URI;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 
 /**
  * Public interface for a configuration property.
  *
  */
 public interface ConfigProperty
-extends Entity
+extends NamedEntity
     {
     /**
      * Link factory interface.

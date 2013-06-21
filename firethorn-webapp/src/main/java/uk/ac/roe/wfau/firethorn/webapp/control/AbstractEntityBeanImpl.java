@@ -56,9 +56,7 @@ implements EntityBean<EntityType>
     private final URI type ;
 
     /**
-     * Public constructor.
-     * @param builder
-     * @param entity
+     *
      *
      */
     public AbstractEntityBeanImpl(final URI type, final EntityType entity)
@@ -94,12 +92,6 @@ implements EntityBean<EntityType>
     public URI getType()
         {
         return this.type;
-        }
-
-    @Override
-    public String getName()
-        {
-        return this.entity.name();
         }
 
     @Override

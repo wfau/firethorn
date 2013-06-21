@@ -45,15 +45,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
-import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
  *
@@ -75,8 +74,8 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
         }
     )
 public abstract class JobEntity
-extends AbstractEntity
-    implements Job
+extends AbstractNamedEntity
+implements Job
     {
     /**
      * Hibernate table mapping.
@@ -209,10 +208,6 @@ extends AbstractEntity
          */
         protected Job.Resolver resolver()
             {
-//            if (this.resolver == null)
-//                {
-//                this.resolver = factories().jobs().resolver();
-//                }
             return this.resolver ;
             }
 
@@ -421,17 +416,17 @@ else {
      */
     protected JobEntity()
         {
+    	super();
         }
 
     /**
      * Protected constructor.
      *
      */
-    protected JobEntity(final Identity owner, final String name)
+    protected JobEntity(final String name)
     throws NameFormatException
         {
         super(
-            owner,
             name
             );
         }
