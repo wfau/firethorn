@@ -120,6 +120,11 @@
 	<logger name="com.mchange.v2.async">
 		<level value="INFO" />
 	</logger>
+	<logger name="com.mchange.v2.c3p0.impl.C3P0ImplUtils">
+		<level value="WARN" />
+	</logger>
+
+
 
 	<!--+
 	    | StarLink loggers.

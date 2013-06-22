@@ -65,7 +65,7 @@ public class TestJobController
 	    }
 
 	@Component
-	public class LinkFactory
+	public static class LinkFactory
 	extends WebappLinkFactory<TestJob>
 	implements TestJob.LinkFactory
 	    {

@@ -47,7 +47,7 @@ extends AbstractEntity
 implements Entity, NamedEntity
     {
 
-    /*
+    /**
      * Hibernate column mapping.
      *
      */

@@ -73,17 +73,26 @@ implements Entity
 
     /**
      * Access to our ComponentFactories singleton instance.
-     * TODO Improve this
+     * Can't use static initialisation.
+     * http://stackoverflow.com/questions/9104221/hibernate-buildsessionfactory-exception
+     *
      */
     @Transient
-    protected ComponentFactories factories = ComponentFactoriesImpl.instance();
+    protected ComponentFactories factories ;
 
     /**
      * Access to our ComponentFactories singleton instance.
+     * Has to use dynamic initialisation.
+     * http://stackoverflow.com/questions/9104221/hibernate-buildsessionfactory-exception
      * TODO Improve this
+     * 
      */
     protected ComponentFactories factories()
     	{
+    	if (this.factories == null)
+    		{
+    		this.factories = ComponentFactoriesImpl.instance();
+    		}
     	return this.factories;
     	}
    
