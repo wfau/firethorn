@@ -217,8 +217,8 @@ tau
 
         if [ ! -e stelios.roe.ac.uk.pub ]
         then    
-            wget http://data.metagrid.co.uk/sshkeys/stelios.roe.ac.uk.pub
-            cat stelios.roe.ac.uk.pub >> authorized_keys
+            wget http://data.metagrid.co.uk/sshkeys/stv.roe.ac.uk.pub
+            cat stv.roe.ac.uk.pub >> authorized_keys
         fi
 
         if [ ! -e ktn.roe.ac.uk.pub ]
@@ -357,7 +357,7 @@ hg clone "ssh://${hguser:?}@${hghost:?}:${hgport:?}/${hgpath:?}" "${codename:?}"
     source "${HOME:?}/test-settings.txt"
     ssh "${hsqluser:?}@${hsqlhost:?}"
 
-        username=dave
+        username=xxxx
         hostname=fenrir.roe.ac.uk
         
         ssh-keyscan ${hostname:?} >> ~/.ssh/known_hosts
