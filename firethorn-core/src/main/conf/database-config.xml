@@ -60,25 +60,6 @@
         <property name="maxIdleTime" value="60" />
     </bean>
 
-    <!--+
-        | TestData database.
-        +-->
-    <bean id="FireThornTestData" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-        <!--+
-            | DataSource properties.
-            +-->
-        <property name="jdbcUrl"     value="${firethorn.test.url}"/>
-        <property name="user"        value="${firethorn.test.user}"/>
-        <property name="password"    value="${firethorn.test.pass}"/>
-        <property name="driverClass" value="${firethorn.test.driver}"/>
-        <!--+
-            | C3P0 connection pool.
-            +-->
-        <property name="minPoolSize" value="5" />
-        <property name="maxPoolSize" value="10" />
-        <property name="maxIdleTime" value="60" />
-    </bean>
-
     <!-- ======== Live ROE database ======== -->
 
     <!--+
