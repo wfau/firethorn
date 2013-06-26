@@ -43,7 +43,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
 
-import uk.ac.roe.wfau.firethorn.annotations.Checkpoint;
+//import uk.ac.roe.wfau.firethorn.annotations.Checkpoint;
 
 /**
  *
@@ -171,7 +171,7 @@ implements TestJob
             }
 
         @Override
-        @Checkpoint("select")
+        //@Checkpoint("select")
         @SelectEntityMethod
         public TestJob select(final Identifier ident)
         throws NotFoundException
@@ -199,7 +199,7 @@ implements TestJob
             }
 
         @Override
-        @Checkpoint("create")
+        //@Checkpoint("create")
         @CreateEntityMethod
         public TestJob create(final String name, final Integer length)
             {
@@ -213,7 +213,7 @@ implements TestJob
             }
 
         @Override
-        @Checkpoint("select")
+        //@Checkpoint("select")
         @SelectEntityMethod
         public Iterable<TestJob> select()
             {
@@ -226,7 +226,7 @@ implements TestJob
             }
 
         @Override
-        @Checkpoint("select")
+        //@Checkpoint("select")
         @SelectEntityMethod
         public TestJob select(final Identifier ident)
         throws NotFoundException
@@ -284,7 +284,7 @@ implements TestJob
         )
     private Integer length;
     @Override
-    @Checkpoint("select")
+    //@Checkpoint("select")
     public Integer length()
         {
         return this.length;
