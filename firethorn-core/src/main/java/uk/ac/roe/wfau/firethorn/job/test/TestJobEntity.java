@@ -24,20 +24,26 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
+
+import uk.ac.roe.wfau.firethorn.annotations.Checkpoint;
 
 /**
  *
@@ -45,6 +51,7 @@ import uk.ac.roe.wfau.firethorn.job.JobEntity;
  */
 @Slf4j
 @Entity()
+@Configurable()
 @Access(
     AccessType.FIELD
     )
@@ -162,6 +169,18 @@ implements TestJob
             {
             return this.idents;
             }
+
+        @Override
+        @Checkpoint("select")
+        @SelectEntityMethod
+        public TestJob select(final Identifier ident)
+        throws NotFoundException
+            {
+        	log.debug("select(Identifier)");
+        	return super.select(
+        			ident
+        			);
+            }
         }
 
     /**
@@ -180,9 +199,11 @@ implements TestJob
             }
 
         @Override
+        @Checkpoint("create")
         @CreateEntityMethod
         public TestJob create(final String name, final Integer length)
             {
+        	log.debug("create(String, Integer)");
             return this.insert(
                 new TestJobEntity(
                     name,
@@ -192,14 +213,28 @@ implements TestJob
             }
 
         @Override
+        @Checkpoint("select")
         @SelectEntityMethod
         public Iterable<TestJob> select()
             {
+        	log.debug("select()");
             return super.iterable(
                 super.query(
                     "TestJob-select-all"
                     )
                 );
+            }
+
+        @Override
+        @Checkpoint("select")
+        @SelectEntityMethod
+        public TestJob select(final Identifier ident)
+        throws NotFoundException
+            {
+        	log.debug("select(Identifier)");
+        	return super.select(
+        			ident
+        			);
             }
 
         @Autowired
@@ -249,6 +284,7 @@ implements TestJob
         )
     private Integer length;
     @Override
+    @Checkpoint("select")
     public Integer length()
         {
         return this.length;
@@ -380,4 +416,14 @@ implements TestJob
 
         return result;
         }
+
+    @Autowired
+    @Transient
+    private TestJob.Factory factory;
+
+    @Override
+	public TestJob.Factory factory()
+    	{
+		return this.factory;
+		}
     }

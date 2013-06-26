@@ -65,7 +65,9 @@ extends TestRoot
         final TestJob job = services().resolver().select(
             ident
             );
-        log.debug("Status [{}]", job.status());
+        log.debug("Status  [{}]", job.status());
+        log.debug("Length  [{}]", job.length());
+        log.debug("Factory [{}]", job.factory());
 
         log.debug("-- Preparing test --");
         log.debug("Result [{}]", services().executor().prepare(ident));

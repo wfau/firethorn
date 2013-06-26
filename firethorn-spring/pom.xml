@@ -49,8 +49,10 @@
 
     <properties>
 
-		<org.spring.version>3.2.0.M1</org.spring.version>
+		<!--org.spring.version>3.2.0.M1</org.spring.version-->
+		<org.spring.version>3.2.3.RELEASE</org.spring.version>
         <org.hibernate.version>4.1.6.Final</org.hibernate.version>
+		<org.aspectj.version>1.7.3</org.aspectj.version>
 
     </properties>
 
@@ -115,6 +117,7 @@
 
         <!--+
             | Spring aspects.
+            +-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
@@ -125,10 +128,10 @@
             <artifactId>spring-aop</artifactId>
             <version>${org.spring.version}</version>
         </dependency>
-            +-->
 
         <!--+
             | AspectJ.
+            +-->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
@@ -139,7 +142,6 @@
             <artifactId>aspectjrt</artifactId>
             <version>${org.aspectj.version}</version>
         </dependency>
-            +-->
 
         <!--+
             | Code Generation Library.
@@ -148,7 +150,7 @@
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
-            <version>2.2.2</version>
+            <version>3.0</version>
         </dependency>
 
         <!--+
@@ -226,6 +228,17 @@
         </dependency>
 
         <!--+
+            | Spring runtime weaving.
+            | http://stackoverflow.com/questions/7996800/running-unit-tests-using-maven-in-spring-ltw-environment
+            +-->	
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-instrument</artifactId>
+            <version>${org.spring.version}</version>
+            <!--scope>test</scope-->
+        </dependency>
+
+        <!--+
             | Hibernate libraries.
             | http://ralf.schaeftlein.de/2010/03/10/migrating-a-hibernate-application-from-jpa-1-0-to-2-0/
             | http://docs.jboss.org/hibernate/core/3.6/quickstart/en-US/html/hibernate-gsg-obtain.html#hibernate-gsg-setup-mavenRepoArtifacts
@@ -250,6 +263,7 @@
             <version>1.0</version>
         </dependency>
             +-->
+
 
         <!--+
             | JSTL libraries (required by Spring MVC).
@@ -299,7 +313,7 @@
 	    <dependency>
 		    <groupId>javax.validation</groupId>
 		    <artifactId>validation-api</artifactId>
-		    <version>1.0.0.GA</version>
+		    <version>1.1.0.Final</version>
 	    </dependency>
 	    <dependency>
 		    <groupId>org.hibernate</groupId>
@@ -355,7 +369,7 @@
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.9</version>
+            <version>1.9.11</version>
         </dependency>
 
     </dependencies>

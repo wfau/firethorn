@@ -114,7 +114,7 @@ implements Entity
     protected AbstractEntity(final boolean init)
         {
         super();
-        this.owner = factories.identities().current();
+        this.owner = factories().identities().current();
         this.created = new DateTime();
 
         /*

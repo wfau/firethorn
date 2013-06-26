@@ -48,11 +48,11 @@
     <url>http://redmine.roe.ac.uk/projects/wva</url>
     
     <properties>
-
+		<!--org.spring.version>3.2.0.M1</org.spring.version-->
+		<org.spring.version>3.2.3.RELEASE</org.spring.version>
     </properties>
 
     <repositories>
-
     </repositories>
 
     <dependencies>
@@ -118,6 +118,16 @@
             <type>jar</type>
         </dependency>
 
+        <!--+
+            | FireThorn annotations.
+            +-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>firethorn-annotations</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+
 	    <!--+
 	        | Servlet libraries.
 	        +-->
@@ -174,11 +184,30 @@
             <artifactId>usertype.core</artifactId>
         </dependency>
 
+
     </dependencies>
 
     <build>
 
         <plugins>
+
+            <!--+
+                | Include support for Spring's load time weaver.
+                | http://stackoverflow.com/questions/7996800/running-unit-tests-using-maven-in-spring-ltw-environment
+                +-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <!--version>2.4</version-->
+                <configuration>
+                    <forkMode>once</forkMode>
+                    <argLine>
+                        -javaagent:"${settings.localRepository}/org/springframework/spring-instrument/${org.spring.version}/spring-instrument-${org.spring.version}.jar"
+                    </argLine>
+                    <useSystemClassloader>true</useSystemClassloader>
+                </configuration>
+            </plugin>        
+
         </plugins>
 
         <resources>
@@ -239,33 +268,6 @@
                         <format>xml</format>
                     </formats>
                 </configuration>
-            </plugin>
-                +-->
-
-            <!--+
-                | PMD report.
-                | http://pmd.sourceforge.net/
-                | https://maven.apache.org/plugins/maven-pmd-plugin/
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>2.7.1</version>
-                <configuration>
-                    <sourceencoding>utf-8</sourceencoding>
-                    <source>${project.javaversion}</source>
-                    <targetjdk>${project.javaversion}</targetjdk>
-                </configuration>
-            </plugin>
-                +-->
-
-            <!--+
-                | Checkstyle report.
-                | http://checkstyle.sourceforge.net/
-                | https://maven.apache.org/plugins/maven-checkstyle-plugin/
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.9.1</version>
             </plugin>
                 +-->
 

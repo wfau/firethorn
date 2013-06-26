@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.job.test;
 
+import uk.ac.roe.wfau.firethorn.annotations.Checkpoint;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.job.Job;
@@ -118,6 +119,7 @@ extends Job, NamedEntity
      * The test duration in seconds.
      *
      */
+    @Checkpoint("select")
     public Integer length();
 
     /**
@@ -137,5 +139,11 @@ extends Job, NamedEntity
      *
      */
     public void limit(final Integer limit);
+
+    /**
+     * Something to configure.
+     *
+     */
+    public TestJob.Factory factory();
 
     }

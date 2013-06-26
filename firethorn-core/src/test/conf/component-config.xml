@@ -30,12 +30,16 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:txn="http://www.springframework.org/schema/tx"
     xmlns:cxt="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
     xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
         "
     >
 
@@ -49,5 +53,21 @@
         | Scan for Spring annotated classes.
         +-->
     <cxt:component-scan base-package="uk.ac.roe.wfau.firethorn"/>
+    <!--+
+        | Scan for Spring configured classes.
+        | http://stackoverflow.com/a/7669456
+        | http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/aop.html#aop-atconfigurable
+        | https://github.com/zzantozz/testbed/tree/master/spring-aspectj-load-time-weaving-in-jetty
+        | http://static.springsource.org/spring/docs/2.0.x/reference/aop.html#aop-using-aspectj
+        +-->
+    <cxt:spring-configured/>
+    <!--cxt:load-time-weaver weaver-class="org.springframework.instrument.classloading.ReflectiveLoadTimeWeaver"/-->
+    <cxt:load-time-weaver/>
+    
+    <!--+
+        | Scan for our own Checkpoint annotations.
+        +-->
+    <aop:aspectj-autoproxy/>
+    <bean id="CheckpointAspect" class="uk.ac.roe.wfau.firethorn.annotations.CheckpointAspect"/>
 
 </beans>
