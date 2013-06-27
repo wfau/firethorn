@@ -111,6 +111,7 @@ implements Community
         @CreateEntityMethod
         public Community create(final String name, final String uri)
             {
+            log.debug("create(String, String) [{}][{}]", name, uri);
             return create(
                 factories().jdbc().resources().userdata(),
                 name,
@@ -122,7 +123,7 @@ implements Community
         @CreateEntityMethod
         public Community create(final JdbcResource space, final String name, final String uri)
             {
-            log.debug("create(JdbcResource, String, String) [{}][{}]", name, uri);
+            log.debug("create(JdbcResource, String, String) [{}][{}][{}]", space, name, uri);
             final Community community = this.select(
                 uri
                 );

@@ -110,9 +110,6 @@ implements HandlerInterceptor
         String identity  = (String) request.getHeader(identityAttrib);
         String community = (String) request.getHeader(communityAttrib);
 
-        log.debug("Identity  [{}]", identity);
-        log.debug("Community [{}]", community);
-
         if (identity == null)
             {
             identity = defaultIdentity ; 
@@ -131,6 +128,7 @@ implements HandlerInterceptor
 
         if ((operation != null) && (community != null) && (identity != null))
             {
+            log.debug("creating ....");
             operation.authentications().create(
                 factories.identities().create(
                     factories.communities().create(
