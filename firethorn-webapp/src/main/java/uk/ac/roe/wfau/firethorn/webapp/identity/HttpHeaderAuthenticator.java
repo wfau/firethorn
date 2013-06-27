@@ -141,6 +141,11 @@ implements HandlerInterceptor
                 );
             }
 
+        log.debug("Operation [{}]", operation);
+        log.debug("Primary   [{}]", operation.authentications().primary());
+        log.debug("Identity  [{}]", operation.authentications().primary().identity());
+        log.debug("Community [{}]", operation.authentications().primary().identity().community());
+        
         return true ;
         }
 
