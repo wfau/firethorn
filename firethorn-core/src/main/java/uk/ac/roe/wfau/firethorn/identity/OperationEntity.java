@@ -136,12 +136,12 @@ implements Operation
             return local.get();
             }
 
-        public Operation current(Operation current)
+        public Operation current(Operation oper)
             {
             local.set(
-                current
+                oper
                 );
-            return current;
+            return oper;
             }
         }
     

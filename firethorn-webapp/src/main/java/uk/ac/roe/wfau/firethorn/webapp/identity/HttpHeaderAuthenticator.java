@@ -123,10 +123,11 @@ implements HandlerInterceptor
             community = defaultCommunity; 
             }
 
+        Operation operation = factories.operations().current();
+
         log.debug("Identity  [{}]", identity);
         log.debug("Community [{}]", community);
-
-        Operation operation = factories.operations().current();
+        log.debug("Operation [{}]", operation);
 
         if ((operation != null) && (community != null) && (identity != null))
             {
