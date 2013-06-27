@@ -339,7 +339,7 @@ public class JdbcSchemaEntity
         public JdbcSchema select(final JdbcResource parent, final String name)
             {
             log.debug("JdbcSchema select(JdbcResource, String)");
-            log.debug("  Parent  [{}]", parent.ident());
+            log.debug("  Resource [{}][{}]", parent.ident(), parent.name());
             log.debug("  Schema  [{}]", name);
             return super.first(
                 super.query(
