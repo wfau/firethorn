@@ -196,7 +196,7 @@ implements Entity
         name = DB_OWNER_COL,
         unique = false,
         nullable = true,
-        updatable = false
+        updatable = true
         )
     private Identity owner ;
     @Override

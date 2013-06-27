@@ -63,7 +63,9 @@ public abstract class BaseResourceEntity<SchemaType extends BaseSchema<SchemaTyp
 
     protected BaseResourceEntity(final String name)
         {
-        super(name);
+        super(
+            name
+            );
         }
 
     @Override
