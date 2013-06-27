@@ -1,0 +1,103 @@
+
+    source "${HOME:?}/test-users.txt"
+    ssh  "${hsqluser:?}@${hsqlhost:?}"
+
+        ssh -v -L '*:1433:ramses5:1433' -L '*:1434:ramses9:1433' "${username:?}@${hostname:?}"
+
+    source "${HOME:?}/test-users.txt"
+    ssh "${fireuser:?}@${firehost:?}"
+
+        vi "${HOME:?}/firethorn.properties"
+
+firethorn.meta.url=jdbc:jtds:sqlserver://pi.virtual.metagrid.co.uk:1434/FIRETHORN_META_001
+firethorn.meta.driver=net.sourceforge.jtds.jdbc.Driver
+firethorn.meta.dialect=org.hibernate.dialect.SQLServer2005Dialect
+firethorn.meta.type=mssql
+firethorn.meta.user=xxxx
+firethorn.meta.pass=xxxx
+firethorn.meta.c3po.max.size=20
+firethorn.meta.c3po.min.size=5
+firethorn.meta.c3po.max.idle=1800
+
+#
+# Need to explicitly use SQLServer2005Dialect.
+# https://hibernate.atlassian.net/browse/HHH-7933
+SQLServer2005Dialect
+
+
+
+
+2013-06-27 18:49:19,779 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: create table AuthenticationEntity (ident numeric(19,0) identity not null, created datetime not null, modified datetime not null, method varchar(255), owner numeric(19,0), identity numeric(19,0) not null, operation numeric(19,0) not null, primary key (ident)) 
+2013-06-27 18:49:19,780 ERROR [localhost-startStop-1] [SchemaUpdate] Incorrect syntax near the keyword 'identity'. 
+2013-06-27 18:49:19,860 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: create table BaseColumnEntity (ident numeric(19,0) identity not null, created datetime not null, modified datetime not null, name varchar(255), text varchar(255), scandate datetime, scanflag boolean not null, status varchar(255) not null, adqlsize int, adqltype varchar(255), owner numeric(19,0), parent numeric(19,0) not null, primary key (ident), unique (name, parent)) 
+2013-06-27 18:49:19,861 ERROR [localhost-startStop-1] [SchemaUpdate] Column, parameter, or variable #7: Cannot find data type boolean. 
+2013-06-27 18:49:19,936 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: create table BaseResourceEntity (ident numeric(19,0) identity not null, created datetime not null, modified datetime not null, name varchar(255), text varchar(255), scandate datetime, scanflag boolean not null, status varchar(255) not null, owner numeric(19,0), primary key (ident)) 
+2013-06-27 18:49:19,937 ERROR [localhost-startStop-1] [SchemaUpdate] Column, parameter, or variable #7: Cannot find data type boolean. 
+2013-06-27 18:49:20,016 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: create table BaseSchemaEntity (ident numeric(19,0) identity not null, created datetime not null, modified datetime not null, name varchar(255), text varchar(255), scandate datetime, scanflag boolean not null, status varchar(255) not null, owner numeric(19,0), parent numeric(19,0) not null, primary key (ident), unique (name, parent)) 
+2013-06-27 18:49:20,017 ERROR [localhost-startStop-1] [SchemaUpdate] Column, parameter, or variable #7: Cannot find data type boolean. 
+2013-06-27 18:49:20,096 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: create table BaseTableEntity (ident numeric(19,0) identity not null, created datetime not null, modified datetime not null, name varchar(255), text varchar(255), scandate datetime, scanflag boolean not null, status varchar(255) not null, owner numeric(19,0), parent numeric(19,0) not null, primary key (ident), unique (name, parent)) 
+2013-06-27 18:49:20,097 ERROR [localhost-startStop-1] [SchemaUpdate] Column, parameter, or variable #7: Cannot find data type boolean. 
+2013-06-27 18:49:20,678 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: create table config_property (ident numeric(19,0) identity not null, created datetime not null, modified datetime not null, name varchar(255), text varchar(255), key varbinary(255) not null unique, value varchar(255), owner numeric(19,0), primary key (ident)) 
+2013-06-27 18:49:20,679 ERROR [localhost-startStop-1] [SchemaUpdate] Incorrect syntax near the keyword 'key'. 
+2013-06-27 18:49:20,779 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table AdqlColumnEntity add constraint FK88A63397EFAAE6CD foreign key (base) references BaseColumnEntity 
+2013-06-27 18:49:20,779 ERROR [localhost-startStop-1] [SchemaUpdate] Foreign key 'FK88A63397EFAAE6CD' references invalid table 'BaseColumnEntity'. 
+2013-06-27 18:49:20,849 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table AdqlColumnEntity add constraint FK88A63397F57381EC foreign key (ident) references BaseColumnEntity 
+2013-06-27 18:49:20,850 ERROR [localhost-startStop-1] [SchemaUpdate] Foreign key 'FK88A63397F57381EC' references invalid table 'BaseColumnEntity'. 
+2013-06-27 18:49:21,385 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table AdqlQueryJoinBaseResource add constraint FK48E6A331F3213D3 foreign key (baseresource) references BaseResourceEntity 
+2013-06-27 18:49:21,386 ERROR [localhost-startStop-1] [SchemaUpdate] Foreign key 'FK48E6A331F3213D3' references invalid table 'BaseResourceEntity'. 
+2013-06-27 18:49:21,457 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table AdqlResourceEntity add constraint FK8F0282CFA0D64BE4 foreign key (ident) references BaseResourceEntity 
+2013-06-27 18:49:21,457 ERROR [localhost-startStop-1] [SchemaUpdate] Foreign key 'FK8F0282CFA0D64BE4' references invalid table 'BaseResourceEntity'. 
+2013-06-27 18:49:21,529 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table AdqlSchemaEntity add constraint FK43EA71A2B0B7BFF7 foreign key (ident) references BaseSchemaEntity 
+2013-06-27 18:49:21,530 ERROR [localhost-startStop-1] [SchemaUpdate] Foreign key 'FK43EA71A2B0B7BFF7' references invalid table 'BaseSchemaEntity'. 
+2013-06-27 18:49:21,706 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table AdqlTableEntity add constraint FKED0880D32A563A9F foreign key (base) references BaseTableEntity 
+2013-06-27 18:49:21,707 ERROR [localhost-startStop-1] [SchemaUpdate] Foreign key 'FKED0880D32A563A9F' references invalid table 'BaseTableEntity'. 
+2013-06-27 18:49:21,778 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table AdqlTableEntity add constraint FKED0880D3301ED5BE foreign key (ident) references BaseTableEntity 
+2013-06-27 18:49:21,779 ERROR [localhost-startStop-1] [SchemaUpdate] Foreign key 'FKED0880D3301ED5BE' references invalid table 'BaseTableEntity'. 
+2013-06-27 18:49:21,982 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table AuthenticationEntity add constraint FK946A2C9BFB1931D1 foreign key (identity) references IdentityEntity 
+2013-06-27 18:49:21,983 ERROR [localhost-startStop-1] [SchemaUpdate] Incorrect syntax near the keyword 'identity'. 
+2013-06-27 18:49:22,066 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table AuthenticationEntity add constraint FK946A2C9BCD5DE4FF foreign key (operation) references OperationEntity 
+2013-06-27 18:49:22,067 ERROR [localhost-startStop-1] [SchemaUpdate] Cannot find the object "AuthenticationEntity" because it does not exist or you do not have permissions. 
+2013-06-27 18:49:22,136 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table AuthenticationEntity add constraint FK946A2C9B984B3C6 foreign key (owner) references IdentityEntity 
+2013-06-27 18:49:22,137 ERROR [localhost-startStop-1] [SchemaUpdate] Cannot find the object "AuthenticationEntity" because it does not exist or you do not have permissions. 
+2013-06-27 18:49:22,205 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table BaseColumnEntity add constraint FK9ACC386A984B3C6 foreign key (owner) references IdentityEntity 
+2013-06-27 18:49:22,206 ERROR [localhost-startStop-1] [SchemaUpdate] Cannot find the object "BaseColumnEntity" because it does not exist or you do not have permissions. 
+2013-06-27 18:49:22,275 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table BaseColumnEntity add constraint FK9ACC386AEED33C78 foreign key (parent) references BaseTableEntity 
+2013-06-27 18:49:22,276 ERROR [localhost-startStop-1] [SchemaUpdate] Cannot find the object "BaseColumnEntity" because it does not exist or you do not have permissions. 
+2013-06-27 18:49:22,344 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: create index BaseColumnEntityIndexByParent on BaseColumnEntity (parent) 
+2013-06-27 18:49:22,345 ERROR [localhost-startStop-1] [SchemaUpdate] Cannot find the object "BaseColumnEntity" because it does not exist or you do not have permissions. 
+2013-06-27 18:49:22,412 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table BaseResourceEntity add constraint FKAFBA9EE2984B3C6 foreign key (owner) references IdentityEntity 
+2013-06-27 18:49:22,413 ERROR [localhost-startStop-1] [SchemaUpdate] Cannot find the object "BaseResourceEntity" because it does not exist or you do not have permissions. 
+2013-06-27 18:49:22,482 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table BaseSchemaEntity add constraint FK56107675984B3C6 foreign key (owner) references IdentityEntity 
+2013-06-27 18:49:22,483 ERROR [localhost-startStop-1] [SchemaUpdate] Cannot find the object "BaseSchemaEntity" because it does not exist or you do not have permissions. 
+2013-06-27 18:49:22,552 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table BaseSchemaEntity add constraint FK561076755F8AB29E foreign key (parent) references BaseResourceEntity 
+2013-06-27 18:49:22,553 ERROR [localhost-startStop-1] [SchemaUpdate] Cannot find the object "BaseSchemaEntity" because it does not exist or you do not have permissions. 
+2013-06-27 18:49:22,625 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: create index BaseSchemaEntityIndexByParent on BaseSchemaEntity (parent) 
+2013-06-27 18:49:22,628 ERROR [localhost-startStop-1] [SchemaUpdate] Cannot find the object "BaseSchemaEntity" because it does not exist or you do not have permissions. 
+2013-06-27 18:49:22,695 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table BaseTableEntity add constraint FK487515A0984B3C6 foreign key (owner) references IdentityEntity 
+2013-06-27 18:49:22,695 ERROR [localhost-startStop-1] [SchemaUpdate] Cannot find the object "BaseTableEntity" because it does not exist or you do not have permissions. 
+2013-06-27 18:49:22,765 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table BaseTableEntity add constraint FK487515A06F6C26B1 foreign key (parent) references BaseSchemaEntity 
+2013-06-27 18:49:22,766 ERROR [localhost-startStop-1] [SchemaUpdate] Cannot find the object "BaseTableEntity" because it does not exist or you do not have permissions. 
+2013-06-27 18:49:22,834 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: create index BaseTableEntityIndexByParent on BaseTableEntity (parent) 
+2013-06-27 18:49:22,835 ERROR [localhost-startStop-1] [SchemaUpdate] Cannot find the object "BaseTableEntity" because it does not exist or you do not have permissions. 
+2013-06-27 18:49:23,116 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table IvoaColumnEntity add constraint FKE345C058F57381EC foreign key (ident) references BaseColumnEntity 
+2013-06-27 18:49:23,116 ERROR [localhost-startStop-1] [SchemaUpdate] Foreign key 'FKE345C058F57381EC' references invalid table 'BaseColumnEntity'. 
+2013-06-27 18:49:23,226 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table IvoaResourceEntity add constraint FKBFF1E350A0D64BE4 foreign key (ident) references BaseResourceEntity 
+2013-06-27 18:49:23,227 ERROR [localhost-startStop-1] [SchemaUpdate] Foreign key 'FKBFF1E350A0D64BE4' references invalid table 'BaseResourceEntity'. 
+2013-06-27 18:49:23,298 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table IvoaSchemaEntity add constraint FK9E89FE63B0B7BFF7 foreign key (ident) references BaseSchemaEntity 
+2013-06-27 18:49:23,299 ERROR [localhost-startStop-1] [SchemaUpdate] Foreign key 'FK9E89FE63B0B7BFF7' references invalid table 'BaseSchemaEntity'. 
+2013-06-27 18:49:23,404 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table IvoaTableEntity add constraint FK6BD3D7F2301ED5BE foreign key (ident) references BaseTableEntity 
+2013-06-27 18:49:23,405 ERROR [localhost-startStop-1] [SchemaUpdate] Foreign key 'FK6BD3D7F2301ED5BE' references invalid table 'BaseTableEntity'. 
+2013-06-27 18:49:23,516 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table JdbcColumnEntity add constraint FKD82CF594F57381EC foreign key (ident) references BaseColumnEntity 
+2013-06-27 18:49:23,517 ERROR [localhost-startStop-1] [SchemaUpdate] Foreign key 'FKD82CF594F57381EC' references invalid table 'BaseColumnEntity'. 
+2013-06-27 18:49:23,655 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table JdbcResourceEntity add constraint FK17E0B98CA0D64BE4 foreign key (ident) references BaseResourceEntity 
+2013-06-27 18:49:23,655 ERROR [localhost-startStop-1] [SchemaUpdate] Foreign key 'FK17E0B98CA0D64BE4' references invalid table 'BaseResourceEntity'. 
+2013-06-27 18:49:23,725 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table JdbcSchemaEntity add constraint FK9371339FB0B7BFF7 foreign key (ident) references BaseSchemaEntity 
+2013-06-27 18:49:23,726 ERROR [localhost-startStop-1] [SchemaUpdate] Foreign key 'FK9371339FB0B7BFF7' references invalid table 'BaseSchemaEntity'. 
+2013-06-27 18:49:23,899 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table JdbcTableEntity add constraint FKD6D30B36301ED5BE foreign key (ident) references BaseTableEntity 
+2013-06-27 18:49:23,900 ERROR [localhost-startStop-1] [SchemaUpdate] Foreign key 'FKD6D30B36301ED5BE' references invalid table 'BaseTableEntity'. 
+2013-06-27 18:49:24,105 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table OperationEntity add constraint FK401E740A926C7775 foreign key (auth) references AuthenticationEntity 
+2013-06-27 18:49:24,106 ERROR [localhost-startStop-1] [SchemaUpdate] Foreign key 'FK401E740A926C7775' references invalid table 'AuthenticationEntity'. 
+2013-06-27 18:49:24,246 ERROR [localhost-startStop-1] [SchemaUpdate] HHH000388: Unsuccessful: alter table config_property add constraint FK61A61632984B3C6 foreign key (owner) references IdentityEntity 
+2013-06-27 18:49:24,246 ERROR [localhost-startStop-1] [SchemaUpdate] Cannot find the object "config_property" because it does not exist or you do not have permissions. 
+2013-06-27 18:49:24,247 INFO  [localhost-startStop-1] [SchemaUpdate] HHH000232: Schema update complete 
+

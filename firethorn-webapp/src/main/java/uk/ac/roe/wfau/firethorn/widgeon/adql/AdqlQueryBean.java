@@ -36,16 +36,6 @@ public class AdqlQueryBean
 extends NamedEntityBeanImpl<AdqlQuery>
 implements NamedEntityBean<AdqlQuery>
     {
-    /**
-     * Factory wrapper method.
-     *
-    public static Iter wrap(final Iterable<AdqlQuery> iterable)
-        {
-        return new Iter(
-            iterable
-            );
-        }
-     */
 
     public static class Iter
     extends AbstractEntityBeanIter<AdqlQuery>
@@ -65,21 +55,6 @@ implements NamedEntityBean<AdqlQuery>
             }
         }
 
-    /**
-     * Factory wrapper method.
-     *
-    public static AdqlQueryBean wrap(final AdqlQuery entity)
-        {
-        return new AdqlQueryBean(
-            entity
-            );
-        }
-     */
-
-    /**
-     * Protected constructor.
-     *
-     */
     protected AdqlQueryBean(final AdqlQuery entity)
         {
         super(
@@ -243,7 +218,7 @@ implements NamedEntityBean<AdqlQuery>
         }
 
     /**
-     * Our result tables.
+     * The query results.
      *
      */
     public interface Results
@@ -268,7 +243,7 @@ implements NamedEntityBean<AdqlQuery>
         }
 
     /**
-     * Our result tables.
+     * The query results.
      *
      */
     public Results getResults()
@@ -300,12 +275,14 @@ implements NamedEntityBean<AdqlQuery>
     public interface FieldBean
         {
         public String  getName();
+
         public Integer getLength();
+        
         public String  getType();
         }
 
     /**
-     * Our select fields.
+     * The query select fields.
      *
      */
     public Iterable<FieldBean> getFields()
