@@ -1123,7 +1123,7 @@ implements AdqlQuery, AdqlParserQuery
         // Create our tables.
         if (identity.space() != null)
             {
-            log.debug(" Owner space [{}][{}]", identity.space().ident(), identity.space().name());
+            log.debug(" Identity space [{}][{}]", identity.space().ident(), identity.space().name());
             this.jdbctable = identity.space().tables().create(
                 this
                 );
@@ -1131,18 +1131,11 @@ implements AdqlQuery, AdqlParserQuery
                 this
                 );
             }
-// Legacy no-owner fallback.
+// no-owner fallback.
         else {
             log.error("-- NO OWNER");
-/*
-            this.jdbctable = services().builder().create(
-                legacy,
-                this
-                );
- */                
+            // Config exception. 
             }
-
-
 //TODO
 //Why does the query need to know where the JdbcTable is ?
         

@@ -6,6 +6,7 @@
 
 # ------------------------------------------------------------
 # Install our init-user script.
+# TODO - replace tese with ischenura or Puppet scripts
 #[user@desktop]
 
     for vmname in ${vmlist[@]:?}

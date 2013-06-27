@@ -96,7 +96,6 @@
             <id>database</id>
             <modules>
                 <module>metadata</module>
-                <module>testdata</module>
                 <module>userdata</module>
             </modules>
         </profile>

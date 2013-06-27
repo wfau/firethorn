@@ -200,6 +200,13 @@ public class JdbcResourceEntity
             }
 
         /**
+         * The default 'userdate' OGSA-DAI resource id.
+         * @todo Make this a configurable property.
+         * 
+         */
+        public static final String DEFAULT_USERDATA_OGSA_ID = "userdata" ;
+
+        /**
          * Select the default 'userdata' Resource (based on ogsaid).
          * @todo Make this a configurable property.
          *
@@ -210,14 +217,14 @@ public class JdbcResourceEntity
             {
             try {
                 JdbcResource userdata = ogsaid(
-                    "userdata"
+                    DEFAULT_USERDATA_OGSA_ID
                     );
 //TODO Make this configurable
                 if (userdata == null)
                     {
                     userdata = create(
-                        "userdata",
-                        "userdata",
+                        DEFAULT_USERDATA_OGSA_ID,
+                        DEFAULT_USERDATA_OGSA_ID,
                         "spring:FireThornUserData"
                         );
                     }
@@ -225,7 +232,7 @@ public class JdbcResourceEntity
                 }
             catch (NotFoundException ouch)
                 {
-                log.error("Unable to find default resource for userdata");
+                log.error("Unable to find default userdata resource");
                 return null ;
                 }
             }
