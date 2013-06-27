@@ -102,6 +102,10 @@ implements Identity
             Operation oper = factories().operations().current() ;
             if (oper != null)
                 {
+                log.debug("oper [{}]", oper);                
+                log.debug("oper.auth [{}]", oper.auth());                
+                log.debug("oper.auth.primary [{}]", oper.authentications().primary());
+                log.debug("oper.auth.primary.identity [{}]", oper.authentications().primary().identity());                
                 return oper.authentications().primary().identity();
                 }
             else {

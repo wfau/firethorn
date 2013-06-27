@@ -126,7 +126,7 @@ implements HandlerInterceptor
         log.debug("Identity  [{}]", identity);
         log.debug("Community [{}]", community);
 
-        Operation operation =  factories.operations().current();
+        Operation operation = factories.operations().current();
 
         if ((operation != null) && (community != null) && (identity != null))
             {

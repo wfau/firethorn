@@ -238,7 +238,9 @@ implements Operation
     protected void auth(Authentication auth)
         {
         this.auth = auth ;
-        this.owner(auth.identity()) ;
+        this.owner(
+            auth.identity()
+            ) ;
         }
    
     /**

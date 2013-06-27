@@ -71,7 +71,9 @@ implements Entity, NamedEntity
     protected AbstractNamedEntity(final String name)
     throws NameFormatException
         {
-    	super(true);
+    	super(
+    	    true
+    	    );
         this.name(
             name
             );
