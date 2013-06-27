@@ -56,6 +56,12 @@ public interface EntityBean<EntityType extends Entity>
     public URI getType();
 
     /**
+     * The Entity owner.
+     *
+     */
+    public URI getOwner();
+
+    /**
      * The Entity create date.
      *
      */

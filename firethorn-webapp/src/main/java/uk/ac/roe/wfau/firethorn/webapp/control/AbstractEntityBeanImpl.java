@@ -95,6 +95,28 @@ implements EntityBean<EntityType>
         }
 
     @Override
+    public URI getOwner()
+        {
+        if (this.entity.owner() != null)
+            {
+            try {
+                return new URI(
+                    this.entity.owner().link()
+                    );
+                }
+            catch (final URISyntaxException ouch)
+                {
+                throw new RuntimeException(
+                    ouch
+                    );
+                }
+            }
+        else {
+            return null ;
+            }
+        }
+
+    @Override
     public String getCreated()
         {
         return dateformat(
