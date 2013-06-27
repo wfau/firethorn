@@ -112,10 +112,10 @@
             | Add our own custom interceptors.
             +-->
         <bean id="operation-interceptor"
-            class="uk.ac.roe.wfau.firethorn.webapp.identity.OperationInterceptor">
+            class="uk.ac.roe.wfau.firethorn.webapp.oper.OperationInterceptor">
         </bean>
         <bean id="atlas-authentication"
-            class="uk.ac.roe.wfau.firethorn.webapp.identity.HttpHeaderAuthenticator">
+            class="uk.ac.roe.wfau.firethorn.webapp.auth.HttpHeaderAuthenticator">
             <!--+
                 | Default configuration ..
             <property name="defaultIdentity"  value="guest.identity"/>
@@ -125,12 +125,7 @@
                 +-->
         </bean>
         <bean id="anon-authentication"
-            class="uk.ac.roe.wfau.firethorn.webapp.identity.AnonymousAuthenticator">
-        </bean>
-
-        <bean id="test-interceptor"
-            class="uk.ac.roe.wfau.firethorn.webapp.identity.TestHandlerInterceptorOne">
-            <property name="name" value="Rachel"/>
+            class="uk.ac.roe.wfau.firethorn.webapp.auth.AnonymousAuthenticator">
         </bean>
 
     </mvc:interceptors>
