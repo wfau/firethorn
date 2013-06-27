@@ -139,7 +139,9 @@ implements Authentication
      */
     protected AuthenticationEntity(final Operation operation, final Identity identity, final String method)
         {
-        super();
+        super(
+            true
+            );
 
         log.debug("AuthenticationEntity(Operation, Identity, String)");
         log.debug("  Operation [{}]", operation.method());
