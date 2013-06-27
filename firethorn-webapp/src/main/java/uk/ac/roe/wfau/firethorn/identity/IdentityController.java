@@ -42,7 +42,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
  */
 @Slf4j
 @Controller
-@RequestMapping(IdentityLinkFactory.SERVICE_PATH)
+@RequestMapping(IdentityLinkFactory.IDENTITY_PATH)
 public class IdentityController
 extends AbstractController
     {
