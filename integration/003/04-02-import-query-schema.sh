@@ -22,6 +22,9 @@
 baseschemaname=${1:?}
 adqlschemaname=${2:?}
 
+unset baseschema
+unset adqlschema
+
 baseschema=$(
     POST "${adqlspace:?}/schemas/select" \
         --header "firethorn.auth.identity:${identity:?}" \

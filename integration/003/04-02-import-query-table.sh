@@ -25,6 +25,12 @@ basetablename=${2:?}
 queryschemaname=${3:?}
 querytablename=${4:?}
 
+unset baseschema
+unset basetable
+
+unset queryschema
+unset querytable
+
 baseschema=$(
     POST "${adqlspace:?}/schemas/select" \
         --header "firethorn.auth.identity:${identity:?}" \

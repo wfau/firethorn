@@ -22,6 +22,9 @@
 jdbcname=${1:?}
 adqlname=${2:?}
 
+unset jdbcschema
+unset adqlschema
+
 jdbcschema=$(
     POST "${jdbcspace:?}/schemas/select" \
         --header "firethorn.auth.identity:${identity:?}" \
