@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.identity;
 
+import java.net.URI;
+
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
@@ -30,4 +32,7 @@ public class IdentityIdentFactory
 extends WebappIdentFactory
 implements Identity.IdentFactory
     {
+    public static final URI TYPE_URI = URI.create(
+        "http://data.metagrid.co.uk/wfau/firethorn/types/identity-1.0.json"
+        );
     }
