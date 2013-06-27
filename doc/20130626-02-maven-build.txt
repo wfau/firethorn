@@ -25,6 +25,8 @@
         source ${HOME:?}/firethorn.settings
         pushd "${FIRETHORN_CODE:?}"
 
+            hg pull ; hg update
+
             mvn -P depends install
 
             pushd 'firethorn-hsqldb'
