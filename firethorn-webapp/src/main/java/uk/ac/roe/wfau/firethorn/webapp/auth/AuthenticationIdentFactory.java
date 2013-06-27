@@ -15,7 +15,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.identity;
+package uk.ac.roe.wfau.firethorn.webapp.auth;
+
+import java.net.URI;
 
 import org.springframework.stereotype.Component;
 
@@ -26,12 +28,12 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
  *
  *
  */
-public class AuthenticationController
+@Component
+public class AuthenticationIdentFactory
+extends WebappIdentFactory
+implements Authentication.IdentFactory
     {
-    @Component
-    public static class IdentFactory
-    extends WebappIdentFactory
-    implements Authentication.IdentFactory
-        {
-        }
+    public static final URI TYPE_URI = URI.create(
+        "http://data.metagrid.co.uk/wfau/firethorn/types/authentication-1.0.json"
+        );
     }

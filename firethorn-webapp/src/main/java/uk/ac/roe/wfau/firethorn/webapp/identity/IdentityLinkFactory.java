@@ -19,23 +19,23 @@ package uk.ac.roe.wfau.firethorn.webapp.identity;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.identity.Authentication;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.identity.Identity.LinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- * Link factory for <code>AdqlColumn</code>.
- * TODO
+ * Link factory for <code>Identity</code>.
  *
  */
 @Component
-public class AuthenticationLinkFactory
-extends WebappLinkFactory<Authentication>
-implements Authentication.LinkFactory
+public class IdentityLinkFactory
+extends WebappLinkFactory<Identity>
+implements Identity.LinkFactory
     {
-    protected AuthenticationLinkFactory()
+    protected IdentityLinkFactory()
         {
         super(
-            BASE_PATH
+            SERVICE_PATH
             );
         }
 
@@ -43,19 +43,19 @@ implements Authentication.LinkFactory
      * The URI path for the service.
      *
      */
-    protected static final String BASE_PATH = "/authentication" ;
+    public static final String SERVICE_PATH = "/auth/identity";
 
     /**
-     * The URI path for individual columns.
+     * The URI path for individual identities.
      *
      */
-    public static final String ENTITY_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
+    public static final String IDENTITY_PATH = SERVICE_PATH + "/" + IDENT_TOKEN ;
 
     @Override
-    public String link(final Authentication entity)
+    public String link(final Identity entity)
         {
-        return link(
-            ENTITY_PATH,
+        return this.link(
+            IDENTITY_PATH,
             entity
             );
         }

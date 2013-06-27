@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.identity;
+package uk.ac.roe.wfau.firethorn.webapp.community;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.Community;
+import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
@@ -42,8 +44,8 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
  */
 @Slf4j
 @Controller
-@RequestMapping(IdentityLinkFactory.IDENTITY_PATH)
-public class IdentityController
+@RequestMapping(CommunityLinkFactory.ENTITY_PATH)
+public class CommunityController
 extends AbstractController
     {
 
@@ -51,7 +53,7 @@ extends AbstractController
     public Path path()
         {
         return path(
-            IdentityLinkFactory.IDENTITY_PATH
+            CommunityLinkFactory.ENTITY_PATH
             );
         }
 
@@ -59,7 +61,7 @@ extends AbstractController
      * Public constructor.
      *
      */
-    public IdentityController()
+    public CommunityController()
         {
         super();
         }
@@ -68,32 +70,32 @@ extends AbstractController
      * Bean wrapper.
      *
      */
-    public static class IdentityBean
-    extends NamedEntityBeanImpl<Identity>
-    implements NamedEntityBean<Identity>
+    public static class CommunityBean
+    extends NamedEntityBeanImpl<Community>
+    implements NamedEntityBean<Community>
         {
         public static class Iter
-        extends AbstractEntityBeanIter<Identity>
+        extends AbstractEntityBeanIter<Community>
             {
-            public Iter(final Iterable<Identity> iterable)
+            public Iter(final Iterable<Community> iterable)
                 {
                 super(
                     iterable
                     );
                 }
             @Override
-            public NamedEntityBean<Identity> bean(final Identity entity)
+            public NamedEntityBean<Community> bean(final Community entity)
                 {
-                return new IdentityBean(
+                return new CommunityBean(
                     entity
                     );
                 }
             }
 
-        public IdentityBean(final Identity entity)
+        public CommunityBean(final Community entity)
             {
             super(
-                IdentityIdentFactory.TYPE_URI,
+                CommunityIdentFactory.TYPE_URI,
                 entity
                 );
             }
@@ -105,15 +107,15 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public IdentityBean select(
+    public CommunityBean select(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         ) throws NotFoundException  {
         log.debug("JSON GET request");
         try {
-            return new IdentityBean(
-                factories().identities().select(
-                    factories().identities().idents().ident(
+            return new CommunityBean(
+                factories().communities().select(
+                    factories().communities().idents().ident(
                         ident
                         )
                     )

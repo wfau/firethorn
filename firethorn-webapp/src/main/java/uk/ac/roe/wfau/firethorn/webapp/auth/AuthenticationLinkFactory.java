@@ -15,23 +15,24 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.webapp.identity;
+package uk.ac.roe.wfau.firethorn.webapp.auth;
 
 import org.springframework.stereotype.Component;
 
-import uk.ac.roe.wfau.firethorn.identity.Operation;
+import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**
- *
+ * Link factory for <code>AdqlColumn</code>.
+ * TODO
  *
  */
 @Component
-public class OperationLinkFactory
-extends WebappLinkFactory<Operation>
-implements Operation.LinkFactory
+public class AuthenticationLinkFactory
+extends WebappLinkFactory<Authentication>
+implements Authentication.LinkFactory
     {
-    protected OperationLinkFactory()
+    protected AuthenticationLinkFactory()
         {
         super(
             BASE_PATH
@@ -42,7 +43,7 @@ implements Operation.LinkFactory
      * The URI path for the service.
      *
      */
-    protected static final String BASE_PATH = "/operation" ;
+    protected static final String BASE_PATH = "/authentication" ;
 
     /**
      * The URI path for individual columns.
@@ -51,7 +52,7 @@ implements Operation.LinkFactory
     public static final String ENTITY_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
 
     @Override
-    public String link(final Operation entity)
+    public String link(final Authentication entity)
         {
         return link(
             ENTITY_PATH,

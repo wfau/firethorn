@@ -1,0 +1,157 @@
+#
+#
+#
+#
+#
+
+#-----------------------------------------------------------------------------------
+# Create new set of virtual machines
+#
+#[root@kvm-server]
+
+    source ${HOME:?}/bin/kvm-tools.sh
+
+    vmbase=ubuntu-12
+    memunit=MiB
+    memsize=512
+    volsize=8G
+    volpool=default
+
+    vmlist=(xi pi rho tau)
+    for vmname in ${vmlist[@]:?}
+    do
+        echo "VM name [${vmname:?}]"
+
+        #
+        # Set the disc image params.
+        volname=${vmname:?}.qcow
+        volback=$(virsh vol-path --pool 'base' "${vmbase:?}-base.qcow")
+
+        #
+        # Delete any existing VM
+        vmuuid=$(virsh domuuid "${vmname:?}" 2> /dev/null)
+        if [ -n "${vmuuid}" ]    
+        then
+            virsh destroy  "${vmname:?}"
+            virsh undefine "${vmname:?}"
+        fi
+
+        #
+        # Delete any existing volume.
+        volkey=$(virsh vol-key --pool "${volpool:?}" "${volname:?}" 2> /dev/null)
+        if [ -n "${volkey}" ]
+        then
+            virsh vol-delete --pool "${volpool:?}" "${volname:?}"
+        fi
+
+        #
+        # Create a new volume.
+        virsh vol-create-as \
+            "${volpool:?}" \
+            "${volname:?}" \
+            "${volsize:?}" \
+            --allocation 0 \
+            --format 'qcow2' \
+            --backing-vol "${volback:?}" \
+            --backing-vol-format 'qcow2'
+
+        virsh vol-info --pool "${volpool:?}" "${volname:?}"
+        volpath=$(virsh vol-path --pool "${volpool:?}" "${volname:?}")
+
+        #
+        # Create a new VM definition.
+        sed '
+            s|<name>.*</name>|<name>'"${vmname:?}"'</name>|
+            s|<uuid>.*</uuid>|<uuid>'"$(uuidgen)"'</uuid>|
+            s|<memory unit='\''.*'\''>.*</memory>|<memory unit='\'''"${memunit:?}"''\''>'"${memsize:?}"'</memory>|
+            s|<source file='\''.*'\''/>|<source file='\'''"${volpath:?}"''\''/>|
+            s|<mac address='\''.*'\''/>|<mac address='\'''"$(dhcpmac ${vmname:?})"''\''/>|
+            ' ${HOME:?}/kvm/simple-vm.xml > "${HOME:?}/kvm/${vmname:?}.xml"
+
+        #
+        # Create a new VM instance
+        virsh define "${HOME:?}/kvm/${vmname:?}.xml"
+        virsh start  "${vmname:?}"
+
+    done
+    
+# ------------------------------------------
+# Update our local SSH fingerprint
+#[user@desktop]
+
+    vmlist=(xi pi rho tau)
+    for vmname in ${vmlist[@]:?}
+    do
+
+        fqname=${vmname:?}.virtual.metagrid.co.uk
+
+        ipv4=$(host -t A    "${fqname:?}" | sed -n 's/\([^[:space:]]*\) has address \([^[:space:]]*\)/\2/p')
+        ipv6=$(host -t AAAA "${fqname:?}" | sed -n 's/\([^[:space:]]*\) has IPv6 address \([^[:space:]]*\)/\2/p')
+
+        ssh-keygen -R "${fqname:?}" 2> /dev/null
+        ssh-keygen -R "${ipv4:?}"   2> /dev/null
+        ssh-keygen -R "${ipv6:?}"   2> /dev/null
+
+        ssh-keyscan   "${fqname:?}" >> ~/.ssh/known_hosts
+        ssh-keyscan   "${ipv4:?}"   >> ~/.ssh/known_hosts
+        ssh-keyscan   "${ipv6:?}"   >> ~/.ssh/known_hosts
+
+    done
+
+# ------------------------------------------
+# Login and set the host name.
+# TODO - Fix Ubuntu hostname 
+#[user@desktop]
+
+    for vmname in ${vmlist[@]:?}
+    do
+
+        fqname=${vmname:?}.virtual.metagrid.co.uk
+        ssh root@${fqname:?} "hostname ${vmname:?}"
+
+    done
+
+# ----------------------------------------------------------
+# Install core tools.
+# TODO - Install these in the vm image.
+#[user@desktop]
+
+    for vmname in ${vmlist[@]:?}
+    do
+
+        fqname=${vmname:?}.virtual.metagrid.co.uk
+        ssh root@${fqname:?} << 'EOF'
+
+            apt-get update
+
+            apt-get -y -q install htop
+
+            apt-get -y -q install gzip
+
+            apt-get -y -q install unzip
+
+            apt-get -y -q install pwgen
+
+            #
+            # Install Java 1.7
+            apt-get -y install openjdk-7-jre
+            apt-get -y install openjdk-7-jdk
+
+            #
+            # Install Mercurial 
+            apt-get -y install mercurial
+
+            #
+            # Install Maven
+            apt-get -y install maven
+
+            #
+            # Install Perl and JSON tools
+            apt-get -y install perl
+            apt-get -y install libjson-perl
+
+EOF
+
+    done
+
+

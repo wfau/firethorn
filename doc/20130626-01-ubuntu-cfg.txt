@@ -1,0 +1,233 @@
+#
+#
+#
+#
+#
+
+# ------------------------------------------------------------
+# Install our init-user script.
+#[user@desktop]
+
+    for vmname in ${vmlist[@]:?}
+    do
+
+        ssh root@${vmname:?} << 'EOF'
+
+if [ ! -e "${HOME}/bin" ]
+then
+    mkdir "${HOME}/bin"
+fi
+
+cat > "${HOME}/bin/init-user.sh" << 'EOX'
+#!/bin/bash
+#
+
+username=${1:?}
+useradd --create-home --shell /bin/bash --groups users "${username:?}"
+userhome=$(getent passwd "${username:?}" | cut -d: -f6)
+
+if [ ! -e "${userhome:?}/.ssh" ]
+then
+    mkdir "${userhome:?}/.ssh"
+fi
+
+pushd "${userhome:?}/.ssh"
+
+    if [ ! -e dmr.roe.ac.uk.pub ]
+    then    
+        wget http://data.metagrid.co.uk/sshkeys/dmr.roe.ac.uk.pub
+        cat dmr.roe.ac.uk.pub >> authorized_keys
+    fi
+
+    if [ ! -e stelios.roe.ac.uk.pub ]
+    then    
+        wget http://data.metagrid.co.uk/sshkeys/stv.roe.ac.uk.pub
+        cat stv.roe.ac.uk.pub >> authorized_keys
+    fi
+
+    if [ ! -e ktn.roe.ac.uk.pub ]
+    then    
+        wget http://data.metagrid.co.uk/sshkeys/ktn.roe.ac.uk.pub
+        cat ktn.roe.ac.uk.pub >> authorized_keys
+    fi
+
+popd
+
+chown -R "${username:?}" "${userhome:?}/.ssh"
+chgrp -R "${username:?}" "${userhome:?}/.ssh"
+chmod g=,o=,u=rwx "${userhome:?}/.ssh"
+
+EOX
+
+chmod u+x "${HOME}/bin/init-user.sh"
+
+EOF
+    done
+
+# ------------------------------------------------------------
+# Create our test users.
+#[user@desktop]
+
+    cat > "${HOME:?}/test-users.txt" << EOF
+
+hsqluser=$(pwgen 16 1)
+hsqlhost=pi.virtual.metagrid.co.uk
+
+fireuser=$(pwgen 16 1)
+firehost=rho.virtual.metagrid.co.uk
+
+ogsauser=$(pwgen 16 1)
+ogsahost=tau.virtual.metagrid.co.uk
+
+testuser=$(pwgen 16 1)
+testhost=xi.virtual.metagrid.co.uk
+
+EOF
+
+    source "${HOME:?}/test-users.txt"
+
+    ssh "root@${hsqlhost:?}" "\${HOME}/bin/init-user.sh '${hsqluser:?}'"
+    ssh "root@${firehost:?}" "\${HOME}/bin/init-user.sh '${fireuser:?}'"
+    ssh "root@${ogsahost:?}" "\${HOME}/bin/init-user.sh '${ogsauser:?}'"
+    ssh "root@${testhost:?}" "\${HOME}/bin/init-user.sh '${testuser:?}'"
+
+
+    cat > "${HOME:?}/test-logins.txt" << EOF
+${hsqluser:?}@${hsqlhost:?}
+${fireuser:?}@${firehost:?}
+${ogsauser:?}@${ogsahost:?}
+${testuser:?}@${testhost:?}
+EOF
+
+# ------------------------------------------------------------
+# Install a clone of the source code. 
+#[user@desktop]
+
+    for testlogin in $(cat ${HOME:?}/test-logins.txt)
+    do
+
+        ssh "${testlogin:?}" << 'EOF'
+
+cat >  "${HOME:?}/firethorn.settings" << 'EOX'
+FIRETHORN_BASE=${FIRETHORN_BASE:-${HOME}/firethorn}
+FIRETHORN_CODE=${FIRETHORN_CODE:-${FIRETHORN_BASE:?}/clone}
+
+export MAVEN_OPTS=-Xmx128m
+EOX
+
+        source "${HOME:?}/firethorn.settings"
+
+        codepath="$(dirname  ${FIRETHORN_CODE:?})"
+        codename="$(basename ${FIRETHORN_CODE:?})"
+
+        if [ ! -e "${codepath:?}" ]
+        then
+            mkdir "${codepath:?}"
+        fi
+
+        #
+        # External machines.
+        #hgrepo=http://wfau.metagrid.co.uk/code/firethorn/
+
+        #
+        # Internal machines.
+        hghost=threonine.metagrid.co.uk
+        hguser=Zarquan
+        hgpath=/var/local/projects/edinburgh/wfau/firethorn/devel
+        hgrepo=ssh://${hguser:?}@${hghost:?}/${hgpath:?}
+        ssh-keyscan ${hghost:?} >> ~/.ssh/known_hosts
+
+        pushd "${codepath:?}"
+            if [ ! -e "${codename:?}" ]
+            then
+                 hg clone "${hgrepo:?}" "${codename:?}"
+            else
+                pushd "${codename:?}"
+                    hg pull
+                    hg update
+                popd
+            fi
+        popd
+
+EOF
+    done
+
+# -----------------------------------------------------
+# Create our firethorn properties.
+#[user@desktop]
+
+    source "${HOME:?}/test-users.txt"
+
+    #
+    # Initial template.
+    cat > "${HOME:?}/test-props.txt" << EOF
+
+firethon.webapp.endpoint=http://${firehost:?}:8080/firethorn
+
+firethon.ogsadai.dqp=testdqp
+firethon.ogsadai.store=userdata
+firethon.ogsadai.endpoint=http://${ogsahost:?}:8081/albert/services
+
+firethorn.meta.url=jdbc:hsqldb:hsql://${hsqlhost:?}/metadata
+firethorn.meta.driver=org.hsqldb.jdbc.JDBCDriver
+firethorn.meta.type=hsqldb
+firethorn.meta.user=sa
+firethorn.meta.pass=
+firethorn.meta.c3po.max.size=10
+firethorn.meta.c3po.min.size=1
+firethorn.meta.c3po.max.idle=1800
+
+firethorn.user.url=jdbc:hsqldb:hsql://${hsqlhost:?}/userdata
+firethorn.user.driver=org.hsqldb.jdbc.JDBCDriver
+firethorn.user.type=hsqldb
+firethorn.user.user=sa
+firethorn.user.pass=
+firethorn.user.c3po.max.size=10
+firethorn.user.c3po.min.size=1
+firethorn.user.c3po.max.idle=1800
+
+firethorn.twomass.url=jdbc:jtds:sqlserver://${hsqlhost:?}:1433/TWOMASS
+firethorn.twomass.type=mssql
+firethorn.twomass.user=xxxx
+firethorn.twomass.pass=xxxx
+firethorn.twomass.driver=net.sourceforge.jtds.jdbc.Driver
+
+firethorn.twoxmm.url=jdbc:jtds:sqlserver://${hsqlhost:?}:1433/TWOXMM
+firethorn.twoxmm.type=mssql
+firethorn.twoxmm.user=xxxx
+firethorn.twoxmm.pass=xxxx
+firethorn.twoxmm.driver=net.sourceforge.jtds.jdbc.Driver
+
+firethorn.ukidss.url=jdbc:jtds:sqlserver://${hsqlhost:?}:1433/UKIDSSDR5PLUS
+firethorn.ukidss.type=mssql
+firethorn.ukidss.user=xxxx
+firethorn.ukidss.pass=xxxx
+firethorn.ukidss.driver=net.sourceforge.jtds.jdbc.Driver
+
+firethorn.wfau.url=jdbc:jtds:sqlserver://${hsqlhost:?}:1433/WFAU
+firethorn.wfau.type=mssql
+firethorn.wfau.user=xxxx
+firethorn.wfau.pass=xxxx
+firethorn.wfau.driver=net.sourceforge.jtds.jdbc.Driver
+
+firethorn.atlas.url=jdbc:jtds:sqlserver://${hsqlhost:?}:1433/ATLASv20130304
+firethorn.atlas.type=mssql
+firethorn.atlas.user=xxxx
+firethorn.atlas.pass=xxxx
+firethorn.atlas.driver=net.sourceforge.jtds.jdbc.Driver
+
+EOF
+
+    # ****
+    # Fill in the details manually
+    # ****
+    vi "${HOME:?}/test-props.txt"
+
+    #
+    # Transfer copies to the test VMs
+    for testlogin in $(cat ${HOME:?}/test-logins.txt)
+    do
+        scp "${HOME:?}/test-props.txt" "${testlogin:?}:firethorn.properties"
+    done
+
+

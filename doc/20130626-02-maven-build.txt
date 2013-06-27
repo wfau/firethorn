@@ -1,0 +1,136 @@
+#
+#
+#
+#
+#
+
+# -----------------------------------------------------
+# Run the maven-build steps
+#[user@desktop]
+
+    # TTY #1 ------------------------------------------------------------
+    source "${HOME:?}/test-users.txt"
+    ssh  "${hsqluser:?}@${hsqlhost:?}"
+
+        username=xxxx
+        hostname=fenrir.roe.ac.uk
+        
+        ssh-keyscan ${hostname:?} >> ~/.ssh/known_hosts
+        ssh -L '*:1433:ramses5:1433' "${username:?}@${hostname:?}"
+
+    # TTY #2,3 -----------------------------------------------------------
+    source "${HOME:?}/test-users.txt"
+    ssh "${hsqluser:?}@${hsqlhost:?}"
+
+        source ${HOME:?}/firethorn.settings
+        pushd "${FIRETHORN_CODE:?}"
+
+            mvn -P depends install
+
+            pushd 'firethorn-hsqldb'
+
+                export MAVEN_OPTS=-Xmx128m
+                mvn clean exec:java
+
+    # TTY #4,5,6 ----------------------------------------------------------
+    source "${HOME:?}/test-users.txt"
+    ssh "${fireuser:?}@${firehost:?}"
+
+        source ${HOME:?}/firethorn.settings
+        pushd "${FIRETHORN_CODE:?}"
+
+            mvn -P depends  install
+            mvn -P database install
+            mvn install 
+
+            pushd 'firethorn-webapp'
+
+                export MAVEN_OPTS=-Xmx128m
+                mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+
+    # TTY #7 ------------------------------------------------------------
+    source "${HOME:?}/test-users.txt"
+    ssh "${ogsauser:?}@${ogsahost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+
+            mvn -P depends install
+            mvn install 
+
+            pushd 'firethorn-ogsadai/webapp'
+
+                mvn compile war:war
+
+                source src/test/bin/jdbc-functions.sh
+
+                jdbcconfig twomass  firethorn.twomass "${HOME:?}/firethorn.properties"
+                jdbcconfig ukidss   firethorn.ukidss  "${HOME:?}/firethorn.properties"
+                jdbcconfig atlas    firethorn.atlas   "${HOME:?}/firethorn.properties"
+                jdbcconfig wfau     firethorn.wfau    "${HOME:?}/firethorn.properties"
+                jdbcconfig userdata firethorn.user    "${HOME:?}/firethorn.properties"
+
+                export MAVEN_OPTS=-Xmx128m
+                mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
+        
+
+    # TTY #8 ------------------------------------------------------------
+    source "${HOME:?}/test-users.txt"
+    ssh "${ogsauser:?}@${ogsahost:?}"
+
+        source ${HOME:?}/firethorn.settings
+        pushd "${FIRETHORN_CODE:?}"
+            pushd 'firethorn-ogsadai/activity/client'
+
+                mvn -D skipTests=false -D test=SingleQueryTestCase test 
+
+            popd
+        popd
+
+# -----------------------------------------------------
+# Run the atlas-example tests.
+#[user@test-vm] 
+
+    # TTY #9 ------------------------------------------------------------
+    source "${HOME:?}/test-users.txt"
+    ssh "${testuser:?}@${testhost:?}"
+
+        source ${HOME:?}/firethorn.settings
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/003
+
+        pushd $(mktemp --directory)
+
+            source "${FIRETHORN_TEST:?}/00-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/01-init-user.sh"
+            source "${FIRETHORN_TEST:?}/02-00-create-jdbc-space.sh" 'spring:RoeATLAS' '*' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/03-00-create-adql-space.sh"
+
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'TWOXMM.dbo'         'twoxmm'
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'TWOMASS.dbo'        'twomass'
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'UKIDSSDR5PLUS.dbo'  'ukidssdr5'
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'ATLASv20130304.dbo' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/04-00-create-query-space.sh"
+            source "${FIRETHORN_TEST:?}/04-01-create-query-schema.sh" 'query'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'atlas'   'atlas'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'twomass' 'twomass'
+
+            source "${FIRETHORN_TEST:?}/04-01-create-query-schema.sh" 'ukidss'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsPointSource'        'ukidss' 'gcsPointSource'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsSourceXtwomass_psc' 'ukidss' 'gcsSourceXtwomass_psc'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'lasSource'             'ukidss' 'lasSource' 
+            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'lasSourceXDR7PhotoObj' 'ukidss' 'lasSourceXDR7PhotoObj'
+
+
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-000.adql"
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-001.adql"
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-002.adql"
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-003.adql"
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-004.adql"
+
+        popd
+
