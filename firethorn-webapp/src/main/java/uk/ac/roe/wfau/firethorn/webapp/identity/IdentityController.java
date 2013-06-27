@@ -109,6 +109,17 @@ extends AbstractController
                 return null;
                 }
             }
+
+        public String getSpace()
+            {
+            if (entity().space() != null)
+                {
+                return entity().space().link();
+                }
+            else {
+                return null ;
+                }
+            }
         }
     
     /**

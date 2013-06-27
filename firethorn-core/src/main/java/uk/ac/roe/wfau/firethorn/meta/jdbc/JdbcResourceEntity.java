@@ -207,39 +207,40 @@ public class JdbcResourceEntity
         public static final String DEFAULT_USERDATA_OGSA_ID = "userdata" ;
 
         /**
-         * Select the default 'userdata' Resource (based on ogsaid).
+         * The default 'userdate' JDBC URI.
          * @todo Make this a configurable property.
+         * 
+         */
+        public static final String DEFAULT_USERDATA_URI = "spring:FireThornUserData" ;
+
+        /**
+         * Select (or create) the default 'userdata' Resource (based on ogsaid).
+         * @todo Make the default properties configurable.
          *
          */
         @Override
-        @SelectEntityMethod
+        @CreateEntityMethod
         public JdbcResource userdata()
             {
-            try {
-                JdbcResource userdata = ogsaid(
-                    DEFAULT_USERDATA_OGSA_ID
-                    );
-//TODO Make this configurable
-                if (userdata == null)
-                    {
-                    userdata = create(
-                        DEFAULT_USERDATA_OGSA_ID,
-                        DEFAULT_USERDATA_OGSA_ID,
-                        "spring:FireThornUserData"
-                        );
-                    }
-                return userdata ;
-                }
-            catch (NotFoundException ouch)
+            log.debug("userdata()");
+            JdbcResource userdata = ogsaid(
+                DEFAULT_USERDATA_OGSA_ID
+                );
+            if (userdata == null)
                 {
-                log.error("Unable to find default userdata resource");
-                return null ;
+                log.debug("Userdata resource is null, creating a new one");
+                userdata = create(
+                    DEFAULT_USERDATA_OGSA_ID,
+                    DEFAULT_USERDATA_OGSA_ID,
+                    DEFAULT_USERDATA_URI
+                    );
                 }
+            log.debug("Userdata resource [{}][{}]", userdata.ident(), userdata.name());
+            return userdata ;
             }
 
         @SelectEntityMethod
         public JdbcResource ogsaid(final String ogsaid)
-        throws NotFoundException
             {
             return super.first(
                 super.query(
@@ -250,7 +251,6 @@ public class JdbcResourceEntity
                         )
                 );
             }
-
         }
 
     protected JdbcResourceEntity()

@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.community;
 
+import java.net.URI;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Controller;
@@ -98,6 +100,17 @@ extends AbstractController
                 CommunityIdentFactory.TYPE_URI,
                 entity
                 );
+            }
+
+        public String getSpace()
+            {
+            if (entity().space() != null)
+                {
+                return entity().space().link();
+                }
+            else {
+                return null ;
+                }
             }
         }
     

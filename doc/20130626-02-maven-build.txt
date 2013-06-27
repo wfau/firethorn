@@ -103,7 +103,10 @@
 
             source "${FIRETHORN_TEST:?}/00-init-rest.sh"
 
-            source "${FIRETHORN_TEST:?}/01-init-user.sh"
+identity=$(pwgen 16 1)
+community=$(date '+%A')
+
+            #source "${FIRETHORN_TEST:?}/01-init-user.sh"
             source "${FIRETHORN_TEST:?}/02-00-create-jdbc-space.sh" 'spring:RoeATLAS' '*' 'atlas'
 
             source "${FIRETHORN_TEST:?}/03-00-create-adql-space.sh"
