@@ -207,7 +207,6 @@ public class JdbcSchemaEntity
 // TODO Need the resource catalog name ?
 // NameFactory - Generate a unique name from JdbcResource and Identity. 
 // TODO Liquibase SchemaBuilder ?
-
             return builder().create(
                 this.create(
                     parent,
@@ -340,7 +339,7 @@ public class JdbcSchemaEntity
             {
             log.debug("JdbcSchema select(JdbcResource, String)");
             log.debug("  Resource [{}][{}]", parent.ident(), parent.name());
-            log.debug("  Schema  [{}]", name);
+            log.debug("  Schema   [{}]", name);
             return super.first(
                 super.query(
                     "JdbcSchema-select-parent.name"

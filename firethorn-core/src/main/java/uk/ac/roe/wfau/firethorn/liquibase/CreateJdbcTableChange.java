@@ -16,13 +16,16 @@ extends CreateTableChange
     public CreateJdbcTableChange(final JdbcTable table)
         {
         log.debug("CreateJdbcTableChange(JdbcTable)");
-        log.debug("  Table [{}][{}]", table.ident(), table.name());
+        log.debug("  Table [{}][{}][{}][{}]", table.ident(), table.schema().catalog(), table.schema().schema(), table.name());
         this.table = table ;
         this.setTableName(
             this.table.name()
             );
+        this.setCatalogName(
+            this.table.schema().catalog()
+            );
         this.setSchemaName(
-            this.table.schema().name()
+            this.table.schema().schema()
             );
         for (final JdbcColumn column : table.columns().select())
             {

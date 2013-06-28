@@ -36,4 +36,36 @@ firethorn.meta.c3po.max.idle=1800
     done
 
 
+#----------------------------------------
+
+    CREATE TABLE FirethornUser001.dbo.other (num integer);
+
+    SELECT * FROM FirethornMeta002.dbo.JdbcResourceEntity WHERE ident = 491520 ;
+    
+    UPDATE FirethornMeta002.dbo.JdbcResourceEntity SET jdbcogsaid = 'other' WHERE ident = 491520 ;
+
+    UPDATE FirethornMeta002.dbo.JdbcResourceEntity SET jdbccatalog = 'FirethornUser001' WHERE ident = 491520 ;
+    UPDATE FirethornMeta002.dbo.JdbcResourceEntity SET jdbcproduct = 'MSSQL' WHERE ident = 491520 ;
+
+    UPDATE FirethornMeta002.dbo.JdbcResourceEntity SET jdbccatalog = 'FirethornUser001' WHERE ident = 884736 ;
+    UPDATE FirethornMeta002.dbo.JdbcResourceEntity SET jdbcproduct = 'MSSQL' WHERE ident = 884736 ;
+
+    DELETE FROM FirethornMeta002.dbo.JdbcResourceEntity WHERE ident = 491520 ;
+    DELETE FROM FirethornMeta002.dbo.JdbcResourceEntity WHERE ident = 884736 ;
+
+
+
+    SELECT * FROM FirethornMeta002.dbo.JdbcSchemaEntity where name = 'dbo' and parent =983040 ; 
+
+    SELECT * FROM FirethornMeta002.dbo.BaseSchemaEntity parent = 983040 ; 
+
+
+
+    CREATE TABLE FirethornUser001.dbo.QUERY_1966080 (tmra FLOAT, atra FLOAT, difra FLOAT, tmdec FLOAT, atdec FLOAT, difdec FLOAT, dist FLOAT);
+    CREATE TABLE [FirethornUser001].[dbo].[QUERY_1966082] ([tmra] FLOAT, [atra] FLOAT, [difra] FLOAT, [tmdec] FLOAT, [atdec] FLOAT, [difdec] FLOAT, [dist] FLOAT)
+ 
+    GRANT SELECT, INSERT, UPDATE, DELETE ON DATABASE::FirethornUser001 TO firethornuser; 
+    GRANT SELECT, INSERT, DELETE, UPDATE on SCHEMA::dbo TO firethornuser; 
+    GRANT SELECT, INSERT, DELETE, UPDATE on SCHEMA::dbo TO firethornuser; 
+
 

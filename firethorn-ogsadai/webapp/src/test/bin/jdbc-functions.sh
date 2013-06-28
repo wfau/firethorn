@@ -9,7 +9,7 @@
         local propertyname=${2?}
         local propertyfile=${3?}
 
-        local webappdir='target/firethorn-ogsadai-webapp-01.03-SNAPSHOT'
+        local webappdir='target/firethorn-ogsadai-webapp-01.04-SNAPSHOT'
 
         local databaseurl="$(sed -n 's|^'${propertyname?}'.url=\(.*\)|\1|p'  ${propertyfile?})"
         local databasetype="$(sed -n 's|^'${propertyname?}'.type=\(.*\)|\1|p' ${propertyfile?})"

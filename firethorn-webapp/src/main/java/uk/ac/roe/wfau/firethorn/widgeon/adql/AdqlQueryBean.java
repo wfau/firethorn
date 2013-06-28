@@ -65,12 +65,23 @@ implements NamedEntityBean<AdqlQuery>
 
     public String getSchema()
         {
-        return entity().schema().link();
+        if (entity().schema() != null)
+            {
+            return entity().schema().link();
+            }
+        return null ;
         }
 
     public String getWorkspace()
         {
-        return entity().schema().resource().link();
+        if (entity().schema() != null)
+            {
+            if (entity().schema().resource() != null)
+                {
+                return entity().schema().resource().link();
+                }
+            }
+        return null ;
         }
 
     public String getInput()
@@ -202,17 +213,35 @@ implements NamedEntityBean<AdqlQuery>
             @Override
             public AdqlQuery.Syntax.State getStatus()
                 {
-                return entity().syntax().state();
+                if (entity().syntax() != null)
+                    {
+                    return entity().syntax().state();
+                    }
+                else {
+                    return AdqlQuery.Syntax.State.UNKNOWN;
+                    }
                 }
             @Override
             public String getMessage()
                 {
-                return entity().syntax().message();
+                if (entity().syntax() != null)
+                    {
+                    return entity().syntax().message();
+                    }
+                else {
+                    return null ;
+                    }
                 }
             @Override
             public String getFriendly()
                 {
-                return entity().syntax().friendly();
+                if (entity().syntax() != null)
+                    {
+                    return entity().syntax().friendly();
+                    }
+                else {
+                    return null ;
+                    }
                 }
             };
         }
@@ -253,17 +282,31 @@ implements NamedEntityBean<AdqlQuery>
             @Override
             public String getAdql()
                 {
-                return entity().results().adql().link();
+                if (entity().results().adql() != null)
+                    {
+                    return entity().results().adql().link();
+                    }
+                else {
+                    return null ;
+                }
                 }
             @Override
             public String getJdbc()
                 {
-                return entity().results().jdbc().link();
+                if (entity().results().jdbc() != null)
+                    {
+                    return entity().results().jdbc().link();
+                    }
+                else {
+                    return null ;
+                    }
                 }
             @Override
             public String getVotable()
                 {
-                return entity().link().concat(AdqlQueryLinkFactory.VOTABLE_NAME);
+                return entity().link().concat(
+                    AdqlQueryLinkFactory.VOTABLE_NAME
+                    );
                 }
             };
         }
