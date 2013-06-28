@@ -20,12 +20,6 @@
         <property name="user"        value="${firethorn.meta.user}"/>
         <property name="password"    value="${firethorn.meta.pass}"/>
         <property name="driverClass" value="${firethorn.meta.driver}"/>
-        
-        <!--+
-            | Explicity set the dialect.
-            | https://hibernate.atlassian.net/browse/HHH-7933
-        <property name="dialect"     value="${firethorn.meta.dialect}"/>
-            +-->
 
         <!--+
             | C3P0 connection pool.

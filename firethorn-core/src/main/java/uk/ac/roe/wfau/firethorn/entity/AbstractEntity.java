@@ -140,17 +140,6 @@ implements Entity
         }
 
     /**
-     * Protected constructor, sets the owner and create date.
-     *
-    protected AbstractEntity(final Identity owner)
-        {
-        super();
-        this.owner = owner;
-        this.created = new DateTime();
-        }
-     */
-
-    /**
      * The Entity Identifier.
      * Note - unique=false because @Id already adds a unique primary key.
      * https://hibernate.onjira.com/browse/HHH-5376
@@ -165,11 +154,11 @@ implements Entity
         updatable = false
         )
     @GeneratedValue(
-        generator=DB_GEN_NAME
+        generator="ident-generator"
         )
     @GenericGenerator(
-        name=DB_GEN_NAME,
-        strategy=DB_GEN_METHOD
+        name="ident-generator",
+        strategy="org.hibernate.id.MultipleHiLoPerTableGenerator"
         )
     private Long ident ;
 
