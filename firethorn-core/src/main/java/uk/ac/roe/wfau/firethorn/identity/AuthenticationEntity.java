@@ -71,7 +71,7 @@ implements Authentication
      *
      */
     protected static final String DB_METHOD_COL    = "method"    ;
-    protected static final String DB_IDENTITY_COL  = "identity"  ;
+    protected static final String DB_IDENTITY_COL  = "actor"     ;
     protected static final String DB_OPERATION_COL = "operation" ;
 
     @Component

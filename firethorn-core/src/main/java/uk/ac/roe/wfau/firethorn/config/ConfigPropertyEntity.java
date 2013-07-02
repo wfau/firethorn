@@ -71,15 +71,15 @@ implements ConfigProperty
      * Our database table name.
      *
      */
-    public static final String DB_TABLE_NAME = "config_property" ;
+    public static final String DB_TABLE_NAME = "ConfigProperty" ;
 
     /*
      * Our database mapping values.
      *
      */
-    public static final String DB_KEY_COL   = "key"   ;
-    public static final String DB_TYPE_COL  = "type"  ;
-    public static final String DB_VALUE_COL = "value" ;
+    public static final String DB_KEY_COL   = "propkey" ;
+    public static final String DB_TYPE_COL  = "type"    ;
+    public static final String DB_VALUE_COL = "value"   ;
 
     /**
      * Our Entity Factory implementation.

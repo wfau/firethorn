@@ -20,6 +20,7 @@
         <property name="user"        value="${firethorn.meta.user}"/>
         <property name="password"    value="${firethorn.meta.pass}"/>
         <property name="driverClass" value="${firethorn.meta.driver}"/>
+
         <!--+
             | C3P0 connection pool.
             | http://static.springsource.org/spring/docs/3.0.0.RC3/reference/html/ch12s03.html

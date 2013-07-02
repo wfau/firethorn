@@ -62,9 +62,6 @@ implements Entity
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_GEN_NAME    = "entity-ident" ;
-    protected static final String DB_GEN_METHOD  = "identity" ;
-
     protected static final String DB_IDENT_COL   = "ident" ;
     protected static final String DB_OWNER_COL   = "owner" ;
 
@@ -140,21 +137,11 @@ implements Entity
         }
 
     /**
-     * Protected constructor, sets the owner and create date.
-     *
-    protected AbstractEntity(final Identity owner)
-        {
-        super();
-        this.owner = owner;
-        this.created = new DateTime();
-        }
-     */
-
-    /**
      * The Entity Identifier.
      * Note - unique=false because @Id already adds a unique primary key.
      * https://hibernate.onjira.com/browse/HHH-5376
      * http://sourceforge.net/projects/hsqldb/forums/forum/73674/topic/4537620
+     *  strategy="org.hibernate.id.MultipleHiLoPerTableGenerator"
      *
      */
     @Id
@@ -165,11 +152,11 @@ implements Entity
         updatable = false
         )
     @GeneratedValue(
-        generator=DB_GEN_NAME
+        generator="ident-generator"
         )
     @GenericGenerator(
-        name=DB_GEN_NAME,
-        strategy=DB_GEN_METHOD
+        name="ident-generator",
+        strategy="hilo"
         )
     private Long ident ;
 

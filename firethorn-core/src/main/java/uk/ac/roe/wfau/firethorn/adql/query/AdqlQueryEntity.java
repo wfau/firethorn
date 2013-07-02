@@ -72,6 +72,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineResult;
@@ -1112,11 +1113,35 @@ implements AdqlQuery, AdqlParserQuery
 //
 // TODO Create a new schema for this user.
 // Requires CreateSchema.                
+
+                log.debug(" JdbcResource [{}][{}]", userdata.ident(), userdata.ogsaid());
+
+                String xxx = userdata.connection().type().defschema();
+                log.debug(" Default      [{}]", xxx);
+
+                JdbcSchema yyy = userdata.schemas().select(
+                    "FirethornUser001",
+                    xxx
+                    );
+                if (yyy != null)
+                    {
+                    log.debug(" JdbcSchema   [{}][{}]", yyy.ident(), yyy.name());
+                    }
+                else {
+                    log.debug(" Can't find default schema [{}]", xxx);
+                    }
+
+                identity.space(yyy);
+                log.debug(" JdbcSchema   [{}]", identity.space());
+/*
+ *                 
                 identity.space(
                     userdata.schemas().select(
                         userdata.connection().type().defschema()
                         )
                     );
+ *
+ */
                 }
             }
         //
@@ -1133,7 +1158,7 @@ implements AdqlQuery, AdqlParserQuery
             }
 // no-owner fallback.
         else {
-            log.error("-- NO OWNER");
+            log.error("-- NO USER SPACE");
             // Config exception. 
             }
 //TODO

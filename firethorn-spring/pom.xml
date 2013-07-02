@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version>01.03-SNAPSHOT</version>
+        <version>01.04-SNAPSHOT</version>
     </parent>
 
     <artifactId>firethorn-spring</artifactId>
@@ -50,8 +50,9 @@
     <properties>
 
 		<!--org.spring.version>3.2.0.M1</org.spring.version-->
+        <!--org.hibernate.version>4.1.6.Final</org.hibernate.version-->
 		<org.spring.version>3.2.3.RELEASE</org.spring.version>
-        <org.hibernate.version>4.1.6.Final</org.hibernate.version>
+        <org.hibernate.version>4.2.0.CR1</org.hibernate.version>
 		<org.aspectj.version>1.7.3</org.aspectj.version>
 
     </properties>

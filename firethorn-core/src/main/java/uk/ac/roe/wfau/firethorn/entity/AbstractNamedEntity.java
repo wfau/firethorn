@@ -23,6 +23,9 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
+
+import org.hibernate.annotations.Type;
+
 import lombok.extern.slf4j.Slf4j;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
@@ -80,35 +83,6 @@ implements Entity, NamedEntity
         }
 
     /**
-     * Protected constructor, sets the owner, name and create date.
-     * @todo Better default for the name.
-     *
-    protected AbstractNamedEntity(final Identity owner)
-    throws NameFormatException
-        {
-        super(
-            owner
-            );
-        }
-     */
-
-    /**
-     * Protected constructor, sets the owner, name and create date.
-     * @todo Better default for the name.
-     *
-    protected AbstractNamedEntity(final Identity owner, final String name)
-    throws NameFormatException
-        {
-        super(
-    		owner
-    		);
-        this.name(
-            name
-            );
-        }
-     */
-
-    /**
      * The Entity name.
      *
      */
@@ -139,6 +113,9 @@ implements Entity, NamedEntity
      * The Entity description.
      *
      */
+    @Type(
+        type="org.hibernate.type.TextType"
+        )
     @Basic(
         fetch = FetchType.LAZY
         )

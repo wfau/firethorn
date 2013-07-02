@@ -20,7 +20,7 @@ EOF
 
 #
 # Launch remote desktop
-#[user@laptop]
+#[user@fenrir]
 
     rdesktop -ken-gb -g1024x768 -x l -u dave 192.168.137.35 &
 

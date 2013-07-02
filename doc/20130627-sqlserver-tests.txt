@@ -1,0 +1,71 @@
+
+    source "${HOME:?}/test-users.txt"
+    ssh  "${hsqluser:?}@${hsqlhost:?}"
+
+        ssh -v -L '*:1433:ramses5:1433' -L '*:1434:ramses9:1433' "${username:?}@${hostname:?}"
+
+    source "${HOME:?}/test-users.txt"
+    ssh "${fireuser:?}@${firehost:?}"
+
+        vi "${HOME:?}/firethorn.properties"
+
+#firethorn.meta.url=jdbc:jtds:sqlserver://pi.virtual.metagrid.co.uk:1434/FIRETHORN_META_001
+
+firethorn.meta.url=jdbc:jtds:sqlserver://pi.virtual.metagrid.co.uk:1434/FirethornMeta002
+firethorn.meta.driver=net.sourceforge.jtds.jdbc.Driver
+firethorn.meta.type=mssql
+firethorn.meta.user=xxxx
+firethorn.meta.pass=xxxx
+firethorn.meta.c3po.max.size=20
+firethorn.meta.c3po.min.size=5
+firethorn.meta.c3po.max.idle=1800
+
+    #
+    # Need to explicitly use SQLServer2005Dialect.
+    # https://hibernate.atlassian.net/browse/HHH-7933
+    # Or update to new version.
+
+
+    #
+    # Update the build version.
+    for pomfile in $(grep -rlc '<version>01.03-SNAPSHOT</version>' *)
+    do
+        sed -i '
+            s#<version>01.03-SNAPSHOT</version>#<version>01.04-SNAPSHOT</version>#
+            ' "${pomfile}"
+    done
+
+
+#----------------------------------------
+
+    CREATE TABLE FirethornUser001.dbo.other (num integer);
+
+    SELECT * FROM FirethornMeta002.dbo.JdbcResourceEntity WHERE ident = 491520 ;
+    
+    UPDATE FirethornMeta002.dbo.JdbcResourceEntity SET jdbcogsaid = 'other' WHERE ident = 491520 ;
+
+    UPDATE FirethornMeta002.dbo.JdbcResourceEntity SET jdbccatalog = 'FirethornUser001' WHERE ident = 491520 ;
+    UPDATE FirethornMeta002.dbo.JdbcResourceEntity SET jdbcproduct = 'MSSQL' WHERE ident = 491520 ;
+
+    UPDATE FirethornMeta002.dbo.JdbcResourceEntity SET jdbccatalog = 'FirethornUser001' WHERE ident = 884736 ;
+    UPDATE FirethornMeta002.dbo.JdbcResourceEntity SET jdbcproduct = 'MSSQL' WHERE ident = 884736 ;
+
+    DELETE FROM FirethornMeta002.dbo.JdbcResourceEntity WHERE ident = 491520 ;
+    DELETE FROM FirethornMeta002.dbo.JdbcResourceEntity WHERE ident = 884736 ;
+
+
+
+    SELECT * FROM FirethornMeta002.dbo.JdbcSchemaEntity where name = 'dbo' and parent =983040 ; 
+
+    SELECT * FROM FirethornMeta002.dbo.BaseSchemaEntity parent = 983040 ; 
+
+
+
+    CREATE TABLE FirethornUser001.dbo.QUERY_1966080 (tmra FLOAT, atra FLOAT, difra FLOAT, tmdec FLOAT, atdec FLOAT, difdec FLOAT, dist FLOAT);
+    CREATE TABLE [FirethornUser001].[dbo].[QUERY_1966082] ([tmra] FLOAT, [atra] FLOAT, [difra] FLOAT, [tmdec] FLOAT, [atdec] FLOAT, [difdec] FLOAT, [dist] FLOAT)
+ 
+    GRANT SELECT, INSERT, UPDATE, DELETE ON DATABASE::FirethornUser001 TO firethornuser; 
+    GRANT SELECT, INSERT, DELETE, UPDATE on SCHEMA::dbo TO firethornuser; 
+    GRANT SELECT, INSERT, DELETE, UPDATE on SCHEMA::dbo TO firethornuser; 
+
+

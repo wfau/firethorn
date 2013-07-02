@@ -1,0 +1,148 @@
+#----------------------------------------
+# Create a new database.
+# http://msdn.microsoft.com/en-us/library/aa258257%28v=sql.80%29.aspx
+
+#----------------------------------------
+# ssh to fenrir
+#[user@desktop]
+
+    ssh -X fenrir
+
+#
+# Launch remote desktop
+#[user@fenrir]
+
+    rdesktop -ken-gb -g1024x768 -x l -u dave 192.168.137.35 &
+
+#----------------------------------------
+# Copy/paste into 'SQLServer Management Studio'
+#
+
+#
+# Run the SQLServer 'PowerShell'
+PS C:\Users\dave>
+
+    SQLCMD.EXE -U dave
+    
+    /*
+     * Create our database.
+     */
+    USE master
+    CREATE DATABASE [FirethornUserdata007] ON  PRIMARY 
+        (
+        NAME = N'FirethornUserdata007',
+        FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL10.MSSQLSERVER\MSSQL\DATA\FirethornUserdata007.mdf',
+        SIZE = 3072KB ,
+        FILEGROWTH = 1024KB
+        )
+    LOG ON 
+        (
+        NAME = N'FirethornUserdata007_log',
+        FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL10.MSSQLSERVER\MSSQL\DATA\FirethornUserdata007_log.ldf',
+        SIZE = 4096KB,
+        FILEGROWTH = 10%
+        )
+    GO
+    
+    /*
+     * Configure the database.
+     */
+    ALTER DATABASE [FirethornUserdata007] SET ANSI_NULL_DEFAULT OFF
+    ALTER DATABASE [FirethornUserdata007] SET ANSI_NULLS OFF 
+    ALTER DATABASE [FirethornUserdata007] SET ANSI_PADDING OFF 
+    ALTER DATABASE [FirethornUserdata007] SET ANSI_WARNINGS OFF 
+    ALTER DATABASE [FirethornUserdata007] SET ARITHABORT OFF 
+    ALTER DATABASE [FirethornUserdata007] SET AUTO_CLOSE OFF 
+    ALTER DATABASE [FirethornUserdata007] SET AUTO_CREATE_STATISTICS ON 
+    ALTER DATABASE [FirethornUserdata007] SET AUTO_SHRINK OFF 
+    ALTER DATABASE [FirethornUserdata007] SET AUTO_UPDATE_STATISTICS ON 
+    ALTER DATABASE [FirethornUserdata007] SET CURSOR_CLOSE_ON_COMMIT OFF 
+    ALTER DATABASE [FirethornUserdata007] SET CURSOR_DEFAULT  GLOBAL 
+    ALTER DATABASE [FirethornUserdata007] SET CONCAT_NULL_YIELDS_NULL OFF 
+    ALTER DATABASE [FirethornUserdata007] SET NUMERIC_ROUNDABORT OFF 
+    ALTER DATABASE [FirethornUserdata007] SET QUOTED_IDENTIFIER OFF 
+    ALTER DATABASE [FirethornUserdata007] SET RECURSIVE_TRIGGERS OFF 
+    ALTER DATABASE [FirethornUserdata007] SET DISABLE_BROKER 
+    ALTER DATABASE [FirethornUserdata007] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+    ALTER DATABASE [FirethornUserdata007] SET DATE_CORRELATION_OPTIMIZATION OFF 
+    ALTER DATABASE [FirethornUserdata007] SET PARAMETERIZATION SIMPLE 
+    ALTER DATABASE [FirethornUserdata007] SET READ_WRITE 
+    ALTER DATABASE [FirethornUserdata007] SET RECOVERY FULL 
+    ALTER DATABASE [FirethornUserdata007] SET MULTI_USER 
+    ALTER DATABASE [FirethornUserdata007] SET PAGE_VERIFY CHECKSUM  
+    GO
+    
+    /*
+     * Not sure what this does .. or if we need it.
+     *
+    USE [FirethornUserdata007]
+    IF NOT EXISTS
+        (
+        SELECT
+            name
+        FROM
+            sys.filegroups
+        WHERE
+            is_default=1
+        AND
+            name = N'PRIMARY'
+        )
+    ALTER DATABASE [FirethornUserdata007] MODIFY FILEGROUP [PRIMARY] DEFAULT
+    GO
+     */
+
+    /*
+     * Create our login account.
+     *
+     */
+    CREATE LOGIN [FirethornUserdataLogin007] WITH PASSWORD = 'xxxx'
+    GO
+    
+    /*
+     * Create our user account.
+     *
+     */
+    USE [FirethornUserdata007]
+    CREATE USER [FirethornUserdataUser007] FOR LOGIN [FirethornUserdataLogin007]
+    GO
+
+    /*
+     * Create our schema.
+     *
+    USE [FirethornUserdata007]
+    CREATE SCHEMA [userdata9999] AUTHORIZATION [FirethornUserdataUser007]
+    GO
+     */
+
+    /*
+     * Grant the permissions we need.
+     *
+     */
+    USE [FirethornUserdata007]
+    GRANT CREATE TABLE ON DATABASE::[FirethornUserdata007] TO [FirethornUserdataUser007]
+    GRANT ALTER  ON SCHEMA::[dbo] TO [FirethornUserdataUser007]
+    GRANT INSERT ON SCHEMA::[dbo] TO [FirethornUserdataUser007]
+    GRANT SELECT ON SCHEMA::[dbo] TO [FirethornUserdataUser007]
+    GO
+    
+    #
+    # Try creating a table.
+    EXECUTE AS user = [FirethornUserdataUser007]
+        CREATE TABLE [FirethornUserdata007].[dbo].[table2](column1 int)
+    REVERT
+
+    #
+    # Try inserting some data.
+    EXECUTE AS user = 'FirethornUserdataUser007'
+        INSERT INTO [FirethornUserdata007].[dbo].[table2] (column1) VALUES (1);
+        INSERT INTO [FirethornUserdata007].[dbo].[table2] (column1) VALUES (2);
+        INSERT INTO [FirethornUserdata007].[dbo].[table2] (column1) VALUES (3);
+    REVERT
+
+    #
+    # Try selecting some data.
+    EXECUTE AS user = 'FirethornUserdataUser007'
+        SELECT * FROM [FirethornUserdata007].[dbo].[table2]
+    REVERT
+
+

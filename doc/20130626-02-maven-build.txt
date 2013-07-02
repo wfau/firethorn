@@ -18,6 +18,7 @@
         ssh-keyscan ${hostname:?} >> ~/.ssh/known_hosts
         ssh -L '*:1433:ramses5:1433' "${username:?}@${hostname:?}"
 
+
     # TTY #2,3 -----------------------------------------------------------
     source "${HOME:?}/test-users.txt"
     ssh "${hsqluser:?}@${hsqlhost:?}"
@@ -41,6 +42,8 @@
         source ${HOME:?}/firethorn.settings
         pushd "${FIRETHORN_CODE:?}"
 
+            hg pull ; hg update
+
             mvn -P depends  install
             mvn -P database install
             mvn install 
@@ -57,6 +60,8 @@
 
         source "${HOME:?}/firethorn.settings"
         pushd "${FIRETHORN_CODE:?}"
+
+            hg pull ; hg update
 
             mvn -P depends install
             mvn install 
@@ -105,8 +110,8 @@
 
             source "${FIRETHORN_TEST:?}/00-init-rest.sh"
 
-identity=$(pwgen 16 1)
-community=$(date '+%A')
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
 
             #source "${FIRETHORN_TEST:?}/01-init-user.sh"
             source "${FIRETHORN_TEST:?}/02-00-create-jdbc-space.sh" 'spring:RoeATLAS' '*' 'atlas'
