@@ -21,6 +21,6 @@
      *
      */
     USE master
-    DROP LOGIN [{{databaselogin}}]
+    DROP LOGIN [{databaselogin}]
     go
 

@@ -20,28 +20,22 @@
      * Try creating a table.
      *
      */
-    EXECUTE AS user = '{databaseuser}'
-        CREATE TABLE [{databasename}].[dbo].[test](col int)
-    REVERT
+    CREATE TABLE [{databasename}].[dbo].[test](col int)
     go
 
     /*
      * Try inserting some data.
      *
      */
-    EXECUTE AS user = '{databaseuser}'
-        INSERT INTO [{databasename}].[dbo].[test] (col) VALUES (1);
-        INSERT INTO [{databasename}].[dbo].[test] (col) VALUES (2);
-        INSERT INTO [{databasename}].[dbo].[test] (col) VALUES (3);
-    REVERT
+    INSERT INTO [{databasename}].[dbo].[test] (col) VALUES (1);
+    INSERT INTO [{databasename}].[dbo].[test] (col) VALUES (2);
+    INSERT INTO [{databasename}].[dbo].[test] (col) VALUES (3);
     go
 
     /*
      * Try selecting some data.
      *
      */
-    EXECUTE AS user = '{databaseuser}'
-        SELECT * FROM [{databasename}].[dbo].[test]
-    REVERT
+    SELECT * FROM [{databasename}].[dbo].[test]
     go
 

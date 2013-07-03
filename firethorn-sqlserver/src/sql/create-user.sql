@@ -21,7 +21,7 @@
      *
      */
     USE [{databasename}]
-    CREATE USER [{databaseuser}] FOR LOGIN [{{databaselogin}}]
+    CREATE USER [{databaseuser}] FOR LOGIN [{databaselogin}]
     go
 
     /*
