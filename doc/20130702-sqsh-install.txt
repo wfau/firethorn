@@ -148,18 +148,29 @@
     databaselogin=FirethornUserdataLogin009
     databasepass=xxxx
 
+    servername=master
     serverlogin=dave
     serverpass=davePW!
 
+
+sqlsed()
+    {
     sed '
         s|{databasename}|'"${databasename}"'|g
         s|{databasepath}|'"${databasepath}"'|g
         s|{databaseuser}|'"${databaseuser}"'|g
         s|{databasepass}|'"${databasepass}"'|g
         s|{databaselogin}|'"${databaselogin}"'|g
-        ' create-database.sql |
-    sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "master"
+        ' "${1:?}"
+    }
 
+    sqlsed 'create-database.sql' | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+    sqlsed 'create-login.sql'    | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+    sqlsed 'create-user.sql'     | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
 
+    sqlsed 'test-query.sql'      | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
 
+    sqlsed 'delete-user.sql'     | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+    sqlsed 'delete-login.sql'    | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+    sqlsed 'delete-database.sql' | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
 

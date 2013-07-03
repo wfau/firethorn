@@ -17,22 +17,31 @@
  */
 
     /*
-     * Create our user account.
+     * Try creating a table.
      *
      */
-    USE [{databasename}]
-    CREATE USER [{databaseuser}] FOR LOGIN [{{databaselogin}}]
+    EXECUTE AS user = '{databaseuser}'
+        CREATE TABLE [{databasename}].[dbo].[test](col int)
+    REVERT
     go
 
     /*
-     * Grant the permissions we need.
+     * Try inserting some data.
      *
      */
-    USE [{databasename}]
-    GRANT CREATE TABLE ON DATABASE::[{databasename}] TO [{databaseuser}]
-    GRANT ALTER  ON SCHEMA::[dbo] TO [{databaseuser}]
-    GRANT INSERT ON SCHEMA::[dbo] TO [{databaseuser}]
-    GRANT SELECT ON SCHEMA::[dbo] TO [{databaseuser}]
+    EXECUTE AS user = '{databaseuser}'
+        INSERT INTO [{databasename}].[dbo].[test] (col) VALUES (1);
+        INSERT INTO [{databasename}].[dbo].[test] (col) VALUES (2);
+        INSERT INTO [{databasename}].[dbo].[test] (col) VALUES (3);
+    REVERT
     go
-    
+
+    /*
+     * Try selecting some data.
+     *
+     */
+    EXECUTE AS user = '{databaseuser}'
+        SELECT * FROM [{databasename}].[dbo].[test]
+    REVERT
+    go
 
