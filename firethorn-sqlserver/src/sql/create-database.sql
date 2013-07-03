@@ -24,14 +24,14 @@
     CREATE DATABASE [{databasename}] ON  PRIMARY 
         (
         NAME = N'{databasename}',
-        FILENAME = N'{datapath}\{databasename}.mdf',
+        FILENAME = N'{databasepath}\{databasename}.mdf',
         SIZE = 3072KB ,
         FILEGROWTH = 1024KB
         )
     LOG ON 
         (
         NAME = N'{databasename}_log',
-        FILENAME = N'{datapath}\{databasename}_log.ldf',
+        FILENAME = N'{databasepath}\{databasename}_log.ldf',
         SIZE = 4096KB,
         FILEGROWTH = 10%
         )

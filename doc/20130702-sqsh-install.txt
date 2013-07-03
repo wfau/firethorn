@@ -143,19 +143,21 @@
 # Testing our create/delete scripts.
 
     databasename=FirethornUserdata009
+    databasepath='C:\Program Files\Microsoft SQL Server\MSSQL10.MSSQLSERVER\MSSQL\DATA'
     databaseuser=FirethornUserdataUser009
     databaselogin=FirethornUserdataLogin009
     databasepass=xxxx
 
-    serverlogin=xxxx
-    serverpass=xxxx
+    serverlogin=dave
+    serverpass=davePW!
 
     sed '
-        s/{databaseuser}/'${databaseuser}'/g
         s/{databasename}/'${databasename}'/g
-        s/{databaselogin}/'${databaselogin}'/g
+        s/{databasepath}/'${databasepath}'/g
+        s/{databaseuser}/'${databaseuser}'/g
         s/{databasepass}/'${databasepass}'/g
-        ' delete-database.sql |
+        s/{databaselogin}/'${databaselogin}'/g
+        ' create-database.sql |
     sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${databasename}"
 
 
