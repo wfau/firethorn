@@ -22,7 +22,7 @@
 # Run the SQLServer 'PowerShell'
 PS C:\Users\dave>
 
-    SQLCMD.EXE -U dave
+    sqlcmd -U dave
     
     /*
      * Create our database.

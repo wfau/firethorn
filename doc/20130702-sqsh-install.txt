@@ -1,0 +1,144 @@
+
+# ------------------------------------------------
+# Try installing sqsh on CentOS ..
+#
+#[root@desktop]
+
+    #
+    # Install the FreeTDS library.
+    yum -y install freetds
+    
+    #
+    # Install C compiler.
+    yum -y install gcc
+
+   
+#[root@desktop]
+
+    #
+    # Download and unpack gzip
+    mkdir /var/local/toolkits/sqsh
+    pushd /var/local/toolkits/sqsh
+
+        mkdir downloads
+        pushd downloads
+
+            wget http://sourceforge.net/projects/sqsh/files/sqsh/sqsh-2.2.0/sqsh-2.2.0.tgz
+
+        popd
+        
+        tar -xvzf sqsh-2.2.0.tgz
+        
+        ln -s sqsh-2.2.0 current
+
+#[user@desktop]
+
+    #
+    # Run "configure"
+    pushd /var/local/toolkits/sqsh
+
+        pushd current
+        
+            ./configure
+
+            configure: error: Unable to locate Sybase installation. Check your SYBASE environment variable setting.
+            
+
+    ** Tried to find a way roun this one.
+    ** Installing even a limited version of Sybase is just too much hassle. 
+    ** Couldn't find an alternative ..
+    ** Too long didn't read ...
+
+#
+# Possible clues ..
+# http://www.bamccaig.com/2010/07/sqshell-building-and-installing-sqsh-in.html
+
+
+
+# ------------------------------------------------
+# Available as an installable package in Ubuntu.
+#
+#[root@rho]
+
+    apt-get install  sqsh
+    
+#[user@rho]
+    
+    username=xxxx
+    hostname=fenrir.roe.ac.uk
+    
+    ssh-keyscan ${hostname:?} >> ~/.ssh/known_hosts
+    ssh -L '*:1435:ramses5:1433' -L '*:1439:ramses9:1433' "${username:?}@${hostname:?}"
+
+#
+# Use local config.
+#[user@rho]
+
+    cat > ${HOME}/freetds.conf << EOF
+    [ramses9]
+        host = localhost
+        port = 1439
+    EOF
+
+    sqsh -I ${HOME}/freetds.conf -S ramses9 -U dave
+
+#
+# Bug means it only reads global config.
+# http://sourceforge.net/p/sqsh/discussion/365924/thread/e56075e9
+#[user@rho]
+
+    cat >> /etc/freetds/freetds.conf << EOF
+    [ramses9]
+        host = localhost
+        port = 1439
+
+    EOF
+
+    sqsh -S ramses9 -U dave
+        quit
+
+
+    databasename=FirethornUserdata008
+    databaseuser=FirethornUserdataUser008
+    sqlloginname=FirethornUserdataLogin008
+    sqlloginpass=xxxx
+
+    #
+    # Execute a query from the command line
+    sqsh -S ramses9 -U "${sqlloginname}" -P "${sqlloginpass}" -D "${databasename}" -C "SELECT * FROM [${databasename}].[dbo].[table2]"
+
+    #
+    # Execute a query from the an environment variable.
+    sqlquery="SELECT * FROM [${databasename}].[dbo].[table2]"
+    sqsh -S ramses9 -U "${sqlloginname}" -P "${sqlloginpass}" -D "${databasename}" -C "${sqlquery}"
+
+    #
+    # Read input from a heredoc.
+    sqsh -S ramses9 -U "${sqlloginname}" -P "${sqlloginpass}" -D "${databasename}" << EOF
+        SELECT * FROM [${databasename}].[dbo].[table2]
+        go
+    EOF
+    
+    #
+    # Read input from a text file.
+    cat > "${HOME}/001.sql" << EOF
+        SELECT * FROM [${databasename}].[dbo].[table2]
+        go
+    EOF
+    sqsh -S ramses9 -U "${sqlloginname}" -P "${sqlloginpass}" -D "${databasename}" -i "${HOME}/001.sql"
+
+    #
+    # Pipe input file through sed
+    cat > ${HOME}/002.sql << EOF
+        SELECT * FROM [{databasename}].[dbo].[table2]
+        go
+    EOF
+    sed '
+        s/{databasename}/'${databasename}'/g
+        ' ${HOME}/002.sql |
+    sqsh -S ramses9 -U "${sqlloginname}" -P "${sqlloginpass}" -D "${databasename}"
+    
+    
+
+
+

@@ -1,0 +1,306 @@
+# ------------------------
+# Experiments remote desktop 
+# 
+
+#[user@desktop]
+
+    ssh -X fenrir
+
+#[user@fenrir]
+
+    rdesktop -ken-gb -g1024x768 -x l -u dave 192.168.137.35 &
+
+
+# ------------------------
+# Experiments with PowerShellServer
+# http://www.powershellserver.com/about/
+
+
+    PowerShellServer installed on ramses9.
+    Host based auth.
+
+[use@desktop]
+
+    vi ${HOME}/.ssh/config
+
+        Host ramses-server
+            User <username>
+            HostName <hostname>
+            IdentityFile ~/.ssh/<privatekey>
+            ProxyCommand ssh -q <gateway> nc -q0 %h %p
+            Protocol 2
+            Compression yes
+            PasswordAuthentication no
+
+[use@desktop]
+
+    ssh alias
+
+        PowerShell Server: SSH-Enabled PowerShell Access for Windows (nsoftware.com)
+        PS C:\ProgramData> 
+
+#
+# Run the SQLServer 'PowerShell'
+PS C:\Users\dave>
+
+    sqlcmd -U dave
+
+        .... HANGS ....
+
+
+# ------------------------
+# Experiments with sqsh
+# http://www.sqsh.org/
+#
+[use@desktop]
+
+    ssh fenrir
+
+        sqsh -S ramses9 -U dave
+
+            sqsh-2.1.7 Copyright (C) 1995-2001 Scott C. Gray
+            Portions Copyright (C) 2004-2010 Michael Peppler
+            This is free software with ABSOLUTELY NO WARRANTY
+            For more information type '\warranty'
+            Password: 
+            1> 
+            2> 
+            .....
+            1> quit
+
+# ------------------------
+# Experiments with input from sql file
+# http://www.sqsh.org/
+#
+[use@desktop]
+
+    ssh fenrir
+
+cat > test.sql << EOF
+
+    SELECT * FROM [FirethornUserdata008].[dbo].[table2]
+    go
+
+EOF
+
+    sqsh -i test.sql -S ramses9 -U FirethornUserdataLogin008
+            
+# ------------------------
+# Create our metadata database.
+
+    /*
+     * Create our database.
+     */
+    USE master
+    CREATE DATABASE [FirethornMetadata008] ON  PRIMARY 
+        (
+        NAME = N'FirethornMetadata008',
+        FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL10.MSSQLSERVER\MSSQL\DATA\FirethornMetadata008.mdf',
+        SIZE = 3072KB ,
+        FILEGROWTH = 1024KB
+        )
+    LOG ON 
+        (
+        NAME = N'FirethornMetadata008_log',
+        FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL10.MSSQLSERVER\MSSQL\DATA\FirethornMetadata008_log.ldf',
+        SIZE = 4096KB,
+        FILEGROWTH = 10%
+        )
+    go
+    
+    /*
+     * Configure the database.
+     */
+    ALTER DATABASE [FirethornMetadata008] SET ANSI_NULL_DEFAULT OFF
+    ALTER DATABASE [FirethornMetadata008] SET ANSI_NULLS OFF 
+    ALTER DATABASE [FirethornMetadata008] SET ANSI_PADDING OFF 
+    ALTER DATABASE [FirethornMetadata008] SET ANSI_WARNINGS OFF 
+    ALTER DATABASE [FirethornMetadata008] SET ARITHABORT OFF 
+    ALTER DATABASE [FirethornMetadata008] SET AUTO_CLOSE OFF 
+    ALTER DATABASE [FirethornMetadata008] SET AUTO_CREATE_STATISTICS ON 
+    ALTER DATABASE [FirethornMetadata008] SET AUTO_SHRINK OFF 
+    ALTER DATABASE [FirethornMetadata008] SET AUTO_UPDATE_STATISTICS ON 
+    ALTER DATABASE [FirethornMetadata008] SET CURSOR_CLOSE_ON_COMMIT OFF 
+    ALTER DATABASE [FirethornMetadata008] SET CURSOR_DEFAULT  GLOBAL 
+    ALTER DATABASE [FirethornMetadata008] SET CONCAT_NULL_YIELDS_NULL OFF 
+    ALTER DATABASE [FirethornMetadata008] SET NUMERIC_ROUNDABORT OFF 
+    ALTER DATABASE [FirethornMetadata008] SET QUOTED_IDENTIFIER OFF 
+    ALTER DATABASE [FirethornMetadata008] SET RECURSIVE_TRIGGERS OFF 
+    ALTER DATABASE [FirethornMetadata008] SET DISABLE_BROKER 
+    ALTER DATABASE [FirethornMetadata008] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+    ALTER DATABASE [FirethornMetadata008] SET DATE_CORRELATION_OPTIMIZATION OFF 
+    ALTER DATABASE [FirethornMetadata008] SET PARAMETERIZATION SIMPLE 
+    ALTER DATABASE [FirethornMetadata008] SET READ_WRITE 
+    ALTER DATABASE [FirethornMetadata008] SET RECOVERY FULL 
+    ALTER DATABASE [FirethornMetadata008] SET MULTI_USER 
+    ALTER DATABASE [FirethornMetadata008] SET PAGE_VERIFY CHECKSUM  
+    go
+    
+    /*
+     * Create our login account.
+     *
+     */
+    CREATE LOGIN [FirethornMetadataLogin008] WITH PASSWORD = 'xxxx'
+    go
+    
+    /*
+     * Create our user account.
+     *
+     */
+    USE [FirethornMetadata008]
+    CREATE USER [FirethornMetadataUser008] FOR LOGIN [FirethornMetadataLogin008]
+    go
+
+    /*
+     * Grant the permissions we need.
+     *
+     */
+    USE [FirethornMetadata008]
+    GRANT CREATE TABLE ON DATABASE::[FirethornMetadata008] TO [FirethornMetadataUser008]
+    GRANT ALTER  ON SCHEMA::[dbo] TO [FirethornMetadataUser008]
+    GRANT INSERT ON SCHEMA::[dbo] TO [FirethornMetadataUser008]
+    GRANT SELECT ON SCHEMA::[dbo] TO [FirethornMetadataUser008]
+    go
+    
+    #
+    # Try creating a table.
+    EXECUTE AS user = 'FirethornMetadataUser008'
+        CREATE TABLE [FirethornMetadata008].[dbo].[table2](column1 int)
+    REVERT
+    go
+
+    /*
+     * Try inserting some data.
+     *
+     */
+    EXECUTE AS user = 'FirethornMetadataUser008'
+        INSERT INTO [FirethornMetadata008].[dbo].[table2] (column1) VALUES (1);
+        INSERT INTO [FirethornMetadata008].[dbo].[table2] (column1) VALUES (2);
+        INSERT INTO [FirethornMetadata008].[dbo].[table2] (column1) VALUES (3);
+    REVERT
+    go
+
+    /*
+     * Try selecting some data.
+     *
+     */
+    EXECUTE AS user = 'FirethornMetadataUser008'
+        SELECT * FROM [FirethornMetadata008].[dbo].[table2]
+    REVERT
+    go
+
+
+# ------------------------
+# Create our user data database.
+
+    /*
+     * Create our database.
+     */
+    USE master
+    CREATE DATABASE [FirethornUserdata008] ON  PRIMARY 
+        (
+        NAME = N'FirethornUserdata008',
+        FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL10.MSSQLSERVER\MSSQL\DATA\FirethornUserdata008.mdf',
+        SIZE = 3072KB ,
+        FILEGROWTH = 1024KB
+        )
+    LOG ON 
+        (
+        NAME = N'FirethornUserdata008_log',
+        FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL10.MSSQLSERVER\MSSQL\DATA\FirethornUserdata008_log.ldf',
+        SIZE = 4096KB,
+        FILEGROWTH = 10%
+        )
+    go
+    
+    /*
+     * Configure the database.
+     */
+    ALTER DATABASE [FirethornUserdata008] SET ANSI_NULL_DEFAULT OFF
+    ALTER DATABASE [FirethornUserdata008] SET ANSI_NULLS OFF 
+    ALTER DATABASE [FirethornUserdata008] SET ANSI_PADDING OFF 
+    ALTER DATABASE [FirethornUserdata008] SET ANSI_WARNINGS OFF 
+    ALTER DATABASE [FirethornUserdata008] SET ARITHABORT OFF 
+    ALTER DATABASE [FirethornUserdata008] SET AUTO_CLOSE OFF 
+    ALTER DATABASE [FirethornUserdata008] SET AUTO_CREATE_STATISTICS ON 
+    ALTER DATABASE [FirethornUserdata008] SET AUTO_SHRINK OFF 
+    ALTER DATABASE [FirethornUserdata008] SET AUTO_UPDATE_STATISTICS ON 
+    ALTER DATABASE [FirethornUserdata008] SET CURSOR_CLOSE_ON_COMMIT OFF 
+    ALTER DATABASE [FirethornUserdata008] SET CURSOR_DEFAULT  GLOBAL 
+    ALTER DATABASE [FirethornUserdata008] SET CONCAT_NULL_YIELDS_NULL OFF 
+    ALTER DATABASE [FirethornUserdata008] SET NUMERIC_ROUNDABORT OFF 
+    ALTER DATABASE [FirethornUserdata008] SET QUOTED_IDENTIFIER OFF 
+    ALTER DATABASE [FirethornUserdata008] SET RECURSIVE_TRIGGERS OFF 
+    ALTER DATABASE [FirethornUserdata008] SET DISABLE_BROKER 
+    ALTER DATABASE [FirethornUserdata008] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+    ALTER DATABASE [FirethornUserdata008] SET DATE_CORRELATION_OPTIMIZATION OFF 
+    ALTER DATABASE [FirethornUserdata008] SET PARAMETERIZATION SIMPLE 
+    ALTER DATABASE [FirethornUserdata008] SET READ_WRITE 
+    ALTER DATABASE [FirethornUserdata008] SET RECOVERY FULL 
+    ALTER DATABASE [FirethornUserdata008] SET MULTI_USER 
+    ALTER DATABASE [FirethornUserdata008] SET PAGE_VERIFY CHECKSUM  
+    go
+    
+    /*
+     * Create our login account.
+     *
+     */
+    CREATE LOGIN [FirethornUserdataLogin008] WITH PASSWORD = 'xxxx'
+    go
+    
+    /*
+     * Create our user account.
+     *
+     */
+    USE [FirethornUserdata008]
+    CREATE USER [FirethornUserdataUser008] FOR LOGIN [FirethornUserdataLogin008]
+    go
+
+    /*
+     * Create our schema.
+     *
+    USE [FirethornUserdata008]
+    CREATE SCHEMA [userdata9999] AUTHORIZATION [FirethornUserdataUser008]
+    go
+     */
+
+    /*
+     * Grant the permissions we need.
+     *
+     */
+    USE [FirethornUserdata008]
+    GRANT CREATE TABLE ON DATABASE::[FirethornUserdata008] TO [FirethornUserdataUser008]
+    GRANT ALTER  ON SCHEMA::[dbo] TO [FirethornUserdataUser008]
+    GRANT INSERT ON SCHEMA::[dbo] TO [FirethornUserdataUser008]
+    GRANT SELECT ON SCHEMA::[dbo] TO [FirethornUserdataUser008]
+    go
+    
+    #
+    # Try creating a table.
+    EXECUTE AS user = 'FirethornUserdataUser008'
+        CREATE TABLE [FirethornUserdata008].[dbo].[table2](column1 int)
+    REVERT
+    go
+
+    /*
+     * Try inserting some data.
+     *
+     */
+    EXECUTE AS user = 'FirethornUserdataUser008'
+        INSERT INTO [FirethornUserdata008].[dbo].[table2] (column1) VALUES (1);
+        INSERT INTO [FirethornUserdata008].[dbo].[table2] (column1) VALUES (2);
+        INSERT INTO [FirethornUserdata008].[dbo].[table2] (column1) VALUES (3);
+    REVERT
+    go
+
+    /*
+     * Try selecting some data.
+     *
+     */
+    EXECUTE AS user = 'FirethornUserdataUser008'
+        SELECT * FROM [FirethornUserdata008].[dbo].[table2]
+    REVERT
+    go
+
+
+
