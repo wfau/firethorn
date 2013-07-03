@@ -21,6 +21,6 @@
      *
      */
     USE master
-    DELETE LOGIN [{{sqlloginname}}]
+    DELETE LOGIN [{{databaselogin}}]
     go
 

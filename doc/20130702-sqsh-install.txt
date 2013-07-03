@@ -53,8 +53,6 @@
 # Possible clues ..
 # http://www.bamccaig.com/2010/07/sqshell-building-and-installing-sqsh-in.html
 
-
-
 # ------------------------------------------------
 # Available as an installable package in Ubuntu.
 #
@@ -100,21 +98,21 @@
 
     databasename=FirethornUserdata008
     databaseuser=FirethornUserdataUser008
-    sqlloginname=FirethornUserdataLogin008
-    sqlloginpass=xxxx
+    databaselogin=FirethornUserdataLogin008
+    databasepass=xxxx
 
     #
     # Execute a query from the command line
-    sqsh -S ramses9 -U "${sqlloginname}" -P "${sqlloginpass}" -D "${databasename}" -C "SELECT * FROM [${databasename}].[dbo].[table2]"
+    sqsh -S ramses9 -U "${databaselogin}" -P "${databasepass}" -D "${databasename}" -C "SELECT * FROM [${databasename}].[dbo].[table2]"
 
     #
     # Execute a query from the an environment variable.
     sqlquery="SELECT * FROM [${databasename}].[dbo].[table2]"
-    sqsh -S ramses9 -U "${sqlloginname}" -P "${sqlloginpass}" -D "${databasename}" -C "${sqlquery}"
+    sqsh -S ramses9 -U "${databaselogin}" -P "${databasepass}" -D "${databasename}" -C "${sqlquery}"
 
     #
     # Read input from a heredoc.
-    sqsh -S ramses9 -U "${sqlloginname}" -P "${sqlloginpass}" -D "${databasename}" << EOF
+    sqsh -S ramses9 -U "${databaselogin}" -P "${databasepass}" -D "${databasename}" << EOF
         SELECT * FROM [${databasename}].[dbo].[table2]
         go
     EOF
@@ -125,7 +123,7 @@
         SELECT * FROM [${databasename}].[dbo].[table2]
         go
     EOF
-    sqsh -S ramses9 -U "${sqlloginname}" -P "${sqlloginpass}" -D "${databasename}" -i "${HOME}/001.sql"
+    sqsh -S ramses9 -U "${databaselogin}" -P "${databasepass}" -D "${databasename}" -i "${HOME}/001.sql"
 
     #
     # Pipe input file through sed
@@ -134,11 +132,32 @@
         go
     EOF
     sed '
+        s/{databaseuser}/'${databaseuser}'/g
         s/{databasename}/'${databasename}'/g
+        s/{databaselogin}/'${databaselogin}'/g
+        s/{databasepass}/'${databasepass}'/g
         ' ${HOME}/002.sql |
-    sqsh -S ramses9 -U "${sqlloginname}" -P "${sqlloginpass}" -D "${databasename}"
+    sqsh -S ramses9 -U "${databaselogin}" -P "${databasepass}" -D "${databasename}"
     
-    
+# ------------------------------------------------
+# Testing our create/delete scripts.
+
+    databasename=FirethornUserdata009
+    databaseuser=FirethornUserdataUser009
+    databaselogin=FirethornUserdataLogin009
+    databasepass=xxxx
+
+    serverlogin=xxxx
+    serverpass=xxxx
+
+    sed '
+        s/{databaseuser}/'${databaseuser}'/g
+        s/{databasename}/'${databasename}'/g
+        s/{databaselogin}/'${databaselogin}'/g
+        s/{databasepass}/'${databasepass}'/g
+        ' delete-database.sql |
+    sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${databasename}"
+
 
 
 

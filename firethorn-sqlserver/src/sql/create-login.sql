@@ -21,7 +21,7 @@
      *
      */
     USE [master]
-    CREATE LOGIN [{{sqlloginname}}] WITH PASSWORD = '{sqlloginpass}'
+    CREATE LOGIN [{{databaselogin}}] WITH PASSWORD = '{databasepass}'
     go
 
 

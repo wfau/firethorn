@@ -21,6 +21,6 @@
      *
      */
     USE [{databasename}]
-    DELETE USER [{databaseuser}] FOR LOGIN [{{sqlloginname}}]
+    DELETE USER [{databaseuser}]
     go
 
