@@ -22,6 +22,8 @@
      */
     USE master
     DROP DATABASE [{databasename}]
+    go
+
 
 
 
