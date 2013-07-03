@@ -21,6 +21,6 @@
      *
      */
     USE [{databasename}]
-    DELETE USER [{databaseuser}]
+    DROP USER [{databaseuser}]
     go
 

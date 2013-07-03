@@ -21,7 +21,7 @@
      *
      */
     USE master
-    DELETE DATABASE [{databasename}]
+    DROP DATABASE [{databasename}]
 
 
 
