@@ -30,9 +30,12 @@
      */
     USE [{databasename}]
     GRANT CREATE TABLE ON DATABASE::[{databasename}] TO [{databaseuser}]
-    GRANT ALTER  ON SCHEMA::[dbo] TO [{databaseuser}]
-    GRANT INSERT ON SCHEMA::[dbo] TO [{databaseuser}]
-    GRANT SELECT ON SCHEMA::[dbo] TO [{databaseuser}]
+    GRANT REFERENCES ON SCHEMA::[dbo] TO [{databaseuser}]
+    GRANT EXECUTE    ON SCHEMA::[dbo] TO [{databaseuser}]
+    GRANT ALTER      ON SCHEMA::[dbo] TO [{databaseuser}]
+    GRANT INSERT     ON SCHEMA::[dbo] TO [{databaseuser}]
+    GRANT SELECT     ON SCHEMA::[dbo] TO [{databaseuser}]
+    GRANT UPDATE     ON SCHEMA::[dbo] TO [{databaseuser}]
     go
     
 

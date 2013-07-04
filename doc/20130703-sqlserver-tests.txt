@@ -1,12 +1,53 @@
-#
-#
-#
-#
-#
 
-# -----------------------------------------------------
-# Run the maven-build steps
-#[user@desktop]
+#-----------------------------------------------------------------------------------
+# Create new set of virtual machines
+
+    20130626-00-ubuntu-kvm.txt
+    20130626-01-ubuntu-cfg.txt
+
+#-----------------------------------------------------------------------------------
+# Create our test properties.
+
+source "${HOME:?}/test-users.txt"
+
+cat > "${HOME}/test.properties" << EOF
+firethon.webapp.endpoint=http://${firehost:?}:8080/firethorn
+
+firethon.ogsadai.dqp=testdqp
+firethon.ogsadai.store=userdata
+firethon.ogsadai.endpoint=http://${ogsahost:?}:8081/albert/services
+
+firethorn.meta.url=jdbc:jtds:sqlserver://${hsqlhost:?}:1439/FirethornMetadataxxx
+firethorn.meta.driver=net.sourceforge.jtds.jdbc.Driver
+firethorn.meta.type=mssql
+firethorn.meta.user=xxxx
+firethorn.meta.pass=xxxx
+firethorn.meta.c3po.max.size=20
+firethorn.meta.c3po.min.size=5
+firethorn.meta.c3po.max.idle=1800
+
+firethorn.user.url=jdbc:jtds:sqlserver://${hsqlhost:?}:1439/FirethornUserdataxxx
+firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
+firethorn.user.type=mssql
+firethorn.user.user=xxxx
+firethorn.user.pass=xxxx
+firethorn.user.c3po.max.size=20
+firethorn.user.c3po.min.size=5
+firethorn.user.c3po.max.idle=1800
+
+....
+
+EOF
+
+    #
+    # Transfer copies to the test VMs
+    for testlogin in $(cat ${HOME:?}/test-logins.txt)
+    do
+        scp "${HOME}/test.properties" "${testlogin:?}:firethorn.properties"
+    done
+
+#-----------------------------------------------------------------------------------
+# Run the Maven build (20130626-02-maven-build.txt)
 
     # TTY #1 ------------------------------------------------------------
     source "${HOME:?}/test-users.txt"
@@ -16,24 +57,8 @@
         hostname=fenrir.roe.ac.uk
         
         ssh-keyscan ${hostname:?} >> ~/.ssh/known_hosts
-        ssh -L '*:1433:ramses5:1433' "${username:?}@${hostname:?}"
+        ssh -v -L '*:1435:ramses5:1433' -L '*:1439:ramses9:1433' "${username:?}@${hostname:?}"
 
-
-    # TTY #2,3 -----------------------------------------------------------
-    source "${HOME:?}/test-users.txt"
-    ssh "${hsqluser:?}@${hsqlhost:?}"
-
-        source ${HOME:?}/firethorn.settings
-        pushd "${FIRETHORN_CODE:?}"
-
-            hg pull ; hg update
-
-            mvn -P depends install
-
-            pushd 'firethorn-hsqldb'
-
-                export MAVEN_OPTS=-Xmx128m
-                mvn clean exec:java
 
     # TTY #4,5,6 ----------------------------------------------------------
     source "${HOME:?}/test-users.txt"
@@ -80,7 +105,6 @@
 
                 export MAVEN_OPTS=-Xmx128m
                 mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
-        
 
     # TTY #8 ------------------------------------------------------------
     source "${HOME:?}/test-users.txt"
@@ -95,9 +119,9 @@
             popd
         popd
 
-# -----------------------------------------------------
-# Run the atlas-example tests.
-#[user@desktop]
+    
+#-----------------------------------------------------------------------------------
+# Run the test scripts. 
 
     # TTY #9 ------------------------------------------------------------
     source "${HOME:?}/test-users.txt"
