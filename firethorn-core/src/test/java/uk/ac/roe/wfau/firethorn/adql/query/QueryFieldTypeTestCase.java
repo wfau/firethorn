@@ -35,7 +35,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
  *
  */
 @Slf4j
-public class ColumnTypeTestCase
+public class QueryFieldTypeTestCase
 extends TwomassQueryTestBase
     {
 
