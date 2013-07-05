@@ -57,17 +57,17 @@ implements HandlerInterceptor
         {
         return method;
         }
-    public void setMethod(String value)
+    public void setMethod(final String value)
         {
         method = value;
         }
-    
+
     private String defaultCommunity ;
     public String getDefaultCommunity()
         {
         return defaultCommunity;
         }
-    public void setDefaultCommunity(String name)
+    public void setDefaultCommunity(final String name)
         {
         defaultCommunity = name ;
         }
@@ -77,7 +77,7 @@ implements HandlerInterceptor
         {
         return defaultIdentity ;
         }
-    public void setDefaultIdentity(String name)
+    public void setDefaultIdentity(final String name)
         {
         defaultIdentity = name ;
         }
@@ -87,40 +87,40 @@ implements HandlerInterceptor
         {
         return identityAttrib;
         }
-    public void setIdentityAttrib(String attrib)
+    public void setIdentityAttrib(final String attrib)
         {
         identityAttrib = attrib ;
         }
-    
+
     private String communityAttrib = DEFAULT_COMMUNITY_ATTRIB ;
     public String getCommunityAttrib()
         {
         return communityAttrib;
         }
-    public void setCommunityAttrib(String attrib)
+    public void setCommunityAttrib(final String attrib)
         {
         communityAttrib = attrib ;
         }
-    
+
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
         {
         log.debug("preHandle()");
-        
-        String identity  = (String) request.getHeader(identityAttrib);
-        String community = (String) request.getHeader(communityAttrib);
+
+        String identity  = request.getHeader(identityAttrib);
+        String community = request.getHeader(communityAttrib);
 
         if (identity == null)
             {
-            identity = defaultIdentity ; 
+            identity = defaultIdentity ;
             }
 
         if (community == null)
             {
-            community = defaultCommunity; 
+            community = defaultCommunity;
             }
 
-        Operation operation = factories.operations().current();
+        final Operation operation = factories.operations().current();
 
         log.debug("Identity  [{}]", identity);
         log.debug("Community [{}]", community);
@@ -145,7 +145,7 @@ implements HandlerInterceptor
         log.debug("Primary   [{}]", operation.authentications().primary());
         //log.debug("Identity  [{}]", operation.authentications().primary().identity());
         //log.debug("Community [{}]", operation.authentications().primary().identity().community());
-        
+
         return true ;
         }
 
@@ -154,11 +154,11 @@ implements HandlerInterceptor
         {
         log.debug("postHandle()");
         }
-    
+
     @Override
     public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ouch)
         {
         log.debug("afterCompletion()");
         }
-    
+
     }

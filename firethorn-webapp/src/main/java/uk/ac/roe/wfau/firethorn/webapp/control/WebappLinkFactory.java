@@ -37,7 +37,7 @@ implements Entity.LinkFactory<EntityType>
 
     public static final String DEFAULT_ENDPOINT = "http://localhost:8080/firethorn" ;
 
-    
+
     @Value("${firethon.webapp.endpoint}")
     private String endpoint ;
     public String endpoint()
@@ -50,7 +50,7 @@ implements Entity.LinkFactory<EntityType>
             return DEFAULT_ENDPOINT ;
             }
         }
-    
+
     protected WebappLinkFactory(final String path)
         {
         super(path);

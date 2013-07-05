@@ -22,7 +22,6 @@ import java.net.URI;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.identity.Identity.IdentFactory;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**

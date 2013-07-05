@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.community;
 
-import java.net.URI;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Controller;
@@ -29,7 +27,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Community;
-import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
@@ -113,7 +110,7 @@ extends AbstractController
                 }
             }
         }
-    
+
     /**
      * JSON GET request.
      *

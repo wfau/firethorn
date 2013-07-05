@@ -29,7 +29,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 
 /**
- * 
+ *
  *
  */
 @Slf4j

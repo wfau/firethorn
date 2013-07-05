@@ -27,7 +27,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
-import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
@@ -55,16 +54,16 @@ implements HandlerInterceptor
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
         {
         log.debug("preHandle()");
-        
-        Operation operation =  factories.operations().current();
+
+        final Operation operation =  factories.operations().current();
 
         if (operation != null)
             {
             log.debug(" Oper [{}]", operation.ident());
 
             operation.authentications().resolve();
-            
-            Authentication primary = operation.authentications().primary();
+
+            final Authentication primary = operation.authentications().primary();
             if (primary != null)
                 {
                 log.debug(" Auth [{}][{}][{}]", primary.method(), primary.identity().ident(), primary.identity().name());
@@ -92,7 +91,7 @@ implements HandlerInterceptor
         {
         log.debug("postHandle()");
         }
-    
+
     @Override
     public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ouch)
         {

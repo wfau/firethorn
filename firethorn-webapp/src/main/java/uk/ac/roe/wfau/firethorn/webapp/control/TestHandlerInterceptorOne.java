@@ -34,32 +34,35 @@ public class TestHandlerInterceptorOne
 implements HandlerInterceptor
     {
 
-    
+
     private String name;
     public String getName()
         {
         return this.name ;
         }
-    public void setName(String name)
+    public void setName(final String name)
         {
         this.name = name ;
         }
 
-    
+
+    @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
         {
         log.debug("preHandle() [{}]", name);
         return true ;
         }
 
+    @Override
     public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView model)
         {
         log.debug("postHandle() [{}]", name);
         }
-    
+
+    @Override
     public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ouch)
         {
         log.debug("afterCompletion() [{}]", name);
         }
-    
+
     }

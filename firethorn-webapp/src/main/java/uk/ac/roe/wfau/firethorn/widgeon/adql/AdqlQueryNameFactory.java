@@ -24,7 +24,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 
 /**
  *
- * 
+ *
  */
 @Component
 public class AdqlQueryNameFactory

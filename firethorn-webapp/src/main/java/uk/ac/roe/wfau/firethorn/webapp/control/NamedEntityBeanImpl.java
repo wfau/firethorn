@@ -22,7 +22,7 @@ import java.net.URI;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 
 /**
- * 
+ *
  *
  */
 public class NamedEntityBeanImpl<EntityType extends NamedEntity>

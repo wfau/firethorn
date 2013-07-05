@@ -320,7 +320,7 @@ implements NamedEntityBean<AdqlQuery>
         public String  getName();
 
         public Integer getLength();
-        
+
         public String  getType();
         }
 

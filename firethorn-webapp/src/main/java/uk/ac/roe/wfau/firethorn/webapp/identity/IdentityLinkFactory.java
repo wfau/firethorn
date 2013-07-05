@@ -20,7 +20,6 @@ package uk.ac.roe.wfau.firethorn.webapp.identity;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-import uk.ac.roe.wfau.firethorn.identity.Identity.LinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 
 /**

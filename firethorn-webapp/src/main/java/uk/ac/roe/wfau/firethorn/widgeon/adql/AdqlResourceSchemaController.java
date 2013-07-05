@@ -29,10 +29,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
@@ -142,8 +140,8 @@ extends AbstractController
      *
      */
     public static final String IMPORT_SCHEMA_NAME = "adql.resource.schema.import.name" ;
-    
-    
+
+
     /**
      * Get the parent entity based on the request ident.
      * @throws NotFoundException

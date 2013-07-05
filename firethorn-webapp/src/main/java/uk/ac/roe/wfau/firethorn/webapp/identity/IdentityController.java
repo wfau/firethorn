@@ -121,7 +121,7 @@ extends AbstractController
                 }
             }
         }
-    
+
     /**
      * JSON GET request.
      *

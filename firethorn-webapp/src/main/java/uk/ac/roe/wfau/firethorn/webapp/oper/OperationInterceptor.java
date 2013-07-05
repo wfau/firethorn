@@ -53,7 +53,7 @@ implements HandlerInterceptor
             request.getMethod(),
             request.getRemoteAddr()
             );
-        
+
         return true ;
         }
 
@@ -62,11 +62,11 @@ implements HandlerInterceptor
         {
         log.debug("postHandle()");
         }
-    
+
     @Override
     public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ouch)
         {
         log.debug("afterCompletion()");
         }
-    
+
     }

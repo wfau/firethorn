@@ -38,7 +38,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
@@ -128,7 +127,7 @@ public class AdqlQueryVOTableController
                 ResultSet.CONCUR_READ_ONLY,
                 ResultSet.CLOSE_CURSORS_AT_COMMIT
                 );
-            
+
             //
             // Create an SQL query to get the columns in a specific order.
             final StringBuilder builder = new StringBuilder();
@@ -211,13 +210,13 @@ public class AdqlQueryVOTableController
                         }
                      */
                     }
-                
+
                 else {
                     builder.append(
                         column.root().name()
                         );
                     }
-                
+
                 builder.append(
                     " AS "
                     );
@@ -235,7 +234,7 @@ public class AdqlQueryVOTableController
                 );
             log.debug("SQL [{}]", builder.toString());
 
-            
+
             statement.setFetchSize(
                 1000
                 );
@@ -255,7 +254,7 @@ public class AdqlQueryVOTableController
                     {
                     final ColumnInfo info = startab.getColumnInfo(i);
                     final AdqlColumn adql = columns.get(i);
-    
+
                     log.debug("Info name [{}]", info.getName());
                     log.debug("Adql name [{}]", adql.name());
                     log.debug("Adql type [{}]", adql.meta().adql().type());
@@ -271,9 +270,9 @@ public class AdqlQueryVOTableController
                     info.setUnitString(
                         adql.meta().adql().units()
                         );
-    
+
                     }
-    
+
                 final VOTableWriter writer = new VOTableWriter();
                 writer.writeStarTable(
                     startab,
