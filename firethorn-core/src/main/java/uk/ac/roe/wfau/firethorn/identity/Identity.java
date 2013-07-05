@@ -88,7 +88,13 @@ extends Entity, NamedEntity
      *  The storage space for this Identity.
      *  
      */
+    public JdbcSchema space(boolean create);
+
+    /**
+     *  The storage space for this Identity.
+     *  
     public void space(JdbcSchema space);
+     */
     
     }
 

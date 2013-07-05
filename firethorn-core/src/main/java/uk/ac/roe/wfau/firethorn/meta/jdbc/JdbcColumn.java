@@ -88,12 +88,6 @@ extends BaseColumn<JdbcColumn>
     public JdbcResource resource();
 
     /**
-     * Update the column metadata.
-     *
-     */
-    public void scan();
-
-    /**
      * An enumeration of the JDBC data types.
      *
      */
@@ -338,5 +332,11 @@ extends BaseColumn<JdbcColumn>
 
     @Override
     public JdbcColumn.Metadata meta();
+
+    /**
+     * Update the column metadata.
+     *
+    public void scan();
+     */
 
     }

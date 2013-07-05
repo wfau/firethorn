@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.test ;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.net.URI;
 
@@ -94,10 +95,10 @@ public abstract class TestRoot
 
     /**
      * Inverse of AssertNotNull.
-     * @param object
-     * @throws AssertionError
+     * Not needed - use assertNull() instead.
      *
      */
+    @Deprecated
     public void assertIsNull(final Object object)
     throws AssertionError
         {

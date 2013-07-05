@@ -581,7 +581,7 @@ public class JdbcConnectionEntity
                 {
                 catalogs.add(
                     results.getString(
-                        JdbcMetadata.JDBC_META_TABLE_CAT
+                        JdbcTypes.JDBC_META_TABLE_CAT
                         )
                     );
                 }
@@ -626,7 +626,7 @@ public class JdbcConnectionEntity
                 if (this.parent != null)
                     {
                     try {
-                        this.parent.scan();
+                        this.parent.scansync();
                         }
                     catch (final RuntimeException ouch)
                         {

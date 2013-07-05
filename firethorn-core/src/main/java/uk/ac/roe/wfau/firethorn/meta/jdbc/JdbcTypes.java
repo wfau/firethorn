@@ -23,7 +23,7 @@ import java.sql.DatabaseMetaData;
  *
  *
  */
-public interface JdbcMetadata
+public interface JdbcTypes
     {
     /**
      * JDBC DatabaseMetaData column names.

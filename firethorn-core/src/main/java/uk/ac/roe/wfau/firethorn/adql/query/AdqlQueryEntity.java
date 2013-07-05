@@ -53,7 +53,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
-import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
@@ -268,7 +268,7 @@ implements AdqlQuery, AdqlParserQuery
      */
     @Repository
     public static class Resolver
-    extends AbstractFactory<AdqlQuery>
+    extends AbstractEntityFactory<AdqlQuery>
     implements AdqlQuery.Resolver
         {
         @Override
@@ -299,7 +299,7 @@ implements AdqlQuery, AdqlParserQuery
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<AdqlQuery>
+    extends AbstractEntityFactory<AdqlQuery>
     implements AdqlQuery.Factory
         {
         @Override
@@ -1078,6 +1078,7 @@ implements AdqlQuery, AdqlParserQuery
         Identity identity = this.owner(); 
         log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
 
+/*
         //
         // Locate our JDBC schema.
         // TODO Move this to a separate resolver/factory.
@@ -1116,37 +1117,36 @@ implements AdqlQuery, AdqlParserQuery
 
                 log.debug(" JdbcResource [{}][{}]", userdata.ident(), userdata.ogsaid());
 
-                String xxx = userdata.connection().type().defschema();
-                log.debug(" Default      [{}]", xxx);
-
-                JdbcSchema yyy = userdata.schemas().select(
-                    "FirethornUser001",
-                    xxx
+                String defcatalog = userdata.catalog();
+                String defschema  = userdata.connection().type().defschema();
+                log.debug(" Default catalog [{}]", defcatalog);
+                log.debug(" Default schema  [{}]", defschema);
+                
+                // TODO - resource.schemas().select() requires a catalog name.
+                // Works, unless we use '*' for the catalog.
+                JdbcSchema userschema = userdata.schemas().select(
+                    defcatalog,
+                    defschema
                     );
-                if (yyy != null)
+                
+                if (userschema != null)
                     {
-                    log.debug(" JdbcSchema   [{}][{}]", yyy.ident(), yyy.name());
+                    log.debug(" JdbcSchema   [{}][{}]", userschema.ident(), userschema.name());
                     }
                 else {
-                    log.debug(" Can't find default schema [{}]", xxx);
+                    log.warn(" Can't find default schema [{}][{}]", defcatalog, defschema);
                     }
 
-                identity.space(yyy);
-                log.debug(" JdbcSchema   [{}]", identity.space());
-/*
- *                 
                 identity.space(
-                    userdata.schemas().select(
-                        userdata.connection().type().defschema()
-                        )
+                    userschema
                     );
- *
- */
                 }
             }
+ */
+
         //
         // Create our tables.
-        if (identity.space() != null)
+        if (identity.space(true) != null)
             {
             log.debug(" Identity space [{}][{}]", identity.space().ident(), identity.space().name());
             this.jdbctable = identity.space().tables().create(
@@ -1158,7 +1158,7 @@ implements AdqlQuery, AdqlParserQuery
             }
 // no-owner fallback.
         else {
-            log.error("-- NO USER SPACE");
+            log.warn("NO IDENTITY SPACE for [{}][{}]", identity.ident(), identity.name());
             // Config exception. 
             }
 //TODO

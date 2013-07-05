@@ -201,16 +201,16 @@ extends BaseComponentEntity
         return new BaseColumn.Metadata()
             {
             @Override
-            public BaseColumn.Metadata.AdqlMeta adql()
+            public BaseColumn.Metadata.AdqlMetadata adql()
                 {
                 return adqlmeta();
                 }
             };
         }
 
-    protected BaseColumn.Metadata.AdqlMeta adqlmeta()
+    protected BaseColumn.Metadata.AdqlMetadata adqlmeta()
         {
-        return new BaseColumn.Metadata.AdqlMeta()
+        return new BaseColumn.Metadata.AdqlMetadata()
             {
             @Override
             public Integer arraysize()

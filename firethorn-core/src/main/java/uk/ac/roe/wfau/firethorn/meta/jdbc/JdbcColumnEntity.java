@@ -39,7 +39,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
@@ -121,7 +121,7 @@ public class JdbcColumnEntity
      */
     @Repository
     public static class EntityFactory
-    extends AbstractFactory<JdbcColumn>
+    extends AbstractEntityFactory<JdbcColumn>
     implements JdbcColumn.EntityFactory
         {
 
@@ -500,7 +500,7 @@ public class JdbcColumnEntity
         return new JdbcColumn.Metadata()
             {
             @Override
-            public AdqlColumn.Metadata.AdqlMeta adql()
+            public AdqlColumn.Metadata.AdqlMetadata adql()
                 {
                 return adqlmeta();
                 }

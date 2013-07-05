@@ -30,7 +30,7 @@ import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
@@ -73,7 +73,7 @@ public class IvoaResourceEntity
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<IvoaResource>
+    extends AbstractEntityFactory<IvoaResource>
     implements IvoaResource.Factory
         {
 
@@ -255,5 +255,12 @@ public class IvoaResourceEntity
         return factories().ivoa().resources().links().link(
             this
             );
+        }
+
+    @Override
+    protected void scanimpl()
+        {
+        // TODO Auto-generated method stub
+        
         }
     }

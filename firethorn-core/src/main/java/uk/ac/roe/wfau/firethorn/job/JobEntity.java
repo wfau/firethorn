@@ -45,7 +45,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
-import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectAtomicMethod;
@@ -141,7 +141,7 @@ implements Job
      */
     @Repository
     public static class Resolver
-    extends AbstractFactory<Job>
+    extends AbstractEntityFactory<Job>
     implements Job.Resolver
         {
         @Override

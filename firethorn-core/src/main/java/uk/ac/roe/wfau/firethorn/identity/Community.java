@@ -114,15 +114,21 @@ extends Entity, NamedEntity
     public String uri();
 
     /**
-     * The JDBC Resource for this Community.
+     * The storage space for this Community.
      *
      */
     public JdbcResource space();
 
     /**
-     * The JDBC Resource for this Community.
+     * The storage space for this Community.
      *
      */
+    public JdbcResource space(boolean create);
+
+    /**
+     * The JDBC Resource for this Community.
+     *
     public JdbcResource space(final JdbcResource space);
+     */
 
     }

@@ -34,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
@@ -88,7 +88,7 @@ implements Community
      */
     @Repository
     public static class EntityFactory
-    extends AbstractFactory<Community>
+    extends AbstractEntityFactory<Community>
     implements Community.EntityFactory
         {
         @Override
@@ -264,9 +264,12 @@ implements Community
         return this.space;
         }
     @Override
-    public JdbcResource space(JdbcResource space)
+    public JdbcResource space(boolean create)
         {
-        this.space = space ;
-        return this.space ;
+        if ((create) && (this.space == null))
+            {
+            this.space = factories().jdbc().resources().userdata() ;
+            }
+        return this.space;
         }
     }

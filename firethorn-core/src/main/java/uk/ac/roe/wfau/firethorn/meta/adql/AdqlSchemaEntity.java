@@ -32,7 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
@@ -82,7 +82,7 @@ implements AdqlSchema
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<AdqlSchema>
+    extends AbstractEntityFactory<AdqlSchema>
     implements AdqlSchema.Factory
         {
 
@@ -375,5 +375,12 @@ implements AdqlSchema
                     );
                 }
             };
+        }
+
+    @Override
+    protected void scanimpl()
+        {
+        // TODO Auto-generated method stub
+        
         }
     }

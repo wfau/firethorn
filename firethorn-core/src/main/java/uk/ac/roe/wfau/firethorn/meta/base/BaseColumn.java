@@ -122,14 +122,6 @@ extends BaseComponent
      */
     public StringBuilder fullname();
 
-    /*
-    interface Linked
-        {
-        public Iterable<AdqlColumn> select();
-        }
-    public Linked linked();
-     */
-    
     /**
      * The column metadata.
      *
@@ -141,7 +133,7 @@ extends BaseComponent
          * The ADQL metadata.
          *
          */
-        public interface AdqlMeta
+        public interface AdqlMetadata
             {
 
             /**
@@ -216,7 +208,7 @@ extends BaseComponent
          * The ADQL metadata.
          *
          */
-        public AdqlMeta adql();
+        public AdqlMetadata adql();
 
         }
 

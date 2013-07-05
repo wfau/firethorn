@@ -40,7 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
-import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 
 /**
@@ -84,7 +84,7 @@ implements Operation
     
     @Component
     public static class EntityFactory
-    extends AbstractFactory<Operation>
+    extends AbstractEntityFactory<Operation>
     implements Operation.EntityFactory
         {
         @Override

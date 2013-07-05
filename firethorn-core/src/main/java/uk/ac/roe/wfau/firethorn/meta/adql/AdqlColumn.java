@@ -93,7 +93,6 @@ extends BaseColumn<AdqlColumn>
     public AdqlSchema schema();
     @Override
     public AdqlResource resource();
-
     @Override
     public BaseColumn<?> base();
 

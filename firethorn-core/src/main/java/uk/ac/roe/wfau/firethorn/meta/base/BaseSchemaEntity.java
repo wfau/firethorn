@@ -33,7 +33,7 @@ import org.hibernate.annotations.NamedQueries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 
 /**
  *
@@ -78,7 +78,7 @@ public abstract class BaseSchemaEntity<SchemaType extends BaseSchema<SchemaType,
      */
     @Repository
     public static class Resolver
-    extends AbstractFactory<BaseSchema<?,?>>
+    extends AbstractEntityFactory<BaseSchema<?,?>>
     implements BaseSchema.Resolver
         {
         @Override

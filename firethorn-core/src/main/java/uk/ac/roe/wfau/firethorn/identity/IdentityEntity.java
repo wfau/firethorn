@@ -32,7 +32,7 @@ import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
@@ -87,7 +87,7 @@ implements Identity
      */
     @Repository
     public static class EntityFactory
-    extends AbstractFactory<Identity>
+    extends AbstractEntityFactory<Identity>
     implements Identity.EntityFactory
         {
         @Override
@@ -249,12 +249,24 @@ implements Identity
         return this.jdbcschema;
         }
     @Override
-    public void space(JdbcSchema schema)
+    public JdbcSchema space(boolean create)
         {
-        log.debug("space(JdbcSchema)");
-        log.debug(" Schema [{}]", schema);
-        this.jdbcschema = schema;
+        if ((create) && (this.jdbcschema == null))
+            {
+            if (community() != null)
+                {
+                if (community().space(true) != null)
+                    {
+/*
+                    this.jdbcschema = community().space().schemas().create(
+                        this
+                        ); 
+ */
+                    this.jdbcschema = community().space().schemas().simple();
+                    }
+                }
+            }
+        return this.jdbcschema;
         }
-
     }
 

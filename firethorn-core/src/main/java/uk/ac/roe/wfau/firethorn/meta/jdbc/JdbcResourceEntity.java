@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.SQLInvalidAuthorizationSpecException;
 
@@ -39,7 +40,7 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
@@ -90,13 +91,14 @@ public class JdbcResourceEntity
      */
     protected static final String DB_JDBC_CATALOG_COL = "jdbccatalog";
     protected static final String DB_JDBC_OGSAID_COL  = "jdbcogsaid";
+
     /**
      * Resource factory implementation.
      *
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<JdbcResource>
+    extends AbstractEntityFactory<JdbcResource>
     implements JdbcResource.Factory
         {
 
@@ -285,8 +287,8 @@ public class JdbcResourceEntity
     @Override
     public JdbcResource.Schemas schemas()
         {
-        this.scan(false);
-        return this.schemasimpl();
+        scantest();
+        return schemasimpl();
         }
 
     protected JdbcResource.Schemas schemasimpl()
@@ -342,7 +344,7 @@ public class JdbcResourceEntity
             @Override
             public JdbcSchema create(final Identity identity)
                 {
-                return factories().jdbc().schemas().create(
+                return factories().jdbc().schemas().build(
                     JdbcResourceEntity.this,
                     identity
                     );
@@ -360,7 +362,17 @@ public class JdbcResourceEntity
             @Override
             public void scan()
                 {
-                JdbcResourceEntity.this.scan(true);
+                JdbcResourceEntity.this.scansync();
+                }
+
+            @Override
+            public JdbcSchema simple()
+                {
+                return factories().jdbc().schemas().select(
+                    JdbcResourceEntity.this,
+                    connection().catalog(),
+                    connection().type().schema()
+                    );
                 }
             };
         }
@@ -418,7 +430,7 @@ public class JdbcResourceEntity
     public void catalog(final String catalog)
         {
         this.catalog = catalog ;
-        this.scan(true);
+        scansync();
         }
 
     @Override
@@ -474,8 +486,6 @@ public class JdbcResourceEntity
 // TODO
 // Reprocess the list disable missing ones ...
 //
-        scandate(new DateTime());
-        scanflag(false);
 
         }
 
@@ -494,24 +504,41 @@ public class JdbcResourceEntity
             if (metadata != null)
                 {
                 try {
-                    final ResultSet tables = metadata.getTables(
+/*
+                    final ResultSet schemas = metadata.getTables(
                         catalog,
                         null, // sch
                         null, // tab
                         new String[]
                             {
-                            JdbcMetadata.JDBC_META_TABLE_TYPE_TABLE,
-                            JdbcMetadata.JDBC_META_TABLE_TYPE_VIEW
+                            JdbcTypes.JDBC_META_TABLE_TYPE_TABLE,
+                            JdbcTypes.JDBC_META_TABLE_TYPE_VIEW
                             }
                         );
 
+                    final ResultSet schemas = metadata.getSchemas(
+                        catalog,
+                        null
+                        );
+
+ */
+                    final ResultSet schemas = metadata.getSchemas();
+
                     String cprev = null ;
                     String sprev = null ;
-                    while (tables.next())
+                    while (schemas.next())
                         {
-                        String cname = tables.getString(JdbcMetadata.JDBC_META_TABLE_CAT);
-                        String sname = tables.getString(JdbcMetadata.JDBC_META_TABLE_SCHEM);
+                        String cname = schemas.getString(JdbcTypes.JDBC_META_TABLE_CATALOG);
+                        //String cname = schemas.getString(JdbcTypes.JDBC_META_TABLE_CAT);
+                        String sname = schemas.getString(JdbcTypes.JDBC_META_TABLE_SCHEM);
                         log.debug("Found schema [{}][{}]", new Object[]{cname, sname});
+/*
+                        ResultSetMetaData meta = schemas.getMetaData();
+                        for (int i = 1 ; i <= meta.getColumnCount() ; i++)
+                            {
+                            log.debug("Col [{}][{}]", i, meta.getColumnName(i));                            
+                            }
+ */
                         //
                         // In MySQL the schema name is always null, use the catalog name instead.
                         if (product == JdbcProductType.MYSQL)
@@ -527,7 +554,18 @@ public class JdbcResourceEntity
                             //sname = cname ;
                             //cname = null ;
                             }
-
+                        //
+                        // The jTDS driver for SQLServer returns null column.
+                        // This fix works for single catalog resources.
+                        // This may fail for wildcard resources.
+                        // TODO test with wildcard resources.
+                        if (product == JdbcProductType.MSSQL)
+                            {
+                            if (cname == null)
+                                {
+                                cname = catalog ; 
+                                }
+                            }
                         //
                         // Skip if the schema is on our ignore list.
                         if (product.ignore().contains(sname))
@@ -554,13 +592,11 @@ public class JdbcResourceEntity
 
                         //
                         // Check for an existing schema.
+                        // If none found, create a new one.
                         JdbcSchema schema = this.schemasimpl().select(
                             cname,
                             sname
                             );
-                        log.debug("Found schema [{}]", schema);
-                        //
-                        // If none found, create a new one.
                         if (schema == null)
                             {
                             schema = this.schemasimpl().create(

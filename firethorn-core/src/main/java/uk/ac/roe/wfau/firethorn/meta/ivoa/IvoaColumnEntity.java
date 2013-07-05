@@ -35,7 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -111,7 +111,7 @@ public class IvoaColumnEntity
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<IvoaColumn>
+    extends AbstractEntityFactory<IvoaColumn>
     implements IvoaColumn.Factory
         {
 
@@ -331,5 +331,12 @@ public class IvoaColumnEntity
         return factories().ivoa().columns().links().link(
             this
             );
+        }
+
+    @Override
+    protected void scanimpl()
+        {
+        // TODO Auto-generated method stub
+        
         }
     }

@@ -117,11 +117,17 @@ extends BaseResource<JdbcSchema>
         public Iterable<JdbcSchema> select(final Identity identity);
         
         /**
-         * Update the list of schemas from the JDBC metadata.
+         * Scan the JDBC metadata.
          *
          */
         public void scan();
 
+        /**
+         * The default catalog/schema for this resource.
+         * 
+         */
+        public JdbcSchema simple();
+        
         }
 
     @Override
@@ -150,11 +156,5 @@ extends BaseResource<JdbcSchema>
      *
      */
     public void catalog(final String catalog);
-
-    /**
-     * Update the resource.
-     *
-     */
-    public void scan();
 
     }

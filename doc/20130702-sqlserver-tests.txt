@@ -6,9 +6,13 @@
 
     ssh -X fenrir
 
+    ssh -X fenrir 'rdesktop -ken-gb -g1024x768 -x l -u dave ramses9'
+
 #[user@fenrir]
 
-    rdesktop -ken-gb -g1024x768 -x l -u dave 192.168.137.35 &
+    rdesktop -ken-gb -g1024x768 -x l -u dave 192.168.137.35
+    rdesktop -ken-gb -g1024x768 -x l -u dave ramses9
+
 
 
 # ------------------------

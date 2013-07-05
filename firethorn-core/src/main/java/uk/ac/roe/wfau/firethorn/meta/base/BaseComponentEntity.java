@@ -69,7 +69,7 @@ extends AbstractNamedEntity
     protected static final String DB_COLUMN_COL   = "column";
 
     protected static final String DB_SCAN_DATE_COL = "scandate";
-    protected static final String DB_SCAN_FLAG_COL = "scanflag";
+    protected static final String DB_SCAN_TIME_COL = "scantime";
 
 
     /**
@@ -127,63 +127,53 @@ extends AbstractNamedEntity
         updatable = true
         )
     private DateTime scandate ;
-    public DateTime scandate()
+    @Deprecated 
+    protected DateTime scandate()
         {
         return this.scandate;
         }
-    public void scandate(final DateTime date)
+    @Deprecated 
+    protected void scandate(final DateTime date)
         {
         this.scandate = date;
         }
 
     @Column(
-        name = DB_SCAN_FLAG_COL,
+        name = DB_SCAN_TIME_COL,
         unique = false,
         nullable = false,
         updatable = true
         )
-    private boolean scanflag = true ;
-    public boolean scanflag()
+    private long scantime ;
+    protected long scantime()
         {
-        return this.scanflag;
+        return this.scantime;
         }
-    public void scanflag(final boolean flag)
+    protected void scantime(final long time)
         {
-        this.scanflag = flag;
+        this.scantime = time;
         }
-
-    private static final ReadablePeriod interval = Hours.hours(2);
-
     /**
-     * Test if we need to scan our metadata.
-     *
+     * The interval between scans.
+     * Set to 60 seconds for now .. should be much higher and configurable.
+     * 
      */
-    public void scan()
+    private static final long SCAN_INTERVAL = 1000 * 60 ; 
+    protected boolean scandue()
         {
-        log.debug("scan()");
-        scan(true);
+        return (this.scantime < (System.currentTimeMillis() - SCAN_INTERVAL));
         }
 
     /**
-     * Test if we need to scan our metadata.
+     * Scan our metadata.
      *
      */
-    public void scan(final boolean force)
+    public void scantest()
         {
-        log.debug("scan({})", force);
-        this.scanflag |= force ;
-
-        if (this.scanflag)
+        log.debug("scantest()");
+        if (scandue())
             {
-            this.scansync();
-            }
-        if (this.scandate == null)
-            {
-            this.scansync();
-            }
-        else if (this.scandate.isBefore(this.scandate.minus(interval)))
-            {
-            this.scansync();
+            scansync();
             }
         }
 
@@ -191,23 +181,26 @@ extends AbstractNamedEntity
      * Synchronised set of Identifiers for active scans.
      *
      */
-    private static Set<Identifier> scanset = Collections.synchronizedSet(
-        new HashSet<Identifier>()
+    private static Set<String> scanset = Collections.synchronizedSet(
+        new HashSet<String>()
         );
 
     /**
      * Synchronise our metadata scans.
      *
      */
-    protected void scansync()
+    public void scansync()
         {
         log.debug("scansync()");
-        boolean    todo  = false ;
-        final Identifier ident = this.ident();
+
+        boolean doscan = false ;
+        final String ident = this.ident().toString();
+        //
+        // Sync on the set and check for active scans.
         synchronized (scanset)
             {
             //
-            // If we are already scanning, wait.
+            // If we are already scanning, wait for notification.
             log.debug("Checking for existing scan [{}]", ident);
             if (scanset.contains(ident))
                 {
@@ -226,10 +219,10 @@ extends AbstractNamedEntity
                 log.debug("Scan wait done [{}]", ident);
                 }
             //
-            // If we are not already scanning, add our Identifier to the Set and run a scan.
+            // If not already scanning, add our Identifier to the Set and run a scan.
             else {
                 log.debug("Adding new scan [{}]", ident);
-                todo = true ;
+                doscan = true ;
                 scanset.add(
                     ident
                     );
@@ -237,14 +230,16 @@ extends AbstractNamedEntity
             }
         //
         // If we are due to run a scan.
-        if (todo)
+        if (doscan)
             {
             //
             // Run our scan ...
             try {
-                log.debug("Running scan [{}][{}]", ident);
-                scanflag(true);
+                log.debug("Running scan [{}]", ident);
                 scanimpl();
+                scantime(
+                    System.currentTimeMillis()
+                    );
                 }
             //
             // Remove ourselves from the Set and notify anyone else waiting.
@@ -261,8 +256,10 @@ extends AbstractNamedEntity
             }
         }
 
-    protected void scanimpl()
-        {
-        log.debug("scanimpl() - stub");
-        }
+    /**
+     * Metadata scan implementation.
+     * 
+     */
+    protected abstract void scanimpl();
+
     }

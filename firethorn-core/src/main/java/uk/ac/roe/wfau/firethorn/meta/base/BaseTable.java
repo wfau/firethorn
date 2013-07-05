@@ -126,17 +126,6 @@ extends BaseComponent
 
         }
 
-    /*
-    public String type();
-    public void type(final String type);
-
-    public Integer size();
-    public void size(final Integer size);
-
-    public String ucd();
-    public void ucd(final String ucd);
-     */
-
     /**
      * The OGSA-DAI DQP table alias.
      *
@@ -214,7 +203,7 @@ extends BaseComponent
      * Base table metadata.
      *
      */
-    public interface Info
+    public interface Metadata
         {
         }
 
@@ -222,6 +211,6 @@ extends BaseComponent
      * Access to the table metadata.
      *
      */
-    public AdqlTable.Info info();
+    public AdqlTable.Metadata meta();
 
     }

@@ -52,7 +52,17 @@ public enum JdbcProductType
         "dbo",
         new String[]{
             "sys",
-            "INFORMATION_SCHEMA"
+            "guest",
+            "INFORMATION_SCHEMA",
+            "db_accessadmin",
+            "db_backupoperator",
+            "db_datareader",
+            "db_datawriter",
+            "db_ddladmin",
+            "db_denydatareader",
+            "db_denydatawriter",
+            "db_owner",
+            "db_securityadmin"
             }
         ),
     HSQLDB(
@@ -100,6 +110,7 @@ public enum JdbcProductType
         }
 
     /**
+     * 
      * The default schema name.
      * 
      */
@@ -109,7 +120,7 @@ public enum JdbcProductType
      * The default schema name.
      * 
      */
-    public String defschema ()
+    public String schema()
         {
         return this.schema ;
         }

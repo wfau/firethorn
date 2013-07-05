@@ -172,12 +172,6 @@ extends BaseTable<JdbcTable, JdbcColumn>
     public boolean exists();
 
     /**
-     * Scan the JDBC metadata.
-     *
-     */
-    public void scan();
-
-    /**
      * JDBC table types.
      *
      */
@@ -225,14 +219,14 @@ extends BaseTable<JdbcTable, JdbcColumn>
      * JDBC table metadata.
      *
      */
-    public interface Info
-    extends AdqlTable.Info
+    public interface Metadata
+    extends AdqlTable.Metadata
         {
         /**
          * The JDBC table metadata.
          *
          */
-        public interface JdbcMeta {
+        public interface JdbcMetadata {
 
             /**
              * Get the database table type.
@@ -252,11 +246,11 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * The JDBC table metadata.
          *
          */
-        public JdbcMeta jdbc();
+        public JdbcMetadata jdbc();
 
         }
 
     @Override
-    public JdbcTable.Info info();
+    public JdbcTable.Metadata meta();
 
     }

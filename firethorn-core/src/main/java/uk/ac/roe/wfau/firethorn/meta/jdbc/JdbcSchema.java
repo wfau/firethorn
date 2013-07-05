@@ -88,6 +88,13 @@ extends BaseSchema<JdbcSchema, JdbcTable>
     extends BaseSchema.Factory<JdbcResource, JdbcSchema>
         {
         /**
+         * Create a new schema for an identity.
+         * This actually creates the schema in the database.
+         *
+         */
+        public JdbcSchema build(final JdbcResource parent, final Identity identity);
+        
+        /**
          * Create a new schema.
          *
          */
@@ -99,12 +106,6 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          */
         public JdbcSchema select(final JdbcResource parent, final String catalog, final String schema);
 
-        /**
-         * Create a new schema.
-         *
-         */
-        public JdbcSchema create(final JdbcResource parent, final Identity identity);
-        
         /**
          * Select the schemas for an Identity.
          *
@@ -200,11 +201,5 @@ extends BaseSchema<JdbcSchema, JdbcTable>
      *
      */
     public String schema();
-
-    /**
-     * Update the schema.
-     *
-     */
-    public void scan();
 
     }

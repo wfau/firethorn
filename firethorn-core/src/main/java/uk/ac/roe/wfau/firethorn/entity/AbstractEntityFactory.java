@@ -38,7 +38,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
  */
 @Slf4j
 @Repository
-public abstract class AbstractFactory<EntityType extends Entity>
+public abstract class AbstractEntityFactory<EntityType extends Entity>
 extends AbstractComponent
 implements Entity.EntityFactory<EntityType>
     {
@@ -242,6 +242,12 @@ implements Entity.EntityFactory<EntityType>
         // Using wildcards in a HQL query with named parameters.
         // http://www.stpe.se/2008/07/hibernate-hql-like-query-named-parameters/
         return new StringBuilder(text).append("%").toString();
+        }
+
+    @Override
+    public EntityType empty()
+        {
+        return null ;
         }
     }
 

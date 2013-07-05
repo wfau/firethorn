@@ -394,7 +394,7 @@ implements JdbcTable
     @Override
     public JdbcTable.Columns columns()
         {
-        this.scan(false);
+        scantest();
         return columnsimpl();
         }
 
@@ -447,7 +447,7 @@ implements JdbcTable
             @Override
             public void scan()
                 {
-                JdbcTableEntity.this.scan();
+                JdbcTableEntity.this.scansync();
                 }
             };
         }
@@ -470,14 +470,14 @@ implements JdbcTable
         }
 
     @Override
-    public JdbcTable.Info info()
+    public JdbcTable.Metadata meta()
         {
-        return new JdbcTable.Info()
+        return new JdbcTable.Metadata()
             {
             @Override
-            public JdbcMeta jdbc()
+            public JdbcMetadata jdbc()
                 {
-                return new JdbcMeta()
+                return new JdbcMetadata()
                     {
                     @Override
                     public TableType type()
@@ -496,9 +496,9 @@ implements JdbcTable
                 }
 
             @Override
-            public AdqlMeta adql()
+            public AdqlMetadata adql()
                 {
-                return new AdqlMeta()
+                return new AdqlMetadata()
                     {
 
                     };
@@ -557,18 +557,18 @@ implements JdbcTable
                         );
                     while (columns.next())
                         {
-                        final String ccname  = columns.getString(JdbcMetadata.JDBC_META_TABLE_CAT);
-                        final String csname  = columns.getString(JdbcMetadata.JDBC_META_TABLE_SCHEM);
-                        final String ctname  = columns.getString(JdbcMetadata.JDBC_META_TABLE_NAME);
-                        final String colname = columns.getString(JdbcMetadata.JDBC_META_COLUMN_NAME);
+                        final String ccname  = columns.getString(JdbcTypes.JDBC_META_TABLE_CAT);
+                        final String csname  = columns.getString(JdbcTypes.JDBC_META_TABLE_SCHEM);
+                        final String ctname  = columns.getString(JdbcTypes.JDBC_META_TABLE_NAME);
+                        final String colname = columns.getString(JdbcTypes.JDBC_META_COLUMN_NAME);
                         final JdbcColumn.Type coltype = JdbcColumn.Type.jdbc(
                             columns.getInt(
-                                JdbcMetadata.JDBC_META_COLUMN_TYPE_TYPE
+                                JdbcTypes.JDBC_META_COLUMN_TYPE_TYPE
                                 )
                             );
                         final Integer colsize = new Integer(
                             columns.getInt(
-                                JdbcMetadata.JDBC_META_COLUMN_SIZE
+                                JdbcTypes.JDBC_META_COLUMN_SIZE
                                 )
                             );
 
@@ -609,12 +609,6 @@ implements JdbcTable
         // TODO
         // Reprocess the list disable missing ones ...
         //
-                    scandate(
-                        new DateTime()
-                        );
-                    scanflag(
-                        false
-                        );
                     }
                 catch (final SQLException ouch)
                     {

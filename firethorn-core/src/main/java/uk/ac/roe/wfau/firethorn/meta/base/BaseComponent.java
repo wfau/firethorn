@@ -163,4 +163,10 @@ extends NamedEntity
     public void inport();
      */
 
+    /**
+     * Scan the component metadata.
+     *
+    public void scan();
+     */
+
     }

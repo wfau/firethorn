@@ -34,7 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
-import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 
@@ -87,7 +87,7 @@ implements ConfigProperty
      */
     @Repository
     public static class EntityFactory
-    extends AbstractFactory<ConfigProperty>
+    extends AbstractEntityFactory<ConfigProperty>
     implements ConfigProperty.EntityFactory
         {
 

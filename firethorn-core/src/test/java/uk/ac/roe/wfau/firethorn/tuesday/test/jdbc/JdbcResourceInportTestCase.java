@@ -60,7 +60,6 @@ public class JdbcResourceInportTestCase
             );
         try {
             resource.catalog(catalog);
-            resource.scan();
             }
         catch(final Exception ouch)
             {

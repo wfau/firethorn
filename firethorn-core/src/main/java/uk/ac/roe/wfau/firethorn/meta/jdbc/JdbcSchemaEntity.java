@@ -42,7 +42,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
@@ -190,7 +190,7 @@ public class JdbcSchemaEntity
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<JdbcSchema>
+    extends AbstractEntityFactory<JdbcSchema>
     implements JdbcSchema.Factory
         {
 
@@ -202,11 +202,14 @@ public class JdbcSchemaEntity
 
         @Override
         @CreateEntityMethod
-        public JdbcSchema create(final JdbcResource parent, final Identity identity)
+        public JdbcSchema build(final JdbcResource parent, final Identity identity)
             {
 // TODO Need the resource catalog name ?
 // NameFactory - Generate a unique name from JdbcResource and Identity. 
 // TODO Liquibase SchemaBuilder ?
+            log.debug("JdbcSchema build(JdbcResource ,Identity)");
+            log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
+
             return builder().create(
                 this.create(
                     parent,
@@ -498,7 +501,7 @@ public class JdbcSchemaEntity
     @Override
     public JdbcSchema.Tables tables()
         {
-        this.scan(false);
+        scantest();
         return tablesimpl();
         }
 
@@ -557,7 +560,7 @@ public class JdbcSchemaEntity
             @Override
             public void scan()
                 {
-                JdbcSchemaEntity.this.scan();
+                JdbcSchemaEntity.this.scansync();
                 }
             };
         }
@@ -590,17 +593,17 @@ public class JdbcSchemaEntity
                         null, // tab
                         new String[]
                             {
-                            JdbcMetadata.JDBC_META_TABLE_TYPE_TABLE,
-                            JdbcMetadata.JDBC_META_TABLE_TYPE_VIEW
+                            JdbcTypes.JDBC_META_TABLE_TYPE_TABLE,
+                            JdbcTypes.JDBC_META_TABLE_TYPE_VIEW
                             }
                         );
 
                     while (tables.next())
                         {
-                        final String tcname = tables.getString(JdbcMetadata.JDBC_META_TABLE_CAT);
-                        final String tsname = tables.getString(JdbcMetadata.JDBC_META_TABLE_SCHEM);
-                        final String ttname = tables.getString(JdbcMetadata.JDBC_META_TABLE_NAME);
-                        final String tttype = tables.getString(JdbcMetadata.JDBC_META_TABLE_TYPE);
+                        final String tcname = tables.getString(JdbcTypes.JDBC_META_TABLE_CAT);
+                        final String tsname = tables.getString(JdbcTypes.JDBC_META_TABLE_SCHEM);
+                        final String ttname = tables.getString(JdbcTypes.JDBC_META_TABLE_NAME);
+                        final String tttype = tables.getString(JdbcTypes.JDBC_META_TABLE_TYPE);
                         log.debug("Found table [{}.{}.{}]", new Object[]{tcname, tsname, ttname});
 
                         JdbcTable table = tablesimpl().select(
@@ -608,7 +611,7 @@ public class JdbcSchemaEntity
                             );
                         if (table != null)
                             {
-                            table.info().jdbc().type(
+                            table.meta().jdbc().type(
                                 JdbcTable.TableType.match(
                                     tttype
                                     )
@@ -627,12 +630,6 @@ public class JdbcSchemaEntity
         // TODO
         // Reprocess the list disable missing ones ...
         //
-                    scandate(
-                        new DateTime()
-                        );
-                    scanflag(
-                        false
-                        );
                     }
                 catch (final SQLException ouch)
                     {

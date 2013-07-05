@@ -32,7 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
@@ -104,7 +104,7 @@ public class AdqlColumnEntity
      */
     @Repository
     public static class EntityFactory
-    extends AbstractFactory<AdqlColumn>
+    extends AbstractEntityFactory<AdqlColumn>
     implements AdqlColumn.EntityFactory
         {
 
@@ -314,5 +314,12 @@ public class AdqlColumnEntity
         return factories().adql().columns().links().link(
             this
             );
+        }
+
+    @Override
+    protected void scanimpl()
+        {
+        // TODO Auto-generated method stub
+        
         }
     }

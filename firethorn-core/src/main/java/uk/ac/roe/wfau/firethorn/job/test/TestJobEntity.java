@@ -35,7 +35,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
@@ -145,7 +145,7 @@ implements TestJob
      */
     @Repository
     public static class Resolver
-    extends AbstractFactory<TestJob>
+    extends AbstractEntityFactory<TestJob>
     implements TestJob.Resolver
         {
         @Override
@@ -189,7 +189,7 @@ implements TestJob
      */
     @Repository
     public static class Factory
-    extends AbstractFactory<TestJob>
+    extends AbstractEntityFactory<TestJob>
     implements TestJob.Factory
         {
         @Override

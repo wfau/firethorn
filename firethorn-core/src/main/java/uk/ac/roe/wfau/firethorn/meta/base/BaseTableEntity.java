@@ -34,7 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.entity.AbstractFactory;
+import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 
@@ -80,7 +80,7 @@ extends BaseComponentEntity
      */
     @Repository
     public static class Resolver
-    extends AbstractFactory<BaseTable<?,?>>
+    extends AbstractEntityFactory<BaseTable<?,?>>
     implements BaseTable.Resolver
         {
         @Override
@@ -129,7 +129,7 @@ extends BaseComponentEntity
      */
     @Repository
     public static abstract class Factory<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType, ?>>
-    extends AbstractFactory<TableType>
+    extends AbstractEntityFactory<TableType>
     implements BaseTable.Factory<SchemaType, TableType>
         {
         }
@@ -207,14 +207,14 @@ extends BaseComponentEntity
         }
 
     @Override
-    public AdqlTable.Info info()
+    public AdqlTable.Metadata meta()
         {
-        return new AdqlTable.Info()
+        return new AdqlTable.Metadata()
             {
             @Override
-            public AdqlTable.Info.AdqlMeta adql()
+            public AdqlTable.Metadata.AdqlMetadata adql()
                 {
-                return new AdqlTable.Info.AdqlMeta()
+                return new AdqlTable.Metadata.AdqlMetadata()
                     {
 
                     };

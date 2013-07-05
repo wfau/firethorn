@@ -306,4 +306,11 @@ public class IvoaTableEntity
             this
             );
         }
+
+    @Override
+    protected void scanimpl()
+        {
+        // TODO Auto-generated method stub
+        
+        }
     }

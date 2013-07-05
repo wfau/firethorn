@@ -66,7 +66,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
         }
 
     /**
-     * Table factory interface.
+     * Entity factory interface.
      *
      */
     public static interface Factory
@@ -138,16 +138,17 @@ extends BaseTable<AdqlTable, AdqlColumn>
 
     /**
      * ADQL table metadata.
-     *
+     * @todo make this consistent with BaseColum.Metadata
+     * 
      */
-    public interface Info
-    extends BaseTable.Info
+    public interface Metadata
+    extends BaseTable.Metadata
         {
         /**
          * The ADQL table metadata.
          *
          */
-        public interface AdqlMeta
+        public interface AdqlMetadata
             {
             }
 
@@ -155,10 +156,10 @@ extends BaseTable<AdqlTable, AdqlColumn>
          * The ADQL table metadata.
          *
          */
-        public AdqlMeta adql();
+        public AdqlMetadata adql();
         }
 
     @Override
-    public AdqlTable.Info info();
+    public AdqlTable.Metadata meta();
 
     }

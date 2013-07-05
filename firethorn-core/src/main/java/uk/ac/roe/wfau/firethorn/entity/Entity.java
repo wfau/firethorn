@@ -118,6 +118,13 @@ public interface Entity
          */
         public LinkFactory<EntityType> links();
 
+        /**
+         * Our 'empty' entity instance.
+         * This can be used to represent things like 'nobody', 'no results', or an empty resource, schema, table or column. 
+         *
+         */
+        public EntityType empty();
+        
         }
 
     /**
