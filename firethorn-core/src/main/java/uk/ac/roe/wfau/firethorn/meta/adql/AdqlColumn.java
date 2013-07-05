@@ -158,7 +158,7 @@ extends BaseColumn<AdqlColumn>
         public static AdqlColumn.Type adql(final JdbcColumn.Type jdbc)
             {
             return adql(
-                jdbc.code()
+                jdbc.sqltype()
                 );
             }
 

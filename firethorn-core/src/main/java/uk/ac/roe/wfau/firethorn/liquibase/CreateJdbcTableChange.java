@@ -35,11 +35,11 @@ extends CreateTableChange
                 column.meta().jdbc().type().name()
                 );
 
-            if (column.meta().jdbc().size() == JdbcColumn.Metadata.JdbcMeta.VAR_ARRAY_SIZE)
+            if (column.meta().jdbc().size() == JdbcColumn.VAR_ARRAY_SIZE)
                 {
                 typename.append("(*)");
                 }
-            else if (column.meta().jdbc().size() != JdbcColumn.Metadata.JdbcMeta.NON_ARRAY_SIZE)
+            else if (column.meta().jdbc().size() != JdbcColumn.NON_ARRAY_SIZE)
                 {
                 typename.append("(");
                 typename.append(

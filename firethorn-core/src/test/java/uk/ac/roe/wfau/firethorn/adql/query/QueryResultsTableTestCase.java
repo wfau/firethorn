@@ -18,20 +18,20 @@
 package uk.ac.roe.wfau.firethorn.adql.query ;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import java.util.Iterator;
+import java.sql.ResultSet;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
-import uk.ac.roe.wfau.firethorn.adql.query.QuerySelectFieldTestCase.ExpectedField;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 
 /**
@@ -157,8 +157,13 @@ extends TwomassQueryTestBase
     public void validate(AdqlQuery query, final ExpectedColumn[] expected)
     throws Exception
         {
-        if (query.syntax().state() == State.VALID)
+        if (expected.length > 0)
             {
+            assertEquals(
+                State.VALID,
+                query.syntax().state()
+                );
+
             assertNotNull(
                 query.fields()
                 );
@@ -201,6 +206,10 @@ extends TwomassQueryTestBase
                 );
             }
         else {
+            assertEquals(
+                State.PARSE_ERROR,
+                query.syntax().state()
+                );
             assertTrue(
                 ! query.fields().iterator().hasNext()
                 );
@@ -257,33 +266,9 @@ extends TwomassQueryTestBase
                 }                
             );
         }
-    
+
     //@Test
     public void test002()
-    throws Exception
-        {
-        validate(
-            this.schema.queries().create(
-                "SELECT"
-                + "    MAX(ra),"
-                + "    MAX(dec) as maxdec"
-                + " FROM"
-                + "    adql_twomass.twomass_psc as twomass"
-                + " WHERE"
-                + "    ra  BETWEEN '56.0' AND '57.9'"
-                + " AND"
-                + "    dec BETWEEN '24.0' AND '24.2'"
-                + ""
-                ),
-            new ExpectedColumn[] {
-                new ExpectedColumn("MAX",    AdqlColumn.Type.DOUBLE, 0, "MAX",    JdbcColumn.Type.DOUBLE, 53),
-                new ExpectedColumn("maxdec", AdqlColumn.Type.DOUBLE, 0, "maxdec", JdbcColumn.Type.DOUBLE, 53),
-                }
-            );
-        }
-
-    @Test
-    public void test003()
     throws Exception
         {
         validate(
@@ -365,6 +350,84 @@ extends TwomassQueryTestBase
                 new ExpectedColumn("coadd",            AdqlColumn.Type.SHORT,      0,   "coadd",            JdbcColumn.Type.SMALLINT,   5)
                 }
             );
+        }
+
+    @Test
+    public void test003()
+    throws Exception
+        {
+        validate(
+            this.schema.queries().create(
+                "SELECT"
+
+                + "    COUNT(ra),"
+                + "    count(ra)   as countra,"
+                + "    count(dec)  as countdec,"
+                + "    count(*)    as countall,"
+
+                + "    MIN(ra),"
+                + "    MIN(ra)  as minra,"
+                + "    min(dec) as mindec,"
+
+                + "    MAX(ra),"
+                + "    MAX(ra)  as maxra,"
+                + "    max(dec) as maxdec,"
+                
+                + "    AVG(ra),"
+                + "    AVG(ra)  as avgra,"
+                + "    avg(dec) as avgdec,"
+                
+                + "    SUM(ra),"
+                + "    SUM(ra)  as sumra,"
+                + "    sum(dec) as sumdec"
+                
+                + " FROM"
+                + "    adql_twomass.twomass_psc as twomass"
+                + " WHERE"
+                + "    ra  BETWEEN '56.0' AND '57.9'"
+                + " AND"
+                + "    dec BETWEEN '24.0' AND '24.2'"
+                + ""
+                ),
+            new ExpectedColumn[] {
+
+                new ExpectedColumn("COUNT",    AdqlColumn.Type.LONG, 0, "COUNT",    JdbcColumn.Type.BIGINT, 19),
+                new ExpectedColumn("countra",  AdqlColumn.Type.LONG, 0, "countra",  JdbcColumn.Type.BIGINT, 19),
+                new ExpectedColumn("countdec", AdqlColumn.Type.LONG, 0, "countdec", JdbcColumn.Type.BIGINT, 19),
+                new ExpectedColumn("countall", AdqlColumn.Type.LONG, 0, "countall", JdbcColumn.Type.BIGINT, 19),
+
+                new ExpectedColumn("MIN",    AdqlColumn.Type.DOUBLE, 0, "MIN",      JdbcColumn.Type.DOUBLE, 53),
+                new ExpectedColumn("minra",  AdqlColumn.Type.DOUBLE, 0, "minra",    JdbcColumn.Type.DOUBLE, 53),
+                new ExpectedColumn("mindec", AdqlColumn.Type.DOUBLE, 0, "mindec",   JdbcColumn.Type.DOUBLE, 53),
+
+                new ExpectedColumn("MAX",    AdqlColumn.Type.DOUBLE, 0, "MAX",      JdbcColumn.Type.DOUBLE, 53),
+                new ExpectedColumn("maxra",  AdqlColumn.Type.DOUBLE, 0, "maxra",    JdbcColumn.Type.DOUBLE, 53),
+                new ExpectedColumn("maxdec", AdqlColumn.Type.DOUBLE, 0, "maxdec",   JdbcColumn.Type.DOUBLE, 53),
+
+                new ExpectedColumn("AVG",    AdqlColumn.Type.DOUBLE, 0, "AVG",      JdbcColumn.Type.DOUBLE, 53),
+                new ExpectedColumn("avgra",  AdqlColumn.Type.DOUBLE, 0, "avgra",    JdbcColumn.Type.DOUBLE, 53),
+                new ExpectedColumn("avgdec", AdqlColumn.Type.DOUBLE, 0, "avgdec",   JdbcColumn.Type.DOUBLE, 53),
+                
+                new ExpectedColumn("SUM",    AdqlColumn.Type.DOUBLE, 0, "SUM",      JdbcColumn.Type.DOUBLE, 53),
+                new ExpectedColumn("sumra",  AdqlColumn.Type.DOUBLE, 0, "sumra",    JdbcColumn.Type.DOUBLE, 53),
+                new ExpectedColumn("sumdec", AdqlColumn.Type.DOUBLE, 0, "sumdec",   JdbcColumn.Type.DOUBLE, 53),
+                
+                }
+            );
+        }
+
+    //@Test
+    public void test004()
+    throws Exception
+        {
+        ResultSet results = this.twomass.connection().metadata().getTypeInfo();
+        while (results.next())
+            {
+            Integer size = results.getInt("PRECISION");
+            Integer type = results.getInt("DATA_TYPE");
+            String  name = results.getString("TYPE_NAME");
+            log.debug(" Type [{}][{}][{}]", name, type, size);
+            }
         }
     }
 

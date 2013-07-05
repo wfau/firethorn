@@ -88,53 +88,73 @@ extends BaseColumn<JdbcColumn>
     public JdbcResource resource();
 
     /**
+     * The size for a non-array field.
+     *
+     */
+    public static final Integer NON_ARRAY_SIZE = new Integer(0);
+
+    /**
+     * The size for a variable size array field.
+     *
+     */
+    public static final Integer VAR_ARRAY_SIZE = new Integer(-1);
+    
+
+    /**
      * An enumeration of the JDBC data types.
+     * The sizes are based on the size/precision for SQLServer. 
      *
      */
     public enum Type
         {
-        ARRAY(          Types.ARRAY),
-        BIGINT(         Types.BIGINT),
-        BINARY(         Types.BINARY),
-        BIT(            Types.BIT),
-        BLOB(           Types.BLOB),
-        BOOLEAN(        Types.BOOLEAN),
-        CHAR(           Types.CHAR),
-        CLOB(           Types.CLOB),
-        DATALINK(       Types.DATALINK),
-        DATE(           Types.DATE),
-        DECIMAL(        Types.DECIMAL),
-        DISTINCT(       Types.DISTINCT),
-        DOUBLE(         Types.DOUBLE),
-        FLOAT(          Types.FLOAT),
-        INTEGER(        Types.INTEGER),
-        JAVA_OBJECT(    Types.JAVA_OBJECT),
-        LONGNVARCHAR(   Types.LONGNVARCHAR),
-        LONGVARBINARY(  Types.LONGVARBINARY),
-        LONGVARCHAR(    Types.LONGVARCHAR),
-        NCHAR(          Types.NCHAR),
-        NCLOB(          Types.NCLOB),
-        NULL(           Types.NULL),
-        NUMERIC(        Types.NUMERIC),
-        NVARCHAR(       Types.NVARCHAR),
-        OTHER(          Types.OTHER),
-        REAL(           Types.REAL),
-        REF(            Types.REF),
-        ROWID(          Types.ROWID),
-        SMALLINT(       Types.SMALLINT),
-        SQLXML(         Types.SQLXML),
-        STRUCT(         Types.STRUCT),
-        TIME(           Types.TIME),
-        TIMESTAMP(      Types.TIMESTAMP),
-        TINYINT(        Types.TINYINT),
-        VARBINARY(      Types.VARBINARY),
-        VARCHAR(        Types.VARCHAR),
-        UNKNOWN(        Types.OTHER);
+        ARRAY(          Types.ARRAY,         VAR_ARRAY_SIZE),
+        BIGINT(         Types.BIGINT,        19),
+        BINARY(         Types.BINARY,        VAR_ARRAY_SIZE),
+        BIT(            Types.BIT,            1),
+        BLOB(           Types.BLOB,          VAR_ARRAY_SIZE),
+        BOOLEAN(        Types.BOOLEAN,        1),
+        CHAR(           Types.CHAR,          VAR_ARRAY_SIZE),
+        CLOB(           Types.CLOB,          VAR_ARRAY_SIZE),
+        DATALINK(       Types.DATALINK,      NON_ARRAY_SIZE),
+        DATE(           Types.DATE,          10),
+        DECIMAL(        Types.DECIMAL,       38),
+        DISTINCT(       Types.DISTINCT,      NON_ARRAY_SIZE),
+        DOUBLE(         Types.DOUBLE,        53),
+        FLOAT(          Types.FLOAT,         53),
+        INTEGER(        Types.INTEGER,       10),
+        JAVA_OBJECT(    Types.JAVA_OBJECT,   VAR_ARRAY_SIZE),
+        LONGNVARCHAR(   Types.LONGNVARCHAR,  VAR_ARRAY_SIZE),
+        LONGVARBINARY(  Types.LONGVARBINARY, VAR_ARRAY_SIZE),
+        LONGVARCHAR(    Types.LONGVARCHAR,   VAR_ARRAY_SIZE),
+        NCHAR(          Types.NCHAR,         VAR_ARRAY_SIZE),
+        NCLOB(          Types.NCLOB,         VAR_ARRAY_SIZE),
+        NULL(           Types.NULL,          VAR_ARRAY_SIZE),
+        NUMERIC(        Types.NUMERIC,       38),
+        NVARCHAR(       Types.NVARCHAR,      VAR_ARRAY_SIZE),
+        OTHER(          Types.OTHER,         NON_ARRAY_SIZE),
+        REAL(           Types.REAL,          24),
+        REF(            Types.REF,           NON_ARRAY_SIZE),
+        ROWID(          Types.ROWID,         NON_ARRAY_SIZE),
+        SMALLINT(       Types.SMALLINT,       5),
+        SQLXML(         Types.SQLXML,        VAR_ARRAY_SIZE),
+        STRUCT(         Types.STRUCT,        VAR_ARRAY_SIZE),
+        TIME(           Types.TIME,          16),
+        TIMESTAMP(      Types.TIMESTAMP,      8),
+        TINYINT(        Types.TINYINT,        3),
+        VARBINARY(      Types.VARBINARY,     VAR_ARRAY_SIZE),
+        VARCHAR(        Types.VARCHAR,       VAR_ARRAY_SIZE),
+        UNKNOWN(        Types.OTHER,         NON_ARRAY_SIZE);
 
-        private final int code ;
-        public int code()
+        private final int sqltype ;
+        public int sqltype()
             {
-            return this.code;
+            return this.sqltype;
+            }
+
+        private final int sqlsize ;
+        public int sqlsize()
+            {
+            return this.sqlsize ;
             }
 
         public AdqlColumn.Type adql()
@@ -144,9 +164,10 @@ extends BaseColumn<JdbcColumn>
                 );
             }
 
-        Type(final int code)
+        Type(final int type, final int size)
             {
-            this.code = code ;
+            this.sqltype = type;
+            this.sqlsize = size ;
             }
 
         /**
@@ -272,7 +293,6 @@ extends BaseColumn<JdbcColumn>
             }
         }
 
-
     /**
      * Access to the column metadata.
      *
@@ -286,17 +306,6 @@ extends BaseColumn<JdbcColumn>
          */
         public interface JdbcMeta
             {
-            /**
-             * The size for a non-array field.
-             *
-             */
-            public static final Integer NON_ARRAY_SIZE = new Integer(0);
-
-            /**
-             * The size for a variable size array field.
-             *
-             */
-            public static final Integer VAR_ARRAY_SIZE = new Integer(-1);
 
             /**
              * The JDBC size.

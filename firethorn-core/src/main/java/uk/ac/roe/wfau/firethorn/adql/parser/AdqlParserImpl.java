@@ -50,6 +50,9 @@ import adql.query.operand.ADQLColumn;
 import adql.query.operand.ADQLOperand;
 import adql.query.operand.Operation;
 import adql.query.operand.function.ADQLFunction;
+import adql.query.operand.function.MathFunction;
+import adql.query.operand.function.SQLFunction;
+import adql.query.operand.function.UserDefinedFunction;
 import adql.translator.ADQLTranslator;
 import adql.translator.TranslationException;
 
@@ -733,7 +736,7 @@ implements AdqlParser
      * Wrap a SelectItem.
      *
      */
-    public AdqlQuery.SelectField wrap(final SelectItem item)
+    public static AdqlQuery.SelectField wrap(final SelectItem item)
         {
         log.debug("wrap(SelectItem)");
         log.debug("  alias [{}]", item.getAlias());
@@ -751,7 +754,7 @@ implements AdqlParser
      * Wrap an ADQLOperand.
      *
      */
-    public AdqlQuery.SelectField wrap(final ADQLOperand oper)
+    public static AdqlQuery.SelectField wrap(final ADQLOperand oper)
         {
         log.debug("wrap(ADQLOperand)");
         log.debug("  name   [{}]", oper.getName());
@@ -789,7 +792,7 @@ implements AdqlParser
      * Wrap an ADQLColumn.
      *
      */
-    public AdqlQuery.SelectField wrap(final ADQLColumn column)
+    public static AdqlQuery.SelectField wrap(final ADQLColumn column)
         {
         log.debug("wrap(ADQLColumn)");
         log.debug("  name   [{}]", column.getName());
@@ -810,7 +813,7 @@ implements AdqlParser
                 );
             }
         else {
-            log.warn("Unknown column.getDBLink() class [{}]", column.getDBLink(),getClass().getName());
+            log.warn("Unknown column.getDBLink() class [{}]", column.getDBLink().getClass().getName());
             return new SelectFieldImpl(
                 "unknown",
                 new Integer(0),
@@ -824,7 +827,7 @@ implements AdqlParser
      * @todo Catch DATE_TIME and convert into char[10] 
      *
      */
-    public AdqlQuery.SelectField wrap(final AdqlColumn column)
+    public static AdqlQuery.SelectField wrap(final AdqlColumn column)
         {
         log.debug("wrap(AdqlColumn)");
         log.debug("  adql [{}]", column.fullname());
@@ -840,7 +843,7 @@ implements AdqlParser
      * **This is proof of concept only, it just picks the largest size param.
      *
      */
-    public AdqlQuery.SelectField wrap(final Operation oper)
+    public static AdqlQuery.SelectField wrap(final Operation oper)
         {
         log.debug("wrap(Operation)");
         log.debug("  name   [{}]", oper.getName());
@@ -857,38 +860,188 @@ implements AdqlParser
         }
 
     /**
+     * Function handler.
+     * 
+    public enum FunctionHandler
+        {
+        AVG()
+            {
+            @Override
+            AdqlQuery.SelectField handle(ADQLOperand[] params)
+                {
+                return new SelectFieldWrapper(
+                    this.name(),
+                    wrap(
+                        params[0]
+                        )
+                    );
+                }
+            },
+
+        SUM()
+            {
+            @Override
+            AdqlQuery.SelectField handle(ADQLOperand[] params)
+                {
+                return new SelectFieldWrapper(
+                    this.name(),
+                    wrap(
+                        params[0]
+                        )
+                    );
+                }
+            },
+
+        MIN()
+            {
+            @Override
+            AdqlQuery.SelectField handle(ADQLOperand[] params)
+                {
+                return new SelectFieldWrapper(
+                    this.name(),
+                    wrap(
+                        params[0]
+                        )
+                    );
+                }
+            },
+
+        MAX()
+            {
+            @Override
+            AdqlQuery.SelectField handle(ADQLOperand[] params)
+                {
+                return new SelectFieldWrapper(
+                    this.name(),
+                    wrap(
+                        params[0]
+                        )
+                    );
+                }
+            };
+            
+        abstract AdqlQuery.SelectField handle(ADQLOperand[] param);
+        
+        }
+     */
+    
+    /**
      * Wrap an ADQLFunction.
-     * **This is proof of concept only, it just picks the largest size param.
      *
      */
-    public AdqlQuery.SelectField wrap(final ADQLFunction funct)
+    public static AdqlQuery.SelectField wrap(final ADQLFunction funct)
         {
         log.debug("wrap(ADQLFunction)");
         log.debug("  name   [{}]", funct.getName());
         log.debug("  number [{}]", funct.isNumeric());
         log.debug("  string [{}]", funct.isString());
 
-        AdqlQuery.SelectField info = null ;
+        if (funct instanceof SQLFunction)
+            {
+            return wrap((SQLFunction) funct);
+            }
+        else if (funct instanceof MathFunction)
+            {
+            return wrap((MathFunction) funct);
+            }
+        else if (funct instanceof UserDefinedFunction)
+            {
+            return wrap((UserDefinedFunction) funct);
+            }
+        else {
+            log.error("Unexpected function type [{}][{}]", funct.getName(), funct.getClass().getName());
+            return null ;
+            }
+        }
+        
+    /**
+     * Wrap an ADQLFunction.
+     *
+     */
+    public static AdqlQuery.SelectField wrap(final SQLFunction funct)
+        {
+        log.debug("wrap(SQLFunction)");
+        log.debug("  name   [{}]", funct.getName());
+        log.debug("  number [{}]", funct.isNumeric());
+        log.debug("  string [{}]", funct.isString());
+
+        switch (funct.getType())
+            {
+            case COUNT :
+            case COUNT_ALL :
+                return new SelectFieldImpl(
+                    funct.getName(),
+                    new Integer(0),
+                    AdqlColumn.Type.LONG
+                    );
+
+            case AVG:
+            case MAX:
+            case MIN:
+            case SUM:
+                return new SelectFieldWrapper(
+                    funct.getName(),
+                    wrap(
+                        funct.getParameter(0)
+                        )
+                    );
+            
+            default : 
+                log.error("Unexpected function type [{}][{}]", funct.getName(), funct.getType());
+                return null ;
+            }
+        }
+        
+    /**
+     * Wrap a MathFunction.
+     *
+     */
+    public static AdqlQuery.SelectField wrap(final MathFunction funct)
+        {
+        log.debug("wrap(MathFunction)");
+        log.debug("  name   [{}]", funct.getName());
+        log.debug("  number [{}]", funct.isNumeric());
+        log.debug("  string [{}]", funct.isString());
+        return null ;
+        }
+        
+    /**
+     * Wrap a UserDefinedFunction.
+     *
+     */
+    public static AdqlQuery.SelectField wrap(final UserDefinedFunction funct)
+        {
+        log.debug("wrap(UserDefinedFunction)");
+        log.debug("  name   [{}]", funct.getName());
+        log.debug("  number [{}]", funct.isNumeric());
+        log.debug("  string [{}]", funct.isString());
+        return null ;
+        }
+        
+/*
+ *         
+        AdqlQuery.SelectField field = null ;
 
         for (final ADQLOperand param : funct.getParameters())
             {
             final AdqlQuery.SelectField temp = wrap(
                 param
                 );
-            if (info == null)
+            if (field == null)
                 {
-                info = temp;
+                field = temp;
                 }
             else {
-                if (temp.arraysize().intValue() > info.arraysize().intValue())
+                if (temp.arraysize().intValue() > field.arraysize().intValue())
                     {
-                    info = temp ;
+                    field = temp ;
                     }
                 }
             }
         return new SelectFieldWrapper(
             funct.getName(),
-            info
+            field
             );
-        }
+*
+*/
     }

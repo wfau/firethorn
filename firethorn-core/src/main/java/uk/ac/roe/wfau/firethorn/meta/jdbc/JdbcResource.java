@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 
 /**
@@ -156,5 +157,23 @@ extends BaseResource<JdbcSchema>
      *
      */
     public void catalog(final String catalog);
+
+    /**
+     * Get the JDBC type for an ADQL type.
+     * 
+     */
+    public JdbcColumn.Type jdbctype(final AdqlColumn.Type type);
+    
+    /**
+     * Get the JDBC size/precision for an ADQL type.
+     * 
+     */
+    public Integer jdbcsize(final AdqlColumn.Type type);
+
+    /**
+     * Get the JDBC size/precision for a JDBC type.
+     * 
+     */
+    public Integer jdbcsize(final JdbcColumn.Type type);
 
     }

@@ -600,7 +600,7 @@ implements JdbcTable
                             {
                             columnsimpl().create(
                                 colname,
-                                coltype.code(),
+                                coltype.sqltype(),
                                 colsize.intValue()
                                 );
                             }

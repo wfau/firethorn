@@ -188,26 +188,27 @@ public class JdbcColumnEntity
                 }
             }
 
-        private JdbcColumn create(final JdbcTable parent, String name, final JdbcColumn template)
+        private JdbcColumn create(final JdbcTable parent, String name, final JdbcColumn column)
             {
             return this.insert(
                 new JdbcColumnEntity(
                     parent,
                     name,
-                    template.meta().jdbc().type(),
-                    template.meta().jdbc().size()
+                    column.meta().jdbc().type(),
+                    column.meta().jdbc().size()
                     )
                 );
             }
 
-        private JdbcColumn create(final JdbcTable parent, String name, final AdqlColumn template)
+        
+        private JdbcColumn create(final JdbcTable parent, String name, final AdqlColumn column)
             {
             return this.insert(
                 new JdbcColumnEntity(
                     parent,
                     name,
-                    template.meta().adql().type().jdbc(),
-                    template.meta().adql().arraysize()
+                    column.meta().adql().type().jdbc(),
+                    column.meta().adql().arraysize()
                     )
                 );
             }
@@ -313,6 +314,12 @@ public class JdbcColumnEntity
         this.table    = table;
         this.jdbctype = type ;
         this.jdbcsize = size ;
+        if (this.jdbcsize <= 0)
+            {
+            this.jdbcsize = resource().jdbcsize(
+                type
+                ); 
+            }
         }
 
     @Override
@@ -421,7 +428,7 @@ public class JdbcColumnEntity
             //
             // Array type.
             case ARRAY :
-                return JdbcColumn.Metadata.JdbcMeta.VAR_ARRAY_SIZE;
+                return JdbcColumn.VAR_ARRAY_SIZE;
 
             // TODO unlimited TEXT size
 
@@ -459,7 +466,7 @@ public class JdbcColumnEntity
             //
             // Single value types.
             default :
-                return JdbcColumn.Metadata.JdbcMeta.NON_ARRAY_SIZE;
+                return JdbcColumn.NON_ARRAY_SIZE;
             }
         }
 

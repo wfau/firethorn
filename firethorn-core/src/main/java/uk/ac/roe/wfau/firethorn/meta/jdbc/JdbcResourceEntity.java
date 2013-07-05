@@ -45,7 +45,9 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn.Type;
 
 /**
  *
@@ -627,5 +629,23 @@ public class JdbcResourceEntity
         finally {
             connection().close();
             }
+        }
+
+    @Override
+    public JdbcColumn.Type jdbctype(final AdqlColumn.Type type)
+        {
+        return connection().type().jdbctype(type);
+        }
+    
+    @Override
+    public Integer jdbcsize(final AdqlColumn.Type type)
+        {
+        return connection().type().jdbcsize(type);
+        }
+
+    @Override
+    public Integer jdbcsize(final JdbcColumn.Type type)
+        {
+        return connection().type().jdbcsize(type);
         }
     }

@@ -24,6 +24,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -182,5 +184,39 @@ public enum JdbcProductType
         else {
             return UNKNOWN;
             }
+        }
+
+    /**
+     * Get the JDBC type for an ADQL type.
+     * This defaults to calling jdbc() on the AdqlColumn.Type.
+     * 
+     */
+    public JdbcColumn.Type jdbctype(final AdqlColumn.Type type)
+        {
+        return type.jdbc();
+        }
+    
+    /**
+     * Get the JDBC size/precision for an ADQL type.
+     * This defaults to finding the corresponding JdbcColumn.Type and getting the size for that..
+     * 
+     */
+    public Integer jdbcsize(final AdqlColumn.Type type)
+        {
+        return jdbcsize(
+            jdbctype(
+                type
+                )
+            );
+        }
+
+    /**
+     * Get the JDBC size/precision for a JDBC type.
+     * This defaults to calling sqlsize() on the JdbcColumn.Type.
+     * 
+     */
+    public Integer jdbcsize(final JdbcColumn.Type type)
+        {
+        return type.sqlsize();
         }
     }
