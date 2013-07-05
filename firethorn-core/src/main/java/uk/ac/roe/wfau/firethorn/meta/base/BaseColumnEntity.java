@@ -195,6 +195,107 @@ extends BaseComponentEntity
         this.adqlsize = size;
         }
 
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_ADQL_UNITS_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    protected String adqlunits ;
+    protected String adqlunits()
+        {
+        if (this.adqlunits != null)
+            {
+            return this.adqlunits ;
+            }
+        else {
+            return base().meta().adql().units();
+            }
+        }
+    protected void adqlunits(final String units)
+        {
+        this.adqlunits = units;
+        }
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_ADQL_UTYPE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    protected String adqlutype ;
+    protected String adqlutype()
+        {
+        if (this.adqlutype != null)
+            {
+            return this.adqlutype ;
+            }
+        else {
+            return base().meta().adql().utype();
+            }
+        }
+    protected void adqlutype(final String utype)
+        {
+        this.adqlutype = utype;
+        }
+
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_ADQL_UCD0_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    protected String adqlucd0 ;
+    protected String adqlucd0()
+        {
+        if (this.adqlucd0 != null)
+            {
+            return this.adqlucd0 ;
+            }
+        else {
+            return base().meta().adql().ucd0();
+            }
+        }
+    protected void adqlucd0(final String ucd)
+        {
+        this.adqlucd0 = ucd;
+        }
+
+    @Basic(
+        fetch = FetchType.EAGER
+        )
+    @Column(
+        name = DB_ADQL_UCD1_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    protected String adqlucd1 ;
+    protected String adqlucd1()
+        {
+        if (this.adqlucd1 != null)
+            {
+            return this.adqlucd1 ;
+            }
+        else {
+            return base().meta().adql().ucd1();
+            }
+        }
+    protected void adqlucd1(final String ucd)
+        {
+        this.adqlucd1 = ucd;
+        }
+    
     @Override
     public BaseColumn.Metadata meta()
         {
@@ -238,42 +339,55 @@ extends BaseComponentEntity
                 }
 
             @Override
-            public String unit()
+            public String units()
                 {
-                return "units";
+                return adqlunits();
                 }
             @Override
-            public void unit(final String unit)
+            public void units(final String units)
                 {
+                adqlunits(
+                    units
+                    );
                 }
 
             @Override
             public String utype()
                 {
-                return "utype";
+                return adqlutype();
                 }
             @Override
             public void utype(final String utype)
                 {
+                adqlutype(
+                    utype
+                    );
+                }
+
+            @Override
+            public String ucd0()
+                {
+                return adqlucd0();
+                }
+            @Override
+            public void ucd0(final String ucd)
+                {
+                adqlucd0(
+                    ucd
+                    );
                 }
 
             @Override
             public String ucd1()
                 {
-                return "new-ucd";
+                return adqlucd1();
                 }
             @Override
             public void ucd1(final String ucd)
                 {
-                }
-            @Override
-            public String ucd0()
-                {
-                return "old-ucd";
-                }
-            @Override
-            public void ucd0(final String ucd)
-                {
+                adqlucd1(
+                    ucd
+                    );
                 }
             };
         }

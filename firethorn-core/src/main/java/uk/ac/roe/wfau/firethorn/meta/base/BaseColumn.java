@@ -162,12 +162,12 @@ extends BaseComponent
              * The ADQL units.
              *
              */
-            public String unit();
+            public String units();
             /**
              * Set the ADQL units.
              *
              */
-            public void unit(final String unit);
+            public void units(final String unit);
 
             /**
              * The ADQL utype.
