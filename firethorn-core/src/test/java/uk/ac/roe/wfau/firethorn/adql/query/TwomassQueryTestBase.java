@@ -32,7 +32,7 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 
 /**
- * 
+ *
  *
  */
 @Slf4j
@@ -42,7 +42,7 @@ extends TestBase
     {
 
     protected JdbcResource twomass ;
-    protected AdqlSchema   schema  ;  
+    protected AdqlSchema   schema  ;
     protected AdqlResource workspace ;
 
     /**

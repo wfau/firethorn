@@ -49,8 +49,8 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 @Component
 public class TestFactories
     {
-    
-    
+
+
     @Component
     public static class JobFactories
         {
@@ -165,7 +165,7 @@ public class TestFactories
                     }
                 }
             }
-        
+
         @Component
         public static class OperationFactories
             {
@@ -219,7 +219,7 @@ public class TestFactories
                     }
                 }
             }
-        
+
         }
 
     @Component

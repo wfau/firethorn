@@ -114,7 +114,7 @@ public class JdbcColumnEntity
                 );
             }
         }
-    
+
     /**
      * Column factory implementation.
      *
@@ -188,7 +188,7 @@ public class JdbcColumnEntity
                 }
             }
 
-        private JdbcColumn create(final JdbcTable parent, String name, final JdbcColumn column)
+        private JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn column)
             {
             return this.insert(
                 new JdbcColumnEntity(
@@ -200,8 +200,8 @@ public class JdbcColumnEntity
                 );
             }
 
-        
-        private JdbcColumn create(final JdbcTable parent, String name, final AdqlColumn column)
+
+        private JdbcColumn create(final JdbcTable parent, final String name, final AdqlColumn column)
             {
             return this.insert(
                 new JdbcColumnEntity(
@@ -212,7 +212,7 @@ public class JdbcColumnEntity
                     )
                 );
             }
-        
+
         @Override
         @SelectEntityMethod
         public Iterable<JdbcColumn> select(final JdbcTable parent)
@@ -318,7 +318,7 @@ public class JdbcColumnEntity
             {
             this.jdbcsize = resource().jdbcsize(
                 type
-                ); 
+                );
             }
         }
 
@@ -401,7 +401,7 @@ public class JdbcColumnEntity
             return null;
             }
         }
-    
+
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -449,7 +449,7 @@ public class JdbcColumnEntity
             case TIME:
             case TIMESTAMP:
                 return this.jdbcsize ;
-                
+
             //
             // Blob types.
             case BLOB:
@@ -462,7 +462,7 @@ public class JdbcColumnEntity
             case BINARY:
             case VARBINARY:
                 return this.jdbcsize ;
-            
+
             //
             // Single value types.
             default :
@@ -493,7 +493,7 @@ public class JdbcColumnEntity
         {
         return this.adqlucd1 ;
         }
-    
+
     protected JdbcColumn.Metadata.JdbcMeta jdbcmeta()
         {
         return new JdbcColumn.Metadata.JdbcMeta()

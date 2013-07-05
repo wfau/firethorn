@@ -34,7 +34,7 @@ import adql.translator.TranslationException;
 
 /**
  * OGSA-DAI DQP ADQL Translator.
- * This needs to generate DQP compatible ADQL that can be passed to OGSA-DAI DQP.   
+ * This needs to generate DQP compatible ADQL that can be passed to OGSA-DAI DQP.
  * @todo Remove dependency on PostgreSQLTranslator
  *
  */
@@ -59,7 +59,7 @@ public class OgsaDQPTranslator
      *
      *
      */
-    public OgsaDQPTranslator(boolean column)
+    public OgsaDQPTranslator(final boolean column)
         {
         super(
             column
@@ -70,7 +70,7 @@ public class OgsaDQPTranslator
      *
      *
      */
-    public OgsaDQPTranslator(boolean catalog, boolean schema, boolean table, boolean column)
+    public OgsaDQPTranslator(final boolean catalog, final boolean schema, final boolean table, final boolean column)
         {
         super(
             catalog,
@@ -81,7 +81,7 @@ public class OgsaDQPTranslator
         }
 
     /**
-     * Replaces the PostgreSQLTranslator method to not put LIMIT at the end. 
+     * Replaces the PostgreSQLTranslator method to not put LIMIT at the end.
      *
      */
     @Override
@@ -90,7 +90,7 @@ public class OgsaDQPTranslator
         {
         log.debug("translate(ADQLQuery)");
 
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append(
             translate(
                 query.getSelect()
@@ -141,9 +141,9 @@ public class OgsaDQPTranslator
         return builder.toString();
         }
 
-    
+
     /**
-     * Replaces the PostgreSQLTranslator method to put TOP at the beginning. 
+     * Replaces the PostgreSQLTranslator method to put TOP at the beginning.
      *
      */
     @Override
@@ -152,7 +152,7 @@ public class OgsaDQPTranslator
         {
         log.debug("translate(ClauseSelect)");
 
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         for(int i=0; (i < clause.size()); i++)
             {
             if (i == 0)
@@ -185,10 +185,10 @@ public class OgsaDQPTranslator
             }
         return builder.toString();
         }
-    
+
     /**
      * Copy of the PostgreSQLTranslator method ...
-     *  
+     *
      *
      */
     @Override
@@ -199,28 +199,28 @@ public class OgsaDQPTranslator
 
         /*
          * TODO Replace this with code that uses the Firethorn metadata.
-         *  
+         *
          * Check if the ADQLTable is an AdqlParserTable
-         * Cast the ADQLTable  into an AdqlParserTable 
-         * call table.table() to get an AdqlTable object 
+         * Cast the ADQLTable  into an AdqlParserTable
+         * call table.table() to get an AdqlTable object
          * process the column list from the AdqlTable.
-         * 
+         *
          */
-        
-        HashMap<String, String> mapAlias = new HashMap<String, String>();
-        
+
+        final HashMap<String, String> mapAlias = new HashMap<String, String>();
+
         // Fetch the full list of columns to display:
         Iterable<DBColumn> dbCols = null;
         if (all.getAdqlTable() != null)
             {
-            ADQLTable table = all.getAdqlTable();
+            final ADQLTable table = all.getAdqlTable();
             log.debug("Table [{}][{}]", table.getName(), table.getClass().getName());
             if (table.getDBLink() != null)
                 {
                 dbCols = table.getDBLink();
                 if (table.hasAlias())
                     {
-                    String key = appendFullDBName(new StringBuffer(), table.getDBLink()).toString();
+                    final String key = appendFullDBName(new StringBuffer(), table.getDBLink()).toString();
                     mapAlias.put(key, table.isCaseSensitive(IdentifierField.ALIAS) ? ("\""+table.getAlias()+"\"") : table.getAlias());
                     }
                 }
@@ -234,12 +234,12 @@ public class OgsaDQPTranslator
         else if (all.getQuery() != null)
             {
             dbCols = all.getQuery().getFrom().getDBColumns();
-            ArrayList<ADQLTable> tables = all.getQuery().getFrom().getTables();
-            for(ADQLTable table : tables)
+            final ArrayList<ADQLTable> tables = all.getQuery().getFrom().getTables();
+            for(final ADQLTable table : tables)
                 {
                 if (table.hasAlias())
                     {
-                    String key = appendFullDBName(new StringBuffer(), table.getDBLink()).toString();
+                    final String key = appendFullDBName(new StringBuffer(), table.getDBLink()).toString();
                     mapAlias.put(key, table.isCaseSensitive(IdentifierField.ALIAS) ? ("\""+table.getAlias()+"\"") : table.getAlias());
                     }
                 }
@@ -248,18 +248,24 @@ public class OgsaDQPTranslator
         // Write the DB name of all these columns:
         if (dbCols != null)
             {
-            StringBuffer cols = new StringBuffer();
-            for(DBColumn col : dbCols)
+            final StringBuffer cols = new StringBuffer();
+            for(final DBColumn col : dbCols)
                 {
                 if (cols.length() > 0)
-                    cols.append(',');
+                    {
+                        cols.append(',');
+                        }
                 if (col.getTable() != null)
                     {
-                    String fullDbName = appendFullDBName(new StringBuffer(), col.getTable()).toString();
+                    final String fullDbName = appendFullDBName(new StringBuffer(), col.getTable()).toString();
                     if (mapAlias.containsKey(fullDbName))
-                        appendIdentifier(cols, mapAlias.get(fullDbName), false).append('.');
+                        {
+                            appendIdentifier(cols, mapAlias.get(fullDbName), false).append('.');
+                            }
                     else
-                        cols.append(fullDbName).append('.');
+                        {
+                            cols.append(fullDbName).append('.');
+                            }
                     }
                 appendIdentifier(cols, col.getDBName(), IdentifierField.COLUMN);
                 cols.append(" AS ").append(col.getADQLName());

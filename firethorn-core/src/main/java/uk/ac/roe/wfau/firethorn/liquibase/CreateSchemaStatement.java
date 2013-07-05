@@ -7,7 +7,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 @Slf4j
 public class CreateSchemaStatement
-extends AbstractSqlStatement 
+extends AbstractSqlStatement
     {
     public CreateSchemaStatement(final JdbcSchema schema)
         {

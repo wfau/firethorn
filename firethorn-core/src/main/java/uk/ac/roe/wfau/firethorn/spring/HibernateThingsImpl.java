@@ -306,10 +306,11 @@ public class HibernateThingsImpl
             }
         try {
             @SuppressWarnings("unchecked")
+            final
             Iterator<Entity> iter = query.iterate();
             if (iter.hasNext())
                 {
-                return iter.next(); 
+                return iter.next();
                 }
             else {
                 return null ;

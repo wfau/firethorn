@@ -23,7 +23,7 @@ import org.junit.Test;
 
 
 /**
- * 
+ *
  *
  */
 @Slf4j
@@ -58,6 +58,6 @@ extends TwomassQueryTestBase
                 )
             );
         // TODO verify the query contents ..
-        } 
+        }
     }
 

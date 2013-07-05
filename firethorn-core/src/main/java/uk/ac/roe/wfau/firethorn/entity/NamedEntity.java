@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package uk.ac.roe.wfau.firethorn.entity;
 

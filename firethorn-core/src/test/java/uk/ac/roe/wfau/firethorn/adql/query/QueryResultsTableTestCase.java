@@ -31,7 +31,6 @@ import org.junit.Test;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 
 
 /**
@@ -45,12 +44,12 @@ extends TwomassQueryTestBase
 
     /**
      * An expected column.
-     * todo refactor this as a JdbcColumn.Metadata 
-     * 
+     * todo refactor this as a JdbcColumn.Metadata
+     *
      */
     public static class ExpectedColumn
         {
-        public ExpectedColumn(String adqlname, AdqlColumn.Type adqltype, Integer adqlsize, String jdbcname, JdbcColumn.Type jdbctype, Integer jdbcsize)
+        public ExpectedColumn(final String adqlname, final AdqlColumn.Type adqltype, final Integer adqlsize, final String jdbcname, final JdbcColumn.Type jdbctype, final Integer jdbcsize)
             {
             this.adqlname = adqlname ;
             this.adqltype = adqltype ;
@@ -61,33 +60,33 @@ extends TwomassQueryTestBase
             this.jdbcsize = jdbcsize ;
             }
 
-        private Integer adqlsize ;
+        private final Integer adqlsize ;
         public Integer adqlsize()
             {
             return this.adqlsize;
             }
-        private AdqlColumn.Type adqltype;
+        private final AdqlColumn.Type adqltype;
         public  AdqlColumn.Type adqltype()
             {
             return this.adqltype;
             }
-        private String adqlname ;
+        private final String adqlname ;
         public String adqlname()
             {
             return this.adqlname;
             }
 
-        private Integer jdbcsize ;
+        private final Integer jdbcsize ;
         public Integer jdbcsize()
             {
             return this.jdbcsize;
             }
-        private JdbcColumn.Type jdbctype;
+        private final JdbcColumn.Type jdbctype;
         public  JdbcColumn.Type jdbctype()
             {
             return this.jdbctype;
             }
-        private String jdbcname ;
+        private final String jdbcname ;
         public String jdbcname()
             {
             return this.jdbcname;
@@ -112,7 +111,7 @@ extends TwomassQueryTestBase
                 field.type()
                 ) ;
             }
-        
+
         void validate(final AdqlColumn column)
             {
             log.debug("validate(AdqlColumn)");
@@ -154,7 +153,7 @@ extends TwomassQueryTestBase
             }
         }
 
-    public void validate(AdqlQuery query, final ExpectedColumn[] expected)
+    public void validate(final AdqlQuery query, final ExpectedColumn[] expected)
     throws Exception
         {
         if (expected.length > 0)
@@ -168,7 +167,7 @@ extends TwomassQueryTestBase
                 query.fields()
                 );
             int i = 0 ;
-            for (AdqlQuery.SelectField field : query.fields())
+            for (final AdqlQuery.SelectField field : query.fields())
                 {
                 expected[i++].validate(
                     field
@@ -179,7 +178,7 @@ extends TwomassQueryTestBase
                 );
 
             int j = 0 ;
-            for (AdqlColumn column : query.results().adql().columns().select())
+            for (final AdqlColumn column : query.results().adql().columns().select())
                 {
                 expected[j++].validate(
                     column
@@ -194,7 +193,7 @@ extends TwomassQueryTestBase
                 query.results().jdbc()
                 );
             int k = 0 ;
-            for (JdbcColumn column : query.results().jdbc().columns().select())
+            for (final JdbcColumn column : query.results().jdbc().columns().select())
                 {
                 expected[k++].validate(
                     column
@@ -263,7 +262,7 @@ extends TwomassQueryTestBase
                 ),
             new ExpectedColumn[] {
                 new ExpectedColumn("mydate", AdqlColumn.Type.TIMESTAMP, 23, "mydate", JdbcColumn.Type.TIMESTAMP, 23)
-                }                
+                }
             );
         }
 
@@ -285,12 +284,12 @@ extends TwomassQueryTestBase
                 ),
             new ExpectedColumn[] {
                 new ExpectedColumn("cx",               AdqlColumn.Type.DOUBLE,     0,   "cx",               JdbcColumn.Type.DOUBLE,    53),
-                new ExpectedColumn("cy",               AdqlColumn.Type.DOUBLE,     0,   "cy",               JdbcColumn.Type.DOUBLE,    53),  
-                new ExpectedColumn("cz",               AdqlColumn.Type.DOUBLE,     0,   "cz",               JdbcColumn.Type.DOUBLE,    53),  
-                new ExpectedColumn("htmID",            AdqlColumn.Type.LONG,       0,   "htmID",            JdbcColumn.Type.BIGINT,    19),      
-                new ExpectedColumn("ra",               AdqlColumn.Type.DOUBLE,     0,   "ra",               JdbcColumn.Type.DOUBLE,    53),  
-                new ExpectedColumn("dec",              AdqlColumn.Type.DOUBLE,     0,   "dec",              JdbcColumn.Type.DOUBLE,    53),  
-                new ExpectedColumn("err_maj",          AdqlColumn.Type.FLOAT,      0,   "err_maj",          JdbcColumn.Type.REAL,      24),  
+                new ExpectedColumn("cy",               AdqlColumn.Type.DOUBLE,     0,   "cy",               JdbcColumn.Type.DOUBLE,    53),
+                new ExpectedColumn("cz",               AdqlColumn.Type.DOUBLE,     0,   "cz",               JdbcColumn.Type.DOUBLE,    53),
+                new ExpectedColumn("htmID",            AdqlColumn.Type.LONG,       0,   "htmID",            JdbcColumn.Type.BIGINT,    19),
+                new ExpectedColumn("ra",               AdqlColumn.Type.DOUBLE,     0,   "ra",               JdbcColumn.Type.DOUBLE,    53),
+                new ExpectedColumn("dec",              AdqlColumn.Type.DOUBLE,     0,   "dec",              JdbcColumn.Type.DOUBLE,    53),
+                new ExpectedColumn("err_maj",          AdqlColumn.Type.FLOAT,      0,   "err_maj",          JdbcColumn.Type.REAL,      24),
                 new ExpectedColumn("err_min",          AdqlColumn.Type.FLOAT,      0,   "err_min",          JdbcColumn.Type.REAL,      24),
                 new ExpectedColumn("err_ang",          AdqlColumn.Type.SHORT,      0,   "err_ang",          JdbcColumn.Type.SMALLINT,   5),
                 new ExpectedColumn("designation",      AdqlColumn.Type.CHAR,      17,   "designation",      JdbcColumn.Type.VARCHAR,   17),
@@ -372,15 +371,15 @@ extends TwomassQueryTestBase
                 + "    MAX(ra),"
                 + "    MAX(ra)  as maxra,"
                 + "    max(dec) as maxdec,"
-                
+
                 + "    AVG(ra),"
                 + "    AVG(ra)  as avgra,"
                 + "    avg(dec) as avgdec,"
-                
+
                 + "    SUM(ra),"
                 + "    SUM(ra)  as sumra,"
                 + "    sum(dec) as sumdec"
-                
+
                 + " FROM"
                 + "    adql_twomass.twomass_psc as twomass"
                 + " WHERE"
@@ -407,11 +406,11 @@ extends TwomassQueryTestBase
                 new ExpectedColumn("AVG",    AdqlColumn.Type.DOUBLE, 0, "AVG",      JdbcColumn.Type.DOUBLE, 53),
                 new ExpectedColumn("avgra",  AdqlColumn.Type.DOUBLE, 0, "avgra",    JdbcColumn.Type.DOUBLE, 53),
                 new ExpectedColumn("avgdec", AdqlColumn.Type.DOUBLE, 0, "avgdec",   JdbcColumn.Type.DOUBLE, 53),
-                
+
                 new ExpectedColumn("SUM",    AdqlColumn.Type.DOUBLE, 0, "SUM",      JdbcColumn.Type.DOUBLE, 53),
                 new ExpectedColumn("sumra",  AdqlColumn.Type.DOUBLE, 0, "sumra",    JdbcColumn.Type.DOUBLE, 53),
                 new ExpectedColumn("sumdec", AdqlColumn.Type.DOUBLE, 0, "sumdec",   JdbcColumn.Type.DOUBLE, 53),
-                
+
                 }
             );
         }
@@ -420,12 +419,12 @@ extends TwomassQueryTestBase
     public void test004()
     throws Exception
         {
-        ResultSet results = this.twomass.connection().metadata().getTypeInfo();
+        final ResultSet results = this.twomass.connection().metadata().getTypeInfo();
         while (results.next())
             {
-            Integer size = results.getInt("PRECISION");
-            Integer type = results.getInt("DATA_TYPE");
-            String  name = results.getString("TYPE_NAME");
+            final Integer size = results.getInt("PRECISION");
+            final Integer type = results.getInt("DATA_TYPE");
+            final String  name = results.getString("TYPE_NAME");
             log.debug(" Type [{}][{}][{}]", name, type, size);
             }
         }

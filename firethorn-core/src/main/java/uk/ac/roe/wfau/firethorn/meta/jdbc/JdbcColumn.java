@@ -31,7 +31,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 public interface JdbcColumn
 extends BaseColumn<JdbcColumn>
     {
-   
+
     /**
      * Link factory interface.
      *
@@ -58,7 +58,7 @@ extends BaseColumn<JdbcColumn>
     extends BaseColumn.AliasFactory<JdbcColumn>
         {
         }
-    
+
     /**
      * Column factory interface.
      *
@@ -71,7 +71,7 @@ extends BaseColumn<JdbcColumn>
          *
          */
         public JdbcColumn create(final JdbcTable parent, final AdqlQuery.SelectField field);
-        
+
         /**
          * Create a new column.
          *
@@ -98,11 +98,11 @@ extends BaseColumn<JdbcColumn>
      *
      */
     public static final Integer VAR_ARRAY_SIZE = new Integer(-1);
-    
+
 
     /**
      * An enumeration of the JDBC data types.
-     * The sizes are based on the size/precision for SQLServer. 
+     * The sizes are based on the size/precision for SQLServer.
      *
      */
     public enum Type

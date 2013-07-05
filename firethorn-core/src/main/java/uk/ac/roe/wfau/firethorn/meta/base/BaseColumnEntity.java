@@ -295,7 +295,7 @@ extends BaseComponentEntity
         {
         this.adqlucd1 = ucd;
         }
-    
+
     @Override
     public BaseColumn.Metadata meta()
         {

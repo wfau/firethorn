@@ -18,8 +18,6 @@
 package uk.ac.roe.wfau.firethorn.adql.query ;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Iterator;
 
 import lombok.extern.slf4j.Slf4j;
@@ -41,30 +39,30 @@ extends TwomassQueryTestBase
 
     /**
      * An expected result.
-     * 
+     *
      */
     public static class ExpectedField
     implements AdqlQuery.SelectField
         {
-        public ExpectedField(String name, AdqlColumn.Type type, Integer size)
+        public ExpectedField(final String name, final AdqlColumn.Type type, final Integer size)
             {
             this.name = name ;
             this.type = type ;
             this.size = size ;
             }
-        private Integer size ;
+        private final Integer size ;
         @Override
         public Integer arraysize()
             {
             return this.size;
             }
-        private AdqlColumn.Type type;
+        private final AdqlColumn.Type type;
         @Override
         public  AdqlColumn.Type type()
             {
             return this.type;
             }
-        private String name ;
+        private final String name ;
         @Override
         public String name()
             {
@@ -101,14 +99,14 @@ extends TwomassQueryTestBase
             }
         }
 
-    public void validate(AdqlQuery query, final ExpectedField[] results)
+    public void validate(final AdqlQuery query, final ExpectedField[] results)
     throws Exception
         {
-        Iterator<AdqlQuery.SelectField> iter = query.fields().iterator();
+        final Iterator<AdqlQuery.SelectField> iter = query.fields().iterator();
         int i = 0 ;
         while (iter.hasNext())
             {
-            AdqlQuery.SelectField field = iter.next();
+            final AdqlQuery.SelectField field = iter.next();
             log.debug("Field [{}][{}][{}]", field.name(), field.type(), field.arraysize());
             results[i++].validate(
                 field
@@ -141,7 +139,7 @@ extends TwomassQueryTestBase
                 }
             );
         }
-    
+
     @Test
     public void test001()
     throws Exception
@@ -160,7 +158,7 @@ extends TwomassQueryTestBase
                 ),
             new ExpectedField[] {
                 new ExpectedField("date", AdqlColumn.Type.TIMESTAMP, 23),
-                }               
+                }
             );
         }
 
@@ -204,12 +202,12 @@ extends TwomassQueryTestBase
               ),
           new ExpectedField[] {
               new ExpectedField("cx",               AdqlColumn.Type.DOUBLE,     0),
-              new ExpectedField("cy",               AdqlColumn.Type.DOUBLE,     0), 
-              new ExpectedField("cz",               AdqlColumn.Type.DOUBLE,     0), 
-              new ExpectedField("htmID",            AdqlColumn.Type.LONG,       0), 
-              new ExpectedField("ra",               AdqlColumn.Type.DOUBLE,     0), 
-              new ExpectedField("dec",              AdqlColumn.Type.DOUBLE,     0), 
-              new ExpectedField("err_maj",          AdqlColumn.Type.FLOAT,      0), 
+              new ExpectedField("cy",               AdqlColumn.Type.DOUBLE,     0),
+              new ExpectedField("cz",               AdqlColumn.Type.DOUBLE,     0),
+              new ExpectedField("htmID",            AdqlColumn.Type.LONG,       0),
+              new ExpectedField("ra",               AdqlColumn.Type.DOUBLE,     0),
+              new ExpectedField("dec",              AdqlColumn.Type.DOUBLE,     0),
+              new ExpectedField("err_maj",          AdqlColumn.Type.FLOAT,      0),
               new ExpectedField("err_min",          AdqlColumn.Type.FLOAT,      0),
               new ExpectedField("err_ang",          AdqlColumn.Type.SHORT,      0),
               new ExpectedField("designation",      AdqlColumn.Type.CHAR,      17),
@@ -267,7 +265,7 @@ extends TwomassQueryTestBase
               new ExpectedField("scan_key",         AdqlColumn.Type.INTEGER,    0),
               new ExpectedField("coadd_key",        AdqlColumn.Type.INTEGER,    0),
               new ExpectedField("coadd",            AdqlColumn.Type.SHORT,      0)
-              }                
+              }
           );
       }
     }

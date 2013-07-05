@@ -314,7 +314,7 @@ implements AdqlSchema
                     query
                     );
                 }
-            
+
             @Override
             public Iterable<AdqlTable> search(final String text)
                 {
@@ -381,6 +381,6 @@ implements AdqlSchema
     protected void scanimpl()
         {
         // TODO Auto-generated method stub
-        
+
         }
     }

@@ -50,14 +50,14 @@ extends Entity, NamedEntity
 
     /**
      * Entity factory interface for Communities.
-     * 
+     *
      */
     public interface EntityFactory
     extends Entity.EntityFactory<Community>
         {
         /**
          *  Create a new Community.
-         * @throws NotFoundException 
+         * @throws NotFoundException
          *
          */
         public Community create(final String uri);
@@ -80,10 +80,10 @@ extends Entity, NamedEntity
          */
         public Community select(final String uri);
         }
-    
+
     /**
      * Access to the Identities in this Community.
-     * 
+     *
      */
     public interface Identities
         {
@@ -103,13 +103,13 @@ extends Entity, NamedEntity
 
     /**
      * Access to the Identities in this Community.
-     * 
+     *
      */
     public Identities identities();
 
     /**
      * The unique identifier for this Community.
-     * 
+     *
      */
     public String uri();
 
@@ -123,7 +123,7 @@ extends Entity, NamedEntity
      * The storage space for this Community.
      *
      */
-    public JdbcResource space(boolean create);
+    public JdbcResource space(final boolean create);
 
     /**
      * The JDBC Resource for this Community.

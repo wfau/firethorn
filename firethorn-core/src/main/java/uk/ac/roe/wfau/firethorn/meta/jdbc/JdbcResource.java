@@ -110,13 +110,13 @@ extends BaseResource<JdbcSchema>
          *
          */
         public JdbcSchema create(final Identity identity);
-        
+
         /**
          * Select the schemas owned by an Identity.
          *
          */
         public Iterable<JdbcSchema> select(final Identity identity);
-        
+
         /**
          * Scan the JDBC metadata.
          *
@@ -125,10 +125,10 @@ extends BaseResource<JdbcSchema>
 
         /**
          * The default catalog/schema for this resource.
-         * 
+         *
          */
         public JdbcSchema simple();
-        
+
         }
 
     @Override
@@ -160,19 +160,19 @@ extends BaseResource<JdbcSchema>
 
     /**
      * Get the JDBC type for an ADQL type.
-     * 
+     *
      */
     public JdbcColumn.Type jdbctype(final AdqlColumn.Type type);
-    
+
     /**
      * Get the JDBC size/precision for an ADQL type.
-     * 
+     *
      */
     public Integer jdbcsize(final AdqlColumn.Type type);
 
     /**
      * Get the JDBC size/precision for a JDBC type.
-     * 
+     *
      */
     public Integer jdbcsize(final JdbcColumn.Type type);
 

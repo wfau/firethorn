@@ -36,13 +36,13 @@ implements JdbcSchema.Builder
     {
 
     @Override
-    public JdbcSchema create(JdbcSchema schema)
+    public JdbcSchema create(final JdbcSchema schema)
         {
         log.debug("create(JdbcSchema)");
         log.debug("  Schema [{}][{}]", schema.ident(), schema.name());
-        
+
         log.debug("--- 000 ");
-        ChangeSet changeset = changeset(); 
+        final ChangeSet changeset = changeset();
 
         log.debug("--- 001 ");
         changeset.addChange(
@@ -63,7 +63,7 @@ implements JdbcSchema.Builder
         }
 
     @Override
-    public void delete(JdbcSchema schema)
+    public void delete(final JdbcSchema schema)
         {
         // TODO Auto-generated method stub
         }

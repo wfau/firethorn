@@ -60,7 +60,7 @@ public class JdbcBuilderBase
             ""      // DatabaseList
             );
         }
-    
+
     protected Database database(final JdbcResource resource)
         {
         try {
@@ -80,7 +80,7 @@ public class JdbcBuilderBase
             return null ;
             }
         }
-    
+
     protected void execute(final JdbcResource resource, final ChangeSet changeset)
         {
         log.debug("Executing ChangeSet [{}]", changeset.getId());

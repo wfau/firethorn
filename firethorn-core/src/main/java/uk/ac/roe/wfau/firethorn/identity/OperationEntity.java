@@ -81,7 +81,7 @@ implements Operation
     protected static final String DB_METHOD_COL  = "method"  ;
     protected static final String DB_SOURCE_COL  = "source"  ;
     protected static final String DB_AUTH_COL    = "auth" ;
-    
+
     @Component
     public static class EntityFactory
     extends AbstractEntityFactory<Operation>
@@ -107,7 +107,7 @@ implements Operation
                     )
                 );
             }
-        
+
         @Autowired
         protected Operation.LinkFactory links;
         @Override
@@ -129,14 +129,14 @@ implements Operation
          *
          */
         private final ThreadLocal<Operation> local = new ThreadLocal<Operation>();
-        
+
         @Override
         public Operation current()
             {
             return local.get();
             }
 
-        public Operation current(Operation oper)
+        public Operation current(final Operation oper)
             {
             local.set(
                 oper
@@ -144,7 +144,7 @@ implements Operation
             return oper;
             }
         }
-    
+
     /**
      * Protected constructor.
      *
@@ -153,7 +153,7 @@ implements Operation
         {
         super();
         }
-    
+
     /**
      * Protected constructor.
      * @todo remove name
@@ -235,14 +235,14 @@ implements Operation
         {
         return this.auth;
         }
-    protected void auth(Authentication auth)
+    protected void auth(final Authentication auth)
         {
         this.auth = auth ;
         this.owner(
             auth.identity()
             ) ;
         }
-   
+
     /**
      * The set of Authentications for this Operation.
      *
@@ -276,12 +276,12 @@ implements Operation
                 }
 
             @Override
-            public Authentication create(Identity identity, String method)
+            public Authentication create(final Identity identity, final String method)
                 {
                 log.debug("create(Identity, String)");
                 log.debug("  Identity [{}]", identity.name());
                 log.debug("  Method   [{}]", method);
-                Authentication auth = factories().authentications().create(
+                final Authentication auth = factories().authentications().create(
                     OperationEntity.this,
                     identity,
                     method

@@ -33,7 +33,7 @@ extends TwomassQueryTestBase
     {
 
     /**
-     * Test query "SELECT *" 
+     * Test query "SELECT *"
      *
      */
     private static final String QUERY_000 =
@@ -64,7 +64,7 @@ extends TwomassQueryTestBase
         }
 
     /**
-     * Test query "SELECT twomass.*" 
+     * Test query "SELECT twomass.*"
      *
      */
     private static final String QUERY_001 =

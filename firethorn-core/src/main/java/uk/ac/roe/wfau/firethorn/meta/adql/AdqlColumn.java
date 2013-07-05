@@ -122,7 +122,7 @@ extends BaseColumn<AdqlColumn>
         DATE(          10, "char",          JdbcColumn.Type.DATE),      // YYYY-MM-DD
         TIME(          12, "char",          JdbcColumn.Type.TIME),      // HH:MM:SS.sss
         TIMESTAMP(     23, "char",          JdbcColumn.Type.TIMESTAMP), // YYYY-MM-DDTHH:MM:SS.sss
-        
+
         UNKNOWN(        0, "unknown",       JdbcColumn.Type.UNKNOWN);
 
         private final int size ;
@@ -211,7 +211,7 @@ extends BaseColumn<AdqlColumn>
                     return TIME ;
                 case Types.TIMESTAMP :
                     return TIMESTAMP ;
-                    
+
                 case Types.BINARY :
                 case Types.BLOB :
                 case Types.CLOB :

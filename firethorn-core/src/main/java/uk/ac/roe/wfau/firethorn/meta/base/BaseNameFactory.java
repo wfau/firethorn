@@ -36,18 +36,18 @@ implements Entity.NameFactory<EntityType>
     {
     /**
      * Our SQL safe glue character.
-     *  
+     *
      */
     public static final String GLUE_CHAR = "_" ;
 
     /**
      * Our SQL unsafe replacement pattern.
-     *  
+     *
      */
     public static final String REPLACE_REGEX= "[^" + GLUE_CHAR + "\\p{Alnum}]+?" ;
 
     @Override
-    public String name(String name)
+    public String name(final String name)
         {
         return safe(
             name
@@ -56,9 +56,9 @@ implements Entity.NameFactory<EntityType>
 
     /**
      * Generate a JDBC, ADQL, SQL safe name.
-     * 
+     *
      */
-    public String safe(String name)
+    public String safe(final String name)
         {
         return name.trim().replaceAll(
             REPLACE_REGEX,
@@ -70,9 +70,9 @@ implements Entity.NameFactory<EntityType>
      * Generate a JDBC, ADQL, SQL safe name.
      * http://stackoverflow.com/questions/3472663/replace-all-occurences-of-a-string-using-stringbuilder
      * http://stackoverflow.com/a/7837748
-     * 
+     *
      */
-    public String safe(StringBuilder builder)
+    public String safe(final StringBuilder builder)
         {
         return name(
             builder.toString()
@@ -97,7 +97,7 @@ implements Entity.NameFactory<EntityType>
      */
     protected String datename(final String prefix)
         {
-        StringBuilder builder = new StringBuilder(prefix); 
+        final StringBuilder builder = new StringBuilder(prefix);
         builder.append(
             GLUE_CHAR
             );
@@ -117,7 +117,7 @@ implements Entity.NameFactory<EntityType>
      */
     protected String datename(final String prefix, final Identifier ident)
         {
-        StringBuilder builder = new StringBuilder(prefix); 
+        final StringBuilder builder = new StringBuilder(prefix);
         builder.append(
             GLUE_CHAR
             );

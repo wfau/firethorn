@@ -62,7 +62,7 @@ public class SQLServerTranslator
      *
      *
      */
-    public SQLServerTranslator(boolean column)
+    public SQLServerTranslator(final boolean column)
         {
         super(
             column
@@ -73,7 +73,7 @@ public class SQLServerTranslator
      *
      *
      */
-    public SQLServerTranslator(boolean catalog, boolean schema, boolean table, boolean column)
+    public SQLServerTranslator(final boolean catalog, final boolean schema, final boolean table, final boolean column)
         {
         super(
             catalog,
@@ -84,7 +84,7 @@ public class SQLServerTranslator
         }
 
     /**
-     * Replaces the PostgreSQLTranslator method to not put LIMIT at the end. 
+     * Replaces the PostgreSQLTranslator method to not put LIMIT at the end.
      *
      */
     @Override
@@ -93,7 +93,7 @@ public class SQLServerTranslator
         {
         log.debug("translate(ADQLQuery)");
 
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append(
             translate(
                 query.getSelect()
@@ -144,9 +144,9 @@ public class SQLServerTranslator
         return builder.toString();
         }
 
-    
+
     /**
-     * Replaces the PostgreSQLTranslator method to put TOP at the beginning. 
+     * Replaces the PostgreSQLTranslator method to put TOP at the beginning.
      *
      */
     @Override
@@ -155,7 +155,7 @@ public class SQLServerTranslator
         {
         log.debug("translate(ClauseSelect)");
 
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         for(int i=0; (i < clause.size()); i++)
             {
             if (i == 0)
@@ -191,11 +191,11 @@ public class SQLServerTranslator
 
     /**
      * Copy of the PostgreSQLTranslator method ...
-     * @todo Need to catch date fields and format them as strings.  
+     * @todo Need to catch date fields and format them as strings.
      *
      */
     @Override
-	public String translate(SelectItem item)
+	public String translate(final SelectItem item)
     throws TranslationException
         {
         log.debug("translate(SelectItem)");
@@ -205,7 +205,7 @@ public class SQLServerTranslator
             return translate((SelectAllColumns)item);
             }
 
-        StringBuffer translation = new StringBuffer(
+        final StringBuffer translation = new StringBuffer(
             translate(
                 item.getOperand()
                 )
@@ -221,13 +221,13 @@ public class SQLServerTranslator
 
         return translation.toString();
         }
-    
+
     /**
      * Override the PostgreSQLTranslator method ...
      *
      */
     @Override
-	public String translate(ADQLColumn column)
+	public String translate(final ADQLColumn column)
         throws TranslationException
         {
         log.debug("translate(ADQLColumn)");
@@ -243,7 +243,7 @@ public class SQLServerTranslator
             }
         else if (column.getDBLink() instanceof AdqlDBColumn)
             {
-            AdqlColumn adql = ((AdqlDBColumn) column.getDBLink()).column();
+            final AdqlColumn adql = ((AdqlDBColumn) column.getDBLink()).column();
             log.debug("  adql [{}][{}]", adql.name(), adql.meta().adql().type());
 
             return super.translate(
@@ -260,7 +260,7 @@ public class SQLServerTranslator
         }
 
     /*
-     * 
+     *
     public String translate(AdqlColumn column)
     throws TranslationException
         {
@@ -271,13 +271,13 @@ public class SQLServerTranslator
         log.debug("  rootname [{}]", column.root().fullname());
         return "";
         }
-     * 
+     *
      */
 
     /**
      * Copy of the PostgreSQLTranslator method ...
-     * @todo Need to use Firethorn metadata to iterate the AdqlTable columns.  
-     *  
+     * @todo Need to use Firethorn metadata to iterate the AdqlTable columns.
+     *
      *
      */
     @Override
@@ -287,26 +287,26 @@ public class SQLServerTranslator
         log.debug("translate(SelectAllColumns)");
 
 // TODO Replace this with code that uses the Firethorn metadata.
-// Need to make sure this ends up with the same list of fields as the JDBC table in user data. 
-        
+// Need to make sure this ends up with the same list of fields as the JDBC table in user data.
+
 // Check if ADQLTable is a AdqlParserTable
-// cast into AdqlParserTable and call table.table() to get a AdqlTable 
-// process the column list from the AdqlTable. 
-        
-        HashMap<String, String> mapAlias = new HashMap<String, String>();
-        
+// cast into AdqlParserTable and call table.table() to get a AdqlTable
+// process the column list from the AdqlTable.
+
+        final HashMap<String, String> mapAlias = new HashMap<String, String>();
+
         // Fetch the full list of columns to display:
         Iterable<DBColumn> dbCols = null;
         if (all.getAdqlTable() != null)
             {
-            ADQLTable table = all.getAdqlTable();
+            final ADQLTable table = all.getAdqlTable();
             log.debug("Table [{}][{}]", table.getName(), table.getClass().getName());
             if (table.getDBLink() != null)
                 {
                 dbCols = table.getDBLink();
                 if (table.hasAlias())
                     {
-                    String key = appendFullDBName(new StringBuffer(), table.getDBLink()).toString();
+                    final String key = appendFullDBName(new StringBuffer(), table.getDBLink()).toString();
                     mapAlias.put(key, table.isCaseSensitive(IdentifierField.ALIAS) ? ("\""+table.getAlias()+"\"") : table.getAlias());
                     }
                 }
@@ -320,12 +320,12 @@ public class SQLServerTranslator
         else if (all.getQuery() != null)
             {
             dbCols = all.getQuery().getFrom().getDBColumns();
-            ArrayList<ADQLTable> tables = all.getQuery().getFrom().getTables();
-            for(ADQLTable table : tables)
+            final ArrayList<ADQLTable> tables = all.getQuery().getFrom().getTables();
+            for(final ADQLTable table : tables)
                 {
                 if (table.hasAlias())
                     {
-                    String key = appendFullDBName(new StringBuffer(), table.getDBLink()).toString();
+                    final String key = appendFullDBName(new StringBuffer(), table.getDBLink()).toString();
                     mapAlias.put(key, table.isCaseSensitive(IdentifierField.ALIAS) ? ("\""+table.getAlias()+"\"") : table.getAlias());
                     }
                 }
@@ -334,18 +334,24 @@ public class SQLServerTranslator
         // Write the DB name of all these columns:
         if (dbCols != null)
             {
-            StringBuffer cols = new StringBuffer();
-            for(DBColumn col : dbCols)
+            final StringBuffer cols = new StringBuffer();
+            for(final DBColumn col : dbCols)
                 {
                 if (cols.length() > 0)
-                    cols.append(',');
+                    {
+                        cols.append(',');
+                        }
                 if (col.getTable() != null)
                     {
-                    String fullDbName = appendFullDBName(new StringBuffer(), col.getTable()).toString();
+                    final String fullDbName = appendFullDBName(new StringBuffer(), col.getTable()).toString();
                     if (mapAlias.containsKey(fullDbName))
-                        appendIdentifier(cols, mapAlias.get(fullDbName), false).append('.');
+                        {
+                            appendIdentifier(cols, mapAlias.get(fullDbName), false).append('.');
+                            }
                     else
-                        cols.append(fullDbName).append('.');
+                        {
+                            cols.append(fullDbName).append('.');
+                            }
                     }
                 appendIdentifier(cols, col.getDBName(), IdentifierField.COLUMN);
                 cols.append(" AS ").append(col.getADQLName());

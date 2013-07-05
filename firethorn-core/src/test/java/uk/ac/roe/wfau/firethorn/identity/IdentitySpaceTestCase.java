@@ -37,7 +37,7 @@ public class IdentitySpaceTestCase
     public void testCommunitySpaceNotNull()
         {
 
-        Community community = factories().communities().create(
+        final Community community = factories().communities().create(
             "urn:community",
             unique(
                 "test-community"
@@ -50,7 +50,7 @@ public class IdentitySpaceTestCase
             community.space()
             );
 
-        Identity identity = community.identities().create(
+        final Identity identity = community.identities().create(
             unique(
                 "test-identity"
                 )
@@ -64,7 +64,7 @@ public class IdentitySpaceTestCase
     public void testIdentitySpaceNotNull()
         {
 
-        Community community = factories().communities().create(
+        final Community community = factories().communities().create(
             unique(
                 "test-community"
                 ),
@@ -73,7 +73,7 @@ public class IdentitySpaceTestCase
         log.debug("Test community [{}][{}]", community.ident(), community.name());
         log.debug("Community space [{}][{}]", community.space().ident(), community.space().name());
 
-        Identity identity = community.identities().create(
+        final Identity identity = community.identities().create(
             unique(
                 "test-identity"
                 )

@@ -153,6 +153,6 @@ public interface JdbcConnection
      * Set the database type.
      *
      */
-    public void type(JdbcProductType type);
+    public void type(final JdbcProductType type);
 
     }

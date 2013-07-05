@@ -45,7 +45,7 @@ extends BaseComponent
     extends Entity.AliasFactory<ColumnType>
         {
         }
-    
+
     /**
      * Entity factory interface.
      *
@@ -77,48 +77,48 @@ extends BaseComponent
          *
          */
         public AliasFactory<ColumnType> aliases();
-        
+
         }
 
     /**
-     * The base column this is derived from. 
-     * 
+     * The base column this is derived from.
+     *
      */
     public BaseColumn<?>   base();
 
     /**
-     * The root column this is derived from. 
-     * 
+     * The root column this is derived from.
+     *
      */
     public BaseColumn<?>   root();
 
     /**
-     * The parent table. 
-     * 
+     * The parent table.
+     *
      */
     public BaseTable<?,?>  table();
 
     /**
-     * The parent schema. 
-     * 
+     * The parent schema.
+     *
      */
     public BaseSchema<?,?> schema();
 
     /**
-     * The parent resource. 
-     * 
+     * The parent resource.
+     *
      */
     public BaseResource<?> resource();
 
     /**
-     * The unique column alias, based on the identifier. 
-     * 
+     * The unique column alias, based on the identifier.
+     *
      */
     public String alias();
 
     /**
-     * The full name, including parent table, schema and catalog. 
-     * 
+     * The full name, including parent table, schema and catalog.
+     *
      */
     public StringBuilder fullname();
 

@@ -31,11 +31,7 @@ import javax.persistence.MappedSuperclass;
 import lombok.extern.slf4j.Slf4j;
 
 import org.joda.time.DateTime;
-import org.joda.time.Hours;
-import org.joda.time.ReadablePeriod;
-
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
-import uk.ac.roe.wfau.firethorn.entity.Identifier;
 
 /**
  *
@@ -127,12 +123,12 @@ extends AbstractNamedEntity
         updatable = true
         )
     private DateTime scandate ;
-    @Deprecated 
+    @Deprecated
     protected DateTime scandate()
         {
         return this.scandate;
         }
-    @Deprecated 
+    @Deprecated
     protected void scandate(final DateTime date)
         {
         this.scandate = date;
@@ -156,9 +152,9 @@ extends AbstractNamedEntity
     /**
      * The interval between scans.
      * Set to 60 seconds for now .. should be much higher and configurable.
-     * 
+     *
      */
-    private static final long SCAN_INTERVAL = 1000 * 60 ; 
+    private static final long SCAN_INTERVAL = 1000 * 60 ;
     protected boolean scandue()
         {
         return (this.scantime < (System.currentTimeMillis() - SCAN_INTERVAL));
@@ -258,7 +254,7 @@ extends AbstractNamedEntity
 
     /**
      * Metadata scan implementation.
-     * 
+     *
      */
     protected abstract void scanimpl();
 

@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.SQLInvalidAuthorizationSpecException;
 
@@ -36,18 +35,15 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn.Type;
 
 /**
  *
@@ -206,14 +202,14 @@ public class JdbcResourceEntity
         /**
          * The default 'userdate' OGSA-DAI resource id.
          * @todo Make this a configurable property.
-         * 
+         *
          */
         public static final String DEFAULT_USERDATA_OGSA_ID = "userdata" ;
 
         /**
          * The default 'userdate' JDBC URI.
          * @todo Make this a configurable property.
-         * 
+         *
          */
         public static final String DEFAULT_USERDATA_URI = "spring:FireThornUserData" ;
 
@@ -304,7 +300,7 @@ public class JdbcResourceEntity
                     JdbcResourceEntity.this
                     );
                 }
-            
+
             @Override
             public JdbcSchema create(final String catalog, final String schema)
                 {
@@ -314,7 +310,7 @@ public class JdbcResourceEntity
                     schema
                     );
                 }
-            
+
             @Override
             public JdbcSchema select(final String catalog, final String schema)
                 {
@@ -324,7 +320,7 @@ public class JdbcResourceEntity
                     schema
                     );
                 }
-            
+
             @Override
             public JdbcSchema select(final String name)
                 {
@@ -333,7 +329,7 @@ public class JdbcResourceEntity
                     name
                     );
                 }
-            
+
             @Override
             public Iterable<JdbcSchema> search(final String text)
                 {
@@ -360,7 +356,7 @@ public class JdbcResourceEntity
                     identity
                     );
                 }
-            
+
             @Override
             public void scan()
                 {
@@ -538,7 +534,7 @@ public class JdbcResourceEntity
                         ResultSetMetaData meta = schemas.getMetaData();
                         for (int i = 1 ; i <= meta.getColumnCount() ; i++)
                             {
-                            log.debug("Col [{}][{}]", i, meta.getColumnName(i));                            
+                            log.debug("Col [{}][{}]", i, meta.getColumnName(i));
                             }
  */
                         //
@@ -565,7 +561,7 @@ public class JdbcResourceEntity
                             {
                             if (cname == null)
                                 {
-                                cname = catalog ; 
+                                cname = catalog ;
                                 }
                             }
                         //
@@ -636,7 +632,7 @@ public class JdbcResourceEntity
         {
         return connection().type().jdbctype(type);
         }
-    
+
     @Override
     public Integer jdbcsize(final AdqlColumn.Type type)
         {

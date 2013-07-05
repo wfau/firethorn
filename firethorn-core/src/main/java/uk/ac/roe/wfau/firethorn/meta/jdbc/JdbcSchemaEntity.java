@@ -36,7 +36,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -128,7 +127,7 @@ public class JdbcSchemaEntity
     implements JdbcSchema.NameFactory
         {
         @Override
-        public String fullname(String catalog, String schema)
+        public String fullname(final String catalog, final String schema)
             {
             if ((catalog == null) && (schema == null))
                 {
@@ -150,7 +149,7 @@ public class JdbcSchemaEntity
                     );
                 }
 // SQLServer specific dot notation.
-// Explicitly avoiding super class 'safe' method for the '.' dot. 
+// Explicitly avoiding super class 'safe' method for the '.' dot.
             else {
                 return safe(catalog) + "." + safe(schema) ;
                 }
@@ -205,7 +204,7 @@ public class JdbcSchemaEntity
         public JdbcSchema build(final JdbcResource parent, final Identity identity)
             {
 // TODO Need the resource catalog name ?
-// NameFactory - Generate a unique name from JdbcResource and Identity. 
+// NameFactory - Generate a unique name from JdbcResource and Identity.
 // TODO Liquibase SchemaBuilder ?
             log.debug("JdbcSchema build(JdbcResource ,Identity)");
             log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
@@ -220,7 +219,7 @@ public class JdbcSchemaEntity
                     )
                 );
             }
-        
+
         @Override
         @CreateEntityMethod
         public JdbcSchema create(final JdbcResource parent, final String catalog, final String schema)
@@ -391,7 +390,7 @@ public class JdbcSchemaEntity
                         )
                 );
             }
-        
+
         @Autowired
         protected JdbcTable.Factory tables;
         @Override

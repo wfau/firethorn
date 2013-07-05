@@ -54,7 +54,7 @@ extends BaseSchema<IvoaSchema, IvoaTable>
         {
         /**
          * Create a new schema ...
-         * 
+         *
          */
         public IvoaSchema create(final IvoaResource parent, final String name);
 

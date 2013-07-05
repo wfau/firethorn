@@ -52,16 +52,16 @@ extends Entity
     extends Entity.IdentFactory
         {
         }
-    
+
     /**
      * Factory interface.
-     * 
+     *
      */
     public interface EntityFactory
     extends Entity.EntityFactory<Authentication>
         {
         /**
-         * Get the current active Authentication. 
+         * Get the current active Authentication.
          *
          */
         public Authentication current();
@@ -73,7 +73,7 @@ extends Entity
         public Authentication create(final Operation oper, final Identity identity, final String method);
 
         }
-    
+
     /**
      * The URN for the authentication method.
      *

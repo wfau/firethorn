@@ -55,23 +55,23 @@ extends Entity
 
     /**
      * Factory interface.
-     * 
+     *
      */
     public interface EntityFactory
     extends Entity.EntityFactory<Operation>
         {
         /**
          * Access to the current operation.
-         * 
+         *
          */
         public Operation current();
 
         /**
          * Create a new Operation.
-         * 
+         *
          */
         public Operation create(final String target, final String method, final String source);
-        
+
         }
 
     public String target();
@@ -80,7 +80,7 @@ extends Entity
 
     @Deprecated
     public Authentication auth();
-    
+
     interface Authentications
         {
         public void resolve();

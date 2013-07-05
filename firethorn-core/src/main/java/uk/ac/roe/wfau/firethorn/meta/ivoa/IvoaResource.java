@@ -28,7 +28,7 @@ public interface IvoaResource
 extends BaseResource<IvoaSchema>
     {
     /**
-     * 
+     *
      * Link factory interface.
      *
      */

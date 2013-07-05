@@ -38,25 +38,25 @@ extends BaseSchema<JdbcSchema, JdbcTable>
         {
         /**
          * Create a new date based name.
-         * 
+         *
          */
         public String datename();
 
         /**
          * Create a new date based name.
-         * 
+         *
          */
         public String datename(final Identity identity);
 
         /**
          * Create a new date based name.
-         * 
+         *
          */
         public String datename(final String prefix, final Identity identity);
-        
+
         /**
          * Create a physical schema name from logical catalog and schema names.
-         * 
+         *
          */
         public String fullname(final String catalog, final String schema);
 
@@ -93,7 +93,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          *
          */
         public JdbcSchema build(final JdbcResource parent, final Identity identity);
-        
+
         /**
          * Create a new schema.
          *
@@ -111,7 +111,7 @@ extends BaseSchema<JdbcSchema, JdbcTable>
          *
          */
         public Iterable<JdbcSchema> select(final JdbcResource parent, final Identity identity);
-        
+
         /**
          * The schema table factory.
          *
@@ -140,19 +140,19 @@ extends BaseSchema<JdbcSchema, JdbcTable>
         {
         /**
          * Create a JDBC schema.
-         * @return 
+         * @return
          *
          */
-        public JdbcSchema create(JdbcSchema schema);
+        public JdbcSchema create(final JdbcSchema schema);
 
         /**
          * Delete a JDBC schema.
          *
          */
-        public void delete(JdbcSchema schema);
+        public void delete(final JdbcSchema schema);
 
         }
-    
+
     @Override
     public JdbcResource resource();
 

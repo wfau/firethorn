@@ -42,7 +42,7 @@ public interface Entity
          *
          */
         public String name(final String name);
-        
+
         }
 
     /**
@@ -57,7 +57,7 @@ public interface Entity
          */
         public String alias(final EntityType entity);
         }
-    
+
     /**
      * Common interface for a link factory.
      *
@@ -120,11 +120,11 @@ public interface Entity
 
         /**
          * Our 'empty' entity instance.
-         * This can be used to represent things like 'nobody', 'no results', or an empty resource, schema, table or column. 
+         * This can be used to represent things like 'nobody', 'no results', or an empty resource, schema, table or column.
          *
          */
         public EntityType empty();
-        
+
         }
 
     /**

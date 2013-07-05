@@ -31,7 +31,7 @@ extends CreateTableChange
             {
             log.debug("  Column [{}][{}][{}][{}]", column.ident(), column.name(), column.meta().jdbc().type(), column.meta().jdbc().size());
 
-            StringBuilder typename = new StringBuilder(
+            final StringBuilder typename = new StringBuilder(
                 column.meta().jdbc().type().name()
                 );
 
@@ -60,7 +60,7 @@ extends CreateTableChange
             }
         }
 
-    private JdbcTable table ;
+    private final JdbcTable table ;
     public  JdbcTable table()
         {
         return this.table;

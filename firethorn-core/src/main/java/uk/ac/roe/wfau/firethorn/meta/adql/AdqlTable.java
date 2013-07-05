@@ -37,7 +37,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
     extends BaseTable.NameFactory<AdqlTable>
         {
         }
-    
+
     /**
      * Alias factory interface.
      *
@@ -139,7 +139,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
     /**
      * ADQL table metadata.
      * @todo make this consistent with BaseColum.Metadata
-     * 
+     *
      */
     public interface Metadata
     extends BaseTable.Metadata

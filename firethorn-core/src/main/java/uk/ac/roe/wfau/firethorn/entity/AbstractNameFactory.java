@@ -23,12 +23,12 @@ package uk.ac.roe.wfau.firethorn.entity;
  */
 public class AbstractNameFactory<EntityType extends Entity>
 extends AbstractComponent
-implements Entity.NameFactory<EntityType> 
+implements Entity.NameFactory<EntityType>
     {
     @Override
-    public String name(String name)
+    public String name(final String name)
         {
         return name;
         }
-    
+
     }

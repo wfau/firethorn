@@ -168,7 +168,7 @@ implements AdqlParser
             else {
                 translator = new OgsaDQPTranslator();
                 }
-            
+
             // TODO ** PATCH FIX FOR CROSS JOIN BUG **
             subject.osql(
                 translator.translate(
@@ -227,16 +227,16 @@ implements AdqlParser
         log.debug("process(final AdqlParserQuery, ADQLQuery, ADQLQuery");
         /*
          * Handle each part separately ?
-         * 
+         *
         ClauseSelect select = object.getSelect();
-        FromContent  from = object.getFrom();        
+        FromContent  from = object.getFrom();
         ClauseConstraints where = object.getWhere();
         ClauseADQL<ADQLOrder> orderrby =object.getOrderBy();
         ClauseADQL<ColumnReference> groupby = object.getGroupBy();
         ClauseConstraints having = object.getHaving();
-         *  
+         *
          */
-        
+
         /*
          * Recursively process the tree ...
          *
@@ -252,7 +252,7 @@ implements AdqlParser
 
     /**
      * Recursively process a tree of ADQLObject(s).
-     * 
+     *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final Iterable<ADQLObject> iter)
         {
@@ -313,7 +313,7 @@ implements AdqlParser
 
     /**
      * Process the SELECT part of the query.
-     * 
+     *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final ClauseSelect select)
         {
@@ -348,7 +348,7 @@ implements AdqlParser
 
     /**
      * Process a 'SELECT *' construct.
-     * 
+     *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final SelectAllColumns selectall)
         {
@@ -360,17 +360,17 @@ implements AdqlParser
             fields(
                 subject,
                 selectall.getQuery()
-                );                            
+                );
             }
         //
-        // Specific 'SELECT table.*' from a single table. 
+        // Specific 'SELECT table.*' from a single table.
         else if (selectall.getAdqlTable() != null)
             {
             fields(
                 subject,
                 query,
                 selectall.getAdqlTable()
-                );                            
+                );
             }
         //
         // Shouldn't get here, but check anyway.
@@ -383,7 +383,7 @@ implements AdqlParser
 
     /**
      * Process a column reference outside the SELECT clause.
-     * Adds the column to the list of columns used by the query.  
+     * Adds the column to the list of columns used by the query.
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final ADQLColumn column)
@@ -408,10 +408,10 @@ implements AdqlParser
             log.warn("ADQLColumn getDBLink() is unexpected class [{}]", column.getDBLink().getClass().getName());
             }
         }
-    
+
     /**
      * Process a table reference outside the SELECT clause.
-     * Adds the table to the list of tables used by the query.  
+     * Adds the table to the list of tables used by the query.
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final ADQLTable table)
@@ -436,14 +436,14 @@ implements AdqlParser
             log.warn("ADQLTable getDBLink() is unexpected class [{}]", table.getDBLink().getClass().getName());
             }
         }
-    
+
     /**
      * Add all the fields from a table, called by 'SELECT table.*'.
-     * 
+     *
      * TODO
      * This has to handle ADQLTable with getDBLink() == null.
      * Figure out where this comes from and fix it.
-     * 
+     *
      */
     protected void fields(final AdqlParserQuery subject, final ADQLQuery query, final ADQLTable table)
         {
@@ -471,20 +471,20 @@ implements AdqlParser
             log.warn("ADQLTable getDBLink() is unexpected class [{}]", table.getDBLink().getClass().getName());
             }
         }
- 
+
     /**
      * Add all the fields from a table, called by 'SELECT table.*'.
-     * 
+     *
      * TODO
      * Searches the query FromContent for a matching table.
      * Need to replace this with code that uses the firethorn metadata.
-     * 
+     *
      */
-    protected void fields(final AdqlParserQuery subject, final ADQLQuery query, ADQLTable table, FromContent from)
+    protected void fields(final AdqlParserQuery subject, final ADQLQuery query, final ADQLTable table, final FromContent from)
         {
         log.debug("fields(AdqlParserQuery, ADQLQuery, ADQLTable, FromContent)");
         log.debug("  table [{}][{}]", table.getName(), table.getAlias());
-        for (ADQLTable temp : from.getTables())
+        for (final ADQLTable temp : from.getTables())
             {
             log.debug("    temp  [{}][{}]", temp.getName(), temp.getAlias());
             if (table.hasAlias())
@@ -533,7 +533,7 @@ implements AdqlParser
         {
         log.debug("fields(AdqlParserQuery, ADQLQuery)");
         log.debug("  ADQLQuery [{}]", query.getName());
-        for (DBColumn column : query.getResultingColumns())
+        for (final DBColumn column : query.getResultingColumns())
             {
             log.debug("    DBColumn [{}][{}]", column.getADQLName(), column.getClass().getName());
             if (column instanceof AdqlDBColumn)
@@ -546,12 +546,12 @@ implements AdqlParser
                 }
             }
         }
-    
+
     /**
      * Add all the fields from an AdqlParserTable.
      *
      */
-    protected void fields(final AdqlParserQuery subject, AdqlParserTable table)
+    protected void fields(final AdqlParserQuery subject, final AdqlParserTable table)
         {
         log.debug("fields(AdqlParserQuery, AdqlParserTable)");
         fields(
@@ -564,13 +564,13 @@ implements AdqlParser
      * Add all the fields from an AdqlTable.
      *
      */
-    protected void fields(final AdqlParserQuery subject, AdqlTable table)
+    protected void fields(final AdqlParserQuery subject, final AdqlTable table)
         {
         log.debug("fields(AdqlParserQuery, AdqlTable)");
         log.debug("  AdqlTable [{}]", table.fullname());
         log.debug("  BaseTable [{}]", table.base().fullname());
         log.debug("  RootTable [{}]", table.root().fullname());
-        for (AdqlColumn column : table.columns().select())
+        for (final AdqlColumn column : table.columns().select())
             {
             subject.add(
                 wrap(
@@ -584,14 +584,14 @@ implements AdqlParser
     implements AdqlQuery.SelectField
         {
 
-        private SelectFieldImpl(final String name, Integer size, AdqlColumn.Type type)
+        private SelectFieldImpl(final String name, final Integer size, final AdqlColumn.Type type)
             {
             this.name  = name ;
             this.size  = size ;
             this.type  = type ;
             }
 
-        private String name;
+        private final String name;
         @Override
         public String name()
             {
@@ -609,15 +609,15 @@ implements AdqlParser
             {
             return null ;
             }
-        
-        private Integer size;
+
+        private final Integer size;
         @Override
         public Integer arraysize()
             {
             return this.size;
             }
 
-        private AdqlColumn.Type type;
+        private final AdqlColumn.Type type;
         @Override
         public AdqlColumn.Type type()
             {
@@ -635,7 +635,7 @@ implements AdqlParser
             this.field = field ;
             }
 
-        private String name;
+        private final String name;
         @Override
         public String name()
             {
@@ -659,7 +659,7 @@ implements AdqlParser
             {
             return this.field.jdbc();
             }
-        
+
         @Override
         public Integer arraysize()
             {
@@ -691,7 +691,7 @@ implements AdqlParser
             this.adql  = adql ;
             }
 
-        private String name;
+        private final String name;
         @Override
         public String name()
             {
@@ -718,7 +718,7 @@ implements AdqlParser
                 }
             return null ;
             }
-        
+
         @Override
         public Integer arraysize()
             {
@@ -824,7 +824,7 @@ implements AdqlParser
 
     /**
      * Wrap an AdqlColumn.
-     * @todo Catch DATE_TIME and convert into char[10] 
+     * @todo Catch DATE_TIME and convert into char[10]
      *
      */
     public static AdqlQuery.SelectField wrap(final AdqlColumn column)
@@ -861,7 +861,7 @@ implements AdqlParser
 
     /**
      * Function handler.
-     * 
+     *
     public enum FunctionHandler
         {
         AVG()
@@ -919,12 +919,12 @@ implements AdqlParser
                     );
                 }
             };
-            
+
         abstract AdqlQuery.SelectField handle(ADQLOperand[] param);
-        
+
         }
      */
-    
+
     /**
      * Wrap an ADQLFunction.
      *
@@ -953,7 +953,7 @@ implements AdqlParser
             return null ;
             }
         }
-        
+
     /**
      * Wrap an ADQLFunction.
      *
@@ -985,13 +985,13 @@ implements AdqlParser
                         funct.getParameter(0)
                         )
                     );
-            
-            default : 
+
+            default :
                 log.error("Unexpected function type [{}][{}]", funct.getName(), funct.getType());
                 return null ;
             }
         }
-        
+
     /**
      * Wrap a MathFunction.
      *
@@ -1004,7 +1004,7 @@ implements AdqlParser
         log.debug("  string [{}]", funct.isString());
         return null ;
         }
-        
+
     /**
      * Wrap a UserDefinedFunction.
      *
@@ -1017,9 +1017,9 @@ implements AdqlParser
         log.debug("  string [{}]", funct.isString());
         return null ;
         }
-        
+
 /*
- *         
+ *
         AdqlQuery.SelectField field = null ;
 
         for (final ADQLOperand param : funct.getParameters())

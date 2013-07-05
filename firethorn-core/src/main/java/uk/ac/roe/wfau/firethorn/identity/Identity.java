@@ -54,7 +54,7 @@ extends Entity, NamedEntity
         {
         /**
          * Get the current active Identity.
-         * 
+         *
          */
         public Identity current();
 
@@ -74,27 +74,27 @@ extends Entity, NamedEntity
 
     /**
      * The community this Identity belongs to.
-     * 
+     *
      */
     public Community community();
 
     /**
      *  The storage space for this Identity.
-     *  
+     *
      */
     public JdbcSchema space();
 
     /**
      *  The storage space for this Identity.
-     *  
+     *
      */
-    public JdbcSchema space(boolean create);
+    public JdbcSchema space(final boolean create);
 
     /**
      *  The storage space for this Identity.
-     *  
+     *
     public void space(JdbcSchema space);
      */
-    
+
     }
 

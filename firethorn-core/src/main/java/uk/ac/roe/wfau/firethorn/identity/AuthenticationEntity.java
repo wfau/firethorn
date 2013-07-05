@@ -123,7 +123,7 @@ implements Authentication
             return null;
             }
         }
-    
+
     /**
      * Protected constructor.
      *
@@ -152,7 +152,7 @@ implements Authentication
         this.identity  = identity  ;
         this.operation = operation ;
         }
-    
+
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -195,19 +195,19 @@ implements Authentication
         unique = false,
         nullable = false,
         updatable = false
-        )        
+        )
     private Operation operation ;
     @Override
     public Operation operation()
         {
         return this.operation;
         }
-    
+
     @Override
     public String link()
         {
         // TODO Auto-generated method stub
         return null;
         }
-    
+
     }

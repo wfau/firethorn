@@ -81,7 +81,7 @@ implements Community
      */
     protected static final String DB_URI_COL   = "uri" ;
     protected static final String DB_SPACE_COL = "space" ;
-    
+
     /**
      * EntityFactory implementation.
      *
@@ -141,10 +141,10 @@ implements Community
                     );
                 }
             }
-        
+
         @Override
         @SelectEntityMethod
-        public Community select(String uri)
+        public Community select(final String uri)
             {
             log.debug("select(String) [{}]", uri);
             return super.first(
@@ -213,7 +213,7 @@ implements Community
         {
         return this.uri;
         }
-    
+
     @Override
     public Identities identities()
         {
@@ -238,7 +238,7 @@ implements Community
                 }
             };
         }
-    
+
     @Override
     public String link()
         {
@@ -264,7 +264,7 @@ implements Community
         return this.space;
         }
     @Override
-    public JdbcResource space(boolean create)
+    public JdbcResource space(final boolean create)
         {
         if ((create) && (this.space == null))
             {

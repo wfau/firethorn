@@ -73,7 +73,7 @@ public class JdbcConnectionEntity
     protected static final String DB_JDBC_STATUS_COL  = "jdbcstatus";
     protected static final String DB_JDBC_DRIVER_COL  = "jdbcdriver";
     protected static final String DB_JDBC_PRODUCT_COL = "jdbcproduct";
-    
+
     /**
      * Our Spring SQLException translator.
      *

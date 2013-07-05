@@ -23,7 +23,7 @@ public class CreateJdbcSchemaChange extends AbstractChange
         this.schema = schema ;
         }
 
-    private JdbcSchema schema;
+    private final JdbcSchema schema;
     public  JdbcSchema schema()
         {
         return this.schema;
@@ -39,15 +39,15 @@ public class CreateJdbcSchemaChange extends AbstractChange
         }
 
     @Override
-    public SqlStatement[] generateStatements(Database database)
+    public SqlStatement[] generateStatements(final Database database)
         {
         log.debug("generateStatements(Database)");
 
-        List<SqlStatement> statements = new ArrayList<SqlStatement>();
+        final List<SqlStatement> statements = new ArrayList<SqlStatement>();
         statements.add(
             new CreateSchemaStatement(this.schema)
             );
-        
+
         return statements.toArray(
             new SqlStatement[statements.size()]
             );

@@ -261,6 +261,6 @@ public class IvoaResourceEntity
     protected void scanimpl()
         {
         // TODO Auto-generated method stub
-        
+
         }
     }

@@ -39,26 +39,26 @@ extends NamedEntity, Job
 
     /**
      * Public interface for OGSA-DAI query params.
-     * @todo This should become the basis for an OgsaDaiservice entiry ? 
-     * 
+     * @todo This should become the basis for an OgsaDaiservice entiry ?
+     *
      */
     public interface QueryParam
         {
         /**
          * The service endpoint URL.
-         * 
+         *
          */
         public String endpoint();
 
         /**
          * The DQP processor name.
-         * 
+         *
          */
         public String dqp();
 
         /**
          * The user data store name.
-         * 
+         *
          */
         public String store();
         }
@@ -76,7 +76,7 @@ extends NamedEntity, Job
         public QueryParam current();
 
         }
-    
+
     /**
      * Our local service implementations.
      *
@@ -130,7 +130,7 @@ extends NamedEntity, Job
          *
          */
         public ParamFactory params();
-        
+
         }
 
     /**
@@ -148,7 +148,7 @@ extends NamedEntity, Job
         {
         /**
          * Generate a unique name for a query.
-         * 
+         *
          */
         public String name();
         }
@@ -311,7 +311,7 @@ extends NamedEntity, Job
 
     /**
      * The OGSA-DAI query params.
-     * 
+     *
      */
     public QueryParam params();
 
@@ -423,7 +423,7 @@ extends NamedEntity, Job
          *
          */
         public abstract JdbcColumn jdbc();
-        
+
         }
 
     /**

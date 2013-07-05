@@ -35,13 +35,13 @@ implements JdbcTable.Builder
     {
 
     @Override
-    public JdbcTable create(JdbcTable table)
+    public JdbcTable create(final JdbcTable table)
         {
         log.debug("create(JdbcTable)");
         log.debug("  table [{}][{}]", table.ident(), table.name());
-        
+
         log.debug("--- 000 ");
-        ChangeSet changeset = changeset(); 
+        final ChangeSet changeset = changeset();
 
         log.debug("--- 001 ");
         changeset.addChange(
@@ -61,7 +61,7 @@ implements JdbcTable.Builder
         }
 
     @Override
-    public void delete(JdbcTable table)
+    public void delete(final JdbcTable table)
         {
         // TODO Auto-generated method stub
         }

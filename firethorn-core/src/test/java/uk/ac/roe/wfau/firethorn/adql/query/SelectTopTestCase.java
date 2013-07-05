@@ -33,7 +33,7 @@ extends TwomassQueryTestBase
     {
 
     /**
-     * Test query "SELECT TOP 5 ra, dec" 
+     * Test query "SELECT TOP 5 ra, dec"
      *
      */
     private static final String QUERY_000 =
@@ -66,7 +66,7 @@ extends TwomassQueryTestBase
         }
 
     /**
-     * Test query "SELECT TOP 5 *" 
+     * Test query "SELECT TOP 5 *"
      *
      */
     private static final String QUERY_001 =
@@ -98,7 +98,7 @@ extends TwomassQueryTestBase
         }
 
     /**
-     * Test query "SELECT TOP 5 twomass.*" 
+     * Test query "SELECT TOP 5 twomass.*"
      *
      */
     private static final String QUERY_002 =

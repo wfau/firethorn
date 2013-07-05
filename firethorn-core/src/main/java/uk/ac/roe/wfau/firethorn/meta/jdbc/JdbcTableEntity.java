@@ -39,7 +39,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -137,7 +136,7 @@ implements JdbcTable
                 "QUERY_".concat(
                     query.ident().toString()
                     )
-                );            
+                );
             }
         }
 
@@ -186,7 +185,7 @@ implements JdbcTable
         @CreateEntityMethod
         public JdbcTable create(final JdbcSchema schema, final AdqlQuery query)
             {
-            JdbcTable table = this.insert(
+            final JdbcTable table = this.insert(
                 new JdbcTableEntity(
                     schema,
                     query,

@@ -242,6 +242,6 @@ public class IvoaSchemaEntity
     protected void scanimpl()
         {
         // TODO Auto-generated method stub
-        
+
         }
     }

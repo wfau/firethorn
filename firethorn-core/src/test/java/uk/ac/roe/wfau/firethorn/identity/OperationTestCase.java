@@ -33,29 +33,29 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 public class OperationTestCase
 extends TestBase
     {
-   
+
     @Test
     public void test000()
         {
-        final int COUNT = 1000; 
-        DateTime start = new DateTime();
+        final int COUNT = 1000;
+        final DateTime start = new DateTime();
 
         log.debug("------------------");
         for (int i = 0 ; i < COUNT ; i++)
             {
-            Operation operation = factories().operations().create(
+            final Operation operation = factories().operations().create(
                 "target",
                 "method",
                 "source"
-                ); 
+                );
             factories().hibernate().flush();
             factories().hibernate().evict(operation);
             log.debug("Oper [{}]", operation.ident());
             }
         log.debug("------------------");
 
-        DateTime end = new DateTime();
-        Interval interval = new Interval(start, end);        
+        final DateTime end = new DateTime();
+        final Interval interval = new Interval(start, end);
         log.debug(" Duration [{}]", (interval.toDurationMillis()/COUNT));
 
         }

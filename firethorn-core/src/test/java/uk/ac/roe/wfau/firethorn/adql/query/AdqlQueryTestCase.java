@@ -35,7 +35,7 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
  * @todo - NEED TO SET UP CURRENT IDENTITY WITH A JdbcResource for storage.
- * 
+ *
  */
 @Slf4j
 public class AdqlQueryTestCase

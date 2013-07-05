@@ -226,7 +226,7 @@ extends BaseResourceEntity<AdqlSchema>
     protected void scanimpl()
         {
         // TODO Auto-generated method stub
-        
+
         }
 
     }

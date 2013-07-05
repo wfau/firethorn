@@ -80,7 +80,7 @@ implements Identity
      */
     protected static final String DB_COMMUNITY_COL = "community" ;
     protected static final String DB_CURRENT_SCHEMA_COL = "currentschema" ;
-    
+
     /**
      * Factory implementation.
      *
@@ -99,7 +99,7 @@ implements Identity
         @Override
         public Identity current()
             {
-            Operation oper = factories().operations().current() ;
+            final Operation oper = factories().operations().current() ;
             if (oper != null)
                 {
                 if (oper.authentications().primary() != null)
@@ -135,7 +135,7 @@ implements Identity
 
         @Override
         @SelectEntityMethod
-        public Identity select(Community community, String name)
+        public Identity select(final Community community, final String name)
             {
             return super.first(
                 super.query(
@@ -223,7 +223,7 @@ implements Identity
         {
         return this.community ;
         }
-    
+
     @Override
     public String link()
         {
@@ -249,7 +249,7 @@ implements Identity
         return this.jdbcschema;
         }
     @Override
-    public JdbcSchema space(boolean create)
+    public JdbcSchema space(final boolean create)
         {
         if ((create) && (this.jdbcschema == null))
             {
@@ -260,7 +260,7 @@ implements Identity
 /*
                     this.jdbcschema = community().space().schemas().create(
                         this
-                        ); 
+                        );
  */
                     this.jdbcschema = community().space().schemas().simple();
                     }

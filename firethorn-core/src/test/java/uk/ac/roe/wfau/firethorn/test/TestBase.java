@@ -54,7 +54,7 @@ extends TestRoot
     public static final String TEST_IDENTITY_NAME  = "Tester (identity)" ;
     public static final String TEST_COMMUNITY_URI  = "test" ;
     public static final String TEST_COMMUNITY_NAME = "Tester (group)" ;
-    
+
     /**
      * Initialise our operation and identity.
      * http://stackoverflow.com/questions/6076599/what-order-are-the-junit-before-after-called
@@ -63,7 +63,7 @@ extends TestRoot
     @Before
     public final void oper()
         {
-        Operation operation = factories().operations().create(
+        final Operation operation = factories().operations().create(
             TEST_OPER_TARGET,
             TEST_OPER_METHOD,
             TEST_OPER_SOURCE
@@ -87,7 +87,7 @@ extends TestRoot
             }
 
         operation.authentications().resolve();
-        Authentication primary = operation.authentications().primary();
+        final Authentication primary = operation.authentications().primary();
         log.debug(" Auth [{}][{}][{}]", primary.method(), primary.identity().ident(), primary.identity().name());
 
         }

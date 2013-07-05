@@ -19,16 +19,16 @@ extends AbstractSqlGenerator<CreateSchemaStatement>
     {
 
     @Override
-    public Sql[] generateSql(CreateSchemaStatement statement, Database database, SqlGeneratorChain chain)
+    public Sql[] generateSql(final CreateSchemaStatement statement, final Database database, final SqlGeneratorChain chain)
         {
 
         log.debug("generateSql(CreateSchemaStatement, Database, SqlGeneratorChain)");
         log.debug("  Catalog [{}]", statement.getCatalogName());
         log.debug("  Schema  [{}]", statement.getSchemaName());
-        
-        List<Sql> list = new ArrayList<Sql>();
 
-        StringBuffer buffer = new StringBuffer();
+        final List<Sql> list = new ArrayList<Sql>();
+
+        final StringBuffer buffer = new StringBuffer();
         buffer.append("CREATE SCHEMA ");
         buffer.append(
             database.correctSchema(
@@ -57,9 +57,9 @@ extends AbstractSqlGenerator<CreateSchemaStatement>
         }
 
     @Override
-    public ValidationErrors validate(CreateSchemaStatement statement, Database database, SqlGeneratorChain chain)
+    public ValidationErrors validate(final CreateSchemaStatement statement, final Database database, final SqlGeneratorChain chain)
         {
-        ValidationErrors errors = new ValidationErrors();
+        final ValidationErrors errors = new ValidationErrors();
         errors .checkRequiredField("schemaName", statement.getSchemaName());
         return errors ;
         }

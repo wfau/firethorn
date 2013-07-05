@@ -24,9 +24,9 @@ package uk.ac.roe.wfau.firethorn.identity;
 public interface Authenticator
     {
     /**
-     * URN identifier for this type of authentication. 
-     * 
+     * URN identifier for this type of authentication.
+     *
      */
     public String method();
-    
+
     }

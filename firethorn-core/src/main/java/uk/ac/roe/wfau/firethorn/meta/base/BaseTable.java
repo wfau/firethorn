@@ -70,7 +70,7 @@ extends BaseComponent
         @Override
 		public String alias(final TableType table);
         }
-    
+
     /**
      * Table resolver interface.
      *

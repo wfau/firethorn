@@ -46,7 +46,7 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
-import org.springframework.beans.factory.annotation.Value;         
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -59,7 +59,6 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.identity.Community;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
@@ -72,8 +71,6 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.client.PipelineResult;
@@ -149,11 +146,11 @@ implements AdqlQuery, AdqlParserQuery
     protected static final String DB_OGSADAI_DQP_COL      = "ogsadaidqp";
     protected static final String DB_OGSADAI_STORE_COL    = "ogsadaistore";
     protected static final String DB_OGSADAI_ENDPOINT_COL = "ogsadaiendpoint";
-    
+
     /**
      * Param factory implementation.
      * @todo Move to a separate class.
-     * 
+     *
      */
     @Component
     public static class ParamFactory
@@ -191,7 +188,7 @@ implements AdqlQuery, AdqlParserQuery
                 };
             }
         }
-    
+
     /**
      * Our local service implementations.
      *
@@ -382,7 +379,7 @@ implements AdqlQuery, AdqlParserQuery
             {
             return this.params;
             }
-        
+
         @Override
         @SelectEntityMethod
         public Iterable<AdqlQuery> select()
@@ -637,7 +634,7 @@ implements AdqlQuery, AdqlParserQuery
         )
     private String endpoint ;
 
-    protected void params(AdqlQuery.QueryParam params)
+    protected void params(final AdqlQuery.QueryParam params)
         {
         this.dqp      = params.dqp();
         this.store    = params.store();
@@ -914,8 +911,8 @@ implements AdqlQuery, AdqlParserQuery
             resource
             );
         }
-    
-    
+
+
     @Override
     public Status execute()
         {
@@ -1077,12 +1074,12 @@ implements AdqlQuery, AdqlParserQuery
         log.debug("build()");
 
         // TODO Delete old tables ?
-        
+
         if (this.syntax == State.VALID)
             {
-            Identity identity = this.owner(); 
+            final Identity identity = this.owner();
             log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
-    
+
             //
             // Create our tables.
             if (identity.space(true) != null)
@@ -1098,7 +1095,7 @@ implements AdqlQuery, AdqlParserQuery
 // no-owner fallback.
             else {
                 log.warn("NO IDENTITY SPACE for [{}][{}]", identity.ident(), identity.name());
-                // Config exception. 
+                // Config exception.
                 }
 //TODO
 //Why does the query need to know where the JdbcTable is ?
@@ -1108,10 +1105,10 @@ implements AdqlQuery, AdqlParserQuery
             // TODO Delete old tables ?
             }
         }
-    
+
     /**
      * Our result tables.
-     * TODO - Which external components need access to the JdbcTable ? 
+     * TODO - Which external components need access to the JdbcTable ?
      *
      */
     @Override

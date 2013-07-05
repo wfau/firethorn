@@ -50,11 +50,11 @@ extends BaseTable<JdbcTable, JdbcColumn>
         {
         /**
          * Create a name for a query results table.
-         * 
+         *
          */
         public String name(final AdqlQuery query);
         }
-    
+
     /**
      * Link factory interface.
      *
@@ -83,13 +83,13 @@ extends BaseTable<JdbcTable, JdbcColumn>
          * Create a JDBC table.
          *
          */
-        public JdbcTable create(JdbcTable table);
+        public JdbcTable create(final JdbcTable table);
 
         /**
          * Delete a JDBC table.
          *
          */
-        public void delete(JdbcTable table);
+        public void delete(final JdbcTable table);
 
         }
 
@@ -129,7 +129,7 @@ extends BaseTable<JdbcTable, JdbcColumn>
          *
          */
         public JdbcTable.Builder builder();
-        
+
         }
 
     @Override

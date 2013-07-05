@@ -82,7 +82,7 @@ implements Entity
      * Has to use dynamic initialisation.
      * http://stackoverflow.com/questions/9104221/hibernate-buildsessionfactory-exception
      * TODO Improve this
-     * 
+     *
      */
     protected ComponentFactories factories()
     	{
@@ -92,7 +92,7 @@ implements Entity
     		}
     	return this.factories;
     	}
-   
+
     /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html
@@ -194,7 +194,7 @@ implements Entity
         {
         return this.owner ;
         }
-    protected void owner(Identity owner)
+    protected void owner(final Identity owner)
         {
         this.owner = owner;
         }

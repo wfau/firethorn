@@ -6,7 +6,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 @Slf4j
 public class DeleteJdbcTableChange
-extends DropTableChange 
+extends DropTableChange
     {
     public DeleteJdbcTableChange(final JdbcTable table)
         {
@@ -21,7 +21,7 @@ extends DropTableChange
             );
         }
 
-    private JdbcTable table ;
+    private final JdbcTable table ;
     public  JdbcTable table()
         {
         return this.table;
