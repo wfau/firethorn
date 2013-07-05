@@ -53,6 +53,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
@@ -1073,97 +1074,39 @@ implements AdqlQuery, AdqlParserQuery
      */
     protected void build()
         {
-        log.debug("create(JdbcSchema)");
+        log.debug("build()");
 
-        Identity identity = this.owner(); 
-        log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
-
-/*
-        //
-        // Locate our JDBC schema.
-        // TODO Move this to a separate resolver/factory.
-        if (identity.space() == null)
+        // TODO Delete old tables ?
+        
+        if (this.syntax == State.VALID)
             {
-            log.debug(" Identity space [null][null]");
-
-            Community community = identity.community();
-            log.debug(" Community [{}][{}]", community.ident(), community.name());
-
-            JdbcResource userdata = community.space(); 
-            if (userdata == null)
+            Identity identity = this.owner(); 
+            log.debug(" Identity [{}][{}]", identity.ident(), identity.name());
+    
+            //
+            // Create our tables.
+            if (identity.space(true) != null)
                 {
-                log.debug(" Community space [null][null]");
-                userdata = factories().jdbc().resources().userdata() ;
-                if (userdata  == null)
-                    {
-                    log.debug(" Userdata resource [null][null]");
-                    }
-                else {
-                    log.debug(" Userdata resource [{}][{}]", userdata.ident(), userdata.name());
-                    community.space(
-                        userdata 
-                        );                
-                    }
-                }
-
-            if (userdata != null)
-                {
-                log.debug(" Community space [{}][{}]", userdata.ident(), userdata.name());
-                log.debug(" Creating new user space");
-
-//
-// TODO Create a new schema for this user.
-// Requires CreateSchema.                
-
-                log.debug(" JdbcResource [{}][{}]", userdata.ident(), userdata.ogsaid());
-
-                String defcatalog = userdata.catalog();
-                String defschema  = userdata.connection().type().defschema();
-                log.debug(" Default catalog [{}]", defcatalog);
-                log.debug(" Default schema  [{}]", defschema);
-                
-                // TODO - resource.schemas().select() requires a catalog name.
-                // Works, unless we use '*' for the catalog.
-                JdbcSchema userschema = userdata.schemas().select(
-                    defcatalog,
-                    defschema
+                log.debug(" Identity space [{}][{}]", identity.space().ident(), identity.space().name());
+                this.jdbctable = identity.space().tables().create(
+                    this
                     );
-                
-                if (userschema != null)
-                    {
-                    log.debug(" JdbcSchema   [{}][{}]", userschema.ident(), userschema.name());
-                    }
-                else {
-                    log.warn(" Can't find default schema [{}][{}]", defcatalog, defschema);
-                    }
-
-                identity.space(
-                    userschema
+                this.adqltable = this.schema().tables().create(
+                    this
                     );
                 }
-            }
- */
-
-        //
-        // Create our tables.
-        if (identity.space(true) != null)
-            {
-            log.debug(" Identity space [{}][{}]", identity.space().ident(), identity.space().name());
-            this.jdbctable = identity.space().tables().create(
-                this
-                );
-            this.adqltable = this.schema().tables().create(
-                this
-                );
-            }
 // no-owner fallback.
-        else {
-            log.warn("NO IDENTITY SPACE for [{}][{}]", identity.ident(), identity.name());
-            // Config exception. 
-            }
+            else {
+                log.warn("NO IDENTITY SPACE for [{}][{}]", identity.ident(), identity.name());
+                // Config exception. 
+                }
 //TODO
 //Why does the query need to know where the JdbcTable is ?
-        
+            }
+
+        else {
+            // TODO Delete old tables ?
+            }
         }
     
     /**

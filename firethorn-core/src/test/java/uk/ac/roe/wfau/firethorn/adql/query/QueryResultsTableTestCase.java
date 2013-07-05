@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.adql.query.QuerySelectFieldTestCase.ExpectedField;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
@@ -94,7 +95,7 @@ extends TwomassQueryTestBase
         
         void validate(final AdqlColumn column)
             {
-            log.debug("check()");
+            log.debug("validate(AdqlColumn)");
             log.debug("  name [{}][{}]", this.adqlname, column.name());
             log.debug("  size [{}][{}]", this.adqlsize, column.meta().adql().arraysize());
             log.debug("  type [{}][{}]", this.adqltype, column.meta().adql().type());
@@ -114,7 +115,7 @@ extends TwomassQueryTestBase
 
         void validate(final JdbcColumn column)
             {
-            log.debug("check()");
+            log.debug("validate(JdbcColumn)");
             log.debug("  name [{}][{}]", this.jdbcname, column.name());
             log.debug("  size [{}][{}]", this.jdbcsize, column.meta().jdbc().size());
             log.debug("  type [{}][{}]", this.jdbctype, column.meta().jdbc().type());
@@ -136,52 +137,72 @@ extends TwomassQueryTestBase
     public void validate(AdqlQuery query, final ExpectedColumn[] expected)
     throws Exception
         {
-        assertNotNull(
-            query.results().adql()
-            );
-        int i = 0 ;
-        for (AdqlColumn column : query.results().adql().columns().select())
+        if (query.syntax().state() == State.VALID)
             {
-            expected[i++].validate(
-                column
+            assertNotNull(
+                query.results().adql()
                 );
-            }
-        assertEquals(
-            expected.length,
-            i
-            );
+            int i = 0 ;
+            for (AdqlColumn column : query.results().adql().columns().select())
+                {
+                expected[i++].validate(
+                    column
+                    );
+                }
+            assertEquals(
+                expected.length,
+                i
+                );
 
-        assertNotNull(
-            query.results().jdbc()
-            );
-        int j = 0 ;
-        for (JdbcColumn column : query.results().jdbc().columns().select())
-            {
-            expected[j++].validate(
-                column
+            assertNotNull(
+                query.results().jdbc()
+                );
+            int j = 0 ;
+            for (JdbcColumn column : query.results().jdbc().columns().select())
+                {
+                expected[j++].validate(
+                    column
+                    );
+                }
+            assertEquals(
+                expected.length,
+                j
                 );
             }
-        assertEquals(
-            expected.length,
-            j
+        else {
+            assertNull(
+                query.results().adql()
+                );
+            assertNull(
+                query.results().jdbc()
+                );
+            }
+        }
+
+    //
+    // Query syntax error is deliberate.
+    @Test
+    public void test000()
+    throws Exception
+        {
+        validate(
+            this.schema.queries().create(
+                "SELECT"
+                + "    frog"
+                + "    toad"
+                + " FROM"
+                + "    adql_twomass.twomass_psc as twomass"
+                + " WHERE"
+                + "    ra  BETWEEN '56.0' AND '57.9'"
+                + " AND"
+                + "    dec BETWEEN '24.0' AND '24.2'"
+                + ""
+                ),
+            new ExpectedColumn[] {}
             );
         }
     
-    private static final String QUERY_001 =
-        "SELECT"
-      + "    date as mydate"
-      + " FROM"
-      + "    adql_twomass.twomass_psc as twomass"
-      + " WHERE"
-      + "    ra  BETWEEN '56.0' AND '57.9'"
-      + " AND"
-      + "    dec BETWEEN '24.0' AND '24.2'"
-      + ""
-      ;
-
-    public static final ExpectedColumn[] RESULTS_001 = {
-        new ExpectedColumn("mydate", AdqlColumn.Type.TIMESTAMP, 23, "mydate", JdbcColumn.Type.TIMESTAMP, 23)
-        }; 
+    
 
     @Test
     public void test001()
@@ -189,29 +210,22 @@ extends TwomassQueryTestBase
         {
         validate(
             this.schema.queries().create(
-                QUERY_001
+                "SELECT"
+                + "    date as mydate"
+                + " FROM"
+                + "    adql_twomass.twomass_psc as twomass"
+                + " WHERE"
+                + "    ra  BETWEEN '56.0' AND '57.9'"
+                + " AND"
+                + "    dec BETWEEN '24.0' AND '24.2'"
+                + ""
                 ),
-            RESULTS_001                
+            new ExpectedColumn[] {
+                new ExpectedColumn("mydate", AdqlColumn.Type.TIMESTAMP, 23, "mydate", JdbcColumn.Type.TIMESTAMP, 23)
+                }                
             );
         }
 
-    private static final String QUERY_002 =
-        "SELECT"
-    + "    MAX(ra)"
-    + "    MAX(dec) as maxdec"
-      + " FROM"
-      + "    adql_twomass.twomass_psc as twomass"
-      + " WHERE"
-      + "    ra  BETWEEN '56.0' AND '57.9'"
-      + " AND"
-      + "    dec BETWEEN '24.0' AND '24.2'"
-      + ""
-      ;
-    
-    public static final ExpectedColumn[] RESULTS_002 = {
-        new ExpectedColumn("MAX",    AdqlColumn.Type.DOUBLE, 0, "MAX",    JdbcColumn.Type.DOUBLE, 6),
-        new ExpectedColumn("maxdec", AdqlColumn.Type.DOUBLE, 0, "maxdec", JdbcColumn.Type.DOUBLE, 6),
-        }; 
     
     @Test
     public void test002()
@@ -219,9 +233,21 @@ extends TwomassQueryTestBase
         {
         validate(
             this.schema.queries().create(
-                QUERY_002
+                "SELECT"
+                + "    MAX(ra),"
+                + "    MAX(dec) as maxdec"
+                + " FROM"
+                + "    adql_twomass.twomass_psc as twomass"
+                + " WHERE"
+                + "    ra  BETWEEN '56.0' AND '57.9'"
+                + " AND"
+                + "    dec BETWEEN '24.0' AND '24.2'"
+                + ""
                 ),
-            RESULTS_002
+            new ExpectedColumn[] {
+                new ExpectedColumn("MAX",    AdqlColumn.Type.DOUBLE, 0, "MAX",    JdbcColumn.Type.DOUBLE, 53),
+                new ExpectedColumn("maxdec", AdqlColumn.Type.DOUBLE, 0, "maxdec", JdbcColumn.Type.DOUBLE, 53),
+                }
             );
         }
     }
