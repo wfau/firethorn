@@ -6,7 +6,6 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
 import java.net.URL;
 
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Value;
 
 /**
  *

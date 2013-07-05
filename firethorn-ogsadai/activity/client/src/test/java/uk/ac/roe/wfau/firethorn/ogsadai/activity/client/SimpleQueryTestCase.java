@@ -20,7 +20,6 @@ package uk.ac.roe.wfau.firethorn.ogsadai.activity.client;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
@@ -40,7 +39,7 @@ extends SimpleQueryTestBase
 
     @Value("${firethon.ogsadai.endpoint}")
     private String endpoint ;
-    
+
     /**
      * Single catalog, TWOMASS.
      *
