@@ -9,71 +9,11 @@
 #
 #[root@kvm-server]
 
-    source ${HOME:?}/bin/kvm-tools.sh
 
-    vmbase=ubuntu-12
-    memunit=MiB
-    memsize=512
-    volsize=8G
-    volpool=default
+    #
+    # Create three lova virtual machines.
+    # https://github.com/Zarquan/ischnura-kvm/blob/master/src/bin/createvm
 
-    vmlist=(xi pi rho tau)
-    for vmname in ${vmlist[@]:?}
-    do
-        echo "VM name [${vmname:?}]"
-
-        #
-        # Set the disc image params.
-        volname=${vmname:?}.qcow
-        volback=$(virsh vol-path --pool 'base' "${vmbase:?}-base.qcow")
-
-        #
-        # Delete any existing VM
-        vmuuid=$(virsh domuuid "${vmname:?}" 2> /dev/null)
-        if [ -n "${vmuuid}" ]    
-        then
-            virsh destroy  "${vmname:?}"
-            virsh undefine "${vmname:?}"
-        fi
-
-        #
-        # Delete any existing volume.
-        volkey=$(virsh vol-key --pool "${volpool:?}" "${volname:?}" 2> /dev/null)
-        if [ -n "${volkey}" ]
-        then
-            virsh vol-delete --pool "${volpool:?}" "${volname:?}"
-        fi
-
-        #
-        # Create a new volume.
-        virsh vol-create-as \
-            "${volpool:?}" \
-            "${volname:?}" \
-            "${volsize:?}" \
-            --allocation 0 \
-            --format 'qcow2' \
-            --backing-vol "${volback:?}" \
-            --backing-vol-format 'qcow2'
-
-        virsh vol-info --pool "${volpool:?}" "${volname:?}"
-        volpath=$(virsh vol-path --pool "${volpool:?}" "${volname:?}")
-
-        #
-        # Create a new VM definition.
-        sed '
-            s|<name>.*</name>|<name>'"${vmname:?}"'</name>|
-            s|<uuid>.*</uuid>|<uuid>'"$(uuidgen)"'</uuid>|
-            s|<memory unit='\''.*'\''>.*</memory>|<memory unit='\'''"${memunit:?}"''\''>'"${memsize:?}"'</memory>|
-            s|<source file='\''.*'\''/>|<source file='\'''"${volpath:?}"''\''/>|
-            s|<mac address='\''.*'\''/>|<mac address='\'''"$(dhcpmac ${vmname:?})"''\''/>|
-            ' ${HOME:?}/kvm/simple-vm.xml > "${HOME:?}/kvm/${vmname:?}.xml"
-
-        #
-        # Create a new VM instance
-        virsh define "${HOME:?}/kvm/${vmname:?}.xml"
-        virsh start  "${vmname:?}"
-
-    done
     
 # ------------------------------------------
 # Update our local SSH fingerprint
