@@ -1,7 +1,10 @@
 
     SELECT
         MAX(twomass.ra) AS maxtmra,
-        MIN(twomass.ra) AS mintmra
+        MIN(twomass.ra) AS mintmra,
+        AVG(twomass.ra) AS avgtmra,
+        SUM(twomass.ra) AS sumtmra,
+        COUNT(twomass.ra) AS count
     FROM
         twomass.twomass_psc AS twomass,
         atlas.atlasSource   AS source,

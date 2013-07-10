@@ -171,6 +171,9 @@ public class AdqlQueryVOTableController
                 // http://technet.microsoft.com/en-us/library/ms174450.aspx
                 else if (resource.connection().type() == JdbcProductType.MSSQL)
                     {
+                    builder.append(
+                        column.root().name()
+                        );
                     /*
                     if (column.meta().adql().type() == Type.TIMESTAMP)
                         {

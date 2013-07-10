@@ -140,15 +140,21 @@ EOF
         # Use a context file to link to our war file.
         # By default the war file is not unpacked into 'webapps'
         # To deploy/undeploy, create/delete the context file.
-        pushd /var/lib/tomcat7/conf/Catalina/localhost
 
+
+        pushd /var/lib/tomcat7/conf/Catalina/localhost
+            rm firethorn.xml
+        popd
+
+        scp Zarquan@threonine:/var/local/projects/edinburgh/wfau/firethorn/devel/firethorn-webapp/target/firethorn-webapp-${fireversion:?}.war .
+
+        pushd /var/lib/tomcat7/conf/Catalina/localhost
             cat > firethorn.xml << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/firethorn" 
     docBase="${HOME}/firethorn-webapp-${fireversion:?}.war" 
     />
 EOF
-
         popd
 
 
