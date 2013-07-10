@@ -20,6 +20,12 @@ package uk.ac.roe.wfau.firethorn.tuesday.test.jdbc;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
@@ -27,6 +33,7 @@ import org.junit.Test;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 /**
  * TODO experiment with this
@@ -71,7 +78,7 @@ public class JdbcResourceInportTestCase
         return resource;
         }
 
-    @Test
+    //@Test
     public void test001()
     throws Exception
         {
@@ -111,5 +118,36 @@ public class JdbcResourceInportTestCase
 
                 }
             }
+        }
+
+    @Test
+    public void test003()
+    throws Exception
+        {
+        final JdbcResource resource = factories().jdbc().resources().create(
+            "test:atlas",
+            "*",
+            "test:atlas",
+            "spring:RoeATLAS"
+            );
+        assertNotNull(
+            resource
+            );
+
+        final JdbcSchema s1 =resource.schemas().select(
+            "TWOMASS.dbo"
+            ); 
+        assertNotNull(
+            s1
+            );
+
+        
+        final JdbcSchema s2 =resource.schemas().select(
+            "TWOMASS.dbo"
+            ); 
+        assertNotNull(
+            s2
+            );
+        
         }
     }

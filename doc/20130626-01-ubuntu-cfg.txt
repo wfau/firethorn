@@ -19,7 +19,7 @@
 #
 
 # ------------------------------------------------------------
-# Install our init-user script.
+# Install our ssh keys.
 # TODO - replace tese with ischenura or Puppet scripts
 #[user@desktop]
 
@@ -81,34 +81,35 @@ EOF
 
 # ------------------------------------------------------------
 # Create our test users.
+# TODO - replace tese with ischenura or Puppet scripts
 #[user@desktop]
 
     cat > "${HOME:?}/test-users.txt" << EOF
 
-hsqluser=$(pwgen 16 1)
-hsqlhost=pi.virtual.metagrid.co.uk
+jdbcuser=$(pwgen 16 1)
+jdbchost=pi.virtual.metagrid.co.uk
 
 fireuser=$(pwgen 16 1)
 firehost=rho.virtual.metagrid.co.uk
 
 ogsauser=$(pwgen 16 1)
-ogsahost=tau.virtual.metagrid.co.uk
+ogsahost=sigma.virtual.metagrid.co.uk
 
 testuser=$(pwgen 16 1)
-testhost=xi.virtual.metagrid.co.uk
+testhost=nu.virtual.metagrid.co.uk
 
 EOF
 
     source "${HOME:?}/test-users.txt"
 
-    ssh "root@${hsqlhost:?}" "\${HOME}/bin/init-user.sh '${hsqluser:?}'"
+    ssh "root@${jdbchost:?}" "\${HOME}/bin/init-user.sh '${jdbcuser:?}'"
     ssh "root@${firehost:?}" "\${HOME}/bin/init-user.sh '${fireuser:?}'"
     ssh "root@${ogsahost:?}" "\${HOME}/bin/init-user.sh '${ogsauser:?}'"
     ssh "root@${testhost:?}" "\${HOME}/bin/init-user.sh '${testuser:?}'"
 
 
     cat > "${HOME:?}/test-logins.txt" << EOF
-${hsqluser:?}@${hsqlhost:?}
+${jdbcuser:?}@${jdbchost:?}
 ${fireuser:?}@${firehost:?}
 ${ogsauser:?}@${ogsahost:?}
 ${testuser:?}@${testhost:?}
@@ -171,67 +172,6 @@ EOF
 # Create our firethorn properties.
 #[user@desktop]
 
-    source "${HOME:?}/test-users.txt"
-
-    #
-    # Initial template.
-    cat > "${HOME:?}/test-props.txt" << EOF
-
-firethon.webapp.endpoint=http://${firehost:?}:8080/firethorn
-
-firethon.ogsadai.dqp=testdqp
-firethon.ogsadai.store=userdata
-firethon.ogsadai.endpoint=http://${ogsahost:?}:8081/albert/services
-
-firethorn.meta.url=jdbc:hsqldb:hsql://${hsqlhost:?}/metadata
-firethorn.meta.driver=org.hsqldb.jdbc.JDBCDriver
-firethorn.meta.type=hsqldb
-firethorn.meta.user=sa
-firethorn.meta.pass=
-firethorn.meta.c3po.max.size=10
-firethorn.meta.c3po.min.size=1
-firethorn.meta.c3po.max.idle=1800
-
-firethorn.user.url=jdbc:hsqldb:hsql://${hsqlhost:?}/userdata
-firethorn.user.driver=org.hsqldb.jdbc.JDBCDriver
-firethorn.user.type=hsqldb
-firethorn.user.user=sa
-firethorn.user.pass=
-firethorn.user.c3po.max.size=10
-firethorn.user.c3po.min.size=1
-firethorn.user.c3po.max.idle=1800
-
-firethorn.twomass.url=jdbc:jtds:sqlserver://${hsqlhost:?}:1433/TWOMASS
-firethorn.twomass.type=mssql
-firethorn.twomass.user=xxxx
-firethorn.twomass.pass=xxxx
-firethorn.twomass.driver=net.sourceforge.jtds.jdbc.Driver
-
-firethorn.twoxmm.url=jdbc:jtds:sqlserver://${hsqlhost:?}:1433/TWOXMM
-firethorn.twoxmm.type=mssql
-firethorn.twoxmm.user=xxxx
-firethorn.twoxmm.pass=xxxx
-firethorn.twoxmm.driver=net.sourceforge.jtds.jdbc.Driver
-
-firethorn.ukidss.url=jdbc:jtds:sqlserver://${hsqlhost:?}:1433/UKIDSSDR5PLUS
-firethorn.ukidss.type=mssql
-firethorn.ukidss.user=xxxx
-firethorn.ukidss.pass=xxxx
-firethorn.ukidss.driver=net.sourceforge.jtds.jdbc.Driver
-
-firethorn.wfau.url=jdbc:jtds:sqlserver://${hsqlhost:?}:1433/WFAU
-firethorn.wfau.type=mssql
-firethorn.wfau.user=xxxx
-firethorn.wfau.pass=xxxx
-firethorn.wfau.driver=net.sourceforge.jtds.jdbc.Driver
-
-firethorn.atlas.url=jdbc:jtds:sqlserver://${hsqlhost:?}:1433/ATLASv20130304
-firethorn.atlas.type=mssql
-firethorn.atlas.user=xxxx
-firethorn.atlas.pass=xxxx
-firethorn.atlas.driver=net.sourceforge.jtds.jdbc.Driver
-
-EOF
 
     # ****
     # Fill in the details manually
@@ -242,7 +182,7 @@ EOF
     # Transfer copies to the test VMs
     for testlogin in $(cat ${HOME:?}/test-logins.txt)
     do
-        scp "${HOME:?}/test-props.txt" "${testlogin:?}:firethorn.properties"
+        scp "${HOME:?}/test.properties" "${testlogin:?}:firethorn-01.04-SNAPSHOT.properties"
     done
 
 

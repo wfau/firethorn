@@ -503,6 +503,8 @@ public class JdbcResourceEntity
                 {
                 try {
 /*
+ * getTables() fails if there are no tables
+ */
                     final ResultSet schemas = metadata.getTables(
                         catalog,
                         null, // sch
@@ -513,21 +515,27 @@ public class JdbcResourceEntity
                             JdbcTypes.JDBC_META_TABLE_TYPE_VIEW
                             }
                         );
-
+/*
+ * getSchemas() fails because catalog is ignored
                     final ResultSet schemas = metadata.getSchemas(
                         catalog,
                         null
                         );
 
- */
+// This will get ALL the catalogs.
+// But the cname is always null, so we can't distinguish between them.
                     final ResultSet schemas = metadata.getSchemas();
+ *
+ */
+
+
 
                     String cprev = null ;
                     String sprev = null ;
                     while (schemas.next())
                         {
-                        String cname = schemas.getString(JdbcTypes.JDBC_META_TABLE_CATALOG);
-                        //String cname = schemas.getString(JdbcTypes.JDBC_META_TABLE_CAT);
+                        //String cname = schemas.getString(JdbcTypes.JDBC_META_TABLE_CATALOG);
+                        String cname = schemas.getString(JdbcTypes.JDBC_META_TABLE_CAT);
                         String sname = schemas.getString(JdbcTypes.JDBC_META_TABLE_SCHEM);
                         log.debug("Found schema [{}][{}]", new Object[]{cname, sname});
 /*
@@ -597,10 +605,16 @@ public class JdbcResourceEntity
                             );
                         if (schema == null)
                             {
+//////
+                            log.debug("Matching schema not found [{}][{}], creating", new Object[]{cname, sname});
                             schema = this.schemasimpl().create(
                                 cname,
                                 sname
                                 );
+                            }
+                        else {
+                            log.debug("Matching schema found [{}][{}], skipping", new Object[]{cname, sname});
+//////
                             }
                         }
                     }

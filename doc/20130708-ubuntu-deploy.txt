@@ -1,0 +1,404 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+################ ############## 
+# Create SSH tunnel to SQLServer
+#
+#[user@desktop]
+
+    source "${HOME:?}/test-users.txt"
+    ssh ${jdbcuser:?}@${jdbchost:?}
+
+        sshuser=
+        sshhost=fenrir.roe.ac.uk
+        
+        ssh -v -L '*:1435:ramses5:1433' -L '*:1439:ramses9:1433' "${sshuser:?}@${sshhost:?}"
+
+
+################ ############## 
+# Install our properties file.
+#
+#[user@desktop]
+
+    vi "${HOME:?}/test.properties"
+
+        ##############################
+        # Set database login details #
+        ##############################
+
+    for testlogin in $(cat "${HOME:?}/test-logins.txt")
+    do
+        scp "${HOME:?}/test.properties" "${testlogin:?}:firethorn.properties"
+    done
+
+
+################ ############## 
+# Deploy firethorn.
+#
+
+#
+# Install Tomcat
+#[user@desktop]
+
+    source "${HOME:?}/test-users.txt"
+    ssh root@${firehost:?} << EOF
+
+        #
+        # Install Tomcat.
+        apt-get install tomcat7
+        apt-get install tomcat7-admin
+
+        #
+        # Create the manager account.
+        vi /etc/tomcat7/tomcat-users.xml
+
+            <user username="manager" password="manager" roles="admin-gui, manager-gui, manager-script, manager-jmx"/>
+
+        #
+        # Add our user to the tomcat group.
+        usermod --append --groups tomcat7 "${fireuser}"
+
+        #
+        # Add our properties to the tomcat 'home'.
+        pushd /usr/share/tomcat7
+            ln -s "/home/${fireuser}/firethorn.properties"
+        popd
+
+EOF
+    
+#
+# Remote deploy using maven.
+#[user@desktop]
+
+    vi "${HOME:?}/.m2/settings.xml"
+
+        ##############################
+        # Set tomcat login details #
+        ##############################
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd 'firethorn-webapp'
+
+
+            mvn -P tomcat-alpha
+
+            # Uploads the war file from Maven build.
+            # Path param sets the context name.
+            # Uploaded war file name is changed to to match the context, 'firethorn.war'.
+
+#
+# Remote deploy using tomcat manager app.
+#[user@desktop]
+
+    firefox 'http://rho.virtual.metagrid.co.uk:8080/manager/html' &
+
+        # Ignores META-INF/context.xml in the uploaded war file.
+        # Uploaded war file name is changed to to match the context, 'firethorn.war'.
+
+#
+# Manual deploy on the server.
+#[user@desktop]
+
+    source "${HOME:?}/test-users.txt"
+    ssh ${fireuser:?}@${firehost:?}
+
+        fireversion=01.04-SNAPSHOT
+
+        #
+        # Fetch our war file from remote server.
+        # wget http://data.metagrid.co.uk/wfau/maven/publish/uk/ac/roe/wfau/firethorn-webapp/${fireversion:?}/firethorn-webapp-${fireversion:?}.war
+        # or
+        scp Zarquan@threonine:/var/local/projects/edinburgh/wfau/firethorn/devel/firethorn-webapp/target/firethorn-webapp-${fireversion:?}.war .
+
+        #
+        # Deploy our war file direct into 'webapps'
+        # Changing war file to 'firethorn.war'.
+        # mv firethorn-webapp-${fireversion:?}.war /var/lib/tomcat7/webapps/firethorn.war
+
+        #
+        # Use a context file to link to our war file.
+        # By default the war file is not unpacked into 'webapps'
+        # To deploy/undeploy, create/delete the context file.
+        pushd /var/lib/tomcat7/conf/Catalina/localhost
+
+            cat > firethorn.xml << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/firethorn" 
+    docBase="${HOME}/firethorn-webapp-${fireversion:?}.war" 
+    />
+EOF
+
+        popd
+
+
+    #
+    # Check for deployed webapp.
+    source "${HOME:?}/test-users.txt"
+    ssh root@${firehost:?} << EOF
+
+        ls -al /var/lib/tomcat7/conf/Catalina/localhost
+        ls -al /var/lib/tomcat7/work/Catalina/localhost
+        tail -f /var/log/tomcat7/catalina.out 
+
+
+################ ############## 
+# Deploy ogsa-dai.
+#
+
+#
+# Install Tomcat
+#[user@desktop]
+
+    source "${HOME:?}/test-users.txt"
+    ssh root@${ogsahost:?} << EOF
+
+        #
+        # Install Tomcat.
+        apt-get install tomcat6
+        apt-get install tomcat6-admin
+
+        #
+        # Create the manager account.
+        vi /etc/tomcat6/tomcat-users.xml
+
+            <user username="manager" password="manager" roles="admin-gui, manager-gui, manager-script, manager-jmx"/>
+
+        #
+        # Add our user to the tomcat group.
+        usermod --append --groups tomcat6 "${ogsauser:?}"
+
+        #
+        # Add our properties to the tomcat 'home'.
+        pushd /usr/share/tomcat6
+            ln -s "/home/${ogsauser:?}/firethorn.properties"
+        popd
+
+EOF
+
+#
+# Manual deploy on the server.
+#[user@desktop]
+
+    source "${HOME:?}/test-users.txt"
+    ssh ${ogsauser:?}@${ogsahost:?}
+
+        fireversion=01.04-SNAPSHOT
+
+        #
+        # Fetch our war file from remote server.
+        # wget http://data.metagrid.co.uk/wfau/maven/publish/uk/ac/roe/wfau/firethorn-ogsadai-webapp/01.04-SNAPSHOT/firethorn-ogsadai-webapp-${fireversion:?}.war
+        # or
+        # scp Zarquan@threonine:/var/local/projects/edinburgh/wfau/firethorn/devel/firethorn-ogsadai/webapp/target/firethorn-ogsadai-webapp-${fireversion:?}.war .
+
+        #
+        # Deploy our war file direct into 'webapps'
+        # Changing war file to 'firethorn.war'.
+        # mv firethorn-webapp-${fireversion:?}.war /var/lib/tomcat7/webapps/firethorn.war
+
+        #
+        # Use a context file to link to our war file.
+        # By default the war file is not unpacked into 'webapps'
+        # To deploy/undeploy, create/delete the context file.
+        pushd /etc/tomcat6/Catalina/localhost
+
+            cat > ogsa-dai.xml << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/ogsa-dai" 
+    docBase="${HOME}/firethorn-ogsadai-webapp-${fireversion:?}.war"
+    unpackWAR="true" 
+    />
+EOF
+
+        popd
+
+        #
+        # ** permissions problem **
+        # As root - grant write access to the webapp config.
+        sudo chmod -R g+rw /var/lib/tomcat6/webapps/ogsa-dai/WEB-INF/etc
+
+        #
+        # Manual edits to the OGSA-DAI config.
+        pushd /var/lib/tomcat6/webapps/ogsa-dai/WEB-INF
+
+            vi etc/dai/resources/atlas 
+
+                dai.data.resource.uri=jdbc:jtds:sqlserver://localhost:1433/ATLAS
+
+            vi etc/dai/logins.txt 
+
+                ....            
+                id=atlas
+                userID=*
+                username={SQL-USER}
+                password={SQL-PASS}
+                LOGIN-END
+                END
+                ....            
+
+        popd
+
+        #
+        # Semi-automated edits to the OGSA-DAI config.
+        wget http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/firethorn-ogsadai/webapp/src/test/bin/jdbc-functions.sh
+        source "${HOME}/jdbc-functions.sh"
+
+        pushd /var/lib/tomcat6/webapps/ogsa-dai/WEB-INF
+
+                jdbcconfig twomass  firethorn.twomass
+                jdbcconfig ukidss   firethorn.ukidss
+                jdbcconfig atlas    firethorn.atlas
+                jdbcconfig wfau     firethorn.wfau
+                jdbcconfig userdata firethorn.user
+
+        popd
+
+        #
+        # Fix hard coded URL in DQP config.
+        # Can we use properties to set this ?
+
+        pushd /var/lib/tomcat6/webapps/ogsa-dai/WEB-INF
+
+            vi etc/dai/dqp/testdqp/DQPContext.xml
+
+                <bean class="uk.org.ogsadai.dqp.presentation.jersey.JerseyEvaluationNode" id="TestDqpEval">
+            -       <constructor-arg name="url"     value="http://localhost:8081/albert/services"/>
+            +       <constructor-arg name="url"     value="http://localhost:8080/ogsa-dai/services"/>
+                    <constructor-arg name="drerID"  value="DataRequestExecutionResource"/>
+                    <constructor-arg name="dsos"    value="dataSources"/>
+                    <constructor-arg name="dsis"    value="dataSinks"/>
+                    <constructor-arg name="isLocal" type="boolean" value="true"/>
+                </bean>
+
+
+
+    <!--+
+        | Use a local properties file.
+        | http://blog.callistaenterprise.se/2011/11/17/configure-your-spring-web-application/
+        +-->
+    <cxt:property-placeholder location="file:${user.home}/firethorn.properties"/>
+
+
+################ ############## 
+# OGSA-DAI login bug.
+#
+#[user@desktop]
+
+    #
+    # Run the login test.
+    # ** NEED TO CREATE SIMPLE LOGIN JSP IN FIRETHORN WEBAPP ** 
+
+
+    source "${HOME:?}/test-users.txt"
+    ssh ${testuser}@${testhost:?}
+
+        source ${HOME:?}/firethorn.settings
+        pushd "${FIRETHORN_CODE:?}"
+            pushd 'firethorn-ogsadai/activity/client'
+
+                mvn -D skipTests=false -D test=SingleQueryTestCase test 
+
+            popd
+        popd
+
+################ ############## 
+# Test scripts.
+#
+#[user@desktop]
+
+    source "${HOME:?}/test-users.txt"
+    ssh ${testuser}@${testhost:?}
+
+        source ${HOME:?}/firethorn.settings
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/003
+
+        pushd $(mktemp --directory)
+
+            source "${FIRETHORN_TEST:?}/00-init-rest.sh"
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            #source "${FIRETHORN_TEST:?}/01-init-user.sh"
+            source "${FIRETHORN_TEST:?}/02-00-create-jdbc-space.sh" 'spring:RoeATLAS' '*' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/03-00-create-adql-space.sh"
+
+            #source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'TWOXMM.dbo'         'twoxmm'
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'TWOMASS.dbo'        'twomass'
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'UKIDSSDR5PLUS.dbo'  'ukidssdr5'
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'ATLASv20130304.dbo' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/04-00-create-query-space.sh"
+            source "${FIRETHORN_TEST:?}/04-01-create-query-schema.sh" 'query'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'atlas'   'atlas'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'twomass' 'twomass'
+
+            source "${FIRETHORN_TEST:?}/04-01-create-query-schema.sh" 'ukidss'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsPointSource'        'ukidss' 'gcsPointSource'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsSourceXtwomass_psc' 'ukidss' 'gcsSourceXtwomass_psc'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'lasSource'             'ukidss' 'lasSource' 
+            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'lasSourceXDR7PhotoObj' 'ukidss' 'lasSourceXDR7PhotoObj'
+
+
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-000.adql"
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-001.adql"
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-002.adql"
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-003.adql"
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-004.adql"
+
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-010.adql"
+
+
+        popd
+
+
+
+################ ############## 
+# Issues .....
+
+    #
+    # Import JDBC schema -> ADQL schema
+    source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'TWOMASS.dbo' 'twomass'
+
+        #
+        # Select by name re-scans the JDBC metadata.
+        POST "${jdbcspace:?}/schemas/select" \
+            --data   "jdbc.resource.schema.select.name=${jdbcname:?}"
+
+        #
+        # Import schema, makse a deep copy and doesn't return a node.
+        POST "${adqlspace:?}/schemas/import" \
+            --data   "adql.resource.schema.import.name=${adqlname:?}" \
+            --data   "adql.resource.schema.import.base=${jdbcschema:?}"
+
+
+    #
+    # Import ADQL schema -> ADQL schema
+    source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'atlas'   'atlas'
+
+        # Deep copy.
+        # POST does not return a node (redirect URL in logs is valid)
+
+

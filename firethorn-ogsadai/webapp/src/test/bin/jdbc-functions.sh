@@ -7,16 +7,16 @@
         {
         local resourcename=${1?}
         local propertyname=${2?}
-        local propertyfile=${3?}
 
-        local webappdir='target/firethorn-ogsadai-webapp-01.04-SNAPSHOT'
+        local webinfdir=${3:-'.'}
+        local propsfile=${4:-"${HOME}/firethorn.properties"}
 
-        local databaseurl="$(sed -n 's|^'${propertyname?}'.url=\(.*\)|\1|p'  ${propertyfile?})"
-        local databasetype="$(sed -n 's|^'${propertyname?}'.type=\(.*\)|\1|p' ${propertyfile?})"
-        local databasename="$(sed -n 's|^'${propertyname?}'.name=\(.*\)|\1|p' ${propertyfile?})"
-        local databaseuser="$(sed -n 's|^'${propertyname?}'.user=\(.*\)|\1|p' ${propertyfile?})"
-        local databasepass="$(sed -n 's|^'${propertyname?}'.pass=\(.*\)|\1|p' ${propertyfile?})"
-        local databasedriver="$(sed -n 's|^'${propertyname?}'.driver=\(.*\)|\1|p' ${propertyfile?})"
+        local databaseurl="$(sed  -n 's|^'${propertyname?}'.url=\(.*\)|\1|p'  ${propsfile?})"
+        local databasetype="$(sed -n 's|^'${propertyname?}'.type=\(.*\)|\1|p' ${propsfile?})"
+        local databasename="$(sed -n 's|^'${propertyname?}'.name=\(.*\)|\1|p' ${propsfile?})"
+        local databaseuser="$(sed -n 's|^'${propertyname?}'.user=\(.*\)|\1|p' ${propsfile?})"
+        local databasepass="$(sed -n 's|^'${propertyname?}'.pass=\(.*\)|\1|p' ${propsfile?})"
+        local databasedriver="$(sed -n 's|^'${propertyname?}'.driver=\(.*\)|\1|p' ${propsfile?})"
 
         echo " Type [${databasetype?}]"
         echo " User [${databaseuser?}]"
@@ -29,7 +29,7 @@
         sed -i '
             s|^dai.driver.class=.*|dai.driver.class='${databasedriver?}'|
             s|^dai.data.resource.uri=.*|dai.data.resource.uri='${databaseurl?}'|
-            ' "${webappdir?}/WEB-INF/etc/dai/resources/${resourcename?}"
+            ' "${webinfdir?}/etc/dai/resources/${resourcename?}"
 
         #
         # Set the login credentials.
@@ -38,7 +38,7 @@
                 s|^username=.*|username='${databaseuser?}'|
                 s|^password=.*|password='${databasepass?}'|
                 }
-            ' "${webappdir?}/WEB-INF/etc/dai/logins.txt"
+            ' "${webinfdir?}/etc/dai/logins.txt"
         }
 
 

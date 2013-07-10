@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc ;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
@@ -43,7 +44,7 @@ extends JdbcResourceTestBase
     public void test001()
     throws Exception
         {
-        assertIsNull(
+        assertNull(
             jdbc().resource().schemas().select(
                 "catalog-A",
                 "schema-A"
@@ -91,7 +92,7 @@ extends JdbcResourceTestBase
                 "schema-A"
                 )
             );
-        assertIsNull(
+        assertNull(
             jdbc().resource().schemas().select(
                 "catalog-A",
                 "schema-A"

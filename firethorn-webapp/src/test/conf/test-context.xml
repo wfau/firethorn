@@ -40,7 +40,6 @@
 
     <!--+
         | File based HSQLDB test database.
-        +-->
     <Resource
         name="firethorn/database" 
         auth="Container"
@@ -50,6 +49,7 @@
         username="sa"
         password=""
         />
+        +-->
 
     <!--+
         | PostgreSQL test database.

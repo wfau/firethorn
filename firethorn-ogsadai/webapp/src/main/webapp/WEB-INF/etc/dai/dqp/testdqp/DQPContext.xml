@@ -11,6 +11,13 @@
     <!-- ***********************
         DQP Federation 
        *********************** -->
+
+    <!--+
+        | Use a local properties file.
+        | http://blog.callistaenterprise.se/2011/11/17/configure-your-spring-web-application/
+        +-->
+    <context:property-placeholder location="file:${user.home}/firethorn.properties"/>
+
     <!--+
         | Feature support helper - default can be configured here
         | or replace with another implementation class.
@@ -21,7 +28,7 @@
         | Jersey evaluation node.
         +-->
     <bean class="uk.org.ogsadai.dqp.presentation.jersey.JerseyEvaluationNode" id="TestDqpEval">
-        <constructor-arg name="url"     value="http://localhost:8081/albert/services"/>
+        <constructor-arg name="url"     value="{firethon.ogsadai.endpoint}"/>
         <constructor-arg name="drerID"  value="DataRequestExecutionResource"/>
         <constructor-arg name="dsos"    value="dataSources"/>
         <constructor-arg name="dsis"    value="dataSinks"/>
@@ -91,7 +98,7 @@
 
         <property name="metadataServiceFactory">
             <bean class="uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest.MetadataServiceFactoryImpl">
-                <constructor-arg name="endpoint" value="http://localhost:8080/firethorn/"/>
+                <constructor-arg name="endpoint" value="${firethon.webapp.endpoint}"/>
             </bean>
         </property>
 
@@ -109,8 +116,8 @@
                 <entry key="wfau">
                     <ref bean="wfau"/>
                 </entry>
-                <entry key="user">
-                    <ref bean="user"/>
+                <entry key="userdata">
+                    <ref bean="userdata"/>
                 </entry>
             </map>
         </property>

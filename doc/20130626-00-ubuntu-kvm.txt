@@ -25,7 +25,7 @@
 
 
     #
-    # Create three lova virtual machines.
+    # Create three clean virtual machines.
     # https://github.com/Zarquan/ischnura-kvm/blob/master/src/bin/createvm
 
     #   pi      sqlserver proxy
@@ -36,7 +36,7 @@
 # Update our local SSH fingerprint
 #[user@desktop]
 
-    vmlist=(pi rho sigma)
+    vmlist=(nu pi rho sigma)
     for vmname in ${vmlist[@]:?}
     do
 

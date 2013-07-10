@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql ;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,6 +25,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
+import lombok.extern.slf4j.Slf4j;
+
 
 /**
  *
@@ -57,7 +60,7 @@ extends TestBase
         {
         //
         // Select missing schema fails.
-        assertIsNull(
+        assertNull(
             resource().schemas().select(
                 "schema-A"
                 )

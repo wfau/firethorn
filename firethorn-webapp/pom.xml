@@ -25,12 +25,6 @@
     >
     <modelVersion>4.0.0</modelVersion>
 
-    <!--+
-        | Notes
-        | JSTL TagLib
-        | http://jstl.java.net/download.html
-        | http://search.maven.org/#browse|-1002239620
-        +-->
 
     <!--+
         | Maven parent/child projects.
@@ -450,14 +444,23 @@
 
                             <!--+
                                 | Server user name and password in ~/.m2/settings.xml
+                                | https://tomcat.apache.org/maven-plugin-2.1/tomcat7-maven-plugin/deploy-mojo.html
                                 |
                                 +-->
-                            <server>tomcat-alpha</server>
-                            <url>http://alpha.virtual.metagrid.co.uk:8080/manager/html</url>
+                            <server>rho.virtual.metagrid.co.uk</server>
+                            <url>http://rho.virtual.metagrid.co.uk:8080/manager/text</url>
+
+                            <!--+
+                                | Sedployment context file.
+                                | ${project.build.directory}/${project.build.finalName}/META-INF/context.xml
+                                | https://tomcat.apache.org/maven-plugin-2.1/tomcat7-maven-plugin/deploy-mojo.html
+                                |
+                                | <contextFile></contextFile>
+                                +-->
 
                             <!--+
                                 | Deployment mode [war|context|both].
-                                | http://mojo.codehaus.org/tomcat-maven-plugin/deploy-mojo.html
+                                | https://tomcat.apache.org/maven-plugin-2.1/tomcat7-maven-plugin/deploy-mojo.html
                                 |
                                 | Because of the way Tomcat manager works ...
                                 | If deploy mode is [war], then it is uploaded to server by Maven.

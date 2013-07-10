@@ -24,7 +24,7 @@
 
     # TTY #1 ------------------------------------------------------------
     source "${HOME:?}/test-users.txt"
-    ssh  "${hsqluser:?}@${hsqlhost:?}"
+    ssh  "${jdbcuser:?}@${jdbchost:?}"
 
         username=xxxx
         hostname=fenrir.roe.ac.uk
@@ -35,7 +35,7 @@
 
     # TTY #2,3 -----------------------------------------------------------
     source "${HOME:?}/test-users.txt"
-    ssh "${hsqluser:?}@${hsqlhost:?}"
+    ssh "${jdbcuser:?}@${jdbchost:?}"
 
         source ${HOME:?}/firethorn.settings
         pushd "${FIRETHORN_CODE:?}"
@@ -86,12 +86,16 @@
 
                 source src/test/bin/jdbc-functions.sh
 
-                jdbcconfig twomass  firethorn.twomass "${HOME:?}/firethorn.properties"
-                jdbcconfig ukidss   firethorn.ukidss  "${HOME:?}/firethorn.properties"
-                jdbcconfig atlas    firethorn.atlas   "${HOME:?}/firethorn.properties"
-                jdbcconfig wfau     firethorn.wfau    "${HOME:?}/firethorn.properties"
-                jdbcconfig userdata firethorn.user    "${HOME:?}/firethorn.properties"
+                pushd target/firethorn-ogsadai-webapp-01.04-SNAPSHOT
 
+                    jdbcconfig twomass  firethorn.twomass
+                    jdbcconfig ukidss   firethorn.ukidss
+                    jdbcconfig atlas    firethorn.atlas
+                    jdbcconfig wfau     firethorn.wfau
+                    jdbcconfig userdata firethorn.user
+
+                popd
+                
                 export MAVEN_OPTS=-Xmx128m
                 mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
         

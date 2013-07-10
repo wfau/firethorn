@@ -7,6 +7,12 @@
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
+    <!--+
+        | Use a local properties file.
+        | http://blog.callistaenterprise.se/2011/11/17/configure-your-spring-web-application/
+        +-->
+    <context:property-placeholder location="file:${user.home}/firethorn.properties"/>
+
     <bean id="uk.org.ogsadai.CORE_VERSION"  class="java.lang.String">
         <constructor-arg value="4.2"/>
     </bean>
@@ -65,8 +71,14 @@
         </property>
     </bean>
 
+    <!--+
+        | Actually, this should be the context URL not the service endpoint URL.
+        | + http://hostname:port/context
+        | - http://hostname:port/context/services
+        | Need to check this works ok.
+        +-->
     <bean id="uk.org.ogsadai.WEB_SERVER_URL"  class="java.lang.String">
-        <constructor-arg value="http://localhost:8081/albert/"/>
+        <constructor-arg value="${firethon.ogsadai.endpoint}"/>
     </bean>
 
     <!--
