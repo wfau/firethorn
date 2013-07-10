@@ -124,10 +124,15 @@ public class AdqlQueryVOTableController
             final Connection connection = resource.connection().open();
             final Statement statement = connection.createStatement(
                 ResultSet.TYPE_FORWARD_ONLY,
-                ResultSet.CONCUR_READ_ONLY,
-                ResultSet.CLOSE_CURSORS_AT_COMMIT
+                ResultSet.CONCUR_READ_ONLY
                 );
 
+/*
+ * ResultSet.CLOSE_CURSORS_AT_COMMIT
+ * Exception reading SQL results [The CLOSE_CURSORS_AT_COMMIT option is not currently supported by the setHoldability method.]
+ * 
+ */
+            
             //
             // Create an SQL query to get the columns in a specific order.
             final StringBuilder builder = new StringBuilder();

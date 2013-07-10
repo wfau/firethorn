@@ -368,6 +368,7 @@ EOF
             time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-003.adql"
             time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-004.adql"
 
+            vi "${FIRETHORN_TEST?}/06-query-atlas-010.adql"
             time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-010.adql"
 
 
@@ -401,4 +402,8 @@ EOF
         # Deep copy.
         # POST does not return a node (redirect URL in logs is valid)
 
+
+    #
+    # VOTable query causes an exception.
+    [AdqlQueryVOTableController] Exception reading SQL results [The CLOSE_CURSORS_AT_COMMIT option is not currently supported by the setHoldability method.] 
 
