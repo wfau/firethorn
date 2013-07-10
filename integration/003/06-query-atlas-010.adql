@@ -4,7 +4,7 @@
         MIN(twomass.ra) AS mintmra,
         AVG(twomass.ra) AS avgtmra,
         SUM(twomass.ra) AS sumtmra,
-        COUNT(twomass.ra) AS count
+        COUNT(twomass.ra) AS countra
     FROM
         twomass.twomass_psc AS twomass,
         atlas.atlasSource   AS source,

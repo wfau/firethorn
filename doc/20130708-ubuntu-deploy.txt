@@ -409,7 +409,4 @@ EOF
         # POST does not return a node (redirect URL in logs is valid)
 
 
-    #
-    # VOTable query causes an exception.
-    [AdqlQueryVOTableController] Exception reading SQL results [The CLOSE_CURSORS_AT_COMMIT option is not currently supported by the setHoldability method.] 
 
