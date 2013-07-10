@@ -409,4 +409,6 @@ EOF
         # POST does not return a node (redirect URL in logs is valid)
 
 
-
+    #
+    # Creating query re-scans JdbcSchema table list.
+    # Could get expensive over tme ....
