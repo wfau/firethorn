@@ -39,7 +39,7 @@
         | Maven project versions
         | http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-pom-syntax.html
         +-->
-    <version>01.04-SNAPSHOT</version>
+    <version>01.05-SNAPSHOT</version>
 
     <prerequisites>
         <maven>2.2.1</maven>
