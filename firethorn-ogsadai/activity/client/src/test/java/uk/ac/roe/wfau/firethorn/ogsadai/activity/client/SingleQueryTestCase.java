@@ -37,14 +37,16 @@ extends SimpleQueryTestBase
     public void test001()
     throws Exception
         {
+        endpoint="http://localhost:8089/ogsa-dai/services";
+        
         execute(
             endpoint,
-            "twomass",
+            "atlas",
             " SELECT" +
             "    twomass.ra," +
             "    twomass.dec" +
             " FROM" +
-            "    twomass_psc AS twomass" +
+            "    TWOMASS.dbo.twomass_psc AS twomass" +
             " WHERE" +
             "    twomass.ra  BETWEEN '55.0' AND '55.9'" +
             " AND" +

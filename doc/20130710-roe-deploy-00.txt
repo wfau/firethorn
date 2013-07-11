@@ -22,15 +22,341 @@
 
 
     # pyrus       - tests
-    # malus       - hsqldb
-    # pyracantha  - firethorn
-    # coccinea    - ogsa-dai
+    # coccinea    - firethorn
+    # pyracantha  - ogsa-dai
 
-    vmlist=(pyracantha coccinea malus pyrus)
-    for vmname in 
+#
+# Configure the deployment names.
+#[user@desktop]
 
-
+    mkdir "${HOME:?}/deployment"
 
     #
-    # Deploy our firethorn properties.
-    
+    # Set the usernames and hostnames
+    cat >  "${HOME:?}/deployment/deploy.logins" << 'EOF'
+
+vmuser=firethorn
+vmlist=(coccinea pyracantha malus pyrus)
+
+firehost=coccinea
+fireuser=${fireuser:-${vmuser}}
+firelogin=${fireuser}@${firehost}
+
+ogsahost=pyracantha
+ogsauser=${ogsauser:-${vmuser}}
+ogsalogin=${ogsauser}@${ogsahost}
+
+testhost=pyrus
+testuser=${testuser:-${vmuser}}
+testlogin=${testuser}@${testhost}
+
+EOF
+
+#
+# Check the Java versions.
+#[user@desktop]
+
+    source "${HOME:?}/deployment/deploy.logins"
+    ssh "${firelogin:?}" 'java -version' # 1.7.0_03
+    ssh "${ogsalogin:?}" 'java -version' # 1.6.0_27
+    ssh "${testlogin:?}" 'java -version' # 1.7.0_03
+
+#
+# Add a symlink to the Tomcat home.
+#[user@desktop]
+
+    ssh "${firelogin:?}" 'ln -s /var/tomcat7 tomcat'
+    ssh "${ogsalogin:?}" 'ln -s /var/tomcat6 tomcat'
+
+#
+# Deploy our config properties.
+#[user@desktop]
+
+    gedit ${HOME:?}/deployment/deploy.properties &
+
+        firethon.webapp.endpoint=http://coccinea:8080/firethorn
+
+        firethon.ogsadai.dqp=testdqp
+        firethon.ogsadai.store=userdata
+        firethon.ogsadai.endpoint=http://pyracantha:8080/ogsa-dai/services
+
+        firethorn.meta.url=jdbc:jtds:sqlserver://ramses9:1433/FirethornMetadata011
+        firethorn.meta.user=xxxx-xxxx
+        firethorn.meta.pass=xxxx-xxxx
+        firethorn.meta.type=mssql
+        firethorn.meta.driver=net.sourceforge.jtds.jdbc.Driver
+        firethorn.meta.c3po.max.size=20
+        firethorn.meta.c3po.min.size=5
+        firethorn.meta.c3po.max.idle=1800
+
+        firethorn.user.url=jdbc:jtds:sqlserver://ramses9:1433/FirethornUserdata011
+        firethorn.user.user=xxxx-xxxx
+        firethorn.user.pass=xxxx-xxxx
+        firethorn.user.type=mssql
+        firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
+        firethorn.user.c3po.max.size=20
+        firethorn.user.c3po.min.size=5
+        firethorn.user.c3po.max.idle=1800
+
+        firethorn.wfau.url=jdbc:jtds:sqlserver://ramses5:1433/WFAU
+        firethorn.wfau.user=xxxx-xxxx
+        firethorn.wfau.pass=xxxx-xxxx
+        firethorn.wfau.type=mssql
+        firethorn.wfau.driver=net.sourceforge.jtds.jdbc.Driver
+
+        firethorn.atlas.url=jdbc:jtds:sqlserver://ramses5:1433/ATLASv20130304
+        firethorn.atlas.user=xxxx-xxxx
+        firethorn.atlas.pass=xxxx-xxxx
+        firethorn.atlas.type=mssql
+        firethorn.atlas.driver=net.sourceforge.jtds.jdbc.Driver
+
+    source "${HOME:?}/deployment/deploy.logins"
+    for vmname in ${vmlist[@]:?}
+    do
+        echo "vmname [${vmname:?}]"
+        scp "${HOME:?}/deployment/deploy.properties" "${vmuser:?}@${vmname:?}:firethorn.properties"
+    done
+
+#
+# Configure Tomcat manager
+#[user@desktop]
+
+    source "${HOME:?}/deployment/deploy.logins"
+    for login in "${firelogin:?}" "${ogsalogin:?}"
+    do
+        echo "Login [$login]"
+        ssh "${login:?}" << 'EOF'
+            if [ $(grep -c 'firethorn-manager' "${HOME}/tomcat/conf/tomcat-users.xml") -eq 0  ]
+            then
+                managername=$(pwgen 20 1)
+                managerpass=$(pwgen 20 1)
+                echo "Name [${managername}]"
+                echo "Pass [${managerpass}]"
+                sed -i '
+                    /<\/tomcat-users/ i\
+    <!-- firethorn-manager -->\
+    <user username="'${managername}'" password="'${managerpass}'" roles="admin-gui, manager-gui, manager-script, manager-jmx"/>
+                    ' "${HOME}/tomcat/conf/tomcat-users.xml"
+            fi
+EOF
+    done
+
+#Name [queejasarohhafanahya]
+#Pass [chieteiveijeiphaxahz]
+
+#Name [iseidujaecheejaevoht]
+#Pass [bahyohneonoreijeebie]
+
+#
+# Deploy firethorn webapp ...
+# Firethorn works for any method - no need to edit the war file contents.
+# Use our own webapps directory and add a pointer in context file.
+#[user@desktop]
+
+    source "${HOME:?}/deployment/deploy.logins"
+    ssh "${firelogin:?}" 
+
+        webappver=01.04-SNAPSHOT
+        webappproj=firethorn-webapp
+        webappname=${webappproj:?}-${webappver:?}
+        webapppath=${HOME}/webapps
+        webappfile=${webappname:?}.war
+
+        downloadurl="http://data.metagrid.co.uk/wfau/maven/publish/uk/ac/roe/wfau/${webappproj:?}/${webappver:?}/${webappfile:?}"
+
+        contextname=firethorn
+        contextpath=${HOME}/tomcat/conf/Catalina/localhost
+        contextfile=${contextname:?}.xml
+
+        #
+        # Undeploy context.
+        pushd "${contextpath:?}"
+            if [ -e "${contextfile:?}" ]
+            then
+                rm "${contextfile:?}"
+            fi
+        popd
+
+        #
+        # Install webapp.
+        if [ ! -e "${webapppath:?}" ]
+        then
+            mkdir "${webapppath:?}"
+        fi
+        pushd "${webapppath:?}"
+
+            #
+            # Tidy up
+            if [ -e "${webappfile}" ]
+            then
+                rm "${webappfile}"
+            fi            
+            if [ -e "${webappname}" ]
+            then
+                rm -r "${webappname}"
+            fi            
+
+            #
+            # Download
+            wget "${downloadurl:?}"
+            wget --limit-rate=20k "${downloadurl:?}"
+
+        popd
+
+        #
+        # Deploy context.
+        pushd "${contextpath:?}"
+            cat > "${contextfile:?}" << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/${contextname:?}" 
+    docBase="${webapppath:?}/${webappfile:?}" 
+    />
+EOF
+        popd
+        
+#
+# Watch tomcat logs.
+# Includes tunneled connection to port 8080 ..
+#[user@desktop]
+
+    source "${HOME:?}/deployment/deploy.logins"
+    ssh -L 8088:localhost:8080 "${firelogin:?}"
+
+        tail -f "${HOME}/tomcat/logs/catalina.out"
+
+#
+# Connect with browser ..
+#[user@desktop]
+
+    firefox 'http://localhost:8088/firethorn/' &
+
+#
+# Deploy ogsadai webapp ...
+# OGSA-DAI install needs to edit files inside the webapp.
+# Use our own webapps directory and add a pointer in context file.
+#[user@desktop]
+
+    source "${HOME:?}/deployment/deploy.logins"
+    ssh "${ogsalogin:?}" 
+
+        webappver=01.04-SNAPSHOT
+        webappproj=firethorn-ogsadai-webapp
+        webappname=${webappproj:?}-${webappver:?}
+        webapppath=${HOME}/webapps
+        webappfile=${webappname:?}.war
+
+        downloadurl="http://data.metagrid.co.uk/wfau/maven/publish/uk/ac/roe/wfau/${webappproj:?}/${webappver:?}/${webappfile:?}"
+
+        contextname=ogsa-dai
+        contextpath=${HOME}/tomcat/conf/Catalina/localhost
+        contextfile=${contextname:?}.xml
+
+        #
+        # Undeploy context.
+        pushd "${contextpath:?}"
+            if [ -e "${contextfile:?}" ]
+            then
+                rm "${contextfile:?}"
+            fi
+        popd
+
+        #
+        # Install config tools
+        if [ ! -e "${HOME}/bin" ]
+        then
+            mkdir "${HOME}/bin"
+        fi
+        pushd "${HOME}/bin"
+            if [ ! -e 'jdbc-functions.sh' ]
+            then
+                wget 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/firethorn-ogsadai/webapp/src/test/bin/jdbc-functions.sh'
+            fi
+            source 'jdbc-functions.sh'
+        popd
+
+        #
+        # Install webapp.
+        if [ ! -e "${webapppath:?}" ]
+        then
+            mkdir "${webapppath:?}"
+        fi
+        pushd "${webapppath:?}"
+
+            #
+            # Tidy up
+            if [ -e "${webappfile}" ]
+            then
+                rm "${webappfile}"
+            fi            
+            if [ -e "${webappname}" ]
+            then
+                rm -r "${webappname}"
+            fi            
+
+            #
+            # Download
+            wget "${downloadurl:?}"
+            wget --limit-rate=20k "${downloadurl:?}"
+
+            #
+            # Unpack
+            unzip -d "${webappname:?}" "${webappname:?}.war"
+
+            #
+            # Configure
+            pushd "${webappname}/WEB-INF"
+            
+                #jdbcconfig twomass  firethorn.twomass
+                #jdbcconfig ukidss   firethorn.ukidss
+                jdbcconfig atlas    firethorn.atlas
+                jdbcconfig wfau     firethorn.wfau
+                jdbcconfig userdata firethorn.user
+
+            popd
+        popd
+
+        #
+        # Deploy context.
+        pushd "${contextpath:?}"
+            cat > "${contextfile:?}" << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/${contextname:?}" 
+    docBase="${webapppath:?}/${webappname:?}" 
+    />
+EOF
+        popd
+        
+#
+# Watch tomcat logs.
+# Includes tunneled connection to port 8080 ..
+#[user@desktop]
+
+    source "${HOME:?}/deployment/deploy.logins"
+    ssh -L 8089:localhost:8080 "${ogsalogin:?}"
+
+        tail -f "${HOME}/tomcat/logs/catalina.out"
+
+#
+# Connect with browser ..
+#[user@desktop]
+
+    firefox 'http://localhost:8089/ogsa-dai' &
+
+#
+# BUG - OGSA-DAI hangs on first use ....
+# Need to poke with JUnit test before using it for real.
+#[user@desktop]
+
+    source "${HOME:?}/test-users.txt"
+    ssh ${testuser}@${testhost:?}
+
+        source ${HOME:?}/firethorn.settings
+        pushd "${FIRETHORN_CODE:?}"
+            pushd 'firethorn-ogsadai/activity/client'
+
+                mvn -D skipTests=false -D test=SingleQueryTestCase test 
+
+            popd
+        popd
+
+
