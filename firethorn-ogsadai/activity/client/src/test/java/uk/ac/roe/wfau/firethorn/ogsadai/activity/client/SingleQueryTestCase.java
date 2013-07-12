@@ -37,7 +37,7 @@ extends SimpleQueryTestBase
     public void test001()
     throws Exception
         {
-        endpoint="http://localhost:8089/ogsa-dai/services";
+        // endpoint="http://localhost:8089/ogsa-dai/services";
         
         execute(
             endpoint,

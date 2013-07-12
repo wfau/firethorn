@@ -20,10 +20,28 @@
 #
 #
 
-
     # pyrus       - tests
     # coccinea    - firethorn
     # pyracantha  - ogsa-dai
+
+#
+# Increment the version.
+#[user@desktop]
+
+    source ${HOME:?}/firethorn.settings
+    pushd "${FIRETHORN_CODE:?}"
+
+        for file in $(find . -name 'pom.xml')
+        do
+            sed -i '
+                s/<version>01.04-SNAPSHOT<\/version>/<version>01.05-SNAPSHOT<\/version>/
+                ' "${file:?}"
+        done
+
+        hg commit -m "Version 01.05-SNAPSHOT"
+
+    popd
+
 
 #
 # Configure the deployment names.
@@ -69,7 +87,7 @@ EOF
     ssh "${ogsalogin:?}" 'ln -s /var/tomcat6 tomcat'
 
 #
-# Deploy our config properties.
+# Edit our config properties.
 #[user@desktop]
 
     gedit ${HOME:?}/deployment/deploy.properties &
@@ -110,6 +128,10 @@ EOF
         firethorn.atlas.type=mssql
         firethorn.atlas.driver=net.sourceforge.jtds.jdbc.Driver
 
+#
+# Deply our config properties.
+#[user@desktop]
+
     source "${HOME:?}/deployment/deploy.logins"
     for vmname in ${vmlist[@]:?}
     do
@@ -141,11 +163,19 @@ EOF
 EOF
     done
 
-#Name [queejasarohhafanahya]
-#Pass [chieteiveijeiphaxahz]
+#----------------------------------------------------
+# Firethon Tomcat
+#
 
-#Name [iseidujaecheejaevoht]
-#Pass [bahyohneonoreijeebie]
+#
+# Watch tomcat logs.
+# Includes tunneled connection to port 8080 ..
+#[user@desktop]
+
+    source "${HOME:?}/deployment/deploy.logins"
+    ssh -L 8088:localhost:8080 "${firelogin:?}"
+
+        tail -f "${HOME}/tomcat/logs/catalina.out"
 
 #
 # Deploy firethorn webapp ...
@@ -156,13 +186,13 @@ EOF
     source "${HOME:?}/deployment/deploy.logins"
     ssh "${firelogin:?}" 
 
-        webappver=01.04-SNAPSHOT
+        webappver=01.05-SNAPSHOT
         webappproj=firethorn-webapp
         webappname=${webappproj:?}-${webappver:?}
         webapppath=${HOME}/webapps
         webappfile=${webappname:?}.war
 
-        downloadurl="http://data.metagrid.co.uk/wfau/maven/publish/uk/ac/roe/wfau/${webappproj:?}/${webappver:?}/${webappfile:?}"
+        downloadurl="http://data.metagrid.co.uk/wfau/maven/firethorn/uk/ac/roe/wfau/${webappproj:?}/${webappver:?}/${webappfile:?}"
 
         contextname=firethorn
         contextpath=${HOME}/tomcat/conf/Catalina/localhost
@@ -199,7 +229,7 @@ EOF
             #
             # Download
             wget "${downloadurl:?}"
-            wget --limit-rate=20k "${downloadurl:?}"
+            #wget --limit-rate=20k "${downloadurl:?}"
 
         popd
 
@@ -213,22 +243,26 @@ EOF
     />
 EOF
         popd
-        
+
+#
+# Test with browser ..
+#[user@desktop]
+
+    firefox 'http://localhost:8088/firethorn/' &
+
+#----------------------------------------------------
+# OGSA-DAI Tomcat
+#
+
 #
 # Watch tomcat logs.
 # Includes tunneled connection to port 8080 ..
 #[user@desktop]
 
     source "${HOME:?}/deployment/deploy.logins"
-    ssh -L 8088:localhost:8080 "${firelogin:?}"
+    ssh -L 8089:localhost:8080 "${ogsalogin:?}"
 
         tail -f "${HOME}/tomcat/logs/catalina.out"
-
-#
-# Connect with browser ..
-#[user@desktop]
-
-    firefox 'http://localhost:8088/firethorn/' &
 
 #
 # Deploy ogsadai webapp ...
@@ -239,13 +273,13 @@ EOF
     source "${HOME:?}/deployment/deploy.logins"
     ssh "${ogsalogin:?}" 
 
-        webappver=01.04-SNAPSHOT
+        webappver=01.05-SNAPSHOT
         webappproj=firethorn-ogsadai-webapp
         webappname=${webappproj:?}-${webappver:?}
         webapppath=${HOME}/webapps
         webappfile=${webappname:?}.war
 
-        downloadurl="http://data.metagrid.co.uk/wfau/maven/publish/uk/ac/roe/wfau/${webappproj:?}/${webappver:?}/${webappfile:?}"
+        downloadurl="http://data.metagrid.co.uk/wfau/maven/firethorn/uk/ac/roe/wfau/${webappproj:?}/${webappver:?}/${webappfile:?}"
 
         contextname=ogsa-dai
         contextpath=${HOME}/tomcat/conf/Catalina/localhost
@@ -271,7 +305,6 @@ EOF
             then
                 wget 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/firethorn-ogsadai/webapp/src/test/bin/jdbc-functions.sh'
             fi
-            source 'jdbc-functions.sh'
         popd
 
         #
@@ -306,6 +339,7 @@ EOF
             # Configure
             pushd "${webappname}/WEB-INF"
             
+                source 'jdbc-functions.sh'
                 #jdbcconfig twomass  firethorn.twomass
                 #jdbcconfig ukidss   firethorn.ukidss
                 jdbcconfig atlas    firethorn.atlas
@@ -327,36 +361,116 @@ EOF
         popd
         
 #
-# Watch tomcat logs.
-# Includes tunneled connection to port 8080 ..
+# Test with browser ..
 #[user@desktop]
 
-    source "${HOME:?}/deployment/deploy.logins"
-    ssh -L 8089:localhost:8080 "${ogsalogin:?}"
-
-        tail -f "${HOME}/tomcat/logs/catalina.out"
-
-#
-# Connect with browser ..
-#[user@desktop]
-
-    firefox 'http://localhost:8089/ogsa-dai' &
+    firefox 'http://localhost:8089/ogsa-dai/' &
 
 #
 # BUG - OGSA-DAI hangs on first use ....
 # Need to poke with JUnit test before using it for real.
 #[user@desktop]
 
-    source "${HOME:?}/test-users.txt"
-    ssh ${testuser}@${testhost:?}
+#
+#    source "${HOME:?}/test-users.txt"
+#    ssh ${testuser}@${testhost:?}
+#
+#        source ${HOME:?}/firethorn.settings
+#        pushd "${FIRETHORN_CODE:?}"
+#            pushd 'firethorn-ogsadai/activity/client'
+#
+#                mvn -D skipTests=false -D test=SingleQueryTestCase test 
+#
+#            popd
+#        popd
+#
+
+
+#----------------------------------------------------
+# Test queries ....
+#
+
+#[user@desktop]
+
+    #
+    # Install test tools.
+    source "${HOME:?}/deployment/deploy.logins"
+    ssh "root@${testhost:?}" 
+
+        apt-get -y install curl
+        apt-get -y install perl
+        apt-get -y install libjson-perl
+
+        exit
+
+    #
+    # Install and run the tests
+    source "${HOME:?}/deployment/deploy.logins"
+    ssh "${testlogin:?}" 
+
+
+        #
+        # Get a clone of the source code.
+
+cat >  "${HOME:?}/firethorn.settings" << 'EOF'
+FIRETHORN_BASE=${FIRETHORN_BASE:-${HOME}/firethorn}
+FIRETHORN_CODE=${FIRETHORN_CODE:-${FIRETHORN_BASE:?}/clone}
+export MAVEN_OPTS=-Xmx128m
+EOF
+
+        source "${HOME:?}/firethorn.settings"
+
+        codepath="$(dirname  ${FIRETHORN_CODE:?})"
+        codename="$(basename ${FIRETHORN_CODE:?})"
+
+        if [ ! -e "${codepath:?}" ]
+        then
+            mkdir "${codepath:?}"
+        fi
+
+        hgrepo=http://wfau.metagrid.co.uk/code/firethorn/
+
+        pushd "${codepath:?}"
+            if [ ! -e "${codename:?}" ]
+            then
+                 hg clone "${hgrepo:?}" "${codename:?}"
+            else
+                pushd "${codename:?}"
+                    hg pull
+                    hg update
+                popd
+            fi
+        popd
+
+
+        #
+        # Run the tests ...
 
         source ${HOME:?}/firethorn.settings
-        pushd "${FIRETHORN_CODE:?}"
-            pushd 'firethorn-ogsadai/activity/client'
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/003
 
-                mvn -D skipTests=false -D test=SingleQueryTestCase test 
+        pushd $(mktemp --directory)
 
-            popd
+            source "${FIRETHORN_TEST:?}/00-init-rest.sh"
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/02-00-create-jdbc-space.sh" 'spring:RoeATLAS' '*' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/03-00-create-adql-space.sh"
+
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'TWOMASS.dbo'        'twomass'
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'ATLASv20130304.dbo' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/04-00-create-query-space.sh"
+            source "${FIRETHORN_TEST:?}/04-01-create-query-schema.sh" 'query'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'atlas'   'atlas'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'twomass' 'twomass'
+
+
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-000.adql"
+
         popd
 
 

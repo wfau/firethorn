@@ -103,7 +103,8 @@
             apt-get -y install maven
 
             #
-            # Install Perl and JSON tools
+            # Install Curl, Perl and JSON tools
+            apt-get -y install curl
             apt-get -y install perl
             apt-get -y install libjson-perl
 
