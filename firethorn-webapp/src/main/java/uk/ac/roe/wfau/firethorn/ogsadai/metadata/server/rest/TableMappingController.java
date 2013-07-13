@@ -129,7 +129,7 @@ public class TableMappingController
          */
         public String getName()
             {
-            return this.table.fullname().toString();
+            return this.table.namebuilder().toString();
             }
 
         /**

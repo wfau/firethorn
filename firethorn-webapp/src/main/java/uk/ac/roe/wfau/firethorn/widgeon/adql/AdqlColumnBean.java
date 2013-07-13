@@ -83,7 +83,7 @@ implements NamedEntityBean<AdqlColumn>
 
     public String getFullname()
         {
-        return entity().fullname().toString();
+        return entity().namebuilder().toString();
         }
 
     public interface Info

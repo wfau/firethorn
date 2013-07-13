@@ -120,7 +120,7 @@ extends BaseComponent
      * The full name, including parent table, schema and catalog.
      *
      */
-    public StringBuilder fullname();
+    public StringBuilder namebuilder();
 
     /**
      * The column metadata.

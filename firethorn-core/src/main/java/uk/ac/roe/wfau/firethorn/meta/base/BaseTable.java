@@ -136,7 +136,7 @@ extends BaseComponent
      * The fully qualified name.
      *
      */
-    public StringBuilder fullname();
+    public StringBuilder namebuilder();
 
     public BaseTable<?, ?> base();
     public BaseTable<?, ?> root();

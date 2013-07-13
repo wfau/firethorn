@@ -101,9 +101,9 @@ extends BaseComponentEntity
         }
 
     @Override
-    public StringBuilder fullname()
+    public StringBuilder namebuilder()
         {
-        return this.table().fullname().append(".").append(this.name());
+        return this.table().namebuilder().append(".").append(this.name());
         }
 
     @Index(

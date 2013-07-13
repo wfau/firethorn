@@ -54,10 +54,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
         @NamedQuery(
             name  = "IvoaResource-select-all",
             query = "FROM IvoaResourceEntity ORDER BY name asc, ident desc"
-            ),
-        @NamedQuery(
-            name  = "IvoaResource-search-text",
-            query = "FROM IvoaResourceEntity WHERE (name LIKE :text) ORDER BY ident desc"
             )
         }
     )
@@ -94,22 +90,6 @@ public class IvoaResourceEntity
                 super.query(
                     "IvoaResource-select-all"
                     )
-                );
-            }
-
-        @Override
-        @SelectEntityMethod
-        public Iterable<IvoaResource> search(final String text)
-            {
-            return super.iterable(
-                super.query(
-                    "IvoaResource-search-text"
-                    ).setString(
-                        "text",
-                        searchParam(
-                            text
-                            )
-                        )
                 );
             }
 

@@ -66,12 +66,12 @@ public class JdbcAdqlTableTestCase
 	        log.debug("--- Schema [{}][{}]", new Object[] {resource.name(), schema.name()});
 	        for (final AdqlTable table : schema.tables().select())
 	            {
-	            log.debug("---- Table [{}][{}][{}]", new Object[] {table.resource().name(), table.alias(), table.fullname()});
-	            log.debug("---- Base  [{}][{}][{}]", new Object[] {table.base().resource().name(), table.base().alias(), table.base().fullname()});
+	            log.debug("---- Table [{}][{}][{}]", new Object[] {table.resource().name(), table.alias(), table.namebuilder()});
+	            log.debug("---- Base  [{}][{}][{}]", new Object[] {table.base().resource().name(), table.base().alias(), table.base().namebuilder()});
 	            for (final AdqlColumn column : table.columns().select())
 	                {
-	                log.debug("----- Column [{}][{}][{}]", new Object[] {column.resource().name(),        column.alias(),        column.fullname()});
-	                log.debug("----- Base   [{}][{}][{}]", new Object[] {column.base().resource().name(), column.base().alias(), column.base().fullname()});
+	                log.debug("----- Column [{}][{}][{}]", new Object[] {column.resource().name(),        column.alias(),        column.namebuilder()});
+	                log.debug("----- Base   [{}][{}][{}]", new Object[] {column.base().resource().name(), column.base().alias(), column.base().namebuilder()});
 	                }
 	            }
 	        }

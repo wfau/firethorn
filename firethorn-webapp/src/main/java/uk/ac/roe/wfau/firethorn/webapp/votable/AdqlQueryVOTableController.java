@@ -238,7 +238,7 @@ public class AdqlQueryVOTableController
                 " FROM "
                 );
             builder.append(
-                query.results().jdbc().fullname()
+                query.results().jdbc().namebuilder()
                 );
             log.debug("SQL [{}]", builder.toString());
 

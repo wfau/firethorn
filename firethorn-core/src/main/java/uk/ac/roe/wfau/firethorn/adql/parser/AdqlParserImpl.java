@@ -397,9 +397,9 @@ implements AdqlParser
             {
             final AdqlColumn adql = ((AdqlDBColumn) column.getDBLink()).column();
             log.debug("  ----");
-            log.debug("  AdqlColumn [{}]", adql.fullname());
-            log.debug("  BaseColumn [{}]", adql.base().fullname());
-            log.debug("  RootColumn [{}]", adql.root().fullname());
+            log.debug("  AdqlColumn [{}]", adql.namebuilder());
+            log.debug("  BaseColumn [{}]", adql.base().namebuilder());
+            log.debug("  RootColumn [{}]", adql.root().namebuilder());
             subject.add(
                 adql
                 );
@@ -425,9 +425,9 @@ implements AdqlParser
             {
             final AdqlTable adql = ((AdqlParserTable) table.getDBLink()).table();
             log.debug("   ----");
-            log.debug("   AdqlTable [{}]", adql.fullname());
-            log.debug("   BaseTable [{}]", adql.base().fullname());
-            log.debug("   RootTable [{}]", adql.root().fullname());
+            log.debug("   AdqlTable [{}]", adql.namebuilder());
+            log.debug("   BaseTable [{}]", adql.base().namebuilder());
+            log.debug("   RootTable [{}]", adql.root().namebuilder());
             subject.add(
                 adql
                 );
@@ -567,9 +567,9 @@ implements AdqlParser
     protected void fields(final AdqlParserQuery subject, final AdqlTable table)
         {
         log.debug("fields(AdqlParserQuery, AdqlTable)");
-        log.debug("  AdqlTable [{}]", table.fullname());
-        log.debug("  BaseTable [{}]", table.base().fullname());
-        log.debug("  RootTable [{}]", table.root().fullname());
+        log.debug("  AdqlTable [{}]", table.namebuilder());
+        log.debug("  BaseTable [{}]", table.base().namebuilder());
+        log.debug("  RootTable [{}]", table.root().namebuilder());
         for (final AdqlColumn column : table.columns().select())
             {
             subject.add(
@@ -830,9 +830,9 @@ implements AdqlParser
     public static AdqlQuery.SelectField wrap(final AdqlColumn column)
         {
         log.debug("wrap(AdqlColumn)");
-        log.debug("  adql [{}]", column.fullname());
-        log.debug("  base [{}]", column.base().fullname());
-        log.debug("  root [{}]", column.root().fullname());
+        log.debug("  adql [{}]", column.namebuilder());
+        log.debug("  base [{}]", column.base().namebuilder());
+        log.debug("  root [{}]", column.root().namebuilder());
         return new AdqlColumnWrapper(
             column
             );

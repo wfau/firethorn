@@ -87,7 +87,7 @@ implements NamedEntityBean<AdqlTable>
 
     public String getFullname()
         {
-        return entity().fullname().toString();
+        return entity().namebuilder().toString();
         }
 
     public String getQuery()

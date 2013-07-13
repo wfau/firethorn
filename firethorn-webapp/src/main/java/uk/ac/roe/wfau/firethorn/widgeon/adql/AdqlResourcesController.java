@@ -65,12 +65,6 @@ extends AbstractController
     public static final String SELECT_PATH = "select" ;
 
     /**
-     * URL path for the search method.
-     *
-     */
-    public static final String SEARCH_PATH = "search" ;
-
-    /**
      * URL path for the create method.
      *
      */
@@ -89,18 +83,6 @@ extends AbstractController
     public static final String SELECT_RESULT = "adql.resource.select.result" ;
 
     /**
-     * MVC property for the search text.
-     *
-     */
-    public static final String SEARCH_TEXT = "adql.resource.search.text" ;
-
-    /**
-     * MVC property for the search results.
-     *
-     */
-    public static final String SEARCH_RESULT = "adql.resource.search.result" ;
-
-    /**
      * MVC property for the create name.
      *
      */
@@ -117,24 +99,6 @@ extends AbstractController
         ){
         return new AdqlResourceBean.Iter(
             factories().adql().resources().select()
-            );
-        }
-
-    /**
-     * JSON GET or POST request to search by text.
-     *
-     */
-    @ResponseBody
-    @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public AdqlResourceBean.Iter jsonSearch(
-        @RequestParam(SEARCH_TEXT)
-        final String text,
-        final ModelAndView model
-        ){
-        return new AdqlResourceBean.Iter(
-            factories().adql().resources().search(
-                text
-                )
             );
         }
 

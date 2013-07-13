@@ -66,10 +66,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
             query = "FROM JdbcResourceEntity ORDER BY name asc, ident desc"
             ),
         @NamedQuery(
-            name  = "JdbcResource-search-text",
-            query = "FROM JdbcResourceEntity WHERE (name LIKE :text) ORDER BY ident desc"
-            ),
-        @NamedQuery(
             name  = "JdbcResource-select-ogsaid",
             query = "FROM JdbcResourceEntity WHERE (ogsaid = :ogsaid) ORDER BY ident desc"
             )
@@ -116,23 +112,6 @@ public class JdbcResourceEntity
                 super.query(
                     "JdbcResource-select-all"
                     )
-                );
-            }
-
-        @Override
-        @Deprecated
-        @SelectEntityMethod
-        public Iterable<JdbcResource> search(final String text)
-            {
-            return super.iterable(
-                super.query(
-                    "JdbcResource-search-text"
-                    ).setString(
-                        "text",
-                        searchParam(
-                            text
-                            )
-                        )
                 );
             }
 

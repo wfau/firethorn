@@ -69,43 +69,25 @@ public abstract class BaseResourceEntity<SchemaType extends BaseSchema<SchemaTyp
         }
 
     @Override
-    public StringBuilder fullname()
+    public StringBuilder namebuilder()
         {
-        return new StringBuilder(this.name());
+        return new StringBuilder(
+            this.name()
+            );
         }
 
-    /**
-     * The the OGSA-DAI resource ID.
-     * @todo Move this to Jdbc and Ivoa classes - replace with error/warn on base class.
-     * @todo Create a new entity for OGSA-DAI resources.
-     *
-    protected static final String DB_OGSA_ID_COL = "ogsaid";
-    @Column(
-        name = DB_OGSA_ID_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private String ogsaid;
     @Override
     public String ogsaid()
         {
-        return this.ogsaid;
+        throw new UnsupportedOperationException(
+            "ogsaid not available for BaseResource"
+            );
         }
     @Override
     public void ogsaid(final String ogsaid)
         {
-        this.ogsaid = ogsaid;
+        throw new UnsupportedOperationException(
+            "ogsaid not available for BaseResource"
+            );
         }
-     */
-    @Override
-    public String ogsaid()
-        {
-        return null;
-        }
-    @Override
-    public void ogsaid(final String ogsaid)
-        {
-        }
-
     }

@@ -120,6 +120,6 @@ extends BaseComponent
      * The fully qualified name.
      *
      */
-    public StringBuilder fullname();
+    public StringBuilder namebuilder();
 
     }

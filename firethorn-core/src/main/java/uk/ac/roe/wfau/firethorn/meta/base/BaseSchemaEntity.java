@@ -153,7 +153,7 @@ public abstract class BaseSchemaEntity<SchemaType extends BaseSchema<SchemaType,
         }
 
     @Override
-    public StringBuilder fullname()
+    public StringBuilder namebuilder()
         {
         return new StringBuilder(this.name());
         }

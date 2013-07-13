@@ -91,18 +91,6 @@ extends AbstractController
     public static final String SELECT_RESULT = "jdbc.resource.select.result" ;
 
     /**
-     * MVC property for the search text.
-     *
-     */
-    public static final String SEARCH_TEXT = "jdbc.resource.search.text" ;
-
-    /**
-     * MVC property for the search results.
-     *
-     */
-    public static final String SEARCH_RESULT = "jdbc.resource.search.result" ;
-
-    /**
      * MVC property for the initial name.
      *
      */
@@ -149,24 +137,6 @@ extends AbstractController
         ){
         return new JdbcResourceBean.Iter(
             factories().jdbc().resources().select()
-            );
-        }
-
-    /**
-     * JSON GET or POST request to search by text.
-     *
-     */
-    @ResponseBody
-    @RequestMapping(value=SEARCH_PATH, params={SEARCH_TEXT}, produces=JSON_MAPPING)
-    public JdbcResourceBean.Iter jsonSearch(
-        @RequestParam(SEARCH_TEXT)
-        final String text,
-        final ModelAndView model
-        ){
-        return new JdbcResourceBean.Iter(
-            factories().jdbc().resources().search(
-                text
-                )
             );
         }
 

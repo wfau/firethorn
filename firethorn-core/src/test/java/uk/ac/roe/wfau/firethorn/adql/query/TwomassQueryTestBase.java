@@ -95,17 +95,17 @@ extends TestBase
         log.debug("Resources -- ");
         for (final BaseResource<?> target : query.resources())
             {
-            log.debug("Resource [{}]", target.fullname());
+            log.debug("Resource [{}]", target.namebuilder());
             }
         log.debug("Tables -- ");
         for (final AdqlTable table : query.tables())
             {
-            log.debug("Table [{}]", table.fullname());
+            log.debug("Table [{}]", table.namebuilder());
             }
         log.debug("Columns -- ");
         for (final AdqlColumn column : query.columns())
             {
-            log.debug("Column [{}]", column.fullname());
+            log.debug("Column [{}]", column.namebuilder());
             }
         log.debug("Fields -- ");
         for (final SelectField field : query.fields())

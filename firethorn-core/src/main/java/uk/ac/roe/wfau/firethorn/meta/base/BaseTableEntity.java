@@ -155,9 +155,9 @@ extends BaseComponentEntity
         }
 
     @Override
-    public StringBuilder fullname()
+    public StringBuilder namebuilder()
         {
-        return this.schema().fullname().append(".").append(this.name());
+        return this.schema().namebuilder().append(".").append(this.name());
         }
 
     @Override

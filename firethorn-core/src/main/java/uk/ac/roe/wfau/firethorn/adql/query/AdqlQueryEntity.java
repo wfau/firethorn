@@ -962,7 +962,7 @@ implements AdqlQuery, AdqlParserQuery
 
                 // TODO - Check for valid resource ident in prepare().
                 final String target = ((mode() == Mode.DIRECT) ? primary().ogsaid() : params().dqp());
-                final String tablename = query.results().jdbc().fullname().toString() ;
+                final String tablename = query.results().jdbc().namebuilder().toString() ;
 
                 log.debug("-- AdqlQuery executing [{}]", ident());
                 log.debug("-- Mode     [{}]", query.mode());

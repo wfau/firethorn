@@ -49,13 +49,6 @@ extends BaseComponent
          */
         public Iterable<ResourceType> select();
 
-        /**
-         * Select Resources ...
-         *
-         */
-        @Deprecated
-        public Iterable<ResourceType> search(final String text);
-
         }
 
     /**
@@ -94,7 +87,7 @@ extends BaseComponent
      * The fully qualified resource name.
      *
      */
-    public StringBuilder fullname();
+    public StringBuilder namebuilder();
 
     /**
      * Get the OGSA-DAI resource ID.

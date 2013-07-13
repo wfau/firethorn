@@ -73,6 +73,6 @@ implements NamedEntityBean<JdbcSchema>
 
     public String getFullname()
         {
-        return entity().fullname().toString();
+        return entity().namebuilder().toString();
         }
     }

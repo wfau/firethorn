@@ -49,10 +49,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
         @NamedQuery(
             name  = "AdqlResource-select-all",
             query = "FROM AdqlResourceEntity ORDER BY name asc, ident desc"
-            ),
-        @NamedQuery(
-            name  = "AdqlResource-search-text",
-            query = "FROM AdqlResourceEntity WHERE (name LIKE :text) ORDER BY ident desc"
             )
         }
     )
@@ -86,22 +82,6 @@ extends BaseResourceEntity<AdqlSchema>
                 super.query(
                     "AdqlResource-select-all"
                     )
-                );
-            }
-
-        @Override
-        @SelectEntityMethod
-        public Iterable<AdqlResource> search(final String text)
-            {
-            return super.iterable(
-                super.query(
-                    "AdqlResource-search-text"
-                    ).setString(
-                        "text",
-                        searchParam(
-                            text
-                            )
-                        )
                 );
             }
 

@@ -110,13 +110,13 @@ extends TestBase
 
         for (final JdbcSchema schema : resource.schemas().select())
             {
-            log.debug("--- Schema [{}]", schema.fullname());
+            log.debug("--- Schema [{}]", schema.namebuilder());
             for (final JdbcTable table : schema.tables().select())
                 {
-                log.debug("---- Table [{}]", table.fullname());
+                log.debug("---- Table [{}]", table.namebuilder());
                 for (final JdbcColumn column : table.columns().select())
                     {
-                    log.debug("----- Column [{}]", column.fullname());
+                    log.debug("----- Column [{}]", column.namebuilder());
                     }
                 }
             }
