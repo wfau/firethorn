@@ -72,7 +72,7 @@ implements Entity.LinkFactory<EntityType>
         }
 
     @Override
-    public Identifier parse(final String string)
+    public Identifier ident(final String string)
         {
         log.debug("parse(String)");
         log.debug("  string  [{}]", string);

@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.entity ;
 
+import java.util.UUID;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -63,6 +65,7 @@ implements Entity
      *
      */
     protected static final String DB_IDENT_COL   = "ident" ;
+    protected static final String DB_UUID_COL   = "uuid" ;
     protected static final String DB_OWNER_COL   = "owner" ;
 
     protected static final String DB_CREATED_COL  = "created"  ;
@@ -113,6 +116,7 @@ implements Entity
         super();
         if (init)
             {
+            this.uuid = factories.uuids().uuid();
             this.owner = factories().identities().current();
             this.created = new DateTime();
             }
@@ -174,6 +178,23 @@ implements Entity
             }
         }
 
+    /**
+     * The Entity UUID.
+     * 
+     */
+    @Column(
+        name = DB_UUID_COL,
+        unique = true,
+        nullable = false,
+        updatable = false
+        )
+    private UUID uuid ;
+    @Override
+    public UUID uuid()
+        {
+        return this.uuid;
+        }
+    
     /**
      * The Entity owner.
      *

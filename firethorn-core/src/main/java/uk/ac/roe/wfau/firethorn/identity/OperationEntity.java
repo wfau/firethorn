@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.identity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -42,6 +43,7 @@ import org.springframework.stereotype.Component;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 
 /**
  *
@@ -142,6 +144,13 @@ implements Operation
                 oper
                 );
             return oper;
+            }
+
+        @Override
+        public Operation select(UUID uuid) throws NotFoundException
+            {
+            // TODO Auto-generated method stub
+            return null;
             }
         }
 

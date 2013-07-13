@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.job.test;
 
+import java.util.UUID;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -181,6 +183,13 @@ implements TestJob
         			ident
         			);
             }
+
+        @Override
+        public TestJob select(UUID uuid) throws NotFoundException
+            {
+            // TODO Auto-generated method stub
+            return null;
+            }
         }
 
     /**
@@ -251,6 +260,13 @@ implements TestJob
         public TestJob.IdentFactory idents()
             {
             return this.idents;
+            }
+
+        @Override
+        public TestJob select(UUID uuid) throws NotFoundException
+            {
+            // TODO Auto-generated method stub
+            return null;
             }
         }
 

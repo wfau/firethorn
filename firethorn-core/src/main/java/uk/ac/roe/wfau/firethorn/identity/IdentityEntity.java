@@ -16,6 +16,8 @@
  */
 package uk.ac.roe.wfau.firethorn.identity;
 
+import java.util.UUID;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -36,6 +38,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchemaEntity;
 
@@ -164,6 +167,13 @@ implements Identity
         public Identity.LinkFactory links()
             {
             return this.links;
+            }
+
+        @Override
+        public Identity select(UUID uuid) throws NotFoundException
+            {
+            // TODO Auto-generated method stub
+            return null;
             }
         }
 

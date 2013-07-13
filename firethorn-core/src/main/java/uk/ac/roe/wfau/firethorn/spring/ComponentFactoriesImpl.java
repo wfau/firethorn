@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
+import uk.ac.roe.wfau.firethorn.entity.UUIDFactory;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Community;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
@@ -104,6 +105,14 @@ public class ComponentFactoriesImpl
         }
 
     @Autowired
+    private UUIDFactory uuids ;
+    @Override
+    public UUIDFactory uuids()
+        {
+        return this.uuids;
+        }
+    
+    @Autowired
     private SpringThings spring;
     @Override
     public SpringThings spring()
@@ -126,16 +135,6 @@ public class ComponentFactoriesImpl
         {
         return this.base;
         }
-
-    /*
-    @Autowired
-    private OgsaFactories ogsa;
-    @Override
-    public OgsaFactories ogsa()
-        {
-        return this.ogsa;
-        }
-     */
 
     @Autowired
     private AdqlFactories adql;

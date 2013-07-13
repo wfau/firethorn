@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -289,6 +290,12 @@ implements AdqlQuery, AdqlParserQuery
             {
             return this.links;
             }
+        @Override
+        public AdqlQuery select(UUID uuid) throws NotFoundException
+            {
+            // TODO Auto-generated method stub
+            return null;
+            }
         }
 
     /**
@@ -422,6 +429,13 @@ implements AdqlQuery, AdqlParserQuery
                             )
                         )
                 );
+            }
+
+        @Override
+        public AdqlQuery select(UUID uuid) throws NotFoundException
+            {
+            // TODO Auto-generated method stub
+            return null;
             }
         }
 

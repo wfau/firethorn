@@ -210,7 +210,7 @@ extends AbstractController
         final AdqlTableBean bean = new AdqlTableBean(
             schema.tables().create(
                 factories().base().tables().select(
-                    factories().base().tables().links().parse(
+                    factories().base().tables().links().ident(
                         base
                         )
                     )
@@ -246,7 +246,7 @@ extends AbstractController
         final AdqlTableBean bean = new AdqlTableBean(
             schema.tables().create(
                 factories().base().tables().select(
-                    factories().base().tables().links().parse(
+                    factories().base().tables().links().ident(
                         base
                         )
                     ),

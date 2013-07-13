@@ -38,7 +38,7 @@ extends TestBase
     throws Exception
         {
         try {
-            factories().adql().tables().links().parse(
+            factories().adql().tables().links().ident(
                 "adql/table/21"
                 );
             fail(
@@ -64,7 +64,7 @@ extends TestBase
             new LongIdentifier(
                 21
                 ),
-            factories().adql().tables().links().parse(
+            factories().adql().tables().links().ident(
                 "/adql/table/21"
                 )
             );
@@ -78,7 +78,7 @@ extends TestBase
             new LongIdentifier(
                 21
                 ),
-            factories().adql().tables().links().parse(
+            factories().adql().tables().links().ident(
                 "frog/adql/table/21"
                 )
             );
@@ -92,7 +92,7 @@ extends TestBase
             new LongIdentifier(
                 21
                 ),
-            factories().adql().tables().links().parse(
+            factories().adql().tables().links().ident(
                 "/adql/table/21/frog"
                 )
             );
@@ -106,7 +106,7 @@ extends TestBase
             new LongIdentifier(
                 21
                 ),
-            factories().adql().tables().links().parse(
+            factories().adql().tables().links().ident(
                 "frog/adql/table/21/frog"
                 )
             );
@@ -117,7 +117,7 @@ extends TestBase
     throws Exception
         {
         try {
-            factories().adql().tables().links().parse(
+            factories().adql().tables().links().ident(
                 "/frogadql/table/21"
                 );
             fail(
@@ -140,7 +140,7 @@ extends TestBase
     throws Exception
         {
         try {
-            factories().adql().tables().links().parse(
+            factories().adql().tables().links().ident(
                 "/adql/table/21frog"
                 );
             fail(
@@ -163,7 +163,7 @@ extends TestBase
     throws Exception
         {
         try {
-            factories().adql().tables().links().parse(
+            factories().adql().tables().links().ident(
                 "/frogadql/table/21frog"
                 );
             fail(

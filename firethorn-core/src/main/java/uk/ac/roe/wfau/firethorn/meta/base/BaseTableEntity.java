@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.base;
 
+import java.util.UUID;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -120,6 +122,13 @@ extends BaseComponentEntity
                         )
                     )
                 );
+            }
+
+        @Override
+        public BaseTable<?, ?> select(UUID uuid) throws NotFoundException
+            {
+            // TODO Auto-generated method stub
+            return null;
             }
         }
 

@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
+import java.util.UUID;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -207,6 +209,13 @@ public class IvoaTableEntity
 
         @Override
         public uk.ac.roe.wfau.firethorn.meta.base.BaseTable.NameFactory<IvoaTable> names()
+            {
+            // TODO Auto-generated method stub
+            return null;
+            }
+
+        @Override
+        public IvoaTable select(UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;

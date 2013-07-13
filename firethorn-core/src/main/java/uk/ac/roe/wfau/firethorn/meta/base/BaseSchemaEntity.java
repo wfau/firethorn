@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.base;
 
+import java.util.UUID;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -34,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 
 /**
  *
@@ -101,6 +104,12 @@ public abstract class BaseSchemaEntity<SchemaType extends BaseSchema<SchemaType,
         public BaseSchema.LinkFactory links()
             {
             return this.links;
+            }
+        @Override
+        public BaseSchema<?, ?> select(UUID uuid) throws NotFoundException
+            {
+            // TODO Auto-generated method stub
+            return null;
             }
         }
 

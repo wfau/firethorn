@@ -20,6 +20,7 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -308,6 +309,13 @@ implements JdbcTable
         public JdbcTable.Builder builder()
             {
             return this.builder;
+            }
+
+        @Override
+        public JdbcTable select(UUID uuid) throws NotFoundException
+            {
+            // TODO Auto-generated method stub
+            return null;
             }
         }
 

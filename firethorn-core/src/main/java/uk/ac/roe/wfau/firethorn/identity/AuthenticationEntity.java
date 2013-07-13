@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.identity;
 
+import java.util.UUID;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -36,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 
 /**
  *
@@ -118,6 +121,13 @@ implements Authentication
 
         @Override
         public Authentication current()
+            {
+            // TODO Auto-generated method stub
+            return null;
+            }
+
+        @Override
+        public Authentication select(UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;

@@ -17,12 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.entity ;
 
+import java.util.UUID;
+
 import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
-
-
 
 /**
  * Common interface for a persistent Entity.
@@ -30,7 +30,6 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
  */
 public interface Entity
     {
-
     /**
      * Common interface for a name factory.
      *
@@ -42,7 +41,6 @@ public interface Entity
          *
          */
         public String name(final String name);
-
         }
 
     /**
@@ -74,8 +72,7 @@ public interface Entity
          * Parse a link into an Identifier.
          *
          */
-        public Identifier parse(final String string);
-
+        public Identifier ident(final String string);
         }
 
     /**
@@ -89,7 +86,6 @@ public interface Entity
          *
          */
         public Identifier ident(final String string);
-
         }
 
     /**
@@ -104,6 +100,13 @@ public interface Entity
          *
          */
         public EntityType select(final Identifier ident)
+        throws NotFoundException;
+
+        /**
+         * Select a specific Entity by UUID.
+         *
+         */
+        public EntityType select(final UUID uuid)
         throws NotFoundException;
 
         /**
@@ -140,10 +143,10 @@ public interface Entity
     public String link();
 
     /**
-     * Get the Entity name.
+     * Get the Entity UUID.
      *
-    public String name();
      */
+    public UUID uuid();
 
     /**
      * Get the Entity owner.

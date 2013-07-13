@@ -295,7 +295,7 @@ extends AbstractController
             new AdqlSchemaBean(
                 resource.schemas().create(
                     factories().base().schema().select(
-                        factories().base().schema().links().parse(
+                        factories().base().schema().links().ident(
                             base
                             )
                         )
@@ -323,7 +323,7 @@ extends AbstractController
                 resource.schemas().create(
                     name,
                     factories().base().schema().select(
-                        factories().base().schema().links().parse(
+                        factories().base().schema().links().ident(
                             base
                             )
                         )

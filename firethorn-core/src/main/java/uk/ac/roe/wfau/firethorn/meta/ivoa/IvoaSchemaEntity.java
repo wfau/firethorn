@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
+import java.util.UUID;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -33,6 +35,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 
 /**
@@ -168,6 +171,13 @@ public class IvoaSchemaEntity
         public IvoaSchema.LinkFactory links()
             {
             return this.links;
+            }
+
+        @Override
+        public IvoaSchema select(UUID uuid) throws NotFoundException
+            {
+            // TODO Auto-generated method stub
+            return null;
             }
         }
 

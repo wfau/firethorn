@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
+import java.util.UUID;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -286,6 +288,13 @@ public class JdbcColumnEntity
         public JdbcColumn.AliasFactory aliases()
             {
             return this.aliases;
+            }
+
+        @Override
+        public JdbcColumn select(UUID uuid) throws NotFoundException
+            {
+            // TODO Auto-generated method stub
+            return null;
             }
         }
 

@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.job;
 
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -164,6 +165,12 @@ implements Job
         public Job.IdentFactory idents()
             {
             return this.idents;
+            }
+        @Override
+        public Job select(UUID uuid) throws NotFoundException
+            {
+            // TODO Auto-generated method stub
+            return null;
             }
         }
 

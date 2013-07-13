@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.config;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.UUID;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -37,6 +38,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 
 /**
  * ConfigProperty implementation.
@@ -147,6 +149,13 @@ implements ConfigProperty
         public ConfigProperty.LinkFactory links()
             {
             return this.links;
+            }
+
+        @Override
+        public ConfigProperty select(UUID uuid) throws NotFoundException
+            {
+            // TODO Auto-generated method stub
+            return null;
             }
         }
 

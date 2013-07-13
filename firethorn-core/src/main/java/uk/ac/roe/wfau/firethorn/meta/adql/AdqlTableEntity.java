@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import java.util.UUID;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -289,6 +291,13 @@ public class AdqlTableEntity
         public AdqlTable.NameFactory names()
             {
             return this.names;
+            }
+
+        @Override
+        public AdqlTable select(UUID uuid) throws NotFoundException
+            {
+            // TODO Auto-generated method stub
+            return null;
             }
         }
 
