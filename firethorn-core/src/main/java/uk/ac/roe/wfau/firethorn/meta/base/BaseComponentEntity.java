@@ -64,9 +64,8 @@ extends AbstractNamedEntity
     protected static final String DB_TABLE_COL    = "table";
     protected static final String DB_COLUMN_COL   = "column";
 
-    protected static final String DB_SCAN_DATE_COL = "scandate";
-    protected static final String DB_SCAN_TIME_COL = "scantime";
-
+    protected static final String DB_SCAN_TIME_COL   = "scantime";
+    protected static final String DB_ENTITY_TYPE_COL = "entitytype" ;
 
     /**
      * Default constructor needs to be protected not private.
@@ -84,9 +83,25 @@ extends AbstractNamedEntity
      */
     protected BaseComponentEntity(final String name)
         {
+        this(
+            EntityType.REAL,
+            name
+            );
+        }
+
+    /**
+     * Protected constructor, owner defaults to the current actor.
+     *
+     */
+    protected BaseComponentEntity(final EntityType type, final String name)
+        {
         super(
             name
             );
+        this.entitytype = type;
+        log.debug("BaseComponentEntity(EntityType, String)");
+        log.debug("  Name [{}]", name);
+        log.debug("  Type [{}]", type);
         }
 
     /**
@@ -117,47 +132,31 @@ extends AbstractNamedEntity
         }
 
     @Column(
-        name = DB_SCAN_DATE_COL,
-        unique = false,
-        nullable = true,
-        updatable = true
-        )
-    private DateTime scandate ;
-    @Deprecated
-    protected DateTime scandate()
-        {
-        return this.scandate;
-        }
-    @Deprecated
-    protected void scandate(final DateTime date)
-        {
-        this.scandate = date;
-        }
-
-    @Column(
         name = DB_SCAN_TIME_COL,
         unique = false,
         nullable = false,
         updatable = true
         )
-    private long scantime ;
+    private long scanprev ;
     protected long scantime()
         {
-        return this.scantime;
+        return this.scanprev;
         }
     protected void scantime(final long time)
         {
-        this.scantime = time;
+        this.scanprev = time;
         }
     /**
      * The interval between scans.
      * Set to 60 seconds for now .. should be much higher and configurable.
      *
      */
-    private static final long SCAN_INTERVAL = 1000 * 60 ;
+    private static final long SCAN_INTERVAL = 1000 * 60 * 5 ;
     protected boolean scandue()
         {
-        return (this.scantime < (System.currentTimeMillis() - SCAN_INTERVAL));
+        long scannext = System.currentTimeMillis() - SCAN_INTERVAL ;
+        log.debug("scandue [{}][{}][{}]", scanprev, scannext, (scannext - scanprev));
+        return (this.scanprev < scannext);
         }
 
     /**
@@ -254,8 +253,31 @@ extends AbstractNamedEntity
 
     /**
      * Metadata scan implementation.
+     * @todo Not null when we re-build DB.
      *
      */
     protected abstract void scanimpl();
 
+    @Column(
+        name = DB_ENTITY_TYPE_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    private EntityType entitytype = EntityType.REAL ;
+
+    @Override
+    public EntityType entitytype()
+        {
+        return this.entitytype;
+        }
+
+    @Override
+    public void entitytype(final EntityType type)
+        {
+        this.entitytype = type;
+        }
     }

@@ -722,7 +722,6 @@ implements AdqlQuery, AdqlParserQuery
     /**
      * The set of AdqlColumns used by the query.
      *
-     */
     @ManyToMany(
         fetch   = FetchType.LAZY,
         cascade = CascadeType.ALL,
@@ -745,6 +744,8 @@ implements AdqlQuery, AdqlParserQuery
                 )
             }
         )
+     */
+    @Transient
     private final Set<AdqlColumn> columns = new HashSet<AdqlColumn>();
     @Override
     public Iterable<AdqlColumn> columns()
@@ -754,6 +755,7 @@ implements AdqlQuery, AdqlParserQuery
 
     /**
      * The set of BaseResources used by the query.
+     * @Transient
      *
      */
     @ManyToMany(
@@ -1011,7 +1013,7 @@ implements AdqlQuery, AdqlParserQuery
                 }
             catch (final Exception ouch)
                 {
-                log.debug("Unable to execute query [{}][{}]", ident(), ouch.getMessage());
+                log.debug("Unable to execute query [{}][{}][{}]", ident(), ouch.getClass().getName(), ouch.getMessage());
                 result = services().executor().status(
                     ident(),
                     Status.FAILED
@@ -1128,7 +1130,8 @@ implements AdqlQuery, AdqlParserQuery
     @Override
     public Results results()
         {
-        return new Results(){
+        return new Results()
+            {
             @Override
             @Deprecated
             public JdbcTable jdbc()

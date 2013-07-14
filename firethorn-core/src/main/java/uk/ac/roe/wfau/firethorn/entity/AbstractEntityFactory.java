@@ -70,9 +70,8 @@ implements Entity.EntityFactory<EntityType>
      * Insert a new Entity into the database.
      *
      */
-    @CreateEntityMethod
     @SuppressWarnings("unchecked")
-    public EntityType insert(final EntityType entity)
+    protected EntityType insert(final EntityType entity)
         {
         log.debug("insert [{}]", entity);
         return (EntityType) factories().hibernate().insert(

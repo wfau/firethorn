@@ -72,15 +72,17 @@ extends TestBase
             );
 
         this.resource = factories().jdbc().resources().create(
-            "user",
-            "test:userdata",
+            "userdata",
+            "userdata",
             "spring:FireThornUserData"
             );
 // TODO do we need this ?
+/*        
         this.schema = this.resource.schemas().create(
             null,
             "PUBLIC"
             );
+*/            
         }
 
     /**

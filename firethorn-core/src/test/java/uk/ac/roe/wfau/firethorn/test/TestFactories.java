@@ -17,11 +17,14 @@
  */
 package uk.ac.roe.wfau.firethorn.test;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Component;
 
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
 import uk.ac.roe.wfau.firethorn.entity.AbstractIdentFactory;
 import uk.ac.roe.wfau.firethorn.entity.AbstractLinkFactory;
+import uk.ac.roe.wfau.firethorn.entity.Entity;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
@@ -50,7 +53,17 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 public class TestFactories
     {
 
-
+    @Component
+    public static class UUIDFactory
+    implements Entity.UUIDFactory
+        {
+        @Override
+        public UUID uuid()
+            {
+            return UUID.randomUUID();
+            }
+        }
+    
     @Component
     public static class JobFactories
         {

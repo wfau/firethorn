@@ -86,7 +86,7 @@
 
                 source src/test/bin/jdbc-functions.sh
 
-                pushd target/firethorn-ogsadai-webapp-01.04-SNAPSHOT
+                pushd target/firethorn-ogsadai-webapp-01.05-SNAPSHOT/WEB-INF
 
                     jdbcconfig twomass  firethorn.twomass
                     jdbcconfig ukidss   firethorn.ukidss
@@ -161,4 +161,17 @@
             time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-004.adql"
 
         popd
+
+
+        importschema()
+            {
+            source "${FIRETHORN_TEST:?}/04-00-create-query-space.sh"
+            source "${FIRETHORN_TEST:?}/04-01-create-query-schema.sh" 'query'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'atlas'   'atlas'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'twomass' 'twomass'
+            source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-000.adql"
+            }
+
+        time importschema
+
 

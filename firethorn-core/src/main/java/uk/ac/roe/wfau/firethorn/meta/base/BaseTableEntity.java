@@ -150,10 +150,22 @@ extends BaseComponentEntity
 
     protected BaseTableEntity(final BaseSchema<?,TableType> parent, final String name)
         {
-        super(name);
-        this.parent = parent;
+        this(
+            EntityType.REAL,
+            parent,
+            name
+            );
         }
 
+    protected BaseTableEntity(final EntityType type, final BaseSchema<?,TableType> parent, final String name)
+        {
+        super(
+            type,
+            name
+            );
+        this.parent = parent;
+        }
+    
     @Override
     public StringBuilder namebuilder()
         {
@@ -193,6 +205,7 @@ extends BaseComponentEntity
     public abstract BaseResource<?> resource();
 
     @Override
+    @Deprecated
     public Linked linked()
         {
         return new Linked()

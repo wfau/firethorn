@@ -1,0 +1,118 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+    The OSA interface needs to have a 'handle' to load the available resources, workspaces and schema.
+    
+    Start with the OSA workspace (AdqlResource) <-- this is the starting point for the OSA.
+    Need to be able to label this as the 'osa workspace'
+    Unique label on the AdqlResource ?
+    Just ident for now ...
+
+ 
+    Science catalogs are represented as AdqlSchema
+
+    Create a new query workspace
+    Import science catalogs as AdqlSchema
+
+
+
+        source ${HOME:?}/firethorn.settings
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/003
+
+        pushd $(mktemp --directory)
+
+            source "${FIRETHORN_TEST:?}/00-init-rest.sh"
+            community=$(date '+%A')
+
+            # ----------
+            identity=$(pwgen 16 1)
+
+            resource=
+            source "${FIRETHORN_TEST:?}/02-00-create-jdbc-space.sh" 'spring:RoeATLAS' '*' 'ATLAS login'
+
+            workspace=
+            source "${FIRETHORN_TEST:?}/03-00-create-adql-space.sh" 'OSA workspace'
+
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'TWOMASS' 'dbo'        'TWOMASS'           # using metadoc
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'ATLASv20130304' 'dbo' 'ATLASv20130304'    # using metadoc
+
+            # ----------
+            identity=$(pwgen 16 1)
+
+
+            queryspace=
+            source "${FIRETHORN_TEST:?}/04-00-create-query-space.sh"
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASv20130304' 'atlas'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'        'twomass'
+
+            queryschema=
+            source "${FIRETHORN_TEST:?}/04-01-create-query-schema.sh" 'query'
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-000.adql"
+
+            source "${FIRETHORN_TEST:?}/06-00-delete-query-schema.sh"
+
+            # ----------
+
+        popd
+
+# ----------------------------------------------------------
+#
+#
+
+    load JDBC resource
+
+        fix scan bugs
+        scan run inside update transaction
+        managed by entity factory
+
+        keep track of locked catalogs
+        use our own metadata queries
+
+    import JDBC -> ADQL
+    
+        use data from metadoc
+        shallow copies to start with, but metadata from metadoc will mean most will end up being full copies
+
+    import ADQL -> ADQL
+
+        shallow copies of columns
+        shallow copies of tables
+        shallow copies of schema
+
+    gardening
+    
+        remove search methods
+        wrap generic String params with meaningful interfaces
+
+        get rid of the wildcard generics in the metadata tree
+
+
+
+
+
+
+
+
+

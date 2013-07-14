@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Access;
@@ -27,6 +29,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
@@ -49,6 +53,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
  *
  *
  */
+@Slf4j
 @Entity()
 @Access(
     AccessType.FIELD
@@ -137,29 +142,14 @@ public class AdqlTableEntity
 
         @Override
         @CreateEntityMethod
-        public AdqlTable insert(final AdqlTable entity)
-            {
-            super.insert(
-                entity
-                );
-//TODO shallow copy ?
-            for (final BaseColumn<?> base : entity.base().columns().select())
-                {
-                entity.columns().create(
-                    base
-                    );
-                }
-            return entity ;
-            }
-
-        @Override
-        @CreateEntityMethod
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base)
             {
+            log.debug("create(AdqlSchema, BaseTable)");
             return this.insert(
                 new AdqlTableEntity(
                     schema,
-                    base
+                    base,
+                    base.name()
                     )
                 );
             }
@@ -168,23 +158,10 @@ public class AdqlTableEntity
         @CreateEntityMethod
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
             {
+            log.debug("create(AdqlSchema, BaseTable, String)");
             return this.insert(
                 new AdqlTableEntity(
                     schema,
-                    base,
-                    name
-                    )
-                );
-            }
-
-        @Override
-        @CreateEntityMethod
-        public AdqlTable create(final AdqlQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
-            {
-            return this.insert(
-                new AdqlTableEntity(
-                    schema,
-                    query,
                     base,
                     name
                     )
@@ -195,10 +172,13 @@ public class AdqlTableEntity
         @CreateEntityMethod
         public AdqlTable create(final AdqlSchema schema, final AdqlQuery query)
             {
+            log.debug("create(AdqlSchema, AdqlQuery)");
             return this.insert(
                 new AdqlTableEntity(
+                    query,
                     schema,
-                    query
+                    query.results().base(),
+                    query.name()
                     )
                 );
             }
@@ -306,42 +286,37 @@ public class AdqlTableEntity
         super();
         }
 
-    protected AdqlTableEntity(final AdqlSchema schema, final BaseTable<?, ?> base)
-        {
-        this(
-            schema,
-            null,
-            base,
-            base.name()
-            );
-        }
-
     protected AdqlTableEntity(final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
         this(
-            schema,
             null,
+            schema,
             base,
             name
             );
         }
 
-    protected AdqlTableEntity(final AdqlSchema schema, final AdqlQuery query)
+    protected AdqlTableEntity(final AdqlQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
-        this(
+        super(
+            EntityType.THIN,
             schema,
-            query,
-            query.results().base(),
-            query.name()
+            name
             );
-        }
-
-    protected AdqlTableEntity(final AdqlSchema schema, final AdqlQuery query, final BaseTable<?, ?> base, final String name)
-        {
-        super(schema, name);
         this.query  = query;
         this.base   = base;
         this.schema = schema;
+        //
+        // Create our columns.
+        if (entitytype() == EntityType.REAL)
+            {
+            for (final BaseColumn<?> basecol : base.columns().select())
+                {
+                columns().create(
+                    basecol
+                    );
+                }
+            }
         }
 
     @Override
@@ -418,36 +393,83 @@ public class AdqlTableEntity
         return new AdqlTable.Columns()
             {
             @Override
+            @SuppressWarnings("unchecked")
             public Iterable<AdqlColumn> select()
                 {
-                return factories().adql().columns().select(
-                    AdqlTableEntity.this
-                    );
+                if (entitytype() == EntityType.REAL)
+                    {
+                    return factories().adql().columns().select(
+                        AdqlTableEntity.this
+                        );
+                    }
+                else {
+                    // I hate Java generics.
+                    return new AdqlColumnProxy.ProxyIterable(
+                        (Iterable<BaseColumn<?>>) base().columns().select(),
+                        AdqlTableEntity.this
+                        );
+                    }
                 }
+
             @Override
             public AdqlColumn select(final String name)
             throws NotFoundException
                 {
-                return factories().adql().columns().select(
-                    AdqlTableEntity.this,
-                    name
-                    );
+                if (entitytype() == EntityType.REAL)
+                    {
+                    return factories().adql().columns().select(
+                        AdqlTableEntity.this,
+                        name
+                        );
+                    }
+                else {
+                    return new AdqlColumnProxy(
+                        base.columns().select(
+                            name
+                            ),
+                        AdqlTableEntity.this
+                        );
+                    }
                 }
+
             @Override
             public AdqlColumn create(final BaseColumn<?> base)
                 {
-                return factories().adql().columns().create(
-                    AdqlTableEntity.this,
-                    base
-                    );
+                if (entitytype() == EntityType.REAL)
+                    {
+                    return factories().adql().columns().create(
+                        AdqlTableEntity.this,
+                        base
+                        );
+                    }
+                else {
+                    return new AdqlColumnProxy(
+                        base,
+                        AdqlTableEntity.this
+                        );
+                    }
                 }
+
             @Override
+            @SuppressWarnings("unchecked")
             public Iterable<AdqlColumn> search(final String text)
                 {
-                return factories().adql().columns().search(
-                    AdqlTableEntity.this,
-                    text
-                    );
+                if (entitytype() == EntityType.REAL)
+                    {
+                    return factories().adql().columns().search(
+                        AdqlTableEntity.this,
+                        text
+                        );
+                    }
+                else {
+                    // I hate Java generics.
+                    return new AdqlColumnProxy.ProxyIterable(
+                        (Iterable<BaseColumn<?>>) base().columns().search(
+                            text
+                            ),
+                        AdqlTableEntity.this
+                        );
+                    }
                 }
             };
         }
@@ -495,6 +517,5 @@ public class AdqlTableEntity
     protected void scanimpl()
         {
         // TODO Auto-generated method stub
-
         }
     }

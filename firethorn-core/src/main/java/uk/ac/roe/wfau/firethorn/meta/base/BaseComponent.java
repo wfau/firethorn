@@ -169,4 +169,14 @@ extends NamedEntity
     public void scan();
      */
 
+    enum EntityType
+        {
+        PROXY(),
+        THIN(),
+        REAL();
+        }
+
+    public EntityType entitytype();
+    public void entitytype(final EntityType copytype);
+
     }

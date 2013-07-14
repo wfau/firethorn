@@ -561,6 +561,15 @@ public class JdbcResourceEntity
                                 }
                             }
                         //
+                        // Posgtresql - catalog is null :-(
+                        if (product == JdbcProductType.PGSQL)
+                            {
+                            if (cname == null)
+                                {
+                                cname = catalog ;
+                                }
+                            }
+                        //
                         // Skip if the schema is on our ignore list.
                         if (product.ignore().contains(sname))
                             {

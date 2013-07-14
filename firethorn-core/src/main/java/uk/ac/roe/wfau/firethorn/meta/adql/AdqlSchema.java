@@ -34,7 +34,7 @@ extends BaseSchema<AdqlSchema, AdqlTable>
      *
      */
     public static interface NameFactory
-    extends Entity.NameFactory
+    extends Entity.NameFactory<AdqlSchema>
         {
         }
 
@@ -114,13 +114,6 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          *
          */
         public AdqlTable create(final BaseTable<?,?> base, final String name);
-
-        /**
-         * Create a new results table, importing the columns from a base table.
-         *
-         */
-        @Deprecated
-        public AdqlTable create(final AdqlQuery query, final BaseTable<?,?> base, final String name);
 
         /**
          * Create a new results table, importing the details from the query.

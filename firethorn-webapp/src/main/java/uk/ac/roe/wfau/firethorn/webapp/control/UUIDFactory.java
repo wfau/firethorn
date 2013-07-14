@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012 Royal Observatory, University of Edinburgh, UK
+ *  Copyright (C) 2013 Royal Observatory, University of Edinburgh, UK
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,19 +15,25 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.entity;
+package uk.ac.roe.wfau.firethorn.webapp.control;
 
 import java.util.UUID;
 
+import org.springframework.stereotype.Component;
+
+import uk.ac.roe.wfau.firethorn.entity.Entity;
+
 /**
- * Common interface for a UUID factory.
+ *
  *
  */
-public interface UUIDFactory
+@Component
+public class UUIDFactory
+    implements Entity.UUIDFactory
     {
-    /**
-     * Generate a new UUID.
-     *
-     */
-    public UUID uuid();
+    @Override
+    public UUID uuid()
+        {
+        return UUID.randomUUID();
+        }
     }

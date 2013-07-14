@@ -442,7 +442,6 @@ EOF
             fi
         popd
 
-
         #
         # Run the tests ...
 
@@ -452,25 +451,38 @@ EOF
         pushd $(mktemp --directory)
 
             source "${FIRETHORN_TEST:?}/00-init-rest.sh"
-
-            identity=$(pwgen 16 1)
             community=$(date '+%A')
 
-            source "${FIRETHORN_TEST:?}/02-00-create-jdbc-space.sh" 'spring:RoeATLAS' '*' 'atlas'
+            # ----------
+            identity=$(pwgen 16 1)
+
+            source "${FIRETHORN_TEST:?}/02-00-create-jdbc-space.sh" 'spring:RoeATLAS' '*' 'ATLAS'
 
             source "${FIRETHORN_TEST:?}/03-00-create-adql-space.sh"
 
-            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'TWOMASS.dbo'        'twomass'
-            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'ATLASv20130304.dbo' 'atlas'
+## Needs  changes to the scripts
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'TWOMASS'        'dbo' 'TWOMASS'
+            source "${FIRETHORN_TEST:?}/03-01-import-jdbc-schema.sh" 'ATLASv20130304' 'dbo' 'ATLASv20130304'
+
+            # ----------
+            identity=$(pwgen 16 1)
 
             source "${FIRETHORN_TEST:?}/04-00-create-query-space.sh"
             source "${FIRETHORN_TEST:?}/04-01-create-query-schema.sh" 'query'
-            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'atlas'   'atlas'
-            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'twomass' 'twomass'
-
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASv20130304' 'atlas'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'        'twomass'
 
             time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-000.adql"
 
+            source "${FIRETHORN_TEST:?}/06-00-delete-query-schema.sh"
+
+            # ----------
+
         popd
+
+
+
+
+
 
 

@@ -41,6 +41,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.EntityType;
 
 /**
  *
@@ -109,27 +110,14 @@ implements AdqlSchema
 
         @Override
         @CreateEntityMethod
-        public AdqlSchema create(final AdqlResource parent, final String name, final BaseTable<?, ?> base)
-            {
-            final AdqlSchema schema = this.create(
-                parent,
-                name
-                );
-//TODO shallow copy
-            schema.tables().create(
-                base
-                );
-            return schema;
-            }
-
-        @Override
-        @CreateEntityMethod
         public AdqlSchema create(final AdqlResource parent, final BaseSchema<?, ?> base)
             {
-            return this.create(
-                parent,
-                base.name(),
-                base
+            return this.insert(
+                new AdqlSchemaEntity(
+                    parent,
+                    base.name(),
+                    base
+                    )
                 );
             }
 
@@ -137,19 +125,27 @@ implements AdqlSchema
         @CreateEntityMethod
 		public AdqlSchema create(final AdqlResource parent, final String name, final BaseSchema<?, ?> base)
 			{
-			final AdqlSchema schema = this.create(
-					parent,
-					name
-					);
-//TODO shallow copy
-			for (final BaseTable<?,?> table : base.tables().select())
-				{
-				schema.tables().create(
-						table
-						);
-				}
-			return schema;
+            return this.insert(
+                new AdqlSchemaEntity(
+                    parent,
+                    name,
+                    base
+                    )
+                );
 			}
+
+        @Override
+        @CreateEntityMethod
+        public AdqlSchema create(final AdqlResource parent, final String name, final BaseTable<?, ?> base)
+            {
+            return this.insert(
+                new AdqlSchemaEntity(
+                    parent,
+                    name,
+                    base
+                    )
+                );
+            }
 
         @Override
         @SelectEntityMethod
@@ -238,12 +234,47 @@ implements AdqlSchema
         super();
         }
 
-    protected AdqlSchemaEntity(final AdqlResource resource, final String name)
+    protected AdqlSchemaEntity(final AdqlResource resource, final String name, final BaseTable<?, ?> base)
         {
-        super(resource, name);
-        this.resource = resource;
+        this(
+            resource,
+            name
+            );
+        if (entitytype() == EntityType.REAL)
+            {
+            tables().create(
+                base
+                );
+            }
+        }
+    
+    protected AdqlSchemaEntity(final AdqlResource resource, final String name, final BaseSchema<?, ?> base)
+        {
+        this(
+            resource,
+            name
+            );
+        if (entitytype() == EntityType.REAL)
+            {
+            for (final BaseTable<?,?> basetab : base.tables().select())
+                {
+                tables().create(
+                    basetab
+                    );
+                }
+            }
         }
 
+    protected AdqlSchemaEntity(final AdqlResource resource, final String name)
+        {
+        super(
+            EntityType.THIN,
+            resource,
+            name
+            );
+        this.resource = resource;
+        }
+    
     @Index(
         name=DB_TABLE_NAME + "IndexByParent"
         )
@@ -299,17 +330,6 @@ implements AdqlSchema
             public AdqlTable create(final BaseTable<?,?> base, final String name)
                 {
                 return factories().adql().tables().create(
-                    AdqlSchemaEntity.this,
-                    base,
-                    name
-                    );
-                }
-
-            @Override
-            public AdqlTable create(final AdqlQuery query, final BaseTable<?,?> base, final String name)
-                {
-                return factories().adql().tables().create(
-                    query,
                     AdqlSchemaEntity.this,
                     base,
                     name

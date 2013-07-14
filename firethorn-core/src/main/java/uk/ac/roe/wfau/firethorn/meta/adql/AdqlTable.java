@@ -88,13 +88,6 @@ extends BaseTable<AdqlTable, AdqlColumn>
          * Create a new table.
          *
          */
-        @Deprecated
-        public AdqlTable create(final AdqlQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name);
-
-        /**
-         * Create a new table.
-         *
-         */
         public AdqlTable create(final AdqlSchema schema, final AdqlQuery query);
 
         /**

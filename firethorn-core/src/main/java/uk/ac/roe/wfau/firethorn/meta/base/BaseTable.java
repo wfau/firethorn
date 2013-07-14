@@ -182,6 +182,7 @@ extends BaseComponent
      * The AdqlTables linked to this table.
      *
      */
+    @Deprecated
     interface Linked
         {
         public Iterable<AdqlTable> select();
@@ -191,6 +192,7 @@ extends BaseComponent
      * The AdqlTables linked to this table.
      *
      */
+    @Deprecated
     public Linked linked();
 
     /**

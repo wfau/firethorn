@@ -330,6 +330,5 @@ public class AdqlColumnEntity
     protected void scanimpl()
         {
         // TODO Auto-generated method stub
-
         }
     }

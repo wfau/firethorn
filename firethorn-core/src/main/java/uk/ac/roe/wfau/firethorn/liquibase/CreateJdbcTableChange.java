@@ -35,17 +35,19 @@ extends CreateTableChange
                 column.meta().jdbc().type().name()
                 );
 
-            if (column.meta().jdbc().size() == JdbcColumn.VAR_ARRAY_SIZE)
+            if (column.meta().jdbc().type().sqlsize() == JdbcColumn.VAR_ARRAY_SIZE)
                 {
-                typename.append("(*)");
-                }
-            else if (column.meta().jdbc().size() != JdbcColumn.NON_ARRAY_SIZE)
-                {
-                typename.append("(");
-                typename.append(
-                    column.meta().jdbc().size()
-                    );
-                typename.append(")");
+                if (column.meta().jdbc().size() == JdbcColumn.VAR_ARRAY_SIZE)
+                    {
+                    typename.append("(*)");
+                    }
+                else {
+                    typename.append("(");
+                    typename.append(
+                        column.meta().jdbc().size()
+                        );
+                    typename.append(")");
+                    }
                 }
 
             log.debug("  Typename [{}]", typename);

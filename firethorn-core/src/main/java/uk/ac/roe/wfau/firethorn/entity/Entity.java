@@ -31,6 +31,19 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
 public interface Entity
     {
     /**
+     * Common interface for a UUID factory.
+     *
+     */
+    public interface UUIDFactory
+        {
+        /**
+         * Generate a new UUID.
+         *
+         */
+        public UUID uuid();
+        }
+    
+    /**
      * Common interface for a name factory.
      *
      */

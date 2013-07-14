@@ -37,6 +37,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.EntityType;
 
 /**
  *
@@ -120,7 +121,19 @@ public abstract class BaseSchemaEntity<SchemaType extends BaseSchema<SchemaType,
 
     protected BaseSchemaEntity(final BaseResource<SchemaType> resource, final String name)
         {
-        super(name);
+        this(
+            EntityType.REAL,
+            resource,
+            name
+            );
+        }
+
+    protected BaseSchemaEntity(final EntityType type, final BaseResource<SchemaType> resource, final String name)
+        {
+        super(
+            type,
+            name
+            );
         this.parent = resource;
         }
 

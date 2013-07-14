@@ -64,9 +64,9 @@ implements Entity
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_IDENT_COL   = "ident" ;
-    protected static final String DB_UUID_COL   = "uuid" ;
-    protected static final String DB_OWNER_COL   = "owner" ;
+    protected static final String DB_IDENT_COL = "ident" ;
+    protected static final String DB_UUID_COL  = "uuid"  ;
+    protected static final String DB_OWNER_COL = "owner" ;
 
     protected static final String DB_CREATED_COL  = "created"  ;
     protected static final String DB_MODIFIED_COL = "modified" ;
@@ -116,7 +116,7 @@ implements Entity
         super();
         if (init)
             {
-            this.uuid = factories.uuids().uuid();
+            //this.uuid = factories().uuids().uuid();
             this.owner = factories().identities().current();
             this.created = new DateTime();
             }
@@ -180,12 +180,13 @@ implements Entity
 
     /**
      * The Entity UUID.
+     * @todo not null when we create next DB.
      * 
      */
     @Column(
         name = DB_UUID_COL,
         unique = true,
-        nullable = false,
+        nullable = true,
         updatable = false
         )
     private UUID uuid ;

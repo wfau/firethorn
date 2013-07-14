@@ -1,0 +1,253 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # JDBC connection using 'atlasro' login from Spring config. 
+
+        uri       spring:RoeATLAS
+        urn       jdbc:atlas:201307121407
+        catalog   *
+        name      Atlas
+
+    create-jdbc-space.sh 'spring:RoeATLAS' 'jdbc:atlas:201307121407' '*' 'Atlas' 
+
+    # All Entity(s) are allocated a UUID, stored by Hibernate.
+    # EntityFactory has <Type> select(UUID)
+
+    # Some Entity(s) *may* be allocated a URN by the user.
+    # Set at create time, not modifiable.
+
+    # Adaptable search ...
+    # <EntityType> select(String field, String value) 
+
+
+
+    <EntityType> select(Long ident)
+    <EntityType> select(UUID uuid)
+    <EntityType> select(Identifier ident)
+
+    unique, modifiable, nullable
+    <EntityType> select(UserIdent ident) <-- user supplied identifier.
+
+#------------------------------
+
+    //
+    // Adaptable search .. same field names as the Controller
+    <EntityType> select(String field, String value)
+
+
+    //
+    // Wrap it in an interface ..
+    interface EntityField
+        {
+        String name();
+        }
+
+    class StringEntityField
+        {
+        public StringEntityField(String name)
+            {
+            this.name = name ;
+            }
+        public String name()
+            {
+            return this.name ;
+            }
+        }
+
+    enum Schema.Fields implements EntityField
+        {
+        NAME(),
+        UUID(),
+        CATALOG_NAME(),
+        SCHEMA_NAME();
+
+        public Field(String key)
+            {
+            this.key = key ;
+            }
+
+        private String key;
+        public String key()
+            {
+            return this.key;
+            }
+
+        }
+
+    //
+    // Factory method ..
+    <EntityType> select(EntityField field, String value)
+
+
+    public static final String SELECT_NAME = "jdbc.resource.schema.select.name" ;
+
+#------------------------------
+
+    
+
+    @ResponseBody
+    @RequestMapping(value=SEARCH_PATH, params={Schema.Fields.SCHEMA_NAME.key(), Schema.Fields.CATALOG_NAME.key()}, produces=JSON_MAPPING)
+    public JdbcSchemaBean select(
+        @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
+        final JdbcResource resource,
+        @RequestParam(Schema.Fields.CATALOG_NAME.key())
+        final String catalog,
+        @RequestParam(Schema.Fields.SCHEMA_NAME.key())
+        final String schema,
+        ){
+        return new JdbcSchemaBean(
+            resource.schemas().search(
+                Schema.Fields.CATALOG_NAME,
+                catalog
+                Schema.Fields.SCHEMA_NAME,
+                schema
+                )
+            );
+        }
+
+    //
+    // Wrap the values in a type safe param ?
+
+    interface FieldValue<FieldType>
+        {
+        public <FieldType> value();
+        }
+
+    class AbstractFieldValue<FieldType>
+    iimplements FieldValue<FieldType>
+        {
+        public FieldValueImpl(<FieldType> value);
+        private <FieldType> value;
+        public <FieldType> value()
+            {
+            return this.value ;
+            }
+        }
+
+
+
+    class CatalogNameParam
+    extends FieldValue<String>
+    implements JdbcSchema.CatalogName
+        {
+        public static final String KEY = "jdbc.schema.catalog.name";
+        public static String key()
+            {
+            return KEY;
+            }
+        public CatalogNameParam(String value)
+            {
+            super(
+                value
+                );
+            }
+        }
+
+
+    @ResponseBody
+    @RequestMapping(value=SEARCH_PATH, params={CatalogNameParam.key(), SchemaNameParam.key()}, produces=JSON_MAPPING)
+    public JdbcSchemaBean select(
+        @ModelAttribute(ResourceParam.key())
+        final JdbcResource resource,
+        @RequestParam(CatalogNameParam.key())
+        final String catalog,
+        @RequestParam(SchemaNameParam.key())
+        final String schema,
+        ){
+        return new JdbcSchemaBean(
+            resource.schemas().search(
+                new CatalogNameParam(
+                    catalog
+                    ),
+                new SchemaNameParam(
+                    schema
+                    )
+                )
+            );
+        }
+
+
+
+#------------------------------
+# Try an 'unnamed branch'
+#
+    hg sum
+        parent: 715:9932aaa362ab tip
+        Fixing deploy bugs
+
+    ... add experiment ...
+
+    hg add
+    hg commit -m "Experiments with EntityField ..."
+    hg sum
+        716:d606f2406eeb
+        Experiments with EntityField ...
+
+    hg update --check 715
+        11 files updated, 0 files merged, 1 files removed, 0 files unresolved
+
+    hg sum
+        parent: 715:9932aaa362ab 
+        Fixing deploy bugs
+
+    ... edit notes ....
+
+    hg commit -m "Reverted to prev changeset (715:9932aaa362ab)"
+        created new head
+        Segmentation fault (core dumped)
+
+    #
+    # Causes problems when trying to push to remote.
+
+
+#------------------------------
+# Easier to revert uncomitted changes.
+#
+    hg sum
+        parent: 715:9932aaa362ab tip
+         Fixing deploy bugs
+        branch: default
+        commit: 11 modified, 2 unknown
+        update: (current)
+
+    ... add experiment ...
+
+    hg revert --all
+
+
+    hg sum
+        parent: 715:9932aaa362ab tip
+         Fixing deploy bugs
+        branch: default
+        commit: 13 unknown (clean)
+        update: (current)
+
+    rm firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/entity/AbstractEntity.java.orig
+    rm firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/entity/AbstractField.java
+    rm firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/entity/AbstractNameFactory.java.orig
+    rm firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/entity/Entity.java.orig
+    ....
+
+#------------------------------
+
+
