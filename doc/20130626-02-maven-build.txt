@@ -175,3 +175,11 @@
         time importschema
 
 
+        for i in {0..9999}
+        do
+            time importschema
+            echo "Iter [${i}]"
+        done
+
+
+

@@ -310,10 +310,10 @@ public class AdqlTableEntity
         // Create our columns.
         if (entitytype() == EntityType.REAL)
             {
-            for (final BaseColumn<?> basecol : base.columns().select())
+            for (final BaseColumn<?> column : base.columns().select())
                 {
                 columns().create(
-                    basecol
+                    column 
                     );
                 }
             }
@@ -443,10 +443,7 @@ public class AdqlTableEntity
                         );
                     }
                 else {
-                    return new AdqlColumnProxy(
-                        base,
-                        AdqlTableEntity.this
-                        );
+                    throw new UnsupportedOperationException();
                     }
                 }
 

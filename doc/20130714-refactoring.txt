@@ -1,0 +1,119 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Parse nested proxy identifiers.
+
+    (
+        (xx:yy)
+        :
+        (xx:yy)
+    )
+    
+
+    Change the child lists to LinkedHashMap<String, Entity>
+
+    Map  -> @MapKey
+    List -> @OrderBy
+
+    @MapKey  "name"
+    @OrderBy "name, ident"
+    LinkedHashMap
+
+    select()      -> map.values()
+    select(name)  -> map.get()
+
+    select(ident) -> factory
+    search(text)  -> factory    
+
+
+    #
+    # Filter for enabled.
+    @Column(name="POSTS_REF")
+    @Where(clause="state='PostPublished'")
+    private List userPosts;
+
+
+
+
+    #
+    # Hook any modification to a THIN entity.
+    # Trigger a call to realize() first.
+    # Needs to be runinside a transaction.
+
+
+
+    #
+    # Add a transaction wrapper to AbstractEntityFactory.
+    @UpdateEntity
+    public void run(Runnable action)
+        {
+        action.run();
+        }
+
+    if (entitytype == EntityType.THIN)
+        {
+        factories.transactions().run(
+            new Runnable()
+                {
+                public void run()
+                    {
+                    // stuff ...
+                    }
+                }
+            )
+        }
+
+    #
+    # Replace flakey JDBC metadata methods with our own DB type queries
+
+    #
+    # Replace Liquibase with something much simpler.
+    
+
+
+
+
+    #
+    # Add our own ThreadLocal to check for a writeable transaction ?
+
+
+
+
+    #
+    # Import the Hibernate interceptor from VOSpace. 
+    # Set the autowired properties. 
+    package org.astrogrid.vospace.v02.server.hibernate;
+    public class HibernateObjectInterceptor
+    extends EmptyInterceptor
+
+
+    #
+    # Import GenericIterable from AstroDAbis. 
+    package org.jiscinvolve.astrodabis.mallow.util;
+    public class GenericIterable<I, T extends I>
+    implements Iterable<I>
+
+
+
+
+

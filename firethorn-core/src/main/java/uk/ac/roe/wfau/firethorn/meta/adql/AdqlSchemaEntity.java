@@ -234,45 +234,94 @@ implements AdqlSchema
         super();
         }
 
-    protected AdqlSchemaEntity(final AdqlResource resource, final String name, final BaseTable<?, ?> base)
+    protected AdqlSchemaEntity(final AdqlResource resource, final String name)
         {
         this(
+            EntityType.REAL,
             resource,
             name
             );
-        if (entitytype() == EntityType.REAL)
-            {
-            tables().create(
-                base
-                );
-            }
+        }
+
+    protected AdqlSchemaEntity(final AdqlResource resource, final String name, final BaseTable<?, ?> base)
+        {
+        this(
+            EntityType.REAL,
+            resource,
+            name
+            );
+        tables().create(
+            base
+            );
         }
     
     protected AdqlSchemaEntity(final AdqlResource resource, final String name, final BaseSchema<?, ?> base)
         {
         this(
-            resource,
-            name
-            );
-        if (entitytype() == EntityType.REAL)
-            {
-            for (final BaseTable<?,?> basetab : base.tables().select())
-                {
-                tables().create(
-                    basetab
-                    );
-                }
-            }
-        }
-
-    protected AdqlSchemaEntity(final AdqlResource resource, final String name)
-        {
-        super(
             EntityType.THIN,
             resource,
             name
             );
+        this.base = base ;
+        }
+
+    protected AdqlSchemaEntity(final EntityType type, final AdqlResource resource, final String name)
+        {
+        super(
+            type,
+            resource,
+            name
+            );
         this.resource = resource;
+        }
+
+    /**
+     * Convert this into a full copy.
+     * 
+     */
+    protected void realize()
+        {
+        if (this.entitytype != EntityType.REAL)
+            {
+            this.entitytype = EntityType.REAL ;
+            if (this.base != null)
+                {
+                for (final BaseTable<?,?> table : this.base.tables().select())
+                    {
+                    tables().create(
+                        table
+                        );
+                    }
+                }
+            }
+        }
+    
+    /**
+     * Our base schema.
+     * 
+     */
+    @Index(
+        name=DB_TABLE_NAME + "IndexByBase"
+        )
+    @ManyToOne(
+        fetch = FetchType.EAGER,
+        targetEntity = BaseSchemaEntity.class
+        )
+    @JoinColumn(
+        name = DB_BASE_COL,
+        unique = false,
+        nullable = true,
+        updatable = false
+        )
+    private BaseSchema<?, ?> base ;
+
+    /**
+     * Our base schema.
+     * 
+     */
+    public BaseSchema<?, ?> base()
+        {
+        return this.base ;
         }
     
     @Index(
@@ -301,25 +350,48 @@ implements AdqlSchema
         return new AdqlSchema.Tables()
             {
             @Override
+            @SuppressWarnings("unchecked")
             public Iterable<AdqlTable> select()
                 {
-                return factories().adql().tables().select(
-                    AdqlSchemaEntity.this
-                    );
+                if (entitytype() == EntityType.REAL)
+                    {
+                    return factories().adql().tables().select(
+                        AdqlSchemaEntity.this
+                        );
+                    }
+                else {
+                    return new AdqlTableProxy.ProxyIterable(
+                        (Iterable<BaseTable<?,?>>) base().tables().select(),
+                        AdqlSchemaEntity.this
+                        );
+                    }
                 }
 
             @Override
             public AdqlTable select(final String name)
                 {
-                return factories().adql().tables().select(
-                    AdqlSchemaEntity.this,
-                    name
-                    );
+                if (entitytype() == EntityType.REAL)
+                    {
+                    return factories().adql().tables().select(
+                        AdqlSchemaEntity.this,
+                        name
+                        );
+                    }
+                else {
+                    return new AdqlTableProxy(
+                        base().tables().select(name),
+                        AdqlSchemaEntity.this
+                        );
+                    }
                 }
 
             @Override
             public AdqlTable create(final BaseTable<?,?> base)
                 {
+                if (entitytype() != EntityType.REAL)
+                    {
+                    realize();
+                    }
                 return factories().adql().tables().create(
                     AdqlSchemaEntity.this,
                     base
@@ -329,6 +401,10 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final BaseTable<?,?> base, final String name)
                 {
+                if (entitytype() != EntityType.REAL)
+                    {
+                    realize();
+                    }
                 return factories().adql().tables().create(
                     AdqlSchemaEntity.this,
                     base,
@@ -339,6 +415,10 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final AdqlQuery query)
                 {
+                if (entitytype() != EntityType.REAL)
+                    {
+                    realize();
+                    }
                 return factories().adql().tables().create(
                     AdqlSchemaEntity.this,
                     query
@@ -346,12 +426,24 @@ implements AdqlSchema
                 }
 
             @Override
+            @SuppressWarnings("unchecked")
             public Iterable<AdqlTable> search(final String text)
                 {
-                return factories().adql().tables().search(
-                    AdqlSchemaEntity.this,
-                    text
-                    );
+                if (entitytype() == EntityType.REAL)
+                    {
+                    return factories().adql().tables().search(
+                        AdqlSchemaEntity.this,
+                        text
+                        );
+                    }
+                else {
+                    return new AdqlTableProxy.ProxyIterable(
+                        (Iterable<BaseTable<?,?>>) base.tables().search(
+                            text
+                            ),
+                        AdqlSchemaEntity.this
+                        );
+                    }
                 }
             };
         }

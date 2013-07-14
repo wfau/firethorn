@@ -267,7 +267,7 @@ extends AbstractNamedEntity
     @Enumerated(
         EnumType.STRING
         )
-    private EntityType entitytype = EntityType.REAL ;
+    protected EntityType entitytype = EntityType.REAL ;
 
     @Override
     public EntityType entitytype()
