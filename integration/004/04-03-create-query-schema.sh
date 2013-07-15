@@ -19,18 +19,18 @@
 #
 #
 
-schemaname=${1:?}
+queryresource=${1:?}
+queryschemaname=${2:?}
 
-queryschema=$(
-    POST "${queryspace?}/schemas/create" \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        --data   "adql.resource.schema.create.name=${schemaname:?}" \
-        | ident | node
-        )
-GET "${queryschema?}" \
+POST "${queryresource?}/schemas/create" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    | ./pp
+    --data   'adql.schema.depth=FULL' \
+    --data   "adql.resource.schema.create.name=${queryschemaname:?}" \
+    | ./pp | tee query-schema.json
+
+queryschema=$(
+    cat query-schema.json | ident | node
+    )
 
 

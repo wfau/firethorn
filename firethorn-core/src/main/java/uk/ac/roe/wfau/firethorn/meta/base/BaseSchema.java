@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.base;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 
 /**
  *
@@ -71,7 +72,8 @@ extends BaseComponent
          * Select a named schema from a resource.
          *
          */
-        public SchemaType select(final ResourceType parent, final String name);
+        public SchemaType select(final ResourceType parent, final String name)
+        throws NotFoundException;
 
         /**
          * Text search for schemas (name starts with).

@@ -122,45 +122,28 @@
 
             source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
 
-GET "${jdbcspace:?}" \
-    --header "firethorn.auth.identity:${identity:?}" \
-    --header "firethorn.auth.community:${community:?}" \
-    | ./pp
-
-GET "${adqlspace:?}" \
-    --header "firethorn.auth.identity:${identity:?}" \
-    --header "firethorn.auth.community:${community:?}" \
-    | ./pp
-
             source "${FIRETHORN_TEST:?}/03-02-import-jdbc-schema.sh" "${jdbcspace:?}" 'TWOXMM'         'dbo' "${adqlspace:?}" 'TWOXMM'
             source "${FIRETHORN_TEST:?}/03-02-import-jdbc-schema.sh" "${jdbcspace:?}" 'TWOMASS'        'dbo' "${adqlspace:?}" 'TWOMASS'
             source "${FIRETHORN_TEST:?}/03-02-import-jdbc-schema.sh" "${jdbcspace:?}" 'UKIDSSDR5PLUS'  'dbo' "${adqlspace:?}" 'UKIDSSDR5PLUS'
             source "${FIRETHORN_TEST:?}/03-02-import-jdbc-schema.sh" "${jdbcspace:?}" 'ATLASv20130304' 'dbo' "${adqlspace:?}" 'ATLASv20130304'
 
-GET "${adqlschema:?}" \
-    --header "firethorn.auth.identity:${identity:?}" \
-    --header "firethorn.auth.community:${community:?}" \
-    | ./pp
 
+            source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh"  'Query workspace'
 
-            source "${FIRETHORN_TEST:?}/04-00-create-query-space.sh"
-            source "${FIRETHORN_TEST:?}/04-01-create-query-schema.sh" 'query'
-            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'atlas'   'atlas'
-            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'twomass' 'twomass'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}" 'TWOMASS'         "${queryspace:?}" 'twomass'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}" 'ATLASv20130304'  "${queryspace:?}" 'atlas'
 
-            source "${FIRETHORN_TEST:?}/04-01-create-query-schema.sh" 'ukidss'
-            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsPointSource'        'ukidss' 'gcsPointSource'
-            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsSourceXtwomass_psc' 'ukidss' 'gcsSourceXtwomass_psc'
+            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh" "${queryspace:?}"  'ukidss'
 
-            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'lasSource'             'ukidss' 'lasSource' 
-            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'lasSourceXDR7PhotoObj' 'ukidss' 'lasSourceXDR7PhotoObj'
+            source "${FIRETHORN_TEST:?}/04-04-import-query-table.sh"  "${adqlspace:?}" 'UKIDSSDR5PLUS' 'gcsPointSource'        "${queryschema:?}" 'gcsPointSource'
+            source "${FIRETHORN_TEST:?}/04-04-import-query-table.sh"  "${adqlspace:?}" 'UKIDSSDR5PLUS' 'gcsSourceXtwomass_psc' "${queryschema:?}" 'gcsSourceXtwomass_psc'
 
+            source "${FIRETHORN_TEST:?}/04-04-import-query-table.sh"  "${adqlspace:?}" 'UKIDSSDR5PLUS' 'lasSource'             "${queryschema:?}" 'lasSource' 
+            source "${FIRETHORN_TEST:?}/04-04-import-query-table.sh"  "${adqlspace:?}" 'UKIDSSDR5PLUS' 'lasSourceXDR7PhotoObj' "${queryschema:?}" 'lasSourceXDR7PhotoObj'
 
-            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-000.adql"
-            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-001.adql"
-            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-002.adql"
-            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-003.adql"
-            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-004.adql"
+            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh" "${queryspace:?}" 'query'
+
+       time source "${FIRETHORN_TEST:?}/05-00-execute-query.sh" "${queryschema:?}" "${FIRETHORN_TEST:?}/06-query-atlas-000.adql"
 
         popd
 

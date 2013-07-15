@@ -110,7 +110,7 @@ extends AbstractController
      * MVC property for the copy depth (REAL or THIN).
      *
      */
-    public static final String COPY_DEPTH = "adql.schema.copy.depth" ;
+    public static final String COPY_DEPTH = "adql.schema.depth" ;
     
     /**
      * MVC property for the import table.
@@ -182,7 +182,7 @@ extends AbstractController
         final AdqlResource resource,
         @RequestParam(SELECT_NAME)
         final String name
-        ){
+        ) throws NotFoundException {
         log.debug("select(String) [{}]", name);
         return new AdqlSchemaBean(
             resource.schemas().select(
@@ -230,7 +230,7 @@ extends AbstractController
      * JSON POST request to create a new schema.
      *
      */
-    @RequestMapping(value=CREATE_PATH, params={COPY_DEPTH, CREATE_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(value=CREATE_PATH, params={CREATE_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<AdqlSchemaBean> create(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
@@ -254,7 +254,7 @@ extends AbstractController
      * JSON POST request to import all the tables from another schema.
      *
      */
-    @RequestMapping(value=IMPORT_PATH, params={COPY_DEPTH, IMPORT_SCHEMA_BASE}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_BASE}, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<AdqlSchemaBean> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
@@ -282,7 +282,7 @@ extends AbstractController
      * JSON POST request to import all the tables from another schema.
      *
      */
-    @RequestMapping(value=IMPORT_PATH, params={COPY_DEPTH, IMPORT_SCHEMA_BASE, IMPORT_SCHEMA_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_BASE, IMPORT_SCHEMA_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<AdqlSchemaBean> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,

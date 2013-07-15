@@ -141,7 +141,7 @@ extends AbstractController
         final JdbcResource resource,
         @RequestParam(SELECT_NAME)
         final String name
-        ){
+        ) throws NotFoundException {
         log.debug("select(String) [{}]", name);
         return new JdbcSchemaBean(
             resource.schemas().select(
@@ -163,7 +163,7 @@ extends AbstractController
         final String catalog,
         @RequestParam(SELECT_SCHEMA)
         final String schema
-        ) throws NotFoundException{
+        ) throws NotFoundException {
         log.debug("select(String, String) [{}][{}]", catalog, schema);
         return new JdbcSchemaBean(
             resource.schemas().select(

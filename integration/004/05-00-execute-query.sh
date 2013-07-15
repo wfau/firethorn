@@ -19,19 +19,24 @@
 #
 #
 
-adqlfile=${1:?}
+schemaid=${1:?}
+adqlfile=${2:?}
 
 #
 # Create the query.
-POST "${queryschema:?}/queries/create" \
+POST "${schemaid:?}/queries/create" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data-urlencode "adql.schema.query.create.query@${adqlfile:?}" \
-    | tee atlas-query.json | ./pp
+     | ./pp | tee query-job.json
+
+queryident=$(
+    cat query-job.json | ident | node
+    )
 
 #
 # Run the query.
-runquery "$(cat atlas-query.json | ident | node)"
+runquery "${queryident:?}"
 
 #
 # Get the VOTable results.

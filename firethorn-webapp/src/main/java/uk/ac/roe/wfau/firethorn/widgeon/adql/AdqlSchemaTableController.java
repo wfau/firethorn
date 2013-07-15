@@ -110,7 +110,7 @@ extends AbstractController
      * MVC property for the copy depth (REAL or THIN).
      *
      */
-    public static final String COPY_DEPTH = "adql.table.copy.depth" ;
+    public static final String COPY_DEPTH = "adql.table.depth" ;
 
     /**
      * MVC property for the import base.
@@ -220,7 +220,7 @@ extends AbstractController
      *
      */
     @ResponseBody
-    @RequestMapping(value=IMPORT_PATH, params={COPY_DEPTH, IMPORT_BASE}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(value=IMPORT_PATH, params={IMPORT_BASE}, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<AdqlTableBean> inport(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
@@ -250,7 +250,7 @@ extends AbstractController
      *
      */
     @ResponseBody
-    @RequestMapping(value=IMPORT_PATH, params={COPY_DEPTH, IMPORT_BASE, IMPORT_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(value=IMPORT_PATH, params={IMPORT_BASE, IMPORT_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<AdqlTableBean> inport(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,

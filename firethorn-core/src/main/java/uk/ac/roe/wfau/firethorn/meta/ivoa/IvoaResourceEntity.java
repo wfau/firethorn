@@ -198,6 +198,7 @@ public class IvoaResourceEntity
                 }
             @Override
             public IvoaSchema select(final String name)
+            throws NotFoundException
                 {
                 return factories().ivoa().schemas().select(
                     IvoaResourceEntity.this,

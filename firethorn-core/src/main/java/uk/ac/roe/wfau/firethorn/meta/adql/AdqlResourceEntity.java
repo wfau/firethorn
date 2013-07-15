@@ -154,6 +154,7 @@ extends BaseResourceEntity<AdqlSchema>
 
             @Override
             public AdqlSchema select(final String name)
+            throws NotFoundException
                 {
                 return factories().adql().schemas().select(
                     AdqlResourceEntity.this,

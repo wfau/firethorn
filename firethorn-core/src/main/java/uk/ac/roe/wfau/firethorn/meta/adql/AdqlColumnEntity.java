@@ -50,7 +50,9 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
     AccessType.FIELD
     )
 @Table(
-    name = AdqlColumnEntity.DB_TABLE_NAME
+    name = AdqlColumnEntity.DB_TABLE_NAME,
+    uniqueConstraints={
+        }
     )
 @NamedQueries(
         {

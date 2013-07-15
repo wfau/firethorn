@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.base;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 
 /**
  *
@@ -64,13 +65,14 @@ extends BaseComponent
         public Iterable<SchemaType> select();
 
         /**
-         * Select a specific schema by name.
+         * Select a schema by name.
          *
          */
-        public SchemaType select(final String name);
+        public SchemaType select(final String name)
+        throws NotFoundException;
 
         /**
-         * Search for schemas by name.
+         * Search for schemas by name start with.
          *
          */
         public Iterable<SchemaType> search(final String text);

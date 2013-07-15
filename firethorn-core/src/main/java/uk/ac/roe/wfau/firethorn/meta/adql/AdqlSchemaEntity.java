@@ -52,7 +52,9 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
     AccessType.FIELD
     )
 @Table(
-    name = AdqlSchemaEntity.DB_TABLE_NAME
+    name = AdqlSchemaEntity.DB_TABLE_NAME,
+    uniqueConstraints={
+        }
     )
 @NamedQueries(
         {
@@ -116,6 +118,7 @@ implements AdqlSchema
             }
 
         @Override
+        @CreateEntityMethod
         public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name)
             {
             return this.insert(
@@ -131,65 +134,87 @@ implements AdqlSchema
         @CreateEntityMethod
         public AdqlSchema create(final AdqlResource parent, final BaseSchema<?, ?> base)
             {
-            return this.insert(
-                new AdqlSchemaEntity(
-                    parent,
-                    base.name(),
-                    base
-                    )
+            AdqlSchemaEntity schema = new AdqlSchemaEntity(
+                parent,
+                base.name()
                 );
+            super.insert(
+                schema
+                );
+            schema.realize(
+                base
+                );
+            return schema;
             }
 
         @Override
+        @CreateEntityMethod
         public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final BaseSchema<?, ?> base)
             {
-            return this.insert(
-                new AdqlSchemaEntity(
-                    depth,
-                    parent,
-                    base.name(),
-                    base
-                    )
+            AdqlSchemaEntity schema = new AdqlSchemaEntity(
+                depth,
+                parent,
+                base.name()
                 );
+            super.insert(
+                schema
+                );
+            schema.realize(
+                base
+                );
+            return schema;
             }
         
         @Override
         @CreateEntityMethod
 		public AdqlSchema create(final AdqlResource parent, final String name, final BaseSchema<?, ?> base)
 			{
-            return this.insert(
-                new AdqlSchemaEntity(
-                    parent,
-                    name,
-                    base
-                    )
+            AdqlSchemaEntity schema = new AdqlSchemaEntity(
+                parent,
+                name
                 );
+            super.insert(
+                schema
+                );
+            schema.realize(
+                base
+                );
+            return schema;
 			}
 
         @Override
+        @CreateEntityMethod
         public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name, final BaseSchema<?, ?> base)
             {
-            return this.insert(
-                new AdqlSchemaEntity(
-                    depth,
-                    parent,
-                    name,
-                    base
-                    )
+            AdqlSchemaEntity schema = new AdqlSchemaEntity(
+                depth,
+                parent,
+                name
                 );
+            super.insert(
+                schema
+                );
+            schema.realize(
+                base
+                );
+            return schema;
             }
         
         @Override
         @CreateEntityMethod
         public AdqlSchema create(final AdqlResource parent, final String name, final BaseTable<?, ?> base)
             {
-            return this.insert(
-                new AdqlSchemaEntity(
-                    parent,
-                    name,
-                    base
-                    )
+            AdqlSchemaEntity schema = new AdqlSchemaEntity(
+                parent,
+                name
                 );
+            super.insert(
+                schema
+                );
+            schema.realize(
+                base
+                );
+            return schema;
             }
 
         @Override
@@ -209,8 +234,9 @@ implements AdqlSchema
         @Override
         @SelectEntityMethod
         public AdqlSchema select(final AdqlResource parent, final String name)
+        throws NotFoundException
             {
-            return super.first(
+            return super.single(
                 super.query(
                     "AdqlSchema-select-parent.name"
                     ).setEntity(
@@ -273,6 +299,15 @@ implements AdqlSchema
         super();
         }
 
+    /*
+     * 
+    2013-07-15 17:38:01,760 WARN  [http-bio-8080-exec-5] [UnresolvedEntityInsertActions] HHH000437: Attempting to save one or more entities that have a non-nullable association with an unsaved transient entity. The unsaved transient entity must be saved in an operation prior to saving these dependent entities.
+    Unsaved transient entity: ([uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity#<null>])
+    Dependent entities: ([[uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity#19693869]])
+    Non-nullable association(s): ([uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity.parent, uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity.table]) 
+2013-07-15 17:38:01,760 ERROR [http-bio-8080-exec-5] [HibernateThingsImpl] Hibernate excepion [org.hibernate.TransientPropertyValueException][Not-null property references a transient value - transient instance must be saved before current operation: uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity.parent -> uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity] 
+     * 
+     * 
     protected AdqlSchemaEntity(final AdqlResource resource, final String name, final BaseTable<?, ?> base)
         {
         this(
@@ -284,7 +319,8 @@ implements AdqlSchema
             base
             );
         }
-
+     * 
+     * 
     protected AdqlSchemaEntity(final AdqlResource resource, final String name, final BaseSchema<?, ?> base)
         {
         this(
@@ -294,7 +330,8 @@ implements AdqlSchema
             base
             );
         }
-
+     *
+     * 
     protected AdqlSchemaEntity(final CopyDepth depth, final AdqlResource resource, final String name, final BaseSchema<?, ?> base)
         {
         this(
@@ -303,10 +340,11 @@ implements AdqlSchema
             name
             );
         realize(
-            depth,
             base
             );
         }
+     *
+     */
 
     protected AdqlSchemaEntity(final AdqlResource resource, final String name)
         {
@@ -326,15 +364,15 @@ implements AdqlSchema
             );
         this.resource = resource;
         }
-
     
     /**
      * Convert this into a full copy.
+     * @todo Delay the full scan until the data is requested. 
      * 
      */
     protected void realize(final BaseTable<?, ?> base)
         {
-        if (base != null)
+        if ((base != null) && (this.depth == CopyDepth.FULL ))
             {
             tables().create(
                 base
@@ -345,37 +383,30 @@ implements AdqlSchema
     
     /**
      * Convert this into a full copy.
+     * @todo Prevent this happening twice.
+     * @todo Delay the full scan until the data is requested. 
      * 
      */
-    protected void realize(final CopyDepth depth, final BaseSchema<?, ?> base)
-        {
-        if ((base != null) && (depth == CopyDepth.FULL))
-            {
-            if (this.depth != CopyDepth.FULL)
-                {
-                for (final BaseTable<?,?> table : base.tables().select())
-                    {
-                    tables().create(
-                        table
-                        );
-                    }
-                }
-            this.base  = base  ;
-            this.depth = depth ;
-            }
-        }
-
     protected void realize(final BaseSchema<?, ?> base)
         {
-        realize(
-            CopyDepth.FULL,
-            base
-            );
+        if ((base != null) && (this.depth == CopyDepth.FULL ))
+            {
+            for (final BaseTable<?,?> table : base.tables().select())
+                {
+                tables().create(
+                    table
+                    );
+                }
+            this.base  = base  ;
+            this.depth = CopyDepth.FULL ;
+            }
         }
 
     protected void realize()
         {
-        realize(this.base);
+        realize(
+            this.base
+            );
         }
     
     /**

@@ -365,11 +365,12 @@ public class JdbcSchemaEntity
         @Override
         @SelectEntityMethod
         public JdbcSchema select(final JdbcResource parent, final String name)
+        throws NotFoundException
             {
             log.debug("JdbcSchema select(JdbcResource, String)");
             log.debug("  Resource [{}][{}]", parent.ident(), parent.name());
             log.debug("  Schema   [{}]", name);
-            return super.first(
+            return super.single(
                 super.query(
                     "JdbcSchema-select-parent.name"
                     ).setEntity(

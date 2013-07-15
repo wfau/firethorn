@@ -145,84 +145,101 @@ public class AdqlTableEntity
         @CreateEntityMethod
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base)
             {
-            return this.insert(
-                new AdqlTableEntity(
-                    schema,
-                    base,
-                    base.name()
-                    )
+            AdqlTableEntity table = new AdqlTableEntity(
+                schema,
+                base,
+                base.name()
                 );
+            super.insert(
+                table
+                );
+            table.realize();
+            return table ;
             }
 
         @Override
         @CreateEntityMethod
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base)
             {
-            return this.insert(
-                new AdqlTableEntity(
-                    type,
-                    schema,
-                    base,
-                    base.name()
-                    )
+            AdqlTableEntity table = new AdqlTableEntity(
+                type,
+                schema,
+                base,
+                base.name()
                 );
+            super.insert(
+                table
+                );
+            table.realize();
+            return table ;
             }
         
         @Override
         @CreateEntityMethod
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
             {
-            return this.insert(
-                new AdqlTableEntity(
-                    schema,
-                    base,
-                    name
-                    )
+            AdqlTableEntity table = new AdqlTableEntity(
+                schema,
+                base,
+                name
                 );
+            super.insert(
+                table
+                );
+            table.realize();
+            return table ;
             }
 
         @Override
         @CreateEntityMethod
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
             {
-            return this.insert(
-                new AdqlTableEntity(
-                    type,
-                    schema,
-                    base,
-                    name
-                    )
+            AdqlTableEntity table = new AdqlTableEntity(
+                type,
+                schema,
+                base,
+                name
                 );
+            super.insert(
+                table
+                );
+            table.realize();
+            return table ;
             }
-        
         
         @Override
         @CreateEntityMethod
         public AdqlTable create(final AdqlSchema schema, final AdqlQuery query)
             {
-            return this.insert(
-                new AdqlTableEntity(
-                    query,
-                    schema,
-                    query.results().base(),
-                    query.name()
-                    )
+            AdqlTableEntity table = new AdqlTableEntity(
+                query,
+                schema,
+                query.results().base(),
+                query.name()
                 );
+            super.insert(
+                table
+                );
+            table.realize();
+            return table ;
             }
 
         @Override
         @CreateEntityMethod
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final AdqlQuery query)
             {
-            return this.insert(
-                new AdqlTableEntity(
-                    type,
-                    query,
-                    schema,
-                    query.results().base(),
-                    query.name()
-                    )
+            AdqlTableEntity table = new AdqlTableEntity(
+                type,
+                query,
+                schema,
+                query.results().base(),
+                query.name()
                 );
+            super.insert(
+                table
+                );
+            table.realize();
+            return table ;
             }
         
         @Override
@@ -371,28 +388,17 @@ public class AdqlTableEntity
         this.query  = query;
         this.base   = base;
         this.schema = schema;
-        //
-        // Create our columns.
-        if (depth() == CopyDepth.FULL)
-            {
-            for (final BaseColumn<?> column : base.columns().select())
-                {
-                columns().create(
-                    column 
-                    );
-                }
-            }
         }
 
     /**
      * Convert this into a full copy.
+     * @todo Delay the full scan until the data is requested. 
      * 
      */
     protected void realize()
         {
-        if (this.depth != CopyDepth.FULL)
+        if (this.depth == CopyDepth.FULL)
             {
-            this.depth = CopyDepth.FULL ;
             if (this.base != null)
                 {
                 for (final BaseColumn<?> column : base.columns().select())

@@ -322,6 +322,7 @@ public class JdbcResourceEntity
             
             @Override
             public JdbcSchema select(final String name)
+            throws NotFoundException
                 {
                 return factories().jdbc().schemas().select(
                     JdbcResourceEntity.this,

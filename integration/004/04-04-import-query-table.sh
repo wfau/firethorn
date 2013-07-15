@@ -21,15 +21,10 @@
 
 baseresource=${1:?}
 baseschemaname=${2:?}
-queryresource=${3:?}
-queryschemaname=${4:?}
+basetablename=${3:?}
 
-
-baseresource="${adqlspace:?}"
-baseschemaname='TWOMASS'
-queryresource="${queryspace:?}"
-queryschemaname='twomass'
-
+queryschemaid=${4:?}
+querytablename=${5:?}
 
 POST "${baseresource:?}/schemas/select" \
     --header "firethorn.auth.identity:${identity:?}" \
@@ -38,18 +33,28 @@ POST "${baseresource:?}/schemas/select" \
     | ./pp | tee base-schema.json
 
 baseschema=$(
-    cat base-schema.json | ident
+    cat base-schema.json | ident | node
     )
 
-POST "${queryresource:?}/schemas/import" \
+POST "${baseschema:?}/tables/select" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    --data   'adql.schema.depth=FULL' \
-    --data   "adql.resource.schema.import.name=${queryschemaname:?}" \
-    --data   "adql.resource.schema.import.base=${baseschema:?}" \
-    | ./pp | tee query-schema.json
+    --data   "adql.schema.table.select.name=${basetablename:?}" \
+    | ./pp | tee base-table.json
 
-queryschema=$(
-    cat query-schema.json | ident | node
+basetable=$(
+    cat base-table.json | ident
+    )
+
+POST "${queryschemaid:?}/tables/import" \
+    --header "firethorn.auth.identity:${identity:?}" \
+    --header "firethorn.auth.community:${community:?}" \
+    --data   'adql.table.depth=FULL' \
+    --data   "adql.schema.table.import.base=${basetable:?}" \
+    --data   "adql.schema.table.import.name=${querytablename:?}" \
+    | ./pp | tee query-table.json
+
+querytable=$(
+    cat query-table.json | ident | node
     )
 

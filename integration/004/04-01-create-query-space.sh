@@ -19,17 +19,18 @@
 #
 #
 
-queryspace=$(
-    POST "/adql/resource/create" \
-        --header "firethorn.auth.identity:${identity:?}" \
-        --header "firethorn.auth.community:${community:?}" \
-        --data "adql.resource.create.name=workspace-$(unique)" \
-        | ident | node
-        )
-GET "${queryspace?}" \
+resourcename=${1:?}
+
+POST "/adql/resource/create" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    | ./pp
+    --data "adql.resource.create.name=${resourcename:?}" \
+    | ./pp | tee query-space.json
+
+queryspace=$(
+    cat query-space.json | ident | node
+    )
+
 
 
 
