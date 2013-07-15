@@ -243,7 +243,6 @@ extends AbstractController
         return response(
             new AdqlSchemaBean(
                 resource.schemas().create(
-                    ((depth != null) ? depth : CopyDepth.FULL),
                     name
                     )
                 )

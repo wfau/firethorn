@@ -27,6 +27,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
@@ -47,6 +49,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
  *
  *
  */
+@Slf4j
 @Entity()
 @Access(
     AccessType.FIELD
@@ -119,31 +122,17 @@ implements AdqlSchema
 
         @Override
         @CreateEntityMethod
-        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name)
-            {
-            return this.insert(
-                new AdqlSchemaEntity(
-                    depth,
-                    parent,
-                    name
-                    )
-                );
-            }
-
-        @Override
-        @CreateEntityMethod
         public AdqlSchema create(final AdqlResource parent, final BaseSchema<?, ?> base)
             {
             AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 parent,
-                base.name()
+                base.name(),
+                base
                 );
             super.insert(
                 schema
                 );
-            schema.realize(
-                base
-                );
+            schema.realize();
             return schema;
             }
 
@@ -154,14 +143,13 @@ implements AdqlSchema
             AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 depth,
                 parent,
-                base.name()
+                base.name(),
+                base
                 );
             super.insert(
                 schema
                 );
-            schema.realize(
-                base
-                );
+            schema.realize();
             return schema;
             }
         
@@ -171,14 +159,13 @@ implements AdqlSchema
 			{
             AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 parent,
-                name
+                name,
+                base
                 );
             super.insert(
                 schema
                 );
-            schema.realize(
-                base
-                );
+            schema.realize();
             return schema;
 			}
 
@@ -189,14 +176,13 @@ implements AdqlSchema
             AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 depth,
                 parent,
-                name
+                name,
+                base
                 );
             super.insert(
                 schema
                 );
-            schema.realize(
-                base
-                );
+            schema.realize();
             return schema;
             }
         
@@ -346,50 +332,63 @@ implements AdqlSchema
      *
      */
 
+
     protected AdqlSchemaEntity(final AdqlResource resource, final String name)
         {
         this(
             CopyDepth.FULL,
             resource,
-            name
+            name,
+            null
             );
         }
 
-    protected AdqlSchemaEntity(final CopyDepth depth, final AdqlResource resource, final String name)
+    protected AdqlSchemaEntity(final AdqlResource resource, final String name, final BaseSchema<?, ?> base)
+        {
+        this(
+            CopyDepth.FULL,
+            resource,
+            name,
+            base
+            );
+        }
+
+    protected AdqlSchemaEntity(final CopyDepth depth, final AdqlResource resource, final String name, final BaseSchema<?, ?> base)
         {
         super(
             depth,
             resource,
             name
             );
+        this.base = base;
         this.resource = resource;
         }
     
     /**
      * Convert this into a full copy.
-     * @todo Delay the full scan until the data is requested. 
+     * @todo Delay the full scan until the data is actually requested. 
      * 
      */
     protected void realize(final BaseTable<?, ?> base)
         {
-        if ((base != null) && (this.depth == CopyDepth.FULL ))
+        if ((base != null) && (this.depth == CopyDepth.FULL))
             {
             tables().create(
                 base
                 );
-            this.depth = CopyDepth.FULL ;
             }
         }
     
     /**
      * Convert this into a full copy.
      * @todo Prevent this happening twice.
-     * @todo Delay the full scan until the data is requested. 
+     * @todo Delay the full scan until the data is actually requested. 
      * 
      */
-    protected void realize(final BaseSchema<?, ?> base)
+    protected void realize()
         {
-        if ((base != null) && (this.depth == CopyDepth.FULL ))
+        log.debug("realize(BaseSchema) [{}][{}][{}][{}]", ident(), name(), base.ident(), base.name());
+        if ((this.base != null) && (this.depth == CopyDepth.FULL))
             {
             for (final BaseTable<?,?> table : base.tables().select())
                 {
@@ -397,18 +396,9 @@ implements AdqlSchema
                     table
                     );
                 }
-            this.base  = base  ;
-            this.depth = CopyDepth.FULL ;
             }
         }
 
-    protected void realize()
-        {
-        realize(
-            this.base
-            );
-        }
-    
     /**
      * Our base schema.
      * 
@@ -466,6 +456,7 @@ implements AdqlSchema
             @SuppressWarnings("unchecked")
             public Iterable<AdqlTable> select()
                 {
+                log.debug("select() [{}][{}][{}][{}]", ident(), name(), depth(), base());
                 if (depth() == CopyDepth.FULL)
                     {
                     return factories().adql().tables().select(
@@ -483,6 +474,7 @@ implements AdqlSchema
             @Override
             public AdqlTable select(final String name)
                 {
+                log.debug("select(String) [{}][{}][{}][{}]", ident(), name(), depth(), base());
                 if (depth() == CopyDepth.FULL)
                     {
                     return factories().adql().tables().select(

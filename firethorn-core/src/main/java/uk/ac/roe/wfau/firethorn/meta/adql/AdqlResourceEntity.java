@@ -170,15 +170,6 @@ extends BaseResourceEntity<AdqlSchema>
                     name
                     );
                 }
-            @Override
-            public AdqlSchema create(final CopyDepth depth, String name)
-                {
-                return factories().adql().schemas().create(
-                    depth,
-                    AdqlResourceEntity.this,
-                    name
-                    );
-                }
 
             @Override
             public AdqlSchema create(final String name, final BaseTable<?, ?> base)

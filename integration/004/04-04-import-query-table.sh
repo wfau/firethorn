@@ -49,7 +49,7 @@ basetable=$(
 POST "${queryschemaid:?}/tables/import" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    --data   'adql.table.depth=FULL' \
+    --data   'adql.table.depth=THIN' \
     --data   "adql.schema.table.import.base=${basetable:?}" \
     --data   "adql.schema.table.import.name=${querytablename:?}" \
     | ./pp | tee query-table.json

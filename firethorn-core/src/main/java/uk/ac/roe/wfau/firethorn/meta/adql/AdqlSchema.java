@@ -78,8 +78,8 @@ extends BaseSchema<AdqlSchema, AdqlTable>
         /**
          * Create an empty schema.
          *  
-         */
         public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name);
+         */
 
         /**
          * Create a new schema, importing a base table.

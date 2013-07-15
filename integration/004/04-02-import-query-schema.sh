@@ -44,7 +44,7 @@ baseschema=$(
 POST "${queryresource:?}/schemas/import" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    --data   'adql.schema.depth=FULL' \
+    --data   'adql.schema.depth=THIN' \
     --data   "adql.resource.schema.import.name=${queryschemaname:?}" \
     --data   "adql.resource.schema.import.base=${baseschema:?}" \
     | ./pp | tee query-schema.json

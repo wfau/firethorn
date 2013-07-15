@@ -101,7 +101,8 @@ implements AdqlParser
         this.mode = mode ;
 
         final AdqlResource workspace = schema.resource();
-
+        //
+        // Create a full set of all the available tables.
         final Set<DBTable> tables = new HashSet<DBTable>();
         for (final AdqlSchema temp : workspace.schemas().select())
             {
