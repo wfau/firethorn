@@ -151,13 +151,13 @@ extends BaseComponentEntity
     protected BaseTableEntity(final BaseSchema<?,TableType> parent, final String name)
         {
         this(
-            EntityType.REAL,
+            CopyDepth.FULL,
             parent,
             name
             );
         }
 
-    protected BaseTableEntity(final EntityType type, final BaseSchema<?,TableType> parent, final String name)
+    protected BaseTableEntity(final CopyDepth type, final BaseSchema<?,TableType> parent, final String name)
         {
         super(
             type,

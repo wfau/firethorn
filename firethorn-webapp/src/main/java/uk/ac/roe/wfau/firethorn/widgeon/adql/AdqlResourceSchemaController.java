@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
@@ -94,22 +95,10 @@ extends AbstractController
     public static final String SELECT_NAME = "adql.resource.schema.select.name" ;
 
     /**
-     * MVC property for the select results.
-     *
-     */
-    public static final String SELECT_RESULT = "adql.resource.schema.select.result" ;
-
-    /**
      * MVC property for the search text.
      *
      */
     public static final String SEARCH_TEXT = "adql.resource.schema.search.text" ;
-
-    /**
-     * MVC property for the search results.
-     *
-     */
-    public static final String SEARCH_RESULT = "adql.resource.schema.search.result" ;
 
     /**
      * MVC property for the create name.
@@ -117,6 +106,12 @@ extends AbstractController
      */
     public static final String CREATE_NAME = "adql.resource.schema.create.name" ;
 
+    /**
+     * MVC property for the copy depth (REAL or THIN).
+     *
+     */
+    public static final String COPY_DEPTH = "adql.schema.copy.depth" ;
+    
     /**
      * MVC property for the import table.
      *
@@ -148,10 +143,11 @@ extends AbstractController
      *
      */
     @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
-    public AdqlResource resource(
+    public AdqlResource parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         ) throws NotFoundException {
+        log.debug("parent() [{}]", ident);
         return factories().adql().resources().select(
             factories().adql().resources().idents().ident(
                 ident
@@ -169,7 +165,7 @@ extends AbstractController
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource
         ){
-        log.debug("jsonSelect()");
+        log.debug("select()");
         return new AdqlSchemaBean.Iter(
             resource.schemas().select()
             );
@@ -187,7 +183,7 @@ extends AbstractController
         @RequestParam(SELECT_NAME)
         final String name
         ){
-        log.debug("jsonSelect(String) [{}]", name);
+        log.debug("select(String) [{}]", name);
         return new AdqlSchemaBean(
             resource.schemas().select(
                 name
@@ -207,7 +203,7 @@ extends AbstractController
         @RequestParam(SEARCH_TEXT)
         final String text
         ){
-        log.debug("jsonSearch(String) [{}]", text);
+        log.debug("search(String) [{}]", text);
         return new AdqlSchemaBean.Iter(
             resource.schemas().search(
                 text
@@ -219,7 +215,7 @@ extends AbstractController
      * A 'created' response entity.
      *
      */
-    public ResponseEntity<AdqlSchemaBean> created(final AdqlSchemaBean bean)
+    public ResponseEntity<AdqlSchemaBean> response(final AdqlSchemaBean bean)
         {
         return new ResponseEntity<AdqlSchemaBean>(
             bean,
@@ -234,17 +230,20 @@ extends AbstractController
      * JSON POST request to create a new schema.
      *
      */
-    @RequestMapping(value=CREATE_PATH, params={CREATE_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(value=CREATE_PATH, params={COPY_DEPTH, CREATE_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<AdqlSchemaBean> create(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
+        @RequestParam(value=COPY_DEPTH, required=false)
+        final CopyDepth depth,
         @RequestParam(value=CREATE_NAME, required=true)
         final String name
         ){
-        log.debug("create(String) [{}]", name);
-        return created (
+        log.debug("create(EntityType, String) [{}][{}]", depth, name);
+        return response(
             new AdqlSchemaBean(
                 resource.schemas().create(
+                    ((depth != null) ? depth : CopyDepth.FULL),
                     name
                     )
                 )
@@ -252,48 +251,23 @@ extends AbstractController
         }
 
     /**
-     * JSON POST request to create a schema and import a table.
-     *
-    @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_NAME, IMPORT_TABLE_BASE}, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<AdqlSchemaBean> inportTable(
-        @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
-        final AdqlResource resource,
-        @RequestParam(IMPORT_TABLE_BASE)
-        final String base,
-        @RequestParam(IMPORT_SCHEMA_NAME)
-        final String name
-        ) throws NotFoundException {
-        log.debug("inportTable(String) [{}][{}]", base, name);
-        return created(
-            new AdqlSchemaBean(
-                resource.schemas().create(
-                    name,
-                    factories().base().schema().select(
-                        factories().base().tables().links().parse(
-                            base
-                            )
-                        )
-                    )
-                )
-            );
-        }
-     */
-
-    /**
      * JSON POST request to import all the tables from another schema.
      *
      */
-    @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_BASE}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(value=IMPORT_PATH, params={COPY_DEPTH, IMPORT_SCHEMA_BASE}, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<AdqlSchemaBean> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
-        @RequestParam(IMPORT_SCHEMA_BASE)
+        @RequestParam(value=COPY_DEPTH, required=false)
+        final CopyDepth depth,
+        @RequestParam(value=IMPORT_SCHEMA_BASE, required=true)
         final String base
         ) throws NotFoundException {
-        log.debug("inport(String) [{}]", base);
-        return created(
+        log.debug("inport(CopyDepth, String) [{}][{}]", depth, base);
+        return response(
             new AdqlSchemaBean(
                 resource.schemas().create(
+                    ((depth != null) ? depth : CopyDepth.FULL),
                     factories().base().schema().select(
                         factories().base().schema().links().ident(
                             base
@@ -308,19 +282,22 @@ extends AbstractController
      * JSON POST request to import all the tables from another schema.
      *
      */
-    @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_NAME, IMPORT_SCHEMA_BASE}, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<AdqlSchemaBean> inportSchema(
+    @RequestMapping(value=IMPORT_PATH, params={COPY_DEPTH, IMPORT_SCHEMA_BASE, IMPORT_SCHEMA_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    public ResponseEntity<AdqlSchemaBean> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
-        @RequestParam(IMPORT_SCHEMA_BASE)
+        @RequestParam(value=COPY_DEPTH, required=false)
+        final CopyDepth depth,
+        @RequestParam(value=IMPORT_SCHEMA_BASE, required=true)
         final String base,
-        @RequestParam(IMPORT_SCHEMA_NAME)
+        @RequestParam(value=IMPORT_SCHEMA_NAME, required=true)
         final String name
         ) throws NotFoundException {
-        log.debug("inport(String, String) [{}][{}]", base, name);
-        return created(
+        log.debug("inport(CopyDepth, String, String) [{}][{}][{}]", depth, base, name);
+        return response(
             new AdqlSchemaBean(
                 resource.schemas().create(
+                    ((depth != null) ? depth : CopyDepth.FULL),
                     name,
                     factories().base().schema().select(
                         factories().base().schema().links().ident(

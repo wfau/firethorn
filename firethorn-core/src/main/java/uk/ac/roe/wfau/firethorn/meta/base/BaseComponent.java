@@ -158,25 +158,27 @@ extends NamedEntity
         }
 
     /**
-     * Update the metadata for this component.
+     * The persistence level, or depth of copy, of a entity.
+     * @todo Does this make sense for JDBC and IVOA components ?
+     * Or does it only apply to ADQL components ?
      *
-    public void inport();
      */
-
-    /**
-     * Scan the component metadata.
-     *
-    public void scan();
-     */
-
-    enum EntityType
+    enum CopyDepth
         {
         PROXY(),
         THIN(),
-        REAL();
+        FULL();
         }
 
-    public EntityType entitytype();
-    public void entitytype(final EntityType copytype);
+    /**
+     * The copy depth.
+     *
+     */
+    public CopyDepth depth();
+    /**
+     * The copy depth.
+     *
+     */
+    public void depth(final CopyDepth depth);
 
     }

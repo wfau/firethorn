@@ -73,28 +73,28 @@ extends AbstractController
     public static final String SEARCH_PATH = "search" ;
 
     /**
-     * MVC property for the select name.
+     * MVC property for the select (full)name.
      *
      */
     public static final String SELECT_NAME = "jdbc.resource.schema.select.name" ;
 
     /**
-     * MVC property for the select results.
+     * MVC property for the select catalog.
      *
      */
-    public static final String SELECT_RESULT = "jdbc.resource.schema.select.result" ;
-
+    public static final String SELECT_CATALOG = "jdbc.resource.schema.select.catalog" ;
+    
+    /**
+     * MVC property for the select schema.
+     *
+     */
+    public static final String SELECT_SCHEMA = "jdbc.resource.schema.select.schema" ;
+    
     /**
      * MVC property for the search text.
      *
      */
     public static final String SEARCH_TEXT = "jdbc.resource.schema.search.text" ;
-
-    /**
-     * MVC property for the search results.
-     *
-     */
-    public static final String SEARCH_RESULT = "jdbc.resource.schema.search.result" ;
 
     /**
      * Get the parent resource based on the identifier in the request.
@@ -106,7 +106,7 @@ extends AbstractController
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException{
-        log.debug("schema() [{}]", ident);
+        log.debug("resource() [{}]", ident);
         return factories().jdbc().resources().select(
             factories().jdbc().resources().idents().ident(
                 ident
@@ -120,10 +120,9 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcSchemaBean.Iter jsonSelect(
+    public JdbcSchemaBean.Iter select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
-        final JdbcResource resource,
-        final ModelAndView model
+        final JdbcResource resource
         ){
         log.debug("select()");
         return new JdbcSchemaBean.Iter(
@@ -137,17 +136,39 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public JdbcSchemaBean jsonSelect(
+    public JdbcSchemaBean select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
         @RequestParam(SELECT_NAME)
-        final String name,
-        final ModelAndView model
+        final String name
         ){
         log.debug("select(String) [{}]", name);
         return new JdbcSchemaBean(
             resource.schemas().select(
                 name
+                )
+            );
+        }
+
+    /**
+     * JSON request to select by schema and catalog.
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=SELECT_PATH, params={SELECT_CATALOG, SELECT_SCHEMA}, produces=JSON_MAPPING)
+    public JdbcSchemaBean select(
+        @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
+        final JdbcResource resource,
+        @RequestParam(SELECT_CATALOG)
+        final String catalog,
+        @RequestParam(SELECT_SCHEMA)
+        final String schema
+        ) throws NotFoundException{
+        log.debug("select(String, String) [{}][{}]", catalog, schema);
+        return new JdbcSchemaBean(
+            resource.schemas().select(
+                catalog,
+                schema
                 )
             );
         }
@@ -162,8 +183,7 @@ extends AbstractController
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
         @RequestParam(SEARCH_TEXT)
-        final String text,
-        final ModelAndView model
+        final String text
         ){
         log.debug("jsonSearch(String) [{}]", text);
         return new JdbcSchemaBean.Iter(

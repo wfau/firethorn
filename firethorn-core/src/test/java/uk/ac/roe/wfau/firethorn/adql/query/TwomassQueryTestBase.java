@@ -51,6 +51,7 @@ extends TestBase
      */
     @Before
     public void init()
+    throws Exception
         {
         //
         // Create our JDBC resources.

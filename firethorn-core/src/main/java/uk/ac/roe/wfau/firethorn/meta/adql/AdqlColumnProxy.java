@@ -81,7 +81,7 @@ implements AdqlColumn
 
     /**
      * Iterable wrapper.
-     * @todo Move to a factory
+     * @todo Make this generic and move to a separate class.
      * 
      */
     public static class ProxyIterable
@@ -96,7 +96,6 @@ implements AdqlColumn
             this.base  = base ;
             this.table = table;
             }
-
         @Override
         public Iterator<AdqlColumn> iterator()
             {
@@ -105,45 +104,40 @@ implements AdqlColumn
                 table
                 );
             }
-        }
 
-    /**
-     * Iterator wrapper.
-     * @todo Move to a factory
-     * 
-     */
-    public static class ProxyIterator
-    implements Iterator<AdqlColumn>
-        {
-        final private Iterator<BaseColumn<?>> base ;
-        final private AdqlTable table ;
-
-        public ProxyIterator(final Iterator<BaseColumn<?>> base, final AdqlTable table)
+        /**
+         * Iterator wrapper.
+         * 
+         */
+        private static class ProxyIterator
+        implements Iterator<AdqlColumn>
             {
-            log.debug("ProxyIterator(Iterator<BaseColumn<?>>, AdqlTable)");
-            this.base  = base ;
-            this.table = table;
-            }
-
-        @Override
-        public boolean hasNext()
-            {
-            return base.hasNext();
-            }
-
-        @Override
-        public AdqlColumn next()
-            {
-            return new AdqlColumnProxy(
-                base.next(),
-                table
-                );
-            }
-
-        @Override
-        public void remove()
-            {
-            throw new UnsupportedOperationException();
+            final private Iterator<BaseColumn<?>> base ;
+            final private AdqlTable table ;
+    
+            public ProxyIterator(final Iterator<BaseColumn<?>> base, final AdqlTable table)
+                {
+                this.base  = base ;
+                this.table = table;
+                }
+            @Override
+            public boolean hasNext()
+                {
+                return base.hasNext();
+                }
+            @Override
+            public AdqlColumn next()
+                {
+                return new AdqlColumnProxy(
+                    base.next(),
+                    table
+                    );
+                }
+            @Override
+            public void remove()
+                {
+                base.remove();
+                }
             }
         }
     
@@ -187,7 +181,6 @@ implements AdqlColumn
         {
         return base().root();
         }
-
 
     private Identifier ident ;
     @Override
@@ -287,13 +280,13 @@ implements AdqlColumn
         }
 
     @Override
-    public EntityType entitytype()
+    public CopyDepth depth()
         {
-        return EntityType.PROXY;
+        return CopyDepth.PROXY;
         }
 
     @Override
-    public void entitytype(EntityType copytype)
+    public void depth(CopyDepth copytype)
         {
         throw new UnsupportedOperationException(
             "Can't change a read only copy"

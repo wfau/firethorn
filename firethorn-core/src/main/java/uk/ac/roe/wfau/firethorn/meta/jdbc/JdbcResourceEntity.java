@@ -301,6 +301,7 @@ public class JdbcResourceEntity
 
             @Override
             public JdbcSchema select(final String catalog, final String schema)
+            throws NotFoundException
                 {
                 return factories().jdbc().schemas().select(
                     JdbcResourceEntity.this,
@@ -309,6 +310,16 @@ public class JdbcResourceEntity
                     );
                 }
 
+            @Override
+            public JdbcSchema search(final String catalog, final String schema)
+                {
+                return factories().jdbc().schemas().search(
+                    JdbcResourceEntity.this,
+                    catalog,
+                    schema
+                    );
+                }
+            
             @Override
             public JdbcSchema select(final String name)
                 {
@@ -353,6 +364,7 @@ public class JdbcResourceEntity
 
             @Override
             public JdbcSchema simple()
+            throws NotFoundException
                 {
                 return factories().jdbc().schemas().select(
                     JdbcResourceEntity.this,
@@ -596,7 +608,7 @@ public class JdbcResourceEntity
                         //
                         // Check for an existing schema.
                         // If none found, create a new one.
-                        JdbcSchema schema = this.schemasimpl().select(
+                        JdbcSchema schema = this.schemasimpl().search(
                             cname,
                             sname
                             );

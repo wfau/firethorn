@@ -64,8 +64,8 @@ extends AbstractNamedEntity
     protected static final String DB_TABLE_COL    = "table";
     protected static final String DB_COLUMN_COL   = "column";
 
-    protected static final String DB_SCAN_TIME_COL   = "scantime";
-    protected static final String DB_ENTITY_TYPE_COL = "entitytype" ;
+    protected static final String DB_SCAN_TIME_COL  = "scantime";
+    protected static final String DB_COPY_DEPTH_COL = "copydepth" ;
 
     /**
      * Default constructor needs to be protected not private.
@@ -84,7 +84,7 @@ extends AbstractNamedEntity
     protected BaseComponentEntity(final String name)
         {
         this(
-            EntityType.REAL,
+            CopyDepth.FULL,
             name
             );
         }
@@ -93,15 +93,15 @@ extends AbstractNamedEntity
      * Protected constructor, owner defaults to the current actor.
      *
      */
-    protected BaseComponentEntity(final EntityType type, final String name)
+    protected BaseComponentEntity(final CopyDepth depth, final String name)
         {
         super(
             name
             );
-        this.entitytype = type;
-        log.debug("BaseComponentEntity(EntityType, String)");
-        log.debug("  Name [{}]", name);
-        log.debug("  Type [{}]", type);
+        this.depth = depth;
+        log.debug("BaseComponentEntity(CopyDepth, String)");
+        log.debug("  Name  [{}]", name);
+        log.debug("  Depth [{}]", depth);
         }
 
     /**
@@ -146,6 +146,12 @@ extends AbstractNamedEntity
         {
         this.scanprev = time;
         }
+    /**
+     * The polling interval for waiting scans.
+     * 
+     */
+    private static final long POLL_WAIT = 1000 ; 
+
     /**
      * The interval between scans.
      * Set to 60 seconds for now .. should be much higher and configurable.
@@ -202,7 +208,7 @@ extends AbstractNamedEntity
                 do {
                     try {
                         log.debug("Scan wait start [{}]", ident);
-                        scanset.wait(1000);
+                        scanset.wait(POLL_WAIT);
                         log.debug("Scan wait woken [{}]", ident);
                         }
                     catch (final Exception ouch)
@@ -259,7 +265,7 @@ extends AbstractNamedEntity
     protected abstract void scanimpl();
 
     @Column(
-        name = DB_ENTITY_TYPE_COL,
+        name = DB_COPY_DEPTH_COL,
         unique = false,
         nullable = true,
         updatable = true
@@ -267,17 +273,17 @@ extends AbstractNamedEntity
     @Enumerated(
         EnumType.STRING
         )
-    protected EntityType entitytype = EntityType.REAL ;
+    protected CopyDepth depth = CopyDepth.FULL ;
 
     @Override
-    public EntityType entitytype()
+    public CopyDepth depth()
         {
-        return this.entitytype;
+        return this.depth;
         }
 
     @Override
-    public void entitytype(final EntityType type)
+    public void depth(final CopyDepth type)
         {
-        this.entitytype = type;
+        this.depth = type;
         }
     }

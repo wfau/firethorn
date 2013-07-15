@@ -21,6 +21,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 
 /**
  *
@@ -71,9 +72,14 @@ extends BaseSchema<AdqlSchema, AdqlTable>
 
         /**
          * Create an empty schema.
-         *
+         *  
          */
         public AdqlSchema create(final AdqlResource parent, final String name);
+        /**
+         * Create an empty schema.
+         *  
+         */
+        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name);
 
         /**
          * Create a new schema, importing a base table.
@@ -85,13 +91,23 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          * Create a new schema, importing the tables from a base schema.
          *
          */
-		public AdqlSchema create(final AdqlResource parent, final BaseSchema<?,?> base);
-
+        public AdqlSchema create(final AdqlResource parent, final BaseSchema<?,?> base);
+        /**
+         * Create a new schema, importing the tables from a base schema.
+         *
+         */
+        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final BaseSchema<?,?> base);
         /**
          * Create a new schema, importing the tables from a base schema.
          *
          */
         public AdqlSchema create(final AdqlResource parent, final String name, final BaseSchema<?,?> base);
+        /**
+         * Create a new schema, importing the tables from a base schema.
+         *
+         */
+        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name, final BaseSchema<?,?> base);
+
         }
 
     @Override
@@ -105,15 +121,25 @@ extends BaseSchema<AdqlSchema, AdqlTable>
         {
         /**
          * Create a new table, importing the columns from a base table.
-         *
+         * 
          */
         public AdqlTable create(final BaseTable<?,?> base);
+        /**
+         * Create a new table, importing the columns from a base table.
+         * 
+         */
+        public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base);
 
         /**
          * Create a new table, importing the columns from a base table.
          *
          */
         public AdqlTable create(final BaseTable<?,?> base, final String name);
+        /**
+         * Create a new table, importing the columns from a base table.
+         *
+         */
+        public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base, final String name);
 
         /**
          * Create a new results table, importing the details from the query.

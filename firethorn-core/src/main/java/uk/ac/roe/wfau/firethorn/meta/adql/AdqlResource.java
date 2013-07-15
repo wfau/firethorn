@@ -21,6 +21,7 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 
 
 /**
@@ -35,7 +36,7 @@ extends BaseResource<AdqlSchema>
      *
      */
     public static interface NameFactory
-    extends Entity.NameFactory
+    extends Entity.NameFactory<AdqlResource>
         {
         }
 
@@ -89,6 +90,11 @@ extends BaseResource<AdqlSchema>
          *
          */
         public AdqlSchema create(final String name);
+        /**
+         * Create a new schema.
+         *
+         */
+        public AdqlSchema create(final CopyDepth type, final String name);
 
         /**
          * Create a new schema, importing a base table.
@@ -101,12 +107,21 @@ extends BaseResource<AdqlSchema>
          *
          */
         public AdqlSchema create(final BaseSchema<?,?> base);
-
+        /**
+         * Create a new schema, importing all the tables from a base schema.
+         *
+         */
+        public AdqlSchema create(final CopyDepth depth, final BaseSchema<?,?> base);
         /**
          * Create a new schema, importing all the tables from a base schema.
          *
          */
         public AdqlSchema create(final String name, final BaseSchema<?,?> base);
+        /**
+         * Create a new schema, importing all the tables from a base schema.
+         *
+         */
+        public AdqlSchema create(final CopyDepth depth, final String name, final BaseSchema<?,?> base);
 
         }
     @Override

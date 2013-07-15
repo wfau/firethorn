@@ -1,0 +1,187 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+# -----------------------------------------------------
+# Run the maven-build steps
+#[user@desktop]
+
+    # TTY #1 ------------------------------------------------------------
+    #source "${HOME:?}/test-users.txt"
+    #ssh  "${jdbcuser:?}@${jdbchost:?}"
+
+        username=xxxx
+        hostname=fenrir.roe.ac.uk
+        
+        ssh-keyscan ${hostname:?} >> ~/.ssh/known_hosts
+        ssh -L '*:1435:ramses5:1433' -L '*:1439:ramses9:1433' "${username:?}@${hostname:?}"
+
+        # Use settings in config
+        # ssh sqltunnel
+
+    # TTY #4,5,6 ----------------------------------------------------------
+    #source "${HOME:?}/test-users.txt"
+    #ssh "${fireuser:?}@${firehost:?}"
+
+        source ${HOME:?}/firethorn.settings
+        pushd "${FIRETHORN_CODE:?}"
+
+            #hg pull ; hg update
+            mvn -P depends clean install
+            mvn clean install 
+
+            pushd 'firethorn-webapp'
+
+                export MAVEN_OPTS=-Xmx128m
+                mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
+
+
+    # TTY #7 ------------------------------------------------------------
+    #source "${HOME:?}/test-users.txt"
+    #ssh "${ogsauser:?}@${ogsahost:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        pushd "${FIRETHORN_CODE:?}"
+
+            #hg pull ; hg update
+            #mvn -P depends install
+            #mvn install 
+
+            pushd 'firethorn-ogsadai/webapp'
+
+                mvn clean compile war:war
+
+                source src/test/bin/jdbc-functions.sh
+
+                pushd target/firethorn-ogsadai-webapp-01.05-SNAPSHOT/WEB-INF
+
+                    jdbcconfig twomass  firethorn.twomass
+                    jdbcconfig ukidss   firethorn.ukidss
+                    jdbcconfig atlas    firethorn.atlas
+                    jdbcconfig wfau     firethorn.wfau
+                    jdbcconfig userdata firethorn.user
+
+                popd
+                
+                export MAVEN_OPTS=-Xmx128m
+                mvn tomcat6:run | tee /tmp/ogsadai-tomcat.log
+
+    # TTY #8 ------------------------------------------------------------
+    #source "${HOME:?}/test-users.txt"
+    #ssh "${ogsauser:?}@${ogsahost:?}"
+
+        source ${HOME:?}/firethorn.settings
+        pushd "${FIRETHORN_CODE:?}"
+
+            #hg pull ; hg update
+            #mvn -P depends install
+            #mvn install 
+
+            pushd 'firethorn-ogsadai/activity/client'
+
+                mvn -D skipTests=false -D test=SingleQueryTestCase test 
+
+            popd
+        popd
+
+    # TTY ------------------------------------------------------------
+    #source "${HOME:?}/test-users.txt"
+    #ssh "${testuser:?}@${testhost:?}"
+
+        source ${HOME:?}/firethorn.settings
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+
+GET "${jdbcspace:?}" \
+    --header "firethorn.auth.identity:${identity:?}" \
+    --header "firethorn.auth.community:${community:?}" \
+    | ./pp
+
+GET "${adqlspace:?}" \
+    --header "firethorn.auth.identity:${identity:?}" \
+    --header "firethorn.auth.community:${community:?}" \
+    | ./pp
+
+            source "${FIRETHORN_TEST:?}/03-02-import-jdbc-schema.sh" "${jdbcspace:?}" 'TWOXMM'         'dbo' "${adqlspace:?}" 'TWOXMM'
+            source "${FIRETHORN_TEST:?}/03-02-import-jdbc-schema.sh" "${jdbcspace:?}" 'TWOMASS'        'dbo' "${adqlspace:?}" 'TWOMASS'
+            source "${FIRETHORN_TEST:?}/03-02-import-jdbc-schema.sh" "${jdbcspace:?}" 'UKIDSSDR5PLUS'  'dbo' "${adqlspace:?}" 'UKIDSSDR5PLUS'
+            source "${FIRETHORN_TEST:?}/03-02-import-jdbc-schema.sh" "${jdbcspace:?}" 'ATLASv20130304' 'dbo' "${adqlspace:?}" 'ATLASv20130304'
+
+GET "${adqlschema:?}" \
+    --header "firethorn.auth.identity:${identity:?}" \
+    --header "firethorn.auth.community:${community:?}" \
+    | ./pp
+
+
+            source "${FIRETHORN_TEST:?}/04-00-create-query-space.sh"
+            source "${FIRETHORN_TEST:?}/04-01-create-query-schema.sh" 'query'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'atlas'   'atlas'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'twomass' 'twomass'
+
+            source "${FIRETHORN_TEST:?}/04-01-create-query-schema.sh" 'ukidss'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsPointSource'        'ukidss' 'gcsPointSource'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'gcsSourceXtwomass_psc' 'ukidss' 'gcsSourceXtwomass_psc'
+
+            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'lasSource'             'ukidss' 'lasSource' 
+            source "${FIRETHORN_TEST:?}/04-02-import-query-table.sh"  'ukidssdr5' 'lasSourceXDR7PhotoObj' 'ukidss' 'lasSourceXDR7PhotoObj'
+
+
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-000.adql"
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-001.adql"
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-002.adql"
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-003.adql"
+            time source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-004.adql"
+
+        popd
+
+
+        importschema()
+            {
+            source "${FIRETHORN_TEST:?}/04-00-create-query-space.sh"
+            source "${FIRETHORN_TEST:?}/04-01-create-query-schema.sh" 'query'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'atlas'   'atlas'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'twomass' 'twomass'
+            source "${FIRETHORN_TEST?}/05-execute-query.sh" "${FIRETHORN_TEST?}/06-query-atlas-000.adql"
+            }
+
+        time importschema
+
+
+        for i in {0..9999}
+        do
+            time importschema
+            echo "Iter [${i}]"
+        done
+
+
+

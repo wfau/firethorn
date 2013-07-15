@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
@@ -106,6 +107,12 @@ extends AbstractController
     public static final String SEARCH_RESULT = "adql.schema.table.search.result" ;
 
     /**
+     * MVC property for the copy depth (REAL or THIN).
+     *
+     */
+    public static final String COPY_DEPTH = "adql.table.copy.depth" ;
+
+    /**
      * MVC property for the import base.
      *
      */
@@ -124,11 +131,11 @@ extends AbstractController
      *
      */
     @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
-    public AdqlSchema schema(
+    public AdqlSchema parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         ) throws NotFoundException {
-        log.debug("schema() [{}]", ident);
+        log.debug("parent() [{}]", ident);
         return factories().adql().schemas().select(
             factories().adql().schemas().idents().ident(
                 ident
@@ -193,35 +200,47 @@ extends AbstractController
         }
 
     /**
-     * JSON request to import a table.
-     * @throws NotFoundException
+     * A 'created' response entity.
      *
      */
-    @ResponseBody
-    @RequestMapping(value=IMPORT_PATH, params={IMPORT_BASE}, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<AdqlTableBean> inport(
-        @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
-        final AdqlSchema schema,
-        @RequestParam(IMPORT_BASE)
-        final String base
-        ) throws NotFoundException {
-        log.debug("inport()");
-        log.debug("  base [{}]", base);
-        final AdqlTableBean bean = new AdqlTableBean(
-            schema.tables().create(
-                factories().base().tables().select(
-                    factories().base().tables().links().ident(
-                        base
-                        )
-                    )
-                )
-            );
+    public ResponseEntity<AdqlTableBean> response(final AdqlTableBean bean)
+        {
         return new ResponseEntity<AdqlTableBean>(
             bean,
             new RedirectHeader(
                 bean
                 ),
             HttpStatus.CREATED
+            );
+        }
+    
+    /**
+     * JSON request to import a table.
+     * @throws NotFoundException
+     *
+     */
+    @ResponseBody
+    @RequestMapping(value=IMPORT_PATH, params={COPY_DEPTH, IMPORT_BASE}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    public ResponseEntity<AdqlTableBean> inport(
+        @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
+        final AdqlSchema schema,
+        @RequestParam(value=COPY_DEPTH, required=false)
+        final CopyDepth type,
+        @RequestParam(value=IMPORT_BASE, required=true)
+        final String base
+        ) throws NotFoundException {
+        log.debug("inport(CopyDepth, String) [{}][{}]", type, base);
+        return response(
+            new AdqlTableBean(
+                schema.tables().create(
+                    ((type != null) ? type : CopyDepth.FULL),
+                    factories().base().tables().select(
+                        factories().base().tables().links().ident(
+                            base
+                            )
+                        )
+                    )
+                )
             );
         }
 
@@ -231,34 +250,30 @@ extends AbstractController
      *
      */
     @ResponseBody
-    @RequestMapping(value=IMPORT_PATH, params={IMPORT_BASE, IMPORT_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(value=IMPORT_PATH, params={COPY_DEPTH, IMPORT_BASE, IMPORT_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
     public ResponseEntity<AdqlTableBean> inport(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
-        @RequestParam(IMPORT_BASE)
+        @RequestParam(value=COPY_DEPTH, required=false)
+        final CopyDepth type,
+        @RequestParam(value=IMPORT_BASE, required=true)
         final String base,
-        @RequestParam(IMPORT_NAME)
+        @RequestParam(value=IMPORT_NAME, required=true)
         final String name
         ) throws NotFoundException {
-        log.debug("inport()");
-        log.debug("  base [{}]", base);
-        log.debug("  name [{}]", name);
-        final AdqlTableBean bean = new AdqlTableBean(
-            schema.tables().create(
-                factories().base().tables().select(
-                    factories().base().tables().links().ident(
-                        base
-                        )
-                    ),
-                name
+        log.debug("inport(CopyDepth, String, String) [{}][{}]", type, base, name);
+        return response(
+            new AdqlTableBean(
+                schema.tables().create(
+                    type,
+                    factories().base().tables().select(
+                        factories().base().tables().links().ident(
+                            base
+                            )
+                        ),
+                    name
+                    )
                 )
-            );
-        return new ResponseEntity<AdqlTableBean>(
-            bean,
-            new RedirectHeader(
-                bean
-                ),
-            HttpStatus.CREATED
             );
         }
     }

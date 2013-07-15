@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
@@ -103,7 +104,14 @@ extends BaseResource<JdbcSchema>
          * Select a schema.
          *
          */
-        public JdbcSchema select(final String catalog, final String schema);
+        public JdbcSchema select(final String catalog, final String schema)
+        throws NotFoundException;
+
+        /**
+         * Search for a schema.
+         *
+         */
+        public JdbcSchema search(final String catalog, final String schema);
 
         /**
          * Create a new schema owned by an Identity.
@@ -127,7 +135,8 @@ extends BaseResource<JdbcSchema>
          * The default catalog/schema for this resource.
          *
          */
-        public JdbcSchema simple();
+        public JdbcSchema simple()
+        throws NotFoundException;
 
         }
 

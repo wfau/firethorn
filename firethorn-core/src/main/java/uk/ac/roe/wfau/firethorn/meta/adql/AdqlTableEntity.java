@@ -48,6 +48,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 
 /**
  *
@@ -144,7 +145,6 @@ public class AdqlTableEntity
         @CreateEntityMethod
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base)
             {
-            log.debug("create(AdqlSchema, BaseTable)");
             return this.insert(
                 new AdqlTableEntity(
                     schema,
@@ -156,9 +156,22 @@ public class AdqlTableEntity
 
         @Override
         @CreateEntityMethod
+        public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base)
+            {
+            return this.insert(
+                new AdqlTableEntity(
+                    type,
+                    schema,
+                    base,
+                    base.name()
+                    )
+                );
+            }
+        
+        @Override
+        @CreateEntityMethod
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
             {
-            log.debug("create(AdqlSchema, BaseTable, String)");
             return this.insert(
                 new AdqlTableEntity(
                     schema,
@@ -170,9 +183,23 @@ public class AdqlTableEntity
 
         @Override
         @CreateEntityMethod
+        public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
+            {
+            return this.insert(
+                new AdqlTableEntity(
+                    type,
+                    schema,
+                    base,
+                    name
+                    )
+                );
+            }
+        
+        
+        @Override
+        @CreateEntityMethod
         public AdqlTable create(final AdqlSchema schema, final AdqlQuery query)
             {
-            log.debug("create(AdqlSchema, AdqlQuery)");
             return this.insert(
                 new AdqlTableEntity(
                     query,
@@ -183,6 +210,21 @@ public class AdqlTableEntity
                 );
             }
 
+        @Override
+        @CreateEntityMethod
+        public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final AdqlQuery query)
+            {
+            return this.insert(
+                new AdqlTableEntity(
+                    type,
+                    query,
+                    schema,
+                    query.results().base(),
+                    query.name()
+                    )
+                );
+            }
+        
         @Override
         @SelectEntityMethod
         public Iterable<AdqlTable> select(final AdqlSchema parent)
@@ -289,6 +331,18 @@ public class AdqlTableEntity
     protected AdqlTableEntity(final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
         this(
+            CopyDepth.FULL,
+            null,
+            schema,
+            base,
+            name
+            );
+        }
+
+    protected AdqlTableEntity(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
+        {
+        this(
+            type,
             null,
             schema,
             base,
@@ -298,8 +352,19 @@ public class AdqlTableEntity
 
     protected AdqlTableEntity(final AdqlQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
+        this(
+            CopyDepth.FULL,
+            query,
+            schema,
+            base,
+            name
+            );
+        }
+
+    protected AdqlTableEntity(final CopyDepth type, final AdqlQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
+        {
         super(
-            EntityType.THIN,
+            type,
             schema,
             name
             );
@@ -308,7 +373,7 @@ public class AdqlTableEntity
         this.schema = schema;
         //
         // Create our columns.
-        if (entitytype() == EntityType.REAL)
+        if (depth() == CopyDepth.FULL)
             {
             for (final BaseColumn<?> column : base.columns().select())
                 {
@@ -319,6 +384,27 @@ public class AdqlTableEntity
             }
         }
 
+    /**
+     * Convert this into a full copy.
+     * 
+     */
+    protected void realize()
+        {
+        if (this.depth != CopyDepth.FULL)
+            {
+            this.depth = CopyDepth.FULL ;
+            if (this.base != null)
+                {
+                for (final BaseColumn<?> column : base.columns().select())
+                    {
+                    columns().create(
+                        column 
+                        );
+                    }
+                }
+            }
+        }
+    
     @Override
     public String text()
         {
@@ -396,7 +482,7 @@ public class AdqlTableEntity
             @SuppressWarnings("unchecked")
             public Iterable<AdqlColumn> select()
                 {
-                if (entitytype() == EntityType.REAL)
+                if (depth() == CopyDepth.FULL)
                     {
                     return factories().adql().columns().select(
                         AdqlTableEntity.this
@@ -415,7 +501,7 @@ public class AdqlTableEntity
             public AdqlColumn select(final String name)
             throws NotFoundException
                 {
-                if (entitytype() == EntityType.REAL)
+                if (depth() == CopyDepth.FULL)
                     {
                     return factories().adql().columns().select(
                         AdqlTableEntity.this,
@@ -435,7 +521,7 @@ public class AdqlTableEntity
             @Override
             public AdqlColumn create(final BaseColumn<?> base)
                 {
-                if (entitytype() == EntityType.REAL)
+                if (depth() == CopyDepth.FULL)
                     {
                     return factories().adql().columns().create(
                         AdqlTableEntity.this,
@@ -451,7 +537,7 @@ public class AdqlTableEntity
             @SuppressWarnings("unchecked")
             public Iterable<AdqlColumn> search(final String text)
                 {
-                if (entitytype() == EntityType.REAL)
+                if (depth() == CopyDepth.FULL)
                     {
                     return factories().adql().columns().search(
                         AdqlTableEntity.this,

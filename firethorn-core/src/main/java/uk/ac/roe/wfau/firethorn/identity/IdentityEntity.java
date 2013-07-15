@@ -272,7 +272,13 @@ implements Identity
                         this
                         );
  */
-                    this.jdbcschema = community().space().schemas().simple();
+                    try {
+                        this.jdbcschema = community().space().schemas().simple();
+                        }
+                    catch (NotFoundException ouch)
+                        {
+                        log.error("Failed to find user space []", ouch.getMessage());
+                        }
                     }
                 }
             }

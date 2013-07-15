@@ -36,6 +36,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 
 @Entity()
 @Access(
@@ -150,6 +151,7 @@ extends BaseResourceEntity<AdqlSchema>
                     AdqlResourceEntity.this
                     );
                 }
+
             @Override
             public AdqlSchema select(final String name)
                 {
@@ -158,6 +160,7 @@ extends BaseResourceEntity<AdqlSchema>
                     name
                     );
                 }
+
             @Override
             public AdqlSchema create(final String name)
                 {
@@ -167,6 +170,16 @@ extends BaseResourceEntity<AdqlSchema>
                     );
                 }
             @Override
+            public AdqlSchema create(final CopyDepth depth, String name)
+                {
+                return factories().adql().schemas().create(
+                    depth,
+                    AdqlResourceEntity.this,
+                    name
+                    );
+                }
+
+            @Override
             public AdqlSchema create(final String name, final BaseTable<?, ?> base)
                 {
                 return factories().adql().schemas().create(
@@ -175,7 +188,8 @@ extends BaseResourceEntity<AdqlSchema>
                     base
                     );
                 }
-			@Override
+
+            @Override
 			public AdqlSchema create(final BaseSchema<?,?> base)
 			    {
                 return factories().adql().schemas().create(
@@ -185,6 +199,17 @@ extends BaseResourceEntity<AdqlSchema>
                     );
 				}
             @Override
+            public AdqlSchema create(final CopyDepth depth, BaseSchema<?, ?> base)
+                {
+                return factories().adql().schemas().create(
+                    depth,
+                    AdqlResourceEntity.this,
+                    base.name(),
+                    base
+                    );
+                }
+
+            @Override
             public AdqlSchema create(final String name, final BaseSchema<?,?> base)
                 {
                 return factories().adql().schemas().create(
@@ -193,7 +218,18 @@ extends BaseResourceEntity<AdqlSchema>
                     base
                     );
                 }
-			@Override
+            @Override
+            public AdqlSchema create(final CopyDepth depth, String name, BaseSchema<?, ?> base)
+                {
+                return factories().adql().schemas().create(
+                    depth,
+                    AdqlResourceEntity.this,
+                    name,
+                    base
+                    );
+                }
+
+            @Override
             public Iterable<AdqlSchema> search(final String text)
                 {
                 return factories().adql().schemas().search(

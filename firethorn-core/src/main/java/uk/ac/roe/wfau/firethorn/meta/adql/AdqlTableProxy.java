@@ -35,7 +35,7 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.EntityType;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.InvalidStatusException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.Status;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
@@ -307,13 +307,13 @@ public class AdqlTableProxy
         }
 
     @Override
-    public EntityType entitytype()
+    public CopyDepth depth()
         {
-        return EntityType.PROXY;
+        return CopyDepth.PROXY;
         }
 
     @Override
-    public void entitytype(EntityType copytype)
+    public void depth(CopyDepth copytype)
         {
         throw new UnsupportedOperationException(
             "Can't change a read only copy"

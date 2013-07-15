@@ -21,16 +21,27 @@
 #
 
     #
+    # Add FULL|THIN param to webservice calls.
+    # Add FULL|THIN properties to webservice results.
+
+
+    #
     # Parse nested proxy identifiers.
+    ( (xx:yy) : (xx:yy) )
+    http://threonine.metagrid.co.uk:8080/firethorn/adql/column/((18809386:17334293):(17334293:17367072))
 
-    (
-        (xx:yy)
-        :
-        (xx:yy)
-    )
-    
 
-    Change the child lists to LinkedHashMap<String, Entity>
+    ((18809386:17334293):(17334293:17367072))
+    (    proxy table    :   proxy column    )
+
+       (schema:table)      (table:column)
+
+
+    #
+    # Use the request URL to generate the identifier URL.
+
+    #
+    # Change the child lists to LinkedHashMap<String, Entity>
 
     Map  -> @MapKey
     List -> @OrderBy
@@ -53,13 +64,11 @@
     private List userPosts;
 
 
-
-
     #
-    # Hook any modification to a THIN entity.
-    # Trigger a call to realize() first.
-    # Needs to be runinside a transaction.
-
+    # Hook modification to a THIN entity,
+    # automatically rigger a call to realize().
+    # Needs to be run inside a transaction.
+    # May need to realize parent first.
 
 
     #

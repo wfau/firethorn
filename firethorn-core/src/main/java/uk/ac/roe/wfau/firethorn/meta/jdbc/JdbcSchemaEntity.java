@@ -267,6 +267,31 @@ public class JdbcSchemaEntity
         @Override
         @SelectEntityMethod
         public JdbcSchema select(final JdbcResource parent, final String catalog, final String schema)
+        throws NotFoundException
+            {
+            log.debug("JdbcSchema select(JdbcResource, String, String)");
+            log.debug("  Parent  [{}]", parent.ident());
+            log.debug("  Catalog [{}]", catalog);
+            log.debug("  Schema  [{}]", schema);
+            JdbcSchema found = search(
+                parent,
+                catalog,
+                schema
+                );
+            if (found != null)
+                {
+                return found ;
+                }
+            else {
+                throw new NotFoundException(
+                    "Unable to find matching schema [" + catalog + "][" + found  + "]" 
+                    );
+                }
+            }
+
+        @Override
+        @SelectEntityMethod
+        public JdbcSchema search(final JdbcResource parent, final String catalog, final String schema)
             {
             log.debug("JdbcSchema select(JdbcResource, String, String)");
             log.debug("  Parent  [{}]", parent.ident());
