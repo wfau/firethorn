@@ -55,7 +55,6 @@
                 export MAVEN_OPTS=-Xmx128m
                 mvn tomcat7:run | tee /tmp/firethorn-tomcat.log
 
-
     # TTY #7 ------------------------------------------------------------
     #source "${HOME:?}/test-users.txt"
     #ssh "${ogsauser:?}@${ogsahost:?}"

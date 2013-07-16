@@ -24,7 +24,6 @@
 # Create Ubuntu VM.
 [root@kvm-server]
 
-
     ischnura-createvm
 
         Select machine name (1) 1
