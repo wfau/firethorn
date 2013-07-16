@@ -1,0 +1,97 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    #--------------------------------------------
+    # FireThorn webapp properties
+
+    firethon.webapp.endpoint=http://localhost:8080/firethorn
+
+    #--------------------------------------------
+    # FireThorn ogsadai properties
+
+    firethon.ogsadai.dqp=testdqp
+    firethon.ogsadai.store=userdata
+    firethon.ogsadai.endpoint=http://localhost:8081/albert/services
+
+    #--------------------------------------------
+    # FireThorn databases
+    # ssh -L '1439:ramses9:1433' fenrir.roe.ac.uk
+
+    #
+    # FireThorn metadata.
+    firethorn.meta.url=jdbc:jtds:sqlserver://localhost:1439/FirethornMetadata011
+    firethorn.meta.driver=net.sourceforge.jtds.jdbc.Driver
+    firethorn.meta.type=mssql
+    firethorn.meta.user=
+    firethorn.meta.pass=
+    firethorn.meta.c3po.max.size=20
+    firethorn.meta.c3po.min.size=5
+    firethorn.meta.c3po.max.idle=1800
+
+    #
+    # FireThorn userdata.
+    firethorn.user.url=jdbc:jtds:sqlserver://localhost:1439/FirethornUserdata011
+    firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
+    firethorn.user.type=mssql
+    firethorn.user.user=
+    firethorn.user.pass=
+    firethorn.user.c3po.max.size=20
+    firethorn.user.c3po.min.size=5
+    firethorn.user.c3po.max.idle=1800
+
+    #--------------------------------------------
+    # SSH tunnel to the ROE live data.
+    # ssh -L '1435:ramses5:1433' fenrir.roe.ac.uk
+    #
+
+    firethorn.twomass.url=jdbc:jtds:sqlserver://localhost:1435/TWOMASS
+    firethorn.twomass.driver=net.sourceforge.jtds.jdbc.Driver
+    firethorn.twomass.type=mssql
+    firethorn.twomass.user=
+    firethorn.twomass.pass=
+
+    firethorn.twoxmm.url=jdbc:jtds:sqlserver://localhost:1435/TWOXMM
+    firethorn.twoxmm.driver=net.sourceforge.jtds.jdbc.Driver
+    firethorn.twoxmm.type=mssql
+    firethorn.twoxmm.user=
+    firethorn.twoxmm.pass=
+
+    firethorn.ukidss.url=jdbc:jtds:sqlserver://localhost:1435/UKIDSSDR5PLUS
+    firethorn.ukidss.driver=net.sourceforge.jtds.jdbc.Driver
+    firethorn.ukidss.type=mssql
+    firethorn.ukidss.user=
+    firethorn.ukidss.pass=
+
+    firethorn.wfau.url=jdbc:jtds:sqlserver://localhost:1435/WFAU
+    firethorn.wfau.driver=net.sourceforge.jtds.jdbc.Driver
+    firethorn.wfau.type=mssql
+    firethorn.wfau.user=
+    firethorn.wfau.pass=
+
+    firethorn.atlas.url=jdbc:jtds:sqlserver://localhost:1435/ATLASv20130304
+    firethorn.atlas.driver=net.sourceforge.jtds.jdbc.Driver
+    firethorn.atlas.type=mssql
+    firethorn.atlas.user=
+    firethorn.atlas.pass=
+
+
