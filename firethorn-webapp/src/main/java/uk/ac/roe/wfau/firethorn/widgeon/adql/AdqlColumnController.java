@@ -92,7 +92,6 @@ extends AbstractEntityController<AdqlColumn>
 
     /**
      * Get the target entity based on the ident in the path.
-     * @throws NotFoundException
      *
      */
     @ModelAttribute(TARGET_ENTITY)
