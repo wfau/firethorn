@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.base;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 
 /**
@@ -100,16 +101,27 @@ extends BaseComponent
          *
          */
         public Iterable<TableType> select();
+
         /**
          * Search for tables (name starts with).
          *
          */
         public Iterable<TableType> search(final String text);
+
         /**
-         * Select a specific column by name.
+         * Select a table by name.
          *
          */
-        public TableType select(final String name);
+        public TableType select(final String name)
+        throws NotFoundException;
+
+        /**
+         * Select a table by ident.
+         * 
+         */
+        public TableType select(final Identifier ident)
+        throws NotFoundException;
+
         }
 
     /**

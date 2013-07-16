@@ -29,6 +29,7 @@ import org.joda.time.DateTime;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
@@ -213,6 +214,7 @@ public class AdqlTableProxy
     @Override
     public Identifier ident()
         {
+        log.debug("ident() [{}][{}][{}]", ident, schema(), base());
         if (ident == null)
             {
             ident = new ProxyIdentifier(
@@ -378,6 +380,18 @@ public class AdqlTableProxy
                 {
                 return new AdqlColumnProxy(
                     base,
+                    AdqlTableProxy.this
+                    );
+                }
+
+            @Override
+            public AdqlColumn select(Identifier ident)
+            throws NotFoundException
+                {
+                return new AdqlColumnProxy(
+                    base().columns().select(
+                        ident
+                        ),
                     AdqlTableProxy.this
                     );
                 }

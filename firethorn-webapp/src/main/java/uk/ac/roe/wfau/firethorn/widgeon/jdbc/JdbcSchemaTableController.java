@@ -99,33 +99,18 @@ extends AbstractController
 
     /**
      * Get the parent schema based on the identifier in the request.
-     * @throws NotFoundException
      *
      */
     @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)
     public JdbcSchema schema(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws NotFoundException{
+        ) throws NotFoundException {
         log.debug("schema() [{}]", ident);
         return factories().jdbc().schemas().select(
             factories().jdbc().schemas().idents().ident(
                 ident
                 )
-            );
-        }
-
-    /**
-     * Select all.
-     *
-     */
-    public JdbcTableBean.Iter select(
-        @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)
-        final JdbcSchema schema
-        ){
-        log.debug("select()");
-        return new JdbcTableBean.Iter(
-            schema.tables().select()
             );
         }
 
@@ -137,30 +122,11 @@ extends AbstractController
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
     public JdbcTableBean.Iter jsonSelect(
         @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)
-        final JdbcSchema schema,
-        final ModelAndView model
+        final JdbcSchema schema
         ){
-        log.debug("jsonSelect()");
-        return select(
-            schema
-            );
-        }
-
-    /**
-     * Select by name.
-     * @todo select should not return null.
-     *
-     */
-    public JdbcTableBean select(
-        @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)
-        final JdbcSchema schema,
-        final String name
-        ){
-        log.debug("select(String) [{}]", name);
-        return new JdbcTableBean(
-            schema.tables().select(
-                name
-                )
+        log.debug("select()");
+        return new JdbcTableBean.Iter(
+            schema.tables().select()
             );
         }
 
@@ -170,33 +136,16 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public JdbcTableBean jsonSelect(
+    public JdbcTableBean select(
         @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)
         final JdbcSchema schema,
         @RequestParam(SELECT_NAME)
-        final String name,
-        final ModelAndView model
-        ){
-        log.debug("jsonSelect(String) [{}]", name);
-        return select(
-            schema,
-            name
-            );
-        }
-
-    /**
-     * Search by text.
-     *
-     */
-    public JdbcTableBean.Iter search(
-        @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)
-        final JdbcSchema schema,
-        final String text
-        ){
-        log.debug("search(String) [{}]", text);
-        return new JdbcTableBean.Iter(
-            schema.tables().search(
-                text
+        final String name
+        ) throws NotFoundException {
+        log.debug("select(String) [{}]", name);
+        return new JdbcTableBean(
+            schema.tables().select(
+                name
                 )
             );
         }
@@ -207,17 +156,17 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public JdbcTableBean.Iter jsonSearch(
+    public JdbcTableBean.Iter search(
         @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)
         final JdbcSchema schema,
         @RequestParam(SEARCH_TEXT)
-        final String text,
-        final ModelAndView model
+        final String text
         ){
-        log.debug("jsonSearch(String) [{}]", text);
-        return search(
-            schema,
-            text
+        log.debug("search(String) [{}]", text);
+        return new JdbcTableBean.Iter(
+            schema.tables().search(
+                text
+                )
             );
         }
     }

@@ -1,0 +1,85 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+
+
+
+# ------------------------------------------------
+# Create our metadata and userdata databases.
+
+    servername=master
+    serverlogin=xxxx
+    serverpass=xxxx
+
+    #
+    # Function to fill in the template values.
+    sqlsed()
+        {
+        sed '
+            s|{databasename}|'"${databasename}"'|g
+            s|{databasepath}|'"${databasepath}"'|g
+            s|{databaseuser}|'"${databaseuser}"'|g
+            s|{databasepass}|'"${databasepass}"'|g
+            s|{databaselogin}|'"${databaselogin}"'|g
+            ' "${1:?}"
+        }
+
+    #
+    # Set the template values
+    databasename="FirethornMetadata011"
+    databasepath='C:\\Program Files\\Microsoft SQL Server\\MSSQL10.MSSQLSERVER\\MSSQL\\DATA'
+    databaseuser="${databasename:?}User"
+    databaselogin="${databasename:?}Login"
+    databasepass="${databasename:?}$(pwgen -s 5 1)"
+
+echo "databasename  [${databasename}]"
+echo "databaseuser  [${databaseuser}]"
+echo "databaselogin [${databaselogin}]"
+echo "databasepass  [${databasepass}]"
+
+    #
+    # Create our new metadata database.
+    sqlsed 'create-database.sql' | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+    sqlsed 'create-login.sql'    | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+    sqlsed 'create-user.sql'     | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+
+    #
+    # Set the template values
+    databasename="FirethornUserdata011"
+    databasepath='C:\\Program Files\\Microsoft SQL Server\\MSSQL10.MSSQLSERVER\\MSSQL\\DATA'
+    databaseuser="${databasename:?}User"
+    databaselogin="${databasename:?}Login"
+    databasepass="${databasename:?}$(pwgen -s 5 1)"
+
+echo "databasename  [${databasename}]"
+echo "databaseuser  [${databaseuser}]"
+echo "databaselogin [${databaselogin}]"
+echo "databasepass  [${databasepass}]"
+
+    #
+    # Create our userdata database.
+    sqlsed 'create-database.sql' | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+    sqlsed 'create-login.sql'    | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+    sqlsed 'create-user.sql'     | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+

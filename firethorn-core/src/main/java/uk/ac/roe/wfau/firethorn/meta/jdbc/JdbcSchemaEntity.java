@@ -43,6 +43,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
@@ -552,6 +553,7 @@ public class JdbcSchemaEntity
                 }
             @Override
             public JdbcTable select(final String name)
+            throws NotFoundException
                 {
                 return factories().jdbc().tables().select(
                     JdbcSchemaEntity.this,
@@ -595,6 +597,15 @@ public class JdbcSchemaEntity
             public void scan()
                 {
                 JdbcSchemaEntity.this.scansync();
+                }
+            @Override
+            public JdbcTable select(Identifier ident) throws NotFoundException
+                {
+                // TODO Add parent constraint.
+                log.debug("select(Identifier) [{}]", ident);
+                return factories().jdbc().tables().select(
+                    ident
+                    );
                 }
             };
         }
@@ -640,19 +651,20 @@ public class JdbcSchemaEntity
                         final String tttype = tables.getString(JdbcTypes.JDBC_META_TABLE_TYPE);
                         log.debug("Found table [{}.{}.{}]", new Object[]{tcname, tsname, ttname});
 
-                        JdbcTable table = tablesimpl().select(
-                            ttname
-                            );
-                        if (table != null)
-                            {
+                        // TODO Remove the try/catch
+                        try {
+                            final JdbcTable table = tablesimpl().select(
+                                ttname
+                                );
                             table.meta().jdbc().type(
                                 JdbcTable.TableType.match(
                                     tttype
                                     )
                                 );
                             }
-                        else {
-                            table = tablesimpl().create(
+                        catch (final NotFoundException ouch)
+                            {
+                            tablesimpl().create(
                                 ttname,
                                 JdbcTable.TableType.match(
                                     tttype

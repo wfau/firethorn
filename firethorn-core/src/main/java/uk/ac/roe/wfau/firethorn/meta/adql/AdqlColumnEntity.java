@@ -27,6 +27,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
@@ -35,6 +37,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
@@ -45,6 +49,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
  *
  *
  */
+@Slf4j
 @Entity()
 @Access(
     AccessType.FIELD
@@ -117,6 +122,39 @@ public class AdqlColumnEntity
         public Class<?> etype()
             {
             return AdqlColumnEntity.class ;
+            }
+
+        @Autowired
+        private AdqlTable.Factory tables ;
+        
+        @Override
+        @SelectEntityMethod
+        public AdqlColumn select(final Identifier ident)
+        throws NotFoundException
+            {
+            log.debug("select(Identifier) [{}]", ident);
+            if (ident instanceof ProxyIdentifier)
+                {
+                log.debug("-- proxy identifier");
+                ProxyIdentifier proxy = (ProxyIdentifier) ident;
+                
+                log.debug("-- parent table");
+                AdqlTable table = tables.select(
+                    proxy.parent()
+                    ); 
+
+                log.debug("-- proxy column");
+                AdqlColumn column = table.columns().select(
+                    proxy.base()
+                    );
+                
+                return column ;
+                }
+            else {
+                return super.select(
+                    ident
+                    );
+                }
             }
 
         @Override

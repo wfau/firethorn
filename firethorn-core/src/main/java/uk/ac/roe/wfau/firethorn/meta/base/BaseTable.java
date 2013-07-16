@@ -18,8 +18,10 @@
 package uk.ac.roe.wfau.firethorn.meta.base;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 
 /**
@@ -95,16 +97,18 @@ extends BaseComponent
     extends Entity.EntityFactory<TableType>
         {
         /**
-         * Select all the tables from a schema.
+         * Select all the tables.
          *
          */
         public Iterable<TableType> select(final SchemaType parent);
 
         /**
-         * Select a named table from a schema.
+         * Select a table by name.
+         * @throws NotFoundException 
          *
          */
-        public TableType select(final SchemaType parent, final String name);
+        public TableType select(final SchemaType parent, final String name)
+        throws NotFoundException;
 
         /**
          * Text search for tables (name starts with).
@@ -168,6 +172,13 @@ extends BaseComponent
          *
          */
         public ColumnType select(final String name)
+        throws NotFoundException;
+
+        /**
+         * Select a column by ident.
+         * 
+         */
+        public ColumnType select(final Identifier ident)
         throws NotFoundException;
 
         }

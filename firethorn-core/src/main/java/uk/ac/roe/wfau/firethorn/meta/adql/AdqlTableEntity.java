@@ -41,8 +41,11 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
@@ -141,6 +144,40 @@ public class AdqlTableEntity
             return AdqlTableEntity.class ;
             }
 
+        @Autowired
+        private AdqlSchema.Factory schemas;
+        
+        @Override
+        @SelectEntityMethod
+        public AdqlTable select(final Identifier ident)
+        throws NotFoundException
+            {
+            log.debug("select(Identifier) [{}]", ident);
+            if (ident instanceof ProxyIdentifier)
+                {
+                log.debug("-- proxy identifier");
+                ProxyIdentifier proxy = (ProxyIdentifier) ident;
+                
+                log.debug("-- parent schema");
+                AdqlSchema schema = schemas.select(
+                    proxy.parent()
+                    ); 
+
+                log.debug("-- proxy table");
+                AdqlTable table = schema.tables().select(
+                    proxy.base()
+                    );
+                
+                return table;
+                }
+            else {
+                return super.select(
+                    ident
+                    );
+                }
+            }
+        
+        
         @Override
         @CreateEntityMethod
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base)
@@ -558,6 +595,28 @@ public class AdqlTableEntity
                             ),
                         AdqlTableEntity.this
                         );
+                    }
+                }
+
+            @Override
+            public AdqlColumn select(Identifier ident)
+            throws NotFoundException
+                {
+                log.debug("select(Identifier) [{}]", ident);
+                if (depth() == CopyDepth.THIN)
+                    {
+                    return new AdqlColumnProxy(
+                        base().columns().select(
+                            ident
+                            ),
+                        AdqlTableEntity.this
+                        );
+                    }
+                else {
+                    log.error("Wrong depth for proxy [{}]", depth());
+                    throw new IdentifierNotFoundException(
+                        ident
+                        ); 
                     }
                 }
             };

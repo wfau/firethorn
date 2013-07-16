@@ -92,11 +92,11 @@ public class AdqlTableController
      *
      */
     @ModelAttribute(TARGET_ENTITY)
-    public AdqlTable entity(
+    public AdqlTable table(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         ) throws NotFoundException {
-        log.debug("schema() [{}]", ident);
+        log.debug("table() [{}]", ident);
         return factories().adql().tables().select(
             factories().adql().tables().idents().ident(
                 ident
@@ -112,11 +112,11 @@ public class AdqlTableController
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public AdqlTableBean jsonSelect(
         @ModelAttribute(TARGET_ENTITY)
-        final AdqlTable entity
+        final AdqlTable table
         ){
-        log.debug("jsonSelect()");
+        log.debug("select()");
         return bean(
-            entity
+            table
             );
         }
 
@@ -131,21 +131,21 @@ public class AdqlTableController
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @ModelAttribute(TARGET_ENTITY)
-        final AdqlTable entity
+        final AdqlTable table
         ){
 
         if (name != null)
             {
             if (name.length() > 0)
                 {
-                entity.name(
+                table.name(
                     name
                     );
                 }
             }
 
         return bean(
-            entity
+            table
             );
         }
     }

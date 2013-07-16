@@ -96,6 +96,7 @@ extends BaseComponentEntity
     protected static final String DB_ADQL_UTYPE_COL = "adqlutype" ;
     protected static final String DB_ADQL_UNITS_COL = "adqlunits" ;
     
+    /*
     @Repository
     public static class EntityFactory
     extends AbstractEntityFactory<BaseColumn<?>>
@@ -127,6 +128,7 @@ extends BaseComponentEntity
             return null;
             }
         }
+    */
 
     protected BaseColumnEntity()
         {

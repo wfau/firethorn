@@ -41,7 +41,7 @@ POST "${queryresource:?}/schemas/import" \
     --data   "adql.resource.schema.import.base=${baseschema:?}" \
     | ./pp | tee query-schema.json
 
-# --data   'adql.schema.depth=FULL' \
+#    --data   'adql.schema.depth=THIN' \
 
 queryschema=$(
     cat query-schema.json | ident | node

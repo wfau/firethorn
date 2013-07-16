@@ -53,7 +53,8 @@ POST "${queryschemaid:?}/tables/import" \
     --data   "adql.schema.table.import.name=${querytablename:?}" \
     | ./pp | tee query-table.json
 
-# --data   'adql.table.depth=FULL' \
+
+#    --data   'adql.table.depth=FULL' \
 
 querytable=$(
     cat query-table.json | ident | node

@@ -37,8 +37,10 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
@@ -510,6 +512,7 @@ implements AdqlSchema
 
             @Override
             public AdqlTable select(final String name)
+            throws NotFoundException
                 {
                 log.debug("tables().select(String) [{}][{}][{}][{}]", ident(), name(), depth(), base());
                 if (depth() == CopyDepth.FULL)
@@ -620,6 +623,27 @@ implements AdqlSchema
                             ),
                         AdqlSchemaEntity.this
                         );
+                    }
+                }
+
+            @Override
+            public AdqlTable select(Identifier ident) throws NotFoundException
+                {
+                log.debug("select(Identifier) [{}]", ident);
+                if (depth() == CopyDepth.THIN)
+                    {
+                    return new AdqlTableProxy(
+                        base().tables().select(
+                            ident
+                            ),
+                        AdqlSchemaEntity.this
+                        );
+                    }
+                else {
+                    log.error("Wrong depth for proxy [{}]", depth());
+                    throw new IdentifierNotFoundException(
+                        ident
+                        ); 
                     }
                 }
             };

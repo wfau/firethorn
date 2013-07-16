@@ -28,7 +28,6 @@ POST "${queryresource?}/schemas/create" \
     --data   "adql.resource.schema.create.name=${queryschemaname:?}" \
     | ./pp | tee query-schema.json
 
-# --data   'adql.schema.depth=FULL' \
 
 queryschema=$(
     cat query-schema.json | ident | node

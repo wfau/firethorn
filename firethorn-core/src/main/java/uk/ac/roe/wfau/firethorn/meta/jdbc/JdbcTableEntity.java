@@ -46,9 +46,11 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQueryEntity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 
@@ -230,8 +232,9 @@ implements JdbcTable
         @Override
         @SelectEntityMethod
         public JdbcTable select(final JdbcSchema parent, final String name)
+        throws NotFoundException
             {
-            return super.first(
+            return super.single(
                 super.query(
                     "JdbcTable-select-parent.name"
                     ).setEntity(
@@ -456,6 +459,17 @@ implements JdbcTable
                 {
                 JdbcTableEntity.this.scansync();
                 }
+
+            @Override
+            public JdbcColumn select(Identifier ident)
+            throws NotFoundException
+                {
+                // TODO Add parent constraint.
+                log.debug("select(Identifier) [{}]", ident);
+                return factories().jdbc().columns().select(
+                    ident
+                    );
+                }
             };
         }
 
@@ -590,6 +604,8 @@ implements JdbcTable
                                 colsize
                                 }
                             );
+
+                        // TODO Remove the try/catch
                         try {
                             final JdbcColumn column = columnsimpl().select(
                                 colname

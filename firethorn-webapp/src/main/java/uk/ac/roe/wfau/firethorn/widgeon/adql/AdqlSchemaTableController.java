@@ -161,6 +161,7 @@ extends AbstractController
 
     /**
      * JSON request to select by name.
+     * @throws NotFoundException  
      *
      */
     @ResponseBody
@@ -170,7 +171,7 @@ extends AbstractController
         final AdqlSchema schema,
         @RequestParam(SELECT_NAME)
         final String name
-        ){
+        ) throws NotFoundException {
         log.debug("select(String) [{}]", name);
         return new AdqlTableBean(
             schema.tables().select(

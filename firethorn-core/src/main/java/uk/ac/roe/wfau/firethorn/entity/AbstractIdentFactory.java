@@ -35,8 +35,9 @@ implements Entity.IdentFactory
 
     private static final Pattern p1 = Pattern.compile("^[0-9]+$") ;
     private static final Pattern p2 = Pattern.compile("^\\(([0-9]+):([0-9]+)\\)$") ;
-    private static final Pattern p3 = Pattern.compile("^\\((\\([0-9]+:[0-9]+\\)):(\\([0-9]+:[0-9]+\\))\\)$") ;
-
+    private static final Pattern p3 = Pattern.compile("^\\((\\([0-9]+:[0-9]+\\)):([0-9]+)\\)$") ;
+    private static final Pattern p4 = Pattern.compile("^\\((\\([0-9]+:[0-9]+\\)):(\\([0-9]+:[0-9]+\\))\\)$") ;
+    
     @Override
     public Identifier ident(final String string)
         {
@@ -78,9 +79,24 @@ implements Entity.IdentFactory
                         );
                     }
                 else {
-                    throw new IdentifierFormatException(
-                        string
-                        ); 
+                    Matcher m4 = p4.matcher(string);
+                    if (m4.matches())
+                        {
+                        log.debug("m4 matches");
+                        return new ProxyIdentifier(
+                            ident(
+                                m4.group(1)
+                                ),
+                            ident(
+                                m4.group(2)
+                                )
+                            );
+                        }
+                    else {
+                        throw new IdentifierFormatException(
+                            string
+                            ); 
+                        }
                     }
                 }
             }

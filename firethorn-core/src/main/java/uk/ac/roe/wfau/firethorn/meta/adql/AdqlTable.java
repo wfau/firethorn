@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
@@ -139,6 +140,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
         public AdqlColumn create(final BaseColumn<?> base);
 
         }
+
     @Override
     public Columns columns();
 

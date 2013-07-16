@@ -32,9 +32,11 @@ import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 
 /**
@@ -296,6 +298,14 @@ public class IvoaTableEntity
                     IvoaTableEntity.this,
                     text
                     );
+                }
+
+            @Override
+            public IvoaColumn select(Identifier ident)
+            throws NotFoundException
+                {
+                // TODO Auto-generated method stub
+                return null;
                 }
             };
         }
