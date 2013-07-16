@@ -88,7 +88,6 @@ implements Entity.EntityFactory<EntityType>
     public EntityType select(final Identifier ident)
     throws NotFoundException
         {
-        log.debug("---- ---- ---- ----");
         log.debug("select() [{}]", (ident != null) ? ident.value() : null);
         @SuppressWarnings("unchecked")
         final
@@ -96,7 +95,6 @@ implements Entity.EntityFactory<EntityType>
             etype(),
             ident
             );
-        log.debug("---- ----");
         if (result != null)
             {
             return result ;

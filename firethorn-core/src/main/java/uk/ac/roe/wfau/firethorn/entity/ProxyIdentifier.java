@@ -24,7 +24,16 @@ public class ProxyIdentifier
 implements Identifier
     {
     private Identifier parent;
+    public Identifier parent()
+        {
+        return this.parent;
+        }
+
     private Identifier base;
+    public Identifier base()
+        {
+        return this.base;
+        }
     
     public ProxyIdentifier(Identifier parent, Identifier base)
         {

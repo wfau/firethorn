@@ -130,16 +130,14 @@
 
             source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh"  'Query workspace'
 
-            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}" 'TWOMASS'         "${queryspace:?}" 'twomass'
-            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}" 'ATLASv20130304'  "${queryspace:?}" 'atlas'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}"  'TWOMASS'         "${queryspace:?}" 'twomass'
+            source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}"  'ATLASv20130304'  "${queryspace:?}" 'atlas'
 
-            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh" "${queryspace:?}"  'ukidss'
-
-            source "${FIRETHORN_TEST:?}/04-04-import-query-table.sh"  "${adqlspace:?}" 'UKIDSSDR5PLUS' 'gcsPointSource'        "${queryschema:?}" 'gcsPointSource'
-            source "${FIRETHORN_TEST:?}/04-04-import-query-table.sh"  "${adqlspace:?}" 'UKIDSSDR5PLUS' 'gcsSourceXtwomass_psc' "${queryschema:?}" 'gcsSourceXtwomass_psc'
-
-            source "${FIRETHORN_TEST:?}/04-04-import-query-table.sh"  "${adqlspace:?}" 'UKIDSSDR5PLUS' 'lasSource'             "${queryschema:?}" 'lasSource' 
-            source "${FIRETHORN_TEST:?}/04-04-import-query-table.sh"  "${adqlspace:?}" 'UKIDSSDR5PLUS' 'lasSourceXDR7PhotoObj' "${queryschema:?}" 'lasSourceXDR7PhotoObj'
+            source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh" "${queryspace:?}" 'ukidss'
+            source "${FIRETHORN_TEST:?}/04-04-import-query-table.sh"  "${adqlspace:?}"  'UKIDSSDR5PLUS' 'gcsPointSource'        "${queryschema:?}" 'gcsPointSource'
+            source "${FIRETHORN_TEST:?}/04-04-import-query-table.sh"  "${adqlspace:?}"  'UKIDSSDR5PLUS' 'gcsSourceXtwomass_psc' "${queryschema:?}" 'gcsSourceXtwomass_psc'
+            source "${FIRETHORN_TEST:?}/04-04-import-query-table.sh"  "${adqlspace:?}"  'UKIDSSDR5PLUS' 'lasSource'             "${queryschema:?}" 'lasSource' 
+            source "${FIRETHORN_TEST:?}/04-04-import-query-table.sh"  "${adqlspace:?}"  'UKIDSSDR5PLUS' 'lasSourceXDR7PhotoObj' "${queryschema:?}" 'lasSourceXDR7PhotoObj'
 
             source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh" "${queryspace:?}" 'query'
 
