@@ -47,8 +47,10 @@
 [root@tau]
 
     #
-    # Install sqsh
-    apt-get install sqsh
+    # Install sqsh pwgen and mercurial
+    apt-get -y install sqsh
+    apt-get -y install pwgen
+    apt-get -y install mercurial
 
     #
     # Create sqsh user
@@ -94,12 +96,30 @@ EOF
     ssh -L '*:1435:ramses5:1433' -L '*:1439:ramses9:1433' "${username:?}@${hostname:?}"
 
 #
-# Login as sqsh user and run sqsh.
+# Login as sqsh user.
 [user@desktop]
 
     ssh sqsh@tau
 
 [sqsh@tau]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     #
     # Setting from firethorn.properties

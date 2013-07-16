@@ -26,62 +26,115 @@
     ....
     ....
 
+# ------------------------------------------------
+# Clone a copy of the source code. 
+#[sqsh@tau]
+
+
+cat >  "${HOME:?}/firethorn.settings" << 'EOX'
+FIRETHORN_BASE=${FIRETHORN_BASE:-${HOME}/firethorn}
+FIRETHORN_CODE=${FIRETHORN_CODE:-${FIRETHORN_BASE:?}/clone}
+
+export MAVEN_OPTS=-Xmx128m
+EOX
+
+        source "${HOME:?}/firethorn.settings"
+
+        codepath="$(dirname  ${FIRETHORN_CODE:?})"
+        codename="$(basename ${FIRETHORN_CODE:?})"
+
+        if [ ! -e "${codepath:?}" ]
+        then
+            mkdir "${codepath:?}"
+        fi
+
+        hgrepo='http://wfau.metagrid.co.uk/code/firethorn/'
+
+        pushd "${codepath:?}"
+            if [ ! -e "${codename:?}" ]
+            then
+                 hg clone "${hgrepo:?}" "${codename:?}"
+            else
+                pushd "${codename:?}"
+                    hg pull
+                    hg update
+                popd
+            fi
+        popd
+
 
 # ------------------------------------------------
 # Create our metadata and userdata databases.
+#[sqsh@tau]
 
-    servername=master
-    serverlogin=xxxx
-    serverpass=xxxx
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"    
+        pushd 'firethorn-sqlserver/src/sql'
 
-    #
-    # Function to fill in the template values.
-    sqlsed()
-        {
-        sed '
-            s|{databasename}|'"${databasename}"'|g
-            s|{databasepath}|'"${databasepath}"'|g
-            s|{databaseuser}|'"${databaseuser}"'|g
-            s|{databasepass}|'"${databasepass}"'|g
-            s|{databaselogin}|'"${databaselogin}"'|g
-            ' "${1:?}"
-        }
+            servername=master
+            serverlogin=xxxx
+            serverpass=xxxx
 
-    #
-    # Set the template values
-    databasename="FirethornMetadata011"
-    databasepath='C:\\Program Files\\Microsoft SQL Server\\MSSQL10.MSSQLSERVER\\MSSQL\\DATA'
-    databaseuser="${databasename:?}User"
-    databaselogin="${databasename:?}Login"
-    databasepass="${databasename:?}$(pwgen -s 5 1)"
+            #
+            # Function to fill in the template values.
+            sqlsed()
+                {
+                sed '
+                    s|{databasename}|'"${databasename}"'|g
+                    s|{databasepath}|'"${databasepath}"'|g
+                    s|{databaseuser}|'"${databaseuser}"'|g
+                    s|{databasepass}|'"${databasepass}"'|g
+                    s|{databaselogin}|'"${databaselogin}"'|g
+                    ' "${1:?}"
+                }
 
-echo "databasename  [${databasename}]"
-echo "databaseuser  [${databaseuser}]"
-echo "databaselogin [${databaselogin}]"
-echo "databasepass  [${databasepass}]"
+            #
+            # Set the template values
+            databasename="FirethornMetadataStelios01"
+            databasepath='C:\\Program Files\\Microsoft SQL Server\\MSSQL10.MSSQLSERVER\\MSSQL\\DATA'
+            databaseuser="${databasename:?}User"
+            databaselogin="${databasename:?}Login"
+            databasepass="${databasename:?}$(pwgen -s 5 1)"
 
-    #
-    # Create our new metadata database.
-    sqlsed 'create-database.sql' | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
-    sqlsed 'create-login.sql'    | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
-    sqlsed 'create-user.sql'     | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+            echo "databasename  [${databasename}]"
+            echo "databaseuser  [${databaseuser}]"
+            echo "databaselogin [${databaselogin}]"
+            echo "databasepass  [${databasepass}]"
 
-    #
-    # Set the template values
-    databasename="FirethornUserdata011"
-    databasepath='C:\\Program Files\\Microsoft SQL Server\\MSSQL10.MSSQLSERVER\\MSSQL\\DATA'
-    databaseuser="${databasename:?}User"
-    databaselogin="${databasename:?}Login"
-    databasepass="${databasename:?}$(pwgen -s 5 1)"
+            #
+            # Create our new metadata database.
+            sqlsed 'create-database.sql' | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+            sqlsed 'create-login.sql'    | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+            sqlsed 'create-user.sql'     | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
 
-echo "databasename  [${databasename}]"
-echo "databaseuser  [${databaseuser}]"
-echo "databaselogin [${databaselogin}]"
-echo "databasepass  [${databasepass}]"
+            #
+            # Set the template values
+            databasename="FirethornUserdataStelios01"
+            databasepath='C:\\Program Files\\Microsoft SQL Server\\MSSQL10.MSSQLSERVER\\MSSQL\\DATA'
+            databaseuser="${databasename:?}User"
+            databaselogin="${databasename:?}Login"
+            databasepass="${databasename:?}$(pwgen -s 5 1)"
 
-    #
-    # Create our userdata database.
-    sqlsed 'create-database.sql' | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
-    sqlsed 'create-login.sql'    | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
-    sqlsed 'create-user.sql'     | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+            echo "databasename  [${databasename}]"
+            echo "databaseuser  [${databaseuser}]"
+            echo "databaselogin [${databaselogin}]"
+            echo "databasepass  [${databasepass}]"
+
+            #
+            # Create our userdata database.
+            sqlsed 'create-database.sql' | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+            sqlsed 'create-login.sql'    | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+            sqlsed 'create-user.sql'     | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+
+
+
+
+        #
+        # Corresponding deletes if/when required.
+        # sqlsed 'delete-user.sql'     | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+        # sqlsed 'delete-login.sql'    | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+        # sqlsed 'delete-database.sql' | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+
+
+
 
