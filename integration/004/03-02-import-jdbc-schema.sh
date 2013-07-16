@@ -37,13 +37,15 @@ jdbcschemaident=$(
     cat jdbc-schema.json | ident
     )
 
+
 POST "${adqlresource:?}/schemas/import" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    --data   'adql.schema.depth=THIN' \
     --data   "adql.resource.schema.import.name=${adqlschemaname:?}" \
     --data   "adql.resource.schema.import.base=${jdbcschemaident:?}" \
     | ./pp | tee adql-schema.json
+
+# --data   'adql.schema.depth=FULL' \
 
 adqlschema=$(
     cat adql-schema.json | ident | node

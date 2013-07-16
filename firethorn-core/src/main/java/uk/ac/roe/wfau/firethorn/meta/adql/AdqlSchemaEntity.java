@@ -188,6 +188,24 @@ implements AdqlSchema
         
         @Override
         @CreateEntityMethod
+        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name, final BaseTable<?, ?> base)
+            {
+            AdqlSchemaEntity schema = new AdqlSchemaEntity(
+                parent,
+                name
+                );
+            super.insert(
+                schema
+                );
+            schema.realize(
+                depth,
+                base
+                );
+            return schema;
+            }
+
+        @Override
+        @CreateEntityMethod
         public AdqlSchema create(final AdqlResource parent, final String name, final BaseTable<?, ?> base)
             {
             AdqlSchemaEntity schema = new AdqlSchemaEntity(
@@ -365,17 +383,36 @@ implements AdqlSchema
         }
     
     /**
-     * Convert this into a full copy.
-     * @todo Delay the full scan until the data is actually requested. 
+     * Create a copy of the base table.
      * 
      */
     protected void realize(final BaseTable<?, ?> base)
         {
-        if ((base != null) && (this.depth == CopyDepth.FULL))
+        realize(
+            CopyDepth.FULL,
+            base
+            );
+        }
+    
+    /**
+     * Create a copy of the base table.
+     * @todo Delay the full scan until the data is actually requested. 
+     * 
+     */
+    protected void realize(final CopyDepth depth, final BaseTable<?, ?> base)
+        {
+        if (base != null)
             {
             tables().create(
+                CopyDepth.FULL,
                 base
                 );
+            }
+        else {
+            log.error("Base table should not be null");
+            throw new IllegalArgumentException(
+                "Base table should not be null"
+                ); 
             }
         }
     
@@ -456,7 +493,7 @@ implements AdqlSchema
             @SuppressWarnings("unchecked")
             public Iterable<AdqlTable> select()
                 {
-                log.debug("select() [{}][{}][{}][{}]", ident(), name(), depth(), base());
+                log.debug("tables().select() [{}][{}][{}][{}]", ident(), name(), depth(), base());
                 if (depth() == CopyDepth.FULL)
                     {
                     return factories().adql().tables().select(
@@ -474,7 +511,7 @@ implements AdqlSchema
             @Override
             public AdqlTable select(final String name)
                 {
-                log.debug("select(String) [{}][{}][{}][{}]", ident(), name(), depth(), base());
+                log.debug("tables().select(String) [{}][{}][{}][{}]", ident(), name(), depth(), base());
                 if (depth() == CopyDepth.FULL)
                     {
                     return factories().adql().tables().select(
@@ -494,6 +531,7 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final CopyDepth depth, BaseTable<?, ?> base)
                 {
+                // TODO - ???
                 if (depth() != CopyDepth.FULL)
                     {
                     realize();
@@ -509,6 +547,7 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final BaseTable<?,?> base)
                 {
+                // TODO - ???
                 if (depth() != CopyDepth.FULL)
                     {
                     realize();
@@ -522,6 +561,7 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final CopyDepth depth, BaseTable<?, ?> base, String name)
                 {
+                // TODO - ???
                 if (depth() != CopyDepth.FULL)
                     {
                     realize();
@@ -536,6 +576,7 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final BaseTable<?,?> base, final String name)
                 {
+                // TODO - ???
                 if (depth() != CopyDepth.FULL)
                     {
                     realize();
@@ -550,6 +591,7 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final AdqlQuery query)
                 {
+                // TODO - ???
                 if (depth() != CopyDepth.FULL)
                     {
                     realize();

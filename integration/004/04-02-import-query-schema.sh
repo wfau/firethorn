@@ -24,13 +24,6 @@ baseschemaname=${2:?}
 queryresource=${3:?}
 queryschemaname=${4:?}
 
-
-baseresource="${adqlspace:?}"
-baseschemaname='TWOMASS'
-queryresource="${queryspace:?}"
-queryschemaname='twomass'
-
-
 POST "${baseresource:?}/schemas/select" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
@@ -44,10 +37,11 @@ baseschema=$(
 POST "${queryresource:?}/schemas/import" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    --data   'adql.schema.depth=THIN' \
     --data   "adql.resource.schema.import.name=${queryschemaname:?}" \
     --data   "adql.resource.schema.import.base=${baseschema:?}" \
     | ./pp | tee query-schema.json
+
+# --data   'adql.schema.depth=FULL' \
 
 queryschema=$(
     cat query-schema.json | ident | node

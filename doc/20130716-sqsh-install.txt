@@ -1,0 +1,170 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#
+# Create Ubuntu VM.
+[root@kvm-server]
+
+
+    ischnura-createvm
+
+        Select machine name (1) 1
+        Select base image (1) 3
+
+        INFO : Node name [tau]
+        INFO : Base name [ubuntu-12-base-20130106.qcow]
+        INFO : Disc name [tau.qcow]
+        INFO : Disc size [8G]
+
+        Create virtual machine (Y/n)
+        ....
+        Domain tau started
+
+#
+# Login and install sqsh.
+[user@desktop]
+
+    ssh root@tau
+
+[root@tau]
+
+    #
+    # Install sqsh
+    apt-get install sqsh
+
+    #
+    # Create sqsh user
+    username='sqsh'
+    useradd --create-home --shell /bin/bash --groups users "${username:?}"
+    userhome=$(getent passwd "${username:?}" | cut -d: -f6)
+
+    if [ ! -e "${userhome:?}/.ssh" ]
+    then
+        mkdir "${userhome:?}/.ssh"
+    fi
+
+    cp "${HOME}/.ssh/authorized_keys" "${userhome:?}/.ssh"
+
+    chown -R "${username:?}" "${userhome:?}/.ssh"
+    chgrp -R "${username:?}" "${userhome:?}/.ssh"
+    chmod g=,o=,u=rwx "${userhome:?}/.ssh"
+
+    #
+    # Configure sqsh
+    cat >> /etc/freetds/freetds.conf << EOF
+[ramses5]
+    host = localhost
+    port = 1435
+
+[ramses9]
+    host = localhost
+    port = 1439
+EOF
+
+#
+# Login as sqsh user and setup the ssh tunnel.
+[user@desktop]
+
+    ssh sqsh@tau
+
+[sqsh@tau]
+
+    username=xxxx
+    hostname=fenrir.roe.ac.uk
+    
+    ssh-keyscan ${hostname:?} >> ~/.ssh/known_hosts
+    ssh -L '*:1435:ramses5:1433' -L '*:1439:ramses9:1433' "${username:?}@${hostname:?}"
+
+#
+# Login as sqsh user and run sqsh.
+[user@desktop]
+
+    ssh sqsh@tau
+
+[sqsh@tau]
+
+    #
+    # Setting from firethorn.properties
+    databasename=FirethornMetadata011
+    databaselogin=FirethornMetadata011Login
+    databaseuser=FirethornMetadata011User
+    databasepass=xxxx
+
+    #
+    # Login ..
+    sqsh -S ramses9 -U "${databaselogin}" -P "${databasepass}" -D "${databasename}"
+
+        SELECT * FROM AdqlSchemaEntity WHERE ident = 21528674 ;
+        GO
+
+            ident                parent               base                
+            21528674.000000      21495813.000000      21528670.000000
+
+
+        SELECT * FROM BaseSchemaEntity WHERE ident = 21528674 ;
+        GO
+
+            ident           created                     modified                    name    text        scandate    scantime    status      owner           parent          uuid    entitytype copydepth                                                                                                                                                                                                                                                      
+            21528674.000000 2013-07-15 22:38:50.2400000 2013-07-15 23:38:50.2400000 twomass NULL        NULL        0.000000    CREATED     21430273.000000 21495813.000000 NULL    NULL       FULL                                                                                                                                                                                                                                                           
+
+
+        DELETE FROM AdqlSchemaEntity WHERE ident = 21528674 ;
+        DELETE FROM BaseSchemaEntity WHERE ident = 21528674 ;
+        GO
+
+        The DELETE permission was denied on the object 'AdqlSchemaEntity', database 'FirethornMetadata011', schema 'dbo'.
+
+        Note to self, grant delete.
+
+    #
+    # Login as admin and fix ..
+    sqsh -S ramses9 -U "${adminlogin}" -P "${adminpass}" -D "${databasename}"
+
+        GRANT DELETE ON SCHEMA::[dbo] TO [FirethornMetadata011User]
+        GO
+
+    #
+    # Login and try again ..
+    sqsh -S ramses9 -U "${databaselogin}" -P "${databasepass}" -D "${databasename}"
+
+        DELETE FROM AdqlSchemaEntity WHERE ident = 21528674 ;
+        DELETE FROM BaseSchemaEntity WHERE ident = 21528674 ;
+        GO
+
+        The DELETE statement conflicted with the REFERENCE constraint "FKED0880D3CC3B1AD1". The conflict occurred in database "FirethornMetadata011", table "dbo.AdqlTableEntity", column 'parent'.
+
+        DELETE FROM AdqlTableEntity WHERE parent = 21528674 ;
+
+        The DELETE statement conflicted with the REFERENCE constraint "FK88A63397C0454458". The conflict occurred in database "FirethornMetadata011", table "dbo.AdqlColumnEntity", column 'parent'.
+
+        DELETE FROM AdqlColumnEntity WHERE parent IN (SELECT ident FROM AdqlTableEntity WHERE parent = 21528674) ;
+        DELETE FROM AdqlTableEntity  WHERE parent = 21528674 ;
+        DELETE FROM AdqlSchemaEntity WHERE ident = 21528674 ;
+        GO
+
+        DELETE FROM BaseColumnEntity WHERE parent IN (SELECT ident FROM BaseTableEntity WHERE parent = 21528674) ;
+        DELETE FROM BaseTableEntity  WHERE parent = 21528674 ;
+        DELETE FROM BaseSchemaEntity WHERE ident = 21528674 ;
+        GO
+
+
+

@@ -25,9 +25,10 @@ queryschemaname=${2:?}
 POST "${queryresource?}/schemas/create" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    --data   'adql.schema.depth=FULL' \
     --data   "adql.resource.schema.create.name=${queryschemaname:?}" \
     | ./pp | tee query-schema.json
+
+# --data   'adql.schema.depth=FULL' \
 
 queryschema=$(
     cat query-schema.json | ident | node

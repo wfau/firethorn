@@ -103,11 +103,14 @@ implements AdqlParser
         final AdqlResource workspace = schema.resource();
         //
         // Create a full set of all the available tables.
+        log.debug("Initalising tables");
         final Set<DBTable> tables = new HashSet<DBTable>();
         for (final AdqlSchema temp : workspace.schemas().select())
             {
+            log.debug("  schema [{}]", temp.name());
             for (final AdqlTable table : temp.tables().select())
                 {
+                log.debug("  table  [{}][{}]", temp.name(), table.name());
                 tables.add(
                     factory.create(
                         this.mode,

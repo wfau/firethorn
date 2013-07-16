@@ -36,6 +36,7 @@
     GRANT INSERT     ON SCHEMA::[dbo] TO [{databaseuser}]
     GRANT SELECT     ON SCHEMA::[dbo] TO [{databaseuser}]
     GRANT UPDATE     ON SCHEMA::[dbo] TO [{databaseuser}]
+    GRANT DELETE     ON SCHEMA::[dbo] TO [{databaseuser}]
     go
     
 
