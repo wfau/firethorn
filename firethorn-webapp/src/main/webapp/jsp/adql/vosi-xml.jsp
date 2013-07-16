@@ -79,17 +79,17 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                         <%
                         }
                     else {
-                        %></ucd><%
+                        %><ucd/><%
                         }
-                    if (meta.adql().unit() != null)
+                    if (meta.adql().units() != null)
                         {
                         %>
-                        <unit><%= meta.adql().unit() %></unit>
+                        <unit><%= meta.adql().units() %></unit>
                         <%
                         }
                     else {
                         %>
-                        </unit>
+                        <unit/>
                         <%
                         }
                     if (meta.adql().utype() != null)
@@ -100,12 +100,12 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                         }
                     else {
                         %>
-                        </utype>
+                        <utype/>
                         <%
                         }
                     if (meta.adql().type() != null)
                         {
-                        if (meta.adql().arraysize() != null)
+                        if ((meta.adql().arraysize() != null) && (meta.adql().arraysize() != 0))
                             {
                             if (meta.adql().arraysize() == -1)
                                 {
@@ -115,7 +115,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                                 }
                             else {
                                 %>
-                                <type size='<%= meta.adql().arraysize() %>'<%= meta.adql().type() %></type>
+                                <type size='<%= meta.adql().arraysize() %>'><%= meta.adql().type() %></type>
                                 <%
                                 }
                             }
