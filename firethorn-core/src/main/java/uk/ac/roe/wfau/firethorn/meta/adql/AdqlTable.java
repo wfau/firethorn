@@ -19,10 +19,8 @@ package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
-import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 
 /**
  *
@@ -76,12 +74,12 @@ extends BaseTable<AdqlTable, AdqlColumn>
         {
         /**
          * Create a new table.
-         * 
+         *
          */
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base);
         /**
          * Create a new table.
-         * 
+         *
          */
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base);
 
@@ -92,7 +90,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base, final String name);
         /**
          * Create a new table.
-         * 
+         *
          */
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name);
 
@@ -103,7 +101,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
         public AdqlTable create(final AdqlSchema schema, final AdqlQuery query);
         /**
          * Create a new table.
-         * 
+         *
          */
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final AdqlQuery query);
 

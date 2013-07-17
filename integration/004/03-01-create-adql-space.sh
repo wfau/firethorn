@@ -24,7 +24,8 @@ resourcename=${1:?}
 POST "/adql/resource/create" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    --data "adql.resource.create.name=${resourcename:?}" \
+    --data   "urn:adql.copy.depth=${adqlcopydepth:-FULL}" \
+    --data   "adql.resource.create.name=${resourcename:?}" \
     | ./pp | tee adql-space.json
 
 adqlspace=$(

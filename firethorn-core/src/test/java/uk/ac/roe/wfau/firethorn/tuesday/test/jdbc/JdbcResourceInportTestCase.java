@@ -20,10 +20,6 @@ package uk.ac.roe.wfau.firethorn.tuesday.test.jdbc;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
 
 import lombok.extern.slf4j.Slf4j;
@@ -136,18 +132,18 @@ public class JdbcResourceInportTestCase
 
         final JdbcSchema s1 =resource.schemas().select(
             "TWOMASS.dbo"
-            ); 
+            );
         assertNotNull(
             s1
             );
 
-        
+
         final JdbcSchema s2 =resource.schemas().select(
             "TWOMASS.dbo"
-            ); 
+            );
         assertNotNull(
             s2
             );
-        
+
         }
     }

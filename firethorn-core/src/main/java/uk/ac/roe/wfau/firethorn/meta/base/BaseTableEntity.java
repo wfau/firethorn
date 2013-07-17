@@ -30,6 +30,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,13 +39,18 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
+import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 
 /**
  *
  *
  */
+@Slf4j
 @Entity()
 @Access(
     AccessType.FIELD
@@ -91,6 +98,35 @@ extends BaseComponentEntity
             return BaseTableEntity.class;
             }
 
+        @Override
+        @SelectEntityMethod
+        public BaseTable select(final Identifier ident)
+        throws NotFoundException
+            {
+            log.debug("select(Identifier) [{}]", ident);
+            if (ident instanceof ProxyIdentifier)
+                {
+                log.debug("-- proxy identifier");
+                final ProxyIdentifier proxy = (ProxyIdentifier) ident;
+
+                log.debug("-- parent schema");
+                final AdqlSchema schema = factories().adql().schemas().select(
+                    proxy.parent()
+                    );
+
+                log.debug("-- proxy table");
+                final AdqlTable table = schema.tables().select(
+                    proxy.base()
+                    );
+                return table;
+                }
+            else {
+                return super.select(
+                    ident
+                    );
+                }
+            }
+        
         @Autowired
         protected BaseTable.IdentFactory idents ;
         @Override
@@ -125,7 +161,7 @@ extends BaseComponentEntity
             }
 
         @Override
-        public BaseTable<?, ?> select(UUID uuid) throws NotFoundException
+        public BaseTable<?, ?> select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;
@@ -165,7 +201,7 @@ extends BaseComponentEntity
             );
         this.parent = parent;
         }
-    
+
     @Override
     public StringBuilder namebuilder()
         {

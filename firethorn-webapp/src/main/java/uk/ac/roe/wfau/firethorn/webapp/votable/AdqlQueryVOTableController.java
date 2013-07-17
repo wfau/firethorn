@@ -130,9 +130,9 @@ public class AdqlQueryVOTableController
 /*
  * ResultSet.CLOSE_CURSORS_AT_COMMIT
  * Exception reading SQL results [The CLOSE_CURSORS_AT_COMMIT option is not currently supported by the setHoldability method.]
- * 
+ *
  */
-            
+
             //
             // Create an SQL query to get the columns in a specific order.
             final StringBuilder builder = new StringBuilder();

@@ -274,7 +274,7 @@ public class JdbcSchemaEntity
             log.debug("  Parent  [{}]", parent.ident());
             log.debug("  Catalog [{}]", catalog);
             log.debug("  Schema  [{}]", schema);
-            JdbcSchema found = search(
+            final JdbcSchema found = search(
                 parent,
                 catalog,
                 schema
@@ -285,7 +285,7 @@ public class JdbcSchemaEntity
                 }
             else {
                 throw new NotFoundException(
-                    "Unable to find matching schema [" + catalog + "][" + found  + "]" 
+                    "Unable to find matching schema [" + catalog + "][" + found  + "]"
                     );
                 }
             }
@@ -461,7 +461,7 @@ public class JdbcSchemaEntity
             }
 
         @Override
-        public JdbcSchema select(UUID uuid) throws NotFoundException
+        public JdbcSchema select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;
@@ -599,7 +599,7 @@ public class JdbcSchemaEntity
                 JdbcSchemaEntity.this.scansync();
                 }
             @Override
-            public JdbcTable select(Identifier ident) throws NotFoundException
+            public JdbcTable select(final Identifier ident) throws NotFoundException
                 {
                 // TODO Add parent constraint.
                 log.debug("select(Identifier) [{}]", ident);

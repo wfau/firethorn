@@ -32,7 +32,8 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnection;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
@@ -44,7 +45,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(JdbcResourceLinkFactory.RESOURCE_PATH)
 public class JdbcResourceController
-    extends AbstractController
+    extends AbstractEntityController<JdbcResource>
     {
 
     @Override
@@ -112,6 +113,22 @@ public class JdbcResourceController
      */
     public static final String UPDATE_CONN_STATUS = "jdbc.resource.connection.status" ;
 
+    @Override
+    public EntityBean<JdbcResource> bean(final JdbcResource entity)
+        {
+        return new JdbcResourceBean(
+            entity
+            );
+        }
+
+    @Override
+    public Iterable<EntityBean<JdbcResource>> bean(final Iterable<JdbcResource> iter)
+        {
+        return new JdbcResourceBean.Iter(
+            iter
+            );
+        }
+
     /**
      * Get the target resource based on the identifier in the request.
      *
@@ -121,8 +138,7 @@ public class JdbcResourceController
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         ) throws NotFoundException  {
-        log.debug("entity()");
-        log.debug("ident [{}]", ident);
+        log.debug("entity() [{}]", ident);
         final JdbcResource entity = factories().jdbc().resources().select(
             factories().jdbc().resources().idents().ident(
                 ident
@@ -137,22 +153,13 @@ public class JdbcResourceController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcResourceBean jsonSelect(
+    public EntityBean<JdbcResource> select(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcResource entity
         ){
-        log.debug("JSON GET request");
-        try
-            {
-            return new JdbcResourceBean(
-                entity
-                );
-            }
-        catch (final Exception ouch)
-            {
-            log.error("Ouch ...", ouch);
-            return null ;
-            }
+        return bean(
+            entity
+            );
         }
 
     /**
@@ -162,7 +169,10 @@ public class JdbcResourceController
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public JdbcResourceBean jsonUpdate(
+    public EntityBean<JdbcResource>  update(
+        @ModelAttribute(TARGET_ENTITY)
+        final JdbcResource entity,
+
         @RequestParam(value=UPDATE_NAME, required=false) final
         String name,
         @RequestParam(value=UPDATE_STATUS, required=false) final
@@ -177,10 +187,8 @@ public class JdbcResourceController
         @RequestParam(value=UPDATE_CONN_PASS, required=false) final
         String pass,
         @RequestParam(value=UPDATE_CONN_STATUS, required=false) final
-        String action,
+        String action
 
-        @ModelAttribute(TARGET_ENTITY)
-        final JdbcResource entity
         ){
 
         if (name != null)

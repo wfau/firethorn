@@ -40,10 +40,10 @@ public interface ComponentFactories
     {
     /**
      * System UUID factory.
-     * 
+     *
      */
     public Entity.UUIDFactory uuids();
-    
+
     /**
      * Our Spring related things.
      *

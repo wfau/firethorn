@@ -67,7 +67,7 @@ implements AdqlColumn
     @Override
     public void refresh()
         {
-        throw new UnsupportedOperationException(); 
+        throw new UnsupportedOperationException();
         }
 
     /**
@@ -76,13 +76,13 @@ implements AdqlColumn
     @Override
     public void delete()
         {
-        throw new UnsupportedOperationException(); 
+        throw new UnsupportedOperationException();
         }
 
     /**
      * Iterable wrapper.
      * @todo Make this generic and move to a separate class.
-     * 
+     *
      */
     public static class ProxyIterable
     implements Iterable<AdqlColumn>
@@ -107,14 +107,14 @@ implements AdqlColumn
 
         /**
          * Iterator wrapper.
-         * 
+         *
          */
         private static class ProxyIterator
         implements Iterator<AdqlColumn>
             {
             final private Iterator<BaseColumn<?>> base ;
             final private AdqlTable table ;
-    
+
             public ProxyIterator(final Iterator<BaseColumn<?>> base, final AdqlTable table)
                 {
                 this.base  = base ;
@@ -140,19 +140,19 @@ implements AdqlColumn
                 }
             }
         }
-    
+
     /**
      * Protected constructor.
      *
      */
-    public AdqlColumnProxy(BaseColumn<?> base, AdqlTable table)
+    public AdqlColumnProxy(final BaseColumn<?> base, final AdqlTable table)
         {
         this.base  = base  ;
         this.table = table ;
-        this.uuid  = factories().uuids().uuid(); 
+        this.uuid  = factories().uuids().uuid();
         }
 
-    private UUID uuid;
+    private final UUID uuid;
     @Override
     public UUID uuid()
         {
@@ -161,15 +161,15 @@ implements AdqlColumn
 
     /**
      * The parent table.
-     * 
+     *
      */
-    private AdqlTable table ;
+    private final AdqlTable table ;
 
     /**
      * The base column.
-     * 
+     *
      */
-    private BaseColumn<?> base ;
+    private final BaseColumn<?> base ;
     @Override
     public BaseColumn<?> base()
         {
@@ -229,11 +229,11 @@ implements AdqlColumn
         }
 
     @Override
-    public void name(String name) throws NameFormatException
+    public void name(final String name) throws NameFormatException
         {
         throw new UnsupportedOperationException(
             "Can't change a read only copy"
-            ); 
+            );
         }
 
     @Override
@@ -243,11 +243,11 @@ implements AdqlColumn
         }
 
     @Override
-    public void text(String text)
+    public void text(final String text)
         {
         throw new UnsupportedOperationException(
             "Can't change a read only copy"
-            ); 
+            );
         }
 
     @Override
@@ -272,11 +272,11 @@ implements AdqlColumn
         }
 
     @Override
-    public void status(Status status) throws InvalidStatusException
+    public void status(final Status status) throws InvalidStatusException
         {
         throw new UnsupportedOperationException(
             "Can't change a read only copy"
-            ); 
+            );
         }
 
     @Override
@@ -286,11 +286,11 @@ implements AdqlColumn
         }
 
     @Override
-    public void depth(CopyDepth copytype)
+    public void depth(final CopyDepth copytype)
         {
         throw new UnsupportedOperationException(
             "Can't change a read only copy"
-            ); 
+            );
         }
 
     @Override
@@ -298,7 +298,7 @@ implements AdqlColumn
         {
         return base().meta();
         }
-    
+
     @Override
     public AdqlTable table()
         {

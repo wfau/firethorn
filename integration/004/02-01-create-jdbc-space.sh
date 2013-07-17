@@ -28,6 +28,7 @@ ogsadainame=${4:?}
 POST "/jdbc/resource/create" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
+    --data   "urn:jdbc.copy.depth=${jdbccopydepth:-FULL}" \
     --data   "jdbc.resource.create.url=${resourceuri:?}" \
     --data   "jdbc.resource.create.name=${resourcename:?}" \
     --data   "jdbc.resource.create.catalog=${catalogname:?}" \

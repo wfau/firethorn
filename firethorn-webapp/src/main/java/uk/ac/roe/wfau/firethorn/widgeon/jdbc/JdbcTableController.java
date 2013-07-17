@@ -30,7 +30,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
@@ -42,7 +43,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(JdbcTableLinkFactory.TABLE_PATH)
 public class JdbcTableController
-    extends AbstractController
+    extends AbstractEntityController<JdbcTable>
     {
 
     @Override
@@ -74,13 +75,18 @@ public class JdbcTableController
      */
     public static final String UPDATE_NAME = "jdbc.table.update.name" ;
 
-    /**
-     * Wrap an entity as a bean.
-     *
-     */
-    public JdbcTableBean bean(
-        final JdbcTable entity
-        ){
+
+    @Override
+    public Iterable<EntityBean<JdbcTable>> bean(final Iterable<JdbcTable> iter)
+        {
+        return new JdbcTableBean.Iter(
+            iter
+            );
+        }
+
+    @Override
+    public EntityBean<JdbcTable> bean(final JdbcTable entity)
+        {
         return new JdbcTableBean(
             entity
             );
@@ -110,11 +116,11 @@ public class JdbcTableController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcTableBean jsonSelect(
+    public EntityBean<JdbcTable> select(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcTable entity
         ){
-        log.debug("jsonSelect()");
+        log.debug("select()");
         return bean(
             entity
             );
@@ -127,13 +133,13 @@ public class JdbcTableController
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public JdbcTableBean jsonUpdate(
-        @RequestParam(value=UPDATE_NAME, required=false)
-        final String name,
+    public EntityBean<JdbcTable> update(
         @ModelAttribute(TARGET_ENTITY)
-        final JdbcTable entity
+        final JdbcTable entity,
+        @RequestParam(value=UPDATE_NAME, required=false)
+        final String name
         ){
-
+        log.debug("select()");
         if (name != null)
             {
             if (name.length() > 0)
@@ -143,7 +149,6 @@ public class JdbcTableController
                     );
                 }
             }
-
         return bean(
             entity
             );

@@ -181,7 +181,7 @@ implements Entity
     /**
      * The Entity UUID.
      * @todo not null when we create next DB.
-     * 
+     *
      */
     @Column(
         name = DB_UUID_COL,
@@ -195,7 +195,7 @@ implements Entity
         {
         return this.uuid;
         }
-    
+
     /**
      * The Entity owner.
      *

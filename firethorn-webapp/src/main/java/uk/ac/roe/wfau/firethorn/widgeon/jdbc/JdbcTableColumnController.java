@@ -26,11 +26,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
@@ -41,7 +42,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(JdbcTableLinkFactory.TABLE_COLUMN_PATH)
 public class JdbcTableColumnController
-extends AbstractController
+extends AbstractEntityController<JdbcColumn>
     {
     @Override
     public Path path()
@@ -59,18 +60,6 @@ extends AbstractController
         {
         super();
         }
-
-    /**
-     * URL path for the select method.
-     *
-     */
-    public static final String SELECT_PATH = "select" ;
-
-    /**
-     * URL path for the search method.
-     *
-     */
-    public static final String SEARCH_PATH = "search" ;
 
     /**
      * MVC property for the Resource name.
@@ -96,35 +85,38 @@ extends AbstractController
      */
     public static final String SEARCH_RESULT = "jdbc.table.column.search.result" ;
 
+
+    @Override
+    public EntityBean<JdbcColumn> bean(final JdbcColumn entity)
+        {
+        return new JdbcColumnBean(
+            entity
+            );
+        }
+
+    @Override
+    public Iterable<EntityBean<JdbcColumn>> bean(final Iterable<JdbcColumn> iter)
+        {
+        return new JdbcColumnBean.Iter(
+            iter
+            );
+        }
+
     /**
      * Get the parent table based on the identifier in the request.
      * @throws NotFoundException
      *
      */
     @ModelAttribute(JdbcTableController.TARGET_ENTITY)
-    public JdbcTable table(
-        @PathVariable("ident")
+    public JdbcTable parent(
+        @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         ) throws NotFoundException {
-        log.debug("schema() [{}]", ident);
+        log.debug("parent() [{}]", ident);
         return factories().jdbc().tables().select(
             factories().jdbc().tables().idents().ident(
                 ident
                 )
-            );
-        }
-
-    /**
-     * Select all.
-     *
-     */
-    public JdbcColumnBean.Iter select(
-        @ModelAttribute(JdbcTableController.TARGET_ENTITY)
-        final JdbcTable table
-        ){
-        log.debug("select()");
-        return new JdbcColumnBean.Iter(
-            table.columns().select()
             );
         }
 
@@ -134,31 +126,13 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcColumnBean.Iter jsonSelect(
+    public Iterable<EntityBean<JdbcColumn>> select(
         @ModelAttribute(JdbcTableController.TARGET_ENTITY)
-        final JdbcTable table,
-        final ModelAndView model
+        final JdbcTable table
         ){
-        log.debug("jsonSelect()");
-        return select(
-            table
-            );
-        }
-
-    /**
-     * Select by name.
-     *
-     */
-    public JdbcColumnBean select(
-        @ModelAttribute(JdbcTableController.TARGET_ENTITY)
-        final JdbcTable table,
-        final String name
-        ) throws NotFoundException {
-        log.debug("select(String) [{}]", name);
-        return new JdbcColumnBean(
-            table.columns().select(
-                name
-                )
+        log.debug("select()");
+        return bean(
+            table.columns().select()
             );
         }
 
@@ -168,33 +142,16 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public JdbcColumnBean jsonSelect(
+    public EntityBean<JdbcColumn> select(
         @ModelAttribute(JdbcTableController.TARGET_ENTITY)
         final JdbcTable table,
         @RequestParam(SELECT_NAME)
-        final String name,
-        final ModelAndView model
+        final String name
         ) throws NotFoundException {
-        log.debug("jsonSelect(String) [{}]", name);
-        return select(
-            table,
-            name
-            );
-        }
-
-    /**
-     * Search by text.
-     *
-     */
-    public JdbcColumnBean.Iter search(
-        @ModelAttribute(JdbcTableController.TARGET_ENTITY)
-        final JdbcTable table,
-        final String text
-        ){
-        log.debug("search(String) [{}]", text);
-        return new JdbcColumnBean.Iter(
-            table.columns().search(
-                text
+        log.debug("select(String) [{}]", name);
+        return bean(
+            table.columns().select(
+                name
                 )
             );
         }
@@ -205,17 +162,17 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public JdbcColumnBean.Iter jsonSearch(
+    public Iterable<EntityBean<JdbcColumn>> search(
         @ModelAttribute(JdbcTableController.TARGET_ENTITY)
         final JdbcTable table,
         @RequestParam(SEARCH_TEXT)
-        final String text,
-        final ModelAndView model
+        final String text
         ){
-        log.debug("jsonSearch(String) [{}]", text);
-        return search(
-            table,
-            text
+        log.debug("search(String) [{}]", text);
+        return bean(
+            table.columns().search(
+                text
+                )
             );
         }
     }

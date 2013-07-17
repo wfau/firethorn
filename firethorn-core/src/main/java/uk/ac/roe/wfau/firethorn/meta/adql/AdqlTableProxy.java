@@ -29,16 +29,11 @@ import org.joda.time.DateTime;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
-import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.InvalidStatusException;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.Status;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactoriesImpl;
 
@@ -74,7 +69,7 @@ public class AdqlTableProxy
     @Override
     public void refresh()
         {
-        throw new UnsupportedOperationException(); 
+        throw new UnsupportedOperationException();
         }
 
     /**
@@ -83,13 +78,13 @@ public class AdqlTableProxy
     @Override
     public void delete()
         {
-        throw new UnsupportedOperationException(); 
+        throw new UnsupportedOperationException();
         }
 
     /**
      * Iterable wrapper.
      * @todo Move to a factory
-     * 
+     *
      */
     public static class ProxyIterable
     implements Iterable<AdqlTable>
@@ -116,7 +111,7 @@ public class AdqlTableProxy
     /**
      * Iterator wrapper.
      * @todo Move to a factory
-     * 
+     *
      */
     public static class ProxyIterator
     implements Iterator<AdqlTable>
@@ -151,53 +146,53 @@ public class AdqlTableProxy
             throw new UnsupportedOperationException();
             }
         }
-    
+
     /**
      * Protected constructor.
      *
      */
-    public AdqlTableProxy(BaseTable<?,?> base, AdqlSchema schema)
+    public AdqlTableProxy(final BaseTable<?,?> base, final AdqlSchema schema)
         {
         this.base   = base   ;
         this.schema = schema ;
-        this.uuid  = factories().uuids().uuid(); 
+        this.uuid  = factories().uuids().uuid();
         }
 
-    private UUID uuid;
+    private final UUID uuid;
     @Override
     public UUID uuid()
         {
         return this.uuid;
         }
-    
+
     /**
      * The parent schema.
-     * 
+     *
      */
-    private AdqlSchema schema ;
+    private final AdqlSchema schema ;
     @Override
     public AdqlSchema schema()
         {
         return this.schema;
         }
     @Override
-    public void schema(AdqlSchema schema)
+    public void schema(final AdqlSchema schema)
         {
         throw new UnsupportedOperationException(
             "Can't change a read only copy"
-            ); 
+            );
         }
     @Override
     public AdqlResource resource()
         {
         return this.schema.resource();
         }
-    
+
     /**
      * The base table.
-     * 
+     *
      */
-    private BaseTable<?,?> base ;
+    private final BaseTable<?,?> base ;
     @Override
     public BaseTable<?, ?> base()
         {
@@ -224,7 +219,7 @@ public class AdqlTableProxy
             }
         return ident ;
         }
-    
+
     @Override
     public String link()
         {
@@ -258,11 +253,11 @@ public class AdqlTableProxy
         }
 
     @Override
-    public void name(String name) throws NameFormatException
+    public void name(final String name) throws NameFormatException
         {
         throw new UnsupportedOperationException(
             "Can't change a read only copy"
-            ); 
+            );
         }
 
     @Override
@@ -272,11 +267,11 @@ public class AdqlTableProxy
         }
 
     @Override
-    public void text(String text)
+    public void text(final String text)
         {
         throw new UnsupportedOperationException(
             "Can't change a read only copy"
-            ); 
+            );
         }
 
     @Override
@@ -301,11 +296,11 @@ public class AdqlTableProxy
         }
 
     @Override
-    public void status(Status status) throws InvalidStatusException
+    public void status(final Status status) throws InvalidStatusException
         {
         throw new UnsupportedOperationException(
             "Can't change a read only copy"
-            ); 
+            );
         }
 
     @Override
@@ -315,11 +310,11 @@ public class AdqlTableProxy
         }
 
     @Override
-    public void depth(CopyDepth copytype)
+    public void depth(final CopyDepth copytype)
         {
         throw new UnsupportedOperationException(
             "Can't change a read only copy"
-            ); 
+            );
         }
 
     @Override
@@ -358,7 +353,7 @@ public class AdqlTableProxy
 
             @Override
             @SuppressWarnings("unchecked")
-            public Iterable<AdqlColumn> search(String text)
+            public Iterable<AdqlColumn> search(final String text)
                 {
                 return new AdqlColumnProxy.ProxyIterable(
                     (Iterable<BaseColumn<?>>)base.columns().search(text),
@@ -367,7 +362,7 @@ public class AdqlTableProxy
                 }
 
             @Override
-            public AdqlColumn select(String name) throws NotFoundException
+            public AdqlColumn select(final String name) throws NotFoundException
                 {
                 return new AdqlColumnProxy(
                     base.columns().select(name),
@@ -376,7 +371,7 @@ public class AdqlTableProxy
                 }
 
             @Override
-            public AdqlColumn create(BaseColumn<?> base)
+            public AdqlColumn create(final BaseColumn<?> base)
                 {
                 return new AdqlColumnProxy(
                     base,
@@ -385,7 +380,7 @@ public class AdqlTableProxy
                 }
 
             @Override
-            public AdqlColumn select(Identifier ident)
+            public AdqlColumn select(final Identifier ident)
             throws NotFoundException
                 {
                 return new AdqlColumnProxy(

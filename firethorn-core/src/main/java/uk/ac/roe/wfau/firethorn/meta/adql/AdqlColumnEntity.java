@@ -126,7 +126,7 @@ public class AdqlColumnEntity
 
         @Autowired
         private AdqlTable.Factory tables ;
-        
+
         @Override
         @SelectEntityMethod
         public AdqlColumn select(final Identifier ident)
@@ -136,18 +136,18 @@ public class AdqlColumnEntity
             if (ident instanceof ProxyIdentifier)
                 {
                 log.debug("-- proxy identifier");
-                ProxyIdentifier proxy = (ProxyIdentifier) ident;
-                
+                final ProxyIdentifier proxy = (ProxyIdentifier) ident;
+
                 log.debug("-- parent table");
-                AdqlTable table = tables.select(
+                final AdqlTable table = tables.select(
                     proxy.parent()
-                    ); 
+                    );
 
                 log.debug("-- proxy column");
-                AdqlColumn column = table.columns().select(
+                final AdqlColumn column = table.columns().select(
                     proxy.base()
                     );
-                
+
                 return column ;
                 }
             else {
@@ -257,7 +257,7 @@ public class AdqlColumnEntity
             }
 
         @Override
-        public AdqlColumn select(UUID uuid) throws NotFoundException
+        public AdqlColumn select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;

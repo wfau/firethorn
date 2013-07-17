@@ -30,7 +30,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
@@ -42,7 +43,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(AdqlTableLinkFactory.TABLE_PATH)
 public class AdqlTableController
-    extends AbstractController
+    extends AbstractEntityController<AdqlTable>
     {
 
     @Override
@@ -74,13 +75,17 @@ public class AdqlTableController
      */
     public static final String UPDATE_NAME = "adql.table.update.name" ;
 
-    /**
-     * Wrap an entity as a bean.
-     *
-     */
-    public AdqlTableBean bean(
-        final AdqlTable entity
-        ){
+    @Override
+    public Iterable<EntityBean<AdqlTable>> bean(final Iterable<AdqlTable> iter)
+        {
+        return new AdqlTableBean.Iter(
+            iter
+            );
+        }
+
+    @Override
+    public EntityBean<AdqlTable> bean(final AdqlTable entity)
+        {
         return new AdqlTableBean(
             entity
             );
@@ -92,7 +97,7 @@ public class AdqlTableController
      *
      */
     @ModelAttribute(TARGET_ENTITY)
-    public AdqlTable table(
+    public AdqlTable entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         ) throws NotFoundException {
@@ -110,7 +115,7 @@ public class AdqlTableController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public AdqlTableBean jsonSelect(
+    public EntityBean<AdqlTable> jsonSelect(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlTable table
         ){
@@ -127,7 +132,7 @@ public class AdqlTableController
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public AdqlTableBean jsonUpdate(
+    public EntityBean<AdqlTable> jsonUpdate(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @ModelAttribute(TARGET_ENTITY)

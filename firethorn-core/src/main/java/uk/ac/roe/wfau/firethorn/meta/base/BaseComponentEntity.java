@@ -30,7 +30,6 @@ import javax.persistence.MappedSuperclass;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.joda.time.DateTime;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 
 /**
@@ -148,31 +147,34 @@ extends AbstractNamedEntity
         }
     /**
      * The polling interval for waiting scans.
-     * 
+     *
      */
-    private static final long POLL_WAIT = 1000 ; 
+    private static final long POLL_WAIT = 1000 ;
 
     /**
      * The interval between scans.
-     * Set to 60 seconds for now .. should be much higher and configurable.
+     * Set to 60 minutes for now .. should be configurable.
      *
      */
-    private static final long SCAN_INTERVAL = 1000 * 60 * 5 ;
+    private static final long SCAN_INTERVAL = 1000 * 60 * 60 ;
+/*
     protected boolean scandue()
         {
         long scannext = System.currentTimeMillis() - SCAN_INTERVAL ;
         log.debug("scandue [{}][{}][{}]", scanprev, scannext, (scannext - scanprev));
         return (this.scanprev < scannext);
         }
-
+*/
     /**
      * Scan our metadata.
      *
      */
     public void scantest()
         {
-        log.debug("scantest()");
-        if (scandue())
+        log.debug("scantest() for [{}]", ident());
+        final long scannext = System.currentTimeMillis() - SCAN_INTERVAL ;
+        log.debug("  values [{}][{}][{}]", scanprev, scannext, (scannext - scanprev));
+        if (this.scanprev < scannext)
             {
             scansync();
             }
@@ -192,7 +194,7 @@ extends AbstractNamedEntity
      */
     public void scansync()
         {
-        log.debug("scansync()");
+        log.debug("scansync() for [{}]", ident());
 
         boolean doscan = false ;
         final String ident = this.ident().toString();

@@ -234,7 +234,7 @@ public class JdbcResourceEntity
             }
 
         @Override
-        public JdbcResource select(UUID uuid) throws NotFoundException
+        public JdbcResource select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;
@@ -319,7 +319,7 @@ public class JdbcResourceEntity
                     schema
                     );
                 }
-            
+
             @Override
             public JdbcSchema select(final String name)
             throws NotFoundException

@@ -18,7 +18,6 @@
 package uk.ac.roe.wfau.firethorn.adql.query ;
 
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import lombok.extern.slf4j.Slf4j;
 
@@ -77,12 +76,12 @@ extends TestBase
             "spring:FireThornUserData"
             );
 // TODO do we need this ?
-/*        
+/*
         this.schema = this.resource.schemas().create(
             null,
             "PUBLIC"
             );
-*/            
+*/
         }
 
     /**

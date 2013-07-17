@@ -33,6 +33,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
 import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
@@ -63,34 +64,10 @@ extends AbstractEntityController<AdqlQuery>
         }
 
     /**
-     * URL path for the select method.
-     *
-     */
-    public static final String SELECT_PATH = "select" ;
-
-    /**
-     * URL path for the search method.
-     *
-     */
-    public static final String SEARCH_PATH = "search" ;
-
-    /**
-     * URL path for the create method.
-     *
-     */
-    public static final String CREATE_PATH = "create" ;
-
-    /**
      * MVC property for the search text.
      *
      */
     public static final String SEARCH_TEXT = "adql.schema.query.search.text" ;
-
-    /**
-     * MVC property for the search results.
-     *
-     */
-    public static final String SEARCH_RESULT = "adql.schema.query.search.result" ;
 
     /**
      * MVC property for the create name.
@@ -132,8 +109,8 @@ extends AbstractEntityController<AdqlQuery>
      *
      */
     @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
-    public AdqlSchema schema(
-        @PathVariable("ident")
+    public AdqlSchema parent(
+        @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         ) throws NotFoundException {
         return factories().adql().schemas().select(
@@ -181,8 +158,9 @@ extends AbstractEntityController<AdqlQuery>
      * JSON POST request to create a new query.
      *
      */
+    @ResponseBody
     @RequestMapping(value=CREATE_PATH, params={CREATE_QUERY, CREATE_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<EntityBean<AdqlQuery>> Create(
+    public ResponseEntity<EntityBean<AdqlQuery>> create(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(CREATE_QUERY)
@@ -190,28 +168,25 @@ extends AbstractEntityController<AdqlQuery>
         @RequestParam(CREATE_NAME)
         final String name
         ) throws NotFoundException {
-        return response(
-            new AdqlQueryBean(
-                schema.queries().create(
-                    query,
-                    name
-                    )
+        return created(
+            schema.queries().create(
+                query,
+                name
                 )
             );
         }
 
+    @ResponseBody
     @RequestMapping(value=CREATE_PATH, params={CREATE_QUERY}, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<EntityBean<AdqlQuery>> Create(
+    public ResponseEntity<EntityBean<AdqlQuery>> create(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(CREATE_QUERY)
         final String query
         ) throws NotFoundException {
-        return response(
-            new AdqlQueryBean(
-                schema.queries().create(
-                    query
-                    )
+        return created(
+            schema.queries().create(
+                query
                 )
             );
         }

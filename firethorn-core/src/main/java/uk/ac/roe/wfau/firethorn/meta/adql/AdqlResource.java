@@ -21,7 +21,6 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 
 
 /**

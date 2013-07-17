@@ -23,19 +23,19 @@ import java.io.Serializable;
 public class ProxyIdentifier
 implements Identifier
     {
-    private Identifier parent;
+    private final Identifier parent;
     public Identifier parent()
         {
         return this.parent;
         }
 
-    private Identifier base;
+    private final Identifier base;
     public Identifier base()
         {
         return this.base;
         }
-    
-    public ProxyIdentifier(Identifier parent, Identifier base)
+
+    public ProxyIdentifier(final Identifier parent, final Identifier base)
         {
         this.parent = parent;
         this.base   = base  ;
@@ -50,7 +50,7 @@ implements Identifier
     @Override
     public String toString()
         {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("(");
         builder.append(parent.toString());
         builder.append(":");

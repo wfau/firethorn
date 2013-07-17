@@ -42,7 +42,7 @@ public interface Entity
          */
         public UUID uuid();
         }
-    
+
     /**
      * Common interface for a name factory.
      *

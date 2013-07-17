@@ -185,7 +185,7 @@ implements TestJob
             }
 
         @Override
-        public TestJob select(UUID uuid) throws NotFoundException
+        public TestJob select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;
@@ -263,7 +263,7 @@ implements TestJob
             }
 
         @Override
-        public TestJob select(UUID uuid) throws NotFoundException
+        public TestJob select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;

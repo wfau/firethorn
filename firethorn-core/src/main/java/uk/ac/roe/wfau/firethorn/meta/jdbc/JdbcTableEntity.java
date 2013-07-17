@@ -50,7 +50,6 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 
@@ -315,7 +314,7 @@ implements JdbcTable
             }
 
         @Override
-        public JdbcTable select(UUID uuid) throws NotFoundException
+        public JdbcTable select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;
@@ -461,7 +460,7 @@ implements JdbcTable
                 }
 
             @Override
-            public JdbcColumn select(Identifier ident)
+            public JdbcColumn select(final Identifier ident)
             throws NotFoundException
                 {
                 // TODO Add parent constraint.

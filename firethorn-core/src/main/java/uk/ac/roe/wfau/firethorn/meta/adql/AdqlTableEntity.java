@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Access;
@@ -45,13 +43,11 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 
 /**
  *
@@ -146,7 +142,7 @@ public class AdqlTableEntity
 
         @Autowired
         private AdqlSchema.Factory schemas;
-        
+
         @Override
         @SelectEntityMethod
         public AdqlTable select(final Identifier ident)
@@ -156,18 +152,17 @@ public class AdqlTableEntity
             if (ident instanceof ProxyIdentifier)
                 {
                 log.debug("-- proxy identifier");
-                ProxyIdentifier proxy = (ProxyIdentifier) ident;
-                
+                final ProxyIdentifier proxy = (ProxyIdentifier) ident;
+
                 log.debug("-- parent schema");
-                AdqlSchema schema = schemas.select(
+                final AdqlSchema schema = schemas.select(
                     proxy.parent()
-                    ); 
+                    );
 
                 log.debug("-- proxy table");
-                AdqlTable table = schema.tables().select(
+                final AdqlTable table = schema.tables().select(
                     proxy.base()
                     );
-                
                 return table;
                 }
             else {
@@ -176,13 +171,12 @@ public class AdqlTableEntity
                     );
                 }
             }
-        
-        
+
         @Override
         @CreateEntityMethod
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base)
             {
-            AdqlTableEntity table = new AdqlTableEntity(
+            final AdqlTableEntity table = new AdqlTableEntity(
                 schema,
                 base,
                 base.name()
@@ -198,7 +192,7 @@ public class AdqlTableEntity
         @CreateEntityMethod
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base)
             {
-            AdqlTableEntity table = new AdqlTableEntity(
+            final AdqlTableEntity table = new AdqlTableEntity(
                 type,
                 schema,
                 base,
@@ -210,12 +204,12 @@ public class AdqlTableEntity
             table.realize();
             return table ;
             }
-        
+
         @Override
         @CreateEntityMethod
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
             {
-            AdqlTableEntity table = new AdqlTableEntity(
+            final AdqlTableEntity table = new AdqlTableEntity(
                 schema,
                 base,
                 name
@@ -231,7 +225,7 @@ public class AdqlTableEntity
         @CreateEntityMethod
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
             {
-            AdqlTableEntity table = new AdqlTableEntity(
+            final AdqlTableEntity table = new AdqlTableEntity(
                 type,
                 schema,
                 base,
@@ -243,12 +237,12 @@ public class AdqlTableEntity
             table.realize();
             return table ;
             }
-        
+
         @Override
         @CreateEntityMethod
         public AdqlTable create(final AdqlSchema schema, final AdqlQuery query)
             {
-            AdqlTableEntity table = new AdqlTableEntity(
+            final AdqlTableEntity table = new AdqlTableEntity(
                 query,
                 schema,
                 query.results().base(),
@@ -265,7 +259,7 @@ public class AdqlTableEntity
         @CreateEntityMethod
         public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final AdqlQuery query)
             {
-            AdqlTableEntity table = new AdqlTableEntity(
+            final AdqlTableEntity table = new AdqlTableEntity(
                 type,
                 query,
                 schema,
@@ -278,7 +272,7 @@ public class AdqlTableEntity
             table.realize();
             return table ;
             }
-        
+
         @Override
         @SelectEntityMethod
         public Iterable<AdqlTable> select(final AdqlSchema parent)
@@ -370,7 +364,7 @@ public class AdqlTableEntity
             }
 
         @Override
-        public AdqlTable select(UUID uuid) throws NotFoundException
+        public AdqlTable select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;
@@ -429,8 +423,8 @@ public class AdqlTableEntity
 
     /**
      * Convert this into a full copy.
-     * @todo Delay the full scan until the data is requested. 
-     * 
+     * @todo Delay the full scan until the data is requested.
+     *
      */
     protected void realize()
         {
@@ -441,13 +435,13 @@ public class AdqlTableEntity
                 for (final BaseColumn<?> column : base.columns().select())
                     {
                     columns().create(
-                        column 
+                        column
                         );
                     }
                 }
             }
         }
-    
+
     @Override
     public String text()
         {
@@ -599,9 +593,10 @@ public class AdqlTableEntity
                 }
 
             @Override
-            public AdqlColumn select(Identifier ident)
+            public AdqlColumn select(final Identifier ident)
             throws NotFoundException
                 {
+/*
                 log.debug("select(Identifier) [{}]", ident);
                 if (depth() == CopyDepth.THIN)
                     {
@@ -616,7 +611,50 @@ public class AdqlTableEntity
                     log.error("Wrong depth for proxy [{}]", depth());
                     throw new IdentifierNotFoundException(
                         ident
-                        ); 
+                        );
+                    }
+ */
+
+                log.debug("columns().select(Identifier) [{}] from [{}]", ident, ident());
+                log.debug(" Table depth [{}]", depth());
+                if (depth() == CopyDepth.THIN)
+                    {
+                    if (ident instanceof ProxyIdentifier)
+                        {
+                        final ProxyIdentifier proxy = (ProxyIdentifier) ident;
+                        log.debug("  Ident is a proxy");
+                        log.debug("  Checking ident parent [{}]", proxy.parent());
+                        if (ident().equals(proxy.parent()))
+                            {
+                            log.debug("  Parent is us :-)");
+                            }
+                        else {
+                            log.error("  Parent is NOT us :-(");
+                            }
+                        log.debug("  Selecting [{}] from base [{}]", proxy.base(), base.ident());
+                        return new AdqlColumnProxy(
+                            base().columns().select(
+                                proxy.base()
+                                ),
+                            AdqlTableEntity.this
+                            );
+                        }
+                    else {
+                        log.debug("  Ident is plain");
+                        log.debug("  Selecting [{}] from base [{}]", ident, base.ident());
+                        return new AdqlColumnProxy(
+                            base().columns().select(
+                                ident
+                                ),
+                            AdqlTableEntity.this
+                            );
+                        }
+                    }
+                else {
+                    // TODO pass reference to this table too.
+                    return factories().adql().columns().select(
+                        ident
+                        );
                     }
                 }
             };

@@ -26,11 +26,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
@@ -42,7 +42,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(JdbcSchemaLinkFactory.SCHEMA_TABLE_PATH)
 public class JdbcSchemaTableController
-extends AbstractController
+extends AbstractEntityController<JdbcTable>
     {
     @Override
     public Path path()
@@ -60,18 +60,6 @@ extends AbstractController
         {
         super();
         }
-
-    /**
-     * URL path for the select method.
-     *
-     */
-    public static final String SELECT_PATH = "select" ;
-
-    /**
-     * URL path for the search method.
-     *
-     */
-    public static final String SEARCH_PATH = "search" ;
 
     /**
      * MVC property for the Resource name.
@@ -97,16 +85,33 @@ extends AbstractController
      */
     public static final String SEARCH_RESULT = "jdbc.schema.table.search.result" ;
 
+
+    @Override
+    public EntityBean<JdbcTable> bean(final JdbcTable entity)
+        {
+        return new JdbcTableBean(
+            entity
+            );
+        }
+
+    @Override
+    public Iterable<EntityBean<JdbcTable>> bean(final Iterable<JdbcTable> iter)
+        {
+        return new JdbcTableBean.Iter(
+            iter
+            );
+        }
+
     /**
      * Get the parent schema based on the identifier in the request.
      *
      */
     @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)
-    public JdbcSchema schema(
+    public JdbcSchema parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         ) throws NotFoundException {
-        log.debug("schema() [{}]", ident);
+        log.debug("parent() [{}]", ident);
         return factories().jdbc().schemas().select(
             factories().jdbc().schemas().idents().ident(
                 ident
@@ -120,12 +125,12 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcTableBean.Iter jsonSelect(
+    public Iterable<EntityBean<JdbcTable>> select(
         @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)
         final JdbcSchema schema
         ){
         log.debug("select()");
-        return new JdbcTableBean.Iter(
+        return bean(
             schema.tables().select()
             );
         }
@@ -136,14 +141,14 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public JdbcTableBean select(
+    public EntityBean<JdbcTable> select(
         @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)
         final JdbcSchema schema,
         @RequestParam(SELECT_NAME)
         final String name
         ) throws NotFoundException {
         log.debug("select(String) [{}]", name);
-        return new JdbcTableBean(
+        return bean(
             schema.tables().select(
                 name
                 )
@@ -156,14 +161,14 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public JdbcTableBean.Iter search(
+    public Iterable<EntityBean<JdbcTable>> search(
         @ModelAttribute(JdbcSchemaController.TARGET_ENTITY)
         final JdbcSchema schema,
         @RequestParam(SEARCH_TEXT)
         final String text
         ){
         log.debug("search(String) [{}]", text);
-        return new JdbcTableBean.Iter(
+        return bean(
             schema.tables().search(
                 text
                 )

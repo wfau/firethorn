@@ -105,6 +105,9 @@
     #source "${HOME:?}/test-users.txt"
     #ssh "${testuser:?}@${testhost:?}"
 
+        #adqlcopydepth=FULL
+        adqlcopydepth=THIN
+
         source ${HOME:?}/firethorn.settings
         FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
 
@@ -131,17 +134,12 @@
             source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh" "${queryspace:?}"  'query'
             source "${FIRETHORN_TEST:?}/05-00-execute-query.sh"       "${queryschema:?}" "${FIRETHORN_TEST:?}/06-query-atlas-000.adql"
 
-        popd
-
-
     #-------------------------------------------------------------
     # Testing stuff - not stable
     #-------------------------------------------------------------
 
-
-            #source "${FIRETHORN_TEST:?}/03-02-import-jdbc-schema.sh" "${jdbcspace:?}" 'TWOXMM'         'dbo' "${adqlspace:?}" 'TWOXMM'
-            #source "${FIRETHORN_TEST:?}/03-02-import-jdbc-schema.sh" "${jdbcspace:?}" 'UKIDSSDR5PLUS'  'dbo' "${adqlspace:?}" 'UKIDSSDR5PLUS'
-
+            # Importing selected tables won't work if the base schema is THIN.
+            #source "${FIRETHORN_TEST:?}/03-02-import-jdbc-schema.sh"  "${jdbcspace:?}"  'UKIDSSDR5PLUS' 'dbo' "${adqlspace:?}" 'UKIDSSDR5PLUS'
             #source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh" "${queryspace:?}" 'ukidss'
             #source "${FIRETHORN_TEST:?}/04-04-import-query-table.sh"  "${adqlspace:?}"  'UKIDSSDR5PLUS' 'gcsPointSource'        "${queryschema:?}" 'gcsPointSource'
             #source "${FIRETHORN_TEST:?}/04-04-import-query-table.sh"  "${adqlspace:?}"  'UKIDSSDR5PLUS' 'gcsSourceXtwomass_psc' "${queryschema:?}" 'gcsSourceXtwomass_psc'
@@ -162,11 +160,41 @@
         time importschema
 
 
-        for i in {0..9999}
+        for i in {0..99}
         do
             time importschema
             echo "Iter [${i}]"
         done
 
+#------------------------------------------
 
+        echo "Atlas ADQL workspace ${adqlspace:?}"
+        Atlas ADQL workspace /adql/resource/32770
+
+        #adqlcopydepth=FULL
+        #adqlcopydepth=THIN
+        adqlspace=/adql/resource/32770
+
+        source ${HOME:?}/firethorn.settings
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            importschema()
+                {
+                source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Query workspace'
+
+                source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}" 'TWOMASS'         "${queryspace:?}" 'twomass'
+                source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}" 'ATLASv20130304'  "${queryspace:?}" 'atlas'
+
+                source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh" "${queryspace:?}"  'query'
+                source "${FIRETHORN_TEST:?}/05-00-execute-query.sh"       "${queryschema:?}" "${FIRETHORN_TEST:?}/06-query-atlas-000.adql"
+                }
+
+            time importschema
 

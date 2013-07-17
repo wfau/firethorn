@@ -170,7 +170,7 @@ implements Identity
             }
 
         @Override
-        public Identity select(UUID uuid) throws NotFoundException
+        public Identity select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;
@@ -275,7 +275,7 @@ implements Identity
                     try {
                         this.jdbcschema = community().space().schemas().simple();
                         }
-                    catch (NotFoundException ouch)
+                    catch (final NotFoundException ouch)
                         {
                         log.error("Failed to find user space []", ouch.getMessage());
                         }

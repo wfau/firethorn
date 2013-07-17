@@ -211,7 +211,7 @@ public class IvoaColumnEntity
             }
 
         @Override
-        public IvoaColumn select(UUID uuid) throws NotFoundException
+        public IvoaColumn select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;

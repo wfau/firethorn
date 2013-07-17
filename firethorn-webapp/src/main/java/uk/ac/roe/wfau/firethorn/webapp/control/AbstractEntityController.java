@@ -57,10 +57,10 @@ extends AbstractController
     public abstract Iterable<EntityBean<EntityType>> bean(final Iterable<EntityType> iter);
 
     /**
-     * Wrap a bean in a HTTP response..
+     * Generate a 'created' HTTP response.
      *
      */
-    public ResponseEntity<EntityBean<EntityType>> response(final EntityBean<EntityType> bean)
+    private ResponseEntity<EntityBean<EntityType>> created(final EntityBean<EntityType> bean)
         {
         return new ResponseEntity<EntityBean<EntityType>>(
             bean,
@@ -68,6 +68,19 @@ extends AbstractController
                 bean
                 ),
             HttpStatus.CREATED
+            );
+        }
+
+    /**
+     * Generate a 'created' HTTP response.
+     *
+     */
+    public ResponseEntity<EntityBean<EntityType>> created(final EntityType entity)
+        {
+        return created(
+            bean(
+                entity
+                )
             );
         }
     }

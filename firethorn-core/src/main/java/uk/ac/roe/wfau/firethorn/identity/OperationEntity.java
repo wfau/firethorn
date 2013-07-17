@@ -147,7 +147,7 @@ implements Operation
             }
 
         @Override
-        public Operation select(UUID uuid) throws NotFoundException
+        public Operation select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;

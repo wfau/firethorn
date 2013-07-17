@@ -291,7 +291,7 @@ public class JdbcColumnEntity
             }
 
         @Override
-        public JdbcColumn select(UUID uuid) throws NotFoundException
+        public JdbcColumn select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;

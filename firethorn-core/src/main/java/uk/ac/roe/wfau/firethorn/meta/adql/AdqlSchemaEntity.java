@@ -38,14 +38,13 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 
 /**
  *
@@ -104,12 +103,12 @@ implements AdqlSchema
             }
 
         @Override
-        public AdqlSchema select(UUID uuid) throws NotFoundException
+        public AdqlSchema select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;
             }
-        
+
         @Override
         @CreateEntityMethod
         public AdqlSchema create(final AdqlResource parent, final String name)
@@ -126,7 +125,7 @@ implements AdqlSchema
         @CreateEntityMethod
         public AdqlSchema create(final AdqlResource parent, final BaseSchema<?, ?> base)
             {
-            AdqlSchemaEntity schema = new AdqlSchemaEntity(
+            final AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 parent,
                 base.name(),
                 base
@@ -142,7 +141,7 @@ implements AdqlSchema
         @CreateEntityMethod
         public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final BaseSchema<?, ?> base)
             {
-            AdqlSchemaEntity schema = new AdqlSchemaEntity(
+            final AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 depth,
                 parent,
                 base.name(),
@@ -154,12 +153,12 @@ implements AdqlSchema
             schema.realize();
             return schema;
             }
-        
+
         @Override
         @CreateEntityMethod
 		public AdqlSchema create(final AdqlResource parent, final String name, final BaseSchema<?, ?> base)
 			{
-            AdqlSchemaEntity schema = new AdqlSchemaEntity(
+            final AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 parent,
                 name,
                 base
@@ -175,7 +174,7 @@ implements AdqlSchema
         @CreateEntityMethod
         public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name, final BaseSchema<?, ?> base)
             {
-            AdqlSchemaEntity schema = new AdqlSchemaEntity(
+            final AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 depth,
                 parent,
                 name,
@@ -187,12 +186,12 @@ implements AdqlSchema
             schema.realize();
             return schema;
             }
-        
+
         @Override
         @CreateEntityMethod
         public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name, final BaseTable<?, ?> base)
             {
-            AdqlSchemaEntity schema = new AdqlSchemaEntity(
+            final AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 parent,
                 name
                 );
@@ -210,7 +209,7 @@ implements AdqlSchema
         @CreateEntityMethod
         public AdqlSchema create(final AdqlResource parent, final String name, final BaseTable<?, ?> base)
             {
-            AdqlSchemaEntity schema = new AdqlSchemaEntity(
+            final AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 parent,
                 name
                 );
@@ -306,14 +305,14 @@ implements AdqlSchema
         }
 
     /*
-     * 
+     *
     2013-07-15 17:38:01,760 WARN  [http-bio-8080-exec-5] [UnresolvedEntityInsertActions] HHH000437: Attempting to save one or more entities that have a non-nullable association with an unsaved transient entity. The unsaved transient entity must be saved in an operation prior to saving these dependent entities.
     Unsaved transient entity: ([uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity#<null>])
     Dependent entities: ([[uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity#19693869]])
-    Non-nullable association(s): ([uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity.parent, uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity.table]) 
-2013-07-15 17:38:01,760 ERROR [http-bio-8080-exec-5] [HibernateThingsImpl] Hibernate excepion [org.hibernate.TransientPropertyValueException][Not-null property references a transient value - transient instance must be saved before current operation: uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity.parent -> uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity] 
-     * 
-     * 
+    Non-nullable association(s): ([uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity.parent, uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity.table])
+2013-07-15 17:38:01,760 ERROR [http-bio-8080-exec-5] [HibernateThingsImpl] Hibernate excepion [org.hibernate.TransientPropertyValueException][Not-null property references a transient value - transient instance must be saved before current operation: uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity.parent -> uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity]
+     *
+     *
     protected AdqlSchemaEntity(final AdqlResource resource, final String name, final BaseTable<?, ?> base)
         {
         this(
@@ -325,8 +324,8 @@ implements AdqlSchema
             base
             );
         }
-     * 
-     * 
+     *
+     *
     protected AdqlSchemaEntity(final AdqlResource resource, final String name, final BaseSchema<?, ?> base)
         {
         this(
@@ -337,7 +336,7 @@ implements AdqlSchema
             );
         }
      *
-     * 
+     *
     protected AdqlSchemaEntity(final CopyDepth depth, final AdqlResource resource, final String name, final BaseSchema<?, ?> base)
         {
         this(
@@ -383,10 +382,10 @@ implements AdqlSchema
         this.base = base;
         this.resource = resource;
         }
-    
+
     /**
      * Create a copy of the base table.
-     * 
+     *
      */
     protected void realize(final BaseTable<?, ?> base)
         {
@@ -395,11 +394,11 @@ implements AdqlSchema
             base
             );
         }
-    
+
     /**
      * Create a copy of the base table.
-     * @todo Delay the full scan until the data is actually requested. 
-     * 
+     * @todo Delay the full scan until the data is actually requested.
+     *
      */
     protected void realize(final CopyDepth depth, final BaseTable<?, ?> base)
         {
@@ -414,15 +413,15 @@ implements AdqlSchema
             log.error("Base table should not be null");
             throw new IllegalArgumentException(
                 "Base table should not be null"
-                ); 
+                );
             }
         }
-    
+
     /**
      * Convert this into a full copy.
      * @todo Prevent this happening twice.
-     * @todo Delay the full scan until the data is actually requested. 
-     * 
+     * @todo Delay the full scan until the data is actually requested.
+     *
      */
     protected void realize()
         {
@@ -440,7 +439,7 @@ implements AdqlSchema
 
     /**
      * Our base schema.
-     * 
+     *
      */
     @Index(
         name=DB_TABLE_NAME + "IndexByBase"
@@ -459,13 +458,13 @@ implements AdqlSchema
 
     /**
      * Our base schema.
-     * 
+     *
      */
     public BaseSchema<?, ?> base()
         {
         return this.base ;
         }
-    
+
     @Index(
         name=DB_TABLE_NAME + "IndexByParent"
         )
@@ -530,9 +529,9 @@ implements AdqlSchema
                     }
                 }
 
-            
+
             @Override
-            public AdqlTable create(final CopyDepth depth, BaseTable<?, ?> base)
+            public AdqlTable create(final CopyDepth depth, final BaseTable<?, ?> base)
                 {
                 // TODO - ???
                 if (depth() != CopyDepth.FULL)
@@ -546,7 +545,7 @@ implements AdqlSchema
                     );
                 }
 
-           
+
             @Override
             public AdqlTable create(final BaseTable<?,?> base)
                 {
@@ -562,7 +561,7 @@ implements AdqlSchema
                 }
 
             @Override
-            public AdqlTable create(final CopyDepth depth, BaseTable<?, ?> base, String name)
+            public AdqlTable create(final CopyDepth depth, final BaseTable<?, ?> base, final String name)
                 {
                 // TODO - ???
                 if (depth() != CopyDepth.FULL)
@@ -627,23 +626,47 @@ implements AdqlSchema
                 }
 
             @Override
-            public AdqlTable select(Identifier ident) throws NotFoundException
+            public AdqlTable select(final Identifier ident) throws NotFoundException
                 {
-                log.debug("select(Identifier) [{}]", ident);
+                log.debug("tables().select(Identifier) [{}] from [{}]", ident, ident());
+                log.debug(" Schema depth [{}]", depth());
                 if (depth() == CopyDepth.THIN)
                     {
-                    return new AdqlTableProxy(
-                        base().tables().select(
-                            ident
-                            ),
-                        AdqlSchemaEntity.this
-                        );
+                    if (ident instanceof ProxyIdentifier)
+                        {
+                        final ProxyIdentifier proxy = (ProxyIdentifier) ident;
+                        log.debug("  Ident is a proxy");
+                        log.debug("  Checking ident parent [{}]", proxy.parent());
+                        if (ident().equals(proxy.parent()))
+                            {
+                            log.debug("  Parent is us :-)");
+                            }
+                        else {
+                            log.error("  Parent is NOT us :-(");
+                            }
+                        log.debug("  Selecting [{}] from base [{}]", proxy.base(), base.ident());
+                        return new AdqlTableProxy(
+                            base().tables().select(
+                                proxy.base()
+                                ),
+                            AdqlSchemaEntity.this
+                            );
+                        }
+                    else {
+                        log.debug("  Selecting [{}] from base [{}]", ident, base.ident());
+                        return new AdqlTableProxy(
+                            base().tables().select(
+                                ident
+                                ),
+                            AdqlSchemaEntity.this
+                            );
+                        }
                     }
                 else {
-                    log.error("Wrong depth for proxy [{}]", depth());
-                    throw new IdentifierNotFoundException(
+                    // TODO pass reference to this schema too.
+                    return factories().adql().tables().select(
                         ident
-                        ); 
+                        );
                     }
                 }
             };

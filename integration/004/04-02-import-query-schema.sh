@@ -37,11 +37,11 @@ baseschema=$(
 POST "${queryresource:?}/schemas/import" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
+    --data   "urn:adql.copy.depth=${adqlcopydepth:-FULL}" \
     --data   "adql.resource.schema.import.name=${queryschemaname:?}" \
     --data   "adql.resource.schema.import.base=${baseschema:?}" \
     | ./pp | tee query-schema.json
 
-#    --data   'adql.schema.depth=THIN' \
 
 queryschema=$(
     cat query-schema.json | ident | node

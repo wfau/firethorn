@@ -17,7 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,8 +25,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
-import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
@@ -40,7 +40,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(JdbcResourceLinkFactory.SERVICE_PATH)
 public class JdbcResourcesController
-extends AbstractController
+extends AbstractEntityController<JdbcResource>
     {
 
     @Override
@@ -59,24 +59,6 @@ extends AbstractController
         {
         super();
         }
-
-    /**
-     * URL path for the select method.
-     *
-     */
-    public static final String SELECT_PATH = "select" ;
-
-    /**
-     * URL path for the search method.
-     *
-     */
-    public static final String SEARCH_PATH = "search" ;
-
-    /**
-     * URL path for the create method.
-     *
-     */
-    public static final String CREATE_PATH = "create" ;
 
     /**
      * MVC property for the select name.
@@ -126,16 +108,32 @@ extends AbstractController
      */
     public static final String CREATE_CONN_PASS = "jdbc.resource.create.pass" ;
 
+    @Override
+    public EntityBean<JdbcResource> bean(final JdbcResource entity)
+        {
+        return new JdbcResourceBean(
+            entity
+            );
+        }
+
+    @Override
+    public Iterable<EntityBean<JdbcResource>> bean(final Iterable<JdbcResource> iter)
+        {
+        return new JdbcResourceBean.Iter(
+            iter
+            );
+        }
+
     /**
      * JSON GET request to select all.
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcResourceBean.Iter jsonSelect(
+    public Iterable<EntityBean<JdbcResource>> select(
         final ModelAndView model
         ){
-        return new JdbcResourceBean.Iter(
+        return bean(
             factories().jdbc().resources().select()
             );
         }
@@ -144,8 +142,9 @@ extends AbstractController
      * JSON POST request to create a new resource.
      *
      */
+    @ResponseBody
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<JdbcResourceBean> jsonCreate(
+    public ResponseEntity<EntityBean<JdbcResource>> jsonCreate(
         @RequestParam(value=CREATE_NAME, required=true)
         final String name,
         @RequestParam(value=CREATE_CONN_URL, required=false)
@@ -159,7 +158,7 @@ extends AbstractController
         @RequestParam(value=CREATE_OGSADAI, required=false)
         final String ogsadai
         ){
-        final JdbcResourceBean bean = new JdbcResourceBean(
+        return created(
             factories().jdbc().resources().create(
                 ogsadai,
                 catalog,
@@ -168,13 +167,6 @@ extends AbstractController
                 user,
                 pass
                 )
-            );
-        return new ResponseEntity<JdbcResourceBean>(
-            bean,
-            new RedirectHeader(
-                bean
-                ),
-            HttpStatus.CREATED
             );
         }
     }

@@ -175,7 +175,7 @@ public class IvoaSchemaEntity
             }
 
         @Override
-        public IvoaSchema select(UUID uuid) throws NotFoundException
+        public IvoaSchema select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;
@@ -240,7 +240,7 @@ public class IvoaSchemaEntity
                     );
                 }
             @Override
-            public IvoaTable select(Identifier ident)
+            public IvoaTable select(final Identifier ident)
             throws NotFoundException
                 {
                 // TODO Auto-generated method stub

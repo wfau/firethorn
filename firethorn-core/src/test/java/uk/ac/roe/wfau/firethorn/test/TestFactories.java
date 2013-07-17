@@ -63,7 +63,7 @@ public class TestFactories
             return UUID.randomUUID();
             }
         }
-    
+
     @Component
     public static class JobFactories
         {

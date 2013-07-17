@@ -28,8 +28,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
@@ -40,7 +43,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(AdqlTableLinkFactory.TABLE_COLUMN_PATH)
 public class AdqlTableColumnController
-extends AbstractController
+extends AbstractEntityController<AdqlColumn>
     {
     @Override
     public Path path()
@@ -58,18 +61,6 @@ extends AbstractController
         {
         super();
         }
-
-    /**
-     * URL path for the select method.
-     *
-     */
-    public static final String SELECT_PATH = "select" ;
-
-    /**
-     * URL path for the search method.
-     *
-     */
-    public static final String SEARCH_PATH = "search" ;
 
     /**
      * MVC property for the Resource name.
@@ -95,17 +86,33 @@ extends AbstractController
      */
     public static final String SEARCH_RESULT = "adql.table.column.search.result" ;
 
+    @Override
+    public EntityBean<AdqlColumn> bean(final AdqlColumn entity)
+        {
+        return new AdqlColumnBean(
+            entity
+            );
+        }
+
+    @Override
+    public Iterable<EntityBean<AdqlColumn>> bean(final Iterable<AdqlColumn> iter)
+        {
+        return new AdqlColumnBean.Iter(
+            iter
+            );
+        }
+
     /**
      * Get the parent entity based on the request ident.
      * @throws NotFoundException
      *
      */
     @ModelAttribute(AdqlTableController.TARGET_ENTITY)
-    public AdqlTable table(
-        @PathVariable("ident")
+    public AdqlTable parent(
+        @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         ) throws NotFoundException {
-        log.debug("table() [{}]", ident);
+        log.debug("parent() [{}]", ident);
         return factories().adql().tables().select(
             factories().adql().tables().idents().ident(
                 ident
@@ -119,23 +126,14 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public AdqlColumnBean.Iter jsonSelect(
+    public Iterable<EntityBean<AdqlColumn>> select(
         @ModelAttribute(AdqlTableController.TARGET_ENTITY)
         final AdqlTable table
         ){
-        log.debug("jsonSelect()");
-        try {
-            return new AdqlColumnBean.Iter(
-                table.columns().select()
-                );
-            }
-        catch (final Throwable ouch)
-            {
-            log.debug("Error executing JsonSelect()");
-            log.debug("  Class [{}]", ouch.getClass());
-            log.debug("  Error [{}]", ouch.getMessage());
-            return null ;
-            }
+        log.debug("select()");
+        return bean(
+            table.columns().select()
+            );
         }
 
     /**
@@ -144,14 +142,14 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public AdqlColumnBean jsonSelect(
+    public EntityBean<AdqlColumn> select(
         @ModelAttribute(AdqlTableController.TARGET_ENTITY)
         final AdqlTable table,
         @RequestParam(SELECT_NAME)
         final String name
         ) throws NotFoundException {
-        log.debug("jsonSelect(String) [{}]", name);
-        return new AdqlColumnBean(
+        log.debug("select(String) [{}]", name);
+        return bean(
             table.columns().select(
                 name
                 )
@@ -164,14 +162,14 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public AdqlColumnBean.Iter jsonSearch(
+    public Iterable<EntityBean<AdqlColumn>> search(
         @ModelAttribute(AdqlTableController.TARGET_ENTITY)
         final AdqlTable table,
         @RequestParam(SEARCH_TEXT)
         final String text
         ){
-        log.debug("jsonSearch(String) [{}]", text);
-        return new AdqlColumnBean.Iter(
+        log.debug("search(String) [{}]", text);
+        return bean(
             table.columns().search(
                 text
                 )

@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,9 +30,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
-import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
@@ -45,7 +45,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(AdqlSchemaLinkFactory.SCHEMA_TABLE_PATH)
 public class AdqlSchemaTableController
-extends AbstractController
+extends AbstractEntityController<AdqlTable>
     {
     @Override
     public Path path()
@@ -65,34 +65,10 @@ extends AbstractController
         }
 
     /**
-     * URL path for the select method.
-     *
-     */
-    public static final String SELECT_PATH = "select" ;
-
-    /**
-     * URL path for the search method.
-     *
-     */
-    public static final String SEARCH_PATH = "search" ;
-
-    /**
-     * URL path for the import method.
-     *
-     */
-    public static final String IMPORT_PATH = "import" ;
-
-    /**
      * MVC property for the Resource name.
      *
      */
     public static final String SELECT_NAME = "adql.schema.table.select.name" ;
-
-    /**
-     * MVC property for the select results.
-     *
-     */
-    public static final String SELECT_RESULT = "adql.schema.table.select.result" ;
 
     /**
      * MVC property for the search text.
@@ -101,29 +77,32 @@ extends AbstractController
     public static final String SEARCH_TEXT = "adql.schema.table.search.text" ;
 
     /**
-     * MVC property for the search results.
-     *
-     */
-    public static final String SEARCH_RESULT = "adql.schema.table.search.result" ;
-
-    /**
-     * MVC property for the copy depth (REAL or THIN).
-     *
-     */
-    public static final String COPY_DEPTH = "adql.table.depth" ;
-
-    /**
-     * MVC property for the import base.
+     * MVC property for the import table base.
      *
      */
     public static final String IMPORT_BASE = "adql.schema.table.import.base" ;
 
     /**
-     * MVC property for the import name.
+     * MVC property for the import table name.
      *
      */
     public static final String IMPORT_NAME = "adql.schema.table.import.name" ;
 
+    @Override
+    public EntityBean<AdqlTable> bean(final AdqlTable entity)
+        {
+        return new AdqlTableBean(
+            entity
+            );
+        }
+
+    @Override
+    public Iterable<EntityBean<AdqlTable>> bean(final Iterable<AdqlTable> iter)
+        {
+        return new AdqlTableBean.Iter(
+            iter
+            );
+        }
 
     /**
      * Get the parent entity based on the request ident.
@@ -149,31 +128,31 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public AdqlTableBean.Iter select(
+    public Iterable<EntityBean<AdqlTable>> select(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema
         ){
         log.debug("select()");
-        return new AdqlTableBean.Iter(
+        return bean(
             schema.tables().select()
             );
         }
 
     /**
      * JSON request to select by name.
-     * @throws NotFoundException  
+     * @throws NotFoundException
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public AdqlTableBean select(
+    public EntityBean<AdqlTable> select(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(SELECT_NAME)
         final String name
         ) throws NotFoundException {
         log.debug("select(String) [{}]", name);
-        return new AdqlTableBean(
+        return bean(
             schema.tables().select(
                 name
                 )
@@ -186,14 +165,14 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public AdqlTableBean.Iter search(
+    public Iterable<EntityBean<AdqlTable>> search(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(SEARCH_TEXT)
         final String text
         ){
         log.debug("search(String) [{}]", text);
-        return new AdqlTableBean.Iter(
+        return bean(
             schema.tables().search(
                 text
                 )
@@ -201,44 +180,27 @@ extends AbstractController
         }
 
     /**
-     * A 'created' response entity.
-     *
-     */
-    public ResponseEntity<AdqlTableBean> response(final AdqlTableBean bean)
-        {
-        return new ResponseEntity<AdqlTableBean>(
-            bean,
-            new RedirectHeader(
-                bean
-                ),
-            HttpStatus.CREATED
-            );
-        }
-    
-    /**
      * JSON request to import a table.
      * @throws NotFoundException
      *
      */
     @ResponseBody
     @RequestMapping(value=IMPORT_PATH, params={IMPORT_BASE}, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<AdqlTableBean> inport(
+    public ResponseEntity<EntityBean<AdqlTable>> inport(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
-        @RequestParam(value=COPY_DEPTH, required=false)
+        @RequestParam(value=ADQL_COPY_DEPTH_URN, required=false)
         final CopyDepth type,
         @RequestParam(value=IMPORT_BASE, required=true)
         final String base
         ) throws NotFoundException {
         log.debug("inport(CopyDepth, String) [{}][{}]", type, base);
-        return response(
-            new AdqlTableBean(
-                schema.tables().create(
-                    ((type != null) ? type : CopyDepth.FULL),
-                    factories().base().tables().select(
-                        factories().base().tables().links().ident(
-                            base
-                            )
+        return created(
+            schema.tables().create(
+                ((type != null) ? type : CopyDepth.FULL),
+                factories().base().tables().select(
+                    factories().base().tables().links().ident(
+                        base
                         )
                     )
                 )
@@ -252,28 +214,26 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=IMPORT_PATH, params={IMPORT_BASE, IMPORT_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<AdqlTableBean> inport(
+    public ResponseEntity<EntityBean<AdqlTable>> inport(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
-        @RequestParam(value=COPY_DEPTH, required=false)
+        @RequestParam(value=ADQL_COPY_DEPTH_URN, required=false)
         final CopyDepth type,
         @RequestParam(value=IMPORT_BASE, required=true)
         final String base,
         @RequestParam(value=IMPORT_NAME, required=true)
         final String name
         ) throws NotFoundException {
-        log.debug("inport(CopyDepth, String, String) [{}][{}]", type, base, name);
-        return response(
-            new AdqlTableBean(
-                schema.tables().create(
-                    type,
-                    factories().base().tables().select(
-                        factories().base().tables().links().ident(
-                            base
-                            )
-                        ),
-                    name
-                    )
+        log.debug("inport(CopyDepth, String, String) [{}][{}][{}]", type, base, name);
+        return created(
+            schema.tables().create(
+                type,
+                factories().base().tables().select(
+                    factories().base().tables().links().ident(
+                        base
+                        )
+                    ),
+                name
                 )
             );
         }

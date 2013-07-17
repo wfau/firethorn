@@ -36,7 +36,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 
 @Entity()
 @Access(
@@ -122,7 +121,7 @@ extends BaseResourceEntity<AdqlSchema>
             }
 
         @Override
-        public AdqlResource select(UUID uuid) throws NotFoundException
+        public AdqlResource select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;
@@ -191,7 +190,7 @@ extends BaseResourceEntity<AdqlSchema>
                     );
 				}
             @Override
-            public AdqlSchema create(final CopyDepth depth, BaseSchema<?, ?> base)
+            public AdqlSchema create(final CopyDepth depth, final BaseSchema<?, ?> base)
                 {
                 return factories().adql().schemas().create(
                     depth,
@@ -211,7 +210,7 @@ extends BaseResourceEntity<AdqlSchema>
                     );
                 }
             @Override
-            public AdqlSchema create(final CopyDepth depth, String name, BaseSchema<?, ?> base)
+            public AdqlSchema create(final CopyDepth depth, final String name, final BaseSchema<?, ?> base)
                 {
                 return factories().adql().schemas().create(
                     depth,

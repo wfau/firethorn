@@ -31,18 +31,19 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
- * Spring MVC controller for <code>AdqlResource</code>.
+ *
  *
  */
 @Slf4j
 @Controller
 @RequestMapping(AdqlResourceLinkFactory.RESOURCE_PATH)
 public class AdqlResourceController
-    extends AbstractController
+    extends AbstractEntityController<AdqlResource>
     {
 
     @Override
@@ -92,14 +93,18 @@ public class AdqlResourceController
      */
     public static final String UPDATE_STATUS = "adql.resource.update.status" ;
 
-    /**
-     * Wrap an entity as a bean.
-     *
-     */
-    public AdqlResourceBean bean(
+    @Override
+    public Iterable<EntityBean<AdqlResource>> bean(final Iterable<AdqlResource> iter)
+        {
+        return new AdqlResourceBean.Iter(
+            iter
+            );
+        }
+
+    @Override
+    public EntityBean<AdqlResource> bean(
         final AdqlResource entity
         ){
-        log.debug("bean() [{}]", entity);
         return new AdqlResourceBean(
             entity
             );
@@ -114,8 +119,7 @@ public class AdqlResourceController
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException  {
-        log.debug("entity(}");
-        log.debug("ident [{}]", ident);
+        log.debug("entity() [{}]", ident);
         final AdqlResource entity = factories().adql().resources().select(
             factories().adql().resources().idents().ident(
                 ident
@@ -130,7 +134,7 @@ public class AdqlResourceController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public AdqlResourceBean jsonSelect(
+    public EntityBean<AdqlResource> select(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlResource entity
         ){
@@ -146,7 +150,7 @@ public class AdqlResourceController
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public AdqlResourceBean jsonUpdate(
+    public EntityBean<AdqlResource> update(
         @RequestParam(value=UPDATE_NAME, required=false) final
         String name,
         @RequestParam(value=UPDATE_STATUS, required=false) final
@@ -193,4 +197,5 @@ public class AdqlResourceController
         ){
         return VOSI_XML_VIEW ;
         }
+
     }

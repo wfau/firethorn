@@ -25,7 +25,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.test.TestBase;
-import lombok.extern.slf4j.Slf4j;
 
 
 /**

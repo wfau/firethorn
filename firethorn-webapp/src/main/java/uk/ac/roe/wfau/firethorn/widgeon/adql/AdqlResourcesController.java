@@ -17,17 +17,16 @@
  */
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
-import uk.ac.roe.wfau.firethorn.webapp.control.RedirectHeader;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
@@ -38,7 +37,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(AdqlResourceLinkFactory.SERVICE_PATH)
 public class AdqlResourcesController
-extends AbstractController
+extends AbstractEntityController<AdqlResource>
     {
 
     @Override
@@ -59,18 +58,6 @@ extends AbstractController
         }
 
     /**
-     * URL path for the select method.
-     *
-     */
-    public static final String SELECT_PATH = "select" ;
-
-    /**
-     * URL path for the create method.
-     *
-     */
-    public static final String CREATE_PATH = "create" ;
-
-    /**
      * MVC property for the select name.
      *
      */
@@ -88,16 +75,31 @@ extends AbstractController
      */
     public static final String CREATE_NAME = "adql.resource.create.name" ;
 
+    @Override
+    public EntityBean<AdqlResource> bean(final AdqlResource entity)
+        {
+        return new AdqlResourceBean(
+            entity
+            );
+        }
+
+    @Override
+    public Iterable<EntityBean<AdqlResource>> bean(final Iterable<AdqlResource> iter)
+        {
+        return new AdqlResourceBean.Iter(
+            iter
+            );
+        }
+
     /**
      * JSON GET request to select all.
      *
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public AdqlResourceBean.Iter jsonSelect(
-        final ModelAndView model
+    public Iterable<EntityBean<AdqlResource>> select(
         ){
-        return new AdqlResourceBean.Iter(
+        return bean(
             factories().adql().resources().select()
             );
         }
@@ -106,23 +108,16 @@ extends AbstractController
      * JSON POST request to create a new resource.
      *
      */
+    @ResponseBody
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<AdqlResourceBean> jsonCreate(
+    public ResponseEntity<EntityBean<AdqlResource>> create(
         @RequestParam(value=CREATE_NAME, required=true)
-        final String name,
-        final ModelAndView model
+        final String name
         ){
-        final AdqlResourceBean bean = new AdqlResourceBean(
+        return created(
             factories().adql().resources().create(
                 name
                 )
-            );
-        return new ResponseEntity<AdqlResourceBean>(
-            bean,
-            new RedirectHeader(
-                bean
-                ),
-            HttpStatus.CREATED
             );
         }
     }

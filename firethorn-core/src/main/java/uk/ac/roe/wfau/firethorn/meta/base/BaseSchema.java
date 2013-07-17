@@ -117,7 +117,7 @@ extends BaseComponent
 
         /**
          * Select a table by ident.
-         * 
+         *
          */
         public TableType select(final Identifier ident)
         throws NotFoundException;

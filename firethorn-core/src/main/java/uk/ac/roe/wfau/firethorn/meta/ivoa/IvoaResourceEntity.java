@@ -129,7 +129,7 @@ public class IvoaResourceEntity
             }
 
         @Override
-        public IvoaResource select(UUID uuid) throws NotFoundException
+        public IvoaResource select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;

@@ -17,10 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.test ;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertEquals;
-
 import java.net.URI;
 
 import lombok.extern.slf4j.Slf4j;

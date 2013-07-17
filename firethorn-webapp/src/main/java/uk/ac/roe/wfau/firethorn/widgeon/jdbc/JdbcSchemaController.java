@@ -30,7 +30,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
@@ -41,7 +43,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(JdbcSchemaLinkFactory.SCHEMA_PATH)
 public class JdbcSchemaController
-    extends AbstractController
+    extends AbstractEntityController<JdbcSchema>
     {
 
     @Override
@@ -73,13 +75,17 @@ public class JdbcSchemaController
      */
     public static final String UPDATE_NAME = "jdbc.schema.update.name" ;
 
-    /**
-     * Wrap an entity as a bean.
-     *
-     */
-    public JdbcSchemaBean bean(
-        final JdbcSchema entity
-        ){
+    @Override
+    public Iterable<EntityBean<JdbcSchema>> bean(final Iterable<JdbcSchema> iter)
+        {
+        return new JdbcSchemaBean.Iter(
+            iter
+            );
+        }
+
+    @Override
+    public EntityBean<JdbcSchema> bean(final JdbcSchema entity)
+        {
         return new JdbcSchemaBean(
             entity
             );
@@ -92,7 +98,7 @@ public class JdbcSchemaController
      */
     @ModelAttribute(TARGET_ENTITY)
     public JdbcSchema entity(
-        @PathVariable("ident")
+        @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         ) throws NotFoundException {
         log.debug("schema() [{}]", ident);
@@ -109,11 +115,11 @@ public class JdbcSchemaController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcSchemaBean jsonSelect(
+    public EntityBean<JdbcSchema> select(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcSchema entity
         ){
-        log.debug("jsonSelect()");
+        log.debug("select()");
         return bean(
             entity
             );
@@ -126,13 +132,13 @@ public class JdbcSchemaController
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public JdbcSchemaBean jsonUpdate(
-        @RequestParam(value=UPDATE_NAME, required=false)
-        final String name,
+    public EntityBean<JdbcSchema> update(
         @ModelAttribute(TARGET_ENTITY)
-        final JdbcSchema entity
+        final JdbcSchema entity,
+        @RequestParam(value=UPDATE_NAME, required=false)
+        final String name
         ){
-
+        log.debug("select()");
         if (name != null)
             {
             if (name.length() > 0)
@@ -142,7 +148,6 @@ public class JdbcSchemaController
                     );
                 }
             }
-
         return bean(
             entity
             );

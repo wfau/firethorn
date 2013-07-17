@@ -152,7 +152,7 @@ implements ConfigProperty
             }
 
         @Override
-        public ConfigProperty select(UUID uuid) throws NotFoundException
+        public ConfigProperty select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;

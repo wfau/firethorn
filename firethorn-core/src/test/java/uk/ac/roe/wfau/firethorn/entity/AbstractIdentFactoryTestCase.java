@@ -33,8 +33,8 @@ import lombok.extern.slf4j.Slf4j;
 public class AbstractIdentFactoryTestCase
     {
 
-    private Entity.IdentFactory factory = new AbstractIdentFactory();
-    
+    private final Entity.IdentFactory factory = new AbstractIdentFactory();
+
     @Test
     public void test000()
         {
@@ -109,7 +109,7 @@ public class AbstractIdentFactoryTestCase
             ((ProxyIdentifier)factory.ident("((0001:002):(0003:004))")).base() instanceof ProxyIdentifier
             );
         }
-    
+
     @Test
     public void test023()
         {

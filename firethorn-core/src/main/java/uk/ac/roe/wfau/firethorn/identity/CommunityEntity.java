@@ -177,7 +177,7 @@ implements Community
             }
 
         @Override
-        public Community select(UUID uuid) throws NotFoundException
+        public Community select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;

@@ -44,6 +44,36 @@ public abstract class AbstractController
     public static final String JSON_MAPPING = "application/json" ;
 
     /**
+     * Request property for the copy depth.
+     *
+     */
+    public static final String ADQL_COPY_DEPTH_URN = "urn:adql.copy.depth" ;
+
+    /**
+     * URL path for the select method.
+     *
+     */
+    public static final String SELECT_PATH = "select" ;
+
+    /**
+     * URL path for the search method.
+     *
+     */
+    public static final String SEARCH_PATH = "search" ;
+
+    /**
+     * URL path for the create method.
+     *
+     */
+    public static final String CREATE_PATH = "create" ;
+
+    /**
+     * URL path for the import method.
+     *
+     */
+    public static final String IMPORT_PATH = "import" ;
+
+    /**
      * The base URI config property key.
      *
      */
@@ -84,6 +114,7 @@ public abstract class AbstractController
 
     /**
      * The base URI (URL) for our webapp.
+     * @todo Alternatively, this should come from the URL in the HttpRequest
      *
      */
     public URI base()

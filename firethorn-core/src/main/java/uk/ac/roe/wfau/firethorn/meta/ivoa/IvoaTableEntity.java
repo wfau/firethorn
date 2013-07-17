@@ -36,7 +36,6 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 
 /**
@@ -217,7 +216,7 @@ public class IvoaTableEntity
             }
 
         @Override
-        public IvoaTable select(UUID uuid) throws NotFoundException
+        public IvoaTable select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;
@@ -301,7 +300,7 @@ public class IvoaTableEntity
                 }
 
             @Override
-            public IvoaColumn select(Identifier ident)
+            public IvoaColumn select(final Identifier ident)
             throws NotFoundException
                 {
                 // TODO Auto-generated method stub

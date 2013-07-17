@@ -26,11 +26,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
+import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
@@ -41,7 +42,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(JdbcResourceLinkFactory.RESOURCE_SCHEMA_PATH)
 public class JdbcResourceSchemaController
-extends AbstractController
+extends AbstractEntityController<JdbcSchema>
     {
     @Override
     public Path path()
@@ -61,18 +62,6 @@ extends AbstractController
         }
 
     /**
-     * URL path for the select method.
-     *
-     */
-    public static final String SELECT_PATH = "select" ;
-
-    /**
-     * URL path for the search method.
-     *
-     */
-    public static final String SEARCH_PATH = "search" ;
-
-    /**
      * MVC property for the select (full)name.
      *
      */
@@ -83,18 +72,35 @@ extends AbstractController
      *
      */
     public static final String SELECT_CATALOG = "jdbc.resource.schema.select.catalog" ;
-    
+
     /**
      * MVC property for the select schema.
      *
      */
     public static final String SELECT_SCHEMA = "jdbc.resource.schema.select.schema" ;
-    
+
     /**
      * MVC property for the search text.
      *
      */
     public static final String SEARCH_TEXT = "jdbc.resource.schema.search.text" ;
+
+
+    @Override
+    public EntityBean<JdbcSchema> bean(final JdbcSchema entity)
+        {
+        return new JdbcSchemaBean(
+            entity
+            );
+        }
+
+    @Override
+    public Iterable<EntityBean<JdbcSchema>> bean(final Iterable<JdbcSchema> iter)
+        {
+        return new JdbcSchemaBean.Iter(
+            iter
+            );
+        }
 
     /**
      * Get the parent resource based on the identifier in the request.
@@ -102,11 +108,11 @@ extends AbstractController
      *
      */
     @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
-    public JdbcResource resource(
-        @PathVariable("ident")
+    public JdbcResource parent(
+        @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
         ) throws NotFoundException{
-        log.debug("resource() [{}]", ident);
+        log.debug("parent() [{}]", ident);
         return factories().jdbc().resources().select(
             factories().jdbc().resources().idents().ident(
                 ident
@@ -120,12 +126,12 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcSchemaBean.Iter select(
+    public Iterable<EntityBean<JdbcSchema>> select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource
         ){
         log.debug("select()");
-        return new JdbcSchemaBean.Iter(
+        return bean(
             resource.schemas().select()
             );
         }
@@ -136,14 +142,14 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public JdbcSchemaBean select(
+    public EntityBean<JdbcSchema> select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
         @RequestParam(SELECT_NAME)
         final String name
         ) throws NotFoundException {
         log.debug("select(String) [{}]", name);
-        return new JdbcSchemaBean(
+        return bean(
             resource.schemas().select(
                 name
                 )
@@ -156,7 +162,7 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params={SELECT_CATALOG, SELECT_SCHEMA}, produces=JSON_MAPPING)
-    public JdbcSchemaBean select(
+    public EntityBean<JdbcSchema> select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
         @RequestParam(SELECT_CATALOG)
@@ -165,7 +171,7 @@ extends AbstractController
         final String schema
         ) throws NotFoundException {
         log.debug("select(String, String) [{}][{}]", catalog, schema);
-        return new JdbcSchemaBean(
+        return bean(
             resource.schemas().select(
                 catalog,
                 schema
@@ -179,14 +185,14 @@ extends AbstractController
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public JdbcSchemaBean.Iter search(
+    public Iterable<EntityBean<JdbcSchema>> search(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
         @RequestParam(SEARCH_TEXT)
         final String text
         ){
         log.debug("jsonSearch(String) [{}]", text);
-        return new JdbcSchemaBean.Iter(
+        return bean(
             resource.schemas().search(
                 text
                 )

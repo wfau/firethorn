@@ -26,7 +26,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.DeleteEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;

@@ -115,10 +115,10 @@ extends AbstractEntityController<AdqlColumn>
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
     public EntityBean<AdqlColumn> select(
         @ModelAttribute(TARGET_ENTITY)
-        final AdqlColumn entity
+        final AdqlColumn column
         ){
         return bean(
-            entity
+            column
             );
         }
 
@@ -133,20 +133,19 @@ extends AbstractEntityController<AdqlColumn>
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @ModelAttribute(TARGET_ENTITY)
-        final AdqlColumn entity
+        final AdqlColumn column
         ){
         if (name != null)
             {
             if (name.length() > 0)
                 {
-                entity.name(
+                column.name(
                     name
                     );
                 }
             }
-
         return bean(
-            entity
+            column
             );
         }
     }

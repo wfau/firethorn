@@ -30,7 +30,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
@@ -41,7 +42,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(JdbcColumnLinkFactory.COLUMN_PATH)
 public class JdbcColumnController
-    extends AbstractController
+    extends AbstractEntityController<JdbcColumn>
     {
 
     @Override
@@ -73,13 +74,17 @@ public class JdbcColumnController
      */
     public static final String UPDATE_NAME = "jdbc.column.update.name" ;
 
-    /**
-     * Wrap an entity as a bean.
-     *
-     */
-    public JdbcColumnBean bean(
-        final JdbcColumn entity
-        ){
+    @Override
+    public Iterable<EntityBean<JdbcColumn>> bean(final Iterable<JdbcColumn> iter)
+        {
+        return new JdbcColumnBean.Iter(
+            iter
+            );
+        }
+
+    @Override
+    public EntityBean<JdbcColumn> bean(final JdbcColumn entity)
+        {
         return new JdbcColumnBean(
             entity
             );
@@ -109,11 +114,11 @@ public class JdbcColumnController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public JdbcColumnBean jsonSelect(
+    public EntityBean<JdbcColumn> select(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcColumn entity
         ){
-        log.debug("jsonSelect()");
+        log.debug("select()");
         return bean(
             entity
             ) ;
@@ -126,13 +131,13 @@ public class JdbcColumnController
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public JdbcColumnBean jsonUpdate(
+    public EntityBean<JdbcColumn>  update(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @ModelAttribute(TARGET_ENTITY)
         final JdbcColumn entity
         ){
-
+        log.debug("select()");
         if (name != null)
             {
             if (name.length() > 0)
@@ -142,7 +147,6 @@ public class JdbcColumnController
                     );
                 }
             }
-
         return bean(
             entity
             );

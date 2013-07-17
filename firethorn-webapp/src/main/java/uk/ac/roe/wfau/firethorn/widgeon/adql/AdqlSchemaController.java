@@ -30,7 +30,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
-import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
+import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
+import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
@@ -41,7 +42,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(AdqlSchemaLinkFactory.SCHEMA_PATH)
 public class AdqlSchemaController
-    extends AbstractController
+    extends AbstractEntityController<AdqlSchema>
     {
 
     @Override
@@ -73,11 +74,16 @@ public class AdqlSchemaController
      */
     public static final String UPDATE_NAME = "adql.schema.update.name" ;
 
-    /**
-     * Wrap an entity as a bean.
-     *
-     */
-    public AdqlSchemaBean bean(
+    @Override
+    public Iterable<EntityBean<AdqlSchema>> bean(final Iterable<AdqlSchema> iter)
+        {
+        return new AdqlSchemaBean.Iter(
+            iter
+            );
+        }
+
+    @Override
+    public EntityBean<AdqlSchema> bean(
         final AdqlSchema entity
         ){
         return new AdqlSchemaBean(
@@ -109,11 +115,11 @@ public class AdqlSchemaController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public AdqlSchemaBean jsonSelect(
+    public EntityBean<AdqlSchema> select(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlSchema entity
         ){
-        log.debug("jsonSelect()");
+        log.debug("select()");
         return bean(
             entity
             );
@@ -126,13 +132,13 @@ public class AdqlSchemaController
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public AdqlSchemaBean jsonUpdate(
-        @RequestParam(value=UPDATE_NAME, required=false)
-        final String name,
+    public EntityBean<AdqlSchema> update(
         @ModelAttribute(TARGET_ENTITY)
-        final AdqlSchema entity
+        final AdqlSchema entity,
+        @RequestParam(value=UPDATE_NAME, required=false)
+        final String name
         ){
-
+        log.debug("update()");
         if (name != null)
             {
             if (name.length() > 0)
@@ -147,6 +153,4 @@ public class AdqlSchemaController
             entity
             );
         }
-
-
     }

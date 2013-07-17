@@ -21,7 +21,6 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 
 /**
  *
@@ -72,12 +71,12 @@ extends BaseSchema<AdqlSchema, AdqlTable>
 
         /**
          * Create an empty schema.
-         *  
+         *
          */
         public AdqlSchema create(final AdqlResource parent, final String name);
         /**
          * Create an empty schema.
-         *  
+         *
         public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name);
          */
 
@@ -126,12 +125,12 @@ extends BaseSchema<AdqlSchema, AdqlTable>
         {
         /**
          * Create a new table, importing the columns from a base table.
-         * 
+         *
          */
         public AdqlTable create(final BaseTable<?,?> base);
         /**
          * Create a new table, importing the columns from a base table.
-         * 
+         *
          */
         public AdqlTable create(final CopyDepth depth, final BaseTable<?,?> base);
 

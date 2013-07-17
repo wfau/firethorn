@@ -21,7 +21,6 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 
 /**
@@ -104,7 +103,7 @@ extends BaseComponent
 
         /**
          * Select a table by name.
-         * @throws NotFoundException 
+         * @throws NotFoundException
          *
          */
         public TableType select(final SchemaType parent, final String name)
@@ -176,7 +175,7 @@ extends BaseComponent
 
         /**
          * Select a column by ident.
-         * 
+         *
          */
         public ColumnType select(final Identifier ident)
         throws NotFoundException;

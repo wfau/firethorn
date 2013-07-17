@@ -64,7 +64,6 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.job.Job;
 import uk.ac.roe.wfau.firethorn.job.JobEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -291,7 +290,7 @@ implements AdqlQuery, AdqlParserQuery
             return this.links;
             }
         @Override
-        public AdqlQuery select(UUID uuid) throws NotFoundException
+        public AdqlQuery select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;
@@ -432,7 +431,7 @@ implements AdqlQuery, AdqlParserQuery
             }
 
         @Override
-        public AdqlQuery select(UUID uuid) throws NotFoundException
+        public AdqlQuery select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;

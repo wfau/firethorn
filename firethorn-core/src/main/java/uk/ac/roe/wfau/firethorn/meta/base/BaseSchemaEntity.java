@@ -37,7 +37,6 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 
 /**
  *
@@ -107,7 +106,7 @@ public abstract class BaseSchemaEntity<SchemaType extends BaseSchema<SchemaType,
             return this.links;
             }
         @Override
-        public BaseSchema<?, ?> select(UUID uuid) throws NotFoundException
+        public BaseSchema<?, ?> select(final UUID uuid) throws NotFoundException
             {
             // TODO Auto-generated method stub
             return null;

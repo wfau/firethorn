@@ -19,7 +19,7 @@
     /*
      * Create a table.
      */
-    CREATE TABLE [FirethornUserdataStelios01].[dbo].[emptytable](emptycolumn int)
+    CREATE TABLE [{databasename}].[dbo].[emptytable](emptycolumn int)
     go
 
     /*

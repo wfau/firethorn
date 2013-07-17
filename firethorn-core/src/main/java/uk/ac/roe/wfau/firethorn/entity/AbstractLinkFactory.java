@@ -32,7 +32,7 @@ public abstract class AbstractLinkFactory<EntityType extends Entity>
 implements Entity.LinkFactory<EntityType>
     {
     public static final String DELIM = "/";
-    public static final String REGEX = "(\\p{Alnum}+).*";
+    public static final String REGEX = "([\\p{Alnum}():]+).*?";
 
     protected AbstractLinkFactory(final String path)
         {
@@ -47,7 +47,7 @@ implements Entity.LinkFactory<EntityType>
         this.path  = path  ;
         this.delim = delim ;
         this.pattern = Pattern.compile(
-            ".*" + this.path + this.delim + REGEX
+            ".*?" + this.path + this.delim + REGEX
             );
         }
 

@@ -111,7 +111,7 @@ public class ComponentFactoriesImpl
         {
         return this.uuids;
         }
-    
+
     @Autowired
     private SpringThings spring;
     @Override

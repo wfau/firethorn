@@ -1,0 +1,173 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#
+# Identifiers mixed up - trying to create a [JdbcSchemaEntity] with a proxy ident [(23035904:23068672)]
+
+    2013-07-16 18:58:52,641 DEBUG [http-bio-8080-exec-2] [AdqlTableColumnController] table() [(23035905:(23035904:23068672))] 
+    2013-07-16 18:58:52,641 DEBUG [http-bio-8080-exec-2] [AbstractIdentFactory] ident(String) [(23035905:(23035904:23068672))] 
+    2013-07-16 18:58:52,641 DEBUG [http-bio-8080-exec-2] [AbstractIdentFactory] m4 matches 
+    2013-07-16 18:58:52,641 DEBUG [http-bio-8080-exec-2] [AbstractIdentFactory] ident(String) [23035905] 
+    2013-07-16 18:58:52,641 DEBUG [http-bio-8080-exec-2] [AbstractIdentFactory] m1 matches 
+    2013-07-16 18:58:52,642 DEBUG [http-bio-8080-exec-2] [AbstractIdentFactory] ident(String) [(23035904:23068672)] 
+    2013-07-16 18:58:52,642 DEBUG [http-bio-8080-exec-2] [AbstractIdentFactory] m2 matches 
+    2013-07-16 18:58:52,642 DEBUG [http-bio-8080-exec-2] [AbstractIdentFactory] ident(String) [23035904] 
+    2013-07-16 18:58:52,642 DEBUG [http-bio-8080-exec-2] [AbstractIdentFactory] m1 matches 
+    2013-07-16 18:58:52,642 DEBUG [http-bio-8080-exec-2] [AbstractIdentFactory] ident(String) [23068672] 
+    2013-07-16 18:58:52,642 DEBUG [http-bio-8080-exec-2] [AbstractIdentFactory] m1 matches 
+    2013-07-16 18:58:52,670 DEBUG [http-bio-8080-exec-2] [AdqlTableEntity] select(Identifier) [(23035905:(23035904:23068672))] 
+    2013-07-16 18:58:52,670 DEBUG [http-bio-8080-exec-2] [AdqlTableEntity] -- proxy identifier 
+    2013-07-16 18:58:52,670 DEBUG [http-bio-8080-exec-2] [AdqlTableEntity] -- parent schema 
+    2013-07-16 18:58:52,670 DEBUG [http-bio-8080-exec-2] [AbstractEntityFactory] select() [23035905] 
+    2013-07-16 18:58:52,804 DEBUG [http-bio-8080-exec-2] [AdqlTableEntity] -- proxy table 
+    2013-07-16 18:58:52,804 DEBUG [http-bio-8080-exec-2] [AdqlSchemaEntity] select(Identifier) [(23035904:23068672)] 
+    2013-07-16 18:58:52,805 DEBUG [http-bio-8080-exec-2] [AdqlSchemaEntity] select(Identifier) [(23035904:23068672)] 
+
+    2013-07-16 18:58:52,805 DEBUG [http-bio-8080-exec-2] [BaseComponentEntity] scantest() 
+    2013-07-16 18:58:52,805 DEBUG [http-bio-8080-exec-2] [BaseComponentEntity] scandue [1373993000465][1373993932805][932340] 
+    2013-07-16 18:58:52,805 DEBUG [http-bio-8080-exec-2] [BaseComponentEntity] scansync() 
+    2013-07-16 18:58:52,805 DEBUG [http-bio-8080-exec-2] [BaseComponentEntity] Checking for existing scan [22839344] 
+    2013-07-16 18:58:52,805 DEBUG [http-bio-8080-exec-2] [BaseComponentEntity] Adding new scan [22839344] 
+    2013-07-16 18:58:52,805 DEBUG [http-bio-8080-exec-2] [BaseComponentEntity] Running scan [22839344] 
+    2013-07-16 18:58:52,805 DEBUG [http-bio-8080-exec-2] [JdbcSchemaEntity] scanimpl() 
+    2013-07-16 18:58:52,868 DEBUG [http-bio-8080-exec-2] [JdbcConnectionEntity] open() 
+    2013-07-16 18:58:52,868 DEBUG [http-bio-8080-exec-2] [JdbcConnectionEntity] connect() 
+    2013-07-16 18:58:52,868 DEBUG [http-bio-8080-exec-2] [JdbcConnectionEntity] Source is null, updating to INIT 
+    2013-07-16 18:58:52,868 DEBUG [http-bio-8080-exec-2] [JdbcConnectionEntity] State is INIT, initialising DataSource 
+    2013-07-16 18:58:52,869 DEBUG [http-bio-8080-exec-2] [JdbcConnectionEntity] State is READY, initialising Connection 
+    2013-07-16 18:58:52,870 DEBUG [http-bio-8080-exec-2] [JdbcSchemaEntity] JdbcProductType [MSSQL] 
+    2013-07-16 18:58:52,946 DEBUG [http-bio-8080-exec-2] [JdbcSchemaEntity] Found table [ATLASv20130304.dbo.ArchiveCurationHistory] 
+    2013-07-16 18:58:53,006 DEBUG [http-bio-8080-exec-2] [JdbcSchemaEntity] Found table [ATLASv20130304.dbo.AstrCalVers] 
+    2013-07-16 18:58:53,037 DEBUG [http-bio-8080-exec-2] [JdbcSchemaEntity] Found table [ATLASv20130304.dbo.atlasDetection] 
+    2013-07-16 18:58:53,068 DEBUG [http-bio-8080-exec-2] [JdbcSchemaEntity] Found table [ATLASv20130304.dbo.atlasMergeLog] 
+    ....................... ..... ...................... .............................. ................................
+    2013-07-16 18:58:54,800 DEBUG [http-bio-8080-exec-2] [JdbcSchemaEntity] Found table [ATLASv20130304.dbo.ukirtFSstars] 
+    2013-07-16 18:58:54,832 DEBUG [http-bio-8080-exec-2] [JdbcConnectionEntity] close() 
+    2013-07-16 18:58:54,833 DEBUG [http-bio-8080-exec-2] [BaseComponentEntity] Completed scan [22839344] 
+
+    2013-07-16 18:58:54,833 DEBUG [http-bio-8080-exec-2] [JdbcSchemaEntity] select(Identifier) [(23035904:23068672)] 
+    2013-07-16 18:58:54,833 DEBUG [http-bio-8080-exec-2] [AbstractEntityFactory] select() [(23035904:23068672)] 
+    2013-07-16 18:58:54,833 ERROR [http-bio-8080-exec-2] [HibernateThingsImpl] Hibernate excepion [org.hibernate.TypeMismatchException][Provided id of the wrong type for class uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTableEntity. Expected: class java.lang.Long, got class java.lang.String] 
+
+#
+# Bug fixes ...
+#
+
+#
+# Create a clean database for testing.
+# (Ubuntu VM with sqsh installed)
+#[sqsq@tau]
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"    
+
+        pushd 'firethorn-sqlserver/src/sql'
+
+            servername=master
+            serverlogin=xxxx
+            serverpass=xxxx
+
+            databasepost=Dave01
+
+            #
+            # Function to fill in the template values.
+            sqlsed()
+                {
+                sed '
+                    s|{databasename}|'"${databasename}"'|g
+                    s|{databasepath}|'"${databasepath}"'|g
+                    s|{databaseuser}|'"${databaseuser}"'|g
+                    s|{databasepass}|'"${databasepass}"'|g
+                    s|{databaselogin}|'"${databaselogin}"'|g
+                    ' "${1:?}"
+                }
+
+            #
+            # Set the template values
+            databasename="FirethornMetadata${databasepost:?}"
+            databasepath='C:\\Program Files\\Microsoft SQL Server\\MSSQL10.MSSQLSERVER\\MSSQL\\DATA'
+            databaseuser="${databasename:?}User"
+            databaselogin="${databasename:?}Login"
+            databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+            echo "databasename  [${databasename}]"
+            echo "databaseuser  [${databaseuser}]"
+            echo "databaselogin [${databaselogin}]"
+            echo "databasepass  [${databasepass}]"
+
+            #
+            # Create our new metadata database.
+            sqlsed 'create-database.sql' | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+            sqlsed 'create-login.sql'    | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+            sqlsed 'create-user.sql'     | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+
+            #
+            # Set the template values
+            databasename="FirethornUserdata${databasepost:?}"
+            databasepath='C:\\Program Files\\Microsoft SQL Server\\MSSQL10.MSSQLSERVER\\MSSQL\\DATA'
+            databaseuser="${databasename:?}User"
+            databaselogin="${databasename:?}Login"
+            databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+            echo "databasename  [${databasename}]"
+            echo "databaseuser  [${databaseuser}]"
+            echo "databaselogin [${databaselogin}]"
+            echo "databasepass  [${databasepass}]"
+
+            #
+            # Create our userdata database.
+            sqlsed 'create-database.sql' | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+            sqlsed 'create-login.sql'    | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+            sqlsed 'create-user.sql'     | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+
+            #
+            # Add the table to avoid empty DB bug.
+            sqlsed 'create-emptytable.sql' | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+
+#
+# Looks like thin thin works :-)
+
+#
+# VOSI still has a high cost, because it triggers a re-scan of JDBC tables and columns
+# Need to fix the scantest/prevscan flags to prevent multiple scans.
+# Also, use our own metadata queres.
+
+
+    # BUG - importing a table into a schema using a table froma thin schema fails.
+    # .. because we are trying point the table base reference to a proxy table
+    # .. which fails when we try to save it in Hibernate.
+    # Needs to make the base schema and table real before we can use them as a base.
+    # Unless ..... the reference to base is ident rather than reference ?
+    # eek
+
+    #
+    # Need realize() on demand, and invokable from child to parent.
+    # 
+
+
+
+
+
+
+
+
+
