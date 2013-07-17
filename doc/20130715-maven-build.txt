@@ -106,7 +106,7 @@
     #ssh "${testuser:?}@${testhost:?}"
 
         #adqlcopydepth=FULL
-        adqlcopydepth=THIN
+        #adqlcopydepth=THIN
 
         source ${HOME:?}/firethorn.settings
         FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
