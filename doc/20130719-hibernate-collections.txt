@@ -20,3 +20,31 @@
 #
 #
 
+    #
+    # Mercurial branch to test Hibernate collections..
+
+    hg branch hibernate-collections
+        marked working directory as branch hibernate-collections
+
+    hg commit -m "Started new branch"
+
+    hg parents
+
+        changeset:   734:4d8a01e40869
+        branch:      hibernate-collections
+        tag:         tip
+        user:        Dave Morris <dave.morris@bristol.ac.uk>
+        date:        Fri Jul 19 13:22:14 2013 +0100
+        summary:     Started new branch
+
+    hg add
+        adding doc/20130719-hibernate-collections.txt
+
+    hg commit -m "...."
+    
+    hg push
+
+        pushing to ssh://Dave@wfau.metagrid.co.uk:22//var/local/wfau/projects/firethorn/code
+        searching for changes
+        abort: push creates new remote branch 'hibernate-collections'!
+
