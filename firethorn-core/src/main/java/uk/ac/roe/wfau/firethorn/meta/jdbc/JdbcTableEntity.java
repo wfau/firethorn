@@ -412,6 +412,8 @@ implements JdbcTable
         return this;
         }
 
+    /*
+     * HibernateCollections 
     @OrderBy(
         "name ASC"
         )
@@ -424,7 +426,9 @@ implements JdbcTable
         targetEntity = JdbcColumnEntity.class
         )
     private Map<String, JdbcColumn> children = new LinkedHashMap<String, JdbcColumn>();
-
+     *
+     */
+    
     @Override
     public JdbcTable.Columns columns()
         {
@@ -440,12 +444,25 @@ implements JdbcTable
             @Override
             public Iterable<JdbcColumn> select()
                 {
+                return factories().jdbc().columns().select(
+                    JdbcTableEntity.this
+                    );
+                /*
+                 * HibernateCollections 
                 return children.values();
+                 *
+                 */
                 }
             @Override
             public JdbcColumn select(final String name)
             throws NotFoundException
                 {
+                return factories().jdbc().columns().select(
+                    JdbcTableEntity.this,
+                    name
+                    );
+                /*
+                 * HibernateCollections 
                 JdbcColumn result = children.get(name);
                 if (result != null)
                     {
@@ -456,6 +473,8 @@ implements JdbcTable
                         name
                         );
                     }
+                 *
+                 */
                 }
             @Override
             public JdbcColumn create(final AdqlQuery.SelectField field)
@@ -464,10 +483,14 @@ implements JdbcTable
                     JdbcTableEntity.this,
                     field
                     );
+                /*
+                 * HibernateCollections 
                 children.put(
                     result .name(),
                     result 
                     );
+                 *
+                 */
                 return result ;
                 }
             @Override
@@ -479,10 +502,14 @@ implements JdbcTable
                     type,
                     size
                     );
+                /*
+                 * HibernateCollections 
                 children.put(
                     result .name(),
                     result 
                     );
+                 *
+                 */
                 return result ;
                 }
             @Override

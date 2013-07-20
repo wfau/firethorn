@@ -374,10 +374,14 @@ implements AdqlSchema
             AdqlSchemaEntity.this,
             base
             );
+        /*
+         * HibernateCollections
         children.put(
             table.name(),
             table
             );
+         *
+         */
         }
 
     /**
@@ -450,6 +454,8 @@ implements AdqlSchema
         return this.resource;
         }
 
+    /*
+     * HibernateCollections
     @OrderBy(
         "name ASC"
         )
@@ -462,6 +468,8 @@ implements AdqlSchema
         targetEntity = AdqlTableEntity.class
         )
     private Map<String, AdqlTable> children = new LinkedHashMap<String, AdqlTable>();
+     *
+     */
     
     @Override
     public AdqlSchema.Tables tables()
@@ -481,7 +489,14 @@ implements AdqlSchema
                         );
                     }
                 else {
+                    return factories().adql().tables().select(
+                        AdqlSchemaEntity.this
+                        );
+                    /*
+                     * HibernateCollections
                     return children.values();
+                     * 
+                     */
                     }
                 }
 
@@ -498,6 +513,12 @@ implements AdqlSchema
                         );
                     }
                 else {
+                    return factories().adql().tables().select(
+                        AdqlSchemaEntity.this,
+                        name
+                        );
+                    /*
+                     * HibernateCollections
                     AdqlTable table = children.get(name);
                     if (table != null)
                         {
@@ -508,6 +529,8 @@ implements AdqlSchema
                             name
                             );
                         }
+                     * 
+                     */
                     }
                 }
 
@@ -520,10 +543,14 @@ implements AdqlSchema
                     AdqlSchemaEntity.this,
                     base
                     );
+                /*
+                 * HibernateCollections
                 children.put(
                     table.name(),
                     table
                     );
+                 *
+                 */
                 return table ;
                 }
 
@@ -535,10 +562,14 @@ implements AdqlSchema
                     AdqlSchemaEntity.this,
                     base
                     );
+                /*
+                 * HibernateCollections
                 children.put(
                     table.name(),
                     table
                     );
+                 *
+                 */
                 return table ;
                 }
 
@@ -552,10 +583,14 @@ implements AdqlSchema
                     base,
                     name
                     );
+                /*
+                 * HibernateCollections
                 children.put(
                     table.name(),
                     table
                     );
+                 *
+                 */
                 return table ;
                 }
 
@@ -568,10 +603,14 @@ implements AdqlSchema
                     base,
                     name
                     );
+                /*
+                 * HibernateCollections
                 children.put(
                     table.name(),
                     table
                     );
+                 *
+                 */
                 return table ;
                 }
 
@@ -583,10 +622,14 @@ implements AdqlSchema
                     AdqlSchemaEntity.this,
                     query
                     );
+                /*
+                 * HibernateCollections
                 children.put(
                     table.name(),
                     table
                     );
+                 *
+                 */
                 return table ;
                 }
 

@@ -277,7 +277,8 @@ public class JdbcResourceEntity
 	        );
 	    }
 
-    
+    /*
+     * HibernateCollections 
     @OrderBy(
         "name ASC"
         )
@@ -290,6 +291,8 @@ public class JdbcResourceEntity
         targetEntity = JdbcSchemaEntity.class
         )
     private Map<String, JdbcSchema> children = new LinkedHashMap<String, JdbcSchema>();
+     *
+     */
     
     @Override
     public JdbcResource.Schemas schemas()
@@ -306,7 +309,14 @@ public class JdbcResourceEntity
             @Override
             public Iterable<JdbcSchema> select()
                 {
+                /*
+                 * HibernateCollections 
                 return children.values();
+                 *
+                 */
+                return factories().jdbc().schemas().select(
+                    JdbcResourceEntity.this
+                    );
                 }
 
             @Override
@@ -316,10 +326,14 @@ public class JdbcResourceEntity
                     JdbcResourceEntity.this,
                     identity
                     );
+                /*
+                 * HibernateCollections 
                 children.put(
                     result.name(),
                     result
                     );
+                 *
+                 */
                 return result ;
                 }
 
@@ -331,10 +345,14 @@ public class JdbcResourceEntity
                     catalog,
                     schema
                     );
+                /*
+                 * HibernateCollections 
                 children.put(
                     result .name(),
                     result 
                     );
+                 *
+                 */
                 return result ;
                 }
 
@@ -351,6 +369,12 @@ public class JdbcResourceEntity
             public JdbcSchema select(final String name)
             throws NotFoundException
                 {
+                return factories().jdbc().schemas().select(
+                    JdbcResourceEntity.this,
+                    name
+                    );
+                /*
+                 * HibernateCollections 
                 JdbcSchema result = children.get(name);
                 if (result != null)
                     {
@@ -361,6 +385,8 @@ public class JdbcResourceEntity
                         name
                         );
                     }
+                 *
+                 */
                 }
 
             @Override

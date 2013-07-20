@@ -448,10 +448,14 @@ public class AdqlTableEntity
             AdqlTableEntity.this,
             base
             );
+        /*
+         * HibernateCollections 
         children.put(
             column.name(),
             column
             );
+         * 
+         */
         }
 
     /**
@@ -544,6 +548,8 @@ public class AdqlTableEntity
         return base().root();
         }
 
+    /*
+     * HibernateCollections 
     @OrderBy(
         "name ASC"
         )
@@ -556,6 +562,8 @@ public class AdqlTableEntity
         targetEntity = AdqlColumnEntity.class
         )
     private Map<String, AdqlColumn> children = new LinkedHashMap<String, AdqlColumn>();
+     *
+     */
     
     @Override
     public AdqlTable.Columns columns()
@@ -574,7 +582,14 @@ public class AdqlTableEntity
                         );
                     }
                 else {
+                    /*
+                     * HibernateCollections 
                     return children.values();
+                     *
+                     */
+                    return factories().adql().columns().select(
+                        AdqlTableEntity.this
+                        );
                     }
                 }
 
@@ -592,6 +607,12 @@ public class AdqlTableEntity
                         );
                     }
                 else {
+                    return factories().adql().columns().select(
+                        AdqlTableEntity.this,
+                        name
+                        );
+                    /*
+                     * HibernateCollections 
                     AdqlColumn column = children.get(name);
                     if (column != null)
                         {
@@ -602,6 +623,8 @@ public class AdqlTableEntity
                             name
                             );
                         }
+                     *
+                     */
                     }
                 }
 
@@ -609,15 +632,18 @@ public class AdqlTableEntity
             public AdqlColumn create(final BaseColumn<?> base)
                 {
                 realize();
-
                 AdqlColumn column = factories().adql().columns().create(
                     AdqlTableEntity.this,
                     base
                     );
+                /*
+                 * HibernateCollections 
                 children.put(
                     column.name(),
                     column
                     );
+                 *
+                 */
                 return column ;
                 }
 

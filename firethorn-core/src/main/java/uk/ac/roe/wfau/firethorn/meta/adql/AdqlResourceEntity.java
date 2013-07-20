@@ -151,6 +151,8 @@ extends BaseResourceEntity<AdqlSchema>
         super(name);
         }
 
+    /*
+     * HibernateCollections
     @OrderBy(
         "name ASC"
         )
@@ -163,6 +165,8 @@ extends BaseResourceEntity<AdqlSchema>
         targetEntity = AdqlSchemaEntity.class
         )
     private Map<String, AdqlSchema> children = new LinkedHashMap<String, AdqlSchema>();
+     * 
+     */
     
     @Override
     public AdqlResource.Schemas schemas()
@@ -172,13 +176,26 @@ extends BaseResourceEntity<AdqlSchema>
             @Override
             public Iterable<AdqlSchema> select()
                 {
+                return factories().adql().schemas().select(
+                    AdqlResourceEntity.this
+                    );
+                /*
+                 * HibernateCollections
                 return children.values();
+                 * 
+                 */
                 }
 
             @Override
             public AdqlSchema select(final String name)
             throws NotFoundException
                 {
+                return factories().adql().schemas().select(
+                    AdqlResourceEntity.this,
+                    name
+                    );
+                /*
+                 * HibernateCollections
                 AdqlSchema schema = children.get(name);
                 if (schema != null)
                     {
@@ -189,6 +206,8 @@ extends BaseResourceEntity<AdqlSchema>
                         name
                         );
                     }
+                 * 
+                 */
                 }
 
             @Override
@@ -198,10 +217,14 @@ extends BaseResourceEntity<AdqlSchema>
                     AdqlResourceEntity.this,
                     name
                     );
+                /*
+                 * HibernateCollections
                 children.put(
                     schema.name(),
                     schema
                     );
+                 * 
+                 */
                 return schema ;
                 }
 
@@ -213,10 +236,14 @@ extends BaseResourceEntity<AdqlSchema>
                     name,
                     base
                     );
+                /*
+                 * HibernateCollections
                 children.put(
                     schema.name(),
                     schema
                     );
+                 * 
+                 */
                 return schema ;
                 }
 
@@ -228,10 +255,14 @@ extends BaseResourceEntity<AdqlSchema>
                     base.name(),
                     base
                     );
+                /*
+                 * HibernateCollections
                 children.put(
                     schema.name(),
                     schema
                     );
+                 * 
+                 */
                 return schema ;
 				}
             @Override
@@ -243,10 +274,14 @@ extends BaseResourceEntity<AdqlSchema>
                     base.name(),
                     base
                     );
+                /*
+                 * HibernateCollections
                 children.put(
                     schema.name(),
                     schema
                     );
+                 * 
+                 */
                 return schema ;
                 }
 
@@ -258,10 +293,14 @@ extends BaseResourceEntity<AdqlSchema>
                     name,
                     base
                     );
+                /*
+                 * HibernateCollections
                 children.put(
                     schema.name(),
                     schema
                     );
+                 * 
+                 */
                 return schema ;
                 }
 
@@ -274,10 +313,14 @@ extends BaseResourceEntity<AdqlSchema>
                     name,
                     base
                     );
+                /*
+                 * HibernateCollections
                 children.put(
                     schema.name(),
                     schema
                     );
+                 * 
+                 */
                 return schema ;
                 }
 

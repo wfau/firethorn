@@ -550,6 +550,8 @@ public class JdbcSchemaEntity
         return this.schema;
         }
 
+    /*
+     * HibernateCollections 
     @OrderBy(
         "name ASC"
         )
@@ -562,6 +564,8 @@ public class JdbcSchemaEntity
         targetEntity = JdbcTableEntity.class
         )
     private Map<String, JdbcTable> children = new LinkedHashMap<String, JdbcTable>();
+     *
+     */
     
     @Override
     public JdbcSchema.Tables tables()
@@ -578,12 +582,25 @@ public class JdbcSchemaEntity
             @Override
             public Iterable<JdbcTable> select()
                 {
+                return factories().jdbc().tables().select(
+                    JdbcSchemaEntity.this
+                    );
+                /*
+                 * HibernateCollections 
                 return children.values();
+                 *
+                 */
                 }
             @Override
             public JdbcTable select(final String name)
             throws NotFoundException
                 {
+                return factories().jdbc().tables().select(
+                    JdbcSchemaEntity.this,
+                    name
+                    );
+                /*
+                 * HibernateCollections 
                 JdbcTable result = children.get(name);
                 if (result != null)
                     {
@@ -594,6 +611,8 @@ public class JdbcSchemaEntity
                         name
                         );
                     }
+                 *
+                 */
                 }
             @Override
             public JdbcTable create(final String name)
@@ -602,10 +621,14 @@ public class JdbcSchemaEntity
                     JdbcSchemaEntity.this,
                     name
                     );
+                /*
+                 * HibernateCollections 
                 children.put(
                     result .name(),
                     result 
                     );
+                 *
+                 */
                 return result ;
                 }
             @Override
@@ -616,10 +639,14 @@ public class JdbcSchemaEntity
                     name,
                     type
                     );
+                /*
+                 * HibernateCollections 
                 children.put(
                     result .name(),
                     result 
                     );
+                 *
+                 */
                 return result ;
                 }
             @Override
@@ -629,10 +656,14 @@ public class JdbcSchemaEntity
                     JdbcSchemaEntity.this,
                     query
                     );
+                /*
+                 * HibernateCollections 
                 children.put(
                     result .name(),
                     result 
                     );
+                 *
+                 */
                 return result ;
                 }
             @Override
