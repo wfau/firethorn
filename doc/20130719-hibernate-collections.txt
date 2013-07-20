@@ -20,8 +20,9 @@
 #
 #
 
-    #
-    # Mercurial branch to test Hibernate collections..
+#
+# Mercurial branch to test Hibernate collections..
+#[user@desktop]
 
     hg branch hibernate-collections
         marked working directory as branch hibernate-collections
@@ -38,6 +39,7 @@
         summary:     Started new branch
 
     hg add
+
         adding doc/20130719-hibernate-collections.txt
 
     hg commit -m "...."
@@ -47,4 +49,25 @@
         pushing to ssh://Dave@wfau.metagrid.co.uk:22//var/local/wfau/projects/firethorn/code
         searching for changes
         abort: push creates new remote branch 'hibernate-collections'!
+
+    #
+    # Need to push the new branch.
+    # http://stackoverflow.com/a/9085762
+    hg push --new-branch
+
+        hg push: option --new-branch not recognized
+
+    #
+    # "The --new-branch flag was introduced in Mercurial 1.6."
+    hg -v
+    
+        Mercurial Distributed SCM (version 1.4)
+        ....
+        
+    #
+    # Older versions of Mercurial required you to use --force instead.
+    hg push --force
+    
+
+
 

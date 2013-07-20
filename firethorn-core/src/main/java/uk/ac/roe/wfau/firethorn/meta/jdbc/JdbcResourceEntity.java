@@ -21,6 +21,8 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLInvalidAuthorizationSpecException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Access;
@@ -30,6 +32,9 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +50,8 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 
 /**
@@ -52,7 +59,7 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
  *
  */
 @Slf4j
-@Entity()
+@Entity
 @Access(
     AccessType.FIELD
     )
@@ -79,7 +86,7 @@ public class JdbcResourceEntity
      * Hibernate table mapping.
      *
      */
-    protected static final String DB_TABLE_NAME = "JdbcResourceEntity";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "JdbcResourceEntity";
 
     /**
      * Hibernate column mapping.
@@ -270,9 +277,24 @@ public class JdbcResourceEntity
 	        );
 	    }
 
+    
+    @OrderBy(
+        "name ASC"
+        )
+    @MapKey(
+        name="name"
+        )
+    @OneToMany(
+        fetch   = FetchType.LAZY,
+        mappedBy = "resource",
+        targetEntity = JdbcSchemaEntity.class
+        )
+    private Map<String, JdbcSchema> children = new LinkedHashMap<String, JdbcSchema>();
+    
     @Override
     public JdbcResource.Schemas schemas()
         {
+        log.debug("schemas() for [{}]", ident());
         scantest();
         return schemasimpl();
         }
@@ -284,29 +306,72 @@ public class JdbcResourceEntity
             @Override
             public Iterable<JdbcSchema> select()
                 {
-                return factories().jdbc().schemas().select(
-                    JdbcResourceEntity.this
+                return children.values();
+                }
+
+            @Override
+            public JdbcSchema create(final Identity identity)
+                {
+                JdbcSchema result = factories().jdbc().schemas().build(
+                    JdbcResourceEntity.this,
+                    identity
                     );
+                children.put(
+                    result.name(),
+                    result
+                    );
+                return result ;
                 }
 
             @Override
             public JdbcSchema create(final String catalog, final String schema)
                 {
-                return factories().jdbc().schemas().create(
+                JdbcSchema result = factories().jdbc().schemas().create(
                     JdbcResourceEntity.this,
                     catalog,
                     schema
                     );
+                children.put(
+                    result .name(),
+                    result 
+                    );
+                return result ;
+                }
+
+            @Override
+            public Iterable<JdbcSchema> select(final Identity identity)
+                {
+                return factories().jdbc().schemas().select(
+                    JdbcResourceEntity.this,
+                    identity
+                    );
+                }
+
+            @Override
+            public JdbcSchema select(final String name)
+            throws NotFoundException
+                {
+                JdbcSchema result = children.get(name);
+                if (result != null)
+                    {
+                    return result ;
+                    }
+                else {
+                    throw new NotFoundException(
+                        name
+                        );
+                    }
                 }
 
             @Override
             public JdbcSchema select(final String catalog, final String schema)
             throws NotFoundException
                 {
-                return factories().jdbc().schemas().select(
-                    JdbcResourceEntity.this,
-                    catalog,
-                    schema
+                return select(
+                    factories().jdbc().schemas().names().fullname(
+                        catalog,
+                        schema
+                        )
                     );
                 }
 
@@ -321,39 +386,11 @@ public class JdbcResourceEntity
                 }
 
             @Override
-            public JdbcSchema select(final String name)
-            throws NotFoundException
-                {
-                return factories().jdbc().schemas().select(
-                    JdbcResourceEntity.this,
-                    name
-                    );
-                }
-
-            @Override
             public Iterable<JdbcSchema> search(final String text)
                 {
                 return factories().jdbc().schemas().search(
                     JdbcResourceEntity.this,
                     text
-                    );
-                }
-
-            @Override
-            public JdbcSchema create(final Identity identity)
-                {
-                return factories().jdbc().schemas().build(
-                    JdbcResourceEntity.this,
-                    identity
-                    );
-                }
-
-            @Override
-            public Iterable<JdbcSchema> select(final Identity identity)
-                {
-                return factories().jdbc().schemas().select(
-                    JdbcResourceEntity.this,
-                    identity
                     );
                 }
 

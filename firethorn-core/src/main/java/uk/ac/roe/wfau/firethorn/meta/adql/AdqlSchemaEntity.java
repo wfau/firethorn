@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Access;
@@ -25,7 +27,11 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,22 +48,30 @@ import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 
 /**
  *
  *
  */
 @Slf4j
-@Entity()
+@Entity
 @Access(
     AccessType.FIELD
     )
 @Table(
     name = AdqlSchemaEntity.DB_TABLE_NAME,
     uniqueConstraints={
+        @UniqueConstraint(
+            columnNames = {
+                BaseComponentEntity.DB_NAME_COL,
+                BaseComponentEntity.DB_PARENT_COL
+                }
+            )
         }
     )
 @NamedQueries(
@@ -84,7 +98,7 @@ implements AdqlSchema
      * Hibernate table mapping.
      *
      */
-    protected static final String DB_TABLE_NAME = "AdqlSchemaEntity";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AdqlSchemaEntity";
 
     /**
      * Schema factory implementation.
@@ -304,54 +318,6 @@ implements AdqlSchema
         super();
         }
 
-    /*
-     *
-    2013-07-15 17:38:01,760 WARN  [http-bio-8080-exec-5] [UnresolvedEntityInsertActions] HHH000437: Attempting to save one or more entities that have a non-nullable association with an unsaved transient entity. The unsaved transient entity must be saved in an operation prior to saving these dependent entities.
-    Unsaved transient entity: ([uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity#<null>])
-    Dependent entities: ([[uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity#19693869]])
-    Non-nullable association(s): ([uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity.parent, uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity.table])
-2013-07-15 17:38:01,760 ERROR [http-bio-8080-exec-5] [HibernateThingsImpl] Hibernate excepion [org.hibernate.TransientPropertyValueException][Not-null property references a transient value - transient instance must be saved before current operation: uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity.parent -> uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity]
-     *
-     *
-    protected AdqlSchemaEntity(final AdqlResource resource, final String name, final BaseTable<?, ?> base)
-        {
-        this(
-            CopyDepth.FULL,
-            resource,
-            name
-            );
-        realize(
-            base
-            );
-        }
-     *
-     *
-    protected AdqlSchemaEntity(final AdqlResource resource, final String name, final BaseSchema<?, ?> base)
-        {
-        this(
-            CopyDepth.FULL,
-            resource,
-            name,
-            base
-            );
-        }
-     *
-     *
-    protected AdqlSchemaEntity(final CopyDepth depth, final AdqlResource resource, final String name, final BaseSchema<?, ?> base)
-        {
-        this(
-            depth,
-            resource,
-            name
-            );
-        realize(
-            base
-            );
-        }
-     *
-     */
-
-
     protected AdqlSchemaEntity(final AdqlResource resource, final String name)
         {
         this(
@@ -396,25 +362,22 @@ implements AdqlSchema
         }
 
     /**
-     * Create a copy of the base table.
+     * Create a copy of a base table.
      * @todo Delay the full scan until the data is actually requested.
      *
      */
     protected void realize(final CopyDepth depth, final BaseTable<?, ?> base)
         {
-        if (base != null)
-            {
-            tables().create(
-                CopyDepth.FULL,
-                base
-                );
-            }
-        else {
-            log.error("Base table should not be null");
-            throw new IllegalArgumentException(
-                "Base table should not be null"
-                );
-            }
+        log.debug("realize(CopyDepth, BaseTable) [{}][{}][{}][{}][{}]", ident(), name(), depth, base.ident(), base.name());
+        AdqlTable table = factories().adql().tables().create(
+            depth,
+            AdqlSchemaEntity.this,
+            base
+            );
+        children.put(
+            table.name(),
+            table
+            );
         }
 
     /**
@@ -425,12 +388,14 @@ implements AdqlSchema
      */
     protected void realize()
         {
-        log.debug("realize(BaseSchema) [{}][{}][{}][{}]", ident(), name(), base.ident(), base.name());
+        log.debug("realize() [{}][{}]", ident(), name());
         if ((this.base != null) && (this.depth == CopyDepth.FULL))
             {
             for (final BaseTable<?,?> table : base.tables().select())
                 {
-                tables().create(
+                log.debug("Importing base table [{}][{}]", table.ident(), table.name());
+                realize(
+                    CopyDepth.THIN,
                     table
                     );
                 }
@@ -485,6 +450,19 @@ implements AdqlSchema
         return this.resource;
         }
 
+    @OrderBy(
+        "name ASC"
+        )
+    @MapKey(
+        name="name"
+        )
+    @OneToMany(
+        fetch   = FetchType.LAZY,
+        mappedBy = "schema",
+        targetEntity = AdqlTableEntity.class
+        )
+    private Map<String, AdqlTable> children = new LinkedHashMap<String, AdqlTable>();
+    
     @Override
     public AdqlSchema.Tables tables()
         {
@@ -495,17 +473,15 @@ implements AdqlSchema
             public Iterable<AdqlTable> select()
                 {
                 log.debug("tables().select() [{}][{}][{}][{}]", ident(), name(), depth(), base());
-                if (depth() == CopyDepth.FULL)
+                if (depth() == CopyDepth.THIN)
                     {
-                    return factories().adql().tables().select(
-                        AdqlSchemaEntity.this
-                        );
-                    }
-                else {
                     return new AdqlTableProxy.ProxyIterable(
                         (Iterable<BaseTable<?,?>>) base().tables().select(),
                         AdqlSchemaEntity.this
                         );
+                    }
+                else {
+                    return children.values();
                     }
                 }
 
@@ -514,113 +490,123 @@ implements AdqlSchema
             throws NotFoundException
                 {
                 log.debug("tables().select(String) [{}][{}][{}][{}]", ident(), name(), depth(), base());
-                if (depth() == CopyDepth.FULL)
+                if (depth() == CopyDepth.THIN)
                     {
-                    return factories().adql().tables().select(
-                        AdqlSchemaEntity.this,
-                        name
-                        );
-                    }
-                else {
                     return new AdqlTableProxy(
                         base().tables().select(name),
                         AdqlSchemaEntity.this
                         );
                     }
+                else {
+                    AdqlTable table = children.get(name);
+                    if (table != null)
+                        {
+                        return table;
+                        }
+                    else {
+                        throw new NotFoundException(
+                            name
+                            );
+                        }
+                    }
                 }
-
 
             @Override
             public AdqlTable create(final CopyDepth depth, final BaseTable<?, ?> base)
                 {
-                // TODO - ???
-                if (depth() != CopyDepth.FULL)
-                    {
-                    realize();
-                    }
-                return factories().adql().tables().create(
+                //realize();
+                AdqlTable table = factories().adql().tables().create(
                     depth,
                     AdqlSchemaEntity.this,
                     base
                     );
+                children.put(
+                    table.name(),
+                    table
+                    );
+                return table ;
                 }
-
 
             @Override
             public AdqlTable create(final BaseTable<?,?> base)
                 {
-                // TODO - ???
-                if (depth() != CopyDepth.FULL)
-                    {
-                    realize();
-                    }
-                return factories().adql().tables().create(
+                //realize();
+                AdqlTable table = factories().adql().tables().create(
                     AdqlSchemaEntity.this,
                     base
                     );
+                children.put(
+                    table.name(),
+                    table
+                    );
+                return table ;
                 }
 
             @Override
             public AdqlTable create(final CopyDepth depth, final BaseTable<?, ?> base, final String name)
                 {
-                // TODO - ???
-                if (depth() != CopyDepth.FULL)
-                    {
-                    realize();
-                    }
-                return factories().adql().tables().create(
+                //realize();
+                AdqlTable table = factories().adql().tables().create(
                     depth,
                     AdqlSchemaEntity.this,
-                    base
+                    base,
+                    name
                     );
+                children.put(
+                    table.name(),
+                    table
+                    );
+                return table ;
                 }
 
             @Override
             public AdqlTable create(final BaseTable<?,?> base, final String name)
                 {
-                // TODO - ???
-                if (depth() != CopyDepth.FULL)
-                    {
-                    realize();
-                    }
-                return factories().adql().tables().create(
+                //realize();
+                AdqlTable table = factories().adql().tables().create(
                     AdqlSchemaEntity.this,
                     base,
                     name
                     );
+                children.put(
+                    table.name(),
+                    table
+                    );
+                return table ;
                 }
 
             @Override
             public AdqlTable create(final AdqlQuery query)
                 {
-                // TODO - ???
-                if (depth() != CopyDepth.FULL)
-                    {
-                    realize();
-                    }
-                return factories().adql().tables().create(
+                //realize();
+                AdqlTable table = factories().adql().tables().create(
                     AdqlSchemaEntity.this,
                     query
                     );
+                children.put(
+                    table.name(),
+                    table
+                    );
+                return table ;
                 }
 
             @Override
             @SuppressWarnings("unchecked")
             public Iterable<AdqlTable> search(final String text)
                 {
-                if (depth() == CopyDepth.FULL)
+                if (depth() == CopyDepth.THIN)
                     {
-                    return factories().adql().tables().search(
-                        AdqlSchemaEntity.this,
-                        text
-                        );
-                    }
-                else {
                     return new AdqlTableProxy.ProxyIterable(
                         (Iterable<BaseTable<?,?>>) base.tables().search(
                             text
                             ),
                         AdqlSchemaEntity.this
+                        );
+                    }
+                else {
+                    return factories().adql().tables().search(
+                        AdqlSchemaEntity.this,
+                        text
                         );
                     }
                 }

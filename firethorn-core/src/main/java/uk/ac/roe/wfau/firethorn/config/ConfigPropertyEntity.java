@@ -73,7 +73,7 @@ implements ConfigProperty
      * Our database table name.
      *
      */
-    public static final String DB_TABLE_NAME = "ConfigProperty" ;
+    public static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "ConfigProperty" ;
 
     /*
      * Our database mapping values.

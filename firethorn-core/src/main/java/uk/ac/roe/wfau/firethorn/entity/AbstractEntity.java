@@ -61,6 +61,12 @@ implements Entity
     {
 
     /**
+     * Hibernate table mapping.
+     *
+     */
+    protected static final String DB_TABLE_PREFIX = "FT002";
+
+    /**
      * Hibernate column mapping.
      *
      */

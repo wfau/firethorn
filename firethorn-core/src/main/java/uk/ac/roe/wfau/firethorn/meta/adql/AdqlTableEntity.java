@@ -17,6 +17,8 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Access;
@@ -25,8 +27,12 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.OrderBy;
+import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,23 +50,32 @@ import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.identity.AuthenticationEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 
 /**
  *
  *
  */
 @Slf4j
-@Entity()
+@Entity
 @Access(
     AccessType.FIELD
     )
 @Table(
     name = AdqlTableEntity.DB_TABLE_NAME,
     uniqueConstraints={
+        @UniqueConstraint(
+            columnNames = {
+                BaseComponentEntity.DB_NAME_COL,
+                BaseComponentEntity.DB_PARENT_COL
+                }
+            )
         }
     )
 @NamedQueries(
@@ -87,7 +102,7 @@ public class AdqlTableEntity
      * Hibernate database table name.
      *
      */
-    protected static final String DB_TABLE_NAME = "AdqlTableEntity";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AdqlTableEntity";
 
     /**
      * Hibernate column mapping.
@@ -422,19 +437,39 @@ public class AdqlTableEntity
         }
 
     /**
+     * Create a copy of a base column.
+     * @todo Delay the full scan until the data is actually requested.
+     *
+     */
+    protected void realize(final BaseColumn<?> base)
+        {
+        log.debug("realize(CopyDepth, BaseColumn) [{}][{}][{}][{}]", ident(), name(), base.ident(), base.name());
+        AdqlColumn column = factories().adql().columns().create(
+            AdqlTableEntity.this,
+            base
+            );
+        children.put(
+            column.name(),
+            column
+            );
+        }
+
+    /**
      * Convert this into a full copy.
      * @todo Delay the full scan until the data is requested.
      *
      */
     protected void realize()
         {
+        log.debug("realize() [{}][{}]", ident(), name());
         if (this.depth == CopyDepth.FULL)
             {
             if (this.base != null)
                 {
                 for (final BaseColumn<?> column : base.columns().select())
                     {
-                    columns().create(
+                    log.debug("Importing base column [{}][{}]", column.ident(), column.name());
+                    realize(
                         column
                         );
                     }
@@ -476,7 +511,6 @@ public class AdqlTableEntity
     @Override
     public void schema(final AdqlSchema schema)
         {
-        super.schema(schema);
         this.schema = schema;
         }
     @Override
@@ -510,6 +544,19 @@ public class AdqlTableEntity
         return base().root();
         }
 
+    @OrderBy(
+        "name ASC"
+        )
+    @MapKey(
+        name="name"
+        )
+    @OneToMany(
+        fetch   = FetchType.LAZY,
+        mappedBy = "table",
+        targetEntity = AdqlColumnEntity.class
+        )
+    private Map<String, AdqlColumn> children = new LinkedHashMap<String, AdqlColumn>();
+    
     @Override
     public AdqlTable.Columns columns()
         {
@@ -519,18 +566,15 @@ public class AdqlTableEntity
             @SuppressWarnings("unchecked")
             public Iterable<AdqlColumn> select()
                 {
-                if (depth() == CopyDepth.FULL)
+                if (depth() == CopyDepth.THIN)
                     {
-                    return factories().adql().columns().select(
-                        AdqlTableEntity.this
-                        );
-                    }
-                else {
-                    // I hate Java generics.
                     return new AdqlColumnProxy.ProxyIterable(
                         (Iterable<BaseColumn<?>>) base().columns().select(),
                         AdqlTableEntity.this
                         );
+                    }
+                else {
+                    return children.values();
                     }
                 }
 
@@ -538,14 +582,8 @@ public class AdqlTableEntity
             public AdqlColumn select(final String name)
             throws NotFoundException
                 {
-                if (depth() == CopyDepth.FULL)
+                if (depth() == CopyDepth.THIN)
                     {
-                    return factories().adql().columns().select(
-                        AdqlTableEntity.this,
-                        name
-                        );
-                    }
-                else {
                     return new AdqlColumnProxy(
                         base.columns().select(
                             name
@@ -553,41 +591,53 @@ public class AdqlTableEntity
                         AdqlTableEntity.this
                         );
                     }
+                else {
+                    AdqlColumn column = children.get(name);
+                    if (column != null)
+                        {
+                        return column;
+                        }
+                    else {
+                        throw new NotFoundException(
+                            name
+                            );
+                        }
+                    }
                 }
 
             @Override
             public AdqlColumn create(final BaseColumn<?> base)
                 {
-                if (depth() == CopyDepth.FULL)
-                    {
-                    return factories().adql().columns().create(
-                        AdqlTableEntity.this,
-                        base
-                        );
-                    }
-                else {
-                    throw new UnsupportedOperationException();
-                    }
+                realize();
+
+                AdqlColumn column = factories().adql().columns().create(
+                    AdqlTableEntity.this,
+                    base
+                    );
+                children.put(
+                    column.name(),
+                    column
+                    );
+                return column ;
                 }
 
             @Override
             @SuppressWarnings("unchecked")
             public Iterable<AdqlColumn> search(final String text)
                 {
-                if (depth() == CopyDepth.FULL)
+                if (depth() == CopyDepth.THIN)
                     {
-                    return factories().adql().columns().search(
-                        AdqlTableEntity.this,
-                        text
-                        );
-                    }
-                else {
-                    // I hate Java generics.
                     return new AdqlColumnProxy.ProxyIterable(
                         (Iterable<BaseColumn<?>>) base().columns().search(
                             text
                             ),
                         AdqlTableEntity.this
+                        );
+                    }
+                else {
+                    return factories().adql().columns().search(
+                        AdqlTableEntity.this,
+                        text
                         );
                     }
                 }
@@ -596,25 +646,6 @@ public class AdqlTableEntity
             public AdqlColumn select(final Identifier ident)
             throws NotFoundException
                 {
-/*
-                log.debug("select(Identifier) [{}]", ident);
-                if (depth() == CopyDepth.THIN)
-                    {
-                    return new AdqlColumnProxy(
-                        base().columns().select(
-                            ident
-                            ),
-                        AdqlTableEntity.this
-                        );
-                    }
-                else {
-                    log.error("Wrong depth for proxy [{}]", depth());
-                    throw new IdentifierNotFoundException(
-                        ident
-                        );
-                    }
- */
-
                 log.debug("columns().select(Identifier) [{}] from [{}]", ident, ident());
                 log.debug(" Table depth [{}]", depth());
                 if (depth() == CopyDepth.THIN)

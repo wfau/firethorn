@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Access;
@@ -30,7 +32,11 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,6 +54,9 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 
@@ -56,12 +65,20 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
  *
  */
 @Slf4j
-@Entity()
+@Entity
 @Access(
     AccessType.FIELD
     )
 @Table(
-    name = JdbcSchemaEntity.DB_TABLE_NAME
+    name = JdbcSchemaEntity.DB_TABLE_NAME,
+    uniqueConstraints={
+        @UniqueConstraint(
+            columnNames = {
+                BaseComponentEntity.DB_NAME_COL,
+                BaseComponentEntity.DB_PARENT_COL
+                }
+            )
+        }
     )
 @NamedQueries(
         {
@@ -110,7 +127,7 @@ public class JdbcSchemaEntity
      * Hibernate table mapping.
      *
      */
-    protected static final String DB_TABLE_NAME = "JdbcSchemaEntity";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "JdbcSchemaEntity";
 
     /**
      * Hibernate column mapping.
@@ -533,9 +550,23 @@ public class JdbcSchemaEntity
         return this.schema;
         }
 
+    @OrderBy(
+        "name ASC"
+        )
+    @MapKey(
+        name="name"
+        )
+    @OneToMany(
+        fetch   = FetchType.LAZY,
+        mappedBy = "schema",
+        targetEntity = JdbcTableEntity.class
+        )
+    private Map<String, JdbcTable> children = new LinkedHashMap<String, JdbcTable>();
+    
     @Override
     public JdbcSchema.Tables tables()
         {
+        log.debug("tables() for [{}]", ident());
         scantest();
         return tablesimpl();
         }
@@ -547,43 +578,62 @@ public class JdbcSchemaEntity
             @Override
             public Iterable<JdbcTable> select()
                 {
-                return factories().jdbc().tables().select(
-                    JdbcSchemaEntity.this
-                    );
+                return children.values();
                 }
             @Override
             public JdbcTable select(final String name)
             throws NotFoundException
                 {
-                return factories().jdbc().tables().select(
-                    JdbcSchemaEntity.this,
-                    name
-                    );
+                JdbcTable result = children.get(name);
+                if (result != null)
+                    {
+                    return result ;
+                    }
+                else {
+                    throw new NotFoundException(
+                        name
+                        );
+                    }
                 }
             @Override
             public JdbcTable create(final String name)
                 {
-                return factories().jdbc().tables().create(
+                JdbcTable result = factories().jdbc().tables().create(
                     JdbcSchemaEntity.this,
                     name
                     );
+                children.put(
+                    result .name(),
+                    result 
+                    );
+                return result ;
                 }
             @Override
             public JdbcTable create(final String name, final JdbcTable.TableType type)
                 {
-                return factories().jdbc().tables().create(
+                JdbcTable result = factories().jdbc().tables().create(
                     JdbcSchemaEntity.this,
                     name,
                     type
                     );
+                children.put(
+                    result .name(),
+                    result 
+                    );
+                return result ;
                 }
             @Override
             public JdbcTable create(final AdqlQuery query)
                 {
-                return factories().jdbc().tables().create(
+                JdbcTable result = factories().jdbc().tables().create(
                     JdbcSchemaEntity.this,
                     query
                     );
+                children.put(
+                    result .name(),
+                    result 
+                    );
+                return result ;
                 }
             @Override
             public Iterable<JdbcTable> search(final String text)

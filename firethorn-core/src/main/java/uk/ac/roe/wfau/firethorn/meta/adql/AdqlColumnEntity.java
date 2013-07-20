@@ -26,6 +26,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
@@ -44,19 +46,26 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 
 /**
  *
  *
  */
 @Slf4j
-@Entity()
+@Entity
 @Access(
     AccessType.FIELD
     )
 @Table(
     name = AdqlColumnEntity.DB_TABLE_NAME,
     uniqueConstraints={
+        @UniqueConstraint(
+            columnNames = {
+                BaseComponentEntity.DB_NAME_COL,
+                BaseComponentEntity.DB_PARENT_COL
+                }
+            )
         }
     )
 @NamedQueries(
@@ -83,7 +92,7 @@ public class AdqlColumnEntity
      * Hibernate table mapping.
      *
      */
-    protected static final String DB_TABLE_NAME = "AdqlColumnEntity";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AdqlColumnEntity";
 
     /**
      * Hibernate column mapping.

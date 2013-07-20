@@ -54,8 +54,8 @@ implements Entity, NamedEntity
      * Hibernate column mapping.
      *
      */
-    public    static final String DB_NAME_COL    = "name"  ;
-    protected static final String DB_TEXT_COL    = "text";
+    public static final String DB_NAME_COL    = "entityname";
+    public static final String DB_TEXT_COL    = "entitytext";
 
     /**
      * Default constructor needs to be protected not private.

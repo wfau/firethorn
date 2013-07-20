@@ -51,38 +51,17 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
  *
  */
 @Slf4j
-@Entity()
+@Entity
 @Access(
     AccessType.FIELD
     )
-@Table(
-    name = BaseTableEntity.DB_TABLE_NAME,
-    uniqueConstraints={
-        @UniqueConstraint(
-            columnNames = {
-                BaseComponentEntity.DB_NAME_COL,
-                BaseComponentEntity.DB_PARENT_COL,
-                }
-            )
-        }
-    )
 @Inheritance(
-    strategy = InheritanceType.JOINED
-    )
-@NamedQueries(
-        {
-        }
+    strategy = InheritanceType.TABLE_PER_CLASS
     )
 public abstract class BaseTableEntity<TableType extends BaseTable<TableType, ColumnType>, ColumnType extends BaseColumn<ColumnType>>
 extends BaseComponentEntity
     implements BaseTable<TableType, ColumnType>
     {
-    /**
-     * Hibernate database table name.
-     *
-     */
-    protected static final String DB_TABLE_NAME = "BaseTableEntity";
-
     /**
      * Table resolver implementation.
      *
@@ -199,7 +178,7 @@ extends BaseComponentEntity
             type,
             name
             );
-        this.parent = parent;
+        //this.parent = parent;
         }
 
     @Override
@@ -213,6 +192,7 @@ extends BaseComponentEntity
     @Override
     public abstract BaseTable<?, ?> root();
 
+    /*
     @Index(
         name=DB_TABLE_NAME + "IndexByParent"
         )
@@ -236,6 +216,7 @@ extends BaseComponentEntity
         {
         this.parent = schema;
         }
+     */
 
     @Override
     public abstract BaseResource<?> resource();

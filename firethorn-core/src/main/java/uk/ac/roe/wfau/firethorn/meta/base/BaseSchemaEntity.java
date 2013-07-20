@@ -30,6 +30,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,38 +44,18 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
  *
  *
  */
-@Entity()
+@Slf4j
+@Entity
 @Access(
     AccessType.FIELD
     )
-@Table(
-    name = BaseSchemaEntity.DB_TABLE_NAME,
-    uniqueConstraints={
-        @UniqueConstraint(
-            name = BaseSchemaEntity.DB_TABLE_NAME + BaseComponentEntity.DB_PARENT_NAME_IDX,
-            columnNames = {
-                BaseComponentEntity.DB_NAME_COL,
-                BaseComponentEntity.DB_PARENT_COL,
-                }
-            )
-        }
-    )
 @Inheritance(
-    strategy = InheritanceType.JOINED
-    )
-@NamedQueries(
-        {
-        }
+    strategy = InheritanceType.TABLE_PER_CLASS
     )
 public abstract class BaseSchemaEntity<SchemaType extends BaseSchema<SchemaType, TableType>, TableType extends BaseTable<TableType, ?>>
     extends BaseComponentEntity
     implements BaseSchema<SchemaType, TableType>
     {
-    /**
-     * Hibernate database table name.
-     *
-     */
-    protected static final String DB_TABLE_NAME = "BaseSchemaEntity";
 
     /**
      * Table resolver implementation.
@@ -133,9 +115,10 @@ public abstract class BaseSchemaEntity<SchemaType extends BaseSchema<SchemaType,
             type,
             name
             );
-        this.parent = resource;
+        //this.parent = resource;
         }
 
+    /*
     @Index(
         name=DB_TABLE_NAME + "IndexByParent"
         )
@@ -155,14 +138,16 @@ public abstract class BaseSchemaEntity<SchemaType extends BaseSchema<SchemaType,
         {
         return this.parent;
         }
+     */
+
     /**
      * Test method.
      *
-     */
     public void resource(final BaseResource<SchemaType> parent)
         {
         this.parent = parent;
         }
+     */
 
     @Override
     public StringBuilder namebuilder()

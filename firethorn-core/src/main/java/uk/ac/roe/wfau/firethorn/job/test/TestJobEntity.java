@@ -76,7 +76,7 @@ implements TestJob
      * Hibernate table mapping.
      *
      */
-    protected static final String DB_TABLE_NAME = "TestJobEntity";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "TestJobEntity";
 
     /**
      * Hibernate column mapping.
