@@ -157,7 +157,7 @@ EOF
 
             time importschema
 
-            for i in {0..9999}
+            for i in {0..99}
             do
                 echo "------------------"
                 echo "Iter [${i}]"
