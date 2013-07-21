@@ -70,7 +70,7 @@
 
                 source src/test/bin/jdbc-functions.sh
 
-                pushd target/firethorn-ogsadai-webapp-01.05-SNAPSHOT/WEB-INF
+                pushd target/firethorn-ogsadai-webapp-01.06-SNAPSHOT/WEB-INF
 
                     jdbcconfig twomass  firethorn.twomass
                     jdbcconfig ukidss   firethorn.ukidss
@@ -110,9 +110,9 @@
 
         pushd $(mktemp --directory)
 
+            adqlcopydepth=THIN
             identity=$(pwgen 16 1)
             community=$(date '+%A')
-            adqlcopydepth=THIN
 
             source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
 
@@ -137,9 +137,9 @@ EOF
 
         pushd $(mktemp --directory)
 
+            adqlcopydepth=THIN
             identity=$(pwgen 16 1)
             community=$(date '+%A')
-            adqlcopydepth=THIN
 
             source "${HOME:?}/firethorn.testing"
             source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
@@ -154,8 +154,6 @@ EOF
                 source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh" "${queryspace:?}"  'query'
                 source "${FIRETHORN_TEST:?}/05-00-execute-query.sh"       "${queryschema:?}" "${FIRETHORN_TEST:?}/06-query-atlas-000.adql"
                 }
-
-            time importschema
 
             for i in {0..99}
             do
