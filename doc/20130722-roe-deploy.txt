@@ -419,7 +419,7 @@ EOF
 
 
 #
-# Run the OGSA-DAI login fix.
+# Update the source code on testvm.
 #[user@desktop]
 
     source "${HOME:?}/deployment/deploy.logins"
@@ -452,8 +452,12 @@ EOF
             fi
         popd
 
-    #
-    # Run the OGSA-DAI login fix.
+#
+# Run the OGSA-DAI login fix from testvm.
+#[user@desktop]
+
+    source "${HOME:?}/deployment/deploy.logins"
+    ssh -L 8088:localhost:8080 "${testlogin:?}"
 
     source ${HOME:?}/firethorn.settings
 
@@ -464,4 +468,76 @@ EOF
 
         popd
     popd
+
+#
+# Run the OSA setup part of the test scripts.
+#[user@desktop]
+
+    source "${HOME:?}/deployment/deploy.logins"
+    ssh "${testlogin:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+            adqlcopydepth=THIN
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC conection' 'spring:RoeATLAS'  '*' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+
+            source "${FIRETHORN_TEST:?}/03-02-import-jdbc-schema.sh" "${jdbcspace:?}" 'TWOMASS'        'dbo' "${adqlspace:?}" 'TWOMASS'
+            source "${FIRETHORN_TEST:?}/03-02-import-jdbc-schema.sh" "${jdbcspace:?}" 'ATLASv20130304' 'dbo' "${adqlspace:?}" 'ATLASv20130304'
+
+            cat > "${HOME:?}/firethorn.testing" << EOF
+adqlspace=${adqlspace:?}
+EOF
+
+        popd
+    exit        
+
+#
+# Run the test query part of the test scripts.
+#[user@desktop]
+
+    source "${HOME:?}/deployment/deploy.logins"
+    ssh "${testlogin:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+            adqlcopydepth=THIN
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            importschema()
+                {
+                source "${HOME:?}/firethorn.testing"
+                source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Query workspace'
+
+                source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}" 'TWOMASS'         "${queryspace:?}" 'twomass'
+                source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}" 'ATLASv20130304'  "${queryspace:?}" 'atlas'
+
+                source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh" "${queryspace:?}"  'query'
+                source "${FIRETHORN_TEST:?}/05-00-execute-query.sh"       "${queryschema:?}" "${FIRETHORN_TEST:?}/06-query-atlas-000.adql"
+                }
+
+            time importschema
+
+            for i in {0..99}
+            do
+                echo "------------------"
+                echo "Iter [${i}]"
+                time importschema
+            done
+
 

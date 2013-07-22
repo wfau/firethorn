@@ -125,6 +125,7 @@
 
             cat > "${HOME:?}/firethorn.testing" << EOF
 adqlspace=${adqlspace:?}
+atlasschema=${adqlschema:?}
 EOF
 
         popd
