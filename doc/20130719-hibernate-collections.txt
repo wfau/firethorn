@@ -70,4 +70,33 @@
     
 
 
+    # ---- ---- ---- ----
+    # stuff done ...
+    # ---- ---- ---- ----
+    
+    #
+    # Change to the main branch
+    hg branch
+
+        hibernate-collections
+
+    hg branches
+
+        hibernate-collections        741:8d8f28c3e9e9
+        default                      733:07f4776782ae (inactive)
+
+    hg update default
+    
+    hg branch
+
+        default
+
+    hg merge hibernate-collections
+
+        61 files updated, 0 files merged, 0 files removed, 0 files unresolved
+        (branch merge, don't forget to commit)
+
+    hg commit -m "Merged hibernate-collections into default"
+
+
 
