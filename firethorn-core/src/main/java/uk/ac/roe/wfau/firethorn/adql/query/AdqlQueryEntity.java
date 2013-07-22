@@ -116,8 +116,9 @@ implements AdqlQuery, AdqlParserQuery
      * Hibernate table mapping.
      *
      */
-    protected static final String DB_JOIN_NAME  = "AdqlQueryJoin";
-    protected static final String DB_TABLE_NAME = "AdqlQueryEntity";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AdqlQueryEntity";
+    protected static final String DB_JOIN_NAME  = DB_TABLE_PREFIX + "AdqlQueryJoinTo";
+    protected static final String DB_INDEX_NAME = DB_TABLE_PREFIX + "AdqlQueryIndexBy";
 
     /**
      * Hibernate column mapping.
@@ -1047,7 +1048,7 @@ implements AdqlQuery, AdqlParserQuery
      *
      */
     @Index(
-        name=DB_TABLE_NAME + "IndexByJdbcTable"
+        name=DB_INDEX_NAME + "JdbcTable"
         )
     @OneToOne(
         fetch = FetchType.LAZY,
@@ -1066,7 +1067,7 @@ implements AdqlQuery, AdqlParserQuery
      *
      */
     @Index(
-        name=DB_TABLE_NAME + "IndexByAdqlTable"
+        name=DB_INDEX_NAME + "AdqlTable"
         )
     @OneToOne(
         fetch = FetchType.LAZY,

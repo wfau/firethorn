@@ -82,7 +82,7 @@ implements Job
      * Hibernate table mapping.
      *
      */
-    protected static final String DB_TABLE_NAME = "JobEntity";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "JobEntity";
 
     /**
      * Hibernate column mapping.

@@ -73,7 +73,7 @@ implements Operation
      * Hibernate table mapping.
      *
      */
-    protected static final String DB_TABLE_NAME = "OperationEntity";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "OperationEntity";
 
     /**
      * Hibernate column mapping.

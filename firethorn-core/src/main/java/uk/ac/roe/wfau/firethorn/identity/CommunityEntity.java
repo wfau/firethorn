@@ -76,7 +76,7 @@ implements Community
      * Hibernate table mapping.
      *
      */
-    public static final String DB_TABLE_NAME = "CommunityEntity";
+    public static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "CommunityEntity";
 
     /**
      * Hibernate column mapping.

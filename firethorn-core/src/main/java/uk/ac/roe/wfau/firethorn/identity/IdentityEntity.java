@@ -75,7 +75,7 @@ implements Identity
      * Hibernate table mapping.
      *
      */
-    public static final String DB_TABLE_NAME = "IdentityEntity";
+    public static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IdentityEntity";
 
     /**
      * Hibernate column mapping.

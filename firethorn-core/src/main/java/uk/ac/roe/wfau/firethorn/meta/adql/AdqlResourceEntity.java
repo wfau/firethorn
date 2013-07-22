@@ -17,12 +17,20 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
@@ -37,7 +45,12 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
-@Entity()
+/**
+ *
+ *
+ */
+@Slf4j
+@Entity
 @Access(
     AccessType.FIELD
     )
@@ -56,7 +69,7 @@ public class AdqlResourceEntity
 extends BaseResourceEntity<AdqlSchema>
     implements AdqlResource
     {
-    protected static final String DB_TABLE_NAME = "AdqlResourceEntity";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AdqlResourceEntity";
 
     /**
      * Our Entity Factory implementation.
@@ -138,6 +151,23 @@ extends BaseResourceEntity<AdqlSchema>
         super(name);
         }
 
+    /*
+     * HibernateCollections
+    @OrderBy(
+        "name ASC"
+        )
+    @MapKey(
+        name="name"
+        )
+    @OneToMany(
+        fetch   = FetchType.LAZY,
+        mappedBy = "resource",
+        targetEntity = AdqlSchemaEntity.class
+        )
+    private Map<String, AdqlSchema> children = new LinkedHashMap<String, AdqlSchema>();
+     * 
+     */
+    
     @Override
     public AdqlResource.Schemas schemas()
         {
@@ -149,6 +179,11 @@ extends BaseResourceEntity<AdqlSchema>
                 return factories().adql().schemas().select(
                     AdqlResourceEntity.this
                     );
+                /*
+                 * HibernateCollections
+                return children.values();
+                 * 
+                 */
                 }
 
             @Override
@@ -159,65 +194,134 @@ extends BaseResourceEntity<AdqlSchema>
                     AdqlResourceEntity.this,
                     name
                     );
+                /*
+                 * HibernateCollections
+                AdqlSchema schema = children.get(name);
+                if (schema != null)
+                    {
+                    return schema ;
+                    }
+                else {
+                    throw new NotFoundException(
+                        name
+                        );
+                    }
+                 * 
+                 */
                 }
 
             @Override
             public AdqlSchema create(final String name)
                 {
-                return factories().adql().schemas().create(
+                AdqlSchema schema = factories().adql().schemas().create(
                     AdqlResourceEntity.this,
                     name
                     );
+                /*
+                 * HibernateCollections
+                children.put(
+                    schema.name(),
+                    schema
+                    );
+                 * 
+                 */
+                return schema ;
                 }
 
             @Override
             public AdqlSchema create(final String name, final BaseTable<?, ?> base)
                 {
-                return factories().adql().schemas().create(
+                AdqlSchema schema = factories().adql().schemas().create(
                     AdqlResourceEntity.this,
                     name,
                     base
                     );
+                /*
+                 * HibernateCollections
+                children.put(
+                    schema.name(),
+                    schema
+                    );
+                 * 
+                 */
+                return schema ;
                 }
 
             @Override
 			public AdqlSchema create(final BaseSchema<?,?> base)
 			    {
-                return factories().adql().schemas().create(
+			    AdqlSchema schema = factories().adql().schemas().create(
                     AdqlResourceEntity.this,
                     base.name(),
                     base
                     );
+                /*
+                 * HibernateCollections
+                children.put(
+                    schema.name(),
+                    schema
+                    );
+                 * 
+                 */
+                return schema ;
 				}
             @Override
             public AdqlSchema create(final CopyDepth depth, final BaseSchema<?, ?> base)
                 {
-                return factories().adql().schemas().create(
+                AdqlSchema schema = factories().adql().schemas().create(
                     depth,
                     AdqlResourceEntity.this,
                     base.name(),
                     base
                     );
+                /*
+                 * HibernateCollections
+                children.put(
+                    schema.name(),
+                    schema
+                    );
+                 * 
+                 */
+                return schema ;
                 }
 
             @Override
             public AdqlSchema create(final String name, final BaseSchema<?,?> base)
                 {
-                return factories().adql().schemas().create(
+                AdqlSchema schema = factories().adql().schemas().create(
                     AdqlResourceEntity.this,
                     name,
                     base
                     );
+                /*
+                 * HibernateCollections
+                children.put(
+                    schema.name(),
+                    schema
+                    );
+                 * 
+                 */
+                return schema ;
                 }
+
             @Override
             public AdqlSchema create(final CopyDepth depth, final String name, final BaseSchema<?, ?> base)
                 {
-                return factories().adql().schemas().create(
+                AdqlSchema schema = factories().adql().schemas().create(
                     depth,
                     AdqlResourceEntity.this,
                     name,
                     base
                     );
+                /*
+                 * HibernateCollections
+                children.put(
+                    schema.name(),
+                    schema
+                    );
+                 * 
+                 */
+                return schema ;
                 }
 
             @Override

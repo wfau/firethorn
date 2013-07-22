@@ -221,10 +221,35 @@ extends TwomassQueryTestBase
             }
         }
 
+    @Test
+    public void test000()
+    throws Exception
+        {
+        validate(
+            this.schema.queries().create(
+                "SELECT"
+                + "    ra,"
+                + "    dec"
+                + " FROM"
+                + "    adql_twomass.twomass_psc as twomass"
+                + " WHERE"
+                + "    ra  BETWEEN '56.0' AND '57.9'"
+                + " AND"
+                + "    dec BETWEEN '24.0' AND '24.2'"
+                + ""
+                ),
+            new ExpectedColumn[] {
+                new ExpectedColumn("ra",  AdqlColumn.Type.DOUBLE, 0, "ra",  JdbcColumn.Type.DOUBLE, 53),
+                new ExpectedColumn("dec", AdqlColumn.Type.DOUBLE, 0, "dec", JdbcColumn.Type.DOUBLE, 53)
+                }
+            );
+        }
+
+    
     //
     // Query syntax error is deliberate.
-    //@Test
-    public void test000()
+    @Test
+    public void test001()
     throws Exception
         {
         validate(
@@ -244,8 +269,8 @@ extends TwomassQueryTestBase
             );
         }
 
-    //@Test
-    public void test001()
+    @Test
+    public void test002()
     throws Exception
         {
         validate(
@@ -266,8 +291,8 @@ extends TwomassQueryTestBase
             );
         }
 
-    //@Test
-    public void test002()
+    @Test
+    public void test003()
     throws Exception
         {
         validate(
@@ -352,7 +377,7 @@ extends TwomassQueryTestBase
         }
 
     @Test
-    public void test003()
+    public void test004()
     throws Exception
         {
         validate(
@@ -415,8 +440,9 @@ extends TwomassQueryTestBase
             );
         }
 
-    //@Test
-    public void test004()
+    /*
+    @Test
+    public void test005()
     throws Exception
         {
         final ResultSet results = this.twomass.connection().metadata().getTypeInfo();
@@ -428,5 +454,6 @@ extends TwomassQueryTestBase
             log.debug(" Type [{}][{}][{}]", name, type, size);
             }
         }
+    */
     }
 

@@ -67,7 +67,7 @@ implements Authentication
      * Hibernate table mapping.
      *
      */
-    protected static final String DB_TABLE_NAME = "AuthenticationEntity";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "AuthenticationEntity";
 
     /**
      * Hibernate column mapping.

@@ -26,6 +26,9 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
@@ -36,19 +39,27 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 
 /**
  *
  *
  */
-@Entity()
+@Slf4j
+@Entity
 @Access(
     AccessType.FIELD
     )
 @Table(
     name = IvoaTableEntity.DB_TABLE_NAME,
     uniqueConstraints={
+        @UniqueConstraint(
+            columnNames = {
+                BaseComponentEntity.DB_NAME_COL,
+                BaseComponentEntity.DB_PARENT_COL
+                }
+            )
         }
     )
 @NamedQueries(
@@ -75,7 +86,7 @@ public class IvoaTableEntity
      * Hibernate database table name.
      *
      */
-    protected static final String DB_TABLE_NAME = "IvoaTableEntity";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IvoaTableEntity";
 
     /**
      * Alias factory implementation.
@@ -235,7 +246,7 @@ public class IvoaTableEntity
         }
 
     @ManyToOne(
-        fetch = FetchType.EAGER,
+        fetch = FetchType.LAZY,
         targetEntity = IvoaSchemaEntity.class
         )
     @JoinColumn(

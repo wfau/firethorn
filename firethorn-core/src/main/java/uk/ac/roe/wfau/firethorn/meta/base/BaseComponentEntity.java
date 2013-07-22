@@ -37,10 +37,10 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
  *
  */
 @Slf4j
-@MappedSuperclass
 @Access(
     AccessType.FIELD
     )
+@MappedSuperclass
 public abstract class BaseComponentEntity
 extends AbstractNamedEntity
     implements BaseComponent
@@ -49,10 +49,10 @@ extends AbstractNamedEntity
      * Hibernate column mapping.
      *
      */
-    protected static final String DB_BASE_COL   = "base";
-    protected static final String DB_PARENT_COL = "parent";
-    protected static final String DB_STATUS_COL = "status";
-    protected static final String DB_ALIAS_COL  = "alias";
+    public static final String DB_BASE_COL   = "base";
+    public static final String DB_PARENT_COL = "parent";
+    public static final String DB_STATUS_COL = "status";
+    public static final String DB_ALIAS_COL  = "alias";
 
     protected static final String DB_NAME_IDX        = "IndexByName";
     protected static final String DB_PARENT_IDX      = "IndexByParent";
@@ -154,9 +154,10 @@ extends AbstractNamedEntity
     /**
      * The interval between scans.
      * Set to 60 minutes for now .. should be configurable.
+     * Extended to 4hrs.
      *
      */
-    private static final long SCAN_INTERVAL = 1000 * 60 * 60 ;
+    private static final long SCAN_INTERVAL = 1000 * 60 * 60 * 4 ;
 /*
     protected boolean scandue()
         {

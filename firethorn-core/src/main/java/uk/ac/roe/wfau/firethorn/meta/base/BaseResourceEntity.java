@@ -24,37 +24,26 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.annotations.NamedQueries;
 
 /**
  *
  *
  */
-@Entity()
+@Slf4j
+@Entity
 @Access(
     AccessType.FIELD
     )
-@Table(
-    name = BaseResourceEntity.DB_TABLE_NAME,
-    uniqueConstraints={
-        }
-    )
 @Inheritance(
-    strategy = InheritanceType.JOINED
-    )
-@NamedQueries(
-        {
-        }
+    strategy = InheritanceType.TABLE_PER_CLASS
     )
 public abstract class BaseResourceEntity<SchemaType extends BaseSchema<SchemaType,?>>
     extends BaseComponentEntity
     implements BaseResource<SchemaType>
     {
-    /**
-     * Hibernate database table name.
-     *
-     */
-    protected static final String DB_TABLE_NAME = "BaseResourceEntity";
 
     protected BaseResourceEntity()
         {

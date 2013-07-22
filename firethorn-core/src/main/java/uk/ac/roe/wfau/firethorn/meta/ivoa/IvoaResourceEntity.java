@@ -27,6 +27,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Table;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +44,8 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
  *
  *
  */
-@Entity()
+@Slf4j
+@Entity
 @Access(
     AccessType.FIELD
     )
@@ -61,7 +64,7 @@ public class IvoaResourceEntity
     extends BaseResourceEntity<IvoaSchema>
     implements IvoaResource
     {
-    protected static final String DB_TABLE_NAME = "IvoaResourceEntity";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "IvoaResourceEntity";
 
     protected static final String DB_URI_COL  = "uri";
     protected static final String DB_URL_COL  = "url";

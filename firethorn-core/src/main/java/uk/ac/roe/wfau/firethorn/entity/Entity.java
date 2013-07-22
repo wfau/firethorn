@@ -141,6 +141,12 @@ public interface Entity
          */
         public EntityType empty();
 
+        /**
+         * Wrap a runnable operation in a write transaction.
+         * 
+         */
+        public void createEntity(final Runnable oper);
+
         }
 
     /**

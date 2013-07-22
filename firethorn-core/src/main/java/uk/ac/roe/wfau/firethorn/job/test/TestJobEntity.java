@@ -76,7 +76,7 @@ implements TestJob
      * Hibernate table mapping.
      *
      */
-    protected static final String DB_TABLE_NAME = "TestJobEntity";
+    protected static final String DB_TABLE_NAME = DB_TABLE_PREFIX + "TestJobEntity";
 
     /**
      * Hibernate column mapping.
@@ -208,7 +208,6 @@ implements TestJob
             }
 
         @Override
-        //@Checkpoint("create")
         @CreateEntityMethod
         public TestJob create(final String name, final Integer length)
             {
@@ -222,7 +221,6 @@ implements TestJob
             }
 
         @Override
-        //@Checkpoint("select")
         @SelectEntityMethod
         public Iterable<TestJob> select()
             {
@@ -235,7 +233,6 @@ implements TestJob
             }
 
         @Override
-        //@Checkpoint("select")
         @SelectEntityMethod
         public TestJob select(final Identifier ident)
         throws NotFoundException

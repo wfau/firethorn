@@ -45,39 +45,17 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
  *
  */
 @Slf4j
-@Entity()
+@Entity
 @Access(
     AccessType.FIELD
     )
-@Table(
-    name = BaseColumnEntity.DB_TABLE_NAME,
-    uniqueConstraints={
-        @UniqueConstraint(
-            columnNames = {
-                AbstractNamedEntity.DB_NAME_COL,
-                BaseComponentEntity.DB_PARENT_COL,
-                }
-            )
-        }
-    )
 @Inheritance(
-    strategy = InheritanceType.JOINED
-    )
-@NamedQueries(
-        {
-        }
+    strategy = InheritanceType.TABLE_PER_CLASS
     )
 public abstract class BaseColumnEntity<ColumnType extends BaseColumn<ColumnType>>
 extends BaseComponentEntity
     implements BaseColumn<ColumnType>
     {
-    /**
-     * Hibernate table mapping.
-     *
-     */
-    protected static final String DB_TABLE_NAME = "BaseColumnEntity";
-
-
     /**
      * Hibernate column mapping.
      *
@@ -89,40 +67,6 @@ extends BaseComponentEntity
     protected static final String DB_ADQL_UTYPE_COL = "adqlutype" ;
     protected static final String DB_ADQL_UNITS_COL = "adqlunits" ;
 
-    /*
-    @Repository
-    public static class EntityFactory
-    extends AbstractEntityFactory<BaseColumn<?>>
-        {
-        @Override
-        public Class<?> etype()
-            {
-            return BaseColumnEntity.class;
-            }
-
-        @Override
-        public BaseColumn<?> select(UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
-            }
-
-        @Override
-        public LinkFactory<BaseColumn<?>> links()
-            {
-            // TODO Auto-generated method stub
-            return null;
-            }
-
-        @Override
-        public BaseColumn.IdentFactory idents()
-            {
-            // TODO Auto-generated method stub
-            return null;
-            }
-        }
-    */
-
     protected BaseColumnEntity()
         {
         super();
@@ -131,7 +75,7 @@ extends BaseComponentEntity
     protected BaseColumnEntity(final BaseTable<?,ColumnType> parent, final String name)
         {
         super(name);
-        this.parent = parent;
+        //this.parent = parent;
         }
 
     @Override
@@ -140,6 +84,7 @@ extends BaseComponentEntity
         return this.table().namebuilder().append(".").append(this.name());
         }
 
+    /*
     @Index(
         name=DB_TABLE_NAME + "IndexByParent"
         )
@@ -159,6 +104,8 @@ extends BaseComponentEntity
         {
         return this.parent;
         }
+     */
+
     @Override
     public BaseSchema<?,?> schema()
         {
