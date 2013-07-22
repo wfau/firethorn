@@ -62,7 +62,6 @@ EOX
             fi
         popd
 
-
 # ------------------------------------------------
 # Create our metadata and userdata databases.
 #[sqsh@tau]

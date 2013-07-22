@@ -200,8 +200,8 @@
             +-->
         <repository>
             <id>firethorn-publish</id>
-            <name>Local repository for our own products</name>
-            <url>http://data.metagrid.co.uk/wfau/maven/publish</url>
+            <name>Local repository for FireThorn components</name>
+            <url>http://data.metagrid.co.uk/wfau/maven/firethorn</url>
             <layout>default</layout>
             <!--+
                 | SNAPSHOT policy.
