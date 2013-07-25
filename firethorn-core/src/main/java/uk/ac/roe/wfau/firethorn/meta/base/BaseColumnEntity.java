@@ -21,6 +21,8 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -39,6 +41,7 @@ import org.hibernate.annotations.NamedQueries;
 import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity;
 
 /**
  *
@@ -62,10 +65,10 @@ extends BaseComponentEntity
      */
     protected static final String DB_ADQL_TYPE_COL  = "adqltype"  ;
     protected static final String DB_ADQL_SIZE_COL  = "adqlsize"  ;
-    protected static final String DB_ADQL_UCD0_COL  = "adqlucd0"  ;
-    protected static final String DB_ADQL_UCD1_COL  = "adqlucd1"  ;
     protected static final String DB_ADQL_UTYPE_COL = "adqlutype" ;
     protected static final String DB_ADQL_UNITS_COL = "adqlunits" ;
+    protected static final String DB_ADQL_UCD_TYPE_COL  = "adqlucdtype"  ;
+    protected static final String DB_ADQL_UCD_VALUE_COL = "adqlucdvalue" ;
 
     protected BaseColumnEntity()
         {
@@ -196,11 +199,13 @@ extends BaseComponentEntity
             return base().meta().adql().units();
             }
         }
-    protected void adqlunits(final String units)
+    protected void adqlunits(final String value)
         {
-        this.adqlunits = units;
+        this.adqlunits = emptystr(
+            value
+            );
         }
-
+    
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -221,35 +226,40 @@ extends BaseComponentEntity
             return base().meta().adql().utype();
             }
         }
-    protected void adqlutype(final String utype)
+    protected void adqlutype(final String value)
         {
-        this.adqlutype = utype;
+        this.adqlutype = emptystr(
+            value
+            );
         }
 
-
+    /*
+     * 
     @Basic(
         fetch = FetchType.EAGER
         )
     @Column(
-        name = DB_ADQL_UCD0_COL,
+        name = DB_ADQL_UCD_VALUE_COL,
         unique = false,
         nullable = true,
         updatable = true
         )
-    protected String adqlucd0 ;
-    protected String adqlucd0()
+    protected String adqlucdvalue ;
+    protected String adqlucdvalue()
         {
-        if (this.adqlucd0 != null)
+        if (this.adqlucdvalue != null)
             {
-            return this.adqlucd0 ;
+            return this.adqlucdvalue ;
             }
         else {
-            return base().meta().adql().ucd0();
+            return base().meta().adql().ucdversion();
             }
         }
-    protected void adqlucd0(final String ucd)
+    protected void adqlucd0(final String value)
         {
-        this.adqlucd0 = ucd;
+        this.adqlucd0 = emptystr(
+            value
+            );
         }
 
     @Basic(
@@ -269,12 +279,92 @@ extends BaseComponentEntity
             return this.adqlucd1 ;
             }
         else {
-            return base().meta().adql().ucd1();
+            return base().meta().adql().ucd();
             }
         }
-    protected void adqlucd1(final String ucd)
+    protected void adqlucd1(final String value)
         {
-        this.adqlucd1 = ucd;
+        this.adqlucd1 = emptystr(
+            value
+            );
+        }
+     *
+     */
+
+    @Embeddable
+    @Access(
+        AccessType.FIELD
+        )
+    public static class UCDEntity
+    implements UCD
+        {
+        protected UCDEntity()
+            {
+            }
+
+        public UCDEntity(final UCD.Type type, final String value)
+            {
+            this.ucdtype  = type  ;
+            this.ucdvalue = value ;
+            }
+
+        @Basic(
+            fetch = FetchType.EAGER
+            )
+        @Column(
+            name = DB_ADQL_UCD_TYPE_COL,
+            unique = false,
+            nullable = true,
+            updatable = true
+            )
+        @Enumerated(
+            EnumType.STRING
+            )
+        private UCD.Type ucdtype  ;
+
+        @Basic(
+            fetch = FetchType.EAGER
+            )
+        @Column(
+            name = DB_ADQL_UCD_VALUE_COL,
+            unique = false,
+            nullable = true,
+            updatable = true
+            )
+        private String ucdvalue ;
+
+        @Override
+        public UCD.Type type()
+            {
+            return this.ucdtype;
+            }
+
+        @Override
+        public String value()
+            {
+            return this.ucdvalue;
+            }
+        }
+
+    @Embedded
+    private UCDEntity ucdentity;
+    protected UCDEntity ucdentity()
+        {
+        return this.ucdentity;
+        }
+
+    protected void ucdentity(final UCD.Type type, final String value)
+        {
+        if (value != null)
+            {
+            this.ucdentity = new UCDEntity(
+                type,
+                value
+                ); 
+            }
+        else {
+            this.ucdentity = null ; 
+            }
         }
 
     @Override
@@ -346,28 +436,16 @@ extends BaseComponentEntity
                 }
 
             @Override
-            public String ucd0()
+            public UCD ucd()
                 {
-                return adqlucd0();
+                return ucdentity();
                 }
             @Override
-            public void ucd0(final String ucd)
+            public void ucd(final UCD.Type type, final String value)
                 {
-                adqlucd0(
-                    ucd
-                    );
-                }
-
-            @Override
-            public String ucd1()
-                {
-                return adqlucd1();
-                }
-            @Override
-            public void ucd1(final String ucd)
-                {
-                adqlucd1(
-                    ucd
+                ucdentity(
+                    type,
+                    value
                     );
                 }
             };

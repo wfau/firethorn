@@ -17,24 +17,26 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.xml;
 
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.StartElement;
 
 import lombok.extern.slf4j.Slf4j;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn.UCD;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
-import uk.ac.roe.wfau.firethorn.util.xml.XMLObjectReader;
-import uk.ac.roe.wfau.firethorn.util.xml.XMLObjectReaderImpl;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLStringValueReader;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLParserException;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLReader;
@@ -65,10 +67,22 @@ implements XMLReader
 
     private static SchemaReader schemareader = new SchemaReader();
 
-    public Iterable<AdqlSchema> inport(final XMLEventReader source, final AdqlResource resource, final BaseSchema<?,?> base)
+    public Iterable<AdqlSchema> inport(final Reader source, final BaseSchema<?,?> base, final AdqlResource workspace)
+    throws XMLParserException, XMLReaderException
+        {
+        return inport(
+            wrap(
+                source
+                ),
+            base,
+            workspace
+            );
+        }
+
+    public Iterable<AdqlSchema> inport(final XMLEventReader source, final BaseSchema<?,?> base, final AdqlResource workspace)
         throws XMLParserException, XMLReaderException
         {
-        log.debug("inport(XMLEventReader, AdqlResource, BaseSchema)");
+        log.debug("inport(XMLEventReader, BaseSchema, AdqlResource)");
 
         parser.start(
             source
@@ -81,8 +95,8 @@ implements XMLReader
             list.add(
                 schemareader.inport(
                     source,
-                    resource,
-                    base
+                    base,
+                    workspace
                     )
                 );
             }
@@ -120,15 +134,15 @@ implements XMLReader
 
         private static TableReader tablereader = new TableReader();
         
-        public AdqlSchema inport(final XMLEventReader source, final AdqlResource resource, final BaseSchema<?,?> base)
+        public AdqlSchema inport(final XMLEventReader source, final BaseSchema<?,?> base, final AdqlResource workspace)
             throws XMLParserException, XMLReaderException
             {
-            log.debug("inport(XMLEventReader, AdqlResource, BaseSchema)");
+            log.debug("inport(XMLEventReader, BaseSchema, AdqlResource)");
             parser.start(
                 source
                 );
 
-            final AdqlSchema schema = resource.schemas().create(
+            final AdqlSchema schema = workspace.schemas().create(
                 CopyDepth.PARTIAL,
                 namereader.read(
                     source
@@ -153,7 +167,8 @@ implements XMLReader
             parser.done(
                 source
                 );
-            return null;
+
+            return schema;
             }
         }
 
@@ -187,7 +202,6 @@ implements XMLReader
             try {
                 config(
                     schema.tables().inport(
-                        CopyDepth.PARTIAL,
                         namereader.read(
                             source
                             )
@@ -252,6 +266,7 @@ implements XMLReader
                     }
                 }
             }
+
         private static ConeSettingsReader conesettings = new ConeSettingsReader();
 
         private static XMLStringValueReader textreader = new XMLStringValueReader(
@@ -344,27 +359,80 @@ implements XMLReader
             "Units",
             false
             );
-        private static XMLStringValueReader ucdreader = new XMLStringValueReader(
-            NAMESPACE_URI,
-            "UCD",
-            false
-            );
         private static XMLStringValueReader errreader = new XMLStringValueReader(
             NAMESPACE_URI,
             "ErrorColumn",
             false
             );
 
+        public static class UCDReader
+        extends XMLStringValueReader 
+            {
+            public UCDReader()
+                {
+                super(
+                    NAMESPACE_URI,
+                    "UCD",
+                    false
+                    );
+                }
+
+            public void read(final AdqlColumn column, final XMLEventReader reader)
+            throws XMLParserException, XMLReaderException
+                {
+                log.debug("read(AdqlColumn, XMLEventReader)");
+                
+                if (match(reader))
+                    {
+                    final StartElement element = start(
+                        reader
+                        );
+
+                    UCD.Type type = UCD.Type.ONE;
+                    final Attribute attrib = element.getAttributeByName(
+                        new QName(
+                            "version"
+                            )
+                        );
+                    if (attrib != null)
+                        {
+                        if ("1+".equals(attrib.getValue()))
+                            {
+                            type = UCD.Type.ONEPLUS;
+                            }
+                        }
+    
+                    column.meta().adql().ucd(
+                        type,
+                        content(
+                            reader
+                            )
+                        );
+                    }
+                }
+            }
+
+        private static UCDReader ucdreader = new UCDReader();
+        
         public void config(final AdqlColumn column, final XMLEventReader source)
         throws XMLParserException, XMLReaderException
             {
-            column.meta().adql().type(
-                Type.valueOf(
-                    typereader.read(
-                        source
+            try {
+                column.meta().adql().type(
+                    AdqlColumn.Type.type(
+                        typereader.read(
+                            source
+                            )
                         )
-                    )
-                );
+                    );
+                }
+            catch (Exception ouch)
+                {
+                log.warn(
+                    "Unable to process column type",
+                    ouch.getMessage()
+                    );
+                }
 
             column.text(
                 textreader.read(
@@ -378,8 +446,9 @@ implements XMLReader
                     )
                 );
 
-            column.meta().adql().ucd0(
-                ucdreader.read(source)
+            ucdreader.read(
+                column,
+                source
                 );
 
             errreader.read(source);

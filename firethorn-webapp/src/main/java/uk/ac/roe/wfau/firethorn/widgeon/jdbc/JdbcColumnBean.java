@@ -22,6 +22,7 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
+import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumnBean.Metadata.Adql.UCD;
 
 /**
  * Bean wrapper for <code>JdbcColumn</code>.
@@ -72,12 +73,22 @@ implements NamedEntityBean<JdbcColumn>
         return entity().namebuilder().toString();
         }
 
-    public interface Info
+    /**
+     * @todo Move to a common base class.
+     *
+     */
+    public interface Metadata
         {
         public interface Adql
             {
             public AdqlColumn.Type getType();
-            public Integer getSize();
+            public Integer getArraySize();
+            public interface UCD
+                {
+                public String getType();
+                public String getValue();
+                }
+            public UCD getUCD();
             }
         public Adql getAdql();
         public interface Jdbc
@@ -88,9 +99,13 @@ implements NamedEntityBean<JdbcColumn>
         public Jdbc getJdbc();
         }
 
-    public Info getInfo()
+    /**
+     * @todo Move to a common base class.
+     *
+     */
+    public Metadata getMeta()
         {
-        return new Info()
+        return new Metadata()
             {
             @Override
             public Adql getAdql()
@@ -103,9 +118,24 @@ implements NamedEntityBean<JdbcColumn>
                         return entity().meta().adql().type();
                         }
                     @Override
-                    public Integer getSize()
+                    public Integer getArraySize()
                         {
                         return entity().meta().adql().arraysize();
+                        }
+                    @Override
+                    public UCD getUCD()
+                        {
+                        return new UCD()
+                            {
+                            public String getType()
+                                {
+                                return entity().meta().adql().ucd().type().toString();
+                                }
+                            public String getValue()
+                                {
+                                return entity().meta().adql().ucd().value();
+                                }
+                            };
                         }
                     };
                 }

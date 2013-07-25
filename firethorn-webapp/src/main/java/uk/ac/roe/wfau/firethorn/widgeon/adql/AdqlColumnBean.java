@@ -86,19 +86,33 @@ implements NamedEntityBean<AdqlColumn>
         return entity().namebuilder().toString();
         }
 
-    public interface Info
+    /**
+     * @todo Move to a common base class.
+     *
+     */
+    public interface Metadata
         {
         public interface Adql
             {
             public AdqlColumn.Type getType();
-            public Integer getSize();
+            public Integer getArraySize();
+            public interface UCD
+                {
+                public String getType();
+                public String getValue();
+                }
+            public UCD getUCD();
             }
         public Adql getAdql();
         }
 
-    public Info getInfo()
+    /**
+     * @todo Move to a common base class.
+     *
+     */
+    public Metadata getMeta()
         {
-        return new Info()
+        return new Metadata()
             {
             @Override
             public Adql getAdql()
@@ -111,9 +125,24 @@ implements NamedEntityBean<AdqlColumn>
                         return entity().meta().adql().type();
                         }
                     @Override
-                    public Integer getSize()
+                    public Integer getArraySize()
                         {
                         return entity().meta().adql().arraysize();
+                        }
+                    @Override
+                    public UCD getUCD()
+                        {
+                        return new UCD()
+                            {
+                            public String getType()
+                                {
+                                return entity().meta().adql().ucd().type().toString();
+                                }
+                            public String getValue()
+                                {
+                                return entity().meta().adql().ucd().value();
+                                }
+                            };
                         }
                     };
                 }

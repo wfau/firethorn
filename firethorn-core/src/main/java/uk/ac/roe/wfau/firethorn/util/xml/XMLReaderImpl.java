@@ -141,6 +141,8 @@ implements XMLReader
     public boolean match(XMLEvent event)
     throws XMLParserException
         {
+        log.debug("match(XMLEvent)");
+        log.debug("  Event [{}]", event);
         return parser.match(
             event
             );
@@ -155,14 +157,27 @@ implements XMLReader
     throws XMLParserException
         {
         log.debug("match(StartElement)");
-        log.debug("  Element [{}]", element + "]");
-        if (parser.match(element))
-            {
-            return true;
-            }
-        else
-            {
-            return false;
-            }
+        log.debug("  Element [{}]", element);
+        return parser.match(
+            element
+            );
+        }
+
+    /**
+     * Validate our start element.
+     * 
+     * @param reader The XMLEventReader to read from.
+     * @return Our start element.
+     * @throws XMLReaderException If we didn't find what we expected.
+     *
+     */
+    public StartElement start(final XMLEventReader reader)
+    throws XMLParserException
+        {
+        log.debug("start(StartElement)");
+        log.debug("  QName [{}]", this.qname());
+        return parser.start(
+            reader
+            );
         }
     }

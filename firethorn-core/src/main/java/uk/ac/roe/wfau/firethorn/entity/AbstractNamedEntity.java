@@ -54,8 +54,8 @@ implements Entity, NamedEntity
      * Hibernate column mapping.
      *
      */
-    public static final String DB_NAME_COL    = "entityname";
-    public static final String DB_TEXT_COL    = "entitytext";
+    public static final String DB_NAME_COL    = "name";
+    public static final String DB_TEXT_COL    = "text";
 
     /**
      * Default constructor needs to be protected not private.
@@ -106,7 +106,14 @@ implements Entity, NamedEntity
     @Override
     public void name(final String name)
         {
-        this.name = name ;
+        if (name != null)
+            {
+            String temp = name.trim();
+            if (temp.length() > 0)
+                {
+                this.name = temp;
+                }
+            }
         }
 
     /**
@@ -132,9 +139,11 @@ implements Entity, NamedEntity
         return this.text;
         }
     @Override
-    public void text(final String text)
+    public void text(final String value)
         {
-        this.text = text;
+        this.text = emptystr(
+            value
+            );
         }
     }
 

@@ -249,7 +249,7 @@ public class AdqlTableProxy
     public void name(final String name) throws NameFormatException
         {
         throw new UnsupportedOperationException(
-            "Can't change a read only copy"
+            "Can't modify a read only table"
             );
         }
 
@@ -263,7 +263,7 @@ public class AdqlTableProxy
     public void text(final String text)
         {
         throw new UnsupportedOperationException(
-            "Can't change a read only copy"
+            "Can't modify a read only table"
             );
         }
 
@@ -292,7 +292,7 @@ public class AdqlTableProxy
     public void status(final Status status) throws InvalidStatusException
         {
         throw new UnsupportedOperationException(
-            "Can't change a read only copy"
+            "Can't modify a read only table"
             );
         }
 
@@ -306,7 +306,7 @@ public class AdqlTableProxy
     public void depth(final CopyDepth copytype)
         {
         throw new UnsupportedOperationException(
-            "Can't change a read only copy"
+            "Can't modify a read only table"
             );
         }
 
@@ -381,6 +381,14 @@ public class AdqlTableProxy
                         ident
                         ),
                     AdqlTableProxy.this
+                    );
+                }
+
+            @Override
+            public AdqlColumn inport(String name) throws NotFoundException
+                {
+                throw new UnsupportedOperationException(
+                    "Can't modify a read only table"
                     );
                 }
             };

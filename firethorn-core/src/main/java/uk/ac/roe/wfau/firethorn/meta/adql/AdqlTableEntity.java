@@ -709,6 +709,36 @@ public class AdqlTableEntity
                         );
                     }
                 }
+
+            @Override
+            public AdqlColumn inport(String name)
+            throws NotFoundException
+                {
+                if (depth() == CopyDepth.PARTIAL)
+                    {
+                    realize();
+                    AdqlColumn column = factories().adql().columns().create(
+                        AdqlTableEntity.this,
+                        base().columns().select(
+                            name
+                            )
+                        );
+                    /*
+                     * HibernateCollections 
+                    children.put(
+                        column.name(),
+                        column
+                        );
+                     *
+                     */
+                    return column ;
+                    }
+                else {
+                    throw new UnsupportedOperationException(
+                        "Import only available on PARTIAL nodes"
+                        );
+                    }
+                }
             };
         }
 

@@ -697,6 +697,36 @@ implements AdqlSchema
                         );
                     }
                 }
+
+            @Override
+            public AdqlTable inport(String name)
+            throws NotFoundException
+                {
+                if (depth() == CopyDepth.PARTIAL)
+                    {
+                    AdqlTable table = factories().adql().tables().create(
+                        CopyDepth.PARTIAL,
+                        AdqlSchemaEntity.this,
+                        base().tables().select(
+                            name
+                            )
+                        );
+                    /*
+                     * HibernateCollections
+                    children.put(
+                        table.name(),
+                        table
+                        );
+                     *
+                     */
+                    return table ;
+                    }
+                else {
+                    throw new UnsupportedOperationException(
+                        "Import only available on PARTIAL nodes"
+                        );
+                    }
+                }
             };
         }
 

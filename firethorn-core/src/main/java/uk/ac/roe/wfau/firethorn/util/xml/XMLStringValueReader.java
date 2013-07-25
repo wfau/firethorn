@@ -73,57 +73,77 @@ implements XMLObjectReader<String>
     public String read(XMLEventReader reader)
     throws XMLParserException, XMLReaderException
         {
+        log.debug("read(XMLEventReader)");
+        log.debug("  QName [{}]", this.qname());
+        //
+        // If we we match the next element. 
+        if ((required) || (parser.match(reader)))
+            {
+            start(
+                reader
+                );
+            return content(
+                reader
+                );
+            }
+        //
+        // Otherwise, just return null.
+        else {
+            return null ;
+            }
+        }
+
+    /**
+     * Process our element content.
+     * 
+     *
+     */
+    public String content(XMLEventReader reader)
+    throws XMLParserException, XMLReaderException
+        {
+        log.debug("content(XMLEventReader)");
+        log.debug("  QName [{}]", this.qname());
         //
         // Start with a null String.
         String result = null ;
         //
-        // If we are required, or we match the next element. 
-        if ((required) || (parser.match(reader)))
+        // If there are more events.
+        if (reader.hasNext())
             {
-            parser.start(
-                reader
-                );
             //
-            // If there are more events.
-            if (reader.hasNext())
-                {
-                //
-                // Check the next element type.
-                try {
-                    switch (reader.peek().getEventType())
-                        {
-                        //
-                        // Raw text or CDATA elements.
-                        case XMLStreamConstants.CDATA:
-                        case XMLStreamConstants.CHARACTERS:
-                            result = reader.getElementText();
-                            break ;
-                        //
-                        // End element is expected.
-                        case XMLStreamConstants.END_ELEMENT:
-                            reader.next();
-                            break ;
-                        //
-                        // Anything else is unexpected.
-                        default:
-                            log.debug("Expected CDATA or CHARACTERS");
-                            throw new XMLReaderException(
-                                "Expected CDATA or CHARACTERS"
-                                );
-                        }
-                    }
-                catch (XMLStreamException ouch)
+            // Check the next element type.
+            try {
+                switch (reader.peek().getEventType())
                     {
-                    log.debug("XMLStreamException while reading string [{}]", ouch.getMessage());
-                    throw new XMLReaderException(
-                        "XMLStreamException while reading string",
-                        ouch
-                        );
+                    //
+                    // Raw text or CDATA elements.
+                    case XMLStreamConstants.CDATA:
+                    case XMLStreamConstants.CHARACTERS:
+                        result = reader.getElementText();
+                        break ;
+                    //
+                    // (optional) end element is expected.
+                    case XMLStreamConstants.END_ELEMENT:
+                        reader.next();
+                        break ;
+                    //
+                    // Anything else is unexpected.
+                    default:
+                        log.debug("Unexpected element type : expected CDATA or CHARACTERS");
+                        throw new XMLReaderException(
+                            "Expected CDATA or CHARACTERS"
+                            );
                     }
                 }
+            catch (XMLStreamException ouch)
+                {
+                log.debug("XMLStreamException while reading string [{}]", ouch.getMessage());
+                throw new XMLReaderException(
+                    "XMLStreamException while reading string",
+                    ouch
+                    );
+                }
             }
-        return process(
-            result
-            );
+        return result;
         }
     }

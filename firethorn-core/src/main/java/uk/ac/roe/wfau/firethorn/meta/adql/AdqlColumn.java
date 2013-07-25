@@ -155,9 +155,9 @@ extends BaseColumn<AdqlColumn>
          * @see JdbcColumn.Type
          *
          */
-        public static AdqlColumn.Type adql(final JdbcColumn.Type jdbc)
+        public static AdqlColumn.Type type(final JdbcColumn.Type jdbc)
             {
-            return adql(
+            return type(
                 jdbc.sqltype()
                 );
             }
@@ -167,7 +167,7 @@ extends BaseColumn<AdqlColumn>
          * @see java.sql.Types
          *
          */
-        public static AdqlColumn.Type adql(final int sql)
+        public static AdqlColumn.Type type(final int sql)
             {
             switch(sql)
                 {
@@ -231,6 +231,19 @@ extends BaseColumn<AdqlColumn>
                 case Types.VARBINARY :
                 default :
                     return UNKNOWN ;
+                }
+            }
+
+        public static AdqlColumn.Type type(final String name)
+            {
+            if(name != null)
+                {
+                return AdqlColumn.Type.valueOf(
+                    name.trim().toUpperCase()
+                    );
+                }
+            else {
+                return null ;
                 }
             }
         }

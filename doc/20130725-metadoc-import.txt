@@ -22,35 +22,34 @@
 
 
     #
-    # New CopyDepth level, PARTIAL or USER ?
-
-    #
-    # Do we need this ?
-    # schema tables are imported one at a time.
+    # New CopyDepth level, PARTIAL.
+    # Indicates only some of the base components are imported.
 
 
+    BaseSchema baseschema  .... ;
+    AdqlResource workspace .... ;
 
 
     //
     // Create a new schema.
-    AdqlSchema schema = workspace.schemas().create(
+    AdqlSchema adqlschema = workspace.schemas().create(
         CopyDepth.PARTIAL,
+        baseschema,
         schemaname
         );    
 
 
         //
-        // Create a new table.
-        AdqlTable table = schema.tables().create(
-            CopyDepth.PARTIAL,
-            tablename,
-            basetable
+        // Import a table.
+        AdqlTable adqltable = adqlschema.tables().inport(
+            tablename
             );
+
 
 
             //
             // Import a column.
-            AdqlColumn column = table.columns().create(
+            AdqlColumn adqlcolumn = adqltable.columns().inport(
                 columnname
                 );
 

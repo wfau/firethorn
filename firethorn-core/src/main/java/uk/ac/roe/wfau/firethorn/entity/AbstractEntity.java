@@ -64,7 +64,7 @@ implements Entity
      * Hibernate table mapping.
      *
      */
-    protected static final String DB_TABLE_PREFIX = "FT0106";
+    protected static final String DB_TABLE_PREFIX = "FT0106b";
 
     /**
      * Hibernate column mapping.
@@ -102,6 +102,27 @@ implements Entity
     	return this.factories;
     	}
 
+    /**
+     * Helper method to check for empty or blank strings.
+     * 
+     * @param string The String to check
+     * @return The trimmed String, or null if the String was blank. 
+     *
+     */
+    public static String emptystr(final String string)
+        {
+        if (string != null)
+            {
+            String temp = string.trim();
+            if (temp.length() > 0)
+                {
+                return temp;
+                }
+            }
+        return null ;
+        }
+
+    
     /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html

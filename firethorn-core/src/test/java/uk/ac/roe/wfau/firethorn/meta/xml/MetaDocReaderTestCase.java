@@ -20,10 +20,19 @@ package uk.ac.roe.wfau.firethorn.meta.xml;
 import java.io.File;
 import java.io.FileReader;
 
+import javax.xml.stream.XMLEventReader;
+
 import lombok.extern.slf4j.Slf4j;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.xml.MetaDocReader;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
@@ -33,20 +42,70 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
  */
 @Slf4j
 public class MetaDocReaderTestCase
-//extends TestBase
+extends TestBase
     {
+
+    /**
+     * Create our resources.
+     *
+     */
+    @Before
+    public void init()
+    throws Exception
+        {
+        }
 
     @Test
     public void test000()
     throws Exception
         {
+        //
+        // Create our JDBC resources.
+        JdbcResource resource = factories().jdbc().resources().create(
+            "twomass",
+            "TWOMASS",
+            "twomass",
+            "spring:RoeTWOMASS"
+            );
+        //
+        // Create our ADQL workspace.
+        AdqlResource workspace = factories().adql().resources().create(
+            "workspace"
+            );
+
+        //
+        // Create our reader.
         MetaDocReader reader = new MetaDocReader();
 
-        log.debug("PWD [{}]", new File("test").getCanonicalPath());
-        reader.read(
+        Iterable<AdqlSchema> schemas = reader.inport(
             new FileReader(
-                "src/test/data/metadoc/twomass.metadoc.xml"
-                )
+                "src/test/data/metadoc/twomass.subset.xml"
+                ),
+            resource.schemas().select(
+                "TWOMASS",
+                "dbo"
+                ),                
+            workspace
             );
+
+        log.debug("---------------");
+        for(AdqlSchema schema : schemas)
+            {
+            log.debug("Schema [{}]", schema.namebuilder());
+            for (AdqlTable table : schema.tables().select())
+                {
+                log.debug("  Table [{}]", table.namebuilder());
+                log.debug("    Text [{}]", table.text());
+                for (AdqlColumn column : table.columns().select())
+                    {
+                    log.debug("    Column [{}]", column.namebuilder());
+                    log.debug("      Text  [{}]", column.text());
+                    log.debug("      Type  [{}]", column.meta().adql().type());
+                    log.debug("      Units [{}]", column.meta().adql().units());
+                    log.debug("      Utype [{}]", column.meta().adql().utype());
+                    log.debug("      UCD   [{}][{}]", column.meta().adql().ucd().type(), column.meta().adql().ucd().value());
+                    }
+                }
+            }
         }
     }

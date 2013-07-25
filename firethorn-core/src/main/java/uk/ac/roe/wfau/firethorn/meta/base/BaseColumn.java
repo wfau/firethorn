@@ -123,6 +123,36 @@ extends BaseComponent
     public StringBuilder namebuilder();
 
     /**
+     * A class to represent a column UCD.
+     * 
+     */
+    public interface UCD
+        {
+        /**
+         * The UCD version.
+         * 
+         */
+        public enum Type
+            {
+            ONE(),
+            ONEPLUS();
+            }
+
+        /**
+         * The UCD type.
+         * 
+         */
+        public Type type();
+
+        /**
+         * The UCD value.
+         * 
+         */
+        public String value();
+
+        }
+
+    /**
      * The column metadata.
      *
      */
@@ -141,6 +171,7 @@ extends BaseComponent
              *
              */
             public Integer arraysize();
+
             /**
              * Set the array size.
              *
@@ -152,6 +183,7 @@ extends BaseComponent
              *
              */
             public Type type();
+
             /**
              * Set the ADQL type.
              *
@@ -174,33 +206,24 @@ extends BaseComponent
              *
              */
             public String utype();
+
             /**
              * Set the ADQL utype.
              *
              */
             public void utype(final String utype);
+            
+            /**
+             * The column UCD.
+             *
+             */
+            public UCD ucd();
 
             /**
-             * The new ADQL ucd.
+             * Set the column UCD.
              *
              */
-            public String ucd1();
-            /**
-             * Set the new ADQL ucd.
-             *
-             */
-            public void ucd1(final String ucd);
-
-            /**
-             * The old ADQL ucd.
-             *
-             */
-            public String ucd0();
-            /**
-             * Set the old ADQL ucd.
-             *
-             */
-            public void ucd0(final String ucd);
+            public void ucd(final UCD.Type type, final String value);
 
             }
 

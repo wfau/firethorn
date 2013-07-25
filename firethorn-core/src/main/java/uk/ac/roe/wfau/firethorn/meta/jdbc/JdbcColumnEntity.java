@@ -499,18 +499,6 @@ public class JdbcColumnEntity
         return this.adqlutype ;
         }
 
-    @Override
-    protected String adqlucd0()
-        {
-        return this.adqlucd0 ;
-        }
-
-    @Override
-    protected String adqlucd1()
-        {
-        return this.adqlucd1 ;
-        }
-
     protected JdbcColumn.Metadata.JdbcMeta jdbcmeta()
         {
         return new JdbcColumn.Metadata.JdbcMeta()

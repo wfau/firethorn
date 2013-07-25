@@ -159,7 +159,7 @@ extends BaseColumn<JdbcColumn>
 
         public AdqlColumn.Type adql()
             {
-            return AdqlColumn.Type.adql(
+            return AdqlColumn.Type.type(
                 this
                 );
             }

@@ -159,7 +159,7 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          * Import a named table from our base schema.
          *
          */
-        public AdqlTable inport(final CopyDepth depth, final String name)
+        public AdqlTable inport(final String name)
         throws NotFoundException;
 
         }

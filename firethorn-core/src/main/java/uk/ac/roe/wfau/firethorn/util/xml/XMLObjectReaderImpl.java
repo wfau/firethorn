@@ -82,9 +82,4 @@ implements XMLObjectReader<ObjectType>
                 )
             );
         }
-
-    public ObjectType process(final ObjectType value)
-        {
-        return value ;
-        }
     }

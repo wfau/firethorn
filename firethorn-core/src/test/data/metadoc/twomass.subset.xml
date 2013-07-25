@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DatasetDescription xmlns='urn:astrogrid:schema:dsa:TableMetaDoc:v1.1' 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Catalog ID="twomass">
+    <Name>TWOMASS</Name>
+    <Description><![CDATA[]]></Description>
+    <Table ID="twomass_psc">
+      <Name>twomass_psc</Name>
+      <ConeSettings>
+        <RAColName>RA</RAColName>
+	    <DecColName>DEC</DecColName>
+      </ConeSettings>      
+    <Column ID="twomass_psc.cx" indexed="false">
+      <Name>cx</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[unit vector of spherical co-ordinate]]></Description>
+      <Units></Units>
+         <UCD version="1+">pos.distance;pos.cartesian.x</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="twomass_psc.cy" indexed="false">
+      <Name>cy</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[unit vector of spherical co-ordinate]]></Description>
+      <Units></Units>
+         <UCD version="1+">pos.distance;pos.cartesian.y</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="twomass_psc.cz" indexed="false">
+      <Name>cz</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[unit vector of spherical co-ordinate]]></Description>
+      <Units></Units>
+         <UCD version="1+">pos.distance;pos.cartesian.z</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="twomass_psc.ra" indexed="false">
+      <Name>ra</Name>
+      <Datatype>double</Datatype>
+      <Description><![CDATA[J2000 right ascension with respect to the ICRS]]></Description>
+      <Units>deg</Units>
+         <UCD version="1">POS_EQ_RA_MAIN</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="twomass_psc.dec" indexed="false">
+      <Name>dec</Name>
+      <Datatype>double</Datatype>
+      <Description><![CDATA[J2000 declination with respect to the ICRS]]></Description>
+      <Units>deg</Units>
+         <UCD version="1">POS_EQ_DEC_MAIN</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="twomass_psc.err_maj" indexed="false">
+      <Name>err_maj</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Semi-major axis length of the one sigma position uncertainty ellipse]]></Description>
+      <Units>arcsec</Units>
+         <UCD version="1+">phys.angSize;src</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="twomass_psc.err_min" indexed="false">
+      <Name>err_min</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Semi-minor axis length of the one sigma position uncertainty ellipse]]></Description>
+      <Units>arcsec</Units>
+         <UCD version="1+">phys.angSize;src</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="twomass_psc.err_ang" indexed="false">
+      <Name>err_ang</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[Position angle on the sky of the semi-major axis of the position uncertainty ellipse (East of North)]]></Description>
+      <Units>degrees</Units>
+         <UCD version="1+">pos.posAng</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="twomass_psc.designation" indexed="false">
+      <Name>designation</Name>
+      <Datatype>string</Datatype>
+      <Description><![CDATA[Sexagesimal, equatorial position-based source name in the form: hhmmssss+ddmmsss[ABC...].]]></Description>
+      <Units></Units>
+         <UCD version="1+">??</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+
+    <Column ID="twomass_psc.date" indexed="false">
+      <Name>date</Name>
+      <Datatype>dateTime</Datatype>
+      <Description><![CDATA[The observation reference date for this source expressed in ISO standard format. (YYYY-MM-DD)]]></Description>
+      <Units>yyyy-mm-dd</Units>
+         <UCD version="1+">time.epoch</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="twomass_psc.scan" indexed="false">
+      <Name>scan</Name>
+      <Datatype>int</Datatype>
+      <Description><![CDATA[The nightly scan number in which the source was detected.]]></Description>
+      <Units></Units>
+         <UCD version="1+">phys.atmol.number</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="twomass_psc.glon" indexed="false">
+      <Name>glon</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Galactic longitude rounded to 0.001 deg.]]></Description>
+      <Units>degrees</Units>
+         <UCD version="1+">pos.galactic.lon</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="twomass_psc.glat" indexed="false">
+      <Name>glat</Name>
+      <Datatype>float</Datatype>
+      <Description><![CDATA[Galactic latitude rounded to 0.001 deg.]]></Description>
+      <Units>degrees</Units>
+         <UCD version="1+">pos.galactic.lat</UCD>
+      <ErrorColumn></ErrorColumn>
+    </Column>
+    </Table>
+
+   <Table ID="twomass_pscXBestDR7PhotoObjAll">
+      <Name>twomass_pscXBestDR7PhotoObjAll</Name>
+      <Description><![CDATA[ Cross-neighbours between 2MASS Point Source Catalog and SDSS DR7 sources]]></Description>
+      <Column ID="twomass_pscXBestDR7PhotoObjAll.masterObjID" indexed="true">
+         <Name>masterObjID</Name>
+         <Datatype>long</Datatype>
+         <Description><![CDATA[The unique ID in twomass_psc (=pts_key)]]></Description>
+         <Units> </Units>
+         <UCD version="1+">meta.id;meta.main</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="twomass_pscXBestDR7PhotoObjAll.slaveObjID" indexed="true">
+         <Name>slaveObjID</Name>
+         <Datatype>long</Datatype>
+         <Description><![CDATA[The unique ID of the neighbour in BestDR7..PhotoObjAll (=objID)]]></Description>
+         <Units> </Units>
+         <UCD version="1+">meta.id;meta.dataset</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="twomass_pscXBestDR7PhotoObjAll.distanceMins" indexed="false">
+         <Name>distanceMins</Name>
+         <Datatype>float</Datatype>
+         <Description><![CDATA[Angular separation between neighbours]]></Description>
+         <Units>arcminutes</Units>
+         <UCD version="1+">pos.angDistance</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="twomass_pscXBestDR7PhotoObjAll.sdssType" indexed="false">
+         <Name>sdssType</Name>
+         <Datatype>short</Datatype>
+         <Description><![CDATA[SDSS type of neighbour: 3=galaxy; 6=star]]></Description>
+         <Units> </Units>
+         <UCD version="1+">src.class</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+      <Column ID="twomass_pscXBestDR7PhotoObjAll.sdssPrimary" indexed="false">
+         <Name>sdssPrimary</Name>
+         <Datatype>short</Datatype>
+         <Description><![CDATA[SDSS flag for neighbour being primary (1) or secondary (0)]]></Description>
+         <Units> </Units>
+         <UCD version="1+">meta.code</UCD>
+         <ErrorColumn></ErrorColumn>
+      </Column>
+   </Table>    
+  </Catalog>
+
+</DatasetDescription>

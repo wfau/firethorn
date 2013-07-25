@@ -186,8 +186,8 @@ public class XMLParserImpl
     public void done(final XMLEventReader reader)
     throws XMLParserException
         {
-        log.debug("close(XMLEventReader)");
-       log.debug("  QName [{}]", this.qname());
+        log.debug("done(XMLEventReader)");
+        log.debug("  QName [{}]", this.qname());
         //
         // Peek at the next element and check we are done.
         final XMLEvent event = this.peek(reader);
@@ -428,9 +428,11 @@ public class XMLParserImpl
                 //
                 // Start element is what we are looking for.
                 case XMLStreamConstants.START_ELEMENT:
-                    return event.asStartElement();
-                    //
-                    // Throw exception for other event types.
+                    return validate(
+                        event.asStartElement()
+                        );
+                //
+                // Throw exception for other event types.
                 default:
                     log.debug("XML start element expected [{}][{}]", typename(event), event);
                     throw new XMLParserException(
@@ -453,6 +455,39 @@ public class XMLParserImpl
             }
         }
 
+    /**
+     * Validate a start element is the one we expected.
+     * 
+     * @param element The element to check.
+     * @return The element.
+     * @throws XMLParserException If the element is not what we expect.
+     *
+     */
+    public StartElement validate(final StartElement  element)
+    throws XMLParserException
+        {
+        log.debug("start(StartElement)");
+        log.debug("  QName [{}]", this.qname());
+
+        if (this.qname() == null)
+            {
+            return element ;
+            }
+        else {
+            if (element.getName().equals(this.qname()))
+                {
+                return element ;
+                }
+            else {
+                throw new XMLParserException(
+                    "Unexpected XML element",
+                    this.qname(),
+                    element
+                    );
+                }
+            }
+        }
+        
     /**
      * Decode an XML event type into a human readable name.
      *
