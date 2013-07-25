@@ -272,10 +272,10 @@ public class AdqlTableEntity
 
         @Override
         @CreateEntityMethod
-        public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final AdqlQuery query)
+        public AdqlTable create(final CopyDepth depth, final AdqlSchema schema, final AdqlQuery query)
             {
             final AdqlTableEntity table = new AdqlTableEntity(
-                type,
+                depth,
                 query,
                 schema,
                 query.results().base(),
@@ -511,11 +511,6 @@ public class AdqlTableEntity
     public AdqlSchema schema()
         {
         return this.schema;
-        }
-    @Override
-    public void schema(final AdqlSchema schema)
-        {
-        this.schema = schema;
         }
     @Override
     public AdqlResource resource()

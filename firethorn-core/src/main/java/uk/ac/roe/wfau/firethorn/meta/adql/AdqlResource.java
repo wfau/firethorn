@@ -100,21 +100,25 @@ extends BaseResource<AdqlSchema>
          *
          */
         public AdqlSchema create(final BaseSchema<?,?> base);
+
         /**
-         * Create a new schema, importing all the tables from a base schema.
+         * Create a new schema, importing the tables from a base schema.
          *
          */
         public AdqlSchema create(final CopyDepth depth, final BaseSchema<?,?> base);
+
         /**
          * Create a new schema, importing all the tables from a base schema.
          *
          */
         public AdqlSchema create(final String name, final BaseSchema<?,?> base);
+
         /**
-         * Create a new schema, importing all the tables from a base schema.
+         * Create a new schema, importing the tables from a base schema.
          *
          */
         public AdqlSchema create(final CopyDepth depth, final String name, final BaseSchema<?,?> base);
+
 
         }
     @Override

@@ -85,6 +85,18 @@ extends BaseComponent
         }
 
     /**
+     * The base schema that this schema is derived from.
+     *
+     */
+    public BaseSchema<?, ?> base();
+
+    /**
+     * The root of the chain that this schema is derived from.
+     *
+     */
+    public BaseSchema<?, ?> root();
+
+    /**
      * Access to our parent resource.
      *
      */

@@ -1,0 +1,129 @@
+/*
+ *  Copyright (C) 2013 Royal Observatory, University of Edinburgh, UK
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+package uk.ac.roe.wfau.firethorn.util.xml;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ *
+ *
+ */
+@Slf4j
+public class XMLStringValueReader
+extends XMLObjectReaderImpl<String>
+implements XMLObjectReader<String>
+    {
+    public XMLStringValueReader(final QName qname)
+        {
+        this(
+            qname,
+            true
+            );
+        }
+
+    public XMLStringValueReader(final QName qname, final boolean required)
+        {
+        super(
+            qname
+            );
+        this.required = required ;
+        }
+
+    public XMLStringValueReader(final String namespace, final String name)
+        {
+        this(
+            namespace,
+            name,
+            true
+            );
+        }
+
+    public XMLStringValueReader(final String namespace, final String name, final boolean required)
+        {
+        super(
+            namespace,
+            name
+            );
+        this.required = required ;
+        }
+
+    private boolean required ;
+
+    @Override
+    public String read(XMLEventReader reader)
+    throws XMLParserException, XMLReaderException
+        {
+        //
+        // Start with a null String.
+        String result = null ;
+        //
+        // If we are required, or we match the next element. 
+        if ((required) || (parser.match(reader)))
+            {
+            parser.start(
+                reader
+                );
+            //
+            // If there are more events.
+            if (reader.hasNext())
+                {
+                //
+                // Check the next element type.
+                try {
+                    switch (reader.peek().getEventType())
+                        {
+                        //
+                        // Raw text or CDATA elements.
+                        case XMLStreamConstants.CDATA:
+                        case XMLStreamConstants.CHARACTERS:
+                            result = reader.getElementText();
+                            break ;
+                        //
+                        // End element is expected.
+                        case XMLStreamConstants.END_ELEMENT:
+                            reader.next();
+                            break ;
+                        //
+                        // Anything else is unexpected.
+                        default:
+                            log.debug("Expected CDATA or CHARACTERS");
+                            throw new XMLReaderException(
+                                "Expected CDATA or CHARACTERS"
+                                );
+                        }
+                    }
+                catch (XMLStreamException ouch)
+                    {
+                    log.debug("XMLStreamException while reading string [{}]", ouch.getMessage());
+                    throw new XMLReaderException(
+                        "XMLStreamException while reading string",
+                        ouch
+                        );
+                    }
+                }
+            }
+        return process(
+            result
+            );
+        }
+    }

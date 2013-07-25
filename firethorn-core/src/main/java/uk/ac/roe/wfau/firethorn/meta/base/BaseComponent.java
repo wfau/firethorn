@@ -167,6 +167,7 @@ extends NamedEntity
         {
         PROXY(),
         THIN(),
+        PARTIAL(),
         FULL();
         }
 
@@ -175,6 +176,7 @@ extends NamedEntity
      *
      */
     public CopyDepth depth();
+
     /**
      * The copy depth.
      *

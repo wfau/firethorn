@@ -141,7 +141,16 @@ extends BaseComponent
      */
     public StringBuilder namebuilder();
 
+    /**
+     * The base table that this table is derived from.
+     *
+     */
     public BaseTable<?, ?> base();
+
+    /**
+     * The root of the chain that this table is derived from.
+     *
+     */
     public BaseTable<?, ?> root();
 
     public BaseSchema<?,TableType> schema();

@@ -1,0 +1,168 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# ------------------------------------------------
+# Connect the SSH tunnel to ROE.
+#[sqsh@tau]
+
+    username=xxxx
+    hostname=fenrir.roe.ac.uk
+    
+    ssh-keyscan ${hostname:?} >> ~/.ssh/known_hosts
+    ssh -L '*:1435:ramses5:1433' -L '*:1439:ramses9:1433' "${username:?}@${hostname:?}"
+
+# ------------------------------------------------
+# Clean out old query results ...
+#[sqsh@tau]
+
+    #
+    # Delete data from old queries.
+    
+    servername=master
+    serverlogin=xxxx
+    serverpass=xxxx
+
+
+    sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+
+        use [FirethornMetadataDjer0722]
+
+        SELECT * FROM information_schema.tables
+        go
+                
+        SELECT * FROM information_schema.columns WHERE table_name = 'FT0106AdqlQueryEntity'
+        go
+
+        SELECT * FROM information_schema.columns WHERE table_name = 'FT0106AdqlTableEntity'
+        go
+
+
+
+        SELECT column_name FROM information_schema.columns WHERE table_name = 'FT0106AdqlQueryEntity'
+        go
+
+
+
+        SELECT ident, adqltable, jdbctable FROM FT0106AdqlQueryEntity
+        go
+
+        2431204   2470345   2470344
+
+
+        SELECT * FROM FT0106AdqlTableEntity where adqlquery = 2431204
+        go
+
+        SELECT * FROM FT0106AdqlColumnEntity where parent = 2470345
+        go
+
+
+        SELECT count(ident) FROM FT0106AdqlColumnEntity where parent IN (SELECT ident FROM FT0106AdqlTableEntity where adqlquery = 2431204)
+        go
+
+        SELECT count(ident) FROM FT0106JdbcColumnEntity where parent IN (SELECT ident FROM FT0106JdbcTableEntity where adqlquery = 2431204)
+        go
+
+
+
+
+
+        use [FirethornMetadataDjer0722]
+
+        SELECT job.ident, query.adqltable, query.jdbctable, job.created FROM FT0106AdqlQueryEntity AS query INNER JOIN FT0106JobEntity AS job ON query.ident = job.ident WHERE job.created < '2013-07-23 00:00'
+        go
+
+        SELECT job.ident FROM FT0106AdqlQueryEntity AS query INNER JOIN FT0106JobEntity AS job ON query.ident = job.ident WHERE job.created >= '2013-07-23 00:00' AND job.created < '2013-07-23 01:00'
+        go
+
+
+        UPDATE FT0106AdqlQueryEntity SET adqltable = NULL WHERE ident = 2431207
+        DELETE FROM FT0106AdqlColumnEntity where parent IN (SELECT ident FROM FT0106AdqlTableEntity where adqlquery = 2431207)
+        DELETE FROM FT0106AdqlTableEntity where adqlquery = 2431207
+        go
+
+        UPDATE FT0106AdqlQueryEntity SET jdbctable = NULL WHERE ident = 2431207
+        DELETE FROM FT0106JdbcColumnEntity where parent IN (SELECT ident FROM FT0106JdbcTableEntity where adqlquery = 2431207)
+        DELETE FROM FT0106JdbcTableEntity where adqlquery = 2431207
+        go
+
+        DROP TABLE FirethornUserdataDjer0722.dbo.QUERY_2431207
+        go
+
+
+
+
+        SELECT job.ident FROM FT0106AdqlQueryEntity AS query INNER JOIN FT0106JobEntity AS job ON query.ident = job.ident WHERE job.created >= '2013-07-23 00:00' AND job.created < '2013-07-23 01:00'
+
+        DELETE FROM FT0106AdqlColumnEntity where parent IN (SELECT ident FROM FT0106AdqlTableEntity where adqlquery = query)
+        DELETE FROM FT0106AdqlTableEntity where adqlquery = query
+        go
+
+# ------------------------------------------------
+# Automate the process
+# http://www.sqsh.org/sqsh_features.html#Control
+#[sqsh@tau]
+
+
+        use [FirethornMetadataDjer0722]
+        SELECT job.ident FROM FT0106AdqlQueryEntity AS query INNER JOIN FT0106JobEntity AS job ON query.ident = job.ident WHERE job.created >= '2013-07-23 00:00' AND job.created < '2013-07-23 01:00'
+           \do
+
+                UPDATE FT0106AdqlQueryEntity SET adqltable = NULL WHERE ident = #1
+                DELETE FROM FT0106AdqlColumnEntity where parent IN (SELECT ident FROM FT0106AdqlTableEntity where adqlquery = #1)
+                DELETE FROM FT0106AdqlTableEntity where adqlquery = 2431207
+                go
+
+                UPDATE FT0106AdqlQueryEntity SET jdbctable = NULL WHERE ident = #1
+                DELETE FROM FT0106JdbcColumnEntity where parent IN (SELECT ident FROM FT0106JdbcTableEntity where adqlquery = #1)
+                DELETE FROM FT0106JdbcTableEntity where adqlquery = #1
+                go
+
+           \done
+
+
+
+        use [FirethornMetadataDjer0722]
+        SELECT format(job.ident, 'D') FROM FT0106AdqlQueryEntity AS query INNER JOIN FT0106JobEntity AS job ON query.ident = job.ident WHERE job.created >= '2013-07-23 00:00' AND job.created < '2013-07-23 01:00'
+           \do
+
+                \set name="QUERY_#1"
+                \echo "[$name]"
+                go
+
+                DROP TABLE FirethornUserdataDjer0722.dbo.$name
+                go
+
+           \done
+
+# ------------------------------------------------
+# Things to do next ..
+#
+
+    Use JdbcTable ident for the table name, not the query ident.
+    Allows re-query before without conflicts.
+
+    Unlink method on query - unlinks the Adql and Jdbc tables.
+    
+    
+
+
+

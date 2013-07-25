@@ -58,6 +58,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTableEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 
 /**
@@ -550,6 +551,17 @@ public class JdbcSchemaEntity
         return this.schema;
         }
 
+    @Override
+    public BaseSchema<?, ?> base()
+        {
+        return this ;
+        }
+    @Override
+    public BaseSchema<?, ?> root()
+        {
+        return this ;
+        }
+    
     /*
      * HibernateCollections 
     @OrderBy(

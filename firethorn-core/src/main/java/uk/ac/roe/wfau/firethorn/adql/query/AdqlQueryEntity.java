@@ -951,7 +951,7 @@ implements AdqlQuery, AdqlParserQuery
 
                 //
                 // Create our server client.
-                log.debug("-- Pipeline endpoint [{}]", endpoint);
+                log.debug("-- Pipeline endpoint [{}]", params().endpoint());
                 final StoredResultPipeline pipeline = new StoredResultPipeline(
                     new URL(
                         params().endpoint()
@@ -959,19 +959,18 @@ implements AdqlQuery, AdqlParserQuery
                     );
                 log.debug("-- Pipeline [{}]", pipeline);
 
-                //
-                // Execute the pipleline.
-
-                // TODO - Check for valid resource ident in prepare().
-                final String target = ((mode() == Mode.DIRECT) ? primary().ogsaid() : params().dqp());
-                final String tablename = query.results().jdbc().namebuilder().toString() ;
-
                 log.debug("-- AdqlQuery executing [{}]", ident());
                 log.debug("-- Mode     [{}]", query.mode());
-                log.debug("-- Table    [{}]", tablename);
                 log.debug("-- Store    [{}]", params().store());
-                log.debug("-- Target   [{}]", target);
                 log.debug("-- Endpoint [{}]", params().endpoint());
+
+                
+                // TODO - Check for valid resource ident in prepare().
+                final String target = ((mode() == Mode.DIRECT) ? primary().ogsaid() : params().dqp());
+                log.debug("-- Target   [{}]", target);
+
+                final String tablename = query.results().jdbc().namebuilder().toString() ;
+                log.debug("-- Table    [{}]", tablename);
 
                 final PipelineResult frog = pipeline.execute(
                     target,

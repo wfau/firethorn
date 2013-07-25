@@ -350,7 +350,7 @@ implements AdqlSchema
         }
 
     /**
-     * Create a copy of the base table.
+     * Create a copy of a base table.
      *
      */
     protected void realize(final BaseTable<?, ?> base)
@@ -425,13 +425,16 @@ implements AdqlSchema
         )
     private BaseSchema<?, ?> base ;
 
-    /**
-     * Our base schema.
-     *
-     */
+    @Override
     public BaseSchema<?, ?> base()
         {
         return this.base ;
+        }
+
+    @Override
+    public BaseSchema<?, ?> root()
+        {
+        return base.root();
         }
 
     @Index(
@@ -537,7 +540,6 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final CopyDepth depth, final BaseTable<?, ?> base)
                 {
-                //realize();
                 AdqlTable table = factories().adql().tables().create(
                     depth,
                     AdqlSchemaEntity.this,
@@ -557,7 +559,6 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final BaseTable<?,?> base)
                 {
-                //realize();
                 AdqlTable table = factories().adql().tables().create(
                     AdqlSchemaEntity.this,
                     base
@@ -576,7 +577,6 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final CopyDepth depth, final BaseTable<?, ?> base, final String name)
                 {
-                //realize();
                 AdqlTable table = factories().adql().tables().create(
                     depth,
                     AdqlSchemaEntity.this,
@@ -597,7 +597,6 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final BaseTable<?,?> base, final String name)
                 {
-                //realize();
                 AdqlTable table = factories().adql().tables().create(
                     AdqlSchemaEntity.this,
                     base,

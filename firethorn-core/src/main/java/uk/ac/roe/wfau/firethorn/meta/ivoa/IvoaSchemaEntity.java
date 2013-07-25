@@ -41,6 +41,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 
 /**
@@ -221,6 +222,17 @@ public class IvoaSchemaEntity
     public IvoaResource resource()
         {
         return this.resource;
+        }
+
+    @Override
+    public BaseSchema<?, ?> base()
+        {
+        return this ;
+        }
+    @Override
+    public BaseSchema<?, ?> root()
+        {
+        return this ;
         }
 
     @Override

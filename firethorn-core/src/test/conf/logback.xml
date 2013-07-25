@@ -47,6 +47,9 @@
 	<logger name="uk.ac.roe.wfau.firethorn.adql.parser">
 		<level value="DEBUG"/>
 	</logger>
+	<logger name="uk.ac.roe.wfau.firethorn.util.xml">
+		<level value="INFO"/>
+	</logger>
 
 	<!--+
 	    | Spring loggers.

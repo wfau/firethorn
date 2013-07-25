@@ -15,21 +15,36 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package uk.ac.roe.wfau.firethorn.meta.adql;
+package uk.ac.roe.wfau.firethorn.util.xml;
+
+import java.io.Reader;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.events.XMLEvent;
 
 /**
  *
  *
  */
-@Deprecated
-public interface AdqlColumnInfo
+public interface XMLObjectReader<Type>
+extends XMLReader
     {
-    public Integer size();
 
-    public void size(final Integer size);
+    /**
+     * Process events from an XMLEventReader and return an Object.
+     * @returns An Object generated from the XML data.
+     * 
+     */
+    public Type read(final XMLEventReader reader)
+    throws XMLParserException, XMLReaderException;
 
-    public AdqlColumnType type();
-
-    public void type(final AdqlColumnType type);
+    /**
+     * Read data from a Java IO Reader and return an Object.
+     * @returns An Object generated from the data.
+     *
+     */
+    public Type read(final Reader reader)
+    throws XMLParserException, XMLReaderException;
 
     }

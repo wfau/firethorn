@@ -176,13 +176,6 @@ public class AdqlTableProxy
         return this.schema;
         }
     @Override
-    public void schema(final AdqlSchema schema)
-        {
-        throw new UnsupportedOperationException(
-            "Can't change a read only copy"
-            );
-        }
-    @Override
     public AdqlResource resource()
         {
         return this.schema.resource();

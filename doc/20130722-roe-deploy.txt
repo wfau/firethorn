@@ -109,10 +109,11 @@
             echo "databasepass  [${databasepass}]"
 
             #
-            # Create our userdata database.
-            sqlsed 'create-database.sql' | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
-            sqlsed 'create-login.sql'    | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
-            sqlsed 'create-user.sql'     | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+            # Create our userdata database (including empty table).
+            sqlsed 'create-database.sql'   | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+            sqlsed 'create-login.sql'      | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+            sqlsed 'create-user.sql'       | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+            sqlsed 'create-emptytable.sql' | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
 
         popd
     popd
@@ -200,20 +201,20 @@ EOF
 #
 
 #
-# Watch tomcat logs.
-# Includes tunneled connection to port 8080 ..
+# Stop Tomcat.
 #[user@desktop]
 
     source "${HOME:?}/deployment/deploy.logins"
     ssh -L 8088:localhost:8080 "${firelogin:?}"
 
-        tail -f "${HOME}/tomcat/logs/catalina.out"
+        "${HOME}/tomcat/bin/shutdown.sh"
 
 #
 # Deploy firethorn webapp ...
 # Firethorn works for any method - no need to edit the war file contents.
 # Use our own webapps directory and add a pointer in context file.
 #[user@desktop]
+
 
     source "${HOME:?}/deployment/deploy.logins"
     ssh "${firelogin:?}" 
@@ -276,11 +277,61 @@ EOF
         popd
 
 #
+# Start Tomcat and watch the logs.
+# Includes ssh tunnel connecting port 8090 to 8080.
+#[user@desktop]
+
+    source "${HOME:?}/deployment/deploy.logins"
+    ssh -L 8090:localhost:8080 "${firelogin:?}"
+
+#
+# Configure jmxremote in the Tomcat VM.
+# http://stackoverflow.com/questions/151238/has-anyone-ever-got-a-remote-jmx-jconsole-to-work
+# http://blog.cantremember.com/debugging-with-jconsole-jmx-ssh-tunnels/
+
+        cat > "${HOME}/tomcat/bin/setenv.sh" << EOF
+CATALINA_OPTS="${CATALINA_OPTS} -Xmx128m"
+CATALINA_OPTS="${CATALINA_OPTS} -XX:MaxPermSize=128m"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.port=8081"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.ssl=false"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.authenticate=false"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.local.only=false"
+CATALINA_OPTS="${CATALINA_OPTS} -Djava.rmi.server.hostname=$(hostname -s)"
+CATALINA_OPTS="${CATALINA_OPTS} -Djava.rmi.activation.port=8082"
+EOF
+
+        "${HOME}/tomcat/bin/startup.sh"
+
+        tail -f "${HOME}/tomcat/logs/catalina.out"
+
+#
 # Test with local browser ..
 #[user@desktop]
 
-    firefox 'http://localhost:8088/manager/' &
-    firefox 'http://localhost:8088/firethorn/' &
+    firefox 'http://localhost:8090/manager/' &
+    firefox 'http://localhost:8090/firethorn/' &
+
+#
+# Route JConsole via ssh socks tunnel.
+# http://stackoverflow.com/questions/151238/has-anyone-ever-got-a-remote-jmx-jconsole-to-work
+# http://simplygenius.com/2010/08/jconsole-via-socks-ssh-tunnel.html
+#[user@desktop]
+
+    jmxport=8081
+    jmxhost=localhost
+    proxyport=8083
+    proxyhost=localhost
+
+    ssh -N -f -D ${proxyport:?} "${firelogin:?}"
+    ssh_pid=$(ps ax | grep "[s]sh -N -f -D ${proxyport:?}" | awk '{print $1}')
+
+    jconsole -J-DsocksProxyHost=${proxyhost:?} -J-DsocksProxyPort=${proxyport:?} service:jmx:rmi:///jndi/rmi://${jmxhost:?}:${jmxport:?}/jmxrmi &
+
+    kill $ssh_pid
+
+#TODO use ssh control port ?
+
 
 #----------------------------------------------------
 # OGSA-DAI Tomcat
@@ -288,11 +339,11 @@ EOF
 
 #
 # Watch tomcat logs.
-# Includes tunneled connection to port 8080 ..
+# Includes ssh tunnel connecting port 8091 to 8080.
 #[user@desktop]
 
     source "${HOME:?}/deployment/deploy.logins"
-    ssh -L 8089:localhost:8080 "${ogsalogin:?}"
+    ssh -L 8091:localhost:8080 "${ogsalogin:?}"
 
         tail -f "${HOME}/tomcat/logs/catalina.out"
 
@@ -393,8 +444,8 @@ EOF
 # Test with browser ..
 #[user@desktop]
 
-    firefox 'http://localhost:8089/manager/'  &
-    firefox 'http://localhost:8089/ogsa-dai/' &
+    firefox 'http://localhost:8091/manager/'  &
+    firefox 'http://localhost:8091/ogsa-dai/' &
 
 #----------------------------------------------------
 # Run the test scripts
@@ -423,7 +474,7 @@ EOF
 #[user@desktop]
 
     source "${HOME:?}/deployment/deploy.logins"
-    ssh -L 8088:localhost:8080 "${testlogin:?}"
+    ssh "${testlogin:?}"
 
         #
         # Update the local copy of the source code
@@ -457,7 +508,7 @@ EOF
 #[user@desktop]
 
     source "${HOME:?}/deployment/deploy.logins"
-    ssh -L 8088:localhost:8080 "${testlogin:?}"
+    ssh "${testlogin:?}"
 
     source ${HOME:?}/firethorn.settings
 
@@ -508,36 +559,49 @@ EOF
     source "${HOME:?}/deployment/deploy.logins"
     ssh "${testlogin:?}"
 
-        source "${HOME:?}/firethorn.settings"
-        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+cat > ${HOME}/test-loop.sh << 'EOF'
+#!/bin/bash
+#
+source "${HOME:?}/firethorn.settings"
+FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
 
-        pushd $(mktemp --directory)
+pushd $(mktemp --directory)
 
-            identity=$(pwgen 16 1)
-            community=$(date '+%A')
-            adqlcopydepth=THIN
+    identity=$(pwgen 16 1)
+    community=$(date '+%A')
+    adqlcopydepth=THIN
 
-            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+    source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
 
-            importschema()
-                {
-                source "${HOME:?}/firethorn.testing"
-                source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Query workspace'
+    importschema()
+        {
+        source "${HOME:?}/firethorn.testing"
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Query workspace'
 
-                source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}" 'TWOMASS'         "${queryspace:?}" 'twomass'
-                source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}" 'ATLASv20130304'  "${queryspace:?}" 'atlas'
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}" 'TWOMASS'         "${queryspace:?}" 'twomass'
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}" 'ATLASv20130304'  "${queryspace:?}" 'atlas'
 
-                source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh" "${queryspace:?}"  'query'
-                source "${FIRETHORN_TEST:?}/05-00-execute-query.sh"       "${queryschema:?}" "${FIRETHORN_TEST:?}/06-query-atlas-000.adql"
-                }
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh" "${queryspace:?}"  'query'
+        source "${FIRETHORN_TEST:?}/05-00-execute-query.sh"       "${queryschema:?}" "${FIRETHORN_TEST:?}/06-query-atlas-000.adql"
+        }
 
-            time importschema
+    time importschema
 
-            for i in {0..99}
-            do
-                echo "------------------"
-                echo "Iter [${i}]"
-                time importschema
-            done
+    for i in {0..99}
+    do
+        echo "------------------"
+        echo "Iter [${i}]"
+        time importschema
+    done
 
+popd
+EOF
+
+    chmod a+rx "${HOME:?}/test-loop.sh"
+    "${HOME:?}/test-loop.sh"
+
+
+#
+# Tomcat native components missing
+# INFO: The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: /usr/java/packages/lib/amd64:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib
 
