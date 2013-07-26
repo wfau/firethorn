@@ -716,22 +716,19 @@ public class AdqlTableEntity
                 {
                 if (depth() == CopyDepth.PARTIAL)
                     {
-                    realize();
-                    AdqlColumn column = factories().adql().columns().create(
-                        AdqlTableEntity.this,
-                        base().columns().select(
-                            name
-                            )
+                    // TODO refactor this to use search(String)
+                    AdqlColumn column = select(
+                        name
                         );
-                    /*
-                     * HibernateCollections 
-                    children.put(
-                        column.name(),
-                        column
-                        );
-                     *
-                     */
-                    return column ;
+                    if (column == null)
+                        {
+                        column = create(
+                            base().columns().select(
+                                name
+                                )
+                            );
+                        }
+                    return column;
                     }
                 else {
                     throw new UnsupportedOperationException(

@@ -45,6 +45,9 @@ public class MetaDocReaderTestCase
 extends TestBase
     {
 
+    private JdbcResource resource  ;
+    private AdqlResource workspace ;
+
     /**
      * Create our resources.
      *
@@ -53,15 +56,9 @@ extends TestBase
     public void init()
     throws Exception
         {
-        }
-
-    @Test
-    public void test000()
-    throws Exception
-        {
         //
         // Create our JDBC resources.
-        JdbcResource resource = factories().jdbc().resources().create(
+        resource = factories().jdbc().resources().create(
             "twomass",
             "TWOMASS",
             "twomass",
@@ -69,25 +66,13 @@ extends TestBase
             );
         //
         // Create our ADQL workspace.
-        AdqlResource workspace = factories().adql().resources().create(
+        workspace = factories().adql().resources().create(
             "workspace"
             );
-
-        //
-        // Create our reader.
-        MetaDocReader reader = new MetaDocReader();
-
-        Iterable<AdqlSchema> schemas = reader.inport(
-            new FileReader(
-                "src/test/data/metadoc/twomass.subset.xml"
-                ),
-            resource.schemas().select(
-                "TWOMASS",
-                "dbo"
-                ),                
-            workspace
-            );
-
+        }
+    
+    public void debug(Iterable<AdqlSchema> schemas)
+        {
         log.debug("---------------");
         for(AdqlSchema schema : schemas)
             {
@@ -107,5 +92,59 @@ extends TestBase
                     }
                 }
             }
+        }
+
+    @Test
+    public void test000()
+    throws Exception
+        {
+        MetaDocReader reader = new MetaDocReader();
+
+        Iterable<AdqlSchema> schemas = reader.inport(
+            new FileReader(
+                "src/test/data/metadoc/twomass.subset.xml"
+                ),
+            resource.schemas().select(
+                "TWOMASS",
+                "dbo"
+                ),                
+            workspace
+            );
+
+        debug(schemas);
+
+        }
+
+    @Test
+    public void test001()
+    throws Exception
+        {
+        MetaDocReader reader = new MetaDocReader();
+
+        Iterable<AdqlSchema> one = reader.inport(
+            new FileReader(
+                "src/test/data/metadoc/twomass.subset.xml"
+                ),
+            resource.schemas().select(
+                "TWOMASS",
+                "dbo"
+                ),                
+            workspace
+            );
+
+        debug(one);
+
+        Iterable<AdqlSchema> two = reader.inport(
+            new FileReader(
+                "src/test/data/metadoc/twomass.subset.xml"
+                ),
+            resource.schemas().select(
+                "TWOMASS",
+                "dbo"
+                ),                
+            workspace
+            );
+
+        debug(two);
         }
     }

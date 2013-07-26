@@ -135,15 +135,14 @@ implements XMLReader
         private static TableReader tablereader = new TableReader();
         
         public AdqlSchema inport(final XMLEventReader source, final BaseSchema<?,?> base, final AdqlResource workspace)
-            throws XMLParserException, XMLReaderException
+        throws XMLParserException, XMLReaderException
             {
             log.debug("inport(XMLEventReader, BaseSchema, AdqlResource)");
             parser.start(
                 source
                 );
-
-            final AdqlSchema schema = workspace.schemas().create(
-                CopyDepth.PARTIAL,
+ 
+            AdqlSchema schema = workspace.schemas().inport(
                 namereader.read(
                     source
                     ),
@@ -192,7 +191,7 @@ implements XMLReader
             );
 
         public void inport(final XMLEventReader source, final AdqlSchema schema)
-            throws XMLParserException, XMLReaderException
+        throws XMLParserException, XMLReaderException
             {
             log.debug("inport(XMLEventReader, AdqlSchema)");
             parser.start(
@@ -220,8 +219,6 @@ implements XMLReader
                 source
                 );
             }
-
-        private static ColumnReader columnreader = new ColumnReader();
 
         public static class ConeSettingsReader
         extends XMLReaderImpl
@@ -269,6 +266,8 @@ implements XMLReader
 
         private static ConeSettingsReader conesettings = new ConeSettingsReader();
 
+        private static ColumnReader columnreader = new ColumnReader();
+
         private static XMLStringValueReader textreader = new XMLStringValueReader(
             NAMESPACE_URI,
             "Description",
@@ -276,18 +275,16 @@ implements XMLReader
             );
 
         public void config(final AdqlTable table, final XMLEventReader source)
-        throws XMLParserException, XMLReaderException
+        throws XMLParserException, XMLReaderException, NotFoundException
             {
             table.text(
                 textreader.read(
                     source
                     )
                 );
-
             conesettings.read(
                 source
                 );
-            
             while (columnreader.match(source))
                 {
                 columnreader.inport(
@@ -317,28 +314,20 @@ implements XMLReader
             );
 
         public void inport(final XMLEventReader source, final AdqlTable table)
-            throws XMLParserException, XMLReaderException
+            throws XMLParserException, XMLReaderException, NotFoundException 
             {
             log.debug("inport(XMLEventReader, AdqlTable)");
             parser.start(
                 source
                 );
-            try {
-                config(
-                    table.columns().inport(
-                        namereader.read(
-                            source
-                            )
-                        ),
-                    source
-                    );
-                }
-            catch (NotFoundException ouch)
-                {
-                throw new XMLReaderException(
-                    "Unable to locate base column",
-                    ouch);
-                }
+            config(
+                table.columns().inport(
+                    namereader.read(
+                        source
+                        )
+                    ),
+                source
+                );
             parser.done(
                 source
                 );

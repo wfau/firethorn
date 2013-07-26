@@ -44,6 +44,7 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 
 /**
  *
@@ -331,6 +332,33 @@ extends BaseResourceEntity<AdqlSchema>
                     AdqlResourceEntity.this,
                     text
                     );
+                }
+
+            @Override
+            public AdqlSchema inport(String name, BaseSchema<?, ?> base)
+                {
+                //
+                // TODO refactor this to use search(String)
+                try {
+                    AdqlSchema schema = select(
+                        name
+                        );
+                    if (schema == null)
+                        {
+                        schema = create(
+                            CopyDepth.PARTIAL,
+                            name,
+                            base
+                            );
+                        }
+                    return schema ;
+                    }
+                //
+                // Really really broken.
+                catch (NotFoundException ouch)
+                    {
+                    return null ;
+                    }
                 }
             };
         }

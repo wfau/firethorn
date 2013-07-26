@@ -75,11 +75,6 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          *
          */
         public AdqlSchema create(final AdqlResource parent, final String name);
-        /**
-         * Create an empty schema.
-         *
-        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name);
-         */
 
         /**
          * Create a new schema, importing a base table.

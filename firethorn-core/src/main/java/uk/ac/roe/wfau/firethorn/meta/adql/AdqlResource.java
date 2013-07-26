@@ -89,6 +89,7 @@ extends BaseResource<AdqlSchema>
          *
          */
         public AdqlSchema create(final String name);
+
         /**
          * Create a new schema, importing a base table.
          *
@@ -119,6 +120,11 @@ extends BaseResource<AdqlSchema>
          */
         public AdqlSchema create(final CopyDepth depth, final String name, final BaseSchema<?,?> base);
 
+        /**
+         * Select or create a named schema.  
+         *
+         */
+        public AdqlSchema inport(String read, BaseSchema<?, ?> base);
 
         }
     @Override

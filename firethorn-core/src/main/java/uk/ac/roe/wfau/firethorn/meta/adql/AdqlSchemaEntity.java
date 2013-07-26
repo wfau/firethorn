@@ -253,9 +253,8 @@ implements AdqlSchema
         @Override
         @SelectEntityMethod
         public AdqlSchema select(final AdqlResource parent, final String name)
-        throws NotFoundException
             {
-            return super.single(
+            return super.first(
                 super.query(
                     "AdqlSchema-select-parent.name"
                     ).setEntity(
@@ -654,7 +653,8 @@ implements AdqlSchema
                 }
 
             @Override
-            public AdqlTable select(final Identifier ident) throws NotFoundException
+            public AdqlTable select(final Identifier ident)
+            throws NotFoundException
                 {
                 log.debug("tables().select(Identifier) [{}] from [{}]", ident, ident());
                 log.debug(" Schema depth [{}]", depth());
@@ -704,21 +704,20 @@ implements AdqlSchema
                 {
                 if (depth() == CopyDepth.PARTIAL)
                     {
-                    AdqlTable table = factories().adql().tables().create(
-                        CopyDepth.PARTIAL,
-                        AdqlSchemaEntity.this,
-                        base().tables().select(
-                            name
-                            )
+                    //
+                    // TODO refactor this to use search(String)
+                    AdqlTable  table = select(
+                        name
                         );
-                    /*
-                     * HibernateCollections
-                    children.put(
-                        table.name(),
-                        table
-                        );
-                     *
-                     */
+                    if (table == null)
+                        {
+                        table = create(
+                            CopyDepth.PARTIAL,
+                            base().tables().select(
+                                name
+                                )
+                            );
+                        }
                     return table ;
                     }
                 else {
