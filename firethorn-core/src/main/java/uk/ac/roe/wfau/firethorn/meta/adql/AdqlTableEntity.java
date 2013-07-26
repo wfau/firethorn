@@ -714,19 +714,25 @@ public class AdqlTableEntity
             public AdqlColumn inport(String name)
             throws NotFoundException
                 {
+                log.debug("columns().inport(String)");
+                log.debug("  name [{}]", name);
                 if (depth() == CopyDepth.PARTIAL)
                     {
                     // TODO refactor this to use search(String)
                     AdqlColumn column = select(
                         name
                         );
-                    if (column == null)
+                    if (column != null)
                         {
+                        log.debug("Found existing column [{}][{}]", column.ident(), column.name());
+                        }
+                    else {
                         column = create(
                             base().columns().select(
                                 name
                                 )
                             );
+                        log.debug("Created new column [{}][{}]", column.ident(), column.name());
                         }
                     return column;
                     }

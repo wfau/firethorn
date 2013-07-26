@@ -43,7 +43,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(AdqlTableLinkFactory.TABLE_PATH)
 public class AdqlTableController
-    extends AbstractEntityController<AdqlTable>
+    extends AbstractEntityController<AdqlTable, AdqlTableBean>
     {
 
     @Override
@@ -76,7 +76,7 @@ public class AdqlTableController
     public static final String UPDATE_NAME = "adql.table.update.name" ;
 
     @Override
-    public Iterable<EntityBean<AdqlTable>> bean(final Iterable<AdqlTable> iter)
+    public Iterable<AdqlTableBean> bean(final Iterable<AdqlTable> iter)
         {
         return new AdqlTableBean.Iter(
             iter
@@ -84,7 +84,7 @@ public class AdqlTableController
         }
 
     @Override
-    public EntityBean<AdqlTable> bean(final AdqlTable entity)
+    public AdqlTableBean bean(final AdqlTable entity)
         {
         return new AdqlTableBean(
             entity
@@ -115,7 +115,7 @@ public class AdqlTableController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public EntityBean<AdqlTable> jsonSelect(
+    public AdqlTableBean select(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlTable table
         ){
@@ -132,7 +132,7 @@ public class AdqlTableController
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public EntityBean<AdqlTable> jsonUpdate(
+    public AdqlTableBean update(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @ModelAttribute(TARGET_ENTITY)

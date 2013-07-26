@@ -45,7 +45,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(JdbcResourceLinkFactory.RESOURCE_PATH)
 public class JdbcResourceController
-    extends AbstractEntityController<JdbcResource>
+    extends AbstractEntityController<JdbcResource, JdbcResourceBean>
     {
 
     @Override
@@ -114,7 +114,7 @@ public class JdbcResourceController
     public static final String UPDATE_CONN_STATUS = "jdbc.resource.connection.status" ;
 
     @Override
-    public EntityBean<JdbcResource> bean(final JdbcResource entity)
+    public JdbcResourceBean bean(final JdbcResource entity)
         {
         return new JdbcResourceBean(
             entity
@@ -122,7 +122,7 @@ public class JdbcResourceController
         }
 
     @Override
-    public Iterable<EntityBean<JdbcResource>> bean(final Iterable<JdbcResource> iter)
+    public Iterable<JdbcResourceBean> bean(final Iterable<JdbcResource> iter)
         {
         return new JdbcResourceBean.Iter(
             iter
@@ -153,7 +153,7 @@ public class JdbcResourceController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public EntityBean<JdbcResource> select(
+    public JdbcResourceBean select(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcResource entity
         ){
@@ -169,7 +169,7 @@ public class JdbcResourceController
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public EntityBean<JdbcResource>  update(
+    public EntityBean<JdbcResource> update(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcResource entity,
 

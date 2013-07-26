@@ -45,7 +45,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(AdqlQueryLinkFactory.QUERY_PATH)
 public class AdqlQueryController
-extends AbstractEntityController<AdqlQuery>
+extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
     {
 
     @Override
@@ -96,7 +96,7 @@ extends AbstractEntityController<AdqlQuery>
     public static final String UPDATE_TIMEOUT = "adql.query.update.timeout" ;
 
     @Override
-    public EntityBean<AdqlQuery> bean(final AdqlQuery entity)
+    public AdqlQueryBean bean(final AdqlQuery entity)
         {
         return new AdqlQueryBean(
             entity
@@ -104,7 +104,7 @@ extends AbstractEntityController<AdqlQuery>
         }
 
     @Override
-    public Iterable<EntityBean<AdqlQuery>> bean(final Iterable<AdqlQuery> iter)
+    public Iterable<AdqlQueryBean> bean(final Iterable<AdqlQuery> iter)
         {
         return new AdqlQueryBean.Iter(
             iter
@@ -117,7 +117,7 @@ extends AbstractEntityController<AdqlQuery>
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public EntityBean<AdqlQuery> select(
+    public AdqlQueryBean select(
         @PathVariable("ident")
         final String ident
         ) throws NotFoundException {
@@ -136,7 +136,7 @@ extends AbstractEntityController<AdqlQuery>
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public EntityBean<AdqlQuery> update(
+    public AdqlQueryBean update(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @RequestParam(value=UPDATE_QUERY, required=false)

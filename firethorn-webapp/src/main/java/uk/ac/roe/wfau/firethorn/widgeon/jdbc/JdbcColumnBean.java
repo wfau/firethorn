@@ -22,18 +22,19 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
-import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlColumnBean.Metadata.Adql.UCD;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseColumnBean;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseColumnBean.AdqlMetadataBean;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseColumnBean.MetadataBean;
 
 /**
  * Bean wrapper for <code>JdbcColumn</code>.
  *
  */
 public class JdbcColumnBean
-extends NamedEntityBeanImpl<JdbcColumn>
-implements NamedEntityBean<JdbcColumn>
+extends BaseColumnBean<JdbcColumn>
     {
     public static class Iter
-    extends AbstractEntityBeanIter<JdbcColumn>
+    extends AbstractEntityBeanIter<JdbcColumn, JdbcColumnBean>
         {
         public Iter(final Iterable<JdbcColumn> iterable)
             {
@@ -41,9 +42,8 @@ implements NamedEntityBean<JdbcColumn>
                 iterable
                 );
             }
-
         @Override
-        public NamedEntityBean<JdbcColumn> bean(final JdbcColumn entity)
+        public JdbcColumnBean bean(final JdbcColumn entity)
             {
             return new JdbcColumnBean(
                 entity
@@ -63,99 +63,29 @@ implements NamedEntityBean<JdbcColumn>
             );
         }
 
-    public String getParent()
+    public class JdbcMetadataBean
         {
-        return entity().table().link();
-        }
-
-    public String getFullname()
-        {
-        return entity().namebuilder().toString();
-        }
-
-    /**
-     * @todo Move to a common base class.
-     *
-     */
-    public interface Metadata
-        {
-        public interface Adql
+        public JdbcColumn.Type getType()
             {
-            public AdqlColumn.Type getType();
-            public Integer getArraySize();
-            public interface UCD
-                {
-                public String getType();
-                public String getValue();
-                }
-            public UCD getUCD();
+            return entity().meta().jdbc().type();
             }
-        public Adql getAdql();
-        public interface Jdbc
+        public Integer getSize()
             {
-            public JdbcColumn.Type getType();
-            public Integer getSize();
+            return entity().meta().jdbc().size();
             }
-        public Jdbc getJdbc();
         }
 
-    /**
-     * @todo Move to a common base class.
-     *
-     */
-    public Metadata getMeta()
+    public class MetadataBean
+    extends BaseColumnBean<JdbcColumn>.MetadataBean
         {
-        return new Metadata()
+        public JdbcMetadataBean getJdbc()
             {
-            @Override
-            public Adql getAdql()
-                {
-                return new Adql()
-                    {
-                    @Override
-                    public AdqlColumn.Type getType()
-                        {
-                        return entity().meta().adql().type();
-                        }
-                    @Override
-                    public Integer getArraySize()
-                        {
-                        return entity().meta().adql().arraysize();
-                        }
-                    @Override
-                    public UCD getUCD()
-                        {
-                        return new UCD()
-                            {
-                            public String getType()
-                                {
-                                return entity().meta().adql().ucd().type().toString();
-                                }
-                            public String getValue()
-                                {
-                                return entity().meta().adql().ucd().value();
-                                }
-                            };
-                        }
-                    };
-                }
-            @Override
-            public Jdbc getJdbc()
-                {
-                return new Jdbc()
-                    {
-                    @Override
-                    public JdbcColumn.Type getType()
-                        {
-                        return entity().meta().jdbc().type();
-                        }
-                    @Override
-                    public Integer getSize()
-                        {
-                        return entity().meta().jdbc().size();
-                        }
-                    };
-                }
-            };
+            return new JdbcMetadataBean();
+            }
+        }
+
+    public MetadataBean getMeta()
+        {
+        return new MetadataBean();
         }
     }

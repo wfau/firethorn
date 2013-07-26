@@ -42,4 +42,10 @@ implements NamedEntityBean<EntityType>
         {
         return entity().name();
         }
+
+    @Override
+    public String getText()
+        {
+        return entity().text();
+        }
     }

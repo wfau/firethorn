@@ -42,7 +42,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(AdqlColumnLinkFactory.COLUMN_PATH)
 public class AdqlColumnController
-extends AbstractEntityController<AdqlColumn>
+extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
     {
 
     @Override
@@ -75,7 +75,7 @@ extends AbstractEntityController<AdqlColumn>
     public static final String UPDATE_NAME = "adql.column.update.name" ;
 
     @Override
-    public EntityBean<AdqlColumn> bean(final AdqlColumn entity)
+    public AdqlColumnBean bean(final AdqlColumn entity)
         {
         return new AdqlColumnBean(
             entity
@@ -83,7 +83,7 @@ extends AbstractEntityController<AdqlColumn>
         }
 
     @Override
-    public Iterable<EntityBean<AdqlColumn>> bean(final Iterable<AdqlColumn> iter)
+    public Iterable<AdqlColumnBean> bean(final Iterable<AdqlColumn> iter)
         {
         return new AdqlColumnBean.Iter(
             iter
@@ -113,7 +113,7 @@ extends AbstractEntityController<AdqlColumn>
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public EntityBean<AdqlColumn> select(
+    public AdqlColumnBean select(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlColumn column
         ){
@@ -129,7 +129,7 @@ extends AbstractEntityController<AdqlColumn>
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public EntityBean<AdqlColumn> update(
+    public AdqlColumnBean update(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,
         @ModelAttribute(TARGET_ENTITY)

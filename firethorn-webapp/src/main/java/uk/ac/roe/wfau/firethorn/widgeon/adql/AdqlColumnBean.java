@@ -22,6 +22,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseColumnBean;
 
 /**
  * Bean wrapper for <code>AdqlColumn</code>.
@@ -29,11 +30,11 @@ import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
  */
 @Slf4j
 public class AdqlColumnBean
-extends NamedEntityBeanImpl<AdqlColumn>
-implements NamedEntityBean<AdqlColumn>
+extends BaseColumnBean<AdqlColumn>
     {
+
     public static class Iter
-    extends AbstractEntityBeanIter<AdqlColumn>
+    extends AbstractEntityBeanIter<AdqlColumn, AdqlColumnBean>
         {
         public Iter(final Iterable<AdqlColumn> iterable)
             {
@@ -42,7 +43,7 @@ implements NamedEntityBean<AdqlColumn>
                 );
             }
         @Override
-        public NamedEntityBean<AdqlColumn> bean(final AdqlColumn entity)
+        public AdqlColumnBean bean(final AdqlColumn entity)
             {
             return new AdqlColumnBean(
                 entity
@@ -59,93 +60,5 @@ implements NamedEntityBean<AdqlColumn>
             AdqlColumnIdentFactory.TYPE_URI,
             entity
             );
-        }
-
-    public String getParent()
-        {
-        return entity().table().link();
-        }
-
-    public String getBase()
-        {
-        return entity().base().link();
-        }
-
-    public String getRoot()
-        {
-        return entity().root().link();
-        }
-
-    public String getAlias()
-        {
-        return entity().alias();
-        }
-
-    public String getFullname()
-        {
-        return entity().namebuilder().toString();
-        }
-
-    /**
-     * @todo Move to a common base class.
-     *
-     */
-    public interface Metadata
-        {
-        public interface Adql
-            {
-            public AdqlColumn.Type getType();
-            public Integer getArraySize();
-            public interface UCD
-                {
-                public String getType();
-                public String getValue();
-                }
-            public UCD getUCD();
-            }
-        public Adql getAdql();
-        }
-
-    /**
-     * @todo Move to a common base class.
-     *
-     */
-    public Metadata getMeta()
-        {
-        return new Metadata()
-            {
-            @Override
-            public Adql getAdql()
-                {
-                return new Adql()
-                    {
-                    @Override
-                    public AdqlColumn.Type getType()
-                        {
-                        return entity().meta().adql().type();
-                        }
-                    @Override
-                    public Integer getArraySize()
-                        {
-                        return entity().meta().adql().arraysize();
-                        }
-                    @Override
-                    public UCD getUCD()
-                        {
-                        return new UCD()
-                            {
-                            public String getType()
-                                {
-                                return entity().meta().adql().ucd().type().toString();
-                                }
-                            public String getValue()
-                                {
-                                return entity().meta().adql().ucd().value();
-                                }
-                            };
-                        }
-                    };
-                }
-            };
         }
     }

@@ -42,7 +42,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(JdbcColumnLinkFactory.COLUMN_PATH)
 public class JdbcColumnController
-    extends AbstractEntityController<JdbcColumn>
+    extends AbstractEntityController<JdbcColumn, JdbcColumnBean>
     {
 
     @Override
@@ -75,7 +75,7 @@ public class JdbcColumnController
     public static final String UPDATE_NAME = "jdbc.column.update.name" ;
 
     @Override
-    public Iterable<EntityBean<JdbcColumn>> bean(final Iterable<JdbcColumn> iter)
+    public Iterable<JdbcColumnBean> bean(final Iterable<JdbcColumn> iter)
         {
         return new JdbcColumnBean.Iter(
             iter
@@ -83,7 +83,7 @@ public class JdbcColumnController
         }
 
     @Override
-    public EntityBean<JdbcColumn> bean(final JdbcColumn entity)
+    public JdbcColumnBean bean(final JdbcColumn entity)
         {
         return new JdbcColumnBean(
             entity
@@ -114,7 +114,7 @@ public class JdbcColumnController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public EntityBean<JdbcColumn> select(
+    public JdbcColumnBean select(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcColumn entity
         ){
@@ -122,33 +122,5 @@ public class JdbcColumnController
         return bean(
             entity
             ) ;
-        }
-
-    /**
-     * JSON POST update.
-     *
-     */
-    @ResponseBody
-    @UpdateAtomicMethod
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public EntityBean<JdbcColumn>  update(
-        @RequestParam(value=UPDATE_NAME, required=false)
-        final String name,
-        @ModelAttribute(TARGET_ENTITY)
-        final JdbcColumn entity
-        ){
-        log.debug("select()");
-        if (name != null)
-            {
-            if (name.length() > 0)
-                {
-                entity.name(
-                    name
-                    );
-                }
-            }
-        return bean(
-            entity
-            );
         }
     }

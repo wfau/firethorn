@@ -23,7 +23,7 @@ import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappIdentFactory;
 
 /**
- *
+  * Spring MVC controller for <code>Authentication</code>.
  *
  */
 public class AuthenticationController

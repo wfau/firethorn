@@ -35,10 +35,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
- * Spring MVC controller for <code>JdbcResource</code>.
- * TODO better exception handling.
- * http://blog.newsplore.com/2010/08/04/restful-error-handling-with-tomcat-springmvc
- * http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/util/AntPathMatcher.html
+ * Spring MVC controller for <code>Identity</code>.
  *
  */
 @Slf4j
@@ -74,7 +71,7 @@ extends AbstractController
     implements NamedEntityBean<Identity>
         {
         public static class Iter
-        extends AbstractEntityBeanIter<Identity>
+        extends AbstractEntityBeanIter<Identity, IdentityBean>
             {
             public Iter(final Iterable<Identity> iterable)
                 {
@@ -83,7 +80,7 @@ extends AbstractController
                     );
                 }
             @Override
-            public NamedEntityBean<Identity> bean(final Identity entity)
+            public IdentityBean bean(final Identity entity)
                 {
                 return new IdentityBean(
                     entity
@@ -133,19 +130,12 @@ extends AbstractController
         final String ident
         ) throws NotFoundException  {
         log.debug("JSON GET request");
-        try {
-            return new IdentityBean(
-                factories().identities().select(
-                    factories().identities().idents().ident(
-                        ident
-                        )
+        return new IdentityBean(
+            factories().identities().select(
+                factories().identities().idents().ident(
+                    ident
                     )
-                );
-            }
-        catch (final Exception ouch)
-            {
-            log.error("Ouch ...", ouch);
-            return null ;
-            }
+                )
+            );
         }
     }

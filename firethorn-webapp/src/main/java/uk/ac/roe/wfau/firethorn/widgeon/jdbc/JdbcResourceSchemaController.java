@@ -42,7 +42,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(JdbcResourceLinkFactory.RESOURCE_SCHEMA_PATH)
 public class JdbcResourceSchemaController
-extends AbstractEntityController<JdbcSchema>
+extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
     {
     @Override
     public Path path()
@@ -87,7 +87,7 @@ extends AbstractEntityController<JdbcSchema>
 
 
     @Override
-    public EntityBean<JdbcSchema> bean(final JdbcSchema entity)
+    public JdbcSchemaBean bean(final JdbcSchema entity)
         {
         return new JdbcSchemaBean(
             entity
@@ -95,7 +95,7 @@ extends AbstractEntityController<JdbcSchema>
         }
 
     @Override
-    public Iterable<EntityBean<JdbcSchema>> bean(final Iterable<JdbcSchema> iter)
+    public Iterable<JdbcSchemaBean> bean(final Iterable<JdbcSchema> iter)
         {
         return new JdbcSchemaBean.Iter(
             iter
@@ -126,7 +126,7 @@ extends AbstractEntityController<JdbcSchema>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public Iterable<EntityBean<JdbcSchema>> select(
+    public Iterable<JdbcSchemaBean> select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource
         ){
@@ -142,7 +142,7 @@ extends AbstractEntityController<JdbcSchema>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public EntityBean<JdbcSchema> select(
+    public JdbcSchemaBean select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
         @RequestParam(SELECT_NAME)
@@ -162,7 +162,7 @@ extends AbstractEntityController<JdbcSchema>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params={SELECT_CATALOG, SELECT_SCHEMA}, produces=JSON_MAPPING)
-    public EntityBean<JdbcSchema> select(
+    public JdbcSchemaBean select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
         @RequestParam(SELECT_CATALOG)
@@ -185,7 +185,7 @@ extends AbstractEntityController<JdbcSchema>
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public Iterable<EntityBean<JdbcSchema>> search(
+    public Iterable<JdbcSchemaBean> search(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
         @RequestParam(SEARCH_TEXT)

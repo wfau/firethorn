@@ -31,7 +31,7 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
  */
 @Slf4j
 @Controller
-public abstract class AbstractEntityController<EntityType extends Entity>
+public abstract class AbstractEntityController<EntityType extends Entity, BeanType extends EntityBean<EntityType>>
 extends AbstractController
     {
 
@@ -48,21 +48,21 @@ extends AbstractController
      * Wrap an entity as a bean.
      *
      */
-    public abstract EntityBean<EntityType> bean(final EntityType entity);
+    public abstract BeanType bean(final EntityType entity);
 
     /**
      * Wrap a set of entities as beans.
      *
      */
-    public abstract Iterable<EntityBean<EntityType>> bean(final Iterable<EntityType> iter);
+    public abstract Iterable<BeanType> bean(final Iterable<EntityType> iter);
 
     /**
      * Generate a 'created' HTTP response.
      *
      */
-    private ResponseEntity<EntityBean<EntityType>> created(final EntityBean<EntityType> bean)
+    private ResponseEntity<BeanType> created(final BeanType bean)
         {
-        return new ResponseEntity<EntityBean<EntityType>>(
+        return new ResponseEntity<BeanType>(
             bean,
             new RedirectHeader(
                 bean
@@ -75,7 +75,7 @@ extends AbstractController
      * Generate a 'created' HTTP response.
      *
      */
-    public ResponseEntity<EntityBean<EntityType>> created(final EntityType entity)
+    public ResponseEntity<BeanType> created(final EntityType entity)
         {
         return created(
             bean(

@@ -45,7 +45,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(AdqlResourceLinkFactory.RESOURCE_SCHEMA_PATH)
 public class AdqlResourceSchemaController
-extends AbstractEntityController<AdqlSchema>
+extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
     {
     @Override
     public Path path()
@@ -107,7 +107,7 @@ extends AbstractEntityController<AdqlSchema>
     public static final String IMPORT_SCHEMA_NAME = "adql.resource.schema.import.name" ;
 
     @Override
-    public EntityBean<AdqlSchema> bean(final AdqlSchema entity)
+    public AdqlSchemaBean bean(final AdqlSchema entity)
         {
         return new AdqlSchemaBean(
             entity
@@ -115,7 +115,7 @@ extends AbstractEntityController<AdqlSchema>
         }
 
     @Override
-    public Iterable<EntityBean<AdqlSchema>> bean(final Iterable<AdqlSchema> iter)
+    public Iterable<AdqlSchemaBean > bean(final Iterable<AdqlSchema> iter)
         {
         return new AdqlSchemaBean.Iter(
             iter
@@ -146,7 +146,7 @@ extends AbstractEntityController<AdqlSchema>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public Iterable<EntityBean<AdqlSchema>> select(
+    public Iterable<AdqlSchemaBean> select(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource
         ){
@@ -162,7 +162,7 @@ extends AbstractEntityController<AdqlSchema>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public EntityBean<AdqlSchema> select(
+    public AdqlSchemaBean select(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(SELECT_NAME)
@@ -182,14 +182,14 @@ extends AbstractEntityController<AdqlSchema>
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public Iterable<EntityBean<AdqlSchema>> search(
+    public Iterable<AdqlSchemaBean> search(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(SEARCH_TEXT)
         final String text
         ){
         log.debug("search(String) [{}]", text);
-        return new AdqlSchemaBean.Iter(
+        return bean(
             resource.schemas().search(
                 text
                 )
@@ -202,7 +202,7 @@ extends AbstractEntityController<AdqlSchema>
      */
     @ResponseBody
     @RequestMapping(value=CREATE_PATH, params={CREATE_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<EntityBean<AdqlSchema>> create(
+    public ResponseEntity<AdqlSchemaBean> create(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(value=ADQL_COPY_DEPTH_URN, required=false)
@@ -224,7 +224,7 @@ extends AbstractEntityController<AdqlSchema>
      */
     @ResponseBody
     @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_BASE}, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<EntityBean<AdqlSchema>> inport(
+    public ResponseEntity<AdqlSchemaBean> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(value=ADQL_COPY_DEPTH_URN, required=false)
@@ -251,7 +251,7 @@ extends AbstractEntityController<AdqlSchema>
      */
     @ResponseBody
     @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_BASE, IMPORT_SCHEMA_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<EntityBean<AdqlSchema>> inport(
+    public ResponseEntity<AdqlSchemaBean> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
         @RequestParam(value=ADQL_COPY_DEPTH_URN, required=false)

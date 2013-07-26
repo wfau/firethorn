@@ -28,10 +28,9 @@ import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
  */
 public class AdqlSchemaBean
 extends NamedEntityBeanImpl<AdqlSchema>
-implements NamedEntityBean<AdqlSchema>
     {
     public static class Iter
-    extends AbstractEntityBeanIter<AdqlSchema>
+    extends AbstractEntityBeanIter<AdqlSchema, AdqlSchemaBean>
         {
         public Iter(final Iterable<AdqlSchema> iterable)
             {
@@ -40,7 +39,7 @@ implements NamedEntityBean<AdqlSchema>
                 );
             }
         @Override
-        public NamedEntityBean<AdqlSchema> bean(final AdqlSchema entity)
+        public AdqlSchemaBean bean(final AdqlSchema entity)
             {
             return new AdqlSchemaBean(
                 entity

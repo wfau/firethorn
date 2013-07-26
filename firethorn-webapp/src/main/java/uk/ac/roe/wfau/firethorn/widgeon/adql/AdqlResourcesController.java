@@ -37,7 +37,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(AdqlResourceLinkFactory.SERVICE_PATH)
 public class AdqlResourcesController
-extends AbstractEntityController<AdqlResource>
+extends AbstractEntityController<AdqlResource, AdqlResourceBean>
     {
 
     @Override
@@ -76,7 +76,7 @@ extends AbstractEntityController<AdqlResource>
     public static final String CREATE_NAME = "adql.resource.create.name" ;
 
     @Override
-    public EntityBean<AdqlResource> bean(final AdqlResource entity)
+    public AdqlResourceBean bean(final AdqlResource entity)
         {
         return new AdqlResourceBean(
             entity
@@ -84,7 +84,7 @@ extends AbstractEntityController<AdqlResource>
         }
 
     @Override
-    public Iterable<EntityBean<AdqlResource>> bean(final Iterable<AdqlResource> iter)
+    public Iterable<AdqlResourceBean> bean(final Iterable<AdqlResource> iter)
         {
         return new AdqlResourceBean.Iter(
             iter
@@ -97,7 +97,7 @@ extends AbstractEntityController<AdqlResource>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public Iterable<EntityBean<AdqlResource>> select(
+    public Iterable<AdqlResourceBean> select(
         ){
         return bean(
             factories().adql().resources().select()
@@ -110,7 +110,7 @@ extends AbstractEntityController<AdqlResource>
      */
     @ResponseBody
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<EntityBean<AdqlResource>> create(
+    public ResponseEntity<AdqlResourceBean> create(
         @RequestParam(value=CREATE_NAME, required=true)
         final String name
         ){

@@ -25,8 +25,8 @@ import uk.ac.roe.wfau.firethorn.entity.Entity;
  * Abstract base class for <code>EntityBeanIter</code> implementations.
  *
  */
-public abstract class AbstractEntityBeanIter<EntityType extends Entity>
-implements EntityBean.Iter<EntityType>
+public abstract class AbstractEntityBeanIter<EntityType extends Entity, BeanType extends EntityBean<EntityType>>
+implements EntityBean.Iter<EntityType, BeanType>
     {
 
     /**
@@ -49,12 +49,12 @@ implements EntityBean.Iter<EntityType>
      * Wrap an Entity as an EntityBean.
      *
      */
-    public abstract EntityBean<EntityType> bean(final EntityType entity);
+    public abstract BeanType bean(final EntityType entity);
 
     @Override
-    public Iterator<EntityBean<EntityType>> iterator()
+    public Iterator<BeanType> iterator()
         {
-        return new Iterator<EntityBean<EntityType>>()
+        return new Iterator<BeanType>()
             {
             private final Iterator<EntityType> iterator = iterable().iterator();
 
@@ -64,7 +64,7 @@ implements EntityBean.Iter<EntityType>
                 return this.iterator.hasNext();
                 }
             @Override
-            public EntityBean<EntityType> next()
+            public BeanType next()
                 {
                 return bean(
                     this.iterator.next()

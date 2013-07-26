@@ -28,10 +28,9 @@ import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
  */
 public class JdbcSchemaBean
 extends NamedEntityBeanImpl<JdbcSchema>
-implements NamedEntityBean<JdbcSchema>
     {
     public static class Iter
-    extends AbstractEntityBeanIter<JdbcSchema>
+    extends AbstractEntityBeanIter<JdbcSchema, JdbcSchemaBean>
         {
         public Iter(final Iterable<JdbcSchema> iterable)
             {
@@ -41,7 +40,7 @@ implements NamedEntityBean<JdbcSchema>
             }
 
         @Override
-        public NamedEntityBean<JdbcSchema> bean(final JdbcSchema entity)
+        public JdbcSchemaBean bean(final JdbcSchema entity)
             {
             return new JdbcSchemaBean(
                 entity

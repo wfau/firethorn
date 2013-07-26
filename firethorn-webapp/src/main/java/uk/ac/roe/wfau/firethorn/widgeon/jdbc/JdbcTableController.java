@@ -43,7 +43,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(JdbcTableLinkFactory.TABLE_PATH)
 public class JdbcTableController
-    extends AbstractEntityController<JdbcTable>
+    extends AbstractEntityController<JdbcTable, JdbcTableBean>
     {
 
     @Override
@@ -77,7 +77,7 @@ public class JdbcTableController
 
 
     @Override
-    public Iterable<EntityBean<JdbcTable>> bean(final Iterable<JdbcTable> iter)
+    public Iterable<JdbcTableBean> bean(final Iterable<JdbcTable> iter)
         {
         return new JdbcTableBean.Iter(
             iter
@@ -85,7 +85,7 @@ public class JdbcTableController
         }
 
     @Override
-    public EntityBean<JdbcTable> bean(final JdbcTable entity)
+    public JdbcTableBean bean(final JdbcTable entity)
         {
         return new JdbcTableBean(
             entity
@@ -116,7 +116,7 @@ public class JdbcTableController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public EntityBean<JdbcTable> select(
+    public JdbcTableBean select(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcTable entity
         ){
@@ -126,31 +126,4 @@ public class JdbcTableController
             );
         }
 
-    /**
-     * JSON POST update.
-     *
-     */
-    @ResponseBody
-    @UpdateAtomicMethod
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public EntityBean<JdbcTable> update(
-        @ModelAttribute(TARGET_ENTITY)
-        final JdbcTable entity,
-        @RequestParam(value=UPDATE_NAME, required=false)
-        final String name
-        ){
-        log.debug("select()");
-        if (name != null)
-            {
-            if (name.length() > 0)
-                {
-                entity.name(
-                    name
-                    );
-                }
-            }
-        return bean(
-            entity
-            );
-        }
     }

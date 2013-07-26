@@ -35,10 +35,7 @@ import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
- * Spring MVC controller for <code>JdbcResource</code>.
- * TODO better exception handling.
- * http://blog.newsplore.com/2010/08/04/restful-error-handling-with-tomcat-springmvc
- * http://static.springsource.org/spring/docs/3.1.x/javadoc-api/org/springframework/util/AntPathMatcher.html
+ * Spring MVC controller for <code>Community</code>.
  *
  */
 @Slf4j
@@ -74,7 +71,7 @@ extends AbstractController
     implements NamedEntityBean<Community>
         {
         public static class Iter
-        extends AbstractEntityBeanIter<Community>
+        extends AbstractEntityBeanIter<Community, CommunityBean>
             {
             public Iter(final Iterable<Community> iterable)
                 {
@@ -83,7 +80,7 @@ extends AbstractController
                     );
                 }
             @Override
-            public NamedEntityBean<Community> bean(final Community entity)
+            public CommunityBean bean(final Community entity)
                 {
                 return new CommunityBean(
                     entity
@@ -122,19 +119,12 @@ extends AbstractController
         final String ident
         ) throws NotFoundException  {
         log.debug("JSON GET request");
-        try {
-            return new CommunityBean(
-                factories().communities().select(
-                    factories().communities().idents().ident(
-                        ident
-                        )
+        return new CommunityBean(
+            factories().communities().select(
+                factories().communities().idents().ident(
+                    ident
                     )
-                );
-            }
-        catch (final Exception ouch)
-            {
-            log.error("Ouch ...", ouch);
-            return null ;
-            }
+                )
+            );
         }
     }

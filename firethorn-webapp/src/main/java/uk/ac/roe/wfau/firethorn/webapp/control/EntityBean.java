@@ -32,8 +32,8 @@ public interface EntityBean<EntityType extends Entity>
 	 * Iterable interface.
 	 *
 	 */
-    public static interface Iter<EntityType extends Entity>
-    extends Iterable<EntityBean<EntityType>>
+    public static interface Iter<EntityType extends Entity, BeanType extends EntityBean<EntityType>>
+    extends Iterable<BeanType>
         {
         }
 

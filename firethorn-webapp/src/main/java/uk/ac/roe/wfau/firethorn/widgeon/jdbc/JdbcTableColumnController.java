@@ -42,7 +42,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(JdbcTableLinkFactory.TABLE_COLUMN_PATH)
 public class JdbcTableColumnController
-extends AbstractEntityController<JdbcColumn>
+extends AbstractEntityController<JdbcColumn, JdbcColumnBean>
     {
     @Override
     public Path path()
@@ -87,7 +87,7 @@ extends AbstractEntityController<JdbcColumn>
 
 
     @Override
-    public EntityBean<JdbcColumn> bean(final JdbcColumn entity)
+    public JdbcColumnBean bean(final JdbcColumn entity)
         {
         return new JdbcColumnBean(
             entity
@@ -95,7 +95,7 @@ extends AbstractEntityController<JdbcColumn>
         }
 
     @Override
-    public Iterable<EntityBean<JdbcColumn>> bean(final Iterable<JdbcColumn> iter)
+    public Iterable<JdbcColumnBean> bean(final Iterable<JdbcColumn> iter)
         {
         return new JdbcColumnBean.Iter(
             iter
@@ -126,7 +126,7 @@ extends AbstractEntityController<JdbcColumn>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public Iterable<EntityBean<JdbcColumn>> select(
+    public Iterable<JdbcColumnBean> select(
         @ModelAttribute(JdbcTableController.TARGET_ENTITY)
         final JdbcTable table
         ){
@@ -142,7 +142,7 @@ extends AbstractEntityController<JdbcColumn>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public EntityBean<JdbcColumn> select(
+    public JdbcColumnBean select(
         @ModelAttribute(JdbcTableController.TARGET_ENTITY)
         final JdbcTable table,
         @RequestParam(SELECT_NAME)
@@ -162,7 +162,7 @@ extends AbstractEntityController<JdbcColumn>
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public Iterable<EntityBean<JdbcColumn>> search(
+    public Iterable<JdbcColumnBean> search(
         @ModelAttribute(JdbcTableController.TARGET_ENTITY)
         final JdbcTable table,
         @RequestParam(SEARCH_TEXT)

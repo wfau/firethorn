@@ -45,7 +45,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(AdqlSchemaLinkFactory.SCHEMA_TABLE_PATH)
 public class AdqlSchemaTableController
-extends AbstractEntityController<AdqlTable>
+extends AbstractEntityController<AdqlTable, AdqlTableBean>
     {
     @Override
     public Path path()
@@ -89,7 +89,7 @@ extends AbstractEntityController<AdqlTable>
     public static final String IMPORT_NAME = "adql.schema.table.import.name" ;
 
     @Override
-    public EntityBean<AdqlTable> bean(final AdqlTable entity)
+    public AdqlTableBean bean(final AdqlTable entity)
         {
         return new AdqlTableBean(
             entity
@@ -97,7 +97,7 @@ extends AbstractEntityController<AdqlTable>
         }
 
     @Override
-    public Iterable<EntityBean<AdqlTable>> bean(final Iterable<AdqlTable> iter)
+    public Iterable<AdqlTableBean> bean(final Iterable<AdqlTable> iter)
         {
         return new AdqlTableBean.Iter(
             iter
@@ -128,7 +128,7 @@ extends AbstractEntityController<AdqlTable>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public Iterable<EntityBean<AdqlTable>> select(
+    public Iterable<AdqlTableBean> select(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema
         ){
@@ -145,7 +145,7 @@ extends AbstractEntityController<AdqlTable>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public EntityBean<AdqlTable> select(
+    public AdqlTableBean select(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(SELECT_NAME)
@@ -165,7 +165,7 @@ extends AbstractEntityController<AdqlTable>
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public Iterable<EntityBean<AdqlTable>> search(
+    public Iterable<AdqlTableBean > search(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(SEARCH_TEXT)
@@ -186,7 +186,7 @@ extends AbstractEntityController<AdqlTable>
      */
     @ResponseBody
     @RequestMapping(value=IMPORT_PATH, params={IMPORT_BASE}, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<EntityBean<AdqlTable>> inport(
+    public ResponseEntity<AdqlTableBean > inport(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(value=ADQL_COPY_DEPTH_URN, required=false)
@@ -214,7 +214,7 @@ extends AbstractEntityController<AdqlTable>
      */
     @ResponseBody
     @RequestMapping(value=IMPORT_PATH, params={IMPORT_BASE, IMPORT_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<EntityBean<AdqlTable>> inport(
+    public ResponseEntity<AdqlTableBean> inport(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(value=ADQL_COPY_DEPTH_URN, required=false)

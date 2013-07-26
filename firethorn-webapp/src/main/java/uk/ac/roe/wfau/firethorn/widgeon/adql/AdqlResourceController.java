@@ -36,14 +36,14 @@ import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**
- *
+ * Spring MVC controller for <code>AdqlResource</code>.
  *
  */
 @Slf4j
 @Controller
 @RequestMapping(AdqlResourceLinkFactory.RESOURCE_PATH)
 public class AdqlResourceController
-    extends AbstractEntityController<AdqlResource>
+    extends AbstractEntityController<AdqlResource, AdqlResourceBean>
     {
 
     @Override
@@ -94,7 +94,7 @@ public class AdqlResourceController
     public static final String UPDATE_STATUS = "adql.resource.update.status" ;
 
     @Override
-    public Iterable<EntityBean<AdqlResource>> bean(final Iterable<AdqlResource> iter)
+    public Iterable<AdqlResourceBean> bean(final Iterable<AdqlResource> iter)
         {
         return new AdqlResourceBean.Iter(
             iter
@@ -102,9 +102,8 @@ public class AdqlResourceController
         }
 
     @Override
-    public EntityBean<AdqlResource> bean(
-        final AdqlResource entity
-        ){
+    public AdqlResourceBean bean(final AdqlResource entity)
+        {
         return new AdqlResourceBean(
             entity
             );
@@ -120,12 +119,11 @@ public class AdqlResourceController
         final String ident
         ) throws NotFoundException  {
         log.debug("entity() [{}]", ident);
-        final AdqlResource entity = factories().adql().resources().select(
+        return factories().adql().resources().select(
             factories().adql().resources().idents().ident(
                 ident
                 )
             );
-        return entity ;
         }
 
     /**
@@ -134,7 +132,7 @@ public class AdqlResourceController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public EntityBean<AdqlResource> select(
+    public AdqlResourceBean select(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlResource entity
         ){
@@ -150,7 +148,7 @@ public class AdqlResourceController
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public EntityBean<AdqlResource> update(
+    public AdqlResourceBean update(
         @RequestParam(value=UPDATE_NAME, required=false) final
         String name,
         @RequestParam(value=UPDATE_STATUS, required=false) final

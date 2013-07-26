@@ -42,7 +42,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(AdqlSchemaLinkFactory.SCHEMA_PATH)
 public class AdqlSchemaController
-    extends AbstractEntityController<AdqlSchema>
+    extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
     {
 
     @Override
@@ -75,7 +75,7 @@ public class AdqlSchemaController
     public static final String UPDATE_NAME = "adql.schema.update.name" ;
 
     @Override
-    public Iterable<EntityBean<AdqlSchema>> bean(final Iterable<AdqlSchema> iter)
+    public Iterable<AdqlSchemaBean> bean(final Iterable<AdqlSchema> iter)
         {
         return new AdqlSchemaBean.Iter(
             iter
@@ -83,9 +83,8 @@ public class AdqlSchemaController
         }
 
     @Override
-    public EntityBean<AdqlSchema> bean(
-        final AdqlSchema entity
-        ){
+    public AdqlSchemaBean bean(final AdqlSchema entity)
+        {
         return new AdqlSchemaBean(
             entity
             );
@@ -115,7 +114,7 @@ public class AdqlSchemaController
      */
     @ResponseBody
     @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public EntityBean<AdqlSchema> select(
+    public AdqlSchemaBean select(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlSchema entity
         ){
@@ -132,7 +131,7 @@ public class AdqlSchemaController
     @ResponseBody
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
-    public EntityBean<AdqlSchema> update(
+    public AdqlSchemaBean update(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlSchema entity,
         @RequestParam(value=UPDATE_NAME, required=false)

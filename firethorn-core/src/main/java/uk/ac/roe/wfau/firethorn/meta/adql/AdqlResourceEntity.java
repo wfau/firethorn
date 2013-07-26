@@ -337,19 +337,26 @@ extends BaseResourceEntity<AdqlSchema>
             @Override
             public AdqlSchema inport(String name, BaseSchema<?, ?> base)
                 {
+                log.debug("schemas().inport(String, BaseSchema)");
+                log.debug("  name [{}]", name);
+                log.debug("  base [{}]", base.name());
                 //
                 // TODO refactor this to use search(String)
                 try {
                     AdqlSchema schema = select(
                         name
                         );
-                    if (schema == null)
+                    if (schema != null)
                         {
+                        log.debug("Found existing schema [{}][{}]", schema.ident(), schema.name());
+                        }
+                    else {
                         schema = create(
                             CopyDepth.PARTIAL,
                             name,
                             base
                             );
+                        log.debug("Created new schema [{}][{}]", schema.ident(), schema.name());
                         }
                     return schema ;
                     }

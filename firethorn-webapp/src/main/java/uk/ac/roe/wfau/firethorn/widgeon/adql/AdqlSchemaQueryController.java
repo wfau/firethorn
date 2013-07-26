@@ -44,7 +44,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(AdqlSchemaLinkFactory.SCHEMA_QUERY_PATH)
 public class AdqlSchemaQueryController
-extends AbstractEntityController<AdqlQuery>
+extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
     {
     @Override
     public Path path()
@@ -88,7 +88,7 @@ extends AbstractEntityController<AdqlQuery>
     public static final String CREATE_STORE = "adql.schema.query.create.store" ;
 
     @Override
-    public EntityBean<AdqlQuery> bean(final AdqlQuery entity)
+    public AdqlQueryBean bean(final AdqlQuery entity)
         {
         return new AdqlQueryBean(
             entity
@@ -96,7 +96,7 @@ extends AbstractEntityController<AdqlQuery>
         }
 
     @Override
-    public Iterable<EntityBean<AdqlQuery>> bean(final Iterable<AdqlQuery> iter)
+    public Iterable<AdqlQueryBean> bean(final Iterable<AdqlQuery> iter)
         {
         return new AdqlQueryBean.Iter(
             iter
@@ -126,7 +126,7 @@ extends AbstractEntityController<AdqlQuery>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public Iterable<EntityBean<AdqlQuery>> select(
+    public Iterable<AdqlQueryBean> select(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema
         ){
@@ -141,7 +141,7 @@ extends AbstractEntityController<AdqlQuery>
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public Iterable<EntityBean<AdqlQuery>> search(
+    public Iterable<AdqlQueryBean> search(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(SEARCH_TEXT)
@@ -160,7 +160,7 @@ extends AbstractEntityController<AdqlQuery>
      */
     @ResponseBody
     @RequestMapping(value=CREATE_PATH, params={CREATE_QUERY, CREATE_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<EntityBean<AdqlQuery>> create(
+    public ResponseEntity<AdqlQueryBean> create(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(CREATE_QUERY)
@@ -178,7 +178,7 @@ extends AbstractEntityController<AdqlQuery>
 
     @ResponseBody
     @RequestMapping(value=CREATE_PATH, params={CREATE_QUERY}, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<EntityBean<AdqlQuery>> create(
+    public ResponseEntity<AdqlQueryBean> create(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
         @RequestParam(CREATE_QUERY)

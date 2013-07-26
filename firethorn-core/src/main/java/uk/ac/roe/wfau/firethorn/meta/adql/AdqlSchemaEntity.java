@@ -702,6 +702,8 @@ implements AdqlSchema
             public AdqlTable inport(String name)
             throws NotFoundException
                 {
+                log.debug("tables().inport(String)");
+                log.debug("  name [{}]", name);
                 if (depth() == CopyDepth.PARTIAL)
                     {
                     //
@@ -709,14 +711,18 @@ implements AdqlSchema
                     AdqlTable  table = select(
                         name
                         );
-                    if (table == null)
+                    if (table != null)
                         {
+                        log.debug("Found existing table [{}][{}]", table.ident(), table.name());
+                        }
+                    else {
                         table = create(
                             CopyDepth.PARTIAL,
                             base().tables().select(
                                 name
                                 )
                             );
+                        log.debug("Created new table [{}][{}]", table.ident(), table.name());
                         }
                     return table ;
                     }

@@ -43,7 +43,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(AdqlTableLinkFactory.TABLE_COLUMN_PATH)
 public class AdqlTableColumnController
-extends AbstractEntityController<AdqlColumn>
+extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
     {
     @Override
     public Path path()
@@ -87,7 +87,7 @@ extends AbstractEntityController<AdqlColumn>
     public static final String SEARCH_RESULT = "adql.table.column.search.result" ;
 
     @Override
-    public EntityBean<AdqlColumn> bean(final AdqlColumn entity)
+    public AdqlColumnBean bean(final AdqlColumn entity)
         {
         return new AdqlColumnBean(
             entity
@@ -95,7 +95,7 @@ extends AbstractEntityController<AdqlColumn>
         }
 
     @Override
-    public Iterable<EntityBean<AdqlColumn>> bean(final Iterable<AdqlColumn> iter)
+    public Iterable<AdqlColumnBean> bean(final Iterable<AdqlColumn> iter)
         {
         return new AdqlColumnBean.Iter(
             iter
@@ -126,7 +126,7 @@ extends AbstractEntityController<AdqlColumn>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public Iterable<EntityBean<AdqlColumn>> select(
+    public Iterable<AdqlColumnBean> select(
         @ModelAttribute(AdqlTableController.TARGET_ENTITY)
         final AdqlTable table
         ){
@@ -142,7 +142,7 @@ extends AbstractEntityController<AdqlColumn>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
-    public EntityBean<AdqlColumn> select(
+    public AdqlColumnBean select(
         @ModelAttribute(AdqlTableController.TARGET_ENTITY)
         final AdqlTable table,
         @RequestParam(SELECT_NAME)
@@ -162,7 +162,7 @@ extends AbstractEntityController<AdqlColumn>
      */
     @ResponseBody
     @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public Iterable<EntityBean<AdqlColumn>> search(
+    public Iterable<AdqlColumnBean> search(
         @ModelAttribute(AdqlTableController.TARGET_ENTITY)
         final AdqlTable table,
         @RequestParam(SEARCH_TEXT)

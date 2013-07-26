@@ -40,7 +40,7 @@ import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 @Controller
 @RequestMapping(JdbcResourceLinkFactory.SERVICE_PATH)
 public class JdbcResourcesController
-extends AbstractEntityController<JdbcResource>
+extends AbstractEntityController<JdbcResource, JdbcResourceBean>
     {
 
     @Override
@@ -109,7 +109,7 @@ extends AbstractEntityController<JdbcResource>
     public static final String CREATE_CONN_PASS = "jdbc.resource.create.pass" ;
 
     @Override
-    public EntityBean<JdbcResource> bean(final JdbcResource entity)
+    public JdbcResourceBean bean(final JdbcResource entity)
         {
         return new JdbcResourceBean(
             entity
@@ -117,7 +117,7 @@ extends AbstractEntityController<JdbcResource>
         }
 
     @Override
-    public Iterable<EntityBean<JdbcResource>> bean(final Iterable<JdbcResource> iter)
+    public Iterable<JdbcResourceBean> bean(final Iterable<JdbcResource> iter)
         {
         return new JdbcResourceBean.Iter(
             iter
@@ -130,7 +130,7 @@ extends AbstractEntityController<JdbcResource>
      */
     @ResponseBody
     @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
-    public Iterable<EntityBean<JdbcResource>> select(
+    public Iterable<JdbcResourceBean> select(
         final ModelAndView model
         ){
         return bean(
@@ -144,7 +144,7 @@ extends AbstractEntityController<JdbcResource>
      */
     @ResponseBody
     @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
-    public ResponseEntity<EntityBean<JdbcResource>> jsonCreate(
+    public ResponseEntity<JdbcResourceBean> create(
         @RequestParam(value=CREATE_NAME, required=true)
         final String name,
         @RequestParam(value=CREATE_CONN_URL, required=false)
