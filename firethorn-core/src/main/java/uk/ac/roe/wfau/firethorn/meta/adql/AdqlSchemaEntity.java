@@ -704,7 +704,7 @@ implements AdqlSchema
                 {
                 log.debug("tables().inport(String)");
                 log.debug("  name [{}]", name);
-                if (depth() == CopyDepth.PARTIAL)
+                if ((depth() == CopyDepth.PARTIAL) || (depth() == CopyDepth.FULL)) 
                     {
                     //
                     // TODO refactor this to use search(String)
@@ -728,7 +728,7 @@ implements AdqlSchema
                     }
                 else {
                     throw new UnsupportedOperationException(
-                        "Import only available on PARTIAL nodes"
+                        "Import only available on FULL or PARTIAL nodes"
                         );
                     }
                 }

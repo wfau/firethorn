@@ -68,13 +68,12 @@ public abstract class BaseResourceEntity<SchemaType extends BaseSchema<SchemaTyp
     @Override
     public String ogsaid()
         {
-        throw new UnsupportedOperationException(
-            "ogsaid not available for BaseResource"
-            );
+        return null ;
         }
     @Override
     public void ogsaid(final String ogsaid)
         {
+        // TODO Move this to Jdbc and Ivoa classes ?
         throw new UnsupportedOperationException(
             "ogsaid not available for BaseResource"
             );

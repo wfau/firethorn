@@ -21,13 +21,14 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseTableBean;
 
 /**
  * Bean wrapper for <code>AdqlTable</code>.
  *
  */
 public class AdqlTableBean
-extends NamedEntityBeanImpl<AdqlTable>
+extends BaseTableBean<AdqlTable>
     {
     public static class Iter
     extends AbstractEntityBeanIter<AdqlTable, AdqlTableBean>
@@ -57,36 +58,6 @@ extends NamedEntityBeanImpl<AdqlTable>
             AdqlTableIdentFactory.TYPE_URI,
             entity
             );
-        }
-
-    public String getParent()
-        {
-        return entity().schema().link();
-        }
-
-    public String getColumns()
-        {
-        return entity().link().concat("/columns/select");
-        }
-
-    public String getBase()
-        {
-        return entity().base().link();
-        }
-
-    public String getRoot()
-        {
-        return entity().root().link();
-        }
-
-    public String getAlias()
-        {
-        return entity().alias();
-        }
-
-    public String getFullname()
-        {
-        return entity().namebuilder().toString();
         }
 
     public String getQuery()

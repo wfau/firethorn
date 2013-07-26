@@ -21,13 +21,14 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceBean;
 
 /**
  * Bean wrapper for <code>JdbcResource</code>.
  *
  */
 public class JdbcResourceBean
-extends NamedEntityBeanImpl<JdbcResource>
+extends BaseResourceBean<JdbcResource>
     {
     public static class Iter
     extends AbstractEntityBeanIter<JdbcResource, JdbcResourceBean>
@@ -59,6 +60,11 @@ extends NamedEntityBeanImpl<JdbcResource>
             );
         }
 
+    public String getOgsadai()
+        {
+        return entity().ogsaid();
+        }
+
     public class ConnectionBean
         {
         public String getUri()
@@ -78,15 +84,5 @@ extends NamedEntityBeanImpl<JdbcResource>
     public ConnectionBean getConnection()
         {
         return new ConnectionBean();
-        }
-
-    public String getOgsadai()
-        {
-        return entity().ogsaid();
-        }
-
-    public String getSchemas()
-        {
-        return entity().link().concat("/schemas/select");
         }
     }

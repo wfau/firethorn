@@ -21,6 +21,7 @@ import java.net.URI;
 
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn.UCD;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
 
 /**
@@ -39,7 +40,13 @@ extends NamedEntityBeanImpl<ColumnType>
             );
         }
     
+    @Deprecated
     public String getParent()
+        {
+        return entity().table().link();
+        }
+
+    public String getTable()
         {
         return entity().table().link();
         }
@@ -64,6 +71,11 @@ extends NamedEntityBeanImpl<ColumnType>
         return entity().namebuilder().toString();
         }
 
+    public String getDepth()
+        {
+        return entity().depth().toString();
+        }
+    
     public class AdqlMetadataBean
         {
         public AdqlColumn.Type getType()
@@ -87,11 +99,25 @@ extends NamedEntityBeanImpl<ColumnType>
             {
             public String getType()
                 {
-                return entity().meta().adql().ucd().type().toString();
+                UCD ucd = entity().meta().adql().ucd();
+                if (ucd != null)
+                    {
+                    return ucd.type().toString();
+                    }
+                else {
+                    return null ;
+                    }
                 }
             public String getValue()
                 {
-                return entity().meta().adql().ucd().value();
+                UCD ucd = entity().meta().adql().ucd();
+                if (ucd != null)
+                    {
+                    return ucd.value();
+                    }
+                else {
+                    return null ;
+                    }
                 }
             }
         public UCDMetadataBean getUCD()

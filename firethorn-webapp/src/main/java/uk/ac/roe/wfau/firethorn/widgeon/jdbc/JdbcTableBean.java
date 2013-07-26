@@ -21,13 +21,14 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseTableBean;
 
 /**
  * Bean wrapper for <code>JdbcTable</code>.
  *
  */
 public class JdbcTableBean
-extends NamedEntityBeanImpl<JdbcTable>
+extends BaseTableBean<JdbcTable>
     {
     public static class Iter
     extends AbstractEntityBeanIter<JdbcTable, JdbcTableBean>
@@ -56,21 +57,6 @@ extends NamedEntityBeanImpl<JdbcTable>
             JdbcTableIdentFactory.TYPE_URI,
             entity
             );
-        }
-
-    public String getParent()
-        {
-        return entity().schema().link();
-        }
-
-    public String getColumns()
-        {
-        return entity().link().concat("/columns/select");
-        }
-
-    public String getFullname()
-        {
-        return entity().namebuilder().toString();
         }
 
     public String getQuery()

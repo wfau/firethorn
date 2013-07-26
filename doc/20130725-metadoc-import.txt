@@ -53,3 +53,62 @@
                 columnname
                 );
 
+
+
+
+
+
+            adqlcopydepth=PARTIAL
+
+            jdbcschemaname=dbo
+            jdbccatalogname=TWOMASS
+
+            resourcename='Import test workspace'
+
+            POST "/adql/resource/create" \
+                --header "firethorn.auth.identity:${identity:?}" \
+                --header "firethorn.auth.community:${community:?}" \
+                --data   "urn:adql.copy.depth=${adqlcopydepth:-FULL}" \
+                --data   "adql.resource.create.name=${resourcename:?}" \
+                | ./pp | tee adql-space.json
+
+            adqlspace=$(
+                cat adql-space.json | ident | node
+                )
+
+            POST "${jdbcspace:?}/schemas/select" \
+                --header "firethorn.auth.identity:${identity:?}" \
+                --header "firethorn.auth.community:${community:?}" \
+                --data   "jdbc.resource.schema.select.catalog=${jdbccatalogname:?}" \
+                --data   "jdbc.resource.schema.select.schema=${jdbcschemaname:?}" \
+                | ./pp | tee jdbc-schema.json
+
+            jdbcschema=$(
+                cat jdbc-schema.json | ident
+                )
+
+            POST "${adqlspace:?}/metadoc/import" \
+                --header "firethorn.auth.identity:${identity:?}" \
+                --header "firethorn.auth.community:${community:?}" \
+                --form   "urn:adql.copy.depth=${adqlcopydepth:-FULL}" \
+                --form   "urn:adql.resource.metadoc.import.base=${jdbcschema:?}" \
+                --form   "urn:adql.resource.metadoc.import.file=@${FIRETHORN_TEST:?}/metadoc/twomass.001.xml" \
+                | ./pp | tee imported-schema.json
+                
+            POST "${adqlspace:?}/metadoc/import" \
+                --header "firethorn.auth.identity:${identity:?}" \
+                --header "firethorn.auth.community:${community:?}" \
+                --form   "urn:adql.copy.depth=${adqlcopydepth:-FULL}" \
+                --form   "urn:adql.resource.metadoc.import.base=${jdbcschema:?}" \
+                --form   "urn:adql.resource.metadoc.import.file=@${FIRETHORN_TEST:?}/metadoc/twomass.002.xml" \
+                | ./pp | tee imported-schema.json
+
+
+
+#
+# Can't create PARTIAL/FULL using THIN base.
+
+
+
+
+

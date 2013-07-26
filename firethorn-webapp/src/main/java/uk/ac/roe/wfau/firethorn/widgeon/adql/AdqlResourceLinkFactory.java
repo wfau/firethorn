@@ -56,6 +56,12 @@ implements AdqlResource.LinkFactory
      */
     public static final String RESOURCE_SCHEMA_PATH = RESOURCE_PATH + "/schemas" ;
 
+    /**
+     * The URI path for resource metadoc.
+     *
+     */
+    public static final String RESOURCE_METADOC_PATH = RESOURCE_PATH + "/metadoc" ;
+
     @Override
     public String link(final AdqlResource entity)
         {

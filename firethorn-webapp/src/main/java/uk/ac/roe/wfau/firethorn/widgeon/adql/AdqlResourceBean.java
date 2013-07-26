@@ -21,13 +21,14 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
+import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceBean;
 
 /**
  * Bean wrapper for <code>AdqlResource</code>.
  *
  */
 public class AdqlResourceBean
-extends NamedEntityBeanImpl<AdqlResource>
+extends BaseResourceBean<AdqlResource>
     {
     public static class Iter
     extends AbstractEntityBeanIter<AdqlResource, AdqlResourceBean>
@@ -56,13 +57,6 @@ extends NamedEntityBeanImpl<AdqlResource>
         super(
             AdqlResourceIdentFactory.TYPE_URI,
             entity
-            );
-        }
-
-    public String getSchemas()
-        {
-        return entity().link().concat(
-            "/schemas/select"
             );
         }
 
