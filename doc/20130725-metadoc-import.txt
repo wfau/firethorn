@@ -92,7 +92,7 @@
                 --header "firethorn.auth.community:${community:?}" \
                 --form   "urn:adql.copy.depth=${adqlcopydepth:-FULL}" \
                 --form   "urn:adql.resource.metadoc.import.base=${jdbcschema:?}" \
-                --form   "urn:adql.resource.metadoc.import.file=@${FIRETHORN_TEST:?}/metadoc/twomass.001.xml" \
+                --form   "urn:adql.resource.metadoc.import.file=@${FIRETHORN_TEST:?}/metadoc/test/twomass.001.xml" \
                 | ./pp | tee imported-schema.json
                 
             POST "${adqlspace:?}/metadoc/import" \
@@ -100,15 +100,134 @@
                 --header "firethorn.auth.community:${community:?}" \
                 --form   "urn:adql.copy.depth=${adqlcopydepth:-FULL}" \
                 --form   "urn:adql.resource.metadoc.import.base=${jdbcschema:?}" \
-                --form   "urn:adql.resource.metadoc.import.file=@${FIRETHORN_TEST:?}/metadoc/twomass.002.xml" \
+                --form   "urn:adql.resource.metadoc.import.file=@${FIRETHORN_TEST:?}/metadoc/test/twomass.002.xml" \
+                | ./pp | tee imported-schema.json
+
+            POST "${adqlspace:?}/metadoc/import" \
+                --header "firethorn.auth.identity:${identity:?}" \
+                --header "firethorn.auth.community:${community:?}" \
+                --form   "urn:adql.copy.depth=${adqlcopydepth:-FULL}" \
+                --form   "urn:adql.resource.metadoc.import.base=${jdbcschema:?}" \
+                --form   "urn:adql.resource.metadoc.import.file=@${FIRETHORN_TEST:?}/metadoc/test/twomass.full.xml" \
                 | ./pp | tee imported-schema.json
 
 
-
-#
+# BUG
 # Can't create PARTIAL/FULL using THIN base.
+# Need to automate the realize() process.
 
 
 
 
+    # TTY ------------------------------------------------------------
+    #source "${HOME:?}/test-users.txt"
+    #ssh "${testuser:?}@${testhost:?}"
 
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+            adqlcopydepth=PARTIAL
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            source "${FIRETHORN_TEST:?}/02-01-create-jdbc-space.sh" 'Atlas JDBC resource' 'spring:RoeATLAS'  '*' 'atlas'
+
+            source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'SIXDF'          'dbo' "${adqlspace:?}" '6df.metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'FIRST'          'dbo' "${adqlspace:?}" 'first.metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'GLIMPSE'        'dbo' "${adqlspace:?}" 'glimpse.metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'IRAS'           'dbo' "${adqlspace:?}" 'iras.metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'ROSAT'          'dbo' "${adqlspace:?}" 'rosat.metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'XXXXXXX'        'dbo' "${adqlspace:?}" 'sdssdr1.metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'XXXXXXX'        'dbo' "${adqlspace:?}" 'sdssdr3.metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'XXXXXXX'        'dbo' "${adqlspace:?}" 'sdssdr5.metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'XXXXXXX'        'dbo' "${adqlspace:?}" 'sdssdr7.metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'XXXXXXX'        'dbo' "${adqlspace:?}" 'sdssdr8.metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'XXXXXXX'        'dbo' "${adqlspace:?}" 'ssa.metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'TWOMASS'        'dbo' "${adqlspace:?}" 'twomass.metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR1PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR1_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR2PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR2_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR3PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR3_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR4PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR4_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR5PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR5_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR6PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR6_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR7PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR7_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR8PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR8_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VHSDR1'         'dbo' "${adqlspace:?}" 'VHS_DR1_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VIDEODR2'       'dbo' "${adqlspace:?}" 'VIDEO_DR2_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VIKINGDR2'      'dbo' "${adqlspace:?}" 'VIKING_DR2_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VMCDR1'         'dbo' "${adqlspace:?}" 'VMC_DR1_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VVVDR1'         'dbo' "${adqlspace:?}" 'VVV_DR1_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'TWOXMM'         'dbo' "${adqlspace:?}" 'xmm.metadoc.xml'
+
+            source "${FIRETHORN_TEST:?}/03-02-import-jdbc-schema.sh"  "${jdbcspace:?}" 'ATLASv20130304' 'dbo' "${adqlspace:?}" 'ATLASv20130304'
+
+            cat > "${HOME:?}/firethorn.testing" << EOF
+adqlspace=${adqlspace:?}
+atlasschema=${adqlschema:?}
+EOF
+
+        popd
+        
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+            adqlcopydepth=THIN
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            importschema()
+                {
+                source "${HOME:?}/firethorn.testing"
+                source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Query workspace'
+
+                source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}" 'TWOMASS'         "${queryspace:?}" 'twomass'
+                source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}" 'ATLASv20130304'  "${queryspace:?}" 'atlas'
+
+                source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh" "${queryspace:?}"  'query'
+                source "${FIRETHORN_TEST:?}/05-00-execute-query.sh"       "${queryschema:?}" "${FIRETHORN_TEST:?}/06-query-atlas-000.adql"
+                }
+
+            time importschema
+
+            for i in {0..999}
+            do
+                echo "------------------"
+                echo "Iter [${i}]"
+                time importschema
+            done
+
+
+    #
+    # 6DF - missing column .. case sensitive name ?
+    # Needs to be more robust, and better error handling.
+    # Table of things it rejected.
+    2013-07-27 01:57:21,237 DEBUG [http-bio-8080-exec-3] [AdqlTableEntity] columns().inport(String) 
+    2013-07-27 01:57:21,238 DEBUG [http-bio-8080-exec-3] [AdqlTableEntity]   name [gifSpectrumURL] 
+    2013-07-27 01:57:21,347 DEBUG [http-bio-8080-exec-3] [JdbcTableEntity] columns() for [16187410] 
+    2013-07-27 01:57:21,347 DEBUG [http-bio-8080-exec-3] [BaseComponentEntity] scantest() for [16187410] 
+    2013-07-27 01:57:21,348 DEBUG [http-bio-8080-exec-3] [BaseComponentEntity]   values [1374886601226][1374872241347][-14359879] 
+    2013-07-27 01:57:21,468 DEBUG [http-bio-8080-exec-3] [AnonymousAuthenticator] afterCompletion() 
+    2013-07-27 01:57:21,469 DEBUG [http-bio-8080-exec-3] [HttpHeaderAuthenticator] afterCompletion() 
+    2013-07-27 01:57:21,469 DEBUG [http-bio-8080-exec-3] [OperationInterceptor] afterCompletion() 
+    Jul 27, 2013 1:57:21 AM org.apache.catalina.core.StandardWrapperValve invoke
+    SEVERE: Servlet.service() for servlet [spring-servlet] in context with path [/firethorn] threw exception [Request processing failed; nested exception is uk.ac.roe.wfau.firethorn.util.xml.XMLReaderException: Unable to locate base table] with root cause
+    uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException: Object not found
+	    at uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.single(AbstractEntityFactory.java:168)
+	    at uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumnEntity$EntityFactory.select(JdbcColumnEntity.java:245)
+	    at uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumnEntity$EntityFactory.select(JdbcColumnEntity.java:132)
+
+    #
+    # Change from a POST to a JOB ?
+    # Or, create beans for the schema, tables and columns as they are created ..
+    

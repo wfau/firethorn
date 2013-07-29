@@ -27,7 +27,6 @@
     username=xxxx
     hostname=fenrir.roe.ac.uk
     
-    ssh-keyscan ${hostname:?} >> ~/.ssh/known_hosts
     ssh -L '*:1435:ramses5:1433' -L '*:1439:ramses9:1433' "${username:?}@${hostname:?}"
 
 # ------------------------------------------------
@@ -123,7 +122,7 @@
 
 
         use [FirethornMetadataDjer0722]
-        SELECT job.ident FROM FT0106AdqlQueryEntity AS query INNER JOIN FT0106JobEntity AS job ON query.ident = job.ident WHERE job.created >= '2013-07-23 00:00' AND job.created < '2013-07-23 01:00'
+        SELECT format(job.ident, 'D') FROM FT0106AdqlQueryEntity AS query INNER JOIN FT0106JobEntity AS job ON query.ident = job.ident WHERE job.created >= '2013-07-22 00:00' AND job.created < '2013-07-23 00:00'
            \do
 
                 UPDATE FT0106AdqlQueryEntity SET adqltable = NULL WHERE ident = #1
@@ -135,14 +134,6 @@
                 DELETE FROM FT0106JdbcColumnEntity where parent IN (SELECT ident FROM FT0106JdbcTableEntity where adqlquery = #1)
                 DELETE FROM FT0106JdbcTableEntity where adqlquery = #1
                 go
-
-           \done
-
-
-
-        use [FirethornMetadataDjer0722]
-        SELECT format(job.ident, 'D') FROM FT0106AdqlQueryEntity AS query INNER JOIN FT0106JobEntity AS job ON query.ident = job.ident WHERE job.created >= '2013-07-23 00:00' AND job.created < '2013-07-23 01:00'
-           \do
 
                 \set name="QUERY_#1"
                 \echo "[$name]"
@@ -163,6 +154,630 @@
     Unlink method on query - unlinks the Adql and Jdbc tables.
     
     
+    servername=master
+    serverlogin=xxxx
+    serverpass=xxxx
+
+    sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+
+        use [FirethornMetadataDjer0722]
+        SELECT * FROM information_schema.tables
+        go
+
+        SELECT [name] 
+        FROM master.dbo.sysdatabases WHERE dbid > 4 
+        go
+
+    servername=WFAU
+    serverlogin=firethorn
+    serverpass=firethornpw
+
+    sqsh -S ramses5 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+
+        SELECT [name] 
+        FROM master.dbo.sysdatabases WHERE dbid > 4 
+        go
 
 
+	AKARI                                                                                                                                                                                                 
+	ATLASv20130304                                                                                                                                                                                        
+	ATLASv20130426                                                                                                                                                                                        
+	BEN                                                                                                                                                                                                   
+	BESTDR2                                                                                                                                                                                               
+	BESTDR3                                                                                                                                                                                               
+	BESTDR5                                                                                                                                                                                               
+	BestDR7                                                                                                                                                                                               
+	BestDR8                                                                                                                                                                                               
+	BestDR9                                                                                                                                                                                               
+	COMBO17                                                                                                                                                                                               
+	DENIS                                                                                                                                                                                                 
+	EROS                                                                                                                                                                                                  
+	FIRST                                                                                                                                                                                                 
+	GalexGR6                                                                                                                                                                                              
+	gesiDR1Prelim                                                                                                                                                                                         
+	gesv201303beta                                                                                                                                                                                        
+	GLIMPSE                                                                                                                                                                                               
+	HTM                                                                                                                                                                                                   
+	IRAS                                                                                                                                                                                                  
+	MACHO                                                                                                                                                                                                 
+	MCPS                                                                                                                                                                                                  
+	MGC                                                                                                                                                                                                   
+	MOPED                                                                                                                                                                                                 
+	myDB                                                                                                                                                                                                  
+	OSAPROPRIETY                                                                                                                                                                                          
+	projVHS                                                                                                                                                                                               
+	ReportServer                                                                                                                                                                                          
+	ReportServerTempDB                                                                                                                                                                                    
+	ROSAT                                                                                                                                                                                                 
+	SEGUEDR6                                                                                                                                                                                              
+	SIXDF                                                                                                                                                                                                 
+	SIXDF_DR2                                                                                                                                                                                             
+	SIXDF_DR3_prev                                                                                                                                                                                        
+	SkyServerV3                                                                                                                                                                                           
+	SPITZER                                                                                                                                                                                               
+	Stripe82                                                                                                                                                                                              
+	TestHTM                                                                                                                                                                                               
+	TestOSAPROPRIETY                                                                                                                                                                                      
+	TRANSIT                                                                                                                                                                                               
+	TWODFGRS                                                                                                                                                                                              
+	TWOMASS                                                                                                                                                                                               
+	TWOXMM                                                                                                                                                                                                
+	UCMP4v20090611                                                                                                                                                                                        
+	UKIDSS_SIAP                                                                                                                                                                                           
+	UKIDSSDR1                                                                                                                                                                                             
+	UKIDSSDR10PLUS                                                                                                                                                                                        
+	UKIDSSDR1PLUS                                                                                                                                                                                         
+	UKIDSSDR2PLUS                                                                                                                                                                                         
+	UKIDSSDR4PLUS                                                                                                                                                                                         
+	UKIDSSDR5PLUS                                                                                                                                                                                         
+	UKIDSSDR6PLUS                                                                                                                                                                                         
+	UKIDSSDR7PLUS                                                                                                                                                                                         
+	UKIDSSDR8PLUS                                                                                                                                                                                         
+	UKIDSSDR9PLUS                                                                                                                                                                                         
+	UKIDSSEDR                                                                                                                                                                                             
+	UKIDSSEDRPLUS                                                                                                                                                                                         
+	UKIDSSmar                                                                                                                                                                                             
+	UKIDSSR1                                                                                                                                                                                              
+	UKIDSSSV                                                                                                                                                                                              
+	userInterface                                                                                                                                                                                         
+	usernames                                                                                                                                                                                             
+	usernames-distribution                                                                                                                                                                                
+	VESPA                                                                                                                                                                                                 
+	VHSDR1                                                                                                                                                                                                
+	VHSv20120417                                                                                                                                                                                          
+	VHSv20120926                                                                                                                                                                                          
+	VHSv20130417                                                                                                                                                                                          
+	VIDEODR2                                                                                                                                                                                              
+	VIDEOv20120712                                                                                                                                                                                        
+	VIKINGDR2                                                                                                                                                                                             
+	VIKINGv20110414                                                                                                                                                                                       
+	VIKINGv20110714                                                                                                                                                                                       
+	VIKINGv20111019                                                                                                                                                                                       
+	VIKINGv20121205                                                                                                                                                                                       
+	VIKINGv20130417                                                                                                                                                                                       
+	VMCDR1                                                                                                                                                                                                
+	VMCv20110218                                                                                                                                                                                          
+	VMCv20110310                                                                                                                                                                                          
+	VMCv20110329                                                                                                                                                                                          
+	VMCv20120126                                                                                                                                                                                          
+	VMCv20121128                                                                                                                                                                                          
+	VMCv20130304                                                                                                                                                                                          
+	VVVDR1                                                                                                                                                                                                
+	VVVv20100531                                                                                                                                                                                          
+	VVVv20110718                                                                                                                                                                                          
+	VVVv20110928                                                                                                                                                                                          
+	webqueries                                                                                                                                                                                            
+	webqueriesmar                                                                                                                                                                                         
+	WFAU                                                                                                                                                                                                  
+	WFCAMCAL08B                                                                                                                                                                                           
+	WFCAMOPENTIME                                                                                                                                                                                         
+	WFCAMPROPRIETY                                                                                                                                                                                        
+	WISE                                                                                                                                                                                                  
+	WORLDR1                                                                                                                                                                                               
+	WORLDR2                                                                                                                                                                                               
+	WSERV1v20100706                                                                                                                                                                                       
+	WSERV2v20110322                                                                                                                                                                                       
+	WSERV2v20121017                                                                                                                                                                                       
+	WSERV3v20100818                                                                                                                                                                                       
+	WSERV4v20101019                                                                                                                                                                                       
+	WSERV5v20120208                                                                                                                                                                                       
+	WSERV6v20120808                                                                                                                                                                                       
+	XCS                                                                                                                                                                                                   
+	XCS_prev                                                                                                                                                                                              
+	zepWSERV2v20110126
+	
+
+	U05A100                                                                                                                                                                                               
+	U05A2                                                                                                                                                                                                 
+	U05A3                                                                                                                                                                                                 
+	U05A37                                                                                                                                                                                                
+	U05A37v20090120                                                                                                                                                                                       
+	U05A3v20090430                                                                                                                                                                                        
+	U05AH13A                                                                                                                                                                                              
+	U05AH16A                                                                                                                                                                                              
+	U05AH16Av20090430                                                                                                                                                                                     
+	U05AH18A                                                                                                                                                                                              
+	U05AH18Av20090504                                                                                                                                                                                     
+	U05AH44B                                                                                                                                                                                              
+	U05AH44Bv20090930                                                                                                                                                                                     
+	U05B12                                                                                                                                                                                                
+	U05B12v20090609                                                                                                                                                                                       
+	U05B13                                                                                                                                                                                                
+	U05B13v20090506                                                                                                                                                                                       
+	U05B15                                                                                                                                                                                                
+	U05B15v20090120                                                                                                                                                                                       
+	U05B17                                                                                                                                                                                                
+	U05B17v20090505                                                                                                                                                                                       
+	U05B18                                                                                                                                                                                                
+	U05B19                                                                                                                                                                                                
+	U05B19v20090505                                                                                                                                                                                       
+	U05B3                                                                                                                                                                                                 
+	U05B3v20090609                                                                                                                                                                                        
+	U05B7v20090120                                                                                                                                                                                        
+	U05BD1                                                                                                                                                                                                
+	U05BD1v20090120                                                                                                                                                                                       
+	U05BH22                                                                                                                                                                                               
+	U05BH24                                                                                                                                                                                               
+	U05BH24v20090505                                                                                                                                                                                      
+	U05BH35                                                                                                                                                                                               
+	U05BH36                                                                                                                                                                                               
+	U05BH47                                                                                                                                                                                               
+	U05BH47v20090505                                                                                                                                                                                      
+	U05BH53                                                                                                                                                                                               
+	U05BH53v20090506                                                                                                                                                                                      
+	U05BJ1                                                                                                                                                                                                
+	U05BJ1v20090505                                                                                                                                                                                       
+	U05BJ3v20090506                                                                                                                                                                                       
+	U05BJ4                                                                                                                                                                                                
+	U05BJ4v20090120                                                                                                                                                                                       
+	U05BJ4v20110210                                                                                                                                                                                       
+	U05BJ4v20110809                                                                                                                                                                                       
+	U05BJ4v20120215                                                                                                                                                                                       
+	U06A10                                                                                                                                                                                                
+	U06A10v20090609                                                                                                                                                                                       
+	U06A12                                                                                                                                                                                                
+	U06A12v20090609                                                                                                                                                                                       
+	U06A24v20090121                                                                                                                                                                                       
+	U06A3                                                                                                                                                                                                 
+	U06A35                                                                                                                                                                                                
+	U06A35v20090609                                                                                                                                                                                       
+	U06A3v20090609                                                                                                                                                                                        
+	U06A40                                                                                                                                                                                                
+	U06A40v20090609                                                                                                                                                                                       
+	U06A45                                                                                                                                                                                                
+	U06A48v20090112                                                                                                                                                                                       
+	U06AD5                                                                                                                                                                                                
+	U06AD5v20090609                                                                                                                                                                                       
+	U06AH13                                                                                                                                                                                               
+	U06AH13v20090609                                                                                                                                                                                      
+	U06AH18                                                                                                                                                                                               
+	U06AH29                                                                                                                                                                                               
+	U06AH43                                                                                                                                                                                               
+	U06AH43v20090121                                                                                                                                                                                      
+	U06AJ2                                                                                                                                                                                                
+	U06AJ2v20090609                                                                                                                                                                                       
+	U06B12v20090610                                                                                                                                                                                       
+	U06B13v20090121                                                                                                                                                                                       
+	U06B24v20090121                                                                                                                                                                                       
+	U06B30v20090611                                                                                                                                                                                       
+	U06B36v20090112                                                                                                                                                                                       
+	U06B40v20090610                                                                                                                                                                                       
+	U06BH22v20090610                                                                                                                                                                                      
+	U06BH54                                                                                                                                                                                               
+	U06BJ5v20090610                                                                                                                                                                                       
+	U07A24v20090611                                                                                                                                                                                       
+	U07AD2v20100324                                                                                                                                                                                       
+	U07AH16                                                                                                                                                                                               
+	U07AH16v20090612                                                                                                                                                                                      
+	U07AH30v20090611                                                                                                                                                                                      
+	U07AH32v20090611                                                                                                                                                                                      
+	U07AH51v20090611                                                                                                                                                                                      
+	U07AH8v20090611                                                                                                                                                                                       
+	U07B11v20090507                                                                                                                                                                                       
+	U07B13v20090123                                                                                                                                                                                       
+	U07B17v20110503                                                                                                                                                                                       
+	U07B20v20090507                                                                                                                                                                                       
+	U07B29v20090121                                                                                                                                                                                       
+	U07B36v20090112                                                                                                                                                                                       
+	U07B5v20090127                                                                                                                                                                                        
+	U07B6v20090127                                                                                                                                                                                        
+	U07BD2v20090127                                                                                                                                                                                       
+	U07BD3v20090121                                                                                                                                                                                       
+	U07BD4v20090121                                                                                                                                                                                       
+	U07BH49v20090121                                                                                                                                                                                      
+	U08A14v20090427                                                                                                                                                                                       
+	U08A15v20090608                                                                                                                                                                                       
+	U08A1v20090427                                                                                                                                                                                        
+	U08A32v20090427                                                                                                                                                                                       
+	U08AH61v20100712                                                                                                                                                                                      
+	U08B14v20091111                                                                                                                                                                                       
+	U08B33v20091106                                                                                                                                                                                       
+	U08B33v20100421                                                                                                                                                                                       
+	U08B5v20091106                                                                                                                                                                                        
+	U08BH27v20091106                                                                                                                                                                                      
+	U08BH2v20091106                                                                                                                                                                                       
+	U08BH45v20091106                                                                                                                                                                                      
+	U08BH55v20090427                                                                                                                                                                                      
+	U08BH9v20091106                                                                                                                                                                                       
+	U08BJ10v20091106                                                                                                                                                                                      
+	U09A1v20100216                                                                                                                                                                                        
+	U09A1v20100422                                                                                                                                                                                        
+	U09A2v20100210                                                                                                                                                                                        
+	U09A2v20100413                                                                                                                                                                                        
+	U09A4v20100714                                                                                                                                                                                        
+	U09A5v20100216                                                                                                                                                                                        
+	U09AD1v20100210                                                                                                                                                                                       
+	U09AH33v20100714                                                                                                                                                                                      
+	U09AH42v20110503                                                                                                                                                                                      
+	U09AK1v20100216                                                                                                                                                                                       
+	U09B12v20100311                                                                                                                                                                                       
+	U09B14v20100311                                                                                                                                                                                       
+	U09B1v20100311                                                                                                                                                                                        
+	U09B6v20100311                                                                                                                                                                                        
+	U09B6v20100414                                                                                                                                                                                        
+	U09B7v20100311                                                                                                                                                                                        
+	U09B8v20100414                                                                                                                                                                                        
+	U09B8v20120403                                                                                                                                                                                        
+	U09BD1v20100311                                                                                                                                                                                       
+	U09BD3v20110121                                                                                                                                                                                       
+	U09BD4v20100311                                                                                                                                                                                       
+	U09BH14v20100420                                                                                                                                                                                      
+	U09BH14v20100622                                                                                                                                                                                      
+	U09BH15v20100422                                                                                                                                                                                      
+                                                         
+
+	U09BH43v20110503                                                                                                                                                                                      
+                                                         
+
+	U09BH4v20100714                                                                                                                                                                                       
+                                                         
+
+	U09BH50v20100422                                                                                                                                                                                      
+                                                         
+
+	U09BJ2v20100311                                                                                                                                                                                       
+                                                         
+
+	U09BJ3v20100311                                                                                                                                                                                       
+                                                         
+
+	U09BK1v20100311                                                                                                                                                                                       
+                                                         
+
+	U09BK2v20100311                                                                                                                                                                                       
+                                                         
+
+	U10A2v20101021                                                                                                                                                                                        
+                                                         
+
+	U10A3v20101021                                                                                                                                                                                        
+                                                         
+
+	U10A6v20101021                                                                                                                                                                                        
+                                                         
+
+	U10A9v20101104                                                                                                                                                                                        
+                                                         
+
+	U10AD1v20101021                                                                                                                                                                                       
+                                                         
+
+	U10AD2v20101021                                                                                                                                                                                       
+                                                         
+
+	U10AD3v20101021                                                                                                                                                                                       
+                                                         
+
+	U10AD4v20101021                                                                                                                                                                                       
+                                                         
+
+	U10AD6v20101021                                                                                                                                                                                       
+                                                         
+
+	U10AH42v20110503                                                                                                                                                                                      
+                                                         
+
+	U10AH51v20101104                                                                                                                                                                                      
+                                                         
+
+	U10AH99v20101104                                                                                                                                                                                      
+                                                         
+
+	U10AJ2v20101021                                                                                                                                                                                       
+                                                         
+
+	U10AJ5v20110121                                                                                                                                                                                       
+                                                         
+
+	U10AK1v20101104                                                                                                                                                                                       
+                                                         
+
+	U10AK2v20110112                                                                                                                                                                                       
+                                                         
+
+	U10AK3v20110112                                                                                                                                                                                       
+                                                         
+
+	U10AK4v20110118                                                                                                                                                                                       
+                                                         
+
+	U10B11v20110503                                                                                                                                                                                       
+                                                         
+
+	U10B4v20110503                                                                                                                                                                                        
+                                                         
+
+	U10B8v20110510                                                                                                                                                                                        
+                                                         
+
+	U10BD01v20120418                                                                                                                                                                                      
+                                                         
+
+	U10BD03v20120416                                                                                                                                                                                      
+                                                         
+
+	U10BD04v20110503                                                                                                                                                                                      
+                                                         
+
+	U10BD05v20110503                                                                                                                                                                                      
+                                                         
+
+	U10BJ2v20120418                                                                                                                                                                                       
+                                                         
+
+	U10BK1v20110503                                                                                                                                                                                       
+                                                         
+
+	U10BK2v20110503                                                                                                                                                                                       
+                                                         
+
+	U11AD1v20120416                                                                                                                                                                                       
+                                                         
+
+	U11AD2v20130322                                                                                                                                                                                       
+                                                         
+
+	U11AH2Av20130322                                                                                                                                                                                      
+                                                         
+
+	U11AK3v20120522                                                                                                                                                                                       
+                                                         
+
+	U11BD1v20130322                                                                                                                                                                                       
+                                                         
+
+	U11BD2v20130322                                                                                                                                                                                       
+                                                         
+
+	U11BH05Av20120416                                                                                                                                                                                     
+                                                         
+
+	U11BH07Av20120416                                                                                                                                                                                     
+                                                         
+
+	U11BH50Cv20120416                                                                                                                                                                                     
+                                                         
+
+	U11BK1v20120525                                                                                                                                                                                       
+                                                         
+
+	U11BK2v20120418                                                                                                                                                                                       
+                                                         
+
+	U11BK3v20120525                                                                                                                                                                                       
+                                                         
+
+	U11BK4Bv20120416                                                                                                                                                                                      
+                                                         
+
+	U11BK4v20120525                                                                                                                                                                                       
+                                                         
+
+	U11BK5v20120517                                                                                                                                                                                       
+                                                         
+
+	U12AH11Bv20130529                                                                                                                                                                                     
+                                                         
+
+	U12AH17Bv20130529                                                                                                                                                                                     
+                                                         
+
+	U12AK1v20130528                                                                                                                                                                                       
+                                                         
+
+	U12AK2v20130529                                                                                                                                                                                       
+                                                         
+
+	U12AK3v20130529                                                                                                                                                                                       
+                                                         
+
+	U12AK5v20130605                                                                                                                                                                                       
+                                                         
+
+	U12AKASI1v20130604                                                                                                                                                                                    
+                                                         
+
+	U12BD2v20130606                                                                                                                                                                                       
+                                                         
+
+
+
+
+
+	USERV1625                                                                                                                                                                                             
+	USERV1625v20090121                                                                                                                                                                                    
+	USERV1635                                                                                                                                                                                             
+	USERV1636                                                                                                                                                                                             
+                                                         
+
+	USERV1636v20090121                                                                                                                                                                                    
+                                                         
+
+	USERV1639                                                                                                                                                                                             
+                                                         
+
+	USERV1639v20090611                                                                                                                                                                                    
+                                                         
+
+	USERV1650v20090121                                                                                                                                                                                    
+                                                         
+
+	USERV1652                                                                                                                                                                                             
+                                                         
+
+	USERV1652v20090121                                                                                                                                                                                    
+                                                         
+
+	USERV1671                                                                                                                                                                                             
+                                                         
+
+	USERV1671v20090611                                                                                                                                                                                    
+                                                         
+
+	USERV1672                                                                                                                                                                                             
+                                                         
+
+	USERV1672v20090121                                                                                                                                                                                    
+                                                         
+
+	USERV1673v20090121                                                                                                                                                                                    
+                                                         
+
+	USERV1674                                                                                                                                                                                             
+                                                         
+
+	USERV1674v20090121                                                                                                                                                                                    
+                                                         
+
+	USERV1675                                                                                                                                                                                             
+                                                         
+
+	USERV1675v20090612                                                                                                                                                                                    
+                                                         
+
+	USERV1677                                                                                                                                                                                             
+                                                         
+
+	USERV1677v20090612                                                                                                                                                                                    
+                                                         
+
+	USERV1678                                                                                                                                                                                             
+                                                         
+
+	USERV1678v20090121                                                                                                                                                                                    
+                                                         
+
+	USERV1706v20090121                                                                                                                                                                                    
+                                                         
+
+	USERV1707v20081218                                                                                                                                                                                    
+                                                         
+
+	USERV1707v20121223                                                                                                                                                                                    
+                                                         
+
+	USERV1708v20090121                                                                                                                                                                                    
+                                                         
+
+	USERV1709v20090612                                                                                                                                                                                    
+                                                         
+
+	USERV1711v20090121                                                                                                                                                                                    
+                                                         
+
+	USERV1720v20090612                                                                                                                                                                                    
+                                                         
+
+	USERV1721v20090612                                                                                                                                                                                    
+                                                         
+
+	USERV1731v20090121                                                                                                                                                                                    
+                                                         
+
+	USERV1735v20091106                                                                                                                                                                                    
+                                                         
+
+	USERV1736v20090612                                                                                                                                                                                    
+                                                         
+
+	USERV1737v20091002                                                                                                                                                                                    
+                                                         
+
+	USERV1737v20110531                                                                                                                                                                                    
+                                                         
+
+	USERV1737v20110601                                                                                                                                                                                    
+                                                         
+
+	USERV1741v20090121                                                                                                                                                                                    
+                                                         
+
+	USERV1743v20090121                                                                                                                                                                                    
+                                                         
+
+	USERV1747v20090612                                                                                                                                                                                    
+                                                         
+
+	USERV1759v20090612                                                                                                                                                                                    
+                                                         
+
+	USERV1761v20090121                                                                                                                                                                                    
+                                                         
+
+	USERV1762v20100311                                                                                                                                                                                    
+                                                         
+
+	USERV1764v20091106                                                                                                                                                                                    
+                                                         
+
+	USERV1779                                                                                                                                                                                             
+                                                         
+
+	USERV1781v20090427                                                                                                                                                                                    
+                                                         
+
+	USERV1782v20090427                                                                                                                                                                                    
+                                                         
+
+	USERV1788v20090427                                                                                                                                                                                    
+                                                         
+
+	USERV1799v20091106                                                                                                                                                                                    
+                                                         
+
+	USERV1800v20091106                                                                                                                                                                                    
+                                                         
+
+	USERV1801v20100216                                                                                                                                                                                    
+                                                         
+
+	USERV1802v20100216                                                                                                                                                                                    
+                                                         
+
+	USERV1820v20100210                                                                                                                                                                                    
+                                                         
+
+	USERV1831v20100210                                                                                                                                                                                    
+                                                         
+
+	USERV1836v20100210                                                                                                                                                                                    
+                                                         
+
+	USERV1851v20100311                                                                                                                                                                                    
+                                                         
+
+	USERV1861v20101021                                                                                                                                                                                    
+                                                         
+
+	USERV1862v20101021                                                                                                                                                                                    
+                                                         
+
+	USERV1876v20101104                                                                                                                                                                                    
+                                                         
+
+	USERV1877v20110118                                                                                                                                                                                    
+                                                         
+
+	USERV1878v20101104                                                                                                                                                                                    
+                                                         
 
