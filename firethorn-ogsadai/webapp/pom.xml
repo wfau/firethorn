@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
-        <version>01.06-SNAPSHOT</version>
+        <version>01.07-alpha-01</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-webapp</artifactId>
