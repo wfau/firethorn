@@ -813,10 +813,10 @@
         </profile>
 
         <!--+
-            | Build our codebase.
+            | Build everything.
             +-->
         <profile>
-            <id>build</id>
+            <id>all</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
