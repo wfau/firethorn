@@ -1,0 +1,102 @@
+$def with (logged_in, username,survey_prefix)
+<script src="$survey_prefix/static/js/scrolling_helper.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+		
+		var this_div_name = 'dbaccess_login';
+		init_scrolling_mechanism(this_div_name);
+
+		jQuery('.login_form').each(function() {
+            jQuery(this).submit(function(){
+        	    var password = jQuery("input[name=password]").val();
+        	    var username = jQuery("input[name=username]").val();
+        	    var community_input = jQuery("input[name=community_input]").val();
+                
+        		if (password == '' ||username == '' || community_input == '' ){
+                 	jQuery('#content_dbaccess_login .error').html('Please enter values for  all the input');	
+        			jQuery('#content_dbaccess_login .error').fadeIn('fast');
+                 	jQuery('#content_dbaccess_login .error').delay(3500).fadeOut('slow');
+        		} else {
+        			
+        			xhr = jQuery.ajax({
+                        type: "POST",
+                        url: path + "dbaccess_login",
+                        data: {username : username,password : password, community_input : community_input},
+                        timeout: 1000000,
+                        error: function() {
+                          	jQuery('#content_dbaccess_login .error').html('There was an error during the login process');	
+                			jQuery('#content_dbaccess_login .error').fadeIn('fast');
+                         	jQuery('#content_dbaccess_login .error').delay(3500).fadeOut('slow');                        
+                        
+        				},
+        				success: function(data) {
+        				
+        					if (data=="False"){
+        						jQuery('#content_dbaccess_login .error').html('The details you entered do not correspond to a registered user');	
+                    			jQuery('#content_dbaccess_login .error').fadeIn('fast');
+                             	jQuery('#content_dbaccess_login .error').delay(3500).fadeOut('slow');  
+        					} else {
+        						jQuery('#logged_in_notification').html("<br />Logged in as: <a>" + username + "</a><br />  Community: <a>" + community_input + "</a><br /><a href='" + path + "logout'>Logout</a><br /><br />");	
+        						jQuery('#form_content').html('Welcome <span style="color:green">' +  username + '</span> !<br /><br />');
+        					
+        					}
+        				}
+        			});
+        			
+        		}
+        	    return false;
+            });
+       
+		});
+</script>
+
+
+<div id = "content_dbaccess_login"> 
+	<h3>OSA Login</h3> 
+	Only registered users are allowed to access VST data prior to its public release. 
+	To register for access to proprietary data releases you must be part of the VST ATLAS survey
+	and you should contact the relevant PI in the first instance.<p>
+	Enter your username, password and community below. If you do not login your queries will be directed to 
+	any world accessible databases that contains data no longer within their propriety period.<p><p>
+	
+	
+	<div class="error"></div>
+	
+	
+	<div id="form_content">
+	
+		$if logged_in != "True": 
+			<form name="login_form" class="login_form" id="generic_form" style="margin:0 auto;margin-top:10px;height:150px;width:700px;padding-left:45px;padding-top:40px;"> 
+				
+				<input type="hidden" name="archive" value="VSA" >
+				<input type="hidden" name=community value=""> 
+			
+				<table> 
+				<tr> 
+				
+				<td align="right">Username:</td> <td>
+				<input type="text" name="username" size="28" value="" id="username">
+				</td> 
+				<td rowspan="2">usernames &amp; passwords are case sensitive</td> 
+				<tr> 
+				<td align="right">Password:</td> <td><input type="password" name="password" id="password" size="28" value=""></td>
+				<tr>
+				<td nowrap>Community:</td> 
+				
+				
+				<td>
+				<input type="text" name="community_input" id="community_input" size="28" value=""></td>
+				<td>assigned at registration,  (<a class="ext_links_dbaccess_login" href="#communityInfo_div">see communities</a>)</td>
+				
+				</table>
+				<br />
+				<p> 
+					<input class="submit_button" type="submit" value="Login" > 
+				</p> 
+			</form>
+		$else:
+			<div>Welcome  <span style="color:green">$username</span> !<br /><br /></div>		
+	</div>
+	<p>
+	<br />
+	
+</div>

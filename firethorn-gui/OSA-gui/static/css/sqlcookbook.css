@@ -1,0 +1,29 @@
+.fixed_menu_left {
+	float:left;
+	height:75%;
+	padding:8px;
+	width:200px;
+	position:fixed;
+	overflow:auto;
+	border:1px solid white;
+	/* Fallback for web browsers that doesn't support RGBa */
+	background: rgb(0, 0, 0) transparent;
+	/* RGBa with 0.6 opacity */
+	background: rgba(0, 0, 0, 0.6);
+	/* For IE 5.5 - 7*/
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
+	/* For IE 8*/
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
+	
+}
+
+.list{
+	text-decoration:none;
+	list-style-type:upper-roman;
+	position: relative;
+	zoom: 1;
+}
+
+.cookbook_content {
+	margin-left:240px;
+}

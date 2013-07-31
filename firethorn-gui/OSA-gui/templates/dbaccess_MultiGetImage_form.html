@@ -1,0 +1,194 @@
+$def with (database_options,programme_options, multigetimage_file_name,multigetimage_archive,multigetimage_bands, survey_prefix)
+<link href="$survey_prefix/static/static_MultiGetImage_form/css/dbaccess_MultiGetImage_form.css" media="screen" rel="stylesheet" type="text/css"/>  
+<script type="text/javascript" src="$survey_prefix/static/js/samp.js"></script>
+<script type="text/javascript" src="$survey_prefix/static/js/samp_helper.js"></script>
+<script src="$survey_prefix/static/js/jquery.form.js" type="text/javascript"></script>
+<script src="$survey_prefix/static/static_MultiGetImage_form/js/multiGetImage.js" type="text/javascript"></script>
+
+
+<div id="content_dbaccess_MultiGetImage_form">
+
+	
+	<h3>MultiGetImage form &nbsp;<a id="MultiGetImage_minimizer">[+]</a></h3>
+	
+	This form allows you to extract multiple image cut-outs (
+	<a rel="facebox" href="#MultiGetImage_default_help"> see
+		notes on using MultiGetImage</a>
+	). The supplied file should contain the J2000 coordinates of your
+	objects (one object per line) in decimal degrees or sexagesimal. An
+	optional additional column can also be present that represents the
+	framesetID or multiframeID. Values in the file should be separated by
+	spaces or commas, for example the following lines will be parsed
+	correctly
+	<br>
+	<pre>
+	117.000, -25.4445
+	118.123 23.34
+	11 12 13.4 -30 20 10.0
+	118.123,23.34,123456
+	11 12 13.4 -30 20 10.0 123456
+	</pre>
+	
+	<p></p>
+	<hr>
+	
+	<div id ="MultiGetImage_error" style="color:red;display:none"></div>
+	
+	
+	<form name="MultiGetImage_form" class="MultiGetImage_form"
+		enctype="multipart/form-data" id="generic_form">
+		<input type="hidden" name="archive" value="$multigetimage_archive"> 
+				
+			
+			<div id="clear"></div>
+	
+		
+		
+		<div id="clear"></div>
+	
+		<table style="margin:0 auto;">
+			<tr>
+				<td align="right">
+				<b>Database release:</b>&nbsp;&nbsp; 
+				</td>
+				<td>
+				<select name="database" >$:database_options</select>
+				</td>
+			</tr>
+			
+			$:programme_options
+	
+			<tr>
+				<td align="right" nowrap><b>Source waveband: (*)</b></td>
+				<td>
+				$:multigetimage_bands
+				</td>					
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+	
+				<td align="right" nowrap><b>ID column:</b></td>
+				<td><select name="idPresent" size="1">
+						<option value="noID">no</option>
+						<option value="fsID">framsetID</option>
+						<option value="mfID">multiframeID</option>
+				</select></td>
+				<td>optional, used to specify the frame to be used</td>
+			</tr>
+			<tr>
+				<td align="right"><b>Size (arcmin): (*)</b></td>
+				<td><input type="text" size="4" name="userX" value="1.0">
+				</td>
+				<td>max 12 arcmin</td>
+			</tr>
+			<tr>
+				<td align="right"><b>Email: (*)</b></td>
+				<td><input type="text" size="24" name="email" value="">
+				</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+	
+				<td align="right"><b>Confirm Email: (*)</b></td>
+				<td><input type="text" size="24" name="email1" value="">
+				</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td align="right" nowrap><b>File of coordinates: (*) </b></td>
+				
+				<td><input type="file" name="$multigetimage_file_name" id="uploadFile"></td>
+				<td>max 500 lines, max total area 500 sq. arcmin <br> e.g.
+					500 1x1 or 20 5x5 images
+				</td>
+			</tr>
+			<tr>
+				<td align="right"><b>Cross hair:</b></td>
+				<td><select name="crossHair" size="1">
+						<option value="y">yes</option>
+						<option value="n">no</option>
+				</select></td>
+				<td>mark the position on the jpeg image?</td>
+			</tr>
+			<tr>
+	
+				<td align="right"><b>Mode:</b></td>
+				<td><select name="mode" size="1">
+	
+						<option value="norm">standard</option>
+						<option value="wget">wget</option>
+				</select></td>
+				<td>&nbsp;</td>
+			</tr>
+		</table>
+	
+		<br />
+		<p>
+			<input class="submit_button" type="submit" value="Submit" style="margin-left:30px;" /> 
+		</p>
+	</form>
+	
+	
+	
+	
+	<br /><br />
+	<div id="MultiGetImage_load"></div>
+
+	<div id="MultiGetImage_results" class='dynamic_div'>
+	</div>
+	
+	<div style="display:none" id="MultiGetImage_results_secondary"></div>
+	<br />
+	
+		
+	<div id="MultiGetImage_facebox_content" style="display:none ;width:500px;">
+	</div>
+	
+	
+	
+	<div id="MultiGetImage_default_help" style="display:none;font-size:13px;">
+	
+		<div id="content_getMultiImageNotes_help">
+			<h3>Notes on MultiGetImage</h3>
+			
+			These notes accompany the
+			<a class ="ext_links_dbaccess_MultiGetImage_form" href="#dbaccess_MultiGetImage_form_div">MultiGetImage form</a>
+			. This form allows multiple image cut-outs to be generated. Once
+			completed the submitted request sends an email to the user containing a
+			link to their results. FITS files and jpeg images are produced and
+			presented in web-page tables and a PDF file. A tar saveset of the FITS
+			files is also generated.
+			<p>
+			
+				Users must supply a file of coordinates (J2000) either in decimal
+				degrees or sexagesimal. Values should be separated by spaces or commas.
+				An <b>optional</b> additional column can also be present that
+				respresents the framesetID or multiframeID.
+			</p>
+			<p>At a given point in the sky there can be numerous multiframe
+				images that could be extracted so currently this is narrowed down to
+				only using frames that appear in the mergeLog table for a given
+				programme/survey. If the database you are querying has an empty
+				mergelog table than no images will be found.</p>
+			<p>
+				Note the presence of a framesetID (or multifrmaeID) is optional but can
+				be useful if you want to specify a particular frame to use i.e. using
+				the mergeLog narrows down the choice considerably but there will still
+				be overlap regions. If supplying an ID column please change the <em>ID
+					column</em> in the drop down list to the relevant value. <b>Note:</b> If
+				you supply the multiframeID of the frames you want to use then do not
+				specify a waveband.
+			</p>
+			<p>By default cross-hairs are plotted on the jpegs this can be
+				turned off, cross hair=no.</p>
+			<p>
+				<b>Mode: </b> The <em>wget</em> mode can be used to extract up to 5000
+				images. In this mode the service returns a list of wget commands to
+				download the extracted images. No jpegs or PDF results file are
+				returned in this mode. There is no need to supply an email address in
+				wget mode as the query is run in real time. <BR clear="all">
+			</p>
+		</div>
+	</div>
+	
+</div>

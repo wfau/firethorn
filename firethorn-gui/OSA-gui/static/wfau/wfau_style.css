@@ -1,0 +1,498 @@
+/*
+Credit: http://www.wfau.com
+*/
+html {
+	height: 100%;
+
+}
+body {
+	margin: 0;
+	padding: 0;
+	color: #828fa2;
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 13px;
+	line-height: 1.5em; 
+	background-color: #06182e;
+	background-image: url(images/body_repeat3.jpg);
+	background-position: top;
+	background-repeat: repeat;
+	height:100%;
+}
+*:focus { outline:none }
+a { outline:none; }
+a, a:link, a:visited { color: #34BAF9; font-weight: normal; text-decoration: none; font-size: 12px }
+a:hover { text-decoration: underline; }
+
+a.more { clear: both; display: block; width: 64px; height: 21px; line-height: 19px; text-align: center; font-size: 11px; font-weight: 400; color: #003366; background: url(images/wfau_more.png) no-repeat }
+a.more:hover { color: #000; text-decoration: none }
+
+
+p { margin: 0 0 0 0; padding: 0; }
+img { border: none; }
+blockquote { font-style: italic; margin: 0 0 15px 10px;}
+cite { font-weight: bold; color:#34BAF9; font-size: 12px; }
+cite span { color: #828fa2; }
+em { color: #34BAF9; }
+
+h1, h2, h3, h4, h5, h6 { color: #fff; font-weight: normal; }
+h1 { font-size: 34px; margin: 0 0 20px; padding: 5px 0 }
+h2 { font-size: 28px; margin: 0 0 25px; padding: 5px 0; }
+h3 { font-size: 22px; margin: 0 0 15px; padding: 0; }
+h4 { font-size: 18px; margin: 0 0 15px; padding: 0; }
+h5 { font-size: 16px; margin: 0 0 10px; padding: 0;  }
+h6 { font-size: 14px; margin: 0 0 5px; padding: 0; }
+
+.cleaner { clear: both }
+.h10 { height: 10px }
+.h20 { height: 20px }
+.h30 { height: 30px }
+.h40 { height: 40px }
+.h50 { height: 50px }
+.h60 { height: 60px }
+
+.float_l { float: left }
+.float_r { float: right }
+
+.image_wrapper { display: inline-block; padding: 4px; background: #000; border: 1px solid #1f3958 }
+.image_fl { float: left; margin: 3px 30px 0 0 }
+.image_fr { float: right; margin: 3px 0 0 30px }
+
+.tmo_list { margin: 20px 0 20px 15px; padding: 0; list-style: none }
+.tmo_list li { color:#40a9de; margin: 0; padding: 0 0 5px 20px; background: url(images/templatmeo_list.png) no-repeat scroll 0 7px  }
+.tmo_list li a { color: #40a9de; font-weight: normal; font-size: 12px; text-decoration: none }
+.tmo_list li a:hover { text-decoration: underline }
+
+
+#wfau_wrapper_outter { width: 100%;margin-top:8px; }
+#wfau_wrapper_inner { width: 100%; margin:0 auto;text-align:center;
+	min-height:100%;
+	position:relative;
+}
+
+#wfau_wrapper { width: 960px; padding: 0 10px; margin: 0 auto }
+
+#wfau_menu { width: 100%; height: 40px; }
+
+#wfau_header {
+	width: 100%;
+	height: 100px;
+	box-shadow: 1px 4px 3px black;
+	border:1px solid #303030;
+	border-left:none;
+	margin-bottom:20px;
+	border-right:none;
+	background:#424242;
+}
+
+.right_header_panel{
+	float:right;
+}
+#site_title {margin-right:30px; margin-top:20px; }
+#site_title h1 { margin: 0; padding: 0 }
+#site_title #uoelogo { display: block; float:right; margin-right:27px;width: 130px; height: 110px; color: #fff; background: url(images/ifalogo.gif) no-repeat  }
+.uoe_link_wrapper{
+	padding-left:5px;	
+	padding-top:15px;
+	text-align:center;
+	float: right;	
+	margin-right:10px; 
+	width:260px;
+	height:100px;
+	clear:both;
+	margin-top:20px;
+	background:black;
+	box-shadow: 1px 4px 3px black;
+	border:1px solid #303030;
+
+	
+}
+#wfau_main_top {
+	width: 900px;
+	height: 280px;
+	border-left:2px solid gray;
+	border-right:2px solid gray;
+	border-bottom:3px solid gray;
+	border-radius: 10px;
+	
+	padding: 30px 30px 10px;
+
+	background: url(images/wfau_content_top.png) no-repeat
+}
+#wfau_main_top_sb { width: 100%; height: 25px; background: url(images/wfau_content_top_sb.png) no-repeat }
+#wfau_main_top object {
+	box-shadow: 1px 4px 3px black;
+	border:6px solid black;
+		
+}
+#wfau_main {
+	width: 900px;
+	padding: 50px 30px 40px;
+	background: url(images/wfau_content.png) repeat-y
+}
+
+#wfau_main_sb { 
+	width: 900px;
+	padding: 15px 30px 20px;
+	background: url(images/wfau_content.png) repeat-y
+}
+
+#wfau_main_bottom {
+	width: 100%;
+	height: 10px;
+}
+
+#content {
+	width: 570px;
+	float: left;
+	padding-right: 30px;
+	border-right: 1px dotted #666666;
+}
+
+#sidebar {
+	width: 270px;
+	float: right;
+}
+
+.col_fw { width: 900px; }
+.content_box { margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px dotted #666666 }
+.col_w600 { width: 540px; padding-right: 60px }
+.col_hw { width: 430px }
+.col_w300 { width: 300px }
+.col_allw300 { float: left; width: 270px; margin-right: 30px }
+.bb { border-bottom: 1px solid #292929 }
+.mb30 { margin-bottom: 30px }
+.pb30 { padding-bottom: 30px; }
+.col_last { margin: 0; border: none }
+
+.fp_service_box img { float: left; margin-right: 10px }
+
+.fp_lw_box { clear: both; margin-bottom: 30px }
+.fp_lw_box img { margin-right: 15px; padding-top: 3px }
+.fp_lw_box h6 { margin-bottom: 0 }
+.fp_lw_box h6 a { font-weight: bold; text-decoration: none }
+
+#gallery { margin: 0; padding: 0 }
+.gallery_box {  clear: both; margin-bottom: 30px; padding-bottom: 30px; border-bottom: 1px dotted #666666  }
+.gb_img { float: left;  }
+.gb_detail { float: right; width: 400px }
+
+.pagging { margin: 0 0 20px; padding: 0 }
+.pagging ul { margin: 0; padding: 0; list-style: none }
+.pagging ul li { margin: 0; padding: 0; display: inline }
+.pagging ul li a { float: left; display: block; color: #FFFFFF; background-color: #002040; text-decoration: none; margin-right: 5px; padding: 4px 10px; border: 1px solid #000; }
+.pagging ul li a:hover { background-color: #0066CC; color: #000  }
+
+.post_box { clear: both; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px dotted #666666 }
+.post_content { float: left; width: 760px }
+.post_header { border-top: 3px solid #999; border-bottom: 1px solid #ccc; padding: 5px; margin-bottom: 20px }
+.post_box h2 { font-size: 34px; margin-bottom: 30px }
+.post_box p.post_meta { margin-bottom: 0 }
+.post_content a.more { clear: none; }
+.post_box .comment {
+	float: right;
+	width: 70px;
+    height: 150px;
+	line-height: 50px;
+	margin-right: 40px;
+	color: #fff;
+	text-align: center;
+	background: url(images/wfau_comment.png) no-repeat top left
+}
+.post_box .comment a { color: #000; font-size: 34px; text-decoration: none }
+.post_box .comment a:hover { color: #333 }
+
+
+#contact_form { padding: 0; width: 400px }
+#contact_form form { margin: 0px; padding: 0px; }
+#contact_form form .input_field { width: 270px; padding: 5px 0; color: #fff; border: 1px solid #a7a7a7;  background: #e8e8e8; }
+#contact_form form label { display: block; width: 100px; margin-right: 10px; font-size: 14px }
+#contact_form form textarea { width: 388px; height: 200px; padding: 5px; border: 1px solid #a7a7a7;  background: #e8e8e8; }
+#contact_form form .submit_btn { display: block; margin-top: 10px; padding: 5px 15px; text-align: center; text-decoration: none; font-weight: bold; background: #002244;  color: #fff; border: 1px solid #000000; font-size: 12px; cursor: pointer }
+
+#wfau_bottom {
+	clear: both;
+	width: 100%;
+	padding: 30px 30px 80px;
+}
+
+.bottom_list {
+	list-style: none; padding: 0; margin: 0
+}
+
+.bottom_list li {
+	list-style: none; padding: 0 0 5px; margin: 0 0 7px; border-bottom: 1px solid gray;
+}
+
+.bottom_list li a { color: #d9dadc; text-decoration: none }
+.bottom_list li a:hover { color: #0099FF; text-decoration: none }
+
+#wfau_footer {
+	clear: both;
+	width: 100%;
+	position:absolute;
+    height:80px;
+    bottom:0px;
+    left:0;
+	padding-top: 9px;
+	color: #D8D8D8;
+	text-align: center;
+	border-top:1px solid #D8D8D8;
+	background: url("images/footer-background-repeat.jpg") repeat-x;
+}
+
+
+
+#logostrip{
+	width:100%;
+	background-image: url("images/headerifa.jpg");
+    height:60px;
+    margin-top:20px;
+    
+}
+
+
+img { margin: 0px; padding: 0px; border: none; }
+
+.cleaner { clear: both; width: 100%; height: 0px; font-size: 0px;  }
+
+.cleaner_h10 { clear: both; width:100%; height: 10px; }
+.cleaner_h20 { clear: both; width:100%; height: 20px; }
+.cleaner_h30 { clear: both; width:100%; height: 30px; }
+.cleaner_h40 { clear: both; width:100%; height: 40px; }
+.cleaner_h50 { clear: both; width:100%; height: 50px; }
+.cleaner_h60 { clear: both; width:100%; height: 60px; }
+
+.button_01 a {
+	display: block;
+	width: 80px;
+	height: 24px;
+	padding: 4px 0 0 28px;
+	color: #686b53;
+	font-size: 11px;
+	font-weight: bold;
+	text-decoration: none;
+	background: url(images/wfau_button_01.png) no-repeat;
+}
+
+.button_01 a:hover {
+		background: url(images/wfau_button_01_hover.png) no-repeat;	
+}
+
+
+.image_wrapper {
+	margin-top: 3px;
+	margin-bottom: 5px;
+	border: 5px solid #e8e8e8;
+	padding: 1px;
+	background: #fff;
+	
+}
+
+.fl_image {
+	float: left;
+	margin-right: 30px 
+}
+
+.fr_image {
+	float: right;
+	margin-left: 20px 
+}
+
+.fl { float: left; }
+.fr { float: right; }
+
+.margin_r_10 { margin-right: 10px; }
+
+.margin_r_20 { margin-right: 20px; }
+
+.margin_r_80 { margin-right: 80px; }
+
+/* site title */
+
+#wfau_site_title_bar_wrapper {
+	width: 100%;
+	height: 130px;
+	margin: 0 auto;	
+	background: #000000 url(images/wfau_site_title_bg_wrapper.jpg) no-repeat center top;
+}
+
+#wfau_site_title_bar {
+	width: 900px;
+	height: 130px;
+	margin: 0 auto;
+	padding: 0 20px 0 60px;
+	background: #000000  url(images/wfau_site_title_bg.jpg) no-repeat center top;
+}
+
+#wfau_site_title_bar  #site_title {
+	float: left;
+	padding: 30px 0 0 0;
+	text-align: center;
+}
+
+#site_title h1 a {
+	margin: 0px;
+	padding: 0px;
+	font-size: 24px;
+	color: #ffffff;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+#site_title h1 a:hover {
+	font-weight: bold;	
+	text-decoration: none;
+}
+
+#site_title h1 a span {
+	display: block;
+	margin-left: 3px;
+	font-size: 14px;
+	color: #000000;
+	font-weight: bold;
+	letter-spacing: 4px;
+}
+
+
+/* content */
+
+#wfau_content {
+    padding: 15px 2px 2px;
+    width: 94%;
+	margin:0 auto;text-align:center;
+	max-width:1300px;
+	min-width:1020px;
+	padding-bottom:80px; 
+}
+
+.product_box {
+	float: left;
+	width: 130px;
+	background: #f1f1f1;
+	border: 1px solid #e0e0e0;
+	padding: 5px 0px;
+	margin-bottom: 10px;
+	height:130px;
+	box-shadow: 1px 4px 3px black;
+	
+}
+
+.product_box:hover {
+	background: #e7ebce;
+}
+
+.product_box a {
+	text-decoration: none;
+	height:150px;
+	
+}
+.product_box img {
+	box-shadow: 1px 4px 3px black;
+	text-align:center;
+	margin:0 auto;
+	display:block;
+	margin-bottom:10px;
+
+}
+.product_box a:hover {
+	text-decoration: none; 
+}
+
+.product_box a img {
+	border: 1px solid #ffffff;
+}
+
+.product_box h3 {
+
+	margin: 0 0 10px 0;
+	height: 37px;
+	margin:0 auto;
+	font-size: 11.5px;
+	padding: 2px;
+	color: #424242;
+	border: 1px solid #fff;
+	text-align: center;
+	background: url(images/wfau_product_box_title_bg.jpg) repeat-x;
+}
+
+.product_box:hover h3 {
+	color: #006695;
+	cursor:pointer;
+}
+
+.product_box p {
+	color: #666666;
+	font-weight: normal;
+}
+
+.product_detail_left {
+	float: left;
+}
+
+.product_detail_left .product_img_wrapper {
+	border: 10px solid #f1f1f1;
+	padding: 1px;
+	background: #ffffff;
+}
+
+.product_detail_right {
+	float: right;
+	width: 300px;
+}
+
+.product_detail_right h3 {
+	font-size: 16px;
+	color: #333333;
+}
+
+.service_applied {
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+}
+
+.service_applied li {
+	margin: 0px;
+	padding: 3px 0 3px 20px;
+	color: #006695;
+	background:url(images/wfau_list_icon.jpg) left center no-repeat;
+}
+
+#topnav {
+	float:right;
+	margin-right:10px;
+}
+
+#wfaulogo { 
+	box-shadow: 1px 4px 3px black;
+	border:6px solid #424242;
+	border-radius: 10px;
+	background:#424242;
+	margin-top:50px;
+	margin-right:20px;
+	height: 155px;
+    width: 205px;
+    float:right;
+}
+
+#wfaulogo img{ 
+	height:150px;
+	width:200px;
+}
+
+
+#wfau_content_wrapper {
+	margin:0 auto;
+	text-align:center;
+	width:90%;
+}
+
+
+.slider-wrapper { 
+	width: 560px;
+	height:87%;
+	box-shadow: 1px 4px 3px black;
+	border:1px solid #303030;
+}
+
+

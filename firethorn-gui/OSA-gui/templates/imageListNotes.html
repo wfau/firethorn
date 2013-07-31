@@ -1,0 +1,33 @@
+$def with (survey_prefix)
+<script src="$survey_prefix/static/js/scrolling_helper.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+		var this_div_name = 'imageListNotes';
+		init_scrolling_mechanism(this_div_name);
+</script>
+
+
+<div id="content_imageListNotes">
+	<h3>Using the Archive Listing Form</h3>
+	The <a class="ext_links_imageListNotes" href="#dbaccess_ImageList_form_div">
+	achive listing form</a> allows users to retrieve listings of the multiframes 
+	(multi-extension FITS images) held in the VSA. Links are returned that 
+	allow users to view the compressed jpeg library images and download the 
+	FITS files.
+	<p>
+	Registered users should ensure they
+	have logged on so that the form queries the correct database. 
+	</p><p>
+	<a name="survey"><em>Survey/Programme</em></a> - Users should first select the survey/programmed they are 
+	interested in so that the list of available databases is loaded into the form.
+	</p><p>
+	<a name="database"><em>Database release</em></a> - select the database and version
+	you wish to access. For VISTA the most recent release will be at the
+	top. The database called VSA_DailySync is created daily and represents all files currently ingested on our load curation
+	server. Our <a class="ext_links_imageListNotes" href="#monitor_div">monitor pages</a> show the status of file ingest into the VSA.
+	
+	</p><p>
+	<em>
+	NB the load server is continually being updated by the WFAU team and as such is subject to slow-downs and broken links to, for example, jpeg image files. Occasionally this access will need to be turned off to allow high priority curation jobs to proceed quickly.</em>
+	
+	</p><p><br clear="all"/>
+</div>

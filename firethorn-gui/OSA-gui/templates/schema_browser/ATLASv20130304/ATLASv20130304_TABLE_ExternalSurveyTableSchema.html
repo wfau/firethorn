@@ -1,0 +1,24 @@
+$def with (prefix)
+<h1><a name="ExternalSurveyTable"></a><font size=-1>TABLE</font>&nbsp;&nbsp;ExternalSurveyTable</h1>
+<table width='720px'><tbody>
+<tr><td class='t'> Contains information about the external surveys tables.</td></tr>
+</table>
+<p>
+<table width='720'>
+<tr><td class='d'> Each external survey database will consist of several tables that may<br>
+ need to be explicitly recorded for the purposes of various curation<br>
+ tasks. This table contains a matrix of external surveys and their<br>
+ tables stored within the archive.<br>
+<br>Required constraints:<ul><li><b>Primary key</b> is (surveyID,extTableID)<li>                      (surveyID) references ExternalSurvey(surveyID)
+</ul></td></tr>
+</table><p>
+<TABLE border=0 bgcolor=#888888 width=900 cellspacing=3 cellpadding=3><colgroup><col width='100'><col width='100'><col width='50'><col width='100'><col width='350'><col width='100'><col width='100'></colgroup>
+<tr><th class='h'>Name</th><th class='h'>Type</th><th class='h'>Length</th><th class='h'>Unit</th><th class='h'>Description</th><th class='h'>Default Value</th><th class='h'>Unified Content Descriptor</th></tr>
+<tr><td class='i'><a href='gloss/gloss_s#externalsurveytable_surveyid' class='i'>surveyID</a></td><td class='i'>int</td><td class='i'>4</td><td class='i'>&nbsp;</td><td class='i'>the unique identifier for the survey</td><td class='i'>&nbsp;</td><td class='i'>ID_SURVEY</td></tr>
+<tr><td class='i'><a href='gloss/gloss_e#externalsurveytable_exttableid' class='i'>extTableID</a></td><td class='i'>int</td><td class='i'>4</td><td class='i'>&nbsp;</td><td class='i'>the unique table ID</td><td class='i'>&nbsp;</td><td class='i'>ID_MAIN</td></tr>
+<tr><td class='v'><a href='gloss/gloss_e#externalsurveytable_exttablename' class='v'>extTableName</a></td><td class='v'>varchar</td><td class='v'>256</td><td class='v'>&nbsp;</td><td class='v'>the name of the table</td><td class='v'>&nbsp;</td><td class='v'>ID_TABLE</td></tr>
+<tr><td class='v'><a href='gloss/gloss_s#externalsurveytable_sourceidname' class='v'>sourceIDName</a></td><td class='v'>varchar</td><td class='v'>256</td><td class='v'>&nbsp;</td><td class='v'>The source unique identifier in the table</td><td class='v'>&nbsp;</td><td class='v'>ID_TARGET</td></tr>
+<tr><td class='v'><a href='gloss/gloss_c#externalsurveytable_coord1' class='v'>coord1</a></td><td class='v'>varchar</td><td class='v'>32</td><td class='v'>&nbsp;</td><td class='v'>The attribute name of the first (longitudinal) spherical co-ordinate, e.g. equatorial RA</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_c#externalsurveytable_coord2' class='v'>coord2</a></td><td class='v'>varchar</td><td class='v'>32</td><td class='v'>&nbsp;</td><td class='v'>The attribute name of the second (latitudinal) spherical co-ordinate, e.g. equatorial Dec</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='h'>Total length</td><td></td><td class='h'>584</td></tr>
+</TABLE>

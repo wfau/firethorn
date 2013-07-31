@@ -1,0 +1,66 @@
+$def with (survey_prefix)
+<script src="$survey_prefix/static/js/scrolling_helper.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+		var this_div_name = 'f287';
+		init_scrolling_mechanism(this_div_name);
+</script>
+
+<div id="content_f287">
+	<h3>The Field 287 dataset</h3>
+	
+	<!--<img SRC="./ConstructionIcon.jpg" alt="roadworks sign" width="80" height="80">
+	... we apologise for any inconvenience during construction of this web page ...
+	-->
+	
+	<p>
+	The ESO/SRC field 287 database contains a specialised data set produced by the
+	SuperCOSMOS measuring machine. It consists of scans of around 200 Schmidt plate
+	exposures taken in the single standard southern survey field ESO/SRC 287,
+	RA 21h40; Dec -45 (B1950.0) over a period of 25 years from around 1977 to 2002. Passband coverage
+	consists of 14 U band, 81 B band, 82 R band and 29 I band plates along with
+	four stacks of a small subset of the best 8 plates from each passband. Included
+	in the set are the UKST B, R and I survey plates that are part of the full SSA.
+	The field coverage is approximately 6x6 square degrees.
+	
+	</p><p>
+	The field 287 data set has been internally calibrated for the best possible
+	relative photometry, and offers time-resolved measurements over the 25 year period
+	to B~22 and R~21; coverage in U and I is limited to the more recent ~10 year
+	part of that period, and reaches U~20 and I~18. Typical photometric accuracy
+	is around 0.05mag RMS at intermediate magnitudes, rising to 0.30 mag at
+	the respective plate limits. Hence, the field 287 database is a great resource for
+	exploring photometric variability in a wide variety of Galactic and extra-Galactic
+	objects.
+	
+	 </p><p>The arrangement of the data follows the normalised SSA design with a <b>Source</b> and 
+	<b>Detection</b> table. Detection contains the standard IAM catalogues from the individual
+	epoch plates and stacks in all passbands; Source contains the merged multi-colour source list
+	generated from the four stacks (the source merging process was identical
+	to the <a class="ext_links_f287" href="#dboverview#merge_div">source merging procedure in the SSA</a>).
+	Also contained in the database are a <b>Plate</b> table which holds details of the set
+	of plates scanned; a table of known quasi-stellar objects (<b>KnownQSO</b>); a neighbour
+	table on Source (<b>SourceNeighbours</b>); and a set of cross-neighbour tables that match objects in Source 
+	with detection (<b>SourceXDetection</b>) and with the known QSO table (<b>SourceXKnownQSO</b>). 
+	A complete description of the
+	database schema, including all database objects (tables/rows/columns, functions, indexes and
+	views) is available via the <a class="ext_links_f287" href="#roe_browser_div">SSA browser</a> - follow the link
+	and expand F287 in the tree-view on the left-hand side.
+	
+	</p><p>There are two access modes for the data. For casual browsing, familiarisation
+	with the data and for convenient light-curve generating tools,
+	we recommend the use of a specially-written stand-alone client-side Graphical
+	User Interface that can be 
+	<a href="http://surveys.roe.ac.uk/ssa/F287_Analysis_Tools.jar">
+	launched from here</a> (N.B.: requires Java 1.6; 
+	<a class="ext_links_f287" href="#f287tool_div">further details of the F287 GUI tool are available here</a>). 
+	Users more familar with SQL, and/or the SSA, and the concept of neighbour
+	tables may wish to dive straight into the 
+	<a  class="ext_links_f287" href="#dbaccess_SQL_form_div">free-form SQL access</a> - simply prefix all database object names
+	with the string "F287.." - e.g. <i>SELECT TOP 10 * FROM F287..Plate</i> - in
+	order to query the field 287 database as opposed to the SSA.
+	
+	</p><p>
+	For more information concerning the dataset and how to explore it, please
+	see the <a class="ext_links_f287" href="#sqlcookbook_div">final Section of the SQL Cookbook</a>.
+
+</div>

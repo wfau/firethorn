@@ -1,0 +1,238 @@
+<p><TABLE border=0 bgcolor=#888888 width='600' cellspacing=3 cellpadding=3 align='center'>
+<tr><th class='h' width='600'><h3> Glossary of OSA attributes </h3></th></tr>
+<tr><th class='h'><h5>This Glossary alphabetically lists all attributes used in the <a href="osa_browser.html">OSAv20130304</a> database(s) held in the OSA. If you would like to have more information about the schema tables please use the <a href="osa_browser.html">OSAv20130304</a> <a href='osa_browser.html' title="this Browser version">Schema Browser</a>.</h5></th></tr>
+</TABLE>
+<table border='1' bgcolor=#888888 width='600' cellspacing=3 cellpadding=3 align='center'>
+<colgroup width='38' span='13'>
+</colgroup>
+<tr>
+ <td class='h' align='center'><a href='gloss_a.html'>A</a></td>
+ <td class='h' align='center'><a href='gloss_b.html'>B</a></td>
+ <td class='h' align='center'><a href='gloss_c.html'>C</a></td>
+ <td class='h' align='center'><a href='gloss_d.html'>D</a></td>
+ <td class='h' align='center'><a href='gloss_e.html'>E</a></td>
+ <td class='h' align='center'><a href='gloss_f.html'>F</a></td>
+ <td class='h' align='center'><a href='gloss_g.html'>G</a></td>
+ <td class='h' align='center'><a href='gloss_h.html'>H</a></td>
+ <td class='h' align='center'><a href='gloss_i.html'>I</a></td>
+ <td class='h' align='center'><a href='gloss_j.html'>J</a></td>
+ <td class='h' align='center'><a href='gloss_k.html'>K</a></td>
+ <td class='h' align='center'><a href='gloss_l.html'>L</a></td>
+ <td class='h' align='center'><a href='gloss_m.html'>M</a></td>
+</tr><tr>
+ <td class='h' align='center'><a href='gloss_n.html'>N</a></td>
+ <td class='h' align='center'><a href='gloss_o.html'>O</a></td>
+ <td class='h' align='center'><a href='gloss_p.html'>P</a></td>
+ <td class='h' align='center'><a href='gloss_q.html'>Q</a></td>
+ <td class='h' align='center'><a href='gloss_r.html'>R</a></td>
+ <td class='h' align='center'><a href='gloss_s.html'>S</a></td>
+ <td class='h' align='center'><a href='gloss_t.html'>T</a></td>
+ <td class='h' align='center'><a href='gloss_u.html'>U</a></td>
+ <td class='h' align='center'><a href='gloss_v.html'>V</a></td>
+ <td class='h' align='center'><a href='gloss_w.html'>W</a></td>
+ <td class='h' align='center'><a href='gloss_x.html'>X</a></td>
+ <td class='h' align='center'><a href='gloss_y.html'>Y</a></td>
+ <td class='h' align='center'><a href='gloss_z.html'>Z</a></td>
+</tr>
+</table><p>
+
+<TABLE border=0 bgcolor=#888888 width='1200' cellspacing=3 cellpadding=3>
+<colgroup width='1300'><col width='10%'><col width='10%'><col width='5%'><col width='35%'><col width='5%'><col width='5%'><col width='10%'><col width='10%'><col width='10%'></colgroup>
+<tr><th class='h' colspan='9'><h3>V</h3></th></tr>
+<tr><th class='h'>Name</th><th class='h'>Schema Table</th><th class='h'>Database</th><th class='h'>Description</th><th class='h'>Type</th><th class='h'>Length</th><th class='h'>Unit</th><th class='h'>Default Value</th><th class='h'>Unified Content Descriptor</th></tr>
+<tr> <td class=v>var</td>
+ <td class=v><span id=iras_psc_var></span>iras_psc</td>
+ <td class=v>IRAS</td>
+ <td class=v>percent Likelihood of Variability</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_VARIAB</td>
+</tr>
+<tr> <td class=v>VAR_EXP_ID</td>
+ <td class=v><span id=twoxmm_var_exp_id></span><span id=twoxmm_v1_2_var_exp_id></span><span id=twoxmmi_dr3_v1_0_var_exp_id></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>If the source is detected as variable (that is, if VAR_FLAG is set to True), the exposure ID ('S' or 'U' followed by a three-digit number) of the exposure with the smallest Chi&sup2; probability is given here.</td>
+ <td class=v>varchar</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>VAR_FLAG</td>
+ <td class=v><span id=twoxmm_var_flag></span><span id=twoxmm_v1_2_var_flag></span><span id=twoxmmi_dr3_v1_0_var_flag></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The flag is set to True if this source was detected as variable (Chi&sup2; probability < 1E-5, see PN_CHI2PROB, M1_CHI2PROB, M2_CHI2PROB) in at least one exposure.</td>
+ <td class=v>varchar</td>
+ <td class=v>5</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>var_flg</td>
+ <td class=v><span id=wise_allskysc_var_flg></span>wise_allskysc</td>
+ <td class=v>WISE</td>
+ <td class=v>Variability flag.<br> The variability flag is a four-character string, one character per band, in which the value for each band is related to the probability that the source flux measured on the individual WISE exposures was not constant with time.</td>
+ <td class=v>char</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>NONE</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>var_flg</td>
+ <td class=v><span id=wise_prelimsc_var_flg></span>wise_prelimsc</td>
+ <td class=v>WISE</td>
+ <td class=v>Variability flag<br> The variability flag is a four-character string, one character per band, in which the value for each band is related to the probability that the source flux measured on the individual WISE exposures was not constant with time</td>
+ <td class=v>char</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>NONE</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>VAR_INST_ID</td>
+ <td class=v><span id=twoxmm_var_inst_id></span><span id=twoxmm_v1_2_var_inst_id></span><span id=twoxmmi_dr3_v1_0_var_inst_id></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>If the source is detected as variable (that is, if VAR_FLAG is set to True), the instrument ID (PN, M1, M2) of the exposure given in VAR_EXP_ID is listed here.</td>
+ <td class=v>varchar</td>
+ <td class=v>2</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>variabilityTable</td>
+ <td class=v><span id=programme_variabilitytable></span>Programme</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Table name of merged variable sources</td>
+ <td class=v>varchar</td>
+ <td class=v>64</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>??</td>
+</tr>
+<tr> <td class=v>vc</td>
+ <td class=v><span id=twomass_sixx2_xsc_vc></span>twomass_sixx2_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v>visual verification score for source</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>vc</td>
+ <td class=v><span id=twomass_xsc_vc></span>twomass_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v>visual verification score for source.</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>vegaToAB</td>
+ <td class=v><span id=filter_vegatoab></span>Filter</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The constant to convert Vega magnitudes to AB magnitudes.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>mag</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>versionNum</td>
+ <td class=v><span id=multiframe_versionnum></span>Multiframe</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>a version number for this frame (if available)</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>VERSNUM</td>
+</tr>
+<tr> <td class=v>versNum</td>
+ <td class=v><span id=astrcalvers_versnum></span>AstrCalVers</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Version number of current astrometric solution</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_VERSION</td>
+</tr>
+<tr> <td class=v>versNum</td>
+ <td class=v><span id=photcalvers_versnum></span><span id=previousmfdzp_versnum></span>PhotCalVers, PreviousMFDZP</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>the version number of the calibration</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_VERSION</td>
+</tr>
+<tr> <td class=v>vFlag</td>
+ <td class=v><span id=rosat_bsc_vflag></span><span id=rosat_fsc_vflag></span>rosat_bsc, rosat_fsc</td>
+ <td class=v>ROSAT</td>
+ <td class=v>variability flag</td>
+ <td class=v>varchar</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>vigF</td>
+ <td class=v><span id=rosat_fsc_vigf></span>rosat_fsc</td>
+ <td class=v>ROSAT</td>
+ <td class=v>vignetting factor</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>INST_CORR-FACTOR</td>
+</tr>
+<tr> <td class=v>vigf</td>
+ <td class=v><span id=rosat_bsc_vigf></span>rosat_bsc</td>
+ <td class=v>ROSAT</td>
+ <td class=v>vignetting factor</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>INST_CORR-FACTOR</td>
+</tr>
+<tr> <td class=v>vMag</td>
+ <td class=v><span id=ukirtfsstars_vmag></span>ukirtFSstars</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>V band total magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>mag</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>PHOT_INT-MAG</td>
+</tr>
+<tr> <td class=v>vr_m_opt</td>
+ <td class=v><span id=twomass_psc_vr_m_opt></span>twomass_psc</td>
+ <td class=v>2MASS</td>
+ <td class=v>Visual or red magnitude of the associated optical source.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>mag</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>SPECT_FLUX_VALUE</td>
+</tr>
+<tr> <td class=v>vstRunNo</td>
+ <td class=v><span id=multiframe_vstrunno></span>Multiframe</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Original VST Atlas run number (from filename)</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>REFER_CODE</td>
+</tr>
+</table>
+</table>
+</table>
+</table>
+</table>
+</table>

@@ -1,0 +1,23 @@
+$def with (prefix)
+<h1><a name="ProgrammeCurationHistory"></a><font size=-1>TABLE</font>&nbsp;&nbsp;ProgrammeCurationHistory</h1>
+<table width='720px'><tbody>
+<tr><td class='t'> Contains details of the matrix of programmes and required curation tasks.</td></tr>
+</table>
+<p>
+<table width='720'>
+<tr><td class='d'> This table contains details of the matrix of programmes and<br>
+ required curation tasks; each time a curation task is run, this table<br>
+ gets updated with timestamps indicating which programme(s) have been<br>
+ affected by a curation process.<br>
+<br>Required constraints:<ul><li><b>Primary key</b> is (programmeID,cuEventID)<li>                      (programmeID) references Programme(programmeID)
+<li>                      (cuEventID) references ArchiveCurationHistory(cuEventID)
+</ul></td></tr>
+</table><p>
+<TABLE border=0 bgcolor=#888888 width=900 cellspacing=3 cellpadding=3><colgroup><col width='100'><col width='100'><col width='50'><col width='100'><col width='350'><col width='100'><col width='100'></colgroup>
+<tr><th class='h'>Name</th><th class='h'>Type</th><th class='h'>Length</th><th class='h'>Unit</th><th class='h'>Description</th><th class='h'>Default Value</th><th class='h'>Unified Content Descriptor</th></tr>
+<tr><td class='i'><a href='gloss/gloss_p#programmecurationhistory_programmeid' class='i'>programmeID</a></td><td class='i'>int</td><td class='i'>4</td><td class='i'>&nbsp;</td><td class='i'>the unique programme ID</td><td class='i'>&nbsp;</td><td class='i'>ID_SURVEY</td></tr>
+<tr><td class='i'><a href='gloss/gloss_c#programmecurationhistory_cueventid' class='i'>cuEventID</a></td><td class='i'>int</td><td class='i'>4</td><td class='i'>&nbsp;</td><td class='i'>UID of curation event giving rise to this record</td><td class='i'>&nbsp;</td><td class='i'>REFER_CODE</td></tr>
+<tr><td class='v'><a href='gloss/gloss_t#programmecurationhistory_timestamp' class='v'>timeStamp</a></td><td class='v'>datetime</td><td class='v'>8</td><td class='v'>UTC</td><td class='v'>Time of individual programme curation completion</td><td class='v'>&nbsp;</td><td class='v'>TIME_DATE</td></tr>
+<tr><td class='v'><a href='gloss/gloss_s#programmecurationhistory_status' class='v'>status</a></td><td class='v'>tinyint</td><td class='v'>1</td><td class='v'>&nbsp;</td><td class='v'>successful (1) or unsuccessful (0)</td><td class='v'>&nbsp;</td><td class='v'>CODE_MISC</td></tr>
+<tr><td class='h'>Total length</td><td></td><td class='h'>17</td></tr>
+</TABLE>

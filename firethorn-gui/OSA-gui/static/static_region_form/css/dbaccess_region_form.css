@@ -1,0 +1,76 @@
+#region_minimizer {
+	display:none;
+	cursor: pointer;
+}
+
+#region_results {
+	display:none;  
+	color: #3E3E3E;
+    font: 12px "Lucida Grande",Verdana,Arial,Helvetica,sans-serif;
+}
+
+.region_form input:disabled{
+	background-color: gray;
+}
+
+#content_dbaccess_region_form .error {
+	color:red;
+	font-size:11px;
+}
+
+
+#content_dbaccess_region_form #region_error {
+	color:red;
+	font-size:11px;
+}
+
+#content_dbaccess_region_form #region_load {
+	display:none;
+	margin:0 auto;
+	width:100px;
+	height:15px;
+	text-align:center;
+	background: url("../images/ajax-loader.gif") no-repeat;
+	
+}
+
+#region_getImage_results { 
+		display:none;
+	}
+	
+#region_getImage_results table { 
+		color:#191B19;
+	}
+	
+#region_getImage_results center table{
+		color: #C2BEAD !important;
+	}
+	
+#region_getImage_results_secondary {
+		display:none;
+	} 
+	
+#region_getImage_results_secondary a {
+		color:red;
+}	
+	
+#region_getImage_results_secondary a:hover { 
+		color: gray;
+}
+
+#facebox .content {
+	display:table;
+	width:100%;
+	padding: 10px;
+	background: #fff;
+	-webkit-border-radius:4px;
+	-moz-border-radius:4px;
+	border-radius:4px;
+}
+#facebox {
+	height:580px;
+	overflow-y:auto;
+	overflow-x:hidden;
+	width: 70%;
+	max-height:85%;
+}

@@ -1,0 +1,1628 @@
+<p><TABLE border=0 bgcolor=#888888 width='600' cellspacing=3 cellpadding=3 align='center'>
+<tr><th class='h' width='600'><h3> Glossary of OSA attributes </h3></th></tr>
+<tr><th class='h'><h5>This Glossary alphabetically lists all attributes used in the <a href="osa_browser.html">OSAv20130304</a> database(s) held in the OSA. If you would like to have more information about the schema tables please use the <a href="osa_browser.html">OSAv20130304</a> <a href='osa_browser.html' title="this Browser version">Schema Browser</a>.</h5></th></tr>
+</TABLE>
+<table border='1' bgcolor=#888888 width='600' cellspacing=3 cellpadding=3 align='center'>
+<colgroup width='38' span='13'>
+</colgroup>
+<tr>
+ <td class='h' align='center'><a href='gloss_a.html'>A</a></td>
+ <td class='h' align='center'><a href='gloss_b.html'>B</a></td>
+ <td class='h' align='center'><a href='gloss_c.html'>C</a></td>
+ <td class='h' align='center'><a href='gloss_d.html'>D</a></td>
+ <td class='h' align='center'><a href='gloss_e.html'>E</a></td>
+ <td class='h' align='center'><a href='gloss_f.html'>F</a></td>
+ <td class='h' align='center'><a href='gloss_g.html'>G</a></td>
+ <td class='h' align='center'><a href='gloss_h.html'>H</a></td>
+ <td class='h' align='center'><a href='gloss_i.html'>I</a></td>
+ <td class='h' align='center'><a href='gloss_j.html'>J</a></td>
+ <td class='h' align='center'><a href='gloss_k.html'>K</a></td>
+ <td class='h' align='center'><a href='gloss_l.html'>L</a></td>
+ <td class='h' align='center'><a href='gloss_m.html'>M</a></td>
+</tr><tr>
+ <td class='h' align='center'><a href='gloss_n.html'>N</a></td>
+ <td class='h' align='center'><a href='gloss_o.html'>O</a></td>
+ <td class='h' align='center'><a href='gloss_p.html'>P</a></td>
+ <td class='h' align='center'><a href='gloss_q.html'>Q</a></td>
+ <td class='h' align='center'><a href='gloss_r.html'>R</a></td>
+ <td class='h' align='center'><a href='gloss_s.html'>S</a></td>
+ <td class='h' align='center'><a href='gloss_t.html'>T</a></td>
+ <td class='h' align='center'><a href='gloss_u.html'>U</a></td>
+ <td class='h' align='center'><a href='gloss_v.html'>V</a></td>
+ <td class='h' align='center'><a href='gloss_w.html'>W</a></td>
+ <td class='h' align='center'><a href='gloss_x.html'>X</a></td>
+ <td class='h' align='center'><a href='gloss_y.html'>Y</a></td>
+ <td class='h' align='center'><a href='gloss_z.html'>Z</a></td>
+</tr>
+</table><p>
+
+<TABLE border=0 bgcolor=#888888 width='1200' cellspacing=3 cellpadding=3>
+<colgroup width='1300'><col width='10%'><col width='10%'><col width='5%'><col width='35%'><col width='5%'><col width='5%'><col width='10%'><col width='10%'><col width='10%'></colgroup>
+<tr><th class='h' colspan='9'><h3>P</h3></th></tr>
+<tr><th class='h'>Name</th><th class='h'>Schema Table</th><th class='h'>Database</th><th class='h'>Description</th><th class='h'>Type</th><th class='h'>Length</th><th class='h'>Unit</th><th class='h'>Default Value</th><th class='h'>Unified Content Descriptor</th></tr>
+<tr> <td class=v>PA</td>
+ <td class=v><span id=nvsssource_pa></span>nvssSource</td>
+ <td class=v>NVSS</td>
+ <td class=v>[-90, 90] Position angle of fitted major axis</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>degress</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>POS_POS-ANG</td>
+</tr>
+<tr> <td class=v>pa</td>
+ <td class=v><span id=atlasdetection_pa></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>ellipse fit orientation to x axis {catalogue&nbsp;TType&nbsp;keyword:&nbsp;Position_angle}<br> Angle of ellipse major axis wrt x axis.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>degrees</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>POS_POS-ANG</td>
+</tr>
+<tr> <td class=v>pa</td>
+ <td class=v><span id=first08jul16source_pa></span><span id=firstsource_pa></span><span id=firstsource12feb16_pa></span>first08Jul16Source, firstSource, firstSource12Feb16</td>
+ <td class=v>FIRST</td>
+ <td class=v>position angle (east of north) derived from the elliptical Gaussian model for the source</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>degrees</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>POS_POS-ANG</td>
+</tr>
+<tr> <td class=v>pa_2mass</td>
+ <td class=v><span id=wise_allskysc_pa_2mass></span>wise_allskysc</td>
+ <td class=v>WISE</td>
+ <td class=v>Position angle (degrees E of N) of the vector from the WISE source to the associated 2MASS PSC source, default if there is no associated 2MASS PSC source.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>degrees</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>pa_2mass</td>
+ <td class=v><span id=wise_prelimsc_pa_2mass></span>wise_prelimsc</td>
+ <td class=v>WISE</td>
+ <td class=v>Position angle (degrees E of N) of the vector from the WISE source to the associated 2MASS PSC source, default if there is no associated 2MASS PSC source</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>degrees</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>pairingCriterion</td>
+ <td class=v><span id=programme_pairingcriterion></span>Programme</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The pairing criterion for associating detections into merged sources</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>Degrees</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>??</td>
+</tr>
+<tr> <td class=v>petroFlux</td>
+ <td class=v><span id=atlasdetection_petroflux></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>flux within circular aperture to k &#215; r_p ; k = 2 {catalogue&nbsp;TType&nbsp;keyword:&nbsp;Petr_flux}</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>ADU</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>PHOT_INTENSITY_ADU</td>
+</tr>
+<tr> <td class=v>petroFluxErr</td>
+ <td class=v><span id=atlasdetection_petrofluxerr></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>error on Petrosian flux {catalogue&nbsp;TType&nbsp;keyword:&nbsp;Petr_flux_err}</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>ADU</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ERROR</td>
+</tr>
+<tr> <td class=v>petroMag</td>
+ <td class=v><span id=atlasdetection_petromag></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Calibrated Petrosian magnitude within circular aperture r_p</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>mag</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>PHOT_INT-MAG</td>
+</tr>
+<tr> <td class=v>petroMagErr</td>
+ <td class=v><span id=atlasdetection_petromagerr></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>error on calibrated Petrosian magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>mag</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ERROR</td>
+</tr>
+<tr> <td class=v>petroRad</td>
+ <td class=v><span id=atlasdetection_petrorad></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>r_p as defined in Yasuda et al. 2001 AJ 112 1104 {catalogue&nbsp;TType&nbsp;keyword:&nbsp;Petr_radius}</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>pixels</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>EXTENSION_RAD</td>
+</tr>
+<tr> <td class=v>PF_DEC</td>
+ <td class=v><span id=mgcbrightspec_pf_dec></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>PFr object declination in deg (J2000)</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PF_JMK</td>
+ <td class=v><span id=mgcbrightspec_pf_jmk></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>PFr J-K colour from 2MASS</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PF_K</td>
+ <td class=v><span id=mgcbrightspec_pf_k></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>PFr K magnitude from 2MASS</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PF_NAME</td>
+ <td class=v><span id=mgcbrightspec_pf_name></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>PFr object name</td>
+ <td class=v>varchar</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PF_R</td>
+ <td class=v><span id=mgcbrightspec_pf_r></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>PFr R magnitude from USNO</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PF_RA</td>
+ <td class=v><span id=mgcbrightspec_pf_ra></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>PFr object right ascension in deg (J2000)</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PF_Z</td>
+ <td class=v><span id=mgcbrightspec_pf_z></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>PFr redshift</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PF_ZQUAL</td>
+ <td class=v><span id=mgcbrightspec_pf_zqual></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>PFr redshift quality</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>pFlag</td>
+ <td class=v><span id=rosat_bsc_pflag></span><span id=rosat_fsc_pflag></span>rosat_bsc, rosat_fsc</td>
+ <td class=v>ROSAT</td>
+ <td class=v>possible problem with position determination</td>
+ <td class=v>varchar</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>pGalaxy</td>
+ <td class=v><span id=atlassource_pgalaxy></span>atlasSource</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Probability that the source is a galaxy</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>STAT_PROP</td>
+</tr>
+<tr> <td class=v>ph_qual</td>
+ <td class=v><span id=twomass_psc_ph_qual></span>twomass_psc</td>
+ <td class=v>2MASS</td>
+ <td class=v>Photometric quality flag.</td>
+ <td class=v>varchar</td>
+ <td class=v>3</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_QUALITY</td>
+</tr>
+<tr> <td class=v>ph_qual</td>
+ <td class=v><span id=twomass_sixx2_psc_ph_qual></span>twomass_sixx2_psc</td>
+ <td class=v>2MASS</td>
+ <td class=v>flag indicating photometric quality of source</td>
+ <td class=v>varchar</td>
+ <td class=v>3</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>ph_qual</td>
+ <td class=v><span id=wise_allskysc_ph_qual></span>wise_allskysc</td>
+ <td class=v>WISE</td>
+ <td class=v>Photometric quality flag.<br> Four character flag, one character per band [W1/W2/W3/W4], that provides a shorthand summary of the quality of the profile-fit photometry measurement in each band, as derived from the measurement signal-to-noise ratio.</td>
+ <td class=v>char</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>ph_qual</td>
+ <td class=v><span id=wise_prelimsc_ph_qual></span>wise_prelimsc</td>
+ <td class=v>WISE</td>
+ <td class=v>Photometric quality flag<br> Four character flag, one character per band [W1/W2/W3/W4], that provides a shorthand summary of the quality of the profile-fit photometry measurement in each band, as derived from the measurement signal-to-noise ratio</td>
+ <td class=v>char</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>phaRange</td>
+ <td class=v><span id=rosat_bsc_pharange></span><span id=rosat_fsc_pharange></span>rosat_bsc, rosat_fsc</td>
+ <td class=v>ROSAT</td>
+ <td class=v>PHA range with highest detection likelihood</td>
+ <td class=v>varchar</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>pHeight</td>
+ <td class=v><span id=atlasdetection_pheight></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Highest pixel value above sky {catalogue&nbsp;TType&nbsp;keyword:&nbsp;Peak_height}<br> In counts relative to local value of sky - also zeroth order aperture flux.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>ADU</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>PHOT_COUNTS_MISC</td>
+</tr>
+<tr> <td class=v>pHeightErr</td>
+ <td class=v><span id=atlasdetection_pheighterr></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Error in peak height {catalogue&nbsp;TType&nbsp;keyword:&nbsp;Peak_height_err}</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>ADU</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ERROR</td>
+</tr>
+<tr> <td class=v>phi_opt</td>
+ <td class=v><span id=twomass_psc_phi_opt></span>twomass_psc</td>
+ <td class=v>2MASS</td>
+ <td class=v>Position angle on the sky of the vector from the the associated optical source to the TWOMASS source position, in degrees East of North.</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>degrees</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>POS_POS-ANG</td>
+</tr>
+<tr> <td class=v>photZPCat</td>
+ <td class=v><span id=multiframedetector_photzpcat></span>MultiframeDetector</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Photometric zero point for default extinction for the catalogue data {catalogue&nbsp;extension&nbsp;keyword:&nbsp; MAGZPT}</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>mags</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>??</td>
+</tr>
+<tr> <td class=v>photZPCat</td>
+ <td class=v><span id=previousmfdzp_photzpcat></span>PreviousMFDZP</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Photometric zeropoint for default extinction in catalogue header</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>mag</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>photZPErrCat</td>
+ <td class=v><span id=multiframedetector_photzperrcat></span>MultiframeDetector</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Photometric zero point error for the catalogue data {catalogue&nbsp;extension&nbsp;keyword:&nbsp; MAGZRR}</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>mags</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>??</td>
+</tr>
+<tr> <td class=v>photZPErrCat</td>
+ <td class=v><span id=previousmfdzp_photzperrcat></span>PreviousMFDZP</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Photometric zeropoint error in catalogue header</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>mag</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>picoi</td>
+ <td class=v><span id=multiframe_picoi></span>Multiframe</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>PI-COI name {image&nbsp;primary&nbsp;HDU&nbsp;keyword:&nbsp;PI-COI}</td>
+ <td class=v>varchar</td>
+ <td class=v>64</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>NONE</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>Pix_x_I</td>
+ <td class=v><span id=denisdr3source_pix_x_i></span>denisDR3Source</td>
+ <td class=v>DENIS</td>
+ <td class=v>Pixel x position in I band</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>pix</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>Pix_x_J</td>
+ <td class=v><span id=denisdr3source_pix_x_j></span>denisDR3Source</td>
+ <td class=v>DENIS</td>
+ <td class=v>Pixel x position in J band</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>pix</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>Pix_x_K</td>
+ <td class=v><span id=denisdr3source_pix_x_k></span>denisDR3Source</td>
+ <td class=v>DENIS</td>
+ <td class=v>Pixel x position in K band</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>pix</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>Pix_y_I</td>
+ <td class=v><span id=denisdr3source_pix_y_i></span>denisDR3Source</td>
+ <td class=v>DENIS</td>
+ <td class=v>Pixel y position in I band</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>pix</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>Pix_y_J</td>
+ <td class=v><span id=denisdr3source_pix_y_j></span>denisDR3Source</td>
+ <td class=v>DENIS</td>
+ <td class=v>Pixel y position in J band</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>pix</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>Pix_y_K</td>
+ <td class=v><span id=denisdr3source_pix_y_k></span>denisDR3Source</td>
+ <td class=v>DENIS</td>
+ <td class=v>Pixel y position in K band</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>pix</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>pmDec</td>
+ <td class=v><span id=ukirtfsstars_pmdec></span>ukirtFSstars</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Proper motion in Dec</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>arcsec per year</td>
+ <td class=v>0.0</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>pmRA</td>
+ <td class=v><span id=ukirtfsstars_pmra></span>ukirtFSstars</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Proper motion in RA</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>arcsec per year</td>
+ <td class=v>0.0</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_1_BG</td>
+ <td class=v><span id=twoxmm_pn_1_bg></span><span id=twoxmm_v1_2_pn_1_bg></span><span id=twoxmmi_dr3_v1_0_pn_1_bg></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN band 1 background map.<br> Made using a 12 x 12 nodes spline fit on the source-free individual-band images.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/pixel</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_1_DET_ML</td>
+ <td class=v><span id=twoxmm_pn_1_det_ml></span><span id=twoxmm_v1_2_pn_1_det_ml></span><span id=twoxmmi_dr3_v1_0_pn_1_det_ml></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 1 Maximum likelihood</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_1_EXP</td>
+ <td class=v><span id=twoxmm_pn_1_exp></span><span id=twoxmm_v1_2_pn_1_exp></span><span id=twoxmmi_dr3_v1_0_pn_1_exp></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN band 1 exposure map, combining the mirror vignetting, detector efficiency, bad pixels and CCD gaps.<br> The PSF weighted mean of the area of the subimages (radius 60 arcseconds) in the individual-band exposure maps.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_1_FLUX</td>
+ <td class=v><span id=twoxmm_pn_1_flux></span><span id=twoxmm_v1_2_pn_1_flux></span><span id=twoxmmi_dr3_v1_0_pn_1_flux></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 1 flux</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_1_FLUX_ERR</td>
+ <td class=v><span id=twoxmm_pn_1_flux_err></span><span id=twoxmm_v1_2_pn_1_flux_err></span><span id=twoxmmi_dr3_v1_0_pn_1_flux_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 1 flux error</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_1_RATE</td>
+ <td class=v><span id=twoxmm_pn_1_rate></span><span id=twoxmm_v1_2_pn_1_rate></span><span id=twoxmmi_dr3_v1_0_pn_1_rate></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 1 Count rates</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_1_RATE_ERR</td>
+ <td class=v><span id=twoxmm_pn_1_rate_err></span><span id=twoxmm_v1_2_pn_1_rate_err></span><span id=twoxmmi_dr3_v1_0_pn_1_rate_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 1 Count rates error</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_1_VIG</td>
+ <td class=v><span id=twoxmm_pn_1_vig></span><span id=twoxmm_v1_2_pn_1_vig></span><span id=twoxmmi_dr3_v1_0_pn_1_vig></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN band 1 vignetting value.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_2_BG</td>
+ <td class=v><span id=twoxmm_pn_2_bg></span><span id=twoxmm_v1_2_pn_2_bg></span><span id=twoxmmi_dr3_v1_0_pn_2_bg></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN band 2 background map.<br> Made using a 12 x 12 nodes spline fit on the source-free individual-band images.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/pixel</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_2_DET_ML</td>
+ <td class=v><span id=twoxmm_pn_2_det_ml></span><span id=twoxmm_v1_2_pn_2_det_ml></span><span id=twoxmmi_dr3_v1_0_pn_2_det_ml></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 2 Maximum likelihood</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_2_EXP</td>
+ <td class=v><span id=twoxmm_pn_2_exp></span><span id=twoxmm_v1_2_pn_2_exp></span><span id=twoxmmi_dr3_v1_0_pn_2_exp></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN band 2 exposure map, combining the mirror vignetting, detector efficiency, bad pixels and CCD gaps.<br> The PSF weighted mean of the area of the subimages (radius 60 arcseconds) in the individual-band exposure maps.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_2_FLUX</td>
+ <td class=v><span id=twoxmm_pn_2_flux></span><span id=twoxmm_v1_2_pn_2_flux></span><span id=twoxmmi_dr3_v1_0_pn_2_flux></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 2 flux</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_2_FLUX_ERR</td>
+ <td class=v><span id=twoxmm_pn_2_flux_err></span><span id=twoxmm_v1_2_pn_2_flux_err></span><span id=twoxmmi_dr3_v1_0_pn_2_flux_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 2 flux error</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_2_RATE</td>
+ <td class=v><span id=twoxmm_pn_2_rate></span><span id=twoxmm_v1_2_pn_2_rate></span><span id=twoxmmi_dr3_v1_0_pn_2_rate></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 2 Count rates</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_2_RATE_ERR</td>
+ <td class=v><span id=twoxmm_pn_2_rate_err></span><span id=twoxmm_v1_2_pn_2_rate_err></span><span id=twoxmmi_dr3_v1_0_pn_2_rate_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 2 Count rates error</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_2_VIG</td>
+ <td class=v><span id=twoxmm_pn_2_vig></span><span id=twoxmm_v1_2_pn_2_vig></span><span id=twoxmmi_dr3_v1_0_pn_2_vig></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN band 2 vignetting value.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_3_BG</td>
+ <td class=v><span id=twoxmm_pn_3_bg></span><span id=twoxmm_v1_2_pn_3_bg></span><span id=twoxmmi_dr3_v1_0_pn_3_bg></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN band 3 background map.<br> Made using a 12 x 12 nodes spline fit on the source-free individual-band images.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/pixel</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_3_DET_ML</td>
+ <td class=v><span id=twoxmm_pn_3_det_ml></span><span id=twoxmm_v1_2_pn_3_det_ml></span><span id=twoxmmi_dr3_v1_0_pn_3_det_ml></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 3 Maximum likelihood</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_3_EXP</td>
+ <td class=v><span id=twoxmm_pn_3_exp></span><span id=twoxmm_v1_2_pn_3_exp></span><span id=twoxmmi_dr3_v1_0_pn_3_exp></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN band 3 exposure map, combining the mirror vignetting, detector efficiency, bad pixels and CCD gaps.<br> The PSF weighted mean of the area of the subimages (radius 60 arcseconds) in the individual-band exposure maps.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_3_FLUX</td>
+ <td class=v><span id=twoxmm_pn_3_flux></span><span id=twoxmm_v1_2_pn_3_flux></span><span id=twoxmmi_dr3_v1_0_pn_3_flux></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 3 flux</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_3_FLUX_ERR</td>
+ <td class=v><span id=twoxmm_pn_3_flux_err></span><span id=twoxmm_v1_2_pn_3_flux_err></span><span id=twoxmmi_dr3_v1_0_pn_3_flux_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 3 flux error</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_3_RATE</td>
+ <td class=v><span id=twoxmm_pn_3_rate></span><span id=twoxmm_v1_2_pn_3_rate></span><span id=twoxmmi_dr3_v1_0_pn_3_rate></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 3 Count rates</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_3_RATE_ERR</td>
+ <td class=v><span id=twoxmm_pn_3_rate_err></span><span id=twoxmm_v1_2_pn_3_rate_err></span><span id=twoxmmi_dr3_v1_0_pn_3_rate_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 3 Count rates error</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_3_VIG</td>
+ <td class=v><span id=twoxmm_pn_3_vig></span><span id=twoxmm_v1_2_pn_3_vig></span><span id=twoxmmi_dr3_v1_0_pn_3_vig></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN band 3 vignetting value.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_4_BG</td>
+ <td class=v><span id=twoxmm_pn_4_bg></span><span id=twoxmm_v1_2_pn_4_bg></span><span id=twoxmmi_dr3_v1_0_pn_4_bg></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN band 4 background map.<br> Made using a 12 x 12 nodes spline fit on the source-free individual-band images.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/pixel</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_4_DET_ML</td>
+ <td class=v><span id=twoxmm_pn_4_det_ml></span><span id=twoxmm_v1_2_pn_4_det_ml></span><span id=twoxmmi_dr3_v1_0_pn_4_det_ml></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 4 Maximum likelihood</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_4_EXP</td>
+ <td class=v><span id=twoxmm_pn_4_exp></span><span id=twoxmm_v1_2_pn_4_exp></span><span id=twoxmmi_dr3_v1_0_pn_4_exp></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN band 4 exposure map, combining the mirror vignetting, detector efficiency, bad pixels and CCD gaps.<br> The PSF weighted mean of the area of the subimages (radius 60 arcseconds) in the individual-band exposure maps.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_4_FLUX</td>
+ <td class=v><span id=twoxmm_pn_4_flux></span><span id=twoxmm_v1_2_pn_4_flux></span><span id=twoxmmi_dr3_v1_0_pn_4_flux></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 4 flux</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_4_FLUX_ERR</td>
+ <td class=v><span id=twoxmm_pn_4_flux_err></span><span id=twoxmm_v1_2_pn_4_flux_err></span><span id=twoxmmi_dr3_v1_0_pn_4_flux_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 4 flux error</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_4_RATE</td>
+ <td class=v><span id=twoxmm_pn_4_rate></span><span id=twoxmm_v1_2_pn_4_rate></span><span id=twoxmmi_dr3_v1_0_pn_4_rate></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 4 Count rates</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_4_RATE_ERR</td>
+ <td class=v><span id=twoxmm_pn_4_rate_err></span><span id=twoxmm_v1_2_pn_4_rate_err></span><span id=twoxmmi_dr3_v1_0_pn_4_rate_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 4 Count rates error</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_4_VIG</td>
+ <td class=v><span id=twoxmm_pn_4_vig></span><span id=twoxmm_v1_2_pn_4_vig></span><span id=twoxmmi_dr3_v1_0_pn_4_vig></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN band 4 vignetting value.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_5_BG</td>
+ <td class=v><span id=twoxmm_pn_5_bg></span><span id=twoxmm_v1_2_pn_5_bg></span><span id=twoxmmi_dr3_v1_0_pn_5_bg></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN band 5 background map.<br> Made using a 12 x 12 nodes spline fit on the source-free individual-band images.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/pixel</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_5_DET_ML</td>
+ <td class=v><span id=twoxmm_pn_5_det_ml></span><span id=twoxmm_v1_2_pn_5_det_ml></span><span id=twoxmmi_dr3_v1_0_pn_5_det_ml></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 5 Maximum likelihood</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_5_EXP</td>
+ <td class=v><span id=twoxmm_pn_5_exp></span><span id=twoxmm_v1_2_pn_5_exp></span><span id=twoxmmi_dr3_v1_0_pn_5_exp></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN band 5 exposure map, combining the mirror vignetting, detector efficiency, bad pixels and CCD gaps.<br> The PSF weighted mean of the area of the subimages (radius 60 arcseconds) in the individual-band exposure maps.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_5_FLUX</td>
+ <td class=v><span id=twoxmm_pn_5_flux></span><span id=twoxmm_v1_2_pn_5_flux></span><span id=twoxmmi_dr3_v1_0_pn_5_flux></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 5 flux</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_5_FLUX_ERR</td>
+ <td class=v><span id=twoxmm_pn_5_flux_err></span><span id=twoxmm_v1_2_pn_5_flux_err></span><span id=twoxmmi_dr3_v1_0_pn_5_flux_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 5 flux error</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_5_RATE</td>
+ <td class=v><span id=twoxmm_pn_5_rate></span><span id=twoxmm_v1_2_pn_5_rate></span><span id=twoxmmi_dr3_v1_0_pn_5_rate></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 5 Count rates</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_5_RATE_ERR</td>
+ <td class=v><span id=twoxmm_pn_5_rate_err></span><span id=twoxmm_v1_2_pn_5_rate_err></span><span id=twoxmmi_dr3_v1_0_pn_5_rate_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 5 Count rates error</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_5_VIG</td>
+ <td class=v><span id=twoxmm_pn_5_vig></span><span id=twoxmm_v1_2_pn_5_vig></span><span id=twoxmmi_dr3_v1_0_pn_5_vig></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN band 5 vignetting value.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_8_CTS</td>
+ <td class=v><span id=twoxmm_pn_8_cts></span><span id=twoxmm_v1_2_pn_8_cts></span><span id=twoxmmi_dr3_v1_0_pn_8_cts></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>Combined band source counts</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_8_CTS_ERR</td>
+ <td class=v><span id=twoxmm_pn_8_cts_err></span><span id=twoxmm_v1_2_pn_8_cts_err></span><span id=twoxmmi_dr3_v1_0_pn_8_cts_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>Combined band source counts 1 &sigma; error</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_8_DET_ML</td>
+ <td class=v><span id=twoxmm_pn_8_det_ml></span><span id=twoxmm_v1_2_pn_8_det_ml></span><span id=twoxmmi_dr3_v1_0_pn_8_det_ml></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 8 Maximum likelihood</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_8_FLUX</td>
+ <td class=v><span id=twoxmm_pn_8_flux></span><span id=twoxmm_v1_2_pn_8_flux></span><span id=twoxmmi_dr3_v1_0_pn_8_flux></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 8 flux</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_8_FLUX_ERR</td>
+ <td class=v><span id=twoxmm_pn_8_flux_err></span><span id=twoxmm_v1_2_pn_8_flux_err></span><span id=twoxmmi_dr3_v1_0_pn_8_flux_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 8 flux error</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_8_RATE</td>
+ <td class=v><span id=twoxmm_pn_8_rate></span><span id=twoxmm_v1_2_pn_8_rate></span><span id=twoxmmi_dr3_v1_0_pn_8_rate></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 8 Count rates</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_8_RATE_ERR</td>
+ <td class=v><span id=twoxmm_pn_8_rate_err></span><span id=twoxmm_v1_2_pn_8_rate_err></span><span id=twoxmmi_dr3_v1_0_pn_8_rate_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 8 Count rates error</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_9_DET_ML</td>
+ <td class=v><span id=twoxmm_pn_9_det_ml></span><span id=twoxmm_v1_2_pn_9_det_ml></span><span id=twoxmmi_dr3_v1_0_pn_9_det_ml></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 9 Maximum likelihood</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_9_FLUX</td>
+ <td class=v><span id=twoxmm_pn_9_flux></span><span id=twoxmm_v1_2_pn_9_flux></span><span id=twoxmmi_dr3_v1_0_pn_9_flux></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 9 flux</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_9_FLUX_ERR</td>
+ <td class=v><span id=twoxmm_pn_9_flux_err></span><span id=twoxmm_v1_2_pn_9_flux_err></span><span id=twoxmmi_dr3_v1_0_pn_9_flux_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 9 flux error</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_9_RATE</td>
+ <td class=v><span id=twoxmm_pn_9_rate></span><span id=twoxmm_v1_2_pn_9_rate></span><span id=twoxmmi_dr3_v1_0_pn_9_rate></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 9 Count rates</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_9_RATE_ERR</td>
+ <td class=v><span id=twoxmm_pn_9_rate_err></span><span id=twoxmm_v1_2_pn_9_rate_err></span><span id=twoxmmi_dr3_v1_0_pn_9_rate_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN band 9 Count rates error</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_CHI2PROB</td>
+ <td class=v><span id=twoxmm_pn_chi2prob></span><span id=twoxmm_v1_2_pn_chi2prob></span><span id=twoxmmi_dr3_v1_0_pn_chi2prob></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The Chi&sup2; probability (based on the null hypothesis) that the source as detected by the PN camera is constant.<br> The Pearson approximation to Chi&sup2; for Poissonian data was used, in which the model is used as the estimator of its own variance . If more than one exposure (that is, time series) is available for this source the smallest value of probability was used.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_FILTER</td>
+ <td class=v><span id=twoxmm_pn_filter></span><span id=twoxmm_v1_2_pn_filter></span><span id=twoxmmi_dr3_v1_0_pn_filter></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN filter. The options are Thick, Medium, Thin1, Thin2, and Open, depending on the efficiency of the optical blocking.</td>
+ <td class=v>varchar</td>
+ <td class=v>6</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_FLAG</td>
+ <td class=v><span id=twoxmm_pn_flag></span><span id=twoxmm_v1_2_pn_flag></span><span id=twoxmmi_dr3_v1_0_pn_flag></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN flag string made of the flags 1 - 12 (counted from left to right) for the PN source detection.<br> In case where the camera was not used in the source detection a dash is given. In case a source was not detected by the PN the flags are all set to False (default). Flag 10 is not used.</td>
+ <td class=v>varchar</td>
+ <td class=v>12</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_HR1</td>
+ <td class=v><span id=twoxmm_pn_hr1></span><span id=twoxmm_v1_2_pn_hr1></span><span id=twoxmmi_dr3_v1_0_pn_hr1></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN hardness ratio between the bands 1 &amp; 2<br> In the case where the rate in one band is 0.0 (i.e., too faint to be detected in this band) the hardness ratio will be -1 or +1 which is only a lower or upper limit, respectively.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_HR1_ERR</td>
+ <td class=v><span id=twoxmm_pn_hr1_err></span><span id=twoxmm_v1_2_pn_hr1_err></span><span id=twoxmmi_dr3_v1_0_pn_hr1_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The 1 &sigma; error of the PN hardness ratio between the bands 1 &amp; 2</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_HR2</td>
+ <td class=v><span id=twoxmm_pn_hr2></span><span id=twoxmm_v1_2_pn_hr2></span><span id=twoxmmi_dr3_v1_0_pn_hr2></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN hardness ratio between the bands 2 &amp; 3<br> In the case where the rate in one band is 0.0 (i.e., too faint to be detected in this band) the hardness ratio will be -1 or +1 which is only a lower or upper limit, respectively.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_HR2_ERR</td>
+ <td class=v><span id=twoxmm_pn_hr2_err></span><span id=twoxmm_v1_2_pn_hr2_err></span><span id=twoxmmi_dr3_v1_0_pn_hr2_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The 1 &sigma; error of the PN hardness ratio between the bands 2 &amp; 3</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_HR3</td>
+ <td class=v><span id=twoxmm_pn_hr3></span><span id=twoxmm_v1_2_pn_hr3></span><span id=twoxmmi_dr3_v1_0_pn_hr3></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN hardness ratio between the bands 3 &amp; 4<br> In the case where the rate in one band is 0.0 (i.e., too faint to be detected in this band) the hardness ratio will be -1 or +1 which is only a lower or upper limit, respectively.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_HR3_ERR</td>
+ <td class=v><span id=twoxmm_pn_hr3_err></span><span id=twoxmm_v1_2_pn_hr3_err></span><span id=twoxmmi_dr3_v1_0_pn_hr3_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The 1 &sigma; error of the PN hardness ratio between the bands 3 &amp; 4</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_HR4</td>
+ <td class=v><span id=twoxmm_pn_hr4></span><span id=twoxmm_v1_2_pn_hr4></span><span id=twoxmmi_dr3_v1_0_pn_hr4></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN hardness ratio between the bands 4 &amp; 5<br> In the case where the rate in one band is 0.0 (i.e., too faint to be detected in this band) the hardness ratio will be -1 or +1 which is only a lower or upper limit, respectively.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_HR4_ERR</td>
+ <td class=v><span id=twoxmm_pn_hr4_err></span><span id=twoxmm_v1_2_pn_hr4_err></span><span id=twoxmmi_dr3_v1_0_pn_hr4_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The 1 &sigma; error of the PN hardness ratio between the bands 4 &amp; 5</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_MASKFRAC</td>
+ <td class=v><span id=twoxmm_pn_maskfrac></span><span id=twoxmm_v1_2_pn_maskfrac></span><span id=twoxmmi_dr3_v1_0_pn_maskfrac></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PSF weighted mean of the detector coverage of a detection as derived from the detection mask.<br> Sources which have less than 0.15 of their PSF covered by the detector are considered as being not detected.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_OFFAX</td>
+ <td class=v><span id=twoxmm_pn_offax></span><span id=twoxmm_v1_2_pn_offax></span><span id=twoxmmi_dr3_v1_0_pn_offax></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN offaxis angle (the distance between the detection position and the onaxis position on the respective detector).<br> The offaxis angle for a camera can be larger than 15 arcminutes when the detection is located outside the FOV of that camera.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>arcmin</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_ONTIME</td>
+ <td class=v><span id=twoxmm_pn_ontime></span><span id=twoxmm_v1_2_pn_ontime></span><span id=twoxmmi_dr3_v1_0_pn_ontime></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The PN ontime value (the total good exposure time (after GTI filtering) of the CCD where the detection is positioned).<br> If a source position falls into CCD gaps or outside of the detector it will have a NULL given.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>PN_SUBMODE</td>
+ <td class=v><span id=twoxmm_pn_submode></span><span id=twoxmm_v1_2_pn_submode></span><span id=twoxmmi_dr3_v1_0_pn_submode></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>PN observing mode. The options are full frame mode with the full FOV exposed (in two sub-modes), and large window mode with only parts of the FOV exposed.</td>
+ <td class=v>varchar</td>
+ <td class=v>23</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>pNearH</td>
+ <td class=v><span id=iras_psc_pnearh></span>iras_psc</td>
+ <td class=v>IRAS</td>
+ <td class=v>Number of nearby hours-confirmed point sources</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>NUMBER</td>
+</tr>
+<tr> <td class=v>pNearW</td>
+ <td class=v><span id=iras_psc_pnearw></span>iras_psc</td>
+ <td class=v>IRAS</td>
+ <td class=v>Number of nearby weeks-confirmed point sources</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>NUMBER</td>
+</tr>
+<tr> <td class=v>pNoise</td>
+ <td class=v><span id=atlassource_pnoise></span>atlasSource</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Probability that the source is noise</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>STAT_PROP</td>
+</tr>
+<tr> <td class=v>polFlux</td>
+ <td class=v><span id=nvsssource_polflux></span>nvssSource</td>
+ <td class=v>NVSS</td>
+ <td class=v>Integrated linearly polarized flux density</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>mJy</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>PHOT_FLUX_LINEAR</td>
+</tr>
+<tr> <td class=v>polPA</td>
+ <td class=v><span id=nvsssource_polpa></span>nvssSource</td>
+ <td class=v>NVSS</td>
+ <td class=v>[-90,90] The position angle of polFlux</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>degress</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>POS_POS-EQ</td>
+</tr>
+<tr> <td class=v>pos</td>
+ <td class=v><span id=iras_asc_pos></span>iras_asc</td>
+ <td class=v>IRAS</td>
+ <td class=v>Position Angle from IRAS Source to Association (E of N)</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>degrees</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>POS_POS-ANG</td>
+</tr>
+<tr> <td class=v>posAng</td>
+ <td class=v><span id=iras_psc_posang></span>iras_psc</td>
+ <td class=v>IRAS</td>
+ <td class=v>Uncertainty ellipse position angle (East of North)</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>degrees</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>POS_POS-ANG</td>
+</tr>
+<tr> <td class=v>posAngle</td>
+ <td class=v><span id=currentastrometry_posangle></span>CurrentAstrometry</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>orientation of image x-axis to N-S</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>Degrees</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>POS_POS-ANG</td>
+</tr>
+<tr> <td class=v>posAngle</td>
+ <td class=v><span id=requiredstack_posangle></span>RequiredStack</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Orientation of image x-axis to N-S</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>deg</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>posAngleTolerance</td>
+ <td class=v><span id=programme_posangletolerance></span>Programme</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The position angle tolerance used when creating deep stacks and tiles</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>Degrees</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>??</td>
+</tr>
+<tr> <td class=v>POSERR</td>
+ <td class=v><span id=twoxmm_poserr></span><span id=twoxmm_v1_2_poserr></span><span id=twoxmmi_dr3_v1_0_poserr></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>Total position uncertainty in arcseconds calculated by combining the statistical error RADEC_ERR and the systematic error SYSERR as follows: POSERR = SQRT ( RADEC_ERR&sup2; + SYSERR&sup2; ).</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>arcsec</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>ppErrBits</td>
+ <td class=v><span id=atlasdetection_pperrbits></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>additional WFAU post-processing error bits</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>0</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>ppErrBitsStatus</td>
+ <td class=v><span id=programmeframe_pperrbitsstatus></span>ProgrammeFrame</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Bit flag to denote whether detection quality flagging has been done on this multiframe for this programme.</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>0</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>previewv</td>
+ <td class=v><span id=multiframe_previewv></span>Multiframe</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Version of previe {image&nbsp;primary&nbsp;HDU&nbsp;keyword:&nbsp;PREVIEWV}</td>
+ <td class=v>varchar</td>
+ <td class=v>64</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>NONE</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>priFlgLb</td>
+ <td class=v><span id=rosat_bsc_priflglb></span><span id=rosat_fsc_priflglb></span>rosat_bsc, rosat_fsc</td>
+ <td class=v>ROSAT</td>
+ <td class=v>priority flag L-broad</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>priFlgLh</td>
+ <td class=v><span id=rosat_bsc_priflglh></span><span id=rosat_fsc_priflglh></span>rosat_bsc, rosat_fsc</td>
+ <td class=v>ROSAT</td>
+ <td class=v>priority flag L-hard</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>priFlgLs</td>
+ <td class=v><span id=rosat_bsc_priflgls></span><span id=rosat_fsc_priflgls></span>rosat_bsc, rosat_fsc</td>
+ <td class=v>ROSAT</td>
+ <td class=v>priority flag L-soft</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>priFlgMb</td>
+ <td class=v><span id=rosat_bsc_priflgmb></span><span id=rosat_fsc_priflgmb></span>rosat_bsc, rosat_fsc</td>
+ <td class=v>ROSAT</td>
+ <td class=v>priority flag M-broad</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>priFlgMh</td>
+ <td class=v><span id=rosat_bsc_priflgmh></span><span id=rosat_fsc_priflgmh></span>rosat_bsc, rosat_fsc</td>
+ <td class=v>ROSAT</td>
+ <td class=v>priority flag M-hard</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>priFlgMs</td>
+ <td class=v><span id=rosat_bsc_priflgms></span><span id=rosat_fsc_priflgms></span>rosat_bsc, rosat_fsc</td>
+ <td class=v>ROSAT</td>
+ <td class=v>priority flag M-soft</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>priOrSec</td>
+ <td class=v><span id=atlassource_priorsec></span>atlasSource</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Seam code for a unique (=0) or duplicated (!=0) source (eg. flags overlap duplicates).</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-99999999</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>productID</td>
+ <td class=v><span id=programmeframe_productid></span>ProgrammeFrame</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Product ID of deep stack frame (or intermediate stack if used as a deep stack). {image&nbsp;primary&nbsp;HDU&nbsp;keyword:&nbsp;PRODID}</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-99999999</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>productID</td>
+ <td class=v><span id=requireddiffimage_productid></span>RequiredDiffImage</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>A unique identifier assigned to each required difference image product entry</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>??</td>
+</tr>
+<tr> <td class=v>productID</td>
+ <td class=v><span id=requiredstack_productid></span>RequiredStack</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>A unique identifier assigned to each required stack product entry</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>??</td>
+</tr>
+<tr> <td class=v>programmeID</td>
+ <td class=v><span id=productlinks_programmeid></span><span id=programmecurationhistory_programmeid></span><span id=programmetable_programmeid></span><span id=requireddiffimage_programmeid></span><span id=requiredfilters_programmeid></span><span id=requiredlistdrivenproduct_programmeid></span><span id=requiredneighbours_programmeid></span><span id=requiredstack_programmeid></span>ProductLinks, ProgrammeCurationHistory, ProgrammeTable, RequiredDiffImage, RequiredFilters, RequiredListDrivenProduct, RequiredNeighbours, RequiredStack</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>the unique programme ID</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_SURVEY</td>
+</tr>
+<tr> <td class=v>programmeID</td>
+ <td class=v><span id=programme_programmeid></span>Programme</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>UID of the archived programme coded as above</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_SURVEY</td>
+</tr>
+<tr> <td class=v>programmeID</td>
+ <td class=v><span id=programmeframe_programmeid></span>ProgrammeFrame</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>VSA assigned programme UID {image&nbsp;primary&nbsp;HDU&nbsp;keyword:&nbsp;HIERARCH ESO OBS PROG ID}</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-99999999</td>
+ <td class=v>ID_SURVEY</td>
+</tr>
+<tr> <td class=v>programmeID</td>
+ <td class=v><span id=surveyprogrammes_programmeid></span>SurveyProgrammes</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>OSA assigned programme UID {image&nbsp;primary&nbsp;HDU&nbsp;keyword:&nbsp;PROJECT}</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-99999999</td>
+ <td class=v>ID_SURVEY</td>
+</tr>
+<tr> <td class=v>project</td>
+ <td class=v><span id=multiframe_project></span>Multiframe</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Time-allocation code</td>
+ <td class=v>varchar</td>
+ <td class=v>64</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>NONE</td>
+ <td class=v>REFER_CODE</td>
+</tr>
+<tr> <td class=v>propPeriod</td>
+ <td class=v><span id=programme_propperiod></span>Programme</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>the proprietory period for any data taken for this programme in months, e.g. 12 for open time.</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>months</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>TIME_PERIOD</td>
+</tr>
+<tr> <td class=v>proprietary</td>
+ <td class=v><span id=survey_proprietary></span>Survey</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Logical flag indicating whether a survey is proprietary or not (1=yes; 0=no)</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>??</td>
+</tr>
+<tr> <td class=v>prox</td>
+ <td class=v><span id=twomass_psc_prox></span><span id=twomass_xsc_prox></span>twomass_psc, twomass_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v>Proximity.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>arcsec</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>POS_ANG_DIST_GENERAL</td>
+</tr>
+<tr> <td class=v>pSaturated</td>
+ <td class=v><span id=atlassource_psaturated></span>atlasSource</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Probability that the source is saturated</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>STAT_PROP</td>
+</tr>
+<tr> <td class=v>psfFitChi2</td>
+ <td class=v><span id=atlasdetection_psffitchi2></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>standard normalised variance of PSF fit {catalogue&nbsp;TType&nbsp;keyword:&nbsp;PSF_fit_chi2}</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>FIT_STDEV</td>
+</tr>
+<tr> <td class=v>psfFitDof</td>
+ <td class=v><span id=atlasdetection_psffitdof></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>no. of degrees of freedom of PSF fit {catalogue&nbsp;TType&nbsp;keyword:&nbsp;PSF_fit_dof}</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9999</td>
+ <td class=v>STAT_N-DOF</td>
+</tr>
+<tr> <td class=v>psfFitX</td>
+ <td class=v><span id=atlasdetection_psffitx></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>PSF-fitted X coordinate {catalogue&nbsp;TType&nbsp;keyword:&nbsp;PSF_fit_X}</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>pixels</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>POS_PLATE_X</td>
+</tr>
+<tr> <td class=v>psfFitXerr</td>
+ <td class=v><span id=atlasdetection_psffitxerr></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Error on PSF-fitted X coordinate {catalogue&nbsp;TType&nbsp;keyword:&nbsp;PSF_fit_X_err}</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>pixels</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>ERROR</td>
+</tr>
+<tr> <td class=v>psfFitY</td>
+ <td class=v><span id=atlasdetection_psffity></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>PSF-fitted Y coordinate {catalogue&nbsp;TType&nbsp;keyword:&nbsp;PSF_fit_Y}</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>pixels</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>POS_PLATE_Y</td>
+</tr>
+<tr> <td class=v>psfFitYerr</td>
+ <td class=v><span id=atlasdetection_psffityerr></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Error on PSF-fitted Y coordinate {catalogue&nbsp;TType&nbsp;keyword:&nbsp;PSF_fit_y_err}</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>pixels</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>ERROR</td>
+</tr>
+<tr> <td class=v>psfFlux</td>
+ <td class=v><span id=atlasdetection_psfflux></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>PSF-fitted flux {catalogue&nbsp;TType&nbsp;keyword:&nbsp;PSF_flux}</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>ADU</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>PHOT_INTENSITY_ADU</td>
+</tr>
+<tr> <td class=v>psfFluxErr</td>
+ <td class=v><span id=atlasdetection_psffluxerr></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Error on PSF-fitted flux {catalogue&nbsp;TType&nbsp;keyword:&nbsp;PSF_flux_err}</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>ADU</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>ERROR</td>
+</tr>
+<tr> <td class=v>psfMag</td>
+ <td class=v><span id=atlasdetection_psfmag></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>PSF-fitted calibrated magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>mag</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>PHOT_PROFILE</td>
+</tr>
+<tr> <td class=v>psfMagErr</td>
+ <td class=v><span id=atlasdetection_psfmagerr></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Error on PSF-fitted calibrated magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>mag</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>ERROR</td>
+</tr>
+<tr> <td class=v>pStar</td>
+ <td class=v><span id=atlassource_pstar></span>atlasSource</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Probability that the source is a star</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>STAT_PROP</td>
+</tr>
+<tr> <td class=v>pts_key</td>
+ <td class=v><span id=twomass_psc_pts_key></span>twomass_psc</td>
+ <td class=v>2MASS</td>
+ <td class=v>A unique identification number for the PSC source.</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_NUMBER</td>
+</tr>
+<tr> <td class=v>pts_key</td>
+ <td class=v><span id=twomass_xsc_pts_key></span>twomass_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v>key to point source data DB record.</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_NUMBER</td>
+</tr>
+<tr> <td class=v>pxcntr</td>
+ <td class=v><span id=twomass_psc_pxcntr></span>twomass_psc</td>
+ <td class=v>2MASS</td>
+ <td class=v>The pts_key value of the nearest source in the PSC.</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>NUMBER</td>
+</tr>
+<tr> <td class=v>pxcntr</td>
+ <td class=v><span id=twomass_xsc_pxcntr></span>twomass_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v>ext_key value of nearest XSC source.</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>NUMBER</td>
+</tr>
+<tr> <td class=v>pxpa</td>
+ <td class=v><span id=twomass_psc_pxpa></span><span id=twomass_xsc_pxpa></span>twomass_psc, twomass_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v>The position angle on the sky of the vector from the source to the nearest neighbor in the PSC, in degrees East of North.</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>degrees</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>POS_POS-ANG</td>
+</tr>
+</table>
+</table>
+</table>
+</table>
+</table>
+</table>

@@ -1,0 +1,46 @@
+$def with (survey_prefix)
+
+<script src="$survey_prefix/static/js/scrolling_helper.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+		var this_div_name = 'radial_help';
+		init_scrolling_mechanism(this_div_name);
+</script>
+
+<div id="content_radial_help">
+	
+	<h2> Radial search - help page</h2>
+	
+	This page provides guidance on how to use the 
+	<a class="ext_links_radial_help" href="#dbaccess_radial_form_div">radial search form</a>. This form allows users
+	quick access to searching the main SSA object catalogues (SOURCE and DETECTION). Guidelines  applicable to all methods of access are given in the <a href="dbaccess.html">data access</a> page.
+	<p>
+	Users must supply either a position (RA/Dec or Galactic) or object name
+	and a search radius in arcminutes.
+	Coordinates can be in sexagesimal or decimal degrees and the system (J2000/B1950/Galactic) must also be specified. Supplied object names are resolved using
+	<a href="http://simbad.u-strasbg.fr/sim-fid.pl">Simbad</a>.
+	</p><p>
+	Large area searches ( radius &gt; 60 arcmin) can take a few minutes 
+	writing the results to file so
+	it is recommended that an email address be supplied.</p><p>
+	
+	For quick look small area searches (1-5 arcminues) it's possible to view the entire results in the returned HTML table summary. If you want all the results of
+	searches that find more than 100 objects 
+	 then specify ASCII or FITS (see <a class="ext_links_radial_help" href="#dbaccess_div">data access</a> for further details of limits). </p><p>
+	
+	The final section of the form is optional and allows more control.</p><p>
+	 
+	<b>Select</b> - A default set of parameters is returned by the search unless it is
+	overridden by a supplied comma-separated list. The default parameters for the
+	SOURCE and DETECTION tables are listed <a class="ext_links_radial_help" href="#defaults_div">here</a>.
+	You can append to the default set by adding extra parameters e.g by entering
+	<em>default,prfStatB</em></p><p>
+	
+	<b>From</b> - Most users will want to access the SOURCE object catalogue table however if you want to search the unmerged DETECTION table you can specify it here.</p><p>
+	<b>Where</b> - The final text box allows you to place constraints on the query e.g. if you are 
+	searching the SOURCE table you might like to impose a quality cut by for example entering <em> qualB &lt; 2048 and qualR1 &lt; 2048 and qualR2 &lt; 2048 and qualI &lt; 2048 </em>
+	</p><p>
+	
+</div>
+	
+	
+	

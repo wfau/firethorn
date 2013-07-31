@@ -1,0 +1,110 @@
+$def with (log_info, index_content, menu, footer, survey_title, survey_prefix)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>$:survey_title</title>
+<meta name="description" content=" $:survey_title " />
+<link rel="stylesheet" href="$survey_prefix/static/css/coda-slider.css" type="text/css" media="screen" charset="utf-8" />
+<link href="$survey_prefix/static/css/style.css" rel="stylesheet" type="text/css" />
+<link href="$survey_prefix/static/static_vo_tool/css/facebox.css" media="screen" rel="stylesheet" type="text/css"/>  
+<link rel="stylesheet" type="text/css" href="$survey_prefix/static/static_vo_tool/css/jquery-ui-1.8.16.custom.css" />
+<link rel="stylesheet" type="text/css" href="$survey_prefix/static/static_vo_tool/css/ColReorder.css" />
+<link rel="stylesheet" type="text/css" href="$survey_prefix/static/static_vo_tool/css/ColVis.css" />
+<link rel="stylesheet" type="text/css" href="$survey_prefix/static/static_vo_tool/css/demo_table_jui.css" />	
+<link rel="stylesheet" type="text/css" href="$survey_prefix/static/static_vo_tool/css/TableTools.css" />
+<link rel="stylesheet" type="text/css" href="$survey_prefix/static/css/jquery.jscrollpane.css" />
+<link type="text/css" href="$survey_prefix/static/css/jquery.jscrollpane.lozenge.css" rel="stylesheet" media="all" />
+<link rel="icon" href="$survey_prefix/static/images/favicon.ico" type="image/x-icon" /> 
+<link rel="shortcut icon" href="$survey_prefix/static/images/favicon.ico" type="image/x-icon" /> 
+
+<script src="$survey_prefix/static/js/properties.js" type="text/javascript"></script>
+<script src="$survey_prefix/static/js/jquery.js" type="text/javascript"></script>
+<script src="$survey_prefix/static/js/jquery.easing.1.3.js" type="text/javascript" charset="utf-8"></script>
+<script src="$survey_prefix/static/js/sub-menu-navigation.js" type="text/javascript" charset="utf-8"></script>
+<script src="$survey_prefix/static/static_vo_tool/js/jquery-ui-1.8.16.custom.min.js" type="text/javascript"></script>
+<script src="$survey_prefix/static/static_vo_tool/js/facebox.js" type="text/javascript"></script> 
+<script src="$survey_prefix/static/static_vo_tool/js/functions.js" type="text/javascript"></script> 
+<script src="$survey_prefix/static/static_vo_tool/js/jquery.dataTables.js" type="text/javascript"></script> 
+<script src="$survey_prefix/static/static_vo_tool/js/ColReorder.js" type="text/javascript"></script> 
+<script src="$survey_prefix/static/static_vo_tool/js/ColVis.js" type="text/javascript"></script>
+<script type="text/javascript" charset="utf-8" src="$survey_prefix/static/static_vo_tool/js/ZeroClipboard.js"></script>
+<script type="text/javascript" charset="utf-8" src="$survey_prefix/static/static_vo_tool/js/TableTools.js"></script> 	
+<script src="$survey_prefix/static/js/scrolling_helper.js" type="text/javascript" charset="utf-8"></script>
+<script src="$survey_prefix/static/js/toggle_minimize.js" type="text/javascript"></script> 
+<script src="$survey_prefix/static/js/coda-slider.js" type="text/javascript"></script> 
+<script src="$survey_prefix/static/js/Table_Tools_additional.js" type="text/javascript" charset="utf-8"></script>
+<script src="$survey_prefix/static/js/jquery.mousewheel.js" type="text/javascript" charset="utf-8"></script>
+<script src="$survey_prefix/static/js/jquery.jscrollpane.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="$survey_prefix/static/js/mwheelIntent.js" type="text/javascript" charset="utf-8"></script>
+<script src="$survey_prefix/static/js/jquery.doubleScroll.js" type="text/javascript" charset="utf-8"></script>
+<script src="$survey_prefix/static/js/parser.js" type="text/javascript" charset="utf-8"></script>
+<script src="$survey_prefix/static/js/jquery.actual.js" type="text/javascript" charset="utf-8"></script>
+<script src="$survey_prefix/static/js/index.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+
+<body>
+
+
+<div id="slider">
+	
+	<div id="toggle_menu_bar" class="showing"><img id="menu_bar_img" src="$survey_prefix/static/images/scroll_left2.png"></img></div>
+	<div id="sidebar">
+    	
+    	<div id="header">
+        	<a href="$survey_prefix" target="_parent" ><img style="border: 3px solid gray;" src="$survey_prefix/static/images/logo.gif" /></a>
+        </div> <!-- end of header -->
+        
+         <div id="nav">
+        
+       	    $:menu
+        
+      	  <div id="logged_in_notification">$:log_info</div>
+        
+        </div>	
+    </div> <!-- end of sidebar -->
+    
+
+
+	<div id="main">
+		
+		<div id="top-bar">
+	     	<div  id="top-left"></div>
+	        <div  id="top-right"></div>
+	        <div  id="top-mid"> </div>
+	    </div>
+       	
+       	<div style="clear:both"></div>
+       	
+        <div id="content">
+           	<div  id="content-left"></div>
+           	<div  id="content-right"></div>
+           	<div  id="content-mid"> 
+	           	 	<!-- scroll -->
+		            <div class="scroll">
+		                    <div class="panel" id="dynamic_content">
+					        $:index_content
+		                    </div> <!-- end of home -->
+		             </div>
+		          	<!-- end of scroll -->
+              </div>
+        </div> <!-- end of content -->
+       	
+       	<div id="bot-bar">
+	       	
+	       	<div  id="bot-left"></div>
+	        <div  id="bot-right"></div>
+	        <div  id="bot-mid"> </div>
+	    </div>
+    </div> <!-- end of main -->
+   
+   
+    <div id="footer">$:footer</div> 
+  
+
+</div>
+
+</body>
+</html>

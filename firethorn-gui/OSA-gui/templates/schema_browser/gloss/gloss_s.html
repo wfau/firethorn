@@ -1,0 +1,2698 @@
+<p><TABLE border=0 bgcolor=#888888 width='600' cellspacing=3 cellpadding=3 align='center'>
+<tr><th class='h' width='600'><h3> Glossary of OSA attributes </h3></th></tr>
+<tr><th class='h'><h5>This Glossary alphabetically lists all attributes used in the <a href="osa_browser.html">OSAv20130304</a> database(s) held in the OSA. If you would like to have more information about the schema tables please use the <a href="osa_browser.html">OSAv20130304</a> <a href='osa_browser.html' title="this Browser version">Schema Browser</a>.</h5></th></tr>
+</TABLE>
+<table border='1' bgcolor=#888888 width='600' cellspacing=3 cellpadding=3 align='center'>
+<colgroup width='38' span='13'>
+</colgroup>
+<tr>
+ <td class='h' align='center'><a href='gloss_a.html'>A</a></td>
+ <td class='h' align='center'><a href='gloss_b.html'>B</a></td>
+ <td class='h' align='center'><a href='gloss_c.html'>C</a></td>
+ <td class='h' align='center'><a href='gloss_d.html'>D</a></td>
+ <td class='h' align='center'><a href='gloss_e.html'>E</a></td>
+ <td class='h' align='center'><a href='gloss_f.html'>F</a></td>
+ <td class='h' align='center'><a href='gloss_g.html'>G</a></td>
+ <td class='h' align='center'><a href='gloss_h.html'>H</a></td>
+ <td class='h' align='center'><a href='gloss_i.html'>I</a></td>
+ <td class='h' align='center'><a href='gloss_j.html'>J</a></td>
+ <td class='h' align='center'><a href='gloss_k.html'>K</a></td>
+ <td class='h' align='center'><a href='gloss_l.html'>L</a></td>
+ <td class='h' align='center'><a href='gloss_m.html'>M</a></td>
+</tr><tr>
+ <td class='h' align='center'><a href='gloss_n.html'>N</a></td>
+ <td class='h' align='center'><a href='gloss_o.html'>O</a></td>
+ <td class='h' align='center'><a href='gloss_p.html'>P</a></td>
+ <td class='h' align='center'><a href='gloss_q.html'>Q</a></td>
+ <td class='h' align='center'><a href='gloss_r.html'>R</a></td>
+ <td class='h' align='center'><a href='gloss_s.html'>S</a></td>
+ <td class='h' align='center'><a href='gloss_t.html'>T</a></td>
+ <td class='h' align='center'><a href='gloss_u.html'>U</a></td>
+ <td class='h' align='center'><a href='gloss_v.html'>V</a></td>
+ <td class='h' align='center'><a href='gloss_w.html'>W</a></td>
+ <td class='h' align='center'><a href='gloss_x.html'>X</a></td>
+ <td class='h' align='center'><a href='gloss_y.html'>Y</a></td>
+ <td class='h' align='center'><a href='gloss_z.html'>Z</a></td>
+</tr>
+</table><p>
+
+<TABLE border=0 bgcolor=#888888 width='1200' cellspacing=3 cellpadding=3>
+<colgroup width='1300'><col width='10%'><col width='10%'><col width='5%'><col width='35%'><col width='5%'><col width='5%'><col width='10%'><col width='10%'><col width='10%'></colgroup>
+<tr><th class='h' colspan='9'><h3>S</h3></th></tr>
+<tr><th class='h'>Name</th><th class='h'>Schema Table</th><th class='h'>Database</th><th class='h'>Description</th><th class='h'>Type</th><th class='h'>Length</th><th class='h'>Unit</th><th class='h'>Default Value</th><th class='h'>Unified Content Descriptor</th></tr>
+<tr> <td class=v>S14</td>
+ <td class=v><span id=nvsssource_s14></span>nvssSource</td>
+ <td class=v>NVSS</td>
+ <td class=v>Integrated 1.4GHz flux density of radio source</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>mJy</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>PHOT_FLUX_RADIO_1.4G</td>
+</tr>
+<tr> <td class=v>satnum</td>
+ <td class=v><span id=wise_allskysc_satnum></span>wise_allskysc</td>
+ <td class=v>WISE</td>
+ <td class=v>Minimum sample at which saturation occurs in each band.<br> Four character string, one character per band, that indicates the minimum SUTR sample in which any pixel in the profile-fitting area in all of the single-exposure images used to characterize this source was flagged as having reached the saturation level in the on-board WISE payload processing. If no pixels in a given band are flagged as saturated, the value for that band is "0".</td>
+ <td class=v>char</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>satnum</td>
+ <td class=v><span id=wise_prelimsc_satnum></span>wise_prelimsc</td>
+ <td class=v>WISE</td>
+ <td class=v>Minimum sample at which saturation occurs in each band<br> Four character string, one character per band, that indicates the minimum SUTR sample in which any pixel in the profile-fitting area in all of the single-exposure images used to characterize this source was flagged as having reached the saturation level in the on-board WISE payload processing. If no pixels in a given band are flagged as saturated, the value for that band is "0".</td>
+ <td class=v>char</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>saturatCorr</td>
+ <td class=v><span id=atlasdetection_saturatcorr></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>saturation correction</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>0.0</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_CHI2PROB</td>
+ <td class=v><span id=twoxmm_sc_chi2prob></span><span id=twoxmm_v1_2_sc_chi2prob></span><span id=twoxmmi_dr3_v1_0_sc_chi2prob></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The Chi&sup2; probability (based on the null hypothesis) that the unique source SRCID as detected by any of the observations is constant, that is, the minimum value of the EPIC probabilities in each detection, EP_CHI2PROB, is given.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_DEC</td>
+ <td class=v><span id=twoxmm_sc_dec></span><span id=twoxmm_v1_2_sc_dec></span><span id=twoxmmi_dr3_v1_0_sc_dec></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The mean Declination in degrees (J2000) of all the detections of the source SRCID (see DEC) weighted by the positional errors POSERR.</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>degrees</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_DET_ML</td>
+ <td class=v><span id=twoxmm_sc_det_ml></span><span id=twoxmm_v1_2_sc_det_ml></span><span id=twoxmmi_dr3_v1_0_sc_det_ml></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The total band detection likelihood of the source SRCID is the maximum of the likelihoods of all detections of this source (EP_8_DET_ML).</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_DR_FIRST</td>
+ <td class=v><span id=twoxmmi_dr3_v1_0_sc_dr_first></span>twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>This flag indicates in which catalogue in the 2XMM catalogue series (starting from 2XMM) this unique source first appeared. The flag is DR1 for 2XMM, DR2 for 2XMMi and DR3 for the present 2XMMi-DR3 catalogue.</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_DR_LAST</td>
+ <td class=v><span id=twoxmmi_dr3_v1_0_sc_dr_last></span>twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>This flag indicates in which catalogue in the 2XMM catalogue series (starting from 2XMM) the parameters of this unique source were last updated (e.g. due to the inclusion of one or more new detections which can add to, or even split, the source). The flag is DR1 for 2XMM, DR2 for 2XMMi and DR3 for the present 2XMMi-DR3 catalogue.</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_EP_1_FLUX</td>
+ <td class=v><span id=twoxmm_sc_ep_1_flux></span><span id=twoxmm_v1_2_sc_ep_1_flux></span><span id=twoxmmi_dr3_v1_0_sc_ep_1_flux></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The mean band 1 flux (0.2 - 0.5 keV) of all the detections of the source SRCID (see EP_1_FLUX) weighted by the errors (EP_1_FLUX_ERR), in erg/cm2/s.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_EP_1_FLUX_ERR</td>
+ <td class=v><span id=twoxmm_sc_ep_1_flux_err></span><span id=twoxmm_v1_2_sc_ep_1_flux_err></span><span id=twoxmmi_dr3_v1_0_sc_ep_1_flux_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>Error on the weighted mean band 1 flux in SC_EP_1_FLUX.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_EP_2_FLUX</td>
+ <td class=v><span id=twoxmm_sc_ep_2_flux></span><span id=twoxmm_v1_2_sc_ep_2_flux></span><span id=twoxmmi_dr3_v1_0_sc_ep_2_flux></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The mean band 2 flux (0.5 - 1.0 keV) of all the detections of the source SRCID (see EP_2_FLUX) weighted by the errors (EP_2_FLUX_ERR), in erg/cm2/s.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_EP_2_FLUX_ERR</td>
+ <td class=v><span id=twoxmm_sc_ep_2_flux_err></span><span id=twoxmm_v1_2_sc_ep_2_flux_err></span><span id=twoxmmi_dr3_v1_0_sc_ep_2_flux_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>Error on the weighted mean band 2 flux in SC_EP_2_FLUX.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_EP_3_FLUX</td>
+ <td class=v><span id=twoxmm_sc_ep_3_flux></span><span id=twoxmm_v1_2_sc_ep_3_flux></span><span id=twoxmmi_dr3_v1_0_sc_ep_3_flux></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The mean band 3 flux (1.0 - 2.0 keV) of all the detections of the source SRCID (see EP_3_FLUX) weighted by the errors (EP_3_FLUX_ERR), in erg/cm2/s.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_EP_3_FLUX_ERR</td>
+ <td class=v><span id=twoxmm_sc_ep_3_flux_err></span><span id=twoxmm_v1_2_sc_ep_3_flux_err></span><span id=twoxmmi_dr3_v1_0_sc_ep_3_flux_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>Error on the weighted mean band 3 flux in SC_EP_3_FLUX.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_EP_4_FLUX</td>
+ <td class=v><span id=twoxmm_sc_ep_4_flux></span><span id=twoxmm_v1_2_sc_ep_4_flux></span><span id=twoxmmi_dr3_v1_0_sc_ep_4_flux></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The mean band 4 flux (2.0 - 4.5 keV) of all the detections of the source SRCID (see EP_4_FLUX) weighted by the errors (EP_4_FLUX_ERR), in erg/cm2/s.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_EP_4_FLUX_ERR</td>
+ <td class=v><span id=twoxmm_sc_ep_4_flux_err></span><span id=twoxmm_v1_2_sc_ep_4_flux_err></span><span id=twoxmmi_dr3_v1_0_sc_ep_4_flux_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>Error on the weighted mean band 4 flux in SC_EP_4_FLUX.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_EP_5_FLUX</td>
+ <td class=v><span id=twoxmm_sc_ep_5_flux></span><span id=twoxmm_v1_2_sc_ep_5_flux></span><span id=twoxmmi_dr3_v1_0_sc_ep_5_flux></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The mean band 5 flux (4.5 - 12 keV) of all the detections of the source SRCID (see EP_5_FLUX) weighted by the errors (EP_5_FLUX_ERR), in erg/cm2/s.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_EP_5_FLUX_ERR</td>
+ <td class=v><span id=twoxmm_sc_ep_5_flux_err></span><span id=twoxmm_v1_2_sc_ep_5_flux_err></span><span id=twoxmmi_dr3_v1_0_sc_ep_5_flux_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>Error on the weighted mean band 5 flux in SC_EP_5_FLUX.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_EP_8_FLUX</td>
+ <td class=v><span id=twoxmm_sc_ep_8_flux></span><span id=twoxmm_v1_2_sc_ep_8_flux></span><span id=twoxmmi_dr3_v1_0_sc_ep_8_flux></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The mean total band flux (0.2 - 12 keV) of all the detections of the source SRCID (see EP_8_FLUX) weighted by the errors (EP_8_FLUX_ERR), in erg/cm2/s.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_EP_8_FLUX_ERR</td>
+ <td class=v><span id=twoxmm_sc_ep_8_flux_err></span><span id=twoxmm_v1_2_sc_ep_8_flux_err></span><span id=twoxmmi_dr3_v1_0_sc_ep_8_flux_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>Error on the weighted mean total band flux in SC_EP_8_FLUX.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_EP_9_FLUX</td>
+ <td class=v><span id=twoxmm_sc_ep_9_flux></span><span id=twoxmm_v1_2_sc_ep_9_flux></span><span id=twoxmmi_dr3_v1_0_sc_ep_9_flux></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The mean band 9 flux (0.5 - 4.5 keV) of all the detections of the source SRCID (see EP_9_FLUX) weighted by the errors (EP_9_FLUX_ERR), in erg/cm2/s.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_EP_9_FLUX_ERR</td>
+ <td class=v><span id=twoxmm_sc_ep_9_flux_err></span><span id=twoxmm_v1_2_sc_ep_9_flux_err></span><span id=twoxmmi_dr3_v1_0_sc_ep_9_flux_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>Error on the weighted mean band 9 flux in SC_EP_9_FLUX.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>erg/cm**2/s</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_EXT_ML</td>
+ <td class=v><span id=twoxmm_sc_ext_ml></span><span id=twoxmm_v1_2_sc_ext_ml></span><span id=twoxmmi_dr3_v1_0_sc_ext_ml></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The total band detection likelihood of the extended source SRCID is the average of the extent likelihoods of all detections of this source (EP_EXTENT_ML).</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_EXTENT</td>
+ <td class=v><span id=twoxmmi_dr3_v1_0_sc_extent></span>twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The total band extent of the source SRCID is the weighted average of the EPIC extents of all detections of this source (EP_EXTENT).</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>arcsec</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_HR1</td>
+ <td class=v><span id=twoxmm_sc_hr1></span><span id=twoxmm_v1_2_sc_hr1></span><span id=twoxmmi_dr3_v1_0_sc_hr1></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The mean hardness ratio of the bands 1 and 2 of all the detections of the source SRCID (EP_HR1) weighted by the errors(EP_HR1_ERR).</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_HR1_ERR</td>
+ <td class=v><span id=twoxmm_sc_hr1_err></span><span id=twoxmm_v1_2_sc_hr1_err></span><span id=twoxmmi_dr3_v1_0_sc_hr1_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>Error on the weighted mean hardness ratio in SC_HR1.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_HR2</td>
+ <td class=v><span id=twoxmm_sc_hr2></span><span id=twoxmm_v1_2_sc_hr2></span><span id=twoxmmi_dr3_v1_0_sc_hr2></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The mean hardness ratio of the bands 2 and 3 of all the detections of the source SRCID (EP_HR2) weighted by the errors(EP_HR2_ERR).</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_HR2_ERR</td>
+ <td class=v><span id=twoxmm_sc_hr2_err></span><span id=twoxmm_v1_2_sc_hr2_err></span><span id=twoxmmi_dr3_v1_0_sc_hr2_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>Error on the weighted mean hardness ratio in SC_HR2.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_HR3</td>
+ <td class=v><span id=twoxmm_sc_hr3></span><span id=twoxmm_v1_2_sc_hr3></span><span id=twoxmmi_dr3_v1_0_sc_hr3></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The mean hardness ratio of the bands 3 and 4 of all the detections of the source SRCID (EP_HR3) weighted by the errors(EP_HR3_ERR).</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_HR3_ERR</td>
+ <td class=v><span id=twoxmm_sc_hr3_err></span><span id=twoxmm_v1_2_sc_hr3_err></span><span id=twoxmmi_dr3_v1_0_sc_hr3_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>Error on the weighted mean hardness ratio in SC_HR3.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_HR4</td>
+ <td class=v><span id=twoxmm_sc_hr4></span><span id=twoxmm_v1_2_sc_hr4></span><span id=twoxmmi_dr3_v1_0_sc_hr4></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The mean hardness ratio of the bands 4 and 5 of all the detections of the source SRCID (EP_HR4) weighted by the errors(EP_HR4_ERR).</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_HR4_ERR</td>
+ <td class=v><span id=twoxmm_sc_hr4_err></span><span id=twoxmm_v1_2_sc_hr4_err></span><span id=twoxmmi_dr3_v1_0_sc_hr4_err></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>Error on the weighted mean hardness ratio in SC_HR4.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_POSERR</td>
+ <td class=v><span id=twoxmm_sc_poserr></span><span id=twoxmm_v1_2_sc_poserr></span><span id=twoxmmi_dr3_v1_0_sc_poserr></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The error of the weighted mean position given in SC_RA and SC_DEC in arcseconds.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>arcsec</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_RA</td>
+ <td class=v><span id=twoxmm_sc_ra></span><span id=twoxmm_v1_2_sc_ra></span><span id=twoxmmi_dr3_v1_0_sc_ra></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The mean Right Ascension in degrees (J2000) of all the detections of the source SRCID (see RA) weighted by the positional errors POSERR.</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>degrees</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_SUM_FLAG</td>
+ <td class=v><span id=twoxmm_sc_sum_flag></span><span id=twoxmm_v1_2_sc_sum_flag></span><span id=twoxmmi_dr3_v1_0_sc_sum_flag></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The summary flag for the unique source SRCID is taken to be the worst flag of all detections of this source (SUM_FLAG).</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SC_VAR_FLAG</td>
+ <td class=v><span id=twoxmm_sc_var_flag></span><span id=twoxmm_v1_2_sc_var_flag></span><span id=twoxmmi_dr3_v1_0_sc_var_flag></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The variability flag for the unique source SRCID is set to VAR_FLAG of the most variable detection of this source.</td>
+ <td class=v>varchar</td>
+ <td class=v>5</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>scan</td>
+ <td class=v><span id=twomass_psc_scan></span>twomass_psc</td>
+ <td class=v>2MASS</td>
+ <td class=v>The nightly scan number in which the source was detected.</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>NUMBER</td>
+</tr>
+<tr> <td class=v>scan</td>
+ <td class=v><span id=twomass_scn_scan></span>twomass_scn</td>
+ <td class=v>2MASS</td>
+ <td class=v>Scan number (unique within date).</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>NUMBER</td>
+</tr>
+<tr> <td class=v>scan</td>
+ <td class=v><span id=twomass_sixx2_scn_scan></span>twomass_sixx2_scn</td>
+ <td class=v>2MASS</td>
+ <td class=v>scan number (unique within date)</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>scan</td>
+ <td class=v><span id=twomass_xsc_scan></span>twomass_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v>scan number (unique within date).</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>NUMBER</td>
+</tr>
+<tr> <td class=v>scan_key</td>
+ <td class=v><span id=twomass_psc_scan_key></span>twomass_psc</td>
+ <td class=v>2MASS</td>
+ <td class=v>Unique identification number of the record in the Scan Information Table that corresponds to the survey scan in which this source was detected.</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_NUMBER</td>
+</tr>
+<tr> <td class=v>scan_key</td>
+ <td class=v><span id=twomass_scn_scan_key></span>twomass_scn</td>
+ <td class=v>2MASS</td>
+ <td class=v>the unique identification number for this scan.</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_NUMBER</td>
+</tr>
+<tr> <td class=v>scan_key</td>
+ <td class=v><span id=twomass_sixx2_xsc_scan_key></span>twomass_sixx2_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v>key to scan data record in "scan DB"</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>scan_key</td>
+ <td class=v><span id=twomass_xsc_scan_key></span>twomass_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v>key to scan data record in "scan DB".</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_NUMBER</td>
+</tr>
+<tr> <td class=v>sd</td>
+ <td class=v><span id=twomass_scn_sd></span>twomass_scn</td>
+ <td class=v>2MASS</td>
+ <td class=v>Scanning direction: "n" = north-going, "s" = south-going.</td>
+ <td class=v>varchar</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>POS_POS-ANG</td>
+</tr>
+<tr> <td class=v>sd</td>
+ <td class=v><span id=twomass_sixx2_scn_sd></span>twomass_sixx2_scn</td>
+ <td class=v>2MASS</td>
+ <td class=v>direction of scan -- north/south-bound (n/s)</td>
+ <td class=v>varchar</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sdet</td>
+ <td class=v><span id=twomass_sixx2_psc_sdet></span><span id=twomass_sixx2_xsc_sdet></span>twomass_sixx2_psc, twomass_sixx2_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v># of scans in which src was detected in >=1 band</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_CAMCOL</td>
+ <td class=v><span id=mgcbrightspec_sdss_camcol></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS camera column</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_CLASS</td>
+ <td class=v><span id=mgcbrightspec_sdss_class></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>MGC translation of SDSS_TYPE</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_DEC</td>
+ <td class=v><span id=mgcbrightspec_sdss_dec></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS object declination in deg (J2000)</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_EXTINC_G</td>
+ <td class=v><span id=mgcbrightspec_sdss_extinc_g></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS Galactic extinction correction in mag</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_EXTINC_I</td>
+ <td class=v><span id=mgcbrightspec_sdss_extinc_i></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS Galactic extinction correction in mag</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_EXTINC_R</td>
+ <td class=v><span id=mgcbrightspec_sdss_extinc_r></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS Galactic extinction correction in mag</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_EXTINC_U</td>
+ <td class=v><span id=mgcbrightspec_sdss_extinc_u></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS Galactic extinction correction in mag</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_EXTINC_Z</td>
+ <td class=v><span id=mgcbrightspec_sdss_extinc_z></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS Galactic extinction correction in mag</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_FIELD</td>
+ <td class=v><span id=mgcbrightspec_sdss_field></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS field number</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_MODMAG_G</td>
+ <td class=v><span id=mgcbrightspec_sdss_modmag_g></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS extinction corrected model magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_MODMAG_I</td>
+ <td class=v><span id=mgcbrightspec_sdss_modmag_i></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS extinction corrected model magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_MODMAG_R</td>
+ <td class=v><span id=mgcbrightspec_sdss_modmag_r></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS extinction corrected model magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_MODMAG_U</td>
+ <td class=v><span id=mgcbrightspec_sdss_modmag_u></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS extinction corrected model magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_MODMAG_Z</td>
+ <td class=v><span id=mgcbrightspec_sdss_modmag_z></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS extinction corrected model magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_N</td>
+ <td class=v><span id=mgcbrightspec_sdss_n></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>Number of SDSS objects matched to MGC object</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_OBJID</td>
+ <td class=v><span id=mgcbrightspec_sdss_objid></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS PhotoObject ID</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_PETMAG_G</td>
+ <td class=v><span id=mgcbrightspec_sdss_petmag_g></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS extinction corrected Petrosian magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_PETMAG_I</td>
+ <td class=v><span id=mgcbrightspec_sdss_petmag_i></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS extinction corrected Petrosian magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_PETMAG_R</td>
+ <td class=v><span id=mgcbrightspec_sdss_petmag_r></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS extinction corrected Petrosian magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_PETMAG_U</td>
+ <td class=v><span id=mgcbrightspec_sdss_petmag_u></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS extinction corrected Petrosian magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_PETMAG_Z</td>
+ <td class=v><span id=mgcbrightspec_sdss_petmag_z></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS extinction corrected Petrosian magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_PETR50_G</td>
+ <td class=v><span id=mgcbrightspec_sdss_petr50_g></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS radius containing 50% Petrosian flux in arcsec</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_PETR50_I</td>
+ <td class=v><span id=mgcbrightspec_sdss_petr50_i></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS radius containing 50% Petrosian flux in arcsec</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_PETR50_R</td>
+ <td class=v><span id=mgcbrightspec_sdss_petr50_r></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS radius containing 50% Petrosian flux in arcsec</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_PETR50_U</td>
+ <td class=v><span id=mgcbrightspec_sdss_petr50_u></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS radius containing 50% Petrosian flux in arcsec</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_PETR50_Z</td>
+ <td class=v><span id=mgcbrightspec_sdss_petr50_z></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS radius containing 50% Petrosian flux in arcsec</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_PSFMAG_G</td>
+ <td class=v><span id=mgcbrightspec_sdss_psfmag_g></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS extinction corrected PSF magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_PSFMAG_I</td>
+ <td class=v><span id=mgcbrightspec_sdss_psfmag_i></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS extinction corrected PSF magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_PSFMAG_R</td>
+ <td class=v><span id=mgcbrightspec_sdss_psfmag_r></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS extinction corrected PSF magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_PSFMAG_U</td>
+ <td class=v><span id=mgcbrightspec_sdss_psfmag_u></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS extinction corrected PSF magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_PSFMAG_Z</td>
+ <td class=v><span id=mgcbrightspec_sdss_psfmag_z></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS extinction corrected PSF magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_RA</td>
+ <td class=v><span id=mgcbrightspec_sdss_ra></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS object right ascension in deg (J2000)</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_RERUN</td>
+ <td class=v><span id=mgcbrightspec_sdss_rerun></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS rerun number</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_RUN</td>
+ <td class=v><span id=mgcbrightspec_sdss_run></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS run number</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_SPCLASS</td>
+ <td class=v><span id=mgcbrightspec_sdss_spclass></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>MGC translation of SDSS_SPECCLASS</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_SPECCLASS</td>
+ <td class=v><span id=mgcbrightspec_sdss_specclass></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS spectroscopic classification</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_TYPE</td>
+ <td class=v><span id=mgcbrightspec_sdss_type></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS morphological classification</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_Z</td>
+ <td class=v><span id=mgcbrightspec_sdss_z></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS redshift</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SDSS_ZQUAL</td>
+ <td class=v><span id=mgcbrightspec_sdss_zqual></span>mgcBrightSpec</td>
+ <td class=v>MGC</td>
+ <td class=v>SDSS redshift quality</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sdssClass</td>
+ <td class=v><span id=first08jul16source_sdssclass></span><span id=firstsource12feb16_sdssclass></span>first08Jul16Source, firstSource12Feb16</td>
+ <td class=v>FIRST</td>
+ <td class=v>morphological classification in SDSS DR6 (s=stellar, g=nonstellar/galaxy)</td>
+ <td class=v>varchar</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sdssMag</td>
+ <td class=v><span id=first08jul16source_sdssmag></span><span id=firstsource12feb16_sdssmag></span>first08Jul16Source, firstSource12Feb16</td>
+ <td class=v>FIRST</td>
+ <td class=v>SDSS i magnitude</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>mag</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sdssMatches</td>
+ <td class=v><span id=first08jul16source_sdssmatches></span>first08Jul16Source</td>
+ <td class=v>FIRST</td>
+ <td class=v>number of matches within a fiducial radius (8 arcsec) with SDSS DR6</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sdssMatches</td>
+ <td class=v><span id=firstsource12feb16_sdssmatches></span>firstSource12Feb16</td>
+ <td class=v>FIRST</td>
+ <td class=v>number of matches within a fiducial radius (8 arcsec) with SDSS DR6</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sdssPrimary</td>
+ <td class=v><span id=atlassourcexdr5photoobj_sdssprimary></span><span id=atlassourcexdr5photoobjall_sdssprimary></span><span id=atlassourcexdr7photoobj_sdssprimary></span><span id=atlassourcexdr7photoobjall_sdssprimary></span><span id=atlassourcexdr8photoobj_sdssprimary></span><span id=atlassourcexdr8photoobjall_sdssprimary></span><span id=atlassourcexseguedr6photoobj_sdssprimary></span><span id=atlassourcexseguedr6photoobjall_sdssprimary></span><span id=atlassourcexstripe82photoobjall_sdssprimary></span>atlasSourceXDR5PhotoObj, atlasSourceXDR5PhotoObjAll, atlasSourceXDR7PhotoObj, atlasSourceXDR7PhotoObjAll, atlasSourceXDR8PhotoObj, atlasSourceXDR8PhotoObjAll, atlasSourceXSegueDR6PhotoObj, atlasSourceXSegueDR6PhotoObjAll, atlasSourceXStripe82PhotoObjAll</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>SDSS flag for neighbour being primary (1) or secondary (0)</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>sdssSep</td>
+ <td class=v><span id=first08jul16source_sdsssep></span><span id=firstsource12feb16_sdsssep></span>first08Jul16Source, firstSource12Feb16</td>
+ <td class=v>FIRST</td>
+ <td class=v>separation of the nearest match in SDSS DR6 from the FIRST position</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>arcsec</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sdssType</td>
+ <td class=v><span id=atlassourcexdr5photoobj_sdsstype></span><span id=atlassourcexdr5photoobjall_sdsstype></span><span id=atlassourcexdr7photoobj_sdsstype></span><span id=atlassourcexdr7photoobjall_sdsstype></span><span id=atlassourcexdr8photoobj_sdsstype></span><span id=atlassourcexdr8photoobjall_sdsstype></span><span id=atlassourcexseguedr6photoobj_sdsstype></span><span id=atlassourcexseguedr6photoobjall_sdsstype></span><span id=atlassourcexstripe82photoobjall_sdsstype></span>atlasSourceXDR5PhotoObj, atlasSourceXDR5PhotoObjAll, atlasSourceXDR7PhotoObj, atlasSourceXDR7PhotoObjAll, atlasSourceXDR8PhotoObj, atlasSourceXDR8PhotoObjAll, atlasSourceXSegueDR6PhotoObj, atlasSourceXSegueDR6PhotoObjAll, atlasSourceXStripe82PhotoObjAll</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>SDSS type of neighbour: 3=galaxy; 6=star</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CLASS_OBJECT</td>
+</tr>
+<tr> <td class=v>seeing</td>
+ <td class=v><span id=multiframedetector_seeing></span>MultiframeDetector</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Seeing estimate from CLASSIFY {catalogue&nbsp;extension&nbsp;keyword:&nbsp; SEEING}</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9.999995e+08</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SEP_1XMM</td>
+ <td class=v><span id=twoxmm_sep_1xmm></span><span id=twoxmm_v1_2_sep_1xmm></span>twoxmm, twoxmm_v1_2</td>
+ <td class=v>XMM</td>
+ <td class=v>The distance between this source and the matched 1XMM source (MATCH_1XMM) in arcseconds.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>arcsec</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SEP_2XMMP</td>
+ <td class=v><span id=twoxmm_sep_2xmmp></span><span id=twoxmm_v1_2_sep_2xmmp></span>twoxmm, twoxmm_v1_2</td>
+ <td class=v>XMM</td>
+ <td class=v>The distance between this source and the matched 2XMMp source (MATCH_2XMMp) in arcseconds.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>arcsec</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>seqNo</td>
+ <td class=v><span id=first08jul16source_seqno></span><span id=firstsource_seqno></span><span id=firstsource12feb16_seqno></span>first08Jul16Source, firstSource, firstSource12Feb16</td>
+ <td class=v>FIRST</td>
+ <td class=v>sequential object number</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_NUMBER</td>
+</tr>
+<tr> <td class=v>seqNo</td>
+ <td class=v><span id=glimpse1_hrc_seqno></span><span id=glimpse1_mca_seqno></span><span id=glimpse2_hrc_seqno></span><span id=glimpse2_mca_seqno></span><span id=glimpse_hrc_inter_seqno></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca, glimpse_hrc_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>sequential object number in the HRC</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_NUMBER</td>
+</tr>
+<tr> <td class=v>seqNo</td>
+ <td class=v><span id=glimpse_mca_inter_seqno></span>glimpse_mca_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>sequential object number in the MCA</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_NUMBER</td>
+</tr>
+<tr> <td class=v>seqNo</td>
+ <td class=v><span id=iras_psc_seqno></span>iras_psc</td>
+ <td class=v>IRAS</td>
+ <td class=v>sequential object number</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_NUMBER</td>
+</tr>
+<tr> <td class=v>seqNo</td>
+ <td class=v><span id=nvsssource_seqno></span>nvssSource</td>
+ <td class=v>NVSS</td>
+ <td class=v>sequential object number</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_NUMBER</td>
+</tr>
+<tr> <td class=v>seqNo</td>
+ <td class=v><span id=rosat_bsc_seqno></span>rosat_bsc</td>
+ <td class=v>ROSAT</td>
+ <td class=v>sequential object number in the BSC</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_NUMBER</td>
+</tr>
+<tr> <td class=v>seqNo</td>
+ <td class=v><span id=rosat_fsc_seqno></span>rosat_fsc</td>
+ <td class=v>ROSAT</td>
+ <td class=v>sequential object number in the FSC</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_NUMBER</td>
+</tr>
+<tr> <td class=v>seqNum</td>
+ <td class=v><span id=atlasdetection_seqnum></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>the running number of this detection {catalogue&nbsp;TType&nbsp;keyword:&nbsp;Sequence_number}<br> The running number for ease of reference, in strict order of image detections.</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_NUMBER</td>
+</tr>
+<tr> <td class=v>seqNum</td>
+ <td class=v><span id=denisdr3source_seqnum></span>denisDR3Source</td>
+ <td class=v>DENIS</td>
+ <td class=v>Sequential number (unique object ID)</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>seqNum</td>
+ <td class=v><span id=twomass_sixx2_psc_seqnum></span>twomass_sixx2_psc</td>
+ <td class=v>2MASS</td>
+ <td class=v>Sequential number (unique object ID)</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SerFit1DChi2</td>
+ <td class=v><span id=atlasdetection_serfit1dchi2></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Error in 1D fit {catalogue&nbsp;TType&nbsp;keyword:&nbsp;1D_Sersic_fit_chi2}<br> standard normalised variance of fit [For numerical stability the Sersic fits will use the previously derived x-y coordinates]</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>PHOT_PROFILE_PAR</td>
+</tr>
+<tr> <td class=v>SerFit2DChi2</td>
+ <td class=v><span id=atlasdetection_serfit2dchi2></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Error in 2D fit {catalogue&nbsp;TType&nbsp;keyword:&nbsp;2D_Sersic_fit_chi2}<br> standard normalised variance of fit [For numerical stability the Sersic fits will use the previously derived x-y coordinates]</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>PHOT_PROFILE_PAR</td>
+</tr>
+<tr> <td class=v>SerFitNu1D</td>
+ <td class=v><span id=atlasdetection_serfitnu1d></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>No. of degrees of freedom for 1D Sersic fit {catalogue&nbsp;TType&nbsp;keyword:&nbsp;1D_Sersic_fit_nu}<br> [For numerical stability the Sersic fits will use the previously derived x-y coordinates]</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>STAT_N-DOF</td>
+</tr>
+<tr> <td class=v>SerFitNu2D</td>
+ <td class=v><span id=atlasdetection_serfitnu2d></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>No. of degrees of freedom for 2D Sersic fit {catalogue&nbsp;TType&nbsp;keyword:&nbsp;2D_Sersic_fit_nu}<br> [For numerical stability the Sersic fits will use the previously derived x-y coordinates]</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>STAT_N-DOF</td>
+</tr>
+<tr> <td class=v>SerFlux1D</td>
+ <td class=v><span id=atlasdetection_serflux1d></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>1D Sersic flux {catalogue&nbsp;TType&nbsp;keyword:&nbsp;1D_Sersic_flux}<br> [For numerical stability the Sersic fits will use the previously derived x-y coordinates]</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>ADU</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>PHOT_INTENSITY_ADU</td>
+</tr>
+<tr> <td class=v>SerFlux2D</td>
+ <td class=v><span id=atlasdetection_serflux2d></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>2D Sersic flux {catalogue&nbsp;TType&nbsp;keyword:&nbsp;2D_Sersic_flux}<br> [For numerical stability the Sersic fits will use the previously derived x-y coordinates]</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>ADU</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>PHOT_INTENSITY_ADU</td>
+</tr>
+<tr> <td class=v>SerIdx1D</td>
+ <td class=v><span id=atlasdetection_seridx1d></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Power law index {catalogue&nbsp;TType&nbsp;keyword:&nbsp;1D_Sersic_index}<br> [For numerical stability the Sersic fits will use the previously derived x-y coordinates]</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>PHOT_PROFILE_PAR</td>
+</tr>
+<tr> <td class=v>SerIdx2D</td>
+ <td class=v><span id=atlasdetection_seridx2d></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Power law index {catalogue&nbsp;TType&nbsp;keyword:&nbsp;2D_Sersic_index}<br> [For numerical stability the Sersic fits will use the previously derived x-y coordinates]</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>PHOT_PROFILE_PAR</td>
+</tr>
+<tr> <td class=v>SerMag1D</td>
+ <td class=v><span id=atlasdetection_sermag1d></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Calibrated 1D Sersic flux<br> [For numerical stability the Sersic fits will use the previously derived x-y coordinates]</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>mag</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>PHOT_PROFILE</td>
+</tr>
+<tr> <td class=v>SerMag2D</td>
+ <td class=v><span id=atlasdetection_sermag2d></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Calibrated 2D Sersic flux<br> [For numerical stability the Sersic fits will use the previously derived x-y coordinates]</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>mag</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>PHOT_PROFILE</td>
+</tr>
+<tr> <td class=v>SerScaleLen1D</td>
+ <td class=v><span id=atlasdetection_serscalelen1d></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Scale length {catalogue&nbsp;TType&nbsp;keyword:&nbsp;1D_Sersic_scale_len}<br> [For numerical stability the Sersic fits will use the previously derived x-y coordinates]</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>PHOT_PROFILE_PAR</td>
+</tr>
+<tr> <td class=v>SerScaleLen2D</td>
+ <td class=v><span id=atlasdetection_serscalelen2d></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Scale length {catalogue&nbsp;TType&nbsp;keyword:&nbsp;2D_Sersic_scale_len}<br> [For numerical stability the Sersic fits will use the previously derived x-y coordinates]</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>PHOT_PROFILE_PAR</td>
+</tr>
+<tr> <td class=v>SERSIC</td>
+ <td class=v><span id=mgcgalaxystruct_sersic></span>mgcGalaxyStruct</td>
+ <td class=v>MGC</td>
+ <td class=v>Sersic Index (=4 for de Vaucouleurs profile)</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>99.99</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SERSIC_KAPPA</td>
+ <td class=v><span id=mgcgalaxystruct_sersic_kappa></span>mgcGalaxyStruct</td>
+ <td class=v>MGC</td>
+ <td class=v>Sersic profile coefficient</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SERSICm</td>
+ <td class=v><span id=mgcgalaxystruct_sersicm></span>mgcGalaxyStruct</td>
+ <td class=v>MGC</td>
+ <td class=v>Sersic Index error (-)</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>99.99</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SERSICp</td>
+ <td class=v><span id=mgcgalaxystruct_sersicp></span>mgcGalaxyStruct</td>
+ <td class=v>MGC</td>
+ <td class=v>Sersic Index error (+)</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>99.99</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>ses1_100</td>
+ <td class=v><span id=iras_psc_ses1_100></span>iras_psc</td>
+ <td class=v>IRAS</td>
+ <td class=v>Number of seconds-confirmed nearby small extended sources (100 micron).</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>INST_PARAM</td>
+</tr>
+<tr> <td class=v>ses1_12</td>
+ <td class=v><span id=iras_psc_ses1_12></span>iras_psc</td>
+ <td class=v>IRAS</td>
+ <td class=v>Number of seconds-confirmed nearby small extended sources (12 micron).</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>INST_PARAM</td>
+</tr>
+<tr> <td class=v>ses1_25</td>
+ <td class=v><span id=iras_psc_ses1_25></span>iras_psc</td>
+ <td class=v>IRAS</td>
+ <td class=v>Number of seconds-confirmed nearby small extended sources (25 micron).</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>INST_PARAM</td>
+</tr>
+<tr> <td class=v>ses1_60</td>
+ <td class=v><span id=iras_psc_ses1_60></span>iras_psc</td>
+ <td class=v>IRAS</td>
+ <td class=v>Number of seconds-confirmed nearby small extended sources (60 micron).</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>INST_PARAM</td>
+</tr>
+<tr> <td class=v>ses2_100</td>
+ <td class=v><span id=iras_psc_ses2_100></span>iras_psc</td>
+ <td class=v>IRAS</td>
+ <td class=v>Number of nearby weeks-confirmed small extended sources (100 micron).</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>ses2_12</td>
+ <td class=v><span id=iras_psc_ses2_12></span>iras_psc</td>
+ <td class=v>IRAS</td>
+ <td class=v>Number of nearby weeks-confirmed small extended sources (12 micron).</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>ses2_25</td>
+ <td class=v><span id=iras_psc_ses2_25></span>iras_psc</td>
+ <td class=v>IRAS</td>
+ <td class=v>Number of nearby weeks-confirmed small extended sources (25 micron).</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>ses2_60</td>
+ <td class=v><span id=iras_psc_ses2_60></span>iras_psc</td>
+ <td class=v>IRAS</td>
+ <td class=v>Number of nearby weeks-confirmed small extended sources (60 micron).</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>SEX_FLAG</td>
+ <td class=v><span id=mgcgalaxystruct_sex_flag></span>mgcGalaxyStruct</td>
+ <td class=v>MGC</td>
+ <td class=v>SExtractor Flag</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>Integer</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>shortName</td>
+ <td class=v><span id=filter_shortname></span>Filter</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Short identification name for the filter</td>
+ <td class=v>varchar</td>
+ <td class=v>10</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>??</td>
+</tr>
+<tr> <td class=v>sigdec</td>
+ <td class=v><span id=wise_allskysc_sigdec></span>wise_allskysc</td>
+ <td class=v>WISE</td>
+ <td class=v>One-sigma uncertainty in declination coordinate</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>arcsec</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sigdec</td>
+ <td class=v><span id=wise_prelimsc_sigdec></span>wise_prelimsc</td>
+ <td class=v>WISE</td>
+ <td class=v>One-sigma uncertainty in declination coordinate<br> CAUTION: The declination uncertainty is overestimated for the majority of sources in the Preliminary Release Source Catalog. Sigdec was computed by adding 0.5 arcsec in quadrature to the extraction measurement uncertainty to reflect the impact of the declination bias error known to affect a fraction of source fainter than W1~13.0 mag</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>arcsec</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sigra</td>
+ <td class=v><span id=wise_allskysc_sigra></span><span id=wise_prelimsc_sigra></span>wise_allskysc, wise_prelimsc</td>
+ <td class=v>WISE</td>
+ <td class=v>One-sigma uncertainty in right ascension coordinate</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>arcsec</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sigradec</td>
+ <td class=v><span id=wise_allskysc_sigradec></span>wise_allskysc</td>
+ <td class=v>WISE</td>
+ <td class=v>The co-sigma of the equatorial position uncertainties, sig_ra, sig_dec (&sigma;<sub>&alpha;</sub>, &sigma;&delta;<sub></sub>). The co-sigma is related to the covariance between the position errors V&alpha;&delta; by the formula V&alpha;&delta; = &sigma;<sub>&alpha;&delta;</sub>&times;|&sigma;<sub>&alpha;&delta;</sub>|. This maintains the sign information for the correlation, since &sigma;<sub>&alpha;&delta;</sub> may be negative. It is more natural to carry the co-sigma along with the other uncertainties instead of the covariance because the former is in the same units as the other uncertainties.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>degrees</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sigradec</td>
+ <td class=v><span id=wise_prelimsc_sigradec></span>wise_prelimsc</td>
+ <td class=v>WISE</td>
+ <td class=v>The co-sigma of the equatorial position uncertainties, (sig_ra, sig_dec)</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>degrees</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sky</td>
+ <td class=v><span id=atlasdetection_sky></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>local interpolated sky level from background tracker {catalogue&nbsp;TType&nbsp;keyword:&nbsp;Sky_level}</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>ADU</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>INST_SKY_LEVEL</td>
+</tr>
+<tr> <td class=v>sky1</td>
+ <td class=v><span id=glimpse_hrc_inter_sky1></span><span id=glimpse_mca_inter_sky1></span>glimpse_hrc_inter, glimpse_mca_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Local sky bkg. for band 1 flux</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>MJy/sr</td>
+ <td class=v>-999.9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sky2</td>
+ <td class=v><span id=glimpse_hrc_inter_sky2></span><span id=glimpse_mca_inter_sky2></span>glimpse_hrc_inter, glimpse_mca_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Local sky bkg. for band 2 flux</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>MJy/sr</td>
+ <td class=v>-999.9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sky3</td>
+ <td class=v><span id=glimpse_hrc_inter_sky3></span><span id=glimpse_mca_inter_sky3></span>glimpse_hrc_inter, glimpse_mca_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Local sky bkg. for band 3 flux</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>MJy/sr</td>
+ <td class=v>-999.9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sky3_6</td>
+ <td class=v><span id=glimpse1_hrc_sky3_6></span><span id=glimpse1_mca_sky3_6></span><span id=glimpse2_hrc_sky3_6></span><span id=glimpse2_mca_sky3_6></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Local sky background for 3.6um IRAC (Band 1)</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>MJy/sr</td>
+ <td class=v>-999.9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sky4</td>
+ <td class=v><span id=glimpse_hrc_inter_sky4></span><span id=glimpse_mca_inter_sky4></span>glimpse_hrc_inter, glimpse_mca_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Local sky bkg. for band 4 flux</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>MJy/sr</td>
+ <td class=v>-999.9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sky4_5</td>
+ <td class=v><span id=glimpse1_hrc_sky4_5></span><span id=glimpse1_mca_sky4_5></span><span id=glimpse2_hrc_sky4_5></span><span id=glimpse2_mca_sky4_5></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Local sky background for 4.5um IRAC (Band 2)</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>MJy/sr</td>
+ <td class=v>-999.9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sky5_8</td>
+ <td class=v><span id=glimpse1_hrc_sky5_8></span><span id=glimpse1_mca_sky5_8></span><span id=glimpse2_hrc_sky5_8></span><span id=glimpse2_mca_sky5_8></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Local sky background for 5.8um IRAC (Band 3)</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>MJy/sr</td>
+ <td class=v>-999.9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sky8_0</td>
+ <td class=v><span id=glimpse1_hrc_sky8_0></span><span id=glimpse1_mca_sky8_0></span><span id=glimpse2_hrc_sky8_0></span><span id=glimpse2_mca_sky8_0></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Local sky background for 8.0um IRAC (Band 4)</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>MJy/sr</td>
+ <td class=v>-999.9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>skyAlgorithm</td>
+ <td class=v><span id=multiframe_skyalgorithm></span>Multiframe</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Sky estimation algorithm {image&nbsp;primary&nbsp;HDU&nbsp;keyword:&nbsp;SKYALGO}</td>
+ <td class=v>varchar</td>
+ <td class=v>64</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>NONE</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>skyLevel</td>
+ <td class=v><span id=multiframedetector_skylevel></span>MultiframeDetector</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Sky level estimate from IMCORE {catalogue&nbsp;extension&nbsp;keyword:&nbsp; SKYLEVEL}</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9.999995e+08</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>skyNoise</td>
+ <td class=v><span id=multiframedetector_skynoise></span>MultiframeDetector</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Sky noise estimate from IMCORE {catalogue&nbsp;extension&nbsp;keyword:&nbsp; SKYNOISE}</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9.999995e+08</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>skyVar</td>
+ <td class=v><span id=atlasdetection_skyvar></span>atlasDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>local estimate of variation in sky level around image {catalogue&nbsp;TType&nbsp;keyword:&nbsp;Sky_rms}</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>ADU</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>INST_SKY_LEVEL</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourceneighbours_slaveobjid></span>atlasSourceNeighbours</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in atlasSource (=sourceID)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexdr5photoobj_slaveobjid></span>atlasSourceXDR5PhotoObj</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in BestDR5..PhotoObj (=objID)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexdr5photoobjall_slaveobjid></span>atlasSourceXDR5PhotoObjAll</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in BestDR5..PhotoObjAll (=objID)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexdr7photoobj_slaveobjid></span>atlasSourceXDR7PhotoObj</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in BestDR7..PhotoObj (=objID)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexdr7photoobjall_slaveobjid></span>atlasSourceXDR7PhotoObjAll</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in BestDR7..PhotoObjAll (=objID)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexdr8photoobj_slaveobjid></span>atlasSourceXDR8PhotoObj</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in BestDR8..PhotoObj (=objID)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexdr8photoobjall_slaveobjid></span>atlasSourceXDR8PhotoObjAll</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in BestDR8..PhotoObjAll (=objID)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexgr6photoobjall_slaveobjid></span>atlasSourceXGR6PhotoObjAll</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in GALEXGR6..PhotoObjAll (=objid)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexssasource_slaveobjid></span>atlasSourceXSSASource</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in SSA..Source (=objID)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexseguedr6photoobj_slaveobjid></span>atlasSourceXSegueDR6PhotoObj</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in SEGUEDR6..PhotoObj (=objID)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexseguedr6photoobjall_slaveobjid></span>atlasSourceXSegueDR6PhotoObjAll</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in SEGUEDR6..PhotoObjAll (=objID)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexstripe82photoobjall_slaveobjid></span>atlasSourceXStripe82PhotoObjAll</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in Stripe82..PhotoObjAll (=objID)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexdenisdr3source_slaveobjid></span>atlasSourceXdenisDR3Source</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in DENIS..denisDR3Source (=seqNum)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexfirstsource_slaveobjid></span>atlasSourceXfirstSource</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in FIRST..firstSource (=seqNo)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexglimpse_hrc_inter_slaveobjid></span>atlasSourceXglimpse_hrc_inter</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in GLIMPSE..glimpse_hrc_inter (=seqNo)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexglimpse_mca_inter_slaveobjid></span>atlasSourceXglimpse_mca_inter</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in GLIMPSE..glimpse_mca_inter (=seqNo)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexiras_psc_slaveobjid></span>atlasSourceXiras_psc</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in IRAS..iras_psc (=seqNo)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexmgcdetection_slaveobjid></span>atlasSourceXmgcDetection</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in MGC..mgcDetection (=MGCID)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexnvsssource_slaveobjid></span>atlasSourceXnvssSource</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in NVSS..nvssSource (=seqNo)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexrosat_bsc_slaveobjid></span>atlasSourceXrosat_bsc</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in ROSAT..rosat_bsc (=seqNo)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexrosat_fsc_slaveobjid></span>atlasSourceXrosat_fsc</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in ROSAT..rosat_fsc (=seqNo)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcextwomass_psc_slaveobjid></span>atlasSourceXtwomass_psc</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in TWOMASS..twomass_psc (=pts_key)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcextwomass_xsc_slaveobjid></span>atlasSourceXtwomass_xsc</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in TWOMASS..twomass_xsc (=ext_key)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcextwoxmm_slaveobjid></span>atlasSourceXtwoxmm</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in TWOXMM..twoxmm (=DETID)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexvhsdr1source_slaveobjid></span>atlasSourceXvhsDr1Source</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in VHSDR1..vhsSource (=sourceID)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexvikingdr2source_slaveobjid></span>atlasSourceXvikingDr2Source</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in VIKINGDR2..vikingSource (=sourceID)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>slaveObjID</td>
+ <td class=v><span id=atlassourcexwise_allskysc_slaveobjid></span>atlasSourceXwise_allskysc</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique ID of the neighbour in WISE..wise_allskysc (=cntr)</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_CATALOG</td>
+</tr>
+<tr> <td class=v>smoothing</td>
+ <td class=v><span id=multiframedetector_smoothing></span>MultiframeDetector</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>[pixels] FWHM of smoothing kernel {catalogue&nbsp;extension&nbsp;keyword:&nbsp; FILTFWHM}</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9.999995e+08</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SN1</td>
+ <td class=v><span id=glimpse_hrc_inter_sn1></span><span id=glimpse_mca_inter_sn1></span>glimpse_hrc_inter, glimpse_mca_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Signal/Noise for band 1 flux</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9.99</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SN2</td>
+ <td class=v><span id=glimpse_hrc_inter_sn2></span><span id=glimpse_mca_inter_sn2></span>glimpse_hrc_inter, glimpse_mca_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Signal/Noise for band 2 flux</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9.99</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SN3</td>
+ <td class=v><span id=glimpse_hrc_inter_sn3></span><span id=glimpse_mca_inter_sn3></span>glimpse_hrc_inter, glimpse_mca_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Signal/Noise for band 3 flux</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9.99</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SN3_6</td>
+ <td class=v><span id=glimpse1_hrc_sn3_6></span><span id=glimpse1_mca_sn3_6></span><span id=glimpse2_hrc_sn3_6></span><span id=glimpse2_mca_sn3_6></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>3.6um IRAC (Band 1) Signal/Noise</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9.99</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SN4</td>
+ <td class=v><span id=glimpse_hrc_inter_sn4></span><span id=glimpse_mca_inter_sn4></span>glimpse_hrc_inter, glimpse_mca_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Signal/Noise for band 4 flux</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9.99</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SN4_5</td>
+ <td class=v><span id=glimpse1_hrc_sn4_5></span><span id=glimpse1_mca_sn4_5></span><span id=glimpse2_hrc_sn4_5></span><span id=glimpse2_mca_sn4_5></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>4.5um IRAC (Band 2) Signal/Noise</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9.99</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SN5_8</td>
+ <td class=v><span id=glimpse1_hrc_sn5_8></span><span id=glimpse1_mca_sn5_8></span><span id=glimpse2_hrc_sn5_8></span><span id=glimpse2_mca_sn5_8></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>5.8um IRAC (Band 3) Signal/Noise</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9.99</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SN8_0</td>
+ <td class=v><span id=glimpse1_hrc_sn8_0></span><span id=glimpse1_mca_sn8_0></span><span id=glimpse2_hrc_sn8_0></span><span id=glimpse2_mca_sn8_0></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>8.0um IRAC (Band 4) Signal/Noise</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9.99</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SNH</td>
+ <td class=v><span id=glimpse1_hrc_snh></span><span id=glimpse1_mca_snh></span><span id=glimpse2_hrc_snh></span><span id=glimpse2_mca_snh></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>2MASS All-Sky PSC H Band Signal/Noise</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9.99</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SNJ</td>
+ <td class=v><span id=glimpse1_hrc_snj></span><span id=glimpse1_mca_snj></span><span id=glimpse2_hrc_snj></span><span id=glimpse2_mca_snj></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>2MASS All-Sky PSC J Band Signal/Noise</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9.99</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SNKs</td>
+ <td class=v><span id=glimpse1_hrc_snks></span><span id=glimpse1_mca_snks></span><span id=glimpse2_hrc_snks></span><span id=glimpse2_mca_snks></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>2MASS All-Sky PSC Ks Band Signal/Noise</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9.99</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>softAuth</td>
+ <td class=v><span id=multiframe_softauth></span>Multiframe</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Contact for bug reports {image&nbsp;primary&nbsp;HDU&nbsp;keyword:&nbsp;SOFTAUTH}</td>
+ <td class=v>varchar</td>
+ <td class=v>32</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>NONE</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>softDate</td>
+ <td class=v><span id=multiframe_softdate></span>Multiframe</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>CIRDR release date {image&nbsp;primary&nbsp;HDU&nbsp;keyword:&nbsp;SOFTDATE}</td>
+ <td class=v>varchar</td>
+ <td class=v>32</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>NONE</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>softInst</td>
+ <td class=v><span id=multiframe_softinst></span>Multiframe</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>CASU URL {image&nbsp;primary&nbsp;HDU&nbsp;keyword:&nbsp;SOFTINST}</td>
+ <td class=v>varchar</td>
+ <td class=v>32</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>NONE</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>softVers</td>
+ <td class=v><span id=multiframe_softvers></span>Multiframe</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>CIRDR Version {image&nbsp;primary&nbsp;HDU&nbsp;keyword:&nbsp;SOFTVERS}</td>
+ <td class=v>varchar</td>
+ <td class=v>32</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>NONE</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>source_id</td>
+ <td class=v><span id=wise_allskysc_source_id></span>wise_allskysc</td>
+ <td class=v>WISE</td>
+ <td class=v>Unique source ID, formed from a combination of the Atlas Tile ID, coadd_id, and sequential extracted source number, src, within the Tile.</td>
+ <td class=v>char</td>
+ <td class=v>28</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>source_id</td>
+ <td class=v><span id=wise_prelimsc_source_id></span>wise_prelimsc</td>
+ <td class=v>WISE</td>
+ <td class=v>Unique source ID, formed from a combination of the Atlas Tile ID, coadd_id, and sequential extracted source number, src, within the Tile</td>
+ <td class=v>char</td>
+ <td class=v>28</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sourceID</td>
+ <td class=v><span id=atlassource_sourceid></span>atlasSource</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>UID (unique over entire VSA via programme ID prefix) of this merged detection as assigned by merge algorithm</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_MAIN</td>
+</tr>
+<tr> <td class=v>sourceID</td>
+ <td class=v><span id=iras_asc_sourceid></span>iras_asc</td>
+ <td class=v>IRAS</td>
+ <td class=v>Source ID</td>
+ <td class=v>varchar</td>
+ <td class=v>15</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_ALTERNATIVE</td>
+</tr>
+<tr> <td class=v>sourceIDName</td>
+ <td class=v><span id=externalsurveytable_sourceidname></span>ExternalSurveyTable</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The source unique identifier in the table</td>
+ <td class=v>varchar</td>
+ <td class=v>256</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_TARGET</td>
+</tr>
+<tr> <td class=v>sourceIDName</td>
+ <td class=v><span id=programmetable_sourceidname></span>ProgrammeTable</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>the name of the source</td>
+ <td class=v>varchar</td>
+ <td class=v>256</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_TARGET</td>
+</tr>
+<tr> <td class=v>sourceProb</td>
+ <td class=v><span id=first08jul16source_sourceprob></span>first08Jul16Source</td>
+ <td class=v>FIRST</td>
+ <td class=v>probability that the source is spurious (most commonly because it is a sidelobe of of a nearby bright source.) Low values mean the source is unlikely to be spurious.</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>sourceProb</td>
+ <td class=v><span id=firstsource12feb16_sourceprob></span>firstSource12Feb16</td>
+ <td class=v>FIRST</td>
+ <td class=v>probability that the source is spurious (most commonly because it is a sidelobe of of a nearby bright source.) Low values mean the source is unlikely to be spurious.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>sourceProdType</td>
+ <td class=v><span id=programme_sourceprodtype></span>Programme</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The product type to be used to create the source table. (stack, tile, mosaic)</td>
+ <td class=v>varchar</td>
+ <td class=v>16</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>NONE</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sourceRemeasTable</td>
+ <td class=v><span id=programme_sourceremeastable></span>Programme</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Table name of co-located list re-measurements</td>
+ <td class=v>varchar</td>
+ <td class=v>64</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>??</td>
+</tr>
+<tr> <td class=v>sourceTable</td>
+ <td class=v><span id=programme_sourcetable></span>Programme</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Table name of merged sources</td>
+ <td class=v>varchar</td>
+ <td class=v>64</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>??</td>
+</tr>
+<tr> <td class=v>SPEC_TYPE</td>
+ <td class=v><span id=mgcgalaxystruct_spec_type></span>mgcGalaxyStruct</td>
+ <td class=v>MGC</td>
+ <td class=v>SPD's CONTINUUM type (1=El 15.0, 2=Sa 7.4, 3=SC 2.2)</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>0</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SPECTRA</td>
+ <td class=v><span id=twoxmm_spectra></span><span id=twoxmm_v1_2_spectra></span><span id=twoxmmi_dr3_v1_0_spectra></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The flag is set to True if this source has a spectrum made in at least one exposure.</td>
+ <td class=v>varchar</td>
+ <td class=v>5</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>spos</td>
+ <td class=v><span id=twomass_sixx2_psc_spos></span><span id=twomass_sixx2_xsc_spos></span>twomass_sixx2_psc, twomass_sixx2_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v># of scans in which src position falls inside coverage area</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SQF3_6</td>
+ <td class=v><span id=glimpse1_hrc_sqf3_6></span><span id=glimpse1_mca_sqf3_6></span><span id=glimpse2_hrc_sqf3_6></span><span id=glimpse2_mca_sqf3_6></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Source Quality Flag for 3.6um IRAC (Band 1)</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SQF4_5</td>
+ <td class=v><span id=glimpse1_hrc_sqf4_5></span><span id=glimpse1_mca_sqf4_5></span><span id=glimpse2_hrc_sqf4_5></span><span id=glimpse2_mca_sqf4_5></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Source Quality Flag for 4.5um IRAC (Band 2)</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SQF5_8</td>
+ <td class=v><span id=glimpse1_hrc_sqf5_8></span><span id=glimpse1_mca_sqf5_8></span><span id=glimpse2_hrc_sqf5_8></span><span id=glimpse2_mca_sqf5_8></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Source Quality Flag for 5.8um IRAC (Band 3)</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SQF8_0</td>
+ <td class=v><span id=glimpse1_hrc_sqf8_0></span><span id=glimpse1_mca_sqf8_0></span><span id=glimpse2_hrc_sqf8_0></span><span id=glimpse2_mca_sqf8_0></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Source Quality Flag for 8.0um IRAC (Band 4)</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SQFH</td>
+ <td class=v><span id=glimpse1_hrc_sqfh></span><span id=glimpse1_mca_sqfh></span><span id=glimpse2_hrc_sqfh></span><span id=glimpse2_mca_sqfh></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>2MASS All-Sky PSC H Band Source Quality Flag</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SQFJ</td>
+ <td class=v><span id=glimpse1_hrc_sqfj></span><span id=glimpse1_mca_sqfj></span><span id=glimpse2_hrc_sqfj></span><span id=glimpse2_mca_sqfj></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>2MASS All-Sky PSC J Band Source Quality Flag</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SQFKs</td>
+ <td class=v><span id=glimpse1_hrc_sqfks></span><span id=glimpse1_mca_sqfks></span><span id=glimpse2_hrc_sqfks></span><span id=glimpse2_mca_sqfks></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>2MASS All-Sky PSC Ks Band Source Quality Flag</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SQL1</td>
+ <td class=v><span id=glimpse_hrc_inter_sql1></span><span id=glimpse_mca_inter_sql1></span>glimpse_hrc_inter, glimpse_mca_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Source Quality Flag for band 1 flux</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SQL2</td>
+ <td class=v><span id=glimpse_hrc_inter_sql2></span><span id=glimpse_mca_inter_sql2></span>glimpse_hrc_inter, glimpse_mca_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Source Quality Flag for band 2 flux</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SQL3</td>
+ <td class=v><span id=glimpse_hrc_inter_sql3></span><span id=glimpse_mca_inter_sql3></span>glimpse_hrc_inter, glimpse_mca_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Source Quality Flag for band 3 flux</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SQL4</td>
+ <td class=v><span id=glimpse_hrc_inter_sql4></span><span id=glimpse_mca_inter_sql4></span>glimpse_hrc_inter, glimpse_mca_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Source Quality Flag for band 4 flux</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>src</td>
+ <td class=v><span id=wise_allskysc_src></span>wise_allskysc</td>
+ <td class=v>WISE</td>
+ <td class=v>Sequential number of this source extraction in the Atlas Tile from which this source was extracted, in approximate descending order of W1 source brightness.</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>src</td>
+ <td class=v><span id=wise_prelimsc_src></span>wise_prelimsc</td>
+ <td class=v>WISE</td>
+ <td class=v>Sequential number of this source extraction in the Atlas Tile from which this source was extracted, in approximate descending order of W1 source brightness</td>
+ <td class=v>bigint</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SRC_NUM</td>
+ <td class=v><span id=twoxmm_src_num></span><span id=twoxmm_v1_2_src_num></span><span id=twoxmmi_dr3_v1_0_src_num></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The (decimal) source number in the individual source list for this observation; in the hexadecimal system it identifies the source-specific product files belonging to this detection.</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>srcCps</td>
+ <td class=v><span id=rosat_bsc_srccps></span><span id=rosat_fsc_srccps></span>rosat_bsc, rosat_fsc</td>
+ <td class=v>ROSAT</td>
+ <td class=v>source countrate in the broad energy band, vignetting corrected</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>counts/sec</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>PHOT_COUNT-RATE_X</td>
+</tr>
+<tr> <td class=v>srcdens1</td>
+ <td class=v><span id=glimpse_hrc_inter_srcdens1></span><span id=glimpse_mca_inter_srcdens1></span>glimpse_hrc_inter, glimpse_mca_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Local source density for band 1</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>#/sqamin</td>
+ <td class=v>-9.9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>srcdens2</td>
+ <td class=v><span id=glimpse_hrc_inter_srcdens2></span><span id=glimpse_mca_inter_srcdens2></span>glimpse_hrc_inter, glimpse_mca_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Local source density for band 2</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>#/sqamin</td>
+ <td class=v>-9.9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>srcdens3</td>
+ <td class=v><span id=glimpse_hrc_inter_srcdens3></span><span id=glimpse_mca_inter_srcdens3></span>glimpse_hrc_inter, glimpse_mca_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Local source density for band 3</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>#/sqamin</td>
+ <td class=v>-9.9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>srcdens3_6</td>
+ <td class=v><span id=glimpse1_hrc_srcdens3_6></span><span id=glimpse1_mca_srcdens3_6></span><span id=glimpse2_hrc_srcdens3_6></span><span id=glimpse2_mca_srcdens3_6></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Local source density for 3.6um IRAC (Band 1)</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>arcmin**-2</td>
+ <td class=v>-9.9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>srcdens4</td>
+ <td class=v><span id=glimpse_hrc_inter_srcdens4></span><span id=glimpse_mca_inter_srcdens4></span>glimpse_hrc_inter, glimpse_mca_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Local source density for band 4</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>#/sqamin</td>
+ <td class=v>-9.9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>srcdens4_5</td>
+ <td class=v><span id=glimpse1_hrc_srcdens4_5></span><span id=glimpse1_mca_srcdens4_5></span><span id=glimpse2_hrc_srcdens4_5></span><span id=glimpse2_mca_srcdens4_5></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Local source density for 4.5um IRAC (Band 2)</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>arcmin**-2</td>
+ <td class=v>-9.9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>srcdens5_8</td>
+ <td class=v><span id=glimpse1_hrc_srcdens5_8></span><span id=glimpse1_mca_srcdens5_8></span><span id=glimpse2_hrc_srcdens5_8></span><span id=glimpse2_mca_srcdens5_8></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Local source density for 5.8um IRAC (Band 3)</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>arcmin**-2</td>
+ <td class=v>-9.9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>srcdens8_0</td>
+ <td class=v><span id=glimpse1_hrc_srcdens8_0></span><span id=glimpse1_mca_srcdens8_0></span><span id=glimpse2_hrc_srcdens8_0></span><span id=glimpse2_mca_srcdens8_0></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>Local source density for 8.0um IRAC (Band 4)</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>arcmin**-2</td>
+ <td class=v>-9.9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SRCID</td>
+ <td class=v><span id=twoxmm_srcid></span><span id=twoxmm_v1_2_srcid></span><span id=twoxmmi_dr3_v1_0_srcid></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>A unique number assigned to a group of catalogue entries which are assumed to be the same source. To identify members of the same group the distance in arcseconds between each pair of sources was compared on the two-sigma level of both positional errors. A maximum distance of 7" was assumed, which was reduced to 0.9 * DIST_NN (distance to the nearest neighbour) where necessary.</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>srcID</td>
+ <td class=v><span id=rosat_bsc_srcid></span><span id=rosat_fsc_srcid></span>rosat_bsc, rosat_fsc</td>
+ <td class=v>ROSAT</td>
+ <td class=v>SASS source number (MASOL number) in SASS field</td>
+ <td class=v>varchar</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_NUMBER</td>
+</tr>
+<tr> <td class=v>SRCID_2XMMi</td>
+ <td class=v><span id=twoxmmi_dr3_v1_0_srcid_2xmmi></span>twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The unique source ID of the detection, DETID, in the 2XMMi catalogue. Due to the nature of the matching algorithm, some detections were re-assigned to a different source due to the presence of new detections.</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SRCID_2XMMP</td>
+ <td class=v><span id=twoxmm_srcid_2xmmp></span><span id=twoxmm_v1_2_srcid_2xmmp></span>twoxmm, twoxmm_v1_2</td>
+ <td class=v>XMM</td>
+ <td class=v>The source ID of the 2XMMp unique source matched within radius of 3" and using the closest candidate.</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>srcl</td>
+ <td class=v><span id=rosat_bsc_srcl></span><span id=rosat_fsc_srcl></span>rosat_bsc, rosat_fsc</td>
+ <td class=v>ROSAT</td>
+ <td class=v>likelihood of source detection</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>STAT_LIKELIHOOD</td>
+</tr>
+<tr> <td class=v>srcName</td>
+ <td class=v><span id=glimpse1_hrc_srcname></span><span id=glimpse1_mca_srcname></span><span id=glimpse2_hrc_srcname></span><span id=glimpse2_mca_srcname></span>glimpse1_hrc, glimpse1_mca, glimpse2_hrc, glimpse2_mca</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>GLIMPSEI Highly Reliable Catalogue source name</td>
+ <td class=v>varchar</td>
+ <td class=v>32</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_MAIN</td>
+</tr>
+<tr> <td class=v>srcName</td>
+ <td class=v><span id=glimpse_hrc_inter_srcname></span>glimpse_hrc_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>GLIMPSE Highly Reliable Catalogue source name</td>
+ <td class=v>varchar</td>
+ <td class=v>32</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_MAIN</td>
+</tr>
+<tr> <td class=v>srcName</td>
+ <td class=v><span id=glimpse_mca_inter_srcname></span>glimpse_mca_inter</td>
+ <td class=v>GLIMPSE</td>
+ <td class=v>GLIMPSE More Complete Archive source name</td>
+ <td class=v>varchar</td>
+ <td class=v>32</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_MAIN</td>
+</tr>
+<tr> <td class=v>srcName</td>
+ <td class=v><span id=rosat_bsc_srcname></span><span id=rosat_fsc_srcname></span>rosat_bsc, rosat_fsc</td>
+ <td class=v>ROSAT</td>
+ <td class=v>ROSAT All-Sky Survey Catalogue source name</td>
+ <td class=v>varchar</td>
+ <td class=v>16</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_MAIN</td>
+</tr>
+<tr> <td class=v>stackRadius</td>
+ <td class=v><span id=requiredstack_stackradius></span>RequiredStack</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>radius within which intermediate stacks are selected for this deep stack.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>deg</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>startDate</td>
+ <td class=v><span id=astrcalvers_startdate></span>AstrCalVers</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>MJD of the start time for this version of the calibration</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>Julian days</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>TIME_DATE</td>
+</tr>
+<tr> <td class=v>startDate</td>
+ <td class=v><span id=photcalvers_startdate></span>PhotCalVers</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Date time of start time for this version of the calibration (MM-DD-YYYY)</td>
+ <td class=v>datetime</td>
+ <td class=v>8</td>
+ <td class=v>MM-DD-YYYY</td>
+ <td class=v>12-31-9999</td>
+ <td class=v>TIME_DATE</td>
+</tr>
+<tr> <td class=v>status</td>
+ <td class=v><span id=programmecurationhistory_status></span>ProgrammeCurationHistory</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>successful (1) or unsuccessful (0)</td>
+ <td class=v>tinyint</td>
+ <td class=v>1</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>stdCRms</td>
+ <td class=v><span id=currentastrometry_stdcrms></span>CurrentAstrometry</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>RMS residual of fit to astrometric standards {image&nbsp;extension&nbsp;keyword:&nbsp;STDCRMS}</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-0.9999995e9</td>
+ <td class=v>FIT_RESIDUAL</td>
+</tr>
+<tr> <td class=v>STEL</td>
+ <td class=v><span id=mgcdetection_stel></span>mgcDetection</td>
+ <td class=v>MGC</td>
+ <td class=v>Stellaricity</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>Strip</td>
+ <td class=v><span id=denisdr3source_strip></span>denisDR3Source</td>
+ <td class=v>DENIS</td>
+ <td class=v>DENIS strip number</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>SUM_FLAG</td>
+ <td class=v><span id=twoxmm_sum_flag></span><span id=twoxmm_v1_2_sum_flag></span><span id=twoxmmi_dr3_v1_0_sum_flag></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The summary flag of the source is derived from EP_FLAG. It is 0 if none of the nine flags was set; it is set to 1 if at least one of the warning flags (flag 1, 2, 3, 9) was set but no possible-spurious-detection flag (flag 7, 8); it is set to 2 if at least one of the possible-spurious-detection flags (flag 7, 8) was set but not the manual flag (flag 11); it is set to 3 if the manual flag (flag 11) was set but no possible-spurious-detection flags (flag 7, 8); it is set to 4 if the manual flag (flag 11) as well as one of the possible-spurious-detection flags (flag 7, 8) is set. The meaning is thus: 0 = good, 1 = source parameters may be affected, 2 = possibly spurious, 3 = located in a area where spurious detection may occur, 4 = located in a area where spurious detection may occur and possibly spurious. .</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sup_ba</td>
+ <td class=v><span id=twomass_sixx2_xsc_sup_ba></span>twomass_sixx2_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v>minor/major axis ratio fit to 3-sig. super-coadd isophote</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sup_ba</td>
+ <td class=v><span id=twomass_xsc_sup_ba></span>twomass_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v>Minor/major axis ratio fit to 3-sig. super-coadd isophote.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>PHYS_AXIS-RATIO</td>
+</tr>
+<tr> <td class=v>sup_chif_ellf</td>
+ <td class=v><span id=twomass_xsc_sup_chif_ellf></span>twomass_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v>super-coadd % chi-fraction for ellip. fit to 3-sig isophote.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>FIT_PARAM_VALUE</td>
+</tr>
+<tr> <td class=v>sup_dec</td>
+ <td class=v><span id=twomass_xsc_sup_dec></span>twomass_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v>Super-coadd centroid Dec (J2000 decimal deg).</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>degrees</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>POS_EQ_DEC_MAIN</td>
+</tr>
+<tr> <td class=v>sup_phi</td>
+ <td class=v><span id=twomass_sixx2_xsc_sup_phi></span>twomass_sixx2_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v>super-coadd angle to major axis (E of N)</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>deg</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+<tr> <td class=v>sup_phi</td>
+ <td class=v><span id=twomass_xsc_sup_phi></span>twomass_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v>Super-coadd angle to major axis (E of N).</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>degrees</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>POS_POS-ANG</td>
+</tr>
+<tr> <td class=v>sup_r_3sig</td>
+ <td class=v><span id=twomass_xsc_sup_r_3sig></span>twomass_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v>Super-coadd 3-sigma isophotal semi-major axis radius.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>arcsec</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ERROR</td>
+</tr>
+<tr> <td class=v>sup_ra</td>
+ <td class=v><span id=twomass_xsc_sup_ra></span>twomass_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v>Super-coadd centroid RA (J2000 decimal deg).</td>
+ <td class=v>float</td>
+ <td class=v>8</td>
+ <td class=v>degrees</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>POS_EQ_RA_MAIN</td>
+</tr>
+<tr> <td class=v>surveyID</td>
+ <td class=v><span id=externalsurvey_surveyid></span><span id=externalsurveytable_surveyid></span><span id=release_surveyid></span><span id=requiredneighbours_surveyid></span>ExternalSurvey, ExternalSurveyTable, Release, RequiredNeighbours</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>the unique identifier for the survey</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_SURVEY</td>
+</tr>
+<tr> <td class=v>surveyID</td>
+ <td class=v><span id=requiredlistdrivenproduct_surveyid></span>RequiredListDrivenProduct</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>the unique ID of the external survey (if applicable)</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>-99999999</td>
+ <td class=v>ID_SURVEY</td>
+</tr>
+<tr> <td class=v>surveyID</td>
+ <td class=v><span id=survey_surveyid></span><span id=surveyprogrammes_surveyid></span>Survey, SurveyProgrammes</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The unique identifier for the curated survey</td>
+ <td class=v>int</td>
+ <td class=v>4</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>ID_SURVEY</td>
+</tr>
+<tr> <td class=v>surveyName</td>
+ <td class=v><span id=externalsurvey_surveyname></span>ExternalSurvey</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>The short name of the survey, eg. SDSS-EDR, SDSS-DR1, USNOB etc.</td>
+ <td class=v>varchar</td>
+ <td class=v>32</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>??</td>
+</tr>
+<tr> <td class=v>synopticBestMatchTable</td>
+ <td class=v><span id=programme_synopticbestmatchtable></span>Programme</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Table name of merged variable sources</td>
+ <td class=v>varchar</td>
+ <td class=v>64</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>??</td>
+</tr>
+<tr> <td class=v>synopticSetUp</td>
+ <td class=v><span id=programme_synopticsetup></span>Programme</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>A string describing the synoptic setup for more complicated surveys</td>
+ <td class=v>varchar</td>
+ <td class=v>64</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>NONE</td>
+ <td class=v>??</td>
+</tr>
+<tr> <td class=v>synopticSourceTable</td>
+ <td class=v><span id=programme_synopticsourcetable></span>Programme</td>
+ <td class=v>ATLASv20130304</td>
+ <td class=v>Table name of merged variable sources</td>
+ <td class=v>varchar</td>
+ <td class=v>64</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>??</td>
+</tr>
+<tr> <td class=v>sys_flg</td>
+ <td class=v><span id=twomass_xsc_sys_flg></span>twomass_xsc</td>
+ <td class=v>2MASS</td>
+ <td class=v>system flag: 0=no system, 1=nearby galaxy flux incl. in mag.</td>
+ <td class=v>smallint</td>
+ <td class=v>2</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>CODE_MISC</td>
+</tr>
+<tr> <td class=v>SYSERR</td>
+ <td class=v><span id=twoxmm_syserr></span><span id=twoxmm_v1_2_syserr></span><span id=twoxmmi_dr3_v1_0_syserr></span>twoxmm, twoxmm_v1_2, twoxmmi_dr3_v1_0</td>
+ <td class=v>XMM</td>
+ <td class=v>The systematic 1 &sigma; error on the detection position in arcseconds. It is set to be 0.35 arcsec if the SAS task eposcorr results in a statistically reliable cross-correlation with USNO B1.0 optical catalogue. Otherwise the error is 1.0 arsec.</td>
+ <td class=v>real</td>
+ <td class=v>4</td>
+ <td class=v>arcsec</td>
+ <td class=v>&nbsp;</td>
+ <td class=v>&nbsp;</td>
+</tr>
+</table>
+</table>
+</table>
+</table>
+</table>
+</table>

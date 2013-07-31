@@ -1,0 +1,25 @@
+$def with (prefix)
+<h1><a name="fDMSbase"></a><font size=-1>FUNCTION</font>&nbsp;&nbsp;fDMSbase</h1>
+<table width='720px'><tbody>
+<tr><td class='t'> Base function to convert declination in degrees to +dd:mm:ss.ss notation.</td></tr>
+</table>
+<p>
+<table width='720'>
+<tr><td class='d'> SDSS SkyServer function, courtesy Johns Hopkins University.<br>
+ @truncate is 0 (default) if decimal digits to be rounded, 1 to be truncated.<br>
+ @precision is the number of decimal digits, default 2.<br>
+ Example usages:<br>
+ <samp><br>
+ SELECT dbo.fDMSbase(87.56789,1,4)<br>
+ <font class='ret'>=&gt; +87:34:04.4040</font><br><br>
+ SELECT dbo.fDMSbase(87.56789,default,default)<br>
+ <font class='ret'>=&gt; +87:34:04.40</font><br>
+ </samp><br>
+</td></tr>
+</table><p>
+<TABLE border=0 bgcolor=#888888 width=720 cellspacing=3 cellpadding=3><tr><td class='h'>Name</td><td class='h'>Type</td><td class='h'>Length</td><td class='h'>inout</td><td class='h'>pnum</td></tr>
+<tr><td class='fin'>@deg</td><td class='fin'>float</td><td class='fin'>8</td><td class='fin'>input</td><td class='fin'>1</td></tr>
+<tr><td class='fin'>@truncate</td><td class='fin'>int</td><td class='fin'>4</td><td class='fin'>input</td><td class='fin'>2</td></tr>
+<tr><td class='fin'>@precision</td><td class='fin'>int</td><td class='fin'>4</td><td class='fin'>input</td><td class='fin'>3</td></tr>
+<td class='fout'>&nbsp;</td><td class='fout'>varchar</td><td class='fout'>32</td><td class='fout'>output</td><td class='fout'>1</td></tr>
+</TABLE>

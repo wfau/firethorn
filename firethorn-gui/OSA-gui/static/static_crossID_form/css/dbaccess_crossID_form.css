@@ -1,0 +1,121 @@
+#crossID_minimizer {
+	display:none;
+	cursor: pointer;
+}
+
+
+.crossID_form input:disabled{
+	background-color: gray;
+}
+
+.crossID_form .submit_button, .crossID_form .submit_button:visited, .crossID_form .submit_button:link{
+	text-decoration:none;
+	outline:none;
+}
+
+#content_dbaccess_crossID_form .error {
+	color:red;
+	font-size:11px;
+}
+
+
+#content_dbaccess_crossID_form #crossID_error {
+	color:red;
+	font-size:11px;
+}
+
+#content_dbaccess_crossID_form #crossID_load {
+	display:none;
+	margin:0 auto;
+	width:100px;
+	height:15px;
+	text-align:center;
+	background: url("../images/ajax-loader.gif") no-repeat;
+	
+}
+
+#crossID_results { 
+	display:none;
+	overflow-x: auto; 
+    min-width:100%;
+    height:100%;
+	max-width:100%;
+}
+	
+
+#crossID_results table { 
+	color:#191B19;
+}
+	
+#crossID_results center table{
+	color: #C2BEAD !important;
+}
+
+	
+#facebox {
+	height:580px;
+	overflow-y:auto;
+	overflow-x:hidden;
+	width: 70%;
+	max-height:85%;
+}
+
+#facebox .content {
+  display:table;
+  width:100%;
+  padding: 10px;
+  background: #fff;
+  -webkit-border-radius:4px;
+  -moz-border-radius:4px;
+  border-radius:4px;
+}
+
+#crossID_loadImage {
+
+    background: -moz-linear-gradient(center top , #EDEDED 5%, #DFDFDF 100%) repeat scroll 0 0 #EDEDED;
+    border: 1px solid #DCDCDC;
+    border-radius: 6px 6px 6px 6px;
+    box-shadow: 0 1px 0 0 #FFFFFF inset;
+    color: #777777;
+    cursor: pointer;
+    display: inline;
+    font-family: arial;
+    font-size: 12px;
+    font-weight: bold;
+    height: 25px;
+    line-height: 12px;
+    margin-right: 5px;
+    padding: 6px 24px;
+    text-decoration: none;
+    text-shadow: 1px 1px 0 #FFFFFF;
+	
+}
+
+#crossID_facebox_wrapper tr{
+	background: url("../images/gradback.png") repeat-x  scroll 0 0 #E8EDFF;
+
+}
+#crossID_facebox_wrapper td{
+	background: url("../images/gradback.png") repeat-x scroll 0 0 #E8EDFF;
+    border-bottom: 1px solid #FFFFFF;
+    border-top: 1px solid #FFFFFF;
+      border-right: 1px solid #FFFFFF;
+    border-left: 1px solid #FFFFFF;
+    color: #666699;
+    padding: 8px;
+}
+#crossID_facebox_wrapper table{
+
+	border: 1px solid #6699CC;
+    border-collapse: collapse;
+    font-family: "Lucida Sans Unicode","Lucida Grande",Sans-Serif;
+    font-size: 12px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+    padding:10px;
+    text-align: left;
+    
+}
+

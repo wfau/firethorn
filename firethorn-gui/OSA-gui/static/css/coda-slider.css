@@ -1,0 +1,160 @@
+	
+.scroll {
+	margin-left:0 auto;
+	
+}
+
+div.panel {
+ 	min-height:100%;
+	height:100%;
+	max-height:100%;
+	padding-right: 10px;
+    padding-left: 8px;
+    padding-bottom: 5px;
+    padding-top:10px;
+    /*height: 950px;*/
+    width: 95%;
+  
+}
+
+ul.navigation {
+	width: 250px;
+    list-style: none;
+    margin-left: 20px;
+    padding: 0;
+	text-align: left;
+
+}
+
+.navigation .main_menu_li {
+	margin-bottom:7px;	z-index:11;
+}
+
+
+ul.navigation li {
+    display: inline-block;
+    margin: 0px;
+	padding: 0;
+	z-index:11;
+	
+}
+
+ul.navigation a {
+	display: block;
+	width: 190px;
+	height: 20px;
+	padding: 4px 0px 3px 80px;
+	color:white;
+	font-size: 13px;
+	font-weight: normal;
+    text-decoration: none;
+	position: relative;
+	z-index:11;
+}
+
+
+ul.sub_menu_navigation a {
+	display: block;
+	width: 190px;
+	height: 26px;
+	padding: 8px 0px 0px 80px;
+	color: #8a8980;
+	font-size: 13px;
+	font-weight: normal;
+    text-decoration: none;
+	position: relative;
+	z-index:11;
+}
+
+ul.navigation a .ui_icon { position: absolute; top: 0; left: 15px; width: 40px; height: 40px; }
+
+.main_menu_li a:hover, .main_menu_li a.selected {
+	color: #201f1b;
+	background: url(../images/menu_hover2B.png) no-repeat left;
+}
+
+
+ul.navigation a:focus {
+    outline: none;
+}
+
+.scrollButtons {
+    position: absolute;
+    top: 300px;
+    cursor: pointer;
+	width: 0;
+	height: 0;
+}
+
+.scrollButtons.left {
+    left: -50px;
+}
+
+.scrollButtons.right {
+    right: -50px;
+}
+
+
+/* Sub Level Nav */
+#nav ul li ul {
+	background: #F4F4F4;
+	border: 0px solid #000;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5);
+	margin-top: 10px;
+	margin-left:40px;
+	padding: 0 10px 0;
+	padding-top:10px;
+	padding-bottom:20px;
+	position: relative;
+	width: 156px;
+
+}
+
+#nav ul li ul li {
+	border-bottom: 1px solid #CCC;
+	float: none;
+	height: 10px;
+	padding: 10px 0;
+	width: 156px;
+	text-align:center;
+	overflow:hidden;
+}
+
+#nav ul li ul li a {
+	top:-12px;
+	left: -99px;
+	font-size:12px;
+	color: #201F1B;
+	text-shadow: none;
+}
+
+.sub_menu_navigation a:hover, .sub_menu_navigation a.selected  {
+	color: #000;
+	background: url("../images/sub_menu_hover.png");
+}
+
+#nav ul li ul li:last-child:not(li.arrow) {
+	border: 0;
+}
+
+/* Arrow */
+.arrow {
+	background: url(../images/arrow.png) no-repeat;
+	border: 0;
+	display: none;
+	position: absolute;
+	top: -10px;
+	left: 78px;
+	height: 11px;
+	width: 20px;
+	text-indent: -9999px;
+}
+
+
+#nav { 
+	overflow-y:auto;
+	width:300px;
+	margin-left:0px;
+}

@@ -1,0 +1,24 @@
+$def with (survey_prefix)
+
+<h2>Introduction to SQL</h2>
+
+
+Queries are carried out on the OSA database using SQL 
+(Structured Query Language).<p>
+
+Simple queries are made up of 3 basic commands: <b>select</b>, <b>from</b> and <b>where</b>. <p>
+
+<b>select</b> - list the parameters you wish to extract (separated by commas) e.g. <em> select ra,dec,kMag</em><p>
+<b>from</b> - list the table names you need to access e.g. <em>from vhsSource</em><p> 
+<b>where</b> - provide any constraints e.g. <em> where kMagErr &lt; 0.05</em><p>
+
+to give the full query<p>
+<em> select ra,dec,kmag<br>
+from vhsSource<br>
+where  kMagErr &lt; 0.05</em>
+<p>
+
+
+
+
+<P><BR clear="all">

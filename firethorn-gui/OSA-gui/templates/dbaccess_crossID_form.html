@@ -1,0 +1,157 @@
+$def with (database_options,baseTable_options,programmes, crossID_select,crossID_where,crossID_filename,crossID_archive, crossID_nearest,crossID_table, survey_prefix)
+<link href="$survey_prefix/static/static_crossID_form/css/dbaccess_crossID_form.css" media="screen" rel="stylesheet" type="text/css"/>  
+<link href="$survey_prefix/static/static_vo_tool/style_vo_tool.css" media="screen" rel="stylesheet" type="text/css"/>  
+<script type="text/javascript" src="$survey_prefix/static/js/samp.js"></script>
+<script type="text/javascript" src="$survey_prefix/static/js/samp_helper.js"></script>
+<script src="$survey_prefix/static/js/jquery.form.js" type="text/javascript"></script>
+<script src="$survey_prefix/static/static_crossID_form/js/crossID.js" type="text/javascript"></script>
+
+	
+<div id="content_dbaccess_crossID_form">
+
+	
+	<h3>CrossID form &nbsp;<a id="crossID_minimizer">[+]</a></h3>
+	Use the form to upload a file of names and their positions and match them with objects held in the SOURCE or DETECTION table in the OSA. 
+	The format of each line in the file should be NAME RA DEC separated by spaces. The names can be up to 30 characters long. The coordinates should be in J2000 decimal degrees, e.g.
+
+	<br>
+	<pre>
+	myobjname 180.123456 -1.01234
+	anotherobj 179.0 0.512
+	...
+	</pre>
+	<p></p>
+	<hr>
+	
+	<div id ="crossID_error" style="color:red;display:none"></div>
+	<form name="crossID_form" method="post" class="crossID_form"
+		enctype="multipart/form-data" id="generic_form" >
+		<input type="hidden" name="format" value="HTML" /> 
+		<input type="hidden" name="archive" value="$crossID_archive"> 
+		<input type=hidden name="emailAddress" value="">
+		<input type=hidden name="qType" value="form">
+		<input type=hidden name="disp" value="">
+		
+		<div id="clear"></div>
+	
+		<br />
+		<div id="clear"></div>
+	
+		<table style="margin:0 auto">
+			<tr>
+				<td align="right" nowrap=""><b>Database release :&nbsp;</b></td>
+				<td>
+					<select name="database">$:database_options </select>
+				</td>
+			</tr>
+		
+			$:programmes
+		
+			<tr>
+				<td align="right" nowrap><b>Table:</b></td>
+				<td>
+					<select name="$crossID_table" id="baseTable">
+							$:baseTable_options
+					</select>
+				</td>
+			</tr>
+			
+			<tr>
+				<td align="right">constraints/<b>where:</b></td>
+				<td><input type="text" name="whereClause" id="whereClause" size="40" value=""></td>
+	
+				<td>SQL where clause to refine search</td>
+	
+	
+			</tr>
+			<tr>
+				<td align="right">attributes to <b>select:</b></td>
+				<td>
+				
+				<input type="text" name="$crossID_select" size="40"
+					value="default"></td>
+				<td><a href="#crossID_default_help" rel="facebox">Info on defaults</a></td>
+			</tr>
+			<tr>
+	
+	
+			</tr>
+			<tr>
+				<td align="right"><b>pairing radius (arcsec)</b> &nbsp;&nbsp;(*)</td>
+				<td><input type="text" size="4" name="radius" value="5.0">
+				</td>
+				<td>maximum 300 arcsec</td>
+			</tr>
+			<tr>
+				<td align="right"><b>pairing option:</b></td>
+				<td><select name="$crossID_nearest">
+	
+						<option value="0">All nearby objects</option>
+						<option value="1">Nearest object only</option>
+				</select></td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+		        <td align="left" valign="middle"><b>File Compression:</b></td>
+		        <td><table cellspacing="0" cellpadding="5" border="0"><tbody><tr>
+		        <td><input type="radio" value="NONE" name="compress"></td>
+		        <td>(none)</td>
+		        <td><input type="radio" checked="checked" value="GZIP" name="compress"></td>
+		        <td>GZIP</td></tr>
+		        </tbody></table>
+		        </td></tr>
+			<tr> 
+				<td align="right"><b>HTML rows:</b>&nbsp;&nbsp;(*)</td>
+				<td>
+					<input type="text" value="50" maxlength="6" size="6" name="rows">
+				</td>
+				<td>
+					Number of rows written to HTML table summary (maximum 100)
+				</td>
+				
+			</tr>
+			<tr>
+				<td align="right" nowrap><b>file of coordinates: </b>&nbsp;&nbsp;(*)</td>
+				<td><input type="file" name="$crossID_filename" id="uploadFile"></td>
+				<td>maximum 5000 lines</td>
+	
+			</tr>
+		</table>
+	
+		<br />
+		<input class="submit_button" type="submit" value="Submit" style="margin-left:5px;"/>
+	
+	</form>
+	
+	<div id="crossID_default_help" style="display:none;font-size:13px;">
+		     		
+		<h3 style="color:black;">Default sets of attributes</h3>
+		In some of the data access methods a <b>default</b> list of table attributes is returned for a given table. The
+		listings for the various survey(s) and tables are shown below.<p> You can append to the <b>default</b> set by adding
+		extra parameters, separated by commas, after default e.g. enter <em>default,htmID,cx,cy,cz</em> in the attributes to select box.
+		If you do not wish the default list to be returned enter your own comma separated list in place of default e.g enter
+		
+		<em>htmID,cx,cy,cz</em>
+		
+		</p>
+		<p>
+		Attributes for a given table can be found in the schema browser.
+		</p>
+		<p>
+			<em>
+			Currently the default set of parameters is set to select ALL the attributes in the table being queried.
+			</em>
+		</p>
+	
+	</div>
+	
+	<br /><br />
+	<div id="crossID_load"></div>
+	<span id="error_tooltip_wrapper" style="display:none;margin-right:50px;float:right;color:red;font-size:11px;font-style:italic"><b>Error returned</b> &nbsp;<a id="error_tooltip_link" style="color:red;"><img src="$survey_prefix/static/images/red-exclamation-point.png"  style="vertical-align:middle"> </a></span>
+
+	<div id="crossID_results" class='dynamic_div'></div>
+	
+	<div style="display:none;" id="crossID_results_secondary"></div>
+	<br />
+	
+</div>

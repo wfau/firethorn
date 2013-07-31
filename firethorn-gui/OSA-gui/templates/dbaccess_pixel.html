@@ -1,0 +1,82 @@
+$def with (ra,dec,radius,sys,survey_prefix)
+<link href="$survey_prefix/static/static_pixel_form/css/dbaccess_pixel_form.css" media="screen" rel="stylesheet" type="text/css"/>  
+<link href="$survey_prefix/static/static_vo_tool/style_vo_tool.css" media="screen" rel="stylesheet" type="text/css"/>  
+
+	
+<div id="content_dbaccess_pixel_form">
+
+	
+	<h3>Image/pixel-map extraction&nbsp;<a id="pixel_minimizer">[+]</a></h3>
+	
+		This form provides access to the SuperCOSMOS pixel data
+		
+		<form action="http://www-wfau.roe.ac.uk/sss/cgi-bin/pixel_ssa.cgi" method="POST">
+		<hr>
+		<table class="form" border="0">
+		<tbody><tr>
+		<td>
+		<table border="2" cellpadding="3" cellspacing="3">
+		<tbody><tr>
+		<td align="right"><b>RA</b> or <b>Galactic Long.:</b></td>
+		<td><input name="ra" size="15" value="180" type="text"></td>
+		<td rowspan="2"> sexagesimal format or decimal degrees </td>
+		</tr><tr>
+		<td align="right"><b>Dec</b> or <b>Galactic Lat.:</b></td>
+		<td><input name="dec" size="15" value="1" type="text"></td>
+		</tr><tr>
+		<td align="right"><b>Coordinate System:</b></td>
+		<td>
+		<select name="equinox">
+		<option value="2" selected=""> J2000
+		</option><option value="1"> B1950
+		</option><option value="3"> Galactic
+		</option></select>
+		</td>
+		<td>&nbsp;</td>
+		
+		</tr><tr>
+		<td align="right"><b>Size of extracted box:</b></td>
+		<td><input name="size" size="5" value="2.0" type="text"></td>
+		<td> in arcminutes (maximum 30) </td>
+		</tr><tr>
+		<td align="right"><b>Survey/Waveband:<b></b></b></td>
+		<td><select name="waveband">
+		<option value="J">B : UKST Blue: -90 &lt; Dec &lt; +2.5
+		</option><option value="R">R2 : UKST Red: -90 &lt; Dec &lt; +2.5
+		</option><option value="I">I : UKST near IR -90 &lt; Dec &lt; +2.5    
+		</option><option value="E">R1 : ESO Red: -90 &lt; Dec &lt; -17.5
+		</option><option value="P">R1 : POSS I Red: -20.5 &lt; Dec &lt; +2.5
+		</option></select> </td>
+		<td>&nbsp;</td>
+		</tr></tbody></table>
+		</td>
+		</tr></tbody></table>
+		
+		
+		<p>
+		Do you wish to see a GIF image of the result (takes more time)? 
+		<input name="gif" value="0" checked="" type="radio">no
+		<input name="gif" value="1" type="radio">yes
+		</p><p>
+		
+		Assuming the required area of sky, in the colour/survey requested, is
+		available on-line a link to a gzipped FITS image is returned.
+		</p><p>
+		</p><hr>
+		
+		When you have completed the form, click on the Submit button below.<p>
+		<br>
+		<input value="Submit" class='submit_button' type="submit"> 
+		
+		</p></form>
+
+
+	
+	<div id="pixel_load"></div>
+
+	<div id="pixel_results" class='dynamic_div'></div>
+	
+	<div style="display:none;" id="pixel_results_secondary"></div>
+	<br />
+	
+</div>

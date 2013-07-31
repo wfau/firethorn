@@ -1,0 +1,220 @@
+/*
+ *
+ * Viewer CSS
+ *
+ */	
+* {
+	margin: 0;
+}
+
+html {
+		height: 100%;
+		margin: 0;
+		padding: 0;
+ 
+	}
+
+body {
+		color: #3E3E3E;
+		background-color: #FBFFFF;
+		margin: 0;
+		padding:0;
+		height:100%;
+		font: 80%/1.45em "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+		
+	}
+
+a {
+   outline: 0;
+}
+
+input {
+
+   outline: 0;
+}
+
+#gradient {
+		width:100%;
+		min-width: 1024px !important;
+		height:40px; 	
+		background: url(line_small.png);
+		background-repeat: repeat-x;
+	}	
+	
+#axis_input {
+	font-size:11px;
+	color:white;
+	border: 4px solid #AFC7C7;
+	width:890px;
+	min-width: 540px !important; 
+	height:167px;
+	margin:0 auto;
+	background: url("page_top_img.png");
+	padding-top:20px;
+	padding-bottom: 35px;
+
+}
+
+#axis_input input{
+		padding:4px 2px;
+		font-size: 11px;
+		border:solid 1px #aacfe4;
+		width: 120px; 
+		display: inline-block;
+    		vertical-align: baseline;
+		height:15px;
+		
+	}
+
+#axis_input input:hover {
+		background-color:#A0C7EB;
+	}
+	
+	
+	
+#axis_input input.submit {
+		background: #8cbfc2; /* Old browsers */
+		background: -moz-linear-gradient(top, #8cbfc2 0%, #519093 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#8cbfc2), color-stop(100%,#519093)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top, #8cbfc2 0%,#519093 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top, #8cbfc2 0%,#519093 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top, #8cbfc2 0%,#519093 100%); /* IE10+ */
+		background: linear-gradient(top, #8cbfc2 0%,#519093 100%); /* W3C */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8cbfc2', endColorstr='#519093',GradientType=0 ); /* IE6-9 */
+		border: medium none;
+		border-radius: 5px 5px 5px 5px;
+		color: #FFFFFF;
+		cursor: pointer;
+		font-size:13px;
+		font-family: arial;
+		padding: 4px 10px;
+		text-shadow: 0 1px 1px #003547;	
+		outline:none;
+		float:right;
+		
+		width:100px;
+		height:24px;
+	}
+
+#axis_input input.submit:hover {
+		background: none repeat scroll 0 0 #8CBFC2;
+		text-decoration: none;
+	}	
+
+
+#axis_input input.submit.active {
+		text-decoration:none;
+	}	
+	
+	
+#axis_input label.long_label{ 
+		width: 120px; 
+		display: inline-block;
+    		vertical-align: baseline;
+		
+	}
+	
+#axis_input label.short_label{ 
+		width: 70px; 
+		display: inline-block;
+    		vertical-align: baseline;
+		
+	}
+
+#axis_input label.very_short_label{ 
+		width: 20px; 
+		display: inline-block;
+    		vertical-align: baseline;
+		
+	}
+#post-it-example {
+		text-align:left;
+		color:black;
+		font-family:'Lucida Casual', 'Comic Sans MS';
+		font-style:normal;
+		font-size:13px;
+		margin:0 auto;
+		width:400px;
+		height:189px;
+		background:url("post-it-2.png");
+		line-height:17px;
+		display:none;
+		
+	}	
+
+#post-it-example small{
+		font-size:11px;
+		font-style:italic;
+	}
+
+#viewer_table_div {
+		display:none;
+		width:900px;
+		margin:0 auto;
+	
+	}	
+	
+#viewer_header {
+		height:60px;
+		width: 100%; 
+		background: black;
+		text-align:center;
+		padding:0;
+		margin:0;
+		position: relative; 
+		min-width: 1024px !important; 
+	}
+
+/* Vertically position header text and style it*/
+#viewer_header h3 {
+		color:white;
+		padding:0;
+		margin:0;
+		padding-top: 15px;
+	}	
+		
+#plot_expression_help_link {
+		font-size:12px;
+		outline:none;
+		text-decoration:none;
+		color:gray;	
+	}
+	
+#plot_expression_help_link:hover {
+		color:white;
+		cursor:pointer;
+	}
+	
+	
+#user_table_toggle {
+		color:gray;	
+	}
+	
+#user_table_toggle:hover {
+		color: black;
+		cursor:pointer;
+	}
+
+
+#get_cur_area_link {
+		color:gray;	
+		
+	}
+	
+#get_cur_area_link:hover {
+		color: black;
+		cursor:pointer;
+	}
+
+#get_cur_area_content {
+		margin-top:15px;
+	}
+	
+#results {
+		width:88%;
+	}
+
+#load, #error {
+margin-top:10px;
+}
+
