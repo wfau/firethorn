@@ -40,7 +40,6 @@ jdbcschemaident=$(
 POST "${adqlresource:?}/metadoc/import" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    --form   "urn:adql.copy.depth=${adqlcopydepth:-FULL}" \
     --form   "urn:schema.metadoc.base=${jdbcschemaident:?}" \
     --form   "urn:schema.metadoc.file=@${FIRETHORN_TEST:?}/metadoc/${metadocfile:?}" \
     | ./pp | tee adql-schema.json

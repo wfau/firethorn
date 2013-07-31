@@ -128,7 +128,6 @@
 
             identity=$(pwgen 16 1)
             community=$(date '+%A')
-            adqlcopydepth=PARTIAL
 
             source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
 
@@ -148,6 +147,7 @@
            #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'XXXXXXX'        'dbo' "${adqlspace:?}" 'sdssdr8.metadoc.xml'
            #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'XXXXXXX'        'dbo' "${adqlspace:?}" 'ssa.metadoc.xml'
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'TWOMASS'        'dbo' "${adqlspace:?}" 'twomass.metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'TWOXMM'         'dbo' "${adqlspace:?}" 'xmm.metadoc.xml'
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR1PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR1_metadoc.xml'
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR2PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR2_metadoc.xml'
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR3PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR3_metadoc.xml'
@@ -156,13 +156,13 @@
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR6PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR6_metadoc.xml'
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR7PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR7_metadoc.xml'
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR8PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR8_metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VHSDR1'         'dbo' "${adqlspace:?}" 'VHS_DR1_metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VIDEODR2'       'dbo' "${adqlspace:?}" 'VIDEO_DR2_metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VIKINGDR2'      'dbo' "${adqlspace:?}" 'VIKING_DR2_metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VMCDR1'         'dbo' "${adqlspace:?}" 'VMC_DR1_metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VVVDR1'         'dbo' "${adqlspace:?}" 'VVV_DR1_metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'TWOXMM'         'dbo' "${adqlspace:?}" 'xmm.metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VHSDR1'         'dbo' "${adqlspace:?}" 'VHS_DR1_metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VIDEODR2'       'dbo' "${adqlspace:?}" 'VIDEO_DR2_metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VIKINGDR2'      'dbo' "${adqlspace:?}" 'VIKING_DR2_metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VMCDR1'         'dbo' "${adqlspace:?}" 'VMC_DR1_metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VVVDR1'         'dbo' "${adqlspace:?}" 'VVV_DR1_metadoc.xml'
 
+            adqlcopydepth=FULL
             source "${FIRETHORN_TEST:?}/03-02-import-jdbc-schema.sh"  "${jdbcspace:?}" 'ATLASv20130304' 'dbo' "${adqlspace:?}" 'ATLASv20130304'
 
             cat > "${HOME:?}/firethorn.testing" << EOF
@@ -172,7 +172,6 @@ EOF
 
         popd
         
-
         source "${HOME:?}/firethorn.settings"
         FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
 
@@ -180,7 +179,6 @@ EOF
 
             identity=$(pwgen 16 1)
             community=$(date '+%A')
-            adqlcopydepth=THIN
 
             source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
 
@@ -189,6 +187,7 @@ EOF
                 source "${HOME:?}/firethorn.testing"
                 source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Query workspace'
 
+                adqlcopydepth=THIN
                 source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}" 'TWOMASS'         "${queryspace:?}" 'twomass'
                 source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}" 'ATLASv20130304'  "${queryspace:?}" 'atlas'
 
