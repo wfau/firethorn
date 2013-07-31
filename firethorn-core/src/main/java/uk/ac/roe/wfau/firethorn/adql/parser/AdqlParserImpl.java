@@ -33,6 +33,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import adql.db.DBChecker;
 import adql.db.DBColumn;
@@ -48,6 +49,8 @@ import adql.query.from.ADQLTable;
 import adql.query.from.FromContent;
 import adql.query.operand.ADQLColumn;
 import adql.query.operand.ADQLOperand;
+import adql.query.operand.NumericConstant;
+import adql.query.operand.StringConstant;
 import adql.query.operand.Operation;
 import adql.query.operand.function.ADQLFunction;
 import adql.query.operand.function.MathFunction;
@@ -765,7 +768,28 @@ implements AdqlParser
         log.debug("  class  [{}]", oper.getClass().getName());
         log.debug("  number [{}]", oper.isNumeric());
         log.debug("  string [{}]", oper.isString());
-        if (oper instanceof ADQLColumn)
+
+        
+        if (oper instanceof StringConstant){
+            
+        	return new SelectFieldImpl(
+            		oper.getName(),
+                    new Integer(0),
+                    AdqlColumn.Type.CHAR
+                    );
+          
+        }
+        else if (oper instanceof NumericConstant){
+          
+            return new SelectFieldImpl(
+            		oper.getName(),
+                    new Integer(0),
+                    AdqlColumn.Type.DOUBLE
+                    );
+                   
+          
+        }
+        else if (oper instanceof ADQLColumn)
             {
             return wrap(
                 (ADQLColumn) oper
@@ -783,6 +807,7 @@ implements AdqlParser
                 (Operation) oper
                 );
             }
+   
         else {
             return new SelectFieldImpl(
                 "unknown",
@@ -968,7 +993,6 @@ implements AdqlParser
         log.debug("  name   [{}]", funct.getName());
         log.debug("  number [{}]", funct.isNumeric());
         log.debug("  string [{}]", funct.isString());
-
         switch (funct.getType())
             {
             case COUNT :
@@ -982,7 +1006,7 @@ implements AdqlParser
             case AVG:
             case MAX:
             case MIN:
-            case SUM:
+            case SUM:	
                 return new SelectFieldWrapper(
                     funct.getName(),
                     wrap(
@@ -1006,7 +1030,55 @@ implements AdqlParser
         log.debug("  name   [{}]", funct.getName());
         log.debug("  number [{}]", funct.isNumeric());
         log.debug("  string [{}]", funct.isString());
-        return null ;
+
+ 
+        switch (funct.getType())
+        {
+        
+        	  
+        case ROUND:
+        case ABS:
+        case CEILING:
+        case MOD:
+        case TRUNCATE:
+        case POWER:
+            return new SelectFieldWrapper(
+                    funct.getName(),
+                    wrap(
+                    
+                        funct.getParameter(0)
+                        )
+                    );
+
+        case LOG:		// returns the natural logarithm (base e) of a double value.
+        case LOG10:	// returns the base 10 logarithm of a double value.	
+        case DEGREES:
+        case RADIANS:
+        case RAND:
+        case FLOOR:
+        case ACOS:
+        case ASIN:
+        case ATAN:
+        case ATAN2:
+        case COS:
+        case COT:
+        case SIN:
+        case TAN:
+        case PI:
+        case SQRT:        
+        case EXP:
+        	   return new SelectFieldImpl(
+                       funct.getName(),
+                       new Integer(0),
+                       AdqlColumn.Type.DOUBLE
+                       );
+
+        
+        default :
+            log.error("Unexpected Math function type [{}][{}]", funct.getName(), funct.getType());
+            return null ;
+        }
+        
         }
 
     /**
@@ -1022,6 +1094,7 @@ implements AdqlParser
         return null ;
         }
 
+    
 /*
  *
         AdqlQuery.SelectField field = null ;
