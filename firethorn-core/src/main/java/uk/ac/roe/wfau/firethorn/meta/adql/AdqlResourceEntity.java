@@ -373,5 +373,4 @@ extends BaseResourceEntity<AdqlSchema>
         // TODO Auto-generated method stub
 
         }
-
     }

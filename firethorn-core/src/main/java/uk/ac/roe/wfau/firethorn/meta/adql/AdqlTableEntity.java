@@ -544,7 +544,7 @@ public class AdqlTableEntity
     @Override
     public BaseTable<?,?> root()
         {
-        return base().root();
+        return this.base.root();
         }
 
     /*

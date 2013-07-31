@@ -139,7 +139,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
     protected MetaDocReader reader = new MetaDocReader();
 
     /**
-     * Import schema from using metadata from a metadoc.
+     * Import tables from a base schema using metadata from a metadoc.
      * @throws IOException 
      * @throws XMLReaderException 
      * @throws XMLParserException 
@@ -152,14 +152,12 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
     public Iterable<AdqlSchemaBean> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
-        @RequestParam(value=ADQL_COPY_DEPTH_URN, required=false)
-        final CopyDepth depth,
         @RequestParam(value=METADOC_IMPORT_BASE, required=true)
         final String base,
         @RequestPart(value=METADOC_IMPORT_FILE, required=true)
         final MultipartFile metadoc
         ) throws XMLParserException, XMLReaderException, IOException, IdentifierNotFoundException, NameNotFoundException {
-        log.debug("inport(CopyDepth, BaseSchema, File) [{}][{}]", depth, base);
+        log.debug("inport(BaseSchema, File) [{}]", base);
         return bean(
             reader.inport(
                 new InputStreamReader(

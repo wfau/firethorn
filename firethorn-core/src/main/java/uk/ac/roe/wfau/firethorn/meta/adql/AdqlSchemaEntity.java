@@ -389,22 +389,27 @@ implements AdqlSchema
 
     /**
      * Convert this into a full copy.
+     * @todo Nested full .. or thin ?
      * @todo Prevent this happening twice.
      * @todo Delay the full scan until the data is actually requested.
+     * @todo THIN is fine .. once we fix scan() on JdbcTable
      *
      */
     protected void realize()
         {
         log.debug("realize() [{}][{}]", ident(), name());
-        if ((this.base != null) && (this.depth == CopyDepth.FULL))
+        if (this.depth == CopyDepth.FULL)
             {
-            for (final BaseTable<?,?> table : base.tables().select())
+            if (this.base != null)
                 {
-                log.debug("Importing base table [{}][{}]", table.ident(), table.name());
-                realize(
-                    CopyDepth.THIN,
-                    table
-                    );
+                for (final BaseTable<?,?> table : base.tables().select())
+                    {
+                    log.debug("Importing base table [{}][{}]", table.ident(), table.name());
+                    realize(
+                        CopyDepth.FULL,
+                        table
+                        );
+                    }
                 }
             }
         }
@@ -431,13 +436,25 @@ implements AdqlSchema
     @Override
     public BaseSchema<?, ?> base()
         {
-        return this.base ;
+        if (this.base != null)
+            {
+            return this.base;
+            }
+        else {
+            return this ;
+            }
         }
 
     @Override
     public BaseSchema<?, ?> root()
         {
-        return base.root();
+        if (this.base != null)
+            {
+            return this.base.root();
+            }
+        else {
+            return this ;
+            }
         }
 
     @Index(
