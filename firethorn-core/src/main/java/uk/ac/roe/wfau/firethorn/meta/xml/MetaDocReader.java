@@ -28,6 +28,7 @@ import javax.xml.stream.events.StartElement;
 
 import lombok.extern.slf4j.Slf4j;
 
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
@@ -68,7 +69,7 @@ implements XMLReader
     private static SchemaReader schemareader = new SchemaReader();
 
     public Iterable<AdqlSchema> inport(final Reader source, final BaseSchema<?,?> base, final AdqlResource workspace)
-    throws XMLParserException, XMLReaderException
+    throws XMLParserException, XMLReaderException, NameNotFoundException
         {
         return inport(
             wrap(
@@ -80,7 +81,7 @@ implements XMLReader
         }
 
     public Iterable<AdqlSchema> inport(final XMLEventReader source, final BaseSchema<?,?> base, final AdqlResource workspace)
-        throws XMLParserException, XMLReaderException
+        throws XMLParserException, XMLReaderException, NameNotFoundException
         {
         log.debug("inport(XMLEventReader, BaseSchema, AdqlResource)");
 
@@ -135,13 +136,13 @@ implements XMLReader
         private static TableReader tablereader = new TableReader();
         
         public AdqlSchema inport(final XMLEventReader source, final BaseSchema<?,?> base, final AdqlResource workspace)
-        throws XMLParserException, XMLReaderException
+        throws XMLParserException, XMLReaderException, NameNotFoundException
             {
             log.debug("inport(XMLEventReader, BaseSchema, AdqlResource)");
             parser.start(
                 source
                 );
- 
+
             AdqlSchema schema = workspace.schemas().inport(
                 namereader.read(
                     source
@@ -191,29 +192,21 @@ implements XMLReader
             );
 
         public void inport(final XMLEventReader source, final AdqlSchema schema)
-        throws XMLParserException, XMLReaderException
+        throws XMLParserException, XMLReaderException, NameNotFoundException
             {
             log.debug("inport(XMLEventReader, AdqlSchema)");
             parser.start(
                 source
                 );
 
-            try {
-                config(
-                    schema.tables().inport(
-                        namereader.read(
-                            source
-                            )
-                        ),
-                    source
-                    ); 
-                }
-            catch (NotFoundException ouch)
-                {
-                throw new XMLReaderException(
-                    "Unable to locate base table",
-                    ouch);
-                }
+            config(
+                schema.tables().inport(
+                    namereader.read(
+                        source
+                        )
+                    ),
+                source
+                ); 
 
             parser.done(
                 source
@@ -275,7 +268,7 @@ implements XMLReader
             );
 
         public void config(final AdqlTable table, final XMLEventReader source)
-        throws XMLParserException, XMLReaderException, NotFoundException
+        throws XMLParserException, XMLReaderException, NameNotFoundException
             {
             table.text(
                 textreader.read(
@@ -314,7 +307,7 @@ implements XMLReader
             );
 
         public void inport(final XMLEventReader source, final AdqlTable table)
-            throws XMLParserException, XMLReaderException, NotFoundException 
+        throws XMLParserException, XMLReaderException, NameNotFoundException 
             {
             log.debug("inport(XMLEventReader, AdqlTable)");
             parser.start(

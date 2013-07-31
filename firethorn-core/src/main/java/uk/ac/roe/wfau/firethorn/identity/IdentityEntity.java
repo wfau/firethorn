@@ -168,13 +168,6 @@ implements Identity
             {
             return this.links;
             }
-
-        @Override
-        public Identity select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
-            }
         }
 
     /**

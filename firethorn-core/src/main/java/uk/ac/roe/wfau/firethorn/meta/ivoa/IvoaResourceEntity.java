@@ -37,6 +37,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 
@@ -130,13 +131,6 @@ public class IvoaResourceEntity
             {
             return this.links;
             }
-
-        @Override
-        public IvoaResource select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
-            }
         }
 
     protected IvoaResourceEntity()
@@ -201,7 +195,7 @@ public class IvoaResourceEntity
                 }
             @Override
             public IvoaSchema select(final String name)
-            throws NotFoundException
+            throws NameNotFoundException
                 {
                 return factories().ivoa().schemas().select(
                     IvoaResourceEntity.this,
@@ -209,11 +203,11 @@ public class IvoaResourceEntity
                     );
                 }
             @Override
-            public Iterable<IvoaSchema> search(final String text)
+            public IvoaSchema search(final String name)
                 {
                 return factories().ivoa().schemas().search(
                     IvoaResourceEntity.this,
-                    text
+                    name
                     );
                 }
             };

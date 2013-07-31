@@ -150,13 +150,6 @@ implements ConfigProperty
             {
             return this.links;
             }
-
-        @Override
-        public ConfigProperty select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
-            }
         }
 
     /**

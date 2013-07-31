@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
@@ -117,7 +118,7 @@ public class AdqlResourceController
     public AdqlResource entity(
         @PathVariable("ident")
         final String ident
-        ) throws NotFoundException  {
+        ) throws IdentifierNotFoundException  {
         log.debug("entity() [{}]", ident);
         return factories().adql().resources().select(
             factories().adql().resources().idents().ident(
@@ -149,12 +150,12 @@ public class AdqlResourceController
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
     public AdqlResourceBean update(
+        @ModelAttribute(TARGET_ENTITY)
+        final AdqlResource entity,
         @RequestParam(value=UPDATE_NAME, required=false) final
         String name,
         @RequestParam(value=UPDATE_STATUS, required=false) final
-        String status,
-        @ModelAttribute(TARGET_ENTITY)
-        final AdqlResource entity
+        String status
         ){
 
         if (name != null)
@@ -195,5 +196,4 @@ public class AdqlResourceController
         ){
         return VOSI_XML_VIEW ;
         }
-
     }

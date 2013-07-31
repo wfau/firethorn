@@ -121,10 +121,10 @@ extends BaseResource<AdqlSchema>
         public AdqlSchema create(final CopyDepth depth, final String name, final BaseSchema<?,?> base);
 
         /**
-         * Select or create a named schema.  
+         * Import a base schema.  
          *
          */
-        public AdqlSchema inport(String read, BaseSchema<?, ?> base);
+        public AdqlSchema inport(final String name, final BaseSchema<?, ?> base);
 
         }
     @Override

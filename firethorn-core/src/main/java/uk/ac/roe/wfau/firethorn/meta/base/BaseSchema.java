@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 
 /**
@@ -70,17 +72,17 @@ extends BaseComponent
         public Iterable<SchemaType> select(final ResourceType parent);
 
         /**
-         * Select a named schema from a resource.
+         * Select a schema by name.
          *
          */
         public SchemaType select(final ResourceType parent, final String name)
-        throws NotFoundException;
+        throws NameNotFoundException;
 
         /**
-         * Text search for schemas (name starts with).
+         * Search for a schema by name.
          *
          */
-        public Iterable<SchemaType> search(final ResourceType parent, final String text);
+        public SchemaType search(final ResourceType parent, final String name);
 
         }
 
@@ -115,24 +117,24 @@ extends BaseComponent
         public Iterable<TableType> select();
 
         /**
-         * Search for tables (name starts with).
+         * Search for a table by name.
          *
          */
-        public Iterable<TableType> search(final String text);
+        public TableType search(final String name);
 
         /**
          * Select a table by name.
          *
          */
         public TableType select(final String name)
-        throws NotFoundException;
+        throws NameNotFoundException;
 
         /**
          * Select a table by ident.
          *
          */
         public TableType select(final Identifier ident)
-        throws NotFoundException;
+        throws IdentifierNotFoundException;
 
         }
 

@@ -58,8 +58,8 @@ public abstract class AbstractController
     /**
      * URL path for the search method.
      *
-     */
     public static final String SEARCH_PATH = "search" ;
+     */
 
     /**
      * URL path for the create method.

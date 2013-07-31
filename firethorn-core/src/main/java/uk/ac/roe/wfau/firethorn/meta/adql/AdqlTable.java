@@ -19,6 +19,7 @@ package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -79,6 +80,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
          *
          */
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base);
+
         /**
          * Create a new table.
          *
@@ -90,6 +92,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
          *
          */
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base, final String name);
+
         /**
          * Create a new table.
          *
@@ -101,6 +104,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
          *
          */
         public AdqlTable create(final AdqlSchema schema, final AdqlQuery query);
+
         /**
          * Create a new table.
          *
@@ -132,6 +136,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
      */
     public interface Columns extends BaseTable.Columns<AdqlColumn>
         {
+
         /**
          * Create a new column.
          *
@@ -143,7 +148,7 @@ extends BaseTable<AdqlTable, AdqlColumn>
          * 
          */
         public AdqlColumn inport(final String name)
-        throws NotFoundException;
+        throws NameNotFoundException;
 
         }
 

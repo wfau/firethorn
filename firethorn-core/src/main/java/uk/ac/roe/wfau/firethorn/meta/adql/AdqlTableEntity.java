@@ -49,6 +49,8 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.AuthenticationEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
@@ -161,7 +163,7 @@ public class AdqlTableEntity
         @Override
         @SelectEntityMethod
         public AdqlTable select(final Identifier ident)
-        throws NotFoundException
+        throws IdentifierNotFoundException
             {
             log.debug("select(Identifier) [{}]", ident);
             if (ident instanceof ProxyIdentifier)
@@ -305,6 +307,34 @@ public class AdqlTableEntity
         @Override
         @SelectEntityMethod
         public AdqlTable select(final AdqlSchema parent, final String name)
+        throws NameNotFoundException
+            {
+            try {
+                return super.single(
+                    super.query(
+                        "AdqlTable-select-parent.name"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        ).setString(
+                            "name",
+                            name
+                        )
+                    );
+                }
+            catch (NotFoundException ouch)
+                {
+                log.debug("Unable to locate table [{}][{}]", parent.namebuilder().toString(), name);
+                throw new NameNotFoundException(
+                    name,
+                    ouch
+                    );
+                }
+            }
+
+        @Override
+        @SelectEntityMethod
+        public AdqlTable search(final AdqlSchema parent, final String name)
             {
             return super.first(
                 super.query(
@@ -316,25 +346,6 @@ public class AdqlTableEntity
                         "name",
                         name
                     )
-                );
-            }
-
-        @Override
-        @SelectEntityMethod
-        public Iterable<AdqlTable> search(final AdqlSchema parent, final String text)
-            {
-            return super.iterable(
-                super.query(
-                    "AdqlTable-search-parent.text"
-                    ).setEntity(
-                        "parent",
-                        parent
-                    ).setString(
-                        "text",
-                        searchParam(
-                            text
-                            )
-                        )
                 );
             }
 
@@ -376,13 +387,6 @@ public class AdqlTableEntity
         public AdqlTable.NameFactory names()
             {
             return this.names;
-            }
-
-        @Override
-        public AdqlTable select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
             }
         }
 
@@ -589,8 +593,22 @@ public class AdqlTableEntity
                 }
 
             @Override
+            public AdqlColumn search(final String name)
+                {
+                try {
+                    return select(
+                        name
+                        );
+                    }
+                catch (NameNotFoundException ouch)
+                    {
+                    return null ;
+                    }
+                }
+
+            @Override
             public AdqlColumn select(final String name)
-            throws NotFoundException
+            throws NameNotFoundException
                 {
                 if (depth() == CopyDepth.THIN)
                     {
@@ -614,7 +632,7 @@ public class AdqlTableEntity
                         return column;
                         }
                     else {
-                        throw new NotFoundException(
+                        throw new NameNotFoundException(
                             name
                             );
                         }
@@ -643,29 +661,8 @@ public class AdqlTableEntity
                 }
 
             @Override
-            @SuppressWarnings("unchecked")
-            public Iterable<AdqlColumn> search(final String text)
-                {
-                if (depth() == CopyDepth.THIN)
-                    {
-                    return new AdqlColumnProxy.ProxyIterable(
-                        (Iterable<BaseColumn<?>>) base().columns().search(
-                            text
-                            ),
-                        AdqlTableEntity.this
-                        );
-                    }
-                else {
-                    return factories().adql().columns().search(
-                        AdqlTableEntity.this,
-                        text
-                        );
-                    }
-                }
-
-            @Override
             public AdqlColumn select(final Identifier ident)
-            throws NotFoundException
+            throws IdentifierNotFoundException
                 {
                 log.debug("columns().select(Identifier) [{}] from [{}]", ident, ident());
                 log.debug(" Table depth [{}]", depth());
@@ -712,14 +709,13 @@ public class AdqlTableEntity
 
             @Override
             public AdqlColumn inport(String name)
-            throws NotFoundException
+            throws NameNotFoundException
                 {
                 log.debug("columns().inport(String)");
                 log.debug("  name [{}]", name);
                 if ((depth() == CopyDepth.PARTIAL) || (depth() == CopyDepth.FULL)) 
                     {
-                    // TODO refactor this to use search(String)
-                    AdqlColumn column = select(
+                    AdqlColumn column = search(
                         name
                         );
                     if (column != null)
@@ -727,11 +723,18 @@ public class AdqlTableEntity
                         log.debug("Found existing column [{}][{}]", column.ident(), column.name());
                         }
                     else {
-                        column = create(
-                            base().columns().select(
-                                name
-                                )
-                            );
+                        try {
+                            column = create(
+                                base().columns().select(
+                                    name
+                                    )
+                                );
+                            }
+                        catch (NameNotFoundException ouch)
+                            {
+                            log.error("Unable to locate base table [{}]", name);
+                            throw ouch;
+                            }
                         log.debug("Created new column [{}][{}]", column.ident(), column.name());
                         }
                     return column;

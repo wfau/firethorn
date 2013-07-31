@@ -38,6 +38,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -121,7 +123,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
     public AdqlResource parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws NotFoundException {
+        ) throws IdentifierNotFoundException {
         log.debug("parent() [{}]", ident);
         return factories().adql().resources().select(
             factories().adql().resources().idents().ident(
@@ -141,6 +143,8 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      * @throws IOException 
      * @throws XMLReaderException 
      * @throws XMLParserException 
+     * @throws NameNotFoundException 
+     * @throws IdentifierNotFoundException 
      *
      */
     @ResponseBody
@@ -154,58 +158,20 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         final String base,
         @RequestPart(value=METADOC_IMPORT_FILE, required=true)
         final MultipartFile metadoc
-        ) throws NotFoundException, XMLParserException, XMLReaderException, IOException {
+        ) throws XMLParserException, XMLReaderException, IOException, IdentifierNotFoundException, NameNotFoundException {
         log.debug("inport(CopyDepth, BaseSchema, File) [{}][{}]", depth, base);
-        
-        BaseSchema<?, ?> schema = factories().base().schema().select(
-            factories().base().schema().links().ident(
-                base
-                )
-            );
-        log.debug(" base [{}][{}]", schema.ident(), schema.name());
-        
-        log.debug(" file [{}]", metadoc.getName());
-        log.debug(" name [{}]", metadoc.getOriginalFilename());
-        log.debug(" type [{}]", metadoc.getContentType());
-        log.debug(" size [{}]", metadoc.getSize());
-
-        /*
-        try
-            {
-            LineNumberReader reader = new LineNumberReader(
+        return bean(
+            reader.inport(
                 new InputStreamReader(
                     metadoc.getInputStream()
-                    )
-                );
-
-            String line ;
-            do {
-                line = reader.readLine();
-                log.debug(" line [{}][{}]", reader.getLineNumber(), line);
-                }
-            while (line != null);
-
-            }
-        catch (IOException ouch)
-            {
-            log.debug("IOException [{}]", ouch.getMessage());
-            }
-        return bean(
-            Collections.EMPTY_LIST
+                    ),
+                factories().base().schema().select(
+                    factories().base().schema().links().ident(
+                        base
+                        )
+                    ),
+                resource
+                )
             );
-         */
-
-        Iterable<AdqlSchema> schemas = reader.inport(
-            new InputStreamReader(
-                metadoc.getInputStream()
-                ),
-            schema,
-            resource
-            );
-
-        return bean(
-            schemas
-            );
-
         }
     }

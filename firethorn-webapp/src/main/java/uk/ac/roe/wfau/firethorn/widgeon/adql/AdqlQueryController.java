@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractComponent;
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.job.Job.Status;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -120,7 +121,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
     public AdqlQueryBean select(
         @PathVariable("ident")
         final String ident
-        ) throws NotFoundException {
+        ) throws IdentifierNotFoundException {
         return bean(
             factories().adql().queries().select(
                 factories().adql().queries().idents().ident(
@@ -147,7 +148,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         final Integer timeout,
         @PathVariable("ident")
         final String ident
-        ) throws NotFoundException {
+        ) throws IdentifierNotFoundException {
 
         final AdqlQuery query = factories().queries().resolver().select(
             factories().queries().idents().ident(
@@ -189,8 +190,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
          * Update the properties.
          *
          */
-        public void update(final AdqlQuery query, final String  name, final String input)
-        throws NotFoundException;
+        public void update(final AdqlQuery query, final String  name, final String input);
 
         }
 
@@ -217,9 +217,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
             final AdqlQuery query,
             final String  name,
             final String input
-            )
-        throws NotFoundException
-            {
+            ) {
             log.debug("---- ---- ---- ----");
             log.debug("update(AdqlQuery, String, String)");
             log.debug("  Name  [{}]", name);

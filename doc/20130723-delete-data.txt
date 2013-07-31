@@ -29,6 +29,8 @@
     
     ssh -L '*:1435:ramses5:1433' -L '*:1439:ramses9:1433' "${username:?}@${hostname:?}"
 
+
+
 # ------------------------------------------------
 # Clean out old query results ...
 #[sqsh@tau]
@@ -36,11 +38,13 @@
     #
     # Delete data from old queries.
     
-    servername=master
-    serverlogin=xxxx
-    serverpass=xxxx
+    cat > "${HOME}/sqlserver.txt" << EOF
+servername=master
+serverlogin=xxxx
+serverpass=xxxx
+EOF
 
-
+    source "${HOME}/sqlserver.txt"
     sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
 
         use [FirethornMetadataDjer0722]

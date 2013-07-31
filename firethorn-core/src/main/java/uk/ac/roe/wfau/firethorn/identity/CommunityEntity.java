@@ -175,13 +175,6 @@ implements Community
             {
             return this.links;
             }
-
-        @Override
-        public Community select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
-            }
         }
 
     /**

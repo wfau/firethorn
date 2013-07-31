@@ -166,12 +166,6 @@ implements Job
             {
             return this.idents;
             }
-        @Override
-        public Job select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
-            }
         }
 
     /**

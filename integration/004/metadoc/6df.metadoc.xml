@@ -859,6 +859,8 @@
          <UCD version="1+"></UCD>
          <ErrorColumn></ErrorColumn>
       </Column>
+      <!--+
+          | Not found.
       <Column ID="spectra.gifSpectrumURL" indexed="false">
          <Name>gifSpectrumURL</Name>
          <Datatype>string</Datatype>
@@ -874,7 +876,7 @@
          <Units> </Units>
          <UCD version="1+"></UCD>
          <ErrorColumn></ErrorColumn>
-      </Column>       
+      </Column>
       <Column ID="spectra.displayURL" indexed="false">
          <Name>displayURL</Name>
          <Datatype>string</Datatype>
@@ -891,7 +893,10 @@
          <UCD version="1+"></UCD>
          <ErrorColumn></ErrorColumn>
       </Column>       
+          |
+          +-->       
    </Table>
+
    <Table ID="target">
       <Name>target</Name>
       <Description><![CDATA[ The TARGET table represents the master target list used to configure 6dFGS observations]]></Description>

@@ -87,12 +87,6 @@ public abstract class BaseSchemaEntity<SchemaType extends BaseSchema<SchemaType,
             {
             return this.links;
             }
-        @Override
-        public BaseSchema<?, ?> select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
-            }
         }
 
     protected BaseSchemaEntity()

@@ -19,6 +19,8 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -102,18 +104,17 @@ extends BaseComponent
         public Iterable<TableType> select(final SchemaType parent);
 
         /**
+         * Search for a table by name
+         *
+         */
+        public TableType search(final SchemaType parent, final String name);
+
+        /**
          * Select a table by name.
-         * @throws NotFoundException
          *
          */
         public TableType select(final SchemaType parent, final String name)
-        throws NotFoundException;
-
-        /**
-         * Text search for tables (name starts with).
-         *
-         */
-        public Iterable<TableType> search(final SchemaType parent, final String text);
+        throws NameNotFoundException;
 
         /**
          * AliasFactory implementation.
@@ -170,24 +171,24 @@ extends BaseComponent
         public Iterable<ColumnType> select();
 
         /**
-         * Search for columns (name starts with).
+         * Search for a column by name.
          *
          */
-        public Iterable<ColumnType> search(final String text);
+        public ColumnType search(final String name);
 
         /**
-         * Select a specific column by name.
+         * Select a column by name.
          *
          */
         public ColumnType select(final String name)
-        throws NotFoundException;
+        throws NameNotFoundException;
 
         /**
          * Select a column by ident.
          *
          */
         public ColumnType select(final Identifier ident)
-        throws NotFoundException;
+        throws IdentifierNotFoundException;
 
         }
 
@@ -210,9 +211,9 @@ extends BaseComponent
     /**
      * The AdqlTables linked to this table.
      *
-     */
     @Deprecated
     public Linked linked();
+     */
 
     /**
      * The AdqlQuery that generated this table.

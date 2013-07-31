@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -71,12 +73,6 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
     public static final String SELECT_NAME = "adql.schema.table.select.name" ;
 
     /**
-     * MVC property for the search text.
-     *
-     */
-    public static final String SEARCH_TEXT = "adql.schema.table.search.text" ;
-
-    /**
      * MVC property for the import table base.
      *
      */
@@ -106,14 +102,14 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
 
     /**
      * Get the parent entity based on the request ident.
-     * @throws NotFoundException
+     * @throws IdentifierNotFoundException
      *
      */
     @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
     public AdqlSchema parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws NotFoundException {
+        ) throws IdentifierNotFoundException {
         log.debug("parent() [{}]", ident);
         return factories().adql().schemas().select(
             factories().adql().schemas().idents().ident(
@@ -150,7 +146,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
         final AdqlSchema schema,
         @RequestParam(SELECT_NAME)
         final String name
-        ) throws NotFoundException {
+        ) throws NameNotFoundException {
         log.debug("select(String) [{}]", name);
         return bean(
             schema.tables().select(
@@ -160,28 +156,8 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
         }
 
     /**
-     * JSON request to search by name.
-     *
-     */
-    @ResponseBody
-    @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public Iterable<AdqlTableBean > search(
-        @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
-        final AdqlSchema schema,
-        @RequestParam(SEARCH_TEXT)
-        final String text
-        ){
-        log.debug("search(String) [{}]", text);
-        return bean(
-            schema.tables().search(
-                text
-                )
-            );
-        }
-
-    /**
      * JSON request to import a table.
-     * @throws NotFoundException
+     * @throws IdentifierNotFoundException 
      *
      */
     @ResponseBody
@@ -193,7 +169,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
         final CopyDepth type,
         @RequestParam(value=IMPORT_BASE, required=true)
         final String base
-        ) throws NotFoundException {
+        ) throws IdentifierNotFoundException {
         log.debug("inport(CopyDepth, String) [{}][{}]", type, base);
         return created(
             schema.tables().create(
@@ -209,7 +185,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
 
     /**
      * JSON request to import a table.
-     * @throws NotFoundException
+     * @throws IdentifierNotFoundException 
      *
      */
     @ResponseBody
@@ -223,7 +199,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
         final String base,
         @RequestParam(value=IMPORT_NAME, required=true)
         final String name
-        ) throws NotFoundException {
+        ) throws IdentifierNotFoundException {
         log.debug("inport(CopyDepth, String, String) [{}][{}][{}]", type, base, name);
         return created(
             schema.tables().create(

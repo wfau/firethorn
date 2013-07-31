@@ -42,6 +42,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -80,7 +81,7 @@ extends BaseComponentEntity
         @Override
         @SelectEntityMethod
         public BaseTable select(final Identifier ident)
-        throws NotFoundException
+        throws IdentifierNotFoundException
             {
             log.debug("select(Identifier) [{}]", ident);
             if (ident instanceof ProxyIdentifier)
@@ -137,13 +138,6 @@ extends BaseComponentEntity
                         )
                     )
                 );
-            }
-
-        @Override
-        public BaseTable<?, ?> select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
             }
         }
 
@@ -221,6 +215,7 @@ extends BaseComponentEntity
     @Override
     public abstract BaseResource<?> resource();
 
+    /*
     @Override
     @Deprecated
     public Linked linked()
@@ -235,6 +230,7 @@ extends BaseComponentEntity
                 }
             };
         }
+    */
 
     @Override
     public abstract String alias();

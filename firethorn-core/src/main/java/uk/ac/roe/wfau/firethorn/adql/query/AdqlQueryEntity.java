@@ -290,12 +290,6 @@ implements AdqlQuery, AdqlParserQuery
             {
             return this.links;
             }
-        @Override
-        public AdqlQuery select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
-            }
         }
 
     /**
@@ -429,13 +423,6 @@ implements AdqlQuery, AdqlParserQuery
                             )
                         )
                 );
-            }
-
-        @Override
-        public AdqlQuery select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
             }
         }
 

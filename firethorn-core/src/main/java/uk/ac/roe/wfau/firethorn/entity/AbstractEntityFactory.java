@@ -86,7 +86,7 @@ implements Entity.EntityFactory<EntityType>
     @Override
     @SelectEntityMethod
     public EntityType select(final Identifier ident)
-    throws NotFoundException
+    throws IdentifierNotFoundException
         {
         log.debug("select() [{}]", (ident != null) ? ident.value() : null);
         @SuppressWarnings("unchecked")

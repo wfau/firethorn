@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -93,14 +94,14 @@ public class AdqlTableController
 
     /**
      * Get the target entity based on the ident in the path.
-     * @throws NotFoundException
+     * @throws IdentifierNotFoundException 
      *
      */
     @ModelAttribute(TARGET_ENTITY)
     public AdqlTable entity(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws NotFoundException {
+        ) throws IdentifierNotFoundException {
         log.debug("table() [{}]", ident);
         return factories().adql().tables().select(
             factories().adql().tables().idents().ident(
@@ -133,12 +134,12 @@ public class AdqlTableController
     @UpdateAtomicMethod
     @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
     public AdqlTableBean update(
-        @RequestParam(value=UPDATE_NAME, required=false)
-        final String name,
         @ModelAttribute(TARGET_ENTITY)
-        final AdqlTable table
+        final AdqlTable table,
+        @RequestParam(value=UPDATE_NAME, required=false)
+        final String name
         ){
-
+        log.debug("update(String)");
         if (name != null)
             {
             if (name.length() > 0)
@@ -148,7 +149,6 @@ public class AdqlTableController
                     );
                 }
             }
-
         return bean(
             table
             );

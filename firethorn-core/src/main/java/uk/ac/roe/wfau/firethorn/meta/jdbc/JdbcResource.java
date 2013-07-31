@@ -101,14 +101,14 @@ extends BaseResource<JdbcSchema>
         public JdbcSchema create(final String catalog, final String schema);
 
         /**
-         * Select a schema.
+         * Select a schema by catalog and schema name.
          *
          */
         public JdbcSchema select(final String catalog, final String schema)
         throws NotFoundException;
 
         /**
-         * Search for a schema.
+         * Search for a schema by catalog and schema name.
          *
          */
         public JdbcSchema search(final String catalog, final String schema);

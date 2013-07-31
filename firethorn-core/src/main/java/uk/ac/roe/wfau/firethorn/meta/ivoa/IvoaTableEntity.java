@@ -38,6 +38,8 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
@@ -154,6 +156,35 @@ public class IvoaTableEntity
         @Override
         @SelectEntityMethod
         public IvoaTable select(final IvoaSchema parent, final String name)
+        throws NameNotFoundException
+            {
+            try
+                {
+                return super.single(
+                    super.query(
+                        "IvoaTable-select-parent.name"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        ).setString(
+                            "name",
+                            name
+                        )
+                    );
+                }
+            catch (NotFoundException ouch)
+                {
+                log.debug("Unable to locate table [{}][{}]", parent.namebuilder().toString(), name);
+                throw new NameNotFoundException(
+                    name,
+                    ouch
+                    );
+                }
+            }
+
+        @Override
+        @SelectEntityMethod
+        public IvoaTable search(final IvoaSchema parent, final String name)
             {
             return super.first(
                 super.query(
@@ -165,25 +196,6 @@ public class IvoaTableEntity
                         "name",
                         name
                     )
-                );
-            }
-
-        @Override
-        @SelectEntityMethod
-        public Iterable<IvoaTable> search(final IvoaSchema parent, final String text)
-            {
-            return super.iterable(
-                super.query(
-                    "IvoaTable-search-parent.text"
-                    ).setEntity(
-                        "parent",
-                        parent
-                    ).setString(
-                        "text",
-                        searchParam(
-                            text
-                            )
-                        )
                 );
             }
 
@@ -220,14 +232,7 @@ public class IvoaTableEntity
             }
 
         @Override
-        public uk.ac.roe.wfau.firethorn.meta.base.BaseTable.NameFactory<IvoaTable> names()
-            {
-            // TODO Auto-generated method stub
-            return null;
-            }
-
-        @Override
-        public IvoaTable select(final UUID uuid) throws NotFoundException
+        public IvoaTable.NameFactory<IvoaTable> names()
             {
             // TODO Auto-generated method stub
             return null;
@@ -293,7 +298,7 @@ public class IvoaTableEntity
 
             @Override
             public IvoaColumn select(final String name)
-            throws NotFoundException
+            throws NameNotFoundException
                 {
                 return factories().ivoa().columns().select(
                     IvoaTableEntity.this,
@@ -302,20 +307,22 @@ public class IvoaTableEntity
                 }
 
             @Override
-            public Iterable<IvoaColumn> search(final String text)
+            public IvoaColumn search(final String name)
                 {
                 return factories().ivoa().columns().search(
                     IvoaTableEntity.this,
-                    text
+                    name
                     );
                 }
 
             @Override
             public IvoaColumn select(final Identifier ident)
-            throws NotFoundException
+            throws IdentifierNotFoundException
                 {
-                // TODO Auto-generated method stub
-                return null;
+                // TODO Add reference to this
+                return factories().ivoa().columns().select(
+                    ident
+                    );
                 }
             };
         }

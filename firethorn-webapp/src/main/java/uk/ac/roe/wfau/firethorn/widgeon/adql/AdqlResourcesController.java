@@ -64,12 +64,6 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
     public static final String SELECT_NAME = "adql.resource.select.name" ;
 
     /**
-     * MVC property for the select results.
-     *
-     */
-    public static final String SELECT_RESULT = "adql.resource.select.result" ;
-
-    /**
      * MVC property for the create name.
      *
      */

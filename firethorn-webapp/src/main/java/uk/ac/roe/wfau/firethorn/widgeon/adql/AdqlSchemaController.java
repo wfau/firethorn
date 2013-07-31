@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.annotation.UpdateAtomicMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -92,14 +93,14 @@ public class AdqlSchemaController
 
     /**
      * Get the target entity based on the ident in the path.
-     * @throws NotFoundException
+     * @throws IdentifierNotFoundException
      *
      */
     @ModelAttribute(TARGET_ENTITY)
     public AdqlSchema entity(
         @PathVariable("ident")
         final String ident
-        ) throws NotFoundException {
+        ) throws IdentifierNotFoundException {
         log.debug("schema() [{}]", ident);
         return factories().adql().schemas().select(
             factories().adql().schemas().idents().ident(

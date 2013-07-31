@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -68,24 +70,6 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
      */
     public static final String SELECT_NAME = "adql.table.column.select.name" ;
 
-    /**
-     * MVC property for the select results.
-     *
-     */
-    public static final String SELECT_RESULT = "adql.table.column.select.result" ;
-
-    /**
-     * MVC property for the search text.
-     *
-     */
-    public static final String SEARCH_TEXT = "adql.table.column.search.text" ;
-
-    /**
-     * MVC property for the search results.
-     *
-     */
-    public static final String SEARCH_RESULT = "adql.table.column.search.result" ;
-
     @Override
     public AdqlColumnBean bean(final AdqlColumn entity)
         {
@@ -104,14 +88,14 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
 
     /**
      * Get the parent entity based on the request ident.
-     * @throws NotFoundException
+     * @throws IdentifierNotFoundException 
      *
      */
     @ModelAttribute(AdqlTableController.TARGET_ENTITY)
     public AdqlTable parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws NotFoundException {
+        ) throws IdentifierNotFoundException {
         log.debug("parent() [{}]", ident);
         return factories().adql().tables().select(
             factories().adql().tables().idents().ident(
@@ -138,6 +122,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
 
     /**
      * JSON request to select by name.
+     * @throws NameNotFoundException 
      *
      */
     @ResponseBody
@@ -147,31 +132,11 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
         final AdqlTable table,
         @RequestParam(SELECT_NAME)
         final String name
-        ) throws NotFoundException {
+        ) throws NameNotFoundException{
         log.debug("select(String) [{}]", name);
         return bean(
             table.columns().select(
                 name
-                )
-            );
-        }
-
-    /**
-     * JSON request to search by text.
-     *
-     */
-    @ResponseBody
-    @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public Iterable<AdqlColumnBean> search(
-        @ModelAttribute(AdqlTableController.TARGET_ENTITY)
-        final AdqlTable table,
-        @RequestParam(SEARCH_TEXT)
-        final String text
-        ){
-        log.debug("search(String) [{}]", text);
-        return bean(
-            table.columns().search(
-                text
                 )
             );
         }

@@ -138,19 +138,12 @@ implements Operation
             return local.get();
             }
 
-        public Operation current(final Operation oper)
+        private Operation current(final Operation oper)
             {
             local.set(
                 oper
                 );
             return oper;
-            }
-
-        @Override
-        public Operation select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
             }
         }
 
@@ -238,20 +231,24 @@ implements Operation
         nullable = true,
         updatable = true
         )
-    private Authentication auth ;
-    @Override
-    public Authentication auth()
+    private Authentication primary ;
+
+    private Authentication primary()
         {
-        return this.auth;
-        }
-    protected void auth(final Authentication auth)
-        {
-        this.auth = auth ;
-        this.owner(
-            auth.identity()
-            ) ;
+        return this.primary;
         }
 
+    private void primary(Authentication auth)
+        {
+        if (this.primary == null)
+            {
+            this.primary = auth ;
+            this.owner(
+                auth.identity()
+                ) ;
+            }
+        }
+    
     /**
      * The set of Authentications for this Operation.
      *
@@ -262,6 +259,30 @@ implements Operation
         targetEntity = AuthenticationEntity.class
         )
     private final List<Authentication> authentications = new ArrayList<Authentication>();
+
+    /**
+     * Create a new Authentication for this Operation.
+     *
+     */
+    private Authentication create(final Identity identity, final String method)
+        {
+        log.debug("create(Identity, String)");
+        log.debug("  Identity [{}]", identity.name());
+        log.debug("  Method   [{}]", method);
+        final Authentication auth = factories().authentications().create(
+            this,
+            identity,
+            method
+            );
+        authentications.add(
+            auth
+            );
+        primary(
+            auth
+            );
+        return auth;
+        }
+
     @Override
     public Authentications authentications()
         {
@@ -275,7 +296,7 @@ implements Operation
             @Override
             public Authentication primary()
                 {
-                return OperationEntity.this.auth();
+                return OperationEntity.this.primary();
                 }
 
             @Override
@@ -287,22 +308,10 @@ implements Operation
             @Override
             public Authentication create(final Identity identity, final String method)
                 {
-                log.debug("create(Identity, String)");
-                log.debug("  Identity [{}]", identity.name());
-                log.debug("  Method   [{}]", method);
-                final Authentication auth = factories().authentications().create(
-                    OperationEntity.this,
+                return OperationEntity.this.create(
                     identity,
                     method
                     );
-                authentications.add(
-                    auth
-                    );
-                if (OperationEntity.this.auth() == null)
-                    {
-                    OperationEntity.this.auth(auth) ;
-                    }
-                return auth;
                 }
             };
         }

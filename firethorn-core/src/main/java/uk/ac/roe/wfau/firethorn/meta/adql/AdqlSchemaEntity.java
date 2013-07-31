@@ -47,6 +47,8 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
@@ -114,13 +116,6 @@ implements AdqlSchema
         public Class<?> etype()
             {
             return AdqlSchemaEntity.class ;
-            }
-
-        @Override
-        public AdqlSchema select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
             }
 
         @Override
@@ -253,6 +248,34 @@ implements AdqlSchema
         @Override
         @SelectEntityMethod
         public AdqlSchema select(final AdqlResource parent, final String name)
+        throws NameNotFoundException
+            {
+            try {
+                return super.single(
+                    super.query(
+                        "AdqlSchema-select-parent.name"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        ).setString(
+                            "name",
+                            name
+                        )
+                    );
+                }
+            catch (NotFoundException ouch)
+                {
+                log.debug("Unable to locate schema [{}][{}]", parent.namebuilder().toString(), name);
+                throw new NameNotFoundException(
+                    name,
+                    ouch
+                    );
+                }
+            }
+
+        @Override
+        @SelectEntityMethod
+        public AdqlSchema search(final AdqlResource parent, final String name)
             {
             return super.first(
                 super.query(
@@ -264,25 +287,6 @@ implements AdqlSchema
                         "name",
                         name
                     )
-                );
-            }
-
-        @Override
-        @SelectEntityMethod
-        public Iterable<AdqlSchema> search(final AdqlResource parent, final String text)
-            {
-            return super.iterable(
-                super.query(
-                    "AdqlSchema-search-parent.text"
-                    ).setEntity(
-                        "parent",
-                        parent
-                    ).setString(
-                        "text",
-                        searchParam(
-                            text
-                            )
-                        )
                 );
             }
 
@@ -503,14 +507,29 @@ implements AdqlSchema
                 }
 
             @Override
+            public AdqlTable search(final String name)
+                {
+                try
+                    {
+                    return select(name);
+                    }
+                catch (NameNotFoundException ouch)
+                    {
+                    return null ;
+                    }
+                }
+
+            @Override
             public AdqlTable select(final String name)
-            throws NotFoundException
+            throws NameNotFoundException
                 {
                 log.debug("tables().select(String) [{}][{}][{}][{}]", ident(), name(), depth(), base());
                 if (depth() == CopyDepth.THIN)
                     {
                     return new AdqlTableProxy(
-                        base().tables().select(name),
+                        base().tables().select(
+                            name
+                            ),
                         AdqlSchemaEntity.this
                         );
                     }
@@ -632,29 +651,8 @@ implements AdqlSchema
                 }
 
             @Override
-            @SuppressWarnings("unchecked")
-            public Iterable<AdqlTable> search(final String text)
-                {
-                if (depth() == CopyDepth.THIN)
-                    {
-                    return new AdqlTableProxy.ProxyIterable(
-                        (Iterable<BaseTable<?,?>>) base.tables().search(
-                            text
-                            ),
-                        AdqlSchemaEntity.this
-                        );
-                    }
-                else {
-                    return factories().adql().tables().search(
-                        AdqlSchemaEntity.this,
-                        text
-                        );
-                    }
-                }
-
-            @Override
             public AdqlTable select(final Identifier ident)
-            throws NotFoundException
+            throws IdentifierNotFoundException
                 {
                 log.debug("tables().select(Identifier) [{}] from [{}]", ident, ident());
                 log.debug(" Schema depth [{}]", depth());
@@ -700,15 +698,13 @@ implements AdqlSchema
 
             @Override
             public AdqlTable inport(String name)
-            throws NotFoundException
+            throws NameNotFoundException
                 {
                 log.debug("tables().inport(String)");
                 log.debug("  name [{}]", name);
                 if ((depth() == CopyDepth.PARTIAL) || (depth() == CopyDepth.FULL)) 
                     {
-                    //
-                    // TODO refactor this to use search(String)
-                    AdqlTable  table = select(
+                    AdqlTable table = search(
                         name
                         );
                     if (table != null)
@@ -772,15 +768,6 @@ implements AdqlSchema
                 {
                 return factories().adql().queries().select(
                     AdqlSchemaEntity.this
-                    );
-                }
-
-            @Override
-            public Iterable<AdqlQuery> search(final String text)
-                {
-                return factories().adql().queries().search(
-                    AdqlSchemaEntity.this,
-                    text
                     );
                 }
             };

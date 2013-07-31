@@ -52,6 +52,8 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -384,12 +386,40 @@ public class JdbcSchemaEntity
         @Override
         @SelectEntityMethod
         public JdbcSchema select(final JdbcResource parent, final String name)
-        throws NotFoundException
+        throws NameNotFoundException
             {
             log.debug("JdbcSchema select(JdbcResource, String)");
             log.debug("  Resource [{}][{}]", parent.ident(), parent.name());
             log.debug("  Schema   [{}]", name);
-            return super.single(
+            try
+                {
+                return super.single(
+                    super.query(
+                        "JdbcSchema-select-parent.name"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        ).setString(
+                            "name",
+                            name
+                        )
+                    );
+                }
+            catch (NotFoundException ouch)
+                {
+                log.debug("Unable to locate schema [{}][{}]", parent.namebuilder().toString(), name);
+                throw new NameNotFoundException(
+                    name,
+                    ouch
+                    );
+                }
+            }
+
+        @Override
+        @SelectEntityMethod
+        public JdbcSchema search(final JdbcResource parent, final String name)
+            {
+            return super.first(
                 super.query(
                     "JdbcSchema-select-parent.name"
                     ).setEntity(
@@ -399,25 +429,6 @@ public class JdbcSchemaEntity
                         "name",
                         name
                     )
-                );
-            }
-
-        @Override
-        @SelectEntityMethod
-        public Iterable<JdbcSchema> search(final JdbcResource parent, final String text)
-            {
-            return super.iterable(
-                super.query(
-                    "JdbcSchema-search-parent.text"
-                    ).setEntity(
-                        "parent",
-                        parent
-                    ).setString(
-                        "text",
-                        searchParam(
-                            text
-                            )
-                        )
                 );
             }
 
@@ -476,13 +487,6 @@ public class JdbcSchemaEntity
         public JdbcSchema.Builder builder()
             {
             return this.builder;
-            }
-
-        @Override
-        public JdbcSchema select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
             }
         }
 
@@ -603,9 +607,24 @@ public class JdbcSchemaEntity
                  *
                  */
                 }
+
+            @Override
+            public JdbcTable search(final String name)
+                {
+                /*
+                 * HibernateCollections 
+                return children.get(name);
+                 *
+                 */
+                return factories().jdbc().tables().search(
+                    JdbcSchemaEntity.this,
+                    name
+                    );
+                }
+
             @Override
             public JdbcTable select(final String name)
-            throws NotFoundException
+            throws NameNotFoundException
                 {
                 return factories().jdbc().tables().select(
                     JdbcSchemaEntity.this,
@@ -626,6 +645,7 @@ public class JdbcSchemaEntity
                  *
                  */
                 }
+
             @Override
             public JdbcTable create(final String name)
                 {
@@ -643,6 +663,7 @@ public class JdbcSchemaEntity
                  */
                 return result ;
                 }
+
             @Override
             public JdbcTable create(final String name, final JdbcTable.TableType type)
                 {
@@ -678,24 +699,18 @@ public class JdbcSchemaEntity
                  */
                 return result ;
                 }
-            @Override
-            public Iterable<JdbcTable> search(final String text)
-                {
-                return factories().jdbc().tables().search(
-                    JdbcSchemaEntity.this,
-                    text
-                    );
-                }
+
             @Override
             public void scan()
                 {
                 JdbcSchemaEntity.this.scansync();
                 }
+
             @Override
-            public JdbcTable select(final Identifier ident) throws NotFoundException
+            public JdbcTable select(final Identifier ident)
+            throws IdentifierNotFoundException
                 {
                 // TODO Add parent constraint.
-                log.debug("select(Identifier) [{}]", ident);
                 return factories().jdbc().tables().select(
                     ident
                     );

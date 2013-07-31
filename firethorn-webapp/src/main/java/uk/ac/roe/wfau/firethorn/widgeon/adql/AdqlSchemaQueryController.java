@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
@@ -62,12 +63,6 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         {
         super();
         }
-
-    /**
-     * MVC property for the search text.
-     *
-     */
-    public static final String SEARCH_TEXT = "adql.schema.query.search.text" ;
 
     /**
      * MVC property for the create name.
@@ -112,7 +107,8 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
     public AdqlSchema parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws NotFoundException {
+        ) throws IdentifierNotFoundException {
+        log.debug("parent() [{}]", ident);
         return factories().adql().schemas().select(
             factories().adql().schemas().idents().ident(
                 ident
@@ -136,25 +132,6 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         }
 
     /**
-     * JSON request to search by text.
-     *
-     */
-    @ResponseBody
-    @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public Iterable<AdqlQueryBean> search(
-        @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
-        final AdqlSchema schema,
-        @RequestParam(SEARCH_TEXT)
-        final String text
-        ){
-        return bean(
-            schema.queries().search(
-                text
-                )
-            );
-        }
-
-    /**
      * JSON POST request to create a new query.
      *
      */
@@ -167,7 +144,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         final String query,
         @RequestParam(CREATE_NAME)
         final String name
-        ) throws NotFoundException {
+        ){
         return created(
             schema.queries().create(
                 query,
@@ -183,7 +160,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         final AdqlSchema schema,
         @RequestParam(CREATE_QUERY)
         final String query
-        ) throws NotFoundException {
+        ){
         return created(
             schema.queries().create(
                 query

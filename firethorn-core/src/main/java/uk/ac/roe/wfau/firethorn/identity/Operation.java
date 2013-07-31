@@ -78,9 +78,11 @@ extends Entity
     public String method();
     public String source();
 
+    /*
     @Deprecated
     public Authentication auth();
-
+     */
+    
     interface Authentications
         {
         public void resolve();

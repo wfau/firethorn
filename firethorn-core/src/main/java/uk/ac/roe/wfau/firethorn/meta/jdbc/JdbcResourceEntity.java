@@ -47,6 +47,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -239,13 +240,6 @@ public class JdbcResourceEntity
                         )
                 );
             }
-
-        @Override
-        public JdbcResource select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
-            }
         }
 
     protected JdbcResourceEntity()
@@ -366,8 +360,17 @@ public class JdbcResourceEntity
                 }
 
             @Override
+            public JdbcSchema search(final String name)
+                {
+                return factories().jdbc().schemas().search(
+                    JdbcResourceEntity.this,
+                    name
+                    );
+                }
+
+            @Override
             public JdbcSchema select(final String name)
-            throws NotFoundException
+            throws NameNotFoundException
                 {
                 return factories().jdbc().schemas().select(
                     JdbcResourceEntity.this,
@@ -408,15 +411,6 @@ public class JdbcResourceEntity
                     JdbcResourceEntity.this,
                     catalog,
                     schema
-                    );
-                }
-
-            @Override
-            public Iterable<JdbcSchema> search(final String text)
-                {
-                return factories().jdbc().schemas().search(
-                    JdbcResourceEntity.this,
-                    text
                     );
                 }
 

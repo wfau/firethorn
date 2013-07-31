@@ -39,6 +39,8 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
@@ -131,6 +133,35 @@ public class IvoaSchemaEntity
         @Override
         @SelectEntityMethod
         public IvoaSchema select(final IvoaResource parent, final String name)
+        throws NameNotFoundException
+            {
+            try
+                {
+                return super.single(
+                    super.query(
+                        "IvoaSchema-select-parent.name"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        ).setString(
+                            "name",
+                            name
+                        )
+                    );
+                }
+            catch (NotFoundException ouch)
+                {
+                log.debug("Unable to locate schema [{}][{}]", parent.namebuilder().toString(), name);
+                throw new NameNotFoundException(
+                    name,
+                    ouch
+                    );
+                }
+            }
+
+        @Override
+        @SelectEntityMethod
+        public IvoaSchema search(final IvoaResource parent, final String name)
             {
             return super.first(
                 super.query(
@@ -142,25 +173,6 @@ public class IvoaSchemaEntity
                         "name",
                         name
                     )
-                );
-            }
-
-        @Override
-        @SelectEntityMethod
-        public Iterable<IvoaSchema> search(final IvoaResource parent, final String text)
-            {
-            return super.iterable(
-                super.query(
-                    "IvoaSchema-search-parent.text"
-                    ).setEntity(
-                        "parent",
-                        parent
-                    ).setString(
-                        "text",
-                        searchParam(
-                            text
-                            )
-                        )
                 );
             }
 
@@ -186,13 +198,6 @@ public class IvoaSchemaEntity
         public IvoaSchema.LinkFactory links()
             {
             return this.links;
-            }
-
-        @Override
-        public IvoaSchema select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
             }
         }
 
@@ -249,7 +254,7 @@ public class IvoaSchemaEntity
                 }
             @Override
             public IvoaTable select(final String name)
-            throws NotFoundException
+            throws NameNotFoundException
                 {
                 return factories().ivoa().tables().select(
                     IvoaSchemaEntity.this,
@@ -257,19 +262,20 @@ public class IvoaSchemaEntity
                     );
                 }
             @Override
-            public Iterable<IvoaTable> search(final String text)
+            public IvoaTable search(final String name)
                 {
                 return factories().ivoa().tables().search(
                     IvoaSchemaEntity.this,
-                    text
+                    name
                     );
                 }
             @Override
             public IvoaTable select(final Identifier ident)
-            throws NotFoundException
+            throws IdentifierNotFoundException
                 {
-                // TODO Auto-generated method stub
-                return null;
+                return factories().ivoa().tables().select(
+                    ident
+                    );
                 }
             };
         }

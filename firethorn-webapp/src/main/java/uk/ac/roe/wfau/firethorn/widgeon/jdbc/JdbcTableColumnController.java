@@ -155,24 +155,4 @@ extends AbstractEntityController<JdbcColumn, JdbcColumnBean>
                 )
             );
         }
-
-    /**
-     * JSON request to search by text.
-     *
-     */
-    @ResponseBody
-    @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public Iterable<JdbcColumnBean> search(
-        @ModelAttribute(JdbcTableController.TARGET_ENTITY)
-        final JdbcTable table,
-        @RequestParam(SEARCH_TEXT)
-        final String text
-        ){
-        log.debug("search(String) [{}]", text);
-        return bean(
-            table.columns().search(
-                text
-                )
-            );
-        }
     }

@@ -40,6 +40,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
@@ -133,13 +134,6 @@ extends BaseResourceEntity<AdqlSchema>
             {
             return this.links;
             }
-
-        @Override
-        public AdqlResource select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
-            }
         }
 
     protected AdqlResourceEntity()
@@ -188,8 +182,22 @@ extends BaseResourceEntity<AdqlSchema>
                 }
 
             @Override
+            public AdqlSchema search(final String name)
+                {
+                /*
+                 * HibernateCollections
+                return children.get(name);
+                 * 
+                 */
+                return factories().adql().schemas().search(
+                    AdqlResourceEntity.this,
+                    name
+                    );
+                }
+
+            @Override
             public AdqlSchema select(final String name)
-            throws NotFoundException
+            throws NameNotFoundException
                 {
                 return factories().adql().schemas().select(
                     AdqlResourceEntity.this,
@@ -326,46 +334,27 @@ extends BaseResourceEntity<AdqlSchema>
                 }
 
             @Override
-            public Iterable<AdqlSchema> search(final String text)
-                {
-                return factories().adql().schemas().search(
-                    AdqlResourceEntity.this,
-                    text
-                    );
-                }
-
-            @Override
-            public AdqlSchema inport(String name, BaseSchema<?, ?> base)
+            public AdqlSchema inport(final String name, BaseSchema<?, ?> base)
                 {
                 log.debug("schemas().inport(String, BaseSchema)");
                 log.debug("  name [{}]", name);
                 log.debug("  base [{}]", base.name());
-                //
-                // TODO refactor this to use search(String)
-                try {
-                    AdqlSchema schema = select(
-                        name
-                        );
-                    if (schema != null)
-                        {
-                        log.debug("Found existing schema [{}][{}]", schema.ident(), schema.name());
-                        }
-                    else {
-                        schema = create(
-                            CopyDepth.PARTIAL,
-                            name,
-                            base
-                            );
-                        log.debug("Created new schema [{}][{}]", schema.ident(), schema.name());
-                        }
-                    return schema ;
-                    }
-                //
-                // Really really broken.
-                catch (NotFoundException ouch)
+                AdqlSchema schema = search(
+                    name
+                    );
+                if (schema != null)
                     {
-                    return null ;
+                    log.debug("Found existing schema [{}][{}]", schema.ident(), schema.name());
                     }
+                else {
+                    schema = create(
+                        CopyDepth.PARTIAL,
+                        name,
+                        base
+                        );
+                    log.debug("Created new schema [{}][{}]", schema.ident(), schema.name());
+                    }
+                return schema ;
                 }
             };
         }

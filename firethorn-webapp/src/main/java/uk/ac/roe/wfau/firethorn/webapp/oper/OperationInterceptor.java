@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import uk.ac.roe.wfau.firethorn.identity.Operation;
 import uk.ac.roe.wfau.firethorn.spring.ComponentFactories;
 
 /**
@@ -43,16 +44,25 @@ implements HandlerInterceptor
     @Autowired
     private ComponentFactories factories;
 
+    public Operation.EntityFactory operations()
+        {
+        return factories.operations() ; 
+        }
+
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
         {
         log.debug("preHandle()");
+        log.debug("Handler   [{}]", (handler != null) ? handler.getClass().getName() : "null");
 
-        factories.operations().create(
+        Operation oper = operations().create(
             request.getRequestURL().toString(),
             request.getMethod(),
             request.getRemoteAddr()
             );
+
+        log.debug("Operation [{}][{}]", oper.ident(), oper.target());
+        log.debug("Handler   [{}]", handler.getClass().getName());
 
         return true ;
         }
@@ -61,12 +71,23 @@ implements HandlerInterceptor
     public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView model)
         {
         log.debug("postHandle()");
+        Operation oper = operations().current();
+        log.debug("Operation [{}][{}]", oper.ident(), oper.target());
+        log.debug("Handler   [{}]", handler.getClass().getName());
         }
 
     @Override
     public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ouch)
         {
-        log.debug("afterCompletion()");
+        log.debug("after()");
+        Operation oper = operations().current();
+        log.debug("Operation [{}][{}]", oper.ident(), oper.target());
+        log.debug("Handler   [{}]", (handler != null) ? handler.getClass().getName() : "null");
+        if (ouch != null)
+            {
+            log.debug("Operation threw an exception");
+            log.debug(" type [{}]", ouch.getClass().getName());
+            log.debug(" text [{}]", ouch.getMessage());
+            }
         }
-
     }

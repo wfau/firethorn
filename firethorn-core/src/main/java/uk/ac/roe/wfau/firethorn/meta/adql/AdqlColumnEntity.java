@@ -43,6 +43,8 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
@@ -139,7 +141,7 @@ public class AdqlColumnEntity
         @Override
         @SelectEntityMethod
         public AdqlColumn select(final Identifier ident)
-        throws NotFoundException
+        throws IdentifierNotFoundException
             {
             log.debug("select(Identifier) [{}]", ident);
             if (ident instanceof ProxyIdentifier)
@@ -208,6 +210,34 @@ public class AdqlColumnEntity
         @Override
         @SelectEntityMethod
         public AdqlColumn select(final AdqlTable parent, final String name)
+        throws NameNotFoundException
+            {
+            try {
+                return super.single(
+                    super.query(
+                        "AdqlColumn-select-parent.name"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        ).setString(
+                            "name",
+                            name
+                        )
+                    );
+                }
+            catch (NotFoundException ouch)
+                {
+                log.debug("Unable to locate column [{}][{}]", parent.namebuilder().toString(), name);
+                throw new NameNotFoundException(
+                    name,
+                    ouch
+                    ); 
+                }
+            }
+
+        @Override
+        @SelectEntityMethod
+        public AdqlColumn search(final AdqlTable parent, final String name)
             {
             return super.first(
                 super.query(
@@ -219,25 +249,6 @@ public class AdqlColumnEntity
                         "name",
                         name
                     )
-                );
-            }
-
-        @Override
-        @SelectEntityMethod
-        public Iterable<AdqlColumn> search(final AdqlTable parent, final String text)
-            {
-            return super.iterable(
-                super.query(
-                    "AdqlColumn-search-parent.text"
-                    ).setEntity(
-                        "parent",
-                        parent
-                    ).setString(
-                        "text",
-                        searchParam(
-                            text
-                            )
-                        )
                 );
             }
 
@@ -263,13 +274,6 @@ public class AdqlColumnEntity
         public AdqlColumn.AliasFactory aliases()
             {
             return this.aliases;
-            }
-
-        @Override
-        public AdqlColumn select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
             }
         }
 

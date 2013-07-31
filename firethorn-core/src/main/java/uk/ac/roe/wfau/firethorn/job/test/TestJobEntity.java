@@ -171,25 +171,6 @@ implements TestJob
             {
             return this.idents;
             }
-
-        @Override
-        //@Checkpoint("select")
-        @SelectEntityMethod
-        public TestJob select(final Identifier ident)
-        throws NotFoundException
-            {
-        	log.debug("select(Identifier)");
-        	return super.select(
-        			ident
-        			);
-            }
-
-        @Override
-        public TestJob select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
-            }
         }
 
     /**
@@ -232,17 +213,6 @@ implements TestJob
                 );
             }
 
-        @Override
-        @SelectEntityMethod
-        public TestJob select(final Identifier ident)
-        throws NotFoundException
-            {
-        	log.debug("select(Identifier)");
-        	return super.select(
-        			ident
-        			);
-            }
-
         @Autowired
         protected TestJob.LinkFactory links;
         @Override
@@ -257,13 +227,6 @@ implements TestJob
         public TestJob.IdentFactory idents()
             {
             return this.idents;
-            }
-
-        @Override
-        public TestJob select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
             }
         }
 

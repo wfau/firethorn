@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import org.joda.time.DateTime;
 
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
@@ -113,14 +114,14 @@ public interface Entity
          *
          */
         public EntityType select(final Identifier ident)
-        throws NotFoundException;
+        throws IdentifierNotFoundException;
 
         /**
          * Select a specific Entity by UUID.
          *
-         */
         public EntityType select(final UUID uuid)
         throws NotFoundException;
+         */
 
         /**
          * Our local Identifier factory.

@@ -125,13 +125,6 @@ implements Authentication
             // TODO Auto-generated method stub
             return null;
             }
-
-        @Override
-        public Authentication select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
-            }
         }
 
     /**

@@ -45,6 +45,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
@@ -240,9 +241,36 @@ public class JdbcColumnEntity
         @Override
         @SelectEntityMethod
         public JdbcColumn select(final JdbcTable parent, final String name)
-        throws NotFoundException
+        throws NameNotFoundException
             {
-            return super.single(
+            try {
+                return super.single(
+                    super.query(
+                        "JdbcColumn-select-parent.name"
+                        ).setEntity(
+                            "parent",
+                            parent
+                        ).setString(
+                            "name",
+                            name
+                        )
+                    );
+                }
+            catch (NotFoundException ouch)
+                {
+                log.debug("Unable to locate column [{}][{}]", parent.namebuilder().toString(), name);
+                throw new NameNotFoundException(
+                    name,
+                    ouch
+                    );
+                }
+            }
+
+        @Override
+        @SelectEntityMethod
+        public JdbcColumn search(final JdbcTable parent, final String name)
+            {
+            return super.first(
                 super.query(
                     "JdbcColumn-select-parent.name"
                     ).setEntity(
@@ -252,25 +280,6 @@ public class JdbcColumnEntity
                         "name",
                         name
                     )
-                );
-            }
-
-        @Override
-        @SelectEntityMethod
-        public Iterable<JdbcColumn> search(final JdbcTable parent, final String text)
-            {
-            return super.iterable(
-                super.query(
-                    "JdbcColumn-search-parent.text"
-                    ).setEntity(
-                        "parent",
-                        parent
-                    ).setString(
-                        "text",
-                        searchParam(
-                            text
-                            )
-                        )
                 );
             }
 
@@ -296,13 +305,6 @@ public class JdbcColumnEntity
         public JdbcColumn.AliasFactory aliases()
             {
             return this.aliases;
-            }
-
-        @Override
-        public JdbcColumn select(final UUID uuid) throws NotFoundException
-            {
-            // TODO Auto-generated method stub
-            return null;
             }
         }
 

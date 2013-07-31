@@ -37,6 +37,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -79,12 +81,6 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      *
      */
     public static final String SELECT_NAME = "adql.resource.schema.select.name" ;
-
-    /**
-     * MVC property for the search text.
-     *
-     */
-    public static final String SEARCH_TEXT = "adql.resource.schema.search.text" ;
 
     /**
      * MVC property for the create name.
@@ -153,14 +149,14 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
 
     /**
      * Get the parent entity based on the request ident.
-     * @throws NotFoundException
+     * @throws IdentifierNotFoundException
      *
      */
     @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
     public AdqlResource parent(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident
-        ) throws NotFoundException {
+        ) throws IdentifierNotFoundException {
         log.debug("parent() [{}]", ident);
         return factories().adql().resources().select(
             factories().adql().resources().idents().ident(
@@ -196,31 +192,11 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         final AdqlResource resource,
         @RequestParam(SELECT_NAME)
         final String name
-        ) throws NotFoundException {
+        ) throws NameNotFoundException {
         log.debug("select(String) [{}]", name);
         return bean(
             resource.schemas().select(
                 name
-                )
-            );
-        }
-
-    /**
-     * JSON request to search by text.
-     *
-     */
-    @ResponseBody
-    @RequestMapping(value=SEARCH_PATH, params=SEARCH_TEXT, produces=JSON_MAPPING)
-    public Iterable<AdqlSchemaBean> search(
-        @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
-        final AdqlResource resource,
-        @RequestParam(SEARCH_TEXT)
-        final String text
-        ){
-        log.debug("search(String) [{}]", text);
-        return bean(
-            resource.schemas().search(
-                text
                 )
             );
         }
@@ -260,7 +236,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         final CopyDepth depth,
         @RequestParam(value=IMPORT_SCHEMA_BASE, required=true)
         final String base
-        ) throws NotFoundException {
+        ) throws IdentifierNotFoundException {
         log.debug("inport(CopyDepth, String) [{}][{}]", depth, base);
         return created(
             resource.schemas().create(
@@ -289,7 +265,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
         final String base,
         @RequestParam(value=IMPORT_SCHEMA_NAME, required=true)
         final String name
-        ) throws NotFoundException {
+        ) throws IdentifierNotFoundException {
         log.debug("inport(CopyDepth, String, String) [{}][{}][{}]", depth, base, name);
         return created(
             resource.schemas().create(

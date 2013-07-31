@@ -29,7 +29,9 @@ import org.joda.time.DateTime;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
@@ -310,12 +312,14 @@ public class AdqlTableProxy
             );
         }
 
+    /*
     @Override
     @Deprecated
     public BaseTable.Linked linked()
         {
         return null;
         }
+     */
 
     @Override
     public AdqlQuery query()
@@ -345,17 +349,22 @@ public class AdqlTableProxy
                 }
 
             @Override
-            @SuppressWarnings("unchecked")
-            public Iterable<AdqlColumn> search(final String text)
+            public AdqlColumn search(final String name)
                 {
-                return new AdqlColumnProxy.ProxyIterable(
-                    (Iterable<BaseColumn<?>>)base.columns().search(text),
-                    AdqlTableProxy.this
-                    );
+                try {
+                    return select(
+                        name
+                        );
+                    }
+                catch (NameNotFoundException ouch)
+                    {
+                    return null ;
+                    }
                 }
 
             @Override
-            public AdqlColumn select(final String name) throws NotFoundException
+            public AdqlColumn select(final String name)
+            throws NameNotFoundException
                 {
                 return new AdqlColumnProxy(
                     base.columns().select(name),
@@ -374,7 +383,7 @@ public class AdqlTableProxy
 
             @Override
             public AdqlColumn select(final Identifier ident)
-            throws NotFoundException
+            throws IdentifierNotFoundException
                 {
                 return new AdqlColumnProxy(
                     base().columns().select(
@@ -385,7 +394,8 @@ public class AdqlTableProxy
                 }
 
             @Override
-            public AdqlColumn inport(String name) throws NotFoundException
+            public AdqlColumn inport(String name)
+            throws NameNotFoundException
                 {
                 throw new UnsupportedOperationException(
                     "Can't modify a read only table"

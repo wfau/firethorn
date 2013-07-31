@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.base;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
+import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
 
@@ -60,17 +61,17 @@ extends BaseComponent
         public Iterable<ColumnType> select(final TableType parent);
 
         /**
-         * Select a named column from a table.
+         * Select a column by name.
          *
          */
         public ColumnType select(final TableType parent, final String name)
-        throws NotFoundException;
+        throws NameNotFoundException;
 
         /**
-         * Search for columns within a table (name starts with).
+         * Search for a column by name.
          *
          */
-        public Iterable<ColumnType> search(final TableType parent, final String text);
+        public ColumnType search(final TableType parent, final String name);
 
         /**
          * AliasFactory implementation.
