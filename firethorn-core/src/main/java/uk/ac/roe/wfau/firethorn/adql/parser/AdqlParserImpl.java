@@ -587,11 +587,27 @@ implements AdqlParser
             }
         }
 
+    public static final Integer DEFAULT_FIELD_SIZE = new Integer(0);
+
+    public static final AdqlQuery.SelectField UNKNOWN_FIELD = new SelectFieldImpl(
+        "unknown",
+        AdqlColumn.Type.UNKNOWN
+        );  
+
     public static class SelectFieldImpl
     implements AdqlQuery.SelectField
         {
+        
+        private SelectFieldImpl(final String name, final AdqlColumn.Type type)
+            {
+            this(
+                name,
+                type,
+                DEFAULT_FIELD_SIZE
+                );
+            }
 
-        private SelectFieldImpl(final String name, final Integer size, final AdqlColumn.Type type)
+        private SelectFieldImpl(final String name, final AdqlColumn.Type type, final Integer size)
             {
             this.name  = name ;
             this.size  = size ;
@@ -768,27 +784,22 @@ implements AdqlParser
         log.debug("  class  [{}]", oper.getClass().getName());
         log.debug("  number [{}]", oper.isNumeric());
         log.debug("  string [{}]", oper.isString());
-
         
-        if (oper instanceof StringConstant){
-            
-        	return new SelectFieldImpl(
-            		oper.getName(),
-                    new Integer(0),
-                    AdqlColumn.Type.CHAR
-                    );
-          
-        }
-        else if (oper instanceof NumericConstant){
-          
+        if (oper instanceof StringConstant)
+            {
             return new SelectFieldImpl(
-            		oper.getName(),
-                    new Integer(0),
-                    AdqlColumn.Type.DOUBLE
-                    );
-                   
-          
-        }
+                oper.getName(),
+                AdqlColumn.Type.CHAR,
+                ((StringConstant) oper).getValue().length()
+                );
+            }
+        else if (oper instanceof NumericConstant)
+            {
+            return new SelectFieldImpl(
+                oper.getName(),
+                AdqlColumn.Type.DOUBLE
+                );
+            }
         else if (oper instanceof ADQLColumn)
             {
             return wrap(
@@ -811,7 +822,6 @@ implements AdqlParser
         else {
             return new SelectFieldImpl(
                 "unknown",
-                new Integer(0),
                 AdqlColumn.Type.UNKNOWN
                 );
             }
@@ -829,11 +839,7 @@ implements AdqlParser
         if (column.getDBLink() == null)
             {
             log.warn("column.getDBLink() == null");
-            return new SelectFieldImpl(
-                "unknown",
-                new Integer(0),
-                AdqlColumn.Type.UNKNOWN
-                );
+            return UNKNOWN_FIELD;
             }
         else if (column.getDBLink() instanceof AdqlDBColumn)
             {
@@ -843,17 +849,12 @@ implements AdqlParser
             }
         else {
             log.warn("Unknown column.getDBLink() class [{}]", column.getDBLink().getClass().getName());
-            return new SelectFieldImpl(
-                "unknown",
-                new Integer(0),
-                AdqlColumn.Type.UNKNOWN
-                );
+            return UNKNOWN_FIELD;
             }
         }
 
     /**
      * Wrap an AdqlColumn.
-     * @todo Catch DATE_TIME and convert into char[10]
      *
      */
     public static AdqlQuery.SelectField wrap(final AdqlColumn column)
@@ -869,7 +870,6 @@ implements AdqlParser
 
     /**
      * Wrap an Operation.
-     * **This is proof of concept only, it just picks the largest size param.
      *
      */
     public static AdqlQuery.SelectField wrap(final Operation oper)
@@ -887,72 +887,6 @@ implements AdqlParser
                 )
             );
         }
-
-    /**
-     * Function handler.
-     *
-    public enum FunctionHandler
-        {
-        AVG()
-            {
-            @Override
-            AdqlQuery.SelectField handle(ADQLOperand[] params)
-                {
-                return new SelectFieldWrapper(
-                    this.name(),
-                    wrap(
-                        params[0]
-                        )
-                    );
-                }
-            },
-
-        SUM()
-            {
-            @Override
-            AdqlQuery.SelectField handle(ADQLOperand[] params)
-                {
-                return new SelectFieldWrapper(
-                    this.name(),
-                    wrap(
-                        params[0]
-                        )
-                    );
-                }
-            },
-
-        MIN()
-            {
-            @Override
-            AdqlQuery.SelectField handle(ADQLOperand[] params)
-                {
-                return new SelectFieldWrapper(
-                    this.name(),
-                    wrap(
-                        params[0]
-                        )
-                    );
-                }
-            },
-
-        MAX()
-            {
-            @Override
-            AdqlQuery.SelectField handle(ADQLOperand[] params)
-                {
-                return new SelectFieldWrapper(
-                    this.name(),
-                    wrap(
-                        params[0]
-                        )
-                    );
-                }
-            };
-
-        abstract AdqlQuery.SelectField handle(ADQLOperand[] param);
-
-        }
-     */
 
     /**
      * Wrap an ADQLFunction.
@@ -999,7 +933,6 @@ implements AdqlParser
             case COUNT_ALL :
                 return new SelectFieldImpl(
                     funct.getName(),
-                    new Integer(0),
                     AdqlColumn.Type.LONG
                     );
 
@@ -1030,54 +963,49 @@ implements AdqlParser
         log.debug("  name   [{}]", funct.getName());
         log.debug("  number [{}]", funct.isNumeric());
         log.debug("  string [{}]", funct.isString());
-
  
         switch (funct.getType())
-        {
-        
-        	  
-        case ROUND:
-        case ABS:
-        case CEILING:
-        case MOD:
-        case TRUNCATE:
-        case POWER:
-            return new SelectFieldWrapper(
+            {
+            	  
+            case ROUND:
+            case ABS:
+            case CEILING:
+            case MOD:
+            case TRUNCATE:
+                return new SelectFieldWrapper(
                     funct.getName(),
                     wrap(
-                    
                         funct.getParameter(0)
                         )
                     );
-
-        case LOG:		// returns the natural logarithm (base e) of a double value.
-        case LOG10:	// returns the base 10 logarithm of a double value.	
-        case DEGREES:
-        case RADIANS:
-        case RAND:
-        case FLOOR:
-        case ACOS:
-        case ASIN:
-        case ATAN:
-        case ATAN2:
-        case COS:
-        case COT:
-        case SIN:
-        case TAN:
-        case PI:
-        case SQRT:        
-        case EXP:
-        	   return new SelectFieldImpl(
-                       funct.getName(),
-                       new Integer(0),
-                       AdqlColumn.Type.DOUBLE
-                       );
-
-        
-        default :
-            log.error("Unexpected Math function type [{}][{}]", funct.getName(), funct.getType());
-            return null ;
-        }
+    
+            case LOG:		// returns the natural logarithm (base e) of a double value.
+            case LOG10:	// returns the base 10 logarithm of a double value.	
+            case POWER:
+            case DEGREES:
+            case RADIANS:
+            case RAND:
+            case FLOOR:
+            case ACOS:
+            case ASIN:
+            case ATAN:
+            case ATAN2:
+            case COS:
+            case COT:
+            case SIN:
+            case TAN:
+            case PI:
+            case SQRT:        
+            case EXP:
+                return new SelectFieldImpl(
+                    funct.getName(),
+                    AdqlColumn.Type.DOUBLE
+                    );
+            
+            default :
+                log.error("Unexpected Math function type [{}][{}]", funct.getName(), funct.getType());
+                return null ;
+            }
         
         }
 
