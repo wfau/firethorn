@@ -820,10 +820,7 @@ implements AdqlParser
             }
    
         else {
-            return new SelectFieldImpl(
-                "unknown",
-                AdqlColumn.Type.UNKNOWN
-                );
+            return UNKNOWN_FIELD;
             }
         }
 
@@ -913,7 +910,7 @@ implements AdqlParser
             }
         else {
             log.error("Unexpected function type [{}][{}]", funct.getName(), funct.getClass().getName());
-            return null ;
+            return UNKNOWN_FIELD;
             }
         }
 
@@ -949,7 +946,7 @@ implements AdqlParser
 
             default :
                 log.error("Unexpected function type [{}][{}]", funct.getName(), funct.getType());
-                return null ;
+                return UNKNOWN_FIELD;
             }
         }
 
@@ -964,6 +961,8 @@ implements AdqlParser
         log.debug("  number [{}]", funct.isNumeric());
         log.debug("  string [{}]", funct.isString());
  
+        log.debug("  param  [{}]", funct.getParameter(0));
+        
         switch (funct.getType())
             {
             	  
@@ -1004,9 +1003,8 @@ implements AdqlParser
             
             default :
                 log.error("Unexpected Math function type [{}][{}]", funct.getName(), funct.getType());
-                return null ;
+                return UNKNOWN_FIELD;
             }
-        
         }
 
     /**
@@ -1019,7 +1017,7 @@ implements AdqlParser
         log.debug("  name   [{}]", funct.getName());
         log.debug("  number [{}]", funct.isNumeric());
         log.debug("  string [{}]", funct.isString());
-        return null ;
+        return UNKNOWN_FIELD;
         }
 
     
