@@ -678,7 +678,9 @@ EOF
 # Test using browser on djer
 #[user@desktop]
 
-    ssh -X firethorn@djer
+    #
+    # Login with X forwarding
+    ssh -X firethorn@djer.roe.ac.uk
 
         #
         # OSA workspace 
