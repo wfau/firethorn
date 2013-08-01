@@ -875,13 +875,59 @@ implements AdqlParser
         log.debug("  name   [{}]", oper.getName());
         log.debug("  number [{}]", oper.isNumeric());
         log.debug("  string [{}]", oper.isString());
+
+        ADQLOperand param1 = oper.getLeftOperand();
+        ADQLOperand param2 = oper.getRightOperand();
+
+        log.debug("  p1 [{}][{}]", param1, param1.getClass().getName());
+        log.debug("  p2 [{}][{}]", param2, param2.getClass().getName());
+
+        ADQLColumn c1 = null ; 
+        ADQLColumn c2 = null ;
+        
+        AdqlDBColumn a1 = null ;
+        AdqlDBColumn a2 = null ;
+        
+        AdqlColumn.Type t1 = null ;
+        AdqlColumn.Type t2 = null ;
+        AdqlColumn.Type t3 = null ;
+
+        if (param1 instanceof ADQLColumn)
+            {
+            c1 = (ADQLColumn) param1;
+            if (c1.getDBLink() instanceof AdqlDBColumn)
+                {
+                a1 = (AdqlDBColumn)c1.getDBLink();
+                t1 = a1.column().meta().adql().type();
+                }
+            }
+        if (param2 instanceof ADQLColumn)
+            {
+            c2 = (ADQLColumn) param2;
+            if (c2.getDBLink() instanceof AdqlDBColumn)
+                {
+                a2 = (AdqlDBColumn)c2.getDBLink();
+                t2 = a2.column().meta().adql().type();
+                }
+            }
+ 
+        log.debug("  t1 [{}]", t1);
+        log.debug("  t2 [{}]", t2);
+
+        //
+        // if ........
+        // else if .......
+        // else if .......
+        // else if .......
+        // else if .......
+        
+        t3 = t1 ;
+
         //
         // Temp fix ... array() is null
-        return new SelectFieldWrapper(
-            oper.getName(),
-            wrap(
-                oper.getLeftOperand()
-                )
+        return new SelectFieldImpl(
+            "fred",
+            t3
             );
         }
 
