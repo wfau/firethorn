@@ -36,23 +36,29 @@
     popd
 
 # ------------------------------------------------
+# Initialise our settings.
+#[sqsh@tau]
+
+    cat > "${HOME}/sqlserver.txt" << EOF
+sshsqluser=xxxx
+sshsqlhost=fenrir.roe.ac.uk
+servername=master
+serverlogin=xxxx
+serverpass=xxxx
+EOF
+
+# ------------------------------------------------
 # Connect the SSH tunnel to ROE.
 #[sqsh@tau]
 
-    username=xxxx
-    hostname=fenrir.roe.ac.uk
-    
-    ssh-keyscan ${hostname:?} >> ~/.ssh/known_hosts
-    ssh -L '*:1435:ramses5:1433' -L '*:1439:ramses9:1433' "${username:?}@${hostname:?}"
-
+    source "${HOME}/sqlserver.txt"
+    ssh -L '*:1435:ramses5:1433' -L '*:1439:ramses9:1433' "${sshsqluser:?}@${sshsqlhost:?}"
 
 # ------------------------------------------------
 # Create our metadata and userdata databases.
 #[sqsh@tau]
 
-    servername=master
-    serverlogin=xxxx
-    serverpass=xxxx
+    source "${HOME}/sqlserver.txt"
 
     dbversion=Djer0722
     metadataname="FirethornMetadata${dbversion:?}"
@@ -289,7 +295,7 @@ EOF
 # http://stackoverflow.com/questions/151238/has-anyone-ever-got-a-remote-jmx-jconsole-to-work
 # http://blog.cantremember.com/debugging-with-jconsole-jmx-ssh-tunnels/
 
-        cat > "${HOME}/tomcat/bin/setenv.sh" << EOF
+        cat > "${HOME}/tomcat/bin/setenv.sh" << 'EOF'
 CATALINA_OPTS="${CATALINA_OPTS} -Xmx128m"
 CATALINA_OPTS="${CATALINA_OPTS} -XX:MaxPermSize=128m"
 CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote"
@@ -309,8 +315,8 @@ EOF
 # Test with local browser ..
 #[user@desktop]
 
-    firefox 'http://localhost:8090/manager/' &
-    firefox 'http://localhost:8090/firethorn/' &
+    firefox 'http://localhost:8090/manager/html' &
+    firefox 'http://localhost:8090/firethorn/'   &
 
 #
 # Route JConsole via ssh socks tunnel.
@@ -444,8 +450,8 @@ EOF
 # Test with browser ..
 #[user@desktop]
 
-    firefox 'http://localhost:8091/manager/'  &
-    firefox 'http://localhost:8091/ogsa-dai/' &
+    firefox 'http://localhost:8091/manager/html' &
+    firefox 'http://localhost:8091/ogsa-dai/'    &
 
 #----------------------------------------------------
 # Run the test scripts

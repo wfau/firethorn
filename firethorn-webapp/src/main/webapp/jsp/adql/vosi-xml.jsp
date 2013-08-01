@@ -33,7 +33,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
         <% 
         if (schema.text() != null)
             {
-            %><description><%= schema.text() %></description><%
+            %><description><![CDATA[<%= schema.text() %>]]></description><%
             }
         else {
             %><description/><%
@@ -48,7 +48,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
             <%
             if (table.text() != null)
                 {
-                %><description><%= table.text() %></description><%
+                %><description><![CDATA[<%= table.text() %>]]></description><%
                 }
             else {
                 %><description/><%
@@ -63,7 +63,7 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                 <%
                 if (column.text() != null)
                     {
-                    %><description><%= column.text() %></description><%
+                    %><description><![CDATA[<%= column.text() %>]]></description><%
                     }
                 else {
                     %><description/><%
@@ -72,10 +72,10 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
                 AdqlColumn.Metadata meta = column.meta();
                 if ((meta != null) && (meta.adql() != null))
                     {
-                    if (meta.adql().ucd1() != null)
+                    if (meta.adql().ucd() != null)
                         {
                         %>
-                        <ucd><%= meta.adql().ucd1() %></ucd>
+                        <ucd><%= meta.adql().ucd().value() %></ucd>
                         <%
                         }
                     else {
