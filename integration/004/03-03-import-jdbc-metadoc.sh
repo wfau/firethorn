@@ -19,14 +19,11 @@
 #
 #
 
-jdbcresource=${1:?}
-jdbccatalogname=${2:?}
-jdbcschemaname=${3:?}
+jdbccatalogname=${1:?}
+jdbcschemaname=${2:?}
+metadocfile=${3:?}
 
-adqlresource=${4:?}
-metadocfile=${5:?}
-
-POST "${jdbcresource:?}/schemas/select" \
+POST "${jdbcspace:?}/schemas/select" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "jdbc.resource.schema.select.catalog=${jdbccatalogname:?}" \
@@ -37,7 +34,7 @@ jdbcschemaident=$(
     cat jdbc-schema.json | ident
     )
 
-POST "${adqlresource:?}/metadoc/import" \
+POST "${adqlspace:?}/metadoc/import" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --form   "urn:schema.metadoc.base=${jdbcschemaident:?}" \

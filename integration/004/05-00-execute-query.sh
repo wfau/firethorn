@@ -19,12 +19,11 @@
 #
 #
 
-schemaid=${1:?}
-adqlfile=${2:?}
+adqlfile=${1:?}
 
 #
 # Create the query.
-POST "${schemaid:?}/queries/create" \
+POST "${queryschema:?}/queries/create" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data-urlencode "adql.schema.query.create.query@${adqlfile:?}" \

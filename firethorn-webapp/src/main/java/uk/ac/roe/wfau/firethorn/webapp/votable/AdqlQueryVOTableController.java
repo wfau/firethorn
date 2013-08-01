@@ -272,13 +272,19 @@ public class AdqlQueryVOTableController
                         adql.name()
                         );
 
-                    info.setUCD(
-                        adql.meta().adql().ucd().value()
-                        );
-                    info.setUnitString(
-                        adql.meta().adql().units()
-                        );
+                    if (adql.meta().adql().ucd() != null)
+                        {
+                        info.setUCD(
+                            adql.meta().adql().ucd().value()
+                            );
+                        }
 
+                    if (adql.meta().adql().units() != null)
+                        {
+                        info.setUnitString(
+                            adql.meta().adql().units()
+                            );
+                        }
                     }
 
                 final VOTableWriter writer = new VOTableWriter();

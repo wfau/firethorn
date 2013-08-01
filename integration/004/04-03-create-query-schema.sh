@@ -19,10 +19,9 @@
 #
 #
 
-queryresource=${1:?}
-queryschemaname=${2:?}
+queryschemaname=${1:-'query'}
 
-POST "${queryresource?}/schemas/create" \
+POST "${queryspace?}/schemas/create" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "urn:adql.copy.depth=${adqlcopydepth:-FULL}" \

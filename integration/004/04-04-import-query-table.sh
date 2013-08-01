@@ -19,14 +19,14 @@
 #
 #
 
-baseresource=${1:?}
-baseschemaname=${2:?}
-basetablename=${3:?}
+#baseresource=${1:?}
+baseschemaname=${1:?}
+basetablename=${2:?}
 
 queryschemaid=${4:?}
 querytablename=${5:?}
 
-POST "${baseresource:?}/schemas/select" \
+POST "${adqlspace:?}/schemas/select" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "adql.resource.schema.select.name=${baseschemaname:?}" \

@@ -135,35 +135,36 @@
 
             source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
 
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'SIXDF'          'dbo' "${adqlspace:?}" '6df.metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'FIRST'          'dbo' "${adqlspace:?}" 'first.metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'GLIMPSE'        'dbo' "${adqlspace:?}" 'glimpse.metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'IRAS'           'dbo' "${adqlspace:?}" 'iras.metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'ROSAT'          'dbo' "${adqlspace:?}" 'rosat.metadoc.xml'
-           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'XXXXXXX'        'dbo' "${adqlspace:?}" 'sdssdr1.metadoc.xml'
-           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'XXXXXXX'        'dbo' "${adqlspace:?}" 'sdssdr3.metadoc.xml'
-           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'XXXXXXX'        'dbo' "${adqlspace:?}" 'sdssdr5.metadoc.xml'
-           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'XXXXXXX'        'dbo' "${adqlspace:?}" 'sdssdr7.metadoc.xml'
-           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'XXXXXXX'        'dbo' "${adqlspace:?}" 'sdssdr8.metadoc.xml'
-           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'XXXXXXX'        'dbo' "${adqlspace:?}" 'ssa.metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'TWOMASS'        'dbo' "${adqlspace:?}" 'twomass.metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'TWOXMM'         'dbo' "${adqlspace:?}" 'xmm.metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR1PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR1_metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR2PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR2_metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR3PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR3_metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR4PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR4_metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR5PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR5_metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR6PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR6_metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR7PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR7_metadoc.xml'
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'UKIDSSDR8PLUS'  'dbo' "${adqlspace:?}" 'UKIDSS_DR8_metadoc.xml'
-           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VHSDR1'         'dbo' "${adqlspace:?}" 'VHS_DR1_metadoc.xml'
-           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VIDEODR2'       'dbo' "${adqlspace:?}" 'VIDEO_DR2_metadoc.xml'
-           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VIKINGDR2'      'dbo' "${adqlspace:?}" 'VIKING_DR2_metadoc.xml'
-           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VMCDR1'         'dbo' "${adqlspace:?}" 'VMC_DR1_metadoc.xml'
-           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" "${jdbcspace:?}" 'VVVDR1'         'dbo' "${adqlspace:?}" 'VVV_DR1_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'SIXDF'          'dbo' '6df.metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'FIRST'          'dbo' 'first.metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GLIMPSE'        'dbo' 'glimpse.metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'IRAS'           'dbo' 'iras.metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ROSAT'          'dbo' 'rosat.metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'        'dbo' 'twomass.metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOXMM'         'dbo' 'xmm.metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'UKIDSSDR1PLUS'  'dbo' 'UKIDSS_DR1_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'UKIDSSDR2PLUS'  'dbo' 'UKIDSS_DR2_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'UKIDSSDR3PLUS'  'dbo' 'UKIDSS_DR3_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'UKIDSSDR4PLUS'  'dbo' 'UKIDSS_DR4_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'UKIDSSDR5PLUS'  'dbo' 'UKIDSS_DR5_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'UKIDSSDR6PLUS'  'dbo' 'UKIDSS_DR6_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'UKIDSSDR7PLUS'  'dbo' 'UKIDSS_DR7_metadoc.xml'
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'UKIDSSDR8PLUS'  'dbo' 'UKIDSS_DR8_metadoc.xml'
 
-            adqlcopydepth=FULL
-            source "${FIRETHORN_TEST:?}/03-02-import-jdbc-schema.sh"  "${jdbcspace:?}" 'ATLASv20130304' 'dbo' "${adqlspace:?}" 'ATLASv20130304'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'XXXXXXX'        'dbo' 'sdssdr1.metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'XXXXXXX'        'dbo' 'sdssdr3.metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'XXXXXXX'        'dbo' 'sdssdr5.metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'XXXXXXX'        'dbo' 'sdssdr7.metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'XXXXXXX'        'dbo' 'sdssdr8.metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'XXXXXXX'        'dbo' 'ssa.metadoc.xml'
+
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VHSDR1'         'dbo' 'VHS_DR1_metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VIDEODR2'       'dbo' 'VIDEO_DR2_metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VIKINGDR2'      'dbo' 'VIKING_DR2_metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VMCDR1'         'dbo' 'VMC_DR1_metadoc.xml'
+           #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VVVDR1'         'dbo' 'VVV_DR1_metadoc.xml'
+
+            source "${FIRETHORN_TEST:?}/03-02-import-jdbc-schema.sh"  'ATLASv20130304' 'dbo' 'ATLASv20130304'
 
             cat > "${HOME:?}/firethorn.testing" << EOF
 adqlspace=${adqlspace:?}
@@ -187,22 +188,24 @@ EOF
                 source "${HOME:?}/firethorn.testing"
                 source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Query workspace'
 
-                adqlcopydepth=THIN
-                source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}" 'TWOMASS'         "${queryspace:?}" 'twomass'
-                source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" "${adqlspace:?}" 'ATLASv20130304'  "${queryspace:?}" 'atlas'
+                source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'        'twomass'
+                source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASv20130304' 'atlas'
 
-                source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh" "${queryspace:?}"  'query'
-                source "${FIRETHORN_TEST:?}/05-00-execute-query.sh"       "${queryschema:?}" "${FIRETHORN_TEST:?}/06-query-atlas-000.adql"
+                source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+                source "${FIRETHORN_TEST:?}/05-00-execute-query.sh"       "${FIRETHORN_TEST:?}/06-query-atlas-000.adql"
                 }
 
             time importschema
 
-            for i in {0..999}
+            for i in {0..99}
             do
                 echo "------------------"
                 echo "Iter [${i}]"
                 time importschema
             done
+
+
+
 
 
     #

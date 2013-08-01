@@ -19,12 +19,10 @@
 #
 #
 
-baseresource=${1:?}
-baseschemaname=${2:?}
-queryresource=${3:?}
-queryschemaname=${4:?}
+baseschemaname=${1:?}
+queryschemaname=${2:?}
 
-POST "${baseresource:?}/schemas/select" \
+POST "${adqlspace:?}/schemas/select" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --data   "adql.resource.schema.select.name=${baseschemaname:?}" \
@@ -34,10 +32,10 @@ baseschema=$(
     cat base-schema.json | ident
     )
 
-POST "${queryresource:?}/schemas/import" \
+POST "${queryspace:?}/schemas/import" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
-    --data   "urn:adql.copy.depth=${adqlcopydepth:-FULL}" \
+    --data   "urn:adql.copy.depth=${adqlcopydepth:-THIN}" \
     --data   "adql.resource.schema.import.name=${queryschemaname:?}" \
     --data   "adql.resource.schema.import.base=${baseschema:?}" \
     | ./pp | tee query-schema.json
