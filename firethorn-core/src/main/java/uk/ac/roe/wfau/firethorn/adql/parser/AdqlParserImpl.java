@@ -961,7 +961,11 @@ implements AdqlParser
         log.debug("  number [{}]", funct.isNumeric());
         log.debug("  string [{}]", funct.isString());
  
-        log.debug("  param  [{}]", funct.getParameter(0));
+        ADQLOperand param1 = funct.getParameter(0);
+        ADQLOperand param2 = funct.getParameter(1);
+
+        log.debug("  param1  [{}]", param1);
+        log.debug("  param2  [{}]", param2);
         
         switch (funct.getType())
             {
