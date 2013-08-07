@@ -94,7 +94,7 @@ extends TestBase
             }
         }
 
-    //@Test
+    @Test
     public void test000()
     throws Exception
         {
@@ -102,7 +102,7 @@ extends TestBase
 
         Iterable<AdqlSchema> schemas = reader.inport(
             new FileReader(
-                "src/test/data/metadoc/test/twomass.subset.xml"
+                "src/test/data/metadoc/twomass.subset.xml"
                 ),
             resource.schemas().select(
                 "TWOMASS",
@@ -123,7 +123,7 @@ extends TestBase
 
         Iterable<AdqlSchema> one = reader.inport(
             new FileReader(
-                "src/test/data/metadoc/test/twomass.001.xml"
+                "src/test/data/metadoc/twomass.001.xml"
                 ),
             resource.schemas().select(
                 "TWOMASS",
@@ -136,7 +136,7 @@ extends TestBase
 
         Iterable<AdqlSchema> two = reader.inport(
             new FileReader(
-                "src/test/data/metadoc/test/twomass.002.xml"
+                "src/test/data/metadoc/twomass.002.xml"
                 ),
             resource.schemas().select(
                 "TWOMASS",
