@@ -1,0 +1,34 @@
+$def with (prefix)
+<h1><a name="firstSource"></a><font size=-1>TABLE</font>&nbsp;&nbsp;firstSource</h1>
+<table width='720px'><tbody>
+<tr><td class='t'> Contains the parameters provided for each source in the FIRST Survey Catalog: 03Apr11 Version.</td></tr>
+</table>
+<p>
+<table width='720'>
+<tr><td class='d'> This table contains brief descriptions of the parameters provided for<br>
+ each source in the FIRST SC. It contains 811,117 sources arranged in<br>
+ order of increasing right ascension.<br>
+<br>Required constraints:<ul><li><b>Primary key</b> is (seqNo)</ul></td></tr>
+</table><p>
+<TABLE border=0 bgcolor=#888888 width=900 cellspacing=3 cellpadding=3><colgroup><col width='100'><col width='100'><col width='50'><col width='100'><col width='350'><col width='100'><col width='100'></colgroup>
+<tr><th class='h'>Name</th><th class='h'>Type</th><th class='h'>Length</th><th class='h'>Unit</th><th class='h'>Description</th><th class='h'>Default Value</th><th class='h'>Unified Content Descriptor</th></tr>
+<tr><td class='v'><a href='gloss/gloss_f#firstsource_fieldname' class='v'>fieldName</a></td><td class='v'>varchar</td><td class='v'>12</td><td class='v'>&nbsp;</td><td class='v'>Name of the coadded image containing the source (encodes the position of the field center).</td><td class='v'>&nbsp;</td><td class='v'>ID_IMAGE</td></tr>
+<tr><td class='i'><a href='gloss/gloss_s#firstsource_seqno' class='i'>seqNo</a></td><td class='i'>int</td><td class='i'>4</td><td class='i'>&nbsp;</td><td class='i'>sequential object number</td><td class='i'>&nbsp;</td><td class='i'>ID_NUMBER</td></tr>
+<tr><td class='v'><a href='gloss/gloss_c#firstsource_cx' class='v'>cx</a></td><td class='v'>float</td><td class='v'>8</td><td class='v'>&nbsp;</td><td class='v'>unit vector of spherical co-ordinates</td><td class='v'>&nbsp;</td><td class='v'>POS_EQ_X</td></tr>
+<tr><td class='v'><a href='gloss/gloss_c#firstsource_cy' class='v'>cy</a></td><td class='v'>float</td><td class='v'>8</td><td class='v'>&nbsp;</td><td class='v'>unit vector of spherical co-ordinates</td><td class='v'>&nbsp;</td><td class='v'>POS_EQ_Y</td></tr>
+<tr><td class='v'><a href='gloss/gloss_c#firstsource_cz' class='v'>cz</a></td><td class='v'>float</td><td class='v'>8</td><td class='v'>&nbsp;</td><td class='v'>unit vector of spherical co-ordinates</td><td class='v'>&nbsp;</td><td class='v'>POS_EQ_Z</td></tr>
+<tr><td class='v'><a href='gloss/gloss_h#firstsource_htmid' class='v'>htmID</a></td><td class='v'>bigint</td><td class='v'>8</td><td class='v'>&nbsp;</td><td class='v'>Hierarchical Triangular Mesh (HTM) index, 20 deep, for equatorial co-ordinates</td><td class='v'>&nbsp;</td><td class='v'>POS_GENERAL</td></tr>
+<tr><td class='v'><a href='gloss/gloss_r#firstsource_ra' class='v'>ra</a></td><td class='v'>float</td><td class='v'>8</td><td class='v'>degrees</td><td class='v'>J2000 Celestial Right Ascension</td><td class='v'>&nbsp;</td><td class='v'>POS_EQ_RA_MAIN</td></tr>
+<tr><td class='v'><a href='gloss/gloss_d#firstsource_dec' class='v'>dec</a></td><td class='v'>float</td><td class='v'>8</td><td class='v'>degrees</td><td class='v'>J2000 Celestial Declination</td><td class='v'>&nbsp;</td><td class='v'>POS_EQ_DEC_MAIN</td></tr>
+<tr><td class='v'><a href='gloss/gloss_w#firstsource_warnflag' class='v'>warnFlag</a></td><td class='v'>varchar</td><td class='v'>1</td><td class='v'>&nbsp;</td><td class='v'>Warning flag indicating that the source may be a sidelobe of a nearby bright source.</td><td class='v'>&nbsp;</td><td class='v'>CODE_MISC</td></tr>
+<tr><td class='v'><a href='gloss/gloss_f#firstsource_fpeak' class='v'>fPeak</a></td><td class='v'>real</td><td class='v'>4</td><td class='v'>mJy</td><td class='v'>peak flux densities</td><td class='v'>&nbsp;</td><td class='v'>PHOT_FLUX_RADIO_1.4G</td></tr>
+<tr><td class='v'><a href='gloss/gloss_f#firstsource_fint' class='v'>fInt</a></td><td class='v'>real</td><td class='v'>4</td><td class='v'>mJy</td><td class='v'>integrated flux densities</td><td class='v'>&nbsp;</td><td class='v'>PHOT_FLUX_RADIO_1.4G</td></tr>
+<tr><td class='v'><a href='gloss/gloss_r#firstsource_rms' class='v'>rms</a></td><td class='v'>real</td><td class='v'>4</td><td class='v'>mJy</td><td class='v'>local noise estimate at the source position</td><td class='v'>&nbsp;</td><td class='v'>INST_NOISE</td></tr>
+<tr><td class='v'><a href='gloss/gloss_m#firstsource_maj' class='v'>maj</a></td><td class='v'>real</td><td class='v'>4</td><td class='v'>arcsec</td><td class='v'>major axes derived from the elliptical Gaussian model for the source after deconvolution.</td><td class='v'>&nbsp;</td><td class='v'>EXTENSION_FWHM_MAJ</td></tr>
+<tr><td class='v'><a href='gloss/gloss_m#firstsource_min' class='v'>min</a></td><td class='v'>real</td><td class='v'>4</td><td class='v'>arcsec</td><td class='v'>minor axes derived from the elliptical Gaussian model for the source after deconvolution.</td><td class='v'>&nbsp;</td><td class='v'>EXTENSION_FWHM_MIN</td></tr>
+<tr><td class='v'><a href='gloss/gloss_p#firstsource_pa' class='v'>pa</a></td><td class='v'>real</td><td class='v'>4</td><td class='v'>degrees</td><td class='v'>position angle (east of north) derived from the elliptical Gaussian model for the source</td><td class='v'>&nbsp;</td><td class='v'>POS_POS-ANG</td></tr>
+<tr><td class='v'><a href='gloss/gloss_f#firstsource_fmaj' class='v'>fMaj</a></td><td class='v'>real</td><td class='v'>4</td><td class='v'>arcsec</td><td class='v'>major axes derived from the elliptical Gaussian model for the source before deconvolution.</td><td class='v'>&nbsp;</td><td class='v'>EXTENSION_FWHM_MAJ</td></tr>
+<tr><td class='v'><a href='gloss/gloss_f#firstsource_fmin' class='v'>fMin</a></td><td class='v'>real</td><td class='v'>4</td><td class='v'>arcsec</td><td class='v'>minor axes derived from the elliptical Gaussian model for the source before deconvolution.</td><td class='v'>&nbsp;</td><td class='v'>EXTENSION_FWHM_MIN</td></tr>
+<tr><td class='v'><a href='gloss/gloss_f#firstsource_fpa' class='v'>fPA</a></td><td class='v'>real</td><td class='v'>4</td><td class='v'>degrees</td><td class='v'>position angle (east of north) derived from the elliptical Gaussian model for the source before deconvolution.</td><td class='v'>&nbsp;</td><td class='v'>POS_POS-ANG</td></tr>
+<tr><td class='h'>Total length</td><td></td><td class='h'>101</td></tr>
+</TABLE>

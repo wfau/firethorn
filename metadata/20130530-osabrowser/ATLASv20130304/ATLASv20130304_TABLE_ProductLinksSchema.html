@@ -1,0 +1,20 @@
+$def with (prefix)
+<h1><a name="ProductLinks"></a><font size=-1>TABLE</font>&nbsp;&nbsp;ProductLinks</h1>
+<table width='720px'><tbody>
+<tr><td class='t'> Contains links between different products, e.g. tiles and stacks, mosaics and tiles, mosaics and stacks</td></tr>
+</table>
+<p>
+<table width='720'>
+<tr><td class='d'> This table contains the combined productID and the intermediate productIDs that go into it<br>
+<br>Required constraints:<ul><li><b>Primary key</b> is (programmeID,combiProductID,intProductID,combiProdType,intProdType)<li>                      (programmeID) references Programme(programmeID)
+</ul></td></tr>
+</table><p>
+<TABLE border=0 bgcolor=#888888 width=900 cellspacing=3 cellpadding=3><colgroup><col width='100'><col width='100'><col width='50'><col width='100'><col width='350'><col width='100'><col width='100'></colgroup>
+<tr><th class='h'>Name</th><th class='h'>Type</th><th class='h'>Length</th><th class='h'>Unit</th><th class='h'>Description</th><th class='h'>Default Value</th><th class='h'>Unified Content Descriptor</th></tr>
+<tr><td class='i'><a href='gloss/gloss_p#productlinks_programmeid' class='i'>programmeID</a></td><td class='i'>int</td><td class='i'>4</td><td class='i'>&nbsp;</td><td class='i'>the unique programme ID</td><td class='i'>&nbsp;</td><td class='i'>ID_SURVEY</td></tr>
+<tr><td class='i'><a href='gloss/gloss_c#productlinks_combiproductid' class='i'>combiProductID</a></td><td class='i'>int</td><td class='i'>4</td><td class='i'>&nbsp;</td><td class='i'>Product ID of combination frame</td><td class='i'>&nbsp;</td><td class='i'>??</td></tr>
+<tr><td class='i'><a href='gloss/gloss_i#productlinks_intproductid' class='i'>intProductID</a></td><td class='i'>int</td><td class='i'>4</td><td class='i'>&nbsp;</td><td class='i'>Product ID of intermediate frame</td><td class='i'>&nbsp;</td><td class='i'>??</td></tr>
+<tr><td class='i'><a href='gloss/gloss_c#productlinks_combiprodtype' class='i'>combiProdType</a></td><td class='i'>varchar</td><td class='i'>8</td><td class='i'>&nbsp;</td><td class='i'>Type (stack,tile,mosaic) of combination frame</td><td class='i'>&nbsp;</td><td class='i'>??</td></tr>
+<tr><td class='i'><a href='gloss/gloss_i#productlinks_intprodtype' class='i'>intProdType</a></td><td class='i'>varchar</td><td class='i'>8</td><td class='i'>&nbsp;</td><td class='i'>Type (stack,tile,mosaic) of intermediate frame</td><td class='i'>&nbsp;</td><td class='i'>??</td></tr>
+<tr><td class='h'>Total length</td><td></td><td class='h'>28</td></tr>
+</TABLE>

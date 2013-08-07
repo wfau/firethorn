@@ -1,0 +1,52 @@
+$def with (prefix)
+<h1><a name="Programme"></a><font size=-1>TABLE</font>&nbsp;&nbsp;Programme</h1>
+<table width='720px'><tbody>
+<tr><td class='t'> Contains details of the OMEGACAM observation programmes.</td></tr>
+</table>
+<p>
+<table width='720'>
+<tr><td class='d'> This table contains details of the observation programmes undertaken<br>
+ with OMEGACAM and for which observations are stored and curated in the OSA.<br>
+ Names of the tables that store information for each programme are<br>
+ recorded here.<br>
+ The unique programme ID number (assigned internally within the OSA)<br>
+ identifying all OMEGACAM observation programmes is as follows:<br>
+ <b>programme ID: description</b><br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0: not a programme: used for calibration/confidence frames common to many programmes<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1:  Commissioning data<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 101:  ATLAS Survey<br>
+ &nbsp;&nbsp; 1000+: Open Time programmes (PI)<br>
+ &nbsp; 10000+:  Service programmes<br>
+<br>Required constraints:<ul><li><b>Primary key</b> is (programmeID)</ul></td></tr>
+</table><p>
+<TABLE border=0 bgcolor=#888888 width=900 cellspacing=3 cellpadding=3><colgroup><col width='100'><col width='100'><col width='50'><col width='100'><col width='350'><col width='100'><col width='100'></colgroup>
+<tr><th class='h'>Name</th><th class='h'>Type</th><th class='h'>Length</th><th class='h'>Unit</th><th class='h'>Description</th><th class='h'>Default Value</th><th class='h'>Unified Content Descriptor</th></tr>
+<tr><td class='i'><a href='gloss/gloss_p#programme_programmeid' class='i'>programmeID</a></td><td class='i'>int</td><td class='i'>4</td><td class='i'>&nbsp;</td><td class='i'>UID of the archived programme coded as above</td><td class='i'>&nbsp;</td><td class='i'>ID_SURVEY</td></tr>
+<tr><td class='v'><a href='gloss/gloss_t#programme_title' class='v'>title</a></td><td class='v'>varchar</td><td class='v'>32</td><td class='v'>&nbsp;</td><td class='v'>a short title for the programme, eg. "ATLAS Survey"</td><td class='v'>&nbsp;</td><td class='v'>NOTE</td></tr>
+<tr><td class='v'><a href='gloss/gloss_d#programme_description' class='v'>description</a></td><td class='v'>varchar</td><td class='v'>256</td><td class='v'>&nbsp;</td><td class='v'>a concise description of the programme</td><td class='v'>&nbsp;</td><td class='v'>NOTE</td></tr>
+<tr><td class='v'><a href='gloss/gloss_r#programme_reference' class='v'>reference</a></td><td class='v'>varchar</td><td class='v'>256</td><td class='v'>&nbsp;</td><td class='v'>a reference for the programme, eg. "http://www.ukidss.org/surveys/surveys.html"</td><td class='v'>&nbsp;</td><td class='v'>REFER_CODE</td></tr>
+<tr><td class='v'><a href='gloss/gloss_p#programme_propperiod' class='v'>propPeriod</a></td><td class='v'>int</td><td class='v'>4</td><td class='v'>months</td><td class='v'>the proprietory period for any data taken for this programme in months, e.g. 12 for open time.</td><td class='v'>&nbsp;</td><td class='v'>TIME_PERIOD</td></tr>
+<tr><td class='v'><a href='gloss/gloss_d#programme_dfsidstring' class='v'>dfsIDString</a></td><td class='v'>varchar</td><td class='v'>64</td><td class='v'>&nbsp;</td><td class='v'>The description used within the data flow system (ie. the value of the appropriate FITS keyword)</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_c#programme_catalogueschema' class='v'>catalogueSchema</a></td><td class='v'>varchar</td><td class='v'>64</td><td class='v'>&nbsp;</td><td class='v'>Script file that describes the catalogue schema</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_d#programme_detectiontable' class='v'>detectionTable</a></td><td class='v'>varchar</td><td class='v'>64</td><td class='v'>&nbsp;</td><td class='v'>Table name of detections</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_s#programme_sourcetable' class='v'>sourceTable</a></td><td class='v'>varchar</td><td class='v'>64</td><td class='v'>&nbsp;</td><td class='v'>Table name of merged sources</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_l#programme_listremeastable' class='v'>listRemeasTable</a></td><td class='v'>varchar</td><td class='v'>64</td><td class='v'>&nbsp;</td><td class='v'>Table name of individual passband list re-measurements</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_s#programme_sourceremeastable' class='v'>sourceRemeasTable</a></td><td class='v'>varchar</td><td class='v'>64</td><td class='v'>&nbsp;</td><td class='v'>Table name of co-located list re-measurements</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_m#programme_mergelogtable' class='v'>mergeLogTable</a></td><td class='v'>varchar</td><td class='v'>64</td><td class='v'>&nbsp;</td><td class='v'>Table name of curation log for source merging</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_f#programme_framesettolerance' class='v'>frameSetTolerance</a></td><td class='v'>real</td><td class='v'>4</td><td class='v'>Degrees</td><td class='v'>The match tolerance for different passband frames</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_p#programme_pairingcriterion' class='v'>pairingCriterion</a></td><td class='v'>real</td><td class='v'>4</td><td class='v'>Degrees</td><td class='v'>The pairing criterion for associating detections into merged sources</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_a#programme_adjacentframetolerance' class='v'>adjacentFrameTolerance</a></td><td class='v'>real</td><td class='v'>4</td><td class='v'>Degrees</td><td class='v'>The match tolerance for adjacent frames in the survey</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_n#programme_neighboursschema' class='v'>neighboursSchema</a></td><td class='v'>varchar</td><td class='v'>64</td><td class='v'>&nbsp;</td><td class='v'>Script file that describes the neighbour tables schema for this programme</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_s#programme_synopticsourcetable' class='v'>synopticSourceTable</a></td><td class='v'>varchar</td><td class='v'>64</td><td class='v'>&nbsp;</td><td class='v'>Table name of merged variable sources</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_s#programme_synopticbestmatchtable' class='v'>synopticBestMatchTable</a></td><td class='v'>varchar</td><td class='v'>64</td><td class='v'>&nbsp;</td><td class='v'>Table name of merged variable sources</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_v#programme_variabilitytable' class='v'>variabilityTable</a></td><td class='v'>varchar</td><td class='v'>64</td><td class='v'>&nbsp;</td><td class='v'>Table name of merged variable sources</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_m#programme_mosaictool' class='v'>mosaicTool</a></td><td class='v'>varchar</td><td class='v'>8</td><td class='v'>&nbsp;</td><td class='v'>Name of mosaicing tool to be used</td><td class='v'>NONE</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_e#programme_extracttool' class='v'>extractTool</a></td><td class='v'>varchar</td><td class='v'>8</td><td class='v'>&nbsp;</td><td class='v'>Name of extraction tool to be used</td><td class='v'>NONE</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_b#programme_bandmergingcriterion' class='v'>bandMergingCriterion</a></td><td class='v'>real</td><td class='v'>4</td><td class='v'>minutes</td><td class='v'>maximum timespan over which different filters are merged into sources in the synoptic source table.</td><td class='v'>-0.9999995e9</td><td class='v'>&nbsp;</td></tr>
+<tr><td class='v'><a href='gloss/gloss_i#programme_islowgalacticlat' class='v'>isLowGalacticLat</a></td><td class='v'>tinyint</td><td class='v'>1</td><td class='v'>&nbsp;</td><td class='v'>Is this a low Galactic latitude field where Schlegel maps don't work (No=0/Yes=1)</td><td class='v'>0</td><td class='v'>&nbsp;</td></tr>
+<tr><td class='v'><a href='gloss/gloss_s#programme_sourceprodtype' class='v'>sourceProdType</a></td><td class='v'>varchar</td><td class='v'>16</td><td class='v'>&nbsp;</td><td class='v'>The product type to be used to create the source table. (stack, tile, mosaic)</td><td class='v'>NONE</td><td class='v'>&nbsp;</td></tr>
+<tr><td class='v'><a href='gloss/gloss_e#programme_epochframetype' class='v'>epochFrameType</a></td><td class='v'>varchar</td><td class='v'>16</td><td class='v'>&nbsp;</td><td class='v'>The frame type to be used for each epoch (stack, tile)</td><td class='v'>NONE</td><td class='v'>&nbsp;</td></tr>
+<tr><td class='v'><a href='gloss/gloss_p#programme_posangletolerance' class='v'>posAngleTolerance</a></td><td class='v'>real</td><td class='v'>4</td><td class='v'>Degrees</td><td class='v'>The position angle tolerance used when creating deep stacks and tiles</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_s#programme_synopticsetup' class='v'>synopticSetUp</a></td><td class='v'>varchar</td><td class='v'>64</td><td class='v'>&nbsp;</td><td class='v'>A string describing the synoptic setup for more complicated surveys</td><td class='v'>NONE</td><td class='v'>??</td></tr>
+<tr><td class='h'>Total length</td><td></td><td class='h'>1389</td></tr>
+</TABLE>

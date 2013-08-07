@@ -1,0 +1,24 @@
+$def with (prefix)
+<h1><a name="ProgrammeTable"></a><font size=-1>TABLE</font>&nbsp;&nbsp;ProgrammeTable</h1>
+<table width='720px'><tbody>
+<tr><td class='t'> Contains details of the set of curated tables for each programme.</td></tr>
+</table>
+<p>
+<table width='720'>
+<tr><td class='d'> Within the archive, for any particular programme (eg. ATLAS)<br>
+ a number of tables are curated as a result of the relational model (eg.<br>
+ single image detections, merged source lists, list-driven remeasurements).<br>
+ This table records the names of those tables and various other<br>
+ table-specific data concerning each table for each programme.<br>
+<br>
+<br>Required constraints:<ul><li><b>Primary key</b> is (programmeID,tableID)<li>                      (programmeID) references Programme(programmeID)
+</ul></td></tr>
+</table><p>
+<TABLE border=0 bgcolor=#888888 width=900 cellspacing=3 cellpadding=3><colgroup><col width='100'><col width='100'><col width='50'><col width='100'><col width='350'><col width='100'><col width='100'></colgroup>
+<tr><th class='h'>Name</th><th class='h'>Type</th><th class='h'>Length</th><th class='h'>Unit</th><th class='h'>Description</th><th class='h'>Default Value</th><th class='h'>Unified Content Descriptor</th></tr>
+<tr><td class='i'><a href='gloss/gloss_p#programmetable_programmeid' class='i'>programmeID</a></td><td class='i'>int</td><td class='i'>4</td><td class='i'>&nbsp;</td><td class='i'>the unique programme ID</td><td class='i'>&nbsp;</td><td class='i'>ID_SURVEY</td></tr>
+<tr><td class='i'><a href='gloss/gloss_t#programmetable_tableid' class='i'>tableID</a></td><td class='i'>int</td><td class='i'>4</td><td class='i'>&nbsp;</td><td class='i'>the unique table ID</td><td class='i'>&nbsp;</td><td class='i'>ID_MAIN</td></tr>
+<tr><td class='v'><a href='gloss/gloss_t#programmetable_tablename' class='v'>tableName</a></td><td class='v'>varchar</td><td class='v'>256</td><td class='v'>&nbsp;</td><td class='v'>the name of the table</td><td class='v'>&nbsp;</td><td class='v'>ID_TABLE</td></tr>
+<tr><td class='v'><a href='gloss/gloss_s#programmetable_sourceidname' class='v'>sourceIDName</a></td><td class='v'>varchar</td><td class='v'>256</td><td class='v'>&nbsp;</td><td class='v'>the name of the source</td><td class='v'>&nbsp;</td><td class='v'>ID_TARGET</td></tr>
+<tr><td class='h'>Total length</td><td></td><td class='h'>520</td></tr>
+</TABLE>

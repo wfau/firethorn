@@ -1,0 +1,32 @@
+$def with (prefix)
+<h1><a name="RequiredStack"></a><font size=-1>TABLE</font>&nbsp;&nbsp;RequiredStack</h1>
+<table width='720px'><tbody>
+<tr><td class='t'> Contains details of default stack image products curated in the archive.</td></tr>
+</table>
+<p>
+<table width='720'>
+<tr><td class='d'> This table contains details of all the default image stack products that<br>
+ are curated within the archive as part of the requirements for a<br>
+ particular survey. For example, the UKIDSS UDS is a deep stacked survey.<br>
+ The stacking curation task implemented within the archive uses the<br>
+ information in this table to produce the required stack(s) for a given<br>
+ programme when invoked as part of archive operations.<br>
+<br>Required constraints:<ul><li><b>Primary key</b> is (programmeID,productID)<li>                      (programmeID) references Programme(programmeID)
+<li>                      (filterID) references Filter(filterID)
+</ul></td></tr>
+</table><p>
+<TABLE border=0 bgcolor=#888888 width=900 cellspacing=3 cellpadding=3><colgroup><col width='100'><col width='100'><col width='50'><col width='100'><col width='350'><col width='100'><col width='100'></colgroup>
+<tr><th class='h'>Name</th><th class='h'>Type</th><th class='h'>Length</th><th class='h'>Unit</th><th class='h'>Description</th><th class='h'>Default Value</th><th class='h'>Unified Content Descriptor</th></tr>
+<tr><td class='i'><a href='gloss/gloss_p#requiredstack_programmeid' class='i'>programmeID</a></td><td class='i'>int</td><td class='i'>4</td><td class='i'>&nbsp;</td><td class='i'>the unique programme ID</td><td class='i'>&nbsp;</td><td class='i'>ID_SURVEY</td></tr>
+<tr><td class='i'><a href='gloss/gloss_p#requiredstack_productid' class='i'>productID</a></td><td class='i'>int</td><td class='i'>4</td><td class='i'>&nbsp;</td><td class='i'>A unique identifier assigned to each required stack product entry</td><td class='i'>&nbsp;</td><td class='i'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_n#requiredstack_name' class='v'>name</a></td><td class='v'>varchar</td><td class='v'>64</td><td class='v'>&nbsp;</td><td class='v'>Name of the stacked product</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_d#requiredstack_description' class='v'>description</a></td><td class='v'>varchar</td><td class='v'>256</td><td class='v'>&nbsp;</td><td class='v'>Description of the product</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_f#requiredstack_filterid' class='v'>filterID</a></td><td class='v'>tinyint</td><td class='v'>1</td><td class='v'>&nbsp;</td><td class='v'>UID of combined filter (assigned in OSA: 1=u,2=g,3=r,4=i,5=z,6=blank)</td><td class='v'>&nbsp;</td><td class='v'>INST_FILTER_CODE</td></tr>
+<tr><td class='v'><a href='gloss/gloss_r#requiredstack_ra' class='v'>ra</a></td><td class='v'>float</td><td class='v'>8</td><td class='v'>degrees</td><td class='v'>Right Ascension of stack centre</td><td class='v'>&nbsp;</td><td class='v'>POS_EQ_RA_MAIN</td></tr>
+<tr><td class='v'><a href='gloss/gloss_d#requiredstack_dec' class='v'>dec</a></td><td class='v'>float</td><td class='v'>8</td><td class='v'>degrees</td><td class='v'>Declination of stack centre</td><td class='v'>&nbsp;</td><td class='v'>POS_EQ_DEC_MAIN</td></tr>
+<tr><td class='v'><a href='gloss/gloss_n#requiredstack_numberstk' class='v'>numberStk</a></td><td class='v'>int</td><td class='v'>4</td><td class='v'>&nbsp;</td><td class='v'>Number of intermediate stacks. If default, stack all good quality stacks</td><td class='v'>-99999999</td><td class='v'>&nbsp;</td></tr>
+<tr><td class='v'><a href='gloss/gloss_s#requiredstack_stackradius' class='v'>stackRadius</a></td><td class='v'>real</td><td class='v'>4</td><td class='v'>deg</td><td class='v'>radius within which intermediate stacks are selected for this deep stack.</td><td class='v'>-0.9999995e9</td><td class='v'>&nbsp;</td></tr>
+<tr><td class='v'><a href='gloss/gloss_f#requiredstack_fieldid' class='v'>fieldID</a></td><td class='v'>int</td><td class='v'>4</td><td class='v'>&nbsp;</td><td class='v'>UID of position on sky.</td><td class='v'>-99999999</td><td class='v'>??</td></tr>
+<tr><td class='v'><a href='gloss/gloss_p#requiredstack_posangle' class='v'>posAngle</a></td><td class='v'>real</td><td class='v'>4</td><td class='v'>deg</td><td class='v'>Orientation of image x-axis to N-S</td><td class='v'>-0.9999995e9</td><td class='v'>&nbsp;</td></tr>
+<tr><td class='h'>Total length</td><td></td><td class='h'>361</td></tr>
+</TABLE>

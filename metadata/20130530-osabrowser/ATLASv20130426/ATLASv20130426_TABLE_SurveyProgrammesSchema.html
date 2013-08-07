@@ -1,0 +1,23 @@
+$def with (prefix)
+<h1><a name="SurveyProgrammes"></a><font size=-1>TABLE</font>&nbsp;&nbsp;SurveyProgrammes</h1>
+<table width='720px'><tbody>
+<tr><td class='t'> Contains details of which programme(s) belong to which survey(s)</td></tr>
+</table>
+<p>
+<table width='720'>
+<tr><td class='d'> In general, programmes curated within the archive can belong to more than<br>
+ one survey. This table contains the matrix of Programme/Survey IDs that<br>
+ are associated, thereby allowing programmes to be associated with one or<br>
+ more released survey products if that is required.<br>
+<br>
+<br>Required constraints:<ul><li><b>Primary key</b> is (surveyID,programmeID)<li>                      (programmeID) references Programme(programmeID)
+<li>                      (surveyID) references Survey(surveyID)
+</ul></td></tr>
+</table><p>
+<TABLE border=0 bgcolor=#888888 width=900 cellspacing=3 cellpadding=3><colgroup><col width='100'><col width='100'><col width='50'><col width='100'><col width='350'><col width='100'><col width='100'></colgroup>
+<tr><th class='h'>Name</th><th class='h'>Type</th><th class='h'>Length</th><th class='h'>Unit</th><th class='h'>Description</th><th class='h'>Default Value</th><th class='h'>Unified Content Descriptor</th></tr>
+<tr><td class='i'><a href='gloss/gloss_s#surveyprogrammes_surveyid' class='i'>surveyID</a></td><td class='i'>int</td><td class='i'>4</td><td class='i'>&nbsp;</td><td class='i'>The unique identifier for the curated survey</td><td class='i'>&nbsp;</td><td class='i'>ID_SURVEY</td></tr>
+<tr><td class='i'><a href='gloss/gloss_p#surveyprogrammes_programmeid' class='i'>programmeID</a></td><td class='i'>int</td><td class='i'>4</td><td class='i'>&nbsp;</td><td class='i'>OSA assigned programme UID {image&nbsp;primary&nbsp;HDU&nbsp;keyword:&nbsp;PROJECT}</td><td class='i'>-99999999</td><td class='i'>ID_SURVEY</td></tr>
+<tr><td class='v'><a href='gloss/gloss_d#surveyprogrammes_delpropdata' class='v'>delPropData</a></td><td class='v'>tinyint</td><td class='v'>1</td><td class='v'>&nbsp;</td><td class='v'>Logical flag indicating that proprietary data should be removed on release (1=yes; 0=no)</td><td class='v'>&nbsp;</td><td class='v'>??</td></tr>
+<tr><td class='h'>Total length</td><td></td><td class='h'>9</td></tr>
+</TABLE>
