@@ -1,0 +1,415 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------
+
+The osabrowser data has short and long descriptions for the tables in TWOMASS.
+
+    TWOMASS_Tables_descr.html
+    "Contains the parameters provided for each source in the TWOMASS All Sky Release PSC" 
+
+    TWOMASS_TABLE_twomass_pscSchema.html
+    "This table contains brief descriptions of the parameters provided for<br>
+    each source in the TWOMASS All Sky Release PSC. The table is organized<br>
+    according to the broad function and utility of the parameters: positional<br>
+    information, photometric information, and source quality information.<br>
+    WFAU gratefully acknowledges help from IPAC at Caltech in enabling a<br>
+    bulk download of the entire catalogue for local deployment in the VSA/WSA.<br>
+    Any issues encountered or questions raised in use of this incarnation of<br>
+    the IPAC IRSA catalogue should be communicated to the vsa- or wsa-support helpdesks<br>
+    in the first instance. For a complete description please see the<br>
+    <a href="http://www.ipac.caltech.edu/2mass/releases/allsky/doc/sec2_2a.html">
+    user's guide to the 2MASS PSC all-sky data release</a><br>"
+
+The metadoc data doesn't contain any descrition for the TWOMASS tables.
+
+# -----------------------------------------
+
+The osabrowser data contains version 1 column descriptors
+
+    cx          1   POS_EQ_X
+    cy          1   POS_EQ_Y
+    cz          1   POS_EQ_Z
+    htmID       1   POS_GENERAL
+    ra          1   POS_EQ_RA_MAIN
+    dec         1   POS_EQ_DEC_MAIN
+    err_maj     1   EXTENSION_RAD
+    err_min     1   EXTENSION_RAD
+    err_ang     1   POS_POS-ANG
+
+The metadoc data contains a mix of version 1 and 1+ column descriptors.
+
+    cx          1+  pos.distance;pos.cartesian.x
+    cy          1+  pos.distance;pos.cartesian.y
+    cz          1+  pos.distance;pos.cartesian.y
+    htmID       1+  pos.eq
+    ra          1   POS_EQ_RA_MAIN
+    dec         1   POS_EQ_DEC_MAIN
+    err_maj     1+  phys.angSize;src
+    err_min     1+  phys.angSize;src
+    err_ang     1+  pos.posAng
+
+# -----------------------------------------
+
+The osabrowser data lists ra and dec as 'float' values with length 8.
+
+    cx      float 8
+    cy      float 8
+    cy      float 8
+
+    ra      float 8
+    dec     float 8
+
+The metadoc data lists cx, cy and cz as 'float', but ra and dec are listed as 'double'.
+
+    cx      float
+    cy      float
+    cy      float
+
+    ra      double
+    dec     double
+
+# -----------------------------------------
+
+The osabrowser data lists htmID as 'bigint' with length 8,
+and err_ang as 'smallint' with length 2.
+
+    htmID       bigint   8
+    err_ang     smallint 2
+
+The metadoc data lists both as 'int'.
+
+    htmID       int
+    err_ang     int
+
+# -----------------------------------------
+
+The osabrowser data lists err_maj and err_min as 'real' values with length 4.
+
+    err_maj     real 4
+    err_min     real 4
+
+The metadoc data lists err_maj and err_min as 'float'
+
+    err_maj     float
+    err_min     float
+
+# -----------------------------------------
+
+The osabrowser data lists the units for ra, dec and err_ang as 'degrees'.
+
+    ra          degrees
+    dec         degrees
+    err_ang     degrees
+
+The metadoc data uses a mixture of 'deg' and 'degrees' for the same units.
+
+    ra          deg
+    dec         deg
+    err_ang     degrees
+
+# -----------------------------------------
+# Original data from osabrowser20130530.tar
+ 
+    <tr>
+        <td><a>cx</a></td>
+        <td>float</td>
+        <td>8</td>
+        <td>&nbsp;</td>
+        <td>unit vector of spherical co-ordinates</td>
+        <td>&nbsp;</td>
+        <td>POS_EQ_X</td>
+    </tr>
+    <tr>
+        <td><a>cy</a></td>
+        <td>float</td>
+        <td>8</td>
+        <td>&nbsp;</td>
+        <td>unit vector of spherical co-ordinates</td>
+        <td>&nbsp;</td>
+        <td>POS_EQ_Y</td>
+    </tr>
+    <tr>
+        <td><a>cz</a></td>
+        <td>float</td>
+        <td>8</td>
+        <td>&nbsp;</td>
+        <td>unit vector of spherical co-ordinates</td>
+        <td>&nbsp;</td>
+        <td>POS_EQ_Z</td>
+    </tr>
+    <tr>
+        <td><a>htmID</a></td>
+        <td>bigint</td>
+        <td>8</td>
+        <td>&nbsp;</td>
+        <td>Hierarchical Triangular Mesh (HTM) index, 20 deep, for equatorial co-ordinates</td>
+        <td>&nbsp;</td>
+        <td>POS_GENERAL</td>
+    </tr>
+    <tr>
+        <td><a>ra</a></td>
+        <td>float</td>
+        <td>8</td>
+        <td>degrees</td>
+        <td>J2000 right ascension with respect to the ICRS</td>
+        <td>&nbsp;</td>
+        <td>POS_EQ_RA_MAIN</td>
+    </tr>
+    <tr>
+        <td><a>dec</a></td>
+        <td>float</td>
+        <td>8</td>
+        <td>degrees</td>
+        <td>J2000 declination with respect to the ICRS</td>
+        <td>&nbsp;</td>
+        <td>POS_EQ_DEC_MAIN</td>
+    </tr>
+    <tr>
+        <td><a>err_maj</a></td>
+        <td>real</td>
+        <td>4</td>
+        <td>arcsec</td>
+        <td>Semi-major axis length of the one sigma position uncertainty ellipse</td>
+        <td>&nbsp;</td>
+        <td>EXTENSION_RAD</td>
+    </tr>
+    <tr>
+        <td><a>err_min</a></td>
+        <td>real</td>
+        <td>4</td>
+        <td>arcsec</td>
+        <td>Semi-minor axis length of the one sigma position uncertainty ellipse</td>
+        <td>&nbsp;</td>
+        <td>EXTENSION_RAD</td>
+    </tr>
+    <tr>
+        <td><a>err_ang</a></td>
+        <td>smallint</td>
+        <td>2</td>
+        <td>degrees</td>
+        <td>Position angle on the sky of the semi-major axis of the position uncertainty ellipse (East of North)</td>
+        <td>&nbsp;</td>
+        <td>POS_POS-ANG</td>
+    </tr>
+
+# -----------------------------------------
+# Original data from 20130501-metadocs
+
+    <Column ID="twomass_psc.cx" indexed="false">
+        <Name>cx</Name>
+        <Datatype>float</Datatype>
+        <Description><![CDATA[unit vector of spherical co-ordinate]]></Description>
+        <Units></Units>
+        <UCD version="1+">pos.distance;pos.cartesian.x</UCD>
+        <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="twomass_psc.cy" indexed="false">
+        <Name>cy</Name>
+        <Datatype>float</Datatype>
+        <Description><![CDATA[unit vector of spherical co-ordinate]]></Description>
+        <Units></Units>
+        <UCD version="1+">pos.distance;pos.cartesian.y</UCD>
+        <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="twomass_psc.cz" indexed="false">
+        <Name>cz</Name>
+        <Datatype>float</Datatype>
+        <Description><![CDATA[unit vector of spherical co-ordinate]]></Description>
+        <Units></Units>
+        <UCD version="1+">pos.distance;pos.cartesian.z</UCD>
+        <ErrorColumn></ErrorColumn>
+    </Column>
+
+    <Column ID="twomass_psc.htmID" indexed="false">
+        <Name>htmID</Name>
+        <Datatype>int</Datatype>
+        <Description><![CDATA[HTM index, 20 digits, for co-ordinate]]></Description>
+        <Units></Units>
+        <UCD version="1+">pos.eq</UCD>
+        <ErrorColumn></ErrorColumn>
+    </Column>
+
+    <Column ID="twomass_psc.ra" indexed="false">
+        <Name>ra</Name>
+        <Datatype>double</Datatype>
+        <Description><![CDATA[J2000 right ascension with respect to the ICRS]]></Description>
+        <Units>deg</Units>
+        <UCD version="1">POS_EQ_RA_MAIN</UCD>
+        <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="twomass_psc.dec" indexed="false">
+        <Name>dec</Name>
+        <Datatype>double</Datatype>
+        <Description><![CDATA[J2000 declination with respect to the ICRS]]></Description>
+        <Units>deg</Units>
+        <UCD version="1">POS_EQ_DEC_MAIN</UCD>
+        <ErrorColumn></ErrorColumn>
+    </Column>
+
+    <Column ID="twomass_psc.err_maj" indexed="false">
+        <Name>err_maj</Name>
+        <Datatype>float</Datatype>
+        <Description><![CDATA[Semi-major axis length of the one sigma position uncertainty ellipse]]></Description>
+        <Units>arcsec</Units>
+        <UCD version="1+">phys.angSize;src</UCD>
+        <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="twomass_psc.err_min" indexed="false">
+        <Name>err_min</Name>
+        <Datatype>float</Datatype>
+        <Description><![CDATA[Semi-minor axis length of the one sigma position uncertainty ellipse]]></Description>
+        <Units>arcsec</Units>
+        <UCD version="1+">phys.angSize;src</UCD>
+        <ErrorColumn></ErrorColumn>
+    </Column>
+    <Column ID="twomass_psc.err_ang" indexed="false">
+        <Name>err_ang</Name>
+        <Datatype>int</Datatype>
+        <Description><![CDATA[Position angle on the sky of the semi-major axis of the position uncertainty ellipse (East of North)]]></Description>
+        <Units>degrees</Units>
+        <UCD version="1+">pos.posAng</UCD>
+        <ErrorColumn></ErrorColumn>
+    </Column>
+
+# -----------------------------------------
+# Column metadata from SQLServer
+
+    # ------------------------------------------------
+    # Connect the SSH tunnel to ROE.
+    #[sqsh@tau]
+
+        source "${HOME}/sqlserver.txt"
+        ssh -L '*:1435:ramses5:1433' -L '*:1439:ramses9:1433' "${sshsqluser:?}@${sshsqlhost:?}"
+
+    # ------------------------------------------------
+    # Check the TWOMASS column metadata in SQLServer.
+    #[sqsh@tau]
+
+        servername=WFAU
+        serverlogin=firethorn
+        serverpass=firethornpw
+        sqsh -S ramses5 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+
+        use [TWOMASS]
+
+        SELECT
+            COLUMN_NAME,
+            ORDINAL_POSITION,
+            COLUMN_DEFAULT,
+            IS_NULLABLE,
+            DATA_TYPE,
+            CHARACTER_MAXIMUM_LENGTH,
+            CHARACTER_OCTET_LENGTH,
+            NUMERIC_PRECISION,
+            NUMERIC_PRECISION_RADIX,
+            NUMERIC_SCALE,
+            DATETIME_PRECISION
+        FROM
+            INFORMATION_SCHEMA.COLUMNS
+        WHERE
+            TABLE_NAME='twomass_psc'
+        AND
+            COLUMN_NAME in ('cx','cy','cz', 'htmID', 'ra', 'dec', 'err_maj', 'err_min', 'err_ang' )
+        go
+
+
+    # ------------------------------------------------
+
+    COLUMN_NAME ORDINAL_POSITION    COLUMN_DEFAULT  IS_NULLABLE DATA_TYPE   CHARACTER_MAXIMUM_LENGTH    CHARACTER_OCTET_LENGTH  NUMERIC_PRECISION   NUMERIC_PRECISION_RADIX NUMERIC_SCALE   DATETIME_PRECISION
+    cx          1                   NULL            NO          float       NULL                        NULL                    53                  2                       NULL            NULL
+    cy          2                   NULL            NO          float       NULL                        NULL                    53                  2                       NULL            NULL
+    cz          3                   NULL            NO          float       NULL                        NULL                    53                  2                       NULL            NULL
+    htmID       4                   NULL            NO          bigint      NULL                        NULL                    19                  10                      0               NULL
+    ra          5                   NULL            NO          float       NULL                        NULL                    53                  2                       NULL            NULL
+    dec         6                   NULL            NO          float       NULL                        NULL                    53                  2                       NULL            NULL
+    err_maj     7                   NULL            NO          real        NULL                        NULL                    24                  2                       NULL            NULL
+    err_min     8                   NULL            NO          real        NULL                        NULL                    24                  2                       NULL            NULL
+    err_ang     9                   NULL            NO          smallint    NULL                        NULL                    5                   10                      0               NULL
+
+    # ------------------------------------------------
+    float and real
+    http://technet.microsoft.com/en-us/library/ms173773.aspx
+    
+        float(n)
+        real == float(24)
+
+        "SQL Server treats n as one of two possible values. If 1<=n<=24, n is treated as 24. If 25<=n<=53, n is treated as 53."
+
+        real      = 4 bytes
+        float(24) = 4 bytes
+        float(53) = 8 bytes
+
+    VOTable-1.3-20130315
+
+        float  = 4 byte
+        double = 8 byte
+        
+    # ------------------------------------------------
+    int, bigint, smallint, and tinyint
+    http://technet.microsoft.com/en-us/library/ms187745.aspx
+
+        bigint   = 8 bytes
+        int      = 4 bytes
+        smallint = 2 bytes
+        tinyint  = 1 bytes
+
+    VOTable-1.3-20130315
+
+        long  = 8 byte
+        int   = 4 byte
+        short = 2 byte
+
+    # ------------------------------------------------
+    SQLServer -> VOTable mapping
+    
+        SQLServer   VOTable     bytes
+
+        real        float           4
+        float(24)   float           4
+        float(53)   double          8
+
+        tinyint     unsignedByte    1
+        smallint    short           2
+        int         int             4
+        bigint      long            8
+
+    # ------------------------------------------------
+    SQLServer -> VOTable mapping
+
+      +----------+-----------+---------+-------+
+      | Name     | SQLServer | VOTable | bytes |
+      +----------+-----------+---------+-------+
+      | cx       | float(53) | double  |     8 |
+      | cy       | float(53) | double  |     8 |
+      | cz       | float(53) | double  |     8 |
+      | htmID    | bigint    | long    |     8 |
+      | ra       | float(53) | double  |     8 |
+      | dec      | float(53) | double  |     8 |
+      | err_maj  | real(24)  | float   |     4 |
+      | err_min  | real(24)  | float   |     4 |
+      | err_ang  | smallint  | short   |     2 |
+      +----------+-----------+---------+-------+
+
+
+
+
