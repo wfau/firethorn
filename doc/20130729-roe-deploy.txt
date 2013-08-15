@@ -613,18 +613,19 @@ EOF
 
             source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
 
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASv20130304' 'dbo' "${FIRETHORN_META:?}/ATLASv20130304/auxdocs/ATLASv20130304_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASv20130426' 'dbo' "${FIRETHORN_META:?}/ATLASv20130426/auxdocs/ATLASv20130426_TablesSchema.xml"
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'DENIS'          'dbo' "${FIRETHORN_META:?}/DENIS/auxdocs/DENIS_TablesSchema.xml"
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'FIRST'          'dbo' "${FIRETHORN_META:?}/FIRST/auxdocs/FIRST_TablesSchema.xml"
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GLIMPSE'        'dbo' "${FIRETHORN_META:?}/GLIMPSE/auxdocs/GLIMPSE_TablesSchema.xml"
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'IRAS'           'dbo' "${FIRETHORN_META:?}/IRAS/auxdocs/IRAS_TablesSchema.xml"
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'MGC'            'dbo' "${FIRETHORN_META:?}/MGC/auxdocs/MGC_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'NVSS'           'dbo' "${FIRETHORN_META:?}/NVSS/auxdocs/NVSS_TablesSchema.xml"
+            #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'NVSS'           'dbo' "${FIRETHORN_META:?}/NVSS/auxdocs/NVSS_TablesSchema.xml"
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ROSAT'          'dbo' "${FIRETHORN_META:?}/ROSAT/auxdocs/ROSAT_TablesSchema.xml"
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'        'dbo' "${FIRETHORN_META:?}/TWOMASS/auxdocs/TWOMASS_TablesSchema.xml"
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'WISE'           'dbo' "${FIRETHORN_META:?}/WISE/auxdocs/WISE_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'XMM'            'dbo' "${FIRETHORN_META:?}/XMM/auxdocs/XMM_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOXMM'         'dbo' "${FIRETHORN_META:?}/XMM/auxdocs/XMM_TablesSchema.xml"
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASv20130304' 'dbo' "${FIRETHORN_META:?}/ATLASv20130304/auxdocs/ATLASv20130304_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASv20130426' 'dbo' "${FIRETHORN_META:?}/ATLASv20130426/auxdocs/ATLASv20130426_TablesSchema.xml"
 
             cat > "${HOME:?}/firethorn.testing" << EOF
 adqlspace=${adqlspace:?}
