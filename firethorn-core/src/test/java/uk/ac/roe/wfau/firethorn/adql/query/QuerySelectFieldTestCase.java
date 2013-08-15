@@ -187,5 +187,30 @@ extends QuerySelectFieldTestBase
               }
           );
       }
+
+
+
+    @Test
+    public void test004()
+    throws Exception
+        {
+        validate(
+            this.schema.queries().create(
+                "SELECT"
+                + "    ra +  dec as radec"
+                + " FROM"
+                + "    adql_twomass.twomass_psc as twomass"
+                + " WHERE"
+                + "    ra  BETWEEN '56.0' AND '57.9'"
+                + " AND"
+                + "    dec BETWEEN '24.0' AND '24.2'"
+                + ""
+                ),
+            new ExpectedField[] {
+                new ExpectedField("radec", AdqlColumn.Type.DOUBLE, 0),
+                }
+            );
+        }
+
     }
 

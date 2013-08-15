@@ -891,7 +891,8 @@ implements AdqlParser
         AdqlColumn.Type t1 = null ;
         AdqlColumn.Type t2 = null ;
         AdqlColumn.Type t3 = null ;
-
+        AdqlColumn.Type return_type = null;
+        
         if (param1 instanceof ADQLColumn)
             {
             c1 = (ADQLColumn) param1;
@@ -911,25 +912,49 @@ implements AdqlParser
                 }
             }
  
-        log.debug("  t1 [{}]", t1);
-        log.debug("  t2 [{}]", t2);
-
-        //
-        // if ........
-        // else if .......
-        // else if .......
-        // else if .......
-        // else if .......
+        if ((t1 == AdqlColumn.Type.DOUBLE) || (t2 == AdqlColumn.Type.DOUBLE)){
+        			return_type = AdqlColumn.Type.DOUBLE;
+        			
+        } else if((t1 == AdqlColumn.Type.CHAR) && (t2 == AdqlColumn.Type.CHAR)){
+					return_type = AdqlColumn.Type.CHAR;
         
-        t3 = t1 ;
+        } else if((t1 == AdqlColumn.Type.UNICODE) && (t2 == AdqlColumn.Type.UNICODE)){
+					return_type = AdqlColumn.Type.UNICODE;
+        
+        } else if ((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.SHORT)){
+        			return_type = AdqlColumn.Type.SHORT;
+            
+        } else if ((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.LONG) ||
+        		   	(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.INTEGER) ||
+        		   	(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.LONG) ||
+        		   	(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.LONG) ||
+        		   	(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.SHORT)){
+        			return_type = AdqlColumn.Type.LONG;
+        
+        } else if ((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.INTEGER) || 	
+        			(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.INTEGER) ||
+        			(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.SHORT)){
+        			return_type = AdqlColumn.Type.INTEGER;
+        
+        } else if ((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.FLOAT) ||
+        			(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.FLOAT) ||
+        			(t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.INTEGER) ||
+        			(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.FLOAT) ||
+        			(t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.LONG) ||
+        			(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.FLOAT) ||
+        			(t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.SHORT)){
+        			return_type = AdqlColumn.Type.FLOAT;
+        			
+        }
+    
 
-        //
-        // Temp fix ... array() is null
+     
         return new SelectFieldImpl(
-            "fred",
-            t3
+            "operation",
+            return_type
             );
         }
+
 
     /**
      * Wrap an ADQLFunction.
