@@ -30,11 +30,12 @@
         for file in $(find . -name 'pom.xml')
         do
             sed -i '
-                s/<version>01.07-alpha-01<\/version>/<version>01.07-alpha-02<\/version>/
+                s/<version>01.07-alpha-02<\/version>/<version>01.07-alpha-03<\/version>/
                 ' "${file:?}"
         done
 
-        hg commit -m "Version 01.07-alpha-02"
+        hg diff
+        hg commit -m "Version 01.07-alpha-03"
 
     popd
 
@@ -100,6 +101,22 @@
 
     popd
 
+    #
+    # Fix file permissions.
+    ssh root@data.metagrid.co.uk
+
+        pushd /var/local/websites/data/wfau/maven
+
+            for repo in external firethorn ogsadai
+            do
+                echo "Repo ${repo}"
+                chgrp -R apache "${repo}"
+                find "${repo}" -type f -exec chmod u=rw,g=r,o=r '{}' \;
+                find "${repo}" -type d -exec chmod u=rwx,g=rxs,o=rx '{}' \;
+            done
+            
+        popd
+
 
 # ------------------------------------------------
 # Initialise our settings.
@@ -124,7 +141,7 @@ EOF
 # Create a new database.
 #[sqsh@tau]
 
-    dbversion=DJFT0107alpha02
+    dbversion=DJFT0107alpha03
     metadataname="FirethornMetadata${dbversion:?}"
     userdataname="FirethornUserdata${dbversion:?}"
 
@@ -221,7 +238,7 @@ EOF
 
     gedit ${HOME:?}/deployment/deploy.properties &
 
-        firethorn.version=01.07-alpha-02
+        firethorn.version=01.07-alpha-03
         
         firethon.webapp.endpoint=http://coccinea:8080/firethorn
         #firethon.webapp.baseurl=http://coccinea:8080/firethorn
@@ -293,7 +310,7 @@ EOF
         # Shutdown Tomcat
         "${HOME}/tomcat/bin/shutdown.sh"
 
-        webappver=01.07-alpha-02
+        webappver=01.07-alpha-03
         webappproj=firethorn-webapp
         webappname=${webappproj:?}-${webappver:?}
         webapppath=${HOME}/webapps
