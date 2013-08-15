@@ -46,6 +46,7 @@
     pushd "${FIRETHORN_CODE:?}"
 
         mvn -P all clean install
+        mvn -P all eclipse:eclipse
         
     popd
 
@@ -436,7 +437,7 @@ EOF
         #
         # Deploy the ogsadai webapp.
 
-        webappver=01.07-alpha-02
+        webappver=01.07-alpha-03
         webappproj=firethorn-ogsadai-webapp
         webappname=${webappproj:?}-${webappver:?}
         webapppath=${HOME}/webapps
@@ -550,7 +551,7 @@ EOF
         apt-get -y install perl
         apt-get -y install libjson-perl
 
-        exit
+    exit
 
 #
 # Install maven ......
@@ -588,7 +589,7 @@ EOF
                 popd
             fi
         popd
-        exit
+    exit
 
 #
 # Run the OGSA-DAI login fix.
@@ -606,7 +607,7 @@ EOF
 
             popd
         popd
-        exit
+    exit
 
 #
 # Run the OSA setup part of the test scripts.

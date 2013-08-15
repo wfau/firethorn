@@ -758,6 +758,9 @@ public class AdqlTableEntity
     // TODO
     // Refactor this as mapped identity ?
     // http://www.codereye.com/2009/04/hibernate-bi-directional-one-to-one.html
+    //
+    // SQLServer won't allow a unique column to have a null value.
+    // http://improvingsoftware.com/2010/03/26/creating-a-unique-constraint-that-ignores-nulls-in-sql-server/
     @Index(
         name=DB_TABLE_NAME + "IndexByAdqlQuery"
         )
@@ -767,7 +770,7 @@ public class AdqlTableEntity
         )
     @JoinColumn(
         name = DB_ADQL_QUERY_COL,
-        unique = true,
+        unique = false,
         nullable = true,
         updatable = false
         )

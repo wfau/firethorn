@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.spring;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.config.ConfigProperty;
-import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.identity.Authentication;
 import uk.ac.roe.wfau.firethorn.identity.Community;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
@@ -38,12 +37,6 @@ import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcFactories;
  */
 public interface ComponentFactories
     {
-    /**
-     * System UUID factory.
-     *
-     */
-    public Entity.UUIDFactory uuids();
-
     /**
      * Our Spring related things.
      *

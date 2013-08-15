@@ -206,24 +206,6 @@ implements Entity
         }
 
     /**
-     * The Entity UUID.
-     * @todo not null when we create next DB.
-     *
-     */
-    @Column(
-        name = DB_UUID_COL,
-        unique = true,
-        nullable = true,
-        updatable = false
-        )
-    private UUID uuid ;
-    @Override
-    public UUID uuid()
-        {
-        return this.uuid;
-        }
-
-    /**
      * The Entity owner.
      *
      */

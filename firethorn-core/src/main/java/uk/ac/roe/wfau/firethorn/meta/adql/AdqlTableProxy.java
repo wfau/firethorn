@@ -156,14 +156,6 @@ public class AdqlTableProxy
         {
         this.base   = base   ;
         this.schema = schema ;
-        this.uuid  = factories().uuids().uuid();
-        }
-
-    private final UUID uuid;
-    @Override
-    public UUID uuid()
-        {
-        return this.uuid;
         }
 
     /**

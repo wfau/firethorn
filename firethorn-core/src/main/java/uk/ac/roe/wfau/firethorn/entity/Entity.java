@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.entity ;
 
-import java.util.UUID;
-
 import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
@@ -30,19 +28,6 @@ import uk.ac.roe.wfau.firethorn.identity.Identity;
  */
 public interface Entity
     {
-    /**
-     * Common interface for a UUID factory.
-     *
-     */
-    public interface UUIDFactory
-        {
-        /**
-         * Generate a new UUID.
-         *
-         */
-        public UUID uuid();
-        }
-
     /**
      * Common interface for a name factory.
      *
@@ -160,12 +145,6 @@ public interface Entity
      *
      */
     public String link();
-
-    /**
-     * Get the Entity UUID.
-     *
-     */
-    public UUID uuid();
 
     /**
      * Get the Entity owner.

@@ -149,14 +149,6 @@ implements AdqlColumn
         {
         this.base  = base  ;
         this.table = table ;
-        this.uuid  = factories().uuids().uuid();
-        }
-
-    private final UUID uuid;
-    @Override
-    public UUID uuid()
-        {
-        return this.uuid;
         }
 
     /**

@@ -54,17 +54,6 @@ public class TestFactories
     {
 
     @Component
-    public static class UUIDFactory
-    implements Entity.UUIDFactory
-        {
-        @Override
-        public UUID uuid()
-            {
-            return UUID.randomUUID();
-            }
-        }
-
-    @Component
     public static class JobFactories
         {
         @Component
