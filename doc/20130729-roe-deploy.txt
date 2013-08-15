@@ -602,7 +602,6 @@ EOF
         FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
         FIRETHORN_META=${FIRETHORN_CODE:?}/metadata/20130807-metadocs
 
-
         pushd $(mktemp --directory)
 
             identity=$(pwgen 16 1)
