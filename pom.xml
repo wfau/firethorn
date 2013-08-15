@@ -39,7 +39,7 @@
         | Maven project versions
         | http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-pom-syntax.html
         +-->
-    <version>01.07-alpha-02</version>
+    <version>01.07-alpha-03</version>
 
     <prerequisites>
         <maven>2.2.1</maven>
@@ -187,9 +187,18 @@
             +-->
         <skipTests>true</skipTests>
 
-        <project.javaversion>1.6</project.javaversion>
+        <!--+
+            | Generate checksums.
+            | https://maven.apache.org/plugins/maven-install-plugin/examples/installing-checksums.html
+            +-->
+        <createChecksum>true</createChecksum>
+
+
+        <project.javaversion>1.7</project.javaversion>
 
         <project.build.sourceencoding>UTF-8</project.build.sourceencoding>
+
+
 
     </properties>
 
@@ -347,7 +356,7 @@
             <dependency>
                 <groupId>org.jadira.usertype</groupId>
                 <artifactId>usertype.core</artifactId>
-                <version>3.1.0.CR7</version>
+                <version>3.1.0.CR8</version>
             </dependency>
 
 		    <!--+
@@ -382,7 +391,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>0.11.8</version>
+                <version>0.12.0</version>
             </dependency> 
 
             <!--+

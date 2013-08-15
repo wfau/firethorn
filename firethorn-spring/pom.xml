@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn</artifactId>
-        <version>01.07-alpha-02</version>
+        <version>01.07-alpha-03</version>
     </parent>
 
     <artifactId>firethorn-spring</artifactId>
@@ -51,8 +51,10 @@
 
 		<!--org.spring.version>3.2.0.M1</org.spring.version-->
         <!--org.hibernate.version>4.1.6.Final</org.hibernate.version-->
-		<org.spring.version>3.2.3.RELEASE</org.spring.version>
-        <org.hibernate.version>4.2.0.CR1</org.hibernate.version>
+        <!--org.hibernate.version>4.2.0.CR1</org.hibernate.version-->
+
+		<org.spring.version>3.2.4.RELEASE</org.spring.version>
+        <org.hibernate.version>4.3.0.Beta3</org.hibernate.version>
 		<org.aspectj.version>1.7.3</org.aspectj.version>
 
     </properties>
@@ -252,7 +254,8 @@
         <dependency>  
             <groupId>org.hibernate.java-persistence</groupId>  
             <artifactId>jpa-api</artifactId>  
-            <version>2.0-cr-1</version>  
+            <!--version>2.0-cr-1</version-->  
+            <version>2.0.Beta-20090815</version>  
         </dependency>  
 
         <!--+
