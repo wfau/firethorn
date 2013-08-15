@@ -686,11 +686,11 @@ EOF
 
         #
         # OSA workspace 
-        iceweasel 'http://coccinea:8080/firethorn/adql/resource/32770' &
+        iceweasel 'http://coccinea:8080/firethorn/adql/resource/294917' &
 
         #
         # Default Atlas schema 
-        iceweasel 'http://coccinea:8080/firethorn/adql/schema/163894/' &
+        iceweasel 'http://coccinea:8080/firethorn/adql/schema/327824' &
 
 
 
