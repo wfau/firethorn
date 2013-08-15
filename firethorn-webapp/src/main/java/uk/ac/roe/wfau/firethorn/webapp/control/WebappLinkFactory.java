@@ -17,7 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.webapp.control;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractLinkFactory;
@@ -26,6 +31,7 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractLinkFactory;
  * Base class for IdentFactory implementations within the webapp.
  *
  */
+@Slf4j
 public abstract class WebappLinkFactory<EntityType extends Entity>
 extends AbstractLinkFactory<EntityType>
 implements Entity.LinkFactory<EntityType>
@@ -35,19 +41,16 @@ implements Entity.LinkFactory<EntityType>
     public static final String IDENT_TOKEN = "{ident}" ;
     public static final String IDENT_REGEX = "\\{ident\\}" ;
 
-    public static final String DEFAULT_ENDPOINT = "http://localhost:8080/firethorn" ;
-
-
-    @Value("${firethon.webapp.endpoint}")
-    private String endpoint ;
-    public String endpoint()
+    @Value("${firethon.webapp.baseurl:null}")
+    private String baseurl ;
+    protected String baseurl()
         {
-        if (endpoint != null)
+        if ("null".equals(this.baseurl))
             {
-            return endpoint;
+            return null;
             }
         else {
-            return DEFAULT_ENDPOINT ;
+            return this.baseurl;
             }
         }
 
@@ -56,17 +59,6 @@ implements Entity.LinkFactory<EntityType>
         super(path);
         }
 
-    /*
-     *
-     * http://static.springsource.org/spring/docs/current/spring-framework-reference/html/mvc.html#mvc-buildinguris
-     * Re-use host, port, context path
-     * Append the literal part of the servlet mapping to the path
-     * Append "/accounts" to the path
-     *
-     * ServletUriComponentsBuilder ucb =
-     *   ServletUriComponentsBuilder.fromServletMapping(request).path("/accounts").build()
-     *
-     */
     protected String link(final String path, final Entity entity)
         {
         return link(
@@ -77,13 +69,20 @@ implements Entity.LinkFactory<EntityType>
 
     protected String link(final String path, final String ident)
         {
-        return new StringBuilder(
-            endpoint()
-            ).append(
-                path.replaceFirst(
-                    IDENT_REGEX,
-                    ident
-                    )
-                ).toString();
+        UriComponentsBuilder builder ;
+        if (baseurl() != null)
+            {
+            builder = UriComponentsBuilder.fromHttpUrl(
+                baseurl()
+                );
+            }
+        else {
+            builder = ServletUriComponentsBuilder.fromCurrentContextPath();
+            }
+        return builder.path(
+            path
+            ).build().expand(
+                ident
+                ).toUriString();
         }
     }

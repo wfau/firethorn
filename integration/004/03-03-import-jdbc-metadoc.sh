@@ -24,8 +24,6 @@ jdbccatalogname=${1:?}
 jdbcschemaname=${2:?}
 metadocfile=${3:?}
 
-metadocbase=${FIRETHORN_CODE:?}/metadata/20130501-metadocs
-
 POST "${jdbcspace:?}/schemas/select" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
@@ -41,7 +39,7 @@ POST "${adqlspace:?}/metadoc/import" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
     --form   "urn:schema.metadoc.base=${jdbcschemaident:?}" \
-    --form   "urn:schema.metadoc.file=@${metadocbase:?}/${metadocfile:?}" \
+    --form   "urn:schema.metadoc.file=@${metadocfile:?}" \
     | ./pp | tee adql-schema.json
 
 adqlschema=$(

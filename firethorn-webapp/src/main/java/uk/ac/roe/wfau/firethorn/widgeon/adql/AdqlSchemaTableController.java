@@ -123,7 +123,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_CONTENT)
     public Iterable<AdqlTableBean> select(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema
@@ -140,7 +140,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
+    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_CONTENT)
     public AdqlTableBean select(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
@@ -161,7 +161,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=IMPORT_PATH, params={IMPORT_BASE}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(value=IMPORT_PATH, params={IMPORT_BASE}, method=RequestMethod.POST, produces=JSON_CONTENT)
     public ResponseEntity<AdqlTableBean > inport(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
@@ -189,7 +189,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=IMPORT_PATH, params={IMPORT_BASE, IMPORT_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(value=IMPORT_PATH, params={IMPORT_BASE, IMPORT_NAME}, method=RequestMethod.POST, produces=JSON_CONTENT)
     public ResponseEntity<AdqlTableBean> inport(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,

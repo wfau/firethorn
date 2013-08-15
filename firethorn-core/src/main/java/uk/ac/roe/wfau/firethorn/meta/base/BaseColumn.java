@@ -20,7 +20,7 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
  * Public interface for a table column.
@@ -29,6 +29,18 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
 public interface BaseColumn<ColumnType extends BaseColumn<ColumnType>>
 extends BaseComponent
     {
+    /**
+     * The size for a non-array field.
+     *
+     */
+    public static final Integer NON_ARRAY_SIZE = new Integer(0);
+
+    /**
+     * The size for a variable size array field.
+     *
+     */
+    public static final Integer VAR_ARRAY_SIZE = new Integer(-1);
+
     /**
      * Identifier factory interface.
      *
@@ -183,13 +195,13 @@ extends BaseComponent
              * The ADQL type.
              *
              */
-            public Type type();
+            public AdqlColumn.Type type();
 
             /**
              * Set the ADQL type.
              *
              */
-            public void type(final Type type);
+            public void type(final AdqlColumn.Type type);
 
             /**
              * The ADQL units.

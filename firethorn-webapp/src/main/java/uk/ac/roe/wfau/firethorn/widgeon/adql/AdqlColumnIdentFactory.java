@@ -39,6 +39,6 @@ implements AdqlColumn.IdentFactory
      *
      */
     public static final URI TYPE_URI = URI.create(
-        "http://data.metagrid.co.uk/wfau/firethorn/types/adql-column-1.0.json"
+        "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-column-1.0.json"
         );
     }

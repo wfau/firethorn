@@ -115,7 +115,7 @@ public class AdqlTableController
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
     public AdqlTableBean select(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlTable table
@@ -132,7 +132,7 @@ public class AdqlTableController
      */
     @ResponseBody
     @UpdateAtomicMethod
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_CONTENT)
     public AdqlTableBean update(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlTable table,

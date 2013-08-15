@@ -101,40 +101,39 @@ extends BaseColumn<AdqlColumn>
      * @see <a href='http://www.ivoa.net/Documents/VOTable/20091130/'/>
      * Plus an extra ARRAY value to catch array data.
      * Plus DATE, TIME and TIMESTAMP.
+     * @todo Convert this to an interface to allow user defined types.
      *
      */
     public enum Type
         {
-        ARRAY(          0, "array",         JdbcColumn.Type.ARRAY),
-        BOOLEAN(        1, "boolean",       JdbcColumn.Type.BOOLEAN),
-        BIT(            1, "bit",           JdbcColumn.Type.BLOB),
-        BYTE(           1, "unsignedByte",  JdbcColumn.Type.TINYINT),
-        CHAR(           2, "char",          JdbcColumn.Type.CHAR),
-        UNICODE(        2, "unicodeChar",   JdbcColumn.Type.CHAR),
-        SHORT(          2, "short",         JdbcColumn.Type.SMALLINT),
-        INTEGER(        4, "int",           JdbcColumn.Type.INTEGER),
-        LONG(           8, "long",          JdbcColumn.Type.BIGINT),
-        FLOAT(          4, "float",         JdbcColumn.Type.FLOAT),
-        DOUBLE(         8, "double",        JdbcColumn.Type.DOUBLE),
-        FLOATCOMPLEX(   8, "floatComplex",  JdbcColumn.Type.UNKNOWN),
-        DOUBLECOMPLEX( 16, "doubleComplex", JdbcColumn.Type.UNKNOWN),
+        ARRAY(          "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-array-1.0.json",     "array",         JdbcColumn.Type.ARRAY),
+        BOOLEAN(        "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-boolean-1.0.json",   "boolean",       JdbcColumn.Type.BOOLEAN),
+        BIT(            "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-bit-1.0.json",       "bit",           JdbcColumn.Type.BLOB),
+        BYTE(           "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-byte-1.0.json",      "unsignedByte",  JdbcColumn.Type.TINYINT),
+        CHAR(           "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-char-1.0.json",      "char",          JdbcColumn.Type.CHAR),
+        UNICODE(        "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-unicode-1.0.json",   "unicodeChar",   JdbcColumn.Type.CHAR),
+        SHORT(          "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-int16-1.0.json",     "short",         JdbcColumn.Type.SMALLINT),
+        INTEGER(        "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-int32-1.0.json",     "int",           JdbcColumn.Type.INTEGER),
+        LONG(           "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-int64-1.0.json",     "long",          JdbcColumn.Type.BIGINT),
+        FLOAT(          "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-float32-1.0.json",   "float",         JdbcColumn.Type.FLOAT),
+        DOUBLE(         "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-float64-1.0.json",   "double",        JdbcColumn.Type.DOUBLE),
+        FLOATCOMPLEX(   "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-complex32-1.0.json", "floatComplex",  JdbcColumn.Type.UNKNOWN),
+        DOUBLECOMPLEX(  "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-complex64-1.0.json", "doubleComplex", JdbcColumn.Type.UNKNOWN),
+        DATE(           "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-date-1.0.json",      "char",          JdbcColumn.Type.DATE),      // YYYY-MM-DD
+        TIME(           "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-time-1.0.json",      "char",          JdbcColumn.Type.TIME),      // HH:MM:SS.sss
+        DATETIME(       "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-datetime-1.0.json",  "char",          JdbcColumn.Type.TIMESTAMP), // YYYY-MM-DDTHH:MM:SS.sss
+        UNKNOWN(        "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-unknown-1.0.json",   "unknown",       JdbcColumn.Type.UNKNOWN);
 
-        DATE(          10, "char",          JdbcColumn.Type.DATE),      // YYYY-MM-DD
-        TIME(          12, "char",          JdbcColumn.Type.TIME),      // HH:MM:SS.sss
-        TIMESTAMP(     23, "char",          JdbcColumn.Type.TIMESTAMP), // YYYY-MM-DDTHH:MM:SS.sss
-
-        UNKNOWN(        0, "unknown",       JdbcColumn.Type.UNKNOWN);
-
-        private final int size ;
-        public  int size()
+        private final String votype ;
+        public  String votype()
             {
-            return this.size;
+            return this.votype;
             }
 
-        private final String code ;
-        public  String code()
+        private final String xtype ;
+        public  String xtype()
             {
-            return this.code;
+            return this.xtype;
             }
 
         private final JdbcColumn.Type jdbc ;
@@ -143,10 +142,10 @@ extends BaseColumn<AdqlColumn>
             return this.jdbc;
             }
 
-        Type(final int size, final String code, final JdbcColumn.Type jdbc)
+        Type(final String xtype, final String votype, final JdbcColumn.Type jdbc)
             {
-            this.size = size ;
-            this.code = code ;
+            this.xtype = xtype ;
+            this.votype = votype ;
             this.jdbc = jdbc ;
             }
 
@@ -210,7 +209,7 @@ extends BaseColumn<AdqlColumn>
                 case Types.TIME :
                     return TIME ;
                 case Types.TIMESTAMP :
-                    return TIMESTAMP ;
+                    return DATETIME ;
 
                 case Types.BINARY :
                 case Types.BLOB :

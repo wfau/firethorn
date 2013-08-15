@@ -399,6 +399,8 @@ implements XMLReader
         public void config(final AdqlColumn column, final XMLEventReader source)
         throws XMLParserException, XMLReaderException
             {
+            /*
+             * Ignore the type from the metadoc.
             try {
                 column.meta().adql().type(
                     AdqlColumn.Type.type(
@@ -415,25 +417,37 @@ implements XMLReader
                     ouch.getMessage()
                     );
                 }
-
+             */
+            //
+            // Skip the column type.
+            typereader.read(
+                source
+                );
+            //
+            // Read the column description.
             column.text(
                 textreader.read(
                     source
                     )
                 );
-
+            //
+            // Read the column units.
             column.meta().adql().units(
                 unitreader.read(
                     source
                     )
                 );
-
+            //
+            // Read the column UCD.
             ucdreader.read(
                 column,
                 source
                 );
-
-            errreader.read(source);
+            //
+            // Skip the error column.
+            errreader.read(
+                source
+                );
             }
         }
     }

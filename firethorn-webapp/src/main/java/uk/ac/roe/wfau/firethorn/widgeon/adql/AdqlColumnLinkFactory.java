@@ -32,10 +32,11 @@ public class AdqlColumnLinkFactory
 extends WebappLinkFactory<AdqlColumn>
 implements AdqlColumn.LinkFactory
     {
+
     protected AdqlColumnLinkFactory()
         {
         super(
-            BASE_PATH
+            LINK_PATH
             );
         }
 
@@ -43,13 +44,13 @@ implements AdqlColumn.LinkFactory
      * The URI path for the service.
      *
      */
-    protected static final String BASE_PATH = "/adql/column" ;
+    protected static final String LINK_PATH = "/adql/column" ;
 
     /**
      * The URI path for individual columns.
      *
      */
-    public static final String COLUMN_PATH = BASE_PATH + "/" + IDENT_TOKEN ;
+    public static final String COLUMN_PATH = LINK_PATH + "/" + IDENT_TOKEN ;
 
     @Override
     public String link(final AdqlColumn entity)

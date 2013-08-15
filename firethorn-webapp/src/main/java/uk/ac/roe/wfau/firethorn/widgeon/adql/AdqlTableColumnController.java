@@ -109,7 +109,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_CONTENT)
     public Iterable<AdqlColumnBean> select(
         @ModelAttribute(AdqlTableController.TARGET_ENTITY)
         final AdqlTable table
@@ -126,7 +126,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
+    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_CONTENT)
     public AdqlColumnBean select(
         @ModelAttribute(AdqlTableController.TARGET_ENTITY)
         final AdqlTable table,

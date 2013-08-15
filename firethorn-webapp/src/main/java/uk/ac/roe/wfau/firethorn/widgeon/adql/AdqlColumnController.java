@@ -113,7 +113,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
     public AdqlColumnBean select(
         @ModelAttribute(TARGET_ENTITY)
         final AdqlColumn column
@@ -129,7 +129,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
      */
     @ResponseBody
     @UpdateAtomicMethod
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_CONTENT)
     public AdqlColumnBean update(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,

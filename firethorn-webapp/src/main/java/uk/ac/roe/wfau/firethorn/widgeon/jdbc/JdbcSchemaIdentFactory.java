@@ -38,6 +38,6 @@ implements JdbcSchema.IdentFactory
      *
      */
     public static final URI TYPE_URI = URI.create(
-        "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-schema-1.0.json"
+        "http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-schema-1.0.json"
         );
     }

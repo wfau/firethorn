@@ -114,7 +114,7 @@ public class JdbcSchemaController
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
     public JdbcSchemaBean select(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcSchema entity

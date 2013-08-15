@@ -74,12 +74,11 @@ public class TableMappingController
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
-    public TableMappingBean jsonSelect(
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
+    public TableMappingBean select(
         @PathVariable(TableMappingController.TABLE_ALIAS_FIELD)
         final String alias
         ) throws NotFoundException {
-        log.debug("jsonSelect()");
         return new TableMappingBean(
             factories().base().tables().resolve(
                 alias

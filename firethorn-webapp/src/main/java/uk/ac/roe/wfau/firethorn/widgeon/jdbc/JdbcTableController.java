@@ -115,7 +115,7 @@ public class JdbcTableController
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
     public JdbcTableBean select(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcTable entity
@@ -125,5 +125,4 @@ public class JdbcTableController
             entity
             );
         }
-
     }

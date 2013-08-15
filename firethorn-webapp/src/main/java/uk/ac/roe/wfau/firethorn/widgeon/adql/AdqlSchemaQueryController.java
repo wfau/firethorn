@@ -121,7 +121,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_CONTENT)
     public Iterable<AdqlQueryBean> select(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema
@@ -136,7 +136,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=CREATE_PATH, params={CREATE_QUERY, CREATE_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(value=CREATE_PATH, params={CREATE_QUERY, CREATE_NAME}, method=RequestMethod.POST, produces=JSON_CONTENT)
     public ResponseEntity<AdqlQueryBean> create(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
@@ -154,7 +154,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
         }
 
     @ResponseBody
-    @RequestMapping(value=CREATE_PATH, params={CREATE_QUERY}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(value=CREATE_PATH, params={CREATE_QUERY}, method=RequestMethod.POST, produces=JSON_CONTENT)
     public ResponseEntity<AdqlQueryBean> create(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,

@@ -124,7 +124,7 @@ extends AbstractController
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
     public IdentityBean select(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident

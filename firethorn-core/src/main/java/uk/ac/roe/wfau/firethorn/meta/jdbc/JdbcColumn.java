@@ -88,21 +88,10 @@ extends BaseColumn<JdbcColumn>
     public JdbcResource resource();
 
     /**
-     * The size for a non-array field.
-     *
-     */
-    public static final Integer NON_ARRAY_SIZE = new Integer(0);
-
-    /**
-     * The size for a variable size array field.
-     *
-     */
-    public static final Integer VAR_ARRAY_SIZE = new Integer(-1);
-
-
-    /**
      * An enumeration of the JDBC data types.
      * The sizes are based on the size/precision for SQLServer.
+     * @todo refactor the sizes as arraysize or precision
+     * @todo read the sizes from the table metadata
      *
      */
     public enum Type

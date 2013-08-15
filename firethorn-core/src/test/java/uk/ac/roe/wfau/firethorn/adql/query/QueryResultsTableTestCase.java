@@ -286,7 +286,7 @@ extends TwomassQueryTestBase
                 + ""
                 ),
             new ExpectedColumn[] {
-                new ExpectedColumn("mydate", AdqlColumn.Type.TIMESTAMP, 23, "mydate", JdbcColumn.Type.TIMESTAMP, 23)
+                new ExpectedColumn("mydate", AdqlColumn.Type.DATETIME, 23, "mydate", JdbcColumn.Type.TIMESTAMP, 23)
                 }
             );
         }
@@ -342,7 +342,7 @@ extends TwomassQueryTestBase
                 new ExpectedColumn("mp_flg",           AdqlColumn.Type.SHORT,      0,   "mp_flg",           JdbcColumn.Type.SMALLINT,   5),
                 new ExpectedColumn("pts_key",          AdqlColumn.Type.INTEGER,    0,   "pts_key",          JdbcColumn.Type.INTEGER,   10),
                 new ExpectedColumn("hemis",            AdqlColumn.Type.CHAR,       1,   "hemis",            JdbcColumn.Type.VARCHAR,    1),
-                new ExpectedColumn("date",             AdqlColumn.Type.TIMESTAMP, 23,   "date",             JdbcColumn.Type.TIMESTAMP, 23),
+                new ExpectedColumn("date",             AdqlColumn.Type.DATETIME, 23,   "date",             JdbcColumn.Type.TIMESTAMP, 23),
                 new ExpectedColumn("scan",             AdqlColumn.Type.SHORT,      0,   "scan",             JdbcColumn.Type.SMALLINT,   5),
                 new ExpectedColumn("glon",             AdqlColumn.Type.FLOAT,      0,   "glon",             JdbcColumn.Type.REAL,      24),
                 new ExpectedColumn("glat",             AdqlColumn.Type.FLOAT,      0,   "glat",             JdbcColumn.Type.REAL,      24),

@@ -76,7 +76,7 @@ extends QuerySelectFieldTestBase
                 + ""
                 ),
             new ExpectedField[] {
-                new ExpectedField("date", AdqlColumn.Type.TIMESTAMP, 23),
+                new ExpectedField("date", AdqlColumn.Type.DATETIME, 23),
                 }
             );
         }
@@ -154,7 +154,7 @@ extends QuerySelectFieldTestBase
               new ExpectedField("mp_flg",           AdqlColumn.Type.SHORT,      0),
               new ExpectedField("pts_key",          AdqlColumn.Type.INTEGER,    0),
               new ExpectedField("hemis",            AdqlColumn.Type.CHAR,       1),
-              new ExpectedField("date",             AdqlColumn.Type.TIMESTAMP, 23),
+              new ExpectedField("date",             AdqlColumn.Type.DATETIME, 23),
               new ExpectedField("scan",             AdqlColumn.Type.SHORT,      0),
               new ExpectedField("glon",             AdqlColumn.Type.FLOAT,      0),
               new ExpectedField("glat",             AdqlColumn.Type.FLOAT,      0),

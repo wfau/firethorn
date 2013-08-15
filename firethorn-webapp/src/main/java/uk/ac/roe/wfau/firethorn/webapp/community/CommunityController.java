@@ -113,7 +113,7 @@ extends AbstractController
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
     public CommunityBean select(
         @PathVariable(WebappLinkFactory.IDENT_FIELD)
         final String ident

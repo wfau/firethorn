@@ -22,28 +22,6 @@
 
 # -----------------------------------------
 
-The osabrowser data has short and long descriptions for the tables in TWOMASS.
-
-    TWOMASS_Tables_descr.html
-    "Contains the parameters provided for each source in the TWOMASS All Sky Release PSC" 
-
-    TWOMASS_TABLE_twomass_pscSchema.html
-    "This table contains brief descriptions of the parameters provided for<br>
-    each source in the TWOMASS All Sky Release PSC. The table is organized<br>
-    according to the broad function and utility of the parameters: positional<br>
-    information, photometric information, and source quality information.<br>
-    WFAU gratefully acknowledges help from IPAC at Caltech in enabling a<br>
-    bulk download of the entire catalogue for local deployment in the VSA/WSA.<br>
-    Any issues encountered or questions raised in use of this incarnation of<br>
-    the IPAC IRSA catalogue should be communicated to the vsa- or wsa-support helpdesks<br>
-    in the first instance. For a complete description please see the<br>
-    <a href="http://www.ipac.caltech.edu/2mass/releases/allsky/doc/sec2_2a.html">
-    user's guide to the 2MASS PSC all-sky data release</a><br>"
-
-The metadoc data doesn't contain any descrition for the TWOMASS tables.
-
-# -----------------------------------------
-
 The osabrowser data contains version 1 column descriptors
 
     cx          1   POS_EQ_X

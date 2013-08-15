@@ -170,7 +170,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_CONTENT)
     public Iterable<AdqlSchemaBean> select(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource
@@ -186,7 +186,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
+    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_CONTENT)
     public AdqlSchemaBean select(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
@@ -206,7 +206,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=CREATE_PATH, params={CREATE_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(value=CREATE_PATH, params={CREATE_NAME}, method=RequestMethod.POST, produces=JSON_CONTENT)
     public ResponseEntity<AdqlSchemaBean> create(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
@@ -228,7 +228,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_BASE}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_BASE}, method=RequestMethod.POST, produces=JSON_CONTENT)
     public ResponseEntity<AdqlSchemaBean> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,
@@ -255,7 +255,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_BASE, IMPORT_SCHEMA_NAME}, method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(value=IMPORT_PATH, params={IMPORT_SCHEMA_BASE, IMPORT_SCHEMA_NAME}, method=RequestMethod.POST, produces=JSON_CONTENT)
     public ResponseEntity<AdqlSchemaBean> inport(
         @ModelAttribute(AdqlResourceController.TARGET_ENTITY)
         final AdqlResource resource,

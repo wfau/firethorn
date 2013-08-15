@@ -125,7 +125,7 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_CONTENT)
     public Iterable<JdbcSchemaBean> select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource
@@ -141,7 +141,7 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_MAPPING)
+    @RequestMapping(value=SELECT_PATH, params=SELECT_NAME, produces=JSON_CONTENT)
     public JdbcSchemaBean select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,
@@ -161,7 +161,7 @@ extends AbstractEntityController<JdbcSchema, JdbcSchemaBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, params={SELECT_CATALOG, SELECT_SCHEMA}, produces=JSON_MAPPING)
+    @RequestMapping(value=SELECT_PATH, params={SELECT_CATALOG, SELECT_SCHEMA}, produces=JSON_CONTENT)
     public JdbcSchemaBean select(
         @ModelAttribute(JdbcResourceController.TARGET_ENTITY)
         final JdbcResource resource,

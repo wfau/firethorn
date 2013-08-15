@@ -90,7 +90,7 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_MAPPING)
+    @RequestMapping(value=SELECT_PATH, method=RequestMethod.GET, produces=JSON_CONTENT)
     public Iterable<AdqlResourceBean> select(
         ){
         return bean(
@@ -103,7 +103,7 @@ extends AbstractEntityController<AdqlResource, AdqlResourceBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_CONTENT)
     public ResponseEntity<AdqlResourceBean> create(
         @RequestParam(value=CREATE_NAME, required=true)
         final String name

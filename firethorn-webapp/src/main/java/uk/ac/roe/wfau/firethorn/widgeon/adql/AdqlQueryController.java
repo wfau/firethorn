@@ -117,7 +117,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
     public AdqlQueryBean select(
         @PathVariable("ident")
         final String ident
@@ -136,7 +136,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_CONTENT)
     public AdqlQueryBean update(
         @RequestParam(value=UPDATE_NAME, required=false)
         final String name,

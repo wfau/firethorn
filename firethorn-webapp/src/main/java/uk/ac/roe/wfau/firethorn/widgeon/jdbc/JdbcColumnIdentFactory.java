@@ -39,6 +39,6 @@ implements JdbcColumn.IdentFactory
      *
      */
     public static final URI TYPE_URI = URI.create(
-        "http://data.metagrid.co.uk/wfau/firethorn/types/jdbc-column-1.0.json"
+        "http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-column-1.0.json"
         );
     }

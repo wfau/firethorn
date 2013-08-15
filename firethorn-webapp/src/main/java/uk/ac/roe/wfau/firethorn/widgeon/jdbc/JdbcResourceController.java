@@ -152,7 +152,7 @@ public class JdbcResourceController
      *
      */
     @ResponseBody
-    @RequestMapping(method=RequestMethod.GET, produces=JSON_MAPPING)
+    @RequestMapping(method=RequestMethod.GET, produces=JSON_CONTENT)
     public JdbcResourceBean select(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcResource entity
@@ -168,18 +168,16 @@ public class JdbcResourceController
      */
     @ResponseBody
     @UpdateAtomicMethod
-    @RequestMapping(method=RequestMethod.POST, produces=JSON_MAPPING)
+    @RequestMapping(method=RequestMethod.POST, produces=JSON_CONTENT)
     public EntityBean<JdbcResource> update(
         @ModelAttribute(TARGET_ENTITY)
         final JdbcResource entity,
-
         @RequestParam(value=UPDATE_NAME, required=false) final
         String name,
         @RequestParam(value=UPDATE_STATUS, required=false) final
         String status,
         @RequestParam(value=UPDATE_OGSADAI, required=false) final
         String ogsadai,
-
         @RequestParam(value=UPDATE_CONN_URL, required=false) final
         String url,
         @RequestParam(value=UPDATE_CONN_USER, required=false) final
@@ -188,7 +186,6 @@ public class JdbcResourceController
         String pass,
         @RequestParam(value=UPDATE_CONN_STATUS, required=false) final
         String action
-
         ){
 
         if (name != null)
