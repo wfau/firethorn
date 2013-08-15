@@ -224,6 +224,7 @@ EOF
         firethorn.version=01.07-alpha-02
         
         firethon.webapp.endpoint=http://coccinea:8080/firethorn
+        #firethon.webapp.baseurl=http://coccinea:8080/firethorn
 
         firethon.ogsadai.dqp=testdqp
         firethon.ogsadai.store=userdata
@@ -386,6 +387,8 @@ EOF
 # http://stackoverflow.com/questions/151238/has-anyone-ever-got-a-remote-jmx-jconsole-to-work
 # http://simplygenius.com/2010/08/jconsole-via-socks-ssh-tunnel.html
 #[user@desktop]
+
+    source "${HOME:?}/deployment/deploy.logins"
 
     jmxport=8081
     jmxhost=${firehost:?}
@@ -604,7 +607,6 @@ EOF
 
             identity=$(pwgen 16 1)
             community=$(date '+%A')
-            
 
             source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
 
