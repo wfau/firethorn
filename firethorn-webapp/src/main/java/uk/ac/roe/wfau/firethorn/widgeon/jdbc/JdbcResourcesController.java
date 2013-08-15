@@ -27,7 +27,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
-import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**

@@ -67,16 +67,16 @@ implements XMLObjectReader<String>
         this.required = required ;
         }
 
-    private boolean required ;
+    private final boolean required ;
 
     @Override
-    public String read(XMLEventReader reader)
+    public String read(final XMLEventReader reader)
     throws XMLParserException, XMLReaderException
         {
         log.debug("read(XMLEventReader)");
         log.debug("  QName [{}]", this.qname());
         //
-        // If we we match the next element. 
+        // If we we match the next element.
         if ((required) || (parser.match(reader)))
             {
             start(
@@ -95,10 +95,10 @@ implements XMLObjectReader<String>
 
     /**
      * Process our element content.
-     * 
+     *
      *
      */
-    public String content(XMLEventReader reader)
+    public String content(final XMLEventReader reader)
     throws XMLParserException, XMLReaderException
         {
         log.debug("content(XMLEventReader)");
@@ -135,7 +135,7 @@ implements XMLObjectReader<String>
                             );
                     }
                 }
-            catch (XMLStreamException ouch)
+            catch (final XMLStreamException ouch)
                 {
                 log.debug("XMLStreamException while reading string [{}]", ouch.getMessage());
                 throw new XMLReaderException(

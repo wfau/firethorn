@@ -19,8 +19,6 @@ package uk.ac.roe.wfau.firethorn.widgeon.jdbc;
 
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
-import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
-import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseResourceBean;
 
 /**

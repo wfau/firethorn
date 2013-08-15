@@ -5,6 +5,7 @@ import liquibase.change.ColumnConfig;
 import liquibase.change.DatabaseChange;
 import liquibase.change.core.CreateTableChange;
 import lombok.extern.slf4j.Slf4j;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
@@ -35,9 +36,9 @@ extends CreateTableChange
                 column.meta().jdbc().type().name()
                 );
 
-            if (column.meta().jdbc().type().sqlsize() == JdbcColumn.VAR_ARRAY_SIZE)
+            if (column.meta().jdbc().type().sqlsize() == BaseColumn.VAR_ARRAY_SIZE)
                 {
-                if (column.meta().jdbc().size() == JdbcColumn.VAR_ARRAY_SIZE)
+                if (column.meta().jdbc().size() == BaseColumn.VAR_ARRAY_SIZE)
                     {
                     typename.append("(*)");
                     }

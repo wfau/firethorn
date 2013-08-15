@@ -108,7 +108,7 @@ implements Entity, NamedEntity
         {
         if (name != null)
             {
-            String temp = name.trim();
+            final String temp = name.trim();
             if (temp.length() > 0)
                 {
                 this.name = temp;

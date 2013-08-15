@@ -24,9 +24,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,24 +35,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
-import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcProductType;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractController;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 import uk.ac.roe.wfau.firethorn.widgeon.adql.AdqlQueryLinkFactory;
-import uk.ac.starlink.table.ColumnInfo;
-import uk.ac.starlink.table.StarTable;
-import uk.ac.starlink.table.TableFormatException;
-import uk.ac.starlink.table.jdbc.SequentialResultSetStarTable;
-import uk.ac.starlink.table.jdbc.StarResultSet;
-import uk.ac.starlink.votable.VOTableWriter;
 
 /**
  * Spring MVC controller for <code>AdqlTable</code>.
@@ -97,8 +86,8 @@ public class AdqlQueryVOTableController
      */
     public static final String TEXT_XML_MIME = "text/xml" ;
 
-    
-    
+
+
     public String select(final AdqlTable table, final JdbcProductType type)
         {
         final StringBuilder builder = new StringBuilder();
@@ -136,7 +125,7 @@ public class AdqlQueryVOTableController
         return builder.toString();
 
         }
-    
+
     public void select(final StringBuilder builder, final AdqlColumn column, final JdbcProductType type)
         {
         //
@@ -213,7 +202,7 @@ public class AdqlQueryVOTableController
             column.name()
             );
         }
-    
+
     /**
      * VOTable GET request.
      *
@@ -234,7 +223,7 @@ public class AdqlQueryVOTableController
             );
 
         final PrintWriter writer = response.getWriter();
-        
+
         final AdqlQuery query = factories().adql().queries().select(
             factories().adql().queries().idents().ident(
                 ident
@@ -242,11 +231,11 @@ public class AdqlQueryVOTableController
             );
 
         final AdqlTable table= query.results().adql();
-        final JdbcTable jdbc = query.results().jdbc(); 
+        final JdbcTable jdbc = query.results().jdbc();
 
         // Based on VOTable-1.3 specification.
         // http://www.ivoa.net/documents/VOTable/20130315/PR-VOTable-1.3-20130315.html
-        
+
         writer.append("<?xml version='1.0' encoding='UTF-8'?>");
         writer.append("<vot:VOTABLE");
         writer.append(" xmlns:vot='http://www.ivoa.net/xml/VOTable/v1.3'");
@@ -283,7 +272,7 @@ public class AdqlQueryVOTableController
                 writer.append("]]>");
                 writer.append("</DESCRIPTION>");
                 }
-        
+
                 writer.append("<TABLE ID='table.");
                 writer.append(table.ident().toString());
                 writer.append("'");
@@ -311,7 +300,7 @@ public class AdqlQueryVOTableController
                     writer.append("]]>");
                     writer.append("</DESCRIPTION>");
                     }
-        
+
                 for (final AdqlColumn column : table.columns().select())
                     {
                     writer.append("<FIELD ID='column.");
@@ -387,15 +376,15 @@ public class AdqlQueryVOTableController
                         writer.append(column.meta().adql().utype());
                         writer.append("'");
                         }
-                    
+
                     writer.append(">");
-                
+
                     writer.append("<LINK");
                     writer.append(" content-type='" + JSON_CONTENT + "'");
                     writer.append(" content-role='metadata'");
                     writer.append(" href='" + column.link() + "'");
                     writer.append("/>");
-                                
+
                     if (column.text() != null)
                         {
                         writer.append("<DESCRIPTION>");
@@ -404,10 +393,10 @@ public class AdqlQueryVOTableController
                         writer.append("]]>");
                         writer.append("</DESCRIPTION>");
                         }
-                
+
                     writer.append("</FIELD>");
                     }
-        
+
                     writer.append("<DATA>");
                     writer.append("<TABLEDATA>");
 
@@ -423,7 +412,7 @@ public class AdqlQueryVOTableController
                         statement.setFetchSize(
                             100
                             );
-                        ResultSet results = statement.executeQuery(
+                        final ResultSet results = statement.executeQuery(
                             select(
                                 table,
                                 type
@@ -431,8 +420,8 @@ public class AdqlQueryVOTableController
                             );
 
                         final ResultSetMetaData colmeta = results.getMetaData();
-                        final int colcount = colmeta.getColumnCount();                         
-                        
+                        final int colcount = colmeta.getColumnCount();
+
                         while (results.next())
                             {
                             writer.append("<TR>");
@@ -458,7 +447,7 @@ public class AdqlQueryVOTableController
                             writer.append("</TR>");
                             }
                         }
-    
+
                     catch (final SQLException ouch)
                         {
                         log.error("Exception reading SQL results [{}]", ouch.getMessage());

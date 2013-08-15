@@ -17,17 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.MapKey;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import lombok.extern.slf4j.Slf4j;
@@ -41,11 +33,9 @@ import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 
 /**
  *
@@ -160,9 +150,9 @@ extends BaseResourceEntity<AdqlSchema>
         targetEntity = AdqlSchemaEntity.class
         )
     private Map<String, AdqlSchema> children = new LinkedHashMap<String, AdqlSchema>();
-     * 
+     *
      */
-    
+
     @Override
     public AdqlResource.Schemas schemas()
         {
@@ -177,7 +167,7 @@ extends BaseResourceEntity<AdqlSchema>
                 /*
                  * HibernateCollections
                 return children.values();
-                 * 
+                 *
                  */
                 }
 
@@ -187,7 +177,7 @@ extends BaseResourceEntity<AdqlSchema>
                 /*
                  * HibernateCollections
                 return children.get(name);
-                 * 
+                 *
                  */
                 return factories().adql().schemas().search(
                     AdqlResourceEntity.this,
@@ -215,14 +205,14 @@ extends BaseResourceEntity<AdqlSchema>
                         name
                         );
                     }
-                 * 
+                 *
                  */
                 }
 
             @Override
             public AdqlSchema create(final String name)
                 {
-                AdqlSchema schema = factories().adql().schemas().create(
+                final AdqlSchema schema = factories().adql().schemas().create(
                     AdqlResourceEntity.this,
                     name
                     );
@@ -232,7 +222,7 @@ extends BaseResourceEntity<AdqlSchema>
                     schema.name(),
                     schema
                     );
-                 * 
+                 *
                  */
                 return schema ;
                 }
@@ -240,7 +230,7 @@ extends BaseResourceEntity<AdqlSchema>
             @Override
             public AdqlSchema create(final String name, final BaseTable<?, ?> base)
                 {
-                AdqlSchema schema = factories().adql().schemas().create(
+                final AdqlSchema schema = factories().adql().schemas().create(
                     AdqlResourceEntity.this,
                     name,
                     base
@@ -251,7 +241,7 @@ extends BaseResourceEntity<AdqlSchema>
                     schema.name(),
                     schema
                     );
-                 * 
+                 *
                  */
                 return schema ;
                 }
@@ -259,7 +249,7 @@ extends BaseResourceEntity<AdqlSchema>
             @Override
 			public AdqlSchema create(final BaseSchema<?,?> base)
 			    {
-			    AdqlSchema schema = factories().adql().schemas().create(
+			    final AdqlSchema schema = factories().adql().schemas().create(
                     AdqlResourceEntity.this,
                     base.name(),
                     base
@@ -270,14 +260,14 @@ extends BaseResourceEntity<AdqlSchema>
                     schema.name(),
                     schema
                     );
-                 * 
+                 *
                  */
                 return schema ;
 				}
             @Override
             public AdqlSchema create(final CopyDepth depth, final BaseSchema<?, ?> base)
                 {
-                AdqlSchema schema = factories().adql().schemas().create(
+                final AdqlSchema schema = factories().adql().schemas().create(
                     depth,
                     AdqlResourceEntity.this,
                     base.name(),
@@ -289,7 +279,7 @@ extends BaseResourceEntity<AdqlSchema>
                     schema.name(),
                     schema
                     );
-                 * 
+                 *
                  */
                 return schema ;
                 }
@@ -297,7 +287,7 @@ extends BaseResourceEntity<AdqlSchema>
             @Override
             public AdqlSchema create(final String name, final BaseSchema<?,?> base)
                 {
-                AdqlSchema schema = factories().adql().schemas().create(
+                final AdqlSchema schema = factories().adql().schemas().create(
                     AdqlResourceEntity.this,
                     name,
                     base
@@ -308,7 +298,7 @@ extends BaseResourceEntity<AdqlSchema>
                     schema.name(),
                     schema
                     );
-                 * 
+                 *
                  */
                 return schema ;
                 }
@@ -316,7 +306,7 @@ extends BaseResourceEntity<AdqlSchema>
             @Override
             public AdqlSchema create(final CopyDepth depth, final String name, final BaseSchema<?, ?> base)
                 {
-                AdqlSchema schema = factories().adql().schemas().create(
+                final AdqlSchema schema = factories().adql().schemas().create(
                     depth,
                     AdqlResourceEntity.this,
                     name,
@@ -328,13 +318,13 @@ extends BaseResourceEntity<AdqlSchema>
                     schema.name(),
                     schema
                     );
-                 * 
+                 *
                  */
                 return schema ;
                 }
 
             @Override
-            public AdqlSchema inport(final String name, BaseSchema<?, ?> base)
+            public AdqlSchema inport(final String name, final BaseSchema<?, ?> base)
                 {
                 log.debug("schemas().inport(String, BaseSchema)");
                 log.debug("  name [{}]", name);

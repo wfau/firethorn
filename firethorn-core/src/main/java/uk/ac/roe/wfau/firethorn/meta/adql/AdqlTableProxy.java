@@ -32,7 +32,6 @@ import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameFormatException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
@@ -356,7 +355,7 @@ public class AdqlTableProxy
                         name
                         );
                     }
-                catch (NameNotFoundException ouch)
+                catch (final NameNotFoundException ouch)
                     {
                     return null ;
                     }
@@ -394,7 +393,7 @@ public class AdqlTableProxy
                 }
 
             @Override
-            public AdqlColumn inport(String name)
+            public AdqlColumn inport(final String name)
             throws NameNotFoundException
                 {
                 throw new UnsupportedOperationException(

@@ -29,15 +29,12 @@ import javax.xml.stream.events.StartElement;
 import lombok.extern.slf4j.Slf4j;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn.UCD;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLStringValueReader;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLParserException;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLReader;
@@ -53,10 +50,10 @@ public class MetaDocReader
 extends XMLReaderImpl
 implements XMLReader
     {
-    
+
     public static final String NAMESPACE_OLD = "urn:astrogrid:schema:dsa:TableMetaDoc:v1.1";
     public static final String NAMESPACE_URI = "urn:astrogrid:schema:TableMetaDoc:v1.1";
-    
+
     public MetaDocReader()
         {
         super(
@@ -90,8 +87,8 @@ implements XMLReader
             source
             );
 
-        List<AdqlSchema> list = new ArrayList<AdqlSchema>();
-        
+        final List<AdqlSchema> list = new ArrayList<AdqlSchema>();
+
         while (schemareader.match(source))
             {
             list.add(
@@ -102,7 +99,7 @@ implements XMLReader
                     )
                 );
             }
-        
+
         parser.done(
             source
             );
@@ -135,7 +132,7 @@ implements XMLReader
             );
 
         private static TableReader tablereader = new TableReader();
-        
+
         public AdqlSchema inport(final XMLEventReader source, final BaseSchema<?,?> base, final AdqlResource workspace)
         throws XMLParserException, XMLReaderException, NameNotFoundException
             {
@@ -144,7 +141,7 @@ implements XMLReader
                 source
                 );
 
-            AdqlSchema schema = workspace.schemas().inport(
+            final AdqlSchema schema = workspace.schemas().inport(
                 namereader.read(
                     source
                     ),
@@ -177,7 +174,7 @@ implements XMLReader
     extends XMLReaderImpl
     implements XMLReader
         {
-        
+
         public TableReader()
             {
             super(
@@ -207,7 +204,7 @@ implements XMLReader
                         )
                     ),
                 source
-                ); 
+                );
 
             parser.done(
                 source
@@ -235,8 +232,8 @@ implements XMLReader
                 "DecColName",
                 true
                 );
-    
-            public void read(XMLEventReader reader)
+
+            public void read(final XMLEventReader reader)
                 throws XMLParserException, XMLReaderException
                 {
                 if (this.match(reader))
@@ -244,10 +241,10 @@ implements XMLReader
                     parser.start(
                         reader
                         );
-                    String ra = racol.read(
+                    final String ra = racol.read(
                         reader
                         );
-                    String dec = decol.read(
+                    final String dec = decol.read(
                         reader
                         );
                     log.debug(" columns [{}][{}]", ra, dec);
@@ -288,7 +285,7 @@ implements XMLReader
                 }
             }
         }
-    
+
     public static class ColumnReader
     extends XMLReaderImpl
     implements XMLReader
@@ -308,7 +305,7 @@ implements XMLReader
             );
 
         public void inport(final XMLEventReader source, final AdqlTable table)
-        throws XMLParserException, XMLReaderException, NameNotFoundException 
+        throws XMLParserException, XMLReaderException, NameNotFoundException
             {
             log.debug("inport(XMLEventReader, AdqlTable)");
             parser.start(
@@ -349,7 +346,7 @@ implements XMLReader
             );
 
         public static class UCDReader
-        extends XMLStringValueReader 
+        extends XMLStringValueReader
             {
             public UCDReader()
                 {
@@ -364,7 +361,7 @@ implements XMLReader
             throws XMLParserException, XMLReaderException
                 {
                 log.debug("read(AdqlColumn, XMLEventReader)");
-                
+
                 if (match(reader))
                     {
                     final StartElement element = start(
@@ -384,7 +381,7 @@ implements XMLReader
                             type = UCD.Type.ONEPLUS;
                             }
                         }
-    
+
                     column.meta().adql().ucd(
                         type,
                         content(
@@ -396,7 +393,7 @@ implements XMLReader
             }
 
         private static UCDReader ucdreader = new UCDReader();
-        
+
         public void config(final AdqlColumn column, final XMLEventReader source)
         throws XMLParserException, XMLReaderException
             {

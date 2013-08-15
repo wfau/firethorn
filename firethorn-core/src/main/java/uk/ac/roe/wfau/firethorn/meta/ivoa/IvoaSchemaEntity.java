@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
-import java.util.UUID;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -149,7 +147,7 @@ public class IvoaSchemaEntity
                         )
                     );
                 }
-            catch (NotFoundException ouch)
+            catch (final NotFoundException ouch)
                 {
                 log.debug("Unable to locate schema [{}][{}]", parent.namebuilder().toString(), name);
                 throw new NameNotFoundException(

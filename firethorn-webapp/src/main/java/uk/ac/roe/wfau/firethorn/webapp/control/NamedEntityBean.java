@@ -22,7 +22,7 @@ import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 /**
  * Java Bean interface for a <code>NamedEntity</code>.
  * @todo Remove this interface, just use Beans.
- * 
+ *
  */
 public interface NamedEntityBean<EntityType extends NamedEntity>
 extends EntityBean<EntityType>

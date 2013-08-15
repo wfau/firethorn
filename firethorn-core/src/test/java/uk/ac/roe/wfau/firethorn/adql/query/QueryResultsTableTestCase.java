@@ -22,8 +22,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.ResultSet;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
@@ -245,7 +243,7 @@ extends TwomassQueryTestBase
             );
         }
 
-    
+
     //
     // Query syntax error is deliberate.
     @Test

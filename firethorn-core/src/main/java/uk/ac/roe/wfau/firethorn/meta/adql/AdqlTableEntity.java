@@ -17,21 +17,14 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKey;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.OrderBy;
 import javax.persistence.UniqueConstraint;
 
 import lombok.extern.slf4j.Slf4j;
@@ -52,13 +45,11 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.identity.AuthenticationEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 
 /**
  *
@@ -322,7 +313,7 @@ public class AdqlTableEntity
                         )
                     );
                 }
-            catch (NotFoundException ouch)
+            catch (final NotFoundException ouch)
                 {
                 log.debug("Unable to locate table [{}][{}]", parent.namebuilder().toString(), name);
                 throw new NameNotFoundException(
@@ -448,17 +439,17 @@ public class AdqlTableEntity
     protected void realize(final BaseColumn<?> base)
         {
         log.debug("realize(CopyDepth, BaseColumn) [{}][{}][{}][{}]", ident(), name(), base.ident(), base.name());
-        AdqlColumn column = factories().adql().columns().create(
+        final AdqlColumn column = factories().adql().columns().create(
             AdqlTableEntity.this,
             base
             );
         /*
-         * HibernateCollections 
+         * HibernateCollections
         children.put(
             column.name(),
             column
             );
-         * 
+         *
          */
         }
 
@@ -548,7 +539,7 @@ public class AdqlTableEntity
         }
 
     /*
-     * HibernateCollections 
+     * HibernateCollections
     @OrderBy(
         "name ASC"
         )
@@ -563,7 +554,7 @@ public class AdqlTableEntity
     private Map<String, AdqlColumn> children = new LinkedHashMap<String, AdqlColumn>();
      *
      */
-    
+
     @Override
     public AdqlTable.Columns columns()
         {
@@ -582,7 +573,7 @@ public class AdqlTableEntity
                     }
                 else {
                     /*
-                     * HibernateCollections 
+                     * HibernateCollections
                     return children.values();
                      *
                      */
@@ -600,7 +591,7 @@ public class AdqlTableEntity
                         name
                         );
                     }
-                catch (NameNotFoundException ouch)
+                catch (final NameNotFoundException ouch)
                     {
                     return null ;
                     }
@@ -625,7 +616,7 @@ public class AdqlTableEntity
                         name
                         );
                     /*
-                     * HibernateCollections 
+                     * HibernateCollections
                     AdqlColumn column = children.get(name);
                     if (column != null)
                         {
@@ -645,12 +636,12 @@ public class AdqlTableEntity
             public AdqlColumn create(final BaseColumn<?> base)
                 {
                 realize();
-                AdqlColumn column = factories().adql().columns().create(
+                final AdqlColumn column = factories().adql().columns().create(
                     AdqlTableEntity.this,
                     base
                     );
                 /*
-                 * HibernateCollections 
+                 * HibernateCollections
                 children.put(
                     column.name(),
                     column
@@ -708,12 +699,12 @@ public class AdqlTableEntity
                 }
 
             @Override
-            public AdqlColumn inport(String name)
+            public AdqlColumn inport(final String name)
             throws NameNotFoundException
                 {
                 log.debug("columns().inport(String)");
                 log.debug("  name [{}]", name);
-                if ((depth() == CopyDepth.PARTIAL) || (depth() == CopyDepth.FULL)) 
+                if ((depth() == CopyDepth.PARTIAL) || (depth() == CopyDepth.FULL))
                     {
                     AdqlColumn column = search(
                         name
@@ -730,7 +721,7 @@ public class AdqlTableEntity
                                     )
                                 );
                             }
-                        catch (NameNotFoundException ouch)
+                        catch (final NameNotFoundException ouch)
                             {
                             log.error("Unable to locate base table [{}]", name);
                             throw ouch;

@@ -29,19 +29,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
 import lombok.extern.slf4j.Slf4j;
 
-import org.hibernate.annotations.Index;
-import org.hibernate.annotations.NamedQueries;
-import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcConnectionEntity;
 
 /**
  *
@@ -205,7 +196,7 @@ extends BaseComponentEntity
             value
             );
         }
-    
+
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -234,7 +225,7 @@ extends BaseComponentEntity
         }
 
     /*
-     * 
+     *
     @Basic(
         fetch = FetchType.EAGER
         )
@@ -360,10 +351,10 @@ extends BaseComponentEntity
             this.ucdentity = new UCDEntity(
                 type,
                 value
-                ); 
+                );
             }
         else {
-            this.ucdentity = null ; 
+            this.ucdentity = null ;
             }
         }
 

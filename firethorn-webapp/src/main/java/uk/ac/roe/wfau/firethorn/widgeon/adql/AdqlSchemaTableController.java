@@ -35,7 +35,6 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
-import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
@@ -157,7 +156,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
 
     /**
      * JSON request to import a table.
-     * @throws IdentifierNotFoundException 
+     * @throws IdentifierNotFoundException
      *
      */
     @ResponseBody
@@ -185,7 +184,7 @@ extends AbstractEntityController<AdqlTable, AdqlTableBean>
 
     /**
      * JSON request to import a table.
-     * @throws IdentifierNotFoundException 
+     * @throws IdentifierNotFoundException
      *
      */
     @ResponseBody

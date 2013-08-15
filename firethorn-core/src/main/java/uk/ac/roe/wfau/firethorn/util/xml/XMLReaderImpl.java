@@ -39,14 +39,14 @@ implements XMLReader
 
     /**
      * Our XML XMLEventReader factory.
-     * 
+     *
      */
     private static final XMLInputFactory xmlreaderfactory = XMLInputFactory.newInstance();
 
     /**
      * Create an XMLEventReader for a Java IO Reader.
      * @todo Move this to new XMLReader
-     * 
+     *
      */
     public static XMLEventReader wrap(final Reader reader)
     throws XMLReaderException
@@ -54,7 +54,7 @@ implements XMLReader
         try {
             return xmlreaderfactory.createXMLEventReader(reader);
             }
-        catch (XMLStreamException ouch)
+        catch (final XMLStreamException ouch)
             {
             log.error("Failed to open XMLEventReader [{}]", ouch.getMessage());
             throw new XMLReaderException(
@@ -66,7 +66,7 @@ implements XMLReader
 
     /**
      * Public constructor.
-     * 
+     *
      */
     public XMLReaderImpl()
         {
@@ -77,7 +77,7 @@ implements XMLReader
 
     /**
      * Public constructor.
-     * 
+     *
      */
     public XMLReaderImpl(final String namespace, final String name)
         {
@@ -92,7 +92,7 @@ implements XMLReader
 
     /**
      * Public constructor.
-     * 
+     *
      */
     public XMLReaderImpl(final QName qname)
         {
@@ -105,14 +105,15 @@ implements XMLReader
 
     /**
      * Our XMLParser.
-     * 
+     *
      */
     protected XMLParser parser;
 
     /**
      * The XML element QName this reader handles.
-     * 
+     *
      */
+    @Override
     public QName qname()
         {
         return parser.qname();
@@ -123,8 +124,9 @@ implements XMLReader
      * this reader. This may skip processing instructions, comments and
      * whitespace to find the next element event.
      * @returns true if the next event matches.
-     * 
+     *
      */
+    @Override
     public boolean match(final XMLEventReader reader)
     throws XMLParserException
         {
@@ -136,9 +138,10 @@ implements XMLReader
     /**
      * Check if an XMLEvent matches this reader.
      * @returns true if the event matches this reader.
-     * 
+     *
      */
-    public boolean match(XMLEvent event)
+    @Override
+    public boolean match(final XMLEvent event)
     throws XMLParserException
         {
         log.debug("match(XMLEvent)");
@@ -151,7 +154,7 @@ implements XMLReader
     /**
      * Check if a StartElement matches this reader.
      * @returns true if the element matches this reader.
-     * 
+     *
      */
     public boolean match(final StartElement element)
     throws XMLParserException
@@ -165,7 +168,7 @@ implements XMLReader
 
     /**
      * Validate our start element.
-     * 
+     *
      * @param reader The XMLEventReader to read from.
      * @return Our start element.
      * @throws XMLReaderException If we didn't find what we expected.

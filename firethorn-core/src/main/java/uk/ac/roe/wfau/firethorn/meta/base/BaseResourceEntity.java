@@ -22,11 +22,7 @@ import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.Table;
-
 import lombok.extern.slf4j.Slf4j;
-
-import org.hibernate.annotations.NamedQueries;
 
 /**
  *

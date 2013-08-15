@@ -26,7 +26,6 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
-import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
 
 /**
  * Bean wrapper for <code>AdqlQuery</code>.

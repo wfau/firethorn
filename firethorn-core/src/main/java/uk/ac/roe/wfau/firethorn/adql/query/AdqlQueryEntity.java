@@ -23,8 +23,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
@@ -951,7 +949,7 @@ implements AdqlQuery, AdqlParserQuery
                 log.debug("-- Store    [{}]", params().store());
                 log.debug("-- Endpoint [{}]", params().endpoint());
 
-                
+
                 // TODO - Check for valid resource ident in prepare().
                 final String target = ((mode() == Mode.DIRECT) ? primary().ogsaid() : params().dqp());
                 log.debug("-- Target   [{}]", target);

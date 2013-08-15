@@ -17,19 +17,12 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKey;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -54,7 +47,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
 
 /**
  *
@@ -263,7 +255,7 @@ implements AdqlSchema
                         )
                     );
                 }
-            catch (NotFoundException ouch)
+            catch (final NotFoundException ouch)
                 {
                 log.debug("Unable to locate schema [{}][{}]", parent.namebuilder().toString(), name);
                 throw new NameNotFoundException(
@@ -372,7 +364,7 @@ implements AdqlSchema
     protected void realize(final CopyDepth depth, final BaseTable<?, ?> base)
         {
         log.debug("realize(CopyDepth, BaseTable) [{}][{}][{}][{}][{}]", ident(), name(), depth, base.ident(), base.name());
-        AdqlTable table = factories().adql().tables().create(
+        final AdqlTable table = factories().adql().tables().create(
             depth,
             AdqlSchemaEntity.this,
             base
@@ -493,7 +485,7 @@ implements AdqlSchema
     private Map<String, AdqlTable> children = new LinkedHashMap<String, AdqlTable>();
      *
      */
-    
+
     @Override
     public AdqlSchema.Tables tables()
         {
@@ -518,7 +510,7 @@ implements AdqlSchema
                     /*
                      * HibernateCollections
                     return children.values();
-                     * 
+                     *
                      */
                     }
                 }
@@ -530,7 +522,7 @@ implements AdqlSchema
                     {
                     return select(name);
                     }
-                catch (NameNotFoundException ouch)
+                catch (final NameNotFoundException ouch)
                     {
                     return null ;
                     }
@@ -567,7 +559,7 @@ implements AdqlSchema
                             name
                             );
                         }
-                     * 
+                     *
                      */
                     }
                 }
@@ -575,7 +567,7 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final CopyDepth depth, final BaseTable<?, ?> base)
                 {
-                AdqlTable table = factories().adql().tables().create(
+                final AdqlTable table = factories().adql().tables().create(
                     depth,
                     AdqlSchemaEntity.this,
                     base
@@ -594,7 +586,7 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final BaseTable<?,?> base)
                 {
-                AdqlTable table = factories().adql().tables().create(
+                final AdqlTable table = factories().adql().tables().create(
                     AdqlSchemaEntity.this,
                     base
                     );
@@ -612,7 +604,7 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final CopyDepth depth, final BaseTable<?, ?> base, final String name)
                 {
-                AdqlTable table = factories().adql().tables().create(
+                final AdqlTable table = factories().adql().tables().create(
                     depth,
                     AdqlSchemaEntity.this,
                     base,
@@ -632,7 +624,7 @@ implements AdqlSchema
             @Override
             public AdqlTable create(final BaseTable<?,?> base, final String name)
                 {
-                AdqlTable table = factories().adql().tables().create(
+                final AdqlTable table = factories().adql().tables().create(
                     AdqlSchemaEntity.this,
                     base,
                     name
@@ -652,7 +644,7 @@ implements AdqlSchema
             public AdqlTable create(final AdqlQuery query)
                 {
                 //realize();
-                AdqlTable table = factories().adql().tables().create(
+                final AdqlTable table = factories().adql().tables().create(
                     AdqlSchemaEntity.this,
                     query
                     );
@@ -714,12 +706,12 @@ implements AdqlSchema
                 }
 
             @Override
-            public AdqlTable inport(String name)
+            public AdqlTable inport(final String name)
             throws NameNotFoundException
                 {
                 log.debug("tables().inport(String)");
                 log.debug("  name [{}]", name);
-                if ((depth() == CopyDepth.PARTIAL) || (depth() == CopyDepth.FULL)) 
+                if ((depth() == CopyDepth.PARTIAL) || (depth() == CopyDepth.FULL))
                     {
                     AdqlTable table = search(
                         name

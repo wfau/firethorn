@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.util.xml;
 
-import java.io.Reader;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.events.XMLEvent;
@@ -31,16 +29,16 @@ public interface XMLReader
     {
     /**
      * The XML element QName this reader handles.
-     * 
+     *
      */
     public QName qname();
 
     /**
      * Peek at the next event from an XMLEventReader to see if it matches this reader.
      * This may skip processing instructions, comments and whitespace to find the next element.
-     * 
+     *
      * @returns true if the next event matches.
-     * 
+     *
      */
     public boolean match(final XMLEventReader reader)
     throws XMLParserException;
@@ -48,7 +46,7 @@ public interface XMLReader
     /**
      * Check if an event matches this reader.
      * @returns true if the event matches this reader.
-     * 
+     *
      */
     public boolean match(final XMLEvent event)
     throws XMLParserException;

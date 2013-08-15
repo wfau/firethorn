@@ -19,10 +19,7 @@ package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityBeanIter;
-import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBean;
-import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
 import uk.ac.roe.wfau.firethorn.widgeon.base.BaseSchemaBean;
-import uk.ac.roe.wfau.firethorn.widgeon.base.BaseTableBean;
 
 /**
  * Bean wrapper for <code>AdqlSchema</code>.

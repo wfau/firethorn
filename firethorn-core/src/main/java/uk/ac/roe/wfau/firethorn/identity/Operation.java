@@ -82,7 +82,7 @@ extends Entity
     @Deprecated
     public Authentication auth();
      */
-    
+
     interface Authentications
         {
         public void resolve();

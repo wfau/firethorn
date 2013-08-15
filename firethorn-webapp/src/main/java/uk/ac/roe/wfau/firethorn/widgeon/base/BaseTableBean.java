@@ -37,7 +37,7 @@ extends NamedEntityBeanImpl<TableType>
             table
             );
         }
-    
+
     public String getParent()
         {
         return entity().schema().link();

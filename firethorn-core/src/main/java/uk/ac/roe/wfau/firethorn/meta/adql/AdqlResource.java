@@ -121,7 +121,7 @@ extends BaseResource<AdqlSchema>
         public AdqlSchema create(final CopyDepth depth, final String name, final BaseSchema<?,?> base);
 
         /**
-         * Import a base schema.  
+         * Import a base schema.
          *
          */
         public AdqlSchema inport(final String name, final BaseSchema<?, ?> base);

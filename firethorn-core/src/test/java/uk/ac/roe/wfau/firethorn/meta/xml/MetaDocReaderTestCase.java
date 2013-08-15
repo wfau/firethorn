@@ -17,10 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.xml;
 
-import java.io.File;
 import java.io.FileReader;
-
-import javax.xml.stream.XMLEventReader;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,7 +28,6 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.xml.MetaDocReader;
 import uk.ac.roe.wfau.firethorn.test.TestBase;
@@ -70,18 +66,18 @@ extends TestBase
             "workspace"
             );
         }
-    
-    public void debug(Iterable<AdqlSchema> schemas)
+
+    public void debug(final Iterable<AdqlSchema> schemas)
         {
         log.debug("---------------");
-        for(AdqlSchema schema : schemas)
+        for(final AdqlSchema schema : schemas)
             {
             log.debug("Schema [{}]", schema.namebuilder());
-            for (AdqlTable table : schema.tables().select())
+            for (final AdqlTable table : schema.tables().select())
                 {
                 log.debug("  Table [{}]", table.namebuilder());
                 log.debug("    Text [{}]", table.text());
-                for (AdqlColumn column : table.columns().select())
+                for (final AdqlColumn column : table.columns().select())
                     {
                     log.debug("    Column [{}]", column.namebuilder());
                     log.debug("      Text  [{}]", column.text());
@@ -98,16 +94,16 @@ extends TestBase
     public void test000()
     throws Exception
         {
-        MetaDocReader reader = new MetaDocReader();
+        final MetaDocReader reader = new MetaDocReader();
 
-        Iterable<AdqlSchema> schemas = reader.inport(
+        final Iterable<AdqlSchema> schemas = reader.inport(
             new FileReader(
                 "src/test/data/metadoc/twomass.subset.xml"
                 ),
             resource.schemas().select(
                 "TWOMASS",
                 "dbo"
-                ),                
+                ),
             workspace
             );
 
@@ -119,29 +115,29 @@ extends TestBase
     public void test001()
     throws Exception
         {
-        MetaDocReader reader = new MetaDocReader();
+        final MetaDocReader reader = new MetaDocReader();
 
-        Iterable<AdqlSchema> one = reader.inport(
+        final Iterable<AdqlSchema> one = reader.inport(
             new FileReader(
                 "src/test/data/metadoc/twomass.001.xml"
                 ),
             resource.schemas().select(
                 "TWOMASS",
                 "dbo"
-                ),                
+                ),
             workspace
             );
 
         debug(one);
 
-        Iterable<AdqlSchema> two = reader.inport(
+        final Iterable<AdqlSchema> two = reader.inport(
             new FileReader(
                 "src/test/data/metadoc/twomass.002.xml"
                 ),
             resource.schemas().select(
                 "TWOMASS",
                 "dbo"
-                ),                
+                ),
             workspace
             );
 

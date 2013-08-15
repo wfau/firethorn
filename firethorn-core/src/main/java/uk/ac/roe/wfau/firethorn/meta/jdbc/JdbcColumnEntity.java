@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.jdbc;
 
-import java.util.UUID;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -48,6 +46,7 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumnEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 
@@ -256,7 +255,7 @@ public class JdbcColumnEntity
                         )
                     );
                 }
-            catch (NotFoundException ouch)
+            catch (final NotFoundException ouch)
                 {
                 log.debug("Unable to locate column [{}][{}]", parent.namebuilder().toString(), name);
                 throw new NameNotFoundException(
@@ -447,7 +446,7 @@ public class JdbcColumnEntity
             //
             // Array type.
             case ARRAY :
-                return JdbcColumn.VAR_ARRAY_SIZE;
+                return BaseColumn.VAR_ARRAY_SIZE;
 
             // TODO unlimited TEXT size
 
@@ -485,7 +484,7 @@ public class JdbcColumnEntity
             //
             // Single value types.
             default :
-                return JdbcColumn.NON_ARRAY_SIZE;
+                return BaseColumn.NON_ARRAY_SIZE;
             }
         }
 

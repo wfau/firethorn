@@ -22,7 +22,6 @@ import java.util.UUID;
 import org.joda.time.DateTime;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 
 /**
@@ -144,7 +143,7 @@ public interface Entity
 
         /**
          * Wrap a runnable operation in a write transaction.
-         * 
+         *
          */
         public void createEntity(final Runnable oper);
 

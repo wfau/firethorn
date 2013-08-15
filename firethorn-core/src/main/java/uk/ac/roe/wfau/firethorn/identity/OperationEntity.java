@@ -19,8 +19,6 @@ package uk.ac.roe.wfau.firethorn.identity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -43,7 +41,6 @@ import org.springframework.stereotype.Component;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 
 /**
  *
@@ -238,7 +235,7 @@ implements Operation
         return this.primary;
         }
 
-    private void primary(Authentication auth)
+    private void primary(final Authentication auth)
         {
         if (this.primary == null)
             {
@@ -248,7 +245,7 @@ implements Operation
                 ) ;
             }
         }
-    
+
     /**
      * The set of Authentications for this Operation.
      *

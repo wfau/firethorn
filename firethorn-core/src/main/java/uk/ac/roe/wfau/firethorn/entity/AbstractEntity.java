@@ -104,16 +104,16 @@ implements Entity
 
     /**
      * Helper method to check for empty or blank strings.
-     * 
+     *
      * @param string The String to check
-     * @return The trimmed String, or null if the String was blank. 
+     * @return The trimmed String, or null if the String was blank.
      *
      */
     public static String emptystr(final String string)
         {
         if (string != null)
             {
-            String temp = string.trim();
+            final String temp = string.trim();
             if (temp.length() > 0)
                 {
                 return temp;
@@ -122,7 +122,7 @@ implements Entity
         return null ;
         }
 
-    
+
     /**
      * Default constructor needs to be protected not private.
      * http://kristian-domagala.blogspot.co.uk/2008/10/proxy-instantiation-problem-from.html

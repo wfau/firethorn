@@ -38,7 +38,7 @@ extends SimpleQueryTestBase
     throws Exception
         {
         // endpoint="http://localhost:8089/ogsa-dai/services";
-        
+
         execute(
             endpoint,
             "atlas",

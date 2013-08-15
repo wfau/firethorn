@@ -20,7 +20,6 @@ package uk.ac.roe.wfau.firethorn.meta.adql;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 
@@ -82,7 +81,7 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          *
          */
         public AdqlSchema create(final AdqlResource parent, final String name, final BaseTable<?,?> base);
-        
+
         /**
          * Create a new schema, importing a base table.
          *
@@ -99,13 +98,13 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          *
          */
         public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final BaseSchema<?,?> base);
-        
+
         /**
          * Create a new schema, importing the tables from a base schema.
          *
          */
         public AdqlSchema create(final AdqlResource parent, final String name, final BaseSchema<?,?> base);
-        
+
         /**
          * Create a new schema, importing the tables from a base schema.
          *
@@ -123,7 +122,7 @@ extends BaseSchema<AdqlSchema, AdqlTable>
      */
     public interface Tables extends BaseSchema.Tables<AdqlTable>
         {
-       
+
         /**
          * Create a new table, importing the columns from a base table.
          *

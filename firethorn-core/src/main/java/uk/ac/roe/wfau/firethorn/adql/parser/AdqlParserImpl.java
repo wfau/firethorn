@@ -592,12 +592,12 @@ implements AdqlParser
     public static final AdqlQuery.SelectField UNKNOWN_FIELD = new SelectFieldImpl(
         "unknown",
         AdqlColumn.Type.UNKNOWN
-        );  
+        );
 
     public static class SelectFieldImpl
     implements AdqlQuery.SelectField
         {
-        
+
         private SelectFieldImpl(final String name, final AdqlColumn.Type type)
             {
             this(
@@ -784,7 +784,7 @@ implements AdqlParser
         log.debug("  class  [{}]", oper.getClass().getName());
         log.debug("  number [{}]", oper.isNumeric());
         log.debug("  string [{}]", oper.isString());
-        
+
         if (oper instanceof StringConstant)
             {
             return new SelectFieldImpl(
@@ -818,7 +818,7 @@ implements AdqlParser
                 (Operation) oper
                 );
             }
-   
+
         else {
             return UNKNOWN_FIELD;
             }
@@ -882,17 +882,17 @@ implements AdqlParser
         log.debug("  p1 [{}][{}]", param1, param1.getClass().getName());
         log.debug("  p2 [{}][{}]", param2, param2.getClass().getName());
 
-        ADQLColumn c1 = null ; 
+        ADQLColumn c1 = null ;
         ADQLColumn c2 = null ;
-        
+
         AdqlDBColumn a1 = null ;
         AdqlDBColumn a2 = null ;
-        
+
         AdqlColumn.Type t1 = null ;
         AdqlColumn.Type t2 = null ;
         AdqlColumn.Type t3 = null ;
         AdqlColumn.Type return_type = null;
-        
+
         if (param1 instanceof ADQLColumn)
             {
             c1 = (ADQLColumn) param1;
@@ -911,31 +911,31 @@ implements AdqlParser
                 t2 = a2.column().meta().adql().type();
                 }
             }
- 
+
         if ((t1 == AdqlColumn.Type.DOUBLE) || (t2 == AdqlColumn.Type.DOUBLE)){
         			return_type = AdqlColumn.Type.DOUBLE;
-        			
+
         } else if((t1 == AdqlColumn.Type.CHAR) && (t2 == AdqlColumn.Type.CHAR)){
 					return_type = AdqlColumn.Type.CHAR;
-        
+
         } else if((t1 == AdqlColumn.Type.UNICODE) && (t2 == AdqlColumn.Type.UNICODE)){
 					return_type = AdqlColumn.Type.UNICODE;
-        
+
         } else if ((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.SHORT)){
         			return_type = AdqlColumn.Type.SHORT;
-            
+
         } else if ((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.LONG) ||
         		   	(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.INTEGER) ||
         		   	(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.LONG) ||
         		   	(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.LONG) ||
         		   	(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.SHORT)){
         			return_type = AdqlColumn.Type.LONG;
-        
-        } else if ((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.INTEGER) || 	
+
+        } else if ((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.INTEGER) ||
         			(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.INTEGER) ||
         			(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.SHORT)){
         			return_type = AdqlColumn.Type.INTEGER;
-        
+
         } else if ((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.FLOAT) ||
         			(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.FLOAT) ||
         			(t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.INTEGER) ||
@@ -944,11 +944,11 @@ implements AdqlParser
         			(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.FLOAT) ||
         			(t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.SHORT)){
         			return_type = AdqlColumn.Type.FLOAT;
-        			
-        }
-    
 
-     
+        }
+
+
+
         return new SelectFieldImpl(
             "operation",
             return_type
@@ -1007,7 +1007,7 @@ implements AdqlParser
             case AVG:
             case MAX:
             case MIN:
-            case SUM:	
+            case SUM:
                 return new SelectFieldWrapper(
                     funct.getName(),
                     wrap(
@@ -1031,16 +1031,16 @@ implements AdqlParser
         log.debug("  name   [{}]", funct.getName());
         log.debug("  number [{}]", funct.isNumeric());
         log.debug("  string [{}]", funct.isString());
- 
+
         ADQLOperand param1 = funct.getParameter(0);
         ADQLOperand param2 = funct.getParameter(1);
 
         log.debug("  param1  [{}]", param1);
         log.debug("  param2  [{}]", param2);
-        
+
         switch (funct.getType())
             {
-            	  
+
             case ROUND:
             case ABS:
             case CEILING:
@@ -1052,9 +1052,9 @@ implements AdqlParser
                         funct.getParameter(0)
                         )
                     );
-    
+
             case LOG:		// returns the natural logarithm (base e) of a double value.
-            case LOG10:	// returns the base 10 logarithm of a double value.	
+            case LOG10:	// returns the base 10 logarithm of a double value.
             case POWER:
             case DEGREES:
             case RADIANS:
@@ -1069,13 +1069,13 @@ implements AdqlParser
             case SIN:
             case TAN:
             case PI:
-            case SQRT:        
+            case SQRT:
             case EXP:
                 return new SelectFieldImpl(
                     funct.getName(),
                     AdqlColumn.Type.DOUBLE
                     );
-            
+
             default :
                 log.error("Unexpected Math function type [{}][{}]", funct.getName(), funct.getType());
                 return UNKNOWN_FIELD;
@@ -1095,7 +1095,7 @@ implements AdqlParser
         return UNKNOWN_FIELD;
         }
 
-    
+
 /*
  *
         AdqlQuery.SelectField field = null ;

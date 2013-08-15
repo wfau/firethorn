@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.ivoa;
 
-import java.util.UUID;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -181,7 +179,7 @@ public class IvoaColumnEntity
                         )
                     );
                 }
-            catch (NotFoundException ouch)
+            catch (final NotFoundException ouch)
                 {
                 log.debug("Unable to locate column [{}][{}]", parent.namebuilder().toString(), name);
                 throw new NameNotFoundException(

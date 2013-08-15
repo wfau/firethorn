@@ -21,10 +21,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLInvalidAuthorizationSpecException;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
@@ -32,9 +28,6 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.MapKey;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import lombok.extern.slf4j.Slf4j;
@@ -51,8 +44,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchemaEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResourceEntity;
 
 /**
@@ -272,7 +263,7 @@ public class JdbcResourceEntity
 	    }
 
     /*
-     * HibernateCollections 
+     * HibernateCollections
     @OrderBy(
         "name ASC"
         )
@@ -287,7 +278,7 @@ public class JdbcResourceEntity
     private Map<String, JdbcSchema> children = new LinkedHashMap<String, JdbcSchema>();
      *
      */
-    
+
     @Override
     public JdbcResource.Schemas schemas()
         {
@@ -304,7 +295,7 @@ public class JdbcResourceEntity
             public Iterable<JdbcSchema> select()
                 {
                 /*
-                 * HibernateCollections 
+                 * HibernateCollections
                 return children.values();
                  *
                  */
@@ -316,12 +307,12 @@ public class JdbcResourceEntity
             @Override
             public JdbcSchema create(final Identity identity)
                 {
-                JdbcSchema result = factories().jdbc().schemas().build(
+                final JdbcSchema result = factories().jdbc().schemas().build(
                     JdbcResourceEntity.this,
                     identity
                     );
                 /*
-                 * HibernateCollections 
+                 * HibernateCollections
                 children.put(
                     result.name(),
                     result
@@ -334,16 +325,16 @@ public class JdbcResourceEntity
             @Override
             public JdbcSchema create(final String catalog, final String schema)
                 {
-                JdbcSchema result = factories().jdbc().schemas().create(
+                final JdbcSchema result = factories().jdbc().schemas().create(
                     JdbcResourceEntity.this,
                     catalog,
                     schema
                     );
                 /*
-                 * HibernateCollections 
+                 * HibernateCollections
                 children.put(
                     result .name(),
-                    result 
+                    result
                     );
                  *
                  */
@@ -377,7 +368,7 @@ public class JdbcResourceEntity
                     name
                     );
                 /*
-                 * HibernateCollections 
+                 * HibernateCollections
                 JdbcSchema result = children.get(name);
                 if (result != null)
                     {

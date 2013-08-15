@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
-import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
 /**

@@ -46,7 +46,7 @@ implements HandlerInterceptor
 
     public Operation.EntityFactory operations()
         {
-        return factories.operations() ; 
+        return factories.operations() ;
         }
 
     @Override
@@ -55,7 +55,7 @@ implements HandlerInterceptor
         log.debug("preHandle()");
         log.debug("Handler   [{}]", (handler != null) ? handler.getClass().getName() : "null");
 
-        Operation oper = operations().create(
+        final Operation oper = operations().create(
             request.getRequestURL().toString(),
             request.getMethod(),
             request.getRemoteAddr()
@@ -71,7 +71,7 @@ implements HandlerInterceptor
     public void postHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final ModelAndView model)
         {
         log.debug("postHandle()");
-        Operation oper = operations().current();
+        final Operation oper = operations().current();
         log.debug("Operation [{}][{}]", oper.ident(), oper.target());
         log.debug("Handler   [{}]", handler.getClass().getName());
         }
@@ -80,7 +80,7 @@ implements HandlerInterceptor
     public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ouch)
         {
         log.debug("after()");
-        Operation oper = operations().current();
+        final Operation oper = operations().current();
         log.debug("Operation [{}][{}]", oper.ident(), oper.target());
         log.debug("Handler   [{}]", (handler != null) ? handler.getClass().getName() : "null");
         if (ouch != null)

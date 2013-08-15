@@ -19,9 +19,7 @@ package uk.ac.roe.wfau.firethorn.util.xml;
 
 import java.io.Reader;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.events.XMLEvent;
 
 /**
  *
@@ -34,7 +32,7 @@ extends XMLReader
     /**
      * Process events from an XMLEventReader and return an Object.
      * @returns An Object generated from the XML data.
-     * 
+     *
      */
     public Type read(final XMLEventReader reader)
     throws XMLParserException, XMLReaderException;

@@ -18,15 +18,9 @@
 package uk.ac.roe.wfau.firethorn.widgeon.adql;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.LineNumberReader;
-import java.io.Reader;
-import java.util.Collections;
-
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,20 +30,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent.CopyDepth;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
 import uk.ac.roe.wfau.firethorn.meta.xml.MetaDocReader;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLParserException;
 import uk.ac.roe.wfau.firethorn.util.xml.XMLReaderException;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
-import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
@@ -85,7 +74,7 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
      *
      */
     public static final String METADOC_IMPORT_PATH = "import" ;
-    
+
     /**
      * MVC property for the import metadoc file.
      *
@@ -134,17 +123,17 @@ extends AbstractEntityController<AdqlSchema, AdqlSchemaBean>
 
     /**
      * Our XML metadoc reader.
-     * 
+     *
      */
     protected MetaDocReader reader = new MetaDocReader();
 
     /**
      * Import tables from a base schema using metadata from a metadoc.
-     * @throws IOException 
-     * @throws XMLReaderException 
-     * @throws XMLParserException 
-     * @throws NameNotFoundException 
-     * @throws IdentifierNotFoundException 
+     * @throws IOException
+     * @throws XMLReaderException
+     * @throws XMLParserException
+     * @throws NameNotFoundException
+     * @throws IdentifierNotFoundException
      *
      */
     @ResponseBody

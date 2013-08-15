@@ -19,7 +19,6 @@ package uk.ac.roe.wfau.firethorn.meta.base;
 
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
@@ -137,13 +136,13 @@ extends BaseComponent
 
     /**
      * A class to represent a column UCD.
-     * 
+     *
      */
     public interface UCD
         {
         /**
          * The UCD version.
-         * 
+         *
          */
         public enum Type
             {
@@ -153,13 +152,13 @@ extends BaseComponent
 
         /**
          * The UCD type.
-         * 
+         *
          */
         public Type type();
 
         /**
          * The UCD value.
-         * 
+         *
          */
         public String value();
 
@@ -225,7 +224,7 @@ extends BaseComponent
              *
              */
             public void utype(final String utype);
-            
+
             /**
              * The column UCD.
              *

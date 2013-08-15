@@ -20,12 +20,6 @@ package uk.ac.roe.wfau.firethorn.util.xml;
 import java.io.Reader;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.StartElement;
-import javax.xml.stream.events.XMLEvent;
-
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -40,7 +34,7 @@ implements XMLObjectReader<ObjectType>
 
     /**
      * Public constructor.
-     * 
+     *
      */
     public XMLObjectReaderImpl()
         {
@@ -51,7 +45,7 @@ implements XMLObjectReader<ObjectType>
 
     /**
      * Public constructor.
-     * 
+     *
      */
     public XMLObjectReaderImpl(final String namespace, final String name)
         {
@@ -63,7 +57,7 @@ implements XMLObjectReader<ObjectType>
 
     /**
      * Public constructor.
-     * 
+     *
      */
     public XMLObjectReaderImpl(final QName qname)
         {

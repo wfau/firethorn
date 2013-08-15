@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
-import java.util.UUID;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -37,7 +35,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import uk.ac.roe.wfau.firethorn.entity.AbstractNamedEntity;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
@@ -225,13 +222,13 @@ public class AdqlColumnEntity
                         )
                     );
                 }
-            catch (NotFoundException ouch)
+            catch (final NotFoundException ouch)
                 {
                 log.debug("Unable to locate column [{}][{}]", parent.namebuilder().toString(), name);
                 throw new NameNotFoundException(
                     name,
                     ouch
-                    ); 
+                    );
                 }
             }
 

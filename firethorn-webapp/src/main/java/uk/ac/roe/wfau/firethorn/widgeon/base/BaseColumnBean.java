@@ -39,7 +39,7 @@ extends NamedEntityBeanImpl<ColumnType>
             column
             );
         }
-    
+
     @Deprecated
     public String getParent()
         {
@@ -75,7 +75,7 @@ extends NamedEntityBeanImpl<ColumnType>
         {
         return entity().depth().toString();
         }
-    
+
     public class AdqlMetadataBean
         {
         public AdqlColumn.Type getType()
@@ -99,7 +99,7 @@ extends NamedEntityBeanImpl<ColumnType>
             {
             public String getType()
                 {
-                UCD ucd = entity().meta().adql().ucd();
+                final UCD ucd = entity().meta().adql().ucd();
                 if (ucd != null)
                     {
                     return ucd.type().toString();
@@ -110,7 +110,7 @@ extends NamedEntityBeanImpl<ColumnType>
                 }
             public String getValue()
                 {
-                UCD ucd = entity().meta().adql().ucd();
+                final UCD ucd = entity().meta().adql().ucd();
                 if (ucd != null)
                     {
                     return ucd.value();

@@ -20,7 +20,6 @@ package uk.ac.roe.wfau.firethorn.widgeon.base;
 import java.net.URI;
 
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.NamedEntityBeanImpl;
 
 /**

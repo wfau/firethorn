@@ -20,24 +20,15 @@ package uk.ac.roe.wfau.firethorn.meta.jdbc;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKey;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -58,8 +49,6 @@ import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumnEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseNameFactory;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
@@ -260,13 +249,13 @@ implements JdbcTable
                         )
                     );
                 }
-            catch (NotFoundException ouch)
+            catch (final NotFoundException ouch)
                 {
                 log.debug("Unable to locate table [{}][{}]", parent.namebuilder().toString(), name);
                 throw new NameNotFoundException(
                     name,
                     ouch
-                    ); 
+                    );
                 }
             }
 
@@ -416,7 +405,7 @@ implements JdbcTable
         }
 
     /*
-     * HibernateCollections 
+     * HibernateCollections
     @OrderBy(
         "name ASC"
         )
@@ -431,7 +420,7 @@ implements JdbcTable
     private Map<String, JdbcColumn> children = new LinkedHashMap<String, JdbcColumn>();
      *
      */
-    
+
     @Override
     public JdbcTable.Columns columns()
         {
@@ -451,7 +440,7 @@ implements JdbcTable
                     JdbcTableEntity.this
                     );
                 /*
-                 * HibernateCollections 
+                 * HibernateCollections
                 return children.values();
                  *
                  */
@@ -461,7 +450,7 @@ implements JdbcTable
             public JdbcColumn search(final String name)
                 {
                 /*
-                 * HibernateCollections 
+                 * HibernateCollections
                 return children.get(name);
                  *
                  */
@@ -480,7 +469,7 @@ implements JdbcTable
                     name
                     );
                 /*
-                 * HibernateCollections 
+                 * HibernateCollections
                 JdbcColumn result = children.get(name);
                 if (result != null)
                     {
@@ -497,15 +486,15 @@ implements JdbcTable
             @Override
             public JdbcColumn create(final AdqlQuery.SelectField field)
                 {
-                JdbcColumn result = factories().jdbc().columns().create(
+                final JdbcColumn result = factories().jdbc().columns().create(
                     JdbcTableEntity.this,
                     field
                     );
                 /*
-                 * HibernateCollections 
+                 * HibernateCollections
                 children.put(
                     result .name(),
-                    result 
+                    result
                     );
                  *
                  */
@@ -514,23 +503,23 @@ implements JdbcTable
             @Override
             public JdbcColumn create(final String name, final int type, final int size)
                 {
-                JdbcColumn result = factories().jdbc().columns().create(
+                final JdbcColumn result = factories().jdbc().columns().create(
                     JdbcTableEntity.this,
                     name,
                     type,
                     size
                     );
                 /*
-                 * HibernateCollections 
+                 * HibernateCollections
                 children.put(
                     result .name(),
-                    result 
+                    result
                     );
                  *
                  */
                 return result ;
                 }
-            
+
             @Override
             public void scan()
                 {

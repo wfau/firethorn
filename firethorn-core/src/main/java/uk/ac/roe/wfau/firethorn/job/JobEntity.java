@@ -17,7 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.job;
 
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;

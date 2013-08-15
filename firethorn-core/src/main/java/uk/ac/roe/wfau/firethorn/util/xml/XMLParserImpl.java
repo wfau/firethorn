@@ -457,7 +457,7 @@ public class XMLParserImpl
 
     /**
      * Validate a start element is the one we expected.
-     * 
+     *
      * @param element The element to check.
      * @return The element.
      * @throws XMLParserException If the element is not what we expect.
@@ -487,7 +487,7 @@ public class XMLParserImpl
                 }
             }
         }
-        
+
     /**
      * Decode an XML event type into a human readable name.
      *

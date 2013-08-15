@@ -29,11 +29,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
-import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 import uk.ac.roe.wfau.firethorn.webapp.control.AbstractEntityController;
-import uk.ac.roe.wfau.firethorn.webapp.control.EntityBean;
 import uk.ac.roe.wfau.firethorn.webapp.control.WebappLinkFactory;
 import uk.ac.roe.wfau.firethorn.webapp.paths.Path;
 
@@ -88,7 +86,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
 
     /**
      * Get the parent entity based on the request ident.
-     * @throws IdentifierNotFoundException 
+     * @throws IdentifierNotFoundException
      *
      */
     @ModelAttribute(AdqlTableController.TARGET_ENTITY)
@@ -122,7 +120,7 @@ extends AbstractEntityController<AdqlColumn, AdqlColumnBean>
 
     /**
      * JSON request to select by name.
-     * @throws NameNotFoundException 
+     * @throws NameNotFoundException
      *
      */
     @ResponseBody

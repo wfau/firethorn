@@ -18,7 +18,7 @@
 package uk.ac.roe.wfau.firethorn.util.xml;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.events.XMLEvent;
+
 
 /**
  *
@@ -29,7 +29,7 @@ public class XMLReaderException
     {
 
     /**
-     * 
+     *
      *
      */
     private static final long serialVersionUID = 1L;
@@ -48,7 +48,7 @@ public class XMLReaderException
      * @param message
      *
      */
-    public XMLReaderException(String message)
+    public XMLReaderException(final String message)
         {
         super(
             message
@@ -61,7 +61,7 @@ public class XMLReaderException
      * @param cause
      *
      */
-    public XMLReaderException(String message, Throwable cause)
+    public XMLReaderException(final String message, final Throwable cause)
         {
         super(
             message,
