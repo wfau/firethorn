@@ -33,6 +33,9 @@
 
     /roe.ac.uk
     The Royal Observatory, Edinburgh
+    # status - pending approval
+    # http://purl.org/docs/domain.html
+    
     
     Wide Field Astronomy Unit
     /roe.ac.uk/wfau
@@ -48,6 +51,14 @@
 
     Firethorn VOTable xtypes
     /roe.ac.uk/wfau/firethorn/types/xtype
+
+
+-------------
+
+    Firethorn webservice
+    /firethorn
+
+
 
 
 

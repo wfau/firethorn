@@ -1040,7 +1040,7 @@ implements AdqlQuery, AdqlParserQuery
         )
     @JoinColumn(
         name = DB_JDBC_TABLE_COL,
-        unique = true,
+        unique = false,
         nullable = true,
         updatable = true
         )
@@ -1059,7 +1059,7 @@ implements AdqlQuery, AdqlParserQuery
         )
     @JoinColumn(
         name = DB_ADQL_TABLE_COL,
-        unique = true,
+        unique = false,
         nullable = true,
         updatable = true
         )
