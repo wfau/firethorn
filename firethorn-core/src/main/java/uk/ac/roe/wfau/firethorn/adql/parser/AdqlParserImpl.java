@@ -302,7 +302,7 @@ implements AdqlParser
                     subject,
                     query,
                     ((ADQLTable) clause)
-                    );
+                    ); 
                 }
             //
             // Process the child nodes.
@@ -879,9 +879,6 @@ implements AdqlParser
         ADQLOperand param1 = oper.getLeftOperand();
         ADQLOperand param2 = oper.getRightOperand();
 
-        log.debug("  p1 [{}][{}]", param1, param1.getClass().getName());
-        log.debug("  p2 [{}][{}]", param2, param2.getClass().getName());
-
         ADQLColumn c1 = null ;
         ADQLColumn c2 = null ;
 
@@ -890,7 +887,6 @@ implements AdqlParser
 
         AdqlColumn.Type t1 = null ;
         AdqlColumn.Type t2 = null ;
-        AdqlColumn.Type t3 = null ;
         AdqlColumn.Type return_type = null;
 
         if (param1 instanceof ADQLColumn)
@@ -911,11 +907,22 @@ implements AdqlParser
                 t2 = a2.column().meta().adql().type();
                 }
             }
-
+        
+       
+        if (param1 instanceof NumericConstant  || param2 instanceof NumericConstant){
+        	return_type = AdqlColumn.Type.DOUBLE;
+        }
+        
+   
+        
         if ((t1 == AdqlColumn.Type.DOUBLE) || (t2 == AdqlColumn.Type.DOUBLE)){
         			return_type = AdqlColumn.Type.DOUBLE;
 
+        } else if ((t1 == AdqlColumn.Type.BYTE) || (t2 == AdqlColumn.Type.BYTE)){
+			return_type = AdqlColumn.Type.BYTE;
+        
         } else if((t1 == AdqlColumn.Type.CHAR) && (t2 == AdqlColumn.Type.CHAR)){
+        
 					return_type = AdqlColumn.Type.CHAR;
 
         } else if((t1 == AdqlColumn.Type.UNICODE) && (t2 == AdqlColumn.Type.UNICODE)){
@@ -946,9 +953,7 @@ implements AdqlParser
         			return_type = AdqlColumn.Type.FLOAT;
 
         }
-
-
-
+       		
         return new SelectFieldImpl(
             "operation",
             return_type
