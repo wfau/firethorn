@@ -679,7 +679,9 @@ EOF
                 source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASv20130426' 'atlas'
 
                 source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
-                source "${FIRETHORN_TEST:?}/05-00-execute-query.sh"       "${FIRETHORN_TEST:?}/06-query-atlas-000.adql"
+                #source "${FIRETHORN_TEST:?}/05-00-execute-query.sh"       "${FIRETHORN_TEST:?}/06-query-atlas-000.adql"
+                source "${FIRETHORN_TEST:?}/05-00-execute-query.sh"       query-001.adql
+                
                 }
 
             time importschema

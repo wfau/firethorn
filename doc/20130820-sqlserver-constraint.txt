@@ -27,6 +27,7 @@
     2013-08-20 12:40:46,885 ERROR [http-bio-8080-exec-7] [HibernateThingsImpl] Hibernate excepion [org.hibernate.exception.ConstraintViolationException][could not execute statement] 
 
 
+    2013-08-21 12:29:11,620 ERROR [http-bio-8080-exec-6] [SqlExceptionHelper] Violation of UNIQUE KEY constraint 'UK_my1o942e47yfq0p2v934w30dw'. Cannot insert duplicate key in object 'dbo.FT0107AdqlQueryEntity'. The duplicate key value is (<NULL>).
 
 # ------------------------------------------------
 # Connect the SSH tunnel to ROE.
@@ -66,6 +67,7 @@
     go    
     ALTER TABLE FT0107AdqlQueryEntity DROP CONSTRAINT [UK_p6tjisvg1oxe0912trmov4pa]
     go
+
 
 
 	                  
