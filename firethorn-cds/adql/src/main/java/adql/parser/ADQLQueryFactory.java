@@ -91,7 +91,7 @@ import adql.query.operand.function.geometry.RegionFunction;
  */
 public class ADQLQueryFactory {
 
-	protected boolean allowUnknownFunctions = false;
+	protected boolean allowUnknownFunctions = true;
 
 	public static enum JoinType {
 		CROSS,
