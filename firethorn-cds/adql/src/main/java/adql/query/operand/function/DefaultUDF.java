@@ -48,7 +48,7 @@ public final class DefaultUDF extends UserDefinedFunction {
 		parameters = new ClauseADQL<ADQLOperand>();
 		if (params != null){
 			for(int i=0; i<params.length; i++)
-				parameters.set(i, params[i]);
+				parameters.add(i, params[i]);
 		}
 	}
 

@@ -907,8 +907,7 @@ implements AdqlParser
                 t2 = a2.column().meta().adql().type();
                 }
             }
-        log.debug(" t1 [{}]", t1);
-        log.debug(" t2 [{}]", t2);
+    
 
         if (t1==t2){
 				if (oper.getName()=="/"){
@@ -931,9 +930,7 @@ implements AdqlParser
 					return_type = AdqlColumn.Type.UNICODE;
 
         } else if ((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.SHORT)){
-            		log.debug(" oper.getName()****************************[{}]", oper.getName());
-            		log.debug(" oper.getName2()[{}]", oper.getName()=="/");
-
+          
         	        if (oper.getName()=="/"){
         	        	return_type = AdqlColumn.Type.DOUBLE;
         	        } else {
@@ -1109,11 +1106,38 @@ implements AdqlParser
      */
     public static AdqlQuery.SelectField wrap(final UserDefinedFunction funct)
         {
-        log.debug("wrap(UserDefinedFunction)");
-        log.debug("  name   [{}]", funct.getName());
-        log.debug("  number [{}]", funct.isNumeric());
-        log.debug("  string [{}]", funct.isString());
-        return UNKNOWN_FIELD;
+	        log.debug("wrap(UserDefinedFunction)");
+	        log.debug("  name   [{}]", funct.getName());
+	        log.debug("  number [{}]", funct.isNumeric());
+	        log.debug("  string [{}]", funct.isString());
+	    
+	        String name = funct.getName();
+	        
+	        if ((name=="fDMS") ||
+	        	(name=="fDMSbase") || 
+	        	(name=="fHMS") ||
+	        	(name=="fHMSbase")) {
+	        	
+	        	   return new SelectFieldImpl(
+				           "operation",
+				           AdqlColumn.Type.CHAR,
+				           new Integer(32)
+				           );
+
+	        } else if (name=="fGreatCircleDist") {
+				   return new SelectFieldImpl(
+						   "operation",
+				           AdqlColumn.Type.DOUBLE
+				           );
+
+		    } else {
+		    	 return new SelectFieldImpl(
+		    			  "operation",
+				           AdqlColumn.Type.CHAR,
+				           new Integer(32)
+				           );
+	        }
+        
         }
 
 

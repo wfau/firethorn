@@ -22,6 +22,7 @@ package adql.query;
 import java.util.NoSuchElementException;
 
 import adql.query.operand.ADQLOperand;
+import java.util.UUID;
 
 /**
  * <p>Represents an item of a SELECT clause.</p>
@@ -159,7 +160,16 @@ public class SelectItem implements ADQLObject {
 	}
 
 	public String getName() {
-		return hasAlias()?alias:operand.getName();
+		String uuid = UUID.randomUUID().toString();
+		char[] uuidChars = uuid.toCharArray();
+        String newUUID ="";
+        for(int i = 0; i<8;i++){
+            newUUID += uuidChars[i];
+        }       
+        
+        newUUID = "col_" + newUUID.replaceAll("[\\s\\-()]", "");
+       
+		return hasAlias()?alias:newUUID;
 	}
 
 	public ADQLIterator adqlIterator(){
