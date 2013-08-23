@@ -294,9 +294,29 @@ explore levels of copy
 # Swap back to main branch
 #[user@desktop]
 
-    #
-    # Check which branches we have.
     hg branches
+        delete-node                  797:c1c383930853
+        default                      796:b3a0e77ce012 (inactive)
+        hibernate-collections        741:8d8f28c3e9e9 (inactive)
+
+    hg commit -m "Removing parent|name constraint"
+
+    hg sum
+        parent: 798:c8947cde18af tip
+         Removing parent|name constraint
+        branch: delete-node
+        commit: (clean)
+        update: (current)
+
+    hg update default
+        13 files updated, 0 files merged, 2 files removed, 0 files unresolved
+
+    hg sum
+        parent: 796:b3a0e77ce012 
+         ....
+        branch: default
+        commit: (clean)
+        update: (current)
 
 
 # -------------------------------
