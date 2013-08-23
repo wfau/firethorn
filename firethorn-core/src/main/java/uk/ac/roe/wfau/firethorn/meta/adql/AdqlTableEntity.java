@@ -42,6 +42,7 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateNameException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
@@ -54,6 +55,13 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 /**
  *
  *
+    @UniqueConstraint(
+        columnNames = {
+            BaseComponentEntity.DB_NAME_COL,
+            BaseComponentEntity.DB_PARENT_COL
+            }
+        )
+ *
  */
 @Slf4j
 @Entity
@@ -63,12 +71,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 @Table(
     name = AdqlTableEntity.DB_TABLE_NAME,
     uniqueConstraints={
-        @UniqueConstraint(
-            columnNames = {
-                BaseComponentEntity.DB_NAME_COL,
-                BaseComponentEntity.DB_PARENT_COL
-                }
-            )
         }
     )
 @NamedQueries(
@@ -184,101 +186,94 @@ public class AdqlTableEntity
         @CreateEntityMethod
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base)
             {
-            final AdqlTableEntity table = new AdqlTableEntity(
+            return this.create(
+                CopyDepth.FULL,
                 schema,
                 base,
                 base.name()
                 );
-            super.insert(
-                table
-                );
-            table.realize();
-            return table ;
-            }
-
-        @Override
-        @CreateEntityMethod
-        public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base)
-            {
-            final AdqlTableEntity table = new AdqlTableEntity(
-                type,
-                schema,
-                base,
-                base.name()
-                );
-            super.insert(
-                table
-                );
-            table.realize();
-            return table ;
             }
 
         @Override
         @CreateEntityMethod
         public AdqlTable create(final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
             {
-            final AdqlTableEntity table = new AdqlTableEntity(
+            return this.create(
+                CopyDepth.FULL,
                 schema,
                 base,
                 name
                 );
-            super.insert(
-                table
-                );
-            table.realize();
-            return table ;
             }
 
         @Override
         @CreateEntityMethod
-        public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
+        public AdqlTable create(final CopyDepth depth, final AdqlSchema schema, final BaseTable<?, ?> base)
             {
-            final AdqlTableEntity table = new AdqlTableEntity(
-                type,
+            return this.create(
+                depth,
                 schema,
                 base,
+                base.name()
+                );
+            }
+
+        @Override
+        @CreateEntityMethod
+        public AdqlTable create(final CopyDepth depth, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
+            {
+            final AdqlTable found = search(
+                schema,
                 name
                 );
-            super.insert(
-                table
-                );
-            table.realize();
-            return table ;
+            if (found != null)
+                {
+                throw new DuplicateNameException(
+                    name
+                    );
+                }
+            else {
+                final AdqlTableEntity created = new AdqlTableEntity(
+                    depth,
+                    schema,
+                    base,
+                    name
+                    );
+                super.insert(
+                    created
+                    );
+                created.realize();
+                return created ;
+                }
             }
 
         @Override
         @CreateEntityMethod
         public AdqlTable create(final AdqlSchema schema, final AdqlQuery query)
             {
-            final AdqlTableEntity table = new AdqlTableEntity(
-                query,
+            final AdqlTable found = search(
                 schema,
-                query.results().base(),
                 query.name()
                 );
-            super.insert(
-                table
-                );
-            table.realize();
-            return table ;
-            }
-
-        @Override
-        @CreateEntityMethod
-        public AdqlTable create(final CopyDepth depth, final AdqlSchema schema, final AdqlQuery query)
-            {
-            final AdqlTableEntity table = new AdqlTableEntity(
-                depth,
-                query,
-                schema,
-                query.results().base(),
-                query.name()
-                );
-            super.insert(
-                table
-                );
-            table.realize();
-            return table ;
+            if (found != null)
+                {
+// TODO delete the duplicate ?
+                throw new DuplicateNameException(
+                    query.name()
+                    );
+                }
+            else {
+                final AdqlTableEntity created = new AdqlTableEntity(
+                    CopyDepth.THIN,
+                    schema,
+                    query
+                    );
+                super.insert(
+                    created
+                    );
+                created.realize();
+                return created ;
+                }
             }
 
         @Override
@@ -386,48 +381,26 @@ public class AdqlTableEntity
         super();
         }
 
-    protected AdqlTableEntity(final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
-        {
-        this(
-            CopyDepth.FULL,
-            null,
-            schema,
-            base,
-            name
-            );
-        }
-
-    protected AdqlTableEntity(final CopyDepth type, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
-        {
-        this(
-            type,
-            null,
-            schema,
-            base,
-            name
-            );
-        }
-
-    protected AdqlTableEntity(final AdqlQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
-        {
-        this(
-            CopyDepth.FULL,
-            query,
-            schema,
-            base,
-            name
-            );
-        }
-
-    protected AdqlTableEntity(final CopyDepth type, final AdqlQuery query, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
+    protected AdqlTableEntity(final CopyDepth depth, final AdqlSchema schema, final BaseTable<?, ?> base, final String name)
         {
         super(
-            type,
+            depth,
             schema,
             name
             );
-        this.query  = query;
         this.base   = base;
+        this.schema = schema;
+        }
+
+    protected AdqlTableEntity(final CopyDepth depth, final AdqlSchema schema, final AdqlQuery query)
+        {
+        super(
+            depth,
+            schema,
+            query.name()
+            );
+        this.query  = query;
+        this.base   = query.results().base();
         this.schema = schema;
         }
 

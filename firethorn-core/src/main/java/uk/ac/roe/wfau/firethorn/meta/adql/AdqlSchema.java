@@ -80,13 +80,13 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          * Create a new schema, importing a base table.
          *
          */
-        public AdqlSchema create(final AdqlResource parent, final String name, final BaseTable<?,?> base);
+        public AdqlSchema create(final AdqlResource parent, final BaseTable<?,?> base, final String name);
 
         /**
          * Create a new schema, importing a base table.
          *
          */
-        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name, final BaseTable<?,?> base);
+        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final BaseTable<?,?> base, final String name);
 
         /**
          * Create a new schema, importing the tables from a base schema.
@@ -103,13 +103,13 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          * Create a new schema, importing the tables from a base schema.
          *
          */
-        public AdqlSchema create(final AdqlResource parent, final String name, final BaseSchema<?,?> base);
+        public AdqlSchema create(final AdqlResource parent, final BaseSchema<?,?> base, final String name);
 
         /**
          * Create a new schema, importing the tables from a base schema.
          *
          */
-        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name, final BaseSchema<?,?> base);
+        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final BaseSchema<?,?> base, final String name);
 
         }
 

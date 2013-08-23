@@ -41,6 +41,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateNameException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -49,6 +50,13 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 
 /**
  *
+    @UniqueConstraint(
+        columnNames = {
+            BaseComponentEntity.DB_NAME_COL,
+            BaseComponentEntity.DB_PARENT_COL
+            }
+        )
+
  *
  */
 @Slf4j
@@ -59,12 +67,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 @Table(
     name = IvoaColumnEntity.DB_TABLE_NAME,
     uniqueConstraints={
-        @UniqueConstraint(
-            columnNames = {
-                BaseComponentEntity.DB_NAME_COL,
-                BaseComponentEntity.DB_PARENT_COL
-                }
-            )
         }
     )
 @NamedQueries(
@@ -138,12 +140,24 @@ public class IvoaColumnEntity
         @CreateEntityMethod
         public IvoaColumn create(final IvoaTable parent, final String name)
             {
-            return this.insert(
-                new IvoaColumnEntity(
-                    parent,
-                    name
-                    )
+            final IvoaColumn found = search(
+                parent,
+                name
                 );
+            if (found != null)
+                {
+                throw new DuplicateNameException(
+                    name
+                    );
+                }
+            else {
+                return this.insert(
+                    new IvoaColumnEntity(
+                        parent,
+                        name
+                        )
+                    );
+                }
             }
 
         @Override
@@ -165,8 +179,7 @@ public class IvoaColumnEntity
         public IvoaColumn select(final IvoaTable parent, final String name)
         throws NameNotFoundException
             {
-            try
-                {
+            try {
                 return super.single(
                     super.query(
                         "IvoaColumn-select-parent.name"

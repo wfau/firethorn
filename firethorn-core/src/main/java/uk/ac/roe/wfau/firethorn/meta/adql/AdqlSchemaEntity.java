@@ -40,6 +40,7 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateNameException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
@@ -51,6 +52,13 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 /**
  *
  *
+    @UniqueConstraint(
+        columnNames = {
+            BaseComponentEntity.DB_NAME_COL,
+            BaseComponentEntity.DB_PARENT_COL
+            }
+        )
+ *
  */
 @Slf4j
 @Entity
@@ -60,12 +68,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
 @Table(
     name = AdqlSchemaEntity.DB_TABLE_NAME,
     uniqueConstraints={
-        @UniqueConstraint(
-            columnNames = {
-                BaseComponentEntity.DB_NAME_COL,
-                BaseComponentEntity.DB_PARENT_COL
-                }
-            )
         }
     )
 @NamedQueries(
@@ -112,115 +114,118 @@ implements AdqlSchema
 
         @Override
         @CreateEntityMethod
-        public AdqlSchema create(final AdqlResource parent, final String name)
+        public AdqlSchemaEntity create(final AdqlResource parent, final String name)
             {
-            return this.insert(
-                new AdqlSchemaEntity(
+            return create(
+                CopyDepth.THIN,
+                parent,
+                name
+                );
+            }
+
+        @CreateEntityMethod
+        public AdqlSchemaEntity create(final CopyDepth depth, final AdqlResource parent, final String name)
+            {
+            final AdqlSchema found = search(
+                parent,
+                name
+                ); 
+            if (found != null)
+                {
+                throw new DuplicateNameException(
+                    name
+                    );
+                }
+            else {
+                final AdqlSchemaEntity created = new AdqlSchemaEntity(
+                    depth,
                     parent,
                     name
-                    )
-                );
+                    );
+                super.insert(
+                    created
+                    );
+                return created ;
+                }
             }
 
         @Override
         @CreateEntityMethod
-        public AdqlSchema create(final AdqlResource parent, final BaseSchema<?, ?> base)
+        public AdqlSchema create(final AdqlResource parent, final BaseSchema<?, ?> schema)
             {
-            final AdqlSchemaEntity schema = new AdqlSchemaEntity(
+            return create(
                 parent,
-                base.name(),
-                base
+                schema,
+                schema.name()
                 );
-            super.insert(
-                schema
-                );
-            schema.realize();
-            return schema;
             }
 
         @Override
         @CreateEntityMethod
-        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final BaseSchema<?, ?> base)
+        public AdqlSchema create(final AdqlResource parent, final BaseSchema<?, ?> schema, final String name)
             {
-            final AdqlSchemaEntity schema = new AdqlSchemaEntity(
+            return create(
+                CopyDepth.THIN,
+                parent,
+                schema,
+                name
+                );
+            }
+
+        @Override
+        @CreateEntityMethod
+        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final BaseSchema<?, ?> schema)
+            {
+            return create(
                 depth,
                 parent,
-                base.name(),
-                base
+                schema,
+                schema.name()
                 );
-            super.insert(
-                schema
-                );
-            schema.realize();
-            return schema;
             }
-
+        
         @Override
         @CreateEntityMethod
-		public AdqlSchema create(final AdqlResource parent, final String name, final BaseSchema<?, ?> base)
-			{
-            final AdqlSchemaEntity schema = new AdqlSchemaEntity(
-                parent,
-                name,
-                base
-                );
-            super.insert(
-                schema
-                );
-            schema.realize();
-            return schema;
-			}
-
-        @Override
-        @CreateEntityMethod
-        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name, final BaseSchema<?, ?> base)
+        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final BaseSchema<?, ?> schema, final String name)
             {
-            final AdqlSchemaEntity schema = new AdqlSchemaEntity(
+            final AdqlSchemaEntity created = create(
                 depth,
-                parent,
-                name,
-                base
-                );
-            super.insert(
-                schema
-                );
-            schema.realize();
-            return schema;
-            }
-
-        @Override
-        @CreateEntityMethod
-        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final String name, final BaseTable<?, ?> base)
-            {
-            final AdqlSchemaEntity schema = new AdqlSchemaEntity(
                 parent,
                 name
                 );
-            super.insert(
+            created.realize(
+                depth,
                 schema
                 );
-            schema.realize(
-                depth,
-                base
-                );
-            return schema;
+            return created;
             }
 
+        
         @Override
         @CreateEntityMethod
-        public AdqlSchema create(final AdqlResource parent, final String name, final BaseTable<?, ?> base)
+        public AdqlSchema create(final AdqlResource parent, final BaseTable<?, ?> table, final String name)
             {
-            final AdqlSchemaEntity schema = new AdqlSchemaEntity(
+            return create(
+                CopyDepth.THIN,
+                parent,
+                table,
+                name
+                );
+            }
+        
+        @Override
+        @CreateEntityMethod
+        public AdqlSchema create(final CopyDepth depth, final AdqlResource parent, final BaseTable<?, ?> table, final String name)
+            {
+            final AdqlSchemaEntity created = create(
                 parent,
                 name
                 );
-            super.insert(
-                schema
+            created.realize(
+                depth,
+                table
                 );
-            schema.realize(
-                base
-                );
-            return schema;
+            return created;
             }
 
         @Override
@@ -318,29 +323,17 @@ implements AdqlSchema
         this(
             CopyDepth.FULL,
             resource,
-            name,
-            null
+            name
             );
         }
 
-    protected AdqlSchemaEntity(final AdqlResource resource, final String name, final BaseSchema<?, ?> base)
-        {
-        this(
-            CopyDepth.FULL,
-            resource,
-            name,
-            base
-            );
-        }
-
-    protected AdqlSchemaEntity(final CopyDepth depth, final AdqlResource resource, final String name, final BaseSchema<?, ?> base)
+    protected AdqlSchemaEntity(final CopyDepth depth, final AdqlResource resource, final String name)
         {
         super(
             depth,
             resource,
             name
             );
-        this.base = base;
         this.resource = resource;
         }
 
@@ -355,7 +348,7 @@ implements AdqlSchema
             base
             );
         }
-
+    
     /**
      * Create a copy of a base table.
      * @todo Delay the full scan until the data is actually requested.
@@ -364,6 +357,14 @@ implements AdqlSchema
     protected void realize(final CopyDepth depth, final BaseTable<?, ?> base)
         {
         log.debug("realize(CopyDepth, BaseTable) [{}][{}][{}][{}][{}]", ident(), name(), depth, base.ident(), base.name());
+/*
+ * Check for a duplicate
+ * final AdqlTable found = select(AdqlSchemaEntity.this, name)
+ *
+ * Check for a conflict
+ * found.base() != base
+ * 
+ */
         final AdqlTable table = factories().adql().tables().create(
             depth,
             AdqlSchemaEntity.this,
@@ -379,6 +380,14 @@ implements AdqlSchema
          */
         }
 
+    protected void realize(final BaseSchema<?, ?> base)
+        {
+        realize(
+            CopyDepth.FULL,
+            base
+            );
+        }
+
     /**
      * Convert this into a full copy.
      * @todo Nested full .. or thin ?
@@ -387,8 +396,11 @@ implements AdqlSchema
      * @todo THIN is fine .. once we fix scan() on JdbcTable
      *
      */
-    protected void realize()
+    protected void realize(final CopyDepth depth, final BaseSchema<?, ?> base)
         {
+        this.base = base ;  // TODO Check this.base == null
+        this.depth = depth; // TODO check this
+
         log.debug("realize() [{}][{}]", ident(), name());
         if (this.depth == CopyDepth.FULL)
             {
@@ -405,7 +417,7 @@ implements AdqlSchema
                 }
             }
         }
-
+    
     /**
      * Our base schema.
      *

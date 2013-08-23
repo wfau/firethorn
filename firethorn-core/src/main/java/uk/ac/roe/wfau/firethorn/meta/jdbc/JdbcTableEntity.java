@@ -55,6 +55,12 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 
 /**
  *
+    @UniqueConstraint(
+        columnNames = {
+            BaseComponentEntity.DB_NAME_COL,
+            BaseComponentEntity.DB_PARENT_COL
+            }
+        )
  *
  */
 @Slf4j
@@ -65,12 +71,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 @Table(
     name = JdbcTableEntity.DB_TABLE_NAME,
     uniqueConstraints={
-        @UniqueConstraint(
-            columnNames = {
-                BaseComponentEntity.DB_NAME_COL,
-                BaseComponentEntity.DB_PARENT_COL
-                }
-            )
         }
     )
 @NamedQueries(

@@ -1,0 +1,315 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# ------------------------------------------------
+# Create new branch in Mercurial.
+#[user@desktop]
+
+    #
+    # Create the new branch.
+    hg branch delete-node
+
+    #
+    # Commit the new branch.
+    hg commit -m "Started delete-node branch"
+
+    #
+    # Push the new branch
+    # http://stackoverflow.com/a/9085762
+    hg push --new-branch
+
+        hg push: option --new-branch not recognized
+
+    #
+    # "The --new-branch flag was introduced in Mercurial 1.6."
+    hg -v
+    
+        Mercurial Distributed SCM (version 1.4)
+        ....
+        
+    #
+    # Older versions of Mercurial required you to use --force instead.
+    hg push --force
+
+# ------------------------------------------------
+# Connect the SSH tunnel to ROE.
+#[sqsh@tau]
+
+    source "${HOME}/sqlserver.txt"
+    ssh -L '*:1435:ramses5:1433' -L '*:1439:ramses9:1433' "${sshsqluser:?}@${sshsqlhost:?}"
+
+# ------------------------------------------------
+# Create our metadata and userdata databases.
+#[sqsh@tau]
+
+    source "${HOME}/sqlserver.txt"
+
+    dbversion=Dave03
+    metadataname="FirethornMetadata${dbversion:?}"
+    userdataname="FirethornUserdata${dbversion:?}"
+
+    #
+    # Function to fill in the template values.
+    sqlsed()
+        {
+        sed '
+            s|{databasename}|'"${databasename}"'|g
+            s|{databasepath}|'"${databasepath}"'|g
+            s|{databaseuser}|'"${databaseuser}"'|g
+            s|{databasepass}|'"${databasepass}"'|g
+            s|{databaselogin}|'"${databaselogin}"'|g
+            ' "${1:?}"
+        }
+
+    source "${HOME:?}/firethorn.settings"
+    pushd "${FIRETHORN_CODE:?}"    
+
+        pushd 'firethorn-sqlserver/src/sql'
+
+            #
+            # Set the template values
+            databasename="${metadataname:?}"
+            databasepath='C:\\Program Files\\Microsoft SQL Server\\MSSQL10.MSSQLSERVER\\MSSQL\\DATA'
+            databaseuser="${databasename:?}User"
+            databaselogin="${databasename:?}Login"
+            databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+cat << EOF
+firethorn.meta.url=jdbc:jtds:sqlserver://localhost:1439/${databasename}
+firethorn.meta.user=${databaselogin}
+firethorn.meta.pass=${databasepass}
+EOF
+
+            #
+            # Create our new metadata database.
+            sqlsed 'create-database.sql' | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+            sqlsed 'create-login.sql'    | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+            sqlsed 'create-user.sql'     | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+
+            #
+            # Set the template values
+            databasename="${userdataname:?}"
+            databasepath='C:\\Program Files\\Microsoft SQL Server\\MSSQL10.MSSQLSERVER\\MSSQL\\DATA'
+            databaseuser="${databasename:?}User"
+            databaselogin="${databasename:?}Login"
+            databasepass="${databasename:?}$(pwgen -s 8 1)"
+
+cat << EOF
+firethorn.user.url=jdbc:jtds:sqlserver://localhost:1439/${databasename}
+firethorn.user.user=${databaselogin}
+firethorn.user.pass=${databasepass}
+EOF
+
+            #
+            # Create our userdata database (including empty table).
+            sqlsed 'create-database.sql'   | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+            sqlsed 'create-login.sql'      | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+            sqlsed 'create-user.sql'       | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+            sqlsed 'create-emptytable.sql' | sqsh -S ramses9 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+
+        popd
+    popd
+
+# ------------------------------------------------
+# Remove the join column constraints.
+#[sqsh@tau]
+
+
+    public class AdqlQueryEntity
+        {
+        ....
+
+        @JoinColumn(
+            name = DB_JDBC_TABLE_COL,
+    ~       unique = false,
+            nullable = true,
+            updatable = true
+            )
+        private JdbcTable jdbctable;
+
+        @JoinColumn(
+            name = DB_ADQL_TABLE_COL,
+    ~       unique = false,
+            nullable = true,
+            updatable = true
+            )
+        private AdqlTable adqltable;
+
+        ....
+        }
+
+
+
+    @Table(
+        name = AdqlColumnEntity.DB_TABLE_NAME,
+        uniqueConstraints={
+    -       @UniqueConstraint(
+    -           columnNames = {
+    -               BaseComponentEntity.DB_NAME_COL,
+    -               BaseComponentEntity.DB_PARENT_COL
+    -               }
+    -           )
+            }
+        )
+    public class AdqlColumnEntity
+        {
+        ....
+        }
+
+
+    public class AdqlTableEntity  { .... }
+    public class AdqlSchemaEntity { .... }
+
+    public class IvoaColumnEntity { .... }
+    public class IvoaTableEntity  { .... }
+    public class IvoaSchemaEntity { .... }
+
+    public class JdbcColumnEntity { .... }
+    public class JdbcTableEntity  { .... }
+    public class JdbcSchemaEntity { .... }
+
+
+TODO
+refactor the factory methods ..
+refactor the default depth (THIN)
+deprecate the explicit depth param
+requires relize on demand ..
+
+
+    first stage of processing
+    - removed the constraints
+    - refactored the create() methods
+
+        AdqlColumn
+        AdqlTable
+        AdqlSchema
+
+        IvoaColumn
+        IvoaTable
+        IvoaSchema
+        
+        JdbcColumn
+
+
+TODO
+refactor depth
+default depth
+
+TODO
+explore levels of copy
+
+
+    node
+  <---- parent
+  <---- base
+        name  [...]
+        ident [...]
+        text  []
+        tree  [PROXY|LIST]
+        state [ACTIVE|DELETED]
+
+        ucd   []
+        units []
+        utype []
+        xtype []
+
+
+    Given the option, a node starts as THIN.
+    Result columns inherit data from the base .. 
+
+    Copy data as needed
+
+    text()
+        {
+        if (this.text != null)
+            {
+            return base.text();
+            }
+        else {
+            return base.text();
+            }
+        }
+
+    copymeta()
+        {
+        if (text == null)
+            {
+            text = base.text();
+            }
+        ....
+        }
+
+    copytree()
+        {
+        copytree(
+            basenode
+            );
+        }
+
+    copytree(basenode)
+        {
+        tree = LIST;
+        for(basechild : basenode.childen())
+            {
+            copytree(
+                basechild
+                );
+            }
+        }
+
+    inport(basechild)
+    copytree(basechild)
+        {
+        tree = LIST;
+        nodechild = children.search(basechild.name()) // By name or by base ?
+        if (nodechild == null)
+            {
+            nodechild = children.create(
+                basechild
+                )
+            }
+        }
+
+
+# -------------------------------
+# Swap back to main branch
+#[user@desktop]
+
+    #
+    # Check which branches we have.
+    hg branches
+
+
+# -------------------------------
+# Testing user functions on Altas
+#[sqsh@tau]
+
+    ssh -L '*:1435:ramses5:1433' -L '*:1439:ramses9:1433' user@fenrir.roe.ac.uk
+
+    servername=ATLASv20130304
+    serverlogin=atlasro
+    serverpass=xxxxxxxx
+
+    sqsh -S ramses5 -U "${serverlogin}" -P "${serverpass}" -D "${servername}"
+
+
+

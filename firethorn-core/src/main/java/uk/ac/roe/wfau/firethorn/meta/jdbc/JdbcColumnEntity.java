@@ -43,6 +43,7 @@ import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateNameException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -52,6 +53,12 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 
 /**
  *
+    @UniqueConstraint(
+        columnNames = {
+            BaseComponentEntity.DB_NAME_COL,
+            BaseComponentEntity.DB_PARENT_COL
+            }
+        )
  *
  */
 @Slf4j
@@ -62,12 +69,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 @Table(
     name = JdbcColumnEntity.DB_TABLE_NAME,
     uniqueConstraints={
-        @UniqueConstraint(
-            columnNames = {
-                BaseComponentEntity.DB_NAME_COL,
-                BaseComponentEntity.DB_PARENT_COL
-                }
-            )
         }
     )
 @NamedQueries(
@@ -145,11 +146,13 @@ public class JdbcColumnEntity
         @CreateEntityMethod
         public JdbcColumn create(final JdbcTable parent, final String name, final int type, final int size)
             {
-            return this.insert(
-                new JdbcColumnEntity(
-                    parent,
-                    name,
-                    type,
+            return create(
+                parent,
+                name,
+                JdbcColumn.Type.jdbc(
+                    type
+                    ),
+                new Integer(
                     size
                     )
                 );
@@ -158,14 +161,26 @@ public class JdbcColumnEntity
         @CreateEntityMethod
         private JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn.Type type, final Integer size)
             {
-            return this.insert(
-                new JdbcColumnEntity(
-                    parent,
-                    name,
-                    type,
-                    size
-                    )
+            JdbcColumn found = search(
+                parent,
+                name
                 );
+            if (found != null)
+                {
+                throw new DuplicateNameException(
+                    name
+                    );
+                }
+            else {
+                return this.insert(
+                    new JdbcColumnEntity(
+                        parent,
+                        name,
+                        type,
+                        size
+                        )
+                    );
+                }
             }
 
         @Override
@@ -177,7 +192,8 @@ public class JdbcColumnEntity
                 return create(
                     parent,
                     field.name(),
-                    field.jdbc()
+                    field.jdbc().meta().jdbc().type(),
+                    field.jdbc().meta().jdbc().size()
                     );
                 }
             else if (field.adql() != null)
@@ -185,7 +201,8 @@ public class JdbcColumnEntity
                 return create(
                     parent,
                     field.name(),
-                    field.adql()
+                    field.adql().meta().adql().type().jdbc(),
+                    field.adql().meta().adql().arraysize()
                     );
                 }
             else {
@@ -196,31 +213,6 @@ public class JdbcColumnEntity
                     field.arraysize()
                     );
                 }
-            }
-
-        private JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn column)
-            {
-            return this.insert(
-                new JdbcColumnEntity(
-                    parent,
-                    name,
-                    column.meta().jdbc().type(),
-                    column.meta().jdbc().size()
-                    )
-                );
-            }
-
-
-        private JdbcColumn create(final JdbcTable parent, final String name, final AdqlColumn column)
-            {
-            return this.insert(
-                new JdbcColumnEntity(
-                    parent,
-                    name,
-                    column.meta().adql().type().jdbc(),
-                    column.meta().adql().arraysize()
-                    )
-                );
             }
 
         @Override
@@ -312,23 +304,12 @@ public class JdbcColumnEntity
         super();
         }
 
-    protected JdbcColumnEntity(final JdbcTable table, final String name, final int type, final int size)
-        {
-        this(
-            table,
-            name,
-            JdbcColumn.Type.jdbc(
-                type
-                ),
-            new Integer(
-                size
-                )
-            );
-        }
-
     protected JdbcColumnEntity(final JdbcTable table, final String name, final JdbcColumn.Type type, final Integer size)
         {
-        super(table, name);
+        super(
+            table,
+            name
+            );
         this.table    = table;
         this.jdbctype = type ;
         this.jdbcsize = size ;

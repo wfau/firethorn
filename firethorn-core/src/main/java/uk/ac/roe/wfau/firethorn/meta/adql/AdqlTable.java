@@ -105,12 +105,6 @@ extends BaseTable<AdqlTable, AdqlColumn>
         public AdqlTable create(final AdqlSchema schema, final AdqlQuery query);
 
         /**
-         * Create a new table.
-         *
-         */
-        public AdqlTable create(final CopyDepth type, final AdqlSchema schema, final AdqlQuery query);
-
-        /**
          * The table column factory.
          *
          */

@@ -36,6 +36,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateNameException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
@@ -44,6 +45,12 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 
 /**
  *
+    @UniqueConstraint(
+        columnNames = {
+            BaseComponentEntity.DB_NAME_COL,
+            BaseComponentEntity.DB_PARENT_COL
+            }
+        )
  *
  */
 @Slf4j
@@ -54,12 +61,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseTableEntity;
 @Table(
     name = IvoaTableEntity.DB_TABLE_NAME,
     uniqueConstraints={
-        @UniqueConstraint(
-            columnNames = {
-                BaseComponentEntity.DB_NAME_COL,
-                BaseComponentEntity.DB_PARENT_COL
-                }
-            )
         }
     )
 @NamedQueries(
@@ -129,12 +130,24 @@ public class IvoaTableEntity
         @CreateEntityMethod
         public IvoaTable create(final IvoaSchema parent, final String name)
             {
-            return this.insert(
-                new IvoaTableEntity(
-                    parent,
-                    name
-                    )
+            final IvoaTable found = search(
+                parent,
+                name
                 );
+            if (found != null)
+                {
+                throw new DuplicateNameException(
+                    name
+                    );
+                }
+            else {
+                return this.insert(
+                    new IvoaTableEntity(
+                        parent,
+                        name
+                        )
+                    );
+                }
             }
 
         @Override

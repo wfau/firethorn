@@ -40,6 +40,7 @@ import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
 import uk.ac.roe.wfau.firethorn.entity.annotation.SelectEntityMethod;
+import uk.ac.roe.wfau.firethorn.entity.exception.DuplicateNameException;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
@@ -50,6 +51,13 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 /**
  *
  *
+    @UniqueConstraint(
+        columnNames = {
+            BaseComponentEntity.DB_NAME_COL,
+            BaseComponentEntity.DB_PARENT_COL
+            }
+        )
+ *
  */
 @Slf4j
 @Entity
@@ -59,12 +67,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponentEntity;
 @Table(
     name = AdqlColumnEntity.DB_TABLE_NAME,
     uniqueConstraints={
-        @UniqueConstraint(
-            columnNames = {
-                BaseComponentEntity.DB_NAME_COL,
-                BaseComponentEntity.DB_PARENT_COL
-                }
-            )
         }
     )
 @NamedQueries(
@@ -169,11 +171,10 @@ public class AdqlColumnEntity
         @CreateEntityMethod
         public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base)
             {
-            return this.insert(
-                new AdqlColumnEntity(
-                    parent,
-                    base
-                    )
+            return this.create(
+                parent,
+                base,
+                base.name()
                 );
             }
 
@@ -181,13 +182,25 @@ public class AdqlColumnEntity
         @CreateEntityMethod
         public AdqlColumn create(final AdqlTable parent, final BaseColumn<?> base, final String name)
             {
-            return this.insert(
-                new AdqlColumnEntity(
-                    parent,
-                    base,
-                    name
-                    )
+            AdqlColumn found = search(
+                parent,
+                name
                 );
+            if (found != null)
+                {
+                throw new DuplicateNameException(
+                    name
+                    );
+                }
+            else {
+                return this.insert(
+                    new AdqlColumnEntity(
+                        parent,
+                        base,
+                        name
+                        )
+                    );
+            }
             }
 
         @Override
