@@ -763,11 +763,22 @@ implements AdqlSchema
                 }
 
             @Override
-            public AdqlQuery create(final String query, final String name)
+            public AdqlQuery create(final String query, final String rowid)
                 {
                 return factories().adql().queries().create(
                     AdqlSchemaEntity.this,
                     query,
+                    rowid
+                    );
+                }
+
+            @Override
+            public AdqlQuery create(final String query, final String rowid, final String name)
+                {
+                return factories().adql().queries().create(
+                    AdqlSchemaEntity.this,
+                    query,
+                    rowid,
                     name
                     );
                 }

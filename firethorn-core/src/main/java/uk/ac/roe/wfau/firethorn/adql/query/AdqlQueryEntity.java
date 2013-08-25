@@ -344,11 +344,11 @@ implements AdqlQuery, AdqlParserQuery
             final AdqlQueryEntity entity = new AdqlQueryEntity(
                 params.current(),
                 schema,
+                input,
+                rowid,
                 names().name(
                     name
-                    ),
-                input,
-                rowid
+                    )
                 );
             //
             // Make the query persistent.
@@ -453,7 +453,7 @@ implements AdqlQuery, AdqlParserQuery
      * Protected constructor, used by factory.
      *
      */
-    protected AdqlQueryEntity(final AdqlQuery.QueryParam params, final AdqlSchema schema, final String name, final String input, final String rowid)
+    protected AdqlQueryEntity(final AdqlQuery.QueryParam params, final AdqlSchema schema, final String input, final String rowid, final String name)
     throws NameFormatException
         {
         super(

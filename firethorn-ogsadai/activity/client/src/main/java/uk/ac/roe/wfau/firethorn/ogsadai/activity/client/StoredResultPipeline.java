@@ -78,9 +78,6 @@ public class StoredResultPipeline
         pipeline.add(
             selector
             );
-//
-// Row count tuple.        
-        
         //
         // Create our results writer.
         final SQLBulkLoadTuple writer = new SQLBulkLoadTuple();
@@ -92,12 +89,29 @@ public class StoredResultPipeline
         writer.addTableName(
             table
             );
-        writer.connectDataInput(
-            selector.getDataOutput()
-            );
         pipeline.add(
             writer
             );
+        //
+		// Add our row number generator.        
+		if (rowid != null)
+			{
+			InsertRowid inserter = new InsertRowid();
+			inserter.setColumnName(
+				rowid
+				);
+		    inserter.connectDataInput(
+		        selector.getDataOutput()
+		        );
+	        writer.connectDataInput(
+                inserter.getDataOutput()
+                );
+			}
+		else {
+	        writer.connectDataInput(
+                selector.getDataOutput()
+                );
+			}
         //
         // Create our delivery handler.
         final DeliverToRequestStatus delivery = new DeliverToRequestStatus();

@@ -72,5 +72,4 @@ extends NamedEntityBeanImpl<SchemaType>
         {
         return entity().link().concat("/tables/select");
         }
-
     }

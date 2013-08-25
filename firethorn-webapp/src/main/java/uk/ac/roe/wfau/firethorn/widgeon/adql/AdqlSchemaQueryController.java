@@ -70,6 +70,12 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
     public static final String CREATE_NAME = "adql.schema.query.create.name" ;
 
     /**
+     * MVC property for the create rowid.
+     *
+     */
+    public static final String CREATE_ROWID = "adql.schema.query.create.rowid" ;
+
+    /**
      * MVC property for the create query.
      *
      */
@@ -135,34 +141,22 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=CREATE_PATH, params={CREATE_QUERY, CREATE_NAME}, method=RequestMethod.POST, produces=JSON_CONTENT)
+    @RequestMapping(value=CREATE_PATH, params={CREATE_QUERY, CREATE_ROWID, CREATE_NAME}, method=RequestMethod.POST, produces=JSON_CONTENT)
     public ResponseEntity<AdqlQueryBean> create(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,
-        @RequestParam(CREATE_QUERY)
+        @RequestParam(value=CREATE_QUERY, required=true)
         final String query,
-        @RequestParam(CREATE_NAME)
+        @RequestParam(value=CREATE_ROWID, required=false)
+        final String rowid,
+        @RequestParam(value=CREATE_NAME, required=false)
         final String name
         ){
         return created(
             schema.queries().create(
                 query,
+                rowid,
                 name
-                )
-            );
-        }
-
-    @ResponseBody
-    @RequestMapping(value=CREATE_PATH, params={CREATE_QUERY}, method=RequestMethod.POST, produces=JSON_CONTENT)
-    public ResponseEntity<AdqlQueryBean> create(
-        @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
-        final AdqlSchema schema,
-        @RequestParam(CREATE_QUERY)
-        final String query
-        ){
-        return created(
-            schema.queries().create(
-                query
                 )
             );
         }

@@ -57,4 +57,9 @@ extends BaseSchemaBean<AdqlSchema>
             entity
             );
         }
+
+    public String getQueries()
+    	{
+    	return entity().link().concat("/queries/select");
+    	}
     }
