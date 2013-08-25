@@ -190,5 +190,72 @@ extends QuerySelectFieldTestBase
             query.osql().replace('\n', ' ')
             );
         }
+    
+    @Test
+    public void test007()
+    throws Exception
+        {
+        validate(
+            this.schema.queries().create(
+                "SELECT"
+                + "   (ra + dec + 2) AS diff"
+                + " FROM"
+                + "    adql_twomass.twomass_psc as twomass"
+                + " WHERE"
+                + "    ra  BETWEEN '56.0' AND '57.9'"
+                + " AND"
+                + "    dec BETWEEN '24.0' AND '24.2'"
+                + ""
+                ),
+            new ExpectedField[] {
+                new ExpectedField("diff", AdqlColumn.Type.DOUBLE, 0),
+                }
+            );
+        }
+    
+    @Test
+    public void test008()
+    throws Exception
+        {
+        validate(
+            this.schema.queries().create(
+                "SELECT"
+                + "   (htmID * pts_key) AS diff"
+                + " FROM"
+                + "    adql_twomass.twomass_psc as twomass"
+                + " WHERE"
+                + "    ra  BETWEEN '56.0' AND '57.9'"
+                + " AND"
+                + "    dec BETWEEN '24.0' AND '24.2'"
+                + ""
+                ),
+            new ExpectedField[] {
+                new ExpectedField("diff", AdqlColumn.Type.LONG, 0),
+                }
+            );
+        }
+    
+    @Test
+    public void test009()
+    throws Exception
+        {
+        validate(
+            this.schema.queries().create(
+                "SELECT"
+                + "   (err_ang / err_ang) AS diff"
+                + " FROM"
+                + "    adql_twomass.twomass_psc as twomass"
+                + " WHERE"
+                + "    ra  BETWEEN '56.0' AND '57.9'"
+                + " AND"
+                + "    dec BETWEEN '24.0' AND '24.2'"
+                + ""
+                ),
+            new ExpectedField[] {
+                new ExpectedField("diff", AdqlColumn.Type.DOUBLE, 0),
+                }
+            );
+        }
+
     }
 

@@ -302,7 +302,7 @@ implements AdqlParser
                     subject,
                     query,
                     ((ADQLTable) clause)
-                    );
+                    ); 
                 }
             //
             // Process the child nodes.
@@ -879,9 +879,6 @@ implements AdqlParser
         ADQLOperand param1 = oper.getLeftOperand();
         ADQLOperand param2 = oper.getRightOperand();
 
-        log.debug("  p1 [{}][{}]", param1, param1.getClass().getName());
-        log.debug("  p2 [{}][{}]", param2, param2.getClass().getName());
-
         ADQLColumn c1 = null ;
         ADQLColumn c2 = null ;
 
@@ -890,7 +887,6 @@ implements AdqlParser
 
         AdqlColumn.Type t1 = null ;
         AdqlColumn.Type t2 = null ;
-        AdqlColumn.Type t3 = null ;
         AdqlColumn.Type return_type = null;
 
         if (param1 instanceof ADQLColumn)
@@ -911,30 +907,54 @@ implements AdqlParser
                 t2 = a2.column().meta().adql().type();
                 }
             }
+    
 
-        if ((t1 == AdqlColumn.Type.DOUBLE) || (t2 == AdqlColumn.Type.DOUBLE)){
+        if (t1==t2){
+				if (oper.getName()=="/"){
+					return_type = AdqlColumn.Type.DOUBLE;
+				} else {
+					return_type=t1;
+				}
+        } else if (param1 instanceof NumericConstant  || param2 instanceof NumericConstant){
+        			return_type = AdqlColumn.Type.DOUBLE;
+        } else if ((t1 == AdqlColumn.Type.DOUBLE) || (t2 == AdqlColumn.Type.DOUBLE)){
         			return_type = AdqlColumn.Type.DOUBLE;
 
+        } else if ((t1 == AdqlColumn.Type.BYTE) || (t2 == AdqlColumn.Type.BYTE)){
+					return_type = AdqlColumn.Type.BYTE;
+        
         } else if((t1 == AdqlColumn.Type.CHAR) && (t2 == AdqlColumn.Type.CHAR)){
-					return_type = AdqlColumn.Type.CHAR;
+        			return_type = AdqlColumn.Type.CHAR;
 
         } else if((t1 == AdqlColumn.Type.UNICODE) && (t2 == AdqlColumn.Type.UNICODE)){
 					return_type = AdqlColumn.Type.UNICODE;
 
         } else if ((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.SHORT)){
-        			return_type = AdqlColumn.Type.SHORT;
-
+          
+        	        if (oper.getName()=="/"){
+        	        	return_type = AdqlColumn.Type.DOUBLE;
+        	        } else {
+        	        	return_type = AdqlColumn.Type.SHORT;
+        	        }
         } else if ((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.LONG) ||
         		   	(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.INTEGER) ||
         		   	(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.LONG) ||
         		   	(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.LONG) ||
         		   	(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.SHORT)){
-        			return_type = AdqlColumn.Type.LONG;
+	        		if (oper.getName()=="/"){
+		  	        	return_type = AdqlColumn.Type.DOUBLE;
+		  	        } else {
+		  	        	return_type = AdqlColumn.Type.LONG;
+		  	        }
 
         } else if ((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.INTEGER) ||
         			(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.INTEGER) ||
         			(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.SHORT)){
-        			return_type = AdqlColumn.Type.INTEGER;
+		        	if (oper.getName()=="/"){
+		  	        	return_type = AdqlColumn.Type.DOUBLE;
+		  	        } else {
+		  	        	return_type = AdqlColumn.Type.INTEGER;
+		  	        }
 
         } else if ((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.FLOAT) ||
         			(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.FLOAT) ||
@@ -946,9 +966,7 @@ implements AdqlParser
         			return_type = AdqlColumn.Type.FLOAT;
 
         }
-
-
-
+       		
         return new SelectFieldImpl(
             "operation",
             return_type
@@ -1088,11 +1106,38 @@ implements AdqlParser
      */
     public static AdqlQuery.SelectField wrap(final UserDefinedFunction funct)
         {
-        log.debug("wrap(UserDefinedFunction)");
-        log.debug("  name   [{}]", funct.getName());
-        log.debug("  number [{}]", funct.isNumeric());
-        log.debug("  string [{}]", funct.isString());
-        return UNKNOWN_FIELD;
+	        log.debug("wrap(UserDefinedFunction)");
+	        log.debug("  name   [{}]", funct.getName());
+	        log.debug("  number [{}]", funct.isNumeric());
+	        log.debug("  string [{}]", funct.isString());
+	    
+	        String name = funct.getName();
+	        
+	        if ((name=="fDMS") ||
+	        	(name=="fDMSbase") || 
+	        	(name=="fHMS") ||
+	        	(name=="fHMSbase")) {
+	        	
+	        	   return new SelectFieldImpl(
+				           "operation",
+				           AdqlColumn.Type.CHAR,
+				           new Integer(32)
+				           );
+
+	        } else if (name=="fGreatCircleDist") {
+				   return new SelectFieldImpl(
+						   "operation",
+				           AdqlColumn.Type.DOUBLE
+				           );
+
+		    } else {
+		    	 return new SelectFieldImpl(
+		    			  "operation",
+				           AdqlColumn.Type.CHAR,
+				           new Integer(32)
+				           );
+	        }
+        
         }
 
 

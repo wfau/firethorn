@@ -45,8 +45,7 @@
         pushd "${FIRETHORN_CODE:?}"
 
             #hg pull ; hg update
-            mvn -P depends clean install
-            mvn clean install 
+            mvn -P all clean install
 
             pushd 'firethorn-webapp'
 
