@@ -78,6 +78,12 @@ extends BaseColumn<JdbcColumn>
          */
         public JdbcColumn create(final JdbcTable parent, final String name, final int type, final int size);
 
+        /**
+         * Create a new column.
+         *
+         */
+        public JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn.Type type);
+
         }
 
     @Override

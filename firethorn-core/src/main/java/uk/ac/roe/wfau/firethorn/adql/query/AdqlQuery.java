@@ -197,8 +197,14 @@ extends NamedEntity, Job
          * Create a new query.
          *
          */
-        public AdqlQuery create(final AdqlSchema schema, final String input, final String name);
+        public AdqlQuery create(final AdqlSchema schema, final String input, final String rowid);
 
+        /**
+         * Create a new query.
+         *
+         */
+        public AdqlQuery create(final AdqlSchema schema, final String input, final String rowid, final String name);
+        
         /**
          * Select all the queries from a resource.
          *
@@ -358,6 +364,12 @@ extends NamedEntity, Job
      *
      */
     public String osql();
+
+    /**
+     * The row id column name.
+     * 
+     */
+    public String rowid();
 
     /**
      * A list of the AdqlColumns used by the query.

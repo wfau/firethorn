@@ -156,6 +156,12 @@ extends BaseTable<JdbcTable, JdbcColumn>
         public JdbcColumn create(final String name, final int type, final int size);
 
         /**
+         * Create a new column.
+         *
+         */
+        public JdbcColumn create(final String name, final JdbcColumn.Type type);
+
+        /**
          * Scan the JDBC metadata.
          *
          */

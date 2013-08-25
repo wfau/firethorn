@@ -143,6 +143,20 @@ public class JdbcColumnEntity
 
         @Override
         @CreateEntityMethod
+        public JdbcColumn create(final JdbcTable parent, final String name, final JdbcColumn.Type type)
+            {
+            return this.insert(
+                new JdbcColumnEntity(
+                    parent,
+                    name,
+                    type.sqltype(),
+                    type.sqlsize()
+                    )
+                );
+            }
+
+        @Override
+        @CreateEntityMethod
         public JdbcColumn create(final JdbcTable parent, final String name, final int type, final int size)
             {
             return this.insert(

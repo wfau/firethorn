@@ -125,6 +125,7 @@ implements AdqlQuery, AdqlParserQuery
     protected static final String DB_MODE_COL   = "mode";
     protected static final String DB_ADQL_COL   = "adql";
     protected static final String DB_OSQL_COL   = "osql";
+    protected static final String DB_ROWID_COL  = "rowid";
     protected static final String DB_INPUT_COL  = "input";
     protected static final String DB_STATUS_COL = "status";
     protected static final String DB_JDBC_TABLE_COL  = "jdbctable";
@@ -312,16 +313,30 @@ implements AdqlQuery, AdqlParserQuery
             return create(
                 schema,
                 input,
+                null,
                 names().name()
                 );
             }
 
         @Override
         @CreateEntityMethod
-        public AdqlQuery create(final AdqlSchema schema, final String input, final String name)
+        public AdqlQuery create(final AdqlSchema schema, final String input, final String rowid)
+            {
+            return create(
+                schema,
+                input,
+                rowid,
+                names().name()
+                );
+            }
+
+        @Override
+        @CreateEntityMethod
+        public AdqlQuery create(final AdqlSchema schema, final String input, final String rowid, final String name)
             {
             log.debug("AdqlQuery create(AdqlSchema, String, String)");
             log.debug("  Schema [{}][{}]", schema.ident(), schema.name());
+            log.debug("  Rowid  [{}]", rowid);
             log.debug("  Name   [{}]", name);
 
             //
@@ -332,7 +347,8 @@ implements AdqlQuery, AdqlParserQuery
                 names().name(
                     name
                     ),
-                input
+                input,
+                rowid
                 );
             //
             // Make the query persistent.
@@ -342,6 +358,7 @@ implements AdqlQuery, AdqlParserQuery
             //
             // Create the query tables.
             // TODO make this automatic, triggered by tables().
+            // TODO delete/create the tables when the input changes.
             entity.build();
             //
             // Return the entity.
@@ -436,12 +453,13 @@ implements AdqlQuery, AdqlParserQuery
      * Protected constructor, used by factory.
      *
      */
-    protected AdqlQueryEntity(final AdqlQuery.QueryParam params, final AdqlSchema schema, final String name, final String input)
+    protected AdqlQueryEntity(final AdqlQuery.QueryParam params, final AdqlSchema schema, final String name, final String input, final String rowid)
     throws NameFormatException
         {
         super(
             name
             );
+        this.rowid  = rowid ;
         this.schema = schema;
         this.input(
             input
@@ -588,6 +606,19 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Column(
+        name = DB_ROWID_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    private String rowid;
+    @Override
+    public String rowid()
+        {
+        return this.rowid;
+        }
+    
+    @Column(
         name = DB_SYNTAX_STATE_COL,
         unique = false,
         nullable = false,
@@ -632,7 +663,7 @@ implements AdqlQuery, AdqlParserQuery
         updatable = true
         )
     private String endpoint ;
-
+    
     protected void params(final AdqlQuery.QueryParam params)
         {
         this.dqp      = params.dqp();
@@ -933,7 +964,6 @@ implements AdqlQuery, AdqlParserQuery
                 final AdqlQuery query = services().resolver().select(
                         ident()
                         );
-
                 //
                 // Create our server client.
                 log.debug("-- Pipeline endpoint [{}]", params().endpoint());

@@ -199,6 +199,17 @@ implements JdbcTable
                         )
                     )
                 );
+
+            // Add our rowid column
+            if (query.rowid() != null)
+                {
+                table.columns().create(
+                    query.rowid(),
+                    JdbcColumn.Type.BIGINT
+                    );
+                }
+            //
+            // Add the select fields.
             for (final AdqlQuery.SelectField field : query.fields())
                 {
     // Size is confused .... ?
@@ -508,6 +519,25 @@ implements JdbcTable
                     name,
                     type,
                     size
+                    );
+                /*
+                 * HibernateCollections
+                children.put(
+                    result .name(),
+                    result
+                    );
+                 *
+                 */
+                return result ;
+                }
+
+            @Override
+            public JdbcColumn create(final String name, final JdbcColumn.Type type)
+                {
+                final JdbcColumn result = factories().jdbc().columns().create(
+                    JdbcTableEntity.this,
+                    name,
+                    type
                     );
                 /*
                  * HibernateCollections

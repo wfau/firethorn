@@ -36,6 +36,17 @@ public class StoredResultPipeline
 
     public PipelineResult execute(final String source, final String store, final String table, final String query)
         {
+        return execute(
+            source,
+            store,
+            table,
+            query,
+            null
+            );
+        }
+    
+    public PipelineResult execute(final String source, final String store, final String table, final String query, final String rowid)
+        {
         //
         // Create our ogsadai client.
         final Server server = new JerseyServer();
@@ -50,6 +61,10 @@ public class StoredResultPipeline
                 )
             );
         //
+        // Create our pipeline.
+        final PipelineWorkflow pipeline = new PipelineWorkflow();
+       
+        //
         // Create our SQL query.
         final SQLQuery selector = new SQLQuery();
         selector.setResourceID(
@@ -60,22 +75,12 @@ public class StoredResultPipeline
         selector.addExpression(
             query
             );
-/*
-        //
-        // Create our output table.
-        final CreateTable creator = new CreateTable();
-        creator.setResourceID(
-            new ResourceID(
-                store
-                )
+        pipeline.add(
+            selector
             );
-        creator.setTableName(
-            table
-            );
-        creator.connectTuples(
-            selector.getDataOutput()
-            );
- */
+//
+// Row count tuple.        
+        
         //
         // Create our results writer.
         final SQLBulkLoadTuple writer = new SQLBulkLoadTuple();
@@ -88,28 +93,16 @@ public class StoredResultPipeline
             table
             );
         writer.connectDataInput(
-//          creator.getDataOutput()
             selector.getDataOutput()
+            );
+        pipeline.add(
+            writer
             );
         //
         // Create our delivery handler.
         final DeliverToRequestStatus delivery = new DeliverToRequestStatus();
         delivery.connectInput(
             writer.getDataOutput()
-            );
-        //
-        // Create our pipeline.
-        final PipelineWorkflow pipeline = new PipelineWorkflow();
-        pipeline.add(
-            selector
-            );
-/*
-        pipeline.add(
-            creator
-            );
- */
-        pipeline.add(
-            writer
             );
         pipeline.add(
             delivery
