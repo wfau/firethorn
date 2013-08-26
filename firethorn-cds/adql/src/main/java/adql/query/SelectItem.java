@@ -23,7 +23,7 @@ import java.util.NoSuchElementException;
 
 import adql.query.operand.ADQLOperand;
 import java.util.UUID;
-
+import java.util.Arrays;
 /**
  * <p>Represents an item of a SELECT clause.</p>
  * 
@@ -160,16 +160,22 @@ public class SelectItem implements ADQLObject {
 	}
 
 	public String getName() {
-		String uuid = UUID.randomUUID().toString();
-		char[] uuidChars = uuid.toCharArray();
-        String newUUID ="";
-        for(int i = 0; i<8;i++){
-            newUUID += uuidChars[i];
-        }       
-        
-        newUUID = "col_" + newUUID.replaceAll("[\\s\\-()]", "");
-       
-		return hasAlias()?alias:newUUID;
+	    String operandName = operand.getName();
+	    String newAlias = "";
+		
+		if( Arrays.asList("+","-","*","/").contains(operandName)){
+			String uuid = UUID.randomUUID().toString();
+			char[] uuidChars = uuid.toCharArray();
+	        String newUUID ="";
+	        for(int i = 0; i<8;i++){
+	            newUUID += uuidChars[i];
+	        }       
+	        
+	        newAlias = "col_" + newUUID.replaceAll("[\\s\\-()]", "");
+		} else {
+			newAlias = operandName;
+		}
+		return hasAlias()?alias:newAlias;
 	}
 
 	public ADQLIterator adqlIterator(){

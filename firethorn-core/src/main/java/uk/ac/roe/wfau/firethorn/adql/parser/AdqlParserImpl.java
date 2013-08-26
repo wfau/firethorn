@@ -920,7 +920,7 @@ implements AdqlParser
         } else if ((t1 == AdqlColumn.Type.DOUBLE) || (t2 == AdqlColumn.Type.DOUBLE)){
         			return_type = AdqlColumn.Type.DOUBLE;
 
-        } else if ((t1 == AdqlColumn.Type.BYTE) || (t2 == AdqlColumn.Type.BYTE)){
+        } else if ((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.BYTE)){
 					return_type = AdqlColumn.Type.BYTE;
         
         } else if((t1 == AdqlColumn.Type.CHAR) && (t2 == AdqlColumn.Type.CHAR)){
@@ -929,7 +929,9 @@ implements AdqlParser
         } else if((t1 == AdqlColumn.Type.UNICODE) && (t2 == AdqlColumn.Type.UNICODE)){
 					return_type = AdqlColumn.Type.UNICODE;
 
-        } else if ((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.SHORT)){
+        } else if ((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.SHORT) ||
+        			(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.BYTE) || 
+        			(t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.SHORT)){
           
         	        if (oper.getName()=="/"){
         	        	return_type = AdqlColumn.Type.DOUBLE;
@@ -940,7 +942,9 @@ implements AdqlParser
         		   	(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.INTEGER) ||
         		   	(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.LONG) ||
         		   	(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.LONG) ||
-        		   	(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.SHORT)){
+        		   	(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.SHORT) || 
+        		   	(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.BYTE) || 
+        			(t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.LONG)){
 	        		if (oper.getName()=="/"){
 		  	        	return_type = AdqlColumn.Type.DOUBLE;
 		  	        } else {
@@ -949,7 +953,9 @@ implements AdqlParser
 
         } else if ((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.INTEGER) ||
         			(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.INTEGER) ||
-        			(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.SHORT)){
+        			(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.SHORT) ||
+        			(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.BYTE) || 
+        			(t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.INTEGER)){
 		        	if (oper.getName()=="/"){
 		  	        	return_type = AdqlColumn.Type.DOUBLE;
 		  	        } else {
@@ -962,7 +968,9 @@ implements AdqlParser
         			(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.FLOAT) ||
         			(t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.LONG) ||
         			(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.FLOAT) ||
-        			(t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.SHORT)){
+        			(t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.SHORT) ||
+        			(t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.BYTE)||
+        			(t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.FLOAT)){
         			return_type = AdqlColumn.Type.FLOAT;
 
         }
