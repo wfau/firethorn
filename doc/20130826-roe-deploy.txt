@@ -1,0 +1,146 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# ------------------------------------------------
+# Update the deployment settings.
+#[user@laptop]
+
+    #
+    # Set the usernames and hostnames
+    cat >  "${HOME:?}/deployment/deploy.logins" << 'EOF'
+
+vmuser=firethorn
+vmlist=(coccinea pyracantha malus pyrus)
+
+firehost=coccinea
+fireuser=${fireuser:-${vmuser}}
+firelogin=${fireuser}@${firehost}
+
+ogsahost=pyracantha
+ogsauser=${ogsauser:-${vmuser}}
+ogsalogin=${ogsauser}@${ogsahost}
+
+testhost=pyrus
+testuser=${testuser:-${vmuser}}
+testlogin=${testuser}@${testhost}
+
+EOF
+
+#
+# Deploy firethorn webapp ...
+# Firethorn works for any method - no need to edit the war file contents.
+# Use our own webapps directory and add a pointer in context file.
+#[user@desktop]
+
+    proxyport=8083
+    proxyhost=localhost
+
+    #
+    # SSH login, including 8080 port forward and SOCKS proxy.
+    source "${HOME:?}/deployment/deploy.logins"
+    ssh -L 8090:localhost:8080 -D ${proxyport:?} "${firelogin:?}"
+
+        #
+        # Start Tomcat.
+        #"${HOME}/tomcat/bin/startup.sh"
+
+        #
+        # Watch the logs.
+        tail -f "${HOME}/tomcat/logs/catalina.out"
+
+#
+# Test with local browser ..
+#[user@laptop]
+
+    firefox 'http://localhost:8090/manager/html' &
+    firefox 'http://localhost:8090/firethorn/'   &
+
+#
+# Route JConsole via ssh socks tunnel.
+# http://stackoverflow.com/questions/151238/has-anyone-ever-got-a-remote-jmx-jconsole-to-work
+# http://simplygenius.com/2010/08/jconsole-via-socks-ssh-tunnel.html
+#[user@laptop]
+
+    source "${HOME:?}/deployment/deploy.logins"
+
+    jmxport=8081
+    jmxhost=${firehost:?}
+    proxyport=8083
+    proxyhost=localhost
+
+    #
+    # Invoke JConsole via SOCKS
+    jconsole -J-DsocksProxyHost=${proxyhost:?} -J-DsocksProxyPort=${proxyport:?} service:jmx:rmi:///jndi/rmi://${jmxhost:?}:${jmxport:?}/jmxrmi &
+
+
+#----------------------------------------------------
+# OGSA-DAI Tomcat
+#
+
+#
+# Deploy ogsadai webapp ...
+# OGSA-DAI install needs to edit files inside the webapp.
+# Use our own webapps directory and add a pointer in context file.
+#[user@laptop]
+
+    source "${HOME:?}/deployment/deploy.logins"
+    ssh -L 8091:localhost:8080 "${ogsalogin:?}"
+
+        #
+        # Shutdown Tomcat
+        "${HOME}/tomcat/bin/shutdown.sh"
+
+        #
+        # Start Tomcat
+        "${HOME}/tomcat/bin/startup.sh"
+
+        #
+        # Tail the logs.
+        tail -f "${HOME}/tomcat/logs/catalina.out"
+
+#
+# Test with browser ..
+#[user@laptop]
+
+    firefox 'http://localhost:8091/manager/html' &
+    firefox 'http://localhost:8091/ogsa-dai/'    &
+
+#
+# Run the OGSA-DAI login fix.
+#[user@laptop]
+
+    source "${HOME:?}/deployment/deploy.logins"
+    ssh "${testlogin:?}"
+
+        source ${HOME:?}/firethorn.settings
+
+        pushd "${FIRETHORN_CODE:?}"
+            pushd 'firethorn-ogsadai/activity/client'
+
+                mvn -D skipTests=false -D test=SingleQueryTestCase test 
+
+            popd
+        popd
+    exit
+
+
+
