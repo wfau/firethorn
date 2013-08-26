@@ -1110,7 +1110,6 @@ implements AdqlParser
 	        log.debug("  name   [{}]", funct.getName());
 	        log.debug("  number [{}]", funct.isNumeric());
 	        log.debug("  string [{}]", funct.isString());
-	    
 	        String name = funct.getName();
 	        
 	        if ((name=="fDMS") ||

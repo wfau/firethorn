@@ -32,6 +32,8 @@ import adql.query.SelectAllColumns;
 import adql.query.SelectItem;
 import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
+import adql.query.operand.function.ADQLFunction;
+import adql.query.operand.function.UserDefinedFunction;
 import adql.translator.ADQLTranslator;
 import adql.translator.PostgreSQLTranslator;
 import adql.translator.TranslationException;
@@ -47,6 +49,8 @@ public class SQLServerTranslator
     implements ADQLTranslator
     {
 
+	private String schemaName="dbo";
+
     /**
      *
      *
@@ -56,6 +60,7 @@ public class SQLServerTranslator
         super(
             false
             );
+
         }
 
     /**
@@ -67,6 +72,7 @@ public class SQLServerTranslator
         super(
             column
             );
+
         }
 
     /**
@@ -81,8 +87,18 @@ public class SQLServerTranslator
             table,
             column
             );
+
         }
 
+    /**
+     * Get the schema name
+     * 
+     * @return String schemaName
+     */
+    public String getSchemaName(){
+    	return schemaName;
+    }
+    
     /**
      * Replaces the PostgreSQLTranslator method to not put LIMIT at the end.
      *
@@ -92,7 +108,6 @@ public class SQLServerTranslator
         throws TranslationException
         {
         log.debug("translate(ADQLQuery)");
-
         final StringBuilder builder = new StringBuilder();
         builder.append(
             translate(
@@ -222,6 +237,33 @@ public class SQLServerTranslator
         return translation.toString();
         }
 
+    
+
+	public String translate(UserDefinedFunction fct) throws TranslationException {
+        log.debug("translate(SelectItem)");
+		return getDefaultADQLFunction(fct);
+	}
+
+	
+	/**
+	 * Gets the default SQL output for the given ADQL function.
+	 * 
+	 * @param fct	The ADQL function to format into SQL.
+	 * 
+	 * @return		The corresponding SQL.
+	 * 
+	 * @throws TranslationException	If there is an error during the translation.
+	 */
+	protected String getDefaultADQLFunction(ADQLFunction fct) throws TranslationException {
+	
+		String sql = this.getSchemaName() + '.' + fct.getName()+"(";
+
+		for(int i=0; i<fct.getNbParameters(); i++)
+			sql += ((i==0)?"":", ")+translate(fct.getParameter(i));
+
+		return sql+")";
+	}
+	
     /**
      * Override the PostgreSQLTranslator method ...
      *
