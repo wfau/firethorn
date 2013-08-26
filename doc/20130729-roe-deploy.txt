@@ -174,10 +174,11 @@ EOF
             databaselogin="${databasename:?}Login"
             databasepass="${databasename:?}$(pwgen -s 8 1)"
 
-            echo "databasename  [${databasename}]"
-            echo "databaseuser  [${databaseuser}]"
-            echo "databaselogin [${databaselogin}]"
-            echo "databasepass  [${databasepass}]"
+cat << EOF
+firethorn.meta.url=jdbc:jtds:sqlserver://localhost:1439/${databasename:?}
+firethorn.meta.user=${databaselogin:?}
+firethorn.meta.pass=${databasepass:?}
+EOF
 
             #
             # Create our new metadata database.
@@ -193,10 +194,11 @@ EOF
             databaselogin="${databasename:?}Login"
             databasepass="${databasename:?}$(pwgen -s 8 1)"
 
-            echo "databasename  [${databasename}]"
-            echo "databaseuser  [${databaseuser}]"
-            echo "databaselogin [${databaselogin}]"
-            echo "databasepass  [${databasepass}]"
+cat << EOF
+firethorn.user.url=jdbc:jtds:sqlserver://localhost:1439/${databasename:?}
+firethorn.user.user=${databaselogin:?}
+firethorn.user.pass=${databasepass:?}
+EOF
 
             #
             # Create our userdata database (including empty table).

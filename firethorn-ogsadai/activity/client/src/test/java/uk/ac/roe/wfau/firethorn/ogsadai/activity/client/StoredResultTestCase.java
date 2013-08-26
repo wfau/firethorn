@@ -8,7 +8,7 @@ import java.net.URL;
 import org.junit.Test;
 
 /**
- *
+ * These tests  no longer work - because we need firethorn to create the tables for us.
  *
  */
 public class StoredResultTestCase
@@ -78,7 +78,7 @@ extends SimpleQueryTestBase
      * Single catalog, TWOMASS.
      *
      */
-    @Test
+    //@Test
     public void test001()
     throws Exception
         {
@@ -100,6 +100,36 @@ extends SimpleQueryTestBase
             "    twomass.ra  BETWEEN '55.0' AND '55.9'" +
             " AND" +
             "    twomass.dec BETWEEN '20.0' AND '22.9'"
+            );
+        }
+
+    /**
+     * Single catalog with rowid.
+     *
+     */
+    //@Test
+    public void test002()
+    throws Exception
+        {
+        final StoredResultPipeline pipeline = new StoredResultPipeline(
+            new URL(
+                endpoint
+                )
+            );
+        pipeline.execute(
+            "twomass",
+            "userdata",
+            unique("table"),
+            " SELECT" +
+            "    twomass.ra," +
+            "    twomass.dec" +
+            " FROM" +
+            "    twomass_psc AS twomass" +
+            " WHERE" +
+            "    twomass.ra  BETWEEN '55.0' AND '55.9'" +
+            " AND" +
+            "    twomass.dec BETWEEN '20.0' AND '22.9'",
+            "rowid"
             );
         }
     }

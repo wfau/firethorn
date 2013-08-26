@@ -128,6 +128,7 @@ public class AdqlQueryVOTableController
 
     public void select(final StringBuilder builder, final AdqlColumn column, final JdbcProductType type)
         {
+    	log.debug("select(StringBuilder, AdqlColumn, JdbcProductType)");
         //
         // Postgresql dialect
         if (type == JdbcProductType.PGSQL)
@@ -182,7 +183,7 @@ public class AdqlQueryVOTableController
                 }
             else {
                 builder.append(
-                    column.root().name()
+            		column.root().name()
                     );
                 }
             }
@@ -201,6 +202,7 @@ public class AdqlQueryVOTableController
         builder.append(
             column.name()
             );
+    	log.debug("-- select(..)");
         }
 
     /**

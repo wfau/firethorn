@@ -63,7 +63,6 @@ public class StoredResultPipeline
         //
         // Create our pipeline.
         final PipelineWorkflow pipeline = new PipelineWorkflow();
-       
         //
         // Create our SQL query.
         final SQLQuery selector = new SQLQuery();
@@ -72,11 +71,11 @@ public class StoredResultPipeline
                 source
                 )
             );
+        pipeline.add(
+                selector
+                );
         selector.addExpression(
             query
-            );
-        pipeline.add(
-            selector
             );
         //
         // Create our results writer.
@@ -86,25 +85,28 @@ public class StoredResultPipeline
                 store
                 )
             );
-        writer.addTableName(
-            table
-            );
         pipeline.add(
             writer
+            );
+        writer.addTableName(
+            table
             );
         //
 		// Add our row number generator.        
 		if (rowid != null)
 			{
 			InsertRowid inserter = new InsertRowid();
-			inserter.setColumnName(
+	        pipeline.add(
+                inserter
+                );
+			inserter.setColname(
 				rowid
 				);
 		    inserter.connectDataInput(
 		        selector.getDataOutput()
 		        );
 	        writer.connectDataInput(
-                inserter.getDataOutput()
+                inserter.getResultOutput()
                 );
 			}
 		else {
@@ -115,11 +117,11 @@ public class StoredResultPipeline
         //
         // Create our delivery handler.
         final DeliverToRequestStatus delivery = new DeliverToRequestStatus();
-        delivery.connectInput(
-            writer.getDataOutput()
-            );
         pipeline.add(
             delivery
+            );
+        delivery.connectInput(
+            writer.getDataOutput()
             );
         //
         // Execute our pipeline.

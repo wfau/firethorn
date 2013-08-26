@@ -60,10 +60,6 @@ EOF
     ssh -L 8090:localhost:8080 -D ${proxyport:?} "${firelogin:?}"
 
         #
-        # Start Tomcat.
-        #"${HOME}/tomcat/bin/startup.sh"
-
-        #
         # Watch the logs.
         tail -f "${HOME}/tomcat/logs/catalina.out"
 
@@ -104,14 +100,6 @@ EOF
 
     source "${HOME:?}/deployment/deploy.logins"
     ssh -L 8091:localhost:8080 "${ogsalogin:?}"
-
-        #
-        # Shutdown Tomcat
-        "${HOME}/tomcat/bin/shutdown.sh"
-
-        #
-        # Start Tomcat
-        "${HOME}/tomcat/bin/startup.sh"
 
         #
         # Tail the logs.

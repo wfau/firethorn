@@ -22,10 +22,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.org.ogsadai.activity.ActivityName;
+import uk.org.ogsadai.client.toolkit.Activity;
 import uk.org.ogsadai.client.toolkit.ActivityOutput;
 import uk.org.ogsadai.client.toolkit.ResourceActivity;
 import uk.org.ogsadai.client.toolkit.SingleActivityOutput;
 import uk.org.ogsadai.client.toolkit.activity.ActivityInput;
+import uk.org.ogsadai.client.toolkit.activity.BaseActivity;
 import uk.org.ogsadai.client.toolkit.activity.BaseResourceActivity;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityInput;
 import uk.org.ogsadai.client.toolkit.activity.SimpleActivityOutput;
@@ -37,7 +39,7 @@ import uk.org.ogsadai.data.StringData;
  *
  */
 public class InsertRowid
-extends BaseResourceActivity
+extends BaseActivity implements Activity
     {
 
     /**
@@ -95,12 +97,11 @@ extends BaseResourceActivity
             );
         }
 
-
     /**
-     * Add the rowid column name.
+     * Set the rowid column name.
      *
      */
-    public void setColumnName(final String name)
+    public void setColname(final String name)
         {
         colname.add(
             new StringData(
@@ -124,7 +125,7 @@ extends BaseResourceActivity
      * Get the tuples output.
      *
      */
-    public SingleActivityOutput getDataOutput()
+    public SingleActivityOutput getResultOutput()
         {
         return output.getSingleActivityOutputs()[0];
         }

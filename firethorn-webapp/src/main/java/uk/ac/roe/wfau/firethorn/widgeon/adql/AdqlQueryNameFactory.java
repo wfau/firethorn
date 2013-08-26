@@ -32,6 +32,19 @@ extends BaseNameFactory<AdqlQuery>
 implements AdqlQuery.NameFactory
     {
     @Override
+    public String name(String name)
+        {
+    	if (name != null)
+    		{
+    		return super.name(
+				name
+				);
+    		}
+    	else {
+    		return name();
+    		}
+        }
+    @Override
     public String name()
         {
         return datename(
