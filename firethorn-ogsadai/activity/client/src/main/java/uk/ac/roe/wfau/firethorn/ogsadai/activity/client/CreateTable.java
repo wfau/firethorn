@@ -58,7 +58,7 @@ implements ResourceActivity
      */
     private final static ActivityName DEFAULT_ACTIVITY_NAME =
         new ActivityName(
-            "uk.ac.roe.wfau.firethorn.ogsadai.CreateTable"
+            "uk.ac.roe.wfau.firethorn.CreateTable"
             );
 
     /**

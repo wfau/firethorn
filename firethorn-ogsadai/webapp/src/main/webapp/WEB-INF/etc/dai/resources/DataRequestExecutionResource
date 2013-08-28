@@ -86,7 +86,7 @@ uk.org.ogsadai.ControlledRepeat=uk.org.ogsadai.ControlledRepeat
 uk.org.ogsadai.CharArraysResize=uk.org.ogsadai.CharArraysResize
 uk.org.ogsadai.ByteArraysResize=uk.org.ogsadai.ByteArraysResize
 uk.org.ogsadai.Tee=uk.org.ogsadai.Tee
-uk.ac.roe.wfau.firethorn.ogsadai.InsertRowid=uk.ac.roe.wfau.firethorn.ogsadai.InsertRowid
+uk.ac.roe.wfau.firethorn.InsertRowid=uk.ac.roe.wfau.firethorn.InsertRowid
 END
 acceptRequests=true
 ENGINE-CONFIG

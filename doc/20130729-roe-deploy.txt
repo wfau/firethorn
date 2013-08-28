@@ -30,12 +30,12 @@
         for file in $(find . -name 'pom.xml')
         do
             sed -i '
-                s/<version>01.07-alpha-03<\/version>/<version>01.07-alpha-04<\/version>/
+                s/<version>01.07-alpha-04<\/version>/<version>01.07-alpha-05<\/version>/
                 ' "${file:?}"
         done
 
         hg diff
-        hg commit -m "Version 01.07-alpha-04"
+        hg commit -m "Version 01.07-alpha-05"
 
     popd
 

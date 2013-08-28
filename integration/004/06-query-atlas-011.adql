@@ -1,0 +1,11 @@
+
+    SELECT
+        count(ra)
+    FROM
+        twomass.twomass_psc AS twomass
+    WHERE
+        twomass.ra  BETWEEN '320.0' AND '350.0'
+    AND
+        twomass.dec BETWEEN '-32.0' AND '-30.0'
+
+

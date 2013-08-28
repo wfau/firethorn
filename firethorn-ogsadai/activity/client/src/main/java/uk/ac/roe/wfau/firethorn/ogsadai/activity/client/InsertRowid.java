@@ -56,7 +56,7 @@ extends BaseActivity implements Activity
      */
     private final static ActivityName DEFAULT_ACTIVITY_NAME =
         new ActivityName(
-            "uk.ac.roe.wfau.firethorn.ogsadai.InsertRowid"
+            "uk.ac.roe.wfau.firethorn.InsertRowid"
             );
 
     /**

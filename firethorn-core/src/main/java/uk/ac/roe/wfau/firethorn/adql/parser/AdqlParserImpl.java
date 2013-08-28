@@ -736,7 +736,7 @@ implements AdqlParser
                 {
                 if (this.adql.root() instanceof JdbcColumn)
                     {
-                    return ((JdbcColumn) this.adql.base());
+                    return ((JdbcColumn) this.adql.root());
                     }
                 }
             return null ;

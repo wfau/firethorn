@@ -12,7 +12,7 @@ import uk.org.ogsadai.client.toolkit.RequestExecutionType;
 import uk.org.ogsadai.client.toolkit.RequestResource;
 import uk.org.ogsadai.client.toolkit.Server;
 import uk.org.ogsadai.client.toolkit.activities.delivery.DeliverToRequestStatus;
-import uk.org.ogsadai.client.toolkit.activities.sql.SQLBulkLoadTuple;
+//import uk.org.ogsadai.client.toolkit.activities.sql.SQLBulkLoadTuple;
 import uk.org.ogsadai.client.toolkit.activities.sql.SQLQuery;
 import uk.org.ogsadai.client.toolkit.presentation.jersey.JerseyServer;
 import uk.org.ogsadai.resource.ResourceID;
@@ -79,7 +79,7 @@ public class StoredResultPipeline
             );
         //
         // Create our results writer.
-        final SQLBulkLoadTuple writer = new SQLBulkLoadTuple();
+        final BulkInsert writer = new BulkInsert();
         writer.setResourceID(
             new ResourceID(
                 store
