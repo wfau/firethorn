@@ -35,7 +35,7 @@
         ssh -L '*:1435:ramses5:1433' -L '*:1439:ramses9:1433' "${username:?}@${hostname:?}"
 
         # Use settings in config
-        # ssh sqltunnel
+        ssh sqltunnel
 
     # TTY #4,5,6 ----------------------------------------------------------
     #source "${HOME:?}/test-users.txt"
