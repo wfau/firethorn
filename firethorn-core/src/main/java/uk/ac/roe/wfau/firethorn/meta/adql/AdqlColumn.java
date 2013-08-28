@@ -121,7 +121,7 @@ extends BaseColumn<AdqlColumn>
         DOUBLECOMPLEX(  "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-complex64-1.0.json", "doubleComplex", JdbcColumn.Type.UNKNOWN),
         DATE(           "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-date-1.0.json",      "char",          JdbcColumn.Type.DATE),      // YYYY-MM-DD
         TIME(           "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-time-1.0.json",      "char",          JdbcColumn.Type.TIME),      // HH:MM:SS.sss
-        DATETIME(       "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-datetime-1.0.json",  "char",          JdbcColumn.Type.TIMESTAMP), // YYYY-MM-DDTHH:MM:SS.sss
+        DATETIME(       "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-datetime-1.0.json",  "char",          JdbcColumn.Type.DATE),      // YYYY-MM-DDTHH:MM:SS.sss
         UNKNOWN(        "http://data.metagrid.co.uk/wfau/firethorn/types/xtype/xtype-unknown-1.0.json",   "unknown",       JdbcColumn.Type.UNKNOWN);
 
         private final String votype ;

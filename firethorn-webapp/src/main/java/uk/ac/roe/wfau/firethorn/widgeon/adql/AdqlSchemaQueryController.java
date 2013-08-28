@@ -141,7 +141,7 @@ extends AbstractEntityController<AdqlQuery, AdqlQueryBean>
      *
      */
     @ResponseBody
-    @RequestMapping(value=CREATE_PATH, params={CREATE_QUERY, CREATE_ROWID, CREATE_NAME}, method=RequestMethod.POST, produces=JSON_CONTENT)
+    @RequestMapping(value=CREATE_PATH, method=RequestMethod.POST, produces=JSON_CONTENT)
     public ResponseEntity<AdqlQueryBean> create(
         @ModelAttribute(AdqlSchemaController.TARGET_ENTITY)
         final AdqlSchema schema,

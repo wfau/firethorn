@@ -188,6 +188,8 @@ public class JdbcColumnEntity
             {
             if (field.jdbc() != null)
                 {
+            	// TODO include a base reference.
+            	// TODO inherit the metadata
                 return create(
                     parent,
                     field.name(),
@@ -196,6 +198,8 @@ public class JdbcColumnEntity
                 }
             else if (field.adql() != null)
                 {
+            	// TODO include a base reference.
+            	// TODO inherit the metadata
                 return create(
                     parent,
                     field.name(),

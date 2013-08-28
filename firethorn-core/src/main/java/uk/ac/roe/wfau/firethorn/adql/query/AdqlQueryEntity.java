@@ -338,7 +338,6 @@ implements AdqlQuery, AdqlParserQuery
             log.debug("  Schema [{}][{}]", schema.ident(), schema.name());
             log.debug("  Rowid  [{}]", rowid);
             log.debug("  Name   [{}]", name);
-
             //
             // Create the query entity.
             final AdqlQueryEntity entity = new AdqlQueryEntity(
@@ -991,7 +990,8 @@ implements AdqlQuery, AdqlParserQuery
                     target,
                     params().store(),
                     tablename,
-                    query.osql()
+                    query.osql(),
+                    query.rowid()
                     );
 
                 if (frog != null)
@@ -1118,6 +1118,7 @@ implements AdqlQuery, AdqlParserQuery
                 this.jdbctable = identity.space().tables().create(
                     this
                     );
+                // Should this be FULL or THIN ?
                 this.adqltable = this.schema().tables().create(
                     this
                     );

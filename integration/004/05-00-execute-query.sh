@@ -20,12 +20,15 @@
 #
 
 adqlfile=${1:?}
+rowidcol=rowid
 
+#    --data   "adql.schema.query.create.rowid=${rowidcol:?}" \
 #
 # Create the query.
 POST "${queryschema:?}/queries/create" \
     --header "firethorn.auth.identity:${identity:?}" \
     --header "firethorn.auth.community:${community:?}" \
+    --data   "adql.schema.query.create.rowid=${rowidcol:?}" \
     --data-urlencode "adql.schema.query.create.query@${adqlfile:?}" \
      | ./pp | tee query-job.json
 
