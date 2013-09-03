@@ -163,7 +163,7 @@ public class SelectItem implements ADQLObject {
 	    String operandName = operand.getName();
 	    String newAlias = "";
 		
-		if( Arrays.asList("+","-","*","/").contains(operandName)){
+		if( Arrays.asList("+","-","*","/", "%").contains(operandName)){
 			String uuid = UUID.randomUUID().toString();
 			char[] uuidChars = uuid.toCharArray();
 	        String newUUID ="";
