@@ -119,28 +119,6 @@
 
             source "${FIRETHORN_TEST:?}/03-01-create-adql-space.sh" 'Atlas ADQL workspace'
 
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR5'        'dbo' "${FIRETHORN_META:?}/BESTDR5_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR7'        'dbo' "${FIRETHORN_META:?}/BESTDR7_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR8'        'dbo' "${FIRETHORN_META:?}/BESTDR8_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR9'        'dbo' "${FIRETHORN_META:?}/BESTDR9_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'DENIS'          'dbo' "${FIRETHORN_META:?}/DENIS_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'F287'           'dbo' "${FIRETHORN_META:?}/F287_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'FIRST'          'dbo' "${FIRETHORN_META:?}/FIRST_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GalexGR6'       'dbo' "${FIRETHORN_META:?}/GalexGR6_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GLIMPSE'        'dbo' "${FIRETHORN_META:?}/GLIMPSE_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'IRAS'           'dbo' "${FIRETHORN_META:?}/IRAS_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'MGC'            'dbo' "${FIRETHORN_META:?}/MGC_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'NVSS'           'dbo' "${FIRETHORN_META:?}/NVSS_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ROSAT'          'dbo' "${FIRETHORN_META:?}/ROSAT_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'SEGUEDR6'       'dbo' "${FIRETHORN_META:?}/SEGUEDR6_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'SSA'            'dbo' "${FIRETHORN_META:?}/SSA_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'Stripe82'       'dbo' "${FIRETHORN_META:?}/Stripe82_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'        'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VHSDR1'         'dbo' "${FIRETHORN_META:?}/VHSDR1_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VIKINGDR2'      'dbo' "${FIRETHORN_META:?}/VIKINGDR2_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'WISE'           'dbo' "${FIRETHORN_META:?}/WISE_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'XMM'            'dbo' "${FIRETHORN_META:?}/XMM_TablesSchema.xml"
-
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASv20130304' 'dbo' "${FIRETHORN_META:?}/ATLASv20130304_TablesSchema.xml"
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ATLASv20130426' 'dbo' "${FIRETHORN_META:?}/ATLASv20130426_TablesSchema.xml"
 
@@ -148,6 +126,28 @@
 adqlspace=${adqlspace:?}
 atlasschema=${adqlschema:?}
 EOF
+
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR5'        'dbo' "${FIRETHORN_META:?}/BESTDR5_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR7'        'dbo' "${FIRETHORN_META:?}/BESTDR7_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR8'        'dbo' "${FIRETHORN_META:?}/BESTDR8_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'BESTDR9'        'dbo' "${FIRETHORN_META:?}/BESTDR9_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'DENIS'          'dbo' "${FIRETHORN_META:?}/DENIS_TablesSchema.xml"
+            #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'F287'           'dbo' "${FIRETHORN_META:?}/F287_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'FIRST'          'dbo' "${FIRETHORN_META:?}/FIRST_TablesSchema.xml"
+            #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GalexGR6'       'dbo' "${FIRETHORN_META:?}/GalexGR6_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GLIMPSE'        'dbo' "${FIRETHORN_META:?}/GLIMPSE_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'IRAS'           'dbo' "${FIRETHORN_META:?}/IRAS_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'MGC'            'dbo' "${FIRETHORN_META:?}/MGC_TablesSchema.xml"
+            #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'NVSS'           'dbo' "${FIRETHORN_META:?}/NVSS_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'ROSAT'          'dbo' "${FIRETHORN_META:?}/ROSAT_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'SEGUEDR6'       'dbo' "${FIRETHORN_META:?}/SEGUEDR6_TablesSchema.xml"
+            #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'SSA'            'dbo' "${FIRETHORN_META:?}/SSA_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'Stripe82'       'dbo' "${FIRETHORN_META:?}/Stripe82_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOMASS'        'dbo' "${FIRETHORN_META:?}/TWOMASS_TablesSchema.xml"
+            #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VHSDR1'         'dbo' "${FIRETHORN_META:?}/VHSDR1_TablesSchema.xml"
+            #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VIKINGDR2'      'dbo' "${FIRETHORN_META:?}/VIKINGDR2_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'WISE'           'dbo' "${FIRETHORN_META:?}/WISE_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'XMM'            'dbo' "${FIRETHORN_META:?}/XMM_TablesSchema.xml"
 
         popd
         
