@@ -1,0 +1,277 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#
+# Setup ssh tunnel to new vm server.
+#[user@desktop]
+ 
+    vi ~/.ssh/config
+
+        Host shepseskaf
+            User dave
+            HostName shepseskaf.roe.ac.uk
+            ProxyCommand ssh -q djer nc %h %p
+            IdentityFile ~/.ssh/dmr.roe.ac.uk.dsa
+            Protocol 2
+            Compression yes
+            PasswordAuthentication no
+
+#
+# Verify ssh logins on new vm server.
+#[user@desktop]
+
+    ssh shepseskaf 'hostname -f'
+        shepseskaf.roe.ac.uk
+
+    ssh dave@shepseskaf 'hostname -f'
+        shepseskaf.roe.ac.uk
+
+    ssh firethorn@shepseskaf 'hostname -f'
+        shepseskaf.roe.ac.uk
+
+
+#
+# Setup ssh tunnel to test vm.
+#[user@desktop]
+ 
+    vi ~/.ssh/config
+
+        Host pyratest1
+            User firethorn
+            HostName pyratest1
+            ProxyCommand ssh -q shepseskaf nc %h %p
+            IdentityFile ~/.ssh/dmr.roe.ac.uk.dsa
+            Protocol 2
+            Compression yes
+            PasswordAuthentication no
+
+#
+# Verify ssh logins to test vm.
+#[user@desktop]
+
+    ssh pyratest1 'hostname -f'
+        pyratest1.roe.ac.uk
+    
+    ssh root@pyratest1 'hostname -f'
+        pyratest1.roe.ac.uk
+
+    ssh firethorn@pyratest1 'hostname -f'
+        pyratest1.roe.ac.uk
+
+#
+# Test VirtManager GUI.
+#[user@desktop]
+
+    ssh -X shepseskaf 'virt-manager'
+
+#
+# Test virsh command line.
+#[user@desktop]
+
+    ssh shepseskaf
+
+        virsh -c 'qemu:///system'
+        
+            list
+             Id    Name                           State
+            ----------------------------------------------------
+             2     pyratest1                      running
+             3     pyratest2                      running
+             4     pyratest3                      running
+
+            list --all
+             Id    Name                           State
+            ----------------------------------------------------
+             2     pyratest1                      running
+             3     pyratest2                      running
+             4     pyratest3                      running
+             -     pyratest                       shut off
+             -     pyratest1-backup               shut off
+             -     pyratest2-backup               shut off
+             -     pyratest3-backup               shut off
+
+
+#
+# Check the Java and Tomcat versions
+#[user@desktop]
+
+
+    testvms=(pyratest1 pyratest2 pyratest3)
+
+    for testvm in "${testvms[@]:?}"
+    do
+        echo "---------"
+        echo "${testvm}"
+        ssh "${testvm}" 'ls -al /var | grep tomcat'
+        ssh "${testvm}" 'ls -al /usr/java'
+    done
+
+#
+# Configure the 'latest' Java versions
+#[user@desktop]
+
+    for testvm in "${testvms[@]:?}"
+    do
+        echo "---------"
+        echo "${testvm}"
+        ssh  "${testvm}"
+
+            pushd '/usr/java'
+
+                #
+                # Create version links
+                ln -s jdk1.6.0_21 jdk-1.6
+                ln -s jdk1.7.0_05 jdk-1.7
+
+                #
+                # Fix broken links.
+                pushd 'jdk-1.7'
+                    if [ -h jdk-1.6 ]
+                    then
+                        rm -f jdk-1.6 
+                    fi
+                    if [ -h jdk1.7.0_05 ]
+                    then
+                        rm -f jdk1.7.0_05
+                    fi
+                popd
+
+                #
+                # Fix broken permissions.
+                chown -R root.root jdk1.7.0_05
+
+                #
+                # Link the latest version.
+                if [ -h java-latest ]
+                then
+                    rm -f java-latest
+                fi
+                ln -s jdk-1.7 java-latest
+
+            popd
+        exit
+    done
+
+#
+# Configure the 'current' Java version
+#[user@desktop]
+
+    for testvm in "${testvms[@]:?}"
+    do
+        echo "---------"
+        echo "${testvm}"
+        ssh  "${testvm}"
+
+        pushd '/usr/java'
+
+            if [ -h java-current ]
+            then
+                rm -f java-current
+            fi
+            ln -s jdk-1.7 java-current
+
+            popd
+        exit
+    done
+
+#
+# Configure the Tomcat versions
+#[user@desktop]
+
+    ssh pyratest1
+
+        ln -s /var/tomcat6 tomcat6
+        ln -s tomcat6 tomcat
+        exit
+
+    ssh pyratest2
+
+        ln -s /var/tomcat7 tomcat7
+        ln -s tomcat7 tomcat
+        exit
+
+    ssh pyratest3
+
+        ln -s /var/tomcat7 tomcat7
+        ln -s tomcat7 tomcat
+        exit
+
+#
+# Configure the Tomcat settings
+#[user@desktop]
+
+    for testvm in "${testvms[@]:?}"
+    do
+        echo "---------"
+        echo "${testvm}"
+        ssh  "${testvm}" << 'EOX'
+
+            #
+            # Configure jmxremote for the Tomcat VM.
+            # http://stackoverflow.com/questions/151238/has-anyone-ever-got-a-remote-jmx-jconsole-to-work
+            # http://blog.cantremember.com/debugging-with-jconsole-jmx-ssh-tunnels/
+            cat > "${HOME}/tomcat/bin/setenv.sh" << 'EOF'
+CATALINA_OPTS="${CATALINA_OPTS} -Xmx128m"
+CATALINA_OPTS="${CATALINA_OPTS} -XX:MaxPermSize=128m"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.port=8081"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.ssl=false"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.authenticate=false"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.local.only=false"
+CATALINA_OPTS="${CATALINA_OPTS} -Djava.rmi.server.hostname=$(hostname -s)"
+CATALINA_OPTS="${CATALINA_OPTS} -Djava.rmi.activation.port=8082"
+EOF
+EOX
+
+    done
+
+
+#
+# Check the Java and Tomcat versions
+#[user@desktop]
+
+    for testvm in "${testvms[@]:?}"
+    do
+        echo "---------"
+        echo "${testvm}"
+        ssh "${testvm}" '/usr/java/java-latest/bin/java -version'
+    done
+
+#
+# How to deploy our webapps in a standard way ?
+# Firethorn - simple
+# OGSA-DAI  - need to edit database config inside the webapp 
+
+    context with ref to war
+    context with ref to dir
+
+    Deploy the webapp - then run a script to modify the expanded webapp ?
+
+
+
+
+
+
+
+
+
+

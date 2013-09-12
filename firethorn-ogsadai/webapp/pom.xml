@@ -228,13 +228,16 @@
         </plugins>
 
         <resources>
+    		<resource>
+    			<directory>${basedir}/src/conf</directory>
+                <includes>
+                    <include>*.properties</include>
+                    <include>*.xml</include>
+                </includes>
+    		</resource>
         </resources>
 
         <testResources>
-
-            <!--+
-                | Test configuration files.
-                +-->
     		<testResource>
     			<directory>${basedir}/src/test/conf</directory>
                 <includes>
@@ -242,7 +245,6 @@
                     <include>*.xml</include>
                 </includes>
     		</testResource>
-
         </testResources>
 
     </build>

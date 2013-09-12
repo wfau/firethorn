@@ -711,7 +711,7 @@ public class AdqlTableEntity
                         );
                     if (column != null)
                         {
-                        log.debug("Found existing column [{}][{}]", column.ident(), column.name());
+                        log.debug("Found ADQL column [{}][{}]", column.ident(), column.name());
                         }
                     else {
                         try {
@@ -723,10 +723,10 @@ public class AdqlTableEntity
                             }
                         catch (final NameNotFoundException ouch)
                             {
-                            log.error("Unable to locate base table [{}]", name);
+                            log.error("Unable to locate base column [{}]", name);
                             throw ouch;
                             }
-                        log.debug("Created new column [{}][{}]", column.ident(), column.name());
+                        log.debug("Created new ADQL column [{}][{}]", column.ident(), column.name());
                         }
                     return column;
                     }

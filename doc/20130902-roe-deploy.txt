@@ -32,7 +32,7 @@ Virtual machines
 # ---------------------------------------------------------------------------------------
 
 #
-# Set up ssh tunnel back to home network.
+# Set up ssh tunnel to home network.
 #[laptop@hotel]
 
     vi ~/.ssh/config
@@ -47,7 +47,7 @@ Virtual machines
             PasswordAuthentication no
 
 #
-# Setup tunneled connection to new vm server.
+# Setup ssh tunnel to new vm server.
 #[user@desktop]
  
     vi ~/.ssh/config

@@ -29,7 +29,7 @@
         sed -i '
             s|^dai.driver.class=.*|dai.driver.class='${databasedriver?}'|
             s|^dai.data.resource.uri=.*|dai.data.resource.uri='${databaseurl?}'|
-            ' "${webinfdir?}/etc/dai/resources/${resourcename?}"
+            ' "${webinfdir?}/resources/${resourcename?}"
 
         #
         # Set the login credentials.
@@ -38,7 +38,7 @@
                 s|^username=.*|username='${databaseuser?}'|
                 s|^password=.*|password='${databasepass?}'|
                 }
-            ' "${webinfdir?}/etc/dai/logins.txt"
+            ' "${webinfdir?}/logins.txt"
         }
 
 
