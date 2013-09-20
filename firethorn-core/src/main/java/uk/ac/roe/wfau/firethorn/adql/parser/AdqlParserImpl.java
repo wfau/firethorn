@@ -882,7 +882,6 @@ implements AdqlParser
             column
             );
         }
-
     /**
      * Wrap an Operation.
      *
@@ -926,8 +925,9 @@ implements AdqlParser
                 }
             }
     
-
-        if (t1==t2){
+        if (oper.getName()=="%") {
+        	return_type = AdqlColumn.Type.INTEGER;
+        } else if (t1==t2){
 				if (oper.getName()=="/"){
 					return_type = AdqlColumn.Type.DOUBLE;
 				} else {
