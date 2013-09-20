@@ -1,0 +1,155 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#
+# Test VirtManager GUI.
+#[user@desktop]
+
+    ssh -X shepseskaf 'virt-manager'
+
+#
+# Test virsh command line.
+#[user@shepseskaf]
+
+    virsh -c 'qemu:///system'
+
+
+        list
+             Id    Name                           State
+            ----------------------------------------------------
+             2     pyratest1                      running
+             3     pyratest2                      running
+             4     pyratest3                      running
+
+
+        #
+        # snapshot-current
+        # "Output the snapshot XML for the domain's current snapshot (if any)."
+        snapshot-current pyratest1
+            error: domain 'pyratest1' has no current snapshot
+
+        #
+        # snapshot-create
+        # "Create a snapshot for a domain"
+        snapshot-create pyratest1
+            error: Requested operation is not valid: Disk '/shepseskaf/virtual-machines/pyratest1' does not support snapshotting
+
+#
+# Disc image needs to be qcow2 to support snapshots.
+# http://linuxdrops.com/solve-virsh-snapshot-error-requested-operation-is-not-valid-disk-does-not-support-snapshotting/
+#[user@shepseskaf]
+
+    virsh -c 'qemu:///system' shutdown pyratest1
+        Domain pyratest1 is being shutdown
+
+#
+# Convert the disc image format.
+#[user@shepseskaf]
+
+    pushd /shepseskaf/virtual-machines
+
+        #
+        # Problem  - we don't have write access to the [virtual-machines] directory.
+        qemu-img convert -f raw -O qcow2 \
+            pyratest1 \
+            pyratest1.qcow
+
+        qemu-img: pyratest1.qcow2: error while converting qcow2: Permission denied
+
+    popd
+
+    #
+    # Need to be root to write to this directory.
+    ls -al /shepseskaf/virtual-machines
+
+        drwxr-xr-x  2 root         root                4096 Aug 26 16:58 .
+        drwxr-xr-x 17 root         root                4096 Aug 26 12:05 ..
+        -rwxr-xr-x  1 root         root         10737418240 Aug 26 15:06 pyratest
+        -rwxr-xr-x  1 root         root         10737418240 Sep 13 13:14 pyratest1
+
+    
+    #
+    # Not possible to invoke a snapshot from the GUI.
+    # Not possible to convert the image from the command line.
+
+    #
+    # Try converting in our home directory.
+    qemu-img convert -f raw -O qcow2 \
+        /shepseskaf/virtual-machines/pyratest1 \
+        ${HOME}/vmimages/pyratest1.qcow
+
+    #
+    # Grant read/write to the libvirt-qemu group.
+    chgrp -R 'libvirt-qemu' ${HOME}/vmimages/
+    chmod g+rws ${HOME}/vmimages/
+    
+    #
+    # Modify the VM definition.
+    virsh -c 'qemu:///system'
+    
+        edit pyratest1
+
+            <disk type='file' device='disk'>
+            -   <driver name='qemu' type='raw'/>
+            -   <source file='/shepseskaf/virtual-machines/pyratest1'/>
+            +   <driver name='qemu' type='qcow2'/>
+            +   <source file='/home/dave/vmimages/pyratest1.qcow'/>
+                <target dev='vda' bus='virtio'/>
+                <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+            </disk>
+
+    #
+    # Restart the VM.
+    virsh -c 'qemu:///system'
+
+        start pyratest1
+
+#
+# Test the snapshot facility.
+#[user@shepseskaf]
+
+    virsh -c 'qemu:///system'
+
+        snapshot-current pyratest1
+            error: domain 'pyratest1' has no current snapshot
+
+        snapshot-create pyratest1
+            Domain snapshot 1379078023 created
+
+        snapshot-list pyratest1
+             Name                 Creation Time             State
+            ------------------------------------------------------------
+             1379078023           2013-09-13 14:13:43 +0100 running
+
+
+        snapshot-list --tree pyratest1
+            1379078023
+
+        snapshot-create pyratest1
+            Domain snapshot 1379080066 created
+
+        snapshot-list --tree pyratest1
+            1379078023
+             |
+              +- 1379080066
+
+

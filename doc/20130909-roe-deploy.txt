@@ -244,7 +244,6 @@ EOX
 
     done
 
-
 #
 # Check the Java and Tomcat versions
 #[user@desktop]
@@ -253,7 +252,7 @@ EOX
     do
         echo "---------"
         echo "${testvm}"
-        ssh "${testvm}" '/usr/java/java-latest/bin/java -version'
+        ssh  "${testvm}" '/usr/java/java-latest/bin/java -version'
     done
 
 #
@@ -261,10 +260,20 @@ EOX
 # Firethorn - simple
 # OGSA-DAI  - need to edit database config inside the webapp 
 
-    context with ref to war
-    context with ref to dir
+    #
+    # Deploy the webapp - then run a script to modify the expanded webapp ?
 
-    Deploy the webapp - then run a script to modify the expanded webapp ?
+#
+# Check the Debian version.
+#[user@desktop]
+
+    ssh pyratest1 'cat /etc/debian_version'
+        7.1
+
+    #
+    # Using local test VMs ...
+    # Boring - I don't have a default image for Debian yet.
+    # Really boring ... creating base OS image, then adding Java and Tomcat manually.
 
 
 

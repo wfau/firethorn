@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.adql.parser;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -139,6 +141,20 @@ implements AdqlParser
 
     protected ADQLParser parser ;
 
+    protected String prepare(final String input)
+        {
+        String s1 = input.trim();
+        
+        Pattern p1 = Pattern.compile(
+            "/\\*.*\\*/",
+            Pattern.DOTALL
+            );
+        Matcher m1 = p1.matcher(s1);
+        String  s2 = m1.replaceAll(""); 
+        
+        return s2 ;
+        }
+    
     @Override
     public void process(final AdqlParserQuery subject)
         {
@@ -146,7 +162,9 @@ implements AdqlParser
         // Parse the query.
         try {
             final ADQLQuery object = this.parser.parseQuery(
-                subject.input()
+                prepare(
+                    subject.input()
+                    )
                 );
             //
             // Reset the query state.

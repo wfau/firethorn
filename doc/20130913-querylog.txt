@@ -1,0 +1,395 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# ------------------------------------------------
+# Check the server aliases.
+#[root@tau]
+
+    vi /etc/freetds/freetds.conf
+
+        [ramses1]
+            host = localhost
+            port = 1431
+
+        [ramses2]
+            host = localhost
+            port = 1432
+
+        [ramses3]
+            host = localhost
+            port = 1433
+
+        [ramses4]
+            host = localhost
+            port = 1434
+
+        [ramses5]
+            host = localhost
+            port = 1435
+
+        [ramses6]
+            host = localhost
+            port = 1436
+
+        [ramses7]
+            host = localhost
+            port = 1437
+
+        [ramses8]
+            host = localhost
+            port = 1438
+
+        [ramses9]
+            host = localhost
+            port = 1439
+
+        [ramses10]
+            host = localhost
+            port = 1440
+
+        [ramses11]
+            host = localhost
+            port = 1442
+
+        [ramses12]
+            host = localhost
+            port = 1442
+
+
+
+# ------------------------------------------------
+# Connect the SSH tunnel to ROE.
+#[sqsh@tau]
+
+    source "${HOME}/sqlserver.txt"
+    ssh \
+        -L '*:1431:ramses1:1433' \
+        -L '*:1432:ramses2:1433' \
+        -L '*:1433:ramses3:1433' \
+        -L '*:1434:ramses4:1433' \
+        -L '*:1435:ramses5:1433' \
+        -L '*:1436:ramses6:1433' \
+        -L '*:1437:ramses7:1433' \
+        -L '*:1438:ramses8:1433' \
+        -L '*:1439:ramses9:1433' \
+        -L '*:1440:ramses10:1433' \
+        -L '*:1441:ramses11:1433' \
+        -L '*:1442:ramses12:1433' \
+        -L '*:1443:ramses13:1433' \
+        "${sshuser:?}@${sshhost:?}"
+
+# ------------------------------------------------
+# Connect to our SQLServer.
+#[sqsh@tau]
+
+    cat >> "${HOME}/sqlserver.txt" << EOF
+
+    adminuser=xxxx
+    adminpass=xxxx
+    admindata=userInterface
+
+    EOF
+
+
+    source "${HOME}/sqlserver.txt"
+    sqsh -S ramses3 -U "${adminuser}" -P "${adminpass}"
+
+        USE [userInterface]
+        go
+
+        EXECUTE sp_help webQueries
+        go -m vert
+
+            Column_name:          query
+            Type:                 varchar
+            Computed:             no
+            Length:               4096
+            Prec:                      
+            Scale:                     
+            Nullable:             no
+            TrimTrailingBlanks:   no
+            FixedLenNullInSource: no
+            Collation:            Latin1_General_CI_AS
+             
+            Column_name:          cpu_sec
+            Type:                 float
+            Computed:             no
+            Length:               8
+            Prec:                 53
+            Scale:                NULL
+            Nullable:             yes
+            TrimTrailingBlanks:   (n/a)
+            FixedLenNullInSource: (n/a)
+            Collation:            NULL
+             
+            Column_name:          elapsed_time
+            Type:                 float
+            Computed:             no
+            Length:               8
+            Prec:                 53
+            Scale:                NULL
+            Nullable:             no
+            TrimTrailingBlanks:   (n/a)
+            FixedLenNullInSource: (n/a)
+            Collation:            NULL
+             
+            Column_name:          physical_IO
+            Type:                 float
+            Computed:             no
+            Length:               8
+            Prec:                 53
+            Scale:                NULL
+            Nullable:             yes
+            TrimTrailingBlanks:   (n/a)
+            FixedLenNullInSource: (n/a)
+            Collation:            NULL
+             
+            Column_name:          row_count
+            Type:                 int
+            Computed:             no
+            Length:               4
+            Prec:                 10
+            Scale:                0
+            Nullable:             no
+            TrimTrailingBlanks:   (n/a)
+            FixedLenNullInSource: (n/a)
+            Collation:            NULL
+             
+            Column_name:          time
+            Type:                 datetime
+            Computed:             no
+            Length:               8
+            Prec:                      
+            Scale:                     
+            Nullable:             yes
+            TrimTrailingBlanks:   (n/a)
+            FixedLenNullInSource: (n/a)
+            Collation:            NULL
+             
+            Column_name:          username
+            Type:                 varchar
+            Computed:             no
+            Length:               64
+            Prec:                      
+            Scale:                     
+            Nullable:             yes
+            TrimTrailingBlanks:   no
+            FixedLenNullInSource: yes
+            Collation:            Latin1_General_CI_AS
+             
+            Column_name:          ipaddress
+            Type:                 varchar
+            Computed:             no
+            Length:               32
+            Prec:                      
+            Scale:                     
+            Nullable:             yes
+            TrimTrailingBlanks:   no
+            FixedLenNullInSource: yes
+            Collation:            Latin1_General_CI_AS
+             
+            Column_name:          dbname
+            Type:                 varchar
+            Computed:             no
+            Length:               64
+            Prec:                      
+            Scale:                     
+            Nullable:             yes
+            TrimTrailingBlanks:   no
+            FixedLenNullInSource: yes
+            Collation:            Latin1_General_CI_AS
+             
+            Column_name:          row_size
+            Type:                 int
+            Computed:             no
+            Length:               4
+            Prec:                 10
+            Scale:                0
+            Nullable:             no
+            TrimTrailingBlanks:   (n/a)
+            FixedLenNullInSource: (n/a)
+            Collation:            NULL
+
+
+        SELECT DISTINCT dbname FROM webQueries
+        go
+
+            Msg 229, Level 14, State 5
+            Server 'RAMSES3', Line 1
+            The SELECT permission was denied on the object 'webQueries', database 'userInterface', schema 'dbo'.
+
+        quit
+
+
+    source "${HOME}/sqlserver.txt"
+    sqsh -S ramses3 -U "${adminuser}" -P "${adminpass}"
+
+        USE [userInterface]
+        go
+
+        SELECT DISTINCT dbname FROM webQueries
+        go
+
+             dbname                                                          
+             ----------------------------------------------------------------
+             ATLASv20120128                                                  
+             ATLASv20130220                                                  
+             ATLASv20130304                                                  
+             ATLASv20130426                                                  
+             ..............                      
+             WSERV1v20100706                                                 
+             WSERV2v20110322                                                 
+             WSERV3v20100818                                                 
+             WSERV4v20101019                                                 
+             WSERV5v20120208                                                 
+             WSERV6v20120808                                                 
+
+            (87 rows affected)
+
+
+        SELECT DISTINCT ipaddress FROM webQueries
+        go
+
+             ipaddress                       
+             --------------------------------
+             1.144.180.84                    
+             1.148.108.41                    
+             103.5.142.13                    
+             107.204.29.245                  
+             .............            
+             96.244.177.90                   
+             96.44.160.234                   
+             98.243.174.52                   
+
+            (2758 rows affected)
+
+        SELECT DISTINCT username FROM webQueries
+        go
+
+             username                                                        
+             ----------------------------------------------------------------
+             aa..
+             ab..                                                            
+             ac..
+             ....                            
+             za..
+             zb..
+
+            (397 rows affected)
+
+
+        SELECT COUNT(query) FROM webQueries
+        go
+
+             -----------
+                  358126
+
+        SELECT TOP 100 query FROM webQueries
+        go -m vert
+
+        SELECT DISTINCT query FROM webQueries
+        go -m vert
+
+        SELECT TOP 10 dbname, query FROM webQueries
+        go -m vert | tee /tmp/ramses3-queries.txt
+
+
+
+
+        SELECT DISTINCT dbname, query FROM webQueries
+        go | tee 20130913-ramses3-queries.002
+
+        SELECT DISTINCT dbname, LEN(query), query FROM webQueries WHERE dbname LIKE 'ATLAS%'
+        go | sed 's/\t/ /g' | tee 20130913-ramses3-queries.004
+
+        SELECT LEN(query), query FROM webQueries WHERE dbname LIKE 'ATLAS%'
+        go | sed 's/\t/ /g' 
+
+        #
+        # Queries seem to be truncated at around 256.
+        # Checked the textsize [property - no change.
+        # http://freetds.schemamania.org/faq.html#textdata
+        set textsize 10000
+        go
+
+# ------------------------------------------------
+
+        source "${HOME}/sqlserver.txt"
+        sqsh \
+            -A 2048 \
+            -o sqsh.log \
+            -S ramses5 \
+            -U "${adminuser}" \
+            -P "${adminpass}" \
+            -D userInterface \
+            -C "SELECT DISTINCT dbname, LEN(query), query FROM webQueries WHERE dbname LIKE 'ATLAS%'"
+
+# ------------------------------------------------
+
+        source "${HOME}/sqlserver.txt"
+        sqsh \
+            -S ramses5 \
+            -U "${adminuser}" \
+            -P "${adminpass}" \
+            -D userInterface \
+
+        set textsize 10000
+        SELECT DISTINCT query FROM webQueries WHERE dbname LIKE 'ATLAS%' AND LEN(query) = 704
+        go
+        go -m bcp
+        go -m none
+        go -m vert
+        go -m horiz
+
+
+#----------------------------------------
+# Use the Windows GUI to check.
+#[user@desktop]
+
+    ssh -X fenrir 'rdesktop -ken-gb -g1024x768 -x l -u dave 192.168.137.35'
+ 
+        SELECT DISTINCT dbname, row_count, elapsed_time, '----', query FROM webQueries ORDER BY dbname asc, row_count desc
+
+# ------------------------------------------------
+
+        source "${HOME}/sqlserver.txt"
+        for servernum in {1..13}
+        do
+            servername="ramses${servernum}"
+            echo ""
+            echo "---- ----"
+            echo "${servername:?}"
+
+            sqsh \
+                -S "${servername:?}" \
+                -U "${adminuser:?}" \
+                -P "${adminpass:?}" \
+                -D "${admindata:?}" \
+                -C "SELECT COUNT(query) FROM webQueries"
+        done
+
+
+
+
+
+
+

@@ -26,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Ignore;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
-import uk.ac.roe.wfau.firethorn.adql.query.QuerySelectFieldTestBase.ExpectedField;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -47,9 +46,9 @@ public class AtlasQueryTestBase
 extends TestBase
     {
 
-    protected JdbcResource atlas ;
-    protected AdqlSchema   schema  ;
+    protected static JdbcResource resource  ;
     protected AdqlResource workspace ;
+    protected AdqlSchema   schema ;
 
     /**
      * Create our resources.
@@ -61,48 +60,28 @@ extends TestBase
         {
         //
         // Create our JDBC resources.
-        this.atlas = factories().jdbc().resources().create(
-            "atlas",
-            "ATLASv20130304",
-            "atlas",
-            "spring:RoeATLAS"
-            );
+        if (resource == null)
+            {
+            resource = factories().jdbc().resources().create(
+                "atlas",
+                "ATLASv20130426",
+                "atlas",
+                "spring:RoeATLAS"
+                );
+            }
         //
         // Create our ADQL workspace.
         this.workspace = factories().adql().resources().create(
-            "adql-workspace"
+            "workspace"
             );
         //
-        // Import the JDBC tables into our workspace.
+        // Import the tables into our workspace.
         this.schema = this.workspace.schemas().create(
-            "adql_atlas"
-            );
-        this.schema.tables().create(
-            this.atlas.schemas().select(
-                "ATLASv20130304",
+            resource.schemas().select(
+                "ATLASv20130426",
                 "dbo"
-                ).tables().select(
-                    "atlassourcexDR7photoobj"
-                    )
+                )
             );
-
-        this.schema.tables().create(
-                this.atlas.schemas().select(
-                    "ATLASv20130304",
-                    "dbo"
-                    ).tables().select(
-                        "atlasSource"
-                        )
-                );
-        
-        this.schema.tables().create(
-                this.atlas.schemas().select(
-                    "ATLASv20130304",
-                    "dbo"
-                    ).tables().select(
-                        "Filter"
-                        )
-                );
         }
 
     /**
@@ -218,6 +197,39 @@ extends TestBase
             {
             log.debug("Field [{}][{}][{}]", field.name(), field.type(), field.arraysize());
             }
+        }
+
+    /**
+     * Clean a query string.
+     * 
+     */
+    protected String clean(String s1)
+        {
+        final String s2 = s1.replaceAll("\\p{Space}+", " ");
+        return s2;
+        }
+
+    /**
+     * Compare an ADQL query and the resulting SQL output.
+     * 
+     */
+    public void test(final String adql, final String osql)
+    throws Exception
+        {
+        final AdqlQuery query = this.schema.queries().create(
+            adql
+            );
+        debug(
+            query
+            );
+        assertEquals(
+            clean(
+                osql
+                ),
+            clean(
+                query.osql()
+                )
+            );
         }
     }
 
