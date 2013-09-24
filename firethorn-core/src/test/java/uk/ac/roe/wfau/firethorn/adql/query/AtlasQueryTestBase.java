@@ -176,7 +176,7 @@ extends TestBase
         log.debug("Status [{}]", query.status());
         log.debug("ADQL   [{}]", query.adql());
         log.debug("OSQL   [{}]", query.osql());
-        log.debug("Target [{}]", query.primary().ident());
+        log.debug("Target [{}]", (query.primary() != null) ? query.primary().ident() : null);
         log.debug("Resources -- ");
         for (final BaseResource<?> target : query.resources())
             {
@@ -205,6 +205,11 @@ extends TestBase
      */
     protected String clean(String s1)
         {
+        if (s1 == null)
+            {
+            return  null ;
+            }
+
         final String s2 = s1.replaceAll("\\p{Space}+", " ");
         return s2;
         }

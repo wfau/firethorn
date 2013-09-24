@@ -146,7 +146,7 @@ implements AdqlParser
         String s1 = input.trim();
         
         Pattern p1 = Pattern.compile(
-            "/\\*.*\\*/",
+            "/\\*.*?\\*/",
             Pattern.DOTALL
             );
         Matcher m1 = p1.matcher(s1);
