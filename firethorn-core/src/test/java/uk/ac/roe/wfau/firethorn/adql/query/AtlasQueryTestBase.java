@@ -218,7 +218,7 @@ extends TestBase
      * Compare an ADQL query and the resulting SQL output.
      * 
      */
-    public void test(final String adql, final String osql)
+    public void compare(final String adql, final String osql)
     throws Exception
         {
         final AdqlQuery query = this.schema.queries().create(

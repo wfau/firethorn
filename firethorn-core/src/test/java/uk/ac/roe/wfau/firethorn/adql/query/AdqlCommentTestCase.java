@@ -30,7 +30,7 @@ public class AdqlCommentTestCase
     public void test000()
     throws Exception
         {
-        test(
+        compare(
             "SELECT\n" + 
             "    TOP 100\n" + 
             "    ra,\n" + 
@@ -53,7 +53,7 @@ public class AdqlCommentTestCase
     public void test001()
     throws Exception
         {
-        test(
+        compare(
             "SELECT\n" + 
             "    TOP 100\n" + 
             "    ra,\n" + 

@@ -17,6 +17,7 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query ;
 
+import static org.junit.Assert.*;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
@@ -32,7 +33,7 @@ extends AtlasQueryTestBase
     {
 
     /**
-     * Test Subquery alias - returns 8778 rows"
+     * Test query Subquery in Select - returns 8778 rows"
      *
      * Query:
      * Select DistanceMins From atlassourcexDR7photoobj as CrossMatch,
@@ -41,77 +42,71 @@ extends AtlasQueryTestBase
      * Where DistanceMins < 2/60.0 AND sdsstype = 3 AND sdssPrimary = 1 AND T.id = CrossMatch.masterObjID
      *
      */
+    private static final String QUERY_000 =
+
+          "SELECT"
+        + "    DistanceMins"
+        + " FROM"
+        + "    atlassourcexDR7photoobj as CrossMatch,"
+        + "    (Select s.sourceid as id From atlassource as s Where ra > 182 AND ra < 184 AND dec > -3 AND dec < -1 AND mergedclass =1 group by s.sourceid) AS T "
+        + " WHERE"
+        + " DistanceMins < 2/60.0 AND sdsstype = 3"
+        + " AND"
+        + "   sdssPrimary = 1 AND T.id = CrossMatch.masterObjID"
+        + ""
+        ;
+
 	@Test
     public void test000()
     throws Exception
         {
-        test(
-            "SELECT\n" + 
-            "    DistanceMins\n" + 
-            "FROM\n" + 
-            "    atlassourcexDR7photoobj AS CrossMatch, \n" + 
-            "    (\n" + 
-            "    SELECT\n" + 
-            "        s.sourceid as id\n" + 
-            "    FROM\n" + 
-            "        atlassource as s\n" + 
-            "    WHERE\n" + 
-            "        ra > 182 AND ra < 184\n" + 
-            "    AND\n" + 
-            "        dec > -3 AND dec < -1\n" + 
-            "    AND\n" + 
-            "        mergedclass =1\n" + 
-            "    GROUP BY\n" + 
-            "        s.sourceid\n" + 
-            "    ) AS T\n" + 
-            "WHERE\n" + 
-            "    DistanceMins < 2/60.0\n" + 
-            "AND\n" + 
-            "    sdsstype = 3\n" + 
-            "AND\n" + 
-            "    sdssPrimary = 1\n" + 
-            "AND " + 
-            "    T.id = CrossMatch.masterObjID\n" + 
-            "",
-
-            "SELECT CrossMatch.distanceMins AS DistanceMins FROM ATLASv20130426.dbo.atlasSourceXDR7PhotoObj AS CrossMatch , (SELECT s.sourceID AS id FROM ATLASv20130426.dbo.atlasSource AS s WHERE s.ra > 182 AND s.ra < 184 AND s.dec > -3 AND s.dec < -1 AND s.mergedClass = 1 GROUP BY s.sourceID) AS T WHERE CrossMatch.distanceMins < 2/60.0 AND CrossMatch.sdssType = 3 AND CrossMatch.sdssPrimary = 1 AND T.id = CrossMatch.masterObjID"
+        final AdqlQuery query = this.schema.queries().create(
+            QUERY_000
+            );
+        debug(query);
+        assertEquals(
+            query.osql().replace('\n', ' '),
+            "SELECT twomass.cx AS cx,twomass.cy AS cy,twomass.cz AS cz,twomass.htmID AS htmID,twomass.ra AS ra,twomass.dec AS dec,twomass.err_maj AS err_maj,twomass.err_min AS err_min,twomass.err_ang AS err_ang,twomass.designation AS designation,twomass.j_m AS j_m,twomass.j_cmsig AS j_cmsig,twomass.j_msigcom AS j_msigcom,twomass.j_snr AS j_snr,twomass.h_m AS h_m,twomass.h_cmsig AS h_cmsig,twomass.h_msigcom AS h_msigcom,twomass.h_snr AS h_snr,twomass.k_m AS k_m,twomass.k_cmsig AS k_cmsig,twomass.k_msigcom AS k_msigcom,twomass.k_snr AS k_snr,twomass.ph_qual AS ph_qual,twomass.rd_flg AS rd_flg,twomass.bl_flg AS bl_flg,twomass.cc_flg AS cc_flg,twomass.ndet AS ndet,twomass.prox AS prox,twomass.pxpa AS pxpa,twomass.pxcntr AS pxcntr,twomass.gal_contam AS gal_contam,twomass.mp_flg AS mp_flg,twomass.pts_key AS pts_key,twomass.hemis AS hemis,twomass.date AS date,twomass.scan AS scan,twomass.glon AS glon,twomass.glat AS glat,twomass.x_scan AS x_scan,twomass.jdate AS jdate,twomass.j_psfchi AS j_psfchi,twomass.h_psfchi AS h_psfchi,twomass.k_psfchi AS k_psfchi,twomass.j_m_stdap AS j_m_stdap,twomass.j_msig_stdap AS j_msig_stdap,twomass.h_m_stdap AS h_m_stdap,twomass.h_msig_stdap AS h_msig_stdap,twomass.k_m_stdap AS k_m_stdap,twomass.k_msig_stdap AS k_msig_stdap,twomass.dist_edge_ns AS dist_edge_ns,twomass.dist_edge_ew AS dist_edge_ew,twomass.dist_edge_flg AS dist_edge_flg,twomass.dup_src AS dup_src,twomass.use_src AS use_src,twomass.a AS a,twomass.dist_opt AS dist_opt,twomass.phi_opt AS phi_opt,twomass.b_m_opt AS b_m_opt,twomass.vr_m_opt AS vr_m_opt,twomass.nopt_mchs AS nopt_mchs,twomass.ext_key AS ext_key,twomass.scan_key AS scan_key,twomass.coadd_key AS coadd_key,twomass.coadd AS coadd FROM TWOMASS.dbo.twomass_psc AS twomass WHERE twomass.ra BETWEEN '56.0' AND '57.9' AND twomass.dec BETWEEN '24.0' AND '24.2'"
             );
         }
 
 
     /**
-     * Test query Subquery in From - returns 2876 rows"
+     * Test query  Subquery in From - returns 2876 rows"
      *
      * Query:
      * Select DistanceMins From (Select Top 10000 * From atlassourcexDR7photoobj Where sdssPrimary = 1) as Crossmatch,
      * Where DistanceMins < 2/60.0 AND sdsstype = 3
      *
      */
+    private static final String QUERY_001 =
+
+          "SELECT"
+        + "    DistanceMins"
+        + " FROM"
+        + "		(Select Top 10000 * From atlassourcexDR7photoobj Where sdssPrimary = 1) as Crossmatch"
+        + " WHERE"
+        + "   DistanceMins < 2/60.0"
+        + " AND"
+        + "    sdsstype = 3"
+        + ""
+        ;
+
     @Test
     public void test001()
     throws Exception
         {
-        test(
-            "SELECT\n" + 
-            "    DistanceMins\n" + 
-            "FROM\n" + 
-            "    (\n" + 
-            "    SELECT\n" + 
-            "        TOP 10000 *\n" + 
-            "    FROM\n" + 
-            "        atlassourcexDR7photoobj\n" + 
-            "    WHERE\n" + 
-            "        sdssPrimary = 1\n" + 
-            "    ) AS Crossmatch\n" + 
-            "WHERE\n" + 
-            "    DistanceMins < 2/60.0\n" + 
-            "AND\n" + 
-            "    sdsstype = 3\n" + 
-            "",
-            
-            "SELECT Crossmatch.distanceMins AS DistanceMins FROM (SELECT TOP 10000 ATLASv20130426.dbo.atlasSourceXDR7PhotoObj.masterObjID AS masterObjID,ATLASv20130426.dbo.atlasSourceXDR7PhotoObj.slaveObjID AS slaveObjID,ATLASv20130426.dbo.atlasSourceXDR7PhotoObj.distanceMins AS distanceMins,ATLASv20130426.dbo.atlasSourceXDR7PhotoObj.sdssType AS sdssType,ATLASv20130426.dbo.atlasSourceXDR7PhotoObj.sdssPrimary AS sdssPrimary FROM ATLASv20130426.dbo.atlasSourceXDR7PhotoObj WHERE ATLASv20130426.dbo.atlasSourceXDR7PhotoObj.sdssPrimary = 1) AS Crossmatch WHERE Crossmatch.distanceMins < 2/60.0 AND Crossmatch.sdssType = 3"
+        final AdqlQuery query = this.schema.queries().create(
+            QUERY_001
+            );
+        debug(query);
+        assertEquals(
+            query.osql().replace('\n', ' '),
+            "SELECT twomass.cx AS cx,twomass.cy AS cy,twomass.cz AS cz,twomass.htmID AS htmID,twomass.ra AS ra,twomass.dec AS dec,twomass.err_maj AS err_maj,twomass.err_min AS err_min,twomass.err_ang AS err_ang,twomass.designation AS designation,twomass.j_m AS j_m,twomass.j_cmsig AS j_cmsig,twomass.j_msigcom AS j_msigcom,twomass.j_snr AS j_snr,twomass.h_m AS h_m,twomass.h_cmsig AS h_cmsig,twomass.h_msigcom AS h_msigcom,twomass.h_snr AS h_snr,twomass.k_m AS k_m,twomass.k_cmsig AS k_cmsig,twomass.k_msigcom AS k_msigcom,twomass.k_snr AS k_snr,twomass.ph_qual AS ph_qual,twomass.rd_flg AS rd_flg,twomass.bl_flg AS bl_flg,twomass.cc_flg AS cc_flg,twomass.ndet AS ndet,twomass.prox AS prox,twomass.pxpa AS pxpa,twomass.pxcntr AS pxcntr,twomass.gal_contam AS gal_contam,twomass.mp_flg AS mp_flg,twomass.pts_key AS pts_key,twomass.hemis AS hemis,twomass.date AS date,twomass.scan AS scan,twomass.glon AS glon,twomass.glat AS glat,twomass.x_scan AS x_scan,twomass.jdate AS jdate,twomass.j_psfchi AS j_psfchi,twomass.h_psfchi AS h_psfchi,twomass.k_psfchi AS k_psfchi,twomass.j_m_stdap AS j_m_stdap,twomass.j_msig_stdap AS j_msig_stdap,twomass.h_m_stdap AS h_m_stdap,twomass.h_msig_stdap AS h_msig_stdap,twomass.k_m_stdap AS k_m_stdap,twomass.k_msig_stdap AS k_msig_stdap,twomass.dist_edge_ns AS dist_edge_ns,twomass.dist_edge_ew AS dist_edge_ew,twomass.dist_edge_flg AS dist_edge_flg,twomass.dup_src AS dup_src,twomass.use_src AS use_src,twomass.a AS a,twomass.dist_opt AS dist_opt,twomass.phi_opt AS phi_opt,twomass.b_m_opt AS b_m_opt,twomass.vr_m_opt AS vr_m_opt,twomass.nopt_mchs AS nopt_mchs,twomass.ext_key AS ext_key,twomass.scan_key AS scan_key,twomass.coadd_key AS coadd_key,twomass.coadd AS coadd FROM TWOMASS.dbo.twomass_psc AS twomass WHERE twomass.ra BETWEEN '56.0' AND '57.9' AND twomass.dec BETWEEN '24.0' AND '24.2'"
             );
         }
+
+
 
     /**
      * Test query Subquery in Where - returns 32378 rows
@@ -122,32 +117,30 @@ extends AtlasQueryTestBase
      *	(Select s.sourceid From atlassource as s Where ra > 182 AND ra < 184 AND dec > -3 AND dec < -1 AND CrossMatch.masterOjbID = sourceID)>0
      *
      */
+    private static final String QUERY_002 =
+
+          "SELECT"
+        + "    DistanceMins"
+        + " FROM"
+        + "    atlassourcexDR7photoobj as CrossMatch"
+        + " WHERE"
+        + "    (Select s.sourceid From atlassource as s Where ra > 182 AND ra < 184 AND dec > -3 AND dec < -1 AND CrossMatch.masterOjbID = sourceID)>0"
+        + ""
+        ;
+
     @Test
     public void test002()
     throws Exception
         {
-        test(
-            "SELECT\n" + 
-            "    DistanceMins\n" + 
-            "FROM\n" + 
-            "    atlasSourceXDR7PhotoObj as CrossMatch\n" + 
-            "WHERE\n" + 
-            "    (\n" + 
-            "    SELECT\n" + 
-            "        s.sourceID\n" + 
-            "    FROM\n" + 
-            "        atlasSource as s\n" + 
-            "    WHERE\n" + 
-            "        ra > 182 AND ra < 184\n" + 
-            "    AND\n" + 
-            "        dec > -3 AND dec < -1\n" + 
-            "    AND\n" + 
-            "        CrossMatch.masterObjID = sourceID\n" + 
-            "    ) > 0\n" + 
-            "",
-
-            "SELECT DistanceMins FROM ATLASv20130426.dbo.atlasSourceXDR7PhotoObj as CrossMatch WHERE ( SELECT s.sourceID FROM ATLASv20130426.dbo.atlasSource as s WHERE ra > 182 AND ra < 184 AND dec > -3 AND dec < -1 AND CrossMatch.masterObjID = sourceID ) > 0"
+        final AdqlQuery query = this.schema.queries().create(
+            QUERY_002
+            );
+        debug(query);
+        assertEquals(
+            query.osql().replace('\n', ' '),
+            "SELECT twomass.cx AS cx,twomass.cy AS cy,twomass.cz AS cz,twomass.htmID AS htmID,twomass.ra AS ra,twomass.dec AS dec,twomass.err_maj AS err_maj,twomass.err_min AS err_min,twomass.err_ang AS err_ang,twomass.designation AS designation,twomass.j_m AS j_m,twomass.j_cmsig AS j_cmsig,twomass.j_msigcom AS j_msigcom,twomass.j_snr AS j_snr,twomass.h_m AS h_m,twomass.h_cmsig AS h_cmsig,twomass.h_msigcom AS h_msigcom,twomass.h_snr AS h_snr,twomass.k_m AS k_m,twomass.k_cmsig AS k_cmsig,twomass.k_msigcom AS k_msigcom,twomass.k_snr AS k_snr,twomass.ph_qual AS ph_qual,twomass.rd_flg AS rd_flg,twomass.bl_flg AS bl_flg,twomass.cc_flg AS cc_flg,twomass.ndet AS ndet,twomass.prox AS prox,twomass.pxpa AS pxpa,twomass.pxcntr AS pxcntr,twomass.gal_contam AS gal_contam,twomass.mp_flg AS mp_flg,twomass.pts_key AS pts_key,twomass.hemis AS hemis,twomass.date AS date,twomass.scan AS scan,twomass.glon AS glon,twomass.glat AS glat,twomass.x_scan AS x_scan,twomass.jdate AS jdate,twomass.j_psfchi AS j_psfchi,twomass.h_psfchi AS h_psfchi,twomass.k_psfchi AS k_psfchi,twomass.j_m_stdap AS j_m_stdap,twomass.j_msig_stdap AS j_msig_stdap,twomass.h_m_stdap AS h_m_stdap,twomass.h_msig_stdap AS h_msig_stdap,twomass.k_m_stdap AS k_m_stdap,twomass.k_msig_stdap AS k_msig_stdap,twomass.dist_edge_ns AS dist_edge_ns,twomass.dist_edge_ew AS dist_edge_ew,twomass.dist_edge_flg AS dist_edge_flg,twomass.dup_src AS dup_src,twomass.use_src AS use_src,twomass.a AS a,twomass.dist_opt AS dist_opt,twomass.phi_opt AS phi_opt,twomass.b_m_opt AS b_m_opt,twomass.vr_m_opt AS vr_m_opt,twomass.nopt_mchs AS nopt_mchs,twomass.ext_key AS ext_key,twomass.scan_key AS scan_key,twomass.coadd_key AS coadd_key,twomass.coadd AS coadd FROM TWOMASS.dbo.twomass_psc AS twomass WHERE twomass.ra BETWEEN '56.0' AND '57.9' AND twomass.dec BETWEEN '24.0' AND '24.2'"
             );
         }
+
     }
 
