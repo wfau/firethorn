@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
@@ -77,6 +78,7 @@ extends TestBase
         //
         // Import the tables into our workspace.
         this.schema = this.workspace.schemas().create(
+            "atlastest",
             resource.schemas().select(
                 "ATLASv20130426",
                 "dbo"
@@ -210,8 +212,13 @@ extends TestBase
             return  null ;
             }
 
-        final String s2 = s1.replaceAll("\\p{Space}+", " ");
-        return s2;
+        final String s2 = StringUtils.trim(s1);
+        final String s3 = s2.toLowerCase();
+        final String s4 = s3.replaceAll("[\n\r]+", " ");
+        final String s5 = s4.replaceAll("\\p{Space}+", " ");
+        final String s6 = s5.replaceAll(" +,", ",");
+
+        return s6;
         }
 
     /**

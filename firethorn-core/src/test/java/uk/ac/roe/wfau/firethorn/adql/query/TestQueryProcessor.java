@@ -25,6 +25,7 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.junit.*;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +45,7 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 public class TestQueryProcessor
 extends AtlasQueryTestBase
     {
-    public static final int[] DB_LIST = new int[] {
+    public static final int[] SERVER_LIST = new int[] {
         1,2,3,4,5,6,7,8,10,11,13
         };
     
@@ -230,9 +231,9 @@ extends AtlasQueryTestBase
 
     public void catalogs()
         {
-        for (int dbnum : DB_LIST)
+        for (int server : SERVER_LIST)
             {
-            catalogs(dbnum);
+            catalogs(server);
             }
         }
     
@@ -265,9 +266,9 @@ extends AtlasQueryTestBase
 
     public void queries()
         {
-        for (int dbnum : DB_LIST)
+        for (int server : SERVER_LIST)
             {
-            queries(dbnum);
+            queries(server);
             }
         }
 
@@ -303,14 +304,9 @@ extends AtlasQueryTestBase
 
     public void queries(String match)
         {
-        for (int dbnum : DB_LIST)
+        for (int server : SERVER_LIST)
             {
-            try {
-                queries(dbnum, match);
-                }
-            catch (Exception ouch)
-                {
-                }
+            queries(server, match);
             }
         }
 
@@ -351,7 +347,81 @@ extends AtlasQueryTestBase
                 Integer count    = results.getInt("row_count");
                 DateTime date    = new DateTime(results.getTimestamp("time").getTime()); 
                 String  query    = results.getString("query");
-                log.debug("[{}][{}][{}][{}]", catalog, date.toString(), count, query);
+                
+                //log.debug("[{}][{}][{}][{}]", catalog, date.toString(), count, clean(query));
+                log.debug("Query : {}", clean(query));
+                }
+            }
+        catch (final SQLException ouch)
+            {
+            log.error("Error processing results [{}]", ouch.getMessage());
+            throw new RuntimeException(
+                ouch
+                );
+            }
+        log.debug("--------");
+        }
+    
+    //@Test
+    public void test000()
+        {
+        catalogs();
+        }
+
+    @Test
+    public void test001()
+        {
+        queries("ATLAS%");
+        }
+
+    public void fredric(int servernum)
+        {
+        DatabaseConnection database = admindb(servernum);
+        log.debug("DB [{}] --------", database.servername());
+
+        PreparedStatement statement = database.prepare(
+            "SELECT dbname, row_count, time, query FROM webQueries WHERE dbname LIKE ? AND row_count > 0 ORDER BY dbname asc"
+            );        
+        try {
+            statement.setString(1, "ATLAS%");
+            }
+        catch (final SQLException ouch)
+            {
+            log.error("Error preparing results [{}]", ouch.getMessage());
+            throw new RuntimeException(
+                ouch
+                );
+            }
+        ResultSet results ;
+        try {
+            results = statement.executeQuery();;
+            }
+        catch (final SQLException ouch)
+            {
+            log.error("Error executing results [{}]", ouch.getMessage());
+            throw new RuntimeException(
+                ouch
+                );
+            }
+
+        try {
+            while (results.next())
+                {
+                String  catalog = results.getString("dbname");
+                String  adql    = results.getString("query");
+                log.debug("[{}][{}]", catalog, adql);
+
+                final AdqlQuery query = this.schema.queries().create(
+                    adql
+                    );
+
+                log.debug("[{}][{}]", catalog, query.osql());
+                
+                String diff = StringUtils.difference(
+                    adql,
+                    query.osql()
+                    );
+                log.debug("DIIF [{}]", diff);
                 }
             }
         catch (final SQLException ouch)
@@ -364,18 +434,24 @@ extends AtlasQueryTestBase
         log.debug("--------");
         
         }
-    
-    @Test
-    public void test000()
+
+    //@Test
+    public void test002()
         {
-        catalogs();
+        fredric(5);
         }
 
-    @Test
-    public void test001()
+    //@Test
+    public void test003()
         {
-        queries("ATLAS%");
+        for (int server : SERVER_LIST)
+            {
+            try {
+                fredric(server);
+                }
+            catch (Exception ouch)
+                {
+                }
+            }
         }
-
-    
     }

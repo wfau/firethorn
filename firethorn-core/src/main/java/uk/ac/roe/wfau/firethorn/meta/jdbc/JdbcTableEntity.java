@@ -702,6 +702,7 @@ implements JdbcTable
                             );
 
                         // TODO Remove the try/catch
+                        // Use search() and (column != null)
                         try {
                             final JdbcColumn column = columnsimpl().select(
                                 colname

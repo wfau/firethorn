@@ -114,7 +114,6 @@
 # Check the Java and Tomcat versions
 #[user@desktop]
 
-
     testvms=(pyratest1 pyratest2 pyratest3)
 
     for testvm in "${testvms[@]:?}"
@@ -245,14 +244,14 @@ EOX
     done
 
 #
-# Check the Java and Tomcat versions
+# Check the Java versions
 #[user@desktop]
 
     for testvm in "${testvms[@]:?}"
     do
         echo "---------"
         echo "${testvm}"
-        ssh  "${testvm}" '/usr/java/java-latest/bin/java -version'
+        ssh  "${testvm}" '/usr/java/java-current/bin/java -version'
     done
 
 #

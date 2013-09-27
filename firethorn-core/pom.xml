@@ -184,6 +184,14 @@
             <artifactId>usertype.core</artifactId>
         </dependency>
 
+        <!--+
+            | Apache Commons Lang
+            | http://commons.apache.org/proper/commons-lang/
+            +-->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
 
     </dependencies>
 

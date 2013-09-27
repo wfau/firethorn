@@ -492,12 +492,26 @@ public class JdbcConnectionEntity
         this.local.remove();
         }
 
+    @Transient
+    private int opens;
+    private static final boolean DEBUG_NESTED_CONNECTS = true ; 
+    
     @Override
     public Connection open()
         {
-        log.debug("open()");
+        log.debug("open [{}]", ++opens);
         synchronized (this.local)
             {
+            if (DEBUG_NESTED_CONNECTS)
+                {
+                if (opens > 1)
+                    {
+                    log.error("Duplicate call to open");
+                    throw new RuntimeException(
+                        "Database connection already open"
+                        );
+                    }
+                }
             return this.local.get();
             }
         }
@@ -505,9 +519,19 @@ public class JdbcConnectionEntity
     @Override
     public void close()
         {
-        log.debug("close()");
+        log.debug("close [{}]", opens--);
         synchronized (this.local)
             {
+            if (DEBUG_NESTED_CONNECTS)
+                {
+                if (opens < 0)
+                    {
+                    log.error("Out of sequence call to close");
+                    throw new RuntimeException(
+                        "Database connection already closed"
+                        );
+                    }
+                }
             try {
                 if (this.state == State.CONNECTED)
                     {
@@ -533,6 +557,7 @@ public class JdbcConnectionEntity
     @Override
     public DatabaseMetaData metadata()
         {
+        log.debug("metadata()");
         final Connection connection = open();
         if (connection != null)
             {

@@ -139,7 +139,7 @@ ssh polyester.andrews.metagrid.co.uk
 ssh sqsh@tau.virtual.metagrid.co.uk
 
     source "${HOME}/sqlserver.txt"
-    ssh -L '*:1435:ramses5:1433' -L '*:1439:ramses9:1433' "${sshsqluser:?}@${sshsqlhost:?}"
+    ssh -L '*:1435:ramses5:1433' -L '*:1439:ramses9:1433' "${sshsser:?}@${sshhost:?}"
 
 # ------------------------------------------------
 # Create a new database.
