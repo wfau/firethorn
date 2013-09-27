@@ -411,7 +411,6 @@ EOF
 
         #
         # Get a clone of the source code.
-
 cat >  "${HOME:?}/firethorn.settings" << 'EOF'
 FIRETHORN_BASE=${FIRETHORN_BASE:-${HOME}/firethorn}
 FIRETHORN_CODE=${FIRETHORN_CODE:-${FIRETHORN_BASE:?}/clone}

@@ -494,17 +494,18 @@ public class JdbcConnectionEntity
 
     @Transient
     private int opens;
-    private static final boolean DEBUG_NESTED_CONNECTS = true ; 
+    private static final boolean DEBUG_NESTED_CONNECTS = false ; 
     
     @Override
     public Connection open()
         {
-        log.debug("open [{}]", ++opens);
         synchronized (this.local)
             {
-            if (DEBUG_NESTED_CONNECTS)
+            opens++;
+            log.debug("open [{}]", opens);
+            if (opens > 1)
                 {
-                if (opens > 1)
+                if (DEBUG_NESTED_CONNECTS)
                     {
                     log.error("Duplicate call to open");
                     throw new RuntimeException(
@@ -519,12 +520,13 @@ public class JdbcConnectionEntity
     @Override
     public void close()
         {
-        log.debug("close [{}]", opens--);
         synchronized (this.local)
             {
-            if (DEBUG_NESTED_CONNECTS)
+            log.debug("close [{}]", opens);
+            opens--;
+            if (opens < 0)
                 {
-                if (opens < 0)
+                if (DEBUG_NESTED_CONNECTS)
                     {
                     log.error("Out of sequence call to close");
                     throw new RuntimeException(
@@ -532,24 +534,27 @@ public class JdbcConnectionEntity
                         );
                     }
                 }
-            try {
-                if (this.state == State.CONNECTED)
-                    {
-                    final Connection connection = this.local.get();
-                    if (connection != null)
-                        {
-                        connection.close();
-                        }
-                    this.state = State.CLOSED;
-                    }
-                }
-            catch (final Throwable ouch)
+            if (opens <= 1)
                 {
-                this.state = State.FAILED;
-                log.error("Error closing database connection [{}]", ouch.getMessage());
-                }
-            finally {
-                this.local.remove();
+                try {
+                    if (this.state == State.CONNECTED)
+                        {
+                        final Connection connection = this.local.get();
+                        if (connection != null)
+                            {
+                            connection.close();
+                            }
+                        this.state = State.CLOSED;
+                        }
+                    }
+                catch (final Throwable ouch)
+                    {
+                    this.state = State.FAILED;
+                    log.error("Error closing database connection [{}]", ouch.getMessage());
+                    }
+                finally {
+                    this.local.remove();
+                    }
                 }
             }
         }
