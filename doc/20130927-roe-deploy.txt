@@ -668,7 +668,7 @@ EOF
     exit
 
 #
-# Install a copy of  the source code on testvm.
+# Initialise the metadata.
 #[user@desktop]
 
     source "${HOME:?}/deployment/deploy.logins"
@@ -719,9 +719,59 @@ EOF
             #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VHSDR1'         'dbo' "${FIRETHORN_META:?}/VHSDR1_TablesSchema.xml"
             #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VIKINGDR2'      'dbo' "${FIRETHORN_META:?}/VIKINGDR2_TablesSchema.xml"
             source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'WISE'           'dbo' "${FIRETHORN_META:?}/WISE_TablesSchema.xml"
-            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'XMM'            'dbo' "${FIRETHORN_META:?}/XMM_TablesSchema.xml"
+            source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'TWOXMM'         'dbo' "${FIRETHORN_META:?}/XMM_TablesSchema.xml"
+
+            #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'F287'           'dbo' "${FIRETHORN_META:?}/F287_TablesSchema.xml"
+            #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GalexGR6'       'dbo' "${FIRETHORN_META:?}/GalexGR6_TablesSchema.xml"
+            #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'NVSS'           'dbo' "${FIRETHORN_META:?}/NVSS_TablesSchema.xml"
+            #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'SSA'            'dbo' "${FIRETHORN_META:?}/SSA_TablesSchema.xml"
+            #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VHSDR1'         'dbo' "${FIRETHORN_META:?}/VHSDR1_TablesSchema.xml"
+            #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VIKINGDR2'      'dbo' "${FIRETHORN_META:?}/VIKINGDR2_TablesSchema.xml"
+
+
 
         popd
+    exit
+
+#
+# Run test queries.
+#[user@desktop]
+
+    source "${HOME:?}/deployment/deploy.logins"
+    ssh "${testlogin:?}"
+
+        source "${HOME:?}/firethorn.settings"
+        FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+        pushd $(mktemp --directory)
+
+            identity=$(pwgen 16 1)
+            community=$(date '+%A')
+            adqlcopydepth=THIN
+
+            source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+            importschema()
+                {
+                source "${HOME:?}/firethorn.testing"
+                source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Query workspace'
+
+                source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'        'twomass'
+                source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASv20130304' 'atlas'
+
+                source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+                source "${FIRETHORN_TEST:?}/05-00-execute-query.sh" "${FIRETHORN_TEST:?}/06-query-atlas-000.adql"
+                }
+
+            time importschema
+
+            for i in {0..999}
+            do
+                echo "------------------"
+                echo "Iter [${i}]"
+                time importschema
+            done
+
 
 
 

@@ -33,12 +33,13 @@ chmod a+x pp
 
 #
 # The service endpoint URL.
-localhosturl=http://localhost:8080/firethorn
-endpointurl=$(
+endpointurl=${endpointurl:-$(
     sed -n '
         s/^firethon\.webapp\.endpoint=\(.*\)$/\1/p
         ' "${HOME:?}/firethorn.properties"
-    )
+    )}
+endpointurl=${endpointurl:-'http://localhost:8080/firethorn'}
+
 
 #
 # Initialise our REST client.

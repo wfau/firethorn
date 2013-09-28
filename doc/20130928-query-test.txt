@@ -1,0 +1,150 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+#
+# Run test queries.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.settings"
+    FIRETHORN_TEST=${FIRETHORN_CODE:?}/integration/004
+
+    pushd $(mktemp --directory)
+
+        identity=$(pwgen 16 1)
+        community=$(date '+%A')
+        adqlcopydepth=THIN
+
+        endpointurl='http://localhost:8090/firethorn'
+        source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
+
+        #source "${HOME:?}/firethorn.testing"
+        adqlspace=/adql/resource/360449
+        atlasschema=/adql/schema/229422
+
+        source "${FIRETHORN_TEST:?}/04-01-create-query-space.sh" 'Query workspace'
+
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'TWOMASS'        'twomass'
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASv20130304' 'atlas'
+        source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ROSAT'          'rosat'
+
+
+        source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
+
+
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "select top 10 ra,dec from atlassource"
+
+
+
+        #
+        # Confirm an action.
+        confirm()
+            {
+            local message=${1:-Ok}  
+            local response  
+            read -p "${message} (Y/n)" response
+            case ${response:-'y'} in
+                y|Y)
+                    return 0
+                    ;;
+                n|N)
+                    return 1
+                    ;;
+                q|Q)
+                    return 2
+                    ;;
+                *)
+                    return 3
+                    ;;
+            esac
+            }
+
+   
+        logged=${FIRETHORN_CODE:?}/firethorn-core/src/test/data/adql/atlas-logged-queries-000.txt
+
+        retest()
+            {
+            exec 6<> ${logged} 
+            while read <&6 adql
+            do
+                echo "--------"
+                echo "ADQL [${adql}]"
+                confirm "Run query"
+                frog=$?
+                if [ $frog -eq 0 ]
+                then
+                    echo "Running query"
+                    source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+                fi
+
+                if [ $frog -eq 2 ]
+                then
+                    break
+                fi
+            done
+            echo "Done"
+            exec 6>&-
+            }
+
+
+---------------------------------------------
+
+adql="SELECT ATLASsource.*,2*ASIN(sqrt(power(-0.997825033922517-cx,2)+power(-0.052293794140904105-cy,2)+power(-0.040131792532559725-cz,2))/2)*60 as distance FROM ATLASsource WHERE dec > -2.3166666666666664 and dec < -2.283333333333333 and RA >= 182.98331970017435 and RA <= 183.01668029982565 and ((cx * -0.997825033922517 + cy * -0.052293794140904105 + cz * -0.040131792532559725 ) >= 0.9999999576920253)  "
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+
+    "distance" causes problems
+
+adql="SELECT ATLASsource.*,2*ASIN(sqrt(power(-0.997825033922517-cx,2)+power(-0.052293794140904105-cy,2)+power(-0.040131792532559725-cz,2))/2)*60 as dist     FROM ATLASsource WHERE dec > -2.3166666666666664 and dec < -2.283333333333333 and RA >= 182.98331970017435 and RA <= 183.01668029982565 and ((cx * -0.997825033922517 + cy * -0.052293794140904105 + cz * -0.040131792532559725 ) >= 0.9999999576920253)  "
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+
+    NullPointerException
+	uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumnEntity$EntityFactory.create(JdbcColumnEntity.java:210)
+
+adql="SELECT ASIN(sqrt(power(-0.997825033922517-cx,2)+power(-0.052293794140904105-cy,2)+power(-0.040131792532559725-cz,2))/2) as dist     FROM ATLASsource WHERE dec > -2.3166666666666664 and dec < -2.283333333333333 and RA >= 182.98331970017435 and RA <= 183.01668029982565 and ((cx * -0.997825033922517 + cy * -0.052293794140904105 + cz * -0.040131792532559725 ) >= 0.9999999576920253)  "
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+
+    ArrayIndexOutOfBoundsException: No 1-th parameter for the function &quot;ASIN&quot; (nb required params = 1) !
+	adql.query.operand.function.MathFunction.getParameter(MathFunction.java:158)
+	uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserImpl.wrap(AdqlParserImpl.java:1080)
+
+adql="SELECT sqrt(power(-0.997825033922517-cx,2)+power(-0.052293794140904105-cy,2)+power(-0.040131792532559725-cz,2))/2 as dist     FROM ATLASsource WHERE dec > -2.3166666666666664 and dec < -2.283333333333333 and RA >= 182.98331970017435 and RA <= 183.01668029982565 and ((cx * -0.997825033922517 + cy * -0.052293794140904105 + cz * -0.040131792532559725 ) >= 0.9999999576920253)  "
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+
+    Caused by: java.sql.SQLException: Cannot find either column "dbo" or the user-defined function or aggregate "dbo.SQRT", or the name is ambiguous.
+
+adql="SELECT atlas.sourceID, atlas.ra, atlas.dec, fsc.seqNo, fsc.ra, fsc.dec FROM atlasSource AS atlas, ROSAT..rosat_fsc AS fsc, atlasSourceXrosat_fsc AS x WHERE x.masterObjID=atlas.sourceID AND x.slaveObjID=fsc.seqNo AND x.distanceMins<0.1  "
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+
+    "status" : "PARSE_ERROR",
+    "message" : " Encountered \".\". Was expecting one of: \"\\\"\" <REGULAR_IDENTIFIER> "
+
+adql="SELECT atlas.sourceID, atlas.ra, atlas.dec, fsc.seqNo, fsc.ra, fsc.dec FROM atlasSource AS atlas, ROSAT.rosat_fsc AS fsc, atlasSourceXrosat_fsc AS x WHERE x.masterObjID=atlas.sourceID AND x.slaveObjID=fsc.seqNo AND x.distanceMins<0.1  "
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+
+    java.sql.SQLException: Violation of UNIQUE KEY constraint 'UK_rmxytxavkwh1cng8536dwn30m'. Cannot insert duplicate key in object 'dbo.FT0107JdbcColumnEntity'. The duplicate key value is (ra, 265878).
+
+adql="SELECT atlas.sourceID, atlas.ra as ara, atlas.dec as adec, fsc.seqNo, fsc.ra as fra, fsc.dec as fdec FROM atlasSource AS atlas, ROSAT.rosat_fsc AS fsc, atlasSourceXrosat_fsc AS x WHERE x.masterObjID=atlas.sourceID AND x.slaveObjID=fsc.seqNo AND x.distanceMins<0.1  "
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+
+    OK
+    Need to detect duplicate columns
+    Need to rename duplicate columns
+
+
