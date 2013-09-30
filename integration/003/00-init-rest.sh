@@ -36,7 +36,7 @@ chmod a+x pp
 localhosturl=http://localhost:8080/firethorn
 endpointurl=$(
     sed -n '
-        s/^firethon\.webapp\.endpoint=\(.*\)$/\1/p
+        s/^firethorn\.webapp\.endpoint=\(.*\)$/\1/p
         ' "${HOME:?}/firethorn.properties"
     )
 

@@ -82,7 +82,7 @@
         | Need to check this works ok.
         +-->
     <bean id="uk.org.ogsadai.WEB_SERVER_URL"  class="java.lang.String">
-        <constructor-arg value="${firethon.ogsadai.endpoint}"/>
+        <constructor-arg value="${firethorn.ogsadai.endpoint}"/>
     </bean>
 
     <!--

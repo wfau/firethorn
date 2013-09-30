@@ -24,14 +24,14 @@
     #--------------------------------------------
     # FireThorn webapp properties
 
-    firethon.webapp.endpoint=http://localhost:8080/firethorn
+    firethorn.webapp.endpoint=http://localhost:8080/firethorn
 
     #--------------------------------------------
     # FireThorn ogsadai properties
 
-    firethon.ogsadai.dqp=testdqp
-    firethon.ogsadai.store=userdata
-    firethon.ogsadai.endpoint=http://localhost:8081/albert/services
+    firethorn.ogsadai.dqp=testdqp
+    firethorn.ogsadai.store=userdata
+    firethorn.ogsadai.endpoint=http://localhost:8081/albert/services
 
     #--------------------------------------------
     # FireThorn databases

@@ -24,19 +24,36 @@
 # Merge latest changes.
 #[user@desktop]
 
-
-
-
-#-------------------------------------------------------------------------------------------
-# Build and deploy ...
-#[user@desktop]
-
     source ${HOME:?}/firethorn.settings
     pushd "${FIRETHORN_CODE:?}"
 
+        hg commit -m "ADQL query testing"
+
+        hg pull
+
+            added 1 changesets with 1 changes to 1 files (+1 heads)
+            (run 'hg heads' to see heads, 'hg merge' to merge)
+
+        hg heads
+
+            changeset:   833:ee790b711a2d
+            branch:      stelios-adql-parsing
+            summary:     Arithmetic change - Fixed null type error
+
+            changeset:   832:fa2d302ae77f
+            summary:     ADQL query testing
+
+        hg merge stelios-adql-parsing
+        
         mvn -P all clean install
+
+        hg commit -m "Merged changes from stelios-adql-parsing"
         
     popd
+
+#-------------------------------------------------------------------------------------------
+# Deploy to Maven repository.
+#[user@desktop]
 
     #
     # --omit-dir-times
@@ -57,4 +74,58 @@
         /var/local/toolkits/maven/repository/ \
         data.metagrid.co.uk:/var/local/websites/data/wfau/maven/firethorn
 
+#----------------------------------------------------
+# Deploy on test VM.
+#[user@desktop]
+
+    #
+    # SSH login, including port 8080 tunnel (-L) and SOCKS proxy (-D).
+    source "${HOME:?}/deployment/deploy.logins"
+    ssh -L ${fireproxy:?}:localhost:8080 -D ${firesocks:?} "${firelogin:?}"
+
+        webappversion=01.07-alpha-06
+        webappproject=firethorn-webapp
+        webapppath=${HOME}/webapps
+        webappfile=${webappproject:?}-${webappversion:?}.war
+
+        #
+        # Download the webapp war file.
+        downloadhost="data.metagrid.co.uk"
+        downloadrepo="http://${downloadhost:?}/wfau/maven/firethorn"
+        downloadfile="uk/ac/roe/wfau/${webappproject:?}/${webappversion:?}/${webappfile:?}"
+        downloadurl="${downloadrepo:?}/${downloadfile:?}"
+
+        if [ ! -e "${webapppath:?}" ]
+        then
+            mkdir "${webapppath:?}"
+        fi
+        pushd "${webapppath:?}"
+
+            if [ -e "${webappfile}" ]
+            then
+                rm "${webappfile}"
+            fi            
+            if [ -e "${webappname}" ]
+            then
+                rm -r "${webappname}"
+            fi            
+
+            wget "${downloadurl:?}"
+
+        popd
+
+        #
+        # Deploy the webapp.
+        contextpath=firethorn
+        managername=$(sed -n 's/^firethorn.tomcat.manager.name=\(.*\)$/\1/p' "${HOME}/firethorn.properties")
+        managerpass=$(sed -n 's/^firethorn.tomcat.manager.pass=\(.*\)$/\1/p' "${HOME}/firethorn.properties")
+
+        wget -q -O - \
+            --user=${managername:?} \
+            --password=${managerpass:?} \
+            "http://localhost:8080/manager/text/deploy?update=true&path=/${contextpath:?}&war=file:${webapppath:?}/${webappfile:?}"
+
+        #
+        # Watch the logs.
+        tail -f "${HOME}/tomcat/logs/catalina.out"
 

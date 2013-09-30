@@ -40,7 +40,7 @@ implements Entity.LinkFactory<EntityType>
     public static final String IDENT_TOKEN = "{ident}" ;
     public static final String IDENT_REGEX = "\\{ident\\}" ;
 
-    @Value("${firethon.webapp.baseurl:null}")
+    @Value("${firethorn.webapp.baseurl:null}")
     private String baseurl ;
     protected String baseurl()
         {

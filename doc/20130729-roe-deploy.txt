@@ -249,12 +249,12 @@ EOF
 
         firethorn.version=01.07-alpha-03
         
-        firethon.webapp.endpoint=http://coccinea:8080/firethorn
-        #firethon.webapp.baseurl=http://coccinea:8080/firethorn
+        firethorn.webapp.endpoint=http://coccinea:8080/firethorn
+        #firethorn.webapp.baseurl=http://coccinea:8080/firethorn
 
-        firethon.ogsadai.dqp=testdqp
-        firethon.ogsadai.store=userdata
-        firethon.ogsadai.endpoint=http://pyracantha:8080/ogsa-dai/services
+        firethorn.ogsadai.dqp=testdqp
+        firethorn.ogsadai.store=userdata
+        firethorn.ogsadai.endpoint=http://pyracantha:8080/ogsa-dai/services
 
         firethorn.meta.url=jdbc:jtds:sqlserver://ramses9:1433/xxxx-xxxx
         firethorn.meta.user=xxxx-xxxx

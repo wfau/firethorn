@@ -92,11 +92,11 @@ EOF
 
     gedit ${HOME:?}/deployment/deploy.properties &
 
-        firethon.webapp.endpoint=http://coccinea:8080/firethorn
+        firethorn.webapp.endpoint=http://coccinea:8080/firethorn
 
-        firethon.ogsadai.dqp=testdqp
-        firethon.ogsadai.store=userdata
-        firethon.ogsadai.endpoint=http://pyracantha:8080/ogsa-dai/services
+        firethorn.ogsadai.dqp=testdqp
+        firethorn.ogsadai.store=userdata
+        firethorn.ogsadai.endpoint=http://pyracantha:8080/ogsa-dai/services
 
         firethorn.meta.url=jdbc:jtds:sqlserver://ramses9:1433/FirethornMetadata011
         firethorn.meta.user=xxxx-xxxx
