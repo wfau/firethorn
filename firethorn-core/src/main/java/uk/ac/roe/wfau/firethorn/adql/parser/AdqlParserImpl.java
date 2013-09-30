@@ -143,16 +143,26 @@ implements AdqlParser
 
     protected String prepare(final String input)
         {
+        // Trim leading/trailing spaces.
         String s1 = input.trim();
-        
+
+        // Skip /* comments */
         Pattern p1 = Pattern.compile(
             "/\\*.*?\\*/",
             Pattern.DOTALL
             );
         Matcher m1 = p1.matcher(s1);
         String  s2 = m1.replaceAll(""); 
-        
-        return s2 ;
+
+        // Replace multiple ..
+        Pattern p2 = Pattern.compile(
+            "\\.{2,}",
+            Pattern.DOTALL
+            );
+        Matcher m2 = p2.matcher(s2);
+        String  s3 = m2.replaceAll("."); 
+
+        return s3 ;
         }
     
     @Override

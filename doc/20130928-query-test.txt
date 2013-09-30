@@ -84,19 +84,29 @@
             exec 6<> ${logged} 
             while read <&6 adql
             do
-                echo "--------"
-                echo "ADQL [${adql}]"
-                confirm "Run query"
-                frog=$?
-                if [ $frog -eq 0 ]
+                if [[ "${adql}" == '' ]]
                 then
-                    echo "Running query"
-                    source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
-                fi
+                    echo "SKIP [${adql}]"
+                else                    
+                    if [[ "${adql}" =~ ^# ]]
+                    then
+                        echo "SKIP [${adql}]"
+                    else
+                        echo "--------"
+                        echo "ADQL [${adql}]"
+                        confirm "Run query"
+                        go="$?"
+                        if [ "${go}" -eq 0 ]
+                        then
+                            echo "Running query"
+                            source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+                        fi
 
-                if [ $frog -eq 2 ]
-                then
-                    break
+                        if [ "${go}" -eq 2 ]
+                        then
+                            break
+                        fi
+                    fi
                 fi
             done
             echo "Done"
@@ -146,5 +156,39 @@ source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
     OK
     Need to detect duplicate columns
     Need to rename duplicate columns
+
+
+select ra as radeg,dec as decdeg from atlassource where sourceid%100=0 and (priorsec=0 or priorsec=framesetid)
+
+    adql.parser.TokenMgrError: Lexical error at line 1, column 65.  Encountered: &quot;%&quot; (37), after : &quot;&quot;
+
+select top 10 ra,dec from atlassource where uapermag3>0 and gapermag3 > 0 and Rapermag3 >0 and iapermag3 > 0 and zapermag3 >0 and sourceid%100=0
+
+    adql.parser.TokenMgrError: Lexical error at line 1, column 139.  Encountered: &quot;%&quot; (37), after : &quot;&quot;
+
+sELECT TOP 50 atlas.ra, atlas.dec, uAperMag3, gAperMag3, rAperMag3, iAperMag3, zAperMag3, psfMag_u, psfMag_g, psfMag_r, psfMag_i, psfMag_z FROM atlasSource AS atlas, BestDR8..PhotoObj AS dr8, atlasSourceXDR8PhotoObj AS x WHERE masterObjID=atlas.sourceID AND slaveObjID=dr8.ObjID AND distanceMins<0.033333 AND sdssPrimary=1 AND distanceMins IN ( SELECT MIN(distanceMins) FROM atlasSourceXDR8PhotoObj WHERE masterObjID=x.masterObjID AND sdssPrimary=1) /* ramses5..*/
+
+    "status" : "PARSE_ERROR",
+    "message" : "1 unresolved identifiers: masterObjID [l.1 c.417 - l.1 c.430] !"
+
+select top 10 * from multiframe  
+
+    Query fails in OGSA-DAI
+    Suspect "creationDate" DATETIME column
+
+select ra as radeg,dec as decdeg from atlassource where sourceid%1000=0
+
+    adql.parser.TokenMgrError: Lexical error at line 1, column 65.  Encountered: &quot;%&quot; (37), after : &quot;&quot;
+
+SELECT name+''',' as city FROM sys.Tables order by name
+
+    "status" : "PARSE_ERROR",
+    "message" : "[java.lang.UnsupportedOperationException] Impossible to update an Operation because the right operand is not numeric (''',') !"
+
+SELECT atlas.sourceID, atlas.ra, atlas.dec, fsc.seqNo, fsc.ra, fsc.dec FROM atlasSource AS atlas, ROSAT..rosat_fsc AS fsc, atlasSourceXrosat_fsc AS x WHERE x.masterObjID=atlas.sourceID AND x.slaveObjID=fsc.seqNo AND x.distanceMins<0.1
+
+    java.sql.SQLException: Violation of UNIQUE KEY constraint 'UK_rmxytxavkwh1cng8536dwn30m'. Cannot insert duplicate key in object 'dbo.FT0107JdbcColumnEntity'. The duplicate key value is (ra, 655366).
+    Need to rename duplicate column names.
+
 
 

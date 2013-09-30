@@ -1,0 +1,197 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    # -----------------------------------------------
+    # Query Atlas to get the list of joined catalogs
+    #
+
+        SELECT
+            ExternalSurvey.surveyName,
+            ExternalSurvey.databaseName
+        FROM
+            RequiredNeighbours
+        JOIN
+            ExternalSurvey
+        ON
+            RequiredNeighbours.surveyID = ExternalSurvey.surveyID
+        JOIN
+            ExternalSurveyTable
+        ON
+            RequiredNeighbours.surveyID = ExternalSurveyTable.surveyID
+        AND
+            RequiredNeighbours.extTableID = ExternalSurveyTable.extTableID
+        ORDER BY
+            ExternalSurvey.databaseName
+        go
+
+
+        surveyName                       databaseName    
+        -------------------------------- ----------------
+        SDSS-DR5                         BestDR5         
+        SDSS-DR5                         BestDR5         
+        SDSS-DR7                         BestDR7         
+        SDSS-DR7                         BestDR7         
+        SDSS-DR8                         BestDR8         
+        SDSS-DR8                         BestDR8         
+        SDSS-DR9                         BestDR9         
+        SDSS-DR9                         BestDR9         
+        DENIS                            DENIS           
+        FIRST                            FIRST           
+        GALEX-GR6                        GALEXGR6        
+        GALEX-GR6                        GALEXGR6        
+        GLIMPSE                          GLIMPSE         
+        GLIMPSE                          GLIMPSE         
+        IRAS                             IRAS            
+        MGC                              MGC             
+        NONE                             NONE            
+        NONE                             NONE            
+        NVSS                             NVSS            
+        UKIRTFS                          OSA             
+        ROSAT-ASS                        ROSAT           
+        ROSAT-ASS                        ROSAT           
+        SDSS-SEGUE-DR6                   SEGUEDR6        
+        SDSS-SEGUE-DR6                   SEGUEDR6        
+        SSA                              SSA             
+        SSA                              SSA             
+        SDSS-STRIPE82                    Stripe82        
+        2MASS                            TWOMASS         
+        2MASS                            TWOMASS         
+        2MASS                            TWOMASS         
+        XMM                              TWOXMM          
+        VHSDR1                           VHSDR1          
+        VIKINGDR2                        VIKINGDR2       
+        WISE                             WISE            
+        WISE                             WISE            
+
+    # -----------------------------------------------
+    # Get the key identifiers. 
+    #
+
+        cat "${HOME:?}/firethorn.testing"
+
+            adqlspace=/adql/resource/360449
+            atlasschema=/adql/schema/229422
+
+    # -----------------------------------------------
+    # List of available ADQL schema.
+    # http://localhost:8090/firethorn/adql/resource/360449/schemas/select
+    #
+
+        SDSS-DR5        BestDR5         
+        "name": "BESTDR5",
+        "ident": "http://localhost:8090/firethorn/adql/schema/229423"
+
+        SDSS-DR7        BestDR7         
+        "name": "BESTDR7",
+        "ident": "http://localhost:8090/firethorn/adql/schema/229424"
+
+        SDSS-DR8        BestDR8         
+        "name": "BESTDR8",
+        "ident": "http://localhost:8090/firethorn/adql/schema/229425"
+
+        SDSS-DR9        BestDR9         
+        "name": "BESTDR9",
+        "ident": "http://localhost:8090/firethorn/adql/schema/229426"
+
+        DENIS           DENIS           
+        "name": "DENIS",
+        "ident": "http://localhost:8090/firethorn/adql/schema/229427"
+
+        FIRST           FIRST           
+        "name": "FIRST",
+        "ident": "http://localhost:8090/firethorn/adql/schema/229428"
+
+        GLIMPSE         GLIMPSE         
+        "name": "GLIMPSE",
+        "ident": "http://localhost:8090/firethorn/adql/schema/229429"
+
+        IRAS            IRAS            
+        "name": "IRAS",
+        "ident": "http://localhost:8090/firethorn/adql/schema/229430"
+
+        MGC             MGC             
+        "name": "MGC",
+        "ident": "http://localhost:8090/firethorn/adql/schema/229431"
+
+        ROSAT-ASS       ROSAT           
+        "name": "ROSAT",
+        "ident": "http://localhost:8090/firethorn/adql/schema/229432"
+
+        SDSS-SEGUE-DR6  SEGUEDR6        
+        "name": "SEGUEDR6",
+        "ident": "http://localhost:8090/firethorn/adql/schema/229433"
+
+        SDSS-STRIPE82   Stripe82        
+        "name": "Stripe82",
+        "ident": "http://localhost:8090/firethorn/adql/schema/229434"
+
+        2MASS           TWOMASS         
+        "name": "TWOMASS",
+        "ident": "http://localhost:8090/firethorn/adql/schema/229435"
+
+        WISE            WISE            
+        "name": "WISE",
+        "ident": "http://localhost:8090/firethorn/adql/schema/229436"
+
+        XMM             TWOXMM          
+        "name": "XMM",
+        "ident": "http://localhost:8090/firethorn/adql/schema/229437"
+
+    # -----------------------------------------------
+    # Missing catalogs.
+    #
+
+        GALEX-GR6       GALEXGR6        
+        NVSS            NVSS            
+        UKIRTFS         OSA             
+        SSA             SSA             
+        VHSDR1          VHSDR1          
+        VIKINGDR2       VIKINGDR2       
+
+
+    # -----------------------------------------------
+    # Metadoc processing.
+    #
+
+        cat "${HOME:?}/firethorn.testing"
+
+            jdbcspace=/jdbc/resource/360448
+            adqlspace=/adql/resource/360449
+            atlasschema=/adql/schema/229422
+
+        source "${HOME:?}/firethorn.testing"
+
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'F287'           'dbo' "${FIRETHORN_META:?}/F287_TablesSchema.xml"
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GalexGR6'       'dbo' "${FIRETHORN_META:?}/GalexGR6_TablesSchema.xml"
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GALEXGR6'       'dbo' "${FIRETHORN_META:?}/GalexGR6_TablesSchema.xml"
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'NVSS'           'dbo' "${FIRETHORN_META:?}/NVSS_TablesSchema.xml"
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'SSA'            'dbo' "${FIRETHORN_META:?}/SSA_TablesSchema.xml"
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VHSDR1'         'dbo' "${FIRETHORN_META:?}/VHSDR1_TablesSchema.xml"
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VIKINGDR2'      'dbo' "${FIRETHORN_META:?}/VIKINGDR2_TablesSchema.xml"
+
+
+
+
+
+
+
+

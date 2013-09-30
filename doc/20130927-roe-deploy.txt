@@ -168,7 +168,7 @@ EOX
     pushd "${FIRETHORN_CODE:?}"
 
         mvn -P all clean install
-        mvn -P all eclipse:eclipse
+        #mvn -P all eclipse:eclipse
         
     popd
 
@@ -338,21 +338,21 @@ EOF
 
 #
 # Edit our deployment properties.
+# TODO Automate with sed
 #[user@desktop]
 
     gedit ${HOME:?}/deployment/deploy.properties &
 
         firethorn.version=01.07-alpha-06
 
-        firethon.webapp.endpoint=http://pyratest2:8080/firethorn
-        #firethon.webapp.baseurl=http://pyratest2:8080/firethorn
+        firethorn.webapp.endpoint=http://pyratest2:8080/firethorn
 
-        firethon.ogsadai.dqp=testdqp
-        firethon.ogsadai.store=userdata
-        firethon.ogsadai.endpoint=http://pyratest1:8080/ogsa-dai/services
+        firethorn.ogsadai.dqp=testdqp
+        firethorn.ogsadai.store=userdata
+        firethorn.ogsadai.endpoint=http://pyratest1:8080/ogsa-dai/services
 
-        firethon.tomcat.manager.name=xxxx
-        firethon.tomcat.manager.pass=xxxx
+        firethorn.tomcat.manager.name=xxxx
+        firethorn.tomcat.manager.pass=xxxx
 
         firethorn.meta.url=jdbc:jtds:sqlserver://ramses9:1433/FirethornMetadataSHFT0107alpha06
         firethorn.meta.user=xxxx
@@ -394,10 +394,23 @@ EOF
     for vmname in "${testvms[@]:?}"
     do
         echo "---------"
-        echo "VM [${vmname}]"
-        ssh "${testvm:?}" 'cp -f firethorn.properties firethorn.properties-$(date +%Y%m%d%H%M%S)'
+        echo "VM [${vmname:?}]"
+        ssh "${vmname:?}" 'cp -f firethorn.properties firethorn.properties-$(date +%Y%m%d%H%M%S)'
         scp "${HOME:?}/deployment/deploy.properties" "${vmname:?}:firethorn.properties"
     done
+
+#
+# Configure python service.
+# TODO Automate with sed
+# firethorn@shepseskaf
+
+    vmserverhost=shepseskaf
+    vmserveruser=firethorn
+    ssh "${vmserveruser:?}@${vmserverhost:?}"
+    
+        vi firethorn.properties
+        
+        firethorn.webapp.endpoint=http://pyratest2:8080/firethorn
 
 #
 # Set the tomcat manager account.
@@ -410,8 +423,8 @@ EOF
         echo "VM [${vmname}]"
         ssh "$@${testvm:?}" << 'EOF'
 
-            managername=$(sed -n 's/^firethon.tomcat.manager.name=\(.*\)$/\1/p' "${HOME}/firethorn.properties")
-            managerpass=$(sed -n 's/^firethon.tomcat.manager.pass=\(.*\)$/\1/p' "${HOME}/firethorn.properties")
+            managername=$(sed -n 's/^firethorn.tomcat.manager.name=\(.*\)$/\1/p' "${HOME}/firethorn.properties")
+            managerpass=$(sed -n 's/^firethorn.tomcat.manager.pass=\(.*\)$/\1/p' "${HOME}/firethorn.properties")
 
             sed -i '
                 /<\/tomcat-users/ i\
@@ -485,8 +498,8 @@ EOF
         #
         # Deploy the webapp.
         contextpath=firethorn
-        managername=$(sed -n 's/^firethon.tomcat.manager.name=\(.*\)$/\1/p' "${HOME}/firethorn.properties")
-        managerpass=$(sed -n 's/^firethon.tomcat.manager.pass=\(.*\)$/\1/p' "${HOME}/firethorn.properties")
+        managername=$(sed -n 's/^firethorn.tomcat.manager.name=\(.*\)$/\1/p' "${HOME}/firethorn.properties")
+        managerpass=$(sed -n 's/^firethorn.tomcat.manager.pass=\(.*\)$/\1/p' "${HOME}/firethorn.properties")
 
         wget -q -O - \
             --user=${managername:?} \
@@ -565,14 +578,13 @@ EOF
         # Deploy the webapp.
         contextpath=ogsa-dai
 
-        managername=$(sed -n 's/^firethon.tomcat.manager.name=\(.*\)$/\1/p' "${HOME}/firethorn.properties")
-        managerpass=$(sed -n 's/^firethon.tomcat.manager.pass=\(.*\)$/\1/p' "${HOME}/firethorn.properties")
+        managername=$(sed -n 's/^firethorn.tomcat.manager.name=\(.*\)$/\1/p' "${HOME}/firethorn.properties")
+        managerpass=$(sed -n 's/^firethorn.tomcat.manager.pass=\(.*\)$/\1/p' "${HOME}/firethorn.properties")
 
         wget -q -O - \
             --user=${managername:?} \
             --password=${managerpass:?} \
             "http://localhost:8080/manager/deploy?update=true&path=/${contextpath:?}&war=file:${webapppath:?}/${webappfile:?}"
-
 
         #
         # Install config tools
@@ -695,6 +707,7 @@ EOF
 #BUG - REST calls don't return anything
 
             cat > "${HOME:?}/firethorn.testing" << EOF
+jdbcspace=${jdbcspace:?}
 adqlspace=${adqlspace:?}
 atlasschema=${adqlschema:?}
 EOF
@@ -727,8 +740,6 @@ EOF
             #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'SSA'            'dbo' "${FIRETHORN_META:?}/SSA_TablesSchema.xml"
             #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VHSDR1'         'dbo' "${FIRETHORN_META:?}/VHSDR1_TablesSchema.xml"
             #source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VIKINGDR2'      'dbo' "${FIRETHORN_META:?}/VIKINGDR2_TablesSchema.xml"
-
-
 
         popd
     exit
