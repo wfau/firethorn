@@ -906,7 +906,13 @@ implements AdqlParser
                 t2 = a2.column().meta().adql().type();
                 }
             }
-    
+        if (t1==null){
+        	t1 = AdqlColumn.Type.DOUBLE;
+        }
+        if (t2==null){
+        	t2 = AdqlColumn.Type.DOUBLE;
+        }
+        
         if (oper.getName()=="%") {
         	return_type = AdqlColumn.Type.INTEGER;
         } else if (t1==t2){
@@ -974,7 +980,8 @@ implements AdqlParser
         			return_type = AdqlColumn.Type.FLOAT;
 
         }
-       		
+        log.debug("  return_type******************** [{}]",return_type);
+
         return new SelectFieldImpl(
             "operation",
             return_type
