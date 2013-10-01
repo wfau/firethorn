@@ -36,6 +36,7 @@
         source "${FIRETHORN_TEST:?}/01-01-init-rest.sh"
 
         #source "${HOME:?}/firethorn.testing"
+        jdbcspace=/jdbc/resource/360448
         adqlspace=/adql/resource/360449
         atlasschema=/adql/schema/229422
 
@@ -45,13 +46,9 @@
         source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASv20130304' 'atlas'
         source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ROSAT'          'rosat'
 
-
         source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
 
-
-        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "select top 10 ra,dec from atlassource"
-
-
+        source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
 
         #
         # Confirm an action.
@@ -78,7 +75,8 @@
 
    
         logged=${FIRETHORN_CODE:?}/firethorn-core/src/test/data/adql/atlas-logged-queries-000.txt
-
+        
+        
         retest()
             {
             exec 6<> ${logged} 
@@ -157,7 +155,6 @@ source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
     Need to detect duplicate columns
     Need to rename duplicate columns
 
-
 select ra as radeg,dec as decdeg from atlassource where sourceid%100=0 and (priorsec=0 or priorsec=framesetid)
 
     adql.parser.TokenMgrError: Lexical error at line 1, column 65.  Encountered: &quot;%&quot; (37), after : &quot;&quot;
@@ -189,6 +186,50 @@ SELECT atlas.sourceID, atlas.ra, atlas.dec, fsc.seqNo, fsc.ra, fsc.dec FROM atla
 
     java.sql.SQLException: Violation of UNIQUE KEY constraint 'UK_rmxytxavkwh1cng8536dwn30m'. Cannot insert duplicate key in object 'dbo.FT0107JdbcColumnEntity'. The duplicate key value is (ra, 655366).
     Need to rename duplicate column names.
+
+SELECT ATLASsource.*,2*DEGREES(ASIN(sqrt(power(0.7983646996322346-cx,2)+power(0.34838219681206845-cy,2)+power(-0.4911656047867451-cz,2))/2))*60 as dist FROM ATLASsource WHERE dec > -29.43388888888889 and dec < -29.400555555555556 and RA >= 23.55586322128755 and RA <= 23.594136778712457 and ((cx * 0.7983646996322346 + cy * 0.34838219681206845 + cz * -0.4911656047867451 ) >= 0.9999999576920253)  
+
+    java.sql.SQLException: Cannot find either column "dbo" or the user-defined function or aggregate "dbo.DEGREES", or the name is ambiguous.
+
+select ra as radeg,dec as decdeg from atlasSource where priorsec!=0 and priOrSec!=frameSetID and sourceID%5=0
+
+    adql.parser.TokenMgrError: Lexical error at line 1, column 106.  Encountered: &quot;%&quot; (37), after : &quot;&quot;
+    adql.parser.ADQLParserTokenManager.getNextToken(ADQLParserTokenManager.java:1830)
+
+select * from #usertable
+
+    adql.parser.TokenMgrError: Lexical error at line 1, column 15.  Encountered: &quot;#&quot; (35), after : &quot;&quot;
+    adql.parser.ADQLParserTokenManager.getNextToken(ADQLParserTokenManager.java:1830)
+
+Select DistanceMins From atlassourcexDR8photoobj as CrossMatch, (Select s.sourceid as id From atlassource as s Where ra > 0 AND ra < 13.94 AND dec > -12.0 AND dec < -8.5 AND mergedclass = 1 group by s.sourceid) AS T Where DistanceMins < 2/60.0 AND sdsstype = 3 AND sdssPrimary = 1 AND T.id = CrossMatch.masterObjID
+
+    java.sql.SQLException: Invalid column name 'sourceID'.
+
+
+
+#---------------------------------------------
+#
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra, dec FROM atlassource"
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 DEGREES(ra) as radeg, DEGREES(dec) as decdegFROM atlassource"
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra - dec AS distance FROM atlassource"
+
+    "status" : "PARSE_ERROR",
+    "message" : " Encountered \"distance\". Was expecting one of: \"\\\"\" <REGULAR_IDENTIFIER> "
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 DEGREES(ra) FROM atlassource"
+
+    java.lang.ArrayIndexOutOfBoundsException: No 1-th parameter for the function &quot;DEGREES&quot; (nb required params = 1) !
+	adql.query.operand.function.MathFunction.getParameter(MathFunction.java:158)
+	uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserImpl.wrap(AdqlParserImpl.java:1097)
+
+
+
+
+
+
 
 
 

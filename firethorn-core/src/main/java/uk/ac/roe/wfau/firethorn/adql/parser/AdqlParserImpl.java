@@ -1092,13 +1092,15 @@ implements AdqlParser
         log.debug("  name   [{}]", funct.getName());
         log.debug("  number [{}]", funct.isNumeric());
         log.debug("  string [{}]", funct.isString());
-
+/*
+ * Causes error if the function only has one param. 
         ADQLOperand param1 = funct.getParameter(0);
         ADQLOperand param2 = funct.getParameter(1);
 
         log.debug("  param1  [{}]", param1);
         log.debug("  param2  [{}]", param2);
-
+ *        
+ */
         switch (funct.getType())
             {
 
@@ -1114,7 +1116,7 @@ implements AdqlParser
                         )
                     );
 
-            case LOG:		// returns the natural logarithm (base e) of a double value.
+            case LOG:   // returns the natural logarithm (base e) of a double value.
             case LOG10:	// returns the base 10 logarithm of a double value.
             case POWER:
             case DEGREES:

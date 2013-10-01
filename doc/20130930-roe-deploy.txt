@@ -180,14 +180,21 @@
 
         source "${HOME:?}/firethorn.testing"
 
+        #
+        # Available as part of Atlas.
         source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'F287'           'dbo' "${FIRETHORN_META:?}/F287_TablesSchema.xml"
-        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GalexGR6'       'dbo' "${FIRETHORN_META:?}/GalexGR6_TablesSchema.xml"
-        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GALEXGR6'       'dbo' "${FIRETHORN_META:?}/GalexGR6_TablesSchema.xml"
-        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'NVSS'           'dbo' "${FIRETHORN_META:?}/NVSS_TablesSchema.xml"
+
+        #
+        # Enabled and tested :-)
         source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'SSA'            'dbo' "${FIRETHORN_META:?}/SSA_TablesSchema.xml"
         source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VHSDR1'         'dbo' "${FIRETHORN_META:?}/VHSDR1_TablesSchema.xml"
         source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'VIKINGDR2'      'dbo' "${FIRETHORN_META:?}/VIKINGDR2_TablesSchema.xml"
 
+        #
+        # Not available yet.
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GalexGR6'       'dbo' "${FIRETHORN_META:?}/GalexGR6_TablesSchema.xml"
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'GALEXGR6'       'dbo' "${FIRETHORN_META:?}/GalexGR6_TablesSchema.xml"
+        source "${FIRETHORN_TEST:?}/03-03-import-jdbc-metadoc.sh" 'NVSS'           'dbo' "${FIRETHORN_META:?}/NVSS_TablesSchema.xml"
 
 
 
