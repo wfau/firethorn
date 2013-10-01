@@ -227,7 +227,7 @@ source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra - dec AS d
     "message" : " Encountered \"distance\". Was expecting one of: \"\\\"\" <REGULAR_IDENTIFIER> "
 
 
-
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT surveyName, databaseName, extTableName, description FROM ExternalSurvey AS s, ExternalSurveyTable AS t WHERE s.surveyID=t.surveyID AND s.surveyID>0"
 
 
 
