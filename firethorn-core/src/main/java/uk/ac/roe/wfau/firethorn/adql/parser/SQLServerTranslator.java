@@ -237,32 +237,63 @@ public class SQLServerTranslator
         return translation.toString();
         }
 
-    
-
-	public String translate(UserDefinedFunction fct) throws TranslationException {
-        log.debug("translate(SelectItem)");
-		return getDefaultADQLFunction(fct);
-	}
+    @Override
+	public String translate(UserDefinedFunction function)
+    throws TranslationException
+        {
+        log.debug("translate(UserDefinedFunction)");
+		return getDefaultADQLFunction(
+		    function
+		    );
+        }
 
 	
 	/**
 	 * Gets the default SQL output for the given ADQL function.
 	 * 
-	 * @param fct	The ADQL function to format into SQL.
-	 * 
-	 * @return		The corresponding SQL.
-	 * 
+	 * @param function The ADQL function to format into SQL.
+	 * @return The corresponding SQL.
 	 * @throws TranslationException	If there is an error during the translation.
+	 * 
 	 */
-	protected String getDefaultADQLFunction(ADQLFunction fct) throws TranslationException {
-	
-		String sql = this.getSchemaName() + '.' + fct.getName()+"(";
+    @Override
+	protected String getDefaultADQLFunction(ADQLFunction function)
+    throws TranslationException
+        {
+        StringBuilder builder = new StringBuilder(); 
+        //
+        // If the function is user defined.
+        if (function instanceof UserDefinedFunction)
+            {
+            //
+            // TODO Check the function schema.
+            if (true)
+                {
+                builder.append(this.getSchemaName());
+                builder.append(".");
+                }
+            }
 
-		for(int i=0; i<fct.getNbParameters(); i++)
-			sql += ((i==0)?"":", ")+translate(fct.getParameter(i));
+        builder.append(function.getName());
+        builder.append("(");
 
-		return sql+")";
-	}
+        for(int param = 0; param < function.getNbParameters(); param++)
+            {
+            if (param > 0)
+                {
+                builder.append(", ");
+                }
+            builder.append(
+                translate(
+                    function.getParameter(
+                        param
+                        )
+                    )
+                );
+            }
+        builder.append(")");
+		return builder.toString();
+        }
 	
     /**
      * Override the PostgreSQLTranslator method ...

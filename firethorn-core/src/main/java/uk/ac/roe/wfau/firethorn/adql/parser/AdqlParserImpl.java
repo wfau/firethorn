@@ -41,6 +41,7 @@ import adql.db.DBChecker;
 import adql.db.DBColumn;
 import adql.db.DBTable;
 import adql.parser.ADQLParser;
+import adql.parser.ADQLQueryFactory;
 import adql.parser.ParseException;
 import adql.query.ADQLObject;
 import adql.query.ADQLQuery;
@@ -124,6 +125,7 @@ implements AdqlParser
                     );
                 }
             }
+/*
         //
         // Create our ADQL parser:
         this.parser = new ADQLParser();
@@ -135,8 +137,64 @@ implements AdqlParser
                 tables
                 )
             );
+ */
+        //
+        // Create our ADQL parser.
+        this.parser = new ADQLParser(
+            new DBChecker(
+                tables
+                ),
+            new AdqlQueryFactoryImpl()
+            );
+
+        this.parser.disable_tracing();
+        
         }
 
+    /**
+     *  Factory for building an ADQL query representation.
+     *
+     */
+    public class AdqlQueryFactoryImpl
+    extends ADQLQueryFactory
+        {
+        /**
+         * Create a SelectItem.  
+         * 
+         */
+        @Override
+        public SelectItem createSelectItem(ADQLOperand operand, String alias)
+        throws Exception
+            {
+            log.debug("createSelectItem(ADQLOperand, String)");
+            log.debug("  Oper [{}][{}]", operand.getName(), operand.getClass());
+            return super.createSelectItem(
+                operand,
+                alias
+                );
+            }
+
+        /**
+         * Create a UserDefinedFunction.  
+         * 
+         */
+        @Override
+        public UserDefinedFunction createUserDefinedFunction(String name, ADQLOperand[] params)
+        throws Exception
+            {
+            log.debug("createUserDefinedFunction(String, ADQLOperand[])");
+            log.debug("  Name [{}][{}]", name);
+
+            // Need to check the function resource (catalog).
+            // Some functions are schema specific.
+            return super.createUserDefinedFunction(
+                name,
+                params
+                );
+            }
+        }
+    
+    
     protected AdqlQuery.Mode mode ;
 
     protected ADQLParser parser ;
