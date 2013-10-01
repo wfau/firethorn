@@ -31,13 +31,13 @@ public class SimpleQueryTestCase
 extends SimpleQueryTestBase
     {
 
-    @Value("${firethon.ogsadai.dqp}")
+    @Value("${firethorn.ogsadai.dqp}")
     private String dqp ;
 
-    @Value("${firethon.ogsadai.store}")
+    @Value("${firethorn.ogsadai.store}")
     private String store ;
 
-    @Value("${firethon.ogsadai.endpoint}")
+    @Value("${firethorn.ogsadai.endpoint}")
     private String endpoint ;
 
     /**

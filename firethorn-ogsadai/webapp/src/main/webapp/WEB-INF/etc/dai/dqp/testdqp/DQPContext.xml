@@ -28,7 +28,7 @@
         | Jersey evaluation node.
         +-->
     <bean class="uk.org.ogsadai.dqp.presentation.jersey.JerseyEvaluationNode" id="TestDqpEval">
-        <constructor-arg name="url"     value="${firethon.ogsadai.endpoint}"/>
+        <constructor-arg name="url"     value="${firethorn.ogsadai.endpoint}"/>
         <constructor-arg name="drerID"  value="DataRequestExecutionResource"/>
         <constructor-arg name="dsos"    value="dataSources"/>
         <constructor-arg name="dsis"    value="dataSinks"/>
@@ -98,7 +98,7 @@
 
         <property name="metadataServiceFactory">
             <bean class="uk.ac.roe.wfau.firethorn.ogsadai.metadata.client.rest.MetadataServiceFactoryImpl">
-                <constructor-arg name="endpoint" value="${firethon.webapp.endpoint}"/>
+                <constructor-arg name="endpoint" value="${firethorn.webapp.endpoint}"/>
             </bean>
         </property>
 

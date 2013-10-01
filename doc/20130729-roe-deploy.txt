@@ -135,14 +135,20 @@ EOF
 # Connect the SSH tunnel to ROE.
 #[sqsh@tau]
 
+ssh polyester.andrews.metagrid.co.uk
+ssh sqsh@tau.virtual.metagrid.co.uk
+
     source "${HOME}/sqlserver.txt"
-    ssh -L '*:1435:ramses5:1433' -L '*:1439:ramses9:1433' "${sshsqluser:?}@${sshsqlhost:?}"
+    ssh -L '*:1435:ramses5:1433' -L '*:1439:ramses9:1433' "${sshsser:?}@${sshhost:?}"
 
 # ------------------------------------------------
 # Create a new database.
 #[sqsh@tau]
 
-    dbversion=DJFT0107alpha03
+ssh polyester.andrews.metagrid.co.uk
+ssh sqsh@tau.virtual.metagrid.co.uk
+
+    dbversion=DJFT0107alpha05
     metadataname="FirethornMetadata${dbversion:?}"
     userdataname="FirethornUserdata${dbversion:?}"
 
@@ -243,12 +249,12 @@ EOF
 
         firethorn.version=01.07-alpha-03
         
-        firethon.webapp.endpoint=http://coccinea:8080/firethorn
-        #firethon.webapp.baseurl=http://coccinea:8080/firethorn
+        firethorn.webapp.endpoint=http://coccinea:8080/firethorn
+        #firethorn.webapp.baseurl=http://coccinea:8080/firethorn
 
-        firethon.ogsadai.dqp=testdqp
-        firethon.ogsadai.store=userdata
-        firethon.ogsadai.endpoint=http://pyracantha:8080/ogsa-dai/services
+        firethorn.ogsadai.dqp=testdqp
+        firethorn.ogsadai.store=userdata
+        firethorn.ogsadai.endpoint=http://pyracantha:8080/ogsa-dai/services
 
         firethorn.meta.url=jdbc:jtds:sqlserver://ramses9:1433/xxxx-xxxx
         firethorn.meta.user=xxxx-xxxx
@@ -313,7 +319,7 @@ EOF
         # Shutdown Tomcat
         "${HOME}/tomcat/bin/shutdown.sh"
 
-        webappver=01.07-alpha-03
+        webappver=01.07-alpha-05
         webappproj=firethorn-webapp
         webappname=${webappproj:?}-${webappver:?}
         webapppath=${HOME}/webapps
@@ -439,7 +445,7 @@ EOF
         #
         # Deploy the ogsadai webapp.
 
-        webappver=01.07-alpha-03
+        webappver=01.07-alpha-05
         webappproj=firethorn-ogsadai-webapp
         webappname=${webappproj:?}-${webappver:?}
         webapppath=${HOME}/webapps
@@ -656,6 +662,10 @@ EOF
         exit
 
 #
+#adqlspace=/adql/resource/32770
+#atlasschema=/adql/schema/163899
+
+#
 # Run the query part of the test scripts.
 #[user@desktop]
 
@@ -681,8 +691,7 @@ EOF
                 source "${FIRETHORN_TEST:?}/04-02-import-query-schema.sh" 'ATLASv20130426' 'atlas'
 
                 source "${FIRETHORN_TEST:?}/04-03-create-query-schema.sh"
-                #source "${FIRETHORN_TEST:?}/05-00-execute-query.sh"       "${FIRETHORN_TEST:?}/06-query-atlas-000.adql"
-                source "${FIRETHORN_TEST:?}/05-00-execute-query.sh"       query-001.adql
+                source "${FIRETHORN_TEST:?}/05-00-execute-query.sh"       "${FIRETHORN_TEST:?}/06-query-atlas-000.adql"
                 
                 }
 

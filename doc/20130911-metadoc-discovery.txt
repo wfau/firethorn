@@ -1,0 +1,796 @@
+
+
+# --------------------------------------------------------------------------
+# BEST-DR8 schema browser URL redirects to a generic home page.
+# http://cas.sdss.org/dr8/en/help/browser/browser.asp
+# BEST-DR8 schema browser URL should be
+# http://skyserver.sdss3.org/dr8/en/help/browser/browser.asp  
+
+# --------------------------------------------------------------------------
+# OSA schema browser has external links for BEST-DR7 and BEST-DR8.
+# Metadocs include data for BEST-DR9.
+# Should we include BEST-DR9 even if it is not in the schema browser ?
+
+# --------------------------------------------------------------------------
+# Truncated descriptions in BEST DR 5,7,8,9
+# Metadoc generator removes trailing full stop by truncating last character.
+# Problem - not all descriptions have a trailing full stop.
+
+    BEST DR 5,7,8,9
+    http://skyserver.sdss3.org/dr8/en/help/browser/description.asp?n=PhotoStatus&t=V
+    <Table ID="PhotoStatus">
+        <Name>PhotoStatus</Name>
+        <Description><![CDATA[ Contains the PhotoStatus flag values from DataConstants as binary(4]]></Description>
+        <Description><![CDATA[ Contains the PhotoStatus flag values from DataConstants as binary(4) ]]></Description>
+
+
+    BEST DR 8,9
+    http://skyserver.sdss3.org/dr8/en/help/browser/description.asp?n=sdssTile&t=V
+    <Table ID="sdssTile">
+        <Name>sdssTile</Name>
+        <Description><![CDATA[ A view of sdssTileAll that have untiled=]]></Description>
+        <Description><![CDATA[ A view of sdssTileAll that have untiled=0]]></Description>
+
+    BEST DR 8,9
+    http://skyserver.sdss3.org/dr8/en/help/browser/description.asp?n=AtlasOutline&t=U
+    <Table ID="AtlasOutline">
+        <Name>AtlasOutline</Name>
+        <Description><![CDATA[ Contains a record describing each AtlasOutline objec]]></Description>
+        <Description><![CDATA[ Contains a record describing each AtlasOutline object]]></Description>
+
+    BEST DR 8,9
+    http://skyserver.sdss3.org/dr8/en/help/browser/description.asp?n=HoleType&t=V
+    <Table ID="HoleType">
+        <Name>HoleType</Name>
+        <Description><![CDATA[ Contains the HoleType enumerated values from DataConstants as in]]></Description>
+        <Description><![CDATA[ Contains the HoleType enumerated values from DataConstants as int]]></Description>
+
+
+# --------------------------------------------------------------------------
+# Reference to an unknown column in BESTDR9
+
+    [JdbcColumnEntity] Unable to locate column [BestDR9.dbo.sdssTilingBoundary][tilingGeometryID] 
+
+
+    # DR9 metadoc  table  name [sdssTilingBoundary]
+    # DR9 metadoc  column name [sdssTilingBoundary.tilingGeometryID]
+    # DR9 database column name [sdssTilingBoundary.regionID]
+
+
+    # DR8 metadoc  table  name [sdssTilingBoundary]
+    # DR8 metadoc  column name [sdssTilingBoundary.regionID]
+    # DR8 database column name [sdssTilingBoundary.regionID]
+    # DR8 original column name [sdssTilingBoundary.regionID]
+    # http://skyserver.sdss3.org/dr8/en/help/browser/description.asp?n=sdssTilingGeometry&t=U
+
+    # DR7 metadoc  table  name [TilingBoundary]
+    # DR7 metadoc  column name [TilingBoundary.tilingGeometryID]
+    # DR7 database column name [TilingBoundary.tilingGeometryID]
+    # DR7 original column name [TilingBoundary.tilingGeometryID]
+    # http://cas.sdss.org/dr7/en/help/browser/description.asp?n=TilingGeometry&t=U
+
+    # DR9 metadoc  column name [sdssTilingMask.tilingGeometryID]
+    # DR9 database column name [sdssTilingMask.regionID]
+    # DR8 metadoc  column name [sdssTilingMask.regionID]
+    # DR7 metadoc  column name [TilingMask.tilingGeometryID]
+
+    # ------------------------------------------------
+    # Connect the SSH tunnel to ROE.
+    #[sqsh@tau]
+
+        source "${HOME}/sqlserver.txt"
+        ssh \
+            -L '*:1433:ramses3:1433' \
+            -L '*:1434:ramses4:1433' \
+            -L '*:1435:ramses5:1433' \
+            -L '*:1436:ramses6:1433' \
+            -L '*:1437:ramses7:1433' \
+            -L '*:1438:ramses8:1433' \
+            -L '*:1439:ramses9:1433' \
+            "${sshsqluser:?}@${sshsqlhost:?}"
+
+    # ------------------------------------------------
+    # Connect to the main database.
+    #[sqsh@tau]
+
+        databasehost=ramses5
+        databaselogin=xxxx
+        databasepass=xxxx
+        databasename=ATLASv20130426
+
+        sqsh -S "${databasehost}" -U "${databaselogin}" -P "${databasepass}" -D "${databasename}"
+
+        use [BestDR9]
+        go
+
+        EXECUTE sp_help sdssTilingBoundary
+        go
+
+        EXECUTE sp_columns sdssTilingBoundary
+        go
+
+
+    USE [BestDR9]
+    go
+
+    SELECT
+        COLUMN_NAME,
+        DATA_TYPE
+    FROM
+        INFORMATION_SCHEMA.COLUMNS
+    WHERE
+        TABLE_NAME = 'sdssTilingBoundary'
+    go
+
+    COLUMN_NAME DATA_TYPE                                                                                                                                                                                                                                                      
+    regionID    int
+    ....
+
+    SELECT
+        COLUMN_NAME,
+        DATA_TYPE
+    FROM
+        INFORMATION_SCHEMA.COLUMNS
+    WHERE
+        TABLE_NAME = 'sdssTilingMask'
+    go
+
+    COLUMN_NAME DATA_TYPE                                                                                                                                                                                                                                                      
+    regionID    int
+    ....
+
+    SELECT
+        COLUMN_NAME,
+        DATA_TYPE
+    FROM
+        INFORMATION_SCHEMA.COLUMNS
+    WHERE
+        TABLE_NAME = 'sdssTilingGeometry'
+    go
+
+    COLUMN_NAME         DATA_TYPE                                                                                                                                                                                                                                                      
+    tilingGeometryID    int  
+    ....
+
+
+# --------------------------------------------------------------------------
+# Known/unknown catalogs.
+
+    #
+    # Based on text in schema browser ..
+
+    atlasSourceXdenisDR3Source          DENISDR3    DENIS
+    atlasSourceXDR5PhotoObj             SDSS-DR5    BESTDR5
+    atlasSourceXDR5PhotoObjAll          SDSS-DR5    BESTDR5
+    atlasSourceXDR7PhotoObj             SDSS-DR7    BESTDR7
+    atlasSourceXDR7PhotoObjAll          SDSS-DR7    BESTDR7
+    atlasSourceXDR8PhotoObj             SDSS-DR8    BESTDR8
+    atlasSourceXDR8PhotoObjAll          SDSS-DR8    BESTDR8
+    atlasSourceXDR9PhotoObj             SDSS-DR9    BESTDR9
+    atlasSourceXDR9PhotoObjAll          SDSS-DR9    BESTDR9
+    atlasSourceXfirstSource             FIRST       FIRST
+    atlasSourceXglimpse_hrc_inter       GLIMPSE     GLIMPSE
+    atlasSourceXglimpse_mca_inter       GLIMPSE     GLIMPSE
+    atlasSourceXGR6PhotoObjAll          GALEX-GR6   GalexGR6
+    atlasSourceXiras_psc                IRAS        IRAS
+    atlasSourceXmgcDetection            MGC         MGC
+    atlasSourceXnvssSource              NVSS        NVSS
+    atlasSourceXrosat_bsc               ROSAT       ROSAT
+    atlasSourceXrosat_fsc               ROSAT       ROSAT
+    atlasSourceXSegueDR6PhotoObj        SEGUE-DR6   SEGUEDR6
+    atlasSourceXSegueDR6PhotoObjAll     SEGUE-DR6   SEGUEDR6
+    atlasSourceXSSASource               SSA         SSA
+    atlasSourceXStripe82PhotoObjAll     Stripe82    Stripe82
+    atlasSourceXtwomass_psc             TWOMASS     TWOMASS
+    atlasSourceXtwomass_xsc             TWOMASS     TWOMASS
+    atlasSourceXtwoxmm                  XMM         TWOXMM
+    atlasSourceXvhsDr1Source            VISTA (VSA) VHSDR1      VSAv20130308
+    atlasSourceXvikingDr2Source         VISTA (VSA) VIKINGDR2   VSAv20130308
+    atlasSourceXwise_allskysc           WISE        WISE
+
+
+    F287 - part of SuperCOSMOS SSA
+    SSA  - part of SuperCOSMOS SSA
+    NVSS - NRAO VLA Sky Survey
+
+
+#
+# Unknown catalogs
+
+    use [F287]
+    go
+
+        Msg 911, Level 16, State 1
+        Server 'RAMSES5', Line 1
+        Database 'F287' does not exist. Make sure that the name is entered correctly.
+
+    use [NVSS]
+    go
+
+        Msg 911, Level 16, State 1
+        Server 'RAMSES5', Line 1
+        Database 'NVSS' does not exist. Make sure that the name is entered correctly.
+
+    use [OSA]
+    go
+
+        Msg 911, Level 16, State 1
+        Server 'RAMSES5', Line 4
+        Database 'OSA' does not exist. Make sure that the name is entered correctly.
+        
+    use [SSA]
+    go
+
+        Msg 911, Level 16, State 1
+        Server 'RAMSES5', Line 1
+        Database 'SSA' does not exist. Make sure that the name is entered correctly.
+
+#
+# Connection issues
+
+    use [GalexGR6]
+    go
+
+        Msg 601, Level 12, State 2
+        Server 'RAMSES3', Line 1
+        Could not continue scan with NOLOCK due to data movement.
+
+        Msg 926, Level 14, State 3
+        Server 'RAMSES5', Line 1
+        Database 'GalexGR6' cannot be opened. It has been marked SUSPECT by recovery. See the SQL Server errorlog for more information.
+
+    use [VHSDR1]
+    go
+
+        Msg 916, Level 14, State 1
+        Server 'RAMSES5', Line 1
+        The server principal "atlasro" is not able to access the database "VHSDR1" under the current security context.
+
+    use [VIKINGDR2]
+    go
+
+        Msg 916, Level 14, State 1
+        Server 'RAMSES5', Line 1
+        The server principal "atlasro" is not able to access the database "VIKINGDR2" under the current security context.
+
+
+
+    SELECT * FROM ExternalSurvey ;
+    go
+
+        surveyID    surveyName                       databaseName    description                                                                                                                                                                                                                                                    
+        7           SDSS-DR5                         BestDR5         Sloan Digital Sky Survey Fifth Data Release                                                                                                                                                                                                                    
+        8           SDSS-SEGUE-DR6                   SEGUEDR6        Sloan Digital Sky Survey SEGUE Sixth Data Release                                                                                                                                                                                                              
+        9           SDSS-DR7                         BestDR7         Sloan Digital Sky Survey Seventh Data Release                                                                                                                                                                                                                  
+        10          2MASS                            TWOMASS         Two Micron All Sky Survey; all-sky data release (point source and extended source catalogues)                                                                                                                                                                  
+        12          ROSAT-ASS                        ROSAT           ROSAT all-sky survey bright and faint source catalogues                                                                                                                                                                                                        
+        13          FIRST                            FIRST           FIRST catalogue                                                                                                                                                                                                                                                
+        14          IRAS                             IRAS            Infra-Red Astronomy Satellite point source catalogue                                                                                                                                                                                                           
+        15          SSA                              SSA             SuperCOSMOS Sky Survey (SSS) as deployed in the SuperCOSMOS Science Archive                                                                                                                                                                                    
+        16          GLIMPSE                          GLIMPSE         Galactic Legacy Infrared Mid-Plane Survey Extraordinaire (HRC and MCA, v1.0)                                                                                                                                                                                   
+        17          XMM                              TWOXMM          XMM-Newton serendipitous source survey                                                                                                                                                                                                                         
+        18          UKIRTFS                          OSA             UFTI observations of UKIRT Faint Standard (FS) stars                                                                                                                                                                                                           
+        19          MGC                              MGC             Millennium Galaxy Catalogue, INT Wide Field Survey                                                                                                                                                                                                             
+        20          NVSS                             NVSS            NRAO VLA Sky Survey                                                                                                                                                                                                                                            
+        21          GLIMPSEI                         GLIMPSE         Galactic Legacy Infrared Mid-Plane Survey Extraordinaire (HRC and MCA, v2.0)                                                                                                                                                                                   
+        22          GLIMPSEII                        GLIMPSE         Galactic Legacy Infrared Mid-Plane Survey Extraordinaire (HRC and MCA, v2.0)                                                                                                                                                                                   
+        23          SDSS-STRIPE82                    Stripe82        Sloan Digital Sky Survey Stripe 82 Data Release                                                                                                                                                                                                                
+        24          COMBO17                          COMBO17         Classifying Objects by Medium-Band Observations (a spectrophotometric 17-filter survey)                                                                                                                                                                        
+        25          MACHO                            MACHO           The MACHO microlensing survey                                                                                                                                                                                                                                  
+        26          MCPS                             MCPS            Magellanic Clouds Photometric Survey                                                                                                                                                                                                                           
+        27          SPITZER                          SPITZER         Spitzer survey of the SMC & SAGE-LMC                                                                                                                                                                                                                           
+        28          TWODFGRS                         TWODFGRS        The Magellanic Clouds Photometric Survey                                                                                                                                                                                                                       
+        29          DENIS                            DENIS           Deep Near-Infrared Survey of the Southern Sky                                                                                                                                                                                                                  
+        30          EROS                             EROS            The EROS microlensing survey                                                                                                                                                                                                                                   
+        31          WISE                             WISE            The Wide-field Infrared Survey Explorer catalogue                                                                                                                                                                                                              
+        32          GALEX-GR6                        GALEXGR6        The Galaxy Evolution Explorer catalogue                                                                                                                                                                                                                        
+        33          SDSS-DR8                         BestDR8         Sloan Digital Sky Survey Eighth Data Release                                                                                                                                                                                                                   
+        34          VHSDR1                           VHSDR1          VHS First public database release                                                                                                                                                                                                                              
+        35          VIKINGDR2                        VIKINGDR2       VIKING DR2 public database release                                                                                                                                                                                                                             
+
+
+    SELECT DISTINCT
+        databaseName 
+    FROM
+        ExternalSurvey
+    ORDER BY
+        databaseName
+    go
+
+         BestDR5         
+         BestDR7         
+         BestDR8         
+         BestDR9         
+         COMBO17         
+         DENIS           
+         EROS            
+         FIRST           
+         GALEXGR6        
+         GLIMPSE         
+         IRAS            
+         MACHO           
+         MCPS            
+         MGC             
+         NONE            
+         NVSS            
+         OSA             
+         ROSAT           
+         SEGUEDR6        
+         SPITZER         
+         SSA             
+         Stripe82        
+         TWODFGRS        
+         TWOMASS         
+         TWOXMM          
+         VHSDR1          
+         VIKINGDR2       
+         WISE            
+
+
+    SELECT DISTINCT
+        neighbourTable
+    FROM
+        RequiredNeighbours
+    ORDER BY
+        neighbourTable
+    go
+
+         atlasSourceNeighbours
+         atlasSourceXdenisDR3Source
+         atlasSourceXDR5PhotoObj
+         atlasSourceXDR5PhotoObjAll
+         atlasSourceXDR7PhotoObj
+         atlasSourceXDR7PhotoObjAll
+         atlasSourceXDR8PhotoObj
+         atlasSourceXDR8PhotoObjAll
+         atlasSourceXDR9PhotoObj
+         atlasSourceXDR9PhotoObjAll
+         atlasSourceXfirstSource
+         atlasSourceXglimpse_hrc_inter
+         atlasSourceXglimpse_mca_inter
+         atlasSourceXGR6PhotoObjAll
+         atlasSourceXiras_psc
+         atlasSourceXmgcDetection
+         atlasSourceXnvssSource
+         atlasSourceXrosat_bsc
+         atlasSourceXrosat_fsc
+         atlasSourceXSegueDR6PhotoObj
+         atlasSourceXSegueDR6PhotoObjAll
+         atlasSourceXSSASource
+         atlasSourceXStripe82PhotoObjAll
+         atlasSourceXtwomass_psc
+         atlasSourceXtwomass_xsc
+         atlasSourceXtwoxmm
+         atlasSourceXvhsDr1Source
+         atlasSourceXvikingDr2Source
+         atlasSourceXwise_allskysc
+         calSourceNeighbours
+         calSourceXGR6PhotoObjAll
+         calSourceXSSASource
+         calSourceXtwomass_psc
+         calSourceXukirtFSstars
+         calSourceXwise_allskysc
+
+
+    SELECT
+        RequiredNeighbours.neighbourTable,
+        ExternalSurvey.surveyName,
+        ExternalSurvey.databaseName,
+        ExternalSurveyTable.extTableName
+    FROM
+        RequiredNeighbours
+    JOIN
+        ExternalSurvey
+    ON
+        RequiredNeighbours.surveyID = ExternalSurvey.surveyID
+    JOIN
+        ExternalSurveyTable
+    ON
+        RequiredNeighbours.surveyID = ExternalSurveyTable.surveyID
+    AND
+        RequiredNeighbours.extTableID = ExternalSurveyTable.extTableID
+    ORDER BY
+        ExternalSurvey.databaseName
+    go
+        
+        atlasSourceNeighbours               NONE                             NONE            NONE                                                                                                                                                                                                                                                           
+        calSourceNeighbours                 NONE                             NONE            NONE                                                                                                                                                                                                                                                           
+        atlasSourceXDR5PhotoObj             SDSS-DR5                         BestDR5         PhotoObj                                                                                                                                                                                                                                                       
+        atlasSourceXDR5PhotoObjAll          SDSS-DR5                         BestDR5         PhotoObjAll                                                                                                                                                                                                                                                    
+        atlasSourceXDR7PhotoObj             SDSS-DR7                         BestDR7         PhotoObj                                                                                                                                                                                                                                                       
+        atlasSourceXDR7PhotoObjAll          SDSS-DR7                         BestDR7         PhotoObjAll                                                                                                                                                                                                                                                    
+        atlasSourceXDR8PhotoObj             SDSS-DR8                         BestDR8         PhotoObj                                                                                                                                                                                                                                                       
+        atlasSourceXDR8PhotoObjAll          SDSS-DR8                         BestDR8         PhotoObjAll                                                                                                                                                                                                                                                    
+        atlasSourceXdenisDR3Source          DENIS                            DENIS           denisDR3Source                                                                                                                                                                                                                                                 
+        atlasSourceXfirstSource             FIRST                            FIRST           firstSource                                                                                                                                                                                                                                                    
+        atlasSourceXglimpse_hrc_inter       GLIMPSE                          GLIMPSE         glimpse_hrc_inter                                                                                                                                                                                                                                              
+        atlasSourceXglimpse_mca_inter       GLIMPSE                          GLIMPSE         glimpse_mca_inter                                                                                                                                                                                                                                              
+        atlasSourceXGR6PhotoObjAll          GALEX-GR6                        GALEXGR6        PhotoObjAll                                                                                                                                                                                                                                                    
+        calSourceXGR6PhotoObjAll            GALEX-GR6                        GALEXGR6        PhotoObjAll                                                                                                                                                                                                                                                    
+        atlasSourceXiras_psc                IRAS                             IRAS            iras_psc                                                                                                                                                                                                                                                       
+        atlasSourceXmgcDetection            MGC                              MGC             mgcDetection                                                                                                                                                                                                                                                   
+        atlasSourceXnvssSource              NVSS                             NVSS            nvssSource                                                                                                                                                                                                                                                     
+        calSourceXukirtFSstars              UKIRTFS                          OSA             ukirtFSstars                                                                                                                                                                                                                                                   
+        atlasSourceXrosat_bsc               ROSAT-ASS                        ROSAT           rosat_bsc                                                                                                                                                                                                                                                      
+        atlasSourceXrosat_fsc               ROSAT-ASS                        ROSAT           rosat_fsc                                                                                                                                                                                                                                                      
+        atlasSourceXSegueDR6PhotoObj        SDSS-SEGUE-DR6                   SEGUEDR6        PhotoObj                                                                                                                                                                                                                                                       
+        atlasSourceXSegueDR6PhotoObjAll     SDSS-SEGUE-DR6                   SEGUEDR6        PhotoObjAll                                                                                                                                                                                                                                                    
+        atlasSourceXSSASource               SSA                              SSA             Source                                                                                                                                                                                                                                                         
+        calSourceXSSASource                 SSA                              SSA             Source                                                                                                                                                                                                                                                         
+        atlasSourceXStripe82PhotoObjAll     SDSS-STRIPE82                    Stripe82        PhotoObjAll                                                                                                                                                                                                                                                    
+        atlasSourceXtwomass_psc             2MASS                            TWOMASS         twomass_psc                                                                                                                                                                                                                                                    
+        atlasSourceXtwomass_xsc             2MASS                            TWOMASS         twomass_xsc                                                                                                                                                                                                                                                    
+        calSourceXtwomass_psc               2MASS                            TWOMASS         twomass_psc                                                                                                                                                                                                                                                    
+        atlasSourceXtwoxmm                  XMM                              TWOXMM          twoxmm                                                                                                                                                                                                                                                         
+        atlasSourceXvhsDr1Source            VHSDR1                           VHSDR1          vhsSource                                                                                                                                                                                                                                                      
+        atlasSourceXvikingDr2Source         VIKINGDR2                        VIKINGDR2       vikingSource                                                                                                                                                                                                                                                   
+        atlasSourceXwise_allskysc           WISE                             WISE            wise_allskysc                                                                                                                                                                                                                                                  
+        calSourceXwise_allskysc             WISE                             WISE            wise_allskysc                                                                                                                                                                                                                                                  
+
+
+# ------------------------------------------------
+# Create multiple tunnels to the ROE servers.
+#[sqsh@tau]
+
+    source "${HOME}/sqlserver.txt"
+    ssh \
+        -L '*:1433:ramses3:1433' \
+        -L '*:1434:ramses4:1433' \
+        -L '*:1435:ramses5:1433' \
+        -L '*:1436:ramses6:1433' \
+        -L '*:1437:ramses7:1433' \
+        -L '*:1438:ramses8:1433' \
+        -L '*:1439:ramses9:1433' \
+        "${sshsqluser:?}@${sshsqlhost:?}"
+
+# ---------------------------------------------------
+# Update the sqsh config to match.
+#[root@tau]
+
+    vi /etc/freetds/freetds.conf 
+
+        [ramses3]
+            host = localhost
+            port = 1433
+
+        [ramses4]
+            host = localhost
+            port = 1434
+
+        [ramses5]
+            host = localhost
+            port = 1435
+
+        [ramses6]
+            host = localhost
+            port = 1436
+
+        [ramses7]
+            host = localhost
+            port = 1437
+
+        [ramses8]
+            host = localhost
+            port = 1438
+
+        [ramses9]
+            host = localhost
+            port = 1439
+
+# ---------------------------------------------------
+# Run test query on each.
+#[sqsh@tau]
+
+
+cat >> "${HOME}/sqlserver.txt" << EOF
+atlashost=ramses3
+atlaslogin=xxxx
+atlaspass=xxxx
+atlascatalog=ATLASv20130426
+EOF
+
+        source "${HOME}/sqlserver.txt"
+        sqsh -S "${atlashost}" -U "${atlaslogin}" -P "${atlaspass}" -D "${atlascatalog}"
+
+            use [ATLASv20130426]
+            go
+
+            SELECT
+                ExternalSurvey.surveyName,
+                ExternalSurvey.databaseName,
+                ExternalSurveyTable.extTableName,
+                RequiredNeighbours.neighbourTable
+            FROM
+                RequiredNeighbours
+            JOIN
+                ExternalSurvey
+            ON
+                RequiredNeighbours.surveyID = ExternalSurvey.surveyID
+            JOIN
+                ExternalSurveyTable
+            ON
+                RequiredNeighbours.surveyID = ExternalSurveyTable.surveyID
+            AND
+                RequiredNeighbours.extTableID = ExternalSurveyTable.extTableID
+            ORDER BY
+                ExternalSurvey.databaseName
+            go -m vert
+
+            # -----------------------------------------------
+
+            surveyName:     SDSS-DR5
+            databaseName:   BestDR5
+            extTableName:   PhotoObj
+            neighbourTable: atlasSourceXDR5PhotoObj
+             
+            surveyName:     SDSS-DR5
+            databaseName:   BestDR5
+            extTableName:   PhotoObjAll
+            neighbourTable: atlasSourceXDR5PhotoObjAll
+             
+            surveyName:     SDSS-DR7
+            databaseName:   BestDR7
+            extTableName:   PhotoObj
+            neighbourTable: atlasSourceXDR7PhotoObj
+             
+            surveyName:     SDSS-DR7
+            databaseName:   BestDR7
+            extTableName:   PhotoObjAll
+            neighbourTable: atlasSourceXDR7PhotoObjAll
+             
+            surveyName:     SDSS-DR8
+            databaseName:   BestDR8
+            extTableName:   PhotoObj
+            neighbourTable: atlasSourceXDR8PhotoObj
+             
+            surveyName:     SDSS-DR8
+            databaseName:   BestDR8
+            extTableName:   PhotoObjAll
+            neighbourTable: atlasSourceXDR8PhotoObjAll
+             
+            surveyName:     SDSS-DR9
+            databaseName:   BestDR9
+            extTableName:   PhotoObj
+            neighbourTable: atlasSourceXDR9PhotoObj
+             
+            surveyName:     SDSS-DR9
+            databaseName:   BestDR9
+            extTableName:   PhotoObjAll
+            neighbourTable: atlasSourceXDR9PhotoObjAll
+             
+            surveyName:     DENIS
+            databaseName:   DENIS
+            extTableName:   denisDR3Source
+            neighbourTable: atlasSourceXdenisDR3Source
+             
+            surveyName:     FIRST
+            databaseName:   FIRST
+            extTableName:   firstSource
+            neighbourTable: atlasSourceXfirstSource
+             
+            surveyName:     GALEX-GR6
+            databaseName:   GALEXGR6
+            extTableName:   PhotoObjAll
+            neighbourTable: atlasSourceXGR6PhotoObjAll
+             
+            surveyName:     GALEX-GR6
+            databaseName:   GALEXGR6
+            extTableName:   PhotoObjAll
+            neighbourTable: calSourceXGR6PhotoObjAll
+             
+            surveyName:     GLIMPSE
+            databaseName:   GLIMPSE
+            extTableName:   glimpse_hrc_inter
+            neighbourTable: atlasSourceXglimpse_hrc_inter
+             
+            surveyName:     GLIMPSE
+            databaseName:   GLIMPSE
+            extTableName:   glimpse_mca_inter
+            neighbourTable: atlasSourceXglimpse_mca_inter
+             
+            surveyName:     IRAS
+            databaseName:   IRAS
+            extTableName:   iras_psc
+            neighbourTable: atlasSourceXiras_psc
+             
+            surveyName:     MGC
+            databaseName:   MGC
+            extTableName:   mgcDetection
+            neighbourTable: atlasSourceXmgcDetection
+             
+            surveyName:     NONE
+            databaseName:   NONE
+            extTableName:   NONE
+            neighbourTable: calSourceNeighbours
+             
+            surveyName:     NONE
+            databaseName:   NONE
+            extTableName:   NONE
+            neighbourTable: atlasSourceNeighbours
+             
+            surveyName:     NVSS
+            databaseName:   NVSS
+            extTableName:   nvssSource
+            neighbourTable: atlasSourceXnvssSource
+             
+            surveyName:     UKIRTFS
+            databaseName:   OSA
+            extTableName:   ukirtFSstars
+            neighbourTable: calSourceXukirtFSstars
+             
+            surveyName:     ROSAT-ASS
+            databaseName:   ROSAT
+            extTableName:   rosat_bsc
+            neighbourTable: atlasSourceXrosat_bsc
+             
+            surveyName:     ROSAT-ASS
+            databaseName:   ROSAT
+            extTableName:   rosat_fsc
+            neighbourTable: atlasSourceXrosat_fsc
+             
+            surveyName:     SDSS-SEGUE-DR6
+            databaseName:   SEGUEDR6
+            extTableName:   PhotoObj
+            neighbourTable: atlasSourceXSegueDR6PhotoObj
+             
+            surveyName:     SDSS-SEGUE-DR6
+            databaseName:   SEGUEDR6
+            extTableName:   PhotoObjAll
+            neighbourTable: atlasSourceXSegueDR6PhotoObjAll
+             
+            surveyName:     SSA
+            databaseName:   SSA
+            extTableName:   Source
+            neighbourTable: atlasSourceXSSASource
+             
+            surveyName:     SSA
+            databaseName:   SSA
+            extTableName:   Source
+            neighbourTable: calSourceXSSASource
+             
+            surveyName:     SDSS-STRIPE82
+            databaseName:   Stripe82
+            extTableName:   PhotoObjAll
+            neighbourTable: atlasSourceXStripe82PhotoObjAll
+             
+            surveyName:     2MASS
+            databaseName:   TWOMASS
+            extTableName:   twomass_psc
+            neighbourTable: atlasSourceXtwomass_psc
+             
+            surveyName:     2MASS
+            databaseName:   TWOMASS
+            extTableName:   twomass_xsc
+            neighbourTable: atlasSourceXtwomass_xsc
+             
+            surveyName:     2MASS
+            databaseName:   TWOMASS
+            extTableName:   twomass_psc
+            neighbourTable: calSourceXtwomass_psc
+             
+            surveyName:     XMM
+            databaseName:   TWOXMM
+            extTableName:   twoxmm
+            neighbourTable: atlasSourceXtwoxmm
+             
+            surveyName:     VHSDR1
+            databaseName:   VHSDR1
+            extTableName:   vhsSource
+            neighbourTable: atlasSourceXvhsDr1Source
+             
+            surveyName:     VIKINGDR2
+            databaseName:   VIKINGDR2
+            extTableName:   vikingSource
+            neighbourTable: atlasSourceXvikingDr2Source
+             
+            surveyName:     WISE
+            databaseName:   WISE
+            extTableName:   wise_allskysc
+            neighbourTable: atlasSourceXwise_allskysc
+             
+            surveyName:     WISE
+            databaseName:   WISE
+            extTableName:   wise_allskysc
+            neighbourTable: calSourceXwise_allskysc
+
+            # -----------------------------------------------
+
+            SELECT
+                ExternalSurvey.surveyName,
+                ExternalSurvey.databaseName
+            FROM
+                RequiredNeighbours
+            JOIN
+                ExternalSurvey
+            ON
+                RequiredNeighbours.surveyID = ExternalSurvey.surveyID
+            JOIN
+                ExternalSurveyTable
+            ON
+                RequiredNeighbours.surveyID = ExternalSurveyTable.surveyID
+            AND
+                RequiredNeighbours.extTableID = ExternalSurveyTable.extTableID
+            ORDER BY
+                ExternalSurvey.databaseName
+            go
+
+
+             surveyName                       databaseName    
+             -------------------------------- ----------------
+             SDSS-DR5                         BestDR5         
+             SDSS-DR5                         BestDR5         
+             SDSS-DR7                         BestDR7         
+             SDSS-DR7                         BestDR7         
+             SDSS-DR8                         BestDR8         
+             SDSS-DR8                         BestDR8         
+             SDSS-DR9                         BestDR9         
+             SDSS-DR9                         BestDR9         
+             DENIS                            DENIS           
+             FIRST                            FIRST           
+             GALEX-GR6                        GALEXGR6        
+             GALEX-GR6                        GALEXGR6        
+             GLIMPSE                          GLIMPSE         
+             GLIMPSE                          GLIMPSE         
+             IRAS                             IRAS            
+             MGC                              MGC             
+             NONE                             NONE            
+             NONE                             NONE            
+             NVSS                             NVSS            
+             UKIRTFS                          OSA             
+             ROSAT-ASS                        ROSAT           
+             ROSAT-ASS                        ROSAT           
+             SDSS-SEGUE-DR6                   SEGUEDR6        
+             SDSS-SEGUE-DR6                   SEGUEDR6        
+             SSA                              SSA             
+             SSA                              SSA             
+             SDSS-STRIPE82                    Stripe82        
+             2MASS                            TWOMASS         
+             2MASS                            TWOMASS         
+             2MASS                            TWOMASS         
+             XMM                              TWOXMM          
+             VHSDR1                           VHSDR1          
+             VIKINGDR2                        VIKINGDR2       
+             WISE                             WISE            
+             WISE                             WISE            
+
+            # -----------------------------------------------
+
+
+    surveyName      databaseName    
+    --------------- ----------------
+    SDSS-DR5        BestDR5         
+    SDSS-DR5        BestDR5         
+    SDSS-DR7        BestDR7         
+    SDSS-DR7        BestDR7         
+    SDSS-DR8        BestDR8         
+    SDSS-DR8        BestDR8         
+    SDSS-DR9        BestDR9         
+    SDSS-DR9        BestDR9         
+    DENIS           DENIS           
+    FIRST           FIRST           
+    GALEX-GR6       GALEXGR6        
+    GALEX-GR6       GALEXGR6        
+    GLIMPSE         GLIMPSE         
+    GLIMPSE         GLIMPSE         
+    IRAS            IRAS            
+    MGC             MGC             
+    NONE            NONE            
+    NONE            NONE            
+    NVSS            NVSS            
+    UKIRTFS         OSA             
+    ROSAT-ASS       ROSAT           
+    ROSAT-ASS       ROSAT           
+    SDSS-SEGUE-DR6  SEGUEDR6        
+    SDSS-SEGUE-DR6  SEGUEDR6        
+    SSA             SSA             
+    SSA             SSA             
+    SDSS-STRIPE82   Stripe82        
+    2MASS           TWOMASS         
+    2MASS           TWOMASS         
+    2MASS           TWOMASS         
+    XMM             TWOXMM          
+    VHSDR1          VHSDR1          
+    VIKINGDR2       VIKINGDR2       
+    WISE            WISE            
+    WISE            WISE            
+

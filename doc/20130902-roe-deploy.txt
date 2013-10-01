@@ -1,0 +1,221 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+Physical host
+    shepseskaf
+
+Virtual machines
+    pyratest1
+    pyratest2
+    pyratest3
+
+# ---------------------------------------------------------------------------------------
+
+#
+# Set up ssh tunnel to home network.
+#[laptop@hotel]
+
+    vi ~/.ssh/config
+
+        Host polytunnel
+            HostName threonine.metagrid.co.uk 
+            ProxyCommand ssh -q polyester.andrews.metagrid.co.uk nc %h %p
+            User Zarquan
+            IdentityFile ~/.ssh/zarquan.metagrid.co.uk
+            Protocol 2
+            Compression yes
+            PasswordAuthentication no
+
+#
+# Setup ssh tunnel to new vm server.
+#[user@desktop]
+ 
+    vi ~/.ssh/config
+
+        Host shepseskaf
+            User dave
+            HostName shepseskaf.roe.ac.uk
+            ProxyCommand ssh -q djer nc %h %p
+            IdentityFile ~/.ssh/dmr.roe.ac.uk.dsa
+            Protocol 2
+            Compression yes
+            PasswordAuthentication no
+
+#
+# Setup ssh identity on new vm server.
+#[user@shepseskaf]
+
+    if [ ! -e "${HOME}/.ssh" ]
+    then
+        mkdir "${HOME}/.ssh"
+    fi
+
+    pushd "${HOME}/.ssh"
+        if [ ! -e dmr.roe.ac.uk.dsa.pub ]
+        then    
+            wget http://data.metagrid.co.uk/sshkeys/dmr.roe.ac.uk.dsa.pub
+            cat dmr.roe.ac.uk.dsa.pub >> authorized_keys
+        fi
+    popd
+
+    chown -R "${USER}:${USER}" "${HOME}/.ssh"
+    chmod g=,o=,u=rwx "${HOME}/.ssh"
+
+#
+# Run VM Manager on new vm server.
+#[laptop@hotel]
+
+    ssh -X polytunnel
+        ssh -X shepseskaf
+                virt-manager &
+
+# Using VirtManager GUI to star/stop the test VMs works.
+
+#
+# Startup test vm.
+#[laptop@hotel]
+
+    ssh polytunnel
+        ssh shepseskaf
+
+            #
+            # Command line start fails.
+            virsh start pyratest1
+
+                error: failed to get domain 'pyratest1'
+                error: Domain not found: no domain with matching name 'pyratest1'
+
+            #
+            # Config file is not readable
+            cat /etc/libvirt/qemu/pyratest1.xml 
+
+                cat: /etc/libvirt/qemu/pyratest1.xml: Permission denied
+
+            #
+            # Command line virsh can't see any of the VMs.
+            virsh list --all
+
+                 Id    Name                           State
+                ----------------------------------------------------
+
+
+qemu:///system
+
+
+# **
+# Using VirtManager GUI works.
+# Using comnmand line tools fails 
+# Suggests that something is amis in the config.
+
+#
+# ls on '/' hangs
+#[user@shepseskaf]
+
+    ls /
+    .....
+    
+#
+# VM images are not managed by a libvirt storage pool. 
+#[user@shepseskaf]
+    
+    ls -al /shepseskaf/virtual-machines
+
+        -rwxr-xr-x  1 root         root         10737418240 Aug 26 15:06 pyratest
+        -rwxr-xr-x  1 libvirt-qemu libvirt-qemu 10737418240 Sep  2 12:03 pyratest1
+        -rwxr-xr-x  1 root         root         10737418240 Aug 26 15:56 pyratest1-backup
+        -rwxr-xr-x  1 root         root         10737418240 Aug 26 16:57 pyratest2
+        -rwxr-xr-x  1 root         root         10737418240 Aug 26 16:59 pyratest2-backup
+        -rwxr-xr-x  1 root         root         10737418240 Aug 26 16:30 pyratest3
+        -rwxr-xr-x  1 root         root         10737418240 Aug 26 16:31 pyratest3-backup
+
+# ---------------------------------------------------------------------------------------
+
+    firethorn@djer
+        pubkey   - yes
+
+    dave@djer
+        pubkey   - yes
+
+        virt-manager
+            works
+
+        virsh list
+            fails
+
+
+
+
+    root@coccinea
+    firethorn@coccinea
+        pubkey   - yes
+
+    root@pyracantha
+    firethorn@pyracantha
+        pubkey   - yes
+ 
+    root@pyrus
+    firethorn@pyrus
+        pubkey   - yes
+ 
+    root@malus
+    firethorn@malus
+        pubkey   - yes
+ 
+ 
+ 
+ 
+    firethorn@shepseskaf
+        password  - no
+        pubkey    - no
+ 
+    dave@shepseskaf
+        password  - ok
+        pubkey   - ok
+
+        virt-manager
+            works
+
+        virsh list
+            fails
+
+
+    root@pyratest1
+    dave@pyratest1
+    firethorn@pyratest1
+        password  - no
+        pubkey   - no
+
+
+    pyratest1,2,3
+        mem  1G
+        swap ?
+
+    pyratest1,2,3-backup
+        what happens if we run these by accident ?
+
+
+
+
+
+
+

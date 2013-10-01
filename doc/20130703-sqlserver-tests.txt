@@ -30,11 +30,11 @@
 source "${HOME:?}/test-users.txt"
 
 cat > "${HOME}/test.properties" << EOF
-firethon.webapp.endpoint=http://${firehost:?}:8080/firethorn
+firethorn.webapp.endpoint=http://${firehost:?}:8080/firethorn
 
-firethon.ogsadai.dqp=testdqp
-firethon.ogsadai.store=userdata
-firethon.ogsadai.endpoint=http://${ogsahost:?}:8081/albert/services
+firethorn.ogsadai.dqp=testdqp
+firethorn.ogsadai.store=userdata
+firethorn.ogsadai.endpoint=http://${ogsahost:?}:8081/albert/services
 
 firethorn.meta.url=jdbc:jtds:sqlserver://${hsqlhost:?}:1439/FirethornMetadataxxx
 firethorn.meta.driver=net.sourceforge.jtds.jdbc.Driver

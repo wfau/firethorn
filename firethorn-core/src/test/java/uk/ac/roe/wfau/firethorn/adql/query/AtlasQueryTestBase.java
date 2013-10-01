@@ -23,10 +23,10 @@ import java.util.Iterator;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
-import uk.ac.roe.wfau.firethorn.adql.query.QuerySelectFieldTestBase.ExpectedField;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -47,9 +47,9 @@ public class AtlasQueryTestBase
 extends TestBase
     {
 
-    protected JdbcResource atlas ;
-    protected AdqlSchema   schema  ;
+    protected static JdbcResource resource  ;
     protected AdqlResource workspace ;
+    protected AdqlSchema   schema ;
 
     /**
      * Create our resources.
@@ -61,48 +61,29 @@ extends TestBase
         {
         //
         // Create our JDBC resources.
-        this.atlas = factories().jdbc().resources().create(
-            "atlas",
-            "ATLASv20130304",
-            "atlas",
-            "spring:RoeATLAS"
-            );
+        if (resource == null)
+            {
+            resource = factories().jdbc().resources().create(
+                "atlas",
+                "ATLASv20130426",
+                "atlas",
+                "spring:RoeATLAS"
+                );
+            }
         //
         // Create our ADQL workspace.
         this.workspace = factories().adql().resources().create(
-            "adql-workspace"
+            "workspace"
             );
         //
-        // Import the JDBC tables into our workspace.
+        // Import the tables into our workspace.
         this.schema = this.workspace.schemas().create(
-            "adql_atlas"
-            );
-        this.schema.tables().create(
-            this.atlas.schemas().select(
-                "ATLASv20130304",
+            "atlastest",
+            resource.schemas().select(
+                "ATLASv20130426",
                 "dbo"
-                ).tables().select(
-                    "atlassourcexDR7photoobj"
-                    )
+                )
             );
-
-        this.schema.tables().create(
-                this.atlas.schemas().select(
-                    "ATLASv20130304",
-                    "dbo"
-                    ).tables().select(
-                        "atlasSource"
-                        )
-                );
-        
-        this.schema.tables().create(
-                this.atlas.schemas().select(
-                    "ATLASv20130304",
-                    "dbo"
-                    ).tables().select(
-                        "Filter"
-                        )
-                );
         }
 
     /**
@@ -197,7 +178,7 @@ extends TestBase
         log.debug("Status [{}]", query.status());
         log.debug("ADQL   [{}]", query.adql());
         log.debug("OSQL   [{}]", query.osql());
-        log.debug("Target [{}]", query.primary().ident());
+        log.debug("Target [{}]", (query.primary() != null) ? query.primary().ident() : null);
         log.debug("Resources -- ");
         for (final BaseResource<?> target : query.resources())
             {
@@ -218,6 +199,49 @@ extends TestBase
             {
             log.debug("Field [{}][{}][{}]", field.name(), field.type(), field.arraysize());
             }
+        }
+
+    /**
+     * Clean a query string.
+     * 
+     */
+    protected String clean(String s1)
+        {
+        if (s1 == null)
+            {
+            return  null ;
+            }
+
+        final String s2 = StringUtils.trim(s1);
+        final String s3 = s2.toLowerCase();
+        final String s4 = s3.replaceAll("[\n\r]+", " ");
+        final String s5 = s4.replaceAll("\\p{Space}+", " ");
+        final String s6 = s5.replaceAll(" +,", ",");
+
+        return s6;
+        }
+
+    /**
+     * Compare an ADQL query and the resulting SQL output.
+     * 
+     */
+    public void compare(final String adql, final String osql)
+    throws Exception
+        {
+        final AdqlQuery query = this.schema.queries().create(
+            adql
+            );
+        debug(
+            query
+            );
+        assertEquals(
+            clean(
+                osql
+                ),
+            clean(
+                query.osql()
+                )
+            );
         }
     }
 

@@ -63,13 +63,11 @@ public class JdbcBuilderBase
 
     protected Database database(final JdbcResource resource)
         {
+        final DatabaseFactory factory = DatabaseFactory.getInstance();
         try {
-            final DatabaseFactory factory = DatabaseFactory.getInstance();
-
             final JdbcConnection connection = new JdbcConnection(
                 resource.connection().open()
                 );
-
             return factory.findCorrectDatabaseImplementation(
                 connection
                 );
@@ -84,6 +82,7 @@ public class JdbcBuilderBase
     protected void execute(final JdbcResource resource, final ChangeSet changeset)
         {
         log.debug("Executing ChangeSet [{}]", changeset.getId());
+
         final Database database = database(
             resource
             );
@@ -106,13 +105,19 @@ public class JdbcBuilderBase
             }
         finally
             {
+            resource.connection().close();
+            /*
             try {
                 database.close();
                 }
             catch (final DatabaseException ouch)
                 {
-                log.error("Failed to execute close database [{}]", ouch.getMessage());
+                log.error("Exception while closing database [{}]", ouch.getMessage());
+                throw new RuntimeException(
+                    ouch
+                    );
                 }
+            */
             }
         }
     }

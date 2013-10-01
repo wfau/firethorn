@@ -20,6 +20,8 @@ package uk.ac.roe.wfau.firethorn.adql.parser;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,6 +41,7 @@ import adql.db.DBChecker;
 import adql.db.DBColumn;
 import adql.db.DBTable;
 import adql.parser.ADQLParser;
+import adql.parser.ADQLQueryFactory;
 import adql.parser.ParseException;
 import adql.query.ADQLObject;
 import adql.query.ADQLQuery;
@@ -122,6 +125,7 @@ implements AdqlParser
                     );
                 }
             }
+/*
         //
         // Create our ADQL parser:
         this.parser = new ADQLParser();
@@ -133,12 +137,92 @@ implements AdqlParser
                 tables
                 )
             );
+ */
+        //
+        // Create our ADQL parser.
+        this.parser = new ADQLParser(
+            new DBChecker(
+                tables
+                ),
+            new AdqlQueryFactoryImpl()
+            );
+
+        this.parser.disable_tracing();
+        
         }
 
+    /**
+     *  Factory for building an ADQL query representation.
+     *
+     */
+    public class AdqlQueryFactoryImpl
+    extends ADQLQueryFactory
+        {
+        /**
+         * Create a SelectItem.  
+         * 
+         */
+        @Override
+        public SelectItem createSelectItem(ADQLOperand operand, String alias)
+        throws Exception
+            {
+            log.debug("createSelectItem(ADQLOperand, String)");
+            log.debug("  Oper [{}][{}]", operand.getName(), operand.getClass());
+            return super.createSelectItem(
+                operand,
+                alias
+                );
+            }
+
+        /**
+         * Create a UserDefinedFunction.  
+         * 
+         */
+        @Override
+        public UserDefinedFunction createUserDefinedFunction(String name, ADQLOperand[] params)
+        throws Exception
+            {
+            log.debug("createUserDefinedFunction(String, ADQLOperand[])");
+            log.debug("  Name [{}][{}]", name);
+
+            // Need to check the function resource (catalog).
+            // Some functions are schema specific.
+            return super.createUserDefinedFunction(
+                name,
+                params
+                );
+            }
+        }
+    
+    
     protected AdqlQuery.Mode mode ;
 
     protected ADQLParser parser ;
 
+    protected String prepare(final String input)
+        {
+        // Trim leading/trailing spaces.
+        String s1 = input.trim();
+
+        // Skip /* comments */
+        Pattern p1 = Pattern.compile(
+            "/\\*.*?\\*/",
+            Pattern.DOTALL
+            );
+        Matcher m1 = p1.matcher(s1);
+        String  s2 = m1.replaceAll(""); 
+
+        // Replace multiple ..
+        Pattern p2 = Pattern.compile(
+            "\\.{2,}",
+            Pattern.DOTALL
+            );
+        Matcher m2 = p2.matcher(s2);
+        String  s3 = m2.replaceAll("."); 
+
+        return s3 ;
+        }
+    
     @Override
     public void process(final AdqlParserQuery subject)
         {
@@ -146,7 +230,9 @@ implements AdqlParser
         // Parse the query.
         try {
             final ADQLQuery object = this.parser.parseQuery(
-                subject.input()
+                prepare(
+                    subject.input()
+                    )
                 );
             //
             // Reset the query state.
@@ -1064,13 +1150,15 @@ implements AdqlParser
         log.debug("  name   [{}]", funct.getName());
         log.debug("  number [{}]", funct.isNumeric());
         log.debug("  string [{}]", funct.isString());
-
+/*
+ * Causes error if the function only has one param. 
         ADQLOperand param1 = funct.getParameter(0);
         ADQLOperand param2 = funct.getParameter(1);
 
         log.debug("  param1  [{}]", param1);
         log.debug("  param2  [{}]", param2);
-
+ *        
+ */
         switch (funct.getType())
             {
 
@@ -1086,7 +1174,7 @@ implements AdqlParser
                         )
                     );
 
-            case LOG:		// returns the natural logarithm (base e) of a double value.
+            case LOG:   // returns the natural logarithm (base e) of a double value.
             case LOG10:	// returns the base 10 logarithm of a double value.
             case POWER:
             case DEGREES:

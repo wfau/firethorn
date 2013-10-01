@@ -492,12 +492,27 @@ public class JdbcConnectionEntity
         this.local.remove();
         }
 
+    @Transient
+    private int opens;
+    private static final boolean DEBUG_NESTED_CONNECTS = false ; 
+    
     @Override
     public Connection open()
         {
-        log.debug("open()");
         synchronized (this.local)
             {
+            opens++;
+            log.debug("open [{}]", opens);
+            if (opens > 1)
+                {
+                if (DEBUG_NESTED_CONNECTS)
+                    {
+                    log.error("Duplicate call to open");
+                    throw new RuntimeException(
+                        "Database connection already open"
+                        );
+                    }
+                }
             return this.local.get();
             }
         }
@@ -505,27 +520,41 @@ public class JdbcConnectionEntity
     @Override
     public void close()
         {
-        log.debug("close()");
         synchronized (this.local)
             {
-            try {
-                if (this.state == State.CONNECTED)
+            log.debug("close [{}]", opens);
+            opens--;
+            if (opens < 0)
+                {
+                if (DEBUG_NESTED_CONNECTS)
                     {
-                    final Connection connection = this.local.get();
-                    if (connection != null)
-                        {
-                        connection.close();
-                        }
-                    this.state = State.CLOSED;
+                    log.error("Out of sequence call to close");
+                    throw new RuntimeException(
+                        "Database connection already closed"
+                        );
                     }
                 }
-            catch (final Throwable ouch)
+            if (opens <= 1)
                 {
-                this.state = State.FAILED;
-                log.error("Error closing database connection [{}]", ouch.getMessage());
-                }
-            finally {
-                this.local.remove();
+                try {
+                    if (this.state == State.CONNECTED)
+                        {
+                        final Connection connection = this.local.get();
+                        if (connection != null)
+                            {
+                            connection.close();
+                            }
+                        this.state = State.CLOSED;
+                        }
+                    }
+                catch (final Throwable ouch)
+                    {
+                    this.state = State.FAILED;
+                    log.error("Error closing database connection [{}]", ouch.getMessage());
+                    }
+                finally {
+                    this.local.remove();
+                    }
                 }
             }
         }
@@ -533,6 +562,7 @@ public class JdbcConnectionEntity
     @Override
     public DatabaseMetaData metadata()
         {
+        log.debug("metadata()");
         final Connection connection = open();
         if (connection != null)
             {
