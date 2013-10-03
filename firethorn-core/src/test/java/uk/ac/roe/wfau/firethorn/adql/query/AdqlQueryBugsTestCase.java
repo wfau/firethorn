@@ -18,6 +18,8 @@
 package uk.ac.roe.wfau.firethorn.adql.query;
 
 import static org.junit.Assert.assertEquals;
+import lombok.extern.slf4j.Slf4j;
+
 import org.junit.Test;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
@@ -29,6 +31,7 @@ import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
  *
  *
  */
+@Slf4j
 public class AdqlQueryBugsTestCase
     extends AtlasQueryTestBase
     {
@@ -51,7 +54,6 @@ public class AdqlQueryBugsTestCase
             "    ATLASv20130426.atlasSourceXtwomass_psc as neighbours\n" + 
             ""
             );
-
         assertEquals(
             AdqlQuery.Syntax.State.PARSE_ERROR,
             query.syntax().state()
@@ -66,7 +68,6 @@ public class AdqlQueryBugsTestCase
     @Test
     public void test001()
         {
-        
         AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
                 Level.LEGACY
@@ -77,7 +78,6 @@ public class AdqlQueryBugsTestCase
             "    ATLASv20130426.atlasSourceXtwomass_psc as neighbours\n" + 
             ""
             );
-
         assertEquals(
             AdqlQuery.Syntax.State.VALID,
             query.syntax().state()
@@ -91,6 +91,10 @@ public class AdqlQueryBugsTestCase
             new ExpectedField[] {
                 new ExpectedField("dist", AdqlColumn.Type.FLOAT, 0),
                 }
+            );
+        compare(
+            query,
+            "select top 10 neighbours.distancemins as dist from atlasv20130426.dbo.atlassourcextwomass_psc as neighbours"
             );
         }
 
@@ -143,7 +147,6 @@ public class AdqlQueryBugsTestCase
             "    TWOMASS..twomass_psc\n" + 
             ""
             );
-
         assertEquals(
             AdqlQuery.Syntax.State.VALID,
             query.syntax().state()
@@ -158,6 +161,10 @@ public class AdqlQueryBugsTestCase
             new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
             new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0),
                 }
+            );
+        compare(
+            query,
+            "select top 10 twomass.dbo.twomass_psc.ra as ra, twomass.dbo.twomass_psc.dec as dec from twomass.dbo.twomass_psc"
             );
         }
 
@@ -194,6 +201,11 @@ public class AdqlQueryBugsTestCase
             AdqlQuery.Syntax.State.VALID,
             query.syntax().state()
             );
+        // TODO
+        compare(
+            query,
+            "SELECT stuff"
+            );
         }
 
     /**
@@ -228,11 +240,15 @@ public class AdqlQueryBugsTestCase
                 new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0),
                 }
             );
+        compare(
+            query,
+            "select top 10 atlas.ra as ra, atlas.dec as dec from atlasv20130426.dbo.atlassource as atlas where atlas.sourceid%100 = 0"
+            );
         }
 
     /**
      * Inner WHERE clause refers to table defined in outer FROM clause.
-     * "WHERE masterObjID=neighbours.masterObjID"
+     * "WHERE masterObjID = neighbours.masterObjID"
      * 
      */
     @Test
@@ -260,7 +276,7 @@ public class AdqlQueryBugsTestCase
             "        FROM\n" + 
             "            atlasSourceXDR8PhotoObj\n" + 
             "        WHERE\n" + 
-            "            masterObjID=neighbours.masterObjID\n" + 
+            "            masterObjID = neighbours.masterObjID\n" + 
             "        )\n" + 
             ""
             );
@@ -274,6 +290,11 @@ public class AdqlQueryBugsTestCase
                 new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
                 new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0),
                 }
+            );
+        // TODO
+        compare(
+            query,
+            "SELECT stuff"
             );
         }
 
@@ -301,8 +322,55 @@ public class AdqlQueryBugsTestCase
         validate(
             query,
             new ExpectedField[] {
-                new ExpectedField("creationDate",  AdqlColumn.Type.DATETIME, 0),
+                new ExpectedField("creationDate", AdqlColumn.Type.DATETIME, 0),
                 }
+            );
+        // TODO
+        compare(
+            query,
+            "SELECT stuff"
+            );
+        }
+
+    /**
+     * Alias for nested query in SELECT.
+     * SELECT ... FROM (SELECT .... AS ident ...) AS inner WHERE inner.ident = outer.field
+     * 
+     */
+    @Test
+    public void test008()
+        {
+        AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.LEGACY
+                ),
+            "SELECT\n" + 
+            "    neighbours.distanceMins AS dist\n" + 
+            "FROM\n" + 
+            "    atlassourcexDR8photoobj AS neighbours,\n" + 
+            "    (\n" + 
+            "    SELECT TOP 10\n" + 
+            "        sourceId AS ident\n" + 
+            "    FROM\n" + 
+            "        atlasSource\n" + 
+            "    ) AS sources\n" + 
+            "WHERE\n" + 
+            "    sources.ident = neighbours.masterObjID\n" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("dist", AdqlColumn.Type.FLOAT, 0),
+                }
+            );
+        compare(
+            query,
+            "select neighbours.distancemins as dist from atlasv20130426.dbo.atlassourcexdr8photoobj as neighbours, (select top 10 atlasv20130426.dbo.atlassource.sourceid as ident from atlasv20130426.dbo.atlassource) as sources where sources.ident = neighbours.masterobjid"
             );
         }
     }

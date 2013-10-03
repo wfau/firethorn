@@ -381,9 +381,20 @@ extends TestPropertiesBase
      */
     public void compare(final String adql, final String osql)
         {
-        final AdqlQuery query = this.queryspace.queries().create(
-            adql
+        compare(
+            this.queryspace.queries().create(
+                adql
+                ),
+            osql
             );
+        }
+
+    /**
+     * Compare an ADQL query and the resulting SQL output.
+     * 
+     */
+    public void compare(final AdqlQuery query, final String osql)
+        {
         debug(
             query
             );
