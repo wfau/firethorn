@@ -325,6 +325,10 @@ public class AdqlQueryBugsTestCase
                 new ExpectedField("creationDate", AdqlColumn.Type.DATETIME, 0),
                 }
             );
+        // TODO - verify the JDBC column is DATE TIME, not TIMESTAMP.
+        // Firethorn create table fails if we have two DATETIME columns.
+        // OGSA-DAI insert into TIMESTAMP column fails.
+
         // TODO
         compare(
             query,
