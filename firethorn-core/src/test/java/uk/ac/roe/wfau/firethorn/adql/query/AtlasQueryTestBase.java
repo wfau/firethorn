@@ -24,17 +24,22 @@ import java.util.Iterator;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
+import uk.ac.roe.wfau.firethorn.entity.Identifier;
+import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
+import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
+import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.test.TestBase;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 
 /**
@@ -44,48 +49,198 @@ import uk.ac.roe.wfau.firethorn.test.TestBase;
 @Slf4j
 @Ignore
 public class AtlasQueryTestBase
-extends TestBase
+extends TestPropertiesBase
     {
 
-    protected static JdbcResource resource  ;
+    protected JdbcResource resource ;
     protected AdqlResource workspace ;
-    protected AdqlSchema   schema ;
+    protected AdqlResource testspace ;
+    
+    protected AdqlSchema queryspace ;
+
+    public void schema()
+        {
+        
+        }
 
     /**
-     * Create our resources.
+     * Load our test resources.
      *
      */
     @Before
-    public void init()
-    throws Exception
+    public void loadResources()
+    throws NotFoundException
         {
         //
-        // Create our JDBC resources.
+        // Create our JDBC resource.
         if (resource == null)
             {
-            resource = factories().jdbc().resources().create(
-                "atlas",
-                "ATLASv20130426",
-                "atlas",
-                "spring:RoeATLAS"
-                );
+            log.debug("Loading test resource");
+            String prop = testprops().getProperty("jdbc.space");
+            if (prop != null)
+                {
+                try {
+                    resource = factories().jdbc().resources().select(
+                        factories().jdbc().resources().idents().ident(
+                            prop
+                            )
+                        );
+                    }
+                catch (IdentifierNotFoundException ouch)
+                    {
+                    log.debug("Unable to load JDBC resource from test config [{}]", ouch.getMessage());
+                    }
+                }
+            if (resource == null)
+                {
+                log.debug("Null JDBC resource, creating new one");
+                resource = factories().jdbc().resources().create(
+                    "atlas",
+                    "*",
+                    "atlas",
+                    "spring:RoeATLAS"
+                    );
+                }
             }
+        
         //
         // Create our ADQL workspace.
-        this.workspace = factories().adql().resources().create(
-            "workspace"
-            );
+        if (this.workspace == null)
+            {
+            log.debug("Loading test workspace");
+            String prop = testprops().getProperty("adql.space");
+            if (prop != null)
+                {
+                try {
+                    this.workspace = factories().adql().resources().select(
+                        factories().adql().resources().idents().ident(
+                            prop
+                            )
+                        );
+                    }
+                catch (IdentifierNotFoundException ouch)
+                    {
+                    log.debug("Unable to load ADQL resource from test config [{}]", ouch.getMessage());
+                    }
+                }
+            if (this.workspace == null)
+                {
+                log.debug("Null ADQL resource, creating new one");
+                this.workspace = factories().adql().resources().create(
+                    "workspace"
+                    );
+                this.workspace.schemas().create(
+                    BaseComponent.CopyDepth.THIN,
+                    "ATLASv20130426",
+                    resource.schemas().select(
+                        "ATLASv20130426",
+                        "dbo"
+                        )
+                    );
+                this.workspace.schemas().create(
+                    BaseComponent.CopyDepth.THIN,
+                    "ROSAT",
+                    resource.schemas().select(
+                        "ROSAT",
+                        "dbo"
+                        )
+                    );
+                this.workspace.schemas().create(
+                    BaseComponent.CopyDepth.THIN,
+                    "TWOMASS",
+                    resource.schemas().select(
+                        "TWOMASS",
+                        "dbo"
+                        )
+                    );
+                }
+            }
+
         //
-        // Import the tables into our workspace.
-        this.schema = this.workspace.schemas().create(
-            "atlastest",
-            resource.schemas().select(
-                "ATLASv20130426",
-                "dbo"
-                )
-            );
+        // Create our ADQL workspace.
+        if (this.testspace == null)
+            {
+            log.debug("Loading test schema");
+            String prop = testprops().getProperty("test.space");
+            if (prop != null)
+                {
+                try {
+                    this.testspace = factories().adql().resources().select(
+                        factories().adql().schemas().idents().ident(
+                            prop
+                            )
+                        );
+                    }
+                catch (IdentifierNotFoundException ouch)
+                    {
+                    log.debug("Unable to load ADQL resource from test config [{}]", ouch.getMessage());
+                    }
+                }
+            if (this.testspace == null)
+                {
+                this.testspace = factories().adql().resources().create(
+                    "testspace"
+                    );
+                this.testspace.schemas().create(
+                    BaseComponent.CopyDepth.THIN,
+                    this.workspace.schemas().select(
+                        "ATLASv20130426"
+                        )
+                    );
+                this.testspace.schemas().create(
+                    BaseComponent.CopyDepth.THIN,
+                    this.workspace.schemas().select(
+                        "ROSAT"
+                        )
+                    );
+                this.testspace.schemas().create(
+                    BaseComponent.CopyDepth.THIN,
+                    this.workspace.schemas().select(
+                        "TWOMASS"
+                        )
+                    );
+                }
+            }
+
+        //
+        // Create our ADQL query space.
+        if (this.queryspace == null)
+            {
+            log.debug("Loading test schema");
+            this.queryspace = this.testspace.schemas().search(
+                "queryspace"
+                );
+            if (this.queryspace == null)
+                {
+                this.queryspace = this.testspace.schemas().create(
+                    "queryspace"
+                    );
+                }
+            }
         }
 
+    /**
+     * Save our test resources.
+     * 
+     */
+    @After
+    public void saveResources()
+        {
+        log.debug("Saving test resources");
+        if (this.resource != null)
+            {
+            testprops().setProperty("jdbc.space", this.resource.ident().toString());
+            }
+        if (this.workspace != null)
+            {
+            testprops().setProperty("adql.space", this.workspace.ident().toString());
+            }
+        if (this.testspace != null)
+            {
+            testprops().setProperty("test.space", this.testspace.ident().toString());
+            }
+        }
+    
     /**
      * An expected result.
      *
@@ -148,8 +303,7 @@ extends TestBase
             }
         }
 
-    public void validate(final AdqlQuery query, final ExpectedField[] results)
-    throws Exception
+    public void validate(final AdqlQuery query, final ExpectedField[] expected)
         {
         final Iterator<AdqlQuery.SelectField> iter = query.fields().iterator();
         int i = 0 ;
@@ -157,13 +311,13 @@ extends TestBase
             {
             final AdqlQuery.SelectField field = iter.next();
             log.debug("Field [{}][{}][{}]", field.name(), field.type(), field.arraysize());
-            results[i++].validate(
+            expected[i++].validate(
                 field
                 );
             }
         assertEquals(
             i,
-            results.length
+            expected.length
             );
         }
     
@@ -226,9 +380,8 @@ extends TestBase
      * 
      */
     public void compare(final String adql, final String osql)
-    throws Exception
         {
-        final AdqlQuery query = this.schema.queries().create(
+        final AdqlQuery query = this.queryspace.queries().create(
             adql
             );
         debug(
