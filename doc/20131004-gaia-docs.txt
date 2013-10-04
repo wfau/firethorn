@@ -1,0 +1,75 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    ESA GAIA webpages
+    http://www.rssd.esa.int/index.php?project=GAIA&page=index
+
+
+    DPAC Data Processing and Analysis Consortium
+    http://www.rssd.esa.int/wikiSI/index.php?title=Data_Processing_and_Analysis_Consortium
+
+        CU9 Catalogue Access
+        http://www.rssd.esa.int/wikiSI/index.php?title=CU9:_Catalogue_Access
+
+
+            CU9-WP930 Science Archive architecture and Development 
+            http://www.rssd.esa.int/wikiSI/index.php?title=CU9:930
+
+
+                CU9-WP930-WBS-WP932:Gaia Archive Core Systems
+                http://www.rssd.esa.int/wikiSI/index.php?title=CU9-WP930-WBS-WP932:Gaia_Archive_Core_Systems
+
+                CU9-WP930-WBS-WP933:Consortium/ESAC-SAT Interface Control
+                http://www.rssd.esa.int/wikiSI/index.php?title=CU9-WP930-WBS-WP933:Consortium/ESAC-SAT_Interface_Control
+
+                CU9-WP930-WBS-WP934:Database Collaboration
+                http://www.rssd.esa.int/wikiSI/index.php?title=CU9-WP930-WBS-WP934:Database_Collaboration
+
+                CU9-WP930-WBS-WP935:Database Interface Design
+                http://www.rssd.esa.int/wikiSI/index.php?title=CU9-WP930-WBS-WP935:Database_Interface_Design
+
+            CU9-WP970 Science Enabling Applications
+            http://www.rssd.esa.int/wikiSI/index.php?title=CU9:970
+
+            CU9-WP980 Visualisation 
+            http://www.rssd.esa.int/wikiSI/index.php?title=CU9:980
+
+
+    RSSD Document Facility
+    http://www.rssd.esa.int/cs/livelink?func=llworkspace    
+
+        Astrophysics & Fundamental Physics Missions
+        http://www.rssd.esa.int/cs/livelink?func=ll&objId=128535&objAction=browse&viewType=1
+
+            Gaia
+            http://www.rssd.esa.int/cs/livelink?func=ll&objId=2433&objAction=browse
+
+                [CU9] Catalogue Access
+                http://www.rssd.esa.int/cs/livelink?func=ll&objId=535531&objAction=RunReport
+
+
+
+
+
+
+http://www.rssd.esa.int/cs/livelink?func=ll&objId=535530&objAction=RunReport

@@ -73,7 +73,7 @@
 #[user@desktop]
 
     testvms=(pyratest1 pyratest2 pyratest3)
-    for vmname in "${vmname[@]:?}"
+    for vmname in "${testvms[@]:?}"
     do
         echo "---------"
         echo "VM [${vmname}]"

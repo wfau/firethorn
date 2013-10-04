@@ -49,9 +49,9 @@ public class AdqlQueryBugsTestCase
                 Level.STRICT
                 ),
             "SELECT TOP 10\n" + 
-            "    neighbours.distanceMins AS distance\n" + 
+            "    distanceMins AS distance\n" + 
             "FROM\n" + 
-            "    ATLASv20130426.atlasSourceXtwomass_psc as neighbours\n" + 
+            "    ATLASv20130426.atlasSourceXtwomass_psc\n" + 
             ""
             );
         assertEquals(
@@ -73,9 +73,9 @@ public class AdqlQueryBugsTestCase
                 Level.LEGACY
                 ),
             "SELECT TOP 10\n" + 
-            "    neighbours.distanceMins AS distance\n" + 
+            "    distanceMins AS distance\n" + 
             "FROM\n" + 
-            "    ATLASv20130426.atlasSourceXtwomass_psc as neighbours\n" + 
+            "    ATLASv20130426.atlasSourceXtwomass_psc\n" + 
             ""
             );
         assertEquals(
@@ -111,8 +111,8 @@ public class AdqlQueryBugsTestCase
                 Level.STRICT
                 ),
             "SELECT TOP 10\n" + 
-            "    twomass_psc.ra,\n" + 
-            "    twomass_psc.dec\n" + 
+            "    ra,\n" + 
+            "    dec\n" + 
             "FROM\n" + 
             "    TWOMASS..twomass_psc\n" + 
             ""
@@ -141,8 +141,8 @@ public class AdqlQueryBugsTestCase
                 Level.LEGACY
                 ),
             "SELECT TOP 10\n" + 
-            "    twomass_psc.ra,\n" + 
-            "    twomass_psc.dec\n" + 
+            "    ra,\n" + 
+            "    dec\n" + 
             "FROM\n" + 
             "    TWOMASS..twomass_psc\n" + 
             ""
@@ -193,8 +193,6 @@ public class AdqlQueryBugsTestCase
             "    neighbours.masterObjID=atlas.sourceID\n" + 
             "AND\n" + 
             "    neighbours.slaveObjID=rosat.seqNo\n" + 
-            "AND\n" + 
-            "    neighbours.distanceMins < 0.1\n" + 
             ""
             );
         assertEquals(
@@ -310,7 +308,8 @@ public class AdqlQueryBugsTestCase
                 Level.LEGACY
                 ),
             "SELECT TOP 10\n" + 
-            "    creationDate\n" + 
+            "    utDate,\n" + 
+            "    dateObs\n" + 
             "FROM\n" + 
             "    multiframe\n" + 
             ""
@@ -359,7 +358,7 @@ public class AdqlQueryBugsTestCase
             "        atlasSource\n" + 
             "    ) AS sources\n" + 
             "WHERE\n" + 
-            "    sources.ident = neighbours.masterObjID\n" + 
+            "    neighbours.masterObjID = sources.ident\n" + 
             ""
             );
         assertEquals(
@@ -374,7 +373,7 @@ public class AdqlQueryBugsTestCase
             );
         compare(
             query,
-            "select neighbours.distancemins as dist from atlasv20130426.dbo.atlassourcexdr8photoobj as neighbours, (select top 10 atlasv20130426.dbo.atlassource.sourceid as ident from atlasv20130426.dbo.atlassource) as sources where sources.ident = neighbours.masterobjid"
+            "select neighbours.distancemins as dist from atlasv20130426.dbo.atlassourcexdr8photoobj as neighbours, (select top 10 atlasv20130426.dbo.atlassource.sourceid as ident from atlasv20130426.dbo.atlassource) as sources where neighbours.masterobjid = sources.ident"
             );
         }
     }
