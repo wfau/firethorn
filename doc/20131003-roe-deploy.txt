@@ -99,8 +99,6 @@
         atlasschema =  dict(line.strip().split('=') for line in open(config.firethorn_ini ))['atlasschema']
 
 
-
-
 #-------------------------------------------------------------------------------------------------------------
 # Fixing SSH login for Stelios on test VMs
 #
