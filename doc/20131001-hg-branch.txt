@@ -20,6 +20,9 @@
 #
 #
 
+#-----------------------------------------------------------------------------------
+#
+
     #
     # Check current branch
     hg branch
@@ -63,6 +66,31 @@
         remote: adding file changes
         remote: added 1 changesets with 0 changes to 0 files (+1 heads)
     
+
+#-----------------------------------------------------------------------------------
+#
+
+    #
+    # Check current branch
+    hg branch
+        dave-adql-parsing
+
+    #
+    # Swap the the default branch
+    hg update -C default
+        13 files updated, 0 files merged, 11 files removed, 0 files unresolved
+
+    #
+    # Merge the branch changes into main.
+    hg merge dave-adql-parsing
+
+    #
+    # Review the changes
+    hg diff | less
+    
+    #
+    # Commit the changes
+    hg commit -m "Merged dave-adql-parsing into main"
 
 
 
