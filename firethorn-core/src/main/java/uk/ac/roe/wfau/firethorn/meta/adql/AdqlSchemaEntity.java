@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.ProxyIdentifier;
@@ -780,6 +781,17 @@ implements AdqlSchema
                     query,
                     rowid,
                     name
+                    );
+                }
+
+
+            @Override
+            public AdqlQuery create(QueryParam params, String query)
+                {
+                return factories().adql().queries().create(
+                    params,
+                    AdqlSchemaEntity.this,
+                    query
                     );
                 }
 

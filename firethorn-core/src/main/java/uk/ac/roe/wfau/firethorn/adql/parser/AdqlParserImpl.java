@@ -199,11 +199,12 @@ implements AdqlParser
 
     protected ADQLParser parser ;
 
-    protected String prepare(final String input)
+    protected String fudge(final AdqlParserQuery subject)
         {
+        //
         // Trim leading/trailing spaces.
-        String s1 = input.trim();
-
+        String s1 = subject.input().trim();
+        //
         // Skip /* comments */
         Pattern p1 = Pattern.compile(
             "/\\*.*?\\*/",
@@ -212,15 +213,7 @@ implements AdqlParser
         Matcher m1 = p1.matcher(s1);
         String  s2 = m1.replaceAll(""); 
 
-        // Replace multiple ..
-        Pattern p2 = Pattern.compile(
-            "\\.{2,}",
-            Pattern.DOTALL
-            );
-        Matcher m2 = p2.matcher(s2);
-        String  s3 = m2.replaceAll("."); 
-
-        return s3 ;
+        return s2 ;
         }
     
     @Override
@@ -230,9 +223,7 @@ implements AdqlParser
         // Parse the query.
         try {
             final ADQLQuery object = this.parser.parseQuery(
-                prepare(
-                    subject.input()
-                    )
+                subject.cleaned()
                 );
             //
             // Reset the query state.

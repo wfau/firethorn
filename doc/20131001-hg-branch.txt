@@ -1,0 +1,68 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Check current branch
+    hg branch
+
+        default
+
+    #
+    # List the available branches
+    hg branches
+
+        stelios-adql-parsing         840:af0f70173349
+        delete-node                  799:6f588570c570
+        default                      839:dbe1fdeffd5c
+        hibernate-collections        741:8d8f28c3e9e9
+
+    #
+    # Create a new named branch.
+    hg branch dave-adql-parsing
+
+        marked working directory as branch dave-adql-parsing
+
+    hg commit -m "Created dave-adql-parsing branch"
+
+        created new head
+
+    #
+    # Push the new branch to the shared repository (needs force)
+    hg push
+
+        pushing to ssh://wfau.metagrid.co.uk:22//var/local/wfau/projects/firethorn/code
+        searching for changes
+        abort: push creates new remote branch 'dave-adql-parsing'!
+        (did you forget to merge? use push -f to force)
+
+    hg push -f
+
+        pushing to ssh://wfau.metagrid.co.uk:22//var/local/wfau/projects/firethorn/code
+        searching for changes
+        remote: adding changesets
+        remote: adding manifests
+        remote: adding file changes
+        remote: added 1 changesets with 0 changes to 0 files (+1 heads)
+    
+
+
+

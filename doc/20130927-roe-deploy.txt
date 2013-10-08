@@ -73,7 +73,7 @@
 #[user@desktop]
 
     testvms=(pyratest1 pyratest2 pyratest3)
-    for vmname in "${vmname[@]:?}"
+    for vmname in "${testvms[@]:?}"
     do
         echo "---------"
         echo "VM [${vmname}]"
@@ -577,7 +577,6 @@ EOF
         #
         # Deploy the webapp.
         contextpath=ogsa-dai
-
         managername=$(sed -n 's/^firethorn.tomcat.manager.name=\(.*\)$/\1/p' "${HOME}/firethorn.properties")
         managerpass=$(sed -n 's/^firethorn.tomcat.manager.pass=\(.*\)$/\1/p' "${HOME}/firethorn.properties")
 
@@ -598,7 +597,6 @@ EOF
                 wget 'http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/firethorn-ogsadai/webapp/src/test/bin/jdbc-functions.sh'
             fi
         popd
-
         source "${HOME:?}/bin/jdbc-functions.sh"
 
         #

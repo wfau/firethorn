@@ -1,0 +1,147 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#-------------------------------------------------------------------------------------------------------------
+# Fixing WebPy configuration on shepseskaf
+#
+# [firethorn@shepseskaf]
+    
+    cat "${HOME}/firethorn.properties "
+
+        #
+        # Firethorn enpoint URLs.
+        firethorn.webapp.endpoint=http://pyratest2:8080/firethorn
+
+        firethorn.atlas.jdbcspace=/jdbc/resource/360448
+        firethorn.atlas.adqlspace=/adql/resource/360449
+        firethorn.atlas.adqlschema=/adql/schema/229422
+
+#
+# shared firethorn account can't edit the webpy config.
+# [firethorn@shepseskaf]
+
+        id firethorn
+        uid=1002(firethorn) gid=1002(firethorn) groups=1002(firethorn),117(libvirt),118(libvirt-qemu)
+
+        id dave
+        uid=1003(dave) gid=1003(dave) groups=1003(dave),33(www-data),100(users),1002(firethorn),117(libvirt),118(libvirt-qemu)
+
+        id stv
+        uid=1006(stv)  gid=100(users) groups=100(users),33(www-data),117(libvirt),118(libvirt-qemu)
+
+#
+# Misc directory permissions.
+# To edit the config file, need to be group 'users'.
+# To backup the config file, need to be user 'stv'.
+# [firethorn@shepseskaf]
+
+    ls -al /var/www/osa
+
+        drwxr-xr-x 26 stv  www-data  4096 Oct  3 11:02 .
+        ...
+        -rw-rw-r--  1 stv  users      355 Oct  3 16:01 firethorn.ini
+
+#
+# Login using personal accout to edit the config file.
+# [dave@shepseskaf]
+
+    vi /var/www/osa/firethorn.ini
+
+    -   adqlspace=http://localhost:8080/firethorn/adql/resource/48922625
+    -   atlasschema=http://localhost:8080/firethorn/adql/schema/48955437
+    -   firethorn_base=http://localhost:8080/firethorn
+    +   adqlspace=http://pyratest2:8080/firethorn/adql/resource/360449
+    +   atlasschema=http://pyratest2:8080/firethorn/adql/schema/229422
+    +   firethorn_base=http://pyratest2:8080/firethorn
+
+
+#
+# Tail the log file to check for errors
+# [dave@shepseskaf]
+
+    tail -f /var/www/osa/log/error.log 
+
+        10-03 16:46 root         ERROR    Error during firethorn initialization
+        Traceback (most recent call last):
+          File "/var/www/osa/url_classes/dbaccess_SQL_form.py", line 58, in GET
+            atlasworkspace = dict(line.strip().split('=') for line in open(config.firethorn_ini ))['adqlspace']
+        ValueError: dictionary update sequence element #3 has length 1; 2 is required
+
+        10-03 16:46 root         ERROR    Error getting during firethorn initialization
+        Traceback (most recent call last):
+          File "/var/www/osa/url_classes/dbaccess_SQL_form.py", line 122, in POST
+            atlasworkspace = dict(line.strip().split('=') for line in open(config.firethorn_ini ))['adqlspace']
+        ValueError: dictionary update sequence element #3 has length 1; 2 is required
+
+
+    vi /var/www/osa/url_classes/dbaccess_SQL_form.py
+
+        atlasworkspace = dict(line.strip().split('=') for line in open(config.firethorn_ini ))['adqlspace']
+        atlasschema =  dict(line.strip().split('=') for line in open(config.firethorn_ini ))['atlasschema']
+
+
+#-------------------------------------------------------------------------------------------------------------
+# Fixing SSH login for Stelios on test VMs
+#
+
+    #
+    # Add Stelios's SSH key.
+    testvms=(pyratest1 pyratest2 pyratest3)
+    for vmname in "${testvms[@]:?}"
+    do
+        echo "---------"
+        echo "VM [${vmname}]"
+        ssh -T "${vmname}" << 'EOX'
+
+    pushd "${HOME}/.ssh"
+        wget 'http://data.metagrid.co.uk/sshkeys/stv.roe.ac.uk.pub'
+        cat stv.roe.ac.uk.pub >> authorized_keys
+    popd
+EOX
+    done
+
+    #
+    # Check our own login still works.
+    for vmname in "${testvms[@]:?}"
+    do
+        echo "---------"
+        echo "VM [${vmname}]"
+        ssh "${vmname}" 'cat /etc/debian_version'
+    done
+
+
+    testvms=(pyratest1 pyratest2 pyratest3)
+    for vmname in "${testvms[@]:?}"
+    do
+        echo "---------"
+        echo "VM [${vmname}]"
+        ssh -T "root@${vmname}" << 'EOX'
+
+    pushd "${HOME}/.ssh"
+        wget 'http://data.metagrid.co.uk/sshkeys/stv.roe.ac.uk.pub'
+        cat stv.roe.ac.uk.pub >> authorized_keys
+    popd
+EOX
+    done
+
+
+

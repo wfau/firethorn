@@ -1,0 +1,143 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+"distance" is a reserved word in ADQL
+
+adql="SELECT ATLASsource.*,2*ASIN(sqrt(power(-0.997825033922517-cx,2)+power(-0.052293794140904105-cy,2)+power(-0.040131792532559725-cz,2))/2)*60 as distance FROM ATLASsource WHERE dec > -2.3166666666666664 and dec < -2.283333333333333 and RA >= 182.98331970017435 and RA <= 183.01668029982565 and ((cx * -0.997825033922517 + cy * -0.052293794140904105 + cz * -0.040131792532559725 ) >= 0.9999999576920253)  "
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+
+
+
+adql="SELECT atlas.sourceID, atlas.ra, atlas.dec, fsc.seqNo, fsc.ra, fsc.dec FROM atlasSource AS atlas, ROSAT..rosat_fsc AS fsc, atlasSourceXrosat_fsc AS x WHERE x.masterObjID=atlas.sourceID AND x.slaveObjID=fsc.seqNo AND x.distanceMins<0.1  "
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+
+    java.sql.SQLException: Violation of UNIQUE KEY constraint 'UK_rmxytxavkwh1cng8536dwn30m'. Cannot insert duplicate key in object 'dbo.FT0107JdbcColumnEntity'. The duplicate key value is (ra, 1474612).
+    net.sourceforge.jtds.jdbc.SQLDiagnostic.addDiagnostic(SQLDiagnostic.java:372)
+
+adql="SELECT atlas.sourceID, atlas.ra, atlas.dec, fsc.seqNo, fsc.ra, fsc.dec FROM atlasSource AS atlas, ROSAT.rosat_fsc AS fsc, atlasSourceXrosat_fsc AS x WHERE x.masterObjID=atlas.sourceID AND x.slaveObjID=fsc.seqNo AND x.distanceMins<0.1  "
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+
+    java.sql.SQLException: Violation of UNIQUE KEY constraint 'UK_rmxytxavkwh1cng8536dwn30m'. Cannot insert duplicate key in object 'dbo.FT0107JdbcColumnEntity'. The duplicate key value is (ra, 265878).
+
+    Need to detect duplicate columns
+    Need to rename duplicate columns
+
+adql="select ra as radeg,dec as decdeg from atlassource where sourceid%100=0 and (priorsec=0 or priorsec=framesetid)
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+
+    adql.parser.TokenMgrError: Lexical error at line 1, column 65.  Encountered: &quot;%&quot; (37), after : &quot;&quot;
+
+adql="select top 10 ra,dec from atlassource where uapermag3>0 and gapermag3 > 0 and Rapermag3 >0 and iapermag3 > 0 and zapermag3 >0 and sourceid%100=0"
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+
+    adql.parser.TokenMgrError: Lexical error at line 1, column 139.  Encountered: &quot;%&quot; (37), after : &quot;&quot;
+
+adql="sELECT TOP 50 atlas.ra, atlas.dec, uAperMag3, gAperMag3, rAperMag3, iAperMag3, zAperMag3, psfMag_u, psfMag_g, psfMag_r, psfMag_i, psfMag_z FROM atlasSource AS atlas, BestDR8..PhotoObj AS dr8, atlasSourceXDR8PhotoObj AS x WHERE masterObjID=atlas.sourceID AND slaveObjID=dr8.ObjID AND distanceMins<0.033333 AND sdssPrimary=1 AND distanceMins IN ( SELECT MIN(distanceMins) FROM atlasSourceXDR8PhotoObj WHERE masterObjID=x.masterObjID AND sdssPrimary=1) /* ramses5..*/"
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+
+    "status" : "PARSE_ERROR",
+    "message" : "1 unresolved identifiers: masterObjID [l.1 c.417 - l.1 c.430] !"
+
+adql="select top 10 * from multiframe"
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+
+    Query fails in OGSA-DAI
+    Caused by: java.sql.BatchUpdateException: Invalid object name 'FirethornUserdataSHFT0107alpha06.dbo.QUERY_1441825'.
+
+    Fails to create the table.
+    Cause "creationDate" DATETIME column
+
+    2013-10-01 16:41:15,089 DEBUG [http-bio-8080-exec-84] [JdbcTableEntity] create(SelectField) 
+    2013-10-01 16:41:15,090 DEBUG [http-bio-8080-exec-84] [JdbcTableEntity]   Name [creationDate] 
+    2013-10-01 16:41:15,090 DEBUG [http-bio-8080-exec-84] [JdbcTableEntity]   Type [DATETIME] 
+    2013-10-01 16:41:15,090 DEBUG [http-bio-8080-exec-84] [JdbcTableEntity]   Size [23] 
+    2013-10-01 16:41:15,090 DEBUG [http-bio-8080-exec-84] [JdbcTableEntity] columns() for [1474620] 
+    2013-10-01 16:41:15,090 DEBUG [http-bio-8080-exec-84] [BaseComponentEntity] scantest() for [1474620] 
+    2013-10-01 16:41:15,090 DEBUG [http-bio-8080-exec-84] [BaseComponentEntity]   values [1380642075086][1380627675090][-14399996] 
+    2013-10-01 16:41:15,090 WARN  [http-bio-8080-exec-84] [JavassistLazyInitializer] HHH000179: Narrowing proxy to class uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumnEntity - this operation breaks == 
+    2013-10-01 16:41:15,090 WARN  [http-bio-8080-exec-84] [JavassistLazyInitializer] HHH000179: Narrowing proxy to class uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumnEntity - this operation breaks == 
+    2013-10-01 16:41:15,090 WARN  [http-bio-8080-exec-84] [JavassistLazyInitializer] HHH000179: Narrowing proxy to class uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumnEntity - this operation breaks == 
+    2013-10-01 16:41:15,090 WARN  [http-bio-8080-exec-84] [JavassistLazyInitializer] HHH000179: Narrowing proxy to class uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumnEntity - this operation breaks == 
+    2013-10-01 16:41:15,091 DEBUG [http-bio-8080-exec-84] [BaseComponentEntity] BaseComponentEntity(CopyDepth, String) 
+    2013-10-01 16:41:15,091 DEBUG [http-bio-8080-exec-84] [BaseComponentEntity]   Name  [creationDate] 
+    2013-10-01 16:41:15,091 DEBUG [http-bio-8080-exec-84] [BaseComponentEntity]   Depth [FULL] 
+    ....
+
+    2013-10-01 16:41:15,241 DEBUG [http-bio-8080-exec-84] [CreateJdbcTableChange]   Column [1510269][creationDate][TIMESTAMP][23] 
+    2013-10-01 16:41:15,242 DEBUG [http-bio-8080-exec-84] [CreateJdbcTableChange]   Typename [TIMESTAMP] 
+    ....
+
+    A table can only have one timestamp column. Because table 'QUERY_1441826' already has one, the column 'utDate' cannot be added.
+	at liquibase.executor.jvm.JdbcExecutor.execute(JdbcExecutor.java:56) ~[liquibase-core-3.0.1.jar:na]
+	at liquibase.executor.jvm.JdbcExecutor.execute(JdbcExecutor.java:98) ~[liquibase-core-3.0.1.jar:na]
+	at liquibase.database.AbstractJdbcDatabase.execute(AbstractJdbcDatabase.java:1311) ~[liquibase-core-3.0.1.jar:na]
+	at liquibase.database.AbstractJdbcDatabase.executeStatements(AbstractJdbcDatabase.java:1295) ~[liquibase-core-3.0.1.jar:na]
+	at liquibase.changelog.ChangeSet.execute(ChangeSet.java:340) ~[liquibase-core-3.0.1.jar:na]
+	at uk.ac.roe.wfau.firethorn.liquibase.JdbcBuilderBase.execute(JdbcBuilderBase.java:91) [firethorn-core-01.07-alpha-06.jar:na]
+	at uk.ac.roe.wfau.firethorn.liquibase.JdbcTableBuilder.create(JdbcTableBuilder.java:54) [firethorn-core-01.07-alpha-06.jar:na]
+
+adql="SELECT name+''',' as city FROM sys.Tables order by name"
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+
+    "status" : "PARSE_ERROR",
+    "message" : "[java.lang.UnsupportedOperationException] Impossible to update an Operation because the right operand is not numeric (''',') !"
+
+adql="SELECT atlas.sourceID, atlas.ra, atlas.dec, fsc.seqNo, fsc.ra, fsc.dec FROM atlasSource AS atlas, ROSAT..rosat_fsc AS fsc, atlasSourceXrosat_fsc AS x WHERE x.masterObjID=atlas.sourceID AND x.slaveObjID=fsc.seqNo AND x.distanceMins<0.1"
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+
+    java.sql.SQLException: Violation of UNIQUE KEY constraint 'UK_rmxytxavkwh1cng8536dwn30m'. Cannot insert duplicate key in object 'dbo.FT0107JdbcColumnEntity'. The duplicate key value is (ra, 655366).
+    Need to rename duplicate column names.
+
+
+adql="select ra as radeg,dec as decdeg from atlasSource where priorsec!=0 and priOrSec!=frameSetID and sourceID%5=0"
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+
+    adql.parser.TokenMgrError: Lexical error at line 1, column 106.  Encountered: &quot;%&quot; (37), after : &quot;&quot;
+    adql.parser.ADQLParserTokenManager.getNextToken(ADQLParserTokenManager.java:1830)
+
+adql="select * from #usertable"
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+
+    adql.parser.TokenMgrError: Lexical error at line 1, column 15.  Encountered: &quot;#&quot; (35), after : &quot;&quot;
+    adql.parser.ADQLParserTokenManager.getNextToken(ADQLParserTokenManager.java:1830)
+
+adql="Select DistanceMins From atlassourcexDR8photoobj as CrossMatch, (Select s.sourceid as id From atlassource as s Where ra > 0 AND ra < 13.94 AND dec > -12.0 AND dec < -8.5 AND mergedclass = 1 group by s.sourceid) AS T Where DistanceMins < 2/60.0 AND sdsstype = 3 AND sdssPrimary = 1 AND T.id = CrossMatch.masterObjID"
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "${adql}"
+
+    java.sql.SQLException: Invalid column name 'sourceID'.
+
+#---------------------------------------------
+#
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT TOP 10 ra - dec AS distance FROM atlassource"
+
+    "status" : "PARSE_ERROR",
+    "message" : " Encountered \"distance\". Was expecting one of: \"\\\"\" <REGULAR_IDENTIFIER> "
+
+
+source "${FIRETHORN_TEST:?}/05-01-execute-query.sh" "SELECT surveyName, databaseName, extTableName, description FROM ExternalSurvey AS s, ExternalSurveyTable AS t WHERE s.surveyID=t.surveyID AND s.surveyID>0"
+
+
+
+
+
