@@ -24,15 +24,52 @@
 # Debug shell commands.
 #[user@desktop]
 
-    source "${HOME:?}/firethorn/live.machines"
-    ssh "${firehost:?}" -t 'top'
+    LIVE
 
     source "${HOME:?}/firethorn/live.machines"
-    ssh "${ogsahost:?}" -t 'top'
+    ssh "${wepyhost:?}"
+        top
+    
+    source "${HOME:?}/firethorn/live.machines"
+    ssh "${firehost:?}"
+        top
 
     source "${HOME:?}/firethorn/live.machines"
-    ssh "${firehost:?}" -T 'tail -f ${HOME:?}/tomcat/logs/catalina.out'
+    ssh "${ogsahost:?}"
+        top
 
     source "${HOME:?}/firethorn/live.machines"
-    ssh "${firehost:?}" -T 'tail -f ${HOME:?}/tomcat/logs/catalina.out'
+    ssh "${firehost:?}"
+        tail -f "${HOME:?}/tomcat/logs/catalina.out"
+
+    source "${HOME:?}/firethorn/live.machines"
+    ssh "${ogsahost:?}"
+        tail -f "${HOME:?}/tomcat/logs/catalina.out"
+
+
+
+
+    TEST
+
+    source "${HOME:?}/firethorn/test.machines"
+    ssh "${wepyhost:?}"
+        top
+    
+    source "${HOME:?}/firethorn/test.machines"
+    ssh "${firehost:?}"
+        top
+
+    source "${HOME:?}/firethorn/test.machines"
+    ssh "${ogsahost:?}"
+        top
+
+    source "${HOME:?}/firethorn/test.machines"
+    ssh "${firehost:?}"
+        tail -f "${HOME:?}/tomcat/logs/catalina.out"
+
+    source "${HOME:?}/firethorn/test.machines"
+    ssh "${ogsahost:?}"
+        tail -f "${HOME:?}/tomcat/logs/catalina.out"
+
+
 

@@ -104,4 +104,11 @@
     # Swap to my dev branch
     hg update dave-adql-parsing
 
+    #
+    # Merge changes fro the main branch.
+    hg merge default
+
+    #
+    # Commit the changes
+    hg commit -m "Merged main into dave-adql-parsing"
 
