@@ -36,8 +36,8 @@
         dave-adql-parsing
 
     #
-    # Swap the the default branch
-    hg update -C default
+    # Swap to the the default branch
+    hg update default
         13 files updated, 0 files merged, 11 files removed, 0 files unresolved
 
     #
