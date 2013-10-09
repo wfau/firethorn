@@ -126,6 +126,10 @@ public class AdqlQueryBugsTestCase
             AdqlQuery.Syntax.State.PARSE_ERROR,
             query.syntax().state()
             );
+
+        // TODO Explicitly state LEGACY not available in warning.
+        // TODO Change from a string match to a token in the parser grammar.
+
         }
     
     /**
