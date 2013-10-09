@@ -37,7 +37,7 @@
 
     #
     # Swap to the the default branch
-    hg update default
+    hg update -C default
         13 files updated, 0 files merged, 11 files removed, 0 files unresolved
 
     #
@@ -57,7 +57,7 @@
 # TODO Move this to a ROE VM.
 #[user@desktop]
 
-    oldversion=01.07-alpha-06
+    oldversion=01.07-alpha-07
     newversion=01.07-alpha-07
 
     source ${HOME:?}/firethorn.settings
@@ -287,7 +287,7 @@ cat  "${databasefile:?}"
     deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
 
     source "${deploylist:?}"
-    ssh "${fireuser:?}@${firelhost:?}"
+    ssh "${fireuser:?}@${firehost:?}"
 
         webappversion=$(
             sed -n '

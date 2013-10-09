@@ -1,0 +1,170 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#-----------------------------------------------------------------------------------
+# Merge changes from dave-adql-parsing branch into main
+#[user@desktop]
+
+    #
+    # Check current branch
+    hg branch
+        dave-adql-parsing
+
+    #
+    # Swap to the the default branch
+    hg update default
+        13 files updated, 0 files merged, 1 files removed, 0 files unresolved
+
+    #
+    # Merge the branch changes into main.
+    hg merge dave-adql-parsing
+        14 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+    #
+    # Review the changes
+    hg diff | less
+    
+    #
+    # Commit the changes
+    hg commit -m "Merged dave-adql-parsing into main"
+
+#-----------------------------------------------------------------------------------
+# Build a new version.
+# TODO Move this to a ROE VM.
+#[user@desktop]
+
+    source ${HOME:?}/firethorn.settings
+    pushd "${FIRETHORN_CODE:?}"
+
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+        
+    popd
+
+#
+# Deploy results to our Maven repository.
+# TODO Move this to a ROE VM.
+#[user@desktop]
+
+    #
+    # --omit-dir-times
+    # rsync: failed to set times on "{path}/.": Operation not permitted (1)
+    # http://superuser.com/questions/200012/rsync-failed-to-set-times-on-dir-path
+
+    rsync \
+        --recursive --copy-links --times \
+        --stats --human-readable --progress \
+        --prune-empty-dirs \
+        --omit-dir-times \
+        --include='/uk' \
+        --include='/uk/ac' \
+        --include='/uk/ac/roe' \
+        --include='/uk/ac/roe/wfau' \
+        --include='/uk/ac/roe/wfau/**' \
+        --exclude='*' \
+        /var/local/toolkits/maven/repository/ \
+        data.metagrid.co.uk:/var/local/websites/data/wfau/maven/firethorn
+
+#----------------------------------------------------
+# Deploy FireThorn webapp.
+#[user@desktop]
+
+    deploytype=test
+    deploylist="${HOME:?}/firethorn/${deploytype:?}.machines"
+    deployprop="${HOME:?}/firethorn/${deploytype:?}.properties"
+
+    source "${deploylist:?}"
+    ssh "${fireuser:?}@${firehost:?}"
+
+        webappversion=$(
+            sed -n '
+                s/firethorn.webapp.version=\(.*\) *$/\1/p
+                ' "${HOME:?}/firethorn.properties"
+                )
+        webappproject=firethorn-webapp
+        webapppath=${HOME}/webapps
+        webappfile=${webappproject:?}-${webappversion:?}.war
+
+        #
+        # Download the webapp war file.
+        downloadrepo="http://data.metagrid.co.uk/wfau/maven/firethorn"
+        downloadfile="uk/ac/roe/wfau/${webappproject:?}/${webappversion:?}/${webappfile:?}"
+        downloadurl="${downloadrepo:?}/${downloadfile:?}"
+
+        if [ ! -e "${webapppath:?}" ]
+        then
+            mkdir "${webapppath:?}"
+        fi
+        pushd "${webapppath:?}"
+
+            if [ -e "${webappfile}" ]
+            then
+                rm "${webappfile}"
+            fi            
+            if [ -e "${webappname}" ]
+            then
+                rm -r "${webappname}"
+            fi            
+
+            wget "${downloadurl:?}"
+
+        popd
+
+        #
+        # Deploy the webapp.
+        contextpath=firethorn
+        managername=$(sed -n 's/^firethorn.tomcat.manager.name=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+        managerpass=$(sed -n 's/^firethorn.tomcat.manager.pass=\(.*\) *$/\1/p' "${HOME}/firethorn.properties")
+
+        wget -q -O - \
+            --user=${managername:?} \
+            --password=${managerpass:?} \
+            "http://localhost:8080/manager/text/deploy?update=true&path=/${contextpath:?}&war=file:${webapppath:?}/${webappfile:?}"
+
+    exit
+
+#-----------------------------------------------------------------------------------
+# Manual test queries ...
+#
+
+SELECT TOP 10
+    distanceMins AS distance
+FROM
+    ATLASv20130426.atlasSourceXtwomass_psc
+
+
+SELECT TOP 10
+    ra,
+    dec
+FROM
+    TWOMASS..twomass_psc
+
+SELECT TOP 10
+    atlas.ra,
+    atlas.dec
+FROM
+    atlasSource AS atlas
+WHERE
+    atlas.sourceID % 100 = 0
+
+
+
