@@ -38,6 +38,8 @@ public class ParseException extends Exception {
     currentToken = currentTokenVal;
     expectedTokenSequences = expectedTokenSequencesVal;
     tokenImage = tokenImageVal;
+
+		position = new TextPosition(currentToken.next);
   }
 
   /**
@@ -64,19 +66,6 @@ public class ParseException extends Exception {
       position = errorPosition;
       }
 
-  /** Line in the ADQL query where the exception occurs. */
-  protected TextPosition position = null;
-
-  /**
-   * Gets the position in the ADQL query of the token which generates this exception.
-   * 
-   * @return Position or <code>null</code> if unknown.
-   */
-  public final TextPosition getPosition()
-      {
-      return position;
-      }
-
 
   /**
    * This is the last token that has been consumed successfully.  If
@@ -99,6 +88,18 @@ public class ParseException extends Exception {
    */
   public String[] tokenImage;
 
+	/** Line in the ADQL query where the exception occurs. */
+	protected TextPosition position = null;
+
+	/**
+	 * Gets the position in the ADQL query of the token which generates this exception.
+	 * 
+	 * @return Position or <code>null</code> if unknown.
+	 */
+	public final TextPosition getPosition(){
+		return position;
+	}
+
   /**
    * It uses "currentToken" and "expectedTokenSequences" to generate a parse
    * error message and returns it.  If this object has been created
@@ -106,9 +107,46 @@ public class ParseException extends Exception {
    * from the parser) the correct error message
    * gets displayed.
    */
-  private static String initialise(Token currentToken,
-                           int[][] expectedTokenSequences,
-                           String[] tokenImage) {
+	private static String initialise(Token currentToken, int[][] expectedTokenSequences, String[] tokenImage) {
+		int maxSize = 0;
+
+		// Build the list of expected tokens:
+		StringBuffer expected = new StringBuffer();
+		for (int i = 0; i < expectedTokenSequences.length; i++) {
+			if (maxSize < expectedTokenSequences[i].length) {
+				maxSize = expectedTokenSequences[i].length;
+			}
+			for (int j = 0; j < expectedTokenSequences[i].length; j++) {
+				expected.append(tokenImage[expectedTokenSequences[i][j]]);
+			}
+			expected.append(" ");
+		}
+
+		// Encountered token (s list):
+		StringBuffer msg = new StringBuffer();
+		msg.append(" Encountered \"");
+		Token tok = currentToken.next;
+		for (int i = 0; i < maxSize; i++) {
+			if (i != 0) msg.append(' ');
+			if (tok.kind == 0) {
+				msg.append(tokenImage[0]);
+				break;
+			}
+			msg.append(add_escapes(tok.image));
+			tok = tok.next;
+		}
+		msg.append("\".");
+
+		// Append the expected tokens list:
+		if (expectedTokenSequences.length == 1) {
+			msg.append(" Was expecting: ");
+		} else {
+			msg.append(" Was expecting one of: ");
+		}
+		msg.append(expected);
+
+		return msg.toString();
+/*
     String eol = System.getProperty("line.separator", "\n");
     StringBuffer expected = new StringBuffer();
     int maxSize = 0;
@@ -146,7 +184,8 @@ public class ParseException extends Exception {
       retval += "Was expecting one of:" + eol + "    ";
     }
     retval += expected.toString();
-    return retval;
+		return retval;
+*/
   }
 
   /**
