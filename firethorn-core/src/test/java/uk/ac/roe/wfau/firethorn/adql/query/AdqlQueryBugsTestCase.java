@@ -94,7 +94,7 @@ public class AdqlQueryBugsTestCase
             );
         compare(
             query,
-            "select top 10 neighbours.distancemins as dist from atlasv20130426.dbo.atlassourcextwomass_psc as neighbours"
+            "select top 10 atlasv20130426.dbo.atlassourcextwomass_psc.distancemins as dist from atlasv20130426.dbo.atlassourcextwomass_psc"
             );
         }
 
@@ -126,6 +126,10 @@ public class AdqlQueryBugsTestCase
             AdqlQuery.Syntax.State.PARSE_ERROR,
             query.syntax().state()
             );
+
+        // TODO Explicitly state LEGACY not available in warning.
+        // TODO Change from a string match to a token in the parser grammar.
+
         }
     
     /**
@@ -187,7 +191,7 @@ public class AdqlQueryBugsTestCase
             "    rosat.dec\n" + 
             "FROM\n" + 
             "    atlasSource AS atlas,\n" + 
-            "    ROSAT..rosat_fsc AS rosat,\n" + 
+            "    ROSAT.rosat_fsc AS rosat,\n" + 
             "    atlasSourceXrosat_fsc AS neighbours\n" + 
             "WHERE\n" + 
             "    neighbours.masterObjID=atlas.sourceID\n" + 
@@ -225,7 +229,7 @@ public class AdqlQueryBugsTestCase
             "    rosat.dec\n" + 
             "FROM\n" + 
             "    atlasSource AS atlas,\n" + 
-            "    ROSAT..rosat_fsc AS rosat,\n" + 
+            "    ROSAT.rosat_fsc AS rosat,\n" + 
             "    atlasSourceXrosat_fsc AS neighbours\n" + 
             "WHERE\n" + 
             "    neighbours.masterObjID=atlas.sourceID\n" + 
@@ -269,7 +273,7 @@ public class AdqlQueryBugsTestCase
             AdqlQuery.Syntax.State.PARSE_ERROR,
             query.syntax().state()
             );
-        // Check the error message.
+        // TODO Check the error message.
         }
 
     /**
