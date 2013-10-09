@@ -79,8 +79,8 @@ public interface AdqlParserQuery
     /**
      * Get the ADQL parser syntax.
      *
-    public AdqlQuery.Syntax syntax();
      */
+    public AdqlQuery.Syntax syntax();
 
     /**
      * Set the ADQL syntax status.

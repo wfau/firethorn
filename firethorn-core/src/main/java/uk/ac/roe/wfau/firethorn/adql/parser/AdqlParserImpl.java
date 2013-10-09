@@ -31,6 +31,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
@@ -53,6 +54,7 @@ import adql.query.from.FromContent;
 import adql.query.operand.ADQLColumn;
 import adql.query.operand.ADQLOperand;
 import adql.query.operand.NumericConstant;
+import adql.query.operand.OperationType;
 import adql.query.operand.StringConstant;
 import adql.query.operand.Operation;
 import adql.query.operand.function.ADQLFunction;
@@ -147,7 +149,7 @@ implements AdqlParser
             new AdqlQueryFactoryImpl()
             );
 
-        this.parser.disable_tracing();
+        //this.parser.disable_tracing();
         
         }
 
@@ -276,6 +278,14 @@ implements AdqlParser
                 );
             log.warn("Error parsing query [{}]", ouch.getMessage());
             }
+        catch (final AdqlParserException ouch)
+            {
+            subject.syntax(
+                AdqlQuery.Syntax.State.PARSE_ERROR,
+                ouch.getMessage()
+                );
+            log.warn("Error parsing query [{}]", ouch.getMessage());
+            }
         catch (final TranslationException ouch)
             {
             subject.syntax(
@@ -304,11 +314,13 @@ implements AdqlParser
 
     /**
      * Process an ADQL query.
+     * @throws AdqlParserException 
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery object)
+    throws AdqlParserException
         {
-        log.debug("process(final AdqlParserQuery, ADQLQuery, ADQLQuery");
+        log.debug("process(AdqlParserQuery, ADQLQuery, ADQLQuery)");
         /*
          * Handle each part separately ?
          *
@@ -336,11 +348,13 @@ implements AdqlParser
 
     /**
      * Recursively process a tree of ADQLObject(s).
+     * @throws AdqlParserException 
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final Iterable<ADQLObject> iter)
+    throws AdqlParserException
         {
-        log.debug("process(final AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>");
+        log.debug("process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>)");
         for (final ADQLObject clause: iter)
             {
             log.debug(" ----");
@@ -382,6 +396,18 @@ implements AdqlParser
                     ); 
                 }
             //
+            // Check for LEGACY operations.
+            else if (clause instanceof Operation)
+                {
+                log.debug(" ----");
+                log.debug(" Operation [{}]", ((Operation) clause).getName());
+                process(
+                    subject,
+                    query,
+                    ((Operation) clause)
+                    ); 
+                }
+            //
             // Process the child nodes.
             else {
                 process(
@@ -396,12 +422,49 @@ implements AdqlParser
         }
 
     /**
+     * Process an Operation.
+     * @throws AdqlParserException 
+     *
+     */
+    protected void process(final AdqlParserQuery subject, final ADQLQuery query, final Operation oper)
+    throws AdqlParserException
+        {
+        log.debug("process(AdqlParserQuery, ADQLQuery, Operation)");
+        log.debug(" Operation ----");
+        log.debug("  name [{}]", oper.getName());
+        log.debug("  type [{}]", oper.getOperation());
+
+        //
+        // Check for unsupported operations.
+        if (oper.getOperation() == OperationType.MOD)
+            {
+            if (subject.syntax().level() == Level.STRICT)
+                {
+                throw new AdqlParserException(
+                    "Modulo '%' operator is not supported in ADQL"
+                    );
+                }
+            }
+
+        //
+        // Process the rest of the chain 
+        process(
+            subject,
+            query,
+            iter(
+                oper
+                )
+            );
+        }
+    
+    
+    /**
      * Process the SELECT part of the query.
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final ClauseSelect select)
         {
-        log.debug("process(final AdqlParserQuery, ADQLQuery, ClauseSelect");
+        log.debug("process(AdqlParserQuery, ADQLQuery, ClauseSelect)");
         for (final SelectItem item : select)
             {
             log.debug(" Select item ----");
@@ -436,7 +499,7 @@ implements AdqlParser
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final SelectAllColumns selectall)
         {
-        log.debug("process(final AdqlParserQuery, ADQLQuery, SelectAllColumns");
+        log.debug("process(AdqlParserQuery, ADQLQuery, SelectAllColumns)");
         //
         // Generic 'SELECT *' from all the tables.
         if (selectall.getQuery() != null)
@@ -472,7 +535,7 @@ implements AdqlParser
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final ADQLColumn column)
         {
-        log.debug("process(final AdqlParserQuery, ADQLQuery, ADQLColumn");
+        log.debug("process(AdqlParserQuery, ADQLQuery, ADQLColumn)");
         if (column.getDBLink() == null)
             {
             log.warn("ADQLColumn getDBLink() is NULL");
@@ -500,7 +563,7 @@ implements AdqlParser
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final ADQLTable table)
         {
-        log.debug("process(final AdqlParserQuery, ADQLQuery, ADQLTable");
+        log.debug("process(AdqlParserQuery, ADQLQuery, ADQLTable)");
         if (table.getDBLink() == null)
             {
             log.warn("ADQLTable getDBLink() is NULL");
@@ -989,7 +1052,7 @@ implements AdqlParser
         if (t2==null){
         	t2 = AdqlColumn.Type.DOUBLE;
         }
-        
+
         if (oper.getName()=="%") {
         	return_type = AdqlColumn.Type.INTEGER;
         } else if (t1==t2){
