@@ -76,7 +76,7 @@
         dave-adql-parsing
 
     #
-    # Swap the the default branch
+    # Swap to the default branch
     hg update -C default
         13 files updated, 0 files merged, 11 files removed, 0 files unresolved
 
@@ -92,5 +92,16 @@
     # Commit the changes
     hg commit -m "Merged dave-adql-parsing into main"
 
+#-----------------------------------------------------------------------------------
+#
+
+    #
+    # Check current branch
+    hg branch
+        default
+
+    #
+    # Swap to my dev branch
+    hg update -C dave-adql-parsing
 
 

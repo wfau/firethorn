@@ -396,7 +396,6 @@ EOF
 # Configure OGSA-DAI service.
 #[user@desktop]
 
-
     #
     # SSH login to tail the Tomcat log,
     source "${HOME:?}/firethorn/live.machines"

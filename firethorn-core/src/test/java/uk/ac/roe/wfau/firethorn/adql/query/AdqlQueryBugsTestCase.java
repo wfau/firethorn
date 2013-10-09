@@ -42,7 +42,7 @@ public class AdqlQueryBugsTestCase
      * 
      */
     @Test
-    public void test000()
+    public void test002S()
         {
         AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -66,7 +66,7 @@ public class AdqlQueryBugsTestCase
      * 
      */
     @Test
-    public void test001()
+    public void test002L()
         {
         AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -104,7 +104,7 @@ public class AdqlQueryBugsTestCase
      * 
      */
     @Test
-    public void test002()
+    public void test003S()
         {
         AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -134,7 +134,7 @@ public class AdqlQueryBugsTestCase
      * 
      */
     @Test
-    public void test003()
+    public void test003L()
         {
         AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -174,7 +174,45 @@ public class AdqlQueryBugsTestCase
      * 
      */
     @Test
-    public void test004()
+    public void test004S()
+        {
+        AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.STRICT
+                ),
+            "SELECT TOP 10\n" + 
+            "    atlas.ra,\n" + 
+            "    atlas.dec,\n" + 
+            "    rosat.ra,\n" + 
+            "    rosat.dec\n" + 
+            "FROM\n" + 
+            "    atlasSource AS atlas,\n" + 
+            "    ROSAT..rosat_fsc AS rosat,\n" + 
+            "    atlasSourceXrosat_fsc AS neighbours\n" + 
+            "WHERE\n" + 
+            "    neighbours.masterObjID=atlas.sourceID\n" + 
+            "AND\n" + 
+            "    neighbours.slaveObjID=rosat.seqNo\n" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        // TODO
+        compare(
+            query,
+            "SELECT stuff"
+            );
+        }
+
+    /**
+     * Duplicate column names throw Hibernate ConstraintViolationException.
+     * "SELECT atlas.ra, rosat.ra"
+     * 
+     */
+    @Test
+    public void test004L()
         {
         AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -205,6 +243,34 @@ public class AdqlQueryBugsTestCase
             "SELECT stuff"
             );
         }
+    
+    /**
+     * WHERE clause contains '%' modulus operator.
+     * "atlas.sourceID % 100 = 0"
+     * 
+     */
+    @Test
+    public void test005S()
+        {
+        AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.STRICT
+                ),
+            "SELECT TOP 10\n" + 
+            "    atlas.ra,\n" + 
+            "    atlas.dec\n" + 
+            "FROM\n" + 
+            "    atlasSource AS atlas\n" + 
+            "WHERE\n" + 
+            "    atlas.sourceID % 100 = 0\n" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.PARSE_ERROR,
+            query.syntax().state()
+            );
+        // Check the error message.
+        }
 
     /**
      * WHERE clause contains '%' modulus operator.
@@ -212,7 +278,7 @@ public class AdqlQueryBugsTestCase
      * 
      */
     @Test
-    public void test005()
+    public void test005L()
         {
         AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -243,14 +309,15 @@ public class AdqlQueryBugsTestCase
             "select top 10 atlas.ra as ra, atlas.dec as dec from atlasv20130426.dbo.atlassource as atlas where atlas.sourceid%100 = 0"
             );
         }
-
+    
+    
     /**
      * Inner WHERE clause refers to table defined in outer FROM clause.
      * "WHERE masterObjID = neighbours.masterObjID"
      * 
      */
     @Test
-    public void test006()
+    public void test006L()
         {
         AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -301,7 +368,7 @@ public class AdqlQueryBugsTestCase
      * 
      */
     @Test
-    public void test007()
+    public void test007L()
         {
         AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -341,14 +408,14 @@ public class AdqlQueryBugsTestCase
      * 
      */
     @Test
-    public void test008()
+    public void test008L()
         {
         AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
                 Level.LEGACY
                 ),
             "SELECT\n" + 
-            "    neighbours.distanceMins AS dist\n" + 
+            "    neighbours.distanceMins\n" + 
             "FROM\n" + 
             "    atlassourcexDR8photoobj AS neighbours,\n" + 
             "    (\n" + 
