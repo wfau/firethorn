@@ -536,7 +536,6 @@ public class ADQLParser implements ADQLParserConstants {
                 // check the query:
                 if (queryChecker != null)
                         queryChecker.check(
-                            stackQuery,
                             query
                             );
 

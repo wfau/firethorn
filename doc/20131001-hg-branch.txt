@@ -160,13 +160,19 @@
         firethorn-cds/adql/src/main/java/adql/db/DBChecker.java \
         -r 464
 
+    hg revert \
+        firethorn-cds/adql/src/main/java/adql/parser/QueryChecker.java \
+        -r 464
+
     #
     # Commit the changes.
     hg commit -m "Reverted changes to DBChecker"
+    hg commit -m "Reverted changes to QueryChecker"
 
     #
     # Tidy up
     rm firethorn-cds/adql/src/main/java/adql/db/DBChecker.java.orig
+
 
 
 
