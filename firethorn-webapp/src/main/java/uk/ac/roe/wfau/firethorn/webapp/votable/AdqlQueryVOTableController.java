@@ -24,10 +24,16 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,6 +63,114 @@ public class AdqlQueryVOTableController
     extends AbstractController
     {
 
+    public interface FieldHandler
+        {
+        public void write(final PrintWriter writer)
+        throws SQLException;
+        }
+
+    public static abstract class BaseFieldHandler
+    implements FieldHandler
+        {
+        public BaseFieldHandler(final ResultSet resultset, final ResultSetMetaData resultmeta, final int colnum)
+            {
+            this.resultset = resultset ;
+            this.resultmeta = resultmeta ;
+            this.colnum = colnum + 1 ;
+            }
+        protected ResultSet resultset ;
+        protected ResultSetMetaData resultmeta ;
+        protected int colnum ;
+
+        protected abstract String fetch()
+        throws SQLException;
+
+        public void write(final PrintWriter writer)
+        throws SQLException
+            {
+            writer.write("<TD>");
+            writer.write(
+                this.fetch()
+                );
+            writer.write("</TD>");
+            }
+        }
+
+    public static class ObjectFieldHandler
+    extends BaseFieldHandler
+        {
+        public ObjectFieldHandler(final ResultSet resultset, final ResultSetMetaData resultmeta, final int colnum)
+            {
+            super(
+                resultset,
+                resultmeta,
+                colnum
+                );
+            }
+        public String fetch()
+        throws SQLException
+            {
+            return resultset.getObject(
+                colnum
+                ).toString();
+            }
+        }
+
+    /**
+     * Escape string values for XML.
+     * http://commons.apache.org/proper/commons-lang/javadocs/api-release/org/apache/commons/lang3/StringEscapeUtils.html
+     * http://commons.apache.org/proper/commons-lang/javadocs/api-2.6/org/apache/commons/lang/StringEscapeUtils.html#escapeXml%28java.lang.String%29
+     *
+     */
+    public static class StringFieldHandler
+    extends BaseFieldHandler
+        {
+        public StringFieldHandler(final ResultSet resultset, final ResultSetMetaData resultmeta, final int colnum)
+            {
+            super(
+                resultset,
+                resultmeta,
+                colnum
+                );
+            }
+        public String fetch()
+        throws SQLException
+            {
+            return StringEscapeUtils.escapeXml(            
+                resultset.getString(
+                    colnum
+                    )
+                );
+            }
+        }
+
+    /**
+     * Consistent format for dates.
+     *
+     */
+    public static class DateFieldHandler
+    extends BaseFieldHandler
+        {
+        public DateFieldHandler(final ResultSet resultset, final ResultSetMetaData resultmeta, final int colnum)
+            {
+            super(
+                resultset,
+                resultmeta,
+                colnum
+                );
+            }
+        public String fetch()
+        throws SQLException
+            {
+            DateTime value = new DateTime(
+                resultset.getDate(
+                    colnum
+                    )
+                );
+            return value.toString();
+            }
+        }
+    
     @Override
     public Path path()
         {
@@ -116,14 +230,14 @@ public class AdqlQueryVOTableController
         builder.append(
             table.root().namebuilder()
             );
+        /*
+         * Only if we have added a rownum column.
         builder.append(
             " ORDER BY 1"
             );
-
+         */
         log.debug("VOTABLE SQL [{}]", builder.toString());
-
         return builder.toString();
-
         }
 
     public void select(final StringBuilder builder, final AdqlColumn column, final JdbcProductType type)
@@ -139,55 +253,15 @@ public class AdqlQueryVOTableController
                 );
             builder.append('"');
             }
-
         //
         // SQLServer dialect
         // http://technet.microsoft.com/en-us/library/ms174450.aspx
         else if (type == JdbcProductType.MSSQL)
             {
-            if (column.meta().adql().type() == AdqlColumn.Type.DATETIME)
-                {
-                builder.append(
-                    "CONVERT(varchar, 126, "
-                    );
-                builder.append(
-                    column.root().name()
-                    );
-                builder.append(
-                    ")"
-                    );
-                }
-            else if (column.meta().adql().type() == AdqlColumn.Type.TIME)
-                {
-                builder.append(
-                    "CONVERT(varchar, 114, "
-                    );
-                builder.append(
-                    column.root().name()
-                    );
-                builder.append(
-                    ")"
-                    );
-                }
-            else if (column.meta().adql().type() == AdqlColumn.Type.DATE)
-                {
-                builder.append(
-                    "CONVERT(varchar, 102, "
-                    );
-                builder.append(
-                    column.root().name()
-                    );
-                builder.append(
-                    ")"
-                    );
-                }
-            else {
-                builder.append(
-            		column.root().name()
-                    );
-                }
+            builder.append(
+                column.root().name()
+                );
             }
-
         //
         // Generic SQL dialect
         else {
@@ -195,14 +269,12 @@ public class AdqlQueryVOTableController
                 column.root().name()
                 );
             }
-
         builder.append(
             " AS "
             );
         builder.append(
             column.name()
             );
-    	log.debug("-- select(..)");
         }
 
     /**
@@ -303,8 +375,12 @@ public class AdqlQueryVOTableController
                     writer.append("</DESCRIPTION>");
                     }
 
+                List<AdqlColumn> cols = new ArrayList<AdqlColumn>();
+                
                 for (final AdqlColumn column : table.columns().select())
                     {
+                    cols.add(column);
+                    
                     writer.append("<FIELD ID='column.");
                     writer.append(column.ident().toString());
                     writer.append("'");
@@ -424,27 +500,43 @@ public class AdqlQueryVOTableController
                         final ResultSetMetaData colmeta = results.getMetaData();
                         final int colcount = colmeta.getColumnCount();
 
+                        final List<FieldHandler> handlers = new ArrayList<FieldHandler>();
+                        for (int colnum = 0 ; colnum < colcount ; colnum++)
+                            {
+                            AdqlColumn adql = cols.get(colnum);
+                            switch(adql.meta().adql().type())
+                                {
+                                case CHAR :
+                                case UNICODE:
+                                    handlers.add(
+                                        new StringFieldHandler(
+                                            results,
+                                            colmeta,
+                                            colnum
+                                            ) 
+                                        );
+                                    break ;
+
+                                default :
+                                    handlers.add(
+                                        new ObjectFieldHandler(
+                                            results,
+                                            colmeta,
+                                            colnum
+                                            ) 
+                                        );
+                                    break ;
+                                }
+                            }
+                        
                         while (results.next())
                             {
                             writer.append("<TR>");
-                            for (int colnum = 1 ; colnum <= colcount ; colnum++)
+                            for (FieldHandler handler : handlers)
                                 {
-                                Object object = null ;
-                                switch(colmeta.getColumnType(colnum))
-                                    {
-                                    default :
-                                        object = results.getObject(colnum);
-                                        break ;
-                                    }
-                                if (object != null)
-                                    {
-                                    writer.append("<TD>");
-                                    writer.append(object.toString());
-                                    writer.append("</TD>");
-                                    }
-                                else {
-                                    writer.append("<TD/>");
-                                    }
+                                handler.write(
+                                    writer
+                                    );
                                 }
                             writer.append("</TR>");
                             }

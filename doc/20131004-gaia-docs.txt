@@ -26,33 +26,33 @@
 
 
     DPAC Data Processing and Analysis Consortium
-    http://www.rssd.esa.int/wikiSI/index.php?title=Data_Processing_and_Analysis_Consortium
+    http://www.rssd.esa.int/wikiSI/index.php?instance=Gaia&title=Data_Processing_and_Analysis_Consortium
 
         CU9 Catalogue Access
-        http://www.rssd.esa.int/wikiSI/index.php?title=CU9:_Catalogue_Access
+        http://www.rssd.esa.int/wikiSI/index.php?instance=Gaia&title=CU9:_Catalogue_Access
 
 
             CU9-WP930 Science Archive architecture and Development 
-            http://www.rssd.esa.int/wikiSI/index.php?title=CU9:930
+            http://www.rssd.esa.int/wikiSI/index.php?instance=Gaia&title=CU9:930
 
 
                 CU9-WP930-WBS-WP932:Gaia Archive Core Systems
-                http://www.rssd.esa.int/wikiSI/index.php?title=CU9-WP930-WBS-WP932:Gaia_Archive_Core_Systems
+                http://www.rssd.esa.int/wikiSI/index.php?instance=Gaia&title=CU9-WP930-WBS-WP932:Gaia_Archive_Core_Systems
 
                 CU9-WP930-WBS-WP933:Consortium/ESAC-SAT Interface Control
-                http://www.rssd.esa.int/wikiSI/index.php?title=CU9-WP930-WBS-WP933:Consortium/ESAC-SAT_Interface_Control
+                http://www.rssd.esa.int/wikiSI/index.php?instance=Gaia&title=CU9-WP930-WBS-WP933:Consortium/ESAC-SAT_Interface_Control
 
                 CU9-WP930-WBS-WP934:Database Collaboration
-                http://www.rssd.esa.int/wikiSI/index.php?title=CU9-WP930-WBS-WP934:Database_Collaboration
+                http://www.rssd.esa.int/wikiSI/index.php?instance=Gaia&title=CU9-WP930-WBS-WP934:Database_Collaboration
 
                 CU9-WP930-WBS-WP935:Database Interface Design
-                http://www.rssd.esa.int/wikiSI/index.php?title=CU9-WP930-WBS-WP935:Database_Interface_Design
+                http://www.rssd.esa.int/wikiSI/index.php?instance=Gaia&title=CU9-WP930-WBS-WP935:Database_Interface_Design
 
             CU9-WP970 Science Enabling Applications
-            http://www.rssd.esa.int/wikiSI/index.php?title=CU9:970
+            http://www.rssd.esa.int/wikiSI/index.php?instance=Gaia&title=CU9:970
 
             CU9-WP980 Visualisation 
-            http://www.rssd.esa.int/wikiSI/index.php?title=CU9:980
+            http://www.rssd.esa.int/wikiSI/index.php?instance=Gaia&title=CU9:980
 
 
     RSSD Document Facility
