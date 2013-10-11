@@ -235,7 +235,7 @@ public class DBChecker implements QueryChecker {
 			try{
 				ADQLColumn adqlColumn = (ADQLColumn)result;
 				// resolve the column:
-				DBColumn dbColumn = resolveColumn(adqlColumn, list);
+				DBColumn dbColumn = resolveColumn(adqlColumn, list); // ZRQ Here
 				// link with the matched DBColumn:
 				adqlColumn.setDBLink(dbColumn);
 				adqlColumn.setAdqlTable(mapTables.get(dbColumn.getTable()));
