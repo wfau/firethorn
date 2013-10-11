@@ -535,7 +535,10 @@ public class ADQLParser implements ADQLParserConstants {
       }
                 // check the query:
                 if (queryChecker != null)
-                        queryChecker.check(query);
+                        queryChecker.check(
+                            stackQuery,
+                            query
+                            );
 
                 // get the previous query (!= null if the current query is a sub-query):
                 ADQLQuery previousQuery = stackQuery.pop();

@@ -19,6 +19,8 @@ package adql.parser;
  * Copyright 2012 - UDS/Centre de Données astronomiques de Strasbourg (CDS)
  */
 
+import java.util.Stack;
+
 import adql.db.DBChecker;
 import adql.query.ADQLQuery;
 
@@ -40,6 +42,8 @@ public interface QueryChecker {
 	 * 
 	 * @throws ParseException	If the given query is not correct.
 	 */
-	public void check(ADQLQuery query) throws ParseException;
+    public void check(ADQLQuery query) throws ParseException;
+
+    public void check(Stack<ADQLQuery> stack, ADQLQuery query) throws ParseException;
 
 }

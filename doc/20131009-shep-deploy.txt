@@ -64,11 +64,6 @@
 # TODO Move this to a ROE VM.
 #[user@desktop]
 
-    #
-    # --omit-dir-times
-    # rsync: failed to set times on "{path}/.": Operation not permitted (1)
-    # http://superuser.com/questions/200012/rsync-failed-to-set-times-on-dir-path
-
     rsync \
         --recursive --copy-links --times \
         --stats --human-readable --progress \

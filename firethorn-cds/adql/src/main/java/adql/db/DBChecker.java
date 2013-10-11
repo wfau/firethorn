@@ -22,6 +22,9 @@ package adql.db;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Stack;
 
 
 import adql.db.exception.UnresolvedColumnException;
@@ -166,7 +169,17 @@ public class DBChecker implements QueryChecker {
 	 * @see #resolveColumn(ADQLColumn, SearchColumnList)
 	 * @see #checkColumnReference(ColumnReference, ClauseSelect, SearchColumnList)
 	 */
-	public void check(final ADQLQuery query) throws ParseException {
+    public void check(final ADQLQuery query)
+    throws ParseException
+        {
+        check(
+            new Stack<ADQLQuery>(),
+            query
+            );
+        }
+
+	
+	public void check(final Stack<ADQLQuery> stack, final ADQLQuery query) throws ParseException {
 		UnresolvedIdentifiersException errors = new UnresolvedIdentifiersException();
 		HashMap<DBTable, ADQLTable> mapTables = new HashMap<DBTable, ADQLTable>();
 		ISearchHandler sHandler;
@@ -219,6 +232,7 @@ public class DBChecker implements QueryChecker {
 			}
 		}
 
+		//ZRQ - Does this list need to include tables from outer query ?
 		SearchColumnList list = query.getFrom().getDBColumns();
 
 		//		// DEBUG
@@ -235,7 +249,7 @@ public class DBChecker implements QueryChecker {
 			try{
 				ADQLColumn adqlColumn = (ADQLColumn)result;
 				// resolve the column:
-				DBColumn dbColumn = resolveColumn(adqlColumn, list);
+				DBColumn dbColumn = resolveColumn(stack, adqlColumn, list); // ZRQ here
 				// link with the matched DBColumn:
 				adqlColumn.setDBLink(dbColumn);
 				adqlColumn.setAdqlTable(mapTables.get(dbColumn.getTable()));
@@ -301,9 +315,41 @@ public class DBChecker implements QueryChecker {
 	 * @throws ParseException	An {@link UnresolvedColumnException} if the given column can't be resolved
 	 * 							or an {@link UnresolvedTableException} if its table reference can't be resolved.
 	 */
-	protected DBColumn resolveColumn(final ADQLColumn column, final SearchColumnList dbColumns) throws ParseException {
-		ArrayList<DBColumn> foundColumns = dbColumns.search(column);
 
+    protected DBColumn resolveColumn(final ADQLColumn column, final SearchColumnList dbColumns)
+    throws ParseException
+        {
+        return resolveColumn(
+            new Stack<ADQLQuery>(),
+            column,
+            dbColumns
+            );
+        }
+	
+	protected DBColumn resolveColumn(final Stack<ADQLQuery> stack, final ADQLColumn column, final SearchColumnList dbColumns) 
+	throws ParseException {
+	    ArrayList<DBColumn> foundColumns = dbColumns.search(column);
+
+		//
+		// If we didn't find a match, work up the stack (should be reversed).
+		if (foundColumns.size() == 0)
+		    {
+		    // Work up the stack.
+		    for (ADQLQuery outer : stack)
+		        {
+		        List<DBColumn> list = outer.getFrom().getDBColumns().search(
+	                column
+	                );
+                foundColumns.addAll(
+                    list
+		            );
+		        if (foundColumns.size() > 0)
+		            {
+		            break;
+		            }
+		        }
+		    }
+		
 		// good if only one column has been found:
 		if (foundColumns.size() == 1)
 			return foundColumns.get(0);
@@ -315,7 +361,7 @@ public class DBChecker implements QueryChecker {
 				throw new UnresolvedTableException(column, (foundColumns.get(0).getTable()==null)?"<NULL>":foundColumns.get(0).getTable().getADQLName(), (foundColumns.get(1).getTable()==null)?"<NULL>":foundColumns.get(1).getTable().getADQLName());
 		}// otherwise (no match): unknown column !
 		else
-			throw new UnresolvedColumnException(column);
+		    throw new UnresolvedColumnException(column);
 	}
 
 	/**
