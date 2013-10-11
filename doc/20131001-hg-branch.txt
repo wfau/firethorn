@@ -140,10 +140,34 @@
     # Check current branch
     hg branch
         dave-adql-parsing
-    
+
+    #
+    # Check the history.
+    hg log \
+        firethorn-cds/adql/src/main/java/adql/db/DBChecker.java
+
+        changeset:   862:cd414d006afa
+        branch:      dave-adql-parsing
+        ....
+
+        changeset:   464:7fe42860f504
+        parent:      461:4b63a0b8ed22
+        ....
+
     #
     # Revert a file to a previous version.
-    
+    hg revert \
+        firethorn-cds/adql/src/main/java/adql/db/DBChecker.java \
+        -r 464
+
+    #
+    # Commit the changes.
+    hg commit -m "Reverted changes to DBChecker"
+
+    #
+    # Tidy up
+    rm firethorn-cds/adql/src/main/java/adql/db/DBChecker.java.orig
+
 
 
 
