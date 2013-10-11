@@ -133,6 +133,20 @@
     mvn -P all clean install
     mvn -P all eclipse:eclipse
     
+#-----------------------------------------------------------------------------------
+#
+
+    #
+    # Check current branch
+    hg branch
+        dave-adql-parsing
     
+    #
+    # Revert a file to a previous version.
+    
+
+
+
+
 
 
