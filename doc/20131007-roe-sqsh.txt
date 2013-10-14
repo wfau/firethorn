@@ -162,7 +162,7 @@ EOF
         #
         # Test the client.
         source "${HOME:?}/sqlserver.properties"
-        sqsh -S "${develhost:?}" -U "${devuser}" -P "${devpass}" -D "${devdata}" << 'EOF'
+        sqsh -S "${devhost:?}" -U "${devuser}" -P "${devpass}" -D "${devdata}" << 'EOF'
 
 SELECT Name FROM SysDatabases
 go
@@ -213,5 +213,8 @@ EOF
 
 
         
+
+
+
 
 

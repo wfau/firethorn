@@ -937,7 +937,7 @@ implements AdqlParser
             {
             return new SelectFieldImpl(
                 oper.getName(),
-                AdqlColumn.Type.DOUBLE
+                AdqlColumn.Type.DOUBLE // TODO more options
                 );
             }
         else if (oper instanceof ADQLColumn)

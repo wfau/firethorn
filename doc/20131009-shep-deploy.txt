@@ -109,7 +109,6 @@
             mkdir "${webapppath:?}"
         fi
         pushd "${webapppath:?}"
-
             if [ -e "${webappfile}" ]
             then
                 rm "${webappfile}"
@@ -118,9 +117,7 @@
             then
                 rm -r "${webappname}"
             fi            
-
             wget "${downloadurl:?}"
-
         popd
 
         #
@@ -140,25 +137,31 @@
 # Manual test queries ...
 #
 
-SELECT TOP 10
-    distanceMins AS distance
-FROM
-    ATLASv20130426.atlasSourceXtwomass_psc
+    SELECT TOP 10
+        distanceMins AS distance
+    FROM
+        ATLASv20130426.atlasSourceXtwomass_psc
 
 
-SELECT TOP 10
-    ra,
-    dec
-FROM
-    TWOMASS..twomass_psc
+    SELECT TOP 10
+        ra,
+        dec
+    FROM
+        TWOMASS..twomass_psc
 
-SELECT TOP 10
-    atlas.ra,
-    atlas.dec
-FROM
-    atlasSource AS atlas
-WHERE
-    atlas.sourceID % 100 = 0
+    SELECT TOP 10
+        atlas.ra,
+        atlas.dec
+    FROM
+        atlasSource AS atlas
+    WHERE
+        atlas.sourceID % 100 = 0
+
+    SELECT TOP 10
+        utDate,
+        dateObs
+    FROM
+        multiframe
 
 
 

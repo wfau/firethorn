@@ -392,17 +392,18 @@ public class AdqlQueryBugsTestCase
         validate(
             query,
             new ExpectedField[] {
-                new ExpectedField("creationDate", AdqlColumn.Type.DATETIME, 0),
+                new ExpectedField("utDate",  AdqlColumn.Type.DATETIME, 23),
+                new ExpectedField("dateObs", AdqlColumn.Type.DATETIME, 23)
                 }
             );
+
         // TODO - verify the JDBC column is DATE TIME, not TIMESTAMP.
         // Firethorn create table fails if we have two DATETIME columns.
         // OGSA-DAI insert into TIMESTAMP column fails.
 
-        // TODO
         compare(
             query,
-            "SELECT stuff"
+            "select top 10 atlasv20130426.dbo.multiframe.utdate as utdate, atlasv20130426.dbo.multiframe.dateobs as dateobs from atlasv20130426.dbo.multiframe"
             );
         }
 

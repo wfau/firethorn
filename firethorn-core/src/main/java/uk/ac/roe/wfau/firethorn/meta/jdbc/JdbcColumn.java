@@ -102,43 +102,43 @@ extends BaseColumn<JdbcColumn>
      */
     public enum Type
         {
-        ARRAY(          Types.ARRAY,         VAR_ARRAY_SIZE),
-        BIGINT(         Types.BIGINT,        19),
-        BINARY(         Types.BINARY,        VAR_ARRAY_SIZE),
-        BIT(            Types.BIT,            1),
-        BLOB(           Types.BLOB,          VAR_ARRAY_SIZE),
-        BOOLEAN(        Types.BOOLEAN,        1),
-        CHAR(           Types.CHAR,          VAR_ARRAY_SIZE),
-        CLOB(           Types.CLOB,          VAR_ARRAY_SIZE),
-        DATALINK(       Types.DATALINK,      NON_ARRAY_SIZE),
-        DATE(           Types.DATE,          10),
-        DECIMAL(        Types.DECIMAL,       38),
-        DISTINCT(       Types.DISTINCT,      NON_ARRAY_SIZE),
-        DOUBLE(         Types.DOUBLE,        53),
-        FLOAT(          Types.FLOAT,         53),
-        INTEGER(        Types.INTEGER,       10),
-        JAVA_OBJECT(    Types.JAVA_OBJECT,   VAR_ARRAY_SIZE),
-        LONGNVARCHAR(   Types.LONGNVARCHAR,  VAR_ARRAY_SIZE),
-        LONGVARBINARY(  Types.LONGVARBINARY, VAR_ARRAY_SIZE),
-        LONGVARCHAR(    Types.LONGVARCHAR,   VAR_ARRAY_SIZE),
-        NCHAR(          Types.NCHAR,         VAR_ARRAY_SIZE),
-        NCLOB(          Types.NCLOB,         VAR_ARRAY_SIZE),
-        NULL(           Types.NULL,          VAR_ARRAY_SIZE),
-        NUMERIC(        Types.NUMERIC,       38),
-        NVARCHAR(       Types.NVARCHAR,      VAR_ARRAY_SIZE),
-        OTHER(          Types.OTHER,         NON_ARRAY_SIZE),
-        REAL(           Types.REAL,          24),
-        REF(            Types.REF,           NON_ARRAY_SIZE),
-        ROWID(          Types.ROWID,         NON_ARRAY_SIZE),
-        SMALLINT(       Types.SMALLINT,       5),
-        SQLXML(         Types.SQLXML,        VAR_ARRAY_SIZE),
-        STRUCT(         Types.STRUCT,        VAR_ARRAY_SIZE),
-        TIME(           Types.TIME,          16),
-        TIMESTAMP(      Types.TIMESTAMP,      8),
-        TINYINT(        Types.TINYINT,        3),
-        VARBINARY(      Types.VARBINARY,     VAR_ARRAY_SIZE),
-        VARCHAR(        Types.VARCHAR,       VAR_ARRAY_SIZE),
-        UNKNOWN(        Types.OTHER,         NON_ARRAY_SIZE);
+        ARRAY(          Types.ARRAY,         0,     VAR_ARRAY_SIZE),
+        BIGINT(         Types.BIGINT,        0,     19),
+        BINARY(         Types.BINARY,        0,     VAR_ARRAY_SIZE),
+        BIT(            Types.BIT,           0,     1),
+        BLOB(           Types.BLOB,          0,     VAR_ARRAY_SIZE),
+        BOOLEAN(        Types.BOOLEAN,       0,     1),
+        CHAR(           Types.CHAR,          0,     VAR_ARRAY_SIZE),
+        CLOB(           Types.CLOB,          0,     VAR_ARRAY_SIZE),
+        DATALINK(       Types.DATALINK,      0,     NON_ARRAY_SIZE),
+        DATE(           Types.DATE,          0,     10),
+        DECIMAL(        Types.DECIMAL,       0,     38),
+        DISTINCT(       Types.DISTINCT,      0,     NON_ARRAY_SIZE),
+        DOUBLE(         Types.DOUBLE,        0,     53),
+        FLOAT(          Types.FLOAT,         0,     53),
+        INTEGER(        Types.INTEGER,       0,     10),
+        JAVA_OBJECT(    Types.JAVA_OBJECT,   0,     VAR_ARRAY_SIZE),
+        LONGNVARCHAR(   Types.LONGNVARCHAR,  0,     VAR_ARRAY_SIZE),
+        LONGVARBINARY(  Types.LONGVARBINARY, 0,     VAR_ARRAY_SIZE),
+        LONGVARCHAR(    Types.LONGVARCHAR,   0,     VAR_ARRAY_SIZE),
+        NCHAR(          Types.NCHAR,         0,     VAR_ARRAY_SIZE),
+        NCLOB(          Types.NCLOB,         0,     VAR_ARRAY_SIZE),
+        NULL(           Types.NULL,          0,     VAR_ARRAY_SIZE),
+        NUMERIC(        Types.NUMERIC,       0,     38),
+        NVARCHAR(       Types.NVARCHAR,      0,     VAR_ARRAY_SIZE),
+        OTHER(          Types.OTHER,         0,     NON_ARRAY_SIZE),
+        REAL(           Types.REAL,          0,     24),
+        REF(            Types.REF,           0,     NON_ARRAY_SIZE),
+        ROWID(          Types.ROWID,         0,     NON_ARRAY_SIZE),
+        SMALLINT(       Types.SMALLINT,      0,     5),
+        SQLXML(         Types.SQLXML,        0,     VAR_ARRAY_SIZE),
+        STRUCT(         Types.STRUCT,        0,     VAR_ARRAY_SIZE),
+        TIME(           Types.TIME,          0,     16),
+        TIMESTAMP(      Types.TIMESTAMP,     0,     8),
+        TINYINT(        Types.TINYINT,       0,     3),
+        VARBINARY(      Types.VARBINARY,     0,     VAR_ARRAY_SIZE),
+        VARCHAR(        Types.VARCHAR,       0,     VAR_ARRAY_SIZE),
+        UNKNOWN(        Types.OTHER,         0,     NON_ARRAY_SIZE);
 
         private final int sqltype ;
         public int sqltype()
@@ -152,6 +152,12 @@ extends BaseColumn<JdbcColumn>
             return this.sqlsize ;
             }
 
+        private final int strsize ;
+        public int strsize()
+            {
+            return this.strsize ;
+            }
+
         public AdqlColumn.Type adql()
             {
             return AdqlColumn.Type.type(
@@ -159,10 +165,11 @@ extends BaseColumn<JdbcColumn>
                 );
             }
 
-        Type(final int type, final int size)
+        Type(final int sqltype, final int sqlsize, final int strsize)
             {
-            this.sqltype = type;
-            this.sqlsize = size ;
+            this.sqltype = sqltype ;
+            this.sqlsize = sqlsize ;
+            this.strsize = strsize ;
             }
 
         /**
@@ -303,7 +310,7 @@ extends BaseColumn<JdbcColumn>
             {
 
             /**
-             * The JDBC size.
+             * Get the JDBC size.
              *
              */
             public Integer size();
@@ -315,7 +322,7 @@ extends BaseColumn<JdbcColumn>
             public void size(final Integer size);
 
             /**
-             * The JDBC type.
+             * Get the JDBC type.
              *
              */
             public Type type();
@@ -325,6 +332,23 @@ extends BaseColumn<JdbcColumn>
              *
              */
             public void type(final Type type);
+
+            /**
+             * The corresponding SQL 'CREATE COLUMN' fields.
+             *  
+             */
+            public interface CreateSql
+                {
+                public String name();
+                public String type();
+                }
+
+            /**
+             * The corresponding SQL 'CREATE COLUMN' fields.
+             *  
+             */
+            public CreateSql create();
+            
             }
         /**
          * The JDBC column metadata.
