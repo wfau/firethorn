@@ -448,4 +448,34 @@ public class AdqlQueryBugsTestCase
             "select neighbours.distancemins as dist from atlasv20130426.dbo.atlassourcexdr8photoobj as neighbours, (select top 10 atlasv20130426.dbo.atlassource.sourceid as ident from atlasv20130426.dbo.atlassource) as sources where neighbours.masterobjid = sources.ident"
             );
         }
+
+    
+    /**
+     * 'LIKE' string operator in WHERE clause.
+     * 
+     */
+    @Test
+    public void test009L()
+        {
+        AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.LEGACY
+                ),
+            "SELECT\n" + 
+            "    COUNT(*)\n" + 
+            "FROM\n" + 
+            "    Multiframe\n" + 
+            "WHERE\n" + 
+            "    project LIKE 'U/UKIDSS/ATLAS%'" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        compare(
+            query,
+            "select count(*) as count_all from atlasv20130426.dbo.multiframe where atlasv20130426.dbo.multiframe.project like 'u/ukidss/atlas%'"
+            );
+        }
     }
