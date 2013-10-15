@@ -39,6 +39,7 @@ import adql.query.IdentifierField;
 import adql.query.SelectAllColumns;
 import adql.query.SelectItem;
 import adql.query.from.ADQLTable;
+import adql.query.from.FromContent;
 
 import adql.query.operand.ADQLColumn;
 
@@ -71,7 +72,7 @@ public class DBChecker implements QueryChecker {
 	/** List of all available tables ({@link DBTable}). */
 	protected SearchTableList lstTables;
 
-
+	
 	/* ************ */
 	/* CONSTRUCTORS */
 	/* ************ */
@@ -167,6 +168,11 @@ public class DBChecker implements QueryChecker {
 	 * @see #checkColumnReference(ColumnReference, ClauseSelect, SearchColumnList)
 	 */
 	public void check(final ADQLQuery query) throws ParseException {
+		this.check(query, null);
+	}
+	
+	
+	public void check(final ADQLQuery query, SearchColumnList fromList) throws ParseException {
 		UnresolvedIdentifiersException errors = new UnresolvedIdentifiersException();
 		HashMap<DBTable, ADQLTable> mapTables = new HashMap<DBTable, ADQLTable>();
 		ISearchHandler sHandler;
@@ -218,18 +224,20 @@ public class DBChecker implements QueryChecker {
 				errors.addException(pe);
 			}
 		}
-
 		SearchColumnList list = query.getFrom().getDBColumns();
-
-		//		// DEBUG
-		//		System.out.println("\n*** FROM COLUMNS ***");
-		//		for(DBColumn dbCol : list){
-		//			System.out.println("\t- "+dbCol.getADQLName()+" in "+((dbCol.getTable()==null)?"<NULL>":dbCol.getTable().getADQLName())+" (= "+dbCol.getDBName()+" in "+((dbCol.getTable()==null)?"<NULL>":dbCol.getTable().getDBName())+")");
-		//		}
-		//		System.out.println();
+		if (fromList!=null){
+			list.addAll(fromList);
+		}
+				// DEBUG
+				System.out.println("\n*** FROM COLUMNS ***");
+				for(DBColumn dbCol : list){
+					System.out.println("\t- "+dbCol.getADQLName()+" in "+((dbCol.getTable()==null)?"<NULL>":dbCol.getTable().getADQLName())+" (= "+dbCol.getDBName()+" in "+((dbCol.getTable()==null)?"<NULL>":dbCol.getTable().getDBName())+")");
+				}
+				System.out.println();
 
 		// Check the existence of all columns:
-		sHandler = new SearchColumnHandler();
+		sHandler = new SearchColumnHandler();  
+	
 		sHandler.search(query);
 		for(ADQLObject result : sHandler){
 			try{
@@ -276,7 +284,7 @@ public class DBChecker implements QueryChecker {
 	 * 
 	 * @throws ParseException	An {@link UnresolvedTableException} if the given table can't be resolved.
 	 */
-	protected DBTable resolveTable(final ADQLTable table) throws ParseException {
+	public DBTable resolveTable(final ADQLTable table) throws ParseException {
 		ArrayList<DBTable> tables = lstTables.search(table);
 
 		// good if only one table has been found:
@@ -398,7 +406,7 @@ public class DBChecker implements QueryChecker {
 	 * @author Gr&eacute;gory Mantelet (CDS)
 	 * @version 07/2011
 	 */
-	private static class SearchTableHandler extends SimpleSearchHandler {
+	public static class SearchTableHandler extends SimpleSearchHandler {
 		@Override
 		public boolean match(final ADQLObject obj) {
 			return obj instanceof ADQLTable;

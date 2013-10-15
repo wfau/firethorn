@@ -300,7 +300,23 @@ public class SearchColumnList extends TextualSearchList<DBColumn> {
 		else
 			return super.add(item);
 	}
+	
+	public boolean addAll(final Collection<? extends DBColumn> c, boolean ignorecheck) {
+		boolean changed = true;
+		if (!ignorecheck){
+			changed = super.addAll(c);
+		} 
+		
+		if (changed){
+			if (c instanceof SearchColumnList){
+				SearchColumnList list = (SearchColumnList)c;
+				for(Map.Entry<String, String> entry : list.tableAliases.entrySet())
+					putTableAlias(entry.getKey(), entry.getValue());
+			}
+		}
 
+		return changed;
+	}
 	@Override
 	public boolean addAll(final Collection<? extends DBColumn> c) {
 		boolean changed = super.addAll(c);

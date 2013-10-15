@@ -20,6 +20,7 @@ package adql.parser;
  */
 
 import adql.db.DBChecker;
+import adql.db.SearchColumnList;
 import adql.query.ADQLQuery;
 
 /**
@@ -41,5 +42,5 @@ public interface QueryChecker {
 	 * @throws ParseException	If the given query is not correct.
 	 */
 	public void check(ADQLQuery query) throws ParseException;
-
+	public void check(ADQLQuery query, SearchColumnList fromList) throws ParseException;
 }

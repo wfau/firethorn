@@ -6,7 +6,6 @@ package adql.parser;
  * Describes the input token stream.
  */
 
-@SuppressWarnings("all")
 public class Token implements java.io.Serializable {
 
   /**
