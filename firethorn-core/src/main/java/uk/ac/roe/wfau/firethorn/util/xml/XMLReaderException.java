@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.util.xml;
 
-import javax.xml.namespace.QName;
-
 
 /**
  *

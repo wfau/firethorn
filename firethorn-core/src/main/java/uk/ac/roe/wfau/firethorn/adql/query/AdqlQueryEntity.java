@@ -44,7 +44,6 @@ import javax.persistence.Transient;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
@@ -56,7 +55,6 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
@@ -133,7 +131,7 @@ implements AdqlQuery, AdqlParserQuery
     protected static final String DB_OSQL_COL   = "osql";
     protected static final String DB_ROWID_COL  = "rowid";
     protected static final String DB_INPUT_COL  = "input";
-    
+
     protected static final String DB_JDBC_TABLE_COL  = "jdbctable";
     protected static final String DB_ADQL_TABLE_COL  = "adqltable";
     protected static final String DB_ADQL_SCHEMA_COL = "adqlschema";
@@ -685,7 +683,7 @@ implements AdqlQuery, AdqlParserQuery
         {
         return this.rowid;
         }
-    
+
     @Column(
         name = DB_SYNTAX_STATE_COL,
         unique = false,
@@ -709,14 +707,14 @@ implements AdqlQuery, AdqlParserQuery
     private Syntax.Level level ;
 
     @Transient
-    private List<String> warnings = new ArrayList<String>(); 
-    public void warning(String warning)
+    private final List<String> warnings = new ArrayList<String>();
+    public void warning(final String warning)
         {
         warnings.add(
             warning
             );
         }
-    
+
     @Type(
         type="org.hibernate.type.TextType"
         )
@@ -751,7 +749,7 @@ implements AdqlQuery, AdqlParserQuery
         updatable = true
         )
     private String endpoint ;
-    
+
     protected void params(final AdqlQuery.QueryParam params)
         {
         this.dqp      = params.dqp();
@@ -817,7 +815,7 @@ implements AdqlQuery, AdqlParserQuery
                 return AdqlQueryEntity.this.level;
                 }
             @Override
-            public void level(Level level)
+            public void level(final Level level)
                 {
                 AdqlQueryEntity.this.level = level;
                 }
@@ -932,6 +930,7 @@ implements AdqlQuery, AdqlParserQuery
             }
         }
 
+    @Override
     public String cleaned()
         {
         //
@@ -940,51 +939,51 @@ implements AdqlQuery, AdqlParserQuery
 
         //
         // Skip /* comments */
-        Pattern p1 = Pattern.compile(
+        final Pattern p1 = Pattern.compile(
             "/\\*.*?\\*/",
             Pattern.DOTALL
             );
-        Matcher m1 = p1.matcher(result);
+        final Matcher m1 = p1.matcher(result);
         if (m1.find())
             {
             result = m1.replaceAll("");
             }
-        
+
         //
         // Legacy SQLServer syntax
         if (this.level == Level.LEGACY)
             {
             //
             // Replace double '..'
-            Pattern p2 = Pattern.compile(
+            final Pattern p2 = Pattern.compile(
                 "\\.\\.",
                 Pattern.DOTALL
                 );
-            Matcher m2 = p2.matcher(result);
+            final Matcher m2 = p2.matcher(result);
             if (m2.find())
                 {
-                result = m2.replaceAll("."); 
+                result = m2.replaceAll(".");
                 warning("SQLServer '..' syntax is not required");
                 }
 
             //
             // Replace 'AS distance'.
-            Pattern p3 = Pattern.compile(
+            final Pattern p3 = Pattern.compile(
                 "[Aa][Ss] +[Dd][Ii][Ss][Tt][Aa][Nn][Cc][Ee]",
                 Pattern.DOTALL
                 );
-            Matcher m3 = p3.matcher(result);
+            final Matcher m3 = p3.matcher(result);
             if (m3.find())
                 {
-                result = m3.replaceAll("AS dist"); 
+                result = m3.replaceAll("AS dist");
                 warning("DISTANCE is an ADQL reserved word");
                 }
             }
 
         return result;
-        
+
         }
-    
+
     @Override
     public Status prepare()
         {

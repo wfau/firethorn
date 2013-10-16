@@ -190,7 +190,7 @@ extends QuerySelectFieldTestBase
             query.osql().replace('\n', ' ')
             );
         }
-    
+
     @Test
     public void test007()
     throws Exception
@@ -212,7 +212,7 @@ extends QuerySelectFieldTestBase
                 }
             );
         }
-    
+
     @Test
     public void test008()
     throws Exception
@@ -234,7 +234,7 @@ extends QuerySelectFieldTestBase
                 }
             );
         }
-    
+
     @Test
     public void test009()
     throws Exception

@@ -786,7 +786,7 @@ implements AdqlSchema
 
 
             @Override
-            public AdqlQuery create(QueryParam params, String query)
+            public AdqlQuery create(final QueryParam params, final String query)
                 {
                 return factories().adql().queries().create(
                     params,

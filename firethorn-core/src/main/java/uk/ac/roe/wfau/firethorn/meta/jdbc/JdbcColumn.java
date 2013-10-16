@@ -335,7 +335,7 @@ extends BaseColumn<JdbcColumn>
 
             /**
              * The corresponding SQL 'CREATE COLUMN' fields.
-             *  
+             *
              */
             public interface CreateSql
                 {
@@ -345,10 +345,10 @@ extends BaseColumn<JdbcColumn>
 
             /**
              * The corresponding SQL 'CREATE COLUMN' fields.
-             *  
+             *
              */
             public CreateSql create();
-            
+
             }
         /**
          * The JDBC column metadata.

@@ -25,8 +25,6 @@ import org.junit.Test;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
-
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -42,14 +40,14 @@ public class AtlasLoggedQueryTestCase
     public void test000()
     throws Exception
         {
-        BufferedReader reader = new BufferedReader(
+        final BufferedReader reader = new BufferedReader(
             new FileReader(
                 "src/test/data/adql/atlas-logged-queries-000.txt"
                 )
             );
 
-        String linestr = reader.readLine();
-        for (int linenum = 1; (linestr != null) ; linenum++) 
+        final String linestr = reader.readLine();
+        for (int linenum = 1; (linestr != null) ; linenum++)
             {
             inner(linenum, linestr);
             }
@@ -59,24 +57,24 @@ public class AtlasLoggedQueryTestCase
         readOnly=false,
         propagation=Propagation.REQUIRES_NEW
         )
-    public void inner(int linenum, String linestr)
+    public void inner(final int linenum, final String linestr)
         {
         log.debug("--------");
         log.debug("ADQL [{}][{}]", linenum, linestr);
 
-        AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryspace.queries().create(
             linestr
             );
 
-        String s1 = clean(linestr);
-        String s2 = clean(query.adql());
-        String s3 = clean(query.osql());
+        final String s1 = clean(linestr);
+        final String s2 = clean(query.adql());
+        final String s3 = clean(query.osql());
 
         log.debug("LINE [{}][{}]", linenum, s1);
         log.debug("ADQL [{}][{}]", linenum, s2);
         log.debug("OSQL [{}][{}]", linenum, s3);
 
-        String diff = StringUtils.difference(
+        final String diff = StringUtils.difference(
             s1,
             s3
             );

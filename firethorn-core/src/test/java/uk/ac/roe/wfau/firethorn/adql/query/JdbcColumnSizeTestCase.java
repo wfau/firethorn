@@ -20,7 +20,6 @@ package uk.ac.roe.wfau.firethorn.adql.query;
 import static org.junit.Assert.assertEquals;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -31,10 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 
-import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
-import uk.ac.roe.wfau.firethorn.adql.query.QuerySelectFieldTestBase.ExpectedField;
-import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
@@ -47,17 +43,17 @@ public class JdbcColumnSizeTestCase
     extends AtlasQueryTestBase
     {
 
-    
+
     public void checksize(final JdbcTable table, final String colname, final int colsize)
     throws SQLException
         {
-        JdbcResource resource = table.resource();
+        final JdbcResource resource = table.resource();
         try {
-            Connection conn = resource.connection().open();
-            Statement  stmt = conn.createStatement();
-            
-            ResultSet  rset = stmt.executeQuery("SELECT TOP 1 " + colname + " FROM " + table.name());
-            ResultSetMetaData rsmd = rset.getMetaData();
+            final Connection conn = resource.connection().open();
+            final Statement  stmt = conn.createStatement();
+
+            final ResultSet  rset = stmt.executeQuery("SELECT TOP 1 " + colname + " FROM " + table.name());
+            final ResultSetMetaData rsmd = rset.getMetaData();
 
             assertEquals(
                 colsize,
@@ -68,25 +64,25 @@ public class JdbcColumnSizeTestCase
             resource.connection().close();
             }
         }
-    
+
     /**
      * VARCHAR column size.
-     * 
+     *
      */
     @Test
     public void test001()
     throws SQLException
         {
-        AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
                 Level.LEGACY
                 ),
-            "SELECT\n" + 
-            "    project\n" + 
-            "FROM\n" + 
-            "    Multiframe\n" + 
-            "WHERE\n" + 
-            "    project LIKE 'ATLAS%'" + 
+            "SELECT\n" +
+            "    project\n" +
+            "FROM\n" +
+            "    Multiframe\n" +
+            "WHERE\n" +
+            "    project LIKE 'ATLAS%'" +
             ""
             );
         assertEquals(

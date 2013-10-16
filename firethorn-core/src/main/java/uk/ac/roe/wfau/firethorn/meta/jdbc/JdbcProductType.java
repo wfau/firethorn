@@ -220,5 +220,5 @@ public enum JdbcProductType
         {
         return type.sqlsize();
         }
-    
+
     }

@@ -17,21 +17,16 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Properties;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
-
 import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
@@ -62,16 +57,16 @@ public class TestPropertiesBase
                     )
                 );
             }
-        catch (FileNotFoundException ouch)
+        catch (final FileNotFoundException ouch)
             {
             //log.debug("FileNotFoundException loading test properties [{}]", PROPERTIES_FILE);
             }
-        catch (IOException ouch)
+        catch (final IOException ouch)
             {
             log.error("IOException loading test properties [{}][{}]",PROPERTIES_FILE , ouch.getMessage());
             }
         }
-    
+
     @After
     public void saveProperties()
         {
@@ -84,15 +79,15 @@ public class TestPropertiesBase
                 "Auto save after test"
                 );
             }
-        catch (IOException ouch)
+        catch (final IOException ouch)
             {
             log.error("IOException saving test properties [{}][{}]",PROPERTIES_FILE , ouch.getMessage());
             }
         }
-    
+
     /**
      * Test our tests
-     * 
+     *
     @Test
     public void test000()
     throws Exception

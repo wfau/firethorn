@@ -1,14 +1,10 @@
 package uk.ac.roe.wfau.firethorn.liquibase;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import liquibase.change.ChangeMetaData;
 import liquibase.change.ColumnConfig;
 import liquibase.change.DatabaseChange;
 import liquibase.change.core.CreateTableChange;
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
@@ -36,8 +32,8 @@ extends CreateTableChange
             {
             log.debug("  Column [{}][{}][{}][{}]", column.ident(), column.name(), column.meta().jdbc().type(), column.meta().jdbc().size());
 
-            final String colname = column.meta().jdbc().create().name(); 
-            final String coltype = column.meta().jdbc().create().type(); 
+            final String colname = column.meta().jdbc().create().name();
+            final String coltype = column.meta().jdbc().create().type();
 
             log.debug("  Name [{}]", colname);
             log.debug("  Type [{}]", coltype);

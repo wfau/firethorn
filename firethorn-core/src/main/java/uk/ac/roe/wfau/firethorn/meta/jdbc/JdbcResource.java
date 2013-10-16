@@ -22,7 +22,6 @@ import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.identity.Identity;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn.Metadata.JdbcMeta.CreateSql;
 
 /**
  *
@@ -191,7 +190,7 @@ extends BaseResource<JdbcSchema>
 
     /**
      * The SQL metadata needed to create a column.
-     *  
+     *
      *
     public interface CreateColumn
         {
@@ -201,10 +200,10 @@ extends BaseResource<JdbcSchema>
 
     **
      * The SQL metadata needed to create a column.
-     *  
+     *
      *
     public CreateColumn create();
     *
     */
-    
+
     }

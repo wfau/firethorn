@@ -569,13 +569,13 @@ public class JdbcColumnEntity
                         {
                         final StringBuilder builder = new StringBuilder();
                         final JdbcColumn.Type type = jdbctype();
-                        final JdbcProductType prod = JdbcColumnEntity.this.resource().connection().type(); 
+                        final JdbcProductType prod = JdbcColumnEntity.this.resource().connection().type();
 
                         //
                         // TODO Make JdbcProductType an interface.
                         // Use Spring to load available product types ?
                         // ProductType methods for creating tables and columns.
-                        
+
                         switch(prod)
                             {
                             case MSSQL :
@@ -586,25 +586,25 @@ public class JdbcColumnEntity
                                     case TIMESTAMP :
                                         builder.append(
                                             "DATETIME"
-                                            ); 
+                                            );
                                         break ;
 
-                                    default : 
+                                    default :
                                         builder.append(
                                             jdbctype().name()
-                                            ); 
+                                            );
                                         break ;
                                     }
-                            
+
                                 break ;
 
                             default :
                                 builder.append(
                                     jdbctype().name()
-                                    ); 
+                                    );
                                 break ;
                             }
-                        
+
                         if (jdbctype().strsize() == BaseColumn.VAR_ARRAY_SIZE)
                             {
                             if (jdbcsize() == BaseColumn.VAR_ARRAY_SIZE)

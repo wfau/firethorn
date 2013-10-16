@@ -28,7 +28,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
-import uk.ac.roe.wfau.firethorn.entity.Identifier;
 import uk.ac.roe.wfau.firethorn.entity.exception.IdentifierNotFoundException;
 import uk.ac.roe.wfau.firethorn.entity.exception.NotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
@@ -39,7 +38,6 @@ import uk.ac.roe.wfau.firethorn.meta.base.BaseComponent;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseResource;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
-import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcSchema;
 
 
 /**
@@ -55,12 +53,12 @@ extends TestPropertiesBase
     protected JdbcResource resource ;
     protected AdqlResource workspace ;
     protected AdqlResource testspace ;
-    
+
     protected AdqlSchema queryspace ;
 
     public void schema()
         {
-        
+
         }
 
     /**
@@ -76,7 +74,7 @@ extends TestPropertiesBase
         if (resource == null)
             {
             log.debug("Loading test resource");
-            String prop = testprops().getProperty("jdbc.space");
+            final String prop = testprops().getProperty("jdbc.space");
             if (prop != null)
                 {
                 try {
@@ -86,7 +84,7 @@ extends TestPropertiesBase
                             )
                         );
                     }
-                catch (IdentifierNotFoundException ouch)
+                catch (final IdentifierNotFoundException ouch)
                     {
                     log.debug("Unable to load JDBC resource from test config [{}]", ouch.getMessage());
                     }
@@ -102,13 +100,13 @@ extends TestPropertiesBase
                     );
                 }
             }
-        
+
         //
         // Create our ADQL workspace.
         if (this.workspace == null)
             {
             log.debug("Loading test workspace");
-            String prop = testprops().getProperty("adql.space");
+            final String prop = testprops().getProperty("adql.space");
             if (prop != null)
                 {
                 try {
@@ -118,7 +116,7 @@ extends TestPropertiesBase
                             )
                         );
                     }
-                catch (IdentifierNotFoundException ouch)
+                catch (final IdentifierNotFoundException ouch)
                     {
                     log.debug("Unable to load ADQL resource from test config [{}]", ouch.getMessage());
                     }
@@ -161,7 +159,7 @@ extends TestPropertiesBase
         if (this.testspace == null)
             {
             log.debug("Loading test schema");
-            String prop = testprops().getProperty("test.space");
+            final String prop = testprops().getProperty("test.space");
             if (prop != null)
                 {
                 try {
@@ -171,7 +169,7 @@ extends TestPropertiesBase
                             )
                         );
                     }
-                catch (IdentifierNotFoundException ouch)
+                catch (final IdentifierNotFoundException ouch)
                     {
                     log.debug("Unable to load ADQL resource from test config [{}]", ouch.getMessage());
                     }
@@ -221,7 +219,7 @@ extends TestPropertiesBase
 
     /**
      * Save our test resources.
-     * 
+     *
      */
     @After
     public void saveResources()
@@ -240,7 +238,7 @@ extends TestPropertiesBase
             testprops().setProperty("test.space", this.testspace.ident().toString());
             }
         }
-    
+
     /**
      * An expected result.
      *
@@ -320,7 +318,7 @@ extends TestPropertiesBase
             expected.length
             );
         }
-    
+
     /**
      * Debug display of a query.
      *
@@ -357,9 +355,9 @@ extends TestPropertiesBase
 
     /**
      * Clean a query string.
-     * 
+     *
      */
-    protected String clean(String s1)
+    protected String clean(final String s1)
         {
         if (s1 == null)
             {
@@ -377,7 +375,7 @@ extends TestPropertiesBase
 
     /**
      * Compare an ADQL query and the resulting SQL output.
-     * 
+     *
      */
     public void compare(final String adql, final String osql)
         {
@@ -391,7 +389,7 @@ extends TestPropertiesBase
 
     /**
      * Compare an ADQL query and the resulting SQL output.
-     * 
+     *
      */
     public void compare(final AdqlQuery query, final String osql)
         {

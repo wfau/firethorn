@@ -17,8 +17,6 @@
  */
 package uk.ac.roe.wfau.firethorn.entity ;
 
-import java.util.UUID;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;

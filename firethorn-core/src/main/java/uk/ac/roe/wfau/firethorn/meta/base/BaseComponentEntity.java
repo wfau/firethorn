@@ -174,7 +174,7 @@ extends AbstractNamedEntity
             {
             scansync();
             }
- *           
+ *
  */
         if (this.scanprev == 0)
             {

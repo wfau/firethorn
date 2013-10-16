@@ -150,7 +150,7 @@ implements AdqlParser
             );
 
         //this.parser.disable_tracing();
-        
+
         }
 
     /**
@@ -161,11 +161,11 @@ implements AdqlParser
     extends ADQLQueryFactory
         {
         /**
-         * Create a SelectItem.  
-         * 
+         * Create a SelectItem.
+         *
          */
         @Override
-        public SelectItem createSelectItem(ADQLOperand operand, String alias)
+        public SelectItem createSelectItem(final ADQLOperand operand, final String alias)
         throws Exception
             {
             log.debug("createSelectItem(ADQLOperand, String)");
@@ -177,11 +177,11 @@ implements AdqlParser
             }
 
         /**
-         * Create a UserDefinedFunction.  
-         * 
+         * Create a UserDefinedFunction.
+         *
          */
         @Override
-        public UserDefinedFunction createUserDefinedFunction(String name, ADQLOperand[] params)
+        public UserDefinedFunction createUserDefinedFunction(final String name, final ADQLOperand[] params)
         throws Exception
             {
             log.debug("createUserDefinedFunction(String, ADQLOperand[])");
@@ -195,8 +195,8 @@ implements AdqlParser
                 );
             }
         }
-    
-    
+
+
     protected AdqlQuery.Mode mode ;
 
     protected ADQLParser parser ;
@@ -205,19 +205,19 @@ implements AdqlParser
         {
         //
         // Trim leading/trailing spaces.
-        String s1 = subject.input().trim();
+        final String s1 = subject.input().trim();
         //
         // Skip /* comments */
-        Pattern p1 = Pattern.compile(
+        final Pattern p1 = Pattern.compile(
             "/\\*.*?\\*/",
             Pattern.DOTALL
             );
-        Matcher m1 = p1.matcher(s1);
-        String  s2 = m1.replaceAll(""); 
+        final Matcher m1 = p1.matcher(s1);
+        final String  s2 = m1.replaceAll("");
 
         return s2 ;
         }
-    
+
     @Override
     public void process(final AdqlParserQuery subject)
         {
@@ -314,7 +314,7 @@ implements AdqlParser
 
     /**
      * Process an ADQL query.
-     * @throws AdqlParserException 
+     * @throws AdqlParserException
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery object)
@@ -348,7 +348,7 @@ implements AdqlParser
 
     /**
      * Recursively process a tree of ADQLObject(s).
-     * @throws AdqlParserException 
+     * @throws AdqlParserException
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final Iterable<ADQLObject> iter)
@@ -393,7 +393,7 @@ implements AdqlParser
                     subject,
                     query,
                     ((ADQLTable) clause)
-                    ); 
+                    );
                 }
             //
             // Check for LEGACY operations.
@@ -405,7 +405,7 @@ implements AdqlParser
                     subject,
                     query,
                     ((Operation) clause)
-                    ); 
+                    );
                 }
             //
             // Process the child nodes.
@@ -423,7 +423,7 @@ implements AdqlParser
 
     /**
      * Process an Operation.
-     * @throws AdqlParserException 
+     * @throws AdqlParserException
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final Operation oper)
@@ -447,7 +447,7 @@ implements AdqlParser
             }
 
         //
-        // Process the rest of the chain 
+        // Process the rest of the chain
         process(
             subject,
             query,
@@ -456,8 +456,8 @@ implements AdqlParser
                 )
             );
         }
-    
-    
+
+
     /**
      * Process the SELECT part of the query.
      *
@@ -1015,8 +1015,8 @@ implements AdqlParser
         log.debug("  number [{}]", oper.isNumeric());
         log.debug("  string [{}]", oper.isString());
 
-        ADQLOperand param1 = oper.getLeftOperand();
-        ADQLOperand param2 = oper.getRightOperand();
+        final ADQLOperand param1 = oper.getLeftOperand();
+        final ADQLOperand param2 = oper.getRightOperand();
 
         ADQLColumn c1 = null ;
         ADQLColumn c2 = null ;
@@ -1061,62 +1061,62 @@ implements AdqlParser
 				} else {
 					return_type=t1;
 				}
-        } else if (param1 instanceof NumericConstant  || param2 instanceof NumericConstant){
+        } else if ((param1 instanceof NumericConstant)  || (param2 instanceof NumericConstant)){
         			return_type = AdqlColumn.Type.DOUBLE;
         } else if ((t1 == AdqlColumn.Type.DOUBLE) || (t2 == AdqlColumn.Type.DOUBLE)){
         			return_type = AdqlColumn.Type.DOUBLE;
 
         } else if ((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.BYTE)){
 					return_type = AdqlColumn.Type.BYTE;
-        
+
         } else if((t1 == AdqlColumn.Type.CHAR) && (t2 == AdqlColumn.Type.CHAR)){
         			return_type = AdqlColumn.Type.CHAR;
 
         } else if((t1 == AdqlColumn.Type.UNICODE) && (t2 == AdqlColumn.Type.UNICODE)){
 					return_type = AdqlColumn.Type.UNICODE;
 
-        } else if ((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.SHORT) ||
-        			(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.BYTE) || 
-        			(t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.SHORT)){
-          
+        } else if (((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.SHORT)) ||
+        			((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.BYTE)) ||
+        			((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.SHORT))){
+
         	        if (oper.getName()=="/"){
         	        	return_type = AdqlColumn.Type.DOUBLE;
         	        } else {
         	        	return_type = AdqlColumn.Type.SHORT;
         	        }
-        } else if ((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.LONG) ||
-        		   	(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.INTEGER) ||
-        		   	(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.LONG) ||
-        		   	(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.LONG) ||
-        		   	(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.SHORT) || 
-        		   	(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.BYTE) || 
-        			(t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.LONG)){
+        } else if (((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.LONG)) ||
+        		   	((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.INTEGER)) ||
+        		   	((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.LONG)) ||
+        		   	((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.LONG)) ||
+        		   	((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.SHORT)) ||
+        		   	((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.BYTE)) ||
+        			((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.LONG))){
 	        		if (oper.getName()=="/"){
 		  	        	return_type = AdqlColumn.Type.DOUBLE;
 		  	        } else {
 		  	        	return_type = AdqlColumn.Type.LONG;
 		  	        }
 
-        } else if ((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.INTEGER) ||
-        			(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.INTEGER) ||
-        			(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.SHORT) ||
-        			(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.BYTE) || 
-        			(t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.INTEGER)){
+        } else if (((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.INTEGER)) ||
+        			((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.INTEGER)) ||
+        			((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.SHORT)) ||
+        			((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.BYTE)) ||
+        			((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.INTEGER))){
 		        	if (oper.getName()=="/"){
 		  	        	return_type = AdqlColumn.Type.DOUBLE;
 		  	        } else {
 		  	        	return_type = AdqlColumn.Type.INTEGER;
 		  	        }
 
-        } else if ((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.FLOAT) ||
-        			(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.FLOAT) ||
-        			(t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.INTEGER) ||
-        			(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.FLOAT) ||
-        			(t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.LONG) ||
-        			(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.FLOAT) ||
-        			(t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.SHORT) ||
-        			(t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.BYTE)||
-        			(t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.FLOAT)){
+        } else if (((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.FLOAT)) ||
+        			((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.FLOAT)) ||
+        			((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.INTEGER)) ||
+        			((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.FLOAT)) ||
+        			((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.LONG)) ||
+        			((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.FLOAT)) ||
+        			((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.SHORT)) ||
+        			((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.BYTE))||
+        			((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.FLOAT))){
         			return_type = AdqlColumn.Type.FLOAT;
 
         }
@@ -1205,13 +1205,13 @@ implements AdqlParser
         log.debug("  number [{}]", funct.isNumeric());
         log.debug("  string [{}]", funct.isString());
 /*
- * Causes error if the function only has one param. 
+ * Causes error if the function only has one param.
         ADQLOperand param1 = funct.getParameter(0);
         ADQLOperand param2 = funct.getParameter(1);
 
         log.debug("  param1  [{}]", param1);
         log.debug("  param2  [{}]", param2);
- *        
+ *
  */
         switch (funct.getType())
             {
@@ -1267,13 +1267,13 @@ implements AdqlParser
 	        log.debug("  name   [{}]", funct.getName());
 	        log.debug("  number [{}]", funct.isNumeric());
 	        log.debug("  string [{}]", funct.isString());
-	        String name = funct.getName();
-	        
+	        final String name = funct.getName();
+
 	        if ((name=="fDMS") ||
-	        	(name=="fDMSbase") || 
+	        	(name=="fDMSbase") ||
 	        	(name=="fHMS") ||
 	        	(name=="fHMSbase")) {
-	        	
+
 	        	   return new SelectFieldImpl(
 				           "operation",
 				           AdqlColumn.Type.CHAR,
@@ -1293,7 +1293,7 @@ implements AdqlParser
 				           new Integer(32)
 				           );
 	        }
-        
+
         }
 
 
