@@ -18,14 +18,24 @@
 package uk.ac.roe.wfau.firethorn.adql.query;
 
 import static org.junit.Assert.assertEquals;
+
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.ResultSetMetaData;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
+
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.QuerySelectFieldTestBase.ExpectedField;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
 /**
  *
@@ -440,22 +450,22 @@ public class AdqlQueryBugsTestCase
         validate(
             query,
             new ExpectedField[] {
-                new ExpectedField("dist", AdqlColumn.Type.FLOAT, 0),
+                new ExpectedField("distanceMins", AdqlColumn.Type.FLOAT, 0),
                 }
             );
         compare(
             query,
-            "select neighbours.distancemins as dist from atlasv20130426.dbo.atlassourcexdr8photoobj as neighbours, (select top 10 atlasv20130426.dbo.atlassource.sourceid as ident from atlasv20130426.dbo.atlassource) as sources where neighbours.masterobjid = sources.ident"
+            "select neighbours.distancemins from atlasv20130426.dbo.atlassourcexdr8photoobj as neighbours, (select top 10 atlasv20130426.dbo.atlassource.sourceid as ident from atlasv20130426.dbo.atlassource) as sources where neighbours.masterobjid = sources.ident"
             );
         }
 
     
     /**
-     * 'LIKE' string operator in WHERE clause.
+     * Single quoted string in WHERE clause.
      * 
      */
     @Test
-    public void test009L()
+    public void test009a()
         {
         AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
@@ -466,7 +476,7 @@ public class AdqlQueryBugsTestCase
             "FROM\n" + 
             "    Multiframe\n" + 
             "WHERE\n" + 
-            "    project LIKE 'U/UKIDSS/ATLAS%'" + 
+            "    project LIKE 'ATLAS%'" + 
             ""
             );
         assertEquals(
@@ -475,7 +485,32 @@ public class AdqlQueryBugsTestCase
             );
         compare(
             query,
-            "select count(*) as count_all from atlasv20130426.dbo.multiframe where atlasv20130426.dbo.multiframe.project like 'u/ukidss/atlas%'"
+            "select count(*) as count_all from atlasv20130426.dbo.multiframe where atlasv20130426.dbo.multiframe.project like 'ATLAS%'"
+            );
+        }
+    
+    /**
+     * Double quoted string in WHERE clause.
+     * 
+     */
+    @Test
+    public void test009b()
+        {
+        AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.LEGACY
+                ),
+            "SELECT\n" + 
+            "    COUNT(*)\n" + 
+            "FROM\n" + 
+            "    Multiframe\n" + 
+            "WHERE\n" + 
+            "    project LIKE \"ATLAS%\"" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.PARSE_ERROR,
+            query.syntax().state()
             );
         }
     }

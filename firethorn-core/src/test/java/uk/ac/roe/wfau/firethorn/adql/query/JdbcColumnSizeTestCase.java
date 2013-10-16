@@ -1,0 +1,108 @@
+/*
+ *  Copyright (C) 2013 Royal Observatory, University of Edinburgh, UK
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+package uk.ac.roe.wfau.firethorn.adql.query;
+
+import static org.junit.Assert.assertEquals;
+
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.ResultSetMetaData;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.junit.Test;
+
+
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
+import uk.ac.roe.wfau.firethorn.adql.query.QuerySelectFieldTestBase.ExpectedField;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcResource;
+import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
+
+/**
+ *
+ *
+ */
+@Slf4j
+public class JdbcColumnSizeTestCase
+    extends AtlasQueryTestBase
+    {
+
+    
+    public void checksize(final JdbcTable table, final String colname, final int colsize)
+    throws SQLException
+        {
+        JdbcResource resource = table.resource();
+        try {
+            Connection conn = resource.connection().open();
+            Statement  stmt = conn.createStatement();
+            
+            ResultSet  rset = stmt.executeQuery("SELECT TOP 1 " + colname + " FROM " + table.name());
+            ResultSetMetaData rsmd = rset.getMetaData();
+
+            assertEquals(
+                colsize,
+                rsmd.getPrecision(1)
+                );
+            }
+        finally {
+            resource.connection().close();
+            }
+        }
+    
+    /**
+     * VARCHAR column size.
+     * 
+     */
+    @Test
+    public void test001()
+    throws SQLException
+        {
+        AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.LEGACY
+                ),
+            "SELECT\n" + 
+            "    project\n" + 
+            "FROM\n" + 
+            "    Multiframe\n" + 
+            "WHERE\n" + 
+            "    project LIKE 'ATLAS%'" + 
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        compare(
+            query,
+            "select atlasv20130426.dbo.multiframe.project as project from atlasv20130426.dbo.multiframe where atlasv20130426.dbo.multiframe.project like 'ATLAS%'"
+            );
+        //
+        // Check the actual JDBC column size.
+        checksize(
+            query.results().jdbc(),
+            "project",
+            64
+            );
+        }
+    }

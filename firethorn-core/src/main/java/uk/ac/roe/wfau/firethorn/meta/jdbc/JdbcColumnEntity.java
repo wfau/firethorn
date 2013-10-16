@@ -605,7 +605,7 @@ public class JdbcColumnEntity
                                 break ;
                             }
                         
-                        if (jdbctype().sqlsize() == BaseColumn.VAR_ARRAY_SIZE)
+                        if (jdbctype().strsize() == BaseColumn.VAR_ARRAY_SIZE)
                             {
                             if (jdbcsize() == BaseColumn.VAR_ARRAY_SIZE)
                                 {
