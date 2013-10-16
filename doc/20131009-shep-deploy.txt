@@ -24,28 +24,31 @@
 # Merge changes from dave-adql-parsing branch into main
 #[user@desktop]
 
-    #
-    # Check current branch
-    hg branch
-        dave-adql-parsing
+    source ${HOME:?}/firethorn.settings
+    pushd "${FIRETHORN_CODE:?}"
 
-    #
-    # Swap to the the default branch
-    hg update default
-        13 files updated, 0 files merged, 1 files removed, 0 files unresolved
+        #
+        # Check current branch
+        hg branch
+            dave-adql-parsing
 
-    #
-    # Merge the branch changes into main.
-    hg merge dave-adql-parsing
-        14 files updated, 0 files merged, 0 files removed, 0 files unresolved
+        #
+        # Swap to the the default branch
+        hg update default
+            13 files updated, 0 files merged, 1 files removed, 0 files unresolved
 
-    #
-    # Review the changes
-    hg diff | less
-    
-    #
-    # Commit the changes
-    hg commit -m "Merged dave-adql-parsing into main"
+        #
+        # Merge the branch changes into main.
+        hg merge dave-adql-parsing
+            14 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+        #
+        # Review the changes
+        hg diff | less
+        
+        #
+        # Commit the changes
+        hg commit -m "Merged dave-adql-parsing into main"
 
 #-----------------------------------------------------------------------------------
 # Build a new version.
