@@ -39,7 +39,7 @@ extends AtlasQueryTestBase
     throws Exception
         {
         validate(
-            this.schema.queries().create(
+            this.queryspace.queries().create(
                 "SELECT"
                 + "   fDMS(87.5) as fdmscol"
                 + " FROM"
@@ -55,7 +55,7 @@ extends AtlasQueryTestBase
     public void test002()
     throws Exception
         {
-        final AdqlQuery query = this.schema.queries().create(
+        final AdqlQuery query = this.queryspace.queries().create(
 				"SELECT"
                 + " fDMS(87.5) as fdmscol"
                 + " FROM"

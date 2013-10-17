@@ -60,7 +60,7 @@ extends AtlasQueryTestBase
     public void test000()
     throws Exception
         {
-        final AdqlQuery query = this.schema.queries().create(
+        final AdqlQuery query = this.queryspace.queries().create(
             QUERY_000
             );
         debug(query);
@@ -96,7 +96,7 @@ extends AtlasQueryTestBase
     public void test001()
     throws Exception
         {
-        final AdqlQuery query = this.schema.queries().create(
+        final AdqlQuery query = this.queryspace.queries().create(
             QUERY_001
             );
         debug(query);
@@ -132,7 +132,7 @@ extends AtlasQueryTestBase
     public void test002()
     throws Exception
         {
-        final AdqlQuery query = this.schema.queries().create(
+        final AdqlQuery query = this.queryspace.queries().create(
             QUERY_002
             );
         debug(query);

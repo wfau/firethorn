@@ -64,7 +64,7 @@ public class AtlasLoggedQueryTestCase
         log.debug("--------");
         log.debug("ADQL [{}][{}]", linenum, linestr);
 
-        AdqlQuery query = this.schema.queries().create(
+        AdqlQuery query = this.queryspace.queries().create(
             linestr
             );
 

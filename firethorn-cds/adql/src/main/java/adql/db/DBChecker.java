@@ -168,13 +168,13 @@ public class DBChecker implements QueryChecker {
 	 * @see #checkColumnReference(ColumnReference, ClauseSelect, SearchColumnList)
 	 */
 	public void check(final ADQLQuery query) throws ParseException {
-		this.check(query, null);
+		this.check(query, null, new HashMap<DBTable, ADQLTable>());
 	}
 	
 	
-	public void check(final ADQLQuery query, SearchColumnList fromList) throws ParseException {
+	public void check(final ADQLQuery query, SearchColumnList fromList, HashMap<DBTable, ADQLTable> _mapTables) throws ParseException {
 		UnresolvedIdentifiersException errors = new UnresolvedIdentifiersException();
-		HashMap<DBTable, ADQLTable> mapTables = new HashMap<DBTable, ADQLTable>();
+		HashMap<DBTable, ADQLTable> mapTables = _mapTables;
 		ISearchHandler sHandler;
 
 		// Check the existence of all tables:
@@ -226,15 +226,16 @@ public class DBChecker implements QueryChecker {
 		}
 		SearchColumnList list = query.getFrom().getDBColumns();
 		if (fromList!=null){
-			list.addAll(fromList);
+			list = fromList ;
+			list.putTableAliasList(mapTables);
 		}
-				// DEBUG
-				System.out.println("\n*** FROM COLUMNS ***");
-				for(DBColumn dbCol : list){
-					System.out.println("\t- "+dbCol.getADQLName()+" in "+((dbCol.getTable()==null)?"<NULL>":dbCol.getTable().getADQLName())+" (= "+dbCol.getDBName()+" in "+((dbCol.getTable()==null)?"<NULL>":dbCol.getTable().getDBName())+")");
-				}
-				System.out.println();
-
+		// DEBUG
+		System.out.println("\n*** FROM COLUMNS ***");
+		for(DBColumn dbCol : list){
+			System.out.println("\t- "+dbCol.getADQLName()+" in "+((dbCol.getTable()==null)?"<NULL>":dbCol.getTable().getADQLName())+" (= "+dbCol.getDBName()+" in "+((dbCol.getTable()==null)?"<NULL>":dbCol.getTable().getDBName())+")");
+		}
+		System.out.println();
+		
 		// Check the existence of all columns:
 		sHandler = new SearchColumnHandler();  
 	
@@ -265,8 +266,10 @@ public class DBChecker implements QueryChecker {
 				colRef.setDBLink(dbColumn);
 				if (dbColumn != null)
 					colRef.setAdqlTable(mapTables.get(dbColumn.getTable()));
-			}catch(ParseException pe){
-				errors.addException(pe);
+			}catch(Exception pe){
+			
+				System.out.println("Exception caught");
+				//	errors.addException(pe);
 			}
 		}
 

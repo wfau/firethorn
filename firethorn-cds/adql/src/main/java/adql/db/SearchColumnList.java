@@ -26,6 +26,7 @@ import java.util.Map;
 
 import adql.query.IdentifierField;
 
+import adql.query.from.ADQLTable;
 import adql.query.operand.ADQLColumn;
 
 import cds.utils.TextualSearchList;
@@ -113,6 +114,31 @@ public class SearchColumnList extends TextualSearchList<DBColumn> {
 	/* ********************** */
 	/* TABLE ALIAS MANAGEMENT */
 	/* ********************** */
+	
+	/**
+	 * Adds the given table name / alias list to the existing alias list class variables 
+	 * 
+	 * @param tableAliasList	Table alias list.
+	 */
+	public final void putTableAliasList(HashMap<DBTable, ADQLTable> tableAliasList){
+		try {
+		if (tableAliasList!=null){
+				for (Map.Entry<DBTable, ADQLTable> entry : tableAliasList.entrySet()) {
+					DBTable key = entry.getKey(); 
+					ADQLTable value = entry.getValue();
+				    putTableAlias(value.getName(),key.getDBName());
+
+
+
+				}
+			    // ...
+			}
+		} catch (Exception e){
+			System.out.println("Exception caught");
+		}
+		
+	}
+
 	/**
 	 * Adds the given association between a table name and its alias in a query.
 	 * 
@@ -241,8 +267,10 @@ public class SearchColumnList extends TextualSearchList<DBColumn> {
 						String temp;
 						for(int a=0; !foundAlias && a<aliases.size(); a++){
 							temp = tableAliases.get(aliases.get(a));
+							
+
 							if (temp != null)
-								foundAlias = dbTable.getADQLName().equalsIgnoreCase(temp);
+								foundAlias = dbTable.getDBName().equalsIgnoreCase(temp);
 						}
 						if (!foundAlias)
 							continue;
@@ -278,7 +306,9 @@ public class SearchColumnList extends TextualSearchList<DBColumn> {
 			if (tmpResult.size() > 1){
 				ArrayList<DBColumn> result = new ArrayList<DBColumn>(tmpResult.size());
 				for(int i=0; i<tmpResult.size(); i++){
+					DBTable x = tmpResult.get(i).getTable();
 					if (tmpResult.get(i).getTable() == null)
+						System.out.println(tmpResult.get(i).getTable());
 						result.add(tmpResult.remove(i));
 				}
 				if (result.size() == 1)
