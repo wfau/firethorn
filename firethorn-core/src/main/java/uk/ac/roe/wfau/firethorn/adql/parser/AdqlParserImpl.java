@@ -590,8 +590,10 @@ implements AdqlParser
     
     /**
      * Add a SELECT field to a query.
+     * @Deprecated - only used by SelectAll
      * 
      */
+    @Deprecated
     public void additem(final AdqlParserQuery subject,final MySelectField field)
     throws DuplicateFieldException
         {
@@ -608,6 +610,10 @@ implements AdqlParser
     public void additem(final AdqlParserQuery subject,final MySelectItem item)
     throws DuplicateFieldException
         {
+        // Check the name is valid.
+        // Adds generated alias if needed.
+        
+        
         subject.add(
             item
             );        
@@ -797,7 +803,7 @@ implements AdqlParser
         }
 
     /**
-     * Inner class to represent a SelectField. 
+     * Inner class to represent a static SelectField. 
      *
      */
     public static class MySelectFieldImpl

@@ -92,7 +92,7 @@ public interface AdqlParserQuery
         public DuplicateFieldException(final AdqlQuery.SelectField field)
             {
             super(
-                "Duplicate SELECT field name [" + field.name() + "]"
+                "Duplicate SELECT field [" + field.name() + "]"
                 );
             this.field = field;
             }

@@ -1219,16 +1219,21 @@ implements AdqlQuery, AdqlParserQuery
         log.debug("  Size [{}]", field.arraysize());
         log.debug("  Type [{}]", field.type());
         //
-        // Check for a duplicate name.
-        if (fields.containsKey(field.name()))
+        // Clean the name.
+        String name = field.name().trim().toLowerCase();
+        //
+        // Check for a duplicate.
+        if (fields.containsKey(name))
             {
             throw new DuplicateFieldException(
                 field
                 );
             }
+        //
+        // Add the field.
         else {
             this.fields.put(
-                field.name(),
+                name,
                 field
                 );
             }

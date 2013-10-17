@@ -22,6 +22,8 @@ package adql.query;
 import java.util.NoSuchElementException;
 
 import adql.query.operand.ADQLOperand;
+import adql.query.operand.Operation;
+
 import java.util.UUID;
 import java.util.Arrays;
 /**
@@ -160,6 +162,7 @@ public class SelectItem implements ADQLObject {
 	}
 
 	public String getName() {
+	    /*
 	    String operandName = operand.getName();
 	    String newAlias = "";
 		
@@ -176,7 +179,22 @@ public class SelectItem implements ADQLObject {
 			newAlias = operandName;
 		}
 		return hasAlias()?alias:newAlias;
-	}
+		*/
+    	if (hasAlias())
+    	    {
+    	    return getAlias();
+    	    }
+        else {
+            if (operand instanceof Operation)
+                {
+                Operation op = (Operation) operand;
+                return op.getOperation().name();
+                }
+            else {
+                return operand.getName();
+                }
+    	    }
+    	}
 
 	public ADQLIterator adqlIterator(){
 		return new ADQLIterator() {
