@@ -18,13 +18,13 @@
 package uk.ac.roe.wfau.firethorn.adql.query;
 
 import static org.junit.Assert.assertEquals;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
-
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
+import uk.ac.roe.wfau.firethorn.adql.query.QuerySelectFieldTestBase.ExpectedField;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 
 /**
@@ -322,18 +322,18 @@ public class AdqlQueryBugsTestCase
             "    atlas.dec\n" +
             "FROM\n" +
             "    atlasSource AS atlas,\n" +
-            "    BestDR8.PhotoObj AS bestdr8,\n" +
-            "    atlasSourceXDR8PhotoObj AS neighbours\n" +
+            "    TWOMASS.twomass_psc AS twomass,\n" +
+            "    atlasSourceXtwomass_psc AS neighbours\n" +
             "WHERE\n" +
             "    masterObjID=atlas.sourceID\n" +
             "AND\n" +
-            "    slaveObjID=bestdr8.ObjID\n" +
+            "    slaveObjID=twomass.pts_key\n" +
             "AND\n" +
             "    distanceMins IN (\n" +
             "        SELECT\n" +
             "            MIN(distanceMins)\n" +
             "        FROM\n" +
-            "            atlasSourceXDR8PhotoObj\n" +
+            "            atlasSourceXtwomass_psc\n" +
             "        WHERE\n" +
             "            masterObjID = neighbours.masterObjID\n" +
             "        )\n" +
@@ -348,12 +348,13 @@ public class AdqlQueryBugsTestCase
             new ExpectedField[] {
                 new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
                 new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0),
+                //new ExpectedField("MIN", AdqlColumn.Type.FLOAT, 0),
                 }
             );
         // TODO
         compare(
             query,
-            "SELECT stuff"
+            "select top 10 atlas.ra as ra, atlas.dec as dec from atlasv20130426.dbo.atlassource as atlas, twomass.dbo.twomass_psc as twomass, atlasv20130426.dbo.atlassourcextwomass_psc as neighbours where neighbours.masterobjid = atlas.sourceid and neighbours.slaveobjid = twomass.pts_key and neighbours.distancemins in (select min(atlasv20130426.dbo.atlassourcextwomass_psc.distancemins) as min from atlasv20130426.dbo.atlassourcextwomass_psc where atlasv20130426.dbo.atlassourcextwomass_psc.masterobjid = neighbours.masterobjid)"
             );
         }
 
@@ -435,10 +436,9 @@ public class AdqlQueryBugsTestCase
             );
         compare(
             query,
-            "select neighbours.distancemins from atlasv20130426.dbo.atlassourcexdr8photoobj as neighbours, (select top 10 atlasv20130426.dbo.atlassource.sourceid as ident from atlasv20130426.dbo.atlassource) as sources where neighbours.masterobjid = sources.ident"
+            "select neighbours.distancemins as distancemins  from atlasv20130426.dbo.atlassourcexdr8photoobj as neighbours, (select top 10 atlasv20130426.dbo.atlassource.sourceid as ident from atlasv20130426.dbo.atlassource) as sources where neighbours.masterobjid = sources.ident"
             );
         }
-
 
     /**
      * Single quoted string in WHERE clause.

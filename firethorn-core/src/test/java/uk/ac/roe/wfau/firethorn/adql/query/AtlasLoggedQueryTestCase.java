@@ -25,6 +25,8 @@ import org.junit.Test;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**

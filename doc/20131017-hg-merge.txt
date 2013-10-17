@@ -1,0 +1,76 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+#-----------------------------------------------------------------------------------
+#
+
+    #
+    # Make a copy of 'devel'
+    cp -r devel merge
+    pushd merge
+
+        #
+        # Check current branch
+        hg branch
+
+            dave-adql-parsing
+
+        #
+        # Check available branches
+        hg branches
+
+            stelios-adql-parsing         878:9d2a1f45500b
+            dave-adql-parsing            875:102758894004
+            default                      859:070cd00635ed (inactive)
+            ....
+
+        #
+        # Pull the latest changes.
+        hg pull
+
+        #
+        # Merge changes from stelios-adql-parsing
+        hg merge stelios-adql-parsing
+
+        #
+        # Handle conflicts with Meld
+        # http://meldmerge.org/
+
+        #
+        # Build the code.
+        mvn -P all clean install
+
+        #
+        # Update the Eclipse classpath
+        mvn -P all eclipse:eclipse
+
+        #
+        # Run the query bug test.
+        pushd firethorn-core/
+
+            mvn -D skipTests=false -Dtest=AdqlQueryBugsTestCase test
+
+        popd
+
+
+
