@@ -30,12 +30,8 @@ import org.joda.time.DateTime;
 import org.junit.*;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-
-import uk.ac.roe.wfau.firethorn.test.TestBase;
 
 /**
  *
@@ -48,9 +44,9 @@ extends AtlasQueryTestBase
     public static final int[] SERVER_LIST = new int[] {
         1,2,3,4,5,6,7,8,10,11,13
         };
-    
+
     private static final String DRIVER_CLASS = "net.sourceforge.jtds.jdbc.Driver" ;
-    
+
     static {
         try {
             Class.forName(
@@ -73,7 +69,7 @@ extends AtlasQueryTestBase
     @Value("${wfau.sqlserver.admin.name}")
     private String adminname ;
 
-    public DatabaseConnection admindb(int servernum)
+    public DatabaseConnection admindb(final int servernum)
         {
         return new DatabaseConnection(
             servernum,
@@ -85,7 +81,7 @@ extends AtlasQueryTestBase
 
     /**
      * Inner class to represent a tunnelled database connection.
-     * 
+     *
      */
     public static class DatabaseConnection
         {
@@ -93,7 +89,7 @@ extends AtlasQueryTestBase
         public static final String BASE_NAME = "ramses{num}" ;
         public static final int BASE_PORT = 1430 ;
 
-        public DatabaseConnection(int servernum, String dbname, String dbuser, String dbpass)
+        public DatabaseConnection(final int servernum, final String dbname, final String dbuser, final String dbpass)
             {
             this.servernum  = servernum ;
             this.servername = BASE_NAME.replace("{num}", String.valueOf(servernum));
@@ -111,33 +107,33 @@ extends AtlasQueryTestBase
                 replace("{name}", dbname);
             }
 
-        private String servername ;
+        private final String servername ;
         public String servername()
             {
             return this.servername;
             }
 
-        private int servernum ;
+        private final int servernum ;
         public int servernum()
             {
             return this.servernum;
             }
 
-        private String dbuser;
-        private String dbpass;
-        
-        private String dbname;
+        private final String dbuser;
+        private final String dbpass;
+
+        private final String dbname;
         public String dbname()
             {
             return this.dbname;
             }
 
-        private String dburl ;
+        private final String dburl ;
         public String dburl()
             {
             return this.dburl ;
             }
-        
+
         private DataSource source ;
         public DataSource source()
             {
@@ -148,7 +144,7 @@ extends AtlasQueryTestBase
                         dburl()
                         );
                     }
-                catch (Exception ouch)
+                catch (final Exception ouch)
                     {
                     log.error("Unable to open JDBC DataSource [{}][{}]", this.dburl, ouch.getMessage());
                     throw new RuntimeException(
@@ -170,7 +166,7 @@ extends AtlasQueryTestBase
                         this.dbpass
                         );
                     }
-                catch (SQLException ouch)
+                catch (final SQLException ouch)
                     {
                     log.error("Unable to open JDBC connection [{}]", ouch.getMessage());
                     throw new RuntimeException(
@@ -186,7 +182,7 @@ extends AtlasQueryTestBase
             try {
                 return connection().createStatement();
                 }
-            catch (SQLException ouch)
+            catch (final SQLException ouch)
                 {
                 log.error("Unable to create JDBC statement [{}]", ouch.getMessage());
                 throw new RuntimeException(
@@ -195,14 +191,14 @@ extends AtlasQueryTestBase
                 }
             }
 
-        public PreparedStatement prepare(String query)
+        public PreparedStatement prepare(final String query)
             {
             try {
                 return connection().prepareStatement(
                     query
                     );
                 }
-            catch (SQLException ouch)
+            catch (final SQLException ouch)
                 {
                 log.error("Unable to prepare JDBC statement [{}][{}]", query, ouch.getMessage());
                 throw new RuntimeException(
@@ -210,16 +206,16 @@ extends AtlasQueryTestBase
                     );
                 }
             }
-        
-        
-        public ResultSet execute(String query)
+
+
+        public ResultSet execute(final String query)
             {
             try {
                 return statement().executeQuery(
                     query
                     );
                 }
-            catch (SQLException ouch)
+            catch (final SQLException ouch)
                 {
                 log.error("Unable to execute query [{}][{}]", query, ouch.getMessage());
                 throw new RuntimeException(
@@ -231,25 +227,25 @@ extends AtlasQueryTestBase
 
     public void catalogs()
         {
-        for (int server : SERVER_LIST)
+        for (final int server : SERVER_LIST)
             {
             catalogs(server);
             }
         }
-    
-    public void catalogs(int servernum)
+
+    public void catalogs(final int servernum)
         {
-        DatabaseConnection database = admindb(servernum);
+        final DatabaseConnection database = admindb(servernum);
         log.debug("DB [{}] --------", database.servername());
-        
-        ResultSet results = database.execute(
+
+        final ResultSet results = database.execute(
             "SELECT DISTINCT dbname FROM webQueries WHERE row_count > 0 ORDER BY dbname asc"
             );
 
         try {
             while (results.next())
                 {
-                String  catalog  = results.getString("dbname");
+                final String  catalog  = results.getString("dbname");
                 log.debug("[{}]", catalog);
                 }
             }
@@ -266,28 +262,28 @@ extends AtlasQueryTestBase
 
     public void queries()
         {
-        for (int server : SERVER_LIST)
+        for (final int server : SERVER_LIST)
             {
             queries(server);
             }
         }
 
-    public void queries(int servernum)
+    public void queries(final int servernum)
         {
-        DatabaseConnection database = admindb(servernum);
+        final DatabaseConnection database = admindb(servernum);
         log.debug("DB [{}] --------", database.servername());
 
-        ResultSet results = database.execute(
+        final ResultSet results = database.execute(
             "SELECT dbname, row_count, time, query FROM webQueries WHERE row_count > 0 ORDER BY dbname asc"
             );
 
         try {
             while (results.next())
                 {
-                String  catalog  = results.getString("dbname");
-                Integer count    = results.getInt("row_count");
-                DateTime date    = new DateTime(results.getTimestamp("time").getTime()); 
-                String  query    = results.getString("query");
+                final String  catalog  = results.getString("dbname");
+                final Integer count    = results.getInt("row_count");
+                final DateTime date    = new DateTime(results.getTimestamp("time").getTime());
+                final String  query    = results.getString("query");
                 log.debug("[{}][{}][{}][{}]", catalog, date.toString(), count, query);
                 }
             }
@@ -302,22 +298,22 @@ extends AtlasQueryTestBase
 
         }
 
-    public void queries(String match)
+    public void queries(final String match)
         {
-        for (int server : SERVER_LIST)
+        for (final int server : SERVER_LIST)
             {
             queries(server, match);
             }
         }
 
-    public void queries(int servernum, String match)
+    public void queries(final int servernum, final String match)
         {
-        DatabaseConnection database = admindb(servernum);
+        final DatabaseConnection database = admindb(servernum);
         log.debug("DB [{}] --------", database.servername());
 
-        PreparedStatement statement = database.prepare(
+        final PreparedStatement statement = database.prepare(
             "SELECT dbname, row_count, time, query FROM webQueries WHERE dbname LIKE ? AND row_count > 0 ORDER BY dbname asc"
-            );        
+            );
         try {
             statement.setString(1, match);
             }
@@ -343,11 +339,11 @@ extends AtlasQueryTestBase
         try {
             while (results.next())
                 {
-                String  catalog  = results.getString("dbname");
-                Integer count    = results.getInt("row_count");
-                DateTime date    = new DateTime(results.getTimestamp("time").getTime()); 
-                String  query    = results.getString("query");
-                
+                final String  catalog  = results.getString("dbname");
+                final Integer count    = results.getInt("row_count");
+                final DateTime date    = new DateTime(results.getTimestamp("time").getTime());
+                final String  query    = results.getString("query");
+
                 //log.debug("[{}][{}][{}][{}]", catalog, date.toString(), count, clean(query));
                 log.debug("Query : {}", clean(query));
                 }
@@ -361,7 +357,7 @@ extends AtlasQueryTestBase
             }
         log.debug("--------");
         }
-    
+
     //@Test
     public void test000()
         {
@@ -374,14 +370,14 @@ extends AtlasQueryTestBase
         queries("ATLAS%");
         }
 
-    public void fredric(int servernum)
+    public void fredric(final int servernum)
         {
-        DatabaseConnection database = admindb(servernum);
+        final DatabaseConnection database = admindb(servernum);
         log.debug("DB [{}] --------", database.servername());
 
-        PreparedStatement statement = database.prepare(
+        final PreparedStatement statement = database.prepare(
             "SELECT dbname, row_count, time, query FROM webQueries WHERE dbname LIKE ? AND row_count > 0 ORDER BY dbname asc"
-            );        
+            );
         try {
             statement.setString(1, "ATLAS%");
             }
@@ -407,8 +403,8 @@ extends AtlasQueryTestBase
         try {
             while (results.next())
                 {
-                String  catalog = results.getString("dbname");
-                String  adql    = results.getString("query");
+                final String  catalog = results.getString("dbname");
+                final String  adql    = results.getString("query");
                 log.debug("[{}][{}]", catalog, adql);
 
                 final AdqlQuery query = this.queryspace.queries().create(
@@ -416,8 +412,8 @@ extends AtlasQueryTestBase
                     );
 
                 log.debug("[{}][{}]", catalog, query.osql());
-                
-                String diff = StringUtils.difference(
+
+                final String diff = StringUtils.difference(
                     adql,
                     query.osql()
                     );
@@ -432,7 +428,7 @@ extends AtlasQueryTestBase
                 );
             }
         log.debug("--------");
-        
+
         }
 
     //@Test
@@ -444,12 +440,12 @@ extends AtlasQueryTestBase
     //@Test
     public void test003()
         {
-        for (int server : SERVER_LIST)
+        for (final int server : SERVER_LIST)
             {
             try {
                 fredric(server);
                 }
-            catch (Exception ouch)
+            catch (final Exception ouch)
                 {
                 }
             }

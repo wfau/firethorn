@@ -39,19 +39,19 @@ public class AdqlQueryBugsTestCase
     /**
      * Distance is a reserved word in ADQL.
      * "SELECT neighbours.distanceMins AS distance"
-     * 
+     *
      */
     @Test
     public void test002S()
         {
-        AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
                 Level.STRICT
                 ),
-            "SELECT TOP 10\n" + 
-            "    distanceMins AS distance\n" + 
-            "FROM\n" + 
-            "    ATLASv20130426.atlasSourceXtwomass_psc\n" + 
+            "SELECT TOP 10\n" +
+            "    distanceMins AS distance\n" +
+            "FROM\n" +
+            "    ATLASv20130426.atlasSourceXtwomass_psc\n" +
             ""
             );
         assertEquals(
@@ -63,19 +63,19 @@ public class AdqlQueryBugsTestCase
     /**
      * Distance is a reserved word in ADQL.
      * "SELECT neighbours.distanceMins AS distance"
-     * 
+     *
      */
     @Test
     public void test002L()
         {
-        AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
                 Level.LEGACY
                 ),
-            "SELECT TOP 10\n" + 
-            "    distanceMins AS distance\n" + 
-            "FROM\n" + 
-            "    ATLASv20130426.atlasSourceXtwomass_psc\n" + 
+            "SELECT TOP 10\n" +
+            "    distanceMins AS distance\n" +
+            "FROM\n" +
+            "    ATLASv20130426.atlasSourceXtwomass_psc\n" +
             ""
             );
         assertEquals(
@@ -101,20 +101,20 @@ public class AdqlQueryBugsTestCase
     /**
      * SQLServer '..' syntax to access default schema.
      * "FROM TWOMASS..twomass_psc"
-     * 
+     *
      */
     @Test
     public void test003S()
         {
-        AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
                 Level.STRICT
                 ),
-            "SELECT TOP 10\n" + 
-            "    ra,\n" + 
-            "    dec\n" + 
-            "FROM\n" + 
-            "    TWOMASS..twomass_psc\n" + 
+            "SELECT TOP 10\n" +
+            "    ra,\n" +
+            "    dec\n" +
+            "FROM\n" +
+            "    TWOMASS..twomass_psc\n" +
             ""
             );
 
@@ -131,24 +131,24 @@ public class AdqlQueryBugsTestCase
         // TODO Change from a string match to a token in the parser grammar.
 
         }
-    
+
     /**
      * SQLServer '..' syntax to access default schema.
      * "FROM TWOMASS..twomass_psc"
-     * 
+     *
      */
     @Test
     public void test003L()
         {
-        AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
                 Level.LEGACY
                 ),
-            "SELECT TOP 10\n" + 
-            "    ra,\n" + 
-            "    dec\n" + 
-            "FROM\n" + 
-            "    TWOMASS..twomass_psc\n" + 
+            "SELECT TOP 10\n" +
+            "    ra,\n" +
+            "    dec\n" +
+            "FROM\n" +
+            "    TWOMASS..twomass_psc\n" +
             ""
             );
         assertEquals(
@@ -173,100 +173,90 @@ public class AdqlQueryBugsTestCase
         }
 
     /**
-     * Duplicate column names throw Hibernate ConstraintViolationException.
+     * Duplicate column names.
      * "SELECT atlas.ra, rosat.ra"
-     * 
+     *
      */
     @Test
     public void test004S()
         {
-        AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
                 Level.STRICT
                 ),
-            "SELECT TOP 10\n" + 
-            "    atlas.ra,\n" + 
-            "    atlas.dec,\n" + 
-            "    rosat.ra,\n" + 
-            "    rosat.dec\n" + 
-            "FROM\n" + 
-            "    atlasSource AS atlas,\n" + 
-            "    ROSAT.rosat_fsc AS rosat,\n" + 
-            "    atlasSourceXrosat_fsc AS neighbours\n" + 
-            "WHERE\n" + 
-            "    neighbours.masterObjID=atlas.sourceID\n" + 
-            "AND\n" + 
-            "    neighbours.slaveObjID=rosat.seqNo\n" + 
+            "SELECT TOP 10\n" +
+            "    atlas.ra,\n" +
+            "    atlas.dec,\n" +
+            "    rosat.ra,\n" +
+            "    rosat.dec\n" +
+            "FROM\n" +
+            "    atlasSource AS atlas,\n" +
+            "    ROSAT.rosat_fsc AS rosat,\n" +
+            "    atlasSourceXrosat_fsc AS neighbours\n" +
+            "WHERE\n" +
+            "    neighbours.masterObjID=atlas.sourceID\n" +
+            "AND\n" +
+            "    neighbours.slaveObjID=rosat.seqNo\n" +
             ""
             );
         assertEquals(
-            AdqlQuery.Syntax.State.VALID,
+            AdqlQuery.Syntax.State.PARSE_ERROR,
             query.syntax().state()
-            );
-        // TODO
-        compare(
-            query,
-            "SELECT stuff"
             );
         }
 
     /**
-     * Duplicate column names throw Hibernate ConstraintViolationException.
+     * Duplicate column names - do we rename if possible ?
      * "SELECT atlas.ra, rosat.ra"
-     * 
+     *
      */
     @Test
     public void test004L()
         {
-        AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
                 Level.LEGACY
                 ),
-            "SELECT TOP 10\n" + 
-            "    atlas.ra,\n" + 
-            "    atlas.dec,\n" + 
-            "    rosat.ra,\n" + 
-            "    rosat.dec\n" + 
-            "FROM\n" + 
-            "    atlasSource AS atlas,\n" + 
-            "    ROSAT.rosat_fsc AS rosat,\n" + 
-            "    atlasSourceXrosat_fsc AS neighbours\n" + 
-            "WHERE\n" + 
-            "    neighbours.masterObjID=atlas.sourceID\n" + 
-            "AND\n" + 
-            "    neighbours.slaveObjID=rosat.seqNo\n" + 
+            "SELECT TOP 10\n" +
+            "    atlas.ra,\n" +
+            "    atlas.dec,\n" +
+            "    rosat.ra,\n" +
+            "    rosat.dec\n" +
+            "FROM\n" +
+            "    atlasSource AS atlas,\n" +
+            "    ROSAT.rosat_fsc AS rosat,\n" +
+            "    atlasSourceXrosat_fsc AS neighbours\n" +
+            "WHERE\n" +
+            "    neighbours.masterObjID=atlas.sourceID\n" +
+            "AND\n" +
+            "    neighbours.slaveObjID=rosat.seqNo\n" +
             ""
             );
         assertEquals(
-            AdqlQuery.Syntax.State.VALID,
+            AdqlQuery.Syntax.State.PARSE_ERROR,
             query.syntax().state()
             );
-        // TODO
-        compare(
-            query,
-            "SELECT stuff"
-            );
         }
-    
+
     /**
      * WHERE clause contains '%' modulus operator.
      * "atlas.sourceID % 100 = 0"
-     * 
+     *
      */
     @Test
     public void test005S()
         {
-        AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
                 Level.STRICT
                 ),
-            "SELECT TOP 10\n" + 
-            "    atlas.ra,\n" + 
-            "    atlas.dec\n" + 
-            "FROM\n" + 
-            "    atlasSource AS atlas\n" + 
-            "WHERE\n" + 
-            "    atlas.sourceID % 100 = 0\n" + 
+            "SELECT TOP 10\n" +
+            "    atlas.ra,\n" +
+            "    atlas.dec\n" +
+            "FROM\n" +
+            "    atlasSource AS atlas\n" +
+            "WHERE\n" +
+            "    atlas.sourceID % 100 = 0\n" +
             ""
             );
         assertEquals(
@@ -279,22 +269,22 @@ public class AdqlQueryBugsTestCase
     /**
      * WHERE clause contains '%' modulus operator.
      * "atlas.sourceID % 100 = 0"
-     * 
+     *
      */
     @Test
     public void test005L()
         {
-        AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
                 Level.LEGACY
                 ),
-            "SELECT TOP 10\n" + 
-            "    atlas.ra,\n" + 
-            "    atlas.dec\n" + 
-            "FROM\n" + 
-            "    atlasSource AS atlas\n" + 
-            "WHERE\n" + 
-            "    atlas.sourceID % 100 = 0\n" + 
+            "SELECT TOP 10\n" +
+            "    atlas.ra,\n" +
+            "    atlas.dec\n" +
+            "FROM\n" +
+            "    atlasSource AS atlas\n" +
+            "WHERE\n" +
+            "    atlas.sourceID % 100 = 0\n" +
             ""
             );
         assertEquals(
@@ -313,40 +303,40 @@ public class AdqlQueryBugsTestCase
             "select top 10 atlas.ra as ra, atlas.dec as dec from atlasv20130426.dbo.atlassource as atlas where atlas.sourceid%100 = 0"
             );
         }
-    
-    
+
+
     /**
      * Inner WHERE clause refers to table defined in outer FROM clause.
      * "WHERE masterObjID = neighbours.masterObjID"
-     * 
+     *
      */
     @Test
     public void test006L()
         {
-        AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
                 Level.LEGACY
                 ),
-            "SELECT TOP 10\n" + 
-            "    atlas.ra,\n" + 
-            "    atlas.dec\n" + 
-            "FROM\n" + 
-            "    atlasSource AS atlas,\n" + 
-            "    BestDR8.PhotoObj AS bestdr8,\n" + 
-            "    atlasSourceXDR8PhotoObj AS neighbours\n" + 
-            "WHERE\n" + 
-            "    masterObjID=atlas.sourceID\n" + 
-            "AND\n" + 
-            "    slaveObjID=bestdr8.ObjID\n" + 
-            "AND\n" + 
-            "    distanceMins IN (\n" + 
-            "        SELECT\n" + 
-            "            MIN(distanceMins)\n" + 
-            "        FROM\n" + 
-            "            atlasSourceXDR8PhotoObj\n" + 
-            "        WHERE\n" + 
-            "            masterObjID = neighbours.masterObjID\n" + 
-            "        )\n" + 
+            "SELECT TOP 10\n" +
+            "    atlas.ra,\n" +
+            "    atlas.dec\n" +
+            "FROM\n" +
+            "    atlasSource AS atlas,\n" +
+            "    TWOMASS.twomass_psc AS twomass,\n" +
+            "    atlasSourceXtwomass_psc AS neighbours\n" +
+            "WHERE\n" +
+            "    masterObjID=atlas.sourceID\n" +
+            "AND\n" +
+            "    slaveObjID=twomass.pts_key\n" +
+            "AND\n" +
+            "    distanceMins IN (\n" +
+            "        SELECT\n" +
+            "            MIN(distanceMins)\n" +
+            "        FROM\n" +
+            "            atlasSourceXtwomass_psc\n" +
+            "        WHERE\n" +
+            "            masterObjID = neighbours.masterObjID\n" +
+            "        )\n" +
             ""
             );
         assertEquals(
@@ -358,31 +348,32 @@ public class AdqlQueryBugsTestCase
             new ExpectedField[] {
                 new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
                 new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0),
+                //new ExpectedField("MIN", AdqlColumn.Type.FLOAT, 0),
                 }
             );
         // TODO
         compare(
             query,
-            "SELECT stuff"
+            "select top 10 atlas.ra as ra, atlas.dec as dec from atlasv20130426.dbo.atlassource as atlas, twomass.dbo.twomass_psc as twomass, atlasv20130426.dbo.atlassourcextwomass_psc as neighbours where neighbours.masterobjid = atlas.sourceid and neighbours.slaveobjid = twomass.pts_key and neighbours.distancemins in (select min(atlasv20130426.dbo.atlassourcextwomass_psc.distancemins) as min from atlasv20130426.dbo.atlassourcextwomass_psc where atlasv20130426.dbo.atlassourcextwomass_psc.masterobjid = neighbours.masterobjid)"
             );
         }
 
     /**
      * DATETIME column.
-     * 
+     *
      */
     @Test
     public void test007L()
         {
-        AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
                 Level.LEGACY
                 ),
-            "SELECT TOP 10\n" + 
-            "    utDate,\n" + 
-            "    dateObs\n" + 
-            "FROM\n" + 
-            "    multiframe\n" + 
+            "SELECT TOP 10\n" +
+            "    utDate,\n" +
+            "    dateObs\n" +
+            "FROM\n" +
+            "    multiframe\n" +
             ""
             );
         assertEquals(
@@ -392,44 +383,45 @@ public class AdqlQueryBugsTestCase
         validate(
             query,
             new ExpectedField[] {
-                new ExpectedField("creationDate", AdqlColumn.Type.DATETIME, 0),
+                new ExpectedField("utDate",  AdqlColumn.Type.DATETIME, 23),
+                new ExpectedField("dateObs", AdqlColumn.Type.DATETIME, 23)
                 }
             );
+
         // TODO - verify the JDBC column is DATE TIME, not TIMESTAMP.
         // Firethorn create table fails if we have two DATETIME columns.
         // OGSA-DAI insert into TIMESTAMP column fails.
 
-        // TODO
         compare(
             query,
-            "SELECT stuff"
+            "select top 10 atlasv20130426.dbo.multiframe.utdate as utdate, atlasv20130426.dbo.multiframe.dateobs as dateobs from atlasv20130426.dbo.multiframe"
             );
         }
 
     /**
      * Alias for nested query in SELECT.
      * SELECT ... FROM (SELECT .... AS ident ...) AS inner WHERE inner.ident = outer.field
-     * 
+     *
      */
     @Test
     public void test008L()
         {
-        AdqlQuery query = this.queryspace.queries().create(
+        final AdqlQuery query = this.queryspace.queries().create(
             factories().queries().params().param(
                 Level.LEGACY
                 ),
-            "SELECT\n" + 
-            "    neighbours.distanceMins\n" + 
-            "FROM\n" + 
-            "    atlassourcexDR8photoobj AS neighbours,\n" + 
-            "    (\n" + 
-            "    SELECT TOP 10\n" + 
-            "        sourceId AS ident\n" + 
-            "    FROM\n" + 
-            "        atlasSource\n" + 
-            "    ) AS sources\n" + 
-            "WHERE\n" + 
-            "    neighbours.masterObjID = sources.ident\n" + 
+            "SELECT\n" +
+            "    neighbours.distanceMins\n" +
+            "FROM\n" +
+            "    atlassourcexDR8photoobj AS neighbours,\n" +
+            "    (\n" +
+            "    SELECT TOP 10\n" +
+            "        sourceId AS ident\n" +
+            "    FROM\n" +
+            "        atlasSource\n" +
+            "    ) AS sources\n" +
+            "WHERE\n" +
+            "    neighbours.masterObjID = sources.ident\n" +
             ""
             );
         assertEquals(
@@ -439,12 +431,66 @@ public class AdqlQueryBugsTestCase
         validate(
             query,
             new ExpectedField[] {
-                new ExpectedField("dist", AdqlColumn.Type.FLOAT, 0),
+                new ExpectedField("distanceMins", AdqlColumn.Type.FLOAT, 0),
                 }
             );
         compare(
             query,
-            "select neighbours.distancemins as dist from atlasv20130426.dbo.atlassourcexdr8photoobj as neighbours, (select top 10 atlasv20130426.dbo.atlassource.sourceid as ident from atlasv20130426.dbo.atlassource) as sources where neighbours.masterobjid = sources.ident"
+            "select neighbours.distancemins as distancemins  from atlasv20130426.dbo.atlassourcexdr8photoobj as neighbours, (select top 10 atlasv20130426.dbo.atlassource.sourceid as ident from atlasv20130426.dbo.atlassource) as sources where neighbours.masterobjid = sources.ident"
+            );
+        }
+
+    /**
+     * Single quoted string in WHERE clause.
+     *
+     */
+    @Test
+    public void test009a()
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.LEGACY
+                ),
+            "SELECT\n" +
+            "    COUNT(*)\n" +
+            "FROM\n" +
+            "    Multiframe\n" +
+            "WHERE\n" +
+            "    project LIKE 'ATLAS%'" +
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        compare(
+            query,
+            "select count(*) as count_all from atlasv20130426.dbo.multiframe where atlasv20130426.dbo.multiframe.project like 'ATLAS%'"
+            );
+        }
+
+    /**
+     * Double quoted string in WHERE clause.
+     *
+     */
+    @Test
+    public void test009b()
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.LEGACY
+                ),
+            "SELECT\n" +
+            "    COUNT(*)\n" +
+            "FROM\n" +
+            "    Multiframe\n" +
+            "WHERE\n" +
+            "    project LIKE \"ATLAS%\"" +
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.PARSE_ERROR,
+            query.syntax().state()
             );
         }
     }

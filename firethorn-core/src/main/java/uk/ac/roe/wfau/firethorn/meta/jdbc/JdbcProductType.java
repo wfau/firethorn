@@ -166,6 +166,7 @@ public enum JdbcProductType
             return UNKNOWN;
             }
         }
+
     static public JdbcProductType match(final DatabaseMetaData metadata)
         {
         if (metadata != null)
@@ -219,4 +220,5 @@ public enum JdbcProductType
         {
         return type.sqlsize();
         }
+
     }

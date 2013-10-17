@@ -24,28 +24,31 @@
 # Merge changes from dave-adql-parsing branch into main
 #[user@desktop]
 
-    #
-    # Check current branch
-    hg branch
-        dave-adql-parsing
+    source ${HOME:?}/firethorn.settings
+    pushd "${FIRETHORN_CODE:?}"
 
-    #
-    # Swap to the the default branch
-    hg update default
-        13 files updated, 0 files merged, 1 files removed, 0 files unresolved
+        #
+        # Check current branch
+        hg branch
+            dave-adql-parsing
 
-    #
-    # Merge the branch changes into main.
-    hg merge dave-adql-parsing
-        14 files updated, 0 files merged, 0 files removed, 0 files unresolved
+        #
+        # Swap to the the default branch
+        hg update default
+            13 files updated, 0 files merged, 1 files removed, 0 files unresolved
 
-    #
-    # Review the changes
-    hg diff | less
-    
-    #
-    # Commit the changes
-    hg commit -m "Merged dave-adql-parsing into main"
+        #
+        # Merge the branch changes into main.
+        hg merge dave-adql-parsing
+            14 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+        #
+        # Review the changes
+        hg diff | less
+        
+        #
+        # Commit the changes
+        hg commit -m "Merged dave-adql-parsing into main"
 
 #-----------------------------------------------------------------------------------
 # Build a new version.
@@ -56,7 +59,6 @@
     pushd "${FIRETHORN_CODE:?}"
 
         mvn -P all clean install
-        mvn -P all eclipse:eclipse
         
     popd
 
@@ -64,11 +66,6 @@
 # Deploy results to our Maven repository.
 # TODO Move this to a ROE VM.
 #[user@desktop]
-
-    #
-    # --omit-dir-times
-    # rsync: failed to set times on "{path}/.": Operation not permitted (1)
-    # http://superuser.com/questions/200012/rsync-failed-to-set-times-on-dir-path
 
     rsync \
         --recursive --copy-links --times \
@@ -115,7 +112,6 @@
             mkdir "${webapppath:?}"
         fi
         pushd "${webapppath:?}"
-
             if [ -e "${webappfile}" ]
             then
                 rm "${webappfile}"
@@ -124,9 +120,7 @@
             then
                 rm -r "${webappname}"
             fi            
-
             wget "${downloadurl:?}"
-
         popd
 
         #
@@ -146,25 +140,31 @@
 # Manual test queries ...
 #
 
-SELECT TOP 10
-    distanceMins AS distance
-FROM
-    ATLASv20130426.atlasSourceXtwomass_psc
+    SELECT TOP 10
+        distanceMins AS distance
+    FROM
+        ATLASv20130426.atlasSourceXtwomass_psc
 
 
-SELECT TOP 10
-    ra,
-    dec
-FROM
-    TWOMASS..twomass_psc
+    SELECT TOP 10
+        ra,
+        dec
+    FROM
+        TWOMASS..twomass_psc
 
-SELECT TOP 10
-    atlas.ra,
-    atlas.dec
-FROM
-    atlasSource AS atlas
-WHERE
-    atlas.sourceID % 100 = 0
+    SELECT TOP 10
+        atlas.ra,
+        atlas.dec
+    FROM
+        atlasSource AS atlas
+    WHERE
+        atlas.sourceID % 100 = 0
+
+    SELECT TOP 10
+        utDate,
+        dateObs
+    FROM
+        multiframe
 
 
 

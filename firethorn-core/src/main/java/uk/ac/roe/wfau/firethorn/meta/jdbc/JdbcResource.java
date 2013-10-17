@@ -169,20 +169,41 @@ extends BaseResource<JdbcSchema>
 
     /**
      * Get the JDBC type for an ADQL type.
+     * Do we need this here ?
      *
      */
     public JdbcColumn.Type jdbctype(final AdqlColumn.Type type);
 
     /**
      * Get the JDBC size/precision for an ADQL type.
+     * Do we need this here ?
      *
      */
     public Integer jdbcsize(final AdqlColumn.Type type);
 
     /**
      * Get the JDBC size/precision for a JDBC type.
+     * Do we need this here ?
      *
      */
     public Integer jdbcsize(final JdbcColumn.Type type);
+
+    /**
+     * The SQL metadata needed to create a column.
+     *
+     *
+    public interface CreateColumn
+        {
+        public String name();
+        public String type();
+        }
+
+    **
+     * The SQL metadata needed to create a column.
+     *
+     *
+    public CreateColumn create();
+    *
+    */
 
     }

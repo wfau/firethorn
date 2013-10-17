@@ -5,7 +5,6 @@ import liquibase.change.ColumnConfig;
 import liquibase.change.DatabaseChange;
 import liquibase.change.core.CreateTableChange;
 import lombok.extern.slf4j.Slf4j;
-import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcColumn;
 import uk.ac.roe.wfau.firethorn.meta.jdbc.JdbcTable;
 
@@ -28,36 +27,22 @@ extends CreateTableChange
         this.setSchemaName(
             this.table.schema().schema()
             );
+
         for (final JdbcColumn column : table.columns().select())
             {
             log.debug("  Column [{}][{}][{}][{}]", column.ident(), column.name(), column.meta().jdbc().type(), column.meta().jdbc().size());
 
-            final StringBuilder typename = new StringBuilder(
-                column.meta().jdbc().type().name()
-                );
+            final String colname = column.meta().jdbc().create().name();
+            final String coltype = column.meta().jdbc().create().type();
 
-            if (column.meta().jdbc().type().sqlsize() == BaseColumn.VAR_ARRAY_SIZE)
-                {
-                if (column.meta().jdbc().size() == BaseColumn.VAR_ARRAY_SIZE)
-                    {
-                    typename.append("(*)");
-                    }
-                else {
-                    typename.append("(");
-                    typename.append(
-                        column.meta().jdbc().size()
-                        );
-                    typename.append(")");
-                    }
-                }
-
-            log.debug("  Typename [{}]", typename);
+            log.debug("  Name [{}]", colname);
+            log.debug("  Type [{}]", coltype);
 
             this.addColumn(
                 new ColumnConfig().setName(
-                    column.name()
+                    colname
                     ).setType(
-                        typename.toString()
+                        coltype
                         )
                 );
             }

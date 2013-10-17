@@ -1,0 +1,64 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# ------------------------------------------------
+# Check the raw database type.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn/test.machines"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        source "${HOME:?}/sqlserver.properties"
+        sqsh -S "${atlashost:?}" -U "${atlasuser}" -P "${atlaspass}" -D "${atlasdata}"
+        
+            SELECT
+                COLUMN_NAME,
+                DATA_TYPE
+            FROM
+                INFORMATION_SCHEMA.COLUMNS
+            WHERE
+                TABLE_NAME = 'multiframe'
+            AND
+                COLUMN_NAME = 'dateObs'
+            go
+        
+
+        +--------------------------+
+        | COLUMN_NAME |  DATA_TYPE |                                                                                                                                                                                                                                                     
+        +--------------------------+
+        | dateObs     |  datetime  |                                                                                                                                                                                                                                                     
+        +--------------------------+
+                                                                                                                                                                                                                                                                       
+# ------------------------------------------------
+# Check the SQLServer documentation.
+
+    #
+    # "The JDBC TIMESTAMP type maps to the SQL Server datetime and smalldatetime types.
+    # "The SQL Server timestamp type is a fixed-length binary-string type.
+    # "It does not map to any of the JDBC time types: DATE, TIME, or TIMESTAMP.
+    # http://technet.microsoft.com/en-us/library/ms378715.aspx
+
+
+
+
+
+

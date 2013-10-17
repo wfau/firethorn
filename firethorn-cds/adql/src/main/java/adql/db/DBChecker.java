@@ -39,6 +39,7 @@ import adql.query.IdentifierField;
 import adql.query.SelectAllColumns;
 import adql.query.SelectItem;
 import adql.query.from.ADQLTable;
+import adql.query.from.FromContent;
 
 import adql.query.operand.ADQLColumn;
 
@@ -167,10 +168,15 @@ public class DBChecker implements QueryChecker {
 	 * @see #checkColumnReference(ColumnReference, ClauseSelect, SearchColumnList)
 	 */
 	public void check(final ADQLQuery query) throws ParseException {
+		this.check(query, null, new HashMap<DBTable, ADQLTable>());
+	}
+	
+	
+	public void check(final ADQLQuery query, SearchColumnList stackColumnList, HashMap<DBTable, ADQLTable> _mapTables) throws ParseException {
 		UnresolvedIdentifiersException errors = new UnresolvedIdentifiersException();
-		HashMap<DBTable, ADQLTable> mapTables = new HashMap<DBTable, ADQLTable>();
+		HashMap<DBTable, ADQLTable> mapTables = _mapTables;
 		ISearchHandler sHandler;
-
+		stackColumnList.putTableAliasList(mapTables);
 		// Check the existence of all tables:
 		sHandler = new SearchTableHandler();
 		sHandler.search(query.getFrom());
@@ -221,21 +227,22 @@ public class DBChecker implements QueryChecker {
 
 		SearchColumnList list = query.getFrom().getDBColumns();
 
-		//		// DEBUG
-		//		System.out.println("\n*** FROM COLUMNS ***");
-		//		for(DBColumn dbCol : list){
-		//			System.out.println("\t- "+dbCol.getADQLName()+" in "+((dbCol.getTable()==null)?"<NULL>":dbCol.getTable().getADQLName())+" (= "+dbCol.getDBName()+" in "+((dbCol.getTable()==null)?"<NULL>":dbCol.getTable().getDBName())+")");
-		//		}
-		//		System.out.println();
-
+		/* DEBUG
+		System.out.println("\n*** FROM COLUMNS ***");
+		for(DBColumn dbCol : list){
+			System.out.println("\t- "+dbCol.getADQLName()+" in "+((dbCol.getTable()==null)?"<NULL>":dbCol.getTable().getADQLName())+" (= "+dbCol.getDBName()+" in "+((dbCol.getTable()==null)?"<NULL>":dbCol.getTable().getDBName())+")");
+		}
+		System.out.println();
+		*/
 		// Check the existence of all columns:
-		sHandler = new SearchColumnHandler();
+		sHandler = new SearchColumnHandler();  
+	
 		sHandler.search(query);
 		for(ADQLObject result : sHandler){
 			try{
 				ADQLColumn adqlColumn = (ADQLColumn)result;
 				// resolve the column:
-				DBColumn dbColumn = resolveColumn(adqlColumn, list);
+				DBColumn dbColumn = resolveColumn(adqlColumn, list, stackColumnList);
 				// link with the matched DBColumn:
 				adqlColumn.setDBLink(dbColumn);
 				adqlColumn.setAdqlTable(mapTables.get(dbColumn.getTable()));
@@ -257,8 +264,10 @@ public class DBChecker implements QueryChecker {
 				colRef.setDBLink(dbColumn);
 				if (dbColumn != null)
 					colRef.setAdqlTable(mapTables.get(dbColumn.getTable()));
-			}catch(ParseException pe){
-				errors.addException(pe);
+			}catch(Exception pe){
+			
+				System.out.println("Exception caught");
+				//	errors.addException(pe);
 			}
 		}
 
@@ -276,7 +285,7 @@ public class DBChecker implements QueryChecker {
 	 * 
 	 * @throws ParseException	An {@link UnresolvedTableException} if the given table can't be resolved.
 	 */
-	protected DBTable resolveTable(final ADQLTable table) throws ParseException {
+	public DBTable resolveTable(final ADQLTable table) throws ParseException {
 		ArrayList<DBTable> tables = lstTables.search(table);
 
 		// good if only one table has been found:
@@ -301,7 +310,7 @@ public class DBChecker implements QueryChecker {
 	 * @throws ParseException	An {@link UnresolvedColumnException} if the given column can't be resolved
 	 * 							or an {@link UnresolvedTableException} if its table reference can't be resolved.
 	 */
-	protected DBColumn resolveColumn(final ADQLColumn column, final SearchColumnList dbColumns) throws ParseException {
+	protected DBColumn resolveColumn(final ADQLColumn column, final SearchColumnList dbColumns, final SearchColumnList stackColumnList) throws ParseException {
 		ArrayList<DBColumn> foundColumns = dbColumns.search(column);
 
 		// good if only one column has been found:
@@ -313,9 +322,22 @@ public class DBChecker implements QueryChecker {
 				throw new UnresolvedColumnException(column, (foundColumns.get(0).getTable()==null)?"<NULL>":(foundColumns.get(0).getTable().getADQLName()+"."+foundColumns.get(0).getADQLName()), (foundColumns.get(1).getTable()==null)?"<NULL>":(foundColumns.get(1).getTable().getADQLName()+"."+foundColumns.get(1).getADQLName()));
 			else
 				throw new UnresolvedTableException(column, (foundColumns.get(0).getTable()==null)?"<NULL>":foundColumns.get(0).getTable().getADQLName(), (foundColumns.get(1).getTable()==null)?"<NULL>":foundColumns.get(1).getTable().getADQLName());
-		}// otherwise (no match): unknown column !
+		}// otherwise (no match): unknown column ! Check stack column list
+		else{
+			ArrayList<DBColumn> foundColumnsFromStack = stackColumnList.search(column);
+			if (foundColumnsFromStack.size() == 1)
+				return foundColumnsFromStack.get(0);
+			// but if more than one: ambiguous table reference !
+			else if (foundColumnsFromStack.size() > 1){
+				if (column.getTableName() == null)
+					throw new UnresolvedColumnException(column, (foundColumnsFromStack.get(0).getTable()==null)?"<NULL>":(foundColumnsFromStack.get(0).getTable().getADQLName()+"."+foundColumnsFromStack.get(0).getADQLName()), (foundColumnsFromStack.get(1).getTable()==null)?"<NULL>":(foundColumnsFromStack.get(1).getTable().getADQLName()+"."+foundColumnsFromStack.get(1).getADQLName()));
 		else
+					throw new UnresolvedTableException(column, (foundColumnsFromStack.get(0).getTable()==null)?"<NULL>":foundColumnsFromStack.get(0).getTable().getADQLName(), (foundColumnsFromStack.get(1).getTable()==null)?"<NULL>":foundColumnsFromStack.get(1).getTable().getADQLName());
+			} else // otherwise (no match): unknown column !
 			throw new UnresolvedColumnException(column);
+		
+		
+		}
 	}
 
 	/**
@@ -359,7 +381,7 @@ public class DBChecker implements QueryChecker {
 			}
 
 			// check the corresponding column:
-			return resolveColumn(col, dbColumns);
+			return resolveColumn(col, dbColumns, new SearchColumnList());
 		}
 	}
 
@@ -398,7 +420,7 @@ public class DBChecker implements QueryChecker {
 	 * @author Gr&eacute;gory Mantelet (CDS)
 	 * @version 07/2011
 	 */
-	private static class SearchTableHandler extends SimpleSearchHandler {
+	public static class SearchTableHandler extends SimpleSearchHandler {
 		@Override
 		public boolean match(final ADQLObject obj) {
 			return obj instanceof ADQLTable;

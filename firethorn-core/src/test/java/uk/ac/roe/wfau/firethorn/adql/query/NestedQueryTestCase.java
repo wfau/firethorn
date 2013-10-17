@@ -46,32 +46,32 @@ extends AtlasQueryTestBase
     throws Exception
         {
         compare(
-            "SELECT\n" + 
-            "    DistanceMins\n" + 
-            "FROM\n" + 
-            "    atlassourcexDR7photoobj AS CrossMatch, \n" + 
-            "    (\n" + 
-            "    SELECT\n" + 
-            "        s.sourceid as id\n" + 
-            "    FROM\n" + 
-            "        atlassource as s\n" + 
-            "    WHERE\n" + 
-            "        ra > 182 AND ra < 184\n" + 
-            "    AND\n" + 
-            "        dec > -3 AND dec < -1\n" + 
-            "    AND\n" + 
-            "        mergedclass =1\n" + 
-            "    GROUP BY\n" + 
-            "        s.sourceid\n" + 
-            "    ) AS T\n" + 
-            "WHERE\n" + 
-            "    DistanceMins < 2/60.0\n" + 
-            "AND\n" + 
-            "    sdsstype = 3\n" + 
-            "AND\n" + 
-            "    sdssPrimary = 1\n" + 
-            "AND " + 
-            "    T.id = CrossMatch.masterObjID\n" + 
+            "SELECT\n" +
+            "    DistanceMins\n" +
+            "FROM\n" +
+            "    atlassourcexDR7photoobj AS CrossMatch, \n" +
+            "    (\n" +
+            "    SELECT\n" +
+            "        s.sourceid as id\n" +
+            "    FROM\n" +
+            "        atlassource as s\n" +
+            "    WHERE\n" +
+            "        ra > 182 AND ra < 184\n" +
+            "    AND\n" +
+            "        dec > -3 AND dec < -1\n" +
+            "    AND\n" +
+            "        mergedclass =1\n" +
+            "    GROUP BY\n" +
+            "        s.sourceid\n" +
+            "    ) AS T\n" +
+            "WHERE\n" +
+            "    DistanceMins < 2/60.0\n" +
+            "AND\n" +
+            "    sdsstype = 3\n" +
+            "AND\n" +
+            "    sdssPrimary = 1\n" +
+            "AND " +
+            "    T.id = CrossMatch.masterObjID\n" +
             "",
 
             "SELECT CrossMatch.distanceMins AS DistanceMins FROM ATLASv20130426.dbo.atlasSourceXDR7PhotoObj AS CrossMatch , (SELECT s.sourceID AS id FROM ATLASv20130426.dbo.atlasSource AS s WHERE s.ra > 182 AND s.ra < 184 AND s.dec > -3 AND s.dec < -1 AND s.mergedClass = 1 GROUP BY s.sourceID) AS T WHERE CrossMatch.distanceMins < 2/60.0 AND CrossMatch.sdssType = 3 AND CrossMatch.sdssPrimary = 1 AND T.id = CrossMatch.masterObjID"
@@ -92,23 +92,23 @@ extends AtlasQueryTestBase
     throws Exception
         {
         compare(
-            "SELECT\n" + 
-            "    DistanceMins\n" + 
-            "FROM\n" + 
-            "    (\n" + 
-            "    SELECT\n" + 
-            "        TOP 10000 *\n" + 
-            "    FROM\n" + 
-            "        atlassourcexDR7photoobj\n" + 
-            "    WHERE\n" + 
-            "        sdssPrimary = 1\n" + 
-            "    ) AS Crossmatch\n" + 
-            "WHERE\n" + 
-            "    DistanceMins < 2/60.0\n" + 
-            "AND\n" + 
-            "    sdsstype = 3\n" + 
+            "SELECT\n" +
+            "    DistanceMins\n" +
+            "FROM\n" +
+            "    (\n" +
+            "    SELECT\n" +
+            "        TOP 10000 *\n" +
+            "    FROM\n" +
+            "        atlassourcexDR7photoobj\n" +
+            "    WHERE\n" +
+            "        sdssPrimary = 1\n" +
+            "    ) AS Crossmatch\n" +
+            "WHERE\n" +
+            "    DistanceMins < 2/60.0\n" +
+            "AND\n" +
+            "    sdsstype = 3\n" +
             "",
-            
+
             "SELECT Crossmatch.distanceMins AS DistanceMins FROM (SELECT TOP 10000 ATLASv20130426.dbo.atlasSourceXDR7PhotoObj.masterObjID AS masterObjID,ATLASv20130426.dbo.atlasSourceXDR7PhotoObj.slaveObjID AS slaveObjID,ATLASv20130426.dbo.atlasSourceXDR7PhotoObj.distanceMins AS distanceMins,ATLASv20130426.dbo.atlasSourceXDR7PhotoObj.sdssType AS sdssType,ATLASv20130426.dbo.atlasSourceXDR7PhotoObj.sdssPrimary AS sdssPrimary FROM ATLASv20130426.dbo.atlasSourceXDR7PhotoObj WHERE ATLASv20130426.dbo.atlasSourceXDR7PhotoObj.sdssPrimary = 1) AS Crossmatch WHERE Crossmatch.distanceMins < 2/60.0 AND Crossmatch.sdssType = 3"
             );
         }
@@ -127,23 +127,23 @@ extends AtlasQueryTestBase
     throws Exception
         {
         compare(
-            "SELECT\n" + 
-            "    DistanceMins\n" + 
-            "FROM\n" + 
-            "    atlasSourceXDR7PhotoObj as CrossMatch\n" + 
-            "WHERE\n" + 
-            "    (\n" + 
-            "    SELECT\n" + 
-            "        s.sourceID\n" + 
-            "    FROM\n" + 
-            "        atlasSource as s\n" + 
-            "    WHERE\n" + 
-            "        ra > 182 AND ra < 184\n" + 
-            "    AND\n" + 
-            "        dec > -3 AND dec < -1\n" + 
-            "    AND\n" + 
-            "        CrossMatch.masterObjID = sourceID\n" + 
-            "    ) > 0\n" + 
+            "SELECT\n" +
+            "    DistanceMins\n" +
+            "FROM\n" +
+            "    atlasSourceXDR7PhotoObj as CrossMatch\n" +
+            "WHERE\n" +
+            "    (\n" +
+            "    SELECT\n" +
+            "        s.sourceID\n" +
+            "    FROM\n" +
+            "        atlasSource as s\n" +
+            "    WHERE\n" +
+            "        ra > 182 AND ra < 184\n" +
+            "    AND\n" +
+            "        dec > -3 AND dec < -1\n" +
+            "    AND\n" +
+            "        CrossMatch.masterObjID = sourceID\n" +
+            "    ) > 0\n" +
             "",
 
             "SELECT DistanceMins FROM ATLASv20130426.dbo.atlasSourceXDR7PhotoObj as CrossMatch WHERE ( SELECT s.sourceID FROM ATLASv20130426.dbo.atlasSource as s WHERE ra > 182 AND ra < 184 AND dec > -3 AND dec < -1 AND CrossMatch.masterObjID = sourceID ) > 0"

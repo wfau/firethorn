@@ -24,8 +24,6 @@
 # Separate live and test deployment settings.
 #[user@desktop]
 
-
-
     #
     # Edit local copy of live machines.
     source "${HOME:?}/firethorn.properties"
@@ -210,13 +208,13 @@ cat  "${databasefile:?}"
     # SSH login to tail the Tomcat log.
     # including port 8080 tunnel (-L) and SOCKS proxy (-D).
     source "${HOME:?}/firethorn/live.machines"
-    ssh -L "${fireproxy:?}:localhost:8080" -D "${firesocks:?}" "${firelogin:?}"
+    ssh -L "${fireproxy:?}:localhost:8080" -D "${firesocks:?}" "${fireuser:?}@${firehost:?}"
         tail -f "${HOME:?}/tomcat/logs/catalina.out"
 
     #
     # SSH login to deploy the webapp
     source "${HOME:?}/firethorn/live.machines"
-    ssh "${firelogin:?}"
+    ssh "${fireuser:?}@${firehost:?}"
 
         webappversion=01.07-alpha-06
         webappproject=firethorn-webapp

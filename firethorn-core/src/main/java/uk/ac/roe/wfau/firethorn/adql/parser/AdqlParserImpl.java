@@ -23,16 +23,19 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import liquibase.exception.DuplicateChangeSetException;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery.DuplicateFieldException;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserTable.AdqlDBColumn;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Mode;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
+import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn.Type;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlResource;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlSchema;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
@@ -150,7 +153,7 @@ implements AdqlParser
             );
 
         //this.parser.disable_tracing();
-        
+
         }
 
     /**
@@ -161,11 +164,11 @@ implements AdqlParser
     extends ADQLQueryFactory
         {
         /**
-         * Create a SelectItem.  
-         * 
+         * Create a SelectItem.
+         *
          */
         @Override
-        public SelectItem createSelectItem(ADQLOperand operand, String alias)
+        public SelectItem createSelectItem(final ADQLOperand operand, final String alias)
         throws Exception
             {
             log.debug("createSelectItem(ADQLOperand, String)");
@@ -177,11 +180,11 @@ implements AdqlParser
             }
 
         /**
-         * Create a UserDefinedFunction.  
-         * 
+         * Create a UserDefinedFunction.
+         *
          */
         @Override
-        public UserDefinedFunction createUserDefinedFunction(String name, ADQLOperand[] params)
+        public UserDefinedFunction createUserDefinedFunction(final String name, final ADQLOperand[] params)
         throws Exception
             {
             log.debug("createUserDefinedFunction(String, ADQLOperand[])");
@@ -195,8 +198,8 @@ implements AdqlParser
                 );
             }
         }
-    
-    
+
+
     protected AdqlQuery.Mode mode ;
 
     protected ADQLParser parser ;
@@ -205,19 +208,19 @@ implements AdqlParser
         {
         //
         // Trim leading/trailing spaces.
-        String s1 = subject.input().trim();
+        final String s1 = subject.input().trim();
         //
         // Skip /* comments */
-        Pattern p1 = Pattern.compile(
+        final Pattern p1 = Pattern.compile(
             "/\\*.*?\\*/",
             Pattern.DOTALL
             );
-        Matcher m1 = p1.matcher(s1);
-        String  s2 = m1.replaceAll(""); 
+        final Matcher m1 = p1.matcher(s1);
+        final String  s2 = m1.replaceAll("");
 
         return s2 ;
         }
-    
+
     @Override
     public void process(final AdqlParserQuery subject)
         {
@@ -314,7 +317,7 @@ implements AdqlParser
 
     /**
      * Process an ADQL query.
-     * @throws AdqlParserException 
+     * @throws AdqlParserException
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery object)
@@ -348,7 +351,7 @@ implements AdqlParser
 
     /**
      * Recursively process a tree of ADQLObject(s).
-     * @throws AdqlParserException 
+     * @throws AdqlParserException
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final Iterable<ADQLObject> iter)
@@ -393,7 +396,7 @@ implements AdqlParser
                     subject,
                     query,
                     ((ADQLTable) clause)
-                    ); 
+                    );
                 }
             //
             // Check for LEGACY operations.
@@ -405,7 +408,7 @@ implements AdqlParser
                     subject,
                     query,
                     ((Operation) clause)
-                    ); 
+                    );
                 }
             //
             // Process the child nodes.
@@ -423,7 +426,7 @@ implements AdqlParser
 
     /**
      * Process an Operation.
-     * @throws AdqlParserException 
+     * @throws AdqlParserException
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final Operation oper)
@@ -433,7 +436,6 @@ implements AdqlParser
         log.debug(" Operation ----");
         log.debug("  name [{}]", oper.getName());
         log.debug("  type [{}]", oper.getOperation());
-
         //
         // Check for unsupported operations.
         if (oper.getOperation() == OperationType.MOD)
@@ -445,9 +447,8 @@ implements AdqlParser
                     );
                 }
             }
-
         //
-        // Process the rest of the chain 
+        // Process the rest of the chain
         process(
             subject,
             query,
@@ -456,16 +457,16 @@ implements AdqlParser
                 )
             );
         }
-    
-    
+
     /**
      * Process the SELECT part of the query.
      *
      */
-    protected void process(final AdqlParserQuery subject, final ADQLQuery query, final ClauseSelect select)
+    protected void process(final AdqlParserQuery subject, final ADQLQuery query, final ClauseSelect clause)
+    throws DuplicateFieldException
         {
         log.debug("process(AdqlParserQuery, ADQLQuery, ClauseSelect)");
-        for (final SelectItem item : select)
+        for (final SelectItem item : clause)
             {
             log.debug(" Select item ----");
             log.debug("  name  [{}]", item.getName());
@@ -484,7 +485,8 @@ implements AdqlParser
             //
             // Everything else ....
             else {
-                subject.add(
+                additem(
+                    subject,
                     wrap(
                         item
                         )
@@ -495,9 +497,11 @@ implements AdqlParser
 
     /**
      * Process a 'SELECT *' construct.
+     * TODO Replace the SelectAllColumns with a list of columns generated from the AdqlTable(s).
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final SelectAllColumns selectall)
+    throws DuplicateFieldException    
         {
         log.debug("process(AdqlParserQuery, ADQLQuery, SelectAllColumns)");
         //
@@ -583,6 +587,37 @@ implements AdqlParser
             log.warn("ADQLTable getDBLink() is unexpected class [{}]", table.getDBLink().getClass().getName());
             }
         }
+    
+    /**
+     * Add a SELECT field to a query.
+     * @Deprecated - only used by SelectAll
+     * 
+     */
+    @Deprecated
+    public void additem(final AdqlParserQuery subject,final MySelectField field)
+    throws DuplicateFieldException
+        {
+        subject.add(
+            field
+            );        
+        }
+
+    /**
+     * Add a SELECT item to a query.
+     * TODO Try renaming the item ? 
+     * 
+     */
+    public void additem(final AdqlParserQuery subject,final MySelectItem item)
+    throws DuplicateFieldException
+        {
+        // Check the name is valid.
+        // Adds generated alias if needed.
+        
+        
+        subject.add(
+            item
+            );        
+        }
 
     /**
      * Add all the fields from a table, called by 'SELECT table.*'.
@@ -593,6 +628,7 @@ implements AdqlParser
      *
      */
     protected void fields(final AdqlParserQuery subject, final ADQLQuery query, final ADQLTable table)
+    throws DuplicateFieldException
         {
         log.debug("fields(AdqlParserQuery, ADQLQuery, ADQLTable)");
         log.debug("ADQLTable [{}][{}]", table.getName(), table.getClass().getName());
@@ -622,12 +658,12 @@ implements AdqlParser
     /**
      * Add all the fields from a table, called by 'SELECT table.*'.
      *
-     * TODO
-     * Searches the query FromContent for a matching table.
-     * Need to replace this with code that uses the firethorn metadata.
+     * TODO Searches the query FromContent for a matching table.
+     * TODO Needs to replace the ADQLQuery with our own list of columns.
      *
      */
     protected void fields(final AdqlParserQuery subject, final ADQLQuery query, final ADQLTable table, final FromContent from)
+    throws DuplicateFieldException
         {
         log.debug("fields(AdqlParserQuery, ADQLQuery, ADQLTable, FromContent)");
         log.debug("  table [{}][{}]", table.getName(), table.getAlias());
@@ -674,9 +710,11 @@ implements AdqlParser
 
     /**
      * Add all the fields from a query, called by 'SELECT *'.
+     * TODO Needs to replace the ADQLQuery with our own list of columns.
      *
      */
     protected void fields(final AdqlParserQuery subject, final ADQLQuery query)
+    throws DuplicateFieldException    
         {
         log.debug("fields(AdqlParserQuery, ADQLQuery)");
         log.debug("  ADQLQuery [{}]", query.getName());
@@ -685,7 +723,8 @@ implements AdqlParser
             log.debug("    DBColumn [{}][{}]", column.getADQLName(), column.getClass().getName());
             if (column instanceof AdqlDBColumn)
                 {
-                subject.add(
+                additem(
+                    subject,
                     wrap(
                         ((AdqlDBColumn) column).column()
                         )
@@ -696,9 +735,13 @@ implements AdqlParser
 
     /**
      * Add all the fields from an AdqlParserTable.
+     * TODO This is deceptive
+     * The Firethorn query contains the list of columns from the Firethorn table.
+     * The CDQ query still contains the list of columns from the root database table.
      *
      */
     protected void fields(final AdqlParserQuery subject, final AdqlParserTable table)
+    throws DuplicateFieldException
         {
         log.debug("fields(AdqlParserQuery, AdqlParserTable)");
         fields(
@@ -712,6 +755,7 @@ implements AdqlParser
      *
      */
     protected void fields(final AdqlParserQuery subject, final AdqlTable table)
+    throws DuplicateFieldException    
         {
         log.debug("fields(AdqlParserQuery, AdqlTable)");
         log.debug("  AdqlTable [{}]", table.namebuilder());
@@ -719,7 +763,8 @@ implements AdqlParser
         log.debug("  RootTable [{}]", table.root().namebuilder());
         for (final AdqlColumn column : table.columns().select())
             {
-            subject.add(
+            additem(
+                subject,
                 wrap(
                     column
                     )
@@ -729,16 +774,43 @@ implements AdqlParser
 
     public static final Integer DEFAULT_FIELD_SIZE = new Integer(0);
 
-    public static final AdqlQuery.SelectField UNKNOWN_FIELD = new SelectFieldImpl(
+    public static final MySelectField UNKNOWN_FIELD = new MySelectFieldImpl(
         "unknown",
         AdqlColumn.Type.UNKNOWN
         );
 
-    public static class SelectFieldImpl
-    implements AdqlQuery.SelectField
+    /**
+     * Local copy of the AdqlQuery interface. 
+     *
+     */
+    public static interface MySelectField
+    extends AdqlQuery.SelectField
+        {
+        }
+
+    /**
+     * Extends the SelectField interface to include a SelectItem. 
+     *
+     */
+    public static interface MySelectItem
+    extends MySelectField
+        {
+        public String alias();
+        public void alias(String alias);
+
+        public SelectItem item();
+
+        }
+
+    /**
+     * Inner class to represent a static SelectField. 
+     *
+     */
+    public static class MySelectFieldImpl
+    implements MySelectField
         {
 
-        private SelectFieldImpl(final String name, final AdqlColumn.Type type)
+        private MySelectFieldImpl(final String name, final AdqlColumn.Type type)
             {
             this(
                 name,
@@ -747,7 +819,7 @@ implements AdqlParser
                 );
             }
 
-        private SelectFieldImpl(final String name, final AdqlColumn.Type type, final Integer size)
+        private MySelectFieldImpl(final String name, final AdqlColumn.Type type, final Integer size)
             {
             this.name  = name ;
             this.size  = size ;
@@ -759,18 +831,6 @@ implements AdqlParser
         public String name()
             {
             return this.name;
-            }
-
-        @Override
-        public AdqlColumn adql()
-            {
-            return null;
-            }
-
-        @Override
-        public JdbcColumn jdbc()
-            {
-            return null ;
             }
 
         private final Integer size;
@@ -786,13 +846,35 @@ implements AdqlParser
             {
             return this.type;
             }
+
+        @Override
+        public AdqlColumn adql()
+            {
+            return null;
+            }
+        @Override
+        public JdbcColumn jdbc()
+            {
+            return null ;
+            }
         }
-
-    public static class SelectFieldWrapper
-    implements AdqlQuery.SelectField
+    
+    /**
+     * Inner class to wrap a SelectField with an optional change of name. 
+     *
+     */
+    public static class MySelectFieldWrapper
+    implements MySelectField
         {
+        private MySelectFieldWrapper(final MySelectField field)
+            {
+            this(
+                field.name(),
+                field
+                );
+            }
 
-        private SelectFieldWrapper(final String name, final AdqlQuery.SelectField field)
+        private MySelectFieldWrapper(final String name, final MySelectField field)
             {
             this.name  = name  ;
             this.field = field ;
@@ -805,8 +887,8 @@ implements AdqlParser
             return this.name;
             }
 
-        private final AdqlQuery.SelectField field;
-        public AdqlQuery.SelectField field()
+        private final MySelectField field;
+        public MySelectField field()
             {
             return this.field;
             }
@@ -836,11 +918,115 @@ implements AdqlParser
             }
         }
 
-    public static class AdqlColumnWrapper
-    implements AdqlQuery.SelectField
+    /**
+     * Inner class to wrap a SelectItem. 
+     *
+     */
+    public static class MySelectItemWrapper
+    implements MySelectItem
+        {
+        protected MySelectItemWrapper(final SelectItem item)
+            {
+            this.item  = item;
+            this.field = wrap(
+                item.getOperand()
+                );
+            }
+
+        private SelectItem item ;
+        @Override
+        public SelectItem item()
+            {
+            return this.item;
+            }
+        @Override
+        public String alias()
+            {
+            return item.getAlias();
+            }
+        @Override
+        public void alias(String alias)
+            {
+            item.setAlias(
+                alias
+                );
+            }
+        @Override
+        public String name()
+            {
+            return ((item.hasAlias()) ? item.getAlias() : item.getName());
+            }
+        
+        private MySelectField field;
+        public MySelectField field()
+            {
+            return this.field ;
+            }
+        @Override
+        public Integer arraysize()
+            {
+            return this.field.arraysize();
+            }
+        @Override
+        public Type type()
+            {
+            return this.field.type();
+            }
+        @Override
+        public AdqlColumn adql()
+            {
+            return this.field.adql();
+            }
+        @Override
+        public JdbcColumn jdbc()
+            {
+            return this.field.jdbc();
+            }
+        }
+
+    /**
+     * Inner class to wrap an ADQLOperand, adding the operand type. 
+     *
+     */
+    public static class MySelectOperWrapper
+    extends MySelectFieldImpl
+    implements MySelectField
+        {
+        protected MySelectOperWrapper(final ADQLOperand oper, final Type type)
+            {
+            this(
+                oper,
+                type,
+                DEFAULT_FIELD_SIZE
+                );
+            }
+
+        protected MySelectOperWrapper(final ADQLOperand oper, final Type type, final Integer arraysize)
+            {
+            super(
+                oper.getName(),
+                type,
+                arraysize
+                );
+            this.oper = oper;
+            }
+
+        private ADQLOperand oper ;
+        public ADQLOperand oper()
+            {
+            return this.oper;
+            }
+        }
+    
+    /**
+     * Inner class to wrap an AdqlColumn, with an optional name change. 
+     *
+     */
+    public static class MyAdqlColumnWrapper
+    implements MySelectField
         {
 
-        private AdqlColumnWrapper(final AdqlColumn adql)
+        private MyAdqlColumnWrapper(final AdqlColumn adql)
             {
             this(
                 adql.name(),
@@ -848,7 +1034,7 @@ implements AdqlParser
                 );
             }
 
-        private AdqlColumnWrapper(final String name, final AdqlColumn adql)
+        private MyAdqlColumnWrapper(final String name, final AdqlColumn adql)
             {
             this.name  = name ;
             this.adql  = adql ;
@@ -862,7 +1048,6 @@ implements AdqlParser
             }
 
         private final AdqlColumn adql;
-
         @Override
         public AdqlColumn adql()
             {
@@ -887,7 +1072,6 @@ implements AdqlParser
             {
             return this.adql.meta().adql().arraysize();
             }
-
         @Override
         public AdqlColumn.Type type()
             {
@@ -899,17 +1083,14 @@ implements AdqlParser
      * Wrap a SelectItem.
      *
      */
-    public static AdqlQuery.SelectField wrap(final SelectItem item)
+    public static MySelectItem wrap(final SelectItem item)
         {
         log.debug("wrap(SelectItem)");
         log.debug("  alias [{}]", item.getAlias());
         log.debug("  name  [{}]", item.getName());
         log.debug("  class [{}]", item.getClass().getName());
-        return new SelectFieldWrapper(
-            ((item.getAlias() != null) ? item.getAlias() : item.getName()),
-            wrap(
-                item.getOperand()
-                )
+        return new MySelectItemWrapper(
+            item
             );
         }
 
@@ -917,7 +1098,7 @@ implements AdqlParser
      * Wrap an ADQLOperand.
      *
      */
-    public static AdqlQuery.SelectField wrap(final ADQLOperand oper)
+    public static MySelectField wrap(final ADQLOperand oper)
         {
         log.debug("wrap(ADQLOperand)");
         log.debug("  name   [{}]", oper.getName());
@@ -927,17 +1108,17 @@ implements AdqlParser
 
         if (oper instanceof StringConstant)
             {
-            return new SelectFieldImpl(
-                oper.getName(),
+            return new MySelectOperWrapper(
+                oper,
                 AdqlColumn.Type.CHAR,
                 ((StringConstant) oper).getValue().length()
                 );
             }
         else if (oper instanceof NumericConstant)
             {
-            return new SelectFieldImpl(
-                oper.getName(),
-                AdqlColumn.Type.DOUBLE
+            return new MySelectOperWrapper(
+                oper,
+                AdqlColumn.Type.DOUBLE // TODO more options
                 );
             }
         else if (oper instanceof ADQLColumn)
@@ -968,7 +1149,7 @@ implements AdqlParser
      * Wrap an ADQLColumn.
      *
      */
-    public static AdqlQuery.SelectField wrap(final ADQLColumn column)
+    public static MySelectField wrap(final ADQLColumn column)
         {
         log.debug("wrap(ADQLColumn)");
         log.debug("  name   [{}]", column.getName());
@@ -994,13 +1175,13 @@ implements AdqlParser
      * Wrap an AdqlColumn.
      *
      */
-    public static AdqlQuery.SelectField wrap(final AdqlColumn column)
+    public static MySelectField wrap(final AdqlColumn column)
         {
         log.debug("wrap(AdqlColumn)");
         log.debug("  adql [{}]", column.namebuilder());
         log.debug("  base [{}]", column.base().namebuilder());
         log.debug("  root [{}]", column.root().namebuilder());
-        return new AdqlColumnWrapper(
+        return new MyAdqlColumnWrapper(
             column
             );
         }
@@ -1008,15 +1189,15 @@ implements AdqlParser
      * Wrap an Operation.
      *
      */
-    public static AdqlQuery.SelectField wrap(final Operation oper)
+    public static MySelectField wrap(final Operation oper)
         {
         log.debug("wrap(Operation)");
         log.debug("  name   [{}]", oper.getName());
         log.debug("  number [{}]", oper.isNumeric());
         log.debug("  string [{}]", oper.isString());
 
-        ADQLOperand param1 = oper.getLeftOperand();
-        ADQLOperand param2 = oper.getRightOperand();
+        final ADQLOperand param1 = oper.getLeftOperand();
+        final ADQLOperand param2 = oper.getRightOperand();
 
         ADQLColumn c1 = null ;
         ADQLColumn c2 = null ;
@@ -1061,68 +1242,68 @@ implements AdqlParser
 				} else {
 					return_type=t1;
 				}
-        } else if (param1 instanceof NumericConstant  || param2 instanceof NumericConstant){
+        } else if ((param1 instanceof NumericConstant)  || (param2 instanceof NumericConstant)){
         			return_type = AdqlColumn.Type.DOUBLE;
         } else if ((t1 == AdqlColumn.Type.DOUBLE) || (t2 == AdqlColumn.Type.DOUBLE)){
         			return_type = AdqlColumn.Type.DOUBLE;
 
         } else if ((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.BYTE)){
 					return_type = AdqlColumn.Type.BYTE;
-        
+
         } else if((t1 == AdqlColumn.Type.CHAR) && (t2 == AdqlColumn.Type.CHAR)){
         			return_type = AdqlColumn.Type.CHAR;
 
         } else if((t1 == AdqlColumn.Type.UNICODE) && (t2 == AdqlColumn.Type.UNICODE)){
 					return_type = AdqlColumn.Type.UNICODE;
 
-        } else if ((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.SHORT) ||
-        			(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.BYTE) || 
-        			(t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.SHORT)){
-          
+        } else if (((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.SHORT)) ||
+        			((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.BYTE)) ||
+        			((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.SHORT))){
+
         	        if (oper.getName()=="/"){
         	        	return_type = AdqlColumn.Type.DOUBLE;
         	        } else {
         	        	return_type = AdqlColumn.Type.SHORT;
         	        }
-        } else if ((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.LONG) ||
-        		   	(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.INTEGER) ||
-        		   	(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.LONG) ||
-        		   	(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.LONG) ||
-        		   	(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.SHORT) || 
-        		   	(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.BYTE) || 
-        			(t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.LONG)){
+        } else if (((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.LONG)) ||
+        		   	((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.INTEGER)) ||
+        		   	((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.LONG)) ||
+        		   	((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.LONG)) ||
+        		   	((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.SHORT)) ||
+        		   	((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.BYTE)) ||
+        			((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.LONG))){
 	        		if (oper.getName()=="/"){
 		  	        	return_type = AdqlColumn.Type.DOUBLE;
 		  	        } else {
 		  	        	return_type = AdqlColumn.Type.LONG;
 		  	        }
 
-        } else if ((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.INTEGER) ||
-        			(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.INTEGER) ||
-        			(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.SHORT) ||
-        			(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.BYTE) || 
-        			(t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.INTEGER)){
+        } else if (((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.INTEGER)) ||
+        			((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.INTEGER)) ||
+        			((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.SHORT)) ||
+        			((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.BYTE)) ||
+        			((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.INTEGER))){
 		        	if (oper.getName()=="/"){
 		  	        	return_type = AdqlColumn.Type.DOUBLE;
 		  	        } else {
 		  	        	return_type = AdqlColumn.Type.INTEGER;
 		  	        }
 
-        } else if ((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.FLOAT) ||
-        			(t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.FLOAT) ||
-        			(t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.INTEGER) ||
-        			(t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.FLOAT) ||
-        			(t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.LONG) ||
-        			(t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.FLOAT) ||
-        			(t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.SHORT) ||
-        			(t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.BYTE)||
-        			(t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.FLOAT)){
+        } else if (((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.FLOAT)) ||
+        			((t1 == AdqlColumn.Type.INTEGER) && (t2 == AdqlColumn.Type.FLOAT)) ||
+        			((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.INTEGER)) ||
+        			((t1 == AdqlColumn.Type.LONG) && (t2 == AdqlColumn.Type.FLOAT)) ||
+        			((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.LONG)) ||
+        			((t1 == AdqlColumn.Type.SHORT) && (t2 == AdqlColumn.Type.FLOAT)) ||
+        			((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.SHORT)) ||
+        			((t1 == AdqlColumn.Type.FLOAT) && (t2 == AdqlColumn.Type.BYTE))||
+        			((t1 == AdqlColumn.Type.BYTE) && (t2 == AdqlColumn.Type.FLOAT))){
         			return_type = AdqlColumn.Type.FLOAT;
 
         }
         log.debug("  return_type******************** [{}]",return_type);
 
-        return new SelectFieldImpl(
+        return new MySelectFieldImpl(
             "operation",
             return_type
             );
@@ -1133,7 +1314,7 @@ implements AdqlParser
      * Wrap an ADQLFunction.
      *
      */
-    public static AdqlQuery.SelectField wrap(final ADQLFunction funct)
+    public static MySelectField wrap(final ADQLFunction funct)
         {
         log.debug("wrap(ADQLFunction)");
         log.debug("  name   [{}]", funct.getName());
@@ -1162,7 +1343,7 @@ implements AdqlParser
      * Wrap an ADQLFunction.
      *
      */
-    public static AdqlQuery.SelectField wrap(final SQLFunction funct)
+    public static MySelectField wrap(final SQLFunction funct)
         {
         log.debug("wrap(SQLFunction)");
         log.debug("  name   [{}]", funct.getName());
@@ -1172,7 +1353,7 @@ implements AdqlParser
             {
             case COUNT :
             case COUNT_ALL :
-                return new SelectFieldImpl(
+                return new MySelectFieldImpl(
                     funct.getName(),
                     AdqlColumn.Type.LONG
                     );
@@ -1181,7 +1362,7 @@ implements AdqlParser
             case MAX:
             case MIN:
             case SUM:
-                return new SelectFieldWrapper(
+                return new MySelectFieldWrapper(
                     funct.getName(),
                     wrap(
                         funct.getParameter(0)
@@ -1198,20 +1379,20 @@ implements AdqlParser
      * Wrap a MathFunction.
      *
      */
-    public static AdqlQuery.SelectField wrap(final MathFunction funct)
+    public static MySelectField wrap(final MathFunction funct)
         {
         log.debug("wrap(MathFunction)");
         log.debug("  name   [{}]", funct.getName());
         log.debug("  number [{}]", funct.isNumeric());
         log.debug("  string [{}]", funct.isString());
 /*
- * Causes error if the function only has one param. 
+ * Causes error if the function only has one param.
         ADQLOperand param1 = funct.getParameter(0);
         ADQLOperand param2 = funct.getParameter(1);
 
         log.debug("  param1  [{}]", param1);
         log.debug("  param2  [{}]", param2);
- *        
+ *
  */
         switch (funct.getType())
             {
@@ -1221,7 +1402,7 @@ implements AdqlParser
             case CEILING:
             case MOD:
             case TRUNCATE:
-                return new SelectFieldWrapper(
+                return new MySelectFieldWrapper(
                     funct.getName(),
                     wrap(
                         funct.getParameter(0)
@@ -1246,7 +1427,7 @@ implements AdqlParser
             case PI:
             case SQRT:
             case EXP:
-                return new SelectFieldImpl(
+                return new MySelectFieldImpl(
                     funct.getName(),
                     AdqlColumn.Type.DOUBLE
                     );
@@ -1258,69 +1439,40 @@ implements AdqlParser
         }
 
     /**
-     * Wrap a UserDefinedFunction.
+     * Hard coded set of UserDefinedFunctions for the OSA Altas catalog.
      *
      */
-    public static AdqlQuery.SelectField wrap(final UserDefinedFunction funct)
+    public static MySelectField wrap(final UserDefinedFunction funct)
         {
 	        log.debug("wrap(UserDefinedFunction)");
 	        log.debug("  name   [{}]", funct.getName());
 	        log.debug("  number [{}]", funct.isNumeric());
 	        log.debug("  string [{}]", funct.isString());
-	        String name = funct.getName();
-	        
+	        final String name = funct.getName();
+
 	        if ((name=="fDMS") ||
-	        	(name=="fDMSbase") || 
+	        	(name=="fDMSbase") ||
 	        	(name=="fHMS") ||
 	        	(name=="fHMSbase")) {
-	        	
-	        	   return new SelectFieldImpl(
-				           "operation",
+
+	        	   return new MySelectFieldImpl(
+				           name,
 				           AdqlColumn.Type.CHAR,
 				           new Integer(32)
 				           );
 
 	        } else if (name=="fGreatCircleDist") {
-				   return new SelectFieldImpl(
-						   "operation",
+				   return new MySelectFieldImpl(
+						   name,
 				           AdqlColumn.Type.DOUBLE
 				           );
 
 		    } else {
-		    	 return new SelectFieldImpl(
-		    			  "operation",
+		    	 return new MySelectFieldImpl(
+		    			  name,
 				           AdqlColumn.Type.CHAR,
 				           new Integer(32)
 				           );
 	        }
-        
         }
-
-
-/*
- *
-        AdqlQuery.SelectField field = null ;
-
-        for (final ADQLOperand param : funct.getParameters())
-            {
-            final AdqlQuery.SelectField temp = wrap(
-                param
-                );
-            if (field == null)
-                {
-                field = temp;
-                }
-            else {
-                if (temp.arraysize().intValue() > field.arraysize().intValue())
-                    {
-                    field = temp ;
-                    }
-                }
-            }
-        return new SelectFieldWrapper(
-            funct.getName(),
-            field
-            );
-*
-*/
     }

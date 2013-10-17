@@ -1,0 +1,126 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2013, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+#-----------------------------------------------------------------------------------
+# Swap branches for debugging
+#[user@desktop]
+
+    source ${HOME:?}/firethorn.settings
+    pushd "${FIRETHORN_CODE:?}"
+
+        #
+        # Check current branch
+        hg branch
+            dave-adql-parsing
+
+        #
+        # Commit our own changes
+        hg pull    
+
+        #
+        # Pull latest changes from repo
+        hg pull    
+        
+        #
+        # Swap to developers branch
+        hg update stelios-adql-parsing
+
+        #
+        # Re-build 
+        mvn -P all clean install
+        mvn -P all eclipse:eclipse
+
+
+#-----------------------------------------------------------------------------------
+# Service on shepseskaf unable to handle char columns. 
+#[user@desktop]
+
+    #
+    # Check the OGSA-DAI log.
+    source "${HOME:?}/firethorn/test.machines"
+    ssh "${ogsauser:?}@${ogsahost:?}"
+        tail -f "${HOME}/tomcat/logs/catalina.out"
+
+            Caused by: java.sql.BatchUpdateException: Data truncation
+
+
+    # "Data truncation" exception, suggests array size on VARCHAR column ?
+    # http://stackoverflow.com/questions/14747079/getting-exception-java-sql-batchupdateexception-data-truncation-data-too-long
+
+    #
+    # Check the Firethorn metadata
+    source "${HOME:?}/firethorn/test.machines"
+    ssh -L "${fireproxy:?}:localhost:8080" "${fireuser:?}@${firehost:?}"
+        tail -f "${HOME:?}/tomcat/logs/catalina.out"
+
+    #
+    # Check the actual column sizes.
+    source "${HOME:?}/firethorn/test.machines"
+    ssh "${sqluser:?}@${sqlhost:?}"
+
+        source "${HOME:?}/sqlserver.properties"
+        sqsh -S "${devhost:?}" -U "${devuser:?}" -P "${devpass:?}" -D "${devdata:?}"
+
+            use [FirethornUserdataShep0107alpha07]
+            go
+
+            SELECT
+                COLUMN_NAME,
+                DATA_TYPE,
+                CHARACTER_MAXIMUM_LENGTH
+            FROM
+                INFORMATION_SCHEMA.COLUMNS
+            WHERE
+                TABLE_NAME = 'QUERY_1441794'
+            go
+
+            +---------------+-------------+----------------------------+
+            |  COLUMN_NAME  |  DATA_TYPE  |  CHARACTER_MAXIMUM_LENGTH  |
+            +---------------+-------------+----------------------------+
+            |  project      |  varchar    |                         1  |
+            +---------------+-------------+----------------------------+
+
+
+        source "${HOME:?}/sqlserver.properties"
+        sqsh -S "${atlashost:?}" -U "${atlasuser:?}" -P "${atlaspass:?}" -D "${atlasdata:?}"
+
+            SELECT
+                COLUMN_NAME,
+                DATA_TYPE,
+                CHARACTER_MAXIMUM_LENGTH
+            FROM
+                INFORMATION_SCHEMA.COLUMNS
+            WHERE
+                TABLE_NAME = 'Multiframe'
+            AND
+                COLUMN_NAME = 'project'
+            go
+
+            +---------------+-------------+----------------------------+
+            |  COLUMN_NAME  |  DATA_TYPE  |  CHARACTER_MAXIMUM_LENGTH  |
+            +---------------+-------------+----------------------------+
+            |  project      |  varchar    |                        64  |
+            +---------------+-------------+----------------------------+
+
+
+
+

@@ -17,6 +17,9 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.query;
 
+import java.util.List;
+import java.util.Map;
+
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.NamedEntity;
 import uk.ac.roe.wfau.firethorn.job.Job;
@@ -223,7 +226,7 @@ extends NamedEntity, Job
          *
          */
         public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final String input, final String rowid, final String name);
-        
+
         /**
          * Select all the queries from a resource.
          *
@@ -272,11 +275,11 @@ extends NamedEntity, Job
     public void input(final String input);
 
     /**
-     * Get the processed input text. 
-     * 
+     * Get the processed input text.
+     *
      */
     public String cleaned();
-    
+
     /**
      * Query syntax validation status.
      *
@@ -291,13 +294,13 @@ extends NamedEntity, Job
             {
             /**
              * Enforce the ADQL specification.
-             * 
+             *
              */
             STRICT(),
-            
+
             /**
              * Compensate for legacy SQLServer syntax.
-             * 
+             *
              */
             LEGACY();
 
@@ -430,7 +433,7 @@ extends NamedEntity, Job
 
     /**
      * The row id column name.
-     * 
+     *
      */
     public String rowid();
 
@@ -468,13 +471,18 @@ extends NamedEntity, Job
      */
     public interface SelectField
         {
+        /**
+         * The original SelectItem.
+         * 
+        public abstract SelectItem item(); 
+         */
 
         /**
          * The field name.
          *
          */
         public abstract String name();
-
+        
         /**
          * The field size.
          *
@@ -503,9 +511,8 @@ extends NamedEntity, Job
 
     /**
      * A list of the SELECT fields.
-     * The list is only generated in response to a POST request that updates the ADQL query.
-     * The list is generated when an input query is parsed and is not saved in the database.
-     * On subsequent GET requests the list will be empty.
+     * The list is only generated when an input query is parsed.
+     * The list is not saved in the database.
      *
      */
     public Iterable<SelectField> fields();

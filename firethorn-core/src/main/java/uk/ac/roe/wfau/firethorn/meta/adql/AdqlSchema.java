@@ -188,7 +188,7 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          *
          */
         public AdqlQuery create(final QueryParam params, final String query);
-        
+
         /**
          * Create a new query.
          *

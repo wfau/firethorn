@@ -22,6 +22,7 @@ package adql.parser;
 import java.util.Collection;
 import java.util.Vector;
 
+import adql.db.SearchColumnList;
 import adql.parser.IdentifierItems.IdentifierItem;
 import adql.query.ADQLOrder;
 import adql.query.ADQLQuery;
@@ -110,7 +111,8 @@ public class ADQLQueryFactory {
 	public ADQLQuery createQuery() throws Exception {
 		return new ADQLQuery();
 	}
-
+	
+	
 	public ADQLTable createTable(final IdentifierItems idItems, final IdentifierItem alias) throws Exception {
 		ADQLTable t = new ADQLTable(idItems.getCatalog(), idItems.getSchema(), idItems.getTable());
 

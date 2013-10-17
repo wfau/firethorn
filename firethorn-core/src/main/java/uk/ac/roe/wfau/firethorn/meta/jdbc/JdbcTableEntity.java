@@ -709,6 +709,7 @@ implements JdbcTable
                                 );
                             //
                             // Update the column ..
+                            // TODO How do we handle changes to column types ?
                             column.meta().jdbc().size(
                                 colsize
                                 );

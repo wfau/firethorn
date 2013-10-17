@@ -71,7 +71,7 @@ extends AtlasQueryTestBase
             query.osql().replace('\n', ' ')
             );
         }
-    
+
 
     }
 

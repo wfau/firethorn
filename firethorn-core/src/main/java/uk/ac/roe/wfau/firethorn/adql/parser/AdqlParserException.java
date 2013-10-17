@@ -26,19 +26,19 @@ extends Exception
     {
 
     /**
-     * Generated SerialVersionUID 
+     * Generated SerialVersionUID
      *
      */
     private static final long serialVersionUID = 7179671939894201466L;
 
-    
+
     /**
      * Public constructor.
-     * 
+     *
      */
-    public AdqlParserException(String message)
+    public AdqlParserException(final String message)
         {
         super(message);
         }
-    
+
     }

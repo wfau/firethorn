@@ -25,6 +25,7 @@ import java.util.NoSuchElementException;
 
 import adql.db.DBColumn;
 import adql.db.DefaultDBColumn;
+import adql.db.SearchColumnList;
 
 import adql.parser.ADQLParser;
 
@@ -61,7 +62,7 @@ public class ADQLQuery implements ADQLObject {
 
 	/** The ADQL clause ORDER BY. */
 	private ClauseADQL<ADQLOrder> orderBy;
-
+	
 
 	/**
 	 * Builds an empty ADQL query.
@@ -91,6 +92,7 @@ public class ADQLQuery implements ADQLObject {
 		orderBy = (ClauseADQL<ADQLOrder>)toCopy.orderBy.getCopy();
 	}
 
+	
 	/**
 	 * Clear all the clauses.
 	 */
@@ -98,7 +100,6 @@ public class ADQLQuery implements ADQLObject {
 		select.clear();
 		select.setDistinctColumns(false);
 		select.setNoLimit();
-
 		from = null;
 		where.clear();
 		groupBy.clear();
