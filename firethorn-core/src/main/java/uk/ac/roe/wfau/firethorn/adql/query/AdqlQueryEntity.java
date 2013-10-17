@@ -21,7 +21,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1201,23 +1203,35 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Transient
-    private final List<SelectField > fields = new ArrayList<SelectField>();
+    private final Map<String, SelectField> fields = new LinkedHashMap<String, SelectField>();
     @Override
     public Iterable<SelectField > fields()
         {
-        return this.fields;
+        return this.fields.values();
         }
 
     @Override
     public void add(final SelectField field)
+    throws DuplicateFieldException
         {
         log.debug("add(SelectField)");
         log.debug("  Name [{}]", field.name());
         log.debug("  Size [{}]", field.arraysize());
         log.debug("  Type [{}]", field.type());
-        this.fields.add(
-            field
-            );
+        //
+        // Check for a duplicate name.
+        if (fields.containsKey(field.name()))
+            {
+            throw new DuplicateFieldException(
+                field
+                );
+            }
+        else {
+            this.fields.put(
+                field.name(),
+                field
+                );
+            }
         }
 
     /**

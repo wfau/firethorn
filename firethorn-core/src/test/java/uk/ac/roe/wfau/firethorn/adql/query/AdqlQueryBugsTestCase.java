@@ -173,7 +173,7 @@ public class AdqlQueryBugsTestCase
         }
 
     /**
-     * Duplicate column names throw Hibernate ConstraintViolationException.
+     * Duplicate column names.
      * "SELECT atlas.ra, rosat.ra"
      *
      */
@@ -200,18 +200,13 @@ public class AdqlQueryBugsTestCase
             ""
             );
         assertEquals(
-            AdqlQuery.Syntax.State.VALID,
+            AdqlQuery.Syntax.State.PARSE_ERROR,
             query.syntax().state()
-            );
-        // TODO
-        compare(
-            query,
-            "SELECT stuff"
             );
         }
 
     /**
-     * Duplicate column names throw Hibernate ConstraintViolationException.
+     * Duplicate column names - do we rename if possible ?
      * "SELECT atlas.ra, rosat.ra"
      *
      */
@@ -238,13 +233,8 @@ public class AdqlQueryBugsTestCase
             ""
             );
         assertEquals(
-            AdqlQuery.Syntax.State.VALID,
+            AdqlQuery.Syntax.State.PARSE_ERROR,
             query.syntax().state()
-            );
-        // TODO
-        compare(
-            query,
-            "SELECT stuff"
             );
         }
 
