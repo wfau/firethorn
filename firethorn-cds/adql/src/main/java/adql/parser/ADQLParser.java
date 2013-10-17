@@ -497,7 +497,45 @@ public class ADQLParser implements ADQLParserConstants {
 
   final public ADQLQuery QueryExpression() throws ParseException {
     trace_call("QueryExpression");
+    
+    // Create Column list and alias map from the query stack data
+    Stack<ADQLQuery> stackq = stackQuery;
+	    DBChecker qCheck = (DBChecker ) queryChecker;
+	    SearchColumnList allfromlist =  new SearchColumnList();
+		HashMap<DBTable, ADQLTable> mapTables = new HashMap<DBTable, ADQLTable>();
+
+		for(ADQLQuery o : stackq){
+			//ArrayList<ADQLTable> adqltables = o.getFrom().getTables();
+			SearchTableHandler sHandler = new SearchTableHandler();
+
+			sHandler.search(o.getFrom());
+			for(ADQLObject result : sHandler){
+				try{
+					ADQLTable table = (ADQLTable)result;
+					// resolve the table:
+					DBTable dbTable = null;
+					if (table.isSubQuery()){
+						dbTable =  DBChecker.generateDBTable(table.getSubQuery(), table.getAlias());
+					}else{
+						dbTable = qCheck.resolveTable(table);
+						if (table.hasAlias())
+							dbTable = dbTable.copy(dbTable.getDBName(), table.getAlias());
+					}
+					// link with the matched DBTable:
+					table.setDBLink(dbTable);
+					mapTables.put(dbTable, table);
+					allfromlist.addAll(table.getDBColumns());
+
+				}catch(ParseException pe){
+					System.out.println("Parse Exception caught ");
+				}
+			}
+
+		}
+		
     try {
+    	
+    	
                 try{
                         // create the query:
                         query = queryFactory.createQuery();
@@ -541,42 +579,7 @@ public class ADQLParser implements ADQLParserConstants {
         ;
       }
      
-      		    Stack<ADQLQuery> stackq = stackQuery;
-      		    DBChecker qCheck = (DBChecker ) queryChecker;
-      		    SearchColumnList allfromlist =  new SearchColumnList();
-  				HashMap<DBTable, ADQLTable> mapTables = new HashMap<DBTable, ADQLTable>();
-
-      			for(ADQLQuery o : stackq){
-      				//ArrayList<ADQLTable> adqltables = o.getFrom().getTables();
-      				SearchTableHandler sHandler = new SearchTableHandler();
-
-      				sHandler.search(o.getFrom());
-      				for(ADQLObject result : sHandler){
-      					try{
-      						ADQLTable table = (ADQLTable)result;
-      						// resolve the table:
-      						DBTable dbTable = null;
-      						if (table.isSubQuery()){
-      							dbTable =  DBChecker.generateDBTable(table.getSubQuery(), table.getAlias());
-      						}else{
-      							dbTable = qCheck.resolveTable(table);
-      							if (table.hasAlias())
-      								dbTable = dbTable.copy(dbTable.getDBName(), table.getAlias());
-      						}
-      						// link with the matched DBTable:
-      						table.setDBLink(dbTable);
-      						mapTables.put(dbTable, table);
-          					allfromlist.addAll(table.getDBColumns());
-
-      					}catch(ParseException pe){
-      						System.out.println("Parse Exception caught **** ");
-      					}
-      				}
-
-      				//for(ADQLTable x : adqltables){
-      				//	allfromlist.addAll(x.getDBColumns());
-      				//}
-      			}
+      		  
                 // check the query:
                 if (queryChecker != null)
                         queryChecker.check(query,allfromlist, mapTables);

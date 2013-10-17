@@ -172,11 +172,11 @@ public class DBChecker implements QueryChecker {
 	}
 	
 	
-	public void check(final ADQLQuery query, SearchColumnList fromList, HashMap<DBTable, ADQLTable> _mapTables) throws ParseException {
+	public void check(final ADQLQuery query, SearchColumnList stackColumnList, HashMap<DBTable, ADQLTable> _mapTables) throws ParseException {
 		UnresolvedIdentifiersException errors = new UnresolvedIdentifiersException();
 		HashMap<DBTable, ADQLTable> mapTables = _mapTables;
 		ISearchHandler sHandler;
-
+		stackColumnList.putTableAliasList(mapTables);
 		// Check the existence of all tables:
 		sHandler = new SearchTableHandler();
 		sHandler.search(query.getFrom());
@@ -224,18 +224,16 @@ public class DBChecker implements QueryChecker {
 				errors.addException(pe);
 			}
 		}
+		
 		SearchColumnList list = query.getFrom().getDBColumns();
-		if (fromList!=null){
-			list = fromList ;
-			list.putTableAliasList(mapTables);
-		}
-		// DEBUG
+		
+		/* DEBUG
 		System.out.println("\n*** FROM COLUMNS ***");
 		for(DBColumn dbCol : list){
 			System.out.println("\t- "+dbCol.getADQLName()+" in "+((dbCol.getTable()==null)?"<NULL>":dbCol.getTable().getADQLName())+" (= "+dbCol.getDBName()+" in "+((dbCol.getTable()==null)?"<NULL>":dbCol.getTable().getDBName())+")");
 		}
 		System.out.println();
-		
+		*/
 		// Check the existence of all columns:
 		sHandler = new SearchColumnHandler();  
 	
@@ -244,7 +242,7 @@ public class DBChecker implements QueryChecker {
 			try{
 				ADQLColumn adqlColumn = (ADQLColumn)result;
 				// resolve the column:
-				DBColumn dbColumn = resolveColumn(adqlColumn, list);
+				DBColumn dbColumn = resolveColumn(adqlColumn, list, stackColumnList);
 				// link with the matched DBColumn:
 				adqlColumn.setDBLink(dbColumn);
 				adqlColumn.setAdqlTable(mapTables.get(dbColumn.getTable()));
@@ -312,9 +310,9 @@ public class DBChecker implements QueryChecker {
 	 * @throws ParseException	An {@link UnresolvedColumnException} if the given column can't be resolved
 	 * 							or an {@link UnresolvedTableException} if its table reference can't be resolved.
 	 */
-	protected DBColumn resolveColumn(final ADQLColumn column, final SearchColumnList dbColumns) throws ParseException {
+	protected DBColumn resolveColumn(final ADQLColumn column, final SearchColumnList dbColumns, final SearchColumnList stackColumnList) throws ParseException {
 		ArrayList<DBColumn> foundColumns = dbColumns.search(column);
-
+		
 		// good if only one column has been found:
 		if (foundColumns.size() == 1)
 			return foundColumns.get(0);
@@ -324,9 +322,22 @@ public class DBChecker implements QueryChecker {
 				throw new UnresolvedColumnException(column, (foundColumns.get(0).getTable()==null)?"<NULL>":(foundColumns.get(0).getTable().getADQLName()+"."+foundColumns.get(0).getADQLName()), (foundColumns.get(1).getTable()==null)?"<NULL>":(foundColumns.get(1).getTable().getADQLName()+"."+foundColumns.get(1).getADQLName()));
 			else
 				throw new UnresolvedTableException(column, (foundColumns.get(0).getTable()==null)?"<NULL>":foundColumns.get(0).getTable().getADQLName(), (foundColumns.get(1).getTable()==null)?"<NULL>":foundColumns.get(1).getTable().getADQLName());
-		}// otherwise (no match): unknown column !
-		else
-			throw new UnresolvedColumnException(column);
+		}// otherwise (no match): unknown column ! Check stack column list
+		else{
+			ArrayList<DBColumn> foundColumnsFromStack = stackColumnList.search(column);
+			if (foundColumnsFromStack.size() == 1)
+				return foundColumnsFromStack.get(0);
+			// but if more than one: ambiguous table reference !
+			else if (foundColumnsFromStack.size() > 1){
+				if (column.getTableName() == null)
+					throw new UnresolvedColumnException(column, (foundColumnsFromStack.get(0).getTable()==null)?"<NULL>":(foundColumnsFromStack.get(0).getTable().getADQLName()+"."+foundColumnsFromStack.get(0).getADQLName()), (foundColumnsFromStack.get(1).getTable()==null)?"<NULL>":(foundColumnsFromStack.get(1).getTable().getADQLName()+"."+foundColumnsFromStack.get(1).getADQLName()));
+				else
+					throw new UnresolvedTableException(column, (foundColumnsFromStack.get(0).getTable()==null)?"<NULL>":foundColumnsFromStack.get(0).getTable().getADQLName(), (foundColumnsFromStack.get(1).getTable()==null)?"<NULL>":foundColumnsFromStack.get(1).getTable().getADQLName());
+			} else // otherwise (no match): unknown column !
+				throw new UnresolvedColumnException(column);
+		
+		
+		}
 	}
 
 	/**
@@ -370,7 +381,7 @@ public class DBChecker implements QueryChecker {
 			}
 
 			// check the corresponding column:
-			return resolveColumn(col, dbColumns);
+			return resolveColumn(col, dbColumns, new SearchColumnList());
 		}
 	}
 
@@ -387,6 +398,7 @@ public class DBChecker implements QueryChecker {
 	 * 
 	 * @return			The corresponding {@link DBTable} if the table has been found in the given sub-query, <i>null</i> otherwise.
 	 * 
+				
 	 * @throws ParseException	Can be used to explain why the table has not been found.
 	 */
 	public static DBTable generateDBTable(final ADQLQuery subQuery, final String tableName) throws ParseException {

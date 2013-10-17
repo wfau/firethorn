@@ -46,5 +46,15 @@ public interface QueryChecker {
 	 * @throws ParseException	If the given query is not correct.
 	 */
 	public void check(ADQLQuery query) throws ParseException;
-	public void check(ADQLQuery query, SearchColumnList fromList, HashMap<DBTable, ADQLTable> _mapTables) throws ParseException;
+	
+	/**
+	 * <p>Checks (non-recursively in sub-queries) the given {@link ADQLQuery}.</p>
+	 * <p>If the query is correct, nothing happens. However at the first detected error, a {@link ParseException} is thrown.</p>
+	 * 
+	 * @param query				The query to check.
+	 * @param stackColumnList	A list of columns to check, based on higher level query info
+	 * @param _mapTables		A HashMap of table-alias associations
+	 * @throws ParseException	If the given query is not correct.
+	 */
+	public void check(ADQLQuery query, SearchColumnList stackColumnList, HashMap<DBTable, ADQLTable> _mapTables) throws ParseException;
 }
