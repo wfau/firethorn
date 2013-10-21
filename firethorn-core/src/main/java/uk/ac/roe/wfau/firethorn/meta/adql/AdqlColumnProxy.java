@@ -18,8 +18,6 @@
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import java.util.Iterator;
-import java.util.UUID;
-
 import javax.persistence.Transient;
 
 import lombok.extern.slf4j.Slf4j;

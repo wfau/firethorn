@@ -186,10 +186,16 @@ public class JdbcColumnEntity
         @CreateEntityMethod
         public JdbcColumn create(final JdbcTable parent, final AdqlQuery.SelectField field)
             {
+            log.debug("JdbcColumn create(JdbcTable, AdqlQuery.SelectField)");
+            log.debug("  name [{}]", field.name());
             if (field.jdbc() != null)
                 {
+                log.debug("JDBC");
+                log.debug("  name [{}]", field.jdbc().namebuilder());
+                log.debug("  type [{}]", field.jdbc().meta().jdbc().type());
             	// TODO include a base reference.
             	// TODO inherit the metadata
+                log.debug("");
                 return create(
                     parent,
                     field.name(),
@@ -545,6 +551,77 @@ public class JdbcColumnEntity
                 jdbctype(
                     type
                     );
+                }
+            @Override
+            public CreateSql create()
+                {
+                return new CreateSql()
+                    {
+                    @Override
+                    public String name()
+                        {
+                        // TODO Validate name with product specific rules ?
+                        return JdbcColumnEntity.this.name();
+                        }
+
+                    @Override
+                    public String type()
+                        {
+                        final StringBuilder builder = new StringBuilder();
+                        final JdbcColumn.Type type = jdbctype();
+                        final JdbcProductType prod = JdbcColumnEntity.this.resource().connection().type();
+
+                        //
+                        // TODO Make JdbcProductType an interface.
+                        // Use Spring to load available product types ?
+                        // ProductType methods for creating tables and columns.
+
+                        switch(prod)
+                            {
+                            case MSSQL :
+                                switch(type)
+                                    {
+                                    case DATE :
+                                    case TIME :
+                                    case TIMESTAMP :
+                                        builder.append(
+                                            "DATETIME"
+                                            );
+                                        break ;
+
+                                    default :
+                                        builder.append(
+                                            jdbctype().name()
+                                            );
+                                        break ;
+                                    }
+
+                                break ;
+
+                            default :
+                                builder.append(
+                                    jdbctype().name()
+                                    );
+                                break ;
+                            }
+
+                        if (jdbctype().strsize() == BaseColumn.VAR_ARRAY_SIZE)
+                            {
+                            if (jdbcsize() == BaseColumn.VAR_ARRAY_SIZE)
+                                {
+                                builder.append("(*)");
+                                }
+                            else {
+                                builder.append("(");
+                                builder.append(
+                                    jdbcsize()
+                                    );
+                                builder.append(")");
+                                }
+                            }
+                        return builder.toString();
+                        }
+                    };
                 }
             };
         }

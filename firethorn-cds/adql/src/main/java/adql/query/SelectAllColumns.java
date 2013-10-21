@@ -45,7 +45,7 @@ public final class SelectAllColumns extends SelectItem {
 	 * @param query	The query whose all available columns must be selected.
 	 */
 	public SelectAllColumns(final ADQLQuery query) {
-		super(null, null);
+		super(null, null, query);
 		this.query = query;
 	}
 
@@ -54,8 +54,8 @@ public final class SelectAllColumns extends SelectItem {
 	 * 
 	 * @param table	The table whose all available columns must be selected.
 	 */
-	public SelectAllColumns(final ADQLTable table) {
-		super(null, null);
+	public SelectAllColumns(final ADQLTable table, ADQLQuery query ) {
+		super(null, null, query);
 		adqlTable = table;
 	}
 
@@ -66,7 +66,7 @@ public final class SelectAllColumns extends SelectItem {
 	 * @throws Exception	If there is an error during the copy.
 	 */
 	public SelectAllColumns(SelectAllColumns toCopy) throws Exception {
-		super(toCopy);
+		super(toCopy, toCopy.getQuery());
 	}
 
 	/**

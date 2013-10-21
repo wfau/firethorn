@@ -72,7 +72,7 @@ public class DBChecker implements QueryChecker {
 	/** List of all available tables ({@link DBTable}). */
 	protected SearchTableList lstTables;
 
-	
+
 	/* ************ */
 	/* CONSTRUCTORS */
 	/* ************ */
@@ -224,9 +224,9 @@ public class DBChecker implements QueryChecker {
 				errors.addException(pe);
 			}
 		}
-		
+
 		SearchColumnList list = query.getFrom().getDBColumns();
-		
+
 		/* DEBUG
 		System.out.println("\n*** FROM COLUMNS ***");
 		for(DBColumn dbCol : list){
@@ -312,7 +312,7 @@ public class DBChecker implements QueryChecker {
 	 */
 	protected DBColumn resolveColumn(final ADQLColumn column, final SearchColumnList dbColumns, final SearchColumnList stackColumnList) throws ParseException {
 		ArrayList<DBColumn> foundColumns = dbColumns.search(column);
-		
+
 		// good if only one column has been found:
 		if (foundColumns.size() == 1)
 			return foundColumns.get(0);
@@ -331,10 +331,10 @@ public class DBChecker implements QueryChecker {
 			else if (foundColumnsFromStack.size() > 1){
 				if (column.getTableName() == null)
 					throw new UnresolvedColumnException(column, (foundColumnsFromStack.get(0).getTable()==null)?"<NULL>":(foundColumnsFromStack.get(0).getTable().getADQLName()+"."+foundColumnsFromStack.get(0).getADQLName()), (foundColumnsFromStack.get(1).getTable()==null)?"<NULL>":(foundColumnsFromStack.get(1).getTable().getADQLName()+"."+foundColumnsFromStack.get(1).getADQLName()));
-				else
+		else
 					throw new UnresolvedTableException(column, (foundColumnsFromStack.get(0).getTable()==null)?"<NULL>":foundColumnsFromStack.get(0).getTable().getADQLName(), (foundColumnsFromStack.get(1).getTable()==null)?"<NULL>":foundColumnsFromStack.get(1).getTable().getADQLName());
 			} else // otherwise (no match): unknown column !
-				throw new UnresolvedColumnException(column);
+			throw new UnresolvedColumnException(column);
 		
 		
 		}
@@ -398,7 +398,6 @@ public class DBChecker implements QueryChecker {
 	 * 
 	 * @return			The corresponding {@link DBTable} if the table has been found in the given sub-query, <i>null</i> otherwise.
 	 * 
-				
 	 * @throws ParseException	Can be used to explain why the table has not been found.
 	 */
 	public static DBTable generateDBTable(final ADQLQuery subQuery, final String tableName) throws ParseException {

@@ -158,14 +158,7 @@ extends AbstractNamedEntity
      *
      */
     private static final long SCAN_INTERVAL = 1000 * 60 * 60 * 4 ;
-/*
-    protected boolean scandue()
-        {
-        long scannext = System.currentTimeMillis() - SCAN_INTERVAL ;
-        log.debug("scandue [{}][{}][{}]", scanprev, scannext, (scannext - scanprev));
-        return (this.scanprev < scannext);
-        }
-*/
+
     /**
      * Scan our metadata.
      *
@@ -173,9 +166,17 @@ extends AbstractNamedEntity
     public void scantest()
         {
         log.debug("scantest() for [{}]", ident());
+/*
+ * Regular scans disabled.
         final long scannext = System.currentTimeMillis() - SCAN_INTERVAL ;
         log.debug("  values [{}][{}][{}]", scanprev, scannext, (scannext - scanprev));
         if (this.scanprev < scannext)
+            {
+            scansync();
+            }
+ *
+ */
+        if (this.scanprev == 0)
             {
             scansync();
             }

@@ -49,7 +49,7 @@ public class SQLServerTranslator
     implements ADQLTranslator
     {
 
-	private String schemaName="dbo";
+	private final String schemaName="dbo";
 
     /**
      *
@@ -92,13 +92,13 @@ public class SQLServerTranslator
 
     /**
      * Get the schema name
-     * 
+     *
      * @return String schemaName
      */
     public String getSchemaName(){
     	return schemaName;
     }
-    
+
     /**
      * Replaces the PostgreSQLTranslator method to not put LIMIT at the end.
      *
@@ -238,7 +238,7 @@ public class SQLServerTranslator
         }
 
     @Override
-	public String translate(UserDefinedFunction function)
+	public String translate(final UserDefinedFunction function)
     throws TranslationException
         {
         log.debug("translate(UserDefinedFunction)");
@@ -247,20 +247,20 @@ public class SQLServerTranslator
 		    );
         }
 
-	
+
 	/**
 	 * Gets the default SQL output for the given ADQL function.
-	 * 
+	 *
 	 * @param function The ADQL function to format into SQL.
 	 * @return The corresponding SQL.
 	 * @throws TranslationException	If there is an error during the translation.
-	 * 
+	 *
 	 */
     @Override
-	protected String getDefaultADQLFunction(ADQLFunction function)
+	protected String getDefaultADQLFunction(final ADQLFunction function)
     throws TranslationException
         {
-        StringBuilder builder = new StringBuilder(); 
+        final StringBuilder builder = new StringBuilder();
         //
         // If the function is user defined.
         if (function instanceof UserDefinedFunction)
@@ -294,7 +294,7 @@ public class SQLServerTranslator
         builder.append(")");
 		return builder.toString();
         }
-	
+
     /**
      * Override the PostgreSQLTranslator method ...
      *

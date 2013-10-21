@@ -497,14 +497,14 @@ public class ADQLParser implements ADQLParserConstants {
 
   final public ADQLQuery QueryExpression() throws ParseException {
     trace_call("QueryExpression");
-    
+    ADQLQuery parentQuery = null;
     // Create Column list and alias map from the query stack data
     Stack<ADQLQuery> stackq = stackQuery;
-	    DBChecker qCheck = (DBChecker ) queryChecker;
-	    SearchColumnList allfromlist =  new SearchColumnList();
-		HashMap<DBTable, ADQLTable> mapTables = new HashMap<DBTable, ADQLTable>();
+    DBChecker qCheck = (DBChecker ) queryChecker;
+    SearchColumnList allfromlist =  new SearchColumnList();
+	HashMap<DBTable, ADQLTable> mapTables = new HashMap<DBTable, ADQLTable>();
 
-		for(ADQLQuery o : stackq){
+	for(ADQLQuery o : stackq){
 			//ArrayList<ADQLTable> adqltables = o.getFrom().getTables();
 			SearchTableHandler sHandler = new SearchTableHandler();
 
@@ -534,18 +534,16 @@ public class ADQLParser implements ADQLParserConstants {
 		}
 		
     try {
-    	
-    	
                 try{
-                        // create the query:
-                        query = queryFactory.createQuery();
+                	   
+                	    	query = queryFactory.createQuery(query,true);
+            		   
                         stackQuery.push(query);
                 }catch(Exception ex){
                         {if (true) throw generateParseException(ex);}
                 }
       Select();
       From();
-    
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case WHERE:
         Where();
@@ -578,12 +576,10 @@ public class ADQLParser implements ADQLParserConstants {
         jj_la1[4] = jj_gen;
         ;
       }
-     
-      		  
                 // check the query:
                 if (queryChecker != null)
                         queryChecker.check(query,allfromlist, mapTables);
-                
+
                 // get the previous query (!= null if the current query is a sub-query):
                 ADQLQuery previousQuery = stackQuery.pop();
                 if (stackQuery.isEmpty())
@@ -601,7 +597,7 @@ public class ADQLParser implements ADQLParserConstants {
   final public ADQLQuery SubQueryExpression() throws ParseException {
     trace_call("SubQueryExpression");
     try {
-      ADQLQuery q = null;
+                                 ADQLQuery q = null;
       jj_consume_token(LEFT_PAR);
       q = QueryExpression();
       jj_consume_token(RIGHT_PAR);
@@ -700,7 +696,7 @@ public class ADQLParser implements ADQLParserConstants {
           }
           jj_consume_token(ASTERISK);
                                 try{;
-                                        {if (true) return new SelectAllColumns( queryFactory.createTable(identifiers, null) );}
+                                        {if (true) return new SelectAllColumns( queryFactory.createTable(identifiers, null),query );}
                                 }catch(Exception ex) {
                                         {if (true) throw generateParseException(ex);}
                                 }
@@ -775,7 +771,7 @@ public class ADQLParser implements ADQLParserConstants {
         }
       }
                 try{
-                        SelectItem item = queryFactory.createSelectItem(op, (label==null)?null:label.identifier);
+                        SelectItem item = queryFactory.createSelectItem(op, (label==null)?null:label.identifier, query);
                         if (label != null)
                                 item.setCaseSensitive(label.caseSensitivity);
                         {if (true) return item;}
@@ -807,17 +803,14 @@ public class ADQLParser implements ADQLParserConstants {
           }
           jj_consume_token(COMMA);
           content2 = TableRef();
-          content = queryFactory.createJoin(JoinType.CROSS, content, content2);
+                                               content = queryFactory.createJoin(JoinType.CROSS, content, content2);
         }
-         query.setFrom(content);
-        
+                  query.setFrom(content);
       } catch (Exception ex) {
                 {if (true) throw generateParseException(ex);}
       }
     } finally {
       trace_return("From");
-	 
-
     }
   }
 

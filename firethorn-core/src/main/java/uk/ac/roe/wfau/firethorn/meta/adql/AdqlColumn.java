@@ -206,8 +206,10 @@ extends BaseColumn<AdqlColumn>
 
                 case Types.DATE :
                     return DATE ;
+
                 case Types.TIME :
                     return TIME ;
+
                 case Types.TIMESTAMP :
                     return DATETIME ;
 

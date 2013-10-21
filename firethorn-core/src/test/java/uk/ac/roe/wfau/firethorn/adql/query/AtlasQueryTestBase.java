@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -54,12 +55,12 @@ extends TestPropertiesBase
     protected JdbcResource resource ;
     protected AdqlResource workspace ;
     protected AdqlResource testspace ;
-    
+
     protected AdqlSchema queryspace ;
 
     public void schema()
         {
-        
+
         }
 
     /**
@@ -75,7 +76,7 @@ extends TestPropertiesBase
         if (resource == null)
             {
             log.debug("Loading test resource");
-            String prop = testprops().getProperty("jdbc.space");
+            final String prop = testprops().getProperty("jdbc.space");
             if (prop != null)
                 {
                 try {
@@ -85,7 +86,7 @@ extends TestPropertiesBase
                             )
                         );
                     }
-                catch (IdentifierNotFoundException ouch)
+                catch (final IdentifierNotFoundException ouch)
                     {
                     log.debug("Unable to load JDBC resource from test config [{}]", ouch.getMessage());
                     }
@@ -101,13 +102,13 @@ extends TestPropertiesBase
                     );
                 }
             }
-        
+
         //
         // Create our ADQL workspace.
         if (this.workspace == null)
             {
             log.debug("Loading test workspace");
-            String prop = testprops().getProperty("adql.space");
+            final String prop = testprops().getProperty("adql.space");
             if (prop != null)
                 {
                 try {
@@ -117,7 +118,7 @@ extends TestPropertiesBase
                             )
                         );
                     }
-                catch (IdentifierNotFoundException ouch)
+                catch (final IdentifierNotFoundException ouch)
                     {
                     log.debug("Unable to load ADQL resource from test config [{}]", ouch.getMessage());
                     }
@@ -136,14 +137,6 @@ extends TestPropertiesBase
                         "dbo"
                         )
                     );
-                this.workspace.schemas().create(
-                        BaseComponent.CopyDepth.THIN,
-                        "BestDR8",
-                        resource.schemas().select(
-                            "BestDR8",
-                            "dbo"
-                            )
-                        );
                 this.workspace.schemas().create(
                     BaseComponent.CopyDepth.THIN,
                     "ROSAT",
@@ -168,7 +161,7 @@ extends TestPropertiesBase
         if (this.testspace == null)
             {
             log.debug("Loading test schema");
-            String prop = testprops().getProperty("test.space");
+            final String prop = testprops().getProperty("test.space");
             if (prop != null)
                 {
                 try {
@@ -178,7 +171,7 @@ extends TestPropertiesBase
                             )
                         );
                     }
-                catch (IdentifierNotFoundException ouch)
+                catch (final IdentifierNotFoundException ouch)
                     {
                     log.debug("Unable to load ADQL resource from test config [{}]", ouch.getMessage());
                     }
@@ -200,12 +193,6 @@ extends TestPropertiesBase
                         "ROSAT"
                         )
                     );
-                this.testspace.schemas().create(
-                        BaseComponent.CopyDepth.THIN,
-                        this.workspace.schemas().select(
-                            "BestDR8"
-                            )
-                        );
                 this.testspace.schemas().create(
                     BaseComponent.CopyDepth.THIN,
                     this.workspace.schemas().select(
@@ -234,7 +221,7 @@ extends TestPropertiesBase
 
     /**
      * Save our test resources.
-     * 
+     *
      */
     @After
     public void saveResources()
@@ -253,7 +240,7 @@ extends TestPropertiesBase
             testprops().setProperty("test.space", this.testspace.ident().toString());
             }
         }
-    
+
     /**
      * An expected result.
      *
@@ -333,7 +320,7 @@ extends TestPropertiesBase
             expected.length
             );
         }
-    
+
     /**
      * Debug display of a query.
      *
@@ -370,16 +357,17 @@ extends TestPropertiesBase
 
     /**
      * Clean a query string.
-     * 
+     *
      */
-    protected String clean(String s1)
+    protected String clean(final String s1)
         {
         if (s1 == null)
             {
             return  null ;
             }
 
-        final String s3 = s1.toLowerCase();
+        final String s2 = StringUtils.trim(s1);
+        final String s3 = s2.toLowerCase();
         final String s4 = s3.replaceAll("[\n\r]+", " ");
         final String s5 = s4.replaceAll("\\p{Space}+", " ");
         final String s6 = s5.replaceAll(" +,", ",");
@@ -389,7 +377,7 @@ extends TestPropertiesBase
 
     /**
      * Compare an ADQL query and the resulting SQL output.
-     * 
+     *
      */
     public void compare(final String adql, final String osql)
         {
@@ -403,7 +391,7 @@ extends TestPropertiesBase
 
     /**
      * Compare an ADQL query and the resulting SQL output.
-     * 
+     *
      */
     public void compare(final AdqlQuery query, final String osql)
         {

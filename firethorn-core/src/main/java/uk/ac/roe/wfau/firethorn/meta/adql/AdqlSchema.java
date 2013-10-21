@@ -18,6 +18,7 @@
 package uk.ac.roe.wfau.firethorn.meta.adql;
 
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.QueryParam;
 import uk.ac.roe.wfau.firethorn.entity.Entity;
 import uk.ac.roe.wfau.firethorn.entity.exception.NameNotFoundException;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseSchema;
@@ -181,6 +182,12 @@ extends BaseSchema<AdqlSchema, AdqlTable>
          *
          */
         public AdqlQuery create(final String query, final String rowid);
+
+        /**
+         * Create a new query.
+         *
+         */
+        public AdqlQuery create(final QueryParam params, final String query);
 
         /**
          * Create a new query.

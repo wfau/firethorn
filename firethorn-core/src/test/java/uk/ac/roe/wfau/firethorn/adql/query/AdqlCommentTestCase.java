@@ -31,20 +31,20 @@ public class AdqlCommentTestCase
     throws Exception
         {
         compare(
-            "SELECT\n" + 
-            "    TOP 100\n" + 
-            "    ra,\n" + 
-            "    dec\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            "/*\n" + 
-            "WHERE\n" + 
-            "    uAperMag3 >0\n" + 
-            "AND\n" + 
-            "    gAperMag3 >0\n" + 
+            "SELECT\n" +
+            "    TOP 100\n" +
+            "    ra,\n" +
+            "    dec\n" +
+            "FROM\n" +
+            "    atlasSource\n" +
+            "/*\n" +
+            "WHERE\n" +
+            "    uAperMag3 >0\n" +
+            "AND\n" +
+            "    gAperMag3 >0\n" +
             "*/" +
             "",
-            
+
             "SELECT TOP 100 ATLASv20130426.dbo.atlasSource.ra AS ra , ATLASv20130426.dbo.atlasSource.dec AS dec FROM ATLASv20130426.dbo.atlasSource"
             );
         }
@@ -54,23 +54,23 @@ public class AdqlCommentTestCase
     throws Exception
         {
         compare(
-            "SELECT\n" + 
-            "    TOP 100\n" + 
-            "    ra,\n" + 
-            "    dec\n" + 
-            "    /*cx,*/\n" + 
-            "    /*cy,*/\n" + 
-            "    /*cz*/\n" + 
-            "FROM\n" + 
-            "    atlasSource\n" + 
-            "/*\n" + 
-            "WHERE\n" + 
-            "    uAperMag3 >0\n" + 
-            "AND\n" + 
-            "    gAperMag3 >0\n" + 
+            "SELECT\n" +
+            "    TOP 100\n" +
+            "    ra,\n" +
+            "    dec\n" +
+            "    /*cx,*/\n" +
+            "    /*cy,*/\n" +
+            "    /*cz*/\n" +
+            "FROM\n" +
+            "    atlasSource\n" +
+            "/*\n" +
+            "WHERE\n" +
+            "    uAperMag3 >0\n" +
+            "AND\n" +
+            "    gAperMag3 >0\n" +
             "*/" +
             "",
-            
+
             "SELECT TOP 100 ATLASv20130426.dbo.atlasSource.ra AS ra , ATLASv20130426.dbo.atlasSource.dec AS dec FROM ATLASv20130426.dbo.atlasSource"
             );
         }

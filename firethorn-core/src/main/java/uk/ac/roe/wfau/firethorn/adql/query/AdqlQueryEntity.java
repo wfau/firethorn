@@ -21,8 +21,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
@@ -52,6 +57,7 @@ import org.springframework.stereotype.Repository;
 
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParser;
 import uk.ac.roe.wfau.firethorn.adql.parser.AdqlParserQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.Level;
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.Syntax.State;
 import uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory;
 import uk.ac.roe.wfau.firethorn.entity.annotation.CreateEntityMethod;
@@ -127,7 +133,7 @@ implements AdqlQuery, AdqlParserQuery
     protected static final String DB_OSQL_COL   = "osql";
     protected static final String DB_ROWID_COL  = "rowid";
     protected static final String DB_INPUT_COL  = "input";
-    protected static final String DB_STATUS_COL = "status";
+
     protected static final String DB_JDBC_TABLE_COL  = "jdbctable";
     protected static final String DB_ADQL_TABLE_COL  = "adqltable";
     protected static final String DB_ADQL_SCHEMA_COL = "adqlschema";
@@ -137,6 +143,7 @@ implements AdqlQuery, AdqlParserQuery
      *
      */
     protected static final String DB_SYNTAX_STATE_COL   = "syntaxstate";
+    protected static final String DB_SYNTAX_LEVEL_COL   = "syntaxlevel";
     protected static final String DB_SYNTAX_MESSAGE_COL = "syntaxmessage";
 
     /**
@@ -156,17 +163,20 @@ implements AdqlQuery, AdqlParserQuery
     public static class ParamFactory
     implements AdqlQuery.ParamFactory
         {
-       @Value("${firethorn.ogsadai.dqp}")
-       private String dqp ;
+        @Value("${firethorn.adql.level}")
+        private Level level ;
 
-       @Value("${firethorn.ogsadai.store}")
-       private String store ;
+        @Value("${firethorn.ogsadai.dqp}")
+        private String dqp ;
 
-       @Value("${firethorn.ogsadai.endpoint}")
-       private String endpoint ;
+        @Value("${firethorn.ogsadai.store}")
+        private String store ;
+
+        @Value("${firethorn.ogsadai.endpoint}")
+        private String endpoint ;
 
         @Override
-        public AdqlQuery.QueryParam current()
+        public AdqlQuery.QueryParam param()
             {
             return new AdqlQuery.QueryParam()
                 {
@@ -184,6 +194,39 @@ implements AdqlQuery, AdqlParserQuery
                 public String store()
                     {
                     return ParamFactory.this.store;
+                    }
+                @Override
+                public Level level()
+                    {
+                    return ParamFactory.this.level;
+                    }
+                };
+            }
+
+        @Override
+        public QueryParam param(final Level change)
+            {
+            return new AdqlQuery.QueryParam()
+                {
+                @Override
+                public String endpoint()
+                    {
+                    return ParamFactory.this.endpoint;
+                    }
+                @Override
+                public String dqp()
+                    {
+                    return ParamFactory.this.dqp;
+                    }
+                @Override
+                public String store()
+                    {
+                    return ParamFactory.this.store;
+                    }
+                @Override
+                public Level level()
+                    {
+                    return change;
                     }
                 };
             }
@@ -320,6 +363,19 @@ implements AdqlQuery, AdqlParserQuery
 
         @Override
         @CreateEntityMethod
+        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final String input)
+            {
+            return create(
+                params,
+                schema,
+                input,
+                null,
+                names().name()
+                );
+            }
+
+        @Override
+        @CreateEntityMethod
         public AdqlQuery create(final AdqlSchema schema, final String input, final String rowid)
             {
             return create(
@@ -334,6 +390,19 @@ implements AdqlQuery, AdqlParserQuery
         @CreateEntityMethod
         public AdqlQuery create(final AdqlSchema schema, final String input, final String rowid, final String name)
             {
+            return create(
+                params.param(),
+                schema,
+                input,
+                rowid,
+                name
+                );
+            }
+
+        @Override
+        @CreateEntityMethod
+        public AdqlQuery create(final QueryParam params, final AdqlSchema schema, final String input, final String rowid, final String name)
+            {
             log.debug("AdqlQuery create(AdqlSchema, String, String)");
             log.debug("  Schema [{}][{}]", schema.ident(), schema.name());
             log.debug("  Rowid  [{}]", rowid);
@@ -341,7 +410,7 @@ implements AdqlQuery, AdqlParserQuery
             //
             // Create the query entity.
             final AdqlQueryEntity entity = new AdqlQueryEntity(
-                params.current(),
+                params,
                 schema,
                 input,
                 rowid,
@@ -460,11 +529,11 @@ implements AdqlQuery, AdqlParserQuery
             );
         this.rowid  = rowid ;
         this.schema = schema;
-        this.input(
-            input
-            );
         this.params(
             params
+            );
+        this.input(
+            input
             );
         }
 
@@ -616,7 +685,7 @@ implements AdqlQuery, AdqlParserQuery
         {
         return this.rowid;
         }
-    
+
     @Column(
         name = DB_SYNTAX_STATE_COL,
         unique = false,
@@ -627,6 +696,26 @@ implements AdqlQuery, AdqlParserQuery
         EnumType.STRING
         )
     private Syntax.State syntax = Syntax.State.UNKNOWN ;
+
+    @Column(
+        name = DB_SYNTAX_LEVEL_COL,
+        unique = false,
+        nullable = true,
+        updatable = true
+        )
+    @Enumerated(
+        EnumType.STRING
+        )
+    private Syntax.Level level ;
+
+    @Transient
+    private final List<String> warnings = new ArrayList<String>();
+    public void warning(final String warning)
+        {
+        warnings.add(
+            warning
+            );
+        }
 
     @Type(
         type="org.hibernate.type.TextType"
@@ -662,11 +751,12 @@ implements AdqlQuery, AdqlParserQuery
         updatable = true
         )
     private String endpoint ;
-    
+
     protected void params(final AdqlQuery.QueryParam params)
         {
         this.dqp      = params.dqp();
         this.store    = params.store();
+        this.level    = params.level();
         this.endpoint = params.endpoint();
         }
 
@@ -692,6 +782,12 @@ implements AdqlQuery, AdqlParserQuery
                 {
                 return AdqlQueryEntity.this.store;
                 }
+
+            @Override
+            public AdqlQuery.Syntax.Level level()
+                {
+                return AdqlQueryEntity.this.level;
+                }
             };
         }
 
@@ -714,6 +810,21 @@ implements AdqlQuery, AdqlParserQuery
             public String friendly()
                 {
                 return AdqlQueryEntity.this.message;
+                }
+            @Override
+            public Level level()
+                {
+                return AdqlQueryEntity.this.level;
+                }
+            @Override
+            public void level(final Level level)
+                {
+                AdqlQueryEntity.this.level = level;
+                }
+            @Override
+            public Iterable<String> warnings()
+                {
+                return AdqlQueryEntity.this.warnings;
                 }
             };
         }
@@ -819,6 +930,60 @@ implements AdqlQuery, AdqlParserQuery
         else {
             return this.schema.resource();
             }
+        }
+
+    @Override
+    public String cleaned()
+        {
+        //
+        // Trim leading/trailing spaces.
+        String result = input().trim();
+
+        //
+        // Skip /* comments */
+        final Pattern p1 = Pattern.compile(
+            "/\\*.*?\\*/",
+            Pattern.DOTALL
+            );
+        final Matcher m1 = p1.matcher(result);
+        if (m1.find())
+            {
+            result = m1.replaceAll("");
+            }
+
+        //
+        // Legacy SQLServer syntax
+        if (this.level == Level.LEGACY)
+            {
+            //
+            // Replace double '..'
+            final Pattern p2 = Pattern.compile(
+                "\\.\\.",
+                Pattern.DOTALL
+                );
+            final Matcher m2 = p2.matcher(result);
+            if (m2.find())
+                {
+                result = m2.replaceAll(".");
+                warning("SQLServer '..' syntax is not required");
+                }
+
+            //
+            // Replace 'AS distance'.
+            final Pattern p3 = Pattern.compile(
+                "[Aa][Ss] +[Dd][Ii][Ss][Tt][Aa][Nn][Cc][Ee]",
+                Pattern.DOTALL
+                );
+            final Matcher m3 = p3.matcher(result);
+            if (m3.find())
+                {
+                result = m3.replaceAll("AS dist");
+                warning("DISTANCE is an ADQL reserved word");
+                }
+            }
+
+        return result;
+
         }
 
     @Override
@@ -1038,23 +1203,40 @@ implements AdqlQuery, AdqlParserQuery
         }
 
     @Transient
-    private final List<SelectField > fields = new ArrayList<SelectField>();
+    private final Map<String, SelectField> fields = new LinkedHashMap<String, SelectField>();
     @Override
     public Iterable<SelectField > fields()
         {
-        return this.fields;
+        return this.fields.values();
         }
 
     @Override
     public void add(final SelectField field)
+    throws DuplicateFieldException
         {
         log.debug("add(SelectField)");
         log.debug("  Name [{}]", field.name());
         log.debug("  Size [{}]", field.arraysize());
         log.debug("  Type [{}]", field.type());
-        this.fields.add(
-            field
-            );
+        //
+        // Clean the name.
+        String name = field.name().trim().toLowerCase();
+        //
+        // Check for a duplicate.
+        if (fields.containsKey(name))
+            {
+            throw new DuplicateFieldException(
+                field
+                );
+            }
+        //
+        // Add the field.
+        else {
+            this.fields.put(
+                name,
+                field
+                );
+            }
         }
 
     /**

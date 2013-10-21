@@ -494,8 +494,8 @@ public class JdbcConnectionEntity
 
     @Transient
     private int opens;
-    private static final boolean DEBUG_NESTED_CONNECTS = false ; 
-    
+    private static final boolean DEBUG_NESTED_CONNECTS = false ;
+
     @Override
     public Connection open()
         {

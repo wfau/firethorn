@@ -17,7 +17,10 @@
  */
 package uk.ac.roe.wfau.firethorn.adql.parser;
 
+import java.util.Map;
+
 import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery;
+import uk.ac.roe.wfau.firethorn.adql.query.AdqlQuery.SelectField;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlTable;
 
@@ -29,10 +32,16 @@ public interface AdqlParserQuery
     {
 
     /**
-     * Get the input text.
+     * Get the original input text.
      *
      */
     public String input();
+
+    /**
+     * Get the cleaned text.
+     *
+     */
+    public String cleaned();
 
     /**
      * Reset the query state.
@@ -53,22 +62,54 @@ public interface AdqlParserQuery
     public void osql(final String ogsa);
 
     /**
-     * Add an AdqlColumn.
+     * Add an AdqlColumn reference.
      *
      */
     public void add(final AdqlColumn column);
 
     /**
-     * Add an AdqlTable.
+     * Add an AdqlTable reference.
      *
      */
     public void add(final AdqlTable table);
 
     /**
-     * Add the metadata for a SELECT item.
+     * An Exception thrown when a duplicate select field is added.  
+     *
      *
      */
-    public void add(final AdqlQuery.SelectField meta);
+    public static class DuplicateFieldException
+    extends AdqlParserException
+        {
+        private static final long serialVersionUID = -7933054733777146904L;
+
+        private final AdqlQuery.SelectField field ;
+        public AdqlQuery.SelectField field()
+            {
+            return this.field;
+            }
+
+        public DuplicateFieldException(final AdqlQuery.SelectField field)
+            {
+            super(
+                "Duplicate SELECT field [" + field.name() + "]"
+                );
+            this.field = field;
+            }
+        }
+
+    /**
+     * Add the metadata for a SELECT field.
+     *
+     */
+    public void add(final AdqlQuery.SelectField field)
+    throws DuplicateFieldException;
+    
+    /**
+     * Get the ADQL parser syntax.
+     *
+     */
+    public AdqlQuery.Syntax syntax();
 
     /**
      * Set the ADQL syntax status.
