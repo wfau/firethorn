@@ -360,10 +360,10 @@ implements AdqlParser
 
     /**
      * Recursively process a tree of ADQLObject(s).
-     * @throws AdqlParserException
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final Iterable<ADQLObject> iter)
+    throws AdqlParserException
         {
         log.debug("process(final AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>");
         for (final ADQLObject clause: iter)
@@ -434,7 +434,6 @@ implements AdqlParser
 
     /**
      * Process an Operation.
-     * @throws AdqlParserException
      *
      */
     protected void process(final AdqlParserQuery subject, final ADQLQuery query, final Operation oper)
