@@ -552,6 +552,3 @@ public class AdqlQueryBugsTestCase
     SELECT * from (select * from Filter) as q
      * 
      */
-    
-    
-    }

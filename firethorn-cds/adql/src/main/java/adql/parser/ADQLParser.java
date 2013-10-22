@@ -497,14 +497,14 @@ public class ADQLParser implements ADQLParserConstants {
 
   final public ADQLQuery QueryExpression() throws ParseException {
     trace_call("QueryExpression");
-    
+    ADQLQuery parentQuery = null;
     // Create Column list and alias map from the query stack data
     Stack<ADQLQuery> stackq = stackQuery;
-	    DBChecker qCheck = (DBChecker ) queryChecker;
-	    SearchColumnList allfromlist =  new SearchColumnList();
-		HashMap<DBTable, ADQLTable> mapTables = new HashMap<DBTable, ADQLTable>();
+    DBChecker qCheck = (DBChecker ) queryChecker;
+    SearchColumnList allfromlist =  new SearchColumnList();
+	HashMap<DBTable, ADQLTable> mapTables = new HashMap<DBTable, ADQLTable>();
 
-		for(ADQLQuery o : stackq){
+	for(ADQLQuery o : stackq){
 			//ArrayList<ADQLTable> adqltables = o.getFrom().getTables();
 			SearchTableHandler sHandler = new SearchTableHandler();
 
@@ -535,8 +535,9 @@ public class ADQLParser implements ADQLParserConstants {
 		
     try {
                 try{
-                        // create the query:
-                        query = queryFactory.createQuery();
+                	   
+                	    	query = queryFactory.createQuery(query,true);
+            		   
                         stackQuery.push(query);
                 }catch(Exception ex){
                         {if (true) throw generateParseException(ex);}
@@ -695,7 +696,7 @@ public class ADQLParser implements ADQLParserConstants {
           }
           jj_consume_token(ASTERISK);
                                 try{;
-                                        {if (true) return new SelectAllColumns( queryFactory.createTable(identifiers, null) );}
+                                        {if (true) return new SelectAllColumns( queryFactory.createTable(identifiers, null),query );}
                                 }catch(Exception ex) {
                                         {if (true) throw generateParseException(ex);}
                                 }
@@ -770,7 +771,7 @@ public class ADQLParser implements ADQLParserConstants {
         }
       }
                 try{
-                        SelectItem item = queryFactory.createSelectItem(op, (label==null)?null:label.identifier);
+                        SelectItem item = queryFactory.createSelectItem(op, (label==null)?null:label.identifier, query);
                         if (label != null)
                                 item.setCaseSensitive(label.caseSensitivity);
                         {if (true) return item;}

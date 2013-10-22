@@ -63,6 +63,8 @@ public class ADQLQuery implements ADQLObject {
 	/** The ADQL clause ORDER BY. */
 	private ClauseADQL<ADQLOrder> orderBy;
 	
+	/** The parent Query of the query */
+	private ADQLQuery parent;
 
 	/**
 	 * Builds an empty ADQL query.
@@ -74,8 +76,25 @@ public class ADQLQuery implements ADQLObject {
 		groupBy = new ClauseADQL<ColumnReference>("GROUP BY");
 		having = new ClauseConstraints("HAVING");
 		orderBy = new ClauseADQL<ADQLOrder>("ORDER BY");
+		parent = null;
 	}
 
+	
+
+	/**
+	 * Builds an ADQL query with a given parent query parameter.
+	 */
+	public ADQLQuery(ADQLQuery parentQuery, boolean hasParent){
+		select = new ClauseSelect();
+		from = null;
+		where = new ClauseConstraints("WHERE");
+		groupBy = new ClauseADQL<ColumnReference>("GROUP BY");
+		having = new ClauseConstraints("HAVING");
+		orderBy = new ClauseADQL<ADQLOrder>("ORDER BY");
+		if (hasParent)
+			parent = parentQuery;
+	}
+	
 	/**
 	 * Builds an ADQL query by copying the given one.
 	 * 
@@ -90,6 +109,7 @@ public class ADQLQuery implements ADQLObject {
 		groupBy = (ClauseADQL<ColumnReference>)toCopy.groupBy.getCopy();
 		having = (ClauseConstraints)toCopy.having.getCopy();
 		orderBy = (ClauseADQL<ADQLOrder>)toCopy.orderBy.getCopy();
+		parent = (ADQLQuery)toCopy.parent.getCopy();
 	}
 
 	
@@ -105,6 +125,16 @@ public class ADQLQuery implements ADQLObject {
 		groupBy.clear();
 		having.clear();
 		orderBy.clear();
+		parent = null;
+	}
+	
+	/**
+	 * Gets the parent ADQLQuery of this query.
+	 * 
+	 * @return	Its  parent ADQLQuery.
+	 */
+	public final ADQLQuery getParent() {
+		return parent;
 	}
 
 	/**
@@ -401,6 +431,18 @@ public class ADQLQuery implements ADQLObject {
 			adql.append('\n').append(orderBy.toADQL());
 
 		return adql.toString();
+	}
+	
+	/**
+	 * Is query the main one or a subquery?
+	 * @return true/false 
+	 */
+	public boolean isMain(){
+		if (parent==null){
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }
