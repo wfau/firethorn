@@ -317,27 +317,27 @@ public class AdqlQueryBugsTestCase
             factories().queries().params().param(
                 Level.LEGACY
                 ),
-            "SELECT TOP 10\n" +
-            "    atlas.ra,\n" +
-            "    atlas.dec\n" +
-            "FROM\n" +
-            "    atlasSource AS atlas,\n" +
-            "    TWOMASS.twomass_psc AS twomass,\n" +
-            "    atlasSourceXtwomass_psc AS neighbours\n" +
-            "WHERE\n" +
-            "    masterObjID=atlas.sourceID\n" +
-            "AND\n" +
-            "    slaveObjID=twomass.pts_key\n" +
-            "AND\n" +
-            "    distanceMins IN (\n" +
-            "        SELECT\n" +
-            "            MIN(distanceMins)\n" +
-            "        FROM\n" +
-            "            atlasSourceXtwomass_psc\n" +
-            "        WHERE\n" +
-            "            masterObjID = neighbours.masterObjID\n" +
-            "        )\n" +
-            ""
+                
+           " SELECT TOP 10 " +
+		   "     atlas.ra, " +
+		   "     atlas.dec " +
+		   "   FROM " +
+		   "     atlasSource AS atlas, " +
+		   "   BestDR8.PhotoObj AS best, " +
+		   "    atlasSourceXDR8PhotoObj AS neighbours " +
+		   "   WHERE " +
+		   "      masterObjID=atlas.sourceID " +
+		   "  AND " +
+		   "      slaveObjID=best.ObjID " +
+		   "  AND " +
+		   "      distanceMins IN ( " +
+		   "          SELECT " +
+		   "          MIN(distanceMins) " +
+		   "     FROM " +
+		   "         atlasSourceXDR8PhotoObj " +
+		   "      WHERE " +
+		   "          masterObjID = neighbours.masterObjID " +
+		   ")"
             );
         assertEquals(
             AdqlQuery.Syntax.State.VALID,
@@ -410,7 +410,7 @@ public class AdqlQueryBugsTestCase
             factories().queries().params().param(
                 Level.LEGACY
                 ),
-            "SELECT\n" +
+            "SELECT TOP 100\n" +
             "    neighbours.distanceMins\n" +
             "FROM\n" +
             "    atlassourcexDR8photoobj AS neighbours,\n" +
@@ -421,7 +421,7 @@ public class AdqlQueryBugsTestCase
             "        atlasSource\n" +
             "    ) AS sources\n" +
             "WHERE\n" +
-            "    neighbours.masterObjID = sources.ident\n" +
+            "    neighbours.masterObjID - sources.ident < 1000000\n" +
             ""
             );
         assertEquals(
@@ -436,7 +436,7 @@ public class AdqlQueryBugsTestCase
             );
         compare(
             query,
-            "select neighbours.distancemins as distancemins  from atlasv20130426.dbo.atlassourcexdr8photoobj as neighbours, (select top 10 atlasv20130426.dbo.atlassource.sourceid as ident from atlasv20130426.dbo.atlassource) as sources where neighbours.masterobjid = sources.ident"
+            "select top 100 neighbours.distancemins as distancemins from atlasv20130426.dbo.atlassourcexdr8photoobj as neighbours, (select top 10 atlasv20130426.dbo.atlassource.sourceid as ident from atlasv20130426.dbo.atlassource) as sources where neighbours.masterobjid-sources.ident < 1000000"
             );
         }
 
@@ -493,4 +493,39 @@ public class AdqlQueryBugsTestCase
             query.syntax().state()
             );
         }
+    
+    
+    /**
+     * Negative value for select expression.
+     *
+     */
+    @Test
+    public void test010()
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.LEGACY
+                ),
+            	"SELECT -decBase FROM Multiframe WHERE MultiframeID > 0"
+
+            );
+        	assertEquals(
+                AdqlQuery.Syntax.State.VALID,
+                query.syntax().state()
+                );
+       
+            
+            compare(
+                    query,
+                    "select -atlasv20130426.dbo.multiframe.decbase as -decbase from atlasv20130426.dbo.multiframe where atlasv20130426.dbo.multiframe.multiframeid > 0"
+                    );
+            
+            validate(
+                    query,
+                    new ExpectedField[] {
+                        new ExpectedField("decbase", AdqlColumn.Type.FLOAT, 0),
+                        }
+                    );
+        }
+    
     }

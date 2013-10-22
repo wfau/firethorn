@@ -491,7 +491,8 @@ public class PostgreSQLTranslator implements ADQLTranslator {
 			else if (column.getTableName() != null)
 				colName = column.getFullColumnPrefix().append('.');
 
-			appendIdentifier(colName, dbCol.getDBName(), IdentifierField.COLUMN);
+			appendIdentifier(colName, dbCol.getADQLName(), IdentifierField.COLUMN);
+			// WAS appendIdentifier(colName, dbCol.getDBName(), IdentifierField.COLUMN);
 
 			return colName.toString();
 		}
