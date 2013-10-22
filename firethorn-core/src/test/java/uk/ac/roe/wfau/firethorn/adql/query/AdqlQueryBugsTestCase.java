@@ -359,6 +359,58 @@ public class AdqlQueryBugsTestCase
         }
 
     /**
+     * Simple nested query.
+     *
+     */
+    @Test
+    public void test006a()
+        {
+        final AdqlQuery query = this.queryspace.queries().create(
+            factories().queries().params().param(
+                Level.LEGACY
+                ),
+            "SELECT TOP 10\n" +
+            "    atlas.ra,\n" +
+            "    atlas.dec\n" +
+            "FROM\n" +
+            "    atlasSource AS atlas,\n" +
+            "    TWOMASS.twomass_psc AS twomass,\n" +
+            "    atlasSourceXtwomass_psc AS neighbours\n" +
+            "WHERE\n" +
+            "    masterObjID=atlas.sourceID\n" +
+            "AND\n" +
+            "    slaveObjID=twomass.pts_key\n" +
+            "AND\n" +
+            "    distanceMins IN (\n" +
+            "        SELECT\n" +
+            "            distanceMins\n" +
+            "        FROM\n" +
+            "            atlasSourceXtwomass_psc\n" +
+            "        WHERE\n" +
+            "            distanceMins < 0.01\n" +
+            "        )\n" +
+            ""
+            );
+        assertEquals(
+            AdqlQuery.Syntax.State.VALID,
+            query.syntax().state()
+            );
+        validate(
+            query,
+            new ExpectedField[] {
+                new ExpectedField("ra",  AdqlColumn.Type.DOUBLE, 0),
+                new ExpectedField("dec", AdqlColumn.Type.DOUBLE, 0),
+                //new ExpectedField("MIN", AdqlColumn.Type.FLOAT, 0),
+                }
+            );
+        // TODO
+        compare(
+            query,
+            "select top 10 atlas.ra as ra, atlas.dec as dec from atlasv20130426.dbo.atlassource as atlas, twomass.dbo.twomass_psc as twomass, atlasv20130426.dbo.atlassourcextwomass_psc as neighbours where neighbours.masterobjid = atlas.sourceid and neighbours.slaveobjid = twomass.pts_key and neighbours.distancemins in (select min(atlasv20130426.dbo.atlassourcextwomass_psc.distancemins) as min from atlasv20130426.dbo.atlassourcextwomass_psc where atlasv20130426.dbo.atlassourcextwomass_psc.masterobjid = neighbours.masterobjid)"
+            );
+        }
+    
+    /**
      * DATETIME column.
      *
      */
@@ -493,4 +545,13 @@ public class AdqlQueryBugsTestCase
             query.syntax().state()
             );
         }
+
+    
+    /*
+     * 
+    SELECT * from (select * from Filter) as q
+     * 
+     */
+    
+    
     }
